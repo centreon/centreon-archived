@@ -47,7 +47,7 @@
 	 */
 	$group = array();
 	if (($o == "c" || $o == "w") && $acl_group_id) {
-		$DBRESULT =& $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$acl_group_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM acl_groups WHERE acl_group_id = '".$acl_group_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -56,40 +56,40 @@
 		/*
 		 * Set Contact Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'");
-		for ($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_contact_id FROM acl_group_contacts_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++)
 			$group["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
 
 		/*
 		 * Set ContactGroup Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'");
-		for ($i = 0; $contactgroups =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $contactgroups = $DBRESULT->fetchRow(); $i++)
 			$group["cg_contactGroups"][$i] = $contactgroups["cg_cg_id"];
 		$DBRESULT->free();
 
 		/*
 		 * Set Menu link List
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'");
-		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT acl_topology_id FROM acl_group_topology_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++)
 			$group["menuAccess"][$i] = $data["acl_topology_id"];
 		$DBRESULT->free();
 
 		/*
 		 * Set resources List
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
-		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT acl_res_id FROM acl_res_group_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++)
 			$group["resourceAccess"][$i] = $data["acl_res_id"];
 		$DBRESULT->free();
 
 		/*
 		 * Set Action List
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_action_id FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'");
-		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT acl_action_id FROM acl_group_actions_relations WHERE acl_group_id = '".$acl_group_id."'");
+		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++)
 			$group["actionAccess"][$i] = $data["acl_action_id"];
 		$DBRESULT->free();
 
@@ -100,8 +100,8 @@
 	 */
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
-	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
-	while ($contact =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
+	while ($contact = $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
 	$DBRESULT->free();
@@ -111,24 +111,24 @@
 	
 	# topology comes from DB -> Store in $contacts Array
 	$menus = array();
-	$DBRESULT =& $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
-	while ($topo =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
+	while ($topo = $DBRESULT->fetchRow())
 		$menus[$topo["acl_topo_id"]] = $topo["acl_topo_name"];
 	unset($topo);
 	$DBRESULT->free();
 
 	# Action comes from DB -> Store in $contacts Array
 	$action = array();
-	$DBRESULT =& $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions ORDER BY acl_action_name");
-	while ($data =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT acl_action_id, acl_action_name FROM acl_actions ORDER BY acl_action_name");
+	while ($data = $DBRESULT->fetchRow())
 		$action[$data["acl_action_id"]] = $data["acl_action_name"];
 	unset($data);
 	$DBRESULT->free();
 
 	# Resources comes from DB -> Store in $contacts Array
 	$resources = array();
-	$DBRESULT =& $pearDB->query("SELECT acl_res_id, acl_res_name FROM acl_resources ORDER BY acl_res_name");
-	while ($res =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT acl_res_id, acl_res_name FROM acl_resources ORDER BY acl_res_name");
+	while ($res = $DBRESULT->fetchRow())
 		$resources[$res["acl_res_id"]] = $res["acl_res_name"];
 	unset($res);
 	$DBRESULT->free();
@@ -164,31 +164,31 @@
 	$form->addElement('header', 'resource', _("Resources access list link"));
 	$form->addElement('header', 'actions', _("Action access list link"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'cg_contactGroups', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $contactGroups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'menuAccess', array(_("Menu access"), _("Available"), _("Selected")), $menus, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'actionAccess', array(_("Actions access"), _("Available"), _("Selected")), $action, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'resourceAccess', array(_("Resources access"), _("Available"), _("Selected")), $resources, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -210,7 +210,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'acl_group_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -253,20 +253,20 @@
 		/*
 		 * Modify a Contact Group information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($group);
 	} else if ($o == "a") {
 		/*
 		 * Add a Contact Group information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
-		$groupObj =& $form->getElement('acl_group_id');
+		$groupObj = $form->getElement('acl_group_id');
 		if ($form->getSubmitValue("submitA"))
 			$groupObj->setValue(insertGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -283,7 +283,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

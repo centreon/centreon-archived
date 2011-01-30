@@ -81,7 +81,7 @@
 	 * Services Categories Lists
 	 */ 
 	
-	$DBRESULT =& $pearDB->query("SELECT * FROM service_categories $SearchTool ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT = $pearDB->query("SELECT * FROM service_categories $SearchTool ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit);
 
 	$search = tidySearchKey($search, $advanced_search);
 
@@ -96,12 +96,12 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $sc =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
-		$DBRESULT2 =& $pearDB->query("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$sc['sc_id']."'");
-		$nb_svc =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDB->query("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$sc['sc_id']."'");
+		$nb_svc = $DBRESULT2->fetchRow();
 		
-		$selectedElements =& $form->addElement('checkbox', "select[".$sc['sc_id']."]");
+		$selectedElements = $form->addElement('checkbox', "select[".$sc['sc_id']."]");
 		
 		if ($sc["sc_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&sc_id=".$sc['sc_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -158,11 +158,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions"), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -171,7 +171,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServiceCategories.ihtml");

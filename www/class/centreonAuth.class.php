@@ -74,7 +74,7 @@ class CentreonAuth {
     	global $centreon_crypt;
 
     	$this->cryptPossibilities = array('MD5', 'SHA1');
-    	$this->CentreonLog =& $CentreonLog;
+    	$this->CentreonLog = $CentreonLog;
     	$this->login = $username;
     	$this->password = $password;
     	$this->pearDB = $pearDB;
@@ -92,7 +92,7 @@ class CentreonAuth {
 	 * Is loging enable ?
 	 */
 	private function getLogFlag() {
-		$DBRESULT =& $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
+		$DBRESULT = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
 		$data = $DBRESULT->fetchRow();
 		if (isset($data["value"])) {
 			return $data["value"];
@@ -157,12 +157,12 @@ class CentreonAuth {
 
     private function checkUser($username, $password) {
     	if ($this->autologin == 0) {
-	    	$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
+	    	$DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
     	} else {
-    		$DBRESULT =& $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
+    		$DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
     	}
     	if ($DBRESULT->numRows()) {
-    		$this->userInfos =& $DBRESULT->fetchRow();
+    		$this->userInfos = $DBRESULT->fetchRow();
     		if ($this->userInfos["contact_oreon"]) {
 				/*
 				 * Check password matching

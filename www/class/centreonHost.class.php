@@ -59,10 +59,10 @@
 	 */
  	public function getHostName($host_id) {
  		$rq = "SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1";
- 		$DBRES =& $this->DB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
- 		$row =& $DBRES->fetchRow();
+ 		$row = $DBRES->fetchRow();
  		return $row['host_name'];
  	}
 
@@ -73,10 +73,10 @@
  	 */
  	public function getHostAlias($host_id) {
  		$rq = "SELECT host_alias FROM host WHERE host_id = '".$host_id."' LIMIT 1";
- 		$DBRES =& $this->DB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
- 		$row =& $DBRES->fetchRow();
+ 		$row = $DBRES->fetchRow();
  		return $row['host_alias'];
  	}
 
@@ -87,10 +87,10 @@
  	 */
  	public function getHostAddress($host_id) {
  		$rq = "SELECT host_address FROM host WHERE host_id = '".$host_id."' LIMIT 1";
- 		$DBRES =& $this->DB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
- 		$row =& $DBRES->fetchRow();
+ 		$row = $DBRES->fetchRow();
  		return $row['host_address'];
  	}
 
@@ -101,10 +101,10 @@
  	 */
  	public function getHostId($host_name) {
  		$rq = "SELECT host_id FROM host WHERE host_name = '".$host_name."' LIMIT 1";
- 		$DBRES =& $this->DB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
- 		$row =& $DBRES->fetchRow();
+ 		$row = $DBRES->fetchRow();
  		return $row['host_id'];
  	}
 
@@ -132,10 +132,10 @@
  	 */
  	public function getHostPollerId($host_id) {
  		$rq = "SELECT nagios_server_id FROM ns_host_relation WHERE host_host_id = '".$host_id."' LIMIT 1";
- 		$DBRES =& $this->DB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
- 		$row =& $DBRES->fetchRow();
+ 		$row = $DBRES->fetchRow();
  		return $row['nagios_server_id'];
  	}
 
@@ -154,10 +154,10 @@
 		    return $string;
 		}
 		$rq = "SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1";
-        $DBRESULT =& $this->DB->query($rq);
+        $DBRESULT = $this->DB->query($rq);
         if (!$DBRESULT->numRows())
         	return $string;
-        $row =& $DBRESULT->fetchRow();
+        $row = $DBRESULT->fetchRow();
 
         /*
          * replace if not template
@@ -178,16 +178,16 @@
  		$i = 0;
  		while (isset($matches[1][$i])) {
  			$rq = "SELECT host_macro_value FROM on_demand_macro_host WHERE host_host_id = '".$host_id."' AND host_macro_name LIKE '".$matches[1][$i]."'";
- 			$DBRES =& $this->DB->query($rq);
-	 		while ($row =& $DBRES->fetchRow()) {
+ 			$DBRES = $this->DB->query($rq);
+	 		while ($row = $DBRES->fetchRow()) {
 	 			$string = str_replace($matches[1][$i], $row['host_macro_value'], $string);
 	 		}
  			$i++;
  		}
  		if ($i) {
 	 		$rq2 = "SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order`";
-	 		$DBRES2 =& $this->DB->query($rq2);
-	 		while ($row2 =& $DBRES2->fetchRow()) {
+	 		$DBRES2 = $this->DB->query($rq2);
+	 		while ($row2 = $DBRES2->fetchRow()) {
 	 		    if (!isset($antiLoop) || !$antiLoop) {
 	 		        $string = $this->replaceMacroInString($row2['host_tpl_id'], $string, $row2['host_tpl_id']);
 	 		    } elseif ($row2['host_tpl_id'] != $antiLoop) {

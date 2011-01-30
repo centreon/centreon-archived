@@ -49,7 +49,7 @@
 		$cct["contact_svNotifCmds"] = array();
 		$cct["contact_cgNotif"] = array();
 
-		$DBRESULT =& $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM contact WHERE contact_id = '".$contact_id."' LIMIT 1");
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 		$cct["contact_passwd"] = NULL;
 		$DBRESULT->free();
@@ -74,8 +74,8 @@
 		/**
 		 * Set Contact Group Parents
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
-		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$contact_id."'");
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_cgNotif"][$i] = $notifCg["contactgroup_cg_id"];
 		}
 		$DBRESULT->free();
@@ -83,8 +83,8 @@
 		/**
 		 * Set Host Notification Commands
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
-		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT command_command_id FROM contact_hostcommands_relation WHERE contact_contact_id = '".$contact_id."'");
+		for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_hostNotifCmds"][$i] = $notifCmd["command_command_id"];
 		}
 		$DBRESULT->free();
@@ -92,8 +92,8 @@
 		/**
 		 * Set Service Notification Commands
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
-		for ($i = 0; $notifCmd =& $DBRESULT->fetchRow(); $i++) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT command_command_id FROM contact_servicecommands_relation WHERE contact_contact_id = '".$contact_id."'");
+		for ($i = 0; $notifCmd = $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_svNotifCmds"][$i] = $notifCmd["command_command_id"];
 		}
 		$DBRESULT->free();
@@ -101,8 +101,8 @@
 		/**
 		 * Get DLAP auth informations
 		 */
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
-		while ($ldap_auths =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'ldap_auth_enable'");
+		while ($ldap_auths = $DBRESULT->fetchRow()) {
 			$ldap_auth[$ldap_auths["key"]] = myDecode($ldap_auths["value"]);
 		}
 		$DBRESULT->free();
@@ -110,8 +110,8 @@
 		/**
 		 * Get ACL informations for this user
 		 */
-		$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM `acl_group_contacts_relations` WHERE `contact_contact_id` = '".$contact_id."'");
-		for ($i = 0; $data =& $DBRESULT->fetchRow(); $i++) {
+		$DBRESULT = $pearDB->query("SELECT acl_group_id FROM `acl_group_contacts_relations` WHERE `contact_contact_id` = '".$contact_id."'");
+		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++) {
 			$cct["contact_acl_groups"][$i] = $data["acl_group_id"];
 		}
 		$DBRESULT->free();
@@ -131,8 +131,8 @@
 	 * When we make a massive change, give the possibility to not crush value
 	 */
 	$notifTps = array(NULL => NULL);
-	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while ($notifTp =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	while ($notifTp = $DBRESULT->fetchRow())
 		$notifTps[$notifTp["tp_id"]] = $notifTp["tp_name"];
 	$DBRESULT->free();
 
@@ -140,8 +140,8 @@
 	 * Notification commands comes from DB -> Store in $notifsCmds Array
 	 */
 	$notifCmds = array();
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
-	while ($notifCmd =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '1' ORDER BY command_name");
+	while ($notifCmd = $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
 
@@ -149,8 +149,8 @@
 	 * Contact Groups comes from DB -> Store in $notifCcts Array
 	 */
 	$notifCgs = array();
-	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while ($notifCg =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	while ($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
 	$DBRESULT->free();
 
@@ -158,8 +158,8 @@
 	 * Get ACL Groups List
 	 */
 	$aclGroups = array();
-	$DBRESULT =& $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
-	while ($aclGroup =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT acl_group_id, acl_group_name FROM acl_groups ORDER BY acl_group_name");
+	while ($aclGroup = $DBRESULT->fetchRow()) {
 		$aclGroups[$aclGroup["acl_group_id"]] = $aclGroup["acl_group_name"];
 	}
 	$DBRESULT->free();
@@ -174,8 +174,8 @@
 	}
 
 	$contactTpl = array(NULL => "           ");
-	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '1' $strRestrinction ORDER BY contact_name");
-	while ($contacts =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '1' $strRestrinction ORDER BY contact_name");
+	while ($contacts = $DBRESULT->fetchRow()) {
 		$contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 	}
 	$DBRESULT->free();
@@ -248,7 +248,7 @@
 		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cg'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -282,7 +282,7 @@
 		$form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_acl'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'contact_acl_groups', array(_("Access list groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'contact_acl_groups', array(_("Access list groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -351,7 +351,7 @@
 		$form->setDefaults(array('mc_mod_hcmds'=>'0'));
 	}
 
-	$ams1 =& $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -377,7 +377,7 @@
 		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_svcmds'=>'0'));
 	}
-	$ams2 =& $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
+	$ams2 = $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams2->setElementTemplate($template);
@@ -406,13 +406,13 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'contact_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	if (is_array($select))	{
 		$select_str = NULL;
 		foreach ($select as $key => $value)
 			$select_str .= $key.",";
-		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear = $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
 
@@ -486,22 +486,22 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a contact information
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cct);
 	} else if ($o == "a")	{
 		# Add a contact information
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	} else if ($o == "mc")	{
 		# Massive Change
-		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subMC = $form->addElement('submit', 'submitMC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
-		$cctObj =& $form->getElement('contact_id');
+		$cctObj = $form->getElement('contact_id');
 		if ($form->getSubmitValue("submitA"))
 			$cctObj->setValue(insertContactInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -522,7 +522,7 @@
 		require_once($path."listContact.php");
 	} else	{
 		# Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

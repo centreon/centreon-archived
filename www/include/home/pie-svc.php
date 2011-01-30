@@ -59,7 +59,7 @@
 	 * Get Session informations
 	 */
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	/**
 	 * Initiate Language class
@@ -87,8 +87,8 @@
 	 * Init LCA
 	 */
 	$sid = $_GET['sid'];
-	$res1 =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
-	$user =& $res1->fetchRow();
+	$res1 = $pearDB->query("SELECT user_id FROM session WHERE session_id = '".$sid."'");
+	$user = $res1->fetchRow();
 	$user_id = $user["user_id"];
 
 	global $is_admin;
@@ -116,7 +116,7 @@
 					" AND hosts.name NOT LIKE '_Module_%' ".
 					" GROUP BY services.state ORDER by services.state";
 		}
-		$DBRESULT =& $pearDBO->query($rq2);
+		$DBRESULT = $pearDBO->query($rq2);
 	} else {
 		if (!$is_admin) {
 			$rq2 = 	" SELECT count(nss.current_state), nss.current_state state" .
@@ -134,7 +134,7 @@
 					" AND no.name1 NOT LIKE '_Module_%' ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		}
-		$DBRESULT =& $pearDBndo->query($rq2);
+		$DBRESULT = $pearDBndo->query($rq2);
 	}
 
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
@@ -142,7 +142,7 @@
 	$color = array();
 	$legend = array();
 	$counter = 0;
-	while ($data =& $DBRESULT->fetchRow()) {
+	while ($data = $DBRESULT->fetchRow()) {
 		if ($oreon->broker->getBroker() == "broker") {
 			$info[] = $data["count(services.state)"];
 			$counter += $data["count(services.state)"];

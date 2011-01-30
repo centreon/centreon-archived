@@ -49,7 +49,7 @@
 	 	header("Location: ../../index.php");
 		exit;
 	} else {
-	 	$centreon =& $_SESSION["centreon"];
+	 	$centreon = $_SESSION["centreon"];
 	}
 	
 	if (isset($_GET["host"]))

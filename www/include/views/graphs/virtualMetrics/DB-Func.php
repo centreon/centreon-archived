@@ -45,20 +45,20 @@
 		$sql = "SELECT vmetric_id FROM virtual_metrics WHERE ";
 		$sql .= "vmetric_name = '".($vmetric_name == NULL ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
 		$sql .= "AND index_id = '".($index_id == NULL ? $gsvs["index_id"] : $index_id)."'";
-		$DBRESULT =& $pearDB->query($sql);
+		$DBRESULT = $pearDB->query($sql);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$vmetric =& $DBRESULT->fetchRow();
+		$vmetric = $DBRESULT->fetchRow();
 		$nR = $DBRESULT->numRows();
 		$DBRESULT->free();
 
 		$sql = "SELECT metric_id FROM metrics WHERE ";
 		$sql .= "metric_name = '".($vmetric_name == NULL ? $gsvs["vmetric_name"] : $vmetric_name)."' ";
 		$sql .= "AND index_id = '".($index_id == NULL ? $gsvs["index_id"] : $index_id)."'";
-		$DBRESULT =& $pearDBO->query($sql);
+		$DBRESULT = $pearDBO->query($sql);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$metric =& $DBRESULT->fetchRow();
+		$metric = $DBRESULT->fetchRow();
 		$nR = $nR + $DBRESULT->numRows();
 		$DBRESULT->free();
 
@@ -71,7 +71,7 @@
 	function deleteVirtualMetricInDB ($vmetrics = array())	{
 		global $pearDB;
 		foreach($vmetrics as $key => $value){
-			$DBRESULT =& $pearDB->query("DELETE FROM virtual_metrics WHERE vmetric_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM virtual_metrics WHERE vmetric_id = '".$key."'");
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo();
 		}
@@ -80,11 +80,11 @@
 	function multipleVirtualMetricInDB ($vmetrics = array(), $nbrDup = array())	{
 		global $pearDB;
 		foreach($vmetrics as $key=>$value) {
-			$DBRESULT =& $pearDB->query("SELECT * FROM virtual_metrics WHERE vmetric_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM virtual_metrics WHERE vmetric_id = '".$key."' LIMIT 1");
 			
 			if (PEAR::isError($DBRESULT))
 				print "DB Error : ".$DBRESULT->getDebugInfo();
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			$row["vmetric_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -102,7 +102,7 @@
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				$val ? $rq = "INSERT INTO virtual_metrics VALUES (".$val.")" : $rq = null;
-				$DBRESULT2 =& $pearDB->query($rq);
+				$DBRESULT2 = $pearDB->query($rq);
 				if (PEAR::isError($DBRESULT2))
 					print "DB Error : ".$DBRESULT2->getDebugInfo();
 			}
@@ -124,10 +124,10 @@
 		if (!$vmetric_id) return;
 		global $pearDB;
 		$v_ena = array();		
-		$v_ena =& enableVirtualMetric($vmetric_id);
+		$v_ena = enableVirtualMetric($vmetric_id);
 		foreach($v_ena as $pkey => $v_id) {
 //			if ( checkRRDGraphData($v_id) == 0 )
-				$p_qy  =& $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='".$v_id."';");
+				$p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='".$v_id."';");
 //			else
 //				break;
 		}
@@ -137,9 +137,9 @@
 		if (!$vmetric_id) return;
 		global $pearDB;
 		$v_dis= array();
-		$v_dis =& disableVirtualMetric($vmetric_id, $force);
+		$v_dis = disableVirtualMetric($vmetric_id, $force);
 		foreach($v_dis as $pkey => $vm)
-			$p_qy  =& $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='".$vm."';");
+			$p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='".$vm."';");
 	}
 
 	function insertVirtualMetric()	{
@@ -159,13 +159,13 @@
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL, ";
 		$rq .= "NULL, NULL";
 		$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$DBRESULT =& $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
+		$DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
 		if (PEAR::isError($DBRESULT))
 			print "DB Error : ".$DBRESULT->getDebugInfo();
-		$vmetric_id =& $DBRESULT->fetchRow();
+		$vmetric_id = $DBRESULT->fetchRow();
 		return ($vmetric_id["MAX(vmetric_id)"]);
 	}
 	
@@ -191,7 +191,7 @@
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "vmetric_activate = NULL, ck_state = NULL ";
 		$rq .= "WHERE vmetric_id = '".$vmetric_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 //		if ( checkRRDGraphData($vmetric_id) == 0 )
 			enableVirtualMetricInDB($vmetric_id);
@@ -210,13 +210,13 @@
 		if ($force == 0)
 			$l_where = " AND `vmetric_activate` = '1'";
 
-		$l_pqy =& $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='".$v_id."'".$l_where.";");
+		$l_pqy = $pearDB->query("SELECT index_id, vmetric_name FROM `virtual_metrics` WHERE `vmetric_id`='".$v_id."'".$l_where.";");
 		if ( $l_pqy->numRows() == 1 ) {		
-			$vmetric =& $l_pqy->fetchRow();
+			$vmetric = $l_pqy->fetchRow();
 			$l_pqy->free();
-			$l_pqy =& $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
-			while ($d_vmetric =& $l_pqy->fetchRow()) {
-				$lv_dis =& disableVirtualMetric($d_vmetric["vmetric_id"]);		
+			$l_pqy = $pearDB->query("SELECT vmetric_id FROM `virtual_metrics` WHERE `index_id`='".$vmetric["index_id"]."' AND `vmetric_activate` = '1' AND `rpn_function` REGEXP '(^|,)".str_replace($repA, $repB, $vmetric["vmetric_name"])."(,|$)';");
+			while ($d_vmetric = $l_pqy->fetchRow()) {
+				$lv_dis = disableVirtualMetric($d_vmetric["vmetric_id"]);		
 				if ( is_array($lv_dis))
 					foreach($lv_dis as $pkey => $vm)
 						$v_dis[] = $vm;	
@@ -240,13 +240,13 @@
 		else
 			$l_where = "vmetric_id = '".$v_id."'";
 		
-		$l_pqy =& $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE ".$l_where." AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");	
+		$l_pqy = $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE ".$l_where." AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");	
 		if ( $l_pqy->numRows() == 1 ) {
-			$p_vmetric =& $l_pqy->fetchRow();
+			$p_vmetric = $l_pqy->fetchRow();
 			$l_pqy->free();
 			$l_mlist = split(",",$p_vmetric["rpn_function"]);
 			foreach ( $l_mlist as $l_mnane ){
-				$lv_ena =& enableVirtualMetric(NULL, $l_mnane, $p_vmetric["index_id"]);
+				$lv_ena = enableVirtualMetric(NULL, $l_mnane, $p_vmetric["index_id"]);
 				if ( is_array($lv_ena))
 					foreach($lv_ena as $pkey => $vm)
 						$v_ena[] = $vm;

@@ -79,7 +79,7 @@
 					/*
 					 * Print Centreon Version
 					 */
-					$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+					$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
 					$release = $DBRESULT->fetchRow();
 					print $release["value"];
 				?>

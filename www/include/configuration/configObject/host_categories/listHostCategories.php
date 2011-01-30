@@ -56,7 +56,7 @@
 
 	$request = "SELECT COUNT(*) FROM hostcategories $SearchTool";
 
-	$DBRESULT =& $pearDB->query($request);
+	$DBRESULT = $pearDB->query($request);
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -88,7 +88,7 @@
 	 */
 
 	$rq = "SELECT hc_id, hc_name, hc_alias, hc_activate FROM hostcategories $SearchTool ORDER BY hc_name LIMIT ".$num * $limit .", $limit";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
 
@@ -102,8 +102,8 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $hc =& $DBRESULT->fetchRow(); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$hc['hc_id']."]");
+	for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
+		$selectedElements = $form->addElement('checkbox', "select[".$hc['hc_id']."]");
 		$moptions = "";
 		if ($hc["hc_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&hc_id=".$hc['hc_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -121,11 +121,11 @@
 		$nbrhostgroupDeact = array();
 
 		$rq = "SELECT COUNT(*) as nbr FROM hostcategories_relation hcr, host WHERE hostcategories_hc_id = '".$hc['hc_id']."' AND host.host_id = hcr.host_host_id AND host.host_register = '1' AND host.host_activate = '1'";
-		$DBRESULT2 =& $pearDB->query($rq);
+		$DBRESULT2 = $pearDB->query($rq);
 		$nbrhostAct = $DBRESULT2->fetchRow();
 
 		$rq = "SELECT COUNT(*) as nbr FROM hostcategories_relation hcr, host WHERE hostcategories_hc_id = '".$hc['hc_id']."' AND host.host_id = hcr.host_host_id AND host.host_register = '1' AND host.host_activate = '0'";
-		$DBRESULT2 =& $pearDB->query($rq);
+		$DBRESULT2 = $pearDB->query($rq);
 		$nbrhostDeact = $DBRESULT2->fetchRow();
 
 
@@ -185,11 +185,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 
@@ -198,7 +198,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listHostCategories.ihtml");

@@ -107,8 +107,8 @@ class CentreonMonitoring {
 		}
 		$rq .=  ")";
 
-		$DBRESULT =& $objXMLBG->DBNdo->query($rq);
-		$tab =& $DBRESULT->fetchRow();
+		$DBRESULT = $objXMLBG->DBNdo->query($rq);
+		$tab = $DBRESULT->fetchRow();
 		return ($tab["nb"]);
 	}
 
@@ -148,8 +148,8 @@ class CentreonMonitoring {
 		}
 		$rq .=  ")";
 
-		$DBRESULT =& $objXMLBG->DBNdo->query($rq);
-		$tab =& $DBRESULT->fetchRow();
+		$DBRESULT = $objXMLBG->DBNdo->query($rq);
+		$tab = $DBRESULT->fetchRow();
 		return ($tab["nb"]);
 	}
 
@@ -196,8 +196,8 @@ class CentreonMonitoring {
 		$rq .= 	$objXMLBG->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $objXMLBG->access->queryBuilder("AND", "no.name2", "centreon_acl.service_description").$objXMLBG->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
 
 		$tab = array();
-		$DBRESULT =& $objXMLBG->DBNdo->query($rq);
-		while ($svc =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $objXMLBG->DBNdo->query($rq);
+		while ($svc = $DBRESULT->fetchRow()) {
 			if (!isset($tab[$svc["name1"]])) {
 				$tab[$svc["name1"]] = array();
 			}

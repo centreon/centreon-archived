@@ -47,8 +47,8 @@
 	 * Create a GHG Cache
 	 */
 	$ghgCache = array();
-	$DBRESULT =& $pearDB->query("SELECT hg_parent_id, hg_child_id, hg_name FROM `hostgroup`, `hostgroup_hg_relation`, hostgroup_relation WHERE hostgroup_hg_relation.hg_child_id = hostgroup.hg_id AND hostgroup_relation.hostgroup_hg_id = hostgroup_hg_relation.hg_child_id");
-	while ($ghg =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT hg_parent_id, hg_child_id, hg_name FROM `hostgroup`, `hostgroup_hg_relation`, hostgroup_relation WHERE hostgroup_hg_relation.hg_child_id = hostgroup.hg_id AND hostgroup_relation.hostgroup_hg_id = hostgroup_hg_relation.hg_child_id");
+	while ($ghg = $DBRESULT->fetchRow()) {
 		if (!isset($ghgCache[$ghg["hg_parent_id"]])) {
 			$ghgCache[$ghg["hg_parent_id"]] = array();
 		}
@@ -80,8 +80,8 @@
 					"AND hghgr.hg_parent_id = hg.hg_id " .
 					"AND hghgr.hg_parent_id IS NOT NULL " .
 				"ORDER BY `hg_name`";
-	$DBRESULT =& $pearDB->query($request);
-	while ($hostGroup =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query($request);
+	while ($hostGroup = $DBRESULT->fetchRow())	{
 		$strDef = NULL;
 		$HGLinkedToHost = 0;
 

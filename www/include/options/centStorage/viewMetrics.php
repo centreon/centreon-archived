@@ -43,41 +43,41 @@
 		if ((defined($_POST["o1"]) && $_POST["o1"] == "rg") || (defined($_POST["o2"]) && $_POST["o2"] == "rg")){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 			}	
 		} else if ((defined($_POST["o1"]) && $_POST["o1"] == "nrg") || (defined($_POST["o2"]) && $_POST["o2"] == "nrg")){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE `id` = '".$key."' AND `must_be_rebuild` = '1'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE `id` = '".$key."' AND `must_be_rebuild` = '1'");
 			}
 		} else if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
-				while ($metrics =& $DBRESULT->fetchRow()){
-					$DBRESULT2 =& $pearDBO->query("DELETE FROM data_bin WHERE `id_metric` = '".$metrics['metric_id']."'");
-					$DBRESULT2 =& $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
+				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
+				while ($metrics = $DBRESULT->fetchRow()){
+					$DBRESULT2 = $pearDBO->query("DELETE FROM data_bin WHERE `id_metric` = '".$metrics['metric_id']."'");
+					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
 				}
 			}
 		} else if ($_POST["o1"] == "hg" || $_POST["o2"] == "hg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '1' WHERE `metric_id` = '".$key."'");
 			}
 		} else if ($_POST["o1"] == "nhg" || $_POST["o2"] == "nhg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `hidden` = '0' WHERE `metric_id` = '".$key."'");
 			}
 		} else if ($_POST["o1"] == "lk" || $_POST["o2"] == "lk"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '1' WHERE `metric_id` = '".$key."'");
 			}
 		} else if ($_POST["o1"] == "nlk" || $_POST["o2"] == "nlk"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '".$key."'");
 			}
 		}
 	}
@@ -86,20 +86,20 @@
 	if (isset($search) && $search)
 		$search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
 	
-	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM metrics WHERE index_id = '".$_GET["index_id"]."'");
-	$tmp =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM metrics WHERE index_id = '".$_GET["index_id"]."'");
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 			
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");	
 	$yesOrNo = array(NULL => "No", 0 => "No", 1 => "Yes", 2 => "Rebuilding");	
 	
-	$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index_id"]."'");
+	$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index_id"]."'");
 	unset($data);
-	for ($im = 0;$metrics =& $DBRESULT2->fetchRow();$im++){
+	for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++){
 		$metric = array();
-		$DBRESULT3 =& $pearDBO->query("SELECT COUNT(*) FROM data_bin WHERE id_metric = '".$metrics["metric_id"]."'");
-		$nb_value =& $DBRESULT3->fetchRow();
+		$DBRESULT3 = $pearDBO->query("SELECT COUNT(*) FROM data_bin WHERE id_metric = '".$metrics["metric_id"]."'");
+		$nb_value = $DBRESULT3->fetchRow();
 		$metric["nb"] = $nb_value["COUNT(*)"];	
 		$metric["metric_id"] = $metrics["metric_id"];
 		$metric["class"] = $tab_class[$im % 2];
@@ -174,11 +174,11 @@
 	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -200,7 +200,7 @@
 	
 	$tpl->assign("data", $data);
 	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
     $tpl->display("viewMetrics.ihtml");

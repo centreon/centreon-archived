@@ -74,7 +74,7 @@
 	 * Get Poller List
 	 */
 	$tab_nagios_server = array();
-	$DBRESULT =& $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
+	$DBRESULT = $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
 								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
 								"WHERE ndomod.activate = '1' AND n.ns_activate = '1' " .
 								"AND ndomod.ns_nagios_server = n.id AND n.id = '".(isset($_POST["pollers"]) && $_POST["pollers"] != "" ? htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8") : 0)."' " .
@@ -82,13 +82,13 @@
 	$perfInfo = array();
 	$empty_stats = array();
 	$emptyPage = 1;
-	while ($nagios =& $DBRESULT->fetchRow()) {
+	while ($nagios = $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 		if ($nagios['id']) {
 			$emptyPage = 0;
 			$empty_stats[$nagios['id']] = 1;
-			$DBRESULT3 =& $pearDBO->query("SELECT * FROM `nagios_stats` WHERE instance_id = '".$nagios['id']."'");
-			while ($row =& $DBRESULT3->fetchRow()) {
+			$DBRESULT3 = $pearDBO->query("SELECT * FROM `nagios_stats` WHERE instance_id = '".$nagios['id']."'");
+			while ($row = $DBRESULT3->fetchRow()) {
 				switch($row['stat_label']) {
 					case "Hosts Status" :
 						$perfInfo[$row['instance_id']]["hs"][$row['stat_key']] = $row['stat_value'];

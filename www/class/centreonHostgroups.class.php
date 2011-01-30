@@ -73,12 +73,12 @@
 		}
 
 		$hosts = array();
-		$DBRESULT =& $this->DB->query("SELECT hgr.host_host_id " .
+		$DBRESULT = $this->DB->query("SELECT hgr.host_host_id " .
 									"FROM hostgroup_relation hgr, host h " .
 									"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
 									"AND h.host_id = hgr.host_host_id " .
 									"ORDER by h.host_name");
-		while ($elem =& $DBRESULT->fetchRow()) {
+		while ($elem = $DBRESULT->fetchRow()) {
 			$ref[$elem["host_host_id"]] = $elem["host_host_id"];
 			$hosts[] = $elem["host_host_id"];
 		}
@@ -109,12 +109,12 @@
 		}
 
 		$hosts = array();
-		$DBRESULT =& $this->DB->query("SELECT hg_child_id " .
+		$DBRESULT = $this->DB->query("SELECT hg_child_id " .
 									"FROM hostgroup_hg_relation, hostgroup " .
 									"WHERE hostgroup_hg_relation.hg_parent_id = '".$hg_id."' " .
 									"AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
 									"ORDER BY hostgroup.hg_name");
-		while ($elem =& $DBRESULT->fetchRow()) {
+		while ($elem = $DBRESULT->fetchRow()) {
 			$hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
 		}
 		$DBRESULT->free();
@@ -128,8 +128,8 @@
 	 */
 	private function setHgHgCache() {
 		$this->relationCache = array();
-		$DBRESULT =& $this->DB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
-		while ($data =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $this->DB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
+		while ($data = $DBRESULT->fetchRow()) {
 			if (!isset($this->relationCache[$data["hg_parent_id"]])) {
 				$this->relationCache[$data["hg_parent_id"]] = array();
 			}
@@ -145,7 +145,7 @@
 		$this->unsetCache();
 
 		$DBRESULT = $DB->query("SELECT * FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation)");
-		while ($data =& $DBRESULT->fetchRow()) {
+		while ($data = $DBRESULT->fetchRow()) {
 			$this->dataTree[$data['hg_id']] = $this->getHostGroupHosts($data['hg_id'], $this->dataTree);
 		}
 		$DBRESULT->free();

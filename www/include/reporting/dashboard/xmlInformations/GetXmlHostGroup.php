@@ -51,7 +51,7 @@
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['session'], ENT_QUOTES, "UTF-8") . "'");
+	$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['session'], ENT_QUOTES, "UTF-8") . "'");
 	if (!$DBRESULT->numRows())
 		exit();
 	
@@ -74,7 +74,7 @@
 		
 		$str = "";
 		$DBRESULT = & $pearDB->query("SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $_GET["id"] ."'");
-		while ($hg =& $DBRESULT->fetchRow()) {
+		while ($hg = $DBRESULT->fetchRow()) {
 			if ($str != "")
 				$str .= ", ";
 			$str .= $hg["host_host_id"]; 
@@ -89,7 +89,7 @@
 				'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
 				'FROM `log_archive_host` WHERE `host_id` IN ('.$str.') GROUP BY date_end, date_start ORDER BY date_start desc';
 		$DBRESULT = & $pearDBO->query($rq);
-		while ($row =& $DBRESULT->fetchRow()) {
+		while ($row = $DBRESULT->fetchRow()) {
 			fillBuffer($statesTab, $row, $color);
 		}
 		$DBRESULT->free();

@@ -64,14 +64,14 @@
 	$strArgDesc = "";
 	
 	if (($o == "c" || $o == "w") && $command_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 
 		# Set base value
 		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
-	    $DBRESULT =& $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
+	    $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
 		$strArgDesc = "";
 		$nbRow = 0;
-	    while ($row =& $DBRESULT->fetchRow()) {
+	    while ($row = $DBRESULT->fetchRow()) {
 			$strArgDesc .= $row['macro_name'] . " : " . html_entity_decode($row['macro_description']) . "\n";
 			$nbRow++;
 		}
@@ -82,8 +82,8 @@
 	 */
 
 	$resource = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
-	while ($row =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
+	while ($row = $DBRESULT->fetchRow()){
 		$resource[$row["resource_name"]] = $row["resource_name"];
 		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
 			 $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
@@ -95,8 +95,8 @@
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
 	$graphTpls = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
-	while ($graphTpl =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
+	while ($graphTpl = $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	unset($graphTpl);
 	$DBRESULT->free();
@@ -105,8 +105,8 @@
 	 * Nagios Macro
 	 */
 	$macros = array();
-	$DBRESULT =& $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
-	while ($row =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
+	while ($row = $DBRESULT->fetchRow())
 		$macros[$row["macro_name"]] = $row["macro_name"];
 	unset($row);
 	$DBRESULT->free();
@@ -156,7 +156,7 @@
 	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
 	$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
 	$form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
-	$argListObj =& $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
+	$argListObj = $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
 	$argListObj->setAttribute("readonly");
 	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
 
@@ -183,7 +183,7 @@
 	$form->addElement('hidden', 'command_id');
 	$redirectType = $form->addElement('hidden', 'type');
 	$redirectType->setValue($type);
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	$form->applyFilter('__ALL__', 'myTrim');
@@ -222,15 +222,15 @@
 		/*
 		 * Modify a Command information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cmd);
 	} else if ($o == "a")	{
 		/*
 		 * Add a Command information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
@@ -239,13 +239,13 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$cmdObj =& $form->getElement('command_id');
+		$cmdObj = $form->getElement('command_id');
 		if ($form->getSubmitValue("submitA"))
 			$cmdObj->setValue(insertCommandInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateCommandInDB($cmdObj->getValue());
 		$o = NULL;
-		$cmdObj =& $form->getElement('command_id');
+		$cmdObj = $form->getElement('command_id');
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$cmdObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -301,7 +301,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

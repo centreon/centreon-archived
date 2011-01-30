@@ -120,8 +120,8 @@
 				"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
 				"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 	}
-	$DBRESULT_NDO =& $pearDBndo->query($rq2);
-	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+	$DBRESULT_NDO = $pearDBndo->query($rq2);
+	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_comments_svc[$i] = $data;
 		$tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
 		$tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
@@ -172,7 +172,7 @@
 	$tpl->assign('search_host', $host_name);
 	$tpl->assign('search_service', $search_service);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('limit', $limit);
 	$tpl->assign('form', $renderer->toArray());

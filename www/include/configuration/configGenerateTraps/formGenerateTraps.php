@@ -62,7 +62,7 @@
 	 */
 	$form->setDefaults(array('restart' => '1', 'opt' => '1'));
 	
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -71,7 +71,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', _("Generate"));
+	$sub = $form->addElement('submit', 'submit', _("Generate"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate())	{
@@ -89,7 +89,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

@@ -74,8 +74,8 @@
 
 		$hosts = array($host_name=>$host_name);
 
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' ORDER BY host_name");
-		$host =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' ORDER BY host_name");
+		$host = $DBRESULT->fetchRow();
 		$host_id = $host["host_id"];
 		
 		$services = array();
@@ -112,7 +112,7 @@
 		$tpl = initSmartyTpl($path, $tpl);
 			
 		#Apply a template definition	
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);			

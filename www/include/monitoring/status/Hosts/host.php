@@ -152,13 +152,13 @@
 	$attrs = array(	'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
     $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array( 'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
     $form->addElement('select', 'o2', NULL, $action_list, $attrs);
 	$form->setDefaults(array('o2' => NULL));
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 
@@ -168,7 +168,7 @@
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host.ihtml");

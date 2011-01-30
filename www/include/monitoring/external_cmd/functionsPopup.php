@@ -67,7 +67,7 @@
 		$actions = $oreon->user->access->checkAction("service_acknowledgement");
 		if (($actions == true || $is_admin) && isset($_GET['ackhostservice']) && $_GET['ackhostservice'] == "true") {
 			$DBRES = $pearDB->query("SELECT host_id FROM `host` WHERE host_name = '".$host_name."' LIMIT 1");
-			$row =& $DBRES->fetchRow();
+			$row = $DBRES->fetchRow();
 			$svc_tab = array();
 			$svc_tab = getMyHostServices($row['host_id']);
 			if (count($svc_tab)) {

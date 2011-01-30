@@ -44,8 +44,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
-		$DBRESULT =& $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$ndomod =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$ndomod = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndomod["id"] == $id)#Modif case
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $ndomod["id"] != $id)#Duplicate entry
@@ -59,19 +59,19 @@
 
 		if (!$id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '".$id."'");
+		$DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '1' WHERE id = '".$id."'");
 	}
 
 	function disableServerInDB ($id = null)	{
 		if (!$id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = '".$id."'");
+		$DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `ns_activate` = '0' WHERE id = '".$id."'");
 	}
 
 	function deleteServerInDB ($server = array())	{
 		global $pearDB;
 		foreach($server as $key => $value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `nagios_server` WHERE id = '".$key."'");
 		}
 	}
 
@@ -79,7 +79,7 @@
 		global $pearDB;
 
 		foreach ($server as $key => $value)	{
-			$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["ns_activate"] = '0';
@@ -93,7 +93,7 @@
 				}
 				if (testExistence($server_name))	{
 					$val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 				}
 			}
 		}
@@ -128,8 +128,8 @@
         isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
        	$rq .= ")";
-       	$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `nagios_server`");
+       	$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM `nagios_server`");
 		$ndomod_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndomod_id["MAX(id)"]);
@@ -142,7 +142,7 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if ($ret["localhost"]["localhost"] == 1){
-			$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `localhost` = '0'");
+			$DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `localhost` = '0'");
 		}
 		$rq = "UPDATE `nagios_server` SET ";
         isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "name = '".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "name = NULL, ";
@@ -157,6 +157,6 @@
         isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "ssh_private_key = '".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ssh_private_key = NULL, ";
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 ?>

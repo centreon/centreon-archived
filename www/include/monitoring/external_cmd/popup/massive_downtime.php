@@ -86,10 +86,10 @@
 	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 	$form->setDefaults(array('duration' => 3600));
 
-	$chckbox[] =& $form->addElement('checkbox', 'fixed', _("Fixed"), "", array("id"=>"fixed"));
+	$chckbox[] = $form->addElement('checkbox', 'fixed', _("Fixed"), "", array("id"=>"fixed"));
 	$chckbox[0]->setChecked(true);
 
-	$chckbox2[] =& $form->addElement('checkbox', 'downtimehostservice', _("Set downtimes on services attached to hosts"), "", array("id"=>"downtimehostservice"));
+	$chckbox2[] = $form->addElement('checkbox', 'downtimehostservice', _("Set downtimes on services attached to hosts"), "", array("id"=>"downtimehostservice"));
 	$chckbox2[0]->setChecked(true);
 
 	$form->addElement('hidden', 'author', $oreon->user->get_alias(), array("id"=>"author"));
@@ -100,7 +100,7 @@
 	$form->addElement('button', 'submit', _("Set downtime"), array("onClick" => "send_the_command();"));
 	$form->addElement('reset', 'reset', _("Reset"));
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 

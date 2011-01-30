@@ -90,8 +90,8 @@
 	global $is_admin;
 	$is_admin = $centreon->user->admin;
 
-	$DBRESULT =& $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
-	$redirect =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT topology_parent,topology_name,topology_id,topology_url,topology_page FROM topology WHERE topology_page = '".$p."'");
+	$redirect = $DBRESULT->fetchRow();
 
 	/*
 	 * Init URL

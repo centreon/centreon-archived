@@ -40,8 +40,8 @@
 
 	$pearDB = new CentreonDB();
 
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version = $DBRESULT->fetchRow();
 
 	global $pearDB0;
 	$pearDBO = new CentreonDB("centstorage");
@@ -91,7 +91,7 @@
 	/*
 	 * Update NDO
 	 */
-	$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+	$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 	$confNDO = $DBRESULT->fetchRow();
@@ -153,7 +153,7 @@
                 	if ($pos != false) {
                     	$str .= $line;
                     	$str = rtrim($str);
- 	                  	$DBRES =& $pearDB->query($str);
+ 	                  	$DBRES = $pearDB->query($str);
     	                $str = NULL;
                 	} else
                 		$str .= $line;

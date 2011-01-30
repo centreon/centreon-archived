@@ -41,8 +41,8 @@
 
 	# Get Poller List
 	$tab_nagios_server = array("0" => "All Nagios Servers");
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
-	while ($nagios =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
+	while ($nagios = $DBRESULT->fetchRow())
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 
 	#
@@ -116,7 +116,7 @@
 	$form->addElement('select', 'restart_mode', _("Restart Nagios"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
 
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -127,13 +127,13 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', _("Export"));
+	$sub = $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate()) {
 		if ($ret["optimize"]["optimize"]){
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
-			while ($tab =& $DBRESULT_Servers->fetchRow()){
+			$DBRESULT_Servers = $pearDB->query("SELECT `id` FROM `nagios_server` ORDER BY `name`");
+			while ($tab = $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && $ret["host"] == 0 || $ret["host"] == $tab['id']){
 					$stdout = shell_exec($oreon->optGen["nagios_path_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 					$msg .= str_replace ("\n", "<br />", $stdout);
@@ -147,7 +147,7 @@
 		$tpl->assign('msg', $msg);
 
 	# Apply a template definition
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

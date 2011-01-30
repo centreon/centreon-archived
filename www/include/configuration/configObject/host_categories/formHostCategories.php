@@ -43,8 +43,8 @@
 	 * Hosts comes from DB -> Store in $hosts Array
 	 */
 	$hosts = array();
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	unset($host);
@@ -53,8 +53,8 @@
 	 * Hosts comes from DB -> Store in $hosts Array
 	 */
 	$hostTpl = array();
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
-	while ($host =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '0' ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow())
 		$hostTpl[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	unset($host);
@@ -64,7 +64,7 @@
 	 */
 	$hc = array();
 	if (($o == "c" || $o == "w") && $hc_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '".$hc_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '".$hc_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -73,8 +73,8 @@
 		/*
 		 *  Set hostcategories Childs => Hosts
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
-		for ($i = 0, $i2 = 0; $host =& $DBRESULT->fetchRow();) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
+		for ($i = 0, $i2 = 0; $host = $DBRESULT->fetchRow();) {
 			if (isset($hosts[$host["host_host_id"]])) {
 				$hc["hc_hosts"][$i] = $host["host_host_id"];
 				$i++;
@@ -96,8 +96,8 @@
 		$EDITCOND = " WHERE `hc_id` != '".$hc_id."' ";
 
 	$hostCategories = array();
-	$DBRESULT =& $pearDB->query("SELECT hc_id, hc_name FROM hostcategories $EDITCOND ORDER BY hc_name");
-	while ($hcs =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories $EDITCOND ORDER BY hc_name");
+	while ($hcs = $DBRESULT->fetchRow())
 		$hostGroups[$hcs["hc_id"]] = $hcs["hc_name"];
 	$DBRESULT->free();
 	unset($hcs);
@@ -106,8 +106,8 @@
 	 * Contact Groups comes from DB -> Store in $cgs Array
 	 */
 	$cgs = array();
-	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while ($cg =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	while ($cg = $DBRESULT->fetchRow())
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
 	unset($cg);
@@ -151,13 +151,13 @@
 	 * Hosts Selection
 	 */
 	$form->addElement('header', 'relation', _("Relations"));
-    $ams1 =& $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
+    $ams1 = $form->addElement('advmultiselect', 'hc_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'hc_hostsTemplate', array(_("Linked Host Template"), _("Available"), _("Selected")) , $hostTpl, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -181,7 +181,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'hc_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -219,28 +219,28 @@
 		/*
 		 * Modify a HostCategorie information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($hc);
 	} else if ($o == "a")	{
 		/*
 		 * Add a HostCategorie information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('p', $p);
 
 	$valid = false;
 	if ($form->validate())	{
-		$hcObj =& $form->getElement('hc_id');
+		$hcObj = $form->getElement('hc_id');
 		if ($form->getSubmitValue("submitA"))
 			$hcObj->setValue(insertHostCategoriesInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostCategoriesInDB($hcObj->getValue());
 		$o = NULL;
-		$hcObj =& $form->getElement('hc_id');
+		$hcObj = $form->getElement('hc_id');
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hc_id=".$hcObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -253,7 +253,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

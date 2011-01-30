@@ -51,11 +51,11 @@
 	$pearDB = new CentreonDB();
 
 	CentreonSession::start();
-	$centreon =& $_SESSION["centreon"];
+	$centreon = $_SESSION["centreon"];
 
 	function getStatusDBDir($pearDBO){
-		$data =& $pearDBO->query("SELECT `RRDdatabase_status_path` FROM `config` LIMIT 1");
-		$dir =& $data->fetchRow();
+		$data = $pearDBO->query("SELECT `RRDdatabase_status_path` FROM `config` LIMIT 1");
+		$dir = $data->fetchRow();
 		return $dir["RRDdatabase_status_path"];
 	}
 
@@ -72,7 +72,7 @@
 	 * Verify if session is active
 	 */
 
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 
 		$image = imagecreate(250,100);
@@ -92,7 +92,7 @@
 		/*
 		 * Get Values
 		 */
-		$session_value =& $session->fetchRow();
+		$session_value = $session->fetchRow();
 		$session->free();
 
 		/*
@@ -116,12 +116,12 @@
 		}
 
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
-			$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
 		} else {
-			$DBRESULT =& $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND `service_description` = '".$_GET["service_description"]."' LIMIT 1");
+			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE host_name = '".$_GET["host_name"]."' AND `service_description` = '".$_GET["service_description"]."' LIMIT 1");
 		}
 
-		$index_data_ODS =& $DBRESULT->fetchRow();
+		$index_data_ODS = $DBRESULT->fetchRow();
 		if (!isset($_GET["template_id"])|| !$_GET["template_id"]){
 			$host_id = getMyHostID($index_data_ODS["host_name"]);
 			$svc_id = getMyServiceID($index_data_ODS["service_description"], $host_id);
@@ -147,12 +147,12 @@
 		 * get all template infos
 		 */
 
-		$DBRESULT =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-		$GraphTemplate =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+		$GraphTemplate = $DBRESULT->fetchRow();
 
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)) {
-			$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-			$meta =& $DBRESULT_meta->fetchRow();
+			$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+			$meta = $DBRESULT_meta->fetchRow();
 			$index_data_ODS["service_description"] = $meta["meta_name"];
 		}
 

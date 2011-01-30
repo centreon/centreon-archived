@@ -243,7 +243,7 @@
 	$ct = 0;
 	$flag = 0;
 
-	while ($data =& $DBRESULT->fetchRow()) {
+	while ($data = $DBRESULT->fetchRow()) {
 		$passive = 0;
 		$active = 1;
 		$last_check = " ";

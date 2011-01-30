@@ -42,7 +42,7 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_contact.cfg", $oreon->user->get_name());
 	
 	# Host Creation
-	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	$nb = $DBRESULT->numRows();
 	
 	if ($nb){

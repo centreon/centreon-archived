@@ -45,8 +45,8 @@
 	 * Create contact relation Cache
 	 */
 	$cgSvcCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT s.service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg, service s WHERE csr.service_service_id = s.service_id AND csr.contactgroup_cg_id = cg.cg_id");
-	while ($cg =& $DBRESULT2->fetchRow())	{
+	$DBRESULT2 = $pearDB->query("SELECT s.service_id, cg.cg_id, cg.cg_name FROM contactgroup_service_relation csr, contactgroup cg, service s WHERE csr.service_service_id = s.service_id AND csr.contactgroup_cg_id = cg.cg_id");
+	while ($cg = $DBRESULT2->fetchRow())	{
 		if (!isset($cgSvcCache[$cg["service_id"]]))		
 			$cgSvcCache[$cg["service_id"]] = array();	
 		$cgSvcCache[$cg["service_id"]][$cg["cg_id"]] = $cg["cg_name"];
@@ -80,8 +80,8 @@
 	$i = 1;
 	$str = NULL;
 	$service = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM `service` WHERE `service_activate` = '1' AND `service_register` = '0' ORDER BY `service_description`");
-	while ($service =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT * FROM `service` WHERE `service_activate` = '1' AND `service_register` = '0' ORDER BY `service_description`");
+	while ($service = $DBRESULT->fetchRow()) {
 		$LinkedToHost = 0;
 		$strDef = "";
 		
@@ -124,8 +124,8 @@
 			 */
 			if ($service["service_template_model_stm_id"]) {
 				$serviceTemplate = array();
-				$DBRESULT2 =& $pearDB->query("SELECT service.service_description FROM service WHERE service.service_id = '".$service["service_template_model_stm_id"]."' LIMIT 1");
-				while ($serviceTemplate =& $DBRESULT2->fetchRow())
+				$DBRESULT2 = $pearDB->query("SELECT service.service_description FROM service WHERE service.service_id = '".$service["service_template_model_stm_id"]."' LIMIT 1");
+				while ($serviceTemplate = $DBRESULT2->fetchRow())
 					$strTMP .= print_line("use", convertServiceSpecialChar($serviceTemplate["service_description"]));
 				$DBRESULT2->free();
 				unset($serviceTemplate);		
@@ -133,8 +133,8 @@
 			
 			$serviceGroup = array();
 			$strTMPTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
-			while($serviceGroup =& $DBRESULT2->fetchRow())	{
+			$DBRESULT2 = $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM servicegroup_relation sgr, servicegroup sg WHERE sgr.service_service_id = '".$service["service_id"]."' AND sgr.servicegroup_sg_id = sg.sg_id ORDER BY `sg_name`");
+			while($serviceGroup = $DBRESULT2->fetchRow())	{
 				if (isset($gbArr[5][$serviceGroup["sg_id"]]))
 					$strTMPTemp != NULL ? $strTMPTemp .= ", ".$serviceGroup["sg_name"] : $strTMPTemp = $serviceGroup["sg_name"];
 			}
@@ -244,8 +244,8 @@
 			 */
 			$contact = array();
 			$strTMPTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
-			while ($contact =& $DBRESULT2->fetchRow())	{
+			$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
+			while ($contact = $DBRESULT2->fetchRow())	{
 				if (isset($gbArr[0][$contact["contact_id"]]))
 					$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
 			}
@@ -261,8 +261,8 @@
 				$strTMP .= print_line("register", "0");
 			
 			if (isset($service["service_register"]) && $service["service_register"] == 0){
-				$DBRESULT_TEMP =& $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
-				while ($template_link =& $DBRESULT_TEMP->fetchRow())
+				$DBRESULT_TEMP = $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
+				while ($template_link = $DBRESULT_TEMP->fetchRow())
 					$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
 				unset($template_link);
 				unset($DBRESULT_TEMP);
@@ -273,7 +273,7 @@
 			 * On-demand macros
 			 */
 			$rq = "SELECT svc_macro_name, svc_macro_value FROM on_demand_macro_service WHERE `svc_svc_id`=" . $service['service_id'];
-			$DBRESULT3 =& $pearDB->query($rq);
+			$DBRESULT3 = $pearDB->query($rq);
 			while($od_macro = $DBRESULT3->fetchRow()) {
 				$mac_name = str_replace("\$_SERVICE", "_", $od_macro['svc_macro_name']);
 				$mac_name = str_replace("\$", "", $mac_name);
@@ -291,8 +291,8 @@
 			 */
 			$svc_method = new CentreonService($pearDB);
 			
-			$DBRESULT3 =& $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
-			$esi =& $DBRESULT3->fetchRow();
+			$DBRESULT3 = $pearDB->query("SELECT * FROM extended_service_information esi WHERE esi.service_service_id = '".$service["service_id"]."'");
+			$esi = $DBRESULT3->fetchRow();
 			if ($field = $esi["esi_notes"])
 				$strTMP .= print_line("notes", $svc_method->replaceMacroInString($service["service_id"], $field));
 			if ($field = $esi["esi_notes_url"])

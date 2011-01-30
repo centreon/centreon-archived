@@ -45,8 +45,8 @@
  	 * Get Options colors
  	 */
  	$options = array();
- 	$DBRESULT =& $pearDB->query("SELECT * FROM options");
- 	while ($res =& $DBRESULT->fetchRow())
+ 	$DBRESULT = $pearDB->query("SELECT * FROM options");
+ 	while ($res = $DBRESULT->fetchRow())
  		$options[$res["key"]] = $res["value"];
  	unset($res);
 

@@ -41,25 +41,25 @@
 	#
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Notification Failure Criteria
-		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
+		$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
 			$dep["notification_failure_criteria"][trim($value)] = 1;
 		# Set Execution Failure Criteria
-		$dep["execution_failure_criteria"] =& explode(',', $dep["execution_failure_criteria"]);
+		$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 		# Set Meta Service Parents
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $msP =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dep_id."'");
+		for($i = 0; $msP = $DBRESULT->fetchRow(); $i++)
 			$dep["dep_msParents"][$i] = $msP["meta_service_meta_id"];
 		$DBRESULT->free();
 		# Set Meta Service Childs
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $msC =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dep_id."'");
+		for($i = 0; $msC = $DBRESULT->fetchRow(); $i++)
 			$dep["dep_msChilds"][$i] = $msC["meta_service_meta_id"];
 		$DBRESULT->free();
 	}
@@ -68,8 +68,8 @@
 	#
 	# Meta Service comes from DB -> Store in $metas Array
 	$metas = array();
-	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
-	while($meta =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
+	while($meta = $DBRESULT->fetchRow())
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
 	#
@@ -125,13 +125,13 @@
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);'));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_msParents', array(_("Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_msParents', array(_("Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_msChilds', array(_("Dependent Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_msChilds', array(_("Dependent Meta Service Names"), _("Available"), _("Selected")), $metas, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -146,7 +146,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'dep_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -180,14 +180,14 @@
 	}
 	# Modify a Dependency information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($dep);
 	}
 	# Add a Dependency information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 		$form->setDefaults(array('inherits_parent', '0'));
 	}
 
@@ -202,7 +202,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$depObj =& $form->getElement('dep_id');
+		$depObj = $form->getElement('dep_id');
 		if ($form->getSubmitValue("submitA"))
 			$depObj->setValue(insertMetaServiceDependencyInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -217,7 +217,7 @@
 		require_once("listMetaServiceDependency.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

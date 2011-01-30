@@ -41,10 +41,10 @@
 	require_once $centreon_path."www/class/centreon.class.php";
 
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	// -----------------------------------------------------
-	$value =& $_GET["value"];
+	$value = $_GET["value"];
 	foreach ($value as $key => $val)	{
 		if ($val)
 			if (!isset($oreon->optGen["color_".strtolower($key)])) {

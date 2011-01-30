@@ -45,12 +45,12 @@
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/ndomod.cfg", $oreon->user->get_name());
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");
+	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE `activate` = '1' AND `ns_nagios_server` = '".$tab['id']."' LIMIT 1");
 	
-	$DBRESULT->numRows() ? $ndomod =& $DBRESULT->fetchRow() : $ndomod = array();
+	$DBRESULT->numRows() ? $ndomod = $DBRESULT->fetchRow() : $ndomod = array();
 	
-	$DBRESULT2 =& $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '".$tab['id']."' LIMIT 1");
-	$DBRESULT2->numRows() ? $nagios =& $DBRESULT2->fetchRow() : $nagios = array();
+	$DBRESULT2 = $pearDB->query("SELECT name FROM `nagios_server` WHERE `id` = '".$tab['id']."' LIMIT 1");
+	$DBRESULT2->numRows() ? $nagios = $DBRESULT2->fetchRow() : $nagios = array();
 	
 	$str = "";
 	$str .= "instance_name=".$nagios["name"]."\n";

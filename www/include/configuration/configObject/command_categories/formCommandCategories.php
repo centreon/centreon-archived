@@ -45,7 +45,7 @@
 	 
 	$ccdata = array();
 	if (($o == "c" || $o == "w") && $cc_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$cc_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `command_categories` WHERE `cmd_category_id` = '".$cc_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -90,14 +90,14 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'cmd_category_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	if (is_array($select))	{
 		$select_str = NULL;
 		foreach ($select as $key => $value)
 			$select_str .= $key.",";
-		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear = $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
 	
@@ -135,20 +135,20 @@
 		/*
 		 * Modify a command_categories information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ccdata);
 	} else if ($o == "a")	{
 		/*
 		 * Add a command_categories information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
-		$cctObj =& $form->getElement('cmd_category_id');
+		$cctObj = $form->getElement('cmd_category_id');
 		
 		if ($form->getSubmitValue("submitA"))
 			$cctObj->setValue(insertCommandCategorieInDB());
@@ -168,7 +168,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	

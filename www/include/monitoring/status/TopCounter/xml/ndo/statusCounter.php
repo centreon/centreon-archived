@@ -61,7 +61,7 @@
 	 */
 	$pollerList = "";
 	$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
-	$DBRESULT =& $obj->DB->query($request);
+	$DBRESULT = $obj->DB->query($request);
 	while ($d = $DBRESULT->fetchRow()) {
 		if ($pollerList != "") {
 			$pollerList .= ", ";
@@ -86,8 +86,8 @@
 			" GROUP BY ".$obj->ndoPrefix."hoststatus.current_state";
 	$hostCounter = 0;
 	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-	$DBRESULT =& $obj->DBNdo->query($rq1);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($rq1);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		$host_stat[$ndo["current_state"]] = $ndo["count(DISTINCT ".$obj->ndoPrefix."objects.name1)"];
 		$hostCounter += $host_stat[$ndo["current_state"]];
 	}
@@ -115,8 +115,8 @@
 	}
 	$serviceCounter = 0;
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
-	$DBRESULT =& $obj->DBNdo->query($rq2);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($rq2);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
 		$serviceCounter += $svc_stat[$ndo["current_state"]];
 	}
@@ -163,8 +163,8 @@
 				"		GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
 	}
 
-	$DBRESULT =& $obj->DBNdo->query($rq3);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($rq3);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		$svc_stat[$ndo["current_state"] + 5] = $ndo["number"];
 	}
 	$DBRESULT->free();
@@ -183,9 +183,9 @@
 	 * Get minimum check interval
 	 */
 	$request = "SELECT MIN(check_interval) FROM ".$obj->ndoPrefix."services";
-	$DBRESULT =& $obj->DBNdo->query($request);
+	$DBRESULT = $obj->DBNdo->query($request);
 	if (isset($DBRESULT) && $DBRESULT->numRows()) {
-		$data =& $DBRESULT->fetchRow();
+		$data = $DBRESULT->fetchRow();
 		$minInterval = $data["MIN(check_interval)"];
 	} else {
 		$minInterval = 5;
@@ -195,8 +195,8 @@
 	 * Get minimin interval lenght
 	 */
 	$request = "SELECT MIN(interval_length) FROM cfg_nagios";
-	$DBRESULT =& $obj->DB->query($request);
-	$data =& $DBRESULT->fetchRow();
+	$DBRESULT = $obj->DB->query($request);
+	$data = $DBRESULT->fetchRow();
 	$intervalLength = $data["MIN(interval_length)"];
 
 	/* *****************************************************
@@ -207,8 +207,8 @@
 	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
 				"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
 				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id AND ".$obj->ndoPrefix."instances.instance_name IN ($pollerList)";
-	$DBRESULT =& $obj->DBNdo->query($request);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($request);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		/*
 		 * Running
 		 */
@@ -253,8 +253,8 @@
 				"	AND ns.stat_key LIKE 'Average' " .
 				"	AND ns.instance_id = i.instance_id" .
 				"	AND i.instance_name IN ($pollerList)";
-	$DBRESULT =& $obj->DBC->query($request);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBC->query($request);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if ($latency != 2 && $ndo["stat_value"] >= 60) {
 			$latency = 1;
 		}

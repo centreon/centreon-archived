@@ -64,8 +64,8 @@
 					WHERE  topology_parent = '".$id_page."' AND topology_page IS NOT NULL AND topology_show = '1' 
 					ORDER BY topology_order, topology_group "; 
 			
-		$DBRESULT =& $pearDB->query($rq);		
-		$redirect =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rq);		
+		$redirect = $DBRESULT->fetchRow();
 		return $redirect;
 	}
 
@@ -94,16 +94,16 @@
 					FROM topology 
 					WHERE topology_parent IS NULL AND topology_page IS NOT NULL AND topology_show = '1' 
 					LIMIT 1";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$root_menu = array();
 		if ($DBRESULT->numRows())
-			$root_menu =& $DBRESULT->fetchRow();
+			$root_menu = $DBRESULT->fetchRow();
 		return $root_menu;
 	}
 	
 	function getSkin($pearDB) {
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'template' LIMIT 1");
-		$data =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'template' LIMIT 1");
+		$data = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return "./Themes/".$data["value"]."/";
 	}

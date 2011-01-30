@@ -48,8 +48,8 @@
 	/*
 	 * Get Poller List
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
-	while ($nagios =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+	while ($nagios = $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	}
 	$DBRESULT->free();
@@ -57,13 +57,13 @@
 	/*
 	 * Display all servers list
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` DESC");
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` DESC");
 	$n = $DBRESULT->numRows();
 
 	/*
 	 * create all servers list
 	 */
-	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
 		$host_list[$nagios['id']] = $nagios['name'];
 	}
 	$DBRESULT->free();
@@ -85,7 +85,7 @@
 	$form->addGroup($tab, 'optimize', _("Run Optimisation test (-s)"), '&nbsp;');
 	$form->setDefaults(array('optimize' => '0'));
 	
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -94,22 +94,22 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', _("Export"));
+	$sub = $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
 	
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();		
 
-		$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' LIMIT 1");
-		$nagios_bin =& $DBRESULT_Servers->fetchRow();
+		$DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' LIMIT 1");
+		$nagios_bin = $DBRESULT_Servers->fetchRow();
 		$DBRESULT_Servers->free();
 
 		$msg_optimize = array();
 		
 		$cpt = 1;
-		$DBRESULT_Servers =& $pearDB->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
-		while ($tab =& $DBRESULT_Servers->fetchRow()){
+		$DBRESULT_Servers = $pearDB->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+		while ($tab = $DBRESULT_Servers->fetchRow()){
 			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])){		
 				$stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -s ".$nagiosCFGPath.$tab['id']."/nagiosCFG.DEBUG");
 				$stdout = htmlentities($stdout, ENT_QUOTES, "UTF-8");
@@ -130,7 +130,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

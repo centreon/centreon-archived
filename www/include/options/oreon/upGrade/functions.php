@@ -45,8 +45,8 @@
 		global $pearDB;
 		
 		$row = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-		while ($result =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+		while ($result = $DBRESULT->fetchRow()) {
 			$row[$result["key"]] = $result["value"];
 		}
 		$DBRESULT->free();
@@ -61,11 +61,11 @@
 	function getCurrentVersion() {
 		global $pearDB;
 		
-		$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");	
+		$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");	
 		if ($DBRESULT->numRows() != 1) {
 			return(false);
 		}
-		$row =& $DBRESULT->fetchRow();
+		$row = $DBRESULT->fetchRow();
 		$version = $row['value'];
 		return($version);
 	}

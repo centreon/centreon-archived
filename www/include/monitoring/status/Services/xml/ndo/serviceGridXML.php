@@ -141,7 +141,7 @@
 
 	$tab_final = array();
 	$str = "";
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if ($str != "") {
 			$str .= ",";
 		}

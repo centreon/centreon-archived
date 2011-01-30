@@ -36,7 +36,7 @@
 
 if (isset($pearDBndo)) {
 	$update_query = "SHOW COLUMNS FROM `centreon_acl` WHERE Field LIKE 'host_id'";
-	$RES =& $pearDBndo->query($update_query);
+	$RES = $pearDBndo->query($update_query);
 	if (!$RES->numRows()) {
 		$pearDBndo->query("ALTER TABLE `centreon_acl` ADD `host_id` INT NULL AFTER `id`");	
 		$pearDBndo->query("ALTER TABLE `centreon_acl` ADD `service_id` INT NULL AFTER `host_name`");
@@ -44,7 +44,7 @@ if (isset($pearDBndo)) {
 }
 
 $update_query = "SHOW COLUMNS FROM `service` WHERE Field LIKE 'service_first_notification_delay'";
-$RES =& $pearDB->query($update_query);
+$RES = $pearDB->query($update_query);
 if (!$RES->numRows()) {
 	$pearDB->query("ALTER TABLE `service` ADD `service_first_notification_delay` INT NULL AFTER `service_notifications_enabled`");	
 }

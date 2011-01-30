@@ -60,8 +60,8 @@
 	/*
 	 * set limit & num
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` = 'maxViewMonitoring' LIMIT 1");
-	$data =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxViewMonitoring' LIMIT 1");
+	$data = $DBRESULT->fetchRow();
 	$gopt[$data['key']] = myDecode($data['key']);
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
@@ -211,18 +211,18 @@
     $form->addElement('select', 'o1', NULL, $action_list, $attrs);
 
 	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array( 'onchange'=>"javascript: if (cmdCallback(this.value)) { setO(this.value); submit();} else { setO(this.value); }");
     $form->addElement('select', 'o2', NULL, $action_list, $attrs);
 	$form->setDefaults(array('o2' => NULL));
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	$tpl->assign('limit', $limit);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('hostStr', _('Host'));
 	$tpl->assign('serviceStr', _('Service'));

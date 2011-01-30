@@ -48,54 +48,54 @@
 
 	$esc = array();
 	if (($o == "c" || $o == "w") && $esc_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
 
 		# Set base value
 		$esc = array_map("myDecode", $DBRESULT->fetchRow());
 
 		# Set Host Options
-		$esc["escalation_options1"] =& explode(',', $esc["escalation_options1"]);
+		$esc["escalation_options1"] = explode(',', $esc["escalation_options1"]);
 		foreach ($esc["escalation_options1"] as $key => $value)
 			$esc["escalation_options1"][trim($value)] = 1;
 
 		# Set Service Options
-		$esc["escalation_options2"] =& explode(',', $esc["escalation_options2"]);
+		$esc["escalation_options2"] = explode(',', $esc["escalation_options2"]);
 		foreach ($esc["escalation_options2"] as $key => $value)
 			$esc["escalation_options2"][trim($value)] = 1;
 
 		# Set Host Groups relations
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $hg =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		for($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
 
 		# Set Service Groups relations
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		for($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
 			$esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
 		$DBRESULT->free();
 
 		# Set Host relations
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
+		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++)
 			$esc["esc_hosts"][$i] = $host["host_host_id"];
 		$DBRESULT->free();
 
 		# Set Meta Service
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $metas =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
+		for($i = 0; $metas = $DBRESULT->fetchRow(); $i++)
 			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
 		$DBRESULT->free();
 
 		# Set Host Service
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
-		for ($i = 0; $services =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
+		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++)
 			$esc["esc_hServices"][$i] = $services["host_host_id"]."_".$services["service_service_id"];
 		$DBRESULT->free();
 
 		# Set Contact Groups relations
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $cg =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
+		for($i = 0; $cg = $DBRESULT->fetchRow(); $i++)
 			$esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
 		$DBRESULT->free();
 	}
@@ -107,31 +107,31 @@
 
 	# Host Groups comes from DB -> Store in $hgs Array
 	$hgs = array();
-	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while($hg =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
+	while($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 
 	#
 	# Service Groups comes from DB -> Store in $sgs Array
 	$sgs = array();
-	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while($sg =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	while($sg = $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 
 	#
 	# Host comes from DB -> Store in $hosts Array
 	$hosts = array();
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while($host =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while($host = $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	#
 	# Services comes from DB -> Store in $hServices Array
 	$hServices = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($elem =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($elem = $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)	{
 			$index = str_replace('#S#', "/", $index);
@@ -143,8 +143,8 @@
 
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
-	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
-	while ($meta =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
+	while ($meta = $DBRESULT->fetchRow())
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
 
@@ -155,8 +155,8 @@
 
 	# TimePeriods comes from DB -> Store in $tps Array
 	$tps = array();
-	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while ($tp =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	while ($tp = $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 
@@ -207,7 +207,7 @@
 	$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 
-	$ams1 =& $form->addElement('advmultiselect', 'esc_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'esc_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $cgs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -218,7 +218,7 @@
 	#
 	$form->addElement('header', 'hosts', _("Implied Hosts"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'esc_hosts', array(_("Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -229,7 +229,7 @@
 	#
 	$form->addElement('header', 'services', _("Implied Services"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'esc_hServices', array(_("Services by Host"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect2, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'esc_hServices', array(_("Services by Host"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -240,7 +240,7 @@
 	#
 	$form->addElement('header', 'hgs', _("Implied Host Groups"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'esc_hgs', array(_("Host Group"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -251,7 +251,7 @@
 	#
 	$form->addElement('header', 'metas', _("Implied Meta Services"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'esc_metas', array(_("Meta Service"), _("Available"), _("Selected")), $metas, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -262,7 +262,7 @@
 	#
 	$form->addElement('header', 'sgs', _("Implied Service Groups"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'esc_sgs', array(_("Service Group"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect2, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -275,7 +275,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'esc_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -309,14 +309,14 @@
 	}
 	# Modify a Escalation information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($esc);
 	}
 	# Add a Escalation information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign("sort1", _("Information"));
@@ -339,7 +339,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$escObj =& $form->getElement('esc_id');
+		$escObj = $form->getElement('esc_id');
 		if ($form->getSubmitValue("submitA"))
 			$escObj->setValue(insertEscalationInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -354,7 +354,7 @@
 		require_once("listEscalation.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

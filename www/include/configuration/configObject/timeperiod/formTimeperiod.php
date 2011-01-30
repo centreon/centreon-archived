@@ -41,7 +41,7 @@
 
 	$tp = array();
 	if (($o == "c" || $o == "w") && $tp_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM timeperiod WHERE tp_id = '".$tp_id."' LIMIT 1");
 
 		/*
 		 * Set base value
@@ -70,8 +70,8 @@
 
 	$includeTP = array();
 	$excludeTP = array();
-	$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-	while ($data =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+	while ($data = $DBRESULT->fetchRow()) {
 		if ($o != "a" || $tp_id != $data["tp_id"]) {
 			$excludeTP[$data["tp_id"]] = $data["tp_name"];
 			$includeTP[$data["tp_id"]] = $data["tp_name"];
@@ -84,8 +84,8 @@
 	 *  Gets list of timeperiod exceptions
 	 */
 	$j = 0;
-	$DBRESULT =& $pearDB->query("SELECT exception_id, timeperiod_id, days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."' ORDER BY `days`");
-	while ($exceptionTab =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDB->query("SELECT exception_id, timeperiod_id, days, timerange FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."' ORDER BY `days`");
+	while ($exceptionTab = $DBRESULT->fetchRow()){
 		$exception_id[$j] = $exceptionTab["exception_id"];
 		$exception_days[$j] = $exceptionTab["days"];
 		$exception_timerange[$j] = $exceptionTab["timerange"];
@@ -140,7 +140,7 @@
 	/*
 	 * Include Timeperiod
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'tp_include', array(_("Include Timeperiods"), _("Available"), _("Selected")), $includeTP, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'tp_include', array(_("Include Timeperiods"), _("Available"), _("Selected")), $includeTP, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -149,7 +149,7 @@
 	/*
 	 * Exclude Timeperiod
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'tp_exclude', array(_("Exclude Timeperiods"), _("Available"), _("Selected")), $excludeTP, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'tp_exclude', array(_("Exclude Timeperiods"), _("Available"), _("Selected")), $excludeTP, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -160,8 +160,8 @@
 	 */
 	$mTp = array();
 	$k = 0;
-	$DBRESULT =& $pearDB->query("SELECT exception_id FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."'");
-	while ($multiTp =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDB->query("SELECT exception_id FROM timeperiod_exceptions WHERE timeperiod_id = '". $tp_id ."'");
+	while ($multiTp = $DBRESULT->fetchRow()){
 		$mTp[$k] = $multiTp["exception_id"];
 		$k++;
 	}
@@ -199,7 +199,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'tp_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -258,15 +258,15 @@
 		/*
 		 * Modify a Time Period information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($tp);
 	} else if ($o == "a")	{
 		/*
 		 * Add a Time Period information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	/*
@@ -287,7 +287,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$tpObj =& $form->getElement('tp_id');
+		$tpObj = $form->getElement('tp_id');
 		if ($form->getSubmitValue("submitA"))
 			$tpObj->setValue(insertTimeperiodInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -306,7 +306,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

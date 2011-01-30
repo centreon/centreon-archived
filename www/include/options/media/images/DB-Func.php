@@ -186,10 +186,10 @@
 		$rq .= "VALUES ";
 		$rq .= "('".htmlentities($img_name, ENT_QUOTES, "UTF-8")."', '".htmlentities($dst_file, ENT_QUOTES, "UTF-8")."', '".htmlentities($img_comment, ENT_QUOTES, "UTF-8")."')";
 		$pearDB->query($rq);
-		$res =& $pearDB->query("SELECT MAX(img_id) FROM view_img");
-		$img_id =& $res->fetchRow();
+		$res = $pearDB->query("SELECT MAX(img_id) FROM view_img");
+		$img_id = $res->fetchRow();
 		$img_id = $img_id["MAX(img_id)"];
-		$res =& $pearDB->query("INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) VALUES ('".$dir_id."', '".$img_id."')");
+		$res = $pearDB->query("INSERT INTO view_img_dir_relation (dir_dir_parent_id, img_img_id) VALUES ('".$dir_id."', '".$img_id."')");
 //		$res->free();
 
 		return ($img_id);
@@ -214,8 +214,8 @@
 
 		$rq = "SELECT dir_alias, img_path FROM view_img, view_img_dir, view_img_dir_relation ";
 		$rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-		$DBRESULT =& $pearDB->query($rq);
-		while ($img_path =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query($rq);
+		while ($img_path = $DBRESULT->fetchRow()) {
 			$fullpath = $mediadir.$img_path["dir_alias"]."/".$img_path["img_path"];
 			if (is_file($fullpath)) {
 				unlink($fullpath);
@@ -240,10 +240,10 @@
 		 */
 		$rq = "SELECT dir_id, dir_alias, img_path, img_comment FROM view_img, view_img_dir, view_img_dir_relation ";
 		$rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if (!$DBRESULT)
 		    return;
-		$img_info =& $DBRESULT->fetchRow();
+		$img_info = $DBRESULT->fetchRow();
 
 		if ($dir_alias)
 			$dir_alias = sanitizePath($dir_alias);
@@ -280,7 +280,7 @@
 			$oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
 			$newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
 			if (rename($oldpath,$newpath))
-				$DBRESULT =& $pearDB->query("UPDATE view_img_dir_relation SET dir_dir_parent_id = '".$dir_id."' WHERE img_img_id = '".$img_id."'");
+				$DBRESULT = $pearDB->query("UPDATE view_img_dir_relation SET dir_dir_parent_id = '".$dir_id."' WHERE img_img_id = '".$img_id."'");
 		}
 		if ($img_comment) {
 			$DBRESULT = $pearDB->query("UPDATE view_img SET img_comment = '".htmlentities($img_comment, ENT_QUOTES, "UTF-8")."' WHERE img_id = '".$img_id."'");
@@ -301,10 +301,10 @@
 		$mediadir = "./img/media/";
 		$rq = "SELECT dir_id, dir_alias, img_path, img_comment FROM view_img, view_img_dir, view_img_dir_relation ";
 		$rq .= " WHERE img_id = '".$img_id."' AND img_id = img_img_id AND dir_dir_parent_id = dir_id";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if (!$DBRESULT)
 		    return;
-		$img_info =& $DBRESULT->fetchRow();
+		$img_info = $DBRESULT->fetchRow();
 
 		if ($dir_alias)
 			$dir_alias = sanitizePath($dir_alias);
@@ -315,16 +315,16 @@
 				$dir_id = insertDirectory($dir_alias);
 			else {
 				$rq = "SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir_alias."'";
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT = $pearDB->query($rq);
 				if (!$DBRESULT)
 					return;
-				$dir_info =& $DBRESULT->fetchRow();
+				$dir_info = $DBRESULT->fetchRow();
 				$dir_id = $dir_info["dir_id"];
 			}
 			$oldpath = $mediadir.$img_info["dir_alias"]."/".$img_info["img_path"];
 			$newpath = $mediadir.$dir_alias."/".$img_info["img_path"];
 			if (rename($oldpath,$newpath))
-				$DBRESULT =& $pearDB->query("UPDATE view_img_dir_relation SET dir_dir_parent_id = '".$dir_id."' WHERE img_img_id = '".$img_id."'");
+				$DBRESULT = $pearDB->query("UPDATE view_img_dir_relation SET dir_dir_parent_id = '".$dir_id."' WHERE img_img_id = '".$img_id."'");
 		}
 	}
 
@@ -335,9 +335,9 @@
 	function testDirectoryExistence ($name)	{
 		global $pearDB;
 		$dir_id = 0;
-		$DBRESULT =& $pearDB->query("SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$DBRESULT = $pearDB->query("SELECT dir_name, dir_id FROM view_img_dir WHERE dir_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		if ($DBRESULT->numRows() >= 1) {
-			$dir =& $DBRESULT->fetchRow();
+			$dir = $DBRESULT->fetchRow();
 			$dir_id = $dir["dir_id"];
 		}
 		return $dir_id;
@@ -349,7 +349,7 @@
 		global $pearDB;
 
 		$rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$empty = true;
 		if ($DBRESULT && $DBRESULT->numRows() >= 1)
 			$empty = false;
@@ -370,9 +370,9 @@
 			$rq .= "VALUES ";
 			$dir_alias_safe = htmlentities($dir_alias, ENT_QUOTES, "UTF-8");
 			$rq .= "('".$dir_alias_safe."', '".$dir_alias_safe."', '".htmlentities($dir_comment, ENT_QUOTES, "UTF-8")."')";
-			$DBRESULT =& $pearDB->query($rq);
-			$DBRESULT =& $pearDB->query("SELECT MAX(dir_id) FROM view_img_dir");
-			$dir_id =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query($rq);
+			$DBRESULT = $pearDB->query("SELECT MAX(dir_id) FROM view_img_dir");
+			$dir_id = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 			return ($dir_id["MAX(dir_id)"]);
 		}
@@ -396,15 +396,15 @@
 		 * Purge images of the directory
 		 */
 		$rq = "SELECT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dirid."'";
-		$DBRESULT =& $pearDB->query($rq);
-		while ($img =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query($rq);
+		while ($img = $DBRESULT->fetchRow())
 			deleteImg($img["img_img_id"]);
 		/*
 		 * Delete directory
 		 */
 		$rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dirid."'";
-		$DBRESULT =& $pearDB->query($rq);
-		$dir_alias =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rq);
+		$dir_alias = $DBRESULT->fetchRow();
 		$fileTab = scandir($mediadir . $dir_alias["dir_alias"]);
 		foreach ($fileTab as $fileName) {
 			if (is_file($mediadir . $dir_alias["dir_alias"] . "/" . $fileName))
@@ -412,7 +412,7 @@
 		}
 		rmdir($mediadir.$dir_alias["dir_alias"]);
 		if (!is_dir($mediadir.$dir_alias["dir_alias"]))	{
-			$DBRESULT =& $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = '".$dirid."'");
+			$DBRESULT = $pearDB->query("DELETE FROM view_img_dir WHERE dir_id = '".$dirid."'");
 		}
 	}
 
@@ -424,8 +424,8 @@
 
 		$mediadir = "./img/media/";
 		$rq = "SELECT dir_alias FROM view_img_dir WHERE dir_id = '".$dir_id."'";
-		$DBRESULT =& $pearDB->query($rq);
-		$old_dir =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rq);
+		$old_dir = $DBRESULT->fetchRow();
 		$dir_alias = sanitizePath($dir_alias);
 		if (!is_dir($mediadir.$old_dir["dir_alias"]))  {
 			mkdir($mediadir.$dir_alias);
@@ -439,7 +439,7 @@
 					"dir_alias = '".$dir_alias."', " .
 					"dir_comment = '".htmlentities($dir_comment, ENT_QUOTES, "UTF-8")."' " .
 					"WHERE dir_id = '".$dir_id."'";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 	

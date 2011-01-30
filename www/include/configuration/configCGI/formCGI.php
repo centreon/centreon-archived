@@ -41,7 +41,7 @@
 	#
 	$cgi = array();
 	if (($o == "c" || $o == "w") && $cgi_id)	{	
-		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
 		# Set base value
 		$cgi = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -50,9 +50,9 @@
 	#
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array();
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 	$checkCmds = array(NULL=>NULL);
-	while ($checkCmd =& $DBRESULT->fetchRow())
+	while ($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	#
@@ -152,7 +152,7 @@
 	));
 		
 	$form->addElement('hidden', 'cgi_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	#
@@ -187,20 +187,20 @@
 	}
 	# Modify a CGI information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cgi);
 	}
 	# Add a CGI information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$tpl->assign("nagios", $oreon->user->get_version());
 	$valid = false;
 	if ($form->validate())	{
-		$cgiObj =& $form->getElement('cgi_id');
+		$cgiObj = $form->getElement('cgi_id');
 		if ($form->getSubmitValue("submitA"))
 			$cgiObj->setValue(insertCGIInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -215,7 +215,7 @@
 		require_once($path."listCGI.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	

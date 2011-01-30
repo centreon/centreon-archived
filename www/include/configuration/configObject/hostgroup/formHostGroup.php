@@ -44,7 +44,7 @@
 	 */
 	$hg = array();
 	if (($o == "c" || $o == "w") && $hg_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -59,8 +59,8 @@
 		/*
 		 *  Set HostGroup Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
-		for ($i = 0; $hosts =& $DBRESULT->fetchRow(); $i++) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
+		for ($i = 0; $hosts = $DBRESULT->fetchRow(); $i++) {
 			$hg["hg_hosts"][$i] = $hosts["host_id"];
 		}
 		$DBRESULT->free();
@@ -69,8 +69,8 @@
 		/*
 		 *  Set HostGroup Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
-		for ($i = 0; $hgs =& $DBRESULT->fetchRow(); $i++) {
+		$DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
+		for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
 			$hg["hg_hg"][$i] = $hgs["hg_child_id"];
 		}
 		$DBRESULT->free();
@@ -81,8 +81,8 @@
 	 * Hosts comes from DB -> Store in $hosts Array
 	 */
 	$hosts = array();
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	unset($host);
@@ -96,8 +96,8 @@
 		$EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
 
 	$hostGroups = array();
-	$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
-	while ($hgs =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
+	while ($hgs = $DBRESULT->fetchRow()) {
 		if (!isset($hostGroupParents[$hgs["hg_id"]])) {
 			$hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
 		}
@@ -109,8 +109,8 @@
 	 * Contact Groups comes from DB -> Store in $cgs Array
 	 */
 	$cgs = array();
-	$DBRESULT =& $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while ($cg =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	while ($cg = $DBRESULT->fetchRow())
 		$cgs[$cg["cg_id"]] = $cg["cg_name"];
 	$DBRESULT->free();
 	unset($cg);
@@ -156,13 +156,13 @@
 	 * Hosts Selection
 	 */
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 =& $form->addElement('advmultiselect', 'hg_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'hg_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'hg_hg', array(_("Linked Host Groups"), _("Available"), _("Selected")), $hostGroups, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'hg_hg', array(_("Linked Host Groups"), _("Available"), _("Selected")), $hostGroups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -198,7 +198,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'hg_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -236,15 +236,15 @@
 		/*
 		 * Modify a HostGroup information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($hg);
 	} else if ($o == "a")	{
 		/*
 		 * Add a HostGroup information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('p', $p);
@@ -266,13 +266,13 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$hgObj =& $form->getElement('hg_id');
+		$hgObj = $form->getElement('hg_id');
 		if ($form->getSubmitValue("submitA"))
 			$hgObj->setValue(insertHostGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
 			updateHostGroupInDB($hgObj->getValue());
 		$o = NULL;
-		$hgObj =& $form->getElement('hg_id');
+		$hgObj = $form->getElement('hg_id');
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
@@ -285,7 +285,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

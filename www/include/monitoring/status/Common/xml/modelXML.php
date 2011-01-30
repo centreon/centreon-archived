@@ -91,7 +91,7 @@
 	/* 
 	 * Get Pagination Rows 
 	 */
-	$DBRESULT =& $obj->DBNdo->query($rq_pagination);
+	$DBRESULT = $obj->DBNdo->query($rq_pagination);
 	$numRows = $DBRESULT->numRows();
 	$DBRESULT->free();
 	
@@ -109,8 +109,8 @@
 	
 	$ct = 0;
 	$flag = 0;
-	$DBRESULT =& $obj->DBNdo->query($rq1);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($rq1);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		/*

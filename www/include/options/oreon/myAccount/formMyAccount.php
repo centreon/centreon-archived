@@ -59,7 +59,7 @@
 	#
 	$cct = array();
 	if ($o == "c")	{	
-		$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
 		# Set base value
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -95,7 +95,7 @@
 	$form->addElement('password', 'contact_passwd2', _("Confirm password"), $attrsText);
     $form->addElement('select', 'contact_lang', _("Language"), $langs);
 
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	#
@@ -128,8 +128,8 @@
 
 	# Modify a contact information
 	if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cct);
 	}
 	
@@ -142,7 +142,7 @@
 		$form->freeze();
 	}
 	#Apply a template definition	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);	

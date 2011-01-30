@@ -82,8 +82,8 @@ $form->addElement('header', 'information', _("Arguments"));
 /*$form->addElement('text', 'ba_group_name', _("Name"), $attrsText);*/
 
 
-$subS =& $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();"));
-$subS =& $form->addElement('button', 'close', _("Close"), array("onClick"=>"closeBox();"));
+$subS = $form->addElement('button', 'submitSaveAdd', _("Save"), array("onClick"=>"setDescriptions();"));
+$subS = $form->addElement('button', 'close', _("Close"), array("onClick"=>"closeBox();"));
 
 /*
  *  Smarty template

@@ -108,8 +108,8 @@
 	 */
 
 	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	while ($topology_js =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	while ($topology_js = $DBRESULT->fetchRow()) {
 		if ($topology_js['PathName_js'] != "./include/common/javascript/ajaxMonitoring.js" && $topology_js['PathName_js'] != "./include/common/javascript/codebase/dhtmlxtree.js") {
 			if ($topology_js['PathName_js'] != "") {
 				echo "<script type='text/javascript' src='".$topology_js['PathName_js']."'></script>\n";
@@ -157,8 +157,8 @@
 	}
 
 	$res = null;
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
-	while ($topology_js =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDB->query("SELECT DISTINCT PathName_js, init FROM topology_JS WHERE id_page = '".$p."' AND (o = '" . $o . "' OR o IS NULL)");
+	while ($topology_js = $DBRESULT->fetchRow()){
 		if ($topology_js['init'] == "initM") {
 			if ($o != "hd" && $o != "svcd") {
 				print "\tsetTimeout('initM($tM, \"$sid\", \"$o\")', 0);";

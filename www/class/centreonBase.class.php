@@ -125,8 +125,8 @@ class CentreonBase
 	 */
 	private function getUserIdFromSID()
 	{
-		$DBRESULT =& $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
-		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
+		$admin = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["user_id"])) {
 			$this->user_id = $admin["user_id"];

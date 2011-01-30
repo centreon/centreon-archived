@@ -118,7 +118,7 @@
 	$form2 = new HTML_QuickForm('form', 'POST', "?p=".$p);
 	$form2->addElement('submit', 'create', _("Create"));
 	$form2->addElement('text', 'new_dir', _("Create New Directory"));
-	$file =& $form2->addElement('file', 'filename', _("File (zip, tar or cfg)"));
+	$file = $form2->addElement('file', 'filename', _("File (zip, tar or cfg)"));
 	$form2->addElement('submit', 'load', _("Load"));
 	
 	if (isset($_GET["filename"]))
@@ -128,7 +128,7 @@
 		$ret = $form2->getSubmitValues();
 		$fDataz = array();
 		$buf = NULL;
-		$fDataz =& $file->getValue();
+		$fDataz = $file->getValue();
 		print $fDataz["type"];
 	}
 
@@ -158,11 +158,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -172,8 +172,8 @@
 	##Apply a template definition
 	#
 	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$renderer2 =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer2 = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	
 	$form->accept($renderer);	
 	$form2->accept($renderer2);	

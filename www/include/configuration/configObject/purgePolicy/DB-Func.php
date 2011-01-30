@@ -45,8 +45,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('purge_policy_id');
-		$DBRESULT =& $pearDB->query("SELECT purge_policy_name, purge_policy_id FROM purge_policy WHERE purge_policy_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$pp =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT purge_policy_name, purge_policy_id FROM purge_policy WHERE purge_policy_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$pp = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $pp["purge_policy_id"] == $id)
 			return true;
@@ -60,14 +60,14 @@
 	function deletePurgePolicyInDB ($ppols = array())	{
 		global $pearDB;
 		foreach($ppols as $key=>$value)		{
-			$DBRESULT =& $pearDB->query("DELETE FROM purge_policy WHERE purge_policy_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM purge_policy WHERE purge_policy_id = '".$key."'");
 		}
 	}
 
 	function multiplePurgePolicyInDB ($ppols = array(), $nbrDup = array())	{
 		foreach($ppols as $key=>$value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["purge_policy_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -78,7 +78,7 @@
 				}
 				if (testPurgePolicyExistence($purge_policy_name))	{
 					$val ? $rq = "INSERT INTO purge_policy VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 				}
 			}
 		}
@@ -115,8 +115,8 @@
 		isset($ret["purge_policy_host"]["purge_policy_host"]) && $ret["purge_policy_host"]["purge_policy_host"] != NULL ? $rq .= "'".$ret["purge_policy_host"]["purge_policy_host"]."', ": $rq .= "NULL, ";
 		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
 		$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(purge_policy_id) FROM purge_policy");
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(purge_policy_id) FROM purge_policy");
 		$purge_policy_id = $DBRESULT->fetchRow();
 		return ($purge_policy_id["MAX(purge_policy_id)"]);
 	}
@@ -147,6 +147,6 @@
 		$rq .= "purge_policy_comment = ";
 		isset($ret["purge_policy_comment"]) && $ret["purge_policy_comment"] != NULL ? $rq .= "'".htmlentities($ret["purge_policy_comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE purge_policy_id = '".$purge_policy_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 ?>

@@ -43,8 +43,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('compo_id');
-		$DBRESULT =& $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$compo =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT compo_id, name FROM giv_components_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$compo = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $id)	
 			return true;
@@ -58,30 +58,30 @@
 	function deleteComponentTemplateInDB ($compos = array())	{
 		global $pearDB;
 		foreach($compos as $key => $value){
-			$DBRESULT =& $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '".$key."'");
 		}
 		defaultOreonGraph();
 	}	
 	
 	function defaultOreonGraph ()	{
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
+		$DBRESULT = $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
 		if (!$DBRESULT->numRows())	{
-			$DBRESULT2 =& $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("UPDATE giv_components_template SET default_tpl1 = '1' LIMIT 1");
 		}
 	}
 
 	function noDefaultOreonGraph ()	{
 		global $pearDB;
 		$rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 	
 	function multipleComponentTemplateInDB ($compos = array(), $nbrDup = array())	{
 		global $pearDB;
 		foreach($compos as $key=>$value) {
-			$DBRESULT =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$key."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			$row["compo_id"] = '';
 			$row["default_tpl1"] = '0';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -92,7 +92,7 @@
 				}
 				if (testExistence($name))	{
 					$val ? $rq = "INSERT INTO giv_components_template VALUES (".$val.")" : $rq = null;
-					$DBRESULT2 =& $pearDB->query($rq);
+					$DBRESULT2 = $pearDB->query($rq);
 				}
 			}
 		}
@@ -138,10 +138,10 @@
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
 		$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		defaultOreonGraph();
-		$DBRESULT =& $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
-		$compo_id =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
+		$compo_id = $DBRESULT->fetchRow();
 		return ($compo_id["MAX(compo_id)"]);
 	}
 	
@@ -188,7 +188,7 @@
 		$rq .= "comment = ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE compo_id = '".$compo_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		defaultOreonGraph();
 	}		
 	

@@ -40,7 +40,7 @@
 
 	$compo = array();
 	if (($o == "c" || $o == "w") && $compo_id)	{
-		$res =& $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$compo_id."' LIMIT 1");
+		$res = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$compo_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -52,8 +52,8 @@
 	 * Graphs comes from DB -> Store in $graphs Array
 	 */
 	$graphs = array();
-	$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	while ($graph =& $res->fetchRow())
+	$res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	while ($graph = $res->fetchRow())
 		$graphs[$graph["graph_id"]] = $graph["name"];
 	$res->free();
 
@@ -62,8 +62,8 @@
 	 */
 
 	$datasources = array();
-	$DBRESULT =& $pearDBO->query("SELECT DISTINCT `metric_name`, `unit_name` FROM `metrics` ORDER BY `metric_name`");
-	while ($row =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDBO->query("SELECT DISTINCT `metric_name`, `unit_name` FROM `metrics` ORDER BY `metric_name`");
+	while ($row = $DBRESULT->fetchRow()){
 		$datasources[$row["metric_name"]] = $row["metric_name"];
 		if (isset($row["unit_name"]) && $row["unit_name"] != "")
 			 $datasources[$row["metric_name"]] .= " (".$row["unit_name"].")";
@@ -144,7 +144,7 @@
 	 * Components linked with
 	 */
 	$form->addElement('header', 'graphs', _("Graph Choice"));
-	$ams1 =& $form->addElement('advmultiselect', 'compo_graphs', array(_("Graph List"),_("Available"), _("Selected")), $graphs, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'compo_graphs', array(_("Graph List"),_("Available"), _("Selected")), $graphs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -157,7 +157,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'compo_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	function testFilled() {
@@ -195,15 +195,15 @@
 		/*
 		 * Modify
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Delete"));
 		$form->setDefaults($compo);
 	} else if ($o == "a")	{
 		/*
 		 * Add
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Delete"));
 		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));
@@ -237,7 +237,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$compoObj =& $form->getElement('compo_id');
+		$compoObj = $form->getElement('compo_id');
 		if ($form->getSubmitValue("submitA"))
 			$compoObj->setValue(insertComponentTemplateInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -254,7 +254,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

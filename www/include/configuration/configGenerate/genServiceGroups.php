@@ -43,12 +43,12 @@
 	$generatedSG = array();
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/servicegroups.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM `servicegroup` WHERE sg_activate = '1' ORDER BY `sg_name`");
+	$DBRESULT = $pearDB->query("SELECT * FROM `servicegroup` WHERE sg_activate = '1' ORDER BY `sg_name`");
 
 	$serviceGroup = array();
 	$i = 1;
 	$str = NULL;
-	while ($serviceGroup =& $DBRESULT->fetchRow())	{
+	while ($serviceGroup = $DBRESULT->fetchRow())	{
 		$generated = 0;
 		$strDef = "";
 
@@ -74,7 +74,7 @@
 			 */
 			$service = array();
 			$strTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
+			$DBRESULT2 = $pearDB->query("SELECT service_description, service_id, host_name, host_id " .
 									"FROM servicegroup_relation, service, host, host_service_relation " .
 									"WHERE servicegroup_relation.servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
 										"AND service.service_id = servicegroup_relation.service_service_id " .
@@ -84,7 +84,7 @@
 										"AND host.host_id = host_service_relation.host_host_id  " .
 										"AND host_service_relation.service_service_id = service.service_id  " .
 										"AND servicegroup_relation.host_host_id IS NOT NULL");
-			while ($service =& $DBRESULT2->fetchRow()){
+			while ($service = $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{
 					if ($service["host_id"])	{
 						if (isset($gbArr[2][$service["host_id"]]) && isset($host_instance[$service["host_id"]])){
@@ -98,7 +98,7 @@
 				}
 			}
 
-			$DBRESULT2 =& $pearDB->query("SELECT service_description, service_id, hg_id " .
+			$DBRESULT2 = $pearDB->query("SELECT service_description, service_id, hg_id " .
 									"FROM servicegroup_relation, service, hostgroup " .
 									"WHERE servicegroup_sg_id = '".$serviceGroup["sg_id"]."' " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
@@ -106,12 +106,12 @@
 									"AND service.service_activate = '1' " .
 									"AND hostgroup.hg_activate = '1' " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL ");
-			while($service =& $DBRESULT2->fetchRow()){
+			while($service = $DBRESULT2->fetchRow()){
 				if (isset($gbArr[4][$service["service_id"]]))	{
 					if ($service["hg_id"])	{
 						if (isset($gbArr[3][$service["hg_id"]])){
-							$DBRESULT3 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
-							while($host =& $DBRESULT3->fetchRow())	{
+							$DBRESULT3 = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$service["hg_id"]."'");
+							while($host = $DBRESULT3->fetchRow())	{
 								if (isset($gbArr[2][$host["host_host_id"]]) && isset($host_instance[$host["host_host_id"]])){
 									$service["service_description"] = str_replace("#S#", "/", $service["service_description"]);
 									$service["service_description"] = str_replace("#BS#", "\\", $service["service_description"]);

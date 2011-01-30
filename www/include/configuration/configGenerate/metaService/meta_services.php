@@ -39,9 +39,9 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_services.cfg", $oreon->user->get_name());
 	$str = NULL;
 	
-	$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
+	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	# Write Virtual Services For meta 
-	while ($meta =& $DBRESULT->fetchRow())	{
+	while ($meta = $DBRESULT->fetchRow())	{
 		$strEval = NULL;
 		$strEval .= "define service{\n";
 		$strEval .= print_line("service_description", "meta_".$meta["meta_id"]);
@@ -53,16 +53,16 @@
 		$strEval .= print_line("active_checks_enabled", "1");
 		$strEval .= print_line("passive_checks_enabled", "0");
 		
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
-		$period =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["check_period"]."' LIMIT 1");
+		$period = $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("check_period", $period["tp_name"]);
 		$DBRESULT2->free();
 			
 		$strEval .= print_line("notification_interval", $meta["notification_interval"]);
 		
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
-		$period =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDB->query("SELECT DISTINCT tp_name FROM timeperiod WHERE tp_id = '".$meta["notification_period"]."' LIMIT 1");
+		$period = $DBRESULT2->fetchRow();
 		if (isset($period) && $period["tp_name"])
 			$strEval .= print_line("notification_period", $period["tp_name"]);
 		$DBRESULT2->free();
@@ -73,8 +73,8 @@
 		
 		$contactGroup = array();
 		$strTemp = NULL;
-		$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
-		while ($contactGroup =& $DBRESULT2->fetchRow())	{
+		$DBRESULT2 = $pearDB->query("SELECT cg.cg_id, cg.cg_name FROM meta_contactgroup_relation mcgr, contactgroup cg WHERE mcgr.meta_id = '".$meta["meta_id"]."' AND mcgr.cg_cg_id = cg.cg_id ORDER BY `cg_name`");
+		while ($contactGroup = $DBRESULT2->fetchRow())	{
 			if (isset($gbArr[1][$contactGroup["cg_id"]]))
 				$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
 		}

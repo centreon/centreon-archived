@@ -272,8 +272,8 @@ function construct_HostGroupSelectList(id) {
 				 		"WHERE hg.hg_id = arhr.hg_hg_id" .
 				 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
 				 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias";
-			$DBRESULT =& $pearDB->query($query);
-			while ($data =& $DBRESULT->fetchRow()) {
+			$DBRESULT = $pearDB->query($query);
+			while ($data = $DBRESULT->fetchRow()) {
 				$hg[$data["name"]] = 1;
 			}
 			$DBRESULT->free();
@@ -281,11 +281,11 @@ function construct_HostGroupSelectList(id) {
 		}
 
 		if ($broker = 'broker') {
-			$DBRESULT =& $pearDBO->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
+			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
 		} else {
-			$DBRESULT =& $pearDBndo->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
+			$DBRESULT = $pearDBndo->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
 		}
-		while ($hostgroups =& $DBRESULT->fetchRow()) {
+		while ($hostgroups = $DBRESULT->fetchRow()) {
 			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["name"]]))) { ?>
 				var m = document.createElement('option');
 				m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";

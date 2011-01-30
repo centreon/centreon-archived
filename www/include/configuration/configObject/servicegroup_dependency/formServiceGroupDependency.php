@@ -42,30 +42,30 @@
 	#
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 
 		# Set Notification Failure Criteria
-		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
+		$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
 			$dep["notification_failure_criteria"][trim($value)] = 1;
 
 		# Set Execution Failure Criteria
-		$dep["execution_failure_criteria"] =& explode(',', $dep["execution_failure_criteria"]);
+		$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 
 		# Set ServiceGroup Parents
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for ($i = 0; $sgP =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
+		for ($i = 0; $sgP = $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
 		$DBRESULT->free();
 
 		# Set ServiceGroup Childs
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for ($i = 0; $sgC =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
+		for ($i = 0; $sgC = $DBRESULT->fetchRow(); $i++)
 			$dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
 		$DBRESULT->free();
 	}
@@ -79,8 +79,8 @@
 	  */
 
 	$sgs = array();
-	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while ($sg =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	while ($sg = $DBRESULT->fetchRow())
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	$DBRESULT->free();
 
@@ -134,13 +134,13 @@
 	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone2', 'onClick' => 'uncheckAllS2(this);'));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_sgParents', array(_("Service Group Names"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_sgParents', array(_("Service Group Names"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_sgChilds', array(_("Dependent Service Group Names"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_sgChilds', array(_("Dependent Service Group Names"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -155,7 +155,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'dep_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -191,13 +191,13 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a Dependency information
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($dep);
 	} else if ($o == "a")	{
 		# Add a Dependency information
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 		$form->setDefaults(array('inherits_parent', '0'));
 	}
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
@@ -211,7 +211,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$depObj =& $form->getElement('dep_id');
+		$depObj = $form->getElement('dep_id');
 		if ($form->getSubmitValue("submitA"))
 			$depObj->setValue(insertServiceGroupDependencyInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -229,7 +229,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

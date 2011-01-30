@@ -64,7 +64,7 @@
 	 * nagios servers comes from DB
 	 */
 	$nagios_servers = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
 	while ($nagios_server = $DBRESULT->fetchRow()) {
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	}
@@ -75,7 +75,7 @@
 	 */
 	$ndoPrefix = getNDOPrefix();
 	$nagiosInfo = array();
-	$DBRESULT =& $pearDBNdo->query("SELECT program_start_time, is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
+	$DBRESULT = $pearDBNdo->query("SELECT program_start_time, is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
 	while ($info = $DBRESULT->fetchRow()) {
 		$nagiosInfo[$info["instance_name"]] = $info;
 	}
@@ -88,7 +88,7 @@
 	if ($pollerNumber == 0) {
 		$pollerNumber = 1;
 	}
-	$DBRESULT =& $pearDBNdo->query("SELECT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
+	$DBRESULT = $pearDBNdo->query("SELECT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
 	while ($info = $DBRESULT->fetchRow()) {
 		$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
 	}
@@ -124,7 +124,7 @@
 	 * Nagios list
 	 */
 	$rq = "SELECT id, name, ns_activate, ns_ip_address, localhost FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
@@ -139,7 +139,7 @@
 	$elemArr = array();
 	for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$config['id']."]");
+		$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]");
 		if ($config["ns_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
@@ -188,7 +188,7 @@
 				"");
     $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array(
@@ -203,7 +203,7 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
@@ -211,7 +211,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServers.ihtml");

@@ -45,7 +45,7 @@
 		
 	$pearDB = new CentreonDB();
 	
-	$DBRESULT =& $pearDB->query("SELECT `host_id`, `host_name` FROM `host` WHERE `host_register` = '0' ORDER BY `host_name`");
+	$DBRESULT = $pearDB->query("SELECT `host_id`, `host_name` FROM `host` WHERE `host_register` = '0' ORDER BY `host_name`");
 	
 	/*
 	 *  The first element of the select is empty
@@ -60,7 +60,7 @@
 	/*
 	 *  Now we fill out the select with templates id and names
 	 */
-	while ($h =& $DBRESULT->fetchRow()){
+	while ($h = $DBRESULT->fetchRow()){
 		if ($h['host_id'] != $_GET['host_id']) {
 			$buffer->startElement("template");
 			$buffer->writeElement("tp_id", $h['host_id']);

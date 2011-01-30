@@ -52,8 +52,8 @@
 	 * Get Extended informations
 	 */
 	$ehiCache = array();
-	$DBRESULT =& $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-	while ($ehi =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+	while ($ehi = $DBRESULT->fetchRow()) {
 		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 	}
 	$DBRESULT->free();
@@ -112,8 +112,8 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$host['host_id']."]");
+	for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
+		$selectedElements = $form->addElement('checkbox', "select[".$host['host_id']."]");
 		$moptions = "";
 		if ($host["host_activate"]) {
 			$moptions .= "<a href='main.php?p=".$p."&host_id=".$host['host_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -249,11 +249,11 @@
     $form->addElement('select', 'o2', null, array(null => _("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 	$form->setDefaults(array('o2' => null));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(null);
 	$o1->setSelected(null);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(null);
 	$o2->setSelected(null);
 
@@ -262,7 +262,7 @@
 	#
 	##Apply a template definition
 	#
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listHostTemplateModel.ihtml");

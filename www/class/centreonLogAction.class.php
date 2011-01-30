@@ -57,7 +57,7 @@ class CentreonLogAction {
  			$query .= "('".$key."', '".$value."', '".$logId."'), ";
  		}
  		$query[strlen($query)-2] = " "; //removes the last coma
- 		$DBRESULT =& $pearDBO->query($query); 		
+ 		$DBRESULT = $pearDBO->query($query); 		
  		unset($DBRESULT);
  	}
 	
@@ -68,9 +68,9 @@ class CentreonLogAction {
  		global $pearDBO;
  		$now = time();
  		$str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('".$now."', '".$object_type."', '".$object_id."', '".$object_name."', '".$action_type."', '".$this->logUser->user_id."')";
- 		$DBRESULT =& $pearDBO->query($str_query);
+ 		$DBRESULT = $pearDBO->query($str_query);
  		
- 		$DBRESULT2 =& $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");		
+ 		$DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");		
 		$logId = $DBRESULT2->fetchRow();
 		if ($fields)
 			$this->insertFieldsNameValue($logId["MAX(action_log_id)"], $fields);
@@ -82,8 +82,8 @@ class CentreonLogAction {
 	function getContactname($id) {
 		global $pearDB;
 	
-		$DBRESULT =& $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '$id' LIMIT 1");				
-		while ($data =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '$id' LIMIT 1");				
+		while ($data = $DBRESULT->fetchRow())
 			$name = $data["contact_name"];
 		unset($data);
 		$DBRESULT->free();	
@@ -98,8 +98,8 @@ class CentreonLogAction {
 		$list_actions = array();
 		$i = 0;
 		
-		$DBRESULT =& $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date DESC");
-		while ($data =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date DESC");
+		while ($data = $DBRESULT->fetchRow()) {
 			$list_actions[$i]["action_log_id"] = $data["action_log_id"];
 			$list_actions[$i]["action_log_date"] = date("d/m/Y H:i",$data["action_log_date"]);
 			$list_actions[$i]["object_type"] = $data["object_type"];
@@ -125,11 +125,11 @@ class CentreonLogAction {
 		$j = 0;
 		$first_ref_flag = 0;
 		
-		$DBRESULT =& $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER  BY action_log_date ASC");	
+		$DBRESULT = $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER  BY action_log_date ASC");	
 		
-		while ($row =& $DBRESULT->fetchRow()) {
-			$DBRESULT2 =& $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");			
-			while ($field =& $DBRESULT2->fetchRow()) {
+		while ($row = $DBRESULT->fetchRow()) {
+			$DBRESULT2 = $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");			
+			while ($field = $DBRESULT2->fetchRow()) {
 				if (($row["action_type"] == "mc" || $row["action_type"] == "a" || $row["action_type"] == "c") && (!$first_ref_flag || $first_ref_flag == $field["action_log_id"])) {
 					$ref[$field["field_name"]] = $field["field_value"];
 					$first_ref_flag = $field["action_log_id"];

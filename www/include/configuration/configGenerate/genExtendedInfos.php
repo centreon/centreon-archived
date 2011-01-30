@@ -51,7 +51,7 @@
 	 * Host Extended Information
 	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/hostextinfo.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query(	"SELECT host_id, host_name FROM host " .
+	$DBRESULT = $pearDB->query(	"SELECT host_id, host_name FROM host " .
 									"WHERE host_activate = '1' AND host_register = '1' " .
 									"ORDER BY `host_name`");
 									
@@ -61,7 +61,7 @@
 	
 	$host_method = new CentreonHost($pearDB);
 	
-	while ($ehi =& $DBRESULT->fetchRow())	{
+	while ($ehi = $DBRESULT->fetchRow())	{
 		if (isset($host_instance[$ehi["host_id"]]) && isset($ehi["host_id"][$gbArr[2]])) {
 			$flag = 0;
 			$strTmp = "";
@@ -130,8 +130,8 @@
 
 	$svc_method = new CentreonService($pearDB);
 
-	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service, extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND service_activate = '1'");
-	while ($esi =& $DBRESULT->fetchRow())	{	
+	$DBRESULT = $pearDB->query("SELECT service_id, service_description, esi_notes, esi_notes_url, esi_action_url, esi_icon_image, esi_icon_image_alt FROM service, extended_service_information WHERE service_service_id = service_id AND service_register = '1' AND service_activate = '1'");
+	while ($esi = $DBRESULT->fetchRow())	{	
 		if (isset($esi["service_id"]) && ($esi["esi_notes"] || $esi["esi_notes_url"] || $esi["esi_action_url"] || $esi["esi_icon_image"] || $esi["esi_icon_image_alt"]))	{			
 			$hosts = getMyServiceHosts($esi["service_id"]);
 			foreach ($hosts as $key=>$value)	{				

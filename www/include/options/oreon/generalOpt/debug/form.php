@@ -39,9 +39,9 @@
 	if (!isset($oreon))
 		exit();
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
+	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
 	
-	while ($opt =& $DBRESULT->fetchRow()) {
+	while ($opt = $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
 	$DBRESULT->free();
@@ -80,7 +80,7 @@
 	$form->addRule('debug_path', _("Can't write in directory"), 'is_writable_path');
 
 	$form->addElement('hidden', 'gopt_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 
@@ -92,8 +92,8 @@
 
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', _("Save"));
-	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
+	$subC = $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
 
     $valid = false;
 	if ($form->validate())	{
@@ -134,7 +134,7 @@
 	
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=debug'"));
 	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

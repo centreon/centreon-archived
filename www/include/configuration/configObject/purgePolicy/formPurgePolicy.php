@@ -41,7 +41,7 @@
 	#
 	$ppol = array();
 	if (($o == "c" || $o == "w") && $purge_policy_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$purge_policy_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM purge_policy WHERE purge_policy_id = '".$purge_policy_id."' LIMIT 1");
 		# Set base value
 		$ppol = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -89,7 +89,7 @@
 						"10368000"=>_("Last 4 Months"),
 						"15552000"=>_("Last 6 Months"),
 						"31104000"=>_("Last Year"));	
-	$sel =& $form->addElement('select', 'purge_policy_retention', _("Retention Period"), $periods);
+	$sel = $form->addElement('select', 'purge_policy_retention', _("Retention Period"), $periods);
 	$tab = array();
 	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("Yes"), '1');
 	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("No"), '0');
@@ -122,7 +122,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'purge_policy_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	#
@@ -159,19 +159,19 @@
 	}
 	# Modify a contact information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ppol);
 	}
 	# Add a contact information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
-		$ppolObj =& $form->getElement('purge_policy_id');
+		$ppolObj = $form->getElement('purge_policy_id');
 		if ($form->getSubmitValue("submitA"))
 			$ppolObj->setValue(insertPurgePolicyInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -186,7 +186,7 @@
 		require_once($path."listPurgePolicy.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

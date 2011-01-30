@@ -55,8 +55,8 @@
 	$pearDB = new CentreonDB();
 
 	if (isset($_POST["index"])){
-		$DBRESULT =& $pearDB->query("SELECT `command_example` FROM `command` WHERE `command_id` = '". $_POST["index"] ."'");
-		while ($arg =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT `command_example` FROM `command` WHERE `command_id` = '". $_POST["index"] ."'");
+		while ($arg = $DBRESULT->fetchRow())
 			echo myDecodeService($arg["command_example"]);
 		unset($arg);
 		unset($DBRESULT);

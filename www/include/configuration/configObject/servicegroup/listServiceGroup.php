@@ -94,8 +94,8 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$sg['sg_id']."]");	
+	for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
+		$selectedElements = $form->addElement('checkbox', "select[".$sg['sg_id']."]");	
 		$moptions = "";
 		if ($sg["sg_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&sg_id=".$sg['sg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -139,7 +139,7 @@
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
     $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	
 	$attrs = array(
@@ -152,7 +152,7 @@
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
@@ -160,7 +160,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listServiceGroup.ihtml");

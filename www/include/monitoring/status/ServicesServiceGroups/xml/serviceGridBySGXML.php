@@ -122,10 +122,10 @@
 	if ($search != ""){
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	$DBRESULT =& $obj->DBNdo->query($rq1);
+	$DBRESULT = $obj->DBNdo->query($rq1);
 	$numRows = 0;
 	$tabString = "";
-	while ($row =& $DBRESULT->fetchRow()) {
+	while ($row = $DBRESULT->fetchRow()) {
 		$numRows++;
 		if ($tabString != "") {
 			$tabString .= ",";
@@ -140,15 +140,15 @@
 		 * Check ndo version
 		 */
 		$request = "SELECT count(*) FROM " .$obj->ndoPrefix."servicegroups WHERE config_type = '1' LIMIT 1";
-		$DBRESULT =& $obj->DBNdo->query($request);
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $obj->DBNdo->query($request);
+		while ($row = $DBRESULT->fetchRow()) {
 			if ($row["count(*)"] > 0) {
 				$custom_ndo = 0;
 				break;
 			} else {
 				$request = "SELECT count(*) FROM " .$obj->ndoPrefix."servicegroups LIMIT 1";
-				$DBRESULT2 =& $obj->DBNdo->query($request);
-				while ($row2 =& $DBRESULT2->fetchRow()) {
+				$DBRESULT2 = $obj->DBNdo->query($request);
+				while ($row2 = $DBRESULT2->fetchRow()) {
 					if ($row2["count(*)"] > 0) {
 						$custom_ndo = 1;
 						break;
@@ -168,10 +168,10 @@
 		$rq = "SELECT nhs.current_state, nh.display_name, nh.host_object_id FROM `" .$obj->ndoPrefix."hoststatus` nhs, `" .$obj->ndoPrefix."hosts` nh " .
  	            "WHERE nh.display_name IN ($tabString) " .
  	            "AND nh.host_object_id = nhs.host_object_id" ;
-		$DBRESULT =& $obj->DBNdo->query($rq);
+		$DBRESULT = $obj->DBNdo->query($rq);
 		$tabHostStatus = array();
 		$tabHost = array();
-		while ($row =& $DBRESULT->fetchRow()) {
+		while ($row = $DBRESULT->fetchRow()) {
 			$tabHostStatus[$row["display_name"]] = $row["current_state"];
 			$tabHost[$row["display_name"]] = $row["host_object_id"];
 		}
@@ -215,10 +215,10 @@
 		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-		$DBRESULT_PAGINATION =& $obj->DBNdo->query($rq1);
+		$DBRESULT_PAGINATION = $obj->DBNdo->query($rq1);
 		$host_table = array();
 		$sg_table = array();
-		while ($row =& $DBRESULT_PAGINATION->fetchRow()) {
+		while ($row = $DBRESULT_PAGINATION->fetchRow()) {
 		    $host_table[$row["host_name"]] = $row["host_name"];
 			if (!isset($sg_table[$row["alias"]]))
             	$sg_table[$row["alias"]] = array();
@@ -295,8 +295,8 @@
 	$h = "";
 	$flag = 0;
 	$count = 0;
-	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
-	while ($tab =& $DBRESULT_NDO1->fetchRow() && $numRows) {
+	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
+	while ($tab = $DBRESULT_NDO1->fetchRow() && $numRows) {
 		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
 			if ($sg != $tab["alias"]) {
 				$flag = 0;

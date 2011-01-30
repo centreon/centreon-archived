@@ -59,7 +59,7 @@
 			}
 		}
 
-		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 		if ($DBRESULT->numRows())
 			$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
 	}
@@ -68,8 +68,8 @@
 	 * Notification commands comes from DB -> Store in $notifCmds Array
 	 */
 	$notifCmds = array(null=>null);
-	$DBRESULT =& $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '1' ORDER BY `command_name`");
-	while ($notifCmd =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '1' ORDER BY `command_name`");
+	while ($notifCmd = $DBRESULT->fetchRow())
 		$notifCmds[$notifCmd["command_id"]] = $notifCmd["command_name"];
 	$DBRESULT->free();
 	
@@ -78,8 +78,8 @@
 	 */
 	
 	$checkCmds = array(null=>null);
-	$DBRESULT =& $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '2' ORDER BY `command_name`");
-	while ($checkCmd =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT `command_id`, `command_name` FROM `command` WHERE `command_type` = '2' ORDER BY `command_name`");
+	while ($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -109,13 +109,13 @@
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
 	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
 	
-	$v1 =& $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
+	$v1 = $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 	$v1->freeze();
 	
-	$v2 =& $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
+	$v2 = $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 	$v2->freeze();
 	
-	$v3 =& $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
+	$v3 = $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
 	$v3->freeze();
 	
 	/*
@@ -130,10 +130,10 @@
   	/*
   	 * Further informations
   	 */
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
-	$min =& $form->addElement('hidden', 'min');
+	$min = $form->addElement('hidden', 'min');
 	$min->setValue(1);
 	
 
@@ -144,7 +144,7 @@
 	/*
 	 * Apply a template definition
 	 */	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 

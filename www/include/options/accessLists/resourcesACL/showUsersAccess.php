@@ -48,8 +48,8 @@
 	 * Get host icones
 	 */
 	$ehiCache = array();
-	$DBRESULT =& $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
-	while ($ehi =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT ehi_icon_image, host_host_id FROM extended_host_information");
+	while ($ehi = $DBRESULT->fetchRow()) {
 		$ehiCache[$ehi["host_host_id"]] = $ehi["ehi_icon_image"];
 	}
 	$DBRESULT->free();
@@ -58,8 +58,8 @@
 	 * Get user list
 	 */
 	$contact = array("" => null);
-	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
-	while ($ct =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
+	while ($ct = $DBRESULT->fetchRow()) {
 		$contact[$ct["contact_id"]] = $ct["contact_alias"];
 	}
 	$DBRESULT->free();
@@ -121,7 +121,7 @@
 	 */
 	$elemArr = array();
 	$DBRESULT = $pearDBNdo->query("SELECT * FROM centreon_acl WHERE group_id IN ($groups) ORDER BY host_name, service_description");
-	for ($i = 0; $resources =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
 
 		if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
 		    $host_icone = "./img/media/" . $mediaObj->getFilename($ehiCache[$resources["host_id"]]);
@@ -143,7 +143,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('msg', _("The selected user didn't see any resources"));

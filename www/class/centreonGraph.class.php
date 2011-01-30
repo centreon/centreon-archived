@@ -173,21 +173,21 @@ class CentreonGraph	{
 		$this->metricsActive = array();
 		$this->metrics = array();
 
-		$DBRESULT =& $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
-		$config =& $DBRESULT->fetchRow();
+		$DBRESULT = $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
+		$config = $DBRESULT->fetchRow();
 		$this->dbPath = $config["RRDdatabase_path"];
 		unset($config);
 		$DBRESULT->free();
 
-		$DBRESULT =& $this->DB->query("SELECT * FROM options");
-		while ($opt =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $this->DB->query("SELECT * FROM options");
+		while ($opt = $DBRESULT->fetchRow()) {
 			$this->general_opt[$opt['key']] = $opt['value'];
 		}
 		$DBRESULT->free();
 		unset($opt);
 
-		$DBRESULT =& $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
-		while ($metric_Active =& $DBRESULT->fetchRow()){
+		$DBRESULT = $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
+		while ($metric_Active = $DBRESULT->fetchRow()){
 			$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
 		}
 		$DBRESULT->free();
@@ -288,8 +288,8 @@ class CentreonGraph	{
 			$selector = "index_id = '".$this->index."'";
 		}
 		$this->_log("initCurveList with selector= ".$selector);
-		$DBRESULT =& $this->DBC->query("SELECT index_id, metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
-		while ($metric =& $DBRESULT->fetchRow()){
+		$DBRESULT = $this->DBC->query("SELECT index_id, metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
+		while ($metric = $DBRESULT->fetchRow()){
 			$this->_log("found metric ".$metric["metric_id"]." with selector= ".$selector);
 			if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
 				$this->_log("metric disabled ".$metric["metric_id"]);
@@ -310,8 +310,8 @@ class CentreonGraph	{
 			/** **********************************
 			 * Copy Template values
 			 */
-			$DBRESULT2 =& $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
-			$ds_data =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
+			$ds_data = $DBRESULT2->fetchRow();
 			$DBRESULT2->free();
 			if (!$ds_data) {
 				$ds = array();
@@ -319,10 +319,10 @@ class CentreonGraph	{
 				/** *******************************************
 				 * Get Matching Template
 				 */
-				$DBRESULT3 =& $this->DB->query("SELECT * FROM giv_components_template");
+				$DBRESULT3 = $this->DB->query("SELECT * FROM giv_components_template");
 				if ($DBRESULT3->numRows()) {
 					while ($data = $DBRESULT3->fetchRow()) {
-						$DBRESULT4 =& $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$metric["metric_name"]."' AND metric_name LIKE '".$data["ds_name"]."'");
+						$DBRESULT4 = $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$metric["metric_name"]."' AND metric_name LIKE '".$data["ds_name"]."'");
 						if ($DBRESULT4->numRows()) {
 							$ds_data = $data;
 							$DBRESULT4->free();
@@ -337,7 +337,7 @@ class CentreonGraph	{
 					/** *******************************************
 					 * Get default info in default template
 					 */
-					$DBRESULT3 =& $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+					$DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
 					if ($DBRESULT3->numRows()) {
 						foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
 							$ds[$key] = $ds_val;
@@ -350,7 +350,7 @@ class CentreonGraph	{
 					 */
 					$ds["ds_color_line"] = $this->getRandomWebColor();
 					$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
-					$ds_data =& $ds;
+					$ds_data = $ds;
 				}
 			}
 
@@ -450,9 +450,9 @@ class CentreonGraph	{
 			return;
 		} else {
 			$command_id = getMyServiceField($this->indexData["service_id"], "command_command_id");
-			$DBRESULT =& $this->DB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
+			$DBRESULT = $this->DB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
 			if ($DBRESULT->numRows())	{
-				$data =& $DBRESULT->fetchRow();
+				$data = $DBRESULT->fetchRow();
 				if ($data["graph_id"] != 0) {
 					$this->template_id = $data["graph_id"];
 					unset($data);
@@ -462,9 +462,9 @@ class CentreonGraph	{
 			$DBRESULT->free();
 			unset($command_id);
 		}
-		$DBRESULT =& $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+		$DBRESULT = $this->DB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$data =& $DBRESULT->fetchRow();
+			$data = $DBRESULT->fetchRow();
 			$this->template_id = $data["graph_id"];
 			unset($data);
 			$DBRESULT->free();
@@ -489,8 +489,8 @@ class CentreonGraph	{
 				 * Graph is based on a module check point
 				 */
 				$tab = split("_", $this->indexData["service_description"]);
-				$DBRESULT =& $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
-				$tempRes =& $DBRESULT->fetchRow();
+				$DBRESULT = $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
+				$tempRes = $DBRESULT->fetchRow();
 				$DBRESULT->free();
 				$this->template_id = $tempRes["graph_id"];
 				unset($tempRes);
@@ -499,8 +499,8 @@ class CentreonGraph	{
 		} else {
 			$this->template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8");
 		}
-		$DBRESULT =& $this->DB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$this->template_id."' LIMIT 1");
-		$this->templateInformations =& $DBRESULT->fetchRow();
+		$DBRESULT = $this->DB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$this->template_id."' LIMIT 1");
+		$this->templateInformations = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
 	}
@@ -510,8 +510,8 @@ class CentreonGraph	{
 
 		$tab = array();
 		while (1) {
-			$DBRESULT =& $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $this->DB->query("SELECT esi.graph_id, service_template_model_stm_id FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["graph_id"]) {
 				$this->graphID = $row["graph_id"];
 				return $this->graphID;
@@ -539,17 +539,17 @@ class CentreonGraph	{
 			$svc_instance = $this->index;
 
 		$this->_log("index_data for ".$svc_instance);
-		$DBRESULT =& $this->DBC->query("SELECT * FROM index_data WHERE id = '".$svc_instance."' LIMIT 1");
+		$DBRESULT = $this->DBC->query("SELECT * FROM index_data WHERE id = '".$svc_instance."' LIMIT 1");
 		if (!$DBRESULT->numRows()) {
 			$this->indexData = 0;
 		} else {
-			$this->indexData =& $DBRESULT->fetchRow();
+			$this->indexData = $DBRESULT->fetchRow();
 			/*
 			 * Check Meta Service description
 			 */
 			if (preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)){
-				$DBRESULT_meta =& $this->DB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-				$meta =& $DBRESULT_meta->fetchRow();
+				$DBRESULT_meta = $this->DB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+				$meta = $DBRESULT_meta->fetchRow();
 				$this->indexData["service_description"] = $meta["meta_name"];
 				unset($meta);
 				$DBRESULT_meta->free();

@@ -59,16 +59,16 @@
 		/*
 		 * Get Version
 		 */
-		if ($res =& $pearDB->query("SELECT VERSION() AS mysql_version")){
-			$row =& $res->fetchRow();
+		if ($res = $pearDB->query("SELECT VERSION() AS mysql_version")){
+			$row = $res->fetchRow();
 			$version = $row['mysql_version'];
 			if (preg_match("/^(3\.23|4\.|5\.)/", $version)){
 				$db_name = (preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)/", $version) ) ? "`$base`" : $base;
-				if ($DBRESULT =& $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
+				if ($DBRESULT = $pearDB->query("SHOW TABLE STATUS FROM `$base`")){
 					$dbsize = 0;
 					$rows = 0;
 					$datafree = 0;
-					while ($tabledata_ary =& $DBRESULT->fetchRow()) {
+					while ($tabledata_ary = $DBRESULT->fetchRow()) {
 						$dbsize 	+= $tabledata_ary['Data_length'] + $tabledata_ary['Index_length'];
 						$rows 		+= $tabledata_ary['Rows'];
 						$datafree	+= $tabledata_ary['Data_free'];  

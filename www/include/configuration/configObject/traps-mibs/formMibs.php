@@ -57,8 +57,8 @@
 	 * Set base value
 	 */
 	$mnftr = array(NULL => NULL);
-	$DBRESULT =& $pearDB->query("SELECT `id`, `alias` FROM `traps_vendor` ORDER BY `alias`");
-	while ($rmnftr =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT `id`, `alias` FROM `traps_vendor` ORDER BY `alias`");
+	while ($rmnftr = $DBRESULT->fetchRow())
 		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	$DBRESULT->free();
 
@@ -100,7 +100,7 @@
 	/*
 	 * Just watch a Command information
 	 */
-	$subA =& $form->addElement('submit', 'submit', _("Import"));
+	$subA = $form->addElement('submit', 'submit', _("Import"));
 	$form->addElement('header', 'status',_("Status"));
 	$valid = false;
 	$msg = NULL;
@@ -109,7 +109,7 @@
 	
 		$ret = $form->getSubmitValues();
 	
-		$fileObj =& $form->getElement('filename');
+		$fileObj = $form->getElement('filename');
 	
 		if ($fileObj->isUploadedFile()) {
 			/*
@@ -140,7 +140,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

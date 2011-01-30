@@ -45,7 +45,7 @@
 	$mx_l = strlen($s_datas[""]);
 
 	if (isset($_GET["host_id"]) && $_GET["host_id"] != 0) {
-		$pq_sql =& $pearDBO->query("SELECT id index_id, service_description FROM index_data WHERE host_id='".$_GET['host_id']."'ORDER BY service_description");
+		$pq_sql = $pearDBO->query("SELECT id index_id, service_description FROM index_data WHERE host_id='".$_GET['host_id']."'ORDER BY service_description");
 		while($fw_sql = $pq_sql->fetchRow()) {
 			$fw_sql["service_description"] = str_replace($a_this, $a_that, $fw_sql["service_description"]);
 			$s_datas[$fw_sql["index_id"]] = $fw_sql["service_description"];

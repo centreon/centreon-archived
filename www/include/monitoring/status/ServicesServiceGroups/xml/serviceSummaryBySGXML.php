@@ -131,9 +131,9 @@
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
 
-	$DBRESULT =& $obj->DBNdo->query($rq1);
+	$DBRESULT = $obj->DBNdo->query($rq1);
 	$numRows = 0;
-	while ($row =& $DBRESULT->fetchRow()) {
+	while ($row = $DBRESULT->fetchRow()) {
 		$numRows++;
     }
 	$DBRESULT->free();
@@ -143,15 +143,15 @@
 		 * Check ndo version
 		 */
 		$request = "SELECT count(*) FROM " .$obj->ndoPrefix."servicegroups WHERE config_type = '1' LIMIT 1";
-		$DBRESULT =& $obj->DBNdo->query($request);
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $obj->DBNdo->query($request);
+		while ($row = $DBRESULT->fetchRow()) {
 			if ($row["count(*)"] > 0) {
 				$custom_ndo = 0;
 				break;
 			} else {
 				$request = "SELECT count(*) FROM " .$obj->ndoPrefix."servicegroups LIMIT 1";
-				$DBRESULT2 =& $obj->DBNdo->query($request);
-				while ($row2 =& $DBRESULT2->fetchRow()) {
+				$DBRESULT2 = $obj->DBNdo->query($request);
+				while ($row2 = $DBRESULT2->fetchRow()) {
 					if ($row2["count(*)"] > 0) {
 						$custom_ndo = 1;
 						break;
@@ -204,10 +204,10 @@
 		$rq1 .= " ORDER BY sg.alias ASC, no.name1 ".$order." ";
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
-		$DBRESULT =& $obj->DBNdo->query($rq1);
+		$DBRESULT = $obj->DBNdo->query($rq1);
 		$host_table = array();
 		$sg_table = array();
-		while ($row =& $DBRESULT->fetchRow()) {
+		while ($row = $DBRESULT->fetchRow()) {
 		    $host_table[$row["host_name"]] = $row["host_name"];
 			if (!isset($sg_table[$row["alias"]]))
             	$sg_table[$row["alias"]] = array();
@@ -282,7 +282,7 @@
 	($o == "svcOVSG") ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
 	$obj->XML->endElement();
 
-	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
+	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
 
 	$general_opt = getStatusColor($obj->DB);
 
@@ -293,7 +293,7 @@
 	$ct = 0;
 	$count = 0;
 	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-	while ($numRows && $tab =& $DBRESULT_NDO1->fetchRow()){
+	while ($numRows && $tab = $DBRESULT_NDO1->fetchRow()){
 		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
 			if (($h != "" && $h != $tab["host_name"]) || ($sg != $tab["alias"] && $sg != "")) {
 				$obj->XML->startElement("h");

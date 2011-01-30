@@ -67,8 +67,8 @@
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])) {
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
@@ -188,7 +188,7 @@
 	$ct = 0;
 	$flag = 0;
 
-	$DBRESULT_NDO2 =& $pearDBndo->query($rq_pagination);
+	$DBRESULT_NDO2 = $pearDBndo->query($rq_pagination);
 
 	/*
 	 * Get Pagination Rows
@@ -213,9 +213,9 @@
 	$host_prev = "";
 	$class = "list_one";
 
-	$DBRESULT_NDO2 =& $pearDBndo->query($rq);
+	$DBRESULT_NDO2 = $pearDBndo->query($rq);
 
-	while ($ndo =& $DBRESULT_NDO2->fetchRow()) {
+	while ($ndo = $DBRESULT_NDO2->fetchRow()) {
 
 		$color_service = $tab_color_service[$ndo["current_state"]];
 		$passive = 0;
@@ -240,8 +240,8 @@
 		$tabID = split("_", $ndo["service_description"]);
 		$id = $tabID[1];
 
-		$DBRESULT=& $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
-		$dataMeta =& $DBRESULT->fetchRow();
+		$DBRESULT= $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
+		$dataMeta = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
 		$buffer->startElement("l");

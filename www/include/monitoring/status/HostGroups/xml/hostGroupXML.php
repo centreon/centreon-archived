@@ -65,8 +65,8 @@
 	 */
 	$convertTable = array();
     $convertID = array();
-    $DBRESULT =& $pearDB->query("SELECT hg_id, hg_alias, hg_name FROM hostgroup");
-    while ($hg =& $DBRESULT->fetchRow()){
+    $DBRESULT = $pearDB->query("SELECT hg_id, hg_alias, hg_name FROM hostgroup");
+    while ($hg = $DBRESULT->fetchRow()){
 		$convertTable[$hg["hg_name"]] = $hg["hg_alias"];
 	    $convertID[$hg["hg_alias"]] = $hg["hg_id"];
     }
@@ -125,8 +125,8 @@
 					"AND noo.name2 IS NULL $searchStr" .
 				"GROUP BY nhg.alias, nhs.current_state";
 	}
-	$DBRESULT =& $obj->DBNdo->query($rq1);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($rq1);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!isset($stats[$ndo["alias"]]))
 			$stats[$ndo["alias"]] = array("h" => array(0=>0,1=>0,2=>0,3=>0), "s" => array(0=>0,1=>0,2=>0,3=>0,3=>0,4=>0));
 		$stats[$ndo["alias"]]["h"][$ndo["current_state"]] = $ndo["nb"];
@@ -158,8 +158,8 @@
 				AND no.name1 IN (".$hostStr.") AND no.name2 IN (".$svcStr. ") ". $searchStr .
 				"GROUP BY nhg.alias, nss.current_state";
 	}
-	$DBRESULT =& $obj->DBNdo->query($rq2);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($rq2);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!isset($stats[$ndo["alias"]])) {
 			$stats[$ndo["alias"]] = array("h" => array(0=>0,1=>0,2=>0,3=>0), "s" => array(0=>0,1=>0,2=>0,3=>0,3=>0,4=>0));
 		}

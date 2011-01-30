@@ -120,7 +120,7 @@
 	$str = "";
 	$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" .$id."'";
 	$DBRESULT = & $pearDB->query($request);
-	while ($hg =& $DBRESULT->fetchRow()) {
+	while ($hg = $DBRESULT->fetchRow()) {
 		if ($str != "")
 			$str .= ", ";
 		$str .= "'".$hg["host_host_id"]."'";
@@ -146,7 +146,7 @@
 	 	_("Up Mean Time").";"._("Up Alert").";".
 	 	_("Down Mean Time").";"._("Down Alert").";".
 	 	_("Unreachable Mean Time").";"._("Unreachable Alert").";\n";
-	while ($row =& $DBRESULT->fetchRow()) {
+	while ($row = $DBRESULT->fetchRow()) {
 		$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
 
 		/* Percentage by status */

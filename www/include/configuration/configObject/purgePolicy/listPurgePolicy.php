@@ -47,9 +47,9 @@
 	# end quickSearch form
 		
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
 	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM purge_policy");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM purge_policy");
 		
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -80,15 +80,15 @@
 		$rq = "SELECT *  FROM purge_policy WHERE purge_policy_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY purge_policy_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM purge_policy ORDER BY purge_policy_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	#Different style between each lines
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $purgePolicy =& $DBRESULT->fetchRow(); $i++) {		
-		$selectedElements =& $form->addElement('checkbox', "select[".$purgePolicy['purge_policy_id']."]");	
+	for ($i = 0; $purgePolicy = $DBRESULT->fetchRow(); $i++) {		
+		$selectedElements = $form->addElement('checkbox', "select[".$purgePolicy['purge_policy_id']."]");	
 		$moptions = "<a href='main.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=w&search=".$search."'><img src='img/icones/16x16/view.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='main.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=c&search=".$search."'><img src='img/icones/16x16/document_edit.gif' border='0' alt='"._("Modify")."'></a>&nbsp;&nbsp;";
 		$moptions .= "<a href='main.php?p=".$p."&purge_policy_id=".$purgePolicy['purge_policy_id']."&o=d&select[".$purgePolicy['purge_policy_id']."]=1&num=".$num."&limit=".$limit."&search=".$search."' onclick=\"return confirm('"._("Do you confirm the deletion ?")."')\"><img src='img/icones/16x16/delete.gif' border='0' alt='"._("Delete")."'></a>&nbsp;&nbsp;";
@@ -144,11 +144,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -157,7 +157,7 @@
 	#
 	##Apply a template definition
 	#
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listPurgePolicy.ihtml");

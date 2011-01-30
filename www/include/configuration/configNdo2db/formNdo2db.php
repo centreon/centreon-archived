@@ -44,7 +44,7 @@
 	#
 	$nagios = array();
 	if (($o == "c" || $o == "w") && $id)	{	
-		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_ndo2db WHERE id = '".$id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM cfg_ndo2db WHERE id = '".$id."' LIMIT 1");
 		# Set base value
 		$cfg_ndo2db = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -54,15 +54,15 @@
 	
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array();
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 	$checkCmds = array(NULL=>NULL);
-	while($checkCmd =& $DBRESULT->fetchRow())
+	while($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 	
 	# nagios servers comes from DB 
 	$nagios_servers = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+	$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -149,7 +149,7 @@
 			$form->setDefaults($cfg_ndo2db);
 	}	
 	$form->addElement('hidden', 'id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	# Form Rules
@@ -168,17 +168,17 @@
 	    $form->setDefaults($nagios);
 		$form->freeze();
 	} else if ($o == "c")	{# Modify a nagios information
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($nagios);
 	} else if ($o == "a")	{# Add a nagios information
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;
 	if ($form->validate())	{
-		$nagiosObj =& $form->getElement('id');
+		$nagiosObj = $form->getElement('id');
 		if ($form->getSubmitValue("submitA"))
 			insertNdo2dbInDB();
 		else if ($form->getSubmitValue("submitC"))
@@ -190,7 +190,7 @@
 		require_once($path."listNdo2db.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	

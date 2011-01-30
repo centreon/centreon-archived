@@ -54,10 +54,10 @@
  	 */
  	public function getServiceDesc($svc_id) {
  		$rq = "SELECT service_description FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
- 		$DBRES =& $this->DB->query($rq);
+ 		$DBRES = $this->DB->query($rq);
  		if (!$DBRES->numRows())
  			return NULL;
- 		$row =& $DBRES->fetchRow();
+ 		$row = $DBRES->fetchRow();
  		return $row['service_description'];
  	}
 
@@ -123,10 +123,10 @@
  	 */
  	public function replaceMacroInString($svc_id, $string, $antiLoop = null) {
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
-        $DBRES =& $this->DB->query($rq);
+        $DBRES = $this->DB->query($rq);
         if (!$DBRES->numRows())
         	return $string;
-        $row =& $DBRES->fetchRow();
+        $row = $DBRES->fetchRow();
 
         /*
          * replace if not template
@@ -141,16 +141,16 @@
  		$i = 0;
  		while (isset($matches[1][$i])) {
  			$rq = "SELECT svc_macro_value FROM on_demand_macro_service WHERE svc_svc_id = '".$svc_id."' AND svc_macro_name LIKE '".$matches[1][$i]."'";
- 			$DBRES =& $this->DB->query($rq);
-	 		while ($row =& $DBRES->fetchRow()) {
+ 			$DBRES = $this->DB->query($rq);
+	 		while ($row = $DBRES->fetchRow()) {
 	 			$string = str_replace($matches[1][$i], $row['svc_macro_value'], $string);
 	 		}
  			$i++;
  		}
  		if ($i) {
 	 		$rq2 = "SELECT service_template_model_stm_id FROM service WHERE service_id = '".$svc_id."'";
-	 		$DBRES2 =& $this->DB->query($rq2);
-	 		while ($row2 =& $DBRES2->fetchRow()) {
+	 		$DBRES2 = $this->DB->query($rq2);
+	 		while ($row2 = $DBRES2->fetchRow()) {
 	 		    if (!isset($antiLoop) || !$antiLoop) {
 	 		        $string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string, $row2['service_template_model_stm_id']);
 	 			} elseif ($row2['service_template_model_stm_id'] != $antiLoop) {

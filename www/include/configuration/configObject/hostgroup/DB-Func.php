@@ -44,8 +44,8 @@
 		/*
 		 * Get Parent Groups
 		 */
-		$DBRESULT =& $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '".$hg_id."'");
-		while ($hgs =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id = '".$hg_id."'");
+		while ($hgs = $DBRESULT->fetchRow()) {
 			$parentList[$hgs["hg_parent_id"]] = $hgs["hg_parent_id"];
 			$parentList = getHGParents($hgs["hg_parent_id"], $parentList, $pearDB);
 		}
@@ -59,8 +59,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('hg_id');
-		$DBRESULT =& $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".CentreonDB::escape($oreon->checkIllegalChar($name))."'");
-		$hg =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT hg_name, hg_id FROM hostgroup WHERE hg_name = '".CentreonDB::escape($oreon->checkIllegalChar($name))."'");
+		$hg = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $hg["hg_id"] == $id)
 			return true;
@@ -81,8 +81,8 @@
 			$hg_arr = array($hg_id=>"1");
 
 		foreach($hg_arr as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '".$key."'");
-			$DBRESULT2 =& $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("UPDATE hostgroup SET hg_activate = '1' WHERE hg_id = '".$key."'");
+			$DBRESULT2 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "enable");
 		}
@@ -94,8 +94,8 @@
 		if ($hg_id)
 			$hg_arr = array($hg_id=>"1");
 		foreach($hg_arr as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '".$key."'");
-			$DBRESULT2 =& $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("UPDATE hostgroup SET hg_activate = '0' WHERE hg_id = '".$key."'");
+			$DBRESULT2 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "disable");
 		}
@@ -106,17 +106,17 @@
 
 		foreach ($hostGroups as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$key."'";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 
-			while ($row =& $DBRESULT->fetchRow()) {
+			while ($row = $DBRESULT->fetchRow()) {
 				if ($row["nbr"] == 1)	{
-					$DBRESULT2 =& $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
+					$DBRESULT2 = $pearDB->query("DELETE FROM service WHERE service_id = '".$row["service_service_id"]."'");
 				}
 			}
-			$DBRESULT3 =& $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
-			$row =& $DBRESULT3->fetchRow();
+			$DBRESULT3 = $pearDB->query("SELECT hg_name FROM `hostgroup` WHERE `hg_id` = '".$key."' LIMIT 1");
+			$row = $DBRESULT3->fetchRow();
 
-			$DBRESULT =& $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "d");
 		}
 	}
@@ -124,7 +124,7 @@
 	function multipleHostGroupInDB ($hostGroups = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
 		foreach($hostGroups as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["hg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -139,31 +139,31 @@
 				}
 				if (testHostGroupExistence($hg_name))	{
 					$val ? $rq = "INSERT INTO hostgroup VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
-					$DBRESULT =& $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query($rq);
+					$DBRESULT = $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
+					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
 						if (!$is_admin){
 							$group_list = getGroupListofUser($pearDB);
 							$resource_list = getResourceACLList($group_list);
 							if (count($resource_list)){
 								foreach ($resource_list as $res_id)	{
-									$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$maxId["MAX(hg_id)"]."')");
+									$DBRESULT3 = $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$maxId["MAX(hg_id)"]."')");
 								}
 								unset($resource_list);
 							}
 						}
 						#
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$key."'");
 						$fields["hg_hosts"] = "";
-						while($host =& $DBRESULT->fetchRow()){
-							$DBRESULT2 =& $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$maxId["MAX(hg_id)"]."', '".$host["host_host_id"]."')");
+						while($host = $DBRESULT->fetchRow()){
+							$DBRESULT2 = $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$maxId["MAX(hg_id)"]."', '".$host["host_host_id"]."')");
 							$fields["hg_hosts"] .= $host["host_host_id"] . ",";
 						}
 						$fields["hg_hosts"] = trim($fields["hg_hosts"], ",");
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
-						while($cg =& $DBRESULT->fetchRow()){
-							$DBRESULT2 =& $pearDB->query("INSERT INTO contactgroup_hostgroup_relation VALUES ('', '".$cg["contactgroup_cg_id"]."', '".$maxId["MAX(hg_id)"]."')");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT cghgr.contactgroup_cg_id FROM contactgroup_hostgroup_relation cghgr WHERE cghgr.hostgroup_hg_id = '".$key."'");
+						while($cg = $DBRESULT->fetchRow()){
+							$DBRESULT2 = $pearDB->query("INSERT INTO contactgroup_hostgroup_relation VALUES ('', '".$cg["contactgroup_cg_id"]."', '".$maxId["MAX(hg_id)"]."')");
 						}
 						$oreon->CentreonLogAction->insertLog("hostgroup", $maxId["MAX(hg_id)"], $hg_name, "a", $fields);
 					}
@@ -215,7 +215,7 @@
 		$rq .= ")";
 
 		$pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
+		$DBRESULT = $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
 		$hg_id = $DBRESULT->fetchRow();
 
 		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);
@@ -239,7 +239,7 @@
 			$resource_list = $oreon->user->access->getAccessGroups();
 			if (count($resource_list)) {
 				foreach ($resource_list as $res_id => $res_name)	{
-					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
+					$DBRESULT3 = $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
 				}
 				unset($resource_list);
 			}
@@ -285,7 +285,7 @@
 		$rq .= "hg_activate = ";
 		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != NULL ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE hg_id = '".$hg_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);
 		$fields["hg_alias"] = CentreonDB::escape($ret["hg_alias"]);
@@ -308,7 +308,7 @@
 			$resource_list = $oreon->user->access->getAccessGroups();
 			if (count($resource_list)) {
 				foreach ($resource_list as $res_id)	{
-					$DBRESULT3 =& $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
+					$DBRESULT3 = $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$hg_id["MAX(hg_id)"]."')");
 				}
 				unset($resource_list);
 			}
@@ -331,8 +331,8 @@
 		 * Get initial Host list to make a diff after deletion
 		 */
 		$hostsOLD = array();
-		$DBRESULT =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
-		while ($host =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+		while ($host = $DBRESULT->fetchRow())
 			$hostsOLD[$host["host_host_id"]] = $host["host_host_id"];
 		$DBRESULT->free();
 
@@ -341,15 +341,15 @@
 		 */
 		$rq = "SELECT service_service_id FROM host_service_relation ";
 		$rq .= "WHERE hostgroup_hg_id = '".$hg_id."' AND host_host_id IS NULL";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$hgSVS = array();
-		while ($sv =& $DBRESULT->fetchRow())
+		while ($sv = $DBRESULT->fetchRow())
 			$hgSVS[$sv["service_service_id"]] = $sv["service_service_id"];
 
 		/*
 		 * Update Host HG relations
 		 */
-		$DBRESULT =& $pearDB->query("DELETE FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
 		isset($ret["hg_hosts"]) ? $ret = $ret["hg_hosts"] : $ret = $form->getSubmitValue("hg_hosts");
 		$hgNEW = array();
 
@@ -362,12 +362,12 @@
 			$hostsNEW[$ret[$i]] = $ret[$i];
 		}
 		if ($i != 0)
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 
 		/*
 		 * Update HG HG relations
 		 */
-		$DBRESULT =& $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '".$hg_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '".$hg_id."'");
 		isset($ret["hg_hg"]) ? $ret = $ret["hg_hg"] : $ret = $form->getSubmitValue("hg_hg");
 		$hgNEW = array();
 
@@ -380,7 +380,7 @@
 			$hostsNEW[$ret[$i]] = $ret[$i];
 		}
 		if ($i != 0)
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 
 
 		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
@@ -391,14 +391,14 @@
 						# Delete in escalation
 						$rq = "DELETE FROM escalation_service_relation ";
 						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
-						$DBRESULT =& $pearDB->query($rq);
+						$DBRESULT = $pearDB->query($rq);
 						# Delete in dependencies
 						$rq = "DELETE FROM dependency_serviceChild_relation ";
 						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
-						$DBRESULT =& $pearDB->query($rq);
+						$DBRESULT = $pearDB->query($rq);
 						$rq = "DELETE FROM dependency_serviceParent_relation ";
 						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
-						$DBRESULT =& $pearDB->query($rq);
+						$DBRESULT = $pearDB->query($rq);
 					}
 				}
 		#

@@ -57,7 +57,7 @@
 		/*
 		 * Get command informations
 		 */
-		$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 		$cmd = $DBRESULT->fetchRow();
 
 		$cmd_array = explode(" ", $cmd["command_line"]);
@@ -73,9 +73,9 @@
 			/*
 			 * Select Resource line
 			 */
-			$DBRESULT =& $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER".$matches[1]."\$' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT `resource_line` FROM `cfg_resource` WHERE `resource_name` = '\$USER".$matches[1]."\$' LIMIT 1");
 
-			$resource =& $DBRESULT->fetchRow();
+			$resource = $DBRESULT->fetchRow();
 			unset($DBRESULT);
 
 			$resource_path = $resource["resource_line"];			
@@ -112,7 +112,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);

@@ -85,7 +85,7 @@
 
 		$host_id = getMyHostID($host_name);
 
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
+		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."'");
 		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
 		$DBRESULT->free();
@@ -127,8 +127,8 @@
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 					" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$host_name."' ";
 
-		$DBRESULT_NDO =& $pearDBndo->query($rq);
-		while ($ndo =& $DBRESULT_NDO->fetchRow())	{
+		$DBRESULT_NDO = $pearDBndo->query($rq);
+		while ($ndo = $DBRESULT_NDO->fetchRow())	{
 			if (!isset($tab_status[$ndo["current_state"]]))
 				$tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
 			$tab_status[$tab_status_service[$ndo["current_state"]]]++;
@@ -171,8 +171,8 @@
 			" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
 			" WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 like '".$host_name."'";
 
-		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		$ndo2 =& $DBRESULT_NDO->fetchRow();
+		$DBRESULT_NDO = $pearDBndo->query($rq2);
+		$ndo2 = $DBRESULT_NDO->fetchRow();
 
 		$host_status[$host_name] = $ndo2;
 		$host_status[$host_name]["current_state"] = $tab_host_status[$ndo2["current_state"]];
@@ -187,8 +187,8 @@
     		$host_status[$host_name]["action_url"] = str_replace("\$HOSTALIAS\$", $ndo2["alias"], $ndo2["action_url"]);
 		}
 
-		$res =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		$hostDB =& $res->fetchRow();
+		$res = $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
+		$hostDB = $res->fetchRow();
 		$current_attempts = getMyHostField($hostDB["host_id"], "host_max_check_attempts");
 
 		$url_id = NULL;
@@ -210,8 +210,8 @@
 		$rq2 =	" SELECT cmt.comment_id, cmt.comment_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name" .
 				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				" WHERE obj.name1 = '".$host_name."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
-		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+		$DBRESULT_NDO = $pearDBndo->query($rq2);
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 			$tabCommentHosts[$i] = $data;
 			$tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
 		}
@@ -412,7 +412,7 @@
 		/* Dynamics tools */
 		/**/
 		$tools = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM modules_informations");
+		$DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
 		while($module = $DBRESULT->fetchrow())
 		{
 			if(isset($module['host_tools']) && $module['host_tools'] == 1 && file_exists('modules/'.$module['name'].'/host_tools.php'))

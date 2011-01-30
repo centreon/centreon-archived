@@ -101,8 +101,8 @@
 			if (!isset($tmp[1])) {
 				$id .= "HH_" . getMyHostID($tmp[0]).",";
 			} if (isset($tmp[0]) && $tmp[0] == "") {
-				$DBRESULT =& $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
-				$res =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
+				$res = $DBRESULT->fetchRow();
 				$DBRESULT->free();
 				$id .= "MS_".$res["meta_id"].",";
 				$meta = 1;
@@ -148,14 +148,14 @@
 						"10368000"	=> _("Last 4 Months"),
 						"15552000"	=> _("Last 6 Months"),
 						"31104000"	=> _("Last Year"));
-	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
+	$sel = $form->addElement('select', 'period', _("Graph Period"), $periods, array("onchange"=>"resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
 	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "size"=>10));
 	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
 	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "size"=>10));
 	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
 	$tpl->assign('form', $renderer->toArray());

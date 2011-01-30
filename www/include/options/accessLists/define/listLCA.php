@@ -49,19 +49,19 @@
 	$lca_reg = NULL;
 	# Not list the LCA the user is registered by || is admin
 	if (!$oreon->user->get_admin())	{
-		$DBRESULT =& $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
-		while ($contactGroup =& $DBRESULT->fetchRow())	{
-		 	$DBRESULT2 =& $pearDB->query("SELECT lca.lca_id FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id");	
-			while ($lca =& $DBRESULT2->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT contactgroup_cg_id FROM contactgroup_contact_relation WHERE contact_contact_id = '".$oreon->user->get_id()."'");
+		while ($contactGroup = $DBRESULT->fetchRow())	{
+		 	$DBRESULT2 = $pearDB->query("SELECT lca.lca_id FROM lca_define_contactgroup_relation ldcgr, lca_define lca WHERE ldcgr.contactgroup_cg_id = '".$contactGroup["contactgroup_cg_id"]."' AND ldcgr.lca_define_lca_id = lca.lca_id");	
+			while ($lca = $DBRESULT2->fetchRow())
 				$lca_reg ? $lca_reg .= ", ".$lca["lca_id"] : $lca_reg = $lca["lca_id"];
 		}
 	}
 	$lca_reg ? $lca_reg = $lca_reg : $lca_reg =  '\'\'';
 	if (isset($search))
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") AND (lca_name LIKE '".$search."' OR lca_alias LIKE '".$search."')");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") AND (lca_name LIKE '".$search."' OR lca_alias LIKE '".$search."')");
 	else
-		$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
-	$tmp =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM lca_define WHERE lca_id NOT IN (".$lca_reg.")");
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	# Smarty template Init
@@ -81,7 +81,7 @@
 		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate  FROM lca_define WHERE (lca_name LIKE '".$search."' OR lca_alias LIKE '".$search."') AND lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT lca_id, lca_name, lca_alias, lca_activate FROM lca_define WHERE lca_id NOT IN (".$lca_reg.") ORDER BY lca_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
 		
@@ -90,9 +90,9 @@
 	$style = "one";
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $lca =& $DBRESULT->fetchRow(); $i++) {		
+	for ($i = 0; $lca = $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$lca['lca_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$lca['lca_id']."]");	
 		if ($lca["lca_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&lca_id=".$lca['lca_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
@@ -133,7 +133,7 @@
 				"");
         $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 		$form->setDefaults(array('o1' => NULL));
-			$o1 =& $form->getElement('o1');
+			$o1 = $form->getElement('o1');
 			$o1->setValue(NULL);
 
 	$attrs = array(
@@ -148,7 +148,7 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
@@ -156,7 +156,7 @@
 	#
 	##Apply a template definition
 	#
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listLCA.ihtml");	

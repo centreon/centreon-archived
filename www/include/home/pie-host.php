@@ -59,7 +59,7 @@
 	 * Get Session informations
 	 */
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	/**
 	 * Initiate Language class
@@ -92,7 +92,7 @@
 				$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
 				" GROUP BY state " .
 				" ORDER by state";
-		$DBRESULT =& $pearDBO->query($rq1);
+		$DBRESULT = $pearDBO->query($rq1);
 	} else {
 		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state state" .
 				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
@@ -101,13 +101,13 @@
 				$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
 				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-		$DBRESULT =& $pearDBndo->query($rq1);
+		$DBRESULT = $pearDBndo->query($rq1);
 	}
 	$data = array();
 	$color = array();
 	$legend = array();
 	$counter = 0;
-	while ($ndo =& $DBRESULT->fetchRow()){
+	while ($ndo = $DBRESULT->fetchRow()){
 		$data[] = $ndo["cnt"];
 		$legend[] = $statistic_host[$ndo["current_state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["state"]])];

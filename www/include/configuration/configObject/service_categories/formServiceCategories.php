@@ -44,7 +44,7 @@
 	 */
 	$cct = array();
 	if (($o == "c" || $o == "w") && $sc_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$sc_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$sc_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -53,8 +53,8 @@
 
 		$sc["sc_svc"] = array();
 		$sc["sc_svcTpl"] = array();
-		$DBRESULT =& $pearDB->query("SELECT scr.service_service_id, s.service_register FROM service_categories_relation scr, service s WHERE s.service_id = scr.service_service_id AND scr.sc_id = '$sc_id'");
-		while ($res =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT scr.service_service_id, s.service_register FROM service_categories_relation scr, service s WHERE s.service_id = scr.service_service_id AND scr.sc_id = '$sc_id'");
+		while ($res = $DBRESULT->fetchRow()) {
 			if ($res["service_register"] == 1)
 				$sc["sc_svc"][] = $res["service_service_id"];
 			if ($res["service_register"] == 0)
@@ -68,8 +68,8 @@
 	 */
 	/*
 	$hServices = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($elem =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($elem = $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key => $index)	{
 			$index = str_replace('#S#', "/", $index);
@@ -83,8 +83,8 @@
 	 * Get Service Template Available
 	 */
 	$hServices = array();
-	$DBRESULT =& $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias, service_description");
-	while ($elem =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT service_alias, service_description, service_id FROM service WHERE service_register = '0' ORDER BY service_alias, service_description");
+	while ($elem = $DBRESULT->fetchRow())	{
 		$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 		$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 		$elem["service_alias"] = str_replace('#S#', "/", $elem["service_alias"]);
@@ -126,13 +126,13 @@
 	$form->addElement('text', 'sc_name', _("Name"), $attrsText);
 	$form->addElement('text', 'sc_description', _("Description"), $attrsText);
 
-	$ams1 =& $form->addElement('advmultiselect', 'sc_svc', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'sc_svc', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'sc_svcTpl', array(_("Service Template Descriptions"), _("Available"), _("Selected")), $hServicesTpl, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'sc_svcTpl', array(_("Service Template Descriptions"), _("Available"), _("Selected")), $hServicesTpl, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -150,14 +150,14 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'sc_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	if (is_array($select))	{
 		$select_str = NULL;
 		foreach ($select as $key => $value)
 			$select_str .= $key.",";
-		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear = $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
 
@@ -210,20 +210,20 @@
 		/*
 		 * Modify a service_categories information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($sc);
 	} else if ($o == "a")	{
 		/*
 		 * Add a service_categories information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
-		$cctObj =& $form->getElement('sc_id');
+		$cctObj = $form->getElement('sc_id');
 		if ($form->getSubmitValue("submitA"))
 			$cctObj->setValue(insertServiceCategorieInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -241,7 +241,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 

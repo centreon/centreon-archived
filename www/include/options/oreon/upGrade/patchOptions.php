@@ -48,8 +48,8 @@
 	
 	$attrsText = array("size"=>"35");
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	while ($result =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+	while ($result = $DBRESULT->fetchRow()) {
 		$gopt[$result["key"]] = myDecode($result["value"]);
 	}
 	$DBRESULT->free();	
@@ -85,8 +85,8 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
-	$subC =& $form->addElement('submit', 'submitC', _("Save"));
-	$res =& $form->addElement('reset', 'reset', _("Reset"));
+	$subC = $form->addElement('submit', 'submitC', _("Save"));
+	$res = $form->addElement('reset', 'reset', _("Reset"));
 	
 	#
 	##Picker Color JS
@@ -119,7 +119,7 @@
 		$pearDB->query($query);
 	}
 	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

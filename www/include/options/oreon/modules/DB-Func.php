@@ -46,7 +46,7 @@
 			$rq = "SELECT * FROM modules_informations WHERE id='".$id."'  LIMIT 1";
 		else if ($name)
 			$rq = "SELECT * FROM modules_informations WHERE name='".$name."' LIMIT 1";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if ($DBRESULT->numRows())
 			return ($DBRESULT->fetchRow());
 		else
@@ -60,7 +60,7 @@
 			$rq = "SELECT id FROM modules_informations WHERE id = '".$id."'  LIMIT 1";
 		else if ($name)
 			$rq = "SELECT id FROM modules_informations WHERE name = '".$name."'  LIMIT 1";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if ($DBRESULT->numRows())
 			return true;
 		else
@@ -70,8 +70,8 @@
 	function testUpgradeExistence($id = NULL, $release = NULL)	{
 		if (!$id || !$release) return true;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT mod_release FROM modules_informations WHERE id = '".$id."' LIMIT 1");
-		$module =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT mod_release FROM modules_informations WHERE id = '".$id."' LIMIT 1");
+		$module = $DBRESULT->fetchRow();
 		if ($module["mod_release"] == $release)
 			return true;
 		else
@@ -97,9 +97,9 @@
 		isset($module_conf["svc_tools"]) && $module_conf["svc_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["svc_tools"] , ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL,";
 		isset($module_conf["host_tools"]) && $module_conf["host_tools"] != NULL ? $rq .= "'".htmlentities($module_conf["host_tools"] , ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
 		$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM modules_informations");
-		$id =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM modules_informations");
+		$id = $DBRESULT->fetchRow();
 		return ($id["MAX(id)"]);
 	}
 
@@ -120,7 +120,7 @@
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";
 			$rq .= "WHERE id = '".$id."'";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 			return true;
 		}
 		return NULL;
@@ -130,7 +130,7 @@
 		if (!$id) return NULL;
 		global $pearDB;
 		$rq = "DELETE FROM `modules_informations` WHERE id = '".$id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		return true;
 	}
 
@@ -147,7 +147,7 @@
                     $str .= $line;
                     $str = chop ($str);
                     $str = str_replace("@DB_CENTSTORAGE@", $conf_centreon['dbcstg'], $str);
-                    $DBRESULT =& $pearDB->query($str);
+                    $DBRESULT = $pearDB->query($str);
                     $str = NULL;
                 }
                 else

@@ -46,7 +46,7 @@
 
 
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();
 

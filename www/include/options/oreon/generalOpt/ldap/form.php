@@ -99,7 +99,7 @@
 	$form->addElement('text', 'ldap_group_gid_attr', _("Group attribute"), $attrsText);
 
 	$form->addElement('hidden', 'gopt_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -152,8 +152,8 @@
 	
 	$form->setDefaults($gopt);
 
-	$subC =& $form->addElement('submit', 'submitC', _("Save"));
-	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
+	$subC = $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
 
 
     $valid = false;
@@ -254,7 +254,7 @@
 	##Apply a template definition
 	#
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

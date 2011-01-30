@@ -110,7 +110,7 @@
 		 * Set Contact Group
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
-		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
 			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 		}
 		$DBRESULT->free();
@@ -119,7 +119,7 @@
 		 * Set Contact Group
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$service_id."'");
-		for ($i = 0; $notifC =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
 			$service["service_cs"][$i] = $notifC["contact_id"];
 		}
 		$DBRESULT->free();
@@ -128,7 +128,7 @@
 		 * Set Service Group Parents
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
-		for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
 			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
 		}
 		$DBRESULT->free();
@@ -137,7 +137,7 @@
 		 * Set Traps
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT traps_id FROM traps_service_relation WHERE service_id = '".$service_id."'");
-		for ($i = 0; $trap =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $trap = $DBRESULT->fetchRow(); $i++) {
 			$service["service_traps"][$i] = $trap["traps_id"];
 		}
 		$DBRESULT->free();
@@ -146,7 +146,7 @@
 		 * Set Categories
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
-		for ($i = 0; $service_category =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++) {
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		}
 		$DBRESULT->free();
@@ -243,14 +243,14 @@
 	# service categories comes from DB -> Store in $service_categories Array
 	$service_categories = array();
 	$DBRESULT = $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
-	while ($service_categorie =& $DBRESULT->fetchRow()) {
+	while ($service_categorie = $DBRESULT->fetchRow()) {
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	}
 	$DBRESULT->free();
 
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
-	$DBRESULT =& $pearDB->query("SELECT t.traps_id, t.traps_name FROM traps t, traps_service_relation sr WHERE t.traps_id = sr.traps_id AND sr.service_id = '".$service["service_id"]."' ORDER BY t.traps_name");
+	$DBRESULT = $pearDB->query("SELECT t.traps_id, t.traps_name FROM traps t, traps_service_relation sr WHERE t.traps_id = sr.traps_id AND sr.service_id = '".$service["service_id"]."' ORDER BY t.traps_name");
 	while ($trap = $DBRESULT->fetchRow()) {
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	}
@@ -510,7 +510,7 @@
 	 * Traps vendor form
 	 */
 	$mnftr = array(-2 => "_"._("None")."_", -1 => "_"._("ALL")."_");
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
+	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
 	while ($rmnftr = $DBRESULT->fetchRow()) {
 		$mnftr[$rmnftr["id"]] =  html_entity_decode($rmnftr["alias"], ENT_QUOTES);
 	}

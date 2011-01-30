@@ -40,30 +40,30 @@
 	#
 	$dep = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
 		# Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 
 		# Set Notification Failure Criteria
-		$dep["notification_failure_criteria"] =& explode(',', $dep["notification_failure_criteria"]);
+		$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
 		foreach ($dep["notification_failure_criteria"] as $key => $value)
 			$dep["notification_failure_criteria"][trim($value)] = 1;
 
 		# Set Execution Failure Criteria
-		$dep["execution_failure_criteria"] =& explode(',', $dep["execution_failure_criteria"]);
+		$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
 		foreach ($dep["execution_failure_criteria"] as $key => $value)
 			$dep["execution_failure_criteria"][trim($value)] = 1;
 
 		# Set Host Service Childs
-		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $service =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT * FROM dependency_serviceChild_relation dscr WHERE dscr.dependency_dep_id = '".$dep_id."'");
+		for($i = 0; $service = $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hSvChi"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
 		$DBRESULT->free();
 
 		# Set Host Service Parents
-		$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $service =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = '".$dep_id."'");
+		for($i = 0; $service = $DBRESULT->fetchRow(); $i++)
 			$dep["dep_hSvPar"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
 		$DBRESULT->free();
 	}
@@ -77,8 +77,8 @@
 	 */
 
 	$hServices = array();
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($elem =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($elem = $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($elem["host_id"]);
 		foreach ($services as $key=>$index)	{
 			$index = str_replace('#S#', "/", $index);
@@ -146,13 +146,13 @@
 	/*
 	 * Sort 2 Host Service Dependencies
 	 */
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$ams1 =& $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -165,7 +165,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'dep_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -210,21 +210,21 @@
 	}
 	# Modify a Dependency information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($dep);
 	}
 	# Add a Dependency information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 		$form->setDefaults(array('inherits_parent', '0'));
 	}
 	$tpl->assign("nagios", $oreon->user->get_version());
 
 	$valid = false;
 	if ($form->validate())	{
-		$depObj =& $form->getElement('dep_id');
+		$depObj = $form->getElement('dep_id');
 		if ($form->getSubmitValue("submitA"))
 			$depObj->setValue(insertServiceDependencyInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -241,7 +241,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

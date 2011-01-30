@@ -38,8 +38,8 @@
 	if (!isset($oreon))
 		exit();
 
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
-	$release =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version' LIMIT 1");
+	$release = $DBRESULT->fetchRow();
 
 ?><center>
 <div style="width:100%;align:center;">

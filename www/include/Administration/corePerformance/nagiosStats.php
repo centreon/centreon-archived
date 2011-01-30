@@ -84,7 +84,7 @@
 						"last6month" 	=> _("Last 6 months"),
 						"lastyear" 		=> _("Last year"));
 
-	$selTP =& $form->addElement('select', 'start', _("Period :"), $time_period, array("onChange" =>"this.form.submit();"));
+	$selTP = $form->addElement('select', 'start', _("Period :"), $time_period, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["start"])) {
 		$form->setDefaults(array('start' => $_POST["start"]));
 	} else {

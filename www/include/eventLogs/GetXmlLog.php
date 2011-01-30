@@ -58,7 +58,7 @@
 	require_once $centreon_path . "www/class/centreon.class.php";
 
 	centreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	/**
 	 * Language informations init
@@ -150,8 +150,8 @@
 	 * Create hostCahe
 	 */
 	$hostCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
-	while ($data =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+	while ($data = $DBRESULT->fetchRow()) {
 		$hostCache[$data["host_id"]] = $data["host_name"];
 		$hostCacheName[$data["host_name"]] = $data["host_id"];
 	}
@@ -163,8 +163,8 @@
 	 */
 	function setServiceCache($pearDB) {
 		$serviceCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
-		while ($data =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+		while ($data = $DBRESULT->fetchRow())
 			$serviceCache[$data["service_id"]] = $data["service_description"];
 		$DBRESULT->free();
 		unset($data);
@@ -175,8 +175,8 @@
 	 * Create hgCahe
 	 */
 	$hgCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
-	while ($data =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+	while ($data = $DBRESULT->fetchRow())
 		$hgCache[$data["hg_id"]] = $data["hg_name"];
 	$DBRESULT->free();
 	unset($data);
@@ -273,8 +273,8 @@
 	 */
 	if ($export) {
 		$HostCache = array();
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
-		while ($h =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT host_name, host_address FROM host WHERE host_register = '1'");
+		while ($h = $DBRESULT->fetchRow()) {
 			$HostCache[$h["host_name"]] = $h["host_address"];
 		}
 		$DBRESULT->free();
@@ -556,11 +556,11 @@
 		} if ($type == "MS") {
 			if ($id != 0) {
 				$other_services = array();
-				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if ($svc_id =& $DBRESULT2->fetchRow()){
+				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
+				if ($svc_id = $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						$meta =& $DBRESULT_meta->fetchRow();
+						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+						$meta = $DBRESULT_meta->fetchRow();
 						$DBRESULT_meta->free();
 						$svc_id["service_description"] = $meta["meta_name"];
 					}
@@ -587,7 +587,7 @@
 		$req .= $suffix_order;
 
 		$lstart = 0;
-		$DBRESULT =& $pearDBO->query($req);
+		$DBRESULT = $pearDBO->query($req);
 		$rows = $DBRESULT->numrows();
 		if (($num * $limit) > $rows)
 			$num = round($rows / $limit) - 1;
@@ -697,10 +697,10 @@
 	    else
 	    	$req .= " LIMIT $lstart,$limit";
 
-		$DBRESULT =& $pearDBO->query($req);
+		$DBRESULT = $pearDBO->query($req);
 
 		$cpts = 0;
-		while ($log =& $DBRESULT->fetchRow()) {
+		while ($log = $DBRESULT->fetchRow()) {
 			$buffer->startElement("line");
 			$buffer->writeElement("msg_type", $log["msg_type"]);
 			$log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
@@ -729,8 +729,8 @@
 			$buffer->endElement();
 			if ($log["host_name"] == "_Module_Meta") {
 				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
-				$DBRESULT2 =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
-				$meta =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$matches[1]."'");
+				$meta = $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 				$buffer->writeElement("host_name", $log["host_name"], false);
 				$buffer->writeElement("service_description", $meta["meta_name"], false);

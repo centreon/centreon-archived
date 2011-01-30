@@ -69,51 +69,51 @@
 		if ($_POST["o"] == "rg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 			}	
 		} else if ($_POST["o"] == "nrg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
 			}
 		} else if ($_POST["o"] == "ed" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
-				while ($metrics =& $DBRESULT->fetchRow()){
-					$DBRESULT2 =& $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
+				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
+				while ($metrics = $DBRESULT->fetchRow()){
+					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
 				}
-				$DBRESULT =& $pearDBO->query("DELETE FROM index_data WHERE `id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("DELETE FROM index_data WHERE `id` = '".$key."'");
 			}
 		} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '1' WHERE id = '".$key."'");
 			}
 		} else if ($_POST["o"] == "nhg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `hidden` = '0' WHERE id = '".$key."'");
 			}
 		} else if ($_POST["o"] == "lk" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '1' WHERE id = '".$key."'");
 			}
 		} else if ($_POST["o"] == "nlk" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `locked` = '0' WHERE id = '".$key."'");
 			}
 		}
 	}
 	
 	if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])){
-		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$_POST["id"]."'");		
+		$DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$_POST["id"]."'");		
 	}
 	
 	if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])){
-		$DBRESULT =& $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$_POST["id"]."'");
+		$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$_POST["id"]."'");
 	}
 	
 	$search_string = "";
@@ -123,8 +123,8 @@
 		$search_string = " WHERE `host_name` LIKE '%$searchFormated%' OR `service_description` LIKE '%$searchFormated%'";
 	}
 	
-	$DBRESULT =& $pearDBO->query("SELECT COUNT(*) FROM `index_data`$search_string");
-	$tmp =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM `index_data`$search_string");
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 			
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -132,12 +132,12 @@
 	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");	
 	//$yesOrNo = array(0 => "<input type='checkbox' hidden='1' disabled>", 1 => "<input type='checkbox' checked disabled>", 2 => "Rebuilding");	
 		
-	$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` $search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
+	$DBRESULT = $pearDBO->query("SELECT * FROM `index_data` $search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
 	$data = array();
-	for ($i = 0;$index_data =& $DBRESULT->fetchRow();$i++){
-		$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."'");
+	for ($i = 0;$index_data = $DBRESULT->fetchRow();$i++){
+		$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."'");
 		$metric = "";
-		for ($im = 0;$metrics =& $DBRESULT2->fetchRow();$im++){
+		for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++){
 			if ($im)
 				$metric .= " - ";
 			$metric .= "<a href='./main.php?p=5010602&o=mmtrc&index_id=".$index_data["id"]."'>".$metrics["metric_name"]."</a>";
@@ -221,11 +221,11 @@
 	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -245,7 +245,7 @@
 	$tpl->assign("StorageType", _("Storage Type"));
 	$tpl->assign("Actions", _("Actions"));
 	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
     $tpl->display("viewData.ihtml");

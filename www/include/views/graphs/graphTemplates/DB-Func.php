@@ -45,8 +45,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('graph_id');
-		$res =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$graph =& $res->fetchRow();
+		$res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$graph = $res->fetchRow();
 		#Modif case
 		if ($res->numRows() >= 1 && $graph["graph_id"] == $id)	
 			return true;
@@ -67,8 +67,8 @@
 	function multipleGraphTemplateInDB ($graphs = array(), $nbrDup = array())	{
 		foreach($graphs as $key=>$value)	{
 			global $pearDB;
-			$res =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$key."' LIMIT 1");
-			$row =& $res->fetchRow();
+			$res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$key."' LIMIT 1");
+			$row = $res->fetchRow();
 			$row["graph_id"] = '';
 			$row["default_tpl1"] = '0';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -88,7 +88,7 @@
 	function defaultOreonGraph ()	{
 		global $pearDB;
 		$rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'";
-		$res =& $pearDB->query($rq);
+		$res = $pearDB->query($rq);
 		if (!$res->numRows())	{
 			$rq = "UPDATE giv_graphs_template SET default_tpl1 = '1' LIMIT 1";
 			$pearDB->query($rq);
@@ -149,8 +149,8 @@
 		$rq .= ")";
 		$pearDB->query($rq);
 		defaultOreonGraph();
-		$res =& $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
-		$graph_id =& $res->fetchRow();
+		$res = $pearDB->query("SELECT MAX(graph_id) FROM giv_graphs_template");
+		$graph_id = $res->fetchRow();
 		return ($graph_id["MAX(graph_id)"]);
 	}
 	

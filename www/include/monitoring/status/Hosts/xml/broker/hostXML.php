@@ -167,7 +167,7 @@
 
 	$ct = 0;
 	$flag = 0;
-	$DBRESULT =& $obj->DBC->query($rq1);
+	$DBRESULT = $obj->DBC->query($rq1);
 	$numRows = $obj->DBC->numberRows();
 
 	$obj->XML->startElement("reponse");
@@ -180,7 +180,7 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->endElement();
 
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	while ($ndo = $DBRESULT->fetchRow()) {
 
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
 			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);

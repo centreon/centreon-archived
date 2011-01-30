@@ -62,8 +62,8 @@
 		 * request
 		 */
 		$hosts = array("NULL" => "");
-		$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR $searchSTR AND host_register = '1' ORDER BY host_name");
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR $searchSTR AND host_register = '1' ORDER BY host_name");
+		while ($row = $DBRESULT->fetchRow()) {
 			if (!isset($lca) || isset($lca["LcaHost"][$row['host_name']]))
 				$hosts[$row["host_id"]] = $row["host_name"];
 		}
@@ -114,7 +114,7 @@
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `host_id`";
 		$DBRESULT = & $pearDBO->query($rq);
-		if ($row =& $DBRESULT->fetchRow())
+		if ($row = $DBRESULT->fetchRow())
 			$hostStats = $row;
 		
 		/*
@@ -293,7 +293,7 @@
 			  "AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 			 		 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `service_id`";
-		$DBRESULT =& $pearDBO->query($rq);
+		$DBRESULT = $pearDBO->query($rq);
 		while ($row = $DBRESULT->fetchRow()){
 			if (isset($hostServiceStats[$row["service_id"]]))
 				$hostServiceStats[$row["service_id"]] = $row;
@@ -390,7 +390,7 @@
 			  "GROUP BY `service_id`";
 		$DBRESULT = & $pearDBO->query($rq);
 		
-		if ($row =& $DBRESULT->fetchRow())
+		if ($row = $DBRESULT->fetchRow())
 			$serviceStats = $row;
 		$timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
 		if ($timeTab["reportTime"]) {
@@ -540,7 +540,7 @@
 		 * ServiceGroups by host
 		 */
 		$svs = array();
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
 									"FROM servicegroup_relation, service, host " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
@@ -549,7 +549,7 @@
 									"AND servicegroup_relation.host_host_id IS NOT NULL " .
 									//$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
 									"AND service.service_activate = '1'");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["host_name"] . ":::" . $elem["service_description"];
@@ -558,7 +558,7 @@
 		/*
 		 * ServiceGroups by hostGroups
 		 */		
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
 									"FROM servicegroup_relation, service, hostgroup " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
@@ -566,7 +566,7 @@
 									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
 									"AND service.service_activate = '1'");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
 			$hosts = getMyHostGroupHostsForReporting($elem["hostgroup_hg_id"]);
@@ -591,7 +591,7 @@
 		
 		$reportingTimePeriod = array();
 		$query = "SELECT * FROM `contact_param` WHERE cp_contact_id is null";
-		$DBRESULT =& $pearDB->query($query);
+		$DBRESULT = $pearDB->query($query);
 		while ($res = $DBRESULT->fetchRow()) {
 			if ($res["cp_key"] == "report_hour_start")
 				 $reportingTimePeriod["report_hour_start"] = $res["cp_value"];
@@ -636,8 +636,8 @@
 					"WHERE $searchSTR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$oreon->user->access->queryBuilder("WHERE", "host_host_id", $lcaHoststr).") " .
 						$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) . 	
 					"ORDER BY `hg_name`";
-		$DBRESULT =& $pearDB->query($query);
-		while ($hg =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query($query);
+		while ($hg = $DBRESULT->fetchRow())
 			$hgs[$hg["hg_id"]] = $hg["hg_name"];
 		return $hgs;
 	}
@@ -656,9 +656,9 @@
 			$lcaStr = " AND host_id IN (".$lcaHoststr.") ";
 		
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
+		$DBRESULT = $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
 									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by h.host_name");
-		while ($elem =& $DBRESULT->fetchRow()) 
+		while ($elem = $DBRESULT->fetchRow()) 
 			$hosts[$elem["host_host_id"]] = $elem["host_name"];
 		$DBRESULT->free();
 		unset($elem);
@@ -682,8 +682,8 @@
 					"WHERE $searchSTR `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ". 
 						$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
 					"ORDER BY `sg_name`";
-		$DBRESULT =& $pearDB->query($query);
-		while ($elem =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query($query);
+		while ($elem = $DBRESULT->fetchRow()) {
 			$sg[$elem["sg_id"]] = $elem["sg_name"];
 		}
 		$DBRESULT->free();
@@ -699,7 +699,7 @@
 	function getHostNameFromId($host_id) {
 		global $pearDB;
 		$req = "SELECT  `host_name` FROM `host` WHERE `host_id` = ".$host_id;
-		$DBRESULT =& $pearDB->query($req);
+		$DBRESULT = $pearDB->query($req);
 		if ($row = $DBRESULT->fetchRow())
 			return ($row["host_name"]);
 		return "undefined";	
@@ -708,7 +708,7 @@
 	function getHostgroupNameFromId($hostgroup_id) {
 		global $pearDB;
 		$req = "SELECT  `hg_name` FROM `hostgroup` WHERE `hg_id` = ".$hostgroup_id;
-		$DBRESULT =& $pearDB->query($req);
+		$DBRESULT = $pearDB->query($req);
 		if ($row = $DBRESULT->fetchRow())
 			return ($row["hg_name"]);
 		return "undefined";	
@@ -717,7 +717,7 @@
 	function getServiceDescriptionFromId($service_id) {
 		global $pearDB;
 		$req = "SELECT  `service_description` FROM `service` WHERE `service_id` = ".$service_id;
-		$DBRESULT =& $pearDB->query($req);
+		$DBRESULT = $pearDB->query($req);
 		if ($row = $DBRESULT->fetchRow())
 			return ($row["service_description"]);
 		return "undefined";	
@@ -726,9 +726,9 @@
 	function getServiceGroupNameFromId($sg_id) {
 		global $pearDB;
 		$req = "SELECT  `sg_name` FROM `servicegroup` WHERE `sg_id` = ".$sg_id;
-		$DBRESULT =& $pearDB->query($req);
+		$DBRESULT = $pearDB->query($req);
 		unset($req);
-		if ($row =& $DBRESULT->fetchRow())
+		if ($row = $DBRESULT->fetchRow())
 			return ($row["sg_name"]);
 		$DBRESULT->free();
 		return "undefined";	
@@ -755,11 +755,11 @@
 				$lcaStr = " AND `service_id` IN (".$svcStr.") ";
 			}
 		}
-		$DBRESULT =& $pearDB->query(" SELECT `service_id`, `service_description` ".
+		$DBRESULT = $pearDB->query(" SELECT `service_id`, `service_description` ".
 						" FROM `service`, `host_service_relation` hsr".
 						" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
 						" AND service_activate = '1'");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
@@ -767,10 +767,10 @@
 		$DBRESULT->free();
 		// Uncomment following lines if you want to see services that are now disabled
 		/*
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr" .
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr" .
 				" WHERE hsr.host_host_id = '".$host_id."' " .
 				" AND service_id = hsr.service_service_id");
-		while ($elem =& $DBRESULT->fetchRow()){
+		while ($elem = $DBRESULT->fetchRow()){
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
 			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
@@ -785,9 +785,9 @@
 		global $pearDB, $is_admin;
 		
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation`".
+		$DBRESULT = $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation`".
 									" WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hg_id."'");
-		while ($row =& $DBRESULT->fetchRow())
+		while ($row = $DBRESULT->fetchRow())
 			$hosts[$row["host_id"]] = $row["host_name"];
 		$DBRESULT->free();
 		if (!$is_admin) {
@@ -796,12 +796,12 @@
 			$condition = "";
 			if ($str != "")
 				$condition = " WHERE acl_group_id IN (".$str.")";		
-			$DBRESULT =& $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
-			while ($row =& $DBRESULT->fetchRow()){
-				$DBRESULT2 =& $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` ".
+			$DBRESULT = $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
+			while ($row = $DBRESULT->fetchRow()){
+				$DBRESULT2 = $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` ".
 											" WHERE acl_res_id = '".$row["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
 		  		if ($DBRESULT2->numRows()) {
-			  		while ($row2 =& $DBRESULT2->fetchRow()) {
+			  		while ($row2 = $DBRESULT2->fetchRow()) {
 						if (isset($hosts[$row2["host_id"]])) {
 							unset($hosts[$row2["host_id"]]);
 						}

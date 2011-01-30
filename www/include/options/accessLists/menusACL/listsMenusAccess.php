@@ -50,9 +50,9 @@
 	$SearchStr = "";
 	if (isset($search))
 		$SearchStr = " WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_topo_alias LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
-	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $SearchStr);
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_topology" . $SearchStr);
 		
-	$tmp =& $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");
@@ -77,7 +77,7 @@
 	if (isset($search) && $search)
 		$SearchStr = "WHERE (acl_topo_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_topo_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";	
 	$rq = "SELECT acl_topo_id, acl_topo_name, acl_topo_alias, acl_topo_activate FROM acl_topology $SearchStr ORDER BY acl_topo_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -92,8 +92,8 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $topo =& $DBRESULT->fetchRow(); $i++) {		
-		$selectedElements =& $form->addElement('checkbox', "select[".$topo['acl_topo_id']."]");	
+	for ($i = 0; $topo = $DBRESULT->fetchRow(); $i++) {		
+		$selectedElements = $form->addElement('checkbox', "select[".$topo['acl_topo_id']."]");	
 		 if ($topo["acl_topo_activate"])
 			$moptions = "<a href='main.php?p=".$p."&acl_topo_id=".$topo['acl_topo_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
@@ -103,8 +103,8 @@
 		/* Contacts */
 		$ctNbr = array();
 		$rq = "SELECT COUNT(*) AS nbr FROM acl_topology_relations WHERE acl_topo_id = '".$topo['acl_topo_id']."'";
-		$DBRESULT2 =& $pearDB->query($rq);
-		$ctNbr =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDB->query($rq);
+		$ctNbr = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
 							"RowMenu_name"=>$topo["acl_topo_name"],
@@ -153,11 +153,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -166,7 +166,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listsMenusAccess.ihtml");

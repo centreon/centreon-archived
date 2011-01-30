@@ -54,7 +54,7 @@
 	$hostgroup_ary = array(NULL=>NULL);
 	$cmd = "SELECT hg_id, hg_name FROM hostgroup";
 	$DBRESULT = $pearDB->query($cmd);
-	while($hostgroup =& $DBRESULT->fetchRow())
+	while($hostgroup = $DBRESULT->fetchRow())
 		$hostgroup_ary[$hostgroup["hg_id"]] = $hostgroup["hg_name"];
 	$DBRESULT->free();
 	
@@ -65,13 +65,13 @@
 				"WHERE h.host_id = hr.host_host_id ".
 				"AND hr.hostgroup_hg_id = '".$_POST["hostgroup_escalation"]."' ";
 		$res = $pearDB->query($cmd);
-		while($hg =& $res->fetchRow())
+		while($hg = $res->fetchRow())
 			$hgs[$hg["host_id"]] = $hg["host_name"];
 		$res->free();
 	}
 	else {
 		$res = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER by host_name");
-		while($hg =& $res->fetchRow())
+		while($hg = $res->fetchRow())
 			$hgs[$hg["host_id"]] = $hg["host_name"];
 		$res->free();
 	}
@@ -100,7 +100,7 @@
 	$form->addElement('select', 'service_escalation', _("Services Escalation"), $svcs, array("onChange" =>"this.form.submit();"));
 	$valid = false;
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

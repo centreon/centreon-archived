@@ -85,8 +85,8 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $graph =& $res->fetchRow(); $i++) {		
-		$selectedElements =& $form->addElement('checkbox', "select[".$graph['graph_id']."]");	
+	for ($i = 0; $graph = $res->fetchRow(); $i++) {		
+		$selectedElements = $form->addElement('checkbox', "select[".$graph['graph_id']."]");	
 		$moptions = "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$graph['graph_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
@@ -126,7 +126,7 @@
 				"");	  
     $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	
 	$attrs = array(
@@ -141,7 +141,7 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
@@ -149,7 +149,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listGraphTemplates.ihtml");

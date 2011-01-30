@@ -51,7 +51,7 @@
 	/*
 	 * Check session id
 	 */
-	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities(session_id(), ENT_QUOTES, "UTF-8")."' AND user_id = '".htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8")."'");
+	$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities(session_id(), ENT_QUOTES, "UTF-8")."' AND user_id = '".htmlentities($_GET['uid'], ENT_QUOTES, "UTF-8")."'");
 	if (!$session->numRows()){
 		exit;
 	}

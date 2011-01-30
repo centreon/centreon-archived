@@ -200,7 +200,7 @@ class CentreonXMLBGRequest
 	 */
 	public function reloadSession()
 	{
-		$DBRESULT2 =& $this->DB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".$this->session_id."' LIMIT 1");
+		$DBRESULT2 = $this->DB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".$this->session_id."' LIMIT 1");
 	}
 
 	/*
@@ -208,8 +208,8 @@ class CentreonXMLBGRequest
 	 */
 	private function isUserAdmin()
 	{
-		$DBRESULT =& $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '".$this->user_id."' LIMIT 1");
-		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT = $this->DB->query("SELECT contact_admin, contact_id FROM contact WHERE contact.contact_id = '".$this->user_id."' LIMIT 1");
+		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		if ($admin["contact_admin"])
 			$this->is_admin = 1;
@@ -222,8 +222,8 @@ class CentreonXMLBGRequest
 	 */
 	protected function getUserIdFromSID()
 	{
-		$DBRESULT =& $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
-		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT = $this->DB->query("SELECT user_id FROM session WHERE session_id = '".$this->session_id."' LIMIT 1");
+		$admin = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["user_id"])) {
 			$this->user_id = $admin["user_id"];
@@ -243,8 +243,8 @@ class CentreonXMLBGRequest
 	protected function getStatusColor()
 	{
 		$this->general_opt = array();
-		$DBRESULT =& $this->DB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
-		while ($c =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $this->DB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
+		while ($c = $DBRESULT->fetchRow()) {
 			$this->general_opt[$c["key"]] = $this->myDecode($c["value"]);
 		}
 		$DBRESULT->free();
@@ -256,8 +256,8 @@ class CentreonXMLBGRequest
 	 */
 	protected function getNDOPrefix()
 	{
-		$DBRESULT =& $this->DB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
-		$conf_ndo =& $DBRESULT->fetchRow();
+		$DBRESULT = $this->DB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+		$conf_ndo = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		unset($DBRESULT);
 		return $conf_ndo["db_prefix"];

@@ -102,16 +102,16 @@
 		$tpl->assign('authorlabel', _("Alias"));
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 	
-		$ckbx[] =& $form->addElement('checkbox', 'notify', _("notify"));
+		$ckbx[] = $form->addElement('checkbox', 'notify', _("notify"));
 		$ckbx[0]->setChecked($notify);
 		
-		$ckbx1[] =& $form->addElement('checkbox', 'sticky', _("sticky"));
+		$ckbx1[] = $form->addElement('checkbox', 'sticky', _("sticky"));
 		$ckbx1[0]->setChecked($sticky);
 		
-		$ckbx2[] =& $form->addElement('checkbox', 'persistent', _("persistent"));
+		$ckbx2[] = $form->addElement('checkbox', 'persistent', _("persistent"));
 		$ckbx2[0]->setChecked($persistent);
 		
-		$ckbx3[] =& $form->addElement('checkbox', 'force_check', _("Force active check"));
+		$ckbx3[] = $form->addElement('checkbox', 'force_check', _("Force active check"));
 		$ckbx3[0]->setChecked($force_check);
 		
 		$form->addElement('hidden', 'host_name', $host_name);
@@ -123,7 +123,7 @@
 
 		$form->applyFilter('__ALL__', 'myTrim');
 		
-		$textarea =& $form->addElement('textarea', 'comment', _("comment"), array("rows"=>"8", "cols"=>"80"));
+		$textarea = $form->addElement('textarea', 'comment', _("comment"), array("rows"=>"8", "cols"=>"80"));
 		$textarea->setValue(sprintf(_("Acknowledged by %s"), $oreon->user->get_alias()));
 
 		$form->addRule('comment', _("Comment is required"), 'required', '', 'client');
@@ -132,7 +132,7 @@
 		$form->addElement('submit', 'submit', ($en == 1) ? _("Add") : _("Delete"));
 		$form->addElement('reset', 'reset', _("Reset"));
 				
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	

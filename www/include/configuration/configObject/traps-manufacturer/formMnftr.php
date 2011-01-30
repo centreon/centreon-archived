@@ -47,7 +47,7 @@
 
 	$mnftr = array();
 	if (($o == "c" || $o == "w") && $id)	{		
-		$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".$id."' LIMIT 1");
 		# Set base value
 		$mnftr = array_map("myDecodeMnftr", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -86,7 +86,7 @@
 	## Further informations
 	#
 	$form->addElement('hidden', 'id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -130,19 +130,19 @@
 	}
 	# Modify a Command information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($mnftr);
 	}
 	# Add a Command information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
-		$mnftrObj =& $form->getElement('id');
+		$mnftrObj = $form->getElement('id');
 		if ($form->getSubmitValue("submitA")) 
 			$mnftrObj->setValue(insertMnftrInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -152,12 +152,12 @@
 		$form->freeze();
 		$valid = true;
 	}
-	$action =& $form->getSubmitValue("action");
+	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listMnftr.php");
 	else	{
 		##Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

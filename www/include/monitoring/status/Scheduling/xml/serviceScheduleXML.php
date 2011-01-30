@@ -53,8 +53,8 @@
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 		else
 			$userID = $session['user_id'];
@@ -91,8 +91,8 @@
 
 	/* ACL */
 	$is_admin = 0;
-	$res1 =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_id = '".$userID."' AND contact_admin ='1'");
-	while ($row =& $res1->fetchRow())
+	$res1 = $pearDB->query("SELECT contact_id FROM contact WHERE contact_id = '".$userID."' AND contact_admin ='1'");
+	while ($row = $res1->fetchRow())
 		$is_admin = 1;
 	$access = new CentreonACL($userID, $is_admin);
 	$lcaSTR = $access->getHostsString("NAME", $pearDBndo);
@@ -141,8 +141,8 @@
 	($o == "meta") ? $rq1 .= " AND no.name1 = '_Module_Meta'" : $rq1 .= " AND no.name1 != '_Module_Meta'";
 
 
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	while($ndo =& $DBRESULT_NDO1->fetchRow())
+	$DBRESULT_NDO1 = $pearDBndo->query($rq1);
+	while($ndo = $DBRESULT_NDO1->fetchRow())
 		$host_status[$ndo["host_name"]] = $ndo;
 
 	/*
@@ -216,7 +216,7 @@
 
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
 
-	$DBRESULT_NDO =& $pearDBndo->query($rq);
+	$DBRESULT_NDO = $pearDBndo->query($rq);
 
 	$buffer = new CentreonXML();
 	$buffer->startElement("reponse");
@@ -224,7 +224,7 @@
 	$flag = 0;
 
 	/* Get Pagination Rows */
-	$DBRESULT_PAGINATION =& $pearDBndo->query($rq_pagination);
+	$DBRESULT_PAGINATION = $pearDBndo->query($rq_pagination);
 	$numRows = $DBRESULT_PAGINATION->numRows();
 	$buffer->startElement("i");
 	$buffer->writeElement("numrows", $numRows);
@@ -243,7 +243,7 @@
 	$color_en = array("1" => "#00ff00", "0" => "#ff0000");
 	$color_en_label = array("1" => $enable, "0" => $disable);
 
-	while($ndo =& $DBRESULT_NDO->fetchRow()){
+	while($ndo = $DBRESULT_NDO->fetchRow()){
 		if (isset($host_status[$ndo["host_name"]]) ){
 			$color_host = $tab_color_host[$host_status[$ndo["host_name"]]["current_state"]]; //"#FF0000";
 			$color_service = $tab_color_service[$ndo["current_state"]];

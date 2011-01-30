@@ -71,8 +71,8 @@
 	function getServiceGroupCount()	{
 		global $pearDB;
 
-		$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
-		$num_row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
+		$num_row = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $num_row["count(sg_id)"];
 	}
@@ -88,8 +88,8 @@
 
 	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
-		$session =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
+		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
 		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());		
 		$hoststr = $access->getHostsString("ID", $pearDBndo);
@@ -172,8 +172,8 @@
 		} else if ($type == "HS") {	
 			;
 		} else if ($type == "HO") {
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
-			while ($host =& $DBRESULT2->fetchRow()){
+			$DBRESULT2 = $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
+			while ($host = $DBRESULT2->fetchRow()){
 				$i++;
 				if ($is_admin || ((isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]])))){
 					$buffer->startElement("item");
@@ -199,8 +199,8 @@
 			 * Send Service Group list
 			 */
 			$lcaSG = $access->getServiceGroups();
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
-			while ($SG =& $DBRESULT->fetchRow()){
+			$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+			while ($SG = $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin || (isset($lca["LcaSG"]) && isset($lca["LcaSG"][$SG["sg_id"]]))){ 					
 					$buffer->startElement("item");
@@ -215,8 +215,8 @@
 			}
 			$DBRESULT->free();
 		} else if ($type == "RR") {
-			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
-			while ($HG =& $DBRESULT->fetchRow()){
+			$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
+			while ($HG = $DBRESULT->fetchRow()){
 			    $i++;
 				if ($is_admin || (isset($lca["LcaHostGroup"]) && isset($lca["LcaHostGroup"][$HG["hg_id"]]))){
 					$buffer->startElement("item");
@@ -235,10 +235,10 @@
 			 * Hosts Alone
 			 */
 			
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' order by host_name");
+			$DBRESULT2 = $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' order by host_name");
 			$cpt = 0;
 			$hostaloneSTR2 = "";
-			while ($host =& $DBRESULT2->fetchRow()){
+			while ($host = $DBRESULT2->fetchRow()){
 				$i++;
 				if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_id"]]))){
 		           	if (!$cpt) {
@@ -269,8 +269,8 @@
 			 */
 			$str = "";
 			$cpt = 0;
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
-			while ($MS =& $DBRESULT->fetchRow()){
+			$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM meta_service ORDER BY `meta_name`");
+			while ($MS = $DBRESULT->fetchRow()){
 				if (!$cpt) {
 					$buffer->startElement("item");
 					$buffer->writeAttribute("child", "1");

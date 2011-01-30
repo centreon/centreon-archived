@@ -83,9 +83,9 @@
 		global $pearDB, $oreon;
 
 		foreach ($commands as $key => $value) {
-			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			$DBRESULT =& $pearDB->query("DELETE FROM `command` WHERE `command_id` = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `command` WHERE `command_id` = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("command", $key, $row['command_name'], "d");
 		}
 	}
@@ -95,7 +95,7 @@
 		global $pearDB, $oreon;
 
 		foreach($commands as $key => $value) {
-			$DBRESULT =& $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$key."' LIMIT 1");
 
 			$row = $DBRESULT->fetchRow();
 			$row["command_id"] = '';

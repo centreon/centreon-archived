@@ -64,12 +64,12 @@
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 	
 	$items = getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search);
-	$select =& $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));
+	$select = $form->addElement('select', 'item', _("Host Group"), $items, array("onChange" =>"this.form.submit();"));
 	
 	$form->addElement('hidden', 'period', $period);
 	/*$form->addElement('hidden', 'StartDate', $get_date_start);
 	$form->addElement('hidden', 'EndDate', $get_date_end);*/
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	if (isset($id))

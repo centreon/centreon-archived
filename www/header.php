@@ -79,19 +79,19 @@
 	/*
 	 * Delete Session Expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
-	$session_expire =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
+	$session_expire = $DBRESULT->fetchRow();
 	if (!isset($session_expire["value"]) || !$session_expire["value"]) {
 		$session_expire["value"] = 2;
 	}
 	$time_limit = time() - ($session_expire["value"] * 60);
 
-	$DBRESULT =& $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
+	$DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time_limit."'");
 
 	/*
 	 * Get session and Check if session is not expired
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
+	$DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
 
 	if (!$DBRESULT->numRows()) {
 		header("Location: index.php?disconnect=2");
@@ -104,8 +104,8 @@
 	/*
 	 * Define Oreon var alias
 	 */
-	$centreon =& $_SESSION["centreon"];
-	$oreon =& $centreon;
+	$centreon = $_SESSION["centreon"];
+	$oreon = $centreon;
 	if (!is_object($centreon)) {
 		exit();
 	}
@@ -152,7 +152,7 @@
 	/*
 	 * Skin path
 	 */
-	$DBRESULT =& $pearDB->query("SELECT value FROM `options` WHERE `key` = 'template' LIMIT 1");
+	$DBRESULT = $pearDB->query("SELECT value FROM `options` WHERE `key` = 'template' LIMIT 1");
 	$data = $DBRESULT->fetchRow();
 	$skin = "./Themes/".$data["value"]."/";
 
@@ -171,15 +171,15 @@
 	/*
 	 * Get CSS Order and color
 	 */
-	$DBRESULT =& $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
-	if ($DBRESULT->numRows() && ($elem =& $DBRESULT->fetchRow())) {
+	$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
+	if ($DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow())) {
 		$colorfile = "Color/".$elem["css_name"];
 	}
 
 	/*
 	 * Update Session Table For last_reload and current_page row
 	 */
-	$DBRESULT =& $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."' LIMIT 1");
+	$DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."' LIMIT 1");
 
 	/*
 	 * Init Language

@@ -45,8 +45,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');
-		$DBRESULT =& $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$dep =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$dep = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)
 			return true;
@@ -65,7 +65,7 @@
 		if (isset($form))	{
 			$parents = $form->getSubmitValue('dep_sgParents');
 			$childs = $form->getSubmitValue('dep_sgChilds');
-			$childs =& array_flip($childs);
+			$childs = array_flip($childs);
 		}
 		foreach ($parents as $parent)
 			if (array_key_exists($parent, $childs))
@@ -76,10 +76,10 @@
 	function deleteServiceGroupDependencyInDB ($dependencies = array())	{
 		global $pearDB, $oreon;
 		foreach($dependencies as $key=>$value)		{
-			$DBRESULT2 =& $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 
-			$DBRESULT =& $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("servicegroup dependency", $key, $row['dep_name'], "d");
 		}
 	}
@@ -87,7 +87,7 @@
 	function multipleServiceGroupDependencyInDB ($dependencies = array(), $nbrDup = array())	{
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB, $oreon;
-			$DBRESULT =& $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["dep_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -104,22 +104,22 @@
 				}
 				if (isset($dep_name) && testServiceGroupDependencyExistence($dep_name))	{
 					$val ? $rq = "INSERT INTO dependency VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
-					$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query($rq);
+					$DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(dep_id)"]))	{
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$key."'");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$key."'");
 						$fields["dep_sgParents"] = "";
-						while($sg =& $DBRESULT->fetchRow()){
-							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_servicegroupParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+						while($sg = $DBRESULT->fetchRow()){
+							$DBRESULT2 = $pearDB->query("INSERT INTO dependency_servicegroupParent_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
 							$fields["dep_sgParents"] .= $sg["servicegroup_sg_id"] . ",";
 						}
 						$fields["dep_sgParents"] = trim($fields["dep_sgParents"], ",");
 						$DBRESULT->free();
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$key."'");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$key."'");
 						$fields["dep_sgChilds"] = "";
-						while($sg =& $DBRESULT->fetchRow())	{
-							$DBRESULT2 =& $pearDB->query("INSERT INTO dependency_servicegroupChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
+						while($sg = $DBRESULT->fetchRow())	{
+							$DBRESULT2 = $pearDB->query("INSERT INTO dependency_servicegroupChild_relation VALUES ('', '".$maxId["MAX(dep_id)"]."', '".$sg["servicegroup_sg_id"]."')");
 							$fields["dep_sgChilds"] .= $sg["servicegroup_sg_id"] . ",";
 						}
 						$fields["dep_sgChilds"] = trim($fields["dep_sgChilds"], ",");
@@ -160,8 +160,8 @@
 		isset($ret["notification_failure_criteria"]) && $ret["notification_failure_criteria"] != NULL ? $rq .= "'".implode(",", array_keys($ret["notification_failure_criteria"]))."', " : $rq .= "NULL, ";
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
 		$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(dep_id) FROM dependency");
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(dep_id) FROM dependency");
 		$dep_id = $DBRESULT->fetchRow();
 
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
@@ -201,7 +201,7 @@
 		$rq .= "dep_comment = ";
 		isset($ret["dep_comment"]) && $ret["dep_comment"] != NULL ? $rq .= "'".htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8")."' " : $rq .= "NULL ";
 		$rq .= "WHERE dep_id = '".$dep_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
@@ -224,7 +224,7 @@
 		global $pearDB;
 		$rq = "DELETE FROM dependency_servicegroupParent_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if (isset($ret["dep_sgParents"]))
 			$ret = $ret["dep_sgParents"];
 		else
@@ -234,7 +234,7 @@
 			$rq .= "(dependency_dep_id, servicegroup_sg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 
@@ -244,7 +244,7 @@
 		global $pearDB;
 		$rq = "DELETE FROM dependency_servicegroupChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if (isset($ret["dep_sgChilds"]))
 			$ret = $ret["dep_sgChilds"];
 		else
@@ -254,7 +254,7 @@
 			$rq .= "(dependency_dep_id, servicegroup_sg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 ?>

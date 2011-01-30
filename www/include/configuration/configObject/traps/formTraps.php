@@ -62,13 +62,13 @@
 	$mnftr = array(NULL=>NULL);
 	$mnftr_id = -1;
 	if (($o == "c" || $o == "w") && $traps_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
 		# Set base value
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 		$DBRESULT->free();
 	}
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
-	while ($rmnftr =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
+	while ($rmnftr = $DBRESULT->fetchRow()){
 		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	}
 	$DBRESULT->free();
@@ -147,7 +147,7 @@
 	 * Further informations
 	 */
 	$form->addElement('hidden', 'traps_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	$tab = array();
@@ -193,18 +193,18 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a Command information
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($trap);
 	} else if ($o == "a")	{
 		# Add a Command information
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
-		$trapParam =& $form->getElement('traps_id');
+		$trapParam = $form->getElement('traps_id');
 		if ($form->getSubmitValue("submitA"))
 			$trapParam->setValue($trapObj->insert());
 		else if ($form->getSubmitValue("submitC"))
@@ -215,12 +215,12 @@
 		$valid = true;
 	}
 
-	$action =& $form->getSubmitValue("action");
+	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"]) {
 		require_once($path."listTraps.php");
 	} else {
 		# Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

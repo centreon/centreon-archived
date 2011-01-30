@@ -97,7 +97,7 @@
 	/*
 	 * Check Session activity
 	 */
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
+	$session = $pearDB->query("SELECT * FROM `session` WHERE session_id = '".$_GET["session_id"]."'");
 	if (!$session->numRows()){
 		;
 	} else {
@@ -110,8 +110,8 @@
 		/*
 		 * Get RRDTool binary Path
 		 */
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-		while ($option =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+		while ($option = $DBRESULT->fetchRow()) {
 			$optGen[$option["key"]] = $option["value"];
 			if ($option["key"] == 'rrdtool_path_bin') {
 				$rrdtoolPath = $option["value"];
@@ -234,8 +234,8 @@
 						"Crit"=>"#F91D05", "Unk"=>"#2AD1D4", "In_Use"=>"#13EB3A",
 						"Max_Used"=>"#F91D05", "Total_Available"=>"#2AD1D4");
 		$metrics = $differentStats[$options[$_GET["key"]]];
-		$DBRESULT =& $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
-		$nagios_stats =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDBO->query("SELECT RRDdatabase_nagios_stats_path FROM config");
+		$nagios_stats = $DBRESULT->fetchRow();
 		$nagios_stats_path = $nagios_stats['RRDdatabase_nagios_stats_path'];
 
 		$cpt = 1;

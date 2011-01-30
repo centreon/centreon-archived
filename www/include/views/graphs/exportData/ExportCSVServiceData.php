@@ -57,8 +57,8 @@
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
@@ -71,8 +71,8 @@
 	$period = (isset($_POST["period"])) ? htmlentities($_POST["period"], ENT_QUOTES, "UTF-8") : "today";
 	$period = (isset($_GET["period"])) ? htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $period;
 
-	$DBRESULT =& $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
-	while ($res =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDBO->query("SELECT host_name, service_description FROM index_data WHERE id = '$index'");
+	while ($res = $DBRESULT->fetchRow()){
 		$hName = $res["host_name"];
 		$sName = $res["service_description"];
 	}
@@ -85,12 +85,12 @@
 
 	$listMetric = array();
 	$datas = array();
-	$DBRESULT =& $pearDBO->query("SELECT metric_id, metric_name FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
-	while ($index_data =& $DBRESULT->fetchRow()){
+	$DBRESULT = $pearDBO->query("SELECT metric_id, metric_name FROM metrics, index_data WHERE metrics.index_id = index_data.id AND id = '$index'");
+	while ($index_data = $DBRESULT->fetchRow()){
 		if (!isset($listMetric[$index_data["metric_name"]]))
 			$listMetric[$index_data["metric_name"]] = $index_data["metric_name"];
-		$DBRESULT2 =& $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
-		while ($data =& $DBRESULT2->fetchRow()) {
+		$DBRESULT2 = $pearDBO->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$index_data["metric_id"]."' AND ctime >= '".htmlentities($_GET["start"], ENT_QUOTES, "UTF-8")."' AND ctime < '".htmlentities($_GET["end"], ENT_QUOTES, "UTF-8")."'");
+		while ($data = $DBRESULT2->fetchRow()) {
 			if (!isset($datas[$data["ctime"]]))
 				$datas[$data["ctime"]] = array();
 			$datas[$data["ctime"]][$index_data["metric_id"]] = $data["value"];

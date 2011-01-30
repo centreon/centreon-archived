@@ -219,7 +219,7 @@
 
 	$form->setDefaults(array("period" => $user_params['log_filter_period']));
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('From', _("From"));

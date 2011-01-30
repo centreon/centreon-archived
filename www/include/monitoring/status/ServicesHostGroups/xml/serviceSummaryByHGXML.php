@@ -93,7 +93,7 @@
 	 */
 	$tabAliasName = array();
 	$row = array();
-	$DBRESULT_PAGINATION =& $obj->DB->query("SELECT hg_name, hg_alias FROM hostgroup");
+	$DBRESULT_PAGINATION = $obj->DB->query("SELECT hg_name, hg_alias FROM hostgroup");
 	while ($row &= $DBRESULT_PAGINATION->numRows()) {
 		$tabAliasName[$row["hg_name"]] = $row["hg_alias"];
 	}
@@ -149,7 +149,7 @@
 	$ct = 0;
 
 	$tab_final = array();
-	$DBRESULT_NDO =& $obj->DBNdo->query($rq1);
+	$DBRESULT_NDO = $obj->DBNdo->query($rq1);
 	$numRows = $obj->DBNdo->numberRows();
 
 	$obj->XML->startElement("i");
@@ -160,7 +160,7 @@
 	$o == "svcOVHG" ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
 	$obj->XML->endElement();
 
-	while ($ndo =& $DBRESULT_NDO->fetchRow()) {
+	while ($ndo = $DBRESULT_NDO->fetchRow()) {
 		if (!isset($tab_final[$ndo["alias"]])) {
 			$tab_final[$ndo["alias"]] = array();
 		}

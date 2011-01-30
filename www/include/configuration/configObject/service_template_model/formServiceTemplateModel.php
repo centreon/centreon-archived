@@ -66,8 +66,8 @@
 		/*
 		 * Grab hostgroup || host
 		 */
-		$DBRESULT =& $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		while ($parent =& $DBRESULT->fetchRow())	{
+		$DBRESULT = $pearDB->query("SELECT * FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		while ($parent = $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"]) {
 				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
 			} elseif ($parent["hostgroup_hg_id"]) {
@@ -153,7 +153,7 @@
 	 */
 	$svc_tmplt_who_use_me = array();
 	if (isset($_GET["service_id"]) && $_GET["service_id"]) {
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id FROM service WHERE service_template_model_stm_id = '".$_GET["service_id"]."'");
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_template_model_stm_id = '".$_GET["service_id"]."'");
 		while ($service_tmpl_father = $DBRESULT->fetchRow()) {
 			$svc_tmplt_who_use_me[$service_tmpl_father["service_id"]] = $service_tmpl_father["service_description"];
 		}
@@ -164,7 +164,7 @@
 	 * Service Templates comes from DB -> Store in $svTpls Array
 	 */
 	$svTpls = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
+	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
 	while ($svTpl = $DBRESULT->fetchRow())	{
 		if (!$svTpl["service_description"]) {
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
@@ -179,14 +179,14 @@
 	$DBRESULT->free();
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
 	while ($tp = $DBRESULT->fetchRow()) {
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	}
 	$DBRESULT->free();
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
 	while ($checkCmd = $DBRESULT->fetchRow()) {
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	}
@@ -198,7 +198,7 @@
 
 	# Contact comes from DB -> Store in $notifCcts Array
 	$notifCs = array();
-	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
 	while ($notifC = $DBRESULT->fetchRow()) {
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	}
@@ -206,21 +206,21 @@
 
 	# Service Groups comes from DB -> Store in $hgs Array
 	$sgs = array();
-	$DBRESULT =& $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
+	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
 	while ($sg = $DBRESULT->fetchRow()) {
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	}
 	$DBRESULT->free();
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	while ($graphTpl = $DBRESULT->fetchRow()) {
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	}
 	$DBRESULT->free();
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
-	$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+	$DBRESULT = $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 	while ($trap = $DBRESULT->fetchRow()) {
 		$traps[$trap["traps_id"]] = $trap["traps_name"];
 	}
@@ -228,8 +228,8 @@
 
 	# service categories comes from DB -> Store in $service_categories Array
 	$service_categories = array();
-	$DBRESULT =& $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
-	while ($service_categorie =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
+	while ($service_categorie = $DBRESULT->fetchRow()) {
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	}
 	$DBRESULT->free();
@@ -238,7 +238,7 @@
 	 *  Service on demand macro stored in DB
 	 */
 	$j = 0;
-	$DBRESULT =& $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
+	$DBRESULT = $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
 	while ($od_macro = $DBRESULT->fetchRow()) {
 		$od_macro_id[$j] = $od_macro["svc_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_SERVICE", "", $od_macro["svc_macro_name"]);
@@ -298,7 +298,7 @@
 	$form->addElement('select', 'service_template_model_stm_id', _("Service Template Model"), $svTpls, array('id'=>'svcTemplate', 'onChange'=>'changeServiceTemplate(this.value)'));
 	$form->addElement('static', 'tplText', _("Using a Template Model allows you to have multi-level Template connections"));
 
-	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -378,7 +378,7 @@
 	/*
 	 *  Contacts
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -387,7 +387,7 @@
 	/*
 	 *  Contact groups
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -445,7 +445,7 @@
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
 	$form->addElement('header', 'traps', _("SNMP Traps"));
-	$ams3 =& $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -458,7 +458,7 @@
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -466,8 +466,8 @@
 
 	# trap vendor
 	$mnftr = array(null => null);
-	$DBRESULT =& $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
-	while ($rmnftr =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor order by alias");
+	while ($rmnftr = $DBRESULT->fetchRow()) {
 		$mnftr[$rmnftr["id"]] = html_entity_decode($rmnftr["alias"], ENT_QUOTES, "UTF-8");
 	}
 	$mnftr[""] = "_"._("ALL")."_";
@@ -584,7 +584,7 @@
 		$form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sc'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -636,17 +636,17 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'service_id');
-	$reg =& $form->addElement('hidden', 'service_register');
+	$reg = $form->addElement('hidden', 'service_register');
 	$reg->setValue("0");
 	$service_register = 0;
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	if (is_array($select)) {
 		$select_str = null;
 		foreach ($select as $key => $value) {
 			$select_str .= $key.",";
 		}
-		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear = $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
 
@@ -732,7 +732,7 @@
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
-		$serviceObj =& $form->getElement('service_id');
+		$serviceObj = $form->getElement('service_id');
 		if ($form->getSubmitValue("submitA")) {
 			$serviceObj->setValue(insertServiceInDB());
 		} elseif ($form->getSubmitValue("submitC")) {

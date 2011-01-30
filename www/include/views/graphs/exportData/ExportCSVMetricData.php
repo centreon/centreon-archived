@@ -57,8 +57,8 @@
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
@@ -79,8 +79,8 @@
 	print "Date;value\n";
 	$begin = time() - 26000;
 
-	$res =& $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
-	while ($data =& $res->fetchRow()){
+	$res = $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
+	while ($data = $res->fetchRow()){
 		print $data["ctime"].";".$data["value"]."\n";
 	}
 	exit();

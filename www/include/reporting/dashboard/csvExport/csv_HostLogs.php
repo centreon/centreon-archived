@@ -136,7 +136,7 @@
 			"AND `date_end` <= '".$end_date."' " .
 			"ORDER BY `date_start` desc";
 	$DBRESULT = & $pearDBO->query($rq);
-	while ($row =& $DBRESULT->fetchRow()) {
+	while ($row = $DBRESULT->fetchRow()) {
 			$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
 			/* Percentage by status */
 			$row["UP_MP"] = round($row["UPTimeScheduled"] * 100 / $duration, 2);

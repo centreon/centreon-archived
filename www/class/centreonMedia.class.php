@@ -63,7 +63,7 @@ class CentreonMedia
 		$RES = $this->_db->query($query);
 		$dir_id = null;
 		if ($RES->numRows()) {
-			$row =& $RES->fetchRow();
+			$row = $RES->fetchRow();
 			$dir_id = $row['dir_id'];
 		}
 		return $dir_id;

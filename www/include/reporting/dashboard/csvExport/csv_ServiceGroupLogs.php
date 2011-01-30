@@ -125,7 +125,7 @@
 	$str = "";
 	$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$id."'";
 	$DBRESULT = & $pearDB->query($request);
-	while ($sg =& $DBRESULT->fetchRow()) {
+	while ($sg = $DBRESULT->fetchRow()) {
 		if ($str != "") {
 			$str .= ", ";
 		}
@@ -150,7 +150,7 @@
 				"GROUP BY `date_end`, `date_start` order by `date_start` desc";
 	$res = & $pearDBO->query($request);
 	$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
-	while ($row =& $res->fetchRow()) {
+	while ($row = $res->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
 
 		/* Percentage by status */

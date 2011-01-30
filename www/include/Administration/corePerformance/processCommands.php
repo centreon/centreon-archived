@@ -47,7 +47,7 @@
 	if (!isset($_SESSION["centreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"]))
 		exit();
 
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	$poller = $_GET["poller"];
 	$cmd = $_GET["cmd"];
@@ -55,7 +55,7 @@
 	$type = $_GET["type"];
 
 	$pearDB = new CentreonDB();
-	$DBRESULT =& $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
+	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
 	if (!$DBRESULT->numRows())
 		exit();
 

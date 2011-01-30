@@ -56,15 +56,15 @@
 	if (isset($_POST["mnftr_id"])){
 		$traps = array();
 		if ($_POST["mnftr_id"] == -1) {
-			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
+			$DBRESULT = $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
 		} else if ($_POST["mnftr_id"] == -2) {
 			$empty = 1;
 		} else if ($_POST["mnftr_id"] != 0) {
-			$DBRESULT =& $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $_POST["mnftr_id"]. " ORDER BY traps_name");
+			$DBRESULT = $pearDB->query("SELECT traps_id, traps_name FROM traps WHERE manufacturer_id = " . $_POST["mnftr_id"]. " ORDER BY traps_name");
 		}
 
 		if ($empty != 1) {
-			while ($trap =& $DBRESULT->fetchRow()){
+			while ($trap = $DBRESULT->fetchRow()){
 				$buffer->startElement("trap");
 				$buffer->writeElement("id", $trap["traps_id"]);
 				$buffer->writeElement("name", $trap["traps_name"]);

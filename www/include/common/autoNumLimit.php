@@ -46,12 +46,12 @@
 		$limit = $oreon->historyLimit[$url];
 	else {
 		if (($p >= 200 && $p < 300) || ($p >= 20000 && $p < 30000)){
-			$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
-			$gopt =& $DBRESULT->fetchRow();		
+			$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewMonitoring'");
+			$gopt = $DBRESULT->fetchRow();		
 			$limit = myDecode($gopt["value"]);
 		} else {
-			$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
-			$gopt =& $DBRESULT->fetchRow();		
+			$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'maxViewConfiguration'");
+			$gopt = $DBRESULT->fetchRow();		
 			$limit = myDecode($gopt["value"]);
 		}
 	}

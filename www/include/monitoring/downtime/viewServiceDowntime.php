@@ -137,8 +137,8 @@
 				"ORDER BY dtm.actual_start_time DESC " .
 				"LIMIT ".$num * $limit.", ".$limit;
 	}
-	$DBRESULT_NDO =& $pearDBndo->query($request);
-	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++) {
+	$DBRESULT_NDO = $pearDBndo->query($request);
+	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
 		$tab_downtime_svc[$i] = $data;
 		$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
 		$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
@@ -204,7 +204,7 @@
 	$tpl->assign("search_service", $search_service);
 	$tpl->assign('view_all', $view_all);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("serviceDowntime.ihtml");

@@ -41,25 +41,25 @@
 		global $oreon;
 
 		$rq = "DELETE FROM command";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM timeperiod";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM contact WHERE contact_id != '".$oreon->user->get_id()."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM contactgroup";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM host";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM service";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM hostgroup";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM servicegroup";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM dependency";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$rq = "DELETE FROM escalation";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 
 	function insertResourceCFG(& $buf)	{
@@ -93,7 +93,7 @@
 	function deleteResourceCFG()	{
 		global $pearDB;
 		$rq = "DELETE * FROM cfg_resource; ";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 
 	function insertNagiosCFG(& $buf)	{
@@ -146,7 +146,7 @@
 	function deleteNagiosCFG()	{
 		global $pearDB;
 		$rq = "DELETE FROM cfg_nagios; ";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 
 	function insertCgiCFG(& $buf)	{
@@ -176,13 +176,13 @@
 	function deleteCgiCFG()	{
 		global $pearDB;
 		$rq = "DELETE FROM cfg_cgi; ";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 
 	function deletePerfparseCFG()	{
 		global $pearDB;
 		$rq = "DELETE FROM cfg_perfparse; ";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 	}
 
@@ -582,8 +582,8 @@
 					foreach ($tmp as $value) {
 						if (!hostTemplateExists($value)) {
 							$pearDB->query("INSERT INTO `host` (host_name, host_register) VALUES ('".$value."', '0')");
-							$DBRES =& $pearDB->query("SELECT MAX(host_id) FROM `host` WHERE host_register = '0' LIMIT 1");
-							$row =& $DBRES->fetchRow();
+							$DBRES = $pearDB->query("SELECT MAX(host_id) FROM `host` WHERE host_register = '0' LIMIT 1");
+							$row = $DBRES->fetchRow();
 							$pearDB->query("INSERT INTO `extended_host_information` (host_host_id) VALUES ('".$row['MAX(host_id)']."')");
 						}
 					}
@@ -613,7 +613,7 @@
 				case "notification_options" : $tmpConf["host_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "stalking_options" : $tmpConf["host_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "check_command" :
-					$cmd =& explode("!", trim($tmpConf[$key]));
+					$cmd = explode("!", trim($tmpConf[$key]));
 					$tmpConf["command_command_id"] = getMyCommandID(array_shift($cmd));
 					if (!$tmpConf["command_command_id"])
 						unset($tmpConf["command_command_id"]);
@@ -624,7 +624,7 @@
 					unset ($tmpConf[$key]);
 					break;
 				case "event_handler" :
-					$cmd =& explode("!", trim($tmpConf[$key]));
+					$cmd = explode("!", trim($tmpConf[$key]));
 					$tmpConf["command_command_id2"] = getMyCommandID(array_shift($cmd));
 					if (!$tmpConf["command_command_id2"])
 						unset($tmpConf["command_command_id2"]);
@@ -1138,8 +1138,8 @@
 				case "notification_options" : $tmpConf["service_notifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "stalking_options" : $tmpConf["service_stalOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "check_command" :
-					$cmd =& explode("!", trim($tmpConf[$key]));
-					$cmd_name =& array_shift($cmd);
+					$cmd = explode("!", trim($tmpConf[$key]));
+					$cmd_name = array_shift($cmd);
 					$tmpConf["command_command_id"] = getMyCommandID($cmd_name);
 					if (!$tmpConf["command_command_id"])
 						unset($tmpConf["command_command_id"]);
@@ -1150,8 +1150,8 @@
 					unset ($tmpConf[$key]);
 					break;
 				case "event_handler" :
-					$cmd =& explode("!", trim($tmpConf[$key]));
-					$cmd_name =& array_shift($cmd);
+					$cmd = explode("!", trim($tmpConf[$key]));
+					$cmd_name = array_shift($cmd);
 					$tmpConf["command_command_id2"] = getMyCommandID($cmd_name);
 					if (!$tmpConf["command_command_id2"])
 						unset($tmpConf["command_command_id2"]);
@@ -1251,7 +1251,7 @@
 						foreach ($tvalue as $template_link_name) {
 							$host_host_id = getMyHostID($template_link_name);
 							if ($host_host_id) {
-								$DBRESULT_TEMP =& $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
+								$DBRESULT_TEMP = $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
 							}
 						}
 					}

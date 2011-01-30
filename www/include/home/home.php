@@ -97,7 +97,7 @@
 			$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBO)) .
 			" GROUP BY state " .
 			" ORDER by state";
-		$DBRESULT =& $pearDBO->query($rq1);
+		$DBRESULT = $pearDBO->query($rq1);
 	} else {
 		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state state" .
 				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
@@ -106,11 +106,11 @@
 				$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
 				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
-		$DBRESULT =& $pearDBndo->query($rq1);
+		$DBRESULT = $pearDBndo->query($rq1);
 	}
 	$data = array();
 	$statHosts = _("Hosts");
-	while ($ndo =& $DBRESULT->fetchRow()){
+	while ($ndo = $DBRESULT->fetchRow()){
 		$data[] = $ndo["cnt"];
 		if ($statHosts !=  _("Hosts")) {
 			$statHosts .= " - ";
@@ -137,7 +137,7 @@
 					" AND hosts.name NOT LIKE '_Module_%' ".
 					" GROUP BY services.state ORDER by services.state";
 		}
-		$DBRESULT =& $pearDBO->query($rq2);
+		$DBRESULT = $pearDBO->query($rq2);
 	} else {
 		if (!$centreon->user->admin) {
 			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state state" .
@@ -160,7 +160,7 @@
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	$data = array();
 	$statServices = _("Services");
-	while ($ndo =& $DBRESULT->fetchRow()){
+	while ($ndo = $DBRESULT->fetchRow()){
 		$data[] = $ndo["count"];
 		if ($statServices !=  _("Services")) {
 			$statServices .= " - ";

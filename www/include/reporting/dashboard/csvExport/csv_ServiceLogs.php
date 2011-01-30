@@ -117,8 +117,8 @@
 			"AND `date_start` >= '".$start_date."' " .
 			"AND `date_end` <= '".$end_date."' " .
 			"ORDER BY `date_start` DESC";
-	$DBRESULT =& $pearDBO->query($request);
-	while ($row =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDBO->query($request);
+	while ($row = $DBRESULT->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];
 		/* Percentage by status */
 		$duration = $row["OKTimeScheduled"] + $row["WARNINGTimeScheduled"] + $row["UNKNOWNTimeScheduled"] + $row["CRITICALTimeScheduled"];

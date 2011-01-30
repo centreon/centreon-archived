@@ -57,8 +57,8 @@
 	$timeperiods = array();
 	$i = 1;
 	$str = NULL;
-	$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
-	while ($timePeriod =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+	while ($timePeriod = $DBRESULT->fetchRow()) {
 		$ret["comment"] ? ($str .= "# '" . $timePeriod["tp_name"] . "' timeperiod definition " . $i . "\n") : NULL;
 		$str .= "define timeperiod{\n";
 		if ($timePeriod["tp_name"]) {
@@ -156,8 +156,8 @@
 	if ($oreon->CentreonGMT->used() == 1) {
 		$GMTList = $oreon->CentreonGMT->listGTM;
 		foreach ($GMTList as $gmt => $value) {
-			$DBRESULT =& $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
-			while ($timePeriod =& $DBRESULT->fetchRow())	{
+			$DBRESULT = $pearDB->query("SELECT * FROM `timeperiod` ORDER BY `tp_name`");
+			while ($timePeriod = $DBRESULT->fetchRow())	{
 				$PeriodBefore 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
 				$Period 		= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");
 				$PeriodAfter 	= array("monday" => "", "tuesday" => "", "wednesday" => "", "thursday" => "", "friday" => "", "saturday" => "", "sunday" => "");

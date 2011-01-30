@@ -67,7 +67,7 @@
 		$rq .= " AND (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '%".$search."%')";
 	else if (isset($search))
 		$rq .= " WHERE (esc.esc_name LIKE '".$search."' OR esc.esc_alias LIKE '%".$search."%')";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$tmp = & $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -119,7 +119,7 @@
 	 */
 	$rq .= " ORDER BY esc_name LIMIT ".$num * $limit.", ".$limit;
 	
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$search = tidySearchKey($search, $advanced_search);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -133,9 +133,9 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $esc =& $DBRESULT->fetchRow(); $i++) {		
+	for ($i = 0; $esc = $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$esc['esc_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$esc['esc_id']."]");	
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$esc['esc_id']."]'></input>";
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 						"RowMenu_select"=>$selectedElements->toHtml(),
@@ -185,11 +185,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -198,7 +198,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listEscalation.ihtml");

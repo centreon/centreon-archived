@@ -42,9 +42,9 @@
 	function getTopologyParent($p)	{
 		global $pearDB;
 		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
-		$DBRESULT =& $pearDB->query($rqPath);
+		$DBRESULT = $pearDB->query($rqPath);
 		
-		$redirectPath =& $DBRESULT->fetchRow();
+		$redirectPath = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $redirectPath;
 	}
@@ -52,8 +52,8 @@
 	function getTopologyDataPage($p)	{
 		global $pearDB;
 		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
-		$DBRESULT =& $pearDB->query($rqPath);
-		$redirectPath =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rqPath);
+		$redirectPath = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $redirectPath;
 	}
@@ -61,8 +61,8 @@
 	function getTopologyParentPage($p)	{
 		global $pearDB;
 		$rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
-		$DBRESULT =& $pearDB->query($rqPath);
-		$redirectPath =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rqPath);
+		$redirectPath = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $redirectPath["topology_parent"];
 	}
@@ -89,17 +89,17 @@
 	}
 	ksort($tabPath);
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
-	$current =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
+	$current = $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	
 	$page = $p;
 	if (isset($tabPath[$p]) && !$tabPath[$p]["url"])
 		while (1){
-			$DBRESULT =& $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
+			$DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
 			if (!$DBRESULT->numRows())
 				break;
-			$new_url =& $DBRESULT->fetchRow();
+			$new_url = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 			$tabPath[$new_url["topology_page"]] = array();
 			$tabPath[$new_url["topology_page"]]["name"] = _($tab["topology_name"]);

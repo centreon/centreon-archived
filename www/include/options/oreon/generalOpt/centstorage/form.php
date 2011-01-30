@@ -42,7 +42,7 @@
 	if (isset($_POST["o"]) && $_POST["o"])
 		$o = $_POST["o"];
 
-	$DBRESULT =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
+	$DBRESULT = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 	
 			
 	/*
@@ -64,7 +64,7 @@
 	$form->addElement('header', 'title', _("Modify General Options"));
 
 	$form->addElement('hidden', 'gopt_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	$form->setDefaults($gopt);
@@ -101,7 +101,7 @@
 	$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 	$form->addElement('text', 'nagios_log_file', _("Nagios current log file to parse"), $attrsText);
 	
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	/*
@@ -124,7 +124,7 @@
 	$tpl = initSmartyTpl($path.'centstorage/', $tpl);
 	$form->setDefaults($gopt);
 	
-	$subC =& $form->addElement('submit', 'submitC', _("Save"));
+	$subC = $form->addElement('submit', 'submitC', _("Save"));
 	$form->addElement('reset', 'reset', _("Reset"));
     $valid = false;
     
@@ -136,8 +136,8 @@
 		updateODSConfigData();
 		
 		$oreon->optGen = array();
-		$DBRESULT2 =& $pearDBO->query("SELECT * FROM `config` LIMIT 1");
-		$oreon->optGen =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
+		$oreon->optGen = $DBRESULT2->fetchRow();
 
 		$o = NULL;
    		$valid = true;
@@ -151,7 +151,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

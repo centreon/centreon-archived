@@ -90,8 +90,8 @@
 	 */
 	$tplService = array();
 	$templateFilter = "<option value='0'></option>";
-	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_alias FROM service WHERE service_register = '0' ORDER BY service_description");
-	while ($tpl =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_alias FROM service WHERE service_register = '0' ORDER BY service_description");
+	while ($tpl = $DBRESULT->fetchRow()) {
 		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
 		$tpl["service_description"] = str_replace("#S#", "/", $tpl["service_description"]);
 		$tpl["service_description"] = str_replace("#BS#", "\\", $tpl["service_description"]);
@@ -126,7 +126,7 @@
 	 */
 	if ($searchS != "" || $searchH != "") {
 		if ($searchS && !$searchH) {
-			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
+			$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
 										"FROM service sv, host_service_relation hsr " .
 										"WHERE sv.service_register = '1' $sqlFilterCase " .
 										"	AND hsr.service_service_id = sv.service_id " .
@@ -140,7 +140,7 @@
 				$rows++;
 			}
 		} else if (!$searchS && $searchH)	{
-			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
+			$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
 										"FROM service sv, host_service_relation hsr, hostgroup hg " .
 										"WHERE sv.service_register = '1' $sqlFilterCase " .
 										"	AND hsr.service_service_id = sv.service_id " .
@@ -153,7 +153,7 @@
 				$rows++;
 			}
 		} else {
-			$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
+			$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
 										"FROM service sv, host_service_relation hsr, hostgroup hg " .
 										"WHERE sv.service_register = '1' $sqlFilterCase " .
 										"	AND hsr.service_service_id = sv.service_id " .
@@ -168,7 +168,7 @@
 			}
 		}
 	} else	{
-		$DBRESULT =& $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+		$DBRESULT = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
 		$rows = $DBRESULT->numRows();
 	}
 
@@ -203,7 +203,7 @@
 	} else {
 		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
@@ -226,10 +226,10 @@
 	$searchH = str_replace('#S#', "/", $searchH);
 	$searchH = str_replace('#BS#', "\\", $searchH);
 
-	for ($i = 0; $service =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$fgHostgroup["value"] != $service["hg_name"] ? ($fgHostgroup["print"] = true && $fgHostgroup["value"] = $service["hg_name"]) : $fgHostgroup["print"] = false;
-		$selectedElements =& $form->addElement('checkbox', "select[".$service['service_id']."]");
+		$selectedElements = $form->addElement('checkbox', "select[".$service['service_id']."]");
 
 		if ($service["service_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&service_id=".$service['service_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."&template=$template&status=".$status."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -354,10 +354,10 @@
 				"this.form.elements['o2'].selectedIndex = 0");
 	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable"), "dv"=>_("Detach host group services"), "mvH"=>_("Move host group's services to hosts")), $attrs2);
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 
 	$tpl->assign('limit', $limit);
@@ -378,7 +378,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('Hosts', _("HostGroups"));

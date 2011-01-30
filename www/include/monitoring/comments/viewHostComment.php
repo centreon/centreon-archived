@@ -124,9 +124,9 @@
 				$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
 				" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
 	}
-	$DBRESULT_NDO =& $pearDBndo->query($rq2);
+	$DBRESULT_NDO = $pearDBndo->query($rq2);
 
-	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_comments_host[$i] = $data;
 		$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 		$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
@@ -171,9 +171,9 @@
 	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
 
-	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
+	$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
 	$options = "<option value='0'></options>";
-	while ($data =& $DBRESULT->fetchRow()) {
+	while ($data = $DBRESULT->fetchRow()) {
         $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
     }
     $DBRESULT->free();
@@ -181,7 +181,7 @@
 	$tpl->assign('hostgroup', $options);
 	unset($options);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 
 	$form->accept($renderer);
 	$tpl->assign('limit', $limit);

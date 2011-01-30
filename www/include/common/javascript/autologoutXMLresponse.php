@@ -53,7 +53,7 @@
 	$buffer = new CentreonXML();
 	$buffer->startElement("entry");
 	
-	$DBRESULT =& $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . htmlentities($_GET['sid'], ENT_QUOTES, "UTF-8") . "'");
+	$DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . htmlentities($_GET['sid'], ENT_QUOTES, "UTF-8") . "'");
 	if ($DBRESULT->numRows())
 		$buffer->writeElement("state", "ok");
 	

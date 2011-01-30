@@ -44,8 +44,8 @@
 			exit();
 		global $pearDB;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_".$rowdata.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT host_".$rowdata.", host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["host_".$rowdata])
 				return $row["host_$rowdata"];
 			else if ($row["host_template_model_htm_id"])

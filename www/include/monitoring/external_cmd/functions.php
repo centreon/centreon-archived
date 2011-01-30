@@ -372,10 +372,10 @@
 
 	function notifi_svc_host_hostgroup($arg, $type){
 		global $tab, $pearDB, $is_admin;
-	/*	$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
-		while ($r =& $res->fetchRow()){
-			$resH =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$r["host_host_id"]."'");
-			$rH =& $resH->fetchRow();
+	/*	$res = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
+		while ($r = $res->fetchRow()){
+			$resH = $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$r["host_host_id"]."'");
+			$rH = $resH->fetchRow();
 			$flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". $rH["host_name"]);
 		}
 	*/
@@ -384,8 +384,8 @@
 
 	function checks_svc_host_hostgroup($arg, $type){
 		global $tab, $pearDB, $is_admin;
-		/*$res =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
-		$r =& $res->fetchRow();
+		/*$res = $pearDB->query("SELECT host_host_id FROM hostgroup_relation WHERE hostgroup_hg_id = '".$arg."'");
+		$r = $res->fetchRow();
 		$flg = send_cmd(" " . $tab[$type] . "_HOST_SVC_CHECKS;". $rH["host_name"]);
 		*/
 		return $flg;

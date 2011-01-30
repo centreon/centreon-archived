@@ -51,16 +51,16 @@
 	/*
 	 * Get all information for nagios.cfg for this poller
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
+	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	$nagios = $DBRESULT->fetchRow();
 	$DBRESULT->free();
 
 	/*
 	 * Get broker module informations
 	 */
-	$DBRESULT =& $pearDB->query("SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$nagios["nagios_id"]."'");
+	$DBRESULT = $pearDB->query("SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$nagios["nagios_id"]."'");
 	$nagios["broker_module"] = NULL;
-	while ($arBk =& $DBRESULT->fetchRow()) {
+	while ($arBk = $DBRESULT->fetchRow()) {
 		$nagios["broker_module"][] = $arBk;
 	}
 	$DBRESULT->free();
@@ -101,7 +101,7 @@
 	    if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
 			foreach ($files as $filename)	{
 				$cfg = NULL;
-				$file =& basename($filename);
+				$file = basename($filename);
 				$file = explode(".", $file);
 				$cfg .= $file[0];
 				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
@@ -111,7 +111,7 @@
 			if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php")) {
 				foreach ($files as $filename)	{
 					$cfg = NULL;
-					$file =& basename($filename);
+					$file = basename($filename);
 					$file = explode(".", $file);
 					$cfg .= $file[0];
 					$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";

@@ -85,8 +85,8 @@ class CentreonUser	{
 	  	 * Initiate ACL
 	  	 */
 	  	$this->access = new CentreonACL($this->user_id, $this->admin);
-	  	$this->lcaTopo =& $this->access->topology;
-	  	$this->lcaTStr =& $this->access->topologyStr;
+	  	$this->lcaTopo = $this->access->topology;
+	  	$this->lcaTStr = $this->access->topologyStr;
 	  	/*
 	  	 * Initiate Log Class
 	  	 */
@@ -107,8 +107,8 @@ class CentreonUser	{
   	}
   
   	function getAllTopology($pearDB){
-	  	$DBRESULT =& $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
-		while ($topo =& $DBRESULT->fetchRow())
+	  	$DBRESULT = $pearDB->query("SELECT topology_page FROM topology WHERE topology_page IS NOT NULL");	
+		while ($topo = $DBRESULT->fetchRow())
 			if (isset($topo["topology_page"]))
 				$lcaTopo[$topo["topology_page"]] = 1;
 		unset($topo);
@@ -121,12 +121,12 @@ class CentreonUser	{
   	 */
   	
   	function checkUserStatus($sid = NULL, $pearDB){
-		$DBRESULT =& $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
-		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		
-		$DBRESULT =& $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
-		$admin2 =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
+		$admin2 = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
 		if ($admin["contact_admin"]){

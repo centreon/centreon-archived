@@ -61,11 +61,11 @@
 	 * Host Selection 
 	 */
 	$formHost = new HTML_QuickForm('formHost', 'post', "?p=".$p);
-	$redirect =& $formHost->addElement('hidden', 'o');
+	$redirect = $formHost->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	$hosts = getAllHostsForReporting($is_admin, $lcaHoststr, $search);
-	$selHost =& $formHost->addElement('select', 'host', _("Host"), $hosts, array("onChange" =>"this.form.submit();"));
+	$selHost = $formHost->addElement('select', 'host', _("Host"), $hosts, array("onChange" =>"this.form.submit();"));
 	$formHost->addElement('hidden', 'period', $period);
 	/*$formHost->addElement('hidden', 'StartDate', $get_date_start);
 	$formHost->addElement('hidden', 'EndDate', $get_date_end);*/

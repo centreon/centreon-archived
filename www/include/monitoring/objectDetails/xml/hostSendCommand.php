@@ -46,7 +46,7 @@
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 	if (!isset($_SESSION["centreon"]) || !isset($_GET["host_id"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["actiontype"]))
 		exit();
 
@@ -60,7 +60,7 @@
 
 	$pearDB = new CentreonDB();
 
-	$DBRESULT =& $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
+	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
 	if (!$DBRESULT->numRows())
 		exit();
 	if (!$oreon->user->access->checkAction($cmd))

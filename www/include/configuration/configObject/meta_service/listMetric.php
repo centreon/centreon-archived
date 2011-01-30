@@ -58,7 +58,7 @@
 	
 	$DBRESULT = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
 
-	$meta =& $DBRESULT->fetchRow();
+	$meta = $DBRESULT->fetchRow();
 	$tpl->assign("meta", array(	"meta" => _("Meta Service"),
 								"name" => $meta["meta_name"],
 								"calc_type" => $calcType[$meta["calcul_type"]]));
@@ -87,15 +87,15 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr1 = array();
-	for ($i = 0; $metric =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $metric = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
 		if ($metric["activate"])
 			$moptions .= "<a href='main.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
 			$moptions .= "<a href='main.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-		$DBRESULTO =& $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id = '".$metric['metric_id']."' and m.index_id=i.id");
-		$row =& $DBRESULTO->fetchRow();
+		$DBRESULTO = $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id = '".$metric['metric_id']."' and m.index_id=i.id");
+		$row = $DBRESULTO->fetchRow();
 		$row["service_description"] = str_replace("#S#", "/", $row["service_description"]);
 		$row["service_description"] = str_replace("#BS#", "\\", $row["service_description"]);
 		$elemArr1[$i] = array(	"MenuClass"=>"list_".$style, 
@@ -149,11 +149,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ds"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -162,7 +162,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listMetric.ihtml");

@@ -40,7 +40,7 @@
 	## Database retrieve information for Resources CFG
 	#
 	if (($o == "c" || $o == "w") && $resource_id)	{	
-		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM cfg_resource WHERE resource_id = '".$resource_id."' LIMIT 1");
 		# Set base value
 		$rs = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -93,7 +93,7 @@
 	$form->setDefaults(array('action' => '1'));
 	
 	$form->addElement('hidden', 'resource_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	#
@@ -129,19 +129,19 @@
 	}
 	# Modify a Resources CFG information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($rs);
 	}
 	# Add a Resources CFG information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 	
 	$valid = false;
 	if ($form->validate())	{
-		$rsObj =& $form->getElement('resource_id');
+		$rsObj = $form->getElement('resource_id');
 		if ($form->getSubmitValue("submitA"))
 			$rsObj->setValue(insertResourceInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -156,7 +156,7 @@
 		require_once($path."listResources.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);	

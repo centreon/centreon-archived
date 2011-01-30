@@ -49,7 +49,7 @@
 		$dir = array_map("myDecode", $DBRESULT->fetchRow());
 		# Set Child elements
 		$DBRESULT = $pearDB->query("SELECT DISTINCT img_img_id FROM view_img_dir_relation WHERE dir_dir_parent_id = '".$dir_id."'");
-		for($i = 0; $imgs =& $DBRESULT->fetchRow(); $i++) {
+		for($i = 0; $imgs = $DBRESULT->fetchRow(); $i++) {
 			$dir["dir_imgs"][$i] = $imgs["img_img_id"];
 		}
 		$DBRESULT->free();
@@ -80,14 +80,14 @@
 	    $rq .= " WHERE `img_id` IN (".implode(",",$selected).") ";
 	$rq .= " ORDER BY dir_alias, img_name";
 	$DBRESULT = $pearDB->query($rq);
-	while ($img =& $DBRESULT->fetchRow()) {
+	while ($img = $DBRESULT->fetchRow()) {
 		$imgs[$img["img_id"]] = $img["dir_alias"]."/".$img["img_name"];
 	}
 	$DBRESULT->free();
 
 	$directories = array();
-	$DBRESULT =& $pearDB->query("SELECT dir_id, dir_name, dir_comment FROM view_img_dir ORDER BY dir_name");
-	while ($row =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT dir_id, dir_name, dir_comment FROM view_img_dir ORDER BY dir_name");
+	while ($row = $DBRESULT->fetchRow()) {
     	    $directories[$row["dir_id"]] = $row["dir_name"];
 	}
 					        
@@ -123,7 +123,7 @@
 	
 	$form->addElement('hidden', 'dir_id');
 	$form->addElement('hidden', 'select');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 	#

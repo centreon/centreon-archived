@@ -55,7 +55,7 @@
 		exit ;
 
 	if (isset($_GET["session_id"])) {
-		$DBRESULT =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$_GET["session_id"]."'");
+		$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '".$_GET["session_id"]."'");
 		if ($DBRESULT->numRows() == 0)
 			exit();
 	}
@@ -119,16 +119,16 @@
 	 */
  	function checkDirectory($dir, $pearDB) {
  		global $dirCreated;
- 		$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
+ 		$DBRESULT = $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
  		if (!$DBRESULT->numRows()) {
- 			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('".$dir."', '".$dir."')");
+ 			$DBRESULT = $pearDB->query("INSERT INTO view_img_dir (`dir_name`, `dir_alias`) VALUES ('".$dir."', '".$dir."')");
  			@mkdir("./img/media/$dir");
- 			$DBRESULT =& $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
- 			$data =& $DBRESULT->fetchRow();
+ 			$DBRESULT = $pearDB->query("SELECT dir_id FROM view_img_dir WHERE dir_alias = '".$dir."'");
+ 			$data = $DBRESULT->fetchRow();
  			$dirCreated++;
  			return $data["dir_id"];
  		} else {
- 			$data =& $DBRESULT->fetchRow();
+ 			$data = $DBRESULT->fetchRow();
  			return $data["dir_id"];
  		}
  	}
@@ -163,20 +163,20 @@
 			$gdCounter++;
 		}
 
- 		$DBRESULT =& $pearDB->query("SELECT img_id " .
+ 		$DBRESULT = $pearDB->query("SELECT img_id " .
  									"FROM view_img, view_img_dir_relation vidh " .
  									"WHERE img_path = '".$picture."' " .
  									"	AND vidh.dir_dir_parent_id = '".$dir_id."'" .
  									"	AND vidh.img_img_id = img_id");
  		if (!$DBRESULT->numRows()) {
- 			$DBRESULT =& $pearDB->query("INSERT INTO view_img (`img_name`, `img_path`) VALUES ('".$img_info["filename"]."', '".$picture."')");
- 			$DBRESULT =& $pearDB->query("SELECT img_id FROM view_img WHERE `img_name` = '".$img_info["filename"]."' AND `img_path` = '".$picture."'");
- 			$data =& $DBRESULT->fetchRow();
+ 			$DBRESULT = $pearDB->query("INSERT INTO view_img (`img_name`, `img_path`) VALUES ('".$img_info["filename"]."', '".$picture."')");
+ 			$DBRESULT = $pearDB->query("SELECT img_id FROM view_img WHERE `img_name` = '".$img_info["filename"]."' AND `img_path` = '".$picture."'");
+ 			$data = $DBRESULT->fetchRow();
  			$regCounter++;
- 			$DBRESULT =& $pearDB->query("INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) VALUES ('".$dir_id."', '".$data['img_id']."')");
+ 			$DBRESULT = $pearDB->query("INSERT INTO view_img_dir_relation (`dir_dir_parent_id`, `img_img_id`) VALUES ('".$dir_id."', '".$data['img_id']."')");
  			return $data['img_id'];
  		} else {
- 			$data =& $DBRESULT->fetchRow();
+ 			$data = $DBRESULT->fetchRow();
  			return 0;
  		}
  	}
@@ -186,8 +186,8 @@
 	 */
  	function DeleteOldPictures($pearDB) {
  		$fileRemoved = 0;
- 		$DBRESULT =& $pearDB->query("SELECT img_id, img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id");
-		while ($row2 =& $DBRESULT->fetchRow()) {
+ 		$DBRESULT = $pearDB->query("SELECT img_id, img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id");
+		while ($row2 = $DBRESULT->fetchRow()) {
 			if (!file_exists("./img/media/".$row2["dir_alias"]."/".$row2["img_path"])) {
 				$pearDB->query("DELETE FROM view_img WHERE img_id = '".$row2["img_id"]."'");
 				$fileRemoved++;

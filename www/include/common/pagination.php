@@ -179,7 +179,7 @@
 	</SCRIPT>
 	<?php
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p."&search_type_service=" . $search_type_service."&search_type_host=" . $search_type_host);
-	$selLim =& $form->addElement('select', 'l', _("Rows"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
+	$selLim = $form->addElement('select', 'l', _("Rows"), $select, array("onChange" => "setL(this.value);  this.form.submit()"));
 	$selLim->setSelected($limit);
 
 	/*
@@ -196,7 +196,7 @@
 	/*
 	 * Init QuickForm
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;

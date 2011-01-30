@@ -51,9 +51,9 @@
 	if (isset($search))
 		$SearchSTR = " WHERE (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";		
 
-	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM `contactgroup` $SearchSTR");
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `contactgroup` $SearchSTR");
 		
-	$tmp =& $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include_once "./include/common/checkPagination.php";
@@ -79,7 +79,7 @@
 	 * Contactgroup list
 	 */
 	$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate FROM contactgroup $SearchSTR ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$search = tidySearchKey($search, $advanced_search);
 	
@@ -92,8 +92,8 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $cg =& $DBRESULT->fetchRow(); $i++) {		
-		$selectedElements =& $form->addElement('checkbox', "select[".$cg['cg_id']."]");	
+	for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {		
+		$selectedElements = $form->addElement('checkbox', "select[".$cg['cg_id']."]");	
 		if ($cg["cg_activate"])
 			$moptions = "<a href='main.php?p=".$p."&cg_id=".$cg['cg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
@@ -105,7 +105,7 @@
 		 */
 		$ctNbr = array();
 		$rq = "SELECT COUNT(*) AS `nbr` FROM `contactgroup_contact_relation` `cgr` WHERE `cgr`.`contactgroup_cg_id` = '".$cg['cg_id']."'";
-		$DBRESULT2 =& $pearDB->query($rq);
+		$DBRESULT2 = $pearDB->query($rq);
 		$ctNbr = $DBRESULT2->fetchRow();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
 							"RowMenu_select"=>$selectedElements->toHtml(),
@@ -148,11 +148,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -165,7 +165,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('limit', $limit);

@@ -44,11 +44,11 @@
 	/*
 	 * Database retrieve information
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `contact_param` WHERE `cp_contact_id` IS NULL");
+	$DBRESULT = $pearDB->query("SELECT * FROM `contact_param` WHERE `cp_contact_id` IS NULL");
 
 	$params = array();
 	$params["dayList"] = array();
-	while ($param =& $DBRESULT->fetchRow())
+	while ($param = $DBRESULT->fetchRow())
 		if ($param["cp_key"] != "report_hour_start" 
 			&& $param["cp_key"] != "report_hour_end" 
 			&& $param["cp_key"] != "report_minute_start" 
@@ -105,7 +105,7 @@
 	}
 
 	$form->addElement('hidden', 'gopt_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	$form->setDefaults($params);
 
@@ -116,8 +116,8 @@
 	$tpl = initSmartyTpl($path.'reporting/', $tpl);
 
 
-	$subC =& $form->addElement('submit', 'submitC', _("Save"));
-	$DBRESULT =& $form->addElement('reset', 'reset', _("Reset"));
+	$subC = $form->addElement('submit', 'submitC', _("Save"));
+	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
 
 	/*
 	 * Check Formulary
@@ -138,7 +138,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

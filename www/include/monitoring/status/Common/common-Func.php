@@ -46,8 +46,8 @@
 		 $rq = "SELECT nhs.current_state FROM `" .$ndo_base_prefix."hoststatus` nhs, `" .$ndo_base_prefix."hosts` nh " .
  	            "WHERE nh.display_name = '".$host_name."'" .
  	            "AND nh.host_object_id = nhs.host_object_id" ;
-		$DBRESULT =& $pearDBndo->query($rq);
-		$status =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDBndo->query($rq);
+		$status = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		return $status["current_state"];
 	}
@@ -56,12 +56,12 @@
 		if ((!isset($service_description) || !$service_description ) || (!isset($host_name) || !$host_name))
 			return NULL;
 
-		$DBRESULT =& $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_name = '".$host_name."' " .
+		$DBRESULT = $pearDBO->query("SELECT id FROM index_data i, metrics m WHERE i.host_name = '".$host_name."' " .
 									"AND m.hidden = '0' " .
 									"AND i.service_description = '".$service_description."' " .
 									"AND i.id = m.index_id");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["id"];
 		}
 		return 0;

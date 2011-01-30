@@ -40,12 +40,12 @@
 	require_once ("../../../../class/centreon.class.php");
 
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	// create the graph
-	$Graph =& Image_Graph::factory('graph', array(300, 200));
+	$Graph = Image_Graph::factory('graph', array(300, 200));
 	// add a TrueType font
-	$Font =& $Graph->addNew('font', 'Arial');
+	$Font = $Graph->addNew('font', 'Arial');
 	// set the font size to 11 pixels
 	$Font->setSize(7);
 	$Graph->setFont($Font);
@@ -66,15 +66,15 @@
 	$Plotarea->hideAxis();
 	$Plotarea->setBackgroundColor('#F2F2F2');
 
-	$value =& $_GET["value"];
+	$value = $_GET["value"];
 	$tab2 = array();
 	foreach ($value as $key => $v)
 		$tab2[strtolower($key) . " - ". $v] = $v;
 
-	$Dataset =& Image_Graph::factory('dataset', array($value));
+	$Dataset = Image_Graph::factory('dataset', array($value));
 
 	// create the 1st plot as smoothed area chart using the 1st dataset
-	$Plot =& $Plotarea->addNew('Image_Graph_Plot_Pie', $Dataset);
+	$Plot = $Plotarea->addNew('Image_Graph_Plot_Pie', $Dataset);
 
 	$Plot->Radius = 2;
 
@@ -83,7 +83,7 @@
 
 	// set a standard fill style
 
-	$FillArray =& Image_Graph::factory('Image_Graph_Fill_Array');
+	$FillArray = Image_Graph::factory('Image_Graph_Fill_Array');
 	$Plot->setFillStyle($FillArray);
 
 	foreach ($value as $key => $v)
@@ -93,7 +93,7 @@
 
 
 	// create a Y data value marker
-	$Marker =& $Plot->addNew('Image_Graph_Marker_Value', IMAGE_GRAPH_PCT_Y_TOTAL);
+	$Marker = $Plot->addNew('Image_Graph_Marker_Value', IMAGE_GRAPH_PCT_Y_TOTAL);
 	// fill it with white
 	$Marker->setFillColor('white');
 	// and use black border
@@ -103,7 +103,7 @@
 	$Marker->setFontSize(7);
 
 	// create a pin-point marker type
-	$PointingMarker =& $Plot->addNew('Image_Graph_Marker_Pointing_Angular', array(20, &$Marker));
+	$PointingMarker = $Plot->addNew('Image_Graph_Marker_Pointing_Angular', array(20, &$Marker));
 	// and use the marker on the plot
 	$Plot->setMarker($PointingMarker);
 

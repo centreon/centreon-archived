@@ -60,8 +60,8 @@
 	$tpl = initSmartyTpl($path, $tpl);
 
 	$session_data = array();
-	$res =& $pearDB->query("SELECT session.*, contact_name, contact_admin FROM session, contact WHERE contact_id = user_id ORDER BY contact_name, contact_admin");
-	for ($cpt = 0;$r =& $res->fetchRow();$cpt++){
+	$res = $pearDB->query("SELECT session.*, contact_name, contact_admin FROM session, contact WHERE contact_id = user_id ORDER BY contact_name, contact_admin");
+	for ($cpt = 0;$r = $res->fetchRow();$cpt++){
 
 		$session_data[$cpt] = array();
 		if ($cpt % 2) {
@@ -76,8 +76,8 @@
 		$session_data[$cpt]["ip_address"] = $r["ip_address"];
 		$session_data[$cpt]["last_reload"] = date("H:i:s", $r["last_reload"]);
 		
-		$resCP =& $pearDB->query("SELECT topology_name, topology_icone, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
-		$rCP =& $resCP->fetchRow();
+		$resCP = $pearDB->query("SELECT topology_name, topology_icone, topology_page, topology_url_opt FROM topology WHERE topology_page = '".$r["current_page"]."'");
+		$rCP = $resCP->fetchRow();
 		
 		$session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
 		$session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);

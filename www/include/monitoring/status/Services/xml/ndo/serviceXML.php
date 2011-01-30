@@ -118,9 +118,9 @@
 	$rq1 .= ($o == "meta") ?" AND no.name1 = '_Module_Meta'" : " AND no.name1 != '_Module_Meta'";
 	$rq1 .= ($instance != -1) ? " AND no.instance_id = ".$instance : "" ;
 
-	$DBRESULT =& $obj->DBNdo->query($rq1);
+	$DBRESULT = $obj->DBNdo->query($rq1);
 	$hostHGString = "";
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	while ($ndo = $DBRESULT->fetchRow()) {
 		/*
 		 * HG List
 		 */
@@ -309,9 +309,9 @@
         }
 	}
 
-	$DBRESULT =& $obj->DBNdo->query($rq);
-	$data =& $DBRESULT->fetchRow();
-	$numRows =& $data["count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))"];
+	$DBRESULT = $obj->DBNdo->query($rq);
+	$data = $DBRESULT->fetchRow();
+	$numRows = $data["count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2)))"];
 	$DBRESULT->free();
 	unset($data);
 
@@ -343,8 +343,8 @@
 	$ct = 0;
 	$flag = 0;
 
-	$DBRESULT =& $obj->DBNdo->query($finalRequest);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBNdo->query($finalRequest);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if (isset($host_status[$ndo["host_name"]])) {
 
 			$passive = 0;

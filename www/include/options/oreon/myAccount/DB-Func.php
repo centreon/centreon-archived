@@ -39,8 +39,8 @@
 	function testExistence ($name = NULL)	{
 		global $pearDB, $form, $oreon;
 		
-		$DBRESULT =& $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$contact =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT contact_name, contact_id FROM contact WHERE contact_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$contact = $DBRESULT->fetchRow();
 		/*
 		 * Modif case
 		 */
@@ -59,8 +59,8 @@
 	function testAliasExistence ($alias = NULL)	{
 		global $pearDB, $form, $oreon;
 		
-		$DBRESULT =& $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES, "UTF-8")."'");
-		$contact =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT contact_alias, contact_id FROM contact WHERE contact_alias = '".htmlentities($alias, ENT_QUOTES, "UTF-8")."'");
+		$contact = $DBRESULT->fetchRow();
 		
 		/*
 		 * Modif case
@@ -112,7 +112,7 @@
 		$rq .= "contact_pager = ";
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		
 		/*
 		 * Update user object..

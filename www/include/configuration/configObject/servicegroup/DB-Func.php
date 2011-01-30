@@ -48,8 +48,8 @@
 			$id = $form->getSubmitValue('sg_id');
 		}
 
-		$DBRESULT =& $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
-		$sg =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT sg_name, sg_id FROM servicegroup WHERE sg_name = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$sg = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $sg["sg_id"] == $id) {
 			# Modif
 			return true;
@@ -64,8 +64,8 @@
 	function enableServiceGroupInDB ($sg_id = null)	{
 		if (!$sg_id) return;
 		global $pearDB, $oreon;
-		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
-		$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("UPDATE servicegroup SET sg_activate = '1' WHERE sg_id = '".$sg_id."'");
+		$DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
 		$row = $DBRESULT2->fetchRow();
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "enable");
 	}
@@ -73,8 +73,8 @@
 	function disableServiceGroupInDB ($sg_id = null)	{
 		if (!$sg_id) return;
 		global $pearDB, $oreon;
-		$DBRESULT =& $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
-		$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("UPDATE servicegroup SET sg_activate = '0' WHERE sg_id = '".$sg_id."'");
+		$DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$sg_id."' LIMIT 1");
 		$row = $DBRESULT2->fetchRow();
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, $row['sg_name'], "disable");
 	}
@@ -82,9 +82,9 @@
 	function deleteServiceGroupInDB ($serviceGroups = array())	{
 		global $pearDB, $oreon;
 		foreach($serviceGroups as $key=>$value) {
-			$DBRESULT2 =& $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			$DBRESULT =& $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
 		}
 	}
@@ -92,7 +92,7 @@
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
 		foreach($serviceGroups as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["sg_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -107,19 +107,19 @@
 				}
 				if (testServiceGroupExistence($sg_name))	{
 					$val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
-					$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query($rq);
+					$DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
+					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
 
 						$DBRESULT->free();
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						$fields["sg_hgServices"] = "";
-						while($service =& $DBRESULT->fetchRow())	{
+						while($service = $DBRESULT->fetchRow())	{
 							$val = null;
 							foreach ($service as $key2=>$value2)
 								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
-							$DBRESULT2 =& $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
+							$DBRESULT2 = $pearDB->query("INSERT INTO servicegroup_relation (host_host_id, hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES (".$val.", '".$maxId["MAX(sg_id)"]."')");
 							$fields["sg_hgServices"] .= $service["service_service_id"] . ",";
 						}
 						$fields["sg_hgServices"] = trim($fields["sg_hgServices"], ",");
@@ -156,9 +156,9 @@
 		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "'".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "'".$ret["sg_activate"]["sg_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
-		$DBRESULT =& $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
+		$DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
 		$sg_id = $DBRESULT->fetchRow();
 
 		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8");
@@ -190,7 +190,7 @@
 		isset($ret["sg_comment"]) && $ret["sg_comment"] != NULL ? $rq .= "sg_comment = '".htmlentities($ret["sg_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "sg_comment = NULL,";
 		isset($ret["sg_activate"]["sg_activate"]) && $ret["sg_activate"]["sg_activate"] != NULL ? $rq .= "sg_activate = '".$ret["sg_activate"]["sg_activate"]."' " : $rq .= "sg_activate = '0'";
 		$rq .= "WHERE sg_id = '".$sg_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 		$fields["sg_name"] = htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8");
 		$fields["sg_alias"] = htmlentities($ret["sg_alias"], ENT_QUOTES, "UTF-8");
@@ -207,20 +207,20 @@
 		global $pearDB, $form;
 		$rq  = 	"DELETE FROM servicegroup_relation ";
 		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
 				$t = split("\-", $ret[$i]);
 				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT = $pearDB->query($rq);
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
 		for ($i = 0; $i < count($ret); $i++)	{
 			$t = split("\-", $ret[$i]);
 			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 ?>

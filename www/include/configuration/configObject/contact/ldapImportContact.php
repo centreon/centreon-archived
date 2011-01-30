@@ -39,8 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	while ($res =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+	while ($res = $DBRESULT->fetchRow())
 		$ldap_auth[$res["key"]] = html_entity_decode($res["value"]);
 	$DBRESULT->free();
 
@@ -74,7 +74,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'contact_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -91,7 +91,7 @@
 	 * Just watch a contact information
 	 */
 	if ($o == "li")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Import"));
+		$subA = $form->addElement('submit', 'submitA', _("Import"));
 		$form->setDefaults($ldap_auth);
 	}
 
@@ -113,7 +113,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);

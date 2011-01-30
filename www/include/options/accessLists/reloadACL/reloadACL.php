@@ -110,7 +110,7 @@
 			$session_data[$cpt]["current_page"] = $r["current_page"].$rCP["topology_url_opt"];
 			$session_data[$cpt]["topology_name"] = _($rCP["topology_name"]);
 			$session_data[$cpt]["actions"] = "<a href='./main.php?p=$p&o=r&session_id=".$r["session_id"]."'><img src='./img/icones/16x16/refresh.gif' border='0' alt='"._("Reload ACL")."' title='"._("Reload ACL")."'></a>";
-			$selectedElements =& $form->addElement('checkbox', "select[".$r['user_id']."]");
+			$selectedElements = $form->addElement('checkbox', "select[".$r['user_id']."]");
 			$session_data[$cpt]["checkbox"] = $selectedElements->toHtml();
 			$cpt++;
 		}
@@ -145,13 +145,13 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "u"=>_("Reload ACL")), $attrs);
 
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('p', $p);

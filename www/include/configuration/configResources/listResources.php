@@ -84,7 +84,7 @@
 	 * resources list
 	 */
 	$rq = "SELECT * FROM cfg_resource $SearchTool ORDER BY resource_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	
@@ -97,9 +97,9 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();	
-	for ($i = 0; $resource =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $resource = $DBRESULT->fetchRow(); $i++) {
 		preg_match("\$USER([0-9]*)\$", $resource["resource_name"], $tabResources);
-		$selectedElements =& $form->addElement('checkbox', "select[".$resource['resource_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$resource['resource_id']."]");	
 		$moptions  = "";
 		if ($resource["resource_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&resource_id=".$resource['resource_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -179,11 +179,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions"), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -192,7 +192,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listResources.ihtml");

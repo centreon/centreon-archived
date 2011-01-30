@@ -126,9 +126,9 @@
 			(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
 			"ORDER BY dtm.scheduled_start_time DESC " .
 			"LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT_NDO =& $pearDBndo->query($request);
+	$DBRESULT_NDO = $pearDBndo->query($request);
 	$tab_downtime_host = array();
-	for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 		$tab_downtime_host[$i] = $data;
 		$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
 		$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
@@ -192,9 +192,9 @@
 	/**
 	 * Get Hostgroups
 	 */
-	$DBRESULT =& $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
+	$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
 	$options = "<option value='0'></options>";
-	while ($data =& $DBRESULT->fetchRow()) {
+	while ($data = $DBRESULT->fetchRow()) {
         $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
     }
     $DBRESULT->free();
@@ -202,7 +202,7 @@
 	$tpl->assign('hostgroup', $options);
 	unset($options);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("hostDowntime.ihtml");

@@ -59,7 +59,7 @@
 	 * nagios servers comes from DB 
 	 */
 	$nagios_servers = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+	$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -93,7 +93,7 @@
 	
 		
 	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate, output_type FROM cfg_ndomod $SearchTool ORDER BY description LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
@@ -107,7 +107,7 @@
 	 */
 	$elemArr = array();
 	for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {		
-		$selectedElements =& $form->addElement('checkbox', "select[".$config['id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]");	
 		$moptions = "";
 		if ($config["activate"])
 			$moptions .= "<a href='main.php?p=".$p."&id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -152,7 +152,7 @@
 				"");	  
     $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o1' => NULL));
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	
 	$attrs = array(
@@ -167,7 +167,7 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
@@ -175,7 +175,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listNdomod.ihtml");

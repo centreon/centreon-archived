@@ -42,16 +42,16 @@
 	
 	$pearDB = new CentreonDB();
 	CentreonSession::start();
-	$centreon=& $_SESSION["centreon"];
+	$centreon= $_SESSION["centreon"];
 	
-	$session =& $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");
+	$session = $pearDB->query("SELECT * FROM `session` WHERE `session_id` = '".session_id()."'");
 	if (!$session->numRows())
 		exit;
 	
 	$logos_path = "../../img/media/";
 
 	if (isset($_GET["id"]) && $_GET["id"] && is_numeric($_GET["id"])) {
-	    $result =& $pearDB->query("SELECT dir_name, img_path FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE view_img_dir.dir_id = vidr.dir_dir_parent_id AND vidr.img_img_id = img_id AND img_id = '".$_GET["id"]."'");
+	    $result = $pearDB->query("SELECT dir_name, img_path FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE view_img_dir.dir_id = vidr.dir_dir_parent_id AND vidr.img_img_id = img_id AND img_id = '".$_GET["id"]."'");
 	    while ($img = $result->fetchRow() ) {
 			$imgpath = $logos_path . $img["dir_name"] ."/". $img["img_path"];
 	        if (!is_file($imgpath)) {

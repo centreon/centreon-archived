@@ -53,7 +53,7 @@
 		 * Set Poller relations
 		 */
 		$DBRESULT = $pearDB->query("SELECT poller_id FROM acl_resources_poller_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $pollers_list =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $pollers_list = $DBRESULT->fetchRow(); $i++) {
 			$acl["acl_pollers"][$i] = $pollers_list["poller_id"];
 		}
 		$DBRESULT->free();
@@ -63,7 +63,7 @@
 		 */
 		$hostnotexludes = array();
 		$DBRESULT = $pearDB->query("SELECT host_host_id FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hosts_list =& $DBRESULT->fetchRow(); $i++) {
+		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++) {
 			$acl["acl_hosts"][$i] = $hosts_list["host_host_id"];
 			$hostnotexludes[$hosts_list["host_host_id"]] = 1;
 		}
@@ -73,7 +73,7 @@
 		 * Set Hosts exludes relations
 		 */
 		$DBRESULT = $pearDB->query("SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hosts_list =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hosts_list = $DBRESULT->fetchRow(); $i++)
 			$acl["acl_hostexclude"][$i] = $hosts_list["host_host_id"];
 		$DBRESULT->free();
 
@@ -81,7 +81,7 @@
 		 * Set Hosts Groups relations
 		 */
 		$DBRESULT = $pearDB->query("SELECT hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $hg_list =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $hg_list = $DBRESULT->fetchRow(); $i++)
 			$acl["acl_hostgroup"][$i] = $hg_list["hg_hg_id"];
 		$DBRESULT->free();
 
@@ -89,7 +89,7 @@
 		 * Set Groups relations
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
-		for ($i = 0; $groups =& $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $groups = $DBRESULT->fetchRow(); $i++)
 			$acl["acl_groups"][$i] = $groups["acl_group_id"];
 		$DBRESULT->free();
 
@@ -98,7 +98,7 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
-			for ($i = 0; $sc =& $DBRESULT->fetchRow(); $i++)
+			for ($i = 0; $sc = $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sc"][$i] = $sc["sc_id"];
 		$DBRESULT->free();
 
@@ -116,7 +116,7 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT sg_id FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
-			for ($i = 0; $sg =& $DBRESULT->fetchRow(); $i++)
+			for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
 				$acl["acl_sg"][$i] = $sg["sg_id"];
 		$DBRESULT->free();
 
@@ -125,7 +125,7 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT meta_id FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
 		if ($DBRESULT->numRows())
-			for ($i = 0; $ms =& $DBRESULT->fetchRow(); $i++)
+			for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++)
 				$acl["acl_meta"][$i] = $ms["meta_id"];
 		$DBRESULT->free();
 	}
@@ -333,7 +333,7 @@
 
 	$form->addElement('hidden', 'acl_res_id');
 
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -363,21 +363,21 @@
 		/*
 		 * Modify a LCA information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($acl);
 	} else if ($o == "a") {
 		/*
 		 *  Add a LCA information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Delete"));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&lca_id=".$acl_id, "changeT"=>_("Modify")));
 
 	$valid = false;
 	if ($form->validate())	{
-		$aclObj =& $form->getElement('acl_res_id');
+		$aclObj = $form->getElement('acl_res_id');
 		if ($form->getSubmitValue("submitA"))
 			$aclObj->setValue(insertLCAInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -391,7 +391,7 @@
 			/*
 			 * Apply a template definition
 			 */
-			$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+			$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 			$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 			$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 			$form->accept($renderer);

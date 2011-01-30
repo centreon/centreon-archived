@@ -86,8 +86,8 @@ class CentreonGMT{
 		if (!isset($pearDB) && isset($DB))
 			$pearDB = $DB;
 
-		$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
-		$result =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'enable_gmt'");
+		$result = $DBRESULT->fetchRow();
 		return ($result["value"]);
 	}
 
@@ -176,13 +176,13 @@ class CentreonGMT{
 		if (!isset($sid))
 			return 0;
 
-		$DBRESULT =& $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
+		$DBRESULT = $pearDB->query("SELECT `contact_location` FROM `contact`, `session` " .
 									"WHERE `session`.`user_id` = `contact`.`contact_id` " .
 									"AND `session_id` = '$sid' LIMIT 1");
 		if (PEAR::isError($DBRESULT)) {
 			$this->myGMT = 0;
 		}
-		$info =& $DBRESULT->fetchRow();
+		$info = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		$this->myGMT = $info["contact_location"];
 	}

@@ -62,7 +62,7 @@
 	 */
 	$pollerList = "";
 	$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
-	$DBRESULT =& $obj->DB->query($request);
+	$DBRESULT = $obj->DB->query($request);
 	while ($d = $DBRESULT->fetchRow()) {
 		if ($pollerList != "") {
 			$pollerList .= ", ";
@@ -86,8 +86,8 @@
 
 	$hostCounter = 0;
 	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
-	$DBRESULT =& $obj->DBC->query($rq1);
-	while ($data =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBC->query($rq1);
+	while ($data = $DBRESULT->fetchRow()) {
 		$host_stat[$data["state"]] = $data["count(DISTINCT name)"];
 		$hostCounter += $host_stat[$data["state"]];
 	}
@@ -115,8 +115,8 @@
 	}
 	$serviceCounter = 0;
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
-	$DBRESULT =& $obj->DBC->query($rq2);
-	while ($data =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBC->query($rq2);
+	while ($data = $DBRESULT->fetchRow()) {
 		$svc_stat[$data["state"]] = $data["count(services.state)"];
 		$serviceCounter += $svc_stat[$data["state"]];
 	}
@@ -148,8 +148,8 @@
 				"	AND h.state = '0' " .
 				" GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
 	}
-	$DBRESULT =& $obj->DBC->query($rq3);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBC->query($rq3);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		$svc_stat[$ndo["state"] + 5] = $ndo["number"];
 	}
 	$DBRESULT->free();
@@ -168,9 +168,9 @@
 	 * Get minimum check interval
 	 */
 	$request = "SELECT MIN(check_interval) FROM services";
-	$DBRESULT =& $obj->DBC->query($request);
+	$DBRESULT = $obj->DBC->query($request);
 	if (isset($DBRESULT) && $DBRESULT->numRows()) {
-		$data =& $DBRESULT->fetchRow();
+		$data = $DBRESULT->fetchRow();
 		$minInterval = $data["MIN(check_interval)"];
 	} else {
 		$minInterval = 5;
@@ -180,8 +180,8 @@
 	 * Get minimin interval lenght
 	 */
 	$request = "SELECT MIN(interval_length) FROM cfg_nagios";
-	$DBRESULT =& $obj->DB->query($request);
-	$data =& $DBRESULT->fetchRow();
+	$DBRESULT = $obj->DB->query($request);
+	$data = $DBRESULT->fetchRow();
 	$intervalLength = $data["MIN(interval_length)"];
 
 	/* *****************************************************
@@ -192,9 +192,9 @@
 	$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id " .
 				"FROM instances " .
 				"WHERE name IN ($pollerList)";
-	$DBRESULT =& $obj->DBC->query($request);
+	$DBRESULT = $obj->DBC->query($request);
 	$inactivInstance = "";
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	while ($ndo = $DBRESULT->fetchRow()) {
 		/*
 		 * Running
 		 */
@@ -239,8 +239,8 @@
 				"	AND ns.stat_key LIKE 'Average' " .
 				"	AND ns.instance_id = i.instance_id" .
 				"	AND i.name IN ($pollerList)";
-	$DBRESULT =& $obj->DBC->query($request);
-	while ($ndo =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $obj->DBC->query($request);
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if ($latency != 2 && $ndo["stat_value"] >= 60) {
 			$latency = 1;
 		}

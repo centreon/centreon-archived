@@ -43,8 +43,8 @@
 		global $pearDB;
 		$str = "";
 		
-		$DBRES =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_name LIKE '%".$user_name."%' OR contact_alias LIKE '%".$user_name."%'");
-		while ($row =& $DBRES->fetchRow()) {
+		$DBRES = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name LIKE '%".$user_name."%' OR contact_alias LIKE '%".$user_name."%'");
+		while ($row = $DBRES->fetchRow()) {
 			if ($str != "")
 				$str .= ", ";
 			$str .= "'" . $row['contact_id'] . "'";
@@ -170,7 +170,7 @@
 		$query .= " ORDER BY object_type, object_name";
 		$DBRESULT = $pearDBO->query($query);
 		
-		while ($res =& $DBRESULT->fetchRow()) {
+		while ($res = $DBRESULT->fetchRow()) {
 			if ($res['object_id']) {
 				$res['object_name'] = str_replace('#S#', "/", $res["object_name"]);
 				$res['object_name'] = str_replace('#BS#', "\\", $res["object_name"]);
@@ -185,7 +185,7 @@
 	/*
 	 * Apply a template definition
 	 */	 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);		
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('search_object_str', _("Object"));

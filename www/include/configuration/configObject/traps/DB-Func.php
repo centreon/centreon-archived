@@ -48,8 +48,8 @@
 			$id = $form->getSubmitValue('traps_id');
 		}
 
-		$DBRESULT =& $pearDB->query("SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".htmlentities($oid, ENT_QUOTES, "UTF-8")."'");
-		$trap =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT traps_oid, traps_id FROM traps WHERE traps_oid = '".htmlentities($oid, ENT_QUOTES, "UTF-8")."'");
+		$trap = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $trap["traps_id"] == $id)
 			return true;
@@ -69,10 +69,10 @@
 		global $pearDB, $oreon;
 
 		foreach ($traps as $key => $value) {
-			$DBRESULT2 =& $pearDB->query("SELECT traps_name FROM `traps` WHERE `traps_id` = '".$key."' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT traps_name FROM `traps` WHERE `traps_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 
-			$DBRESULT =& $pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM traps WHERE traps_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("traps", $key, $row['traps_name'], "d");
 		}
 	}
@@ -87,7 +87,7 @@
 		global $pearDB, $oreon;
 
 		foreach ($traps as $key => $value)	{
-			$DBRESULT =& $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["traps_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -100,8 +100,8 @@
 					$fields["traps_name"] = $traps_name;
 				}
 				$val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
-				$DBRESULT =& $pearDB->query($rq);
-				$DBRESULT2 =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
+				$DBRESULT = $pearDB->query($rq);
+				$DBRESULT2 = $pearDB->query("SELECT MAX(traps_id) FROM traps");
 				$maxId = $DBRESULT2->fetchRow();
 				$oreon->CentreonLogAction->insertLog("traps", $maxId["MAX(traps_id)"], $traps_name, "a", $fields);
 			}
@@ -151,7 +151,7 @@
 		$rq .= "`traps_comments` = '".htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "`manufacturer_id` = '".htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8")."' ";
 		$rq .= "WHERE `traps_id` = '".$traps_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 		/*
 		 * Logs
@@ -203,8 +203,8 @@
 		$rq .= "'".htmlentities($ret["traps_execution_command_enable"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "'".htmlentities($ret["traps_comments"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "'".htmlentities($ret["manufacturer_id"], ENT_QUOTES, "UTF-8")."')";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(traps_id) FROM traps");
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(traps_id) FROM traps");
 		$traps_id = $DBRESULT->fetchRow();
 
 		/*

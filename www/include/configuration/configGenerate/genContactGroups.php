@@ -44,11 +44,11 @@
 	}
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/contactgroups.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
+	$DBRESULT = $pearDB->query("SELECT * FROM contactgroup ORDER BY `cg_name`");
 	$contactGroup = array();
 	$i = 1;
 	$str = NULL;
-	while ($contactGroup =& $DBRESULT->fetchRow())	{
+	while ($contactGroup = $DBRESULT->fetchRow())	{
 
 		if (isset($gbArr[1][$contactGroup["cg_id"]]))	{
 			$ret["comment"] ? ($str .= "# '" . $contactGroup["cg_name"] . "' contactgroup definition " . $i . "\n") : NULL ;
@@ -71,8 +71,8 @@
 
 			$contact = array();
 			$strTemp = NULL;
-			$DBRESULT2 =& $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
-			while ($contact =& $DBRESULT2->fetchRow())	{
+			$DBRESULT2 = $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id ORDER BY `contact_name`");
+			while ($contact = $DBRESULT2->fetchRow())	{
 				if (isset($gbArr[0][$contact["contact_id"]])) {
 					$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
 				}

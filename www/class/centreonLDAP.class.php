@@ -103,11 +103,11 @@ class CentreonLDAP {
 			}
 			$this->_ldapHosts[] = $ldap;
 		} else {
-			$dbresult =& $this->_db->query("SELECT ar.ar_id, ari.ari_value 
+			$dbresult = $this->_db->query("SELECT ar.ar_id, ari.ari_value 
 				FROM auth_ressource as ar, auth_ressource_info as ari  
 				WHERE ar.ar_type = 'ldap' AND ar.ar_enable = '1' AND ar.ar_id = ari.ar_id AND ari.ari_name = 'host'
 				ORDER BY ar_order");
-			while ($row =& $dbresult->fetchRow()) {
+			while ($row = $dbresult->fetchRow()) {
 				$ldap = array();
 				$ldap['host'] = $row['ari_value'];
 				$ldap['id'] = $row['ar_id'];
@@ -304,12 +304,12 @@ class CentreonLDAP {
 		if (is_null($id)) {
 			$id = $this->_linkId;
 		}
-		$dbresult =& $this->_db->query("SELECT ari_name, ari_value
+		$dbresult = $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
 			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'group_filter', 'group_base_search', 'group_name') AND ar_id = " . $id);
 		$user = array();
 		$group = array();
-		while ($row =& $dbresult->fetchRow()) {
+		while ($row = $dbresult->fetchRow()) {
 			switch ($row['ari_name']) {
 				case 'user_filter':
 					$user['filter'] = $row['ari_value'];

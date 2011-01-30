@@ -43,8 +43,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
-		$DBRESULT =& $pearDB->query("SELECT name, id FROM traps_vendor WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$mnftr =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT name, id FROM traps_vendor WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$mnftr = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $mnftr["id"] == $id)	
 			return true;
@@ -58,10 +58,10 @@
 	function deleteMnftrInDB ($mnftr = array())	{
 		global $pearDB, $oreon;
 		foreach($mnftr as $key=>$value)		{
-			$DBRESULT2 =& $pearDB->query("SELECT name FROM `traps_vendor` WHERE `id` = '".$key."' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT name FROM `traps_vendor` WHERE `id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 			
-			$DBRESULT =& $pearDB->query("DELETE FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES, "UTF-8")."'");
+			$DBRESULT = $pearDB->query("DELETE FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES, "UTF-8")."'");
 			$oreon->CentreonLogAction->insertLog("manufacturer", $key, $row['name'], "d");
 		}
 	}
@@ -69,7 +69,7 @@
 	function multipleMnftrInDB ($mnftr = array(), $nbrDup = array())	{
 		foreach($mnftr as $key=>$value)	{
 			global $pearDB, $oreon;
-			$DBRESULT =& $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM traps_vendor WHERE id = '".htmlentities($key, ENT_QUOTES, "UTF-8")."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -83,7 +83,7 @@
 				}
 				if (testMnftrExistence($name)) {
 					$val ? $rq = "INSERT INTO traps_vendor VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 					$oreon->CentreonLogAction->insertLog("manufacturer", htmlentities($key, ENT_QUOTES, "UTF-8"), $name, "a", $fields);
 				}
 			}
@@ -108,7 +108,7 @@
 		$rq .= "alias = '".htmlentities($ret["alias"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "description = '".htmlentities($ret["description"], ENT_QUOTES, "UTF-8")."' ";
 		$rq .= "WHERE id = '".$id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES, "UTF-8");
 		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES, "UTF-8");
 		$fields["description"] = htmlentities($ret["description"], ENT_QUOTES, "UTF-8");
@@ -132,9 +132,9 @@
 		$rq .= "('".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "'".htmlentities($ret["alias"], ENT_QUOTES, "UTF-8")."', ";
 		$rq .= "'".htmlentities($ret["description"], ENT_QUOTES, "UTF-8")."')";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM traps_vendor");
-		$mnftr_id =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM traps_vendor");
+		$mnftr_id = $DBRESULT->fetchRow();
 		
 		$fields["name"] = htmlentities($ret["name"], ENT_QUOTES, "UTF-8");
 		$fields["alias"] = htmlentities($ret["alias"], ENT_QUOTES, "UTF-8");

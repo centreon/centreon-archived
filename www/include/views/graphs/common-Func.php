@@ -40,10 +40,10 @@
 		global $pearDB;
 
 		if ($search != "")
-			$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup` WHERE sg_name LIKE '%$search%'");
+			$DBRESULT = $pearDB->query("SELECT count(sg_id) FROM `servicegroup` WHERE sg_name LIKE '%$search%'");
 		else
-			$DBRESULT =& $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
-		$num_row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT count(sg_id) FROM `servicegroup`");
+		$num_row = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $num_row["count(sg_id)"];
 	}
@@ -54,8 +54,8 @@
 			return NULL;
 		$tab_svc = array();
 
-		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
-		while ($row =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
+		while ($row = $DBRESULT->fetchRow())
 			$tab_svc[$row["service_id"]] = 1;
 		return $tab_svc;
 	}
@@ -64,8 +64,8 @@
 		global $pearDBO;
 
 		$tab = array();
-		$DBRESULT =& $pearDBO->query("SELECT `host_id` FROM `index_data` WHERE `hidden` = '0' AND `trashed` = '0' ORDER BY `host_name`");
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDBO->query("SELECT `host_id` FROM `index_data` WHERE `hidden` = '0' AND `trashed` = '0' ORDER BY `host_name`");
+		while ($row = $DBRESULT->fetchRow()) {
 			$tab[$row["host_id"]] = 1;
 		}
 		return $tab;
@@ -77,8 +77,8 @@
 			return NULL;
 		$tab_svc = array();
 
-		$DBRESULT =& $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND `hidden` = '0' AND `trashed` = '0'");
-		$num_row =& $DBRESULT->numRows();
+		$DBRESULT = $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND `hidden` = '0' AND `trashed` = '0'");
+		$num_row = $DBRESULT->numRows();
 		$DBRESULT->free();
 		return $num_row;
 	}

@@ -45,7 +45,7 @@
 	 */
 	$img = array("img_path"=>NULL);
 	if ($o == "ci" || $o == "w")	{
-		$res =& $pearDB->query("SELECT * FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
+		$res = $pearDB->query("SELECT * FROM view_img WHERE img_id = '".$img_id."' LIMIT 1");
 		# Set base value
 		$img = array_map("myDecode", $res->fetchRow());
 
@@ -54,8 +54,8 @@
 		$q .= "  JOIN view_img_dir_relation ON img_id = view_img_dir_relation.img_img_id";
 		$q .= "  JOIN view_img_dir ON dir_id = dir_dir_parent_id";
 		$q .= "  WHERE img_id = '".$img_id."' LIMIT 1";
-		$DBRESULT =& $pearDB->query($q);
-		$dir =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($q);
+		$dir = $DBRESULT->fetchRow();
 		$img_path = "./img/media/".$dir["dir_alias"]."/".$dir["img_path"];
 		$img["directories"] = $dir["dir_name"];
 		$DBRESULT->free();
@@ -85,16 +85,16 @@
 		$form->addElement('header', 'title', _("Add Image(s)"));
 		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids, array('id' => 'directories'));
 		$form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
- 		$file =& $form->addElement('file', 'filename', _("Image or archive"));
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
+ 		$file = $form->addElement('file', 'filename', _("Image or archive"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
 	} else if ($o == "ci") {
 		$form->addElement('header', 'title', _("Modify Image"));
 		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
 		$form->addElement('autocomplete', 'directories', _("Existing or new directory"), $dir_ids, array('id' => 'directories'));
-		$list_dir =& $form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
+		$list_dir = $form->addElement('select', 'list_dir', "", $dir_list_sel, array('onchange' => 'document.getElementById("directories").value =  this.options[this.selectedIndex].text;'));
 		$list_dir->setSelected($dir['dir_id']);
- 		$file =& $form->addElement('file', 'filename', _("Image"));
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
+ 		$file = $form->addElement('file', 'filename', _("Image"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
 		$form->setDefaults($img);
 		$form->addRule('img_name', _("Compulsory image name"), 'required');
 	} else if ($o == "w") {
@@ -102,7 +102,7 @@
 		$form->addElement('text', 'img_name', _("Image Name"), $attrsText);
 		$form->addElement('text', 'img_path', $img_path, NULL);
 		$form->addElement('autocomplete', 'directories', _("Directory"), $dir_ids, array('id', 'directories'));
- 		$file =& $form->addElement('file', 'filename', _("Image"));
+ 		$file = $form->addElement('file', 'filename', _("Image"));
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ci&img_id=".$img_id."'"));
 		$form->setDefaults($img);
 	}
@@ -117,7 +117,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'img_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -154,7 +154,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$imgID =& $form->getElement('img_id');
+		$imgID = $form->getElement('img_id');
 		$imgPath = $form->getElement('directories')->getValue();
 		$imgComment = $form->getElement('img_comment')->getValue();
 		if ($form->getSubmitValue("submitA"))

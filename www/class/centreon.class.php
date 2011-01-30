@@ -156,8 +156,8 @@ class Centreon	{
 	 */
 	function creatModuleList($pearDB) {
 		$this->modules = array();
-		$DBRESULT =& $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
-		while ($result =& $DBRESULT->fetchRow()){
+		$DBRESULT = $pearDB->query("SELECT `name`, `sql_files`, `lang_files`, `php_files` FROM `modules_informations`");
+		while ($result = $DBRESULT->fetchRow()){
 			$this->modules[$result["name"]] = array("name"=>$result["name"], "gen"=>false, "sql"=>$result["sql_files"], "lang"=>$result["lang_files"]);
 			if (is_dir("./modules/".$result["name"]."/generate_files/")) {
 				$this->modules[$result["name"]]["gen"] = true;
@@ -191,7 +191,7 @@ class Centreon	{
 			return;
 
 		$this->Nagioscfg = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 		$this->Nagioscfg = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 	}
@@ -207,8 +207,8 @@ class Centreon	{
 			return;
 
 		$this->optGen = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-		while ($opt =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+		while ($opt = $DBRESULT->fetchRow()) {
 			$this->optGen[$opt["key"]] = $opt["value"];
 		}
 		$DBRESULT->free();

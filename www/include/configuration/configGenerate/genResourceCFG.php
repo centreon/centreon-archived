@@ -43,9 +43,9 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 	
 	$handle = create_file($nagiosCFGPath.$tab['id']."/resource.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
+	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_resource` WHERE `resource_activate` = '1'");
 	$str = NULL;
-	while ($DBRESULTource =& $DBRESULT->fetchRow())	{
+	while ($DBRESULTource = $DBRESULT->fetchRow())	{
 		$ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
 		if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
 			$comment = array();

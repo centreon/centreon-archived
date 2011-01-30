@@ -53,8 +53,8 @@
 		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	}
 	$rq = "SELECT COUNT(*) FROM acl_groups $SearchStr ORDER BY acl_group_name";
-	$DBRESULT =& $pearDB->query($rq);
-	$tmp =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query($rq);
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	$DBRESULT->free();
 
@@ -79,7 +79,7 @@
 		$SearchStr = "WHERE (acl_group_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR acl_group_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	}
 	$rq = "SELECT acl_group_id, acl_group_name, acl_group_alias, acl_group_activate  FROM acl_groups $SearchStr ORDER BY acl_group_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
 
@@ -89,8 +89,8 @@
 
 	#Fill a tab with a mutlidimensionnal Array we put in $tpl
 	$elemArr = array();
-	for ($i = 0; $group =& $DBRESULT->fetchRow(); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$group['acl_group_id']."]");
+	for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
+		$selectedElements = $form->addElement('checkbox', "select[".$group['acl_group_id']."]");
 
 		if ($group["acl_group_activate"]) {
 			$moptions = "<a href='main.php?p=".$p."&acl_group_id=".$group['acl_group_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -104,14 +104,14 @@
 		/* Contacts */
 		$ctNbr = array();
 		$rq = "SELECT COUNT(*) AS nbr FROM acl_group_contacts_relations WHERE acl_group_id = '".$group['acl_group_id']."'";
-		$DBRESULT2 =& $pearDB->query($rq);
-		$ctNbr =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDB->query($rq);
+		$ctNbr = $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
 
 		$cgNbr = array();
 		$rq = "SELECT COUNT(*) AS nbr FROM acl_group_contactgroups_relations WHERE acl_group_id = '".$group['acl_group_id']."'";
-		$DBRESULT2 =& $pearDB->query($rq);
-		$cgNbr =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDB->query($rq);
+		$cgNbr = $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
 
 		$elemArr[$i] = array("MenuClass" => "list_".$style,
@@ -167,11 +167,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 
@@ -180,7 +180,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listGroupConfig.ihtml");

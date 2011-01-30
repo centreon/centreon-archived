@@ -46,8 +46,8 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('cg_id');
 
-		$DBRESULT =& $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
-		$cg =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `cg_name`, `cg_id` FROM `contactgroup` WHERE `cg_name` = '".htmlentities($oreon->checkIllegalChar($name), ENT_QUOTES, "UTF-8")."'");
+		$cg = $DBRESULT->fetchRow();
 
 		if ($DBRESULT->numRows() >= 1 && $cg["cg_id"] == $id){
 			/*
@@ -68,8 +68,8 @@
 		global $pearDB, $oreon;
 		if (!$cg_id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '".$cg_id."'");
-		$DBRESULT2 =& $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '1' WHERE `cg_id` = '".$cg_id."'");
+		$DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
 		$row = $DBRESULT2->fetchRow();
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "enable");
 	}
@@ -78,8 +78,8 @@
 		global $pearDB, $oreon;
 		if (!$cg_id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '".$cg_id."'");
-		$DBRESULT2 =& $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("UPDATE `contactgroup` SET `cg_activate` = '0' WHERE `cg_id` = '".$cg_id."'");
+		$DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
 		$row = $DBRESULT2->fetchRow();
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, $row['cg_name'], "disable");
 	}
@@ -88,10 +88,10 @@
 		global $pearDB, $oreon;
 
 		foreach($contactGroups as $key => $value)	{
-			$DBRESULT2 =& $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$key."' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT cg_name FROM `contactgroup` WHERE `cg_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 
-			$DBRESULT =& $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `contactgroup` WHERE `cg_id` = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("contactgroup", $key, $row['cg_name'], "d");
 		}
 	}
@@ -101,7 +101,7 @@
 
 		foreach ($contactGroups as $key=>$value)	{
 
-			$DBRESULT =& $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$key."' LIMIT 1");
 
 			$row = $DBRESULT->fetchRow();
 			$row["cg_id"] = '';
@@ -155,9 +155,9 @@
 
 		$rq = "INSERT INTO `contactgroup` (`cg_name`, `cg_alias`, `cg_comment`, `cg_activate`) ";
 		$rq .= "VALUES ('".htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8")."', '".htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8")."', '".$ret["cg_activate"]["cg_activate"]."')";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
-		$DBRESULT =& $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
+		$DBRESULT = $pearDB->query("SELECT MAX(cg_id) FROM `contactgroup`");
 		$cg_id = $DBRESULT->fetchRow();
 		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8");
 		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8");
@@ -191,7 +191,7 @@
 				"`cg_comment` = '".htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8")."', " .
 				"`cg_activate` = '".$ret["cg_activate"]["cg_activate"]."' " .
 				"WHERE `cg_id` = '".$cg_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$fields["cg_name"] = htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8");
 		$fields["cg_alias"] = htmlentities($ret["cg_alias"], ENT_QUOTES, "UTF-8");
 		$fields["cg_comment"] = htmlentities($ret["cg_comment"], ENT_QUOTES, "UTF-8");
@@ -207,7 +207,7 @@
 			return;
 
 		$rq = "DELETE FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		if (isset($ret["cg_contacts"]))
 			$ret = $ret["cg_contacts"];
 		else
@@ -216,7 +216,7 @@
 		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) ";
 			$rq .= "VALUES ('".$ret[$i]."', '".$cg_id."')";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 ?>

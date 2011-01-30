@@ -40,7 +40,7 @@
 
 	$graph = array();
 	if (($o == "c" || $o == "w") && $graph_id)	{
-		$res =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$graph_id."' LIMIT 1");
+		$res = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$graph_id."' LIMIT 1");
 		/*
 		 * Set base value
 		 */
@@ -52,8 +52,8 @@
 	# Components comes from DB -> Store in $compos Array
 
 	$compos = array();
-	$res =& $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER BY name");
-	while ($compo =& $res->fetchRow())
+	$res = $pearDB->query("SELECT compo_id, name FROM giv_components_template ORDER BY name");
+	while ($compo = $res->fetchRow())
 		$compos[$compo["compo_id"]] = $compo["name"];
 	$res->free();
 
@@ -113,7 +113,7 @@
 						"15552000"=>_("Last 6 Months"),
 						"31104000"=>_("Last Year"));
 
-	$sel =& $form->addElement('select', 'period', _("Graph Period"), $periods);
+	$sel = $form->addElement('select', 'period', _("Graph Period"), $periods);
 	$steps = array(	"0"=>_("No Step"),
 					"2"=>"2",
 					"6"=>"6",
@@ -122,7 +122,7 @@
 					"50"=>"50",
 					"100"=>"100");
 
-	$sel =& $form->addElement('select', 'step', _("Recovery Step"), $steps);
+	$sel = $form->addElement('select', 'step', _("Recovery Step"), $steps);
 
 	$TabColorNameAndLang 	= array(	"bg_grid_color"=>_("Grid background color"),
                                     	"grid_main_color"=>_("Main grid color"),
@@ -161,7 +161,7 @@
 	 * Components linked with
 	 */
 	$form->addElement('header', 'compos', _("Data Source Choice"));
-	$ams1 =& $form->addElement('advmultiselect', 'graph_compos', array(_("Data Source List"),_("Available"), _("Selected")), $compos, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'graph_compos', array(_("Data Source List"),_("Available"), _("Selected")), $compos, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -174,7 +174,7 @@
 	$form->setDefaults(array('action'=>'1'));
 
 	$form->addElement('hidden', 'graph_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -204,12 +204,12 @@
 	    $form->setDefaults($graph);
 		$form->freeze();
 	} else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Delete"));
 	    $form->setDefaults($graph);
 	} else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Delete"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Delete"));
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&graph_id=".$graph_id, "changeT"=>_("Modify")));
 
@@ -239,7 +239,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$graphObj =& $form->getElement('graph_id');
+		$graphObj = $form->getElement('graph_id');
 		if ($form->getSubmitValue("submitA"))
 			$graphObj->setValue(insertGraphTemplateInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -255,7 +255,7 @@
 		require_once("listGraphTemplates.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

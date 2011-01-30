@@ -44,7 +44,7 @@
 	#
 	$host = array();
 	if (($o == "c" || $o == "w") && $host_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM host, extended_host_information ehi WHERE host_id = '".$host_id."' AND ehi.host_host_id = host.host_id LIMIT 1");
 
 		# Set base value
 		if ($DBRESULT->numRows())	{
@@ -61,29 +61,29 @@
 			$DBRESULT->free();
 
 			# Set Contact Group
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-			for($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
+			$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
+			for($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
 				$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
 			$DBRESULT->free();
 
 			/*
 			 * Set Contacts
 			 */
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
+			$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
 			for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
 				$host["host_cs"][$i] = $notifC["contact_id"];
 			$DBRESULT->free();
 
 			# Set Host Parents
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
-			for($i = 0; $parent =& $DBRESULT->fetchRow(); $i++)
+			$DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$host_id."'");
+			for($i = 0; $parent = $DBRESULT->fetchRow(); $i++)
 				$host["host_parents"][$i] = $parent["host_parent_hp_id"];
 			$DBRESULT->free();
 
 			# Set Service Templates Childs
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
-			for($i = 0; $svTpl =& $DBRESULT->fetchRow(); $i++){
-				$DBRESULT2 =& $pearDB->query("SELECT service_register FROM service WHERE service_id = '".$svTpl['service_service_id']."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$host_id."'");
+			for($i = 0; $svTpl = $DBRESULT->fetchRow(); $i++){
+				$DBRESULT2 = $pearDB->query("SELECT service_register FROM service WHERE service_id = '".$svTpl['service_service_id']."' LIMIT 1");
 				$tpReg = $DBRESULT2->fetchRow();
 				if ($tpReg['service_register'] == 0)
 					$host["host_svTpls"][$i] = $svTpl["service_service_id"];
@@ -101,8 +101,8 @@
 	 */
 	$host_tmplt_who_use_me = array();
 	if (isset($_GET["host_id"]) && $_GET["host_id"]){
-		$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$_GET["host_id"]."'");
-		while($host_tmpl_father =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_template_model_htm_id = '".$_GET["host_id"]."'");
+		while($host_tmpl_father = $DBRESULT->fetchRow())
 			$host_tmplt_who_use_me[$host_tmpl_father["host_id"]] = $host_tmpl_father["host_name"];
 		$DBRESULT->free();
 	}
@@ -111,8 +111,8 @@
 	 * Host Templates comes from DB -> Store in $hTpls Array
 	 */
 	$hTpls = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
-	while($hTpl =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_register = '0' AND host_id != '".$host_id."' ORDER BY host_name");
+	while($hTpl = $DBRESULT->fetchRow())	{
 		if (!$hTpl["host_name"])
 			$hTpl["host_name"] = getMyHostName($hTpl["host_template_model_htm_id"])."'";
 		if (!isset($host_tmplt_who_use_me[$hTpl["host_id"]]))
@@ -121,8 +121,8 @@
 	$DBRESULT->free();
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array();
-	$DBRESULT =& $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
-	while($svTpl =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' ORDER BY service_description");
+	while($svTpl = $DBRESULT->fetchRow())	{
 		if (!$svTpl["service_description"])
 			$svTpl["service_description"] = getMyServiceName($svTpl["service_template_model_stm_id"])."'";
 		else	{
@@ -135,15 +135,15 @@
 
 	# Timeperiods comes from DB -> Store in $tps Array
 	$tps = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while($tp =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	while($tp = $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	while($checkCmd =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	while($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -156,7 +156,7 @@
 	 * Contacts come from DB -> Store in $notifCs Array
 	 */
 	$notifCs = array();
-	$DBRESULT =& $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact ORDER BY contact_name");
 	while($notifC = $DBRESULT->fetchRow())
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	$DBRESULT->free();
@@ -167,7 +167,7 @@
 	 */
 	$mTp = array();
 	$k = 0;
-	$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
+	$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '". $host_id ."' ORDER BY `order`");
 	while($multiTp = $DBRESULT->fetchRow()) {
 		$mTp[$k] = $multiTp["host_tpl_id"];
 		$k++;
@@ -178,7 +178,7 @@
 	 *  Host on demand macro stored in DB
 	 */
 	$j = 0;
-	$DBRESULT =& $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
+	$DBRESULT = $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
 	while ($od_macro = $DBRESULT->fetchRow()){
 		$od_macro_id[$j] = $od_macro["host_macro_id"];
 		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
@@ -326,7 +326,7 @@
 	/*
 	 *  Contacts
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -336,7 +336,7 @@
 	/*
 	 *  Contact groups
 	 */
-	$ams3 =& $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -389,7 +389,7 @@
 		$form->addGroup($mc_mod_htpl, 'mc_mod_htpl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_htpl'=>'0'));
 	}
-	$ams3 =& $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -504,18 +504,18 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'host_id');
-	$reg =& $form->addElement('hidden', 'host_register');
+	$reg = $form->addElement('hidden', 'host_register');
 	$reg->setValue("0");
 	$host_register = 0;
-	$assoc =& $form->addElement('hidden', 'dupSvTplAssoc');
+	$assoc = $form->addElement('hidden', 'dupSvTplAssoc');
 	$assoc->setValue("0");
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	if (is_array($select))	{
 		$select_str = NULL;
 		foreach ($select as $key => $value)
 			$select_str .= $key.",";
-		$select_pear =& $form->addElement('hidden', 'select');
+		$select_pear = $form->addElement('hidden', 'select');
 		$select_pear->setValue($select_str);
 	}
 
@@ -559,19 +559,19 @@
 	}
 	# Modify a host information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($host);
 	}
 	# Add a host information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 	# Massive Change
 	else if ($o == "mc")	{
-		$subMC =& $form->addElement('submit', 'submitMC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subMC = $form->addElement('submit', 'submitMC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>1, "min"=>$min));
@@ -602,7 +602,7 @@
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{
-		$hostObj =& $form->getElement('host_id');
+		$hostObj = $form->getElement('host_id');
 		if ($form->getSubmitValue("submitA"))
 			$hostObj->setValue(insertHostInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -623,7 +623,7 @@
 		require_once($path."listHostTemplateModel.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

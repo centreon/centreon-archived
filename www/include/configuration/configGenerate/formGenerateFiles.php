@@ -57,7 +57,7 @@
 	/*
 	 *  Get Poller List
 	 */
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
 	$n = $DBRESULT->numRows();
 	/*
 	 * Display null option
@@ -69,7 +69,7 @@
 	/*
 	 * Display all servers list
 	 */
-	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	}
 	$DBRESULT->free();
@@ -108,7 +108,7 @@
 	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
 
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -117,7 +117,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', _("Export"));
+	$sub = $form->addElement('submit', 'submit', _("Export"));
 	$msg = NULL;
 	$stdout = NULL;
 	if ($form->validate()) {
@@ -141,10 +141,10 @@
 			/*
 			 * Request id and host type.
 			 */
-			$DBRESULT_Servers =& $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+			$DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
 			if (PEAR::isError($DBRESULT_Servers))
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
-			while ($tab =& $DBRESULT_Servers->fetchRow()){
+			while ($tab = $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && ($tab['id'] == $ret["host"] || $ret["host"] == 0)) {
 					unset($DBRESULT2);
 					if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN" &&
@@ -201,8 +201,8 @@
 		 */
 
 		$tab_server = array();
-		$DBRESULT_Servers =& $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
-		while ($tab =& $DBRESULT_Servers->fetchRow()) {
+		$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
+		while ($tab = $DBRESULT_Servers->fetchRow()) {
 			if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
 				$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
 			}
@@ -212,7 +212,7 @@
 		 * If debug needed
 		 */
 		if (isset($ret["debug"]) && $ret["debug"])	{
-			$DBRESULT_Servers =& $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '1' LIMIT 1");
+			$DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '1' LIMIT 1");
 			$nagios_bin = $DBRESULT_Servers->fetchRow();
 			$DBRESULT_Servers->free();
 			$msg_debug = array();
@@ -248,8 +248,8 @@
 			/*
 			 * Copying image in logos directory
 			 */
-			$DBRESULT_imgs =& $pearDB->query("SELECT `dir_alias`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
-			while ($images =& $DBRESULT_imgs->fetchrow()){
+			$DBRESULT_imgs = $pearDB->query("SELECT `dir_alias`, `img_path` FROM `view_img`, `view_img_dir`, `view_img_dir_relation` WHERE dir_dir_parent_id = dir_id AND img_img_id = img_id");
+			while ($images = $DBRESULT_imgs->fetchrow()){
 				if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]))
 					mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
 				copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
@@ -300,8 +300,8 @@
 			/*
 			 * Get Init Script
 			 */
-			$DBRESULT =& $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
-			$serveurs =& $DBRESULT->fetchrow();
+			$DBRESULT = $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
+			$serveurs = $DBRESULT->fetchrow();
 			unset($DBRESULT);
 			(isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
 			unset($serveurs);
@@ -347,7 +347,7 @@
 					}
 					$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A restart signal has been sent to ".$host["name"]."\n");
 				}
-				$DBRESULT =& $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
+				$DBRESULT = $pearDB->query("UPDATE `nagios_server` SET `last_restart` = '".time()."' WHERE `id` = '".$host["id"]."' LIMIT 1");
 			}
 
 			foreach ($msg_restart as $key => $str) {
@@ -381,7 +381,7 @@
 	 * Apply a template definition
 	 */
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

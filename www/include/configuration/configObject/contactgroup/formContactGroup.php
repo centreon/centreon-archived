@@ -56,7 +56,7 @@
 		/*
 		 * Get host Group information
 		 */
-		$DBRESULT =& $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM `contactgroup` WHERE `cg_id` = '".$cg_id."' LIMIT 1");
 
 		/*
 		 * Set base value
@@ -66,8 +66,8 @@
 		/*
 		 * Set Contact Childs
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
-		for ($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
+		for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++)
 			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
 		$DBRESULT->free();
 	}
@@ -76,8 +76,8 @@
 	 * Contacts comes from DB -> Store in $contacts Array
 	 */
 	$contacts = array();
-	$DBRESULT =& $pearDB->query("SELECT `contact_id`, `contact_name` FROM `contact` ORDER BY `contact_name`");
-	while ($contact =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT `contact_id`, `contact_name` FROM `contact` ORDER BY `contact_name`");
+	while ($contact = $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
 	$DBRESULT->free();
@@ -110,7 +110,7 @@
 	 */
 	$form->addElement('header', 'notification', _("Relations"));
 
-	$ams1 =& $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'cg_contacts', array(_("Linked Contacts"), _("Available"), _("Selected")), $contacts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -133,7 +133,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'cg_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -174,21 +174,21 @@
 		/*
 		 * Modify a Contact Group information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($cg);
 	} else if ($o == "a")	{
 		/*
 		 * Add a Contact Group information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
 
-		$cgObj =& $form->getElement('cg_id');
+		$cgObj = $form->getElement('cg_id');
 
 		if ($form->getSubmitValue("submitA"))
 			$cgObj->setValue(insertContactGroupInDB());
@@ -204,7 +204,7 @@
 	if ($valid && $action["action"]["action"]) {
 		require_once($path."listContactGroup.php");
 	} else {
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

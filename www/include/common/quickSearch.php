@@ -128,7 +128,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl("./include/common/", $tpl);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form_search->accept($renderer);
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);

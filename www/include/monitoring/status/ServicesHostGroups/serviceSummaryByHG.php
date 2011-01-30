@@ -102,7 +102,7 @@
 
 	$tpl->assign('limit', $limit);
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
 	$tpl->assign('form', $renderer->toArray());

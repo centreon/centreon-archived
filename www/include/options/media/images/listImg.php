@@ -73,7 +73,7 @@
 		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id WHERE (img_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'  OR dir_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM view_img_dir LEFT JOIN view_img_dir_relation ON dir_dir_parent_id = dir_id LEFT JOIN view_img ON img_img_id = img_id ORDER BY dir_alias, img_name LIMIT ".$num * $limit.", ".$limit;
-	$res =& $pearDB->query($rq);
+	$res = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('form', 'GET', "?p=".$p);
 
@@ -81,9 +81,9 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $elem =& $res->fetchRow(); $i++) {
+	for ($i = 0; $elem = $res->fetchRow(); $i++) {
 		if (isset($elem['dir_id']) && !isset($elemArr[$elem['dir_id']])) {
-			$selectedDirElem =& $form->addElement('checkbox', "select[".$elem['dir_id']."]");
+			$selectedDirElem = $form->addElement('checkbox', "select[".$elem['dir_id']."]");
 			$selectedDirElem->setAttribute("onclick", "setSubNodes(this, 'select[".$elem['dir_id']."-')");
 			$rowOpt = array("RowMenu_select"=>$selectedDirElem->toHtml(),
 					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
@@ -99,7 +99,7 @@
 			    $searchOpt = "&search=".$search;
 			else
 			    $searchOpt = "";
-			$selectedImgElem =& $form->addElement('checkbox', "select[".$elem['dir_id']."-".$elem['img_id']."]");
+			$selectedImgElem = $form->addElement('checkbox', "select[".$elem['dir_id']."-".$elem['img_id']."]");
 			$rowOpt = array("RowMenu_select"=>$selectedImgElem->toHtml(),
 					"RowMenu_ImgLink"=>"?p=".$p."&o=ci&img_id=".$elem['img_id'],
 					"RowMenu_DirLink"=>"?p=".$p."&o=cd&dir_id=".$elem['dir_id'],
@@ -162,11 +162,11 @@
 	$form->setDefaults(array('o2' => NULL));
 
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	

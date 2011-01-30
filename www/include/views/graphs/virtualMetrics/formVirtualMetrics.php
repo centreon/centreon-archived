@@ -43,12 +43,12 @@
 	#
 	$vmetric = array();
 	if (($o == "c" || $o == "w") && $vmetric_id)	{
-		$p_qy =& $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
+		$p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
 		# Set base value
 		$vmetric = array_map("myDecode", $p_qy->fetchRow());
 		$p_qy->free();
 		$hs_data = array();
-		$p_qy =& $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id='".$vmetric["index_id"]."' LIMIT 1;");
+		$p_qy = $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id='".$vmetric["index_id"]."' LIMIT 1;");
 		$hs_data = $p_qy->fetchRow();
 		$vmetric["host_id"] = $hs_data["host_id"];
 	}
@@ -61,7 +61,7 @@
 	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
 	$mx_l = strlen($indds[""]);
 
-	$dbindd =& $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
+	$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
 	if (PEAR::isError($dbindd))
 		print "DB Error : ".$dbindd->getDebugInfo()."<br />";
 	while($indd = $dbindd->fetchRow()) {
@@ -126,7 +126,7 @@
 
 	
 	$form->addElement('hidden', 'vmetric_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	
 
@@ -163,14 +163,14 @@
 	}
 	# Modify
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$vmetric["host_id"].",".$vmetric["index_id"].");"));
 	   	$form->setDefaults($vmetric);
 	}
 	# Add
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(0,0)"));
 	}
 
 	if ($o == "c" || $o == "a") {
@@ -220,7 +220,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$vmetricObj =& $form->getElement('vmetric_id');
+		$vmetricObj = $form->getElement('vmetric_id');
 		if ($form->getSubmitValue("submitA"))
 			$vmetricObj->setValue(insertVirtualMetricInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -235,7 +235,7 @@
 		require_once("listVirtualMetrics.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

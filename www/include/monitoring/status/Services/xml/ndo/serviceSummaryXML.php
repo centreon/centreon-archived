@@ -144,7 +144,7 @@
 	/* ***********************************************
 	 * Get Pagination Rows
 	 */
-	$DBRESULT_PAGINATION =& $obj->DBNdo->query($rq_pagination);
+	$DBRESULT_PAGINATION = $obj->DBNdo->query($rq_pagination);
 	$numRows = $DBRESULT_PAGINATION->numRows();
 
 
@@ -163,8 +163,8 @@
 
 	$ct = 0;
 	$tab_final = array();
-	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
-	while ($ndo =& $DBRESULT_NDO1->fetchRow()){
+	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
+	while ($ndo = $DBRESULT_NDO1->fetchRow()){
 		$tab_final[$ndo["host_name"]]["nb_service_k"] = 0;
 		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0") {
 			$tab_final[$ndo["host_name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);

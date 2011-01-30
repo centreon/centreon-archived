@@ -94,7 +94,7 @@ $style = "one";
 $elemArr = array();
 foreach ($listDowntime as $dt) {
 	$moptions = "";
-	$selectedElements =& $form->addElement('checkbox', "select[".$dt['dt_id']."]");	
+	$selectedElements = $form->addElement('checkbox', "select[".$dt['dt_id']."]");	
 	if ($dt["dt_activate"]) {
 		$moptions .= "<a href='main.php?p=".$p."&dt_id=".$dt['dt_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 	} else {
@@ -152,11 +152,11 @@ $attrs2 = array(
 $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 $form->setDefaults(array('o2' => NULL));
 
-$o1 =& $form->getElement('o1');
+$o1 = $form->getElement('o1');
 $o1->setValue(NULL);
 $o1->setSelected(NULL);
 
-$o2 =& $form->getElement('o2');
+$o2 = $form->getElement('o2');
 $o2->setValue(NULL);
 $o2->setSelected(NULL);
 
@@ -165,7 +165,7 @@ $tpl->assign('limit', $limit);
 /*
  * Apply a template definition
  */
-$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);	
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("listDowntime.ihtml");

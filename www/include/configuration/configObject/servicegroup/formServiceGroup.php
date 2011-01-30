@@ -45,18 +45,18 @@
 
 	$sg = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 
 		# Set base value
 		$sg = array_map("myDecode", $DBRESULT->fetchRow());
 
 		# Set ServiceGroup Childs
-		$DBRESULT =& $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
-		for ($i = 0; $host =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
+		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
 
-		$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
-		for ($i = 0; $services =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
+		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++)
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
 		$DBRESULT->free();
 	}
@@ -68,8 +68,8 @@
 	$hgServices = array();
 	$initName = NULL;
 
-	$DBRESULT =& $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($host["host_id"]);
 		foreach ($services as $key => $s)
 			$hServices[$host["host_id"]."-".$key] = $host["host_name"]."&nbsp;-&nbsp;".$s;
@@ -77,13 +77,13 @@
 	}
 	$DBRESULT->free();
 
-	$DBRESULT =& $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
+	$DBRESULT = $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 									"FROM host_service_relation hsr, service sv, hostgroup hg " .
 									"WHERE sv.service_register = '1' " .
 									"AND hsr.service_service_id = sv.service_id " .
 									"AND hg.hg_id = hsr.hostgroup_hg_id " .
 									"ORDER BY hg.hg_name, sv.service_description");
-	while ($elem =& $DBRESULT->fetchRow())	{
+	while ($elem = $DBRESULT->fetchRow())	{
 		# If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
 		if (!$elem["service_description"])
 			$elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
@@ -128,14 +128,14 @@
 	## Services Selection
 	##
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 =& $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 =& $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($template);
@@ -158,7 +158,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'sg_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -194,14 +194,14 @@
 	}
 	# Modify a Service Group information
 	else if ($o == "c")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($sg);
 	}
 	# Add a Service Group information
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('nagios', $oreon->user->get_version());
@@ -217,7 +217,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$sgObj =& $form->getElement('sg_id');
+		$sgObj = $form->getElement('sg_id');
 		if ($form->getSubmitValue("submitA"))
 			$sgObj->setValue(insertServiceGroupInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -233,7 +233,7 @@
 		require_once($path."listServiceGroup.php");
 	else	{
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

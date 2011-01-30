@@ -50,9 +50,9 @@
 	if (isset($search) && $search)
 		$SearchTool = "WHERE cgi_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 	
-	$DBRESULT =& $pearDB->query("SELECT COUNT(*) FROM cfg_cgi $SearchTool");
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_cgi $SearchTool");
 		
-	$tmp =& $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	$DBRESULT->free();
 	
@@ -84,7 +84,7 @@
 		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi $SearchTool ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT cgi_id, cgi_name, cgi_comment, cgi_activate FROM cfg_cgi ORDER BY cgi_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
@@ -97,9 +97,9 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $cgi =& $DBRESULT->fetchRow(); $i++) {		
+	for ($i = 0; $cgi = $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$cgi['cgi_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$cgi['cgi_id']."]");	
 		if ($cgi["cgi_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&cgi_id=".$cgi['cgi_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
@@ -155,11 +155,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -168,7 +168,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listCGI.ihtml");

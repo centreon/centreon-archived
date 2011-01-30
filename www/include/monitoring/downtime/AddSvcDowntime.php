@@ -83,8 +83,8 @@
 					"WHERE host_register = '1' " .
 					$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) .
 					"ORDER BY host_name";
-			$DBRESULT =& $pearDB->query($query);
-			while ($host =& $DBRESULT->fetchRow()){
+			$DBRESULT = $pearDB->query($query);
+			while ($host = $DBRESULT->fetchRow()){
 				$hosts[$host["host_id"]]= $host["host_name"];
 			}
 			$DBRESULT->free();
@@ -107,11 +107,11 @@
 			/*
 			 * Indicator basic information
 			 */
-			$redirect =& $form->addElement('hidden', 'o');
+			$redirect = $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
 
-		    $selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-			$selSv =& $form->addElement('select', 'service_id', _("Service"), $services);
+		    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+			$selSv = $form->addElement('select', 'service_id', _("Service"), $services);
 		    $form->addElement('checkbox', 'persistant', _("Fixed"));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
@@ -127,8 +127,8 @@
 
 			$form->setDefaults($data);
 
-			$subA =& $form->addElement('submit', 'submitA', _("Save"));
-			$res =& $form->addElement('reset', 'reset', _("Reset"));
+			$subA = $form->addElement('submit', 'submitA', _("Save"));
+			$res = $form->addElement('reset', 'reset', _("Reset"));
 
 		  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
 				if (!isset($_POST["persistant"]))
@@ -147,7 +147,7 @@
 				/*
 				 * Apply a template definition
 				 */
-				$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+				$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 				$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 				$form->accept($renderer);

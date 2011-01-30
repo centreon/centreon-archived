@@ -87,7 +87,7 @@
 		include_once("../errors/alt_error.php");
 	} else {
 
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
+		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
 					$oreon->user->access->queryBuilder("AND", "host_host_id", $oreon->user->access->getHostsString("ID", $pearDBndo)));
 		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
 			$hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
@@ -151,10 +151,10 @@
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
 				" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."' AND no.object_id = ns.service_object_id";
 
-		$DBRESULT_NDO =& $pearDBndo->query($rq);
+		$DBRESULT_NDO = $pearDBndo->query($rq);
 		$tab_status_service = array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
 
-		while ($ndo =& $DBRESULT_NDO->fetchRow()) {
+		while ($ndo = $DBRESULT_NDO->fetchRow()) {
 			if ($ndo["service_description"] == $svc_description) {
 				$service_status[$host_name."_".$svc_description] = $ndo;
 			}
@@ -176,12 +176,12 @@
 		$rq2 =	"SELECT nhs.current_state" .
 				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
-		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		$ndo2 =& $DBRESULT_NDO->fetchRow();
+		$DBRESULT_NDO = $pearDBndo->query($rq2);
+		$ndo2 = $DBRESULT_NDO->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 
-		$DBRESULT =& $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
-		$host =& $DBRESULT->fetchrow();
+		$DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
+		$host = $DBRESULT->fetchrow();
 		//$host_id = getMyHostID($host["host_name"]);
 		$DBRESULT->free();
 		/*
@@ -206,8 +206,8 @@
 		$rq2 =	" SELECT DISTINCT cmt.comment_time as entry_time, cmt.comment_id, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
 				" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
-		$DBRESULT_NDO =& $pearDBndo->query($rq2);
-		for ($i = 0; $data =& $DBRESULT_NDO->fetchRow(); $i++){
+		$DBRESULT_NDO = $pearDBndo->query($rq2);
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 			$tabCommentServices[$i] = $data;
 			$tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
 		}
@@ -304,10 +304,10 @@
 		$optionsURL = "session_id=".session_id()."&host_name=".$host_name."&service_description=".$svc_description;
 
 
-		$DBRES =& $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
+		$DBRES = $pearDBO->query("SELECT id FROM `index_data` WHERE host_name LIKE '".$pearDBO->escape($host_name)."' AND service_description LIKE '".$pearDBO->escape($svc_description)."' LIMIT 1");
 		$index_data = 0;
 		if ($DBRES->numRows()) {
-			$row =& $DBRES->fetchRow();
+			$row = $DBRES->fetchRow();
 			$index_data = $row['id'];
 		}
 		$optionsURL2 = "session_id=".session_id()."&index=".$index_data;
@@ -476,7 +476,7 @@
 		/* Dynamics tools */
 		/**/
 		$tools = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM modules_informations");
+		$DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
 		while($module = $DBRESULT->fetchrow())
 		{
 			if(isset($module['svc_tools']) && $module['svc_tools'] == 1 && file_exists('modules/'.$module['name'].'/svc_tools.php'))

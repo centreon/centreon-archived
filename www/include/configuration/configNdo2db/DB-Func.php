@@ -44,8 +44,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('ndo2db_id');
-		$DBRESULT =& $pearDB->query("SELECT description, id FROM cfg_ndo2db WHERE `description` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$ndo2db =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT description, id FROM cfg_ndo2db WHERE `description` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$ndo2db = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndo2db["id"] == $id)#Modif case	
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $ndo2db["id"] != $id)#Duplicate entry
@@ -57,26 +57,26 @@
 	function enableNdo2dbInDB ($id = null)	{
 		if (!$id) return;
 		global $pearDB, $oreon;
-		$DBRESULT =& $pearDB->query("UPDATE `cfg_ndo2db` SET `activate` = '1' WHERE id = '".$id."'");
+		$DBRESULT = $pearDB->query("UPDATE `cfg_ndo2db` SET `activate` = '1' WHERE id = '".$id."'");
 	}
 	
 	function disableNdo2dbInDB ($id = null)	{
 		if (!$id) return;
 		global $pearDB,$oreon;
-		$DBRESULT =& $pearDB->query("UPDATE `cfg_ndo2db` SET `activate` = '0' WHERE id = '".$id."'");
+		$DBRESULT = $pearDB->query("UPDATE `cfg_ndo2db` SET `activate` = '0' WHERE id = '".$id."'");
 	}
 	
 	function deleteNdo2dbInDB ($ndo2db = array())	{
 		global $pearDB;
 		foreach ($ndo2db as $key => $value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM `cfg_ndo2db` WHERE id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `cfg_ndo2db` WHERE id = '".$key."'");
 		}
 	}
 	
 	function multipleNdo2dbInDB ($ndo2db = array(), $nbrDup = array())	{
 		foreach($ndo2db as $key => $value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndo2db` WHERE id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `cfg_ndo2db` WHERE id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["activate"] = '0';
@@ -89,7 +89,7 @@
 				}
 				if (testExistence($nagios_name))	{
 					$val ? $rq = "INSERT INTO `cfg_ndo2db` VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 				}
 			}
 		}
@@ -135,8 +135,8 @@
         isset($ret["max_hostchecks_age"]) && $ret["max_hostchecks_age"] != NULL ? $rq .= "'".htmlentities($ret["max_hostchecks_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["max_eventhandlers_age"]) && $ret["max_eventhandlers_age"] != NULL ? $rq .= "'".htmlentities($ret["max_eventhandlers_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."')" : $rq .= "NULL )";
-       	$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `cfg_ndo2db`");
+       	$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM `cfg_ndo2db`");
 		$ndo2db_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndo2db_id["MAX(id)"]);
@@ -169,6 +169,6 @@
         isset($ret["max_eventhandlers_age"]) && $ret["max_eventhandlers_age"] != NULL ? $rq .= "max_eventhandlers_age = '".htmlentities($ret["max_eventhandlers_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_eventhandlers_age = NULL, ";
        	$rq .= "activate = '".$ret["activate"]["activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 ?>

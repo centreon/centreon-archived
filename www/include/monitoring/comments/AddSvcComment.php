@@ -85,9 +85,9 @@
 					"WHERE host_register = '1' " .
 					$oreon->user->access->queryBuilder("AND", "host_id", $hostStr) . 
 					"ORDER BY host_name";
-			$DBRESULT =& $pearDB->query($query);
+			$DBRESULT = $pearDB->query($query);
 			$hosts = array(NULL => NULL);			
-			while ($row =& $DBRESULT->fetchRow())
+			while ($row = $DBRESULT->fetchRow())
 				$hosts[$row['host_id']] = $row['host_name'];
 			$DBRESULT->free();
 		
@@ -111,11 +111,11 @@
 			## Indicator basic information
 			#
 			
-			$redirect =& $form->addElement('hidden', 'o');
+			$redirect = $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
 		    
-			$selHost =& $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
-			$selSv =& $form->addElement('select', 'service_id', _("Service"), $services);
+			$selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
+			$selSv = $form->addElement('select', 'service_id', _("Service"), $services);
 			$form->addElement('checkbox', 'persistant', _("Persistent"));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 			
@@ -126,8 +126,8 @@
 			$form->addRule('service_id', _("Required Field"), 'required');
 			$form->addRule('comment', _("Required Field"), 'required');	
 			
-			$subA =& $form->addElement('submit', 'submitA', _("Save"));
-			$res =& $form->addElement('reset', 'reset', _("Reset"));
+			$subA = $form->addElement('submit', 'submitA', _("Save"));
+			$res = $form->addElement('reset', 'reset', _("Reset"));
 		  	
 		  	$form->setDefaults($data);
 		  
@@ -146,7 +146,7 @@
 				$tpl = initSmartyTpl($path, $tpl, "template/");
 					
 				#Apply a template definition	
-				$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+				$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 				$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 				$form->accept($renderer);	

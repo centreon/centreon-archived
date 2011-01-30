@@ -65,8 +65,8 @@
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
@@ -165,8 +165,8 @@
 	/*
 	 * Request
 	 */
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
-	if ($ndo =& $DBRESULT_NDO1->fetchRow()){
+	$DBRESULT_NDO1 = $pearDBndo->query($rq1);
+	if ($ndo = $DBRESULT_NDO1->fetchRow()){
 
 		$buffer->writeElement("svc_name", $ndo["service_description"], false);
 

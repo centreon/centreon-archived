@@ -48,8 +48,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('meta_id');
-		$DBRESULT =& $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$meta =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$meta = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id)	
 			return true;
@@ -63,38 +63,38 @@
 	function enableMetaServiceInDB ($meta_id = null)	{
 		if (!$meta_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE meta_service SET meta_activate = '1' WHERE meta_id = '".$meta_id."'");
+		$DBRESULT = $pearDB->query("UPDATE meta_service SET meta_activate = '1' WHERE meta_id = '".$meta_id."'");
 	}
 	
 	function disableMetaServiceInDB ($meta_id = null)	{
 		if (!$meta_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '".$meta_id."'");
+		$DBRESULT = $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '".$meta_id."'");
 	}
 	
 	function deleteMetaServiceInDB ($metas = array())	{
 		global $pearDB;
 		foreach($metas as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$key."'");
 		}
 	}
 	
 	function enableMetricInDB ($msr_id = null)	{
 		if (!$msr_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE meta_service_relation SET activate = '1' WHERE msr_id = '".$msr_id."'");
+		$DBRESULT = $pearDB->query("UPDATE meta_service_relation SET activate = '1' WHERE msr_id = '".$msr_id."'");
 	}
 	
 	function disableMetricInDB ($msr_id = null)	{
 		if (!$msr_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE meta_service_relation SET activate = '0' WHERE msr_id = '".$msr_id."'");
+		$DBRESULT = $pearDB->query("UPDATE meta_service_relation SET activate = '0' WHERE msr_id = '".$msr_id."'");
 	}
 	
 	function deleteMetricInDB ($metrics = array())	{
 		global $pearDB;
 		foreach($metrics as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM meta_service_relation WHERE msr_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM meta_service_relation WHERE msr_id = '".$key."'");
 		}
 	}	
 	
@@ -103,7 +103,7 @@
 		foreach($metas as $key=>$value)	{
 			global $pearDB;
 			# Get all information about it
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["meta_id"] = '';
 			# Loop on the number of MetaService we want to duplicate
@@ -116,23 +116,23 @@
 				}
 				if (testExistence($meta_name))	{
 					$val ? $rq = "INSERT INTO meta_service VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
-					$DBRESULT =& $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query($rq);
+					$DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
+					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(meta_id)"]))	{
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
-						while($Cg =& $DBRESULT->fetchRow())	{
-							$DBRESULT2 =& $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$key."'");
+						while($Cg = $DBRESULT->fetchRow())	{
+							$DBRESULT2 = $pearDB->query("INSERT INTO meta_contactgroup_relation VALUES ('', '".$maxId["MAX(meta_id)"]."', '".$Cg["cg_cg_id"]."')");
 						}
-						$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '".$key."'");
-						while($metric =& $DBRESULT->fetchRow())	{
+						$DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE meta_id = '".$key."'");
+						while($metric = $DBRESULT->fetchRow())	{
 							$val = null;
 							$metric["msr_id"] = '';
 							foreach ($metric as $key2=>$value2)	{
 								$key2 == "meta_id" ? $value2 = $maxId["MAX(meta_id)"] : null;
 								$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 							}
-							$DBRESULT2 =& $pearDB->query("INSERT INTO meta_service_relation VALUES (".$val.")");
+							$DBRESULT2 = $pearDB->query("INSERT INTO meta_service_relation VALUES (".$val.")");
 						}
 					}
 				}
@@ -157,7 +157,7 @@
 		foreach($metrics as $key=>$value)	{
 			global $pearDB;
 			# Get all information about it
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["msr_id"] = '';
 			# Loop on the number of Metric we want to duplicate
@@ -167,7 +167,7 @@
 				foreach ($row as $key2=>$value2)
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				$val ? $rq = "INSERT INTO meta_service_relation VALUES (".$val.")" : $rq = null;
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT = $pearDB->query($rq);
 			}
 		}
 	}
@@ -204,8 +204,8 @@
 				isset($ret["meta_comment"]) && $ret["meta_comment"] != NULL ? $rq .= "'".htmlentities($ret["meta_comment"])."', " : $rq .= "NULL, ";
 				isset($ret["meta_activate"]["meta_activate"]) && $ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(meta_id) FROM meta_service");
 		$meta_id = $DBRESULT->fetchRow();
 		return ($meta_id["MAX(meta_id)"]);
 	}
@@ -256,7 +256,7 @@
 		$rq .= "meta_activate = ";
 		$ret["meta_activate"]["meta_activate"] != NULL ? $rq .= "'".$ret["meta_activate"]["meta_activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE meta_id = '".$meta_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 		
 	function updateMetaServiceContactGroup($meta_id = null)	{
@@ -265,7 +265,7 @@
 		global $pearDB;
 		$rq = "DELETE FROM meta_contactgroup_relation ";
 		$rq .= "WHERE meta_id = '".$meta_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
 		$ret = $form->getSubmitValue("ms_cgs");
 		$cg = new CentreonContactgroup($pearDB);
@@ -282,7 +282,7 @@
 			$rq .= "(meta_id, cg_cg_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$meta_id."', '".$ret[$i]."')";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 	
@@ -311,8 +311,8 @@
 				isset($ret["msr_comment"]) && $ret["msr_comment"] != NULL ? $rq .= "'".htmlentities($ret["msr_comment"])."', " : $rq .= "NULL, ";
 				isset($ret["activate"]["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."'" : $rq .= "NULL";
 				$rq .= ")";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(msr_id) FROM meta_service_relation");
 		$msr_id = $DBRESULT->fetchRow();
 		return ($msr_id["MAX(msr_id)"]);
 	}
@@ -336,6 +336,6 @@
 		$rq .= "activate = ";
 		$ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE msr_id = '".$msr_id."'";
-		$DBRESULT =& $pearDB->query($rq);		
+		$DBRESULT = $pearDB->query($rq);		
 	}
 ?>

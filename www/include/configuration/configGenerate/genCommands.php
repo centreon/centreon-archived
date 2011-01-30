@@ -44,13 +44,13 @@
 
 	$handle1 = create_file($nagiosCFGPath.$tab['id']."/misccommands.cfg", $oreon->user->get_name());
 	$handle2 = create_file($nagiosCFGPath.$tab['id']."/checkcommands.cfg", $oreon->user->get_name());
-	$DBRESULT =& $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
+	$DBRESULT = $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
 	$command = array();
 	$i1 = 1;
 	$i2 = 1;
 	$str1 = NULL;
 	$str2 = NULL;
-	while ($command =& $DBRESULT->fetchRow())	{
+	while ($command = $DBRESULT->fetchRow())	{
 
 		$command["command_line"] = str_replace('#BR#', "\\n", $command["command_line"]);
 		$command["command_line"] = str_replace('#T#', "\\t", $command["command_line"]);
@@ -75,8 +75,8 @@
 			/*
 			 * Display arguments used in the command line.
 			 */
-			$DBRESULT2 =& $pearDB->query("SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$command["command_id"]."' ORDER BY macro_name");
-			while ($args =& $DBRESULT2->fetchRow())	{
+			$DBRESULT2 = $pearDB->query("SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$command["command_id"]."' ORDER BY macro_name");
+			while ($args = $DBRESULT2->fetchRow())	{
 				$str2 .= print_line(";\$".$args["macro_name"]."\$", $args["macro_description"]);
 			}
 			$DBRESULT2->free();
@@ -100,8 +100,8 @@
 			/*
 			 * Display arguments used in the command line.
 			 */
-			$DBRESULT2 =& $pearDB->query("SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$command["command_id"]."' ORDER BY macro_name");
-			while ($args =& $DBRESULT2->fetchRow())	{
+			$DBRESULT2 = $pearDB->query("SELECT macro_name, macro_description FROM command_arg_description WHERE cmd_id = '".$command["command_id"]."' ORDER BY macro_name");
+			while ($args = $DBRESULT2->fetchRow())	{
 				$str2 .= print_line(";\$".$args["macro_name"]."\$", $args["macro_description"]);
 			}
 			$DBRESULT2->free();

@@ -104,8 +104,8 @@
 					"WHERE sgr.service_service_id = s.service_id " .
 					"AND s.service_description LIKE '%".$search."%' " .
 					"AND sgr.servicegroup_sg_id = '".$id."'";
-			$DBRES =& $pearDB->query($query);
-			while ($row =& $DBRES->fetchRow()) {
+			$DBRES = $pearDB->query($query);
+			while ($row = $DBRES->fetchRow()) {
 				$data[$row['host_host_id'] . "_" . $row['service_service_id']] = 1;
 			}
 		} else {
@@ -130,7 +130,7 @@
 		} else {
 			$query = "SELECT sg_id FROM `servicegroup`";
 		}
-		$DBRES =& $pearDB->query($query);
+		$DBRES = $pearDB->query($query);
 		return ($DBRES->numRows());
 	}
 
@@ -152,8 +152,8 @@
 		} else {
 			$query = "SELECT sg_id FROM `servicegroup`";
 		}
-		$DBRES =& $pearDB->query($query);
-		while ($row =& $DBRES->fetchRow()) {
+		$DBRES = $pearDB->query($query);
+		while ($row = $DBRES->fetchRow()) {
 			$tab[$row['sg_id']] = 1;
 		}
 		return $tab;
@@ -169,8 +169,8 @@
 
 	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]) {
-		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
-		$session =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
+		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
 		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 		$hoststr = $access->getHostsString("ID", $pearDBndo);
@@ -189,8 +189,8 @@
 	 * Create hostCahe
 	 */
 	$hostCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
-	while ($data =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+	while ($data = $DBRESULT->fetchRow())
 		$hostCache[$data["host_id"]] = $data["host_name"];
 	$DBRESULT->free();
 	unset($data);
@@ -200,8 +200,8 @@
 	 */
 	function setServiceCache($pearDB) {
 		$serviceCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
-		while ($data =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+		while ($data = $DBRESULT->fetchRow()) {
 			$serviceCache[$data["service_id"]] = $data["service_description"];
 		}
 		$DBRESULT->free();
@@ -213,8 +213,8 @@
 	 * Create hgCahe
 	 */
 	$hgCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
-	while ($data =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+	while ($data = $DBRESULT->fetchRow()) {
 		$hgCache[$data["hg_id"]] = $data["hg_name"];
 	}
 	$DBRESULT->free();
@@ -335,8 +335,8 @@
 			$buffer->writeAttribute("im1", "../16x16/clients.gif");
 			$buffer->writeAttribute("im2", "../16x16/clients.gif");
 
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' ".$searchSTR. $access->queryBuilder("AND", "host_id", $hoststr). " ORDER BY host_name");
-			while ($host =& $DBRESULT2->fetchRow()) {
+			$DBRESULT2 = $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' ".$searchSTR. $access->queryBuilder("AND", "host_id", $hoststr). " ORDER BY host_name");
+			while ($host = $DBRESULT2->fetchRow()) {
 				$i++;
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
@@ -354,8 +354,8 @@
 			 */
 			$lcaSG = $access->getServiceGroups();
 			$searchSG = getServiceGroupSearch($search_host);
-			$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
-			while ($SG =& $DBRESULT->fetchRow()) {
+			$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+			while ($SG = $DBRESULT->fetchRow()) {
 			    $i++;
 				if (($is_admin || (isset($lca["LcaSG"]) && isset($lca["LcaSG"][$SG["sg_id"]]))) && isset($searchSG[$SG['sg_id']])) {
 					$buffer->startElement("item");
@@ -374,7 +374,7 @@
 			 * Request build
 			 */
 			if ($search_host != "") {
-				$DBRESULT =& $pearDB->query(
+				$DBRESULT = $pearDB->query(
 					"SELECT hg_id, hg_name FROM hostgroup " .
 					"WHERE " .
 					"	hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation)  " .
@@ -382,7 +382,7 @@
 					"OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." " .
 					") ORDER BY `hg_name`");
 			} else {
-				$DBRESULT =& $pearDB->query(
+				$DBRESULT = $pearDB->query(
 					"SELECT hg_id, hg_name FROM hostgroup " .
 					"WHERE " .
 					"	hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) " .
@@ -390,7 +390,7 @@
 					"OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID"))." " .
 					") ORDER BY `hg_name`");
 			}
-			while ($HG =& $DBRESULT->fetchRow()) {
+			while ($HG = $DBRESULT->fetchRow()) {
 			    $i++;
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
@@ -409,10 +409,10 @@
 			if ($search_host != "") {
 				$searchSTR = " AND (`host_name` LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ";
 			}
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' " . $searchSTR . $access->queryBuilder("AND", "host_id", $hoststr) . " ORDER BY host_name");
+			$DBRESULT2 = $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' " . $searchSTR . $access->queryBuilder("AND", "host_id", $hoststr) . " ORDER BY host_name");
 			$cpt = 0;
 			$hostaloneSTR2 = "";
-			while ($host =& $DBRESULT2->fetchRow()) {
+			while ($host = $DBRESULT2->fetchRow()) {
 				$i++;
 		        if (!$cpt) {
 		        	$buffer->startElement("item");
@@ -449,11 +449,11 @@
 			}
 
 			if ($search_host != "") {
-				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ".$access->queryBuilder("AND", "meta_id", $metaString)." ORDER BY `meta_name`");
+				$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ".$access->queryBuilder("AND", "meta_id", $metaString)." ORDER BY `meta_name`");
 			} else {
-				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service ".$access->queryBuilder("WHERE", "meta_id", $metaString)." ORDER BY `meta_name`");
+				$DBRESULT = $pearDB->query("SELECT * FROM meta_service ".$access->queryBuilder("WHERE", "meta_id", $metaString)." ORDER BY `meta_name`");
 			}
-			while ($MS =& $DBRESULT->fetchRow()) {
+			while ($MS = $DBRESULT->fetchRow()) {
 				if (!$cpt) {
 					$buffer->startElement("item");
 					$buffer->writeAttribute("child", "1");
@@ -631,12 +631,12 @@
 		$buffer->writeAttribute("im2", "../16x16/clients.gif");
 
 		if ($search_host != "") {
-			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ORDER BY `hg_name`");
+			$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ORDER BY `hg_name`");
 		} else {
-			$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
+			$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ORDER BY `hg_name`");
 		}
 
-		while ($row =& $DBRESULT->fetchRow()) {
+		while ($row = $DBRESULT->fetchRow()) {
 			$hg_id = $row['hg_id'];
 			$hg_name = $row['hg_name'];
 
@@ -668,8 +668,8 @@
 							"WHERE h.host_id = hgr.host_host_id " .
 							"AND hgr.hostgroup_hg_id = '".$hg_id."' " .
 							$access->queryBuilder("AND", "hgr.host_host_id", $hoststr);
-					$DBRES =& $pearDB->query($query);
-					while ($row =& $DBRES->fetchRow()) {
+					$DBRES = $pearDB->query($query);
+					while ($row = $DBRES->fetchRow()) {
 						$host_id = $row['host_id'];
 			    		$host_name = $row['host_name'];
 
@@ -723,11 +723,11 @@
 		if ($search_host != "") {
 			$searchSTR = " AND (`host_name` LIKE '%$search_host%' OR `host_alias` LIKE '%$search_host%') ";
 		}
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' " . $searchSTR . $access->queryBuilder("AND", "host_id", $hoststr) . " ORDER BY host_name");
+		$DBRESULT2 = $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) AND host_register = '1' " . $searchSTR . $access->queryBuilder("AND", "host_id", $hoststr) . " ORDER BY host_name");
 		$cpt = 0;
 		$i = 0;
 		$hostaloneSTR2 = "";
-		while ($host =& $DBRESULT2->fetchRow()) {
+		while ($host = $DBRESULT2->fetchRow()) {
 			$i++;
 	       	if (!$cpt) {
 		       	$buffer->startElement("item");
@@ -790,11 +790,11 @@
 			$metaString = "''";
 		}
 		if ($search_host != "") {
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ".$access->queryBuilder("AND", "meta_id", $metaString)." ORDER BY `meta_name`");
+			$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE `meta_name` LIKE '%$search_host%' ".$access->queryBuilder("AND", "meta_id", $metaString)." ORDER BY `meta_name`");
 		} else {
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service ".$access->queryBuilder("WHERE", "meta_id", $metaString)." ORDER BY `meta_name`");
+			$DBRESULT = $pearDB->query("SELECT * FROM meta_service ".$access->queryBuilder("WHERE", "meta_id", $metaString)." ORDER BY `meta_name`");
 		}
-		while ($MS =& $DBRESULT->fetchRow()) {
+		while ($MS = $DBRESULT->fetchRow()) {
 			if (!$cpt) {
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
@@ -824,7 +824,7 @@
 		/*
 		 * Display SG
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 		if ($DBRESULT->numrows()) {
 			$buffer->startElement("item");
 			$buffer->writeAttribute("nocheckbox", "1");

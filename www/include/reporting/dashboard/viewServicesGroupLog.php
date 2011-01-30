@@ -62,7 +62,7 @@
 	$form->addElement('hidden', 'period', $period);
 	/*$form->addElement('hidden', 'StartDate', $get_date_start);
 	$form->addElement('hidden', 'EndDate', $get_date_end);*/
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 	if (isset($id))
 		$form->setDefaults(array('item' => $id));

@@ -48,24 +48,24 @@
 	 * Host Dependancies 
 	 */
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostParent_relation dhpr WHERE dhpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostChild_relation dhcr WHERE dhcr.dependency_dep_id = dep.dep_id) > 0";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$dependency = array();
 	$i = 1;
 	$str = "";
-	while ($dependency =& $DBRESULT->fetchRow()) {
+	while ($dependency = $DBRESULT->fetchRow()) {
 		
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
+		$DBRESULT2 = $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostParent_relation dhpr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhpr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhpr.host_host_id");
 		$host = array();
 		$strTemp1 = "";
-		while ($host =& $DBRESULT2->fetchRow())	{
+		while ($host = $DBRESULT2->fetchRow())	{
 			if (isset($host_instance[$host["host_id"]]) && isset($gbArr[2][$host["host_id"]]))	
 				$strTemp1 != "" ? $strTemp1 .= ", ".$host["host_name"] : $strTemp1 = $host["host_name"];
 		}
 		
-		$DBRESULT2 =& $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
+		$DBRESULT2 = $pearDB->query("SELECT DISTINCT host.host_id, host.host_name FROM dependency_hostChild_relation dhcr, host, ns_host_relation nhr WHERE host.host_id = nhr.host_host_id AND nhr.nagios_server_id = '".$tab["id"]."' AND dhcr.dependency_dep_id = '".$dependency["dep_id"]."' AND host.host_id = dhcr.host_host_id");
 		$host = array();
 		$strTemp2 = "";
-		while ($host =& $DBRESULT2->fetchRow())	{
+		while ($host = $DBRESULT2->fetchRow())	{
 			if (isset($host_instance[$host["host_id"]]) && isset($gbArr[2][$host["host_id"]]))	
 				$strTemp2 != "" ? $strTemp2 .= ", ".$host["host_name"] : $strTemp2 = $host["host_name"];
 		}
@@ -99,9 +99,9 @@
 	 */
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgcr WHERE dhgcr.dependency_dep_id = dep.dep_id) > 0";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$dependency = array();
-	while ($dependency =& $DBRESULT->fetchRow())	{
+	while ($dependency = $DBRESULT->fetchRow())	{
 		$generated = 0;
 		$generated2 = 0;
 		$strDef = "";
@@ -114,10 +114,10 @@
 				"AND ns.host_host_id = h.host_id " . 
 				"AND h.host_activate = '1'"; 
 					
-		$DBRESULT2 =& $pearDB->query($query);
+		$DBRESULT2 = $pearDB->query($query);
 		$hg = array();
 		$strTemp1 = "";
-		while ($hg =& $DBRESULT2->fetchRow())	{
+		while ($hg = $DBRESULT2->fetchRow())	{
 			if ($gbArr[3][$hg["hg_id"]] && $generatedHG[$hg["hg_id"]]){
 				$generated++;
 				$strTemp1 != "" ? $strTemp1 .= ", ".$hg["hg_name"] : $strTemp1 = $hg["hg_name"];
@@ -133,10 +133,10 @@
 				"AND ns.host_host_id = h.host_id " . 
 				"AND h.host_activate = '1'";
 		
-		$DBRESULT2 =& $pearDB->query($query);
+		$DBRESULT2 = $pearDB->query($query);
 		$hg = array();
 		$strTemp2 = "";
-		while ($hg =& $DBRESULT2->fetchRow())	{
+		while ($hg = $DBRESULT2->fetchRow())	{
 			if ($gbArr[3][$hg["hg_id"]] && $generatedHG[$hg["hg_id"]])	{
 				$strTemp2 != "" ? $strTemp2 .= ", ".$hg["hg_name"] : $strTemp2 = $hg["hg_name"];
 				$generated2++;
@@ -174,16 +174,16 @@
 	 * Services Dependancies
 	 */
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
-	while ($svPar =& $DBRESULT->fetchRow())	{
+	$DBRESULT = $pearDB->query("SELECT * FROM dependency_serviceParent_relation dspr, dependency WHERE dependency.dep_id = dspr.dependency_dep_id");
+	while ($svPar = $DBRESULT->fetchRow())	{
 		if (isset($gbArr[4][$svPar["service_service_id"]]))	{
 			$hPar = NULL;
 			if (isset($gbArr[2][$svPar["host_host_id"]]) && isset($host_instance[$svPar["host_host_id"]])) {						
 				$hPar = getMyHostName($svPar["host_host_id"]);
 			}
 			# Service Child
-			$DBRESULT2 =& $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
-			while ($svCh =& $DBRESULT2->fetchRow())	{
+			$DBRESULT2 = $pearDB->query("SELECT * FROM dependency_serviceChild_relation WHERE dependency_dep_id = '".$svPar["dependency_dep_id"]."'");
+			while ($svCh = $DBRESULT2->fetchRow())	{
 				$hCh = NULL;
 				if (isset($gbArr[4][$svCh["service_service_id"]])) {
 					if (isset($gbArr[2][$svCh["host_host_id"]]) && isset($gbArr[2][$svCh["host_host_id"]]) && isset($host_instance[$svCh["host_host_id"]]))	{					
@@ -227,9 +227,9 @@
 	 */
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgcr WHERE dsgcr.dependency_dep_id = dep.dep_id) > 0";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$dependency = array();
-	while($dependency =& $DBRESULT->fetchRow())	{
+	while($dependency = $DBRESULT->fetchRow())	{
 		$BP = false;
 		$query = "SELECT DISTINCT servicegroup.sg_id, servicegroup.sg_name ".
 				"FROM dependency_servicegroupParent_relation dsgpr, servicegroup, servicegroup_relation sgr, ns_host_relation ns, host h, service s ". 
@@ -243,10 +243,10 @@
 				"AND sgr.service_service_id = s.service_id " .
 				"AND s.service_activate = '1'";
 		
-		$DBRESULT2 =& $pearDB->query($query);
+		$DBRESULT2 = $pearDB->query($query);
 		$sg = array();
 		$strTemp1 = "";
-		while ($sg =& $DBRESULT2->fetchRow())	{
+		while ($sg = $DBRESULT2->fetchRow())	{
 			if (isset($gbArr[5][$sg["sg_id"]]))	
 				$strTemp1 != "" ? $strTemp1 .= ", ".$sg["sg_name"] : $strTemp1 = $sg["sg_name"];
 		}
@@ -264,10 +264,10 @@
 				"AND sgr.service_service_id = s.service_id " .
 				"AND s.service_activate = '1'";
 		
-		$DBRESULT2 =& $pearDB->query($query);
+		$DBRESULT2 = $pearDB->query($query);
 		$sg = array();
 		$strTemp2 = "";
-		while ($sg =& $DBRESULT2->fetchRow()) {
+		while ($sg = $DBRESULT2->fetchRow()) {
 			if (isset($gbArr[5][$sg["sg_id"]]))	
 				$strTemp2 != "" ? $strTemp2 .= ", ".$sg["sg_name"] : $strTemp2 = $sg["sg_name"];
 		}

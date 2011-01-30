@@ -60,7 +60,7 @@
 	/*
 	 * Check Session existence
 	 */
-	$session =& $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8")."'");
+	$session = $pearDB->query("SELECT user_id FROM `session` WHERE session_id = '".htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8")."'");
 	if (!$session->numRows()){
 		$buffer = new CentreonXML();
 		$buffer->startElement("root");
@@ -95,8 +95,8 @@
 	/*
 	 * Get CSS
 	 */
-	$DBRESULT2 =& $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".htmlentities($_GET["menu"], ENT_QUOTES, "UTF-8")."' LIMIT 1");
-	$menu_style =& $DBRESULT2->fetchRow();
+	$DBRESULT2 = $pearDB->query("SELECT css_name FROM `css_color_menu` WHERE menu_nb = '".htmlentities($_GET["menu"], ENT_QUOTES, "UTF-8")."' LIMIT 1");
+	$menu_style = $DBRESULT2->fetchRow();
 
 	ob_start();
 	require_once $centreon_path . "/www/Themes/Centreon-2/Color/" . $menu_style['css_name'];
@@ -113,10 +113,10 @@
 			"FROM topology " .
 			"WHERE topology_parent IS NULL ".$access->queryBuilder("AND", "topology_page", $topoStr) .
 			" AND topology_show = '1' ORDER BY topology_order";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$buffer->startElement("level_1");
-	while ($elem =& $DBRESULT->fetchRow()) {
+	while ($elem = $DBRESULT->fetchRow()) {
 		$buffer->startElement("Menu1");
 		$buffer->writeElement("Menu1Page", $elem["topology_page"]);
 		$buffer->writeElement("Menu1ClassImg", $_GET["menu"] == $elem["topology_page"] ? "Themes/Centreon-2" . substr($menu1_bgimg, 2) : "");
@@ -134,10 +134,10 @@
 			"WHERE topology_parent = '".$_GET["menu"]."' " .$access->queryBuilder("AND", "topology_page", $topoStr) .
 			"AND topology_show = '1' " .
 			"ORDER BY topology_group, topology_order";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$sep = "&nbsp;";
 	$buffer->startElement("level_2");
-	while ($elem =& $DBRESULT->fetchRow()) {
+	while ($elem = $DBRESULT->fetchRow()) {
 		$buffer->startElement("Menu2");
 		$buffer->writeElement("Menu2Sep", $sep);
 		$buffer->writeElement("Menu2Url", "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"]);

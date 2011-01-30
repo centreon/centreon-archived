@@ -83,23 +83,23 @@
 	 */
 	$ndo_base_prefix = getNDOPrefix();
 	$tab_nagios_server = array();
-	$DBRESULT =& $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
+	$DBRESULT = $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
 								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
 								"WHERE ndomod.activate = '1' " .
 								"AND ndomod.ns_nagios_server = n.id AND n.id = '".(isset($_POST["pollers"]) && $_POST["pollers"] != "" ? htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8") : 0)."' " .
 								"ORDER BY n.localhost DESC");
 
-	while ($nagios =& $DBRESULT->fetchRow()) {
+	while ($nagios = $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 
-		$DBRESULT2 =& $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['name']."'");
-		$row =& $DBRESULT2->fetchRow();
+		$DBRESULT2 = $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['name']."'");
+		$row = $DBRESULT2->fetchRow();
 		$DBRESULT2->free();
 
 		$instance_id = $row['instance_id'];
 		if ($instance_id) {
 
-			$DBRESULT3 =& $pearDBndo->query(
+			$DBRESULT3 = $pearDBndo->query(
 					"SELECT program_version, programstatus_id, " .
 					"pp.instance_id, UNIX_TIMESTAMP(status_update_time),  UNIX_TIMESTAMP(program_start_time),  UNIX_TIMESTAMP(program_end_time), " .
 					"is_currently_running, ps.process_id, daemon_mode, UNIX_TIMESTAMP(last_command_check), " .
@@ -109,7 +109,7 @@
 					"modified_host_attributes, modified_service_attributes, global_host_event_handler, global_service_event_handler " .
 					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' ORDER BY program_date DESC LIMIT 1");
 
-			$data =& $DBRESULT3->fetchRow();
+			$data = $DBRESULT3->fetchRow();
 
 			/*
 			 * Convert Date

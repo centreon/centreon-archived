@@ -86,9 +86,9 @@
 		if (!$svc_id) 
 			return;
 		
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
+		$DBRESULT = $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["host_id"];
 		}
 		return NULL;
@@ -172,8 +172,8 @@
  	 */
  
 	$graphTs = array( NULL => NULL );
-	$DBRESULT =& $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
-	while ($graphT =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
+	while ($graphT = $DBRESULT->fetchRow()) {
 		$graphTs[$graphT["graph_id"]] = $graphT["name"];
 	}
 	$DBRESULT->free();
@@ -301,28 +301,28 @@
 			$elem 			= array();
 		
 			$graphTs = array(NULL => NULL);
-			$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-			while ($graphT =& $DBRESULT->fetchRow())
+			$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+			while ($graphT = $DBRESULT->fetchRow())
 				$graphTs[$graphT["graph_id"]] = $graphT["name"];
 			$DBRESULT->free();
 
 			if ($type == "HS"){
 				$tab_tmp = split("_", $real_id);
-				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
-				$svc_id =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
+				$svc_id = $DBRESULT2->fetchRow();
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
-				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-				$GraphTemplate =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+				$GraphTemplate = $DBRESULT2->fetchRow();
 				if ($GraphTemplate["split_component"] == 1)
 					$split = 1;
 			}	
 			if ($type == "MS"){			
 				$other_services = array();
-				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if ($svc_id =& $DBRESULT2->fetchRow()){
+				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
+				if ($svc_id = $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						$meta =& $DBRESULT_meta->fetchRow();
+						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+						$meta = $DBRESULT_meta->fetchRow();
 						$DBRESULT_meta->free();
 						$svc_id["service_description"] = $meta["meta_name"];
 					}	
@@ -340,8 +340,8 @@
 			$service_id = $svc_id["service_id"];
 			$index_id = $svc_id["id"];
 		
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-			for ($counter = 0;$metrics_ret =& $DBRESULT2->fetchRow(); $counter++){
+			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
+			for ($counter = 0;$metrics_ret = $DBRESULT2->fetchRow(); $counter++){
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#S#', "/", $metrics_ret["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#BS#', "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
@@ -352,7 +352,7 @@
 			/*
 			 * verify if metrics in parameter is for this index
 			 */
-			$metrics_active =& $_GET["metric"];
+			$metrics_active = $_GET["metric"];
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)
@@ -361,17 +361,17 @@
 			
 			if ($msg_error == 0)	{
 				if (isset($_GET["metric"]) && $pass){
-					$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
+					$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
 					foreach ($metrics_active as $key => $metric){
 						if (isset($metrics_active[$key])){
-							$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index."');");
+							$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index."');");
 						}
 					}
 				} else {
-					$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index."' AND `contact_id` = '".$contact_id."'");
+					$DBRESULT = $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index."' AND `contact_id` = '".$contact_id."'");
 					$metrics_active = array();
 					if ($DBRESULT->numRows())
-						while ($metric =& $DBRESULT->fetchRow())
+						while ($metric = $DBRESULT->fetchRow())
 							$metrics_active[$metric["metric_id"]] = 1;		
 					else
 						foreach ($metrics as $key => $value)
@@ -385,14 +385,14 @@
 			$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);	
 				
 			if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-				$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-				$meta =& $DBRESULT_meta->fetchRow();
+				$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+				$meta = $DBRESULT_meta->fetchRow();
 				$svc_id["service_description"] = $meta["meta_name"];
 			}	
 			
 			if ($split){
-				$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-				for ($counter = 1;$metrics_ret =& $DBRESULT2->fetchRow(); $counter++){
+				$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
+				for ($counter = 1;$metrics_ret = $DBRESULT2->fetchRow(); $counter++){
 					if (isset($metrics_active[$metrics_ret["metric_id"]]) && $metrics_active[$metrics_ret["metric_id"]])
 						$metrics_list[$metrics_ret["metric_id"]] = $counter;
 				}
@@ -447,8 +447,8 @@
 		if ($type == "SS" || $type == "SM"){
 				
 			$graphTs = array(NULL=>NULL);
-			$DBRESULT =& $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
-			while ($graphT =& $DBRESULT->fetchRow())
+			$DBRESULT = $pearDB->query("SELECT graph_id,name FROM giv_graphs_template ORDER BY name");
+			while ($graphT = $DBRESULT->fetchRow())
 				$graphTs[$graphT["graph_id"]] = $graphT["name"];
 			$DBRESULT->free();
 			
@@ -458,7 +458,7 @@
 				$period =  $_POST["period"];
 			
 			# Verify if template exists
-			$DBRESULT =& $pearDB->query("SELECT * FROM `giv_graphs_template`");
+			$DBRESULT = $pearDB->query("SELECT * FROM `giv_graphs_template`");
 			if (!$DBRESULT->numRows())
 			
 			$label = NULL;
@@ -466,24 +466,24 @@
 		
 			if ($type == "SS"){
 				$tab_tmp = split("_", $openid);
-				$DBRESULT2 =& $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
-				$svc_id =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
+				$svc_id = $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 				
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
-				$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-				$GraphTemplate =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+				$GraphTemplate = $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 				if ($GraphTemplate["split_component"] == 1 ) 
 					$split = 1;
 			}	
 			if ($type == "SM"){
 				$other_services = array();
-				$DBRESULT2 =& $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if ($svc_id =& $DBRESULT2->fetchRow()){
+				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
+				if ($svc_id = $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-						$DBRESULT_meta =& $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						$meta =& $DBRESULT_meta->fetchRow();
+						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+						$meta = $DBRESULT_meta->fetchRow();
 						$svc_id["service_description"] = $meta["meta_name"];
 					}	
 					$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);
@@ -501,14 +501,14 @@
 			if ($template_id ==  1 && isset($svc_id["service_id"]))
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 	
-			$DBRESULT2 =& $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
-			$GraphTemplate =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
+			$GraphTemplate = $DBRESULT2->fetchRow();
 			if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1))
 				$split = 1;
 		
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' AND hidden = '0' ORDER BY `metric_name`");
+			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' AND hidden = '0' ORDER BY `metric_name`");
 			$counter = 0;
-			while ($metrics_ret =& $DBRESULT2->fetchRow()){			
+			while ($metrics_ret = $DBRESULT2->fetchRow()){			
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#BS#", "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
@@ -519,7 +519,7 @@
 			/*
 			 *  verify if metrics in parameter is for this index
 			 */
-			$metrics_active =& $_GET["metric"];
+			$metrics_active = $_GET["metric"];
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)
@@ -527,17 +527,17 @@
 						$pass = 1;
 			
 			if (isset($_GET["metric"]) && $pass){
-				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");
+				$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");
 				foreach ($metrics_active as $key => $metric){
 					if (isset($metrics_active[$metric["metric_id"]])){
-						$DBRESULT =& $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
+						$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
 					}
 				}
 			} else {
-				$DBRESULT =& $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index_id."' AND `contact_id` = '".$contact_id."'");
+				$DBRESULT = $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index_id."' AND `contact_id` = '".$contact_id."'");
 				$metrics_active = array();
 				if ($DBRESULT->numRows())
-					while ($metric =& $DBRESULT->fetchRow())
+					while ($metric = $DBRESULT->fetchRow())
 						$metrics_active[$metric["metric_id"]] = 1;		
 				else
 					foreach ($metrics as $key => $value)

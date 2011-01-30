@@ -60,7 +60,7 @@
 	require_once ($centreon_path . "www/class/centreonLang.class.php");
 
 	CentreonSession::start();
-	$oreon =& $_SESSION["centreon"];
+	$oreon = $_SESSION["centreon"];
 
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();
@@ -81,8 +81,8 @@
 
 	$is_admin = isUserAdmin($_GET["sid"]);
 	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$DBRESULT =& $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
-		$session =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
+		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
 		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 
@@ -107,8 +107,8 @@
 	 * Create hostCahe
 	 */
 	$hostCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
-	while ($data =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+	while ($data = $DBRESULT->fetchRow())
 		$hostCache[$data["host_id"]] = $data["host_name"];
 	$DBRESULT->free();
 	unset($data);
@@ -118,8 +118,8 @@
 	 */
 	function setServiceCache($pearDB) {
 		$serviceCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
-		while ($data =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+		while ($data = $DBRESULT->fetchRow())
 			$serviceCache[$data["service_id"]] = db2str($data["service_description"]);
 		$DBRESULT->free();
 		unset($data);
@@ -130,8 +130,8 @@
 	 * Create hgCahe
 	 */
 	$hgCache = array();
-	$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ hg_id, hg_name FROM hostgroup");
-	while ($data =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+	while ($data = $DBRESULT->fetchRow())
 		$hgCache[$data["hg_id"]] = $data["hg_name"];
 	$DBRESULT->free();
 	unset($data);
@@ -141,8 +141,8 @@
 	 */
 	function sethgHCache($pearDB) {
 		$hgHCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /** SQL_CACHE */ hostgroup_hg_id, host_host_id FROM hostgroup_relation hr, host h WHERE hr.host_host_id = h.host_id and h.host_register = '1'");
-		while ($data =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ hostgroup_hg_id, host_host_id FROM hostgroup_relation hr, host h WHERE hr.host_host_id = h.host_id and h.host_register = '1'");
+		while ($data = $DBRESULT->fetchRow()) {
 			if (!isset($hgHCache[$data["hostgroup_hg_id"]]))
 				$hgHCache[$data["hostgroup_hg_id"]] = array();
 			$hgHCache[$data["hostgroup_hg_id"]][$data["host_host_id"]] = 1;
@@ -265,8 +265,8 @@
 		} else if ($type == "HS") {
 			;
 		} else if ($type == "HO") {
-			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
-			while ($host =& $DBRESULT2->fetchRow()){
+			$DBRESULT2 = $pearDB->query("SELECT DISTINCT * FROM host WHERE host_id NOT IN (select host_host_id from hostgroup_relation) AND host_register = '1' order by host_name");
+			while ($host = $DBRESULT2->fetchRow()){
 				$i++;
 		        if ($is_admin || (isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host["host_name"]]))) {
 			        $buffer->startElement("item");
@@ -286,10 +286,10 @@
 			 */
 			$lcaSG = $access->getServiceGroups();
 			if ($search != "")
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup WHERE `sg_name` LIKE '%$search%' ORDER BY `sg_name`");
+				$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup WHERE `sg_name` LIKE '%$search%' ORDER BY `sg_name`");
 			else
-				$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
-			while ($SG =& $DBRESULT->fetchRow()){
+				$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
+			while ($SG = $DBRESULT->fetchRow()){
 			    $i++;
 				if (SGIsNotEmpty($SG["sg_id"])) {
 			        if ($is_admin || (isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))) {
@@ -312,10 +312,10 @@
 			$cpt = 0;
 			$str = 0;
 			if ($is_admin)
-				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+				$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
 			else
-				$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' AND `meta_id` IN (".$access->getMetaServiceString().") ORDER BY `meta_name`");
-			while ($MS =& $DBRESULT->fetchRow()){
+				$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' AND `meta_id` IN (".$access->getMetaServiceString().") ORDER BY `meta_name`");
+			while ($MS = $DBRESULT->fetchRow()){
 				$i++;
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "0");
@@ -339,10 +339,10 @@
 			 * Send Host Group list
 			 */
 			if ($search != "")
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
+				$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
 			else
-				$DBRESULT =& $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
-			while ($HG =& $DBRESULT->fetchRow()) {
+				$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
+			while ($HG = $DBRESULT->fetchRow()) {
 				$i++;
 				if (HG_has_one_or_more_host($HG["hg_id"], $hgHCache, $hgHgCache, $is_admin, $lca)){
 				    $buffer->startElement("item");
@@ -377,8 +377,8 @@
 					$access->queryBuilder("AND", "host_id", $hoststr).
 					"ORDER BY host_name";
 
-			$DBRESULT2 =& $pearDB->query($query);
-			while ($host =& $DBRESULT2->fetchRow()){
+			$DBRESULT2 = $pearDB->query($query);
+			while ($host = $DBRESULT2->fetchRow()){
 				$i++;
 				if (isset($hostWithGraph[$host["host_id"]])){
 			    	if (!$cpt) {
@@ -666,8 +666,8 @@
 		$buffer->writeAttribute("im2", "../16x16/server_network.gif");
 
 		if (isset($meta_checked) && count($meta_checked)) {
-			$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
-			while ($MS =& $DBRESULT->fetchRow()){
+			$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE `meta_activate` = '1' ORDER BY `meta_name`");
+			while ($MS = $DBRESULT->fetchRow()){
 				$buffer->startElement("item");
 				$buffer->writeAttribute("child", "0");
 				if (isset($meta_checked[$MS["meta_id"]]))

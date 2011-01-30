@@ -43,8 +43,8 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('nagios_id');
 
-		$DBRESULT =& $pearDB->query("SELECT nagios_name, nagios_id FROM cfg_nagios WHERE nagios_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$nagios =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT nagios_name, nagios_id FROM cfg_nagios WHERE nagios_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$nagios = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] == $id)
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $nagios["nagios_id"] != $id)
@@ -58,12 +58,12 @@
 		if (!$nagios_id)
 			return;
 
-		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'");
-		$data =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'");
+		$data = $DBRESULT->fetchRow();
 
-		$DBRESULT =& $pearDB->query("UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
+		$DBRESULT = $pearDB->query("UPDATE `cfg_nagios` SET `nagios_activate` = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
 
-		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'");
+		$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id."'");
 		$centreon->Nagioscfg = array();
 	}
 
@@ -73,17 +73,17 @@
 		if (!$nagios_id)
 			return;
 
-		$DBRESULT =& $pearDB->query("SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'");
-		$data =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `nagios_server_id` FROM cfg_nagios WHERE nagios_id = '".$nagios_id."'");
+		$data = $DBRESULT->fetchRow();
 
-		$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
+		$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE `nagios_server_id` = '".$data["nagios_server_id"]."'");
 
-		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios WHERE nagios_id != '".$nagios_id."'");
-		$maxId =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios WHERE nagios_id != '".$nagios_id."'");
+		$maxId = $DBRESULT->fetchRow();
 		if (isset($maxId["MAX(nagios_id)"]))	{
-			$DBRESULT2 =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$maxId["MAX(nagios_id)"]."'");
+			$DBRESULT2 = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$maxId["MAX(nagios_id)"]."'");
 			$centreon->Nagioscfg = array();
-			$DBRESULT2 =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+			$DBRESULT2 = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 			$centreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT2->free();
 		}
@@ -93,14 +93,14 @@
 		global $pearDB;
 
 		foreach ($nagios as $key => $value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
-			$DBRESULT =& $pearDB->query("DELETE FROM cfg_nagios_broker_module WHERE nagios_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM cfg_nagios WHERE nagios_id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM cfg_nagios_broker_module WHERE nagios_id = '".$key."'");
 		}
-		$DBRESULT =& $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");
+		$DBRESULT = $pearDB->query("SELECT nagios_id FROM cfg_nagios WHERE nagios_activate = '1'");
 		if (!$DBRESULT->numRows())	{
-			$DBRESULT2 =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
+			$DBRESULT2 = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
 			$nagios_id = $DBRESULT2->fetchRow();
-			$DBRESULT2 =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."'");
+			$DBRESULT2 = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '1' WHERE nagios_id = '".$nagios_id["MAX(nagios_id)"]."'");
 		}
 		$DBRESULT->free();
 	}
@@ -108,14 +108,14 @@
 	function multipleNagiosInDB ($nagios = array(), $nbrDup = array())	{
 		foreach ($nagios as $key => $value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["nagios_id"] = '';
 			$row["nagios_activate"] = '0';
 			$DBRESULT->free();
 			$rowBks = array();
-			$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$key."'");
-			while ($rowBk =& $DBRESULT->fetchRow())
+			$DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$key."'");
+			while ($rowBk = $DBRESULT->fetchRow())
 				$rowBks[] = $rowBk;
 			$DBRESULT->free();
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -126,16 +126,16 @@
 				}
 				if (testExistence($nagios_name))	{
 					$val ? $rq = "INSERT INTO cfg_nagios VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 					/* Find the new last nagios_id once */
-					$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
+					$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
 					$nagios_id = $DBRESULT->fetchRow();
 					$DBRESULT->free();
 					foreach ($rowBks as $keyBk=>$valBk){
 						if ($valBk["broker_module"]) {
 					        $rqBk = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$valBk["broker_module"]."')";
 						}
-						$DBRESULT =& $pearDB->query($rqBk);
+						$DBRESULT = $pearDB->query($rqBk);
 					}
 				}
 			}
@@ -318,8 +318,8 @@
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != 2 ? $rq .= "'".$ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]."', " : $rq .= "'2', ";
 		isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != 2 ? $rq .= "'".$ret["external_command_buffer_slots"]["external_command_buffer_slots"]."') " : $rq .= "'2') ";
 
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
 		$nagios_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		/*
@@ -333,17 +333,17 @@
 						# Insert broker module
 					    $rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$_POST[$inBr]."')";
 					}
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 				}
 			} else {
 				$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT = $pearDB->query($rq);
 			}
 		}
 		if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])	{
-			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
+			$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
 			$centreon->Nagioscfg = array();
-			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 			$centreon->Nagioscfg = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 		}
@@ -357,7 +357,7 @@
 			return;
 
 		if (isset($ret["nagios_server_id"])) {
-			$DBRESULT =& $pearDB->query("UPDATE cfg_nagios SET `nagios_server_id` != '".$ret["nagios_server_id"]."'");
+			$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET `nagios_server_id` != '".$ret["nagios_server_id"]."'");
 		}
 
 		$ret = array();
@@ -494,7 +494,7 @@
 
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 
 
 		/*
@@ -503,13 +503,13 @@
 		if (isset($_POST['lsOfBroker'])) {
 			/* Find how many Broker we already have */
 
-			$DBRESULT =& $pearDB->query("SELECT count(bk_mod_id) as nbOldBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
-			$nRow =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT count(bk_mod_id) as nbOldBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
+			$nRow = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 			$nbOldBroker = $nRow["nbOldBroker"];
 			$oldBks = array();
-			$DBRESULT =& $pearDB->query("SELECT bk_mod_id FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
-			while ($oldBk =& $DBRESULT->fetchRow()) {
+			$DBRESULT = $pearDB->query("SELECT bk_mod_id FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
+			while ($oldBk = $DBRESULT->fetchRow()) {
 				$oldBks[] = $oldBk;
 			}
 			$DBRESULT->free();
@@ -526,13 +526,13 @@
 						# Insert broker module
 						$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
 					}
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 					$cBk++;
 				}
 			}
 			while ( $cBk < $nbOldBroker ) {
 				$rq = "DELETE FROM cfg_nagios_broker_module WHERE bk_mod_id ='".$oldBks[$cBk]['bk_mod_id']."'";
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT = $pearDB->query($rq);
 				$cBk++;
 			}
 		}

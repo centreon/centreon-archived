@@ -43,7 +43,7 @@
 	$nagios = array();
 	$nagios_d = array();
 	if (($o == "c" || $o == "w") && $nagios_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios WHERE nagios_id = '".$nagios_id."' LIMIT 1");
 		# Set base value
 		$nagios = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
@@ -61,9 +61,9 @@
 	 *
 	 */
 	$checkCmds = array();
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command ORDER BY command_name");
 	$checkCmds = array(NULL => NULL);
-	while ($checkCmd =& $DBRESULT->fetchRow()) {
+	while ($checkCmd = $DBRESULT->fetchRow()) {
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	}
 	$DBRESULT->free();
@@ -72,7 +72,7 @@
 	 * Get all nagios servers
 	 */
 	$nagios_server = array(NULL => "");
-	$DBRESULT =& $pearDB->query("SELECT `name`, `id` FROM `nagios_server`");
+	$DBRESULT = $pearDB->query("SELECT `name`, `id` FROM `nagios_server`");
 	for ($i = 0; $ns = $DBRESULT->fetchRow(); $i++) {
 		$nagios_server[$ns["id"]] = $ns["name"];
 	}
@@ -84,8 +84,8 @@
 	 */
 	$nBk = 0;
 	$aBk = array();
-	$DBRESULT=& $pearDB->query("SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '".$nagios_id."'");
-	while ($lineBk =& $DBRESULT->fetchRow()){
+	$DBRESULT= $pearDB->query("SELECT bk_mod_id, broker_module FROM cfg_nagios_broker_module WHERE cfg_nagios_id = '".$nagios_id."'");
+	while ($lineBk = $DBRESULT->fetchRow()){
 		$aBk[$nBk] = $lineBk;
 		$nBk++;
 	}
@@ -664,7 +664,7 @@
 		));
 
 	$form->addElement('hidden', 'nagios_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	function slash($elem = NULL)	{
@@ -695,16 +695,16 @@
 		$form->freeze();
 	} else if ($o == "c")	{
 		# Modify a nagios information
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-#		$res =& $form->addElement('reset', 'reset', _("Reset"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+#		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
 
 		$form->setDefaults($nagios);
 	} else if ($o == "a")	{
 		# Add a nagios information
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-#		$res =& $form->addElement('reset', 'reset', _("Reset"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+#		$res = $form->addElement('reset', 'reset', _("Reset"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
 
 	}
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
@@ -722,7 +722,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$nagiosObj =& $form->getElement('nagios_id');
+		$nagiosObj = $form->getElement('nagios_id');
 		if ($form->getSubmitValue("submitA"))
 			$nagiosObj->setValue(insertNagiosInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -741,7 +741,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

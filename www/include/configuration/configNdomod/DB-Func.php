@@ -44,8 +44,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('id');
-		$DBRESULT =& $pearDB->query("SELECT description, id FROM cfg_ndomod WHERE `description` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$ndomod =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT description, id FROM cfg_ndomod WHERE `description` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$ndomod = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $ndomod["id"] == $id)#Modif case	
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $ndomod["id"] != $id)#Duplicate entry
@@ -57,26 +57,26 @@
 	function enableNdomodInDB ($id = null)	{
 		if (!$id) return;
 		global $pearDB, $oreon;
-		$DBRESULT =& $pearDB->query("UPDATE `cfg_ndomod` SET `activate` = '1' WHERE id = '".$id."'");
+		$DBRESULT = $pearDB->query("UPDATE `cfg_ndomod` SET `activate` = '1' WHERE id = '".$id."'");
 	}
 	
 	function disableNdomodInDB ($id = null)	{
 		if (!$id) return;
 		global $pearDB,$oreon;
-		$DBRESULT =& $pearDB->query("UPDATE `cfg_ndomod` SET `activate` = '0' WHERE id = '".$id."'");
+		$DBRESULT = $pearDB->query("UPDATE `cfg_ndomod` SET `activate` = '0' WHERE id = '".$id."'");
 	}
 	
 	function deleteNdomodInDB ($ndomod = array())	{
 		global $pearDB;
 		foreach($ndomod as $key => $value)	{
-			$DBRESULT =& $pearDB->query("DELETE FROM `cfg_ndomod` WHERE id = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `cfg_ndomod` WHERE id = '".$key."'");
 		}
 	}
 	
 	function multipleNdomodInDB ($ndomod = array(), $nbrDup = array())	{
 		foreach($ndomod as $key => $value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE id = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `cfg_ndomod` WHERE id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["activate"] = '0';
@@ -89,7 +89,7 @@
 				}
 				if (testExistence($nagios_name))	{
 					$val ? $rq = "INSERT INTO `cfg_ndomod` VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
+					$DBRESULT = $pearDB->query($rq);
 				}
 			}
 		}
@@ -114,7 +114,7 @@
 		 * Get Nagios Server List
 		 */
 		$nagios_servers = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+		$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 		while ($nagios_server = $DBRESULT->fetchRow())
 			$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 		$DBRESULT->free();
@@ -140,8 +140,8 @@
         isset($ret["data_processing_options"]) && $ret["data_processing_options"] != 2 ? $rq .= "'".$ret["data_processing_options"]."',  " : $rq .= "NULL, ";
         isset($ret["config_output_options"]) && $ret["config_output_options"] != 2 ? $rq .= "'".$ret["config_output_options"]."',  " : $rq .= "NULL, ";
         isset($ret["activate"]) && $ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."')" : $rq .= "NULL )";
-       	$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(id) FROM `cfg_ndomod`");
+       	$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM `cfg_ndomod`");
 		$ndomod_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndomod_id["MAX(id)"]);
@@ -156,7 +156,7 @@
 		 * Get Nagios Server List
 		 */
 		$nagios_servers = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+		$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 		while ($nagios_server = $DBRESULT->fetchRow())
 			$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 		$DBRESULT->free();
@@ -182,6 +182,6 @@
         isset($ret["config_output_options"]) && $ret["config_output_options"] != NULL ? $rq .= "config_output_options = '".htmlentities($ret["config_output_options"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "config_output_options = NULL, ";
         $rq .= "activate = '".$ret["activate"]["activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 ?>

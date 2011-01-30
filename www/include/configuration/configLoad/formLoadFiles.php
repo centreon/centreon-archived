@@ -38,8 +38,8 @@
 
 	global $pearDB;
 	
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('debug_nagios_import', 'debug_path')");
-	while ($res =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('debug_nagios_import', 'debug_path')");
+	while ($res = $DBRESULT->fetchRow())
 		$debug[$res["key"]] = $res["value"];
 	$DBRESULT->free(); 
 
@@ -51,8 +51,8 @@
 
 	# Get Poller List
 	$tab_nagios_server = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
-	while ($nagios =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `localhost` DESC");
+	while ($nagios = $DBRESULT->fetchRow())
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 	
 
@@ -106,7 +106,7 @@
 	$form->addElement('header', 'fileCmt1', _("It is recommanded to upload all the Command definitions first by specifying their types."));
 	$form->addElement('header', 'fileCmt2', _("Indeed, it's the only way to make a difference between Check and Notification Commands."));
 
-	$file =& $form->addElement('file', 'filename', _("File (zip, tar or cfg)"));
+	$file = $form->addElement('file', 'filename', _("File (zip, tar or cfg)"));
 	$form->addElement('textarea', 'manualDef', _("Manual Filling"), $attrsTextarea);
 
 	$form->addElement('header', 'result', _("Result"));
@@ -116,7 +116,7 @@
 	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '0'));
 
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	#
@@ -128,13 +128,13 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub =& $form->addElement('submit', 'submit', _("Load"));
+	$sub = $form->addElement('submit', 'submit', _("Load"));
 	$msg = NULL;
 	if ($form->validate()) {
 		$ret = $form->getSubmitValues();
 		$fDataz = array();
 		$buf = NULL;
-		$fDataz =& $file->getValue();
+		$fDataz = $file->getValue();
 
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : ". $fDataz["name"] . " -> ". $fDataz["type"]."\n", 3, $debug_path."cfgimport.log");
@@ -150,7 +150,7 @@
 
 		# Buffering Data
 		if (is_file($nagiosCFGPath.$fDataz["name"]))	{
-			$buf =& gzfile($nagiosCFGPath.$fDataz["name"]);
+			$buf = gzfile($nagiosCFGPath.$fDataz["name"]);
 			$buf ? $msg .= _("Data recovery OK")."<br />" :	$msg .= _("Data recovery KO")."<br />";
 		}
 		else if ($ret["manualDef"])	{
@@ -159,7 +159,7 @@
 
 			$msg .= _("Manual filling OK")."<br />";
 			$msg .= _("Data recovery OK")."<br />";
-			$buf =& explode("\n", $ret["manualDef"]);
+			$buf = explode("\n", $ret["manualDef"]);
 		}
 		# Enum Object Types
 		if ($buf)	{
@@ -191,7 +191,7 @@
 						if ($debug_nagios_import == 1)
 							error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Delete All Conf\n", 3, $debug_path."cfgimport.log");
 					}
-					$nbr =& insertCFG($buf, $ret);
+					$nbr = insertCFG($buf, $ret);
 					($nbr["cmd"] ? $msg .= "Command : ".$nbr["cmd"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["tp"] ? $msg .= "Time Period : ".$nbr["tp"]." "._("Entries are registered")."<br />" : 0);
 					($nbr["cct"] ? $msg .= "Contact : ".$nbr["cct"]." "._("Entries are registered")."<br />" : 0);
@@ -222,7 +222,7 @@
 	##Apply a template definition
 	#
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);

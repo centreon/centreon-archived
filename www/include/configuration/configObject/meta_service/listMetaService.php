@@ -98,9 +98,9 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $ms =& $DBRESULT->fetchRow(); $i++) {
+	for ($i = 0; $ms = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$ms['meta_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$ms['meta_id']."]");	
 		if ($ms["meta_select_mode"] == 1)
 			$moptions = "<a href='main.php?p=".$p."&meta_id=".$ms['meta_id']."&o=ci&search=".$search."'><img src='img/icones/16x16/signpost.gif' border='0' alt='"._("View")."'></a>&nbsp;&nbsp;";
 		else
@@ -166,11 +166,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	
@@ -179,7 +179,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listMetaService.ihtml");

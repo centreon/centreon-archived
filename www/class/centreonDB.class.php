@@ -313,8 +313,8 @@ class CentreonDB
 		$db_nameSec = str_replace("_", "\\\_", $this->dsn["database"]);
 		$db_nameSec = str_replace("-", "\\\-", $db_nameSec);
 
-		$DBRESULT =& $this->query("show grants");
-		while ($result =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $this->query("show grants");
+		while ($result = $DBRESULT->fetchRow()) {
 			foreach ($result as $key => $value)
 				;
 			$expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_name."`.\*/";

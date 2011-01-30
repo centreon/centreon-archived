@@ -44,19 +44,19 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_dependencies.cfg", $oreon->user->get_name());
 
 	$rq = "SELECT * FROM dependency dep WHERE (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceParent_relation dmspr WHERE dmspr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_metaserviceChild_relation dmscr WHERE dmscr.dependency_dep_id = dep.dep_id) > 0";
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	$dependency = array();
 	$i = 1;
 	$str = NULL;
-	while($dependency =& $DBRESULT->fetchRow())	{
+	while($dependency = $DBRESULT->fetchRow())	{
 		$BP = false;
-		$DBRESULT2 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
+		$DBRESULT2 = $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceParent_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
 		$metaPar = NULL;
-		while ($metaPar =& $DBRESULT2->fetchRow()) {
+		while ($metaPar = $DBRESULT2->fetchRow()) {
 			if (isset($gbArr[7][$metaPar["meta_service_meta_id"]])) {
-				$DBRESULT3 =& $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
+				$DBRESULT3 = $pearDB->query("SELECT meta_service_meta_id FROM dependency_metaserviceChild_relation WHERE dependency_dep_id = '".$dependency["dep_id"]."'");
 				$metaCh = NULL;
-				while ($metaCh =& $DBRESULT3->fetchRow()) {
+				while ($metaCh = $DBRESULT3->fetchRow()) {
 					if (isset($gbArr[7][$metaCh["meta_service_meta_id"]])) {
 						$ret["comment"]["comment"] ? ($str .= "# '".$dependency["dep_name"]."' host dependency definition ".$i."\n") : NULL;
 						if ($ret["comment"]["comment"] && $dependency["dep_comment"])	{

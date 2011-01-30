@@ -56,8 +56,8 @@ class CentreonAuthLDAP {
 
 		$this->CentreonLog = $CentreonLog;
 
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version', 'ldap_search', 'ldap_search_user', 'ldap_search_user_pwd')");
-		while ($res =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version', 'ldap_search', 'ldap_search_user', 'ldap_search_user_pwd')");
+		while ($res = $DBRESULT->fetchRow())
 			$this->ldapInfos[$res["key"]] = $res["value"];
 		$DBRESULT->free();
 
@@ -84,7 +84,7 @@ class CentreonAuthLDAP {
 	 */
 	private function getLogFlag() {
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap'");
+		$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap'");
 		$data = $DBRESULT->fetchRow();
 		if (isset($data["value"])) {
 			return $data["value"];

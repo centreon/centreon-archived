@@ -46,17 +46,17 @@
 	 */
 
 	$host_instance = array();
-	$DBRESULT =& $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
-	while ($datas =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
+	while ($datas = $DBRESULT->fetchRow())
 		$host_instance[$datas["host_host_id"]] = $datas["host_host_id"];
 	$DBRESULT->free();
 
 	/*
 	 * Get Command List
 	 */
-	$DBRESULT =& $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
+	$DBRESULT = $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
 	$commands = array();
-	while ($command =& $DBRESULT->fetchRow())	{
+	while ($command = $DBRESULT->fetchRow())	{
 		$commands[$command["command_id"]] = $command["command_name"];
 	}
 	unset($command);
@@ -65,8 +65,8 @@
 	 * Get Template cache
 	 */
 	$templateCache = array();
-	$DBRESULT =& $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `order`");
-	while ($h =& $DBRESULT->fetchRow()) {
+	$DBRESULT = $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `order`");
+	while ($h = $DBRESULT->fetchRow()) {
 		if (!isset($templateCache[$h["host_host_id"]]))
 			$templateCache[$h["host_host_id"]] = array();
 		$templateCache[$h["host_host_id"]][] = $h["host_name"];
@@ -78,8 +78,8 @@
 	 * Create HG Cache
 	 */
 	$hgCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id");
-	while ($hg =& $DBRESULT2->fetchRow()) {
+	$DBRESULT2 = $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id");
+	while ($hg = $DBRESULT2->fetchRow()) {
 		if (!isset($hgCache[$hg["host_host_id"]]))
 			$hgCache[$hg["host_host_id"]] = array();
 		$hgCache[$hg["host_host_id"]][$hg["hostgroup_hg_id"]] = $hg["hg_name"];
@@ -96,8 +96,8 @@
 	 * Create Contact Cache
 	 */
 	$cctCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id");
-	while ($contact =& $DBRESULT2->fetchRow())	{
+	$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id");
+	while ($contact = $DBRESULT2->fetchRow())	{
 		if (!isset($cctCache[$contact["host_host_id"]]))
 			$cctCache[$contact["host_host_id"]] = array();
 		$cctCache[$contact["host_host_id"]][$contact["contact_id"]] = $contact["contact_name"];
@@ -109,8 +109,8 @@
 	 * Create Cache for CG
 	 */
 	$cgCache = array();
-	$DBRESULT2 =& $pearDB->query("SELECT cg.cg_id, cg.cg_name, chr.host_host_id FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-	while ($cg =& $DBRESULT2->fetchRow())	{
+	$DBRESULT2 = $pearDB->query("SELECT cg.cg_id, cg.cg_name, chr.host_host_id FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+	while ($cg = $DBRESULT2->fetchRow())	{
 		if (!isset($cgCache[$cg["host_host_id"]]))
 			$cgCache[$cg["host_host_id"]] = array();
 		$cgCache[$cg["host_host_id"]][$cg["cg_id"]] = $cg["cg_name"];
@@ -145,7 +145,7 @@
 	 * Create Host Lists
 	 */
 	$hostGenerated = array();
-	$DBRESULT =& $pearDB->query("SELECT host.* " .
+	$DBRESULT = $pearDB->query("SELECT host.* " .
 							"FROM host, ns_host_relation " .
 							"WHERE host_activate = '1' " .
 							"	AND host_register = '1' AND host.host_id = ns_host_relation.host_host_id " .
@@ -154,7 +154,7 @@
 	$i = 1;
 	$str = NULL;
 	$host = array();
-	while ($host =& $DBRESULT->fetchRow())	{
+	while ($host = $DBRESULT->fetchRow())	{
 		if (isset($host_instance[$host["host_id"]])) {
 			if (isset($gbArr[2][$host["host_id"]]))	{
 
@@ -222,9 +222,9 @@
 				 */
 				$hostParent = array();
 				$strTemp = NULL;
-				$DBRESULT2 =& $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-				while ($hostParent =& $DBRESULT2->fetchRow())	{
-					$DBRESULT3 =& $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
+				$DBRESULT2 = $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
+				while ($hostParent = $DBRESULT2->fetchRow())	{
+					$DBRESULT3 = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
 					if (verifyIfMustBeGenerated($hostParent["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows()) {
 						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
 					}
@@ -384,8 +384,8 @@
 				 */
 
 				$rq = "SELECT `host_macro_name`, `host_macro_value` FROM `on_demand_macro_host` WHERE `host_host_id` = '" . $host['host_id']."'";
-				$DBRESULT3 =& $pearDB->query($rq);
-				while ($od_macro =& $DBRESULT3->fetchRow()) {
+				$DBRESULT3 = $pearDB->query($rq);
+				while ($od_macro = $DBRESULT3->fetchRow()) {
 					$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);
 					$mac_name = str_replace("\$", "", $mac_name);
 					$mac_name = str_replace("#S#", "/", $mac_name);
@@ -399,8 +399,8 @@
 				/*
 				 * Extended Informations
 				 */
-				$DBRESULT2 =& $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
-				$ehi =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDB->query("SELECT * FROM extended_host_information ehi WHERE ehi.host_host_id = '".$host["host_id"]."'");
+				$ehi = $DBRESULT2->fetchRow();
 				if ($ehi["ehi_notes"])
 					$str .= print_line("notes", $host_method->replaceMacroInString($host["host_id"], $ehi["ehi_notes"]));
 				if ($ehi["ehi_notes_url"])

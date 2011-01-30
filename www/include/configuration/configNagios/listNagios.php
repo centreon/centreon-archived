@@ -58,7 +58,7 @@
 	 * nagios servers comes from DB 
 	 */
 	$nagios_servers = array(NULL => "");
-	$DBRESULT =& $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+	$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 	while($nagios_server = $DBRESULT->fetchRow())
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	$DBRESULT->free();
@@ -89,7 +89,7 @@
 	 * Nagios list
 	 */
 	
-	$DBRESULT =& $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id, interval_length FROM cfg_nagios $SearchTool ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id, interval_length FROM cfg_nagios $SearchTool ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit);
 	
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 	
@@ -102,9 +102,9 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $nagios =& $DBRESULT->fetchRow(); $i++) {		
+	for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {		
 		$moptions = "";
-		$selectedElements =& $form->addElement('checkbox', "select[".$nagios['nagios_id']."]");	
+		$selectedElements = $form->addElement('checkbox', "select[".$nagios['nagios_id']."]");	
 		if ($nagios["nagios_activate"])
 			$moptions .= "<a href='main.php?p=".$p."&nagios_id=".$nagios['nagios_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
 		else
@@ -159,7 +159,7 @@
 				"");	  
         $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o1' => NULL));
-			$o1 =& $form->getElement('o1');
+			$o1 = $form->getElement('o1');
 		$o1->setValue(NULL);
 	
 	$attrs = array(
@@ -174,7 +174,7 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
-		$o2 =& $form->getElement('o2');
+		$o2 = $form->getElement('o2');
 		$o2->setValue(NULL);
 	
 	$tpl->assign('limit', $limit);
@@ -182,7 +182,7 @@
 	/*
 	 * Apply a template definition
 	 */	
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listNagios.ihtml");

@@ -44,7 +44,7 @@
 
 	$ms = array();
 	if (($o == "c" || $o == "w") && $meta_id)	{
-		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
 		# Set base value
 		$ms = array_map("myDecode", $DBRESULT->fetchRow());
 
@@ -56,8 +56,8 @@
 		/*
 		 * Set Contact Group
 		 */
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
-		for ($i = 0; $notifCg =& $DBRESULT->fetchRow(); $i++)
+		$DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
 			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
 		$DBRESULT->free();
 	}
@@ -69,16 +69,16 @@
 	$pearDBO = new CentreonDB("centstorage");
 
 	$metrics = array(NULL=>NULL);
-	$DBRESULT =& $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
-	while ($metric =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDBO->query("select DISTINCT metric_name from metrics ORDER BY metric_name");
+	while ($metric = $DBRESULT->fetchRow())
 		$metrics[$metric["metric_name"]] = $metric["metric_name"];
 	$DBRESULT->free();
 
 	/*
 	 * Timeperiods comes from DB -> Store in $tps Array
 	 */
-	$DBRESULT =& $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
-	while ($tp =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name FROM timeperiod ORDER BY tp_name");
+	while ($tp = $DBRESULT->fetchRow())
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	$DBRESULT->free();
 
@@ -86,8 +86,8 @@
 	 * Check commands comes from DB -> Store in $checkCmds Array
 	 */
 	$checkCmds = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
-	while($checkCmd =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
+	while($checkCmd = $DBRESULT->fetchRow())
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	$DBRESULT->free();
 
@@ -102,8 +102,8 @@
 	 * Escalations comes from DB -> Store in $escs Array
 	 */
 	$escs = array();
-	$DBRESULT =& $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
-	while($esc =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT esc_id, esc_name FROM escalation ORDER BY esc_name");
+	while($esc = $DBRESULT->fetchRow())
 		$escs[$esc["esc_id"]] = $esc["esc_name"];
 	$DBRESULT->free();
 
@@ -111,8 +111,8 @@
 	 * Meta Service Dependencies comes from DB -> Store in $deps Array
 	 */
 	$deps = array();
-	$DBRESULT =& $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
-	while($dep =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service WHERE meta_id != '".$meta_id."' ORDER BY meta_name");
+	while($dep = $DBRESULT->fetchRow())
 		$deps[$dep["meta_id"]] = $dep["meta_name"];
 	$DBRESULT->free();
 
@@ -125,8 +125,8 @@
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
 	$graphTpls = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	while($graphTpl =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
+	while($graphTpl = $DBRESULT->fetchRow())
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	$DBRESULT->free();
 
@@ -190,7 +190,7 @@
 	$form->addGroup($tab, 'notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	$form->setDefaults(array('notifications_enabled' => '2'));
 
-	$ams3 =& $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
+	$ams3 = $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($template);
@@ -225,7 +225,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'meta_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	/*
@@ -281,15 +281,15 @@
 		/*
 		 * Modify a service information
 		 */
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($ms);
 	} else if ($o == "a")	{
 		/*
 		 * Add a service information
 		 */
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
@@ -297,7 +297,7 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$msObj =& $form->getElement('meta_id');
+		$msObj = $form->getElement('meta_id');
 		if ($form->getSubmitValue("submitA"))
 			$msObj->setValue(insertMetaServiceInDB());
 		else if ($form->getSubmitValue("submitC"))
@@ -314,7 +314,7 @@
 		/*
 		 * Apply a template definition
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

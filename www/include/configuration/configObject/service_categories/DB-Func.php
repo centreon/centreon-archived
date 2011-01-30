@@ -44,8 +44,8 @@
 		$id = NULL;
 		if (isset($form))
 			$id = $form->getSubmitValue('sc_id');
-		$DBRESULT =& $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
-		$sc =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `sc_name`, `sc_id` FROM `service_categories` WHERE `sc_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+		$sc = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] == $id)
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $sc["sc_id"] != $id)
@@ -57,7 +57,7 @@
 	function multipleServiceCategorieInDB ($sc = array(), $nbrDup = array())	{
 		foreach($sc as $key => $value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$key."' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["sc_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
@@ -69,9 +69,9 @@
 				}
 				if (testServiceCategorieExistence($sc_name))	{
 					$val ? $rq = "INSERT INTO `service_categories` VALUES (".$val.")" : $rq = null;
-					$DBRESULT =& $pearDB->query($rq);
-					$DBRESULT =& $pearDB->query("SELECT MAX(sc_id) FROM `service_categories`");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query($rq);
+					$DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories`");
+					$maxId = $DBRESULT->fetchRow();
 				}
 			}
 		}
@@ -83,7 +83,7 @@
 		if ($sc_id)
 			$sc_arr = array($sc_id=>"1");
 		foreach($sc_arr as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("UPDATE service_categories SET sc_activate = '1' WHERE sc_id = '".$key."'");
+			$DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '1' WHERE sc_id = '".$key."'");
 		}
 	}
 
@@ -93,23 +93,23 @@
 		if ($sc_id)
 			$sc_arr = array($sc_id=>"1");
 		foreach($sc_arr as $key=>$value)	{
-			$DBRESULT =& $pearDB->query("UPDATE service_categories SET sc_activate = '0' WHERE sc_id = '".$key."'");
+			$DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '0' WHERE sc_id = '".$key."'");
 		}
 	}
 	
 	function insertServiceCategorieInDB(){
 		global $pearDB;
 		if (testServiceCategorieExistence($_POST["sc_name"])){
-                $DBRESULT =& $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
-                $DBRESULT =& $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$_POST["sc_name"]."'");
-                $data =& $DBRESULT->fetchRow();
+                $DBRESULT = $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
+                $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$_POST["sc_name"]."'");
+                $data = $DBRESULT->fetchRow();
         }
         updateServiceCategoriesServices($data["MAX(sc_id)"]);
 	}
 	
 	function updateServiceCategorieInDB(){
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
+		$DBRESULT = $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
 		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES, "UTF-8"));
 	}
 	
@@ -117,7 +117,7 @@
 		global $pearDB;
 		$select = $_POST["select"];
 		foreach ($select as $key => $value){
-			$DBRESULT =& $pearDB->query("DELETE FROM `service_categories` WHERE `sc_id` = '".$key."'");
+			$DBRESULT = $pearDB->query("DELETE FROM `service_categories` WHERE `sc_id` = '".$key."'");
 		}
 	}
 	
@@ -127,11 +127,11 @@
 		if (!$sc_id) 
 			return;
 
-		$DBRESULT =& $pearDB->query("DELETE FROM service_categories_relation WHERE sc_id = '".$sc_id."' AND service_service_id IN (SELECT service_id FROM service WHERE service_register = '0')");
+		$DBRESULT = $pearDB->query("DELETE FROM service_categories_relation WHERE sc_id = '".$sc_id."' AND service_service_id IN (SELECT service_id FROM service WHERE service_register = '0')");
 		if (isset($_POST["sc_svcTpl"]))
 			foreach ($_POST["sc_svcTpl"] as $key)	{
 				$rq = "INSERT INTO service_categories_relation (service_service_id, sc_id) VALUES ('".$key."', '".$sc_id."')";
-				$DBRESULT =& $pearDB->query($rq);
+				$DBRESULT = $pearDB->query($rq);
 			}
 	}
 

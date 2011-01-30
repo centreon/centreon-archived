@@ -45,24 +45,24 @@
 	if (($o == "c") && $acl_action_id)	{
 
 		# 1. Get "Actions Rule" id selected by user
-		$DBRESULT =& $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '".$acl_action_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '".$acl_action_id."' LIMIT 1");
 		$action_infos = array();
 		$action_infos = array_map("myDecode", $DBRESULT->fetchRow());
 
 		# 2. Get "Groups" id linked with the selected Rule in order to initialize the form
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'");
+		$DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'");
 
 		$selected = array();
-		for($i = 0; $contacts =& $DBRESULT->fetchRow(); $i++) {
+		for($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
 			$selected[] = $contacts["acl_group_id"];
 		}
 		$action_infos["acl_groups"] = $selected;
 
 		# 3. Range in a table variable, all Groups used in this "Actions Access"
-		$DBRESULT =& $pearDB->query("SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id");
+		$DBRESULT = $pearDB->query("SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id");
 
 		$selected_actions = array();
-		for($i = 0; $act =& $DBRESULT->fetchRow(); $i++) {
+		for($i = 0; $act = $DBRESULT->fetchRow(); $i++) {
 			$selected_actions[$act["acl_action_name"]] = 1;
 		}
 
@@ -74,9 +74,9 @@
 	#
 	# Groups list comes from Database and stores in $groups Array
 	$groups = array();
-	$DBRESULT =& $pearDB->query("SELECT acl_group_id,acl_group_name FROM acl_groups ORDER BY acl_group_name");
+	$DBRESULT = $pearDB->query("SELECT acl_group_id,acl_group_name FROM acl_groups ORDER BY acl_group_name");
 
-	while ($group =& $DBRESULT->fetchRow()) {
+	while ($group = $DBRESULT->fetchRow()) {
 		$groups[$group["acl_group_id"]] = $group["acl_group_name"];
 	}
 	$DBRESULT->free();
@@ -161,7 +161,7 @@
 	$form->addElement('header', 'global_actions', _("Global Nagios Actions (External Process Commands)"));
 	$form->addElement('header', 'global_access', _("Global Fonctionnalities Access"));
 
-    $ams1 =& $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
+    $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($template);
@@ -181,7 +181,7 @@
 	$form->setDefaults(array('action' => '1'));
 
 	$form->addElement('hidden', 'acl_action_id');
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
 	# Form Rules
@@ -210,19 +210,19 @@
 	# Modify an Action Group
 	if ($o == "c" && isset($selected_actions) && isset($action_infos))	{
 		$form->setDefaults($selected_actions);
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($action_infos);
 	}
 	# Add an Action Group
 	else if ($o == "a")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
 	$valid = false;
 	if ($form->validate()) {
-		$groupObj =& $form->getElement('acl_action_id');
+		$groupObj = $form->getElement('acl_action_id');
 		if ($form->getSubmitValue("submitA")) {
 			$groupObj->setValue(insertActionInDB());
 		} else if ($form->getSubmitValue("submitC")){
@@ -239,7 +239,7 @@
 		require_once($path."listsActionsAccess.php");
 	} else {
 		#Apply a template definition
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

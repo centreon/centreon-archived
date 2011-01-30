@@ -109,13 +109,13 @@
 				$tpl->assign("output4", _("Unable to install module"));
 		} else {
 			$form1->addElement('submit', 'install', _("Install Module"));
-			$redirect =& $form1->addElement('hidden', 'o');
+			$redirect = $form1->addElement('hidden', 'o');
 			$redirect->setValue("i");
 		}
 		$form1->addElement('submit', 'list', _("Back"));
-		$hid_name =& $form1->addElement('hidden', 'name');
+		$hid_name = $form1->addElement('hidden', 'name');
 		$hid_name->setValue($name);
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form1->accept($renderer);
 		$tpl->assign('form1', $renderer->toArray());
 	} else if ($id)	{
@@ -163,7 +163,7 @@
 						}
 						if (!$upgrade_ok)	{
 							$form->addElement('submit', 'upgrade', _("Upgrade"));
-							$redirect =& $form->addElement('hidden', 'o');
+							$redirect = $form->addElement('hidden', 'o');
 							$redirect->setValue("u");
 						}
 
@@ -183,12 +183,12 @@
 							"upgrade_is_validUp" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
 							"upgrade_choice" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
 						$i++;
-						$hid_id =& $form->addElement('hidden', 'id');
+						$hid_id = $form->addElement('hidden', 'id');
 						$hid_id->setValue($id);
-						$up_name =& $form->addElement('hidden', 'filename');
+						$up_name = $form->addElement('hidden', 'filename');
 						$up_name->setValue($filename);
 						$form->addElement('submit', 'list', _("Back"));
-						$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+						$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 						$form->accept($renderer);
 						$tpl->assign('form', $renderer->toArray());
 					}
@@ -206,7 +206,7 @@
 		$tpl->assign("elemArr", $elemArr);
 		$form2 = new HTML_QuickForm('Form', 'post', "?p=".$p);
 		$form2->addElement('submit', 'list', _("Back"));
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form2->accept($renderer);
 		$tpl->assign('form2', $renderer->toArray());
 	}

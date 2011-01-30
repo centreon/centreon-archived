@@ -41,8 +41,8 @@
 		if (isset($form))
 			$id = $form->getSubmitValue('lca_id');
 
-		$DBRESULT =& $pearDB->query("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '".$name."'");
-		$lca =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT acl_res_name, acl_res_id FROM `acl_resources` WHERE acl_res_name = '".$name."'");
+		$lca = $DBRESULT->fetchRow();
 		if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] == $id)
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $lca["acl_res_id"] != $id)
@@ -55,31 +55,31 @@
 		global $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");
-		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '1', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 	}
 
 	function disableLCAInDB ($acl_id = null)	{
 		global $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");
-		$DBRESULT =& $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$acl_id')");
+		$DBRESULT = $pearDB->query("UPDATE `acl_resources` SET acl_res_activate = '0', `changed` = '1' WHERE `acl_res_id` = '".$acl_id."'");
 	}
 
 	function deleteLCAInDB ($acls = array())	{
 		global $pearDB;
 		foreach($acls as $key=>$value){
-			$DBRESULT =& $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')");
-			$DBRESULT =& $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");
+			$DBRESULT = $pearDB->query("UPDATE `acl_groups` SET `acl_group_changed` = '1' WHERE acl_group_id IN (SELECT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$key')");
+			$DBRESULT = $pearDB->query("DELETE FROM `acl_resources` WHERE acl_res_id = '".$key."'");
 		}
 	}
 
 	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{
 		foreach($lcas as $key=>$value)	{
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '".$key."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '".$key."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			$row["acl_res_id"] = '';
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
@@ -91,13 +91,13 @@
 				if (testExistence($acl_name))	{
 					$val ? $rq = "INSERT INTO acl_resources VALUES (".$val.")" : $rq = null;
 					$pearDB->query($rq);
-					$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
-					$maxId =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM acl_resources");
+					$maxId = $DBRESULT->fetchRow();
 					$DBRESULT->free();
 					if (isset($maxId["MAX(lca_id)"]))	{
-						$DBRESULT =& $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$key."'");
-						while ($sg =& $DBRESULT->fetchRow())	{
-							$DBRESULT2 =& $pearDB->query("INSERT INTO acl_res_group_relations VALUES ('', '".$maxId["MAX(acl_res_id)"]."', '".$sg["acl_group_id"]."')");
+						$DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '".$key."'");
+						while ($sg = $DBRESULT->fetchRow())	{
+							$DBRESULT2 = $pearDB->query("INSERT INTO acl_res_group_relations VALUES ('', '".$maxId["MAX(acl_res_id)"]."', '".$sg["acl_group_id"]."')");
 						}
 						$DBRESULT->free();
 					}
@@ -153,9 +153,9 @@
 				"'".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
 				"'1', " .
 				"'".htmlentities($ret["acl_res_comment"], ENT_QUOTES, "UTF-8")."')";
-		$DBRESULT =& $pearDB->query($rq);
-		$DBRESULT =& $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
-		$acl =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($rq);
+		$DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
+		$acl = $DBRESULT->fetchRow();
 		return ($acl["MAX(acl_res_id)"]);
 	}
 
@@ -183,7 +183,7 @@
 				"acl_res_comment = '".htmlentities($ret["acl_res_comment"], ENT_QUOTES, "UTF-8")."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
-		$DBRESULT =& $pearDB->query($rq);
+		$DBRESULT = $pearDB->query($rq);
 	}
 
 	/** ****************
@@ -195,13 +195,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_groups");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}
@@ -215,13 +215,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_resources_host_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_hosts");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}
@@ -258,13 +258,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_resources_hostex_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_hostexclude");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}
@@ -273,13 +273,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_resources_hg_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_hostgroup");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}
@@ -288,13 +288,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_resources_sc_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_sc");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}
@@ -318,13 +318,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_resources_sg_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_sg");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}
@@ -333,13 +333,13 @@
 		global $form, $pearDB;
 		if (!$acl_id)
 			return;
-		$DBRESULT =& $pearDB->query("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
+		$DBRESULT = $pearDB->query("DELETE FROM acl_resources_meta_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_meta");
 		if (isset($ret))
 			foreach ($ret as $key => $value){
 				if (isset($value))	{
-					$DBRESULT =& $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES ('".$acl_id."', '".$value."')");
+					$DBRESULT = $pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
 	}

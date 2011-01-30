@@ -42,8 +42,8 @@
 	    
 	$pearDB = new CentreonDB();
 		
-	$DBRESULT =& $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version =& $DBRESULT->fetchRow();        		
+	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+	$version = $DBRESULT->fetchRow();        		
 	
 	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")) == 0) {
     	chdir("../..");

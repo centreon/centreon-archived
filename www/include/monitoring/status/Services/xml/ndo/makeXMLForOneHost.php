@@ -61,8 +61,8 @@
 	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-		$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-		if (!$session =& $res->fetchRow())
+		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+		if (!$session = $res->fetchRow())
 			get_error('bad session id');
 	} else
 		get_error('need session identifiant !');
@@ -152,7 +152,7 @@
 	 * Request
 	 */
 
-	$DBRESULT_NDO1 =& $pearDBndo->query($rq1);
+	$DBRESULT_NDO1 = $pearDBndo->query($rq1);
 
 	$class = "list_one";
 
@@ -164,7 +164,7 @@
 	$buffer = new CentreonXML();
 	$buffer->startElement("reponse");
 
-	if ($ndo =& $DBRESULT_NDO1->fetchRow()){
+	if ($ndo = $DBRESULT_NDO1->fetchRow()){
 
 		$duration = "";
 		if ($ndo["last_state_change"] > 0)

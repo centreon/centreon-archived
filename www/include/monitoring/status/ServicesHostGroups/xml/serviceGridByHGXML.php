@@ -137,9 +137,9 @@
 	$tabHG = array();
 	$tab_finalH = array();
 
-	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
+	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
 	$numRows = $obj->DBNdo->numberRows();
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
+	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
 		if (!isset($tab_finalH[$ndo["alias"]])) {
 			$tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
 		}
@@ -183,8 +183,8 @@
 
 	$tabService = array();
 	$tabHost = array();
-	$DBRESULT_NDO1 =& $obj->DBNdo->query($rq1);
-	while ($ndo =& $DBRESULT_NDO1->fetchRow())	{
+	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
+	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
 		if (!isset($tabService[$ndo["host_name"]])) {
 			$tabService[$ndo["host_name"]] = array();
 		}

@@ -50,17 +50,17 @@
 		header("Location: ../../../../index.php");
 		exit();
 	} else {
-		$oreon =& $_SESSION["centreon"];
+		$oreon = $_SESSION["centreon"];
 	}
 
 	global $buffer;
 	$pearDB = new CentreonDB();
 
-	$DBRESULT =& $pearDB->query("SELECT * FROM `options`");
-	while ($res =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
+	while ($res = $DBRESULT->fetchRow())
 		$ldap_search[$res["key"]] = myDecode($res["value"]);
 	$DBRESULT->free();
-	$debug =& $ldap_search;
+	$debug = $ldap_search;
 
 	$ldap_search_filter = $ldap_search['ldap_search_filter'];
 	$ldap_base_dn = $ldap_search['ldap_base_dn'];

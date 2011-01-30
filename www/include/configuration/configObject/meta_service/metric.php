@@ -45,11 +45,11 @@
 	$metric = array();
 	if (($o == "cs" || $o == "ws") && $msr_id)	{	
 		# Set base value
-		$DBRESULT =& $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
+		$DBRESULT = $pearDB->query("SELECT * FROM meta_service_relation WHERE msr_id = '".$msr_id."'");
 
 		# Set base value
 		$metric1 = array_map("myDecode", $DBRESULT->fetchRow());
-		$DBRESULT =& $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id = index_data.id");		
+		$DBRESULT = $pearDBO->query("SELECT * FROM metrics, index_data WHERE metric_id = '".$metric1["metric_id"]."' and metrics.index_id = index_data.id");		
 		$metric2 = array_map("myDecode", $DBRESULT->fetchRow());
 		$metric = array_merge($metric1, $metric2);
 		$host_id = $metric1["host_id"];
@@ -65,8 +65,8 @@
 	 * Host comes from DB -> Store in $hosts Array
 	 */
 	$hosts = array(NULL=>NULL);
-	$DBRESULT =& $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
-	while ($host =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow())
 		$hosts[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	
@@ -78,8 +78,8 @@
 		foreach ($services as $key => $value)	{
 			$value2 = str_replace("/", "#S#", $value);
 			$value2 = str_replace("\\", "#BS#", $value2);
-			$DBRESULT =& $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value2."' and i.id=m.index_id ORDER BY metric_name, unit_name");
-			while ($metricSV =& $DBRESULT->fetchRow())	{
+			$DBRESULT = $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name FROM metrics m, index_data i WHERE i.host_name = '".getMyHostName($host_id)."' AND i.service_description = '".$value2."' and i.id=m.index_id ORDER BY metric_name, unit_name");
+			while ($metricSV = $DBRESULT->fetchRow())	{
 				$services1[$key] = $value;
 				$metricSV["metric_name"] = str_replace("#S#", "/", $metricSV["metric_name"]);			
 				$metricSV["metric_name"] = str_replace("#BS#", "\\", $metricSV["metric_name"]);
@@ -109,17 +109,17 @@
 	## Indicator basic information
 	#
 	
-	$redirect =& $form->addElement('hidden', 'o');
+	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	$formMsrId =& $form->addElement('hidden', 'msr_id');
+	$formMsrId = $form->addElement('hidden', 'msr_id');
 	$formMsrId->setValue($msr_id);
-	$formMetaId =& $form->addElement('hidden', 'meta_id');
+	$formMetaId = $form->addElement('hidden', 'meta_id');
 	$formMetaId->setValue($meta_id);
-	$formMetricId =& $form->addElement('hidden', 'metric_id');
+	$formMetricId = $form->addElement('hidden', 'metric_id');
 	$formMetricId->setValue($metric_id);
    
-	$hn =& $form->addElement('select', 'host_id', _("Host"), $hosts, array("onChange"=>"this.form.submit()"));
-	$sel =& $form->addElement('hierselect', 'metric_sel', _("Service"));
+	$hn = $form->addElement('select', 'host_id', _("Host"), $hosts, array("onChange"=>"this.form.submit()"));
+	$sel = $form->addElement('hierselect', 'metric_sel', _("Service"));
 	$sel->setOptions(array($services1, $services2));
 	
 	$tab = array();
@@ -158,19 +158,19 @@
 	    $form->setDefaults($metric);
 		$form->freeze();
 	} else if ($o == "cs")	{
-		$subC =& $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($metric);
 	    $hn->freeze();
 	    $sel->freeze();
 	} else if ($o == "as")	{
-		$subA =& $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"));
+		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
   
   	$valid = false;
 	if (((isset($_POST["submitA"]) && $_POST["submitA"]) || (isset($_POST["submitC"]) && $_POST["submitC"])) && $form->validate())	{
-		$msrObj =& $form->getElement('msr_id');
+		$msrObj = $form->getElement('msr_id');
 		if ($form->getSubmitValue("submitA"))
 			$msrObj->setValue(insertMetric($meta_id));
 		else if ($form->getSubmitValue("submitC"))
@@ -194,7 +194,7 @@
 		/*
 		 * Apply a template definition	
 		 */
-		$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);

@@ -82,35 +82,35 @@
 			else if ($key == "debug_verbosity" && $value == 2);
 			else if ($key == "host_perfdata_file_mode" && $value == 2);
 			else if ($key == "global_host_event_handler" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "global_service_event_handler" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "ocsp_command" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "ochp_command" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "host_perfdata_command" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "service_perfdata_command" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "host_perfdata_file_processing_command" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if ($key == "service_perfdata_file_processing_command" && $value)	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();
 				$str .= $key."=".$row["command_name"]."\n";
 			} else if (($key == "nagios_user" || $key == "nagios_group") && $value)	{

@@ -82,9 +82,9 @@
  	function getMyHostIDService($svc_id = NULL)	{
 		if (!$svc_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
+		$DBRESULT = $pearDB->query("SELECT host_id FROM host h, host_service_relation hs WHERE h.host_id = hs.host_host_id AND hs.service_service_id = '".$svc_id."'");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["host_id"];
 		}
 		return NULL;

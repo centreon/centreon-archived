@@ -46,12 +46,12 @@
 		if (!isset($sid))
 			return ;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
-		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT contact_admin, contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
-		$DBRESULT =& $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
-		$admin2 =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT count(*) FROM `acl_group_contacts_relations` WHERE contact_contact_id = '".$admin["contact_id"]."'");
+		$admin2 = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
 		if ($admin["contact_admin"])
@@ -74,8 +74,8 @@
 		if (!isset($sid))
 			return ;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
-		$admin =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT contact_id FROM session, contact WHERE session.session_id = '".$sid."' AND contact.contact_id = session.user_id");
+		$admin = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		if (isset($admin["contact_id"]))
 			return $admin["contact_id"];
@@ -85,7 +85,7 @@
 	function table_not_exists($table_name) {
 		global $pearDBndo;
 
-		$DBRESULT =& $pearDBndo->query("SHOW TABLES LIKE '".$table_name."'");
+		$DBRESULT = $pearDBndo->query("SHOW TABLES LIKE '".$table_name."'");
 
 		if ($DBRESULT->numRows() > 0) {
 			return 0;
@@ -98,8 +98,8 @@
 
 	function getStatusColor($pearDB){
 		$colors = array();
-		$DBRESULT =& $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
-		while ($c =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'color%'");
+		while ($c = $DBRESULT->fetchRow())
 			$colors[$c["key"]] = myDecode($c["value"]);
 		$DBRESULT->free();
 		return $colors;
@@ -182,8 +182,8 @@
 		if (!$host_id)
 			return;
 
-		$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["host_template_model_htm_id"])
 			return $row["host_template_model_htm_id"];
 		else
@@ -195,8 +195,8 @@
 
 		if (!$host_id)
 			return;
-		$DBRESULT =& $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["host_name"])
 			return $row["host_name"];
 	}
@@ -206,8 +206,8 @@
 
 		if (!$host_id)
 			return;
-		$DBRESULT =& $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["host_register"])
 			return true;
 		else
@@ -218,8 +218,8 @@
 		if (!$host_id) return;
 		global $pearDB;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["host_address"])
 				return html_entity_decode($row["host_address"], ENT_QUOTES, "UTF-8");
 			else if ($row["host_template_model_htm_id"])
@@ -233,8 +233,8 @@
 		if (!$host_name) return;
 		global $pearDB;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '".$host_name."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT host_address, host_template_model_htm_id FROM host WHERE host_name = '".$host_name."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["host_address"])
 				return html_entity_decode($row["host_address"], ENT_QUOTES, "UTF-8");
 			else if ($row["host_template_model_htm_id"])
@@ -248,9 +248,9 @@
 		if (!$host_id) return;
 		global $pearDB;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '".$host_id."'");
+			$DBRESULT = $pearDB->query("SELECT host_template_model_htm_id AS tpl FROM host WHERE host_id = '".$host_id."'");
 			$host = clone($DBRESULT->fetchRow());
-			$DBRESULT =& $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$host_id."'");
+			$DBRESULT = $pearDB->query("SELECT hpr.host_parent_hp_id FROM host_hostparent_relation hpr WHERE hpr.host_host_id = '".$host_id."'");
 			if ($DBRESULT->numRows())
 				return $DBRESULT;
 			else if (isset($host["tpl"]) && $host["tpl"])
@@ -264,8 +264,8 @@
 		if (!$host_id) return;
 		global $pearDB;
 		$hgs = array();
-		$DBRESULT =& $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
-		while ($hg =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT hg.hg_name, hgr.hostgroup_hg_id FROM hostgroup hg, hostgroup_relation hgr WHERE hgr.host_host_id = '".$host_id."' AND hgr.hostgroup_hg_id = hg.hg_id");
+		while ($hg = $DBRESULT->fetchRow())
 			$hgs[$hg["hostgroup_hg_id"]] = html_entity_decode($hg["hg_name"], ENT_QUOTES, "UTF-8");
 		return $hgs;
 	}
@@ -277,8 +277,8 @@
 		global $pearDB;
 		$host_id_bkp = $host_id;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["host_snmp_community"])
 				return $row["host_snmp_community"];
 			else if ($row["host_template_model_htm_id"])
@@ -286,13 +286,13 @@
 			else	{
 				$hgs = getMyHostGroups($host_id_bkp);
 				foreach ($hgs as $key=>$value)	{
-					$DBRESULT =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					$row =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+					$row = $DBRESULT->fetchRow();
 					if ($row["hg_snmp_community"])
 						return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES, "UTF-8");
 				}
-				$DBRESULT =& $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_community' LIMIT 1");
-				$row =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_community' LIMIT 1");
+				$row = $DBRESULT->fetchRow();
 				if (isset($row["value"]))
 					return html_entity_decode($row["value"], ENT_QUOTES, "UTF-8");
 				return NULL;
@@ -307,8 +307,8 @@
 		global $pearDB;
 		$host_id_bkp = $host_id;
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["host_snmp_version"])
 				return $row["host_snmp_version"];
 			else if ($row["host_template_model_htm_id"])
@@ -316,13 +316,13 @@
 			else	{
 				$hgs = getMyHostGroups($host_id_bkp);
 				foreach ($hgs as $key=>$value)	{
-					$DBRESULT =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					$row =& $DBRESULT->fetchRow();
+					$DBRESULT = $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
+					$row = $DBRESULT->fetchRow();
 					if ($row["hg_snmp_version"])
 						return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES, "UTF-8");
 				}
-				$DBRESULT =& $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_version' LIMIT 1");
-				$row =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_version' LIMIT 1");
+				$row = $DBRESULT->fetchRow();
 				if (isset($row["value"]))
 					return html_entity_decode($row["value"], ENT_QUOTES, "UTF-8");
 				else
@@ -338,10 +338,10 @@
 			return;
 		global $pearDB;
 
-		$DBRESULT =& $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order` ASC");
-		while ($row =& $DBRESULT->fetchRow()) {
-			$DBRESULT2 =& $pearDB->query("SELECT `".$field."` FROM host WHERE host_id = '". $row['host_tpl_id']."'");
-			while ($row2 =& $DBRESULT2->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$host_id."' ORDER BY `order` ASC");
+		while ($row = $DBRESULT->fetchRow()) {
+			$DBRESULT2 = $pearDB->query("SELECT `".$field."` FROM host WHERE host_id = '". $row['host_tpl_id']."'");
+			while ($row2 = $DBRESULT2->fetchRow()) {
 				if (isset($row2[$field]) && $row2[$field])
 					return $row2[$field];
 				if ($tmp = getMyHostField($row['host_tpl_id'], $field))
@@ -358,8 +358,8 @@
 		if (!$host_id)
 			return;
 
-		$DBRESULT =& $pearDB->query("SELECT `".$field."` FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `".$field."` FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if (isset($row[$field]) && $row[$field])
 			return $row[$field];
 		else
@@ -376,13 +376,13 @@
 			"FROM host_template_relation " .
 			"WHERE host_host_id = '".$host_id."' " .
 			"ORDER BY `order`";
-		$DBRESULT =& $pearDB->query($rq);
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query($rq);
+		while ($row = $DBRESULT->fetchRow()) {
 			$rq2 = "SELECT $field " .
 				"FROM host " .
 				"WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1";
-			$DBRESULT2 =& $pearDB->query($rq2);
-			$row2 =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query($rq2);
+			$row2 = $DBRESULT2->fetchRow();
 			if (isset($row2[$field]) && $row2[$field])
 				return $row2[$field];
 			else {
@@ -404,13 +404,13 @@
 			"FROM host_template_relation " .
 			"WHERE host_host_id = '".$host_id."' " .
 			"ORDER BY `order`";
-		$DBRESULT =& $pearDB->query($rq);
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query($rq);
+		while ($row = $DBRESULT->fetchRow()) {
 			$rq2 = "SELECT ehi.`".$field."` " .
 				"FROM extended_host_information ehi " .
 				"WHERE ehi.host_host_id = '".$row['host_tpl_id']."' LIMIT 1";
-			$DBRESULT2 =& $pearDB->query($rq2);
-			$row2 =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query($rq2);
+			$row2 = $DBRESULT2->fetchRow();
 			if (isset($row2[$field]) && $row2[$field])
 				return $row2[$field];
 			else {
@@ -424,8 +424,8 @@
 
 	function getVersion() {
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'nagios_version' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'nagios_version' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return $row["value"];
 	}
@@ -439,13 +439,13 @@
 			"FROM host_template_relation " .
 			"WHERE host_host_id = '".$host_id."' " .
 			"ORDER BY `order`";
-		$DBRESULT =& $pearDB->query($rq);
-		while ($row =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query($rq);
+		while ($row = $DBRESULT->fetchRow()) {
 			$rq2 = 	"SELECT macro.host_macro_value " .
 					"FROM on_demand_macro_host macro " .
 					"WHERE macro.host_host_id = '".$row["host_tpl_id"]."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1";
-			$DBRESULT2 =& $pearDB->query($rq2);
-			$row2 =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query($rq2);
+			$row2 = $DBRESULT2->fetchRow();
 			if (isset($row2["host_macro_value"]) && $row2["host_macro_value"]) {
 				$macroValue = str_replace("#S#", "/", $row2["host_macro_value"]);
 				$macroValue = str_replace("#BS#", "\\", $macroValue);
@@ -471,8 +471,8 @@
 
 		if ($version < 3) {
 			while (1)	{
-				$DBRESULT =& $pearDB->query("SELECT macro.host_macro_value, h.host_template_model_htm_id FROM host h, on_demand_macro_host macro WHERE macro.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1");
-				$row =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT macro.host_macro_value, h.host_template_model_htm_id FROM host h, on_demand_macro_host macro WHERE macro.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1");
+				$row = $DBRESULT->fetchRow();
 				if (isset($row["host_macro_value"]) && $row["host_macro_value"])
 					return $row["host_macro_value"];
 				else if ($row["host_template_model_htm_id"])
@@ -484,8 +484,8 @@
 			$rq = 	"SELECT macro.host_macro_value " .
 					"FROM on_demand_macro_host macro " .
 					"WHERE macro.host_host_id = '".$host_id."' AND macro.host_macro_name = '\$_HOST".$field."\$' LIMIT 1";
-			$DBRESULT =& $pearDB->query($rq);
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query($rq);
+			$row = $DBRESULT->fetchRow();
 			if (isset($row["host_macro_value"]) && $row["host_macro_value"]) {
 				$macroValue = str_replace("#S#", "/", $row["host_macro_value"]);
 				$macroValue = str_replace("#BS#", "\\", $macroValue);
@@ -506,15 +506,15 @@
 
 	    $tab = array();
 	  	while (1) {
-	  		$DBRESULT =& $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '".$service_id."' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
+	  		$DBRESULT = $pearDB->query("SELECT sc.sc_id FROM service_categories_relation scr, service_categories sc WHERE scr.service_service_id = '".$service_id."' AND sc.sc_id = scr.sc_id AND sc.sc_activate = '1'");
 	    	if ($DBRESULT->numRows()) {
 	    		$tabSC = array();
-	      		while ($row =& $DBRESULT->fetchRow())
+	      		while ($row = $DBRESULT->fetchRow())
 					$tabSC[$row["sc_id"]] = $row["sc_id"];
 	      		return $tabSC;
 	    	} else {
-	      		$DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."'");
-	      		$row =& $DBRESULT->fetchRow();
+	      		$DBRESULT = $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$service_id."'");
+	      		$row = $DBRESULT->fetchRow();
 	      		if ($row["service_template_model_stm_id"]) {
 					if (isset($tab[$row['service_template_model_stm_id']])) {
 					    break;
@@ -533,8 +533,8 @@
 	    return;
 	  global $pearDB, $oreon;
 
-	  $DBRESULT =& $pearDB->query("SELECT sc_name FROM service_categories WHERE sc_id = '".$sc_id."'");
-	  $row =& $DBRESULT->fetchRow();
+	  $DBRESULT = $pearDB->query("SELECT sc_name FROM service_categories WHERE sc_id = '".$sc_id."'");
+	  $row = $DBRESULT->fetchRow();
 	  return $row["sc_name"];
 	}
 
@@ -548,8 +548,8 @@
 
 		if ($version < 3) {
 			while (1)	{
-				$DBRESULT =& $pearDB->query("SELECT macro.svc_macro_value, s.service_template_model_stm_id FROM service s, on_demand_macro_service macro WHERE macro.service_service_id = '".$service_id."' AND s.service_id = '".$service_id."' AND macro.svc_macro_name = 'macro.svc_macro_name = '\$_SERVICE".$field."\$' LIMIT 1");
-				$row =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT macro.svc_macro_value, s.service_template_model_stm_id FROM service s, on_demand_macro_service macro WHERE macro.service_service_id = '".$service_id."' AND s.service_id = '".$service_id."' AND macro.svc_macro_name = 'macro.svc_macro_name = '\$_SERVICE".$field."\$' LIMIT 1");
+				$row = $DBRESULT->fetchRow();
 				if (isset($row["svc_macro_value"]) && $row["svc_macro_value"])
 					return $row["svc_macro_value"];
 				else if ($row["service_template_model_stm_id"])
@@ -561,7 +561,7 @@
 			$rq = 	"SELECT macro.svc_macro_value " .
 					"FROM on_demand_macro_service macro " .
 					"WHERE macro.svc_svc_id = '".$service_id."' AND macro.svc_macro_name = '\$_SERVICE".$field."\$' LIMIT 1";
-			$DBRESULT =& $pearDB->query($rq);
+			$DBRESULT = $pearDB->query($rq);
 			$row = $DBRESULT->fetchRow();
 			if (isset($row["svc_macro_value"]) && $row["svc_macro_value"]) {
 				$macroValue = str_replace("#S#", "/", $row['svc_macro_value']);
@@ -583,8 +583,8 @@
 
 		if ($version < 3) {
 			while (1)	{
-				$DBRESULT =& $pearDB->query("SELECT ehi.`".$field."`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
-				$row =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT ehi.`".$field."`, h.host_template_model_htm_id FROM host h, extended_host_information ehi WHERE ehi.host_host_id = '".$host_id."' AND h.host_id = '".$host_id."' LIMIT 1");
+				$row = $DBRESULT->fetchRow();
 				if (isset($row[$field]) && $row[$field])
 					return $row[$field];
 				else if ($row["host_template_model_htm_id"])
@@ -596,8 +596,8 @@
 			$rq = 	"SELECT ehi.`".$field."` " .
 					"FROM extended_host_information ehi " .
 					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";
-			$DBRESULT =& $pearDB->query($rq);
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query($rq);
+			$row = $DBRESULT->fetchRow();
 			if (isset($row[$field]) && $row[$field])
 				return $row[$field];
 			else {
@@ -616,11 +616,11 @@
 			$rq = "SELECT ehi.`".$field."` " .
 					"FROM extended_host_information ehi " .
 					"WHERE ehi.host_host_id = '".$host_id."' LIMIT 1";
-			$DBRESULT =& $pearDB->query($rq);
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query($rq);
+			$row = $DBRESULT->fetchRow();
 			if (isset($row[$field]) && $row[$field])	{
-				$DBRESULT2 =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
-				$row2 =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+				$row2 = $DBRESULT2->fetchRow();
 				if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"])
 					return $row2["dir_alias"]."/".$row2["img_path"];
 			}
@@ -635,16 +635,16 @@
 				"FROM host_template_relation " .
 				"WHERE host_host_id = '".$host_id."' " .
 				"ORDER BY `order`";
-			$DBRESULT =& $pearDB->query($rq);
-			while ($row =& $DBRESULT->fetchRow()) {
+			$DBRESULT = $pearDB->query($rq);
+			while ($row = $DBRESULT->fetchRow()) {
 				$rq2 = "SELECT ehi.`".$field."` " .
 						"FROM extended_host_information ehi " .
 						"WHERE ehi.host_host_id = '".$row['host_tpl_id']."' LIMIT 1";
-				$DBRESULT2 =& $pearDB->query($rq2);
-				$row2 =& $DBRESULT2->fetchRow();
+				$DBRESULT2 = $pearDB->query($rq2);
+				$row2 = $DBRESULT2->fetchRow();
 				if (isset($row2[$field]) && $row2[$field])	{
-					$DBRESULT3 =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row2[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
-					$row3 =& $DBRESULT3->fetchRow();
+					$DBRESULT3 = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row2[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+					$row3 = $DBRESULT3->fetchRow();
 					if (isset($row3["dir_alias"]) && isset($row3["img_path"]) && $row3["dir_alias"] && $row3["img_path"])
 						return $row3["dir_alias"]."/".$row3["img_path"];
 				} else {
@@ -672,8 +672,8 @@
 			return;
 
 		if (isset($image_id) && $image_id)	{
-			$DBRESULT2 =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$image_id."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
-			$row2 =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$image_id."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+			$row2 = $DBRESULT2->fetchRow();
 			if (isset($row2["dir_alias"]) && isset($row2["img_path"]) && $row2["dir_alias"] && $row2["img_path"])
 				return $row2["dir_alias"]."/".$row2["img_path"];
 		}
@@ -684,8 +684,8 @@
 		global $pearDB;
 		$tplArr = array();
 		while(1)	{
-			$DBRESULT =& $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT host_name, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["host_name"])
 				$tplArr[$host_id] = html_entity_decode($row["host_name"], ENT_QUOTES, "UTF-8");
 			else
@@ -719,8 +719,8 @@
 	function getMyHostGroupName($hg_id = NULL)	{
 		if (!$hg_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT hg_name FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT hg_name FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["hg_name"])
 			return html_entity_decode($row["hg_name"], ENT_QUOTES, "UTF-8");
 		return NULL;
@@ -745,12 +745,12 @@
 			$searchSTR = " AND h.host_name LIKE '%$searchHost%' ";
 
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT hgr.host_host_id " .
+		$DBRESULT = $pearDB->query("SELECT hgr.host_host_id " .
 									"FROM hostgroup_relation hgr, host h " .
 									"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
 									"AND h.host_id = hgr.host_host_id $searchSTR " .
 									"ORDER by h.host_name");
-		while ($elem =& $DBRESULT->fetchRow()) {
+		while ($elem = $DBRESULT->fetchRow()) {
 			$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		}
 		$DBRESULT->free();
@@ -776,8 +776,8 @@
 
 	function setHgHgCache($pearDB) {
 		$hgHgCache = array();
-		$DBRESULT =& $pearDB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
-		while ($data =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
+		while ($data = $DBRESULT->fetchRow()) {
 			if (!isset($hgHgCache[$data["hg_parent_id"]]))
 				$hgHgCache[$data["hg_parent_id"]] = array();
 			$hgHgCache[$data["hg_parent_id"]][$data["hg_child_id"]] = 1;
@@ -794,12 +794,12 @@
 			return;
 
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT hg_child_id " .
+		$DBRESULT = $pearDB->query("SELECT hg_child_id " .
 									"FROM hostgroup_hg_relation, hostgroup " .
 									"WHERE hostgroup_hg_relation.hg_parent_id = '".$hg_id."' " .
 									"AND hostgroup.hg_id = hostgroup_hg_relation.hg_child_id " .
 									"ORDER BY hostgroup.hg_name");
-		while ($elem =& $DBRESULT->fetchRow()) {
+		while ($elem = $DBRESULT->fetchRow()) {
 			$hosts[$elem["hg_child_id"]] = $elem["hg_child_id"];
 		}
 		$DBRESULT->free();
@@ -812,8 +812,8 @@
 
 		if (!$hg_id)
 			return;
-		$DBRESULT =& $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["hg_snmp_community"]) {
 			return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES, "UTF-8");
 		}
@@ -825,8 +825,8 @@
 
 		if (!$hg_id)
 			return;
-		$DBRESULT =& $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["hg_snmp_version"])
 			return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES, "UTF-8");
 		return NULL;
@@ -839,8 +839,8 @@
 	function getMyServiceGroupName($sg_id = NULL)	{
 		if (!$sg_id) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT sg_name FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT sg_name FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["sg_name"])
 			return html_entity_decode($row["sg_name"], ENT_QUOTES, "UTF-8");
 		return NULL;
@@ -854,28 +854,28 @@
 		 * ServiceGroups by host
 		 */
 		$svs = array();
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
 									"FROM servicegroup_relation, service, host " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $elem["host_name"];
 		}
 
 		/*
 		 * ServiceGroups by hostGroups
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
 									"FROM servicegroup_relation, service, hostgroup " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
 			foreach ($hosts as $key => $value)
 				$svs[$key."_".$elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $value;
@@ -892,7 +892,7 @@
 		 * ServiceGroups by host
 		 */
 		$svs = array();
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
 									"FROM servicegroup_relation, service, host " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
@@ -900,14 +900,14 @@
 									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL " .
 									"AND service.service_activate = '1'");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $elem["host_name"];
 		}
 
 		/*
 		 * ServiceGroups by hostGroups
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
 									"FROM servicegroup_relation, service, hostgroup " .
 									"WHERE servicegroup_sg_id = '".$sg_id."' " .
 									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
@@ -915,7 +915,7 @@
 									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
 									"AND service.service_activate = '1'");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
 			foreach ($hosts as $key => $value)
 				$svs[$key."_".$elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $value;
@@ -933,8 +933,8 @@
 		global $pearDB;
 		$tab = array();
 		while (1)	{
-			$DBRESULT =& $pearDB->query("SELECT `".$field."`, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT `".$field."`, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			$field_result = $row[$field];
 			if ($row[$field]) {
 				return $row[$field];
@@ -979,11 +979,11 @@
 
 		$tab = array();
 		while(1) {
-			$DBRESULT =& $pearDB->query("SELECT s.service_template_model_stm_id, `".$field."` FROM service s, extended_service_information esi WHERE s.service_id = '".$service_id."' AND esi.service_service_id = s.service_id LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT s.service_template_model_stm_id, `".$field."` FROM service s, extended_service_information esi WHERE s.service_id = '".$service_id."' AND esi.service_service_id = s.service_id LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if (isset($row[$field]) && $row[$field])	{
-				$DBRESULT =& $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
-				$row =& $DBRESULT->fetchRow();
+				$DBRESULT = $pearDB->query("SELECT img_path, dir_alias FROM view_img vi, view_img_dir vid, view_img_dir_relation vidr WHERE vi.img_id = '".$row[$field]."' AND vidr.img_img_id = vi.img_id AND vid.dir_id = vidr.dir_dir_parent_id LIMIT 1");
+				$row = $DBRESULT->fetchRow();
 				if (isset($row["dir_alias"]) && isset($row["img_path"]) && $row["dir_alias"] && $row["img_path"]) {
 					return $row["dir_alias"]."/".$row["img_path"];
 				}
@@ -1008,8 +1008,8 @@
 		global $pearDB;
 		$tab = array();
 		while (1) {
-			$DBRESULT =& $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT service_description, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["service_description"])	{
 				return html_entity_decode(db2str($row["service_description"]), ENT_QUOTES, "UTF-8");
 			} elseif ($row["service_template_model_stm_id"]) {
@@ -1030,8 +1030,8 @@
 
 		$tab = array();
 		while(1) {
-			$DBRESULT =& $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT service_alias, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["service_alias"])	{
 				return html_entity_decode(db2str($row["service_alias"]), ENT_QUOTES, "UTF-8");
 			} elseif ($row["service_template_model_stm_id"]) {
@@ -1075,24 +1075,24 @@
 		global $pearDB;
 		$service_description = str2db($service_description);
 		if ($host_id)	{
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr " .
+			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr " .
 									"WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id " .
 									"AND service_description = '".$pearDB->escape($service_description)."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			# Service is directely link to a host, no problem
 			if ($row["service_id"])
 				return $row["service_id"];
 			# The Service might be link with a HostGroup
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+			$DBRESULT = $pearDB->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 									" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 									" AND service_id = hsr.service_service_id AND service_description = '".$service_description."'");
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			if ($row["service_id"])
 				return $row["service_id"];
 		}
 		if ($hg_id)	{
-			$DBRESULT =& $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hg_id."' AND hsr.service_service_id = service_id AND service_description = '".$service_description."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$hg_id."' AND hsr.service_service_id = service_id AND service_description = '".$service_description."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["service_id"])
 				return $row["service_id"];
 		}
@@ -1110,8 +1110,8 @@
 		/*
 		 * Get Services attached to hosts
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
+		while ($elem = $DBRESULT->fetchRow())	{
 			$hSvs[$elem["service_id"]] = html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT->free();
@@ -1119,10 +1119,10 @@
 		/*
 		 * Get Services attached to hostgroups
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
-		while ($elem =& $DBRESULT->fetchRow()){
+		while ($elem = $DBRESULT->fetchRow()){
 			$hSvs[$elem["service_id"]]	= html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT->free();
@@ -1145,8 +1145,8 @@
 		/*
 		 * Get Services attached to hosts
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1' $searchSTR");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_activate = '1' $searchSTR");
+		while ($elem = $DBRESULT->fetchRow())	{
 			$hSvs[$elem["service_id"]] = $elem["service_description"];
 		}
 		$DBRESULT->free();
@@ -1154,10 +1154,10 @@
 		/*
 		 * Get Services attached to hostgroups
 		 */
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id AND service_activate = '1' $searchSTR ");
-		while ($elem =& $DBRESULT->fetchRow()) {
+		while ($elem = $DBRESULT->fetchRow()) {
 			$hSvs[$elem["service_id"]]	= $elem["service_description"];
 		}
 		$DBRESULT->free();
@@ -1169,15 +1169,15 @@
 		if (!$host_id) return;
 		global $pearDB;
 		$hSvs = array();
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
+		while ($elem = $DBRESULT->fetchRow())	{
 			$hSvs[db2str($elem["service_description"])] = html_entity_decode($elem["service_id"], ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT->free();
-		$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id");
-		while ($elem =& $DBRESULT->fetchRow())
+		while ($elem = $DBRESULT->fetchRow())
 			$hSvs[db2str($elem["service_description"])]	= html_entity_decode($elem["service_id"], ENT_QUOTES, "UTF-8");
 		$DBRESULT->free();
 		return $hSvs;
@@ -1188,13 +1188,13 @@
 			return;
 		global $pearDB;
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		while ($elem =& $DBRESULT->fetchRow())	{
+		$DBRESULT = $pearDB->query("SELECT host_host_id, hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		while ($elem = $DBRESULT->fetchRow())	{
 			if ($elem["host_host_id"])
 				$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 			else if ($elem["hostgroup_hg_id"]){
-				$DBRESULT2 =& $pearDB->query("SELECT host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$elem["hostgroup_hg_id"]."'");
-				while ($elem2 =& $DBRESULT2->fetchRow())
+				$DBRESULT2 = $pearDB->query("SELECT host_host_id FROM hostgroup_relation hgr WHERE hgr.hostgroup_hg_id = '".$elem["hostgroup_hg_id"]."'");
+				while ($elem2 = $DBRESULT2->fetchRow())
 					$hosts[$elem2["host_host_id"]] = $elem2["host_host_id"];
 				$DBRESULT2->free();
 			}
@@ -1207,8 +1207,8 @@
 		if (!$service_id) return;
 		global $pearDB;
 		$hosts = array();
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		while ($elem =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		while ($elem = $DBRESULT->fetchRow())
 			if ($elem["host_host_id"])
 				$hosts[$elem["host_host_id"]] = $elem["host_host_id"];
 		$DBRESULT->free();
@@ -1219,8 +1219,8 @@
 		if (!$service_id) return;
 		global $pearDB;
 		$hgs = array();
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
-		while ($elem =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM host_service_relation hsr WHERE hsr.service_service_id = '".$service_id."'");
+		while ($elem = $DBRESULT->fetchRow())
 			if ($elem["hostgroup_hg_id"])
 				$hgs[$elem["hostgroup_hg_id"]] = $elem["hostgroup_hg_id"];
 		$DBRESULT->free();
@@ -1230,8 +1230,8 @@
 	function getMyServiceTPLID($service_description = NULL)	{
 		if (!$service_description) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT service_id FROM service WHERE service_description = '".htmlentities(str2db($service_description), ENT_QUOTES, "UTF-8")."' AND service_register = '0' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT service_id FROM service WHERE service_description = '".htmlentities(str2db($service_description), ENT_QUOTES, "UTF-8")."' AND service_register = '0' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["service_id"])
 			return $row["service_id"];
 		return NULL;
@@ -1304,7 +1304,7 @@
 			$DBRESULT = $pearDB->query("SELECT command_command_id, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			if ($row["command_command_id"])	{
-				$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+				$DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
 				$row2 = $DBRESULT2->fetchRow();
 				return ($row2["command_name"]);
 			} elseif ($row["service_template_model_stm_id"]) {
@@ -1326,8 +1326,8 @@
 
 		$tab = array();
 		while(1) {
-			$DBRESULT =& $pearDB->query("SELECT command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-			$row =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT command_command_id_arg, service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+			$row = $DBRESULT->fetchRow();
 			if ($row["command_command_id_arg"])	{
 				return (db2str($row["command_command_id_arg"]));
 			} elseif ($row["service_template_model_stm_id"]) {
@@ -1356,19 +1356,19 @@
 
 		$cmd = NULL;
 		$arg = NULL;
-		$DBRESULT =& $pearDB->query("SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '".$service_id."' LIMIT 1");
-		$row =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT command_command_id, command_command_id_arg FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+		$row = $DBRESULT->fetchRow();
 		if ($row["command_command_id_arg"] && !$row["command_command_id"])	{
 			$cmd = getMyCheckCmdName($service_id);
 			return $cmd.db2str($row["command_command_id_arg"]);
 		} else if ($row["command_command_id"] && !$row["command_command_id_arg"])	{
-			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-			$row2 =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+			$row2 = $DBRESULT2->fetchRow();
 			$arg = getMyCheckCmdArg($service_id);
 			return $row2["command_name"].$arg;
 		} else if ($row["command_command_id"] && $row["command_command_id_arg"])	{
-			$DBRESULT2 =& $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
-			$row2 =& $DBRESULT2->fetchRow();
+			$DBRESULT2 = $pearDB->query("SELECT command_name FROM command WHERE command_id = '".$row["command_command_id"]."' LIMIT 1");
+			$row2 = $DBRESULT2->fetchRow();
 			return $row2["command_name"].db2str($row["command_command_id_arg"]);
 		} else {
 			return NULL;
@@ -1382,9 +1382,9 @@
 	function getMyHostID($host_name = NULL)	{
 		if (!$host_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM host WHERE host_name = '".$pearDB->escape($host_name)."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT host_id FROM host WHERE host_name = '".$pearDB->escape($host_name)."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["host_id"];
 		}
 		return NULL;
@@ -1393,9 +1393,9 @@
 	function getMyHostGroupID($hostgroup_name = NULL) {
 		if (!$hostgroup_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".htmlentities(str2db($hostgroup_name), ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".htmlentities(str2db($hostgroup_name), ENT_QUOTES, "UTF-8")."' LIMIT 1");
 		if ($DBRESULT->numRows()) {
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["hg_id"];
 		}
 		return NULL;
@@ -1404,9 +1404,9 @@
 	function getMyServiceGroupID($servicegroup_name = NULL)	{
 		if (!$servicegroup_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".htmlentities(str2db($servicegroup_name), ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".htmlentities(str2db($servicegroup_name), ENT_QUOTES, "UTF-8")."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["sg_id"];
 		}
 		return NULL;
@@ -1415,9 +1415,9 @@
 	function getMyContactID($contact_name = NULL)	{
 		if (!$contact_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".htmlentities($contact_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".htmlentities($contact_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["contact_id"];
 		}
 		return NULL;
@@ -1426,9 +1426,9 @@
 	function getMyContactGroupID($cg_name = NULL)	{
 		if (!$cg_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '".htmlentities($cg_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '".htmlentities($cg_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["cg_id"];
 		}
 		return NULL;
@@ -1437,9 +1437,9 @@
 	function getMyCommandID($command_name = NULL)	{
 		if (!$command_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT command_id FROM command WHERE command_name = '".htmlentities($command_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT command_id FROM command WHERE command_name = '".htmlentities($command_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["command_id"];
 		}
 		return NULL;
@@ -1448,9 +1448,9 @@
 	function getMyTPID($tp_name = NULL)	{
 		if (!$tp_name) return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".htmlentities($tp_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".htmlentities($tp_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["tp_id"];
 		}
 		return NULL;
@@ -1462,20 +1462,20 @@
 
 	function getDefaultMetaGraph ($meta_id = NULL)	{
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
-		$gt =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
+		$gt = $DBRESULT->fetchRow();
 		if ($gt["graph_id"])
 			return $gt["graph_id"];
 		else {
-			$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+			$DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
 			if ($DBRESULT->numRows())	{
-				$gt =& $DBRESULT->fetchRow();
+				$gt = $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
 		}
-		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$gt =& $DBRESULT->fetchRow();
+			$gt = $DBRESULT->fetchRow();
 			return $gt["graph_id"];
 		}
 		return NULL;
@@ -1489,15 +1489,15 @@
 			return $gt["graph_id"];
 		else {
 			$command_id = getMyServiceField($service_id, "command_command_id");
-			$DBRESULT =& $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
+			$DBRESULT = $pearDB->query("SELECT graph_id FROM command WHERE `command_id` = '".$command_id."'");
 			if ($DBRESULT->numRows())	{
-				$gt =& $DBRESULT->fetchRow();
+				$gt = $DBRESULT->fetchRow();
 				return $gt["graph_id"];
 			}
 		}
-		$DBRESULT =& $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$gt =& $DBRESULT->fetchRow();
+			$gt = $DBRESULT->fetchRow();
 			return $gt["graph_id"];
 		}
 		return NULL;
@@ -1506,9 +1506,9 @@
 	function getDefaultDS()	{
 		global $pearDB;
 		$ds = array();
-		$DBRESULT =& $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT compo_id FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$ds =& $DBRESULT->fetchRow();
+			$ds = $DBRESULT->fetchRow();
 			return $ds["compo_id"];
 		}
 		return NULL;
@@ -1530,11 +1530,11 @@
 			2 => array('gif'=>'gif', 'png'=>'png', 'jpg'=>'jpg', 'gd2'=>'gd2')
 		);
 
-		$DBRESULT =& $pearDB->query("SELECT img_id, img_name, img_path, dir_name FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE img_id = vidr.img_img_id AND dir_id = vidr.dir_dir_parent_id ORDER BY dir_name, img_name");
+		$DBRESULT = $pearDB->query("SELECT img_id, img_name, img_path, dir_name FROM view_img_dir, view_img, view_img_dir_relation vidr WHERE img_id = vidr.img_img_id AND dir_id = vidr.dir_dir_parent_id ORDER BY dir_name, img_name");
 		$dir_name = NULL;
 		$dir_name2 = NULL;
 		$cpt = 1;
-		while ($elem =& $DBRESULT->fetchRow())	{
+		while ($elem = $DBRESULT->fetchRow())	{
 			$dir_name = $elem["dir_name"];
 			if ($dir_name2 != $dir_name)	{
 				$dir_name2 = $dir_name;
@@ -1581,8 +1581,8 @@
 	function getAllHostgroups(){
 		global $pearDB;
 		$hgs = array();
-		$DBRESULT =& $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
-		while ($hg =& $DBRESULT->fetchRow())
+		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM hostgroup ORDER BY `hg_name`");
+		while ($hg = $DBRESULT->fetchRow())
 			$hgs[$hg["hg_id"]] = $hg["hg_name"];
 		return $hgs;
 	}
@@ -1590,12 +1590,12 @@
 	function service_has_graph($host, $service){
 		global $pearDBO;
 		if (is_numeric($host) && is_numeric($service)){
-			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
+			$DBRESULT = $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
 			if($DBRESULT->numRows() > 0)
 				return true;
 		}
 		if (!is_numeric($host) && !is_numeric($service)){
-			$DBRESULT =& $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".$host."' AND service_description = '".$service."'");
+			$DBRESULT = $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".$host."' AND service_description = '".$service."'");
 
 			if($DBRESULT->numRows() > 0)
 				return true;
@@ -1631,8 +1631,8 @@
 					if ($is_admin) {
 						return true;
 					} else {
-						$DBRESULT2 =& $pearDBO->query("SELECT service_id FROM index_data WHERE index_data.host_id = '".$host_id."' AND service_id IN ($servicestr)");
-						while ($flag =& $DBRESULT2->fetchRow()) {
+						$DBRESULT2 = $pearDBO->query("SELECT service_id FROM index_data WHERE index_data.host_id = '".$host_id."' AND service_id IN ($servicestr)");
+						while ($flag = $DBRESULT2->fetchRow()) {
 							return true;
 						}
 					}
@@ -1646,9 +1646,9 @@
 		if (!$service_id)
 			return;
 		global $pearDB;
-		$DBRESULT =& $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '".$service_id."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT host_id FROM host h,host_service_relation hsr WHERE h.host_id = hsr.host_host_id AND hsr.service_service_id = '".$service_id."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
-			$row =& $DBRESULT->fetchRow();
+			$row = $DBRESULT->fetchRow();
 			return $row["host_id"];
 		}
 		return NULL;
@@ -1657,8 +1657,8 @@
 	if (!function_exists('getNDOInformations')){
 		function getNDOInformations(){
 			global $pearDB;
-			$DBRESULT =& $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
-			$conf_ndo =& $DBRESULT->fetchRow();
+			$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+			$conf_ndo = $DBRESULT->fetchRow();
 			unset($DBRESULT);
 			return $conf_ndo;
 		}
@@ -1674,11 +1674,11 @@
 	function getNDOPrefix(){
 		global $pearDB;
 
-		$DBRESULT =& $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT db_prefix FROM cfg_ndo2db LIMIT 1");
 		if(PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}
-		$conf_ndo =& $DBRESULT->fetchRow();
+		$conf_ndo = $DBRESULT->fetchRow();
 		unset($DBRESULT);
 		return $conf_ndo["db_prefix"];
 	}
@@ -1720,8 +1720,8 @@
 	function isHostLocalhost($pearDB, $host_name = NULL){
 		if (!isset($host_name))
 			return 0;
-		$DBRESULT =& $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
-		$nagios_server =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+		$nagios_server = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		if (isset($nagios_server['localhost']))
 			return $nagios_server['localhost'];
@@ -1731,8 +1731,8 @@
 	function isPollerLocalhost($pearDB, $id = NULL){
 		if (!isset($id))
 			return 0;
-		$DBRESULT =& $pearDB->query("SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '$id' LIMIT 1");
-		$nagios_server =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `localhost` FROM nagios_server WHERE nagios_server.id = '$id' LIMIT 1");
+		$nagios_server = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		if (isset($nagios_server['localhost']))
 			return $nagios_server['localhost'];
@@ -1742,8 +1742,8 @@
 	function GetMyHostPoller($pearDB, $host_name = NULL){
 		if (!isset($host_name))
 			return 0;
-		$DBRESULT =& $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
-		$nagios_server =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
+		$nagios_server = $DBRESULT->fetchRow();
 		if (isset($nagios_server['id']))
 			return $nagios_server['id'];
 		return 0;
@@ -1752,8 +1752,8 @@
 	function check_session($sid, $pearDB){
 		if (isset($sid) && !check_injection($sid)){
 			$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
-			$res =& $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
-			if ($session =& $res->fetchRow()){
+			$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
+			if ($session = $res->fetchRow()){
 				return $session["user_id"];
 			} else
 				get_error('bad session id');

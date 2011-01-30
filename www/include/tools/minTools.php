@@ -51,8 +51,8 @@
 	 * Database retrieve information for differents elements list we need on the page
 	 */
 	$Host = array(NULL => NULL);
-	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
-	$Host =& $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name, host_address, host_snmp_community, host_snmp_version FROM host WHERE host_id =". $host_id ."");
+	$Host = $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	switch ($o)	{
 		case "p" : $tool_cmd_script = "include/tools/ping.php?host=".$Host["host_address"]; $tool = _("Ping"); break;
@@ -97,7 +97,7 @@
 	 * Apply a template definition
 	 */
 
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);

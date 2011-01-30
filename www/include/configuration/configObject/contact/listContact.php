@@ -51,8 +51,8 @@
 	 * Create Timeperiod Cache
 	 */
 	$tpCache = array("" => "");
-	$DBRESULT =& $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
-	while ($data =& $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+	while ($data = $DBRESULT->fetchRow())
 		$tpCache[$data["tp_id"]] = $data["tp_name"];
 	unset($data);
 	$DBRESULT->free();
@@ -101,7 +101,7 @@
 	} else {
 		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	}
-	$DBRESULT =& $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
 
@@ -116,8 +116,8 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $contact =& $DBRESULT->fetchRow(); $i++) {
-		$selectedElements =& $form->addElement('checkbox', "select[".$contact['contact_id']."]");
+	for ($i = 0; $contact = $DBRESULT->fetchRow(); $i++) {
+		$selectedElements = $form->addElement('checkbox', "select[".$contact['contact_id']."]");
 
 		$moptions = "";
 		if ($contact["contact_activate"]) {
@@ -187,11 +187,11 @@
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "mc"=>_("Massive Change"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
-	$o1 =& $form->getElement('o1');
+	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 	$o1->setSelected(NULL);
 
-	$o2 =& $form->getElement('o2');
+	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 
@@ -200,7 +200,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("listContact.ihtml");
