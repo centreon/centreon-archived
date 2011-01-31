@@ -279,6 +279,9 @@ class CentreonLDAP {
 	 */
 	public function getEntry($dn, $attr = array())
 	{
+	    if (!is_array($attr)) {
+	        $attr = array($attr);
+	    }
 		$result = ldap_read($this->_ds, $dn, '(objectClass=*)', $attr);
 		if ($result === false) {
 			return false;
@@ -289,12 +292,61 @@ class CentreonLDAP {
 		}
 		$infos = array();
 		foreach ($entry[0] as $info => $value) {
-			if (isset($value[0])) {
+		    if ($value['count'] == 1) {
 				$infos[$info] = $value;
+			} else if ($value['count'] > 1) {
+			    $infos[$info] = array();
+			    for ($i = 0; $i < $value['count']; $i++) {
+			        $infos[$info][$i] = $value[$i];
+			    }
 			}
 		}
 		return $infos;
-	} 
+	}
+
+	/**
+	 * Get the list of groups for a user
+	 * 
+	 * @param string $userdn The user dn
+	 * @return array
+	 */
+	public function listGroupsForUser($userdn)
+	{
+	    $userdn = str_replace('\\', '\\\\', $userdn);
+	    $filter =  '(&' . preg_replace('/%s/', '*', $this->_groupSearchInfo['filter']) . '(' . $this->_groupSearchInfo['member'] . '=' . $userdn . '))';
+	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
+	    if (false === $result) {
+	        print ldap_error($this->_ds);
+	        return array();
+	    }
+	    $entries = ldap_get_entries($this->_ds, $result);
+	    $nbEntries = $entries["count"];
+	    $list = array();
+		for ($i = 0; $i < $nbEntries; $i++) {
+		    $list[] = $entries[$i][$this->_groupSearchInfo['group_name']][0];
+		}
+		return $list;
+	}
+	
+	/**
+	 * Return the list of member of a group
+	 * 
+	 * @param string $groupdn The group dn
+	 * @return array The listt of member
+	 */
+	public function listUserForGroup($groupdn)
+	{
+	    $groupdn = str_replace('\\', '\\\\', $groupdn);
+	    $group = $this->getEntry($groupdn, $this->_groupSearchInfo['member']);
+	    $list = array();
+	    if (!isset($group[$this->_groupSearchInfo['member']])) {
+	        return $list;
+	    } elseif (is_array($group[$this->_groupSearchInfo['member']])) {
+	        return $group[$this->_groupSearchInfo['member']];
+	    } else {
+	        return array($group[$this->_groupSearchInfo['member']]);
+	    }
+	}
 	
 	/**
 	 * Load the search informations
@@ -306,7 +358,8 @@ class CentreonLDAP {
 		}
 		$dbresult = $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'group_filter', 'group_base_search', 'group_name') AND ar_id = " . $id);
+			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'group_filter', 'group_base_search', 'group_name', 'group_member')
+			AND ar_id = " . $id);
 		$user = array();
 		$group = array();
 		while ($row = $dbresult->fetchRow()) {
@@ -320,6 +373,12 @@ class CentreonLDAP {
 				case 'alias':
 				    $user['alias'] = $row['ari_value'];
 				    break;
+				case 'user_group':
+				    $user['group'] = $row['ari_value'];
+				    break;
+				case 'user_name':
+				    $user['name'] = $row['ari_value'];
+				    break;
 				case 'group_filter':
 					$group['filter'] = $row['ari_value'];
 					break;
@@ -329,6 +388,9 @@ class CentreonLDAP {
 				case 'group_name':
 					$group['group_name'] = $row['ari_value'];
 					break;
+				case 'group_member':
+				    $group['member'] = $row['ari_value'];
+				    break;
 			}
 		}
 		if (isset($user['filter'])) {
@@ -378,6 +440,12 @@ class CentreonLDAP {
 		$dbresult->free();
 	}
 	
+	/**
+	 * Get bind information for connection
+	 * 
+	 * @param int $id The auth resource id
+	 * @return array
+	 */
 	private function _getBindInfo($id)
 	{
 	    if (isset($this->_constuctCache[$id])) {

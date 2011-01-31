@@ -111,13 +111,19 @@ function toggleCustom(select) {
 	if (value == 0) {
 		Effect.Appear('ldap_user_filter', { duration : 0 });
 		Effect.Appear('ldap_user_uid_attr', { duration : 0 });
+		Effect.Appear('ldap_user_group', { duration : 0 });
+		Effect.Appear('ldap_user_name', { duration : 0 });
 		Effect.Appear('ldap_group_filter', { duration : 0 });
 		Effect.Appear('ldap_group_gid_attr', { duration : 0 });
+		Effect.Appear('ldap_group_member', { duration : 0 });
 	} else {
 		Effect.Fade('ldap_user_filter', { duration : 0 });
 		Effect.Fade('ldap_user_uid_attr', { duration : 0 });
+		Effect.Fade('ldap_user_group', { duration : 0 });
+		Effect.Fade('ldap_user_name', { duration : 0 });
 		Effect.Fade('ldap_group_filter', { duration : 0 });
 		Effect.Fade('ldap_group_gid_attr', { duration : 0 });
+		Effect.Fade('ldap_group_member', { duration : 0 });
 	}
 }
 

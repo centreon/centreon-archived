@@ -95,8 +95,11 @@
 	$form->addElement('text', 'ldap_group_basedn', _("Search group base DN"), $attrsText);
 	$form->addElement('text', 'ldap_user_filter', _("User filter"), $attrsText);
 	$form->addElement('text', 'ldap_user_uid_attr', _("Login attribute"), $attrsText);
+	$form->addElement('text', 'ldap_user_group', _("User group attribute"), $attrsText);
+	$form->addElement('text', 'ldap_user_name', _("User displayname attribute"), $attrsText);
 	$form->addElement('text', 'ldap_group_filter', _("Group filter"), $attrsText);
 	$form->addElement('text', 'ldap_group_gid_attr', _("Group attribute"), $attrsText);
+	$form->addElement('text', 'ldap_group_member', _("Group member attribute"), $attrsText);
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
@@ -146,8 +149,11 @@
     $gopt['ldap_group_basedn'] = $tmpOptions['group_base_search'];
     $gopt['ldap_user_filter'] = $tmpOptions['user_filter'];
     $gopt['ldap_user_uid_attr'] = $tmpOptions['alias'];
+    $gopt['ldap_user_group'] = $tmpOptions['user_group'];
+    $gopt['ldap_user_name'] = $tmpOptions['user_name'];
     $gopt['ldap_group_filter'] = $tmpOptions['group_filter'];
     $gopt['ldap_group_gid_attr'] = $tmpOptions['group_name'];
+    $gopt['ldap_group_member'] = $tmpOptions['group_member'];
 	unset($tmpOptions);
 	
 	$form->setDefaults($gopt);
@@ -186,20 +192,29 @@
 	    if ($options['tmpl'] == '0') {
 	        $options['user_filter'] = $values['ldap_user_filter'];
 	        $options['alias'] = $values['ldap_user_uid_attr'];
+	        $options['user_group'] = $values['ldap_user_group'];
+	        $options['user_name'] = $values['ldap_user_name'];
 	        $options['group_filter'] = $values['ldap_group_filter'];
 	        $options['group_name'] = $values['ldap_group_gid_attr'];
+	        $options['group_member'] = $values['ldap_group_member'];
 	    } elseif ($options['tmpl'] == '1') {
 	        $tmplOptions = $ldapAdmin->getTemplateLdap();
 	        $options['user_filter'] = $tmplOptions['user_filter'];
 	        $options['alias'] = $tmplOptions['user_attr']['alias'];
+	        $options['user_group'] = $tmplOptions['user_attr']['group'];
+	        $options['user_name'] = $tmplOptions['user_attr']['name'];
 	        $options['group_filter'] = $tmplOptions['group_filter'];
 	        $options['group_name'] = $tmplOptions['group_attr']['group_name'];
+	        $options['group_member'] = $tmplOptions['group_attr']['member'];
 	    } elseif ($options['tmpl'] == '2') {
 	        $tmplOptions = $ldapAdmin->getTemplateAd();
 	        $options['user_filter'] = $tmplOptions['user_filter'];
 	        $options['alias'] = $tmplOptions['user_attr']['alias'];
+	        $options['user_group'] = $tmplOptions['user_attr']['group'];
+	        $options['user_name'] = $tmplOptions['user_attr']['name'];
 	        $options['group_filter'] = $tmplOptions['group_filter'];
 	        $options['group_name'] = $tmplOptions['group_attr']['group_name'];
+	        $options['group_member'] = $tmplOptions['group_attr']['member'];
 	    }
 	    
 	    if (false === PEAR::isError($res) && $res->numRows() == 1) {
