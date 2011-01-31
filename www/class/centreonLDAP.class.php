@@ -349,6 +349,32 @@ class CentreonLDAP {
 	}
 	
 	/**
+	 * Return the attribute name for ldap
+	 * 
+	 * @param string $type user or group
+	 * @param string $info The information to get the attribute name
+	 * @return string The attribute name or null if not found
+	 */
+	public function getAttrName($type, $info)
+	{
+	    switch ($type) {
+	        case 'user':
+	            if (isset($this->_userSearchInfo[$info])) {
+	                return $this->_userSearchInfo[$info];
+	            }
+	            break;
+	        case 'group':
+	            if (isset($this->_groupSearchInfo[$info])) {
+	                return $this->_groupSearchInfo[$info];
+	            }
+	            break;
+	        default:
+	            return null;
+	    }
+	    return null;
+	}
+	
+	/**
 	 * Load the search informations
 	 */
 	private function _loadSearchInfo($id = null)

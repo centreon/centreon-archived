@@ -56,6 +56,8 @@ class CentreonAuth {
 	 */
 	public  $passwdOk;
 	private $authType;
+	
+	private $ldap_auto_import = false;
 
 	/*
 	 * keep log class
@@ -81,6 +83,15 @@ class CentreonAuth {
     	$this->autologin = $autologin;
     	$this->cryptEngine = $encryptType;
     	$this->debug = $this->getLogFlag();
+    	
+    	$queryLdapAutoImport = "SELECT `value` FROM options WHERE `key` = 'ldap_auto_import'";
+    	$res = $pearDB->query($queryLdapAutoImport);
+    	if (false === PEAR::isError($res) && $res->numRows() == 1) {
+    	    $row = $res->fetchRow();
+    	    if ($row['value'] == 1) {
+    	        $this->ldap_auto_import = true;
+    	    }
+    	}
 
     	/*
     	 * Check User acces
@@ -122,7 +133,6 @@ class CentreonAuth {
 			 * Create Class
 			 */
 			$authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos);
-			$authLDAP->connect();
 			$this->passwdOk = $authLDAP->checkPassword();
 			if ($this->passwdOk == -1) {
 				if ($this->userInfos["contact_passwd"] == $password && $this->autologin) {
@@ -135,8 +145,6 @@ class CentreonAuth {
 					$this->passwdOk = 0;
 				}
 			}
-			$authLDAP->close();
-
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
 			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
 				$this->passwdOk = 1;
@@ -184,6 +192,11 @@ class CentreonAuth {
 					$this->CentreonLog->insertLog(1, "Contact '".$username."' is not enable for reaching centreon");
 				$this->error = "Invalid user";
 			}
+    	} else if ($this->ldap_auto_import) {
+    	    /* Add temporary userinfo auth_type */
+    	    $this->userInfos['contact_alias'] = $username;
+    	    $this->userInfos['contact_auth_type'] = "ldap";
+    	    $this->checkPassword($password);
     	} else {
     		if ($this->debug)
 	    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");

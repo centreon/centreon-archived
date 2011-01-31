@@ -3,84 +3,88 @@
  * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- *
- * This program is free software; you can redistribute it and/or modify it under
- * the terms of the GNU General Public License as published by the Free Software
+ * 
+ * This program is free software; you can redistribute it and/or modify it under 
+ * the terms of the GNU General Public License as published by the Free Software 
  * Foundation ; either version 2 of the License.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License along with
+ * 
+ * You should have received a copy of the GNU General Public License along with 
  * this program; if not, see <http://www.gnu.org/licenses>.
- *
- * Linking this program statically or dynamically with other modules is making a
- * combined work based on this program. Thus, the terms and conditions of the GNU
+ * 
+ * Linking this program statically or dynamically with other modules is making a 
+ * combined work based on this program. Thus, the terms and conditions of the GNU 
  * General Public License cover the whole combination.
- *
- * As a special exception, the copyright holders of this program give MERETHIS
- * permission to link this program with independent modules to produce an executable,
- * regardless of the license terms of these independent modules, and to copy and
- * distribute the resulting executable under terms of MERETHIS choice, provided that
- * MERETHIS also meet, for each linked independent module, the terms  and conditions
- * of the license of that module. An independent module is a module which is not
- * derived from this program. If you modify this program, you may extend this
+ * 
+ * As a special exception, the copyright holders of this program give MERETHIS 
+ * permission to link this program with independent modules to produce an executable, 
+ * regardless of the license terms of these independent modules, and to copy and 
+ * distribute the resulting executable under terms of MERETHIS choice, provided that 
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions 
+ * of the license of that module. An independent module is a module which is not 
+ * derived from this program. If you modify this program, you may extend this 
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- *
+ * 
  * For more information : contact@centreon.com
- *
+ * 
  * SVN : $URL$
  * SVN : $Id$
- *
+ * 
  */
+ 
 
-
+/**
+ * Class for Ldap authentication
+ */
 class CentreonAuthLDAP {
-
+	
 	var $pearDB;
-	var $ldapInfos;
-	var $ldapuri;
-	var $ds;
+	var $ldap;
 	var $CentreonLog;
 	var $contactInfos;
 	var $typePassword;
 	var $debug;
 	var $firstCheck = true;
-
-
+	
+	
+	/**
+	 * Constructor
+	 * 
+	 * @param CentreonDB $pearDB Connection to centreon database
+	 * @param CentreonLog $CentreonLog Log event
+	 * @param string $login The username
+	 * @param string $password The user password
+	 * @param string $contactInfos
+	 */
 	function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos) {
-
+		
 		$this->pearDB = $pearDB;
-
+		
 		$this->CentreonLog = $CentreonLog;
-
-		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` IN ('ldap_host', 'ldap_port', 'ldap_base_dn', 'ldap_login_attrib', 'ldap_ssl', 'ldap_auth_enable', 'ldap_protocol_version', 'ldap_search', 'ldap_search_user', 'ldap_search_user_pwd')");
-		while ($res = $DBRESULT->fetchRow())
-			$this->ldapInfos[$res["key"]] = $res["value"];
-		$DBRESULT->free();
-
+		
+		$this->ldap = new CentreonLDAP($pearDB, $CentreonLog);
+		
 		/*
 		 * Set contact Informations
 		 */
 		$this->contactInfos = $contactInfos;
-
+		
 		/*
 		 * Keep password
 		 */
 		$this->typePassword = $password;
-
-		/*
-		 * Create URI
-		 */
-		($this->ldapInfos['ldap_ssl']) ? $this->ldapuri = "ldaps://" : $this->ldapuri = "ldap://" ;
-
+		
 		$this->debug = $this->getLogFlag();
 	}
-
-	/*
+	
+	/**
 	 * Is loging enable ?
+	 * 
+	 * @return int 1 enable 0 disable
 	 */
 	private function getLogFlag() {
 		global $pearDB;
@@ -91,24 +95,18 @@ class CentreonAuthLDAP {
 		} else
 			return 0;
 	}
-
-	function connect() {
-		$this->contactInfos['contact_ldap_dn'] = html_entity_decode($this->contactInfos['contact_ldap_dn']);
-		if  (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '')
-			$this->contactInfos['contact_ldap_dn'] = "anonymous" ;
-		$this->ds = ldap_connect($this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']);
-		if ($this->debug)
-			$this->CentreonLog->insertLog(3, "LDAP Auth Cnx : ". $this->ldapuri . $this->ldapInfos['ldap_host'].":".$this->ldapInfos['ldap_port']." : ".ldap_error($this->ds)." (".ldap_errno($this->ds).")");
-	}
-
+	
+	/**
+	 * Check the user pass
+	 * 
+	 */
 	function checkPassword() {
-
-		/*
-		 * Set Protocol version
-		 */
-		ldap_set_option($this->ds, LDAP_OPT_PROTOCOL_VERSION, $this->ldapInfos['ldap_protocol_version']);
-    	ldap_set_option($this->ds, LDAP_OPT_REFERRALS, 0);
-
+	    
+	    /* Check if it's a new user */
+	    if (!isset($this->contactInfos['contact_ldap_dn'])) {
+	        
+	    }
+		
 		/*
 		 * LDAP BIND
 		 */
@@ -124,7 +122,7 @@ class CentreonAuthLDAP {
 		 * 51 : Server is busy => Fallback
 		 * 52 : Server is unavailable => Fallback
 		 * 81 : Can't contact LDAP server (php5) => Fallback
-		 */
+		 */	
 		if (isset($this->ds) && $this->ds) {
 			switch (ldap_errno($this->ds)) {
 				case 0:
@@ -141,12 +139,12 @@ class CentreonAuthLDAP {
 				case 51:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
-					return -1;
+					return 2;
 					break;
 				case 52:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
-					return -1;
+					return 2;
 					break;
 				case 81:
 					if ($this->debug)
@@ -158,7 +156,7 @@ class CentreonAuthLDAP {
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
 					if ($this->firstCheck && $this->updateUserDn()) {
 						$this->firstCheck = false;
-						return $this->checkPassword();
+						return $this->checkPassword();				
 					}
 				   	return 0;
 				   	break;
@@ -169,48 +167,50 @@ class CentreonAuthLDAP {
 			return 0; /* 2 ?? */
 		}
 	}
-
+	
 	/**
 	 * Search and update the user dn
-	 *
+	 * 
 	 * @return bool If the DN is modified
 	 */
 	function updateUserDn() {
-		if (!is_null($this->ldapInfos['ldap_search_user'])) {
-			$bind = @ldap_bind($this->ds, $this->ldapInfos['ldap_search_user'], $this->ldapInfos['ldap_search_user_pwd']);
-		} else {
-			@ldap_bind($this->ds);
-		}
-		if ($bind) {
-			$filter = "(&(" . $this->ldapInfos['ldap_login_attrib'] ."=" . $this->contactInfos['contact_alias'] . ")" . $this->ldapInfos['ldap_search'] . ")";
-			$sr = ldap_search($this->ds, $this->ldapInfos['ldap_base_dn'], $filter);
-			$entries = ldap_get_entries($this->ds, $sr);
-			if ($entries["count"] == 0) {
-				$this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " . $this->contactInfos['contact_alias']);
-				return false;
-			} else if ($entries["count"] > 1) {
-				$this->CentreonLog->insertLog(3, "LDAP AUTH : Found more than one DN for user " . $this->contactInfos['contact_alias']);
-				return false;
-			} else {
-				$dn = $entries[0]["dn"];
-				if ($dn != $this->contactInfos['contact_ldap_dn']) {
-					$this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
-					$query = "UPDATE contact SET contact_ldap_dn = '" .  $dn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
-					$this->pearDB->query($query);
-					$this->contactInfos['contact_ldap_dn'] = $dn;
-					return true;
-				}
-			}
+		if ($this->ldap->rebind()) {
+		    
+		    $userDn = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
+		    
+		    if (false === $userDn) {
+		        $this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " . $this->contactInfos['contact_alias']);
+		        return false;
+		    }
+		    
+		    if (isset($this->contactInfos['contact_id'])) {
+		        /* Update the user dn */
+		        $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
+				$query = "UPDATE contact SET contact_ldap_dn = '" .  $dn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
+				$this->pearDB->query($query);
+				$this->contactInfos['contact_ldap_dn'] = $dn;
+				return true;
+		    } else {
+		        /* Find the template ID */
+		        $query = "SELECT contact_id FROM contact WHERE contact_register = '1'";
+		        $res = $this->pearDB->query($query);
+		        if ($res->numRows() == 0) {
+		            $this->CentreonLog->insertLog(3, "LDAP AUTH : No contact template defined.");
+		            return false;
+		        }
+		        $row = $res->fetchRow();
+		        $tmplId = $row['contact_id'];
+		        /* Insert user in database */
+		        $userDisplay =  $this->ldap->getEntry($userdn, $this->ldap->getAttrName('user', 'name'));
+		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn)
+		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay[$this->ldap->getAttrName('user', 'name')] . "', 'ldap', '" . $userdn . "')";
+		        if (false === PEAR::isError($this->pearDB->query($query))) {
+		            return true;
+		        }
+		    }
 		}
 		return false;
-	}
-
-	/*
-	 * Close LDAP Connexion
-	 */
-	function close() {
-		ldap_close($this->ds);
-	}
+	}	
 }
 
 ?>
