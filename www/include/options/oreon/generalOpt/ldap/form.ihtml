@@ -23,10 +23,12 @@
 	<tr class="list_one" id="ldap_user_filter"><td class="FormRowField">{$form.ldap_user_filter.label}</td><td class="FormRowValue">{$form.ldap_user_filter.html}</td></tr>
 	<tr class="list_two" id="ldap_user_uid_attr"><td class="FormRowField">{$form.ldap_user_uid_attr.label}</td><td class="FormRowValue">{$form.ldap_user_uid_attr.html}</td></tr>
 	<tr class="list_one" id="ldap_user_group"><td class="FormRowField">{$form.ldap_user_group.label}</td><td class="FormRowValue">{$form.ldap_user_group.html}</td></tr>
-	<tr class="list_one" id="ldap_user_name"><td class="FormRowField">{$form.ldap_user_name.label}</td><td class="FormRowValue">{$form.ldap_user_name.html}</td></tr>
-	<tr class="list_two" id="ldap_group_filter"><td class="FormRowField">{$form.ldap_group_filter.label}</td><td class="FormRowValue">{$form.ldap_group_filter.html}</td></tr>
-	<tr class="list_one" id="ldap_group_gid_attr"><td class="FormRowField">{$form.ldap_group_gid_attr.label}</td><td class="FormRowValue">{$form.ldap_group_gid_attr.html}</td></tr>
-	<tr class="list_two" id="ldap_group_member"><td class="FormRowField">{$form.ldap_group_member.label}</td><td class="FormRowValue">{$form.ldap_group_member.html}</td></tr>
+	<tr class="list_two" id="ldap_user_name"><td class="FormRowField">{$form.ldap_user_name.label}</td><td class="FormRowValue">{$form.ldap_user_name.html}</td></tr>
+	<tr class="list_one" id="ldap_user_email"><td class="FormRowField">{$form.ldap_user_email.label}</td><td class="FormRowValue">{$form.ldap_user_email.html}</td></tr>
+	<tr class="list_two" id="ldap_user_pager"><td class="FormRowField">{$form.ldap_user_pager.label}</td><td class="FormRowValue">{$form.ldap_user_pager.html}</td></tr>
+	<tr class="list_one" id="ldap_group_filter"><td class="FormRowField">{$form.ldap_group_filter.label}</td><td class="FormRowValue">{$form.ldap_group_filter.html}</td></tr>
+	<tr class="list_two" id="ldap_group_gid_attr"><td class="FormRowField">{$form.ldap_group_gid_attr.label}</td><td class="FormRowValue">{$form.ldap_group_gid_attr.html}</td></tr>
+	<tr class="list_one" id="ldap_group_member"><td class="FormRowField">{$form.ldap_group_member.label}</td><td class="FormRowValue">{$form.ldap_group_member.html}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">

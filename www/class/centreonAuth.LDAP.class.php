@@ -201,9 +201,18 @@ class CentreonAuthLDAP {
 		        $row = $res->fetchRow();
 		        $tmplId = $row['contact_id'];
 		        /* Insert user in database */
-		        $userDisplay =  $this->ldap->getEntry($userdn, $this->ldap->getAttrName('user', 'name'));
-		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn)
-		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay[$this->ldap->getAttrName('user', 'name')] . "', 'ldap', '" . $userdn . "')";
+		        $userInfos =  $this->ldap->getEntry($userdn);
+		        $userDisplay = $userInfos[$this->ldap->getAttrName('user', 'name')];
+		        $userEmail = "NULL";
+		        if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
+		            $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')] . "'";
+		        }
+		        $userPager = "NULL";
+		        if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
+		            $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
+		        }
+		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager)
+		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userdn . "', " . $userEmail . ", " . $userPager . ")";
 		        if (false === PEAR::isError($this->pearDB->query($query))) {
 		            return true;
 		        }

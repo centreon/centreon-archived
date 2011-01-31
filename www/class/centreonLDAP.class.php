@@ -384,7 +384,7 @@ class CentreonLDAP {
 		}
 		$dbresult = $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'group_filter', 'group_base_search', 'group_name', 'group_member')
+			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'user_email, 'user_pager', 'group_filter', 'group_base_search', 'group_name', 'group_member')
 			AND ar_id = " . $id);
 		$user = array();
 		$group = array();
@@ -404,6 +404,12 @@ class CentreonLDAP {
 				    break;
 				case 'user_name':
 				    $user['name'] = $row['ari_value'];
+				    break;
+				case 'user_email':
+				    $user['email'] = $row['ari_value'];
+				    break;
+				case 'user_pager':
+				    $user['pager'] = $row['ari_value'];
 				    break;
 				case 'group_filter':
 					$group['filter'] = $row['ari_value'];
