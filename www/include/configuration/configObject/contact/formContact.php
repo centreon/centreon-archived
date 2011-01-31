@@ -39,6 +39,9 @@
 	if (!isset($oreon)) {
 		exit();
 	}
+	
+	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
 	$cct = array();
 	if (($o == "c" || $o == "w") && $contact_id) {
@@ -149,10 +152,18 @@
 	 * Contact Groups comes from DB -> Store in $notifCcts Array
 	 */
 	$notifCgs = array();
-	$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+	/*$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
 	while ($notifCg = $DBRESULT->fetchRow())
 		$notifCgs[$notifCg["cg_id"]] = $notifCg["cg_name"];
-	$DBRESULT->free();
+	$DBRESULT->free();*/
+	$cg = new CentreonContactgroup($pearDB);
+	$notifCgs = $cg->getListContactgroup(false);
+	
+	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
+	    $ldap = new CentreonLDAP($pearDB, null);
+	    $ldap->connect();
+	    $cgLdap = $ldap->listGroupsForUser($cct['contact_ldap_dn']);
+	}
 
 	/**
 	 * Get ACL Groups List
@@ -497,6 +508,11 @@
 		# Massive Change
 		$subMC = $form->addElement('submit', 'submitMC', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
+	}
+	
+	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
+	    $tpl->assign("ldap_group", _("Group Ldap"));
+	    $tpl->assign("ldapGroups", $cgLdap);
 	}
 
 	$valid = false;

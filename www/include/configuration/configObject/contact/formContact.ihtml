@@ -31,6 +31,16 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cg.label}</td><td class="FormRowValue">{$form.mc_mod_cg.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contactgroups"> {$form.contact_cgNotif.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.contact_cgNotif.html}</p></td></tr>
+		{if $o != "mc" and ! isset($ldapGroups)}
+			<tr class="list_two">
+				<td class="FormRowField">{$ldap_group}</td>
+				<td class="FormRowValue">
+				{foreach item=group from=$ldapGroups}
+				&nbsp;{$group}<br/>
+				{/foreach}
+				</td>
+			</tr>
+		{/if}
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 	 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="contact_enable_notifications"> {$form.contact_enable_notifications.label}</td><td class="FormRowValue">{$form.contact_enable_notifications.html}</td></tr>

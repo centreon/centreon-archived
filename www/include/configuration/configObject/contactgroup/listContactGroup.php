@@ -49,9 +49,9 @@
 	
 	$SearchSTR = "";
 	if (isset($search))
-		$SearchSTR = " WHERE (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";		
+		$SearchSTR = " AND (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";		
 
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `contactgroup` $SearchSTR");
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `contactgroup` WHERE `cg_type` = 'local'$SearchSTR");
 		
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -78,7 +78,7 @@
 	/*
 	 * Contactgroup list
 	 */
-	$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate FROM contactgroup $SearchSTR ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate FROM contactgroup WHERE `cg_type` = 'local'$SearchSTR ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 	
 	$search = tidySearchKey($search, $advanced_search);
@@ -165,7 +165,7 @@
 	/*
 	 * Apply a template definition
 	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+	$renderer =& new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('limit', $limit);
