@@ -1,8 +1,8 @@
 {$form.javascript}
-<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext-prototype-adapter.js"></script>
-<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext-all.js"></script>
-<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext.ux.mask.js"></script>
-<script type="text/javascript" src="./include/configuration/configDowntime/javascript/ext.ux.TabCloseMenu.js"></script>
+<script type="text/javascript" src="./include/common/javascript/extjs/ext-prototype-adapter.js"></script>
+<script type="text/javascript" src="./include/common/javascript/extjs/ext-all.js"></script>
+<script type="text/javascript" src="./include/common/javascript/extjs/ext.ux.mask.js"></script>
+<script type="text/javascript" src="./include/common/javascript/extjs/ext.ux.TabCloseMenu.js"></script>
 <link rel="stylesheet" type="text/css" href="./include/configuration/configDowntime/resources/css/ext-all.css" />
 <link rel="stylesheet" type="text/css" href="./include/configuration/configDowntime/resources/css/centreon.css" />  
 {literal}
