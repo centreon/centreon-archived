@@ -3,8 +3,8 @@
 <script type="text/javascript" src="./include/common/javascript/extjs/ext-all.js"></script>
 <script type="text/javascript" src="./include/common/javascript/extjs/ext.ux.mask.js"></script>
 <script type="text/javascript" src="./include/common/javascript/extjs/ext.ux.TabCloseMenu.js"></script>
-<link rel="stylesheet" type="text/css" href="./include/configuration/configDowntime/resources/css/ext-all.css" />
-<link rel="stylesheet" type="text/css" href="./include/configuration/configDowntime/resources/css/centreon.css" />  
+<link rel="stylesheet" type="text/css" href="./include/common/javascript/extjs/resources/css/ext-all.css" />
+<link rel="stylesheet" type="text/css" href="./include/common/javascript/extjs/resources/css/centreon.css" />  
 {literal}
 <script type="text/javascript">
 var tabsPeriods;
