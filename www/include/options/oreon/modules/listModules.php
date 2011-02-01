@@ -38,6 +38,23 @@
 
 	if (!isset($oreon))
 		exit();
+		
+	/**
+     * Parsing a Zend license file
+     * 
+     * @param string $file The file name
+     * @return array
+     */
+    function parse_zend_license_file($file) {
+        $lines = preg_split('/\n/', file_get_contents($file));
+        $infos = array();
+        foreach ($lines as $line) {
+            if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
+                $infos[$match[1]] = $match[2];
+            }
+        }
+        return $infos;
+    }
 
 	/*
 	 * Test Modules Existence for deletion
@@ -111,7 +128,7 @@
 					if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
 						$zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
 					} else {
-						$zend_info = parse_ini_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+						$zend_info = parse_zend_license_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
 					}
 					$license_expires = date("d/m/Y", strtotime($zend_info['Expires']));
 				} else {
@@ -175,7 +192,7 @@
 						if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
 							$zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
 						} else {
-							$zend_info = parse_ini_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+							$zend_info = parse_zend_license_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
 						}
 						$license_expires = date("d/m/Y", strtotime($zend_info['Expires']));
 					} else {
