@@ -139,12 +139,12 @@ class CentreonAuthLDAP {
 				case 51:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server Busy. Try later");
-					return 2;
+					return -1;
 					break;
 				case 52:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : Error, Server unavailable. Try later");
-					return 2;
+					return -1;
 					break;
 				case 81:
 					if ($this->debug)
