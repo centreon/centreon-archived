@@ -135,6 +135,7 @@
 					$_POST["persistant"] = 0;
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
+			    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
 				$ecObj->AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
 		    	require_once("viewServiceDowntime.php");
 			} else {
