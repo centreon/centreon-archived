@@ -121,7 +121,7 @@ ul.x-tab-strip-bottom{
 .x-tab-strip-active span.x-tab-strip-text {
 	/* color:#15428b; */
     font-weight:bold;
-    background-image: url(../../../../../Themes/Centreon-2/Images/bg_header.gif);
+    background-image: url(../../../../../../Themes/Centreon-2/Images/bg_header.gif);
 }
 
 .x-tab-strip-disabled .x-tabs-text {
@@ -134,7 +134,7 @@ ul.x-tab-strip-top {
 }
 
 ul.x-tab-strip li {
-	background-image: url(../../../../../Themes/Centreon-2/Images/bg_header.gif);
+	background-image: url(../../../../../../Themes/Centreon-2/Images/bg_header.gif);
 	border: 1px solid #AAE;
 	border-bottom: none;
 	color: #555;
@@ -149,7 +149,7 @@ ul.x-tab-strip li.x-tab-strip-active {
 }
 
 .x-tab-strip-top .x-tab-right, .x-tab-strip-top .x-tab-left, .x-tab-strip-top .x-tab-strip-inner{
-	background-image: url(../../../../../Themes/Centreon-2/Images/bg_header.gif);
+	background-image: url(../../../../../../Themes/Centreon-2/Images/bg_header.gif);
 	/* background-image: url(../images/default/tabs/tabs-sprite.gif); */
 }
 
