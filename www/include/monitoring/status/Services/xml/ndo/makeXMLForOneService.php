@@ -76,6 +76,11 @@
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = htmlentities($_GET["disable"]) : $disable = "disable";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 
+	$tmpTab = split("_", $svc_id);
+	if (isset($tmpTab[1])) {
+	    $svc_id = $tmpTab[1];
+	}
+
 	function get_centreon_date($date){
 		global $date_time_format_status, $centreonGMT;
 		if ($date > 0)
