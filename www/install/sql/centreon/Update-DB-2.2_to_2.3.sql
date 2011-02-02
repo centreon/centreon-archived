@@ -145,3 +145,6 @@ ALTER TABLE `downtime_servicegroup_relation`
  ALTER TABLE `contactgroup` ADD `cg_type` varchar(10) default 'local';
  ALTER TABLE `contactgroup` ADD `cg_ldap_dn` varchar(255) default NULL;
  
+ 
+ ALTER TABLE `contact` ADD `contact_register` TINYINT( 6 ) NOT NULL DEFAULT '0';
+ 
