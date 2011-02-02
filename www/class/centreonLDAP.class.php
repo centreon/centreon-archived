@@ -51,6 +51,8 @@ class CentreonLDAP {
 	private $_constuctCache = array();
 	private $_userSearchInfo = null;
 	private $_groupSearchInfo = null;
+	private $_debugImport = false;
+	private $_debugPath = "";
 	
 	/**
 	 * Constructor
@@ -81,6 +83,23 @@ class CentreonLDAP {
 		} else {
 			throw new Exception('Not ldap template has defined');
 		}
+		
+		/* Debug options */
+		$dbresult = $this->_db->query("SELECT `key`, `value` FROM `options` WHERE `key` IN ('debug_ldap_import', 'debug_path')");
+		while ($row = $dbresult->fetchRow()) {
+		    if ($row['key'] == 'debug_ldap_import') {
+		        if ($row['value'] == 1) {
+		            $this->_debugImport = true;
+		        }
+		    } elseif ($row['key'] == 'debug_path') {
+		        $this->_debugPath = trim($row['value']);
+		    }
+		}
+		$dbresult->free();
+		if ($this->_debugPath == '') {
+		    $this->_debugImport = false;
+		}
+		
 		
 		/* Get the list of server ldap */
 		if ($use_dns_srv != "0") {
@@ -137,6 +156,7 @@ class CentreonLDAP {
 			} else {
 			    $url = 'ldap://' . $ldap['host'] . $port . '/';
 			}
+			$this->_debug("LDAP Connect : trying url : " . $url);
 			$this->_ds = ldap_connect($url);
 			ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
 			$protocol_version = 3;
@@ -145,12 +165,14 @@ class CentreonLDAP {
 			}
 			ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
 			if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
-			    ldap_start_tls($this->_ds);ldap_start_tls($this->_ds);
+			    $this->_debug("LDAP Connect : use tls");
+			    ldap_start_tls($this->_ds);
 			}
 			$this->_ldap = $ldap;
 			if ($this->rebind()) {
 			    return true;
 			}
+			$this->_debug("LDAP Connect : connection error");
 		}
 		return false;
 	}
@@ -169,18 +191,21 @@ class CentreonLDAP {
 	 */
 	public function rebind() {
 	    if (isset($this->_ldap['info']['bind_dn']) && isset($this->_ldap['info']['bind_pass'])) {
+	        $this->_debug("LDAP Connect : Credentials : " . $this->_ldap['info']['bind_dn'] . " :: " . $this->_ldap['info']['bind_pass']);
 			if (ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
 				$this->_linkId = $this->_ldap['id'];
 				$this->_loadSearchInfo($this->_ldap['tmpl']);
 				return true;
 			}
 		} else {
+		    $this->_debug("LDAP Connect : Credentials : anonymous");
 			if (ldap_bind($this->_ds)) {
 				$this->_linkId = $this->_ldap['id'];
 				$this->_loadSearchInfo($this->_ldap['tmpl']);
 				return true;
 			}
 		}
+		$this->_debug("LDAP Connect : Bind : " . ldap_errno($ds));
 		return false;  
 	}
 	
@@ -375,6 +400,71 @@ class CentreonLDAP {
 	}
 	
 	/**
+	 * Search function
+	 * 
+	 * @param string $filter The filter string, null for use default 
+	 * @param string $basedn The basedn, null for use default
+	 * @param int $searchLimit The search limit, null for all
+	 * @param int $searchTimeout The search timeout, null for default
+	 * @return array The search result
+	 */
+	public function search($filter, $basedn, $searchLimit, $searchTimeout)
+	{
+	    $attr = array(
+	        $this->_userSearchInfo['alias'],
+	        $this->_userSearchInfo['name'],
+	        $this->_userSearchInfo['email'],
+	        $this->_userSearchInfo['pager'],
+	        $this->_userSearchInfo['firstname'],
+	        $this->_userSearchInfo['lastname'],
+	    );
+	    /* Set default */
+	    if (is_null($filter)) {
+	        $filter = $this->_userSearchInfo['filter'];
+	    }
+	    if (is_null($basedn)) {
+	        $filter = $this->_userSearchInfo['base_search'];
+	    }
+	    if (is_null($searchLimit)) {
+	        $searchLimit = 0;
+	    }
+	    if (is_null($searchTimeout)) {
+	        $searchLimit = 0;
+	    }
+	    /* Display debug */
+	    $this->_debug('LDAP Search : Base DN : ' . $basedn);
+	    $this->_debug('LDAP Search : Filter : ' . $filter);
+	    $this->_debug('LDAP Search : Size Limit : ' . $searchLimit);
+	    $this->_debug('LDAP Search : Timeout : ' . $searchTimeout);
+	    /* Search */
+	    $sr = ldap_search($this->_ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
+	    $this->_debug("LDAP Search : Error : ". ldap_err2str($this->_ds));
+	    /* Sort */
+	    ldap_sort($this->_ds, $sr, "dn");
+	    $number_returned = ldap_count_entries($this->_ds,$sr);
+		$this->_debug("LDAP Search : ". (isset($number_returned) ? $number_returned : "0") . " entries found");
+
+		$info = ldap_get_entries($this->_ds, $sr);
+		$this->_debug("LDAP Search : ". $info["count"]);
+		ldap_free_result($sr);
+		
+		/* Format the result */
+		$results = array();
+		for ($i = 0; $i < $info['count']; $i++) {
+		    $result = array();
+		    $result['dn'] = (isset($info[$i]['dn']) ? $info[$i]['dn'] : "");
+		    $result['alias'] = (isset($info[$i][$this->_userSearchInfo['alias']][0]) ? $info[$i][$this->_userSearchInfo['alias']][0] : "");
+		    $result['name'] = (isset($info[$i][$this->_userSearchInfo['name']][0]) ? $info[$i][$this->_userSearchInfo['name']][0] : "");
+		    $result['email'] = (isset($info[$i][$this->_userSearchInfo['email']][0]) ? $info[$i][$this->_userSearchInfo['email']][0] : "");
+		    $result['pager'] = (isset($info[$i][$this->_userSearchInfo['pager']][0]) ? $info[$i][$this->_userSearchInfo['pager']][0] : "");
+		    $result['firstname'] = (isset($info[$i][$this->_userSearchInfo['firstname']][0]) ? $info[$i][$this->_userSearchInfo['firstname']][0] : "");
+		    $result['lastname'] = (isset($info[$i][$this->_userSearchInfo['lastname']][0]) ? $info[$i][$this->_userSearchInfo['lastname']][0] : "");
+		    $results[] = $result;
+		}
+		return $results;
+	}
+	
+	/**
 	 * Load the search informations
 	 */
 	private function _loadSearchInfo($id = null)
@@ -384,7 +474,7 @@ class CentreonLDAP {
 		}
 		$dbresult = $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'user_email, 'user_pager', 'group_filter', 'group_base_search', 'group_name', 'group_member')
+			WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'user_email', 'user_pager', 'user_firstname', 'user_lastname', 'group_filter', 'group_base_search', 'group_name', 'group_member')
 			AND ar_id = " . $id);
 		$user = array();
 		$group = array();
@@ -410,6 +500,12 @@ class CentreonLDAP {
 				    break;
 				case 'user_pager':
 				    $user['pager'] = $row['ari_value'];
+				    break;
+				case 'user_firstname':
+				    $user['firstname'] = $row['ari_value'];
+				    break;
+				case 'user_lastname':
+				    $user['lastname'] = $row['ari_value'];
 				    break;
 				case 'group_filter':
 					$group['filter'] = $row['ari_value'];
@@ -492,6 +588,18 @@ class CentreonLDAP {
 		$dbresult->free();
 		$this->_constuctCache[$id] = $infos;
 		return $infos;
+	}
+	
+	/**
+	 * Debug for ldap
+	 * 
+	 * @param string $msg
+	 */
+	private function _debug($msg)
+	{
+	    if ($this->_debugImport) {
+		    error_log("[" . date("d/m/Y H:s") ."]" . $msg . "\n", 3, $this->_debugPath."ldapsearch.log");
+	    }
 	}
 }
 
@@ -696,6 +804,8 @@ class CentreonLdapAdmin
 		$attr['name'] = 'name';
 		$attr['pager'] = 'mobile';
 		$attr['group'] = 'memberOf';
+		$attr['firstname'] = 'givenname';
+		$attr['lastname'] = 'sn';
 		$infos['user_attr'] = $attr;
 		$infos['group_filter'] = "(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456))";
 		$attr = array();
@@ -719,6 +829,9 @@ class CentreonLdapAdmin
 		$attr['email'] = 'mail';
 		$attr['name'] = 'displayName';
 		$attr['pager'] = 'mobile';
+		$attr['group'] = '';
+		$attr['firstname'] = 'givenname';
+		$attr['lastname'] = 'sn';
 		$infos['user_attr'] = $attr;
 		$infos['group_filter'] = "(&(group=%s)(objectClass=groupOfNames))";
 		$attr = array();

@@ -57,7 +57,7 @@
 	 * Command information
 	 */
 	$form->addElement('header', 'options', _("Search Options"));
-	$form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText );
+	$form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText);
 	$form->addElement('text', 'ldap_base_dn', _("LDAP Base DN"), $attrsText);
 	$form->addElement('text', 'ldap_search_timeout', _("LDAP search timeout"), $attrsText2);
 	$form->addElement('text', 'ldap_search_limit', _("LDAP Search Size Limit"), $attrsText2);

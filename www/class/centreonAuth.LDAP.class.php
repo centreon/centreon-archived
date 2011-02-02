@@ -67,6 +67,8 @@ class CentreonAuthLDAP {
 		$this->CentreonLog = $CentreonLog;
 		
 		$this->ldap = new CentreonLDAP($pearDB, $CentreonLog);
+		$this->ldap->connect();
+		$this->ds = $this->ldap->getDs();
 		
 		/*
 		 * Set contact Informations

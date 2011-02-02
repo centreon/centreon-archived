@@ -52,24 +52,35 @@
 	} else {
 		$oreon = $_SESSION["centreon"];
 	}
-
+	
 	global $buffer;
 	$pearDB = new CentreonDB();
+	
+	/* Debug options */
+	$debug_ldap_import = false;
+	$dbresult = $pearDB->query("SELECT `key`, `value` FROM `options` WHERE `key` IN ('debug_ldap_import', 'debug_path')");
+	while ($row = $dbresult->fetchRow()) {
+	    if ($row['key'] == 'debug_ldap_import') {
+	        if ($row['value'] == 1) {
+	            $debug_ldap_import = true;
+	        }
+	    } elseif ($row['key'] == 'debug_path') {
+	        $debug_path = trim($row['value']);
+	    }
+	}
+	$dbresult->free();
+	if ($debug_path == '') {
+	    $debug_ldap_import = false;
+	}
 
-	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-	while ($res = $DBRESULT->fetchRow())
-		$ldap_search[$res["key"]] = myDecode($res["value"]);
-	$DBRESULT->free();
-	$debug = $ldap_search;
+	$ldap = new CentreonLDAP($pearDB, null);
 
-	$ldap_search_filter = $ldap_search['ldap_search_filter'];
-	$ldap_base_dn = $ldap_search['ldap_base_dn'];
-	$ldap_search_timeout = $ldap_search['ldap_search_timeout'];
-	$ldap_search_limit = $ldap_search['ldap_search_limit'];
-	$ldap_login_attrib = $ldap_search['ldap_login_attrib'];
-	$ldap_protocol_version = $ldap_search['ldap_protocol_version'];
-
-	if (isset($_GET["ldap_search_filter"]) && ($_GET["ldap_search_filter"]!= "undefined") )
+	$ldap_search_filter = null;
+	$ldap_base_dn = null;
+	$ldap_search_timeout = null;
+	$ldap_search_limit = null;
+	
+	if (isset($_GET["ldap_search_filter"]) && ($_GET["ldap_search_filter"] != "undefined") )
 		$ldap_search_filter = $_GET["ldap_search_filter"];
 	else if (isset($_POST["ldap_search_filter"])  && ($_POST["ldap_search_filter"]!= "undefined"))
 		$ldap_search_filter = $_POST["ldap_search_filter"];
@@ -78,7 +89,6 @@
 		$ldap_base_dn = $_GET["ldap_base_dn"];
 	else if (isset($_POST["ldap_base_dn"])  && ($_POST["ldap_base_dn"]!= "undefined"))
 		$ldap_base_dn = $_POST["ldap_base_dn"];
-
 
 	if (isset($_GET["ldap_search_timeout"]) && ($_GET["ldap_search_timeout"]!= "undefined") )
 		$ldap_search_timeout = $_GET["ldap_search_timeout"];
@@ -90,164 +100,64 @@
 	else if (isset($_POST["ldap_search_limit"])  && ($_POST["ldap_search_limit"]!= "undefined"))
 		$ldap_search_limit = $_POST["ldap_search_limit"];
 
-	$connect = true;
+	$connect = false;
 
-	$debug_ldap_import = $debug['debug_ldap_import'];
-	$debug_path = $debug['debug_path'];
-
-	if (!isset($debug_ldap_import))
-		$debug_ldap_import = 0;
-
-	if ($debug_ldap_import == 1)
-		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : $ldap_search_filter\n", 3, $debug_path."ldapsearch.log");
-
-	if ($ldap_search['ldap_ssl'])
-		$ldapuri = "ldaps://" ;
-	else
-		$ldapuri = "ldap://" ;
-
-	if ($debug_ldap_import == 1)
-		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : URI : " . $ldapuri . $ldap_search['ldap_host'].":".$ldap_search['ldap_port'] ."\n", 3, $debug_path."ldapsearch.log");
- 	$ds = @ldap_connect($ldapuri . $ldap_search['ldap_host'].":".$ldap_search['ldap_port']);
-
-
-	@ldap_set_option($ds, LDAP_OPT_PROTOCOL_VERSION, $ldap_protocol_version);
-	@ldap_set_option($ds, LDAP_OPT_REFERRALS, 0);
-
-	if ($debug_ldap_import == 1)
-		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Credentials : " . $ldap_search['ldap_search_user'] . " :: " . $ldap_search['ldap_search_user_pwd'] ."\n", 3, $debug_path."ldapsearch.log");
-	if ($ldap_search['ldap_search_user'] && $ldap_search['ldap_search_user_pwd'])
-		@ldap_bind($ds,$ldap_search['ldap_search_user'],$ldap_search['ldap_search_user_pwd']);
-	else
-		@ldap_bind($ds);
-
-	if ($debug_ldap_import == 1)
-		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Bind : " . ldap_errno($ds) ."\n", 3, $debug_path."ldapsearch.log");
-	/* In some case, we fallback to local Auth
-    0 : Bind succesfull => Default case
-    -1 : Can't contact LDAP server (php4) => Fallback
-    51 : Server is busy => Fallback
-    52 : Server is unavailable => Fallback
-    81 : Can't contact LDAP server (php5) => Fallback
-    Else : Go away !!
-	*/
-	if ($ds) {
-		switch (ldap_errno($ds)) {
-			case 0:
-			   $connect = true;
-			   if ($debug_ldap_import == 1)
-			   	error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Bind OK\n", 3, $debug_path."ldapsearch.log");
-			   break;
-			case -1:
-			case 51:
-			case 52:
-			case 81:
-				$connect = false;
-			   break;
-			default:
-			   $connect = false;
-			   break;
-		}
-	} else {
-		$connect = false;
+	if ($ldap->connect()) {
+	    $connect = true;
 	}
 
 	$buffer = new CentreonXML();
-
+	
 	if ($connect) {
-		if (isset($ldap_login_attrib) && $ldap_login_attrib != "") {
-			$attrib = array("givenname", "mail", "uid", "cn", "sn", "samaccountname", $ldap_login_attrib);
- 		} else{
- 			$attrib = array("givenname", "mail", "uid", "cn", "sn", "samaccountname");
- 		}
-
-		if ($debug_ldap_import == 1) {
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Base DN : ". $ldap_base_dn ."\n", 3, $debug_path."ldapsearch.log");
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Filter : ". $ldap_search_filter . "\n", 3, $debug_path."ldapsearch.log");
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Size Limit : ". $ldap_search_limit . "\n", 3, $debug_path."ldapsearch.log");
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Timeout : ". $ldap_search_timeout . "\n", 3, $debug_path."ldapsearch.log");
-		}
-		$sr = @ldap_search($ds, $ldap_base_dn, $ldap_search_filter,$attrib,0,$ldap_search_limit,$ldap_search_timeout);
-
-		if ($debug_ldap_import == 1)
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : Error : ". ldap_err2str($ds)."\n", 3, $debug_path."ldapsearch.log");
-
-		@ldap_sort($ds, $sr, "dn");
-		$number_returned = @ldap_count_entries($ds,$sr);
-		if ($debug_ldap_import == 1)
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : ". (isset($number_returned) ? $number_returned : "0") . " entries found\n", 3, $debug_path."ldapsearch.log");
-
-		$info = @ldap_get_entries($ds, $sr);
-		if ($debug_ldap_import == 1)
-			error_log("[" . date("d/m/Y H:s") ."] LDAP Search : ". $info["count"] . " \n", 3, $debug_path."ldapsearch.log");
-		@ldap_free_result($sr);
-
-
+	    $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_timeout, $ldap_search_limit);
+	    $number_returned = count($searchResult);
 		if ($number_returned) {
 			$buffer->startElement("reponse");
 			$buffer->writeElement("entries", $number_returned);
 			for ($i = 0 ; $i < $number_returned ; $i++) {
-				if (isset($info[$i]["givenname"])){
+				if (isset($searchResult[$i]["dn"])){
 					$isvalid = "0";
+					if ($searchResult[$i]["alias"] != "") {
+					    $isvalid = "1";
+					} 
 
-					if (isset($ldap_login_attrib) && $ldap_login_attrib != ""){
-						if (isset($info[$i][$ldap_login_attrib][0])) {
-							$isvalid = "1";
-							$uid = $info[$i][$ldap_login_attrib][0];
-						} else{
-							$isvalid = "0";
-							$uid = '';
-						}
-					} else {
-						if (isset($info[$i]["uid"][0])) {
-							$isvalid = "1";
-							$uid = $info[$i]["uid"][0];
-						} else if (isset($info[$i]["samaccountname"][0])) {
-							$isvalid = "1";
-							$uid = $info[$i]["samaccountname"][0];
-						} else if (isset($info[$i]["samaccountname"][0])) {
-							$isvalid = "1";
-							$uid = $info[$i]["samaccountname"][0];
-						} else {
-							$isvalid = "0";
-							$uid = '';
-						}
-					}
+					$searchResult[$i]["firstname"] = str_replace("'", "", $searchResult[$i]["firstname"]);
+					$searchResult[$i]["firstname"] = str_replace("\"", "", $searchResult[$i]["firstname"]);
+					$searchResult[$i]["firstname"] = str_replace("\'", "\\\'", $searchResult[$i]["firstname"]);
+					
+					$searchResult[$i]["lastname"] = str_replace("'", "", $searchResult[$i]["lastname"]);
+					$searchResult[$i]["lastname"] = str_replace("\"", "", $searchResult[$i]["lastname"]);
+					$searchResult[$i]["lastname"] = str_replace("\'", "\\\'", $searchResult[$i]["lastname"]);
 
-					if (!isset($info[$i]["mail"][0]) )
-						$isvalid = "0";
-
-					$info[$i]["givenname"][0] = str_replace("'", "", $info[$i]["givenname"][0]);
-					$info[$i]["givenname"][0] = str_replace("\"", "", $info[$i]["givenname"][0]);
-
-					$info[$i]["cn"][0] = str_replace("'", "", $info[$i]["cn"][0]);
-					$info[$i]["cn"][0] = str_replace("\"", "", $info[$i]["cn"][0]);
+					$searchResult[$i]["name"] = str_replace("'", "", $searchResult[$i]["name"]);
+					$searchResult[$i]["name"] = str_replace("\"", "", $searchResult[$i]["name"]);
+					$searchResult[$i]["name"] = str_replace("\'", "\\\'", $searchResult[$i]["name"]);
 
 					$buffer->startElement("user");
 					$buffer->writeAttribute("isvalid", $isvalid);
 					$buffer->startElement("dn");
-					$buffer->writeAttribute("isvalid", (isset($info[$i]["dn"]) ? "1" : "0" ));
-					$buffer->text((isset($info[$i]["dn"]) ? $info[$i]["dn"] : "" ), 1, 0);
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['dn'] != "") ? "1" : "0" ));
+					$buffer->text($searchResult[$i]['dn'], 1, 0);
 					$buffer->endElement();
 					$buffer->startElement("sn");
-					$buffer->writeAttribute("isvalid", (isset($info[$i]["sn"]) ? "1" : "0" ));
-					$buffer->text((isset($info[$i]["sn"][0]) ? $info[$i]["sn"][0] : ""), 1, 0);
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['lastname'] != "") ? "1" : "0" ));
+					$buffer->text($searchResult[$i]['lastname'], 1, 0);
 					$buffer->endElement();
 					$buffer->startElement("givenname");
-					$buffer->writeAttribute("isvalid", (isset($info[$i]["givenname"]) ? "1" : "0" ));
-					$buffer->text((isset($info[$i]["givenname"][0]) ? str_replace("\'", "\\\'", $info[$i]["givenname"][0]) : "" ), 1, 0);
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['firstname'] != "") ? "1" : "0" ));
+					$buffer->text($searchResult[$i]['firstname'], 1, 0);
 					$buffer->endElement();
 					$buffer->startElement("mail");
-					$buffer->writeAttribute("isvalid", (isset($info[$i]["mail"]) ? "1" : "0" ));
-					$buffer->text((isset($info[$i]["mail"][0]) ? $info[$i]["mail"][0] : "" ), 1, 0);
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['email'] != "") ? "1" : "0" ));
+					$buffer->text($searchResult[$i]['email'], 1, 0);
 					$buffer->endElement();
 					$buffer->startElement("cn");
-					$buffer->writeAttribute("isvalid", (isset($info[$i]["cn"]) ? "1" : "0" ));
-					$buffer->text((isset($info[$i]["cn"][0]) ? $info[$i]["cn"][0] : "" ), 1, 0);
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['name'] != '') ? "1" : "0" ));
+					$buffer->text($searchResult[$i]['name'], 1, 0);
 					$buffer->endElement();
 					$buffer->startElement("uid");
-					$buffer->writeAttribute("isvalid", (empty($uid) ? "0" : "1" ), 1, 0);
-					$buffer->text($uid, 1, 0);
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['alias'] != '') ? "1" : "0" ), 1, 0);
+					$buffer->text($searchResult[$i]['alias'], 1, 0);
 					$buffer->endElement();
 					$buffer->endElement();
 				}
@@ -256,10 +166,9 @@
 		} else {
 			$buffer->startElement("reponse");
 			$buffer->writeElement("entries", "0");
-			$buffer->writeElement("error", ldap_err2str($ds));
+			$buffer->writeElement("error", ldap_err2str($ldap->getDs()));
 			$buffer->endElement();
 		}
-		@ldap_close($ds);
 	}
 
 	if (isset($error)){
@@ -272,6 +181,7 @@
 
 	$buffer->output();
 
-	if ($debug_ldap_import == 1)
+	if (isset($debug_ldap_import) && $debug_ldap_import) {
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : XML Output : ".$buffer->output()."\n", 3, $debug_path."ldapsearch.log");
+	}
 ?>

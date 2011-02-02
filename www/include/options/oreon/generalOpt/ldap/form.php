@@ -97,6 +97,8 @@
 	$form->addElement('text', 'ldap_user_uid_attr', _("Login attribute"), $attrsText);
 	$form->addElement('text', 'ldap_user_group', _("User group attribute"), $attrsText);
 	$form->addElement('text', 'ldap_user_name', _("User displayname attribute"), $attrsText);
+	$form->addElement('text', 'ldap_user_firstname', _("User firstname attribute"), $attrsText);
+	$form->addElement('text', 'ldap_user_lastname', _("User lastname attribute"), $attrsText);
 	$form->addElement('text', 'ldap_user_email', _("User email attribute"), $attrsText);
 	$form->addElement('text', 'ldap_user_pager', _("User pager attribute"), $attrsText);
 	$form->addElement('text', 'ldap_group_filter', _("Group filter"), $attrsText);
@@ -153,6 +155,8 @@
     $gopt['ldap_user_uid_attr'] = $tmpOptions['alias'];
     $gopt['ldap_user_group'] = $tmpOptions['user_group'];
     $gopt['ldap_user_name'] = $tmpOptions['user_name'];
+    $gopt['ldap_user_firstname'] = $tmpOptions['user_firstname'];
+    $gopt['ldap_user_lastname'] = $tmpOptions['user_lastname'];
     $gopt['ldap_user_email'] = $tmpOptions['user_email'];
     $gopt['ldap_user_pager'] = $tmpOptions['user_pager'];
     $gopt['ldap_group_filter'] = $tmpOptions['group_filter'];
@@ -198,6 +202,8 @@
 	        $options['alias'] = $values['ldap_user_uid_attr'];
 	        $options['user_group'] = $values['ldap_user_group'];
 	        $options['user_name'] = $values['ldap_user_name'];
+	        $options['user_firstname'] = $values['ldap_user_firstname'];
+	        $options['user_lastname'] = $values['ldap_user_lastname'];
 	        $options['user_email'] = $values['ldap_user_email'];
             $options['user_pager'] = $values['ldap_user_pager'];
 	        $options['group_filter'] = $values['ldap_group_filter'];
@@ -209,6 +215,8 @@
 	        $options['alias'] = $tmplOptions['user_attr']['alias'];
 	        $options['user_group'] = $tmplOptions['user_attr']['group'];
 	        $options['user_name'] = $tmplOptions['user_attr']['name'];
+	        $options['user_firstname'] = $tmplOptions['user_attr']['firstname'];
+	        $options['user_lastname'] = $tmplOptions['user_attr']['lastname'];
 	        $options['user_email'] = $tmplOptions['user_attr']['email'];
 	        $options['user_pager'] = $tmplOptions['user_attr']['pager'];
 	        $options['group_filter'] = $tmplOptions['group_filter'];
@@ -220,6 +228,8 @@
 	        $options['alias'] = $tmplOptions['user_attr']['alias'];
 	        $options['user_group'] = $tmplOptions['user_attr']['group'];
 	        $options['user_name'] = $tmplOptions['user_attr']['name'];
+	        $options['user_firstname'] = $tmplOptions['user_attr']['firstname'];
+	        $options['user_lastname'] = $tmplOptions['user_attr']['lastname'];
 	        $options['user_email'] = $tmplOptions['user_attr']['email'];
 	        $options['user_pager'] = $tmplOptions['user_attr']['pager'];
 	        $options['group_filter'] = $tmplOptions['group_filter'];
