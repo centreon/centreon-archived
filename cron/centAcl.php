@@ -34,13 +34,20 @@
  * SVN : $URL$
  * SVN : $Id$
  *
+ *
  */
+
+    /**
+     * Define the period between to update in second for ldap user/group 
+     */
+    define('LDAP_UPDATE_PERIOD', 3600);
 
 	include_once "DB.php";
 	//include_once "/etc/centreon/centreon.conf.php";
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path."/cron/centAcl-Func.php";
 	include_once $centreon_path."/www/class/centreonDB.class.php";
+	include_once $centreon_path."/www/class/centreonLDAP.class.php";
 
 	function programExit($msg) {
 	    echo "[".date("Y-m-d H:i:s")."] ".$msg."\n";
@@ -86,6 +93,43 @@
 	       	$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
 	    } else {
 	      	exit(1);
+	    }
+	    
+	    /* ***********************************************
+	     * Sync ACL with ldap
+	     */
+	    $queryOptions = "SELECT `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
+	    $res = $pearDB->query($query);
+	    while ($row = $res->fetchRow()) {
+	        switch ($row['value']) {
+	            case 'ldap_auth_enable':
+	                $ldap_enable = $row['value'];
+	                break;
+	            case 'ldap_last_acl_update':
+	                $ldap_last_update = $row['value'];
+	                break;
+	        }
+	    }
+	    /* If the ldap is enable and the last check is more than update period */
+	    if ($ldap_enable == 1 && $ldap_last_update < (time() + LDAP_UPDATE_PERIOD)) {
+    	    $ldapConn = new CentreonLDAP($pearDB, null);
+    	    $ldapConn->connect();
+    	    $listGroup = array();
+    	    $query = "SELECT cg_id, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'";
+    	    $res = $pearDB->query($query);
+    	    while ($row = $res->fetchRow()) {
+    	        $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
+    	        $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation WHERE contactgroup_cg_id = " . $row['cg_id'];
+    	        $pearDB->query($queryDeleteRelation);
+    	        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN ('" . join("', '", $members) . "')";
+    	        $resContact = $pearDB->query($queryContact);
+    	        while ($rowContact = $resContact->fetchRow()) {
+    	            $queryAddRelation = "INSERT INTO contactgroup_contact_relation
+    	            	(contactgroup_cg_id, contact_contact_id)
+    	            	VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+    	            $pearDB->query($queryAddRelation);
+    	        }
+    	    } 
 	    }
 
 	    /* ***********************************************

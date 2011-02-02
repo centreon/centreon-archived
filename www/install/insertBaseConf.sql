@@ -190,7 +190,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
 ('monitoring_engine','NAGIOS'),
-('display_autologin_shortcut','1');
+('display_autologin_shortcut','1'),
+('ldap_last_acl_update', '0');
 
 --
 -- Contenu de la table `giv_components_template`
