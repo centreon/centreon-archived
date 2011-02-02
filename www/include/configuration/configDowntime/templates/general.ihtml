@@ -20,7 +20,7 @@ function selectPeriodType(type, period_id) {
 		applyTo: 'subformperiod_' + period_id,
 		autoLoad: {
 			url: './main.php',
-			params: 'p=60601&min=1&period=' + period_id + "&period_form=" + type,
+			params: 'p=60601&min=1&iframe=1&period=' + period_id + "&period_form=" + type,
 			method: 'GET',
 			scripts: true
 		}

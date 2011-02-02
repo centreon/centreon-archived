@@ -39,7 +39,7 @@ function addPeriods() {
 	tabsPeriods.add({
 		id: 'p_' + periods,
 		title: 'Period ' + periods,
-		autoLoad: {url: './main.php?p=60601&min=1&period=' + periods, scripts: true},
+		autoLoad: {url: './main.php?p=60601&min=1&iframe=1&period=' + periods, scripts: true},
 		closable: true
 	}).show();
 	return false;
