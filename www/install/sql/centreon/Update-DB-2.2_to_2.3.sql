@@ -1,4 +1,10 @@
-alter table contact add contact_enable_notifications enum('0','1') after contact_oreon;
+alter table contact add contact_enable_notifications enum('0','1') default '0' after contact_oreon;
+alter table contact add contact_template_id int(11) default null after contact_enable_notifications;
+
+ALTER TABLE `contact` ADD INDEX ( `contact_template_id` );
+
+ALTER TABLE `contact` 
+	ADD CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contact_template_id`) REFERENCES `contact` (`contact_id`) ON DELETE SET NULL;
 
 --
 -- Structure de la table `auth_ressource`

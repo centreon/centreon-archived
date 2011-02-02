@@ -692,6 +692,8 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `contact_comment` text,
   `contact_location` INT default '0',
   `contact_oreon` enum('0','1') default NULL,
+  `contact_enable_notifications` enum('0','1') default '0',
+  `contact_template_id` int(11) default NULL,
   `contact_admin` enum('0','1') default '0',
   `contact_type_msg` enum('txt','html','pdf') default 'txt',
   `contact_activate` enum('0','1') default NULL,
@@ -705,7 +707,8 @@ CREATE TABLE IF NOT EXISTS `contact` (
   KEY `name_index` (`contact_name`),
   KEY `alias_index` (`contact_alias`),
   KEY `tp1_index` (`timeperiod_tp_id`),
-  KEY `tp2_index` (`timeperiod_tp_id2`)
+  KEY `tp2_index` (`timeperiod_tp_id2`),
+  KEY `tmpl_index` (`contact_template_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -2252,7 +2255,8 @@ ALTER TABLE `command_arg_description`
 --
 ALTER TABLE `contact`
   ADD CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`timeperiod_tp_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  ADD CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contact_template_id`) REFERENCES `contact` (`contact_id`) ON DELETE SET NULL;
 
 --
 -- Contraintes pour la table `contactgroup_contact_relation`
