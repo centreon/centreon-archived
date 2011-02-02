@@ -121,8 +121,8 @@
 		"init_script"=>"/etc/init.d/nagios",
 		"ns_activate"=>'1',
 		"ssh_port" => '22',
-		"ssh_private_key" => '~/.ssh/rsa.id'),
-		"nagios_perfdata" => "/var/log/nagios/service-perfdata");
+		"ssh_private_key" => '~/.ssh/rsa.id',
+		"nagios_perfdata" => "/var/log/nagios/service-perfdata"));
 	} else {
 		if (isset($cfg_server))
 			$form->setDefaults($cfg_server);

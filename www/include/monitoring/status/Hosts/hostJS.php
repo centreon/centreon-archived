@@ -53,7 +53,7 @@
 		$obis .= '_ack_' . $_GET["acknowledge"];
 	}
 
-	$broker = "broker";
+	$broker = "ndo";
 
 ?>
 <script type="text/javascript">

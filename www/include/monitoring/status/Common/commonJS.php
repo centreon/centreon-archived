@@ -40,7 +40,7 @@
 		exit();
 	}
 
-	$broker = "broker";
+	$broker = "ndo";
 
 	if (!isset($default_poller)) {
 		include_once "./include/monitoring/status/Common/default_poller.php";
@@ -280,10 +280,10 @@ function construct_HostGroupSelectList(id) {
 			unset($data);
 		}
 
-		if ($broker = 'broker') {
-			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
-		} else {
+		if ($broker == 'broker') {
 			$DBRESULT = $pearDBndo->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
+		} else {
+			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}
 		while ($hostgroups = $DBRESULT->fetchRow()) {
 			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["name"]]))) { ?>

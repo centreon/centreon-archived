@@ -58,7 +58,7 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Services/xml/broker/serviceXML.php";
+var _addrXML = "./include/monitoring/status/Services/xml/ndo/serviceXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>

@@ -16,7 +16,7 @@
 
 // JavaScript Document
 
-var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/broker/statusCounter.php";
+var _adrrsearchC = "./include/monitoring/status/TopCounter/xml/ndo/statusCounter.php";
 
 function getXhrC(){
 	if (window.XMLHttpRequest) {
@@ -207,5 +207,15 @@ function reloadStatusCounter(_relaod_time, _sid){
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	xhrC.send("sid="+_sid+"&version="+_version+"&session_expire="+(_relaod_time/1000));
-	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
+	//setQuickTip();
+	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);	
+}
+
+function setQuickTip()
+{
+	new Ext.ToolTip({
+			target: 'host_down',
+			autoLoad: {url: 'include/monitoring/status/TopCounter/quicktipContent.php?type=host&status=1&sid=' + _sid},
+			autoHide: true
+	});
 }
