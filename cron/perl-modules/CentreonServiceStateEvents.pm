@@ -32,15 +32,14 @@ sub getLastStates {
 	
 	my $currentStates = {};
 	
-    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevents_id`, `end_time`".
+    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevents_id`, `start_time`".
     			" FROM `servicestateevents`".
     			" WHERE `last_update` = 1";
     my $sth = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
     	my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
     	if (defined($serviceNames->{$serviceId})) {
-			my $start = $row->{'end_time'};
-		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'servicestateevents_id'});
+		    my @tab = ($row->{'start_time'}, $row->{'state'}, $row->{'servicestateevents_id'});
 			$currentStates->{$serviceNames->{$serviceId}} = \@tab;
     	}
 	}
@@ -58,8 +57,10 @@ sub updateEventEndTime {
 	my $centstorage = $self->{"centstorage"};
 	my $endTime = shift;
 	my $eventId = shift;
+	my $last_update = shift;
 	my $query = "UPDATE `servicestateevents`".
 			" SET `end_time` = ".$endTime.
+				", `last_update`=".$last_update.
 			" WHERE `servicestateevents_id` = ".$eventId;
 	$centstorage->query($query);
 }

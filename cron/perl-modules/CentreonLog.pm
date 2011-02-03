@@ -35,7 +35,7 @@ sub getLogOfServices {
 	my $query = "SELECT `status`, `ctime`, `host_name`, `service_description`".
 				" FROM `log`".
 				" WHERE `ctime` >= ".$start.
-					" AND `ctime` <= ".$end.
+					" AND `ctime` < ".$end.
 					" AND (`type` = 'HARD' OR (`status` = 'OK' AND `type` = 'SOFT'))".
 					" AND `service_description` IS NOT null".
 					" AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
@@ -59,7 +59,7 @@ sub getLogOfHosts {
 	my $query = "SELECT `status`, `ctime`, `host_name`".
 				" FROM `log`".
 				" WHERE `ctime` >= ".$start.
-					" AND `ctime` <= ".$end.
+					" AND `ctime` < ".$end.
 					" AND (`type` = 'HARD' OR (`status` = 'UP' AND `type` = 'SOFT'))".
 					" AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
 					" AND `service_description` IS NULL".

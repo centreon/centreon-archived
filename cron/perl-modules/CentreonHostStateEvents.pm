@@ -29,22 +29,21 @@ sub getLastStates {
 	my $centstorage = $self->{"centstorage"};
 	my $hostNames = shift;
 	
-	my $currentStates = {};
+	my %currentStates;
 	
-    my $query = "SELECT `host_id`, `state`, `hoststateevents_id`, `end_time`".
+    my $query = "SELECT `host_id`, `state`, `hoststateevents_id`, `start_time`".
     			" FROM `hoststateevents`".
     			" WHERE `last_update` = 1";
     my $sth = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
     	if (defined($hostNames->{$row->{'host_id'}})) {
-			my $start = $row->{'end_time'};
-		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'hoststateevents_id'});
-			$currentStates->{$hostNames->{$row->{'host_id'}}} = \@tab;
+		    my @tab = ($row->{'start_time'}, $row->{'state'}, $row->{'hoststateevents_id'});
+			$currentStates{$hostNames->{$row->{'host_id'}}} = \@tab;
     	}
 	}
     $sth->finish();
     
-    return ($currentStates);
+    return (\%currentStates);
 }
 
 # update a specific host incident end time
@@ -56,9 +55,12 @@ sub updateEventEndTime {
 	my $centstorage = $self->{"centstorage"};
 	my $endTime = shift;
 	my $eventId = shift;
+	my $last_update = shift;
 	my $query = "UPDATE `hoststateevents`".
 			" SET `end_time` = ".$endTime.
+				", `last_update`=".$last_update.
 			" WHERE `hoststateevents_id` = ".$eventId;
+	$centstorage->query($query);
 }
 
 # insert a new incident for host

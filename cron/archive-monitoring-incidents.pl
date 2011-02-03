@@ -101,7 +101,7 @@ sub initVars {
 	$processEvents = CentreonProcessStateEvents->new($logger, $host, $service, $nagiosLog, $hostEvents, $serviceEvents);
 }
 
-# For a given period returns in a table each
+# For a given period returns in a table each	
 sub getDaysFromPeriod {
 	my ($start, $end) = (shift, shift);
 	

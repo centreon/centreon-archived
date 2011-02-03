@@ -43,27 +43,30 @@ sub parseServiceLog {
 
     while(my $row = $logs->fetchrow_hashref()) {
 		my $id  = $row->{'host_name'}.";;".$row->{'service_description'};
-		my $eventInfos; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
 		if (defined($allIds->{$id})) {
 			if (defined($currentEvents->{$id})) {
-				$eventInfos =  $currentEvents->{$id};
-				if ($eventInfos->[1] ne $row->{'status'}) {
-					if (defined($eventInfos->[2])) {
+				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
+				if ($eventInfos->[1] != $serviceStates{$row->{'status'}}) {
+					if ($eventInfos->[2] != 0) {
 						# If eventId of log is defined, update the last day event
-						$events->updateEventEndTime($row->{'ctime'}, $eventInfos->[2]);
-						$eventInfos->[2] = undef;
+						$events->updateEventEndTime($row->{'ctime'}, $eventInfos->[2], 0);
 					}else {
 						my ($hostId, $serviceId) = split (";;", $allIds->{$id});
-						$events->insertEvent($hostId, $serviceId, $serviceStates{$eventInfos->[1]}, $eventInfos->[0], $row->{'ctime'}, 0, 0);
+						$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, 0);
 					}
+					$eventInfos->[0] = $row->{'ctime'};
+					$eventInfos->[1] = $serviceStates{$row->{'status'}};
+					$eventInfos->[2] = 0;
+					$currentEvents->{$id} = $eventInfos;
 				}
+			}else {
+				my @tab = ($row->{'ctime'}, $serviceStates{$row->{'status'}}, 0);
+				$currentEvents->{$id} = \@tab;
 			}
-			$eventInfos->[0] = $row->{'ctime'};
-			$eventInfos->[1] = $row->{'status'};
-			$currentEvents->{$id} = $eventInfos;
+			
 		}
 	}
-	$self->insertLastServiceEvents($end, $currentEvents, $allIds, $events);
+	$self->insertLastServiceEvents($end, $currentEvents, $allIds);
 }
 
 # Parse host logs for given period
@@ -80,31 +83,56 @@ sub parseHostLog {
 	my $events = $self->{"hostEvents"};
     
     my ($allIds, $allNames) = $host->getAllHosts();
+    print "getting last events\n";
 	my $currentEvents = $events->getLastStates($allNames);
+	print "getting logs\n";
 	my $logs = $nagiosLog->getLogOfHosts($start, $end);
-
+	
+	print "processing logs\n";
     while(my $row = $logs->fetchrow_hashref()) {
 		my $id  = $row->{'host_name'};
-		my $eventInfos; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
 		if (defined($allIds->{$id})) {
-			if (defined($currentEvents->{$id})) {
-				$eventInfos =  $currentEvents->{$id};
-				if ($eventInfos->[1] ne $row->{'status'}) {
-					if (defined($eventInfos->[2])) {
-						# If eventId of log is defined, update the last day event
-						$events->updateEventEndTime($row->{'ctime'}, $eventInfos->[2]);
-						$eventInfos->[2] = undef;
-					}else {
-						$events->insertEvent($allIds->{$id}, $hostStates{$eventInfos->[1]}, $eventInfos->[0], $row->{'ctime'}, 0, 0);
-					}
-				}
+			if ($allIds->{$id} == 270) {
+				print "processing host\n";
 			}
-			$eventInfos->[0] = $row->{'ctime'};
-			$eventInfos->[1] = $row->{'status'};
-			$currentEvents->{$id} = $eventInfos;
+			if (defined($currentEvents->{$id})) {
+				if ($allIds->{$id} == 270) {
+					print "host exists\n";
+				}
+				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
+				if ($eventInfos->[1] != $hostStates{$row->{'status'}}) {
+					if ($allIds->{$id} == 270) {
+						print "status changed\n";
+					}
+					if ($eventInfos->[2] != 0) {
+						# If eventId of log is defined, update the last day event
+						if ($allIds->{$id} == 270) {
+							print "updating entry\n";
+						}
+						$events->updateEventEndTime($row->{'ctime'}, $eventInfos->[2], 0);
+					}else {
+						if ($allIds->{$id} == 270) {
+							print "inserting entry\n";
+						}
+						$events->insertEvent($allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, 0);
+					}
+					$eventInfos->[0] = $row->{'ctime'};
+					$eventInfos->[1] = $hostStates{$row->{'status'}};
+					$eventInfos->[2] = 0;
+					$currentEvents->{$id} = $eventInfos;
+				}
+			}else {
+				if ($allIds->{$id} == 270) {
+					print "host does not exists\n";
+				}
+				my @tab = ($row->{'ctime'}, $hostStates{$row->{'status'}}, 0);
+				$currentEvents->{$id} = \@tab;
+			}
+
 		}
 	}
-	$self->insertLastHostEvents($end, $currentEvents, $allIds, $events);
+	print "inserting last events\n";
+	$self->insertLastHostEvents($end, $currentEvents, $allIds);
 }
 
 
@@ -115,16 +143,16 @@ sub parseHostLog {
 # $allIds: reference to a hash table that returns host/service ids for host/service names
 sub insertLastServiceEvents {
 	my $self = shift;
+	my $events = $self->{"serviceEvents"};
 	# parameters:
-	my ($end,$currentEvents, $allIds, $events)  = (shift, shift, shift, shift, shift);
+	my ($end,$currentEvents, $allIds)  = (shift, shift, shift);
 	
 	while(my ($id, $eventInfos) = each (%$currentEvents)) {
-			if (defined($eventInfos->[2])) {
-				$events->updateEventEndTime($end, $eventInfos->[2]);
-				$eventInfos->[2] = undef;
+			if ($eventInfos->[2] != 0) {
+				$events->updateEventEndTime($end, $eventInfos->[2], 1);
 			}else {
 				my ($hostId, $serviceId) = split (";;", $allIds->{$id});
-				$events->insertEvent($hostId, $serviceId, $serviceStates{$eventInfos->[1]}, $eventInfos->[0], $end, 1, 0);
+				$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, 0);
 			}
 	}
 }
@@ -136,16 +164,25 @@ sub insertLastServiceEvents {
 # $allIds: reference to a hash table that returns host ids for host names
 sub insertLastHostEvents {
 	my $self = shift;
+	my $events = $self->{"hostEvents"};
 	# parameters:
-	my ($end, $currentEvents, $allIds, $events)  = (shift, shift, shift, shift, shift);
+	my ($end, $currentEvents, $allIds)  = (shift, shift, shift, shift);
 	
 	while(my ($id, $eventInfos) = each (%$currentEvents)) {
-			if (defined($eventInfos->[2])) {
-				$events->updateEventEndTime($end, $eventInfos->[2]);
-				$eventInfos->[2] = undef;
-			}else {
-				$events->insertEvent($allIds->{$id}, $hostStates{$eventInfos->[1]}, $eventInfos->[0], $end, 1, 0);
+		if ($allIds->{$id} ==270) {
+			print localtime($eventInfos->[0])." ".localtime($end)." ".$eventInfos->[1]." ".$eventInfos->[2]."\n";
+		}
+		if ($eventInfos->[2] != 0) {
+			if ($allIds->{$id} == 270) {
+				print "last update\n";
 			}
+			$events->updateEventEndTime($end, $eventInfos->[2], 1);
+		}else {
+			if ($allIds->{$id} == 270) {
+				print "last insert\n";
+			}
+			$events->insertEvent($allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $end, 1, 0);
+		}
 	}
 }
 
