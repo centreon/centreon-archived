@@ -1,19 +1,20 @@
 use strict;
 use warnings;
 
-package CentreonStateEvents;
+package CentreonServiceStateEvents;
 
 # Constructor
 # parameters:
+# $logger: instance of class CentreonLogger
 # $centreon: Instance of centreonDB class for connection to Centreon database
 # $centstorage: (optionnal) Instance of centreonDB class for connection to Centstorage database
 sub new {
 	my $class = shift;
 	my $self  = {};
 	$self->{"logger"}	= shift;
-	$self->{"centreon"} = shift;
+	$self->{"centstorage"}  = shift;
 	if (@_) {
-		$self->{"centstorage"}  = shift;
+		$self->{"centreon"} = shift;
 	}
 	bless $self, $class;
 	return $self;
@@ -23,24 +24,25 @@ sub new {
 # Parameters:
 # $start: max date possible for each event
 # $serviceNames: references a hash table containing a list of services
-sub getLastStateOfServices {
+sub getLastStates {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	
-	my $start = shift;
 	my $serviceNames = shift;
 	
 	my $currentStates = {};
 	
-    my $query = "SELECT `host_id`, `service_id`, `state`, `state_event_id`, `end_time`".
+    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevents_id`, `end_time`".
     			" FROM `servicestateevents`".
     			" WHERE `last_update` = 1";
     my $sth = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
-		my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
-		my $start = $row->{'end_time'};
-	    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'state_event_id'});
-		$currentStates->{$serviceNames->{$serviceId}} = \@tab;
+    	my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
+    	if (defined($serviceNames->{$serviceId})) {
+			my $start = $row->{'end_time'};
+		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'servicestateevents_id'});
+			$currentStates->{$serviceNames->{$serviceId}} = \@tab;
+    	}
 	}
     $sth->finish();
     
@@ -51,7 +53,7 @@ sub getLastStateOfServices {
 # Parameters
 # $endTime: incident end time
 # $eventId: ID of event to update
-sub updateServiceEventEndTime {
+sub updateEventEndTime {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	my $endTime = shift;
@@ -62,20 +64,6 @@ sub updateServiceEventEndTime {
 	$centstorage->query($query);
 }
 
-# update a specific host incident end time
-# Parameters
-# $endTime: incident end time
-# $eventId: ID of event to update
-sub updateHostEventEndTime {
-	my $self = shift;
-	my $centstorage = $self->{"centstorage"};
-	my $endTime = shift;
-	my $eventId = shift;
-	my $query = "UPDATE `hoststateevents`".
-			" SET `end_time` = ".$endTime.
-			" WHERE `hoststateevents_id` = ".$eventId;
-}
-
 # insert a new incident for service
 # Parameters
 # $hostId : host ID
@@ -83,36 +71,29 @@ sub updateHostEventEndTime {
 # $state: incident state
 # $start: incident start time
 # $end: incident end time
-sub insertServiceEvent {
+sub insertEvent {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
-	my ($hostId, $serviceId, $state, $start, $end) = @_;
+	my ($hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift);
 	my $query = "INSERT INTO `servicestateevents`".
-			" (`host_id`, `service_id`, `state`, `start_time`, `end_time`)".
+			" (`host_id`, `service_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`)".
 			" VALUES (".
 			$hostId.", ".
 			$serviceId.", ".
-			"'".$state."', ".
+			$state.", ".
 			$start.", ".
-			$end.")";
+			$end.", ".
+			$lastUpdate.", ".
+			$downTime.")";
 	$centstorage->query($query);
 }
 
 # Truncate service incident table
-sub truncateServiceStateEvents {
+sub truncateStateEvents {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	
 	my $query = "TRUNCATE TABLE `servicestateevents`";
-	$centstorage->query($query);
-}
-
-# Truncate service incident table
-sub truncateHostStateEvents {
-	my $self = shift;
-	my $centstorage = $self->{"centstorage"};
-	
-	my $query = "TRUNCATE TABLE `hoststateevents`";
 	$centstorage->query($query);
 }
 

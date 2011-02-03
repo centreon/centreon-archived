@@ -5,6 +5,7 @@ package CentreonHost;
 
 # Constructor
 # parameters:
+# $logger: instance of class CentreonLogger
 # $centreon: Instance of centreonDB class for connection to Centreon database
 # $centstorage: (optionnal) Instance of centreonDB class for connection to Centstorage database
 sub new {
@@ -30,8 +31,8 @@ sub getAllHosts {
 				" WHERE `host_activate` ='1' AND `host_register`='1'";
 	my $sth = $centreon->query($query);
 	while (my $row = $sth->fetchrow_hashref()) {
-		$host_ids{$row->{"host_id"}} = $row->{"host_name"};
-		$host_names{$row->{"host_name"}} = $row->{"host_id"};
+		$host_ids{$row->{"host_name"}} = $row->{"host_id"};
+		$host_names{$row->{"host_id"}} = $row->{"host_name"};
 	}
 	$sth->finish();
 	return (\%host_ids,\%host_names);

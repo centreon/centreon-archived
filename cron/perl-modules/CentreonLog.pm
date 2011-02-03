@@ -5,15 +5,16 @@ package CentreonLog;
 
 # Constructor
 # parameters:
+# $logger: instance of class CentreonLogger
 # $centreon: Instance of centreonDB class for connection to Centreon database
 # $centstorage: (optionnal) Instance of centreonDB class for connection to Centstorage database
 sub new {
 	my $class = shift;
 	my $self  = {};
 	$self->{"logger"}	= shift;
-	$self->{"centreon"} = shift;
+	$self->{"centstorage"}  = shift;
 	if (@_) {
-		$self->{"centstorage"}  = shift;
+		$self->{"centreon"} = shift;
 	}
 	bless $self, $class;
 	return $self;
@@ -60,8 +61,8 @@ sub getLogOfHosts {
 				" WHERE `ctime` >= ".$start.
 					" AND `ctime` <= ".$end.
 					" AND (`type` = 'HARD' OR (`status` = 'UP' AND `type` = 'SOFT'))".
-					" AND `service_description` IS NULL".
 					" AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
+					" AND `service_description` IS NULL".
 				" ORDER BY `ctime`";
 	my $result = $centstorage->query($query);
 	return $result;
@@ -79,7 +80,6 @@ sub getFirstLastLogTime {
 		($start, $end) = ($row->{"minc"}, $row->{"maxc"});
     }
     $sth->finish;
-    print $start." ".$end."\n";
     return ($start, $end);
 }
 

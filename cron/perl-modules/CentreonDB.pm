@@ -6,6 +6,7 @@ package CentreonDB;
 
 # Constructor
 # Parameters:
+# $logger: instance of class CentreonLogger
 # $db: Database name
 # $host: database hosting server
 # user: mysql user
@@ -74,7 +75,7 @@ sub connect {
 		{ "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
 	  ); 
 	  if (!defined($self->{"instance"})) {
-	  	$logger->writeLog("FATAL", "MySQL error : cannot connect to database ".$self->{"db"}."\n");
+	  	$logger->writeLog("FATAL", "MySQL error : cannot connect to database ".$self->{"db"});
 	  }
 	  
 	return $self->{"instance"};
@@ -95,12 +96,15 @@ sub query {
 	my $logger = $self->{"logger"};
 	
 	my $statement_handle = $instance->prepare($query);
+	#$logger->writeLog("DEBUG", "MySQL error : ".$query);
 	if (defined($instance->errstr)) {
+	  	$logger->writeLog("DEBUG", "MySQL error : ".$query);
 	  	$logger->writeLog("FATAL", "MySQL error : ".$instance->errstr);
 	}
 	
     $statement_handle->execute;
     if (defined($instance->errstr)) {
+		  	$logger->writeLog("DEBUG", "MySQL error : ".$query);
 	  		$logger->writeLog("FATAL", "MySQL error : ".$instance->errstr);
 	}
 	

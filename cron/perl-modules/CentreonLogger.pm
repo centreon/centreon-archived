@@ -69,6 +69,12 @@ sub writeLog {
 			print STDOUT "[".time."] [".uc($severity)."] ".$message."\n";
 		}
 	}
+	if ($severities{$severity}  >= 3) {
+		if ($self->{"stderr"}) {
+			print STDOUT "[".time."] [".uc($severity)."] Program terminated with errors\n";
+			exit;
+		}
+	}
 }
 
 # close file handler
