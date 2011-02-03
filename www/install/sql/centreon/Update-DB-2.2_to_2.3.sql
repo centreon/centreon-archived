@@ -154,3 +154,5 @@ ALTER TABLE `downtime_servicegroup_relation`
  
  ALTER TABLE `contact` ADD `contact_register` TINYINT( 6 ) NOT NULL DEFAULT '0';
  
+ UPDATE `informations` SET `value` = '2.3.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.2.0' LIMIT 1;
+ 
