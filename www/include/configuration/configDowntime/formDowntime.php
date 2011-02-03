@@ -61,12 +61,14 @@ $template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td
 /* QuickFrom */
 $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 if ($o == "a") {
-	$form->addElement('header', 'title', _("Add a Service"));
+	$form->addElement('header', 'title', _("Add a downtime"));
 } elseif ($o == "c") {
-	$form->addElement('header', 'title', _("Modify a Service"));
+	$form->addElement('header', 'title', _("Modify a downtime"));
 } elseif ($o == "w") {
-	$form->addElement('header', 'title', _("View a Service"));
+	$form->addElement('header', 'title', _("View a downtime"));
 }
+
+$form->addElement('header', 'periods', _("Periods"));
 
 # Sort 1
 $form->addElement('header', 'information', _("General Information"));
@@ -107,6 +109,28 @@ $am_hostgroup->setButtonAttributes('add', array('value' =>  _("Add")));
 $am_hostgroup->setButtonAttributes('remove', array('value' => _("Remove")));
 $am_hostgroup->setElementTemplate($template);
 echo $am_hostgroup->getElementJs(false);
+/*  - Service */
+$host4svc = array(-2 => "_"._("None")."_", -1 => "_"._("ALL")."_");
+foreach ($hosts as $key => $hostname) {
+    $host4svc[$key] = $hostname;
+}
+$form->addElement('select', 'host4svc', _('Host'), $host4svc, array('onchange' => "javascript:getServices(this.form.elements['host4svc'].value); return false;"));
+$query = "SELECT s.service_id, s.service_description, h.host_name, h.host_id
+	FROM service s, host h, host_service_relation hsr, downtime_service_relation dsr
+	WHERE h.host_id = hsr.host_host_id AND s.service_id = hsr.service_service_id AND dsr.dt_id = " . $id ." AND dsr.host_host_id = h.host_id AND dsr.service_service_id = s.service_id
+	ORDER BY h.host_name, s.service_description";
+$DBRESULT = $pearDB->query($query);
+$svcs = array();
+while ($svc = $DBRESULT->fetchRow()) {
+    $svc_id = $svc['host_id'] . '-' . $svc['service_id'];
+    $svc_name = $svc['host_name'] . '-' . $svc['service_description'];
+    $svcs[$svc_id] = $svc_name;
+}
+$am_svc = $form->addElement('advmultiselect', 'svc_relation', array(_("Linked with Services"), _("Available"), _("Selected")), $svcs, $attrsAdvSelect_big, SORT_ASC);
+$am_svc->setButtonAttributes('add', array('value' =>  _("Add")));
+$am_svc->setButtonAttributes('remove', array('value' => _("Remove")));
+$am_svc->setElementTemplate($template);
+echo $am_svc->getElementJs(false);
 /*  - Servicegroups */
 $sgs = array();
 $DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
@@ -134,6 +158,7 @@ if ($o == "c" || $o == 'w') {
 		'downtime_activate' => $infos['activate'],
 		'host_relation' => $relations['host'],
 		'hostgroup_relation' => $relations['hostgrp'],
+	    'svc_relation' => $relations['svc'],
 		'svcgroup_relation' => $relations['svcgrp']
 	);
 }
@@ -189,7 +214,11 @@ if ($form->validate()) {
 					$downtime->addRelations($id, $values['host_relation'], 'host');
 				}
 				if (isset($values['hostgroup_relation'])) {
-					$downtime->addRelations($id, $values['svc_relation'], 'hostgrp');
+					$downtime->addRelations($id, $values['hostgroup_relation'], 'hostgrp');
+				}
+				if (isset($values['svc_relation'])) {
+				    file_put_contents('/tmp/query', "Services \n", FILE_APPEND);
+				    $downtime->addRelations($id, $values['svc_relation'], 'svc');
 				}
 				if (isset($values['svcgroup_relation'])) {
 					$downtime->addRelations($id, $values['svcgroup_relation'], 'svcgrp');
@@ -213,6 +242,10 @@ if ($form->validate()) {
 			}
 			if (isset($values['hostgroup_relation'])) {
 				$downtime->addRelations($id, $values['hostgroup_relation'], 'hostgrp');
+			}
+		    if (isset($values['svc_relation'])) {
+			    file_put_contents('/tmp/query', "Services \n", FILE_APPEND);
+			    $downtime->addRelations($id, $values['svc_relation'], 'svc');
 			}
 			if (isset($values['svcgroup_relation'])) {
 				$downtime->addRelations($id, $values['svcgroup_relation'], 'svcgrp');

@@ -229,7 +229,6 @@ class CentreonDowntime
 	 */
 	public function getRelations($id)
 	{
-		//$query = "SELECT obj_id, obj_type FROM downtime_relation WHERE dt_id = " . $id . " ORDER BY obj_type";
 		$list = array(
 			"host" => array(),
 			"hostgrp" => array(),
@@ -245,7 +244,7 @@ class CentreonDowntime
 					$query = "SELECT hg_hg_id as obj_id FROM downtime_hostgroup_relation WHERE dt_id = ";
 					break;
 				case 'svc':
-					$query = "SELECT service_service_id as obj_id FROM downtime_service_relation WHERE dt_id = ";
+					$query = "SELECT CONCAT(host_host_id, CONCAT('-', service_service_id)) as obj_id FROM downtime_service_relation WHERE dt_id = ";
 					break;
 				case 'svcgrp':
 					$query = "SELECT sg_sg_id as obj_id FROM downtime_servicegroup_relation WHERE dt_id = ";
@@ -503,13 +502,16 @@ class CentreonDowntime
 				$query = "INSERT INTO downtime_hostgroup_relation (dt_id, hg_hg_id) VALUES (" . $id  . ", %obj_id%)";
 				break;
 			case 'svc':
-				$query = "INSERT INTO downtime_service_relation (dt_id, service_service_id) VALUES (" . $id  . ", %obj_id%)";
+				$query = "INSERT INTO downtime_service_relation (dt_id, host_host_id, service_service_id) VALUES (" . $id  . ", %obj_id%)";
 				break;
 			case 'svcgrp':
 				$query = "INSERT INTO downtime_servicegroup_relation (dt_id, sg_sg_id) VALUES (" . $id  . ", %obj_id%)";
 				break;
 		}
 		foreach ($obj_ids as $obj_id) {
+		    if ($obj_type == 'svc') {
+		        $obj_id = str_replace('-', ', ', $obj_id);
+		    }
 			$query = str_replace('%obj_id%', $obj_id, $query);
 			$this->db->query($query);
 		}

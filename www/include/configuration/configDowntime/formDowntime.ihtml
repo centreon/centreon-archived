@@ -44,6 +44,63 @@ function addPeriods() {
 	}).show();
 	return false;
 }
+
+function getXhrHost4Svc(){
+	if (window.XMLHttpRequest) // Firefox et autres
+	   var xhrT = new XMLHttpRequest();
+	else if(window.ActiveXObject){ // Internet Explorer
+	   try {
+                var xhrT = new ActiveXObject("Msxml2.XMLHTTP");
+            } catch (e) {
+                var xhrT = new ActiveXObject("Microsoft.XMLHTTP");
+            }
+	} else { // XMLHttpRequest non support2 par le navigateur
+	   alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
+	   var xhrT = false;
+	}
+	return xhrT;
+}
+
+function getServices(host_id) {
+	var arg = 'host_id='+host_id;
+	var xhrT = getXhrHost4Svc();
+	
+	xhrT.open("POST","./include/configuration/configDowntime/GetXMLHost4Services.php", true);
+	xhrT.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xhrT.send(arg);
+	
+	/* Responce */
+	xhrT.onreadystatechange = function()
+	{	
+		// Responce Ok
+		if (xhrT && xhrT.readyState == 4 && xhrT.status == 200 && xhrT.responseXML){		
+			reponseT = xhrT.responseXML.documentElement;	
+			var _services = reponseT.getElementsByTagName("service");
+
+			var _selbox = document.getElementById("svc_relation-f");
+			while ( _selbox.options.length > 0 ){
+				_selbox.options[0] = null;
+			}
+
+
+			if (_services.length == 0) {
+				_selbox.setAttribute('disabled', 'disabled');
+			} else {
+				console.log(_selbox);
+				_selbox.removeAttribute('disabled');
+			}
+			
+			for (var i = 0 ; i < _services.length ; i++) {
+				var _service = _services[i];
+				var _id = _service.getElementsByTagName("id")[0].firstChild.nodeValue;
+				var _name = _service.getElementsByTagName("name")[0].firstChild.nodeValue;
+
+				new_elem = new Option(_name,_id);
+				_selbox.options[_selbox.length] = new_elem;
+			}
+		}
+	};
+}
 </script>
 {/literal}
 <form {$form.attributes}>
@@ -83,7 +140,9 @@ function addPeriods() {
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.links}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.host_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host_relation.html}</p></td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.hostgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hostgroup_relation.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.svcgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.svcgroup_relation.html}</p></td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="svc_name"> {$form.svc_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host4svc.html}
+{$form.svc_relation.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.svcgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.svcgroup_relation.html}</p></td></tr>
 	 </table>
 </div>
 <div id="validForm">

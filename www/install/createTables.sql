@@ -1141,8 +1141,9 @@ CREATE TABLE IF NOT EXISTS `downtime_hostgroup_relation` (
 --
 CREATE TABLE IF NOT EXISTS `downtime_service_relation` (
 	`dt_id` INT(11) NOT NULL,
+	`host_host_id` INT(11) NOT NULL,
 	`service_service_id` INT(11) NOT NULL,
-	PRIMARY KEY (`dt_id`, `service_service_id`)
+	PRIMARY KEY (`dt_id`, `host_host_id`, `service_service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
@@ -2410,6 +2411,7 @@ ALTER TABLE `downtime_hostgroup_relation`
 --
 ALTER TABLE `downtime_service_relation`
   ADD CONSTRAINT `downtime_service_relation_ibfk_1` FOREIGN KEY (`service_service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `downtime_service_relation_ibfk_3` FOREIGN KEY (`host_host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
   ADD CONSTRAINT `downtime_service_relation_ibfk_2` FOREIGN KEY (`dt_id`) REFERENCES `downtime` (`dt_id`) ON DELETE CASCADE;
   
 --
