@@ -644,8 +644,9 @@ class CentreonDowntime
 				$dateOfMonth = date('w', $time);
 				if ($dateOfMonth == $period['day_of_week']) {
 					$monthName = date('F', $time);
+					$year = date('Y', $time);
 					$dayShortName = date('D', $time);
-					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' of ' . $monthName));
+					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year));
 					if ($dayInMonth == date('d', $time)) {
 						$add = true;
 					}
