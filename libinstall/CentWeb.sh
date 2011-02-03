@@ -308,6 +308,14 @@ check_result $? "$(gettext "Change macros for centAcl.php")"
 cp -f $TMP_DIR/work/cron/centAcl.php \
 	$TMP_DIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
 
+log "INFO" "$(gettext "Change macros for centreon-downtime.php")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	$TMP_DIR/src/cron/centreon-downtime.php > $TMP_DIR/work/cron/centreon-downtime.php
+check_result $? "$(gettext "Change macros for centreon-downtime.php")"
+
+cp -f $TMP_DIR/work/cron/centreon-downtime.php \
+	$TMP_DIR/final/cron/centreon-downtime.php >> "$LOG_FILE" 2>&1
+
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 644 \
