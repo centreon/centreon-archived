@@ -137,7 +137,9 @@ class CentreonDowntimeNdo extends CentreonDowntime
 			WHERE dth.object_id = o.object_id AND dth.scheduled_start_time > NOW() AND dth.comment_data = '[Downtime cycle #" . $dt_id . "]'
 				AND o.name1 = '" . $oname1 . "'";
 		if (!is_null($oname2)) {
-			$query .= " o.name2 = '" . $oname2 . "'";
+			$query .= " AND o.name2 = '" . $oname2 . "'";
+		} else {
+		    $query .= " AND o.name2 IS NULL";
 		}
 		$res = $this->dbndo->query($query);
 		if (PEAR::isError($res)) {

@@ -621,14 +621,21 @@ class CentreonDowntime
 	 * @param int $id The downtime id
 	 * @param int $time The timestamp for scheduling
 	 * @param int $delay The delay between the timestamp and the start period
+	 * @param string $start The start time for this period
+	 * @param string $end The end time for this period
 	 * @return array
 	 * @see CentreonDowntime::getPeriods
 	 */
-	public function doSchedule($id, $time, $delay)
+	public function doSchedule($id, $time, $delay, $start, $end)
 	{
 		$periods = $this->getPeriods($id);
 		$listSchedule = array();
+		$start = substr($start, 0, strrpos($start, ':'));
+		$end = substr($end, 0, strrpos($end, ':'));
 		foreach ($periods as $period) {
+		    if ($period['start_time'] != $start || $period['end_time'] != $end) {
+		        continue;
+		    }
 			$add = false;
 			if ($period['month_cycle'] == 'none') {
 				$dateOfMonth = date('j', $time);

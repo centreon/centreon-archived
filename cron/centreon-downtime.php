@@ -148,7 +148,7 @@ foreach ($list as $type => $periods) {
 		switch ($type) {
 			case 'host':
 				$currentHostDate = $gmt->getHostCurrentDatetime($period['obj_id'], 'U');
-				$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay);
+				$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 				if (count($dts) != 0) {
 					$listSchedDt = $downtime->isScheduled($period['dt_id'], $period['obj_name']);
 					foreach ($dts as $dt) {
@@ -178,7 +178,7 @@ foreach ($list as $type => $periods) {
 				//if ($gmt->used()) {
 				foreach ($hostlist as $host) {
 					$currentHostDate = $gmt->getHostCurrentDatetime($host, 'U');
-					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay);
+					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 					if (count($dts) != 0) {
 						$listSchedDt = $downtime->isScheduled($period['dt_id'], $host);
 						foreach ($dts as $dt) {
@@ -216,7 +216,7 @@ foreach ($list as $type => $periods) {
 				$hid = $hostClass->getHostId($period['host_name']);
 				if ($gmt->used()) {
 					$currentHostDate = $gmt->getHostCurrentDatetime($hid, 'U');
-					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay);
+					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 					if (count($dts) != 0) {
 						$listSchedDt = $downtime->isScheduled($period['dt_id'], $period['host_name'], $period['obj_name']);
 						foreach ($dts as $dt) {
@@ -239,7 +239,7 @@ foreach ($list as $type => $periods) {
 						}
 					}
 				} else {
-					$dts = $downtime->doSchedule($period['dt_id'], time(), $delay);
+					$dts = $downtime->doSchedule($period['dt_id'], time(), $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 					if (count($dts) != 0) {
 						$listSchedDt = $downtime->isScheduled($period['dt_id'], $period['host_name'], $period['obj_name']);
 						foreach ($dts as $dt) {
@@ -270,7 +270,7 @@ foreach ($list as $type => $periods) {
 				$services = $sg->getServiceGroupServices($period['obj_id']);
 				foreach ($services as $service){
 					$currentHostDate = $gmt->getHostCurrentDatetime($service['host_host_id'], 'U');
-					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay);
+					$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 					if (count($dts) != 0) {
 						$host_name = $hostClass->getHostName($service['host_host_id']);
 						$service_name = $serviceClass->getServiceName($service['service_service_id']);

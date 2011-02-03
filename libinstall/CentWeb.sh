@@ -310,6 +310,7 @@ cp -f $TMP_DIR/work/cron/centAcl.php \
 
 log "INFO" "$(gettext "Change macros for centreon-downtime.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 	$TMP_DIR/src/cron/centreon-downtime.php > $TMP_DIR/work/cron/centreon-downtime.php
 check_result $? "$(gettext "Change macros for centreon-downtime.php")"
 
