@@ -14,14 +14,18 @@
 				<td  class="ListColLeft">{$form.persistant.html}</td>
 			</tr>
 			<tr class="list_two">
+				<td  class="ListColLeft">{$form.duration.label}</td>
+				<td  class="ListColLeft">{$form.duration.html} {$seconds}</td>
+			</tr>
+			<tr class="list_one">
 				<td  class="ListColLeft">{$form.start.label}</td>
 				<td  class="ListColLeft">{$form.start.html}</td>
 			</tr>
-			<tr class="list_one">
+			<tr class="list_two">
 				<td  class="ListColLeft">{$form.end.label}</td>
 				<td  class="ListColLeft">{$form.end.html}</td>
 			</tr>
-			<tr class="list_two">
+			<tr class="list_one">
 				<td  class="ListColLeft" valign='top'>{$form.comment.label}</td>
 				<td  class="ListColLeft">{$form.comment.html}</td>
 			</tr>

@@ -112,11 +112,12 @@
 
 		    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 			$selSv = $form->addElement('select', 'service_id', _("Service"), $services);
-		    $form->addElement('checkbox', 'persistant', _("Fixed"));
+		    $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 			$form->addElement('text', 'start', _("Start Time"), $attrsText);
 			$form->addElement('text', 'end', _("End Time"), $attrsText);
+			$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 			$form->addRule('host_id', _("Required Field"), 'required');
@@ -136,7 +137,11 @@
 				if (!isset($_POST["comment"]))
 					$_POST["comment"] = 0;
 			    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
-				$ecObj->AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"]);
+			    $duration = null;
+			    if (isset($_POST['duration'])) {
+                    $duration = $_POST['duration'];
+			    }
+				$ecObj->AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"], $duration);
 		    	require_once("viewServiceDowntime.php");
 			} else {
 				/*
@@ -153,6 +158,7 @@
 				$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 				$form->accept($renderer);
 				$tpl->assign('form', $renderer->toArray());
+				$tpl->assign('seconds', _("seconds"));
 				$tpl->assign('o', $o);
 				$tpl->display("AddSvcDowntime.ihtml");
 		    }
@@ -161,3 +167,17 @@
 		require_once("../errors/alt_error.php");
 	}
 ?>
+<script type='text/javascript'>
+document.onLoad = setDurationField();
+function setDurationField()
+{
+	var durationField = document.getElementById('duration');
+	var fixedCb = document.getElementById('fixed');
+
+	if (fixedCb.checked == true) {
+		durationField.disabled = true;
+	} else {
+		durationField.disabled = false;
+	}
+}
+</script>
