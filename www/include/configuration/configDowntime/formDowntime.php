@@ -115,16 +115,18 @@ foreach ($hosts as $key => $hostname) {
     $host4svc[$key] = $hostname;
 }
 $form->addElement('select', 'host4svc', _('Host'), $host4svc, array('onchange' => "javascript:getServices(this.form.elements['host4svc'].value); return false;"));
-$query = "SELECT s.service_id, s.service_description, h.host_name, h.host_id
-	FROM service s, host h, host_service_relation hsr, downtime_service_relation dsr
-	WHERE h.host_id = hsr.host_host_id AND s.service_id = hsr.service_service_id AND dsr.dt_id = " . $id ." AND dsr.host_host_id = h.host_id AND dsr.service_service_id = s.service_id
-	ORDER BY h.host_name, s.service_description";
-$DBRESULT = $pearDB->query($query);
 $svcs = array();
-while ($svc = $DBRESULT->fetchRow()) {
-    $svc_id = $svc['host_id'] . '-' . $svc['service_id'];
-    $svc_name = $svc['host_name'] . '-' . $svc['service_description'];
-    $svcs[$svc_id] = $svc_name;
+if (isset($id) && $id != 0) {
+    $query = "SELECT s.service_id, s.service_description, h.host_name, h.host_id
+    	FROM service s, host h, host_service_relation hsr, downtime_service_relation dsr
+    	WHERE h.host_id = hsr.host_host_id AND s.service_id = hsr.service_service_id AND dsr.dt_id = " . $id ." AND dsr.host_host_id = h.host_id AND dsr.service_service_id = s.service_id
+    	ORDER BY h.host_name, s.service_description";
+    $DBRESULT = $pearDB->query($query);
+    while ($svc = $DBRESULT->fetchRow()) {
+        $svc_id = $svc['host_id'] . '-' . $svc['service_id'];
+        $svc_name = $svc['host_name'] . '-' . $svc['service_description'];
+        $svcs[$svc_id] = $svc_name;
+    }
 }
 $am_svc = $form->addElement('advmultiselect', 'svc_relation', array(_("Linked with Services"), _("Available"), _("Selected")), $svcs, $attrsAdvSelect_big, SORT_ASC);
 $am_svc->setButtonAttributes('add', array('value' =>  _("Add")));
