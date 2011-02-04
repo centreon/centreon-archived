@@ -39,7 +39,7 @@
 	if (!isset($oreon)) {
 		exit();
 	}
-	
+
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
@@ -359,10 +359,7 @@
 					 	$DBRESULT3 = $pearDB->query($mTpRq1);
 						while ($hst = $DBRESULT3->fetchRow()) {
 							$macName = str_replace("\$", "", $hst["host_macro_name"]);
-							$macName = str_replace("/", "#S#", $macName);
-							$macName = str_replace("\\", "#BS#", $macName);
-							$macVal = str_replace("/", "#S#", $hst['host_macro_value']);
-							$macVal = str_replace("\\", "#BS#", $macVal);
+							$macVal = $hst['host_macro_value'];
 							$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
 										"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $macVal ."')";
 					 		$DBRESULT4 = $pearDB->query($mTpRq2);
@@ -515,15 +512,11 @@
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
-			$ret["command_command_id_arg1"] = str_replace('/', "#S#", $ret["command_command_id_arg1"]);
-			$ret["command_command_id_arg1"] = str_replace('\\', "#BS#", $ret["command_command_id_arg1"]);
 		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
 
 		// For Centreon 2, we no longer need "host_template_model_htm_id" in Nagios 3
@@ -638,10 +631,8 @@
 	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
 		 			$my_tab[$macInput] = str_replace("\$_HOST", "", $my_tab[$macInput]);
 		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
-		 			$macName = str_replace("/", "#S#", $my_tab[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $my_tab[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$macName = $my_tab[$macInput];
+		 			$macVal = $my_tab[$macValue];
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id['MAX(host_id)'] .")";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
@@ -931,15 +922,11 @@
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
-			$ret["command_command_id_arg1"] = str_replace('/', "#S#", $ret["command_command_id_arg1"]);
-			$ret["command_command_id_arg1"] = str_replace('\\', "#BS#", $ret["command_command_id_arg1"]);
 		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
 
 
@@ -1108,10 +1095,8 @@
 	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$macName = $_POST[$macInput];
+		 			$macVal = $_POST[$macValue];
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $host_id .")";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
@@ -1210,15 +1195,11 @@
 			$ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\t", "#T#", $ret["command_command_id_arg1"]);
 			$ret["command_command_id_arg1"] = str_replace("\r", "#R#", $ret["command_command_id_arg1"]);
-			$ret["command_command_id_arg1"] = str_replace('/', "#S#", $ret["command_command_id_arg1"]);
-			$ret["command_command_id_arg1"] = str_replace('\\', "#BS#", $ret["command_command_id_arg1"]);
 		}
 		if (isset($ret["command_command_id_arg2"]) && $ret["command_command_id_arg2"] != NULL)		{
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
 		}
 
 		// For Centreon 2, we no longer need "host_template_model_htm_id" in Nagios 3
@@ -1459,10 +1440,8 @@
 	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[strtolower($_POST[$macInput])])) {
 	 				$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$macName = $_POST[$macInput];
+		 			$macVal = $_POST[$macValue];
 	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $macVal . "'".
 	 					  " WHERE `host_host_id`=" . $host_id .
 	 					  " AND `host_macro_name`='\$_HOST" . $macName . "\$'";
@@ -1471,10 +1450,8 @@
 	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
 		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
 		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = str_replace("/", "#S#", $_POST[$macInput]);
-		 			$macName = str_replace("\\", "#BS#", $macName);
-		 			$macVal = str_replace("/", "#S#", $_POST[$macValue]);
-		 			$macVal = str_replace("\\", "#BS#", $macVal);
+		 			$macName = $_POST[$macInput];
+		 			$macVal = $_POST[$macValue];
 		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id .")";
 			 		$DBRESULT = $pearDB->query($rq);
 					$already_stored[strtolower($_POST[$macInput])] = 1;
@@ -1682,7 +1659,7 @@
 		    if (!is_numeric($ret[$i])) {
 		        $res = $cg->insertLdapGroup($ret[$i]);
 		        if ($res != 0) {
-		            $ret[$i] = $res; 
+		            $ret[$i] = $res;
 		        } else {
 		            continue;
 		        }
@@ -1734,7 +1711,7 @@
     			if (!is_numeric($ret[$i])) {
     		        $res = $cg->insertLdapGroup($ret[$i]);
     		        if ($res != 0) {
-    		            $ret[$i] = $res; 
+    		            $ret[$i] = $res;
     		        } else {
     		            continue;
     		        }

@@ -126,8 +126,6 @@
 	{
 		global $pearDB, $centreon;
 
-		$name = str_replace('/', "#S#", $name);
-		$name = str_replace('\\', "#BS#", $name);
 		$DBRESULT = $pearDB->query("SELECT service_description FROM service WHERE service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 		if ($DBRESULT->numRows() >= 1) {
 			return true;
@@ -143,8 +141,6 @@
 		if (isset($form)) {
 			$id = $form->getSubmitValue('service_id');
 		}
-		$name = str_replace('/', "#S#", $name);
-		$name = str_replace('\\', "#BS#", $name);
 		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 		$service = $DBRESULT->fetchRow();
 		#Modif case
@@ -615,16 +611,6 @@
 			$ret["command_command_id_arg2"] = str_replace("\n", "#BR#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\t", "#T#", $ret["command_command_id_arg2"]);
 			$ret["command_command_id_arg2"] = str_replace("\r", "#R#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('/', "#S#", $ret["command_command_id_arg2"]);
-			$ret["command_command_id_arg2"] = str_replace('\\', "#BS#", $ret["command_command_id_arg2"]);
-		}
-		if (isset($ret["service_description"]) && $ret["service_description"] != null)		{
-			$ret["service_description"] = str_replace('/', "#S#", $ret["service_description"]);
-			$ret["service_description"] = str_replace('\\', "#BS#", $ret["service_description"]);
-		}
-		if (isset($ret["service_alias"]) && $ret["service_alias"] != null)		{
-			$ret["service_alias"] = str_replace('/', "#S#", $ret["service_alias"]);
-			$ret["service_alias"] = str_replace('\\', "#BS#", $ret["service_alias"]);
 		}
 		$rq = "INSERT INTO service " .
 				"(service_template_model_stm_id, command_command_id, timeperiod_tp_id, command_command_id2, timeperiod_tp_id2, " .
@@ -665,10 +651,6 @@
 				isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 				isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
 
-				if (isset($ret["service_comment"]) && $ret["service_comment"])	{
-					$ret["service_comment"] = str_replace('/', "#S#", $ret["service_comment"]);
-					$ret["service_comment"] = str_replace('\\', "#BS#", $ret["service_comment"]);
-				}
 				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
 				$ret['command_command_id_arg'] = getCommandArgs($_POST);
 				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
@@ -1367,7 +1349,7 @@
 		    if (!is_numeric($ret[$i])) {
 		        $res = $cg->insertLdapGroup($ret[$i]);
 		        if ($res != 0) {
-		            $ret[$i] = $res; 
+		            $ret[$i] = $res;
 		        } else {
 		            continue;
 		        }
@@ -1398,7 +1380,7 @@
     			if (!is_numeric($ret[$i])) {
     		        $res = $cg->insertLdapGroup($ret[$i]);
     		        if ($res != 0) {
-    		            $ret[$i] = $res; 
+    		            $ret[$i] = $res;
     		        } else {
     		            continue;
     		        }
