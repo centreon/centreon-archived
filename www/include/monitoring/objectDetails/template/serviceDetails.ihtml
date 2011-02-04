@@ -146,17 +146,17 @@
 
 						    {if $lcaTopo.20301 || $admin == 1}
 							<a href='./main.php?p=20301&mode=0&id=HH_{$h.host_id}_01'>
-							<img src="./img/icones/16x16/Logfile16.gif" alt="{$lnk_host_logs} {$h.host_name}" onmouseover="Tip('{$lnk_host_logs} {$h.host_name}')" onmouseout="UnTip()">
+							<img src="./img/icones/16x16/Logfile16.gif" alt="{$lnk_host_logs} {$h.host_name}" onmouseover="Tip('{$lnk_host_logs}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
 						    {if $lcaTopo.307 || $admin == 1}
 							<a href='./main.php?p=307&host={$h.host_id}'>
-							<img src="./img/icones/16x16/reporting.gif" alt="{$lnk_host_reports} {$h.host_name}" onmouseover="Tip('{$lnk_host_reports} {$h.host_name}')" onmouseout="UnTip()">
+							<img src="./img/icones/16x16/reporting.gif" alt="{$lnk_host_reports} {$h.host_name}" onmouseover="Tip('{$lnk_host_reports}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
 						    {if $lcaTopo.4 || $admin == 1}
 							<a href='./main.php?p=4&mode=0&svc_id={$h.host_name}'>
-							<img src="./img/icones/16x16/line-chart.gif" alt="{$lnk_host_graphs} {$h.host_name}" onmouseover="Tip('{$lnk_host_graphs} {$h.host_name}')" onmouseout="UnTip()">
+							<img src="./img/icones/16x16/line-chart.gif" alt="{$lnk_host_graphs} {$h.host_name}" onmouseover="Tip('{$lnk_host_graphs}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
 						</td>
@@ -168,18 +168,18 @@
 						    {/if}
 						    {if $lcaTopo.20201 || $admin == 1}
 							<a href='./main.php?p=20201&o=svc&host_search={$h.host_name}'>
-							<img src="./img/icones/16x16/svc_lights16.png" alt="{$lnk_serv_status} {$h.host_name}" onmouseover="Tip('{$lnk_serv_status} {$h.host_name}')" onmouseout="UnTip()">
+							<img src="./img/icones/16x16/svc_lights16.png" alt="{$lnk_serv_status} {$h.host_name}" onmouseover="Tip('{$lnk_serv_status}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
 
 						    {if $lcaTopo.20301 || $admin == 1}
 							<a href='./main.php?p=20301&mode=0&id=HS_{$service_id}_{$h.host_id}'>
-							<img src="./img/icones/16x16/Logfile16.gif" alt="{$lnk_serv_logs} {$svc_description}" onmouseover="Tip('{$lnk_serv_logs} {$svc_description}')" onmouseout="UnTip()">
+							<img src="./img/icones/16x16/Logfile16.gif" alt="{$lnk_serv_logs} {$svc_description}" onmouseover="Tip('{$lnk_serv_logs}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
 						    {if $lcaTopo.30702 || $admin == 1}
 							<a href='./main.php?p=30702&period=yesterday&start=&end=&host_id={$h.host_id}&item={$service_id}'>
-							<img src="./img/icones/16x16/reporting.gif" alt="{$lnk_serv_reports} {$svc_description}" onmouseover="Tip('{$lnk_serv_reports} {$svc_description}')" onmouseout="UnTip()">
+							<img src="./img/icones/16x16/reporting.gif" alt="{$lnk_serv_reports} {$svc_description}" onmouseover="Tip('{$lnk_serv_reports}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
 						</td>
