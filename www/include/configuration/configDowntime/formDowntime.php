@@ -261,6 +261,28 @@ if ($form->validate()) {
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+if ($o == 'w') {
+    $tpl->assign("time_period", _("Time period"));
+    $tpl->assign("days", _("Days"));
+    $tpl->assign("seconds", _("Seconds"));
+    $tpl->assign("downtime_type", _("Downtime type"));
+    $tpl->assign("fixed", _("Fixed"));
+    $tpl->assign("flexible", _("Flexible"));
+    $tpl->assign("weekly_basis", _("Weekly basis"));
+	$tpl->assign("monthly_basis", _("Monthly basis"));
+	$tpl->assign("specific_date", _("Specific date"));
+	$tpl->assign("week_days", array(
+	    1 => _("Monday"),
+		2 => _("Tuesday"),
+		3 => _("Wednesday"),
+		4 => _("Thursday"),
+		5 => _("Friday"),
+		6 => _("Saturday"),
+		7 => _("Sunday")
+	));
+    $tpl->assign('periods_tab', $downtime->getPeriods($id));
+}
+
 $form->accept($renderer);
 $tpl->assign('o', $o);
 $tpl->assign('form', $renderer->toArray());

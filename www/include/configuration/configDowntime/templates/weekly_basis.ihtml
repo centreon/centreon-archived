@@ -11,7 +11,7 @@ var period_id = {$period_tab};
 	<input type="checkbox" name="periods[{$period_tab}][days][]" value="3" />&nbsp;{$wednesday}<br/>
 	<input type="checkbox" name="periods[{$period_tab}][days][]" value="4" />&nbsp;{$thursday}<br/>
 	<input type="checkbox" name="periods[{$period_tab}][days][]" value="5" />&nbsp;{$friday}<br/>
-	<input type="checkbox" name="periods[{$period_tab}][days][]" value="5" />&nbsp;{$saturday}<br/>
+	<input type="checkbox" name="periods[{$period_tab}][days][]" value="6" />&nbsp;{$saturday}<br/>
 </tr>
 <tr class="list_two">
 	<td class="FormRowField">{$time_period}</td>
