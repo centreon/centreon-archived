@@ -320,7 +320,8 @@ class CentreonExternalCommand {
 	 * @param string $end
 	 * @param int $persistant
 	 */
-	public function AddHostDowntime($host, $comment, $start, $end, $persistant){
+	public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null)
+	{
 		global $centreon;
 
 		if (!isset($persistant)) {
@@ -338,7 +339,10 @@ class CentreonExternalCommand {
 		/*
 		 * Send command
 		 */
-		$this->set_process_command("SCHEDULE_HOST_DOWNTIME;".getMyHostName($host).";".$start_time.";".$end_time.";".$persistant.";0;".($end_time - $start_time).";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
+	    if (!isset($duration)) {
+		   $duration = $start_time - $end_time;
+		}
+		$this->set_process_command("SCHEDULE_HOST_DOWNTIME;".getMyHostName($host).";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
 		$this->write();
 	}
 
@@ -352,7 +356,8 @@ class CentreonExternalCommand {
 	 * @param string $end
 	 * @param int $persistant
 	 */
-	public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant){
+	public function AddSvcDowntime($host, $service, $comment, $start, $end, $persistant, $duration = null)
+	{
 		global $centreon;
 
 		if (!isset($persistant)) {
@@ -370,7 +375,10 @@ class CentreonExternalCommand {
 		/*
 		 * Send command
 		 */
-		$this->set_process_command("SCHEDULE_SVC_DOWNTIME;".getMyHostName($host).";".getMyServiceName($service).";".$start_time.";".$end_time.";".$persistant.";0;".($end_time - $start_time).";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
+		if (!isset($duration)) {
+		   $duration = $start_time - $end_time;
+		}
+		$this->set_process_command("SCHEDULE_SVC_DOWNTIME;".getMyHostName($host).";".getMyServiceName($service).";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
 		$this->write();
 	}
 
