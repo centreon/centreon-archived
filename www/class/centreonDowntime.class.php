@@ -308,7 +308,7 @@ class CentreonDowntime
 				case 'svc':
 					$name = ', s.service_name as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name';
 					$table = ', downtime_service_relation dtr, service s, host h, host_service_relation hsr';
-					$clause = ' AND dtr.service_service_id = s.service_id AND hsr.service_service_id = s.service_id AND hsr.host_host_id = h.host_id';
+					$clause = ' AND dtr.service_service_id = s.service_id AND hsr.service_service_id = s.service_id AND hsr.host_host_id = h.host_id AND h.host_id = dtr.host_host_id';
 					break;
 				case 'svcgrp':
 					$name = ', sg.sg_name as obj_name, dtr.sg_sg_id as obj_id';
