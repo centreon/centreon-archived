@@ -290,7 +290,7 @@
 			}
 			$buffer->writeElement("hs", $host_status[$ndo["host_name"]]["current_state"]);
 			$buffer->writeElement("sd", $ndo["service_description"], false);
-			$buffer->writeElement("ac", $color_en_label[$ndo["active_checks_enabled"]]);
+			$buffer->writeElement("ac", $color_en_label[$ndo["active_checks_enabled"]], false);
 			$buffer->writeElement("sc", $color_service);
 			$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
 			$buffer->writeElement("po", $ndo["plugin_output"]);
@@ -298,7 +298,7 @@
 			$buffer->writeElement("ne", $ndo["notifications_enabled"]);
 			$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
 			$buffer->writeElement("pc", $passive);
-			$buffer->writeElement("ac", $active);
+			$buffer->writeElement("ac", $active, false);
 			$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
 			$buffer->writeElement("is", $ndo["is_flapping"]);
 			$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);
