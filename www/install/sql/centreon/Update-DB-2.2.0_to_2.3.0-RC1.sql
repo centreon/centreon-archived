@@ -96,8 +96,9 @@ CREATE TABLE IF NOT EXISTS `downtime_hostgroup_relation` (
 --
 CREATE TABLE IF NOT EXISTS `downtime_service_relation` (
 	`dt_id` INT(11) NOT NULL,
+	`host_host_id` INT(11) NOT NULL,
 	`service_service_id` INT(11) NOT NULL,
-	PRIMARY KEY (`dt_id`, `service_service_id`)
+	PRIMARY KEY (`dt_id`, `host_host_id`, `service_service_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- --------------------------------------------------------
 
