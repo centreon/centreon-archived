@@ -865,6 +865,7 @@
 				$tmpConf["contact_activate"]["contact_activate"] = "1";
 				$tmpConf["contact_comment"] = "Ldap Import - " .  date("d/m/Y - H:i:s", time());
 				$tmpConf["contact_location"] = "0";
+				$tmpConf["contact_register"] = "0";
 				insertContactInDB($tmpConf);
 				unset($tmpConf);
 			}
