@@ -71,7 +71,7 @@
 			require_once($path."AddSvcDowntime.php");
 			break;
 		case "ds" :
-			$ecObj->DeleteDowntime("SVC", isset($_GET["select"]) ? $_GET["select"] : array());
+			$ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
 			require_once($path."viewServiceDowntime.php");
 			break;
 		case "vs" :

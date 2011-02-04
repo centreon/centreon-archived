@@ -71,7 +71,7 @@
 			require_once($path."AddHostDowntime.php");
 			break;
 		case "dh" :
-			$ecObj->DeleteDowntime("HOST", isset($_GET["select"]) ? $_GET["select"] : array());
+			$ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
 			require_once($path."viewHostDowntime.php");
 			break;
 		case "vh" :
