@@ -195,7 +195,7 @@
 	$tpl->assign("Host", _("Host Name"));
 	$tpl->assign("Service", _("Service"));
 	$tpl->assign("Output", _("Output"));
-	$tpl->assign("user", _("Utilisateurs"));
+	$tpl->assign("user", _("Users"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->assign("ViewAll", _("Show finished downtime"));

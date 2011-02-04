@@ -165,7 +165,7 @@
 
 	$tpl->assign("Host", _("Host Name"));
 	$tpl->assign("Output", _("Output"));
-	$tpl->assign("user", _("Utilisateurs"));
+	$tpl->assign("user", _("Useres"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
 	$tpl->assign('Search', _("Search"));
 	$tpl->assign("search_output", $search_output);
