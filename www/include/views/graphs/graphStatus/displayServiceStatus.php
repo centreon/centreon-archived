@@ -110,10 +110,6 @@
 		/*
 		 * Get index information to have acces to graph
 		 */
-		if (isset($_GET["service_description"])){
-			$_GET["service_description"] = str_replace("/", "#S#", $_GET["service_description"]);
-			$_GET["service_description"] = str_replace("\\", "#BS#", $_GET["service_description"]);
-		}
 
 		if (!isset($_GET["host_name"]) && !isset($_GET["service_description"])){
 			$DBRESULT = $pearDBO->query("SELECT * FROM index_data WHERE `id` = '".$_GET["index"]."' LIMIT 1");
