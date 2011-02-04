@@ -119,18 +119,15 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 -- Contenu de la table `general_opt`
 --
 INSERT INTO `options` (`key`, `value`) VALUES 
-('ldap_host', NULL),
-('ldap_port', NULL),
-('ldap_base_dn', NULL),
-('ldap_login_attrib', NULL),
-('ldap_ssl', NULL),
-('ldap_auth_enable', NULL),
-('ldap_search_user', NULL),
-('ldap_search_user_pwd', NULL),
-('ldap_search_filter','(&(objectClass=person)(cn=*))'),
+('ldap_dns_use_ssl', '0'),
+('ldap_dns_use_tls', '0'),
+('ldap_auth_enable', '0'),
+('ldap_auto_import', '0'),
+('ldap_srv_dns', '0'),
+('ldap_dns_use_domain', ''),
 ('ldap_search_timeout','60'),
 ('ldap_search_limit','60'),
-('ldap_protocol_version','3'),
+('ldap_last_acl_update', '0'),
 ('color_up','#19EE11'),
 ('color_down','#F91E05'),
 ('color_unreachable','#82CFD8'),
@@ -190,8 +187,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
 ('monitoring_engine','NAGIOS'),
-('display_autologin_shortcut','1'),
-('ldap_last_acl_update', '0');
+('display_autologin_shortcut','1');
 
 --
 -- Contenu de la table `giv_components_template`
