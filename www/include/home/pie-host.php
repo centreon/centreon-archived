@@ -109,7 +109,7 @@
 	$counter = 0;
 	while ($ndo = $DBRESULT->fetchRow()){
 		$data[] = $ndo["cnt"];
-		$legend[] = $statistic_host[$ndo["current_state"]];
+		$legend[] = $statistic_host[$ndo["state"]];
 		$color[] = $oreon->optGen["color_".strtolower($statistic_host[$ndo["state"]])];
 		$counter += $ndo["cnt"];
 	}

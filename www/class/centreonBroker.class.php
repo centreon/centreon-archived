@@ -47,7 +47,7 @@ class CentreonBroker
 	 * @return 	object	object session
 	 */
 	public function __construct() {
-		$this->name = "broker";
+		$this->name = "ndo";
 	}
 
 	/*

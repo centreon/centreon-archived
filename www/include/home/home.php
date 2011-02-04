@@ -54,7 +54,7 @@
 	$broker = "broker";
 
 	if ($oreon->broker->getBroker() == "ndo") {
-		$pearDBndo = new CentreonDbPdo("ndo");
+		$pearDBndo = new CentreonDb("ndo");
 		$ndo_base_prefix = getNDOPrefix();
 	}
 
@@ -149,7 +149,7 @@
 					" AND centreon_acl.group_id IN (".$centreon->user->access->getAccessGroupsString().") ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 		} else {
-			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state" .
+			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 NOT LIKE '_Module_%' ".
