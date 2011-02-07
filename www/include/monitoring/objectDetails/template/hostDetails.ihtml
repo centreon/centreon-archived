@@ -266,7 +266,7 @@
 					{if $aclAct.host_comment || $admin == 1}						
 						<tr class='list_two'>
 							<td class="ListColLeft" id="host_comment">
-								<img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='main.php?p=20219&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a>
+								<img src='./img/icones/16x16/messages.gif' border='1'>&nbsp;<a href='main.php?p=20107&o=ah&host_name={$h.host_name}'>{$m_mon_add_comment}</a>
 							</td>
 						</tr>
 					{/if}
