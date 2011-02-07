@@ -39,7 +39,7 @@
 	if (!isset($oreon)) {
 		exit();
 	}
-	
+
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
@@ -158,7 +158,7 @@
 	$DBRESULT->free();*/
 	$cg = new CentreonContactgroup($pearDB);
 	$notifCgs = $cg->getListContactgroup(false);
-	
+
 	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
 	    $ldap = new CentreonLDAP($pearDB, null);
 	    $ldap->connect();
@@ -251,7 +251,7 @@
 	/**
 	 * Contact Groups Field
 	 */
-	$form->addElement('header', 'groupLinks', _("Groups Links"));
+	$form->addElement('header', 'groupLinks', _("Group Relations"));
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
 		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
@@ -509,7 +509,7 @@
 		$subMC = $form->addElement('submit', 'submitMC', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
 	    $tpl->assign("ldap_group", _("Group Ldap"));
 	    $tpl->assign("ldapGroups", $cgLdap);
