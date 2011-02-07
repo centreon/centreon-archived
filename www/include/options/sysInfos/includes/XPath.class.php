@@ -1102,7 +1102,7 @@ class XPathEngine extends XPathBase {
    *   Negative numbers are allowed, where -1 is the last text-part a.s.o.
    *
    * NOTE I : The returned value can be fetched by reference
-   *          E.g. $text = wholeText(). If you wish to modify the text.
+   *          E.g. $text =& wholeText(). If you wish to modify the text.
    * NOTE II: text-part numbers out of range will return FALSE
    * SIDENOTE:The function name is a suggestion from W3C in the XPath specification level 3.
    *
@@ -1125,7 +1125,7 @@ class XPathEngine extends XPathBase {
           $this->_displayError("The $absoluteXPath/attribute::$attribute value isn't a node in this document.", __LINE__, __FILE__, FALSE);
           break; // try-block
         }
-        $text = $this->nodeIndex[$absoluteXPath]['attributes'][$attribute];
+        $text =& $this->nodeIndex[$absoluteXPath]['attributes'][$attribute];
         $status = TRUE;
         break; // try-block
       }
@@ -1151,7 +1151,7 @@ class XPathEngine extends XPathBase {
           $this->_displayError("The $absoluteXPath/text()[$textPartNr] value isn't a NODE in this document.", __LINE__, __FILE__, FALSE);
           break; // try-block
         }
-        $text = $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr - 1];
+        $text =& $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr - 1];
         $status = TRUE;
         break; // try-block
       }
@@ -1181,7 +1181,7 @@ class XPathEngine extends XPathBase {
         $this->_displayError("The $absoluteXPath has no text part at pos [$textPartNr] (Note: text parts start with 1).", __LINE__, __FILE__, FALSE);
         break; // try-block
       }
-      $text = $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr -1];
+      $text =& $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr -1];
       $status = TRUE;
     } while (FALSE); // END try-block
     
@@ -1469,7 +1469,7 @@ class XPathEngine extends XPathBase {
     // We have not to output text before/after our node, so blank it.  We will recover it
     // later
     $OldPreceedingStringValue = $nodeStack['Parent'][0]['textParts'][$node['pos']];
-    $OldPreceedingStringRef = $nodeStack['Parent'][0]['textParts'][$node['pos']];
+    $OldPreceedingStringRef =& $nodeStack['Parent'][0]['textParts'][$node['pos']];
     $OldPreceedingStringRef = "";
     $currentXpath = "";
 
@@ -1489,7 +1489,7 @@ class XPathEngine extends XPathBase {
       // Add the text before our child.
 
       // Add the text part before the current child
-      $tmpTxt = $nodeStack['Parent'][$nodeStackIndex]['textParts'][$currentChild];
+      $tmpTxt =& $nodeStack['Parent'][$nodeStackIndex]['textParts'][$currentChild];
       if (isSet($tmpTxt) AND ($tmpTxt!="")) {
         // Only add CR indent if there were children
         if ($iChildCount)
@@ -1513,7 +1513,7 @@ class XPathEngine extends XPathBase {
       // Are there any more children?
       if ($iChildCount <= $currentChild) {
         // Nope, so output the last text before the closing tag
-        $tmpTxt = $nodeStack['Parent'][$nodeStackIndex]['textParts'][$currentChild+1];
+        $tmpTxt =& $nodeStack['Parent'][$nodeStackIndex]['textParts'][$currentChild+1];
         if (isSet($tmpTxt) AND ($tmpTxt!="")) {
           // Hilight if necessary.
           $highlightStart = $highlightEnd = '';
@@ -1766,16 +1766,16 @@ class XPathEngine extends XPathBase {
           break; // try-block
         } 
         // Add it as the starting point in our array.
-        $this->nodeStack[0] = $this->nodeIndex[$absoluteParentPath];
+        $this->nodeStack[0] =& $this->nodeIndex[$absoluteParentPath];
       } else {
         // Build a 'super-root'
         $this->_createSuperRoot();
         // Put it in as the start of our node stack.
-        $this->nodeStack[0] = $this->nodeRoot;
+        $this->nodeStack[0] =& $this->nodeRoot;
       }
 
       // Point our text buffer reference at the next text part of the root
-      $this->parsedTextLocation = $this->nodeStack[0]['textParts'][];
+      $this->parsedTextLocation =& $this->nodeStack[0]['textParts'][];
       $this->parsInCData = 0;
       // We cache this now.
       $this->parseSkipWhiteCache = isSet($this->parseOptions[XML_OPTION_SKIP_WHITE]) ? $this->parseOptions[XML_OPTION_SKIP_WHITE] : FALSE;
@@ -1886,7 +1886,7 @@ class XPathEngine extends XPathBase {
     $this->parseStackIndex++;
 
     // Point our parseTxtBuffer reference at the new node.
-    $this->parsedTextLocation = $this->nodeStack[$this->parseStackIndex]['textParts'][0];
+    $this->parsedTextLocation =& $this->nodeStack[$this->parseStackIndex]['textParts'][0];
     
     // Set the attributes.
     if (!empty($attributes)) {
@@ -1936,7 +1936,7 @@ class XPathEngine extends XPathBase {
     $this->parseStackIndex--;
 
     // Set our reference for where we put any more whitespace
-    $this->parsedTextLocation = $this->nodeStack[$this->parseStackIndex]['textParts'][];
+    $this->parsedTextLocation =& $this->nodeStack[$this->parseStackIndex]['textParts'][];
 
     // Note we leave the entry in the stack, as it will get blanked over by the next element
     // at this level.  The safe thing to do would be to remove it too, but in the interests 
@@ -2038,7 +2038,7 @@ class XPathEngine extends XPathBase {
     $this->nodeRoot = $this->emptyNode;
     $this->nodeRoot['name']      = '';
     $this->nodeRoot['parentNode'] = NULL;
-    $this->nodeIndex[''] = $this->nodeRoot;
+    $this->nodeIndex[''] =& $this->nodeRoot;
   }
 
   /**
@@ -2093,17 +2093,17 @@ class XPathEngine extends XPathBase {
 
     // Retrieve the parent node from the node stack.  This is the last node at that 
     // depth that we have yet to close.  This is where we should add the text/node.
-    $parentNode = $this->nodeStack[$stackParentIndex];
+    $parentNode =& $this->nodeStack[$stackParentIndex];
           
     // Brand new node please
     $newChildNode = $this->emptyNode;
     
     // Save the vital information about the node.
     $newChildNode['name'] = $nodeName;
-    $parentNode['childNodes'][] = $newChildNode;
+    $parentNode['childNodes'][] =& $newChildNode;
     
     // Add to our node stack
-    $this->nodeStack[$stackParentIndex + 1] = $newChildNode;
+    $this->nodeStack[$stackParentIndex + 1] =& $newChildNode;
 
     /*
     if ($bDebugThisFunction) {
@@ -2160,7 +2160,7 @@ class XPathEngine extends XPathBase {
     //return;
     $this->_indexIsDirty = FALSE;
     $this->nodeIndex = array();
-    $this->nodeIndex[''] = $this->nodeRoot;
+    $this->nodeIndex[''] =& $this->nodeRoot;
     // Quick out for when the tree has no data.
     if (empty($this->nodeRoot)) return TRUE;
     return $this->_recursiveReindexNodeTree('');
@@ -2198,7 +2198,7 @@ class XPathEngine extends XPathBase {
    * @see reindexNodeTree()
    */
   function _recursiveReindexNodeTree($absoluteParentPath) {
-    $parentNode = $this->nodeIndex[$absoluteParentPath];
+    $parentNode =& $this->nodeIndex[$absoluteParentPath];
     
     // Check for any 'dead' child nodes first and concate the text parts if found.
     for ($iChildIndex=sizeOf($parentNode['childNodes'])-1; $iChildIndex>=0; $iChildIndex--) {
@@ -2217,10 +2217,10 @@ class XPathEngine extends XPathBase {
     // If there are no children, we have to treat this specially:
     if ($childSize == 0) {
       // Add a dummy text node.
-      $this->nodeIndex[$absoluteParentPath.'/text()[1]'] = $parentNode;
+      $this->nodeIndex[$absoluteParentPath.'/text()[1]'] =& $parentNode;
     } else {
       for ($iChildIndex=0; $iChildIndex<$childSize; $iChildIndex++) {
-        $childNode = $parentNode['childNodes'][$iChildIndex];
+        $childNode =& $parentNode['childNodes'][$iChildIndex];
         // Make sure that there is a text-part in front of every node. (May be empty)
         if (!isSet($parentNode['textParts'][$iChildIndex])) $parentNode['textParts'][$iChildIndex] = '';
         // Count the nodes with same name (to determine their context position)
@@ -2236,9 +2236,9 @@ class XPathEngine extends XPathBase {
         // ### Note ultimately we will end up supporting text nodes as actual nodes.
 
         // Preceed with a dummy entry for the text node.
-        $this->nodeIndex[$absoluteParentPath.'/text()['.($childNode['pos']+1).']'] = $childNode;
+        $this->nodeIndex[$absoluteParentPath.'/text()['.($childNode['pos']+1).']'] =& $childNode;
         // Then the node itself
-        $this->nodeIndex[$newPath] = $childNode;
+        $this->nodeIndex[$newPath] =& $childNode;
 
         // Now some dummy nodes for each of the attribute nodes.
         $iAttributeCount = sizeOf($childNode['attributes']);
@@ -2251,8 +2251,8 @@ class XPathEngine extends XPathBase {
             $newAttributeNode['textParts'] = array($childNode['attributes'][$attribute]);
             $newAttributeNode['contextPos'] = $iAttributeIndex;
             $newAttributeNode['xpath'] = "$newPath/attribute::$attribute";
-            $newAttributeNode['parentNode'] = $childNode;
-            $newAttributeNode['depth'] = $parentNode['depth'] + 2;
+            $newAttributeNode['parentNode'] =& $childNode;
+            $newAttributeNode['depth'] =& $parentNode['depth'] + 2;
             // Insert the node as a master node, not a reference, otherwise there will be 
             // variable "bleeding".
             $this->nodeIndex["$newPath/attribute::$attribute"] = $newAttributeNode;
@@ -2260,7 +2260,7 @@ class XPathEngine extends XPathBase {
         }
 
         // Update the node info (optimisation)
-        $childNode['parentNode'] = $parentNode;
+        $childNode['parentNode'] =& $parentNode;
         $childNode['depth'] = $parentNode['depth'] + 1;
         $childNode['pos'] = $iChildIndex;
         $childNode['contextPos'] = $contextHash[$childName];
@@ -2268,7 +2268,7 @@ class XPathEngine extends XPathBase {
         $this->_recursiveReindexNodeTree($newPath);
 
         // Follow with a dummy entry for the text node.
-        $this->nodeIndex[$absoluteParentPath.'/text()['.($childNode['pos']+2).']'] = $childNode;
+        $this->nodeIndex[$absoluteParentPath.'/text()['.($childNode['pos']+2).']'] =& $childNode;
       }
 
       // Make sure that their is a text-part after the last node.
@@ -2282,7 +2282,7 @@ class XPathEngine extends XPathBase {
    * Clone a node and it's child nodes.
    *
    * NOTE: If the node has children you *MUST* use the reference operator!
-   *       E.g. $clonedNode = cloneNode($node);
+   *       E.g. $clonedNode =& cloneNode($node);
    *       Otherwise the children will not point back to the parent, they will point 
    *       back to your temporary variable instead.
    *
@@ -2303,9 +2303,9 @@ class XPathEngine extends XPathBase {
     
     $childSize = sizeOf($node['childNodes']);
     for ($i=0; $i<$childSize; $i++) {
-      $childNode = $this->cloneNode($node['childNodes'][$i], TRUE);  // copy child 
-      $node['childNodes'][$i] = $childNode; // reference the copy
-      $childNode['parentNode'] = $node;      // child references the parent.
+      $childNode =& $this->cloneNode($node['childNodes'][$i], TRUE);  // copy child 
+      $node['childNodes'][$i] =& $childNode; // reference the copy
+      $childNode['parentNode'] =& $node;      // child references the parent.
     }
     
     if (!$recursive) {
@@ -5360,7 +5360,7 @@ class XPath extends XPathEngine {
         $this->_indexIsDirty = TRUE;
         
         $theNode = $this->nodeIndex[$absoluteXPath];
-        $theNode['parentNode']['childNodes'][$theNode['pos']] = $NULL;
+        $theNode['parentNode']['childNodes'][$theNode['pos']] =& $NULL;
         if ($bDebugThisFunction) echo "We removed the node '$absoluteXPath'.\n";
       }
       // Reindex the node tree again
@@ -5421,7 +5421,7 @@ class XPath extends XPathEngine {
         $theNode = $this->nodeIndex[$absoluteXPath];
         $pos = $theNode['pos'];
         $theNode['parentNode']['textParts'][$pos] .= $data;
-        $theNode['parentNode']['childNodes'][$pos] = $NULL;
+        $theNode['parentNode']['childNodes'][$pos] =& $NULL;
         if ($bDebugThisFunction) echo "We replaced the node '$absoluteXPath' with data.\n";
       }
       // Reindex the node tree again
@@ -5481,11 +5481,11 @@ class XPath extends XPathEngine {
         $this->_indexIsDirty = TRUE;
         
         $absoluteXPath = $xPathSet[$i];
-        $childNode = $this->nodeIndex[$absoluteXPath];
-        $parentNode = $childNode['parentNode'];
-        $childNode['parentNode'] = $NULL;
+        $childNode =& $this->nodeIndex[$absoluteXPath];
+        $parentNode =& $childNode['parentNode'];
+        $childNode['parentNode'] =& $NULL;
         $childPos = $childNode['pos'];
-        $parentNode['childNodes'][$childPos] = $this->cloneNode($node);
+        $parentNode['childNodes'][$childPos] =& $this->cloneNode($node);
       }
       if ($mustReindex) $this->reindexNodeTree();
       $status = TRUE;
@@ -5560,8 +5560,8 @@ class XPath extends XPathEngine {
     // Make chages from 'bottom-up'. In this manner the modifications will not affect itself.
     for ($i=sizeOf($xPathSet)-1; $i>=0; $i--) {
       $absoluteXPath = $xPathSet[$i];
-      $childNode = $this->nodeIndex[$absoluteXPath];
-      $parentNode = $childNode['parentNode'];
+      $childNode =& $this->nodeIndex[$absoluteXPath];
+      $parentNode =& $childNode['parentNode'];
 
       // We can't insert at the super root or at the root.
       if (empty($absoluteXPath) || (!$parentNode['parentNode'])) {
@@ -5575,7 +5575,7 @@ class XPath extends XPathEngine {
       
       //Special case: It not possible to add siblings to the top node.
       if (empty($parentNode['name'])) continue;
-      $newNode = $this->cloneNode($node);
+      $newNode =& $this->cloneNode($node);
       $pos = $shiftRight ? $childNode['pos'] : $childNode['pos']+1;
       $parentNode['childNodes'] = array_merge(
                                     array_slice($parentNode['childNodes'], 0, $pos),
@@ -5660,9 +5660,9 @@ class XPath extends XPathEngine {
       $this->_indexIsDirty = TRUE;
       
       $absoluteXPath = $xPathSet[$i];
-      $parentNode = $this->nodeIndex[$absoluteXPath];
-      $newNode = $this->cloneNode($node);
-      $parentNode['childNodes'][] = $newNode;
+      $parentNode =& $this->nodeIndex[$absoluteXPath];
+      $newNode =& $this->cloneNode($node);
+      $parentNode['childNodes'][] =& $newNode;
       $pos = count($parentNode['textParts']);
       $pos -= $afterText ? 0 : 1;
       $parentNode['textParts'] = array_merge(
@@ -5805,7 +5805,7 @@ class XPath extends XPathEngine {
       $xPathSet = $this->_resolveXPathQuery($xPathQuery,'setAttributes');
       foreach($xPathSet as $absoluteXPath) {
         // Add the attributes to the node.
-        $theNode = $this->nodeIndex[$absoluteXPath];
+        $theNode =& $this->nodeIndex[$absoluteXPath];
         if (empty($theNode['attributes'])) {
           $this->nodeIndex[$absoluteXPath]['attributes'] = $attributes;
         } else {
@@ -6057,7 +6057,7 @@ class XPath extends XPathEngine {
                     XML_OPTION_CASE_FOLDING => $this->getProperties('caseFolding'), 
                     XML_OPTION_SKIP_WHITE   => $this->getProperties('skipWhiteSpaces')
                   );
-    $xmlParser = new XPathEngine($xmlOptions);
+    $xmlParser =& new XPathEngine($xmlOptions);
     $xmlParser->setVerbose($this->properties['verboseLevel']);
     // Parse the XML string
     if (!$xmlParser->importFromString($xmlString)) {
@@ -6129,7 +6129,7 @@ class XPath extends XPathEngine {
             $this->_displayError("The $absoluteXPath/attribute::$attribute value isn't a node in this document.", __LINE__, __FILE__, FALSE);
             continue;
           }
-          $textSet[] = $this->nodes[$absoluteXPath]['attributes'][$attribute];
+          $textSet[] =& $this->nodes[$absoluteXPath]['attributes'][$attribute];
         }
         $status = TRUE;
         break; // try-block
@@ -6168,13 +6168,13 @@ class XPath extends XPathEngine {
       // Now fetch all text-parts that match. (May be 0,1 or many)
       foreach($xPathSet as $absoluteXPath) {
         unset($text);
-        if ($text = $this->wholeText($absoluteXPath, $textPartNr)) {
-          $textSet[] = $text;
+        if ($text =& $this->wholeText($absoluteXPath, $textPartNr)) {
+          $textSet[] =& $text;
         } else {
           // The node does not yet have any text, so we have to add a '' string so that
           // if we insert or replace to it, then we'll actually have something to op on.
           $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr-1] = '';
-          $textSet[] = $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr-1];
+          $textSet[] =& $this->nodeIndex[$absoluteXPath]['textParts'][$textPartNr-1];
         }
       }
 
@@ -6315,7 +6315,7 @@ EOD;
   
   // The sample code:
   $xmlOptions = array(XML_OPTION_CASE_FOLDING => TRUE, XML_OPTION_SKIP_WHITE => TRUE);
-  $xPath = new XPath(FALSE, $xmlOptions);
+  $xPath =& new XPath(FALSE, $xmlOptions);
   //$xPath->bDebugXmlParse = TRUE;
   if (!$xPath->importFromString($xmlSource)) { echo $xPath->getLastError(); exit; }
   
