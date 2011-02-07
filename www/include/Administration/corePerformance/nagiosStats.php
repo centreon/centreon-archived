@@ -55,18 +55,23 @@
 	/*
 	 * Get Poller List
 	 */
-	$pollerList = array(null => null);
+	$pollerList = array();
+	$defaultPoller = null;
 	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost` DESC");
 	while ($data = $DBRESULT->fetchRow()) {
-		$pollerList[$data["id"]] = $data["name"];
+		if ($data['localhost']) {
+		    $defaultPoller = $data['id'];
+		}
+	    $pollerList[$data["id"]] = $data["name"];
 	}
 	$DBRESULT->free();
+	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
 	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
-	if (isset($_POST["pollers"])) {
-		$form->setDefaults(array('pollers' => htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")));
-		$host_list[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")] = $pollerList[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")];
-		$tab_server[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")] = $pollerList[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")];
-		$pollerName = $pollerList[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")];
+	if (isset($selectedPoller) && $selectedPoller) {
+		$form->setDefaults(array('pollers' => $selectedPoller));
+		$host_list[$selectedPoller] = $pollerList[$selectedPoller];
+		$tab_server[$selectedPoller] = $pollerList[$selectedPoller];
+		$pollerName = $pollerList[$selectedPoller];
 	} else {
 		$form->setDefaults(array('pollers' => null));
 	}
@@ -74,8 +79,7 @@
 	/*
 	 * Get Periode
 	 */
-	$time_period = array(NULL 			=> NULL,
-						"last3hours"	=> _("Last 3 hours"),
+	$time_period = array("last3hours"	=> _("Last 3 hours"),
 						"today" 		=> _("Today"),
 						"yesterday" 	=> _("Yesterday"),
 						"last4days" 	=> _("Last 4 days"),
@@ -120,6 +124,8 @@
 
 	if (isset($_POST["start"])) {
 		$tpl->assign('startPeriod', $_POST["start"]);
+	} else {
+	    $tpl->assign('startPeriod', 'today');
 	}
 	if (isset($host_list) && $host_list) {
 		$tpl->assign('host_list', $host_list);

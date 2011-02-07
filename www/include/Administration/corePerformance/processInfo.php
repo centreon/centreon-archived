@@ -62,17 +62,21 @@
 	/*
 	 * Get Poller List
 	 */
-	$pollerList = array(null => null);
+	$pollerList = array();
 	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = 1 ORDER BY `localhost` DESC");
 	while ($data = $DBRESULT->fetchRow()) {
-		$pollerList[$data["id"]] = $data["name"];
+		if ($data['localhost']) {
+		    $defaultPoller = $data['id'];
+		}
+	    $pollerList[$data["id"]] = $data["name"];
 	}
 	$DBRESULT->free();
+	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
 	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["pollers"])) {
-		$form->setDefaults(array('pollers' => htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")));
-		$host_list[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")] = $pollerList[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")];
-		$tab_server[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")] = $pollerList[htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8")];
+		$form->setDefaults(array('pollers' => $selectedPoller));
+		$host_list[$selectedPoller] = $pollerList[$selectedPoller];
+		$tab_server[$selectedPoller] = $pollerList[$selectedPoller];
 	} else {
 		$form->setDefaults(array('pollers' => null));
 	}
@@ -86,7 +90,7 @@
 	$DBRESULT = $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
 								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
 								"WHERE ndomod.activate = '1' " .
-								"AND ndomod.ns_nagios_server = n.id AND n.id = '".(isset($_POST["pollers"]) && $_POST["pollers"] != "" ? htmlentities($_POST["pollers"], ENT_QUOTES, "UTF-8") : 0)."' " .
+								"AND ndomod.ns_nagios_server = n.id AND n.id = '".$pearDB->escape($selectedPoller)."' " .
 								"ORDER BY n.localhost DESC");
 
 	while ($nagios = $DBRESULT->fetchRow()) {
