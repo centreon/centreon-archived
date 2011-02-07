@@ -58,6 +58,8 @@
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects"></script>
 <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
 <script type="text/javascript" src="./include/common/javascript/prototype-datepicker.js"></script>
+<script type="text/javascript" src="./include/common/javascript/extjs/ext-prototype-adapter.js"></script>
+<script type="text/javascript" src="./include/common/javascript/extjs/ext-all.js"></script>
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
 <?php
@@ -161,7 +163,14 @@
 	while ($topology_js = $DBRESULT->fetchRow()){
 		if ($topology_js['init'] == "initM") {
 			if ($o != "hd" && $o != "svcd") {
-				print "\tsetTimeout('initM($tM, \"$sid\", \"$o\")', 0);";
+			    $obis = $o;
+	            if (isset($_GET["problem"])) {
+		            $obis .= '_pb';
+	            }
+	            if (isset($_GET["acknowledge"])) {
+		            $obis .= '_ack_' . $_GET["acknowledge"];
+	            }
+			    print "\tsetTimeout('initM($tM, \"$sid\", \"$obis\")', 0);";
 			}
 		} else if ($topology_js['init']){
 			echo $topology_js['init'] ."();";
