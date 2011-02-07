@@ -79,7 +79,6 @@
 			else if ($key == "enable_environment_macros" && $value == 2);
 			else if ($key == "enable_embedded_perl" && $value == 2);
 			else if ($key == "use_embedded_perl_implicitly" && $value == 2);
-			else if ($key == "debug_verbosity" && $value == 2);
 			else if ($key == "host_perfdata_file_mode" && $value == 2);
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
