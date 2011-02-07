@@ -193,7 +193,7 @@
 	$tpl->assign("empty_stats", $empty_stats);
 	$tpl->assign("empty_stats_label", _("No stats available for this poller. Is it currently running?"));
 	$tpl->assign("emptyPage", $emptyPage);
-	$tpl->assign("empty_page_label", _("No poller selected. Please selection a poller to see reports."));
+	$tpl->assign("empty_page_label", _("No poller selected. Please select a poller to see reports."));
 
 
 	if (isset($host_list) && $host_list)
