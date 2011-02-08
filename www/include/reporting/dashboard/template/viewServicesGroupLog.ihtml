@@ -73,9 +73,9 @@
 						<!-- headers -->
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$stateLabel}</td>
-							<td class="ListColHeaderCenter">{$totalTimeLabel}</td>
-							<td class="ListColHeaderCenter">{$meanTimeLabel}</td>
-							<td class="ListColHeaderCenter">{$alertsLabel}</td>
+							<td class="ListColHeaderRight">{$totalTimeLabel}</td>
+							<td class="ListColHeaderRight">{$meanTimeLabel}</td>
+							<td class="ListColHeaderRight">{$alertsLabel}</td>
 						</tr>
 						<!-- Values -->
 						<tr class="list_one">

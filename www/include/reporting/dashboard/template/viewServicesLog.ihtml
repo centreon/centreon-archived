@@ -70,35 +70,35 @@
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$stateLabel}</td>
 							<td class="ListColHeaderCenter">{$durationLabel}</td>
-							<td class="ListColHeaderCenter">{$totalTimeLabel}</td>
-							<td class="ListColHeaderCenter">{$meanTimeLabel}</td>
-							<td class="ListColHeaderCenter">{$alertsLabel}</td>
+							<td class="ListColHeaderRight">{$totalTimeLabel}</td>
+							<td class="ListColHeaderRight">{$meanTimeLabel}</td>
+							<td class="ListColHeaderRight">{$alertsLabel}</td>
 						</tr>
 						<!-- Values -->
 						<tr class="list_one">
 							<td {$style_ok}>{$OKTitle}</td>
-							<td class='ListColRight'>{$summary.OK_TF}</td>
+							<td class='ListColCenter'>{$summary.OK_TF}</td>
 							<td class='ListColRight'>{$summary.OK_TP}%</td>
 							<td class='ListColRight'>{$summary.OK_MP}%</td>
 							<td class='ListColRight'>{$summary.OK_A}</td>
 						</tr>
 						<tr class="list_two">
 							<td {$style_warning}>{$WarningTitle}</td>
-							<td class='ListColRight'>{$summary.WARNING_TF}</td>
+							<td class='ListColCenter'>{$summary.WARNING_TF}</td>
 							<td class='ListColRight'>{$summary.WARNING_TP}%</td>
 							<td class='ListColRight'>{$summary.WARNING_MP}%</td>
 							<td class='ListColRight'>{$summary.WARNING_A}</td>
 						</tr>
 						<tr class="list_one">
 							<td {$style_critical}>{$CriticalTitle}</td>
-							<td class='ListColRight'>{$summary.CRITICAL_TF}</td>
+							<td class='ListColCenter'>{$summary.CRITICAL_TF}</td>
 							<td class='ListColRight'>{$summary.CRITICAL_TP}%</td>
 							<td class='ListColRight'>{$summary.CRITICAL_MP}%</td>
 							<td class='ListColRight'>{$summary.CRITICAL_A}</td>
 						</tr>
 						<tr class="list_two">
 							<td {$style_unknown}>{$UnknownTitle}</td>
-							<td class='ListColRight'>{$summary.UNKNOWN_TF}</td>
+							<td class='ListColCenter'>{$summary.UNKNOWN_TF}</td>
 							<td class='ListColRight'>{$summary.UNKNOWN_TP}%</td>
 							<td class='ListColRight'>{$summary.UNKNOWN_MP}%</td>
 							<td class='ListColRight'>{$summary.UNKNOWN_A}</td>
@@ -112,7 +112,7 @@
 						</tr>
 						<tr class="list_one">
 							<td {$style_pending}>{$PendingTitle}</td>
-							<td class='ListColRight'>{$summary.UNDETERMINED_TF}</td>
+							<td class='ListColCenter'>{$summary.UNDETERMINED_TF}</td>
 							<td class='ListColRight'>{$summary.UNDETERMINED_TP}%</td>
 							<td class='ListColRight'></td>
 							<td class='ListColRight'>{$summary.UNDETERMINED_A}</td>
@@ -120,7 +120,7 @@
 						<!-- Total -->
 						<tr class='list_lvl_2'>
 							<td class="ListColHeaderCenter">{$totalLabel}</td>
-							<td class='ListColRight'>{$totalTime}</td>
+							<td class='ListColCenter'>{$totalTime}</td>
 							<td class='ListColRight'></td>
 							<td class='ListColRight'></td>
 							<td class='ListColRight'>{$totalAlert}</td>
