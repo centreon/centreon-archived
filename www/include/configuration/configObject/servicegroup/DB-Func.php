@@ -101,9 +101,12 @@
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "sg_name" ? ($sg_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
-					if ($key2 != "sg_id")
+					if ($key2 != "sg_id") {
 						$fields[$key2] = $value2;
-					$fields["sg_name"] = $sg_name;
+					}
+					if (isset($sg_name)) {
+						$fields["sg_name"] = $sg_name;
+					}
 				}
 				if (testServiceGroupExistence($sg_name))	{
 					$val ? $rq = "INSERT INTO servicegroup VALUES (".$val.")" : $rq = null;
