@@ -88,7 +88,6 @@ sub initVars {
 	# database connectors
 	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd);
 	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd);
-	$centstatus = CentreonDB->new($logger, $mysql_database_status, $mysql_host, $mysql_user, $mysql_passwd);
 	
 	# classes to query database tables 
 	$host = CentreonHost->new($logger, $centreon);
@@ -189,7 +188,18 @@ sub main {
     if (!defined($options{'rebuild'})) {
 		rebuildIncidents();
     }else {
-		;
+    	my $currentTime = time;
+		my ($day,$month,$year) = (localtime($currentTime))[3,4,5];
+		my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
+		my $start = $end - (60 * 60 * 24);
+		
+		my ($serviceIds, $serviceNames) = $service->getAllServices(0);
+		my ($hostIds, $hostNames) = $host->getAllHosts(0);
+		$logger->writeLog("INFO", "Processing period: ".localtime($start)." => ".localtime($end));
+		my $hostStateDurations = $hostEvents->getStateEventDurations($start, $end);
+		$dashboard->insertHostStats($hostNames, $hostStateDurations, $start, $end);
+		my $serviceStateDurations = $serviceEvents->getStateEventDurations($start, $end);
+		$dashboard->insertServiceStats($serviceNames, $serviceStateDurations, $start, $end);
     }
     
 	exit_pgr;

@@ -7,7 +7,7 @@ use Getopt::Long;
 use Time::Local;
 
 # variables from external packages
-use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_database_status $mysql_host $mysql_user $mysql_passwd);
+use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "/home/msugumaran/centreon/conf/conf.pm";
 
 use vars qw ($PROGNAME $VERSION $varLibCentreon $lock_file %options %serviceStates %hostStates %servicStateIds %hostStateIds);
@@ -90,8 +90,13 @@ sub initVars {
 	# database connectors
 	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd);
 	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd);
-	$centstatus = CentreonDB->new($logger, $mysql_database_status, $mysql_host, $mysql_user, $mysql_passwd);
 	
+	# Getting centstatus database name
+	my $sth = $centreon->query("select db_name from cfg_ndo2db where activate='1' limit 1");
+	if (my $row = $sth->fetchrow_hashref()) {
+		# connecting to censtatus
+		$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $mysql_host, $mysql_user, $mysql_passwd);
+	}
 	# classes to query database tables 
 	$host = CentreonHost->new($logger, $centreon);
 	$service = CentreonService->new($logger, $centreon);
@@ -178,7 +183,13 @@ sub main {
     if (!defined($options{'rebuild'})) {
 		rebuildIncidents();
     }else {
-		;
+    	my $currentTime = time;
+		my ($day,$month,$year) = (localtime($currentTime))[3,4,5];
+		my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
+		my $start = $end - (60 * 60 * 24);
+		$logger->writeLog("INFO", "Processing period: ".localtime($start)." => ".localtime($end));
+		$processEvents->parseHostLog($start, $end);
+		$processEvents->parseServiceLog($start, $end);
     }
     
 	exit_pgr;
