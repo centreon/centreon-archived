@@ -24,11 +24,18 @@ sub new {
 sub getAllHosts {
 	my $self = shift;
 	my $centreon = $self->{"centreon"};
+	my $activated = 1;
+	if (@_) {
+		$activated  = 0;
+	}
 	my (%host_ids, %host_names);
 	
 	my $query = "SELECT `host_id`, `host_name`".
 				" FROM `host`".
-				" WHERE `host_activate` ='1' AND `host_register`='1'";
+				" WHERE `host_register`='1'";
+				if ($activated == 1) {
+					$query .= " AND `host_activate` ='1'";
+				}
 	my $sth = $centreon->query($query);
 	while (my $row = $sth->fetchrow_hashref()) {
 		$host_ids{$row->{"host_name"}} = $row->{"host_id"};

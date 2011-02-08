@@ -18,18 +18,16 @@ require "perl-modules/CentreonLogger.pm";
 require "perl-modules/CentreonDB.pm";
 require "perl-modules/CentreonHost.pm";
 require "perl-modules/CentreonService.pm";
-require "perl-modules/CentreonLog.pm";
 require "perl-modules/CentreonServiceStateEvents.pm";
 require "perl-modules/CentreonHostStateEvents.pm";
-require "perl-modules/CentreonProcessStateEvents.pm";
-require "perl-modules/CentreonDownTime.pm";
+require "perl-modules/CentreonDashboard.pm";
 
 # Variables
 my $pid= getpgrp(0);
 $PROGNAME = "$0";
 $VERSION = "1.0";
 
-my ($centreon, $centstorage, $centstatus, $logger, $processEvents, $serviceEvents, $hostEvents, $nagiosLog, $service, $host);
+my ($centreon, $centstorage, $centstatus, $logger, $serviceEvents, $hostEvents, $dashboard, $service, $host);
 
 # program exit function
 sub exit_pgr() {
@@ -60,7 +58,7 @@ sub dayAlreadyProcessed($$$$) {
 		return 0;
     }
 
-    my $tmp_file = $varLibCentreon . "/archive-monitoring-incidents.last";
+    my $tmp_file = $varLibCentreon . "/centreon-dashboard-engine.last";
     my $last;
     my $now;
     my $write_cmd;
@@ -69,13 +67,13 @@ sub dayAlreadyProcessed($$$$) {
     if (-e "$tmp_file") {
     	chomp($last = `cat $tmp_file`);
     	$write_cmd = `echo $now > $tmp_file`;
-	if ($now == $last) {
-	    print "[".time."] Error : day already processed\n";
-	    return 1;
-	}
-	else {
-	    return 0;
-	}
+		if ($now == $last) {
+		    print "[".time."] Error : day already processed\n";
+		    return 1;
+		}
+		else {
+		    return 0;
+		}
     }
     $write_cmd = `echo $now > $tmp_file`;
     return 0;
@@ -95,16 +93,14 @@ sub initVars {
 	# classes to query database tables 
 	$host = CentreonHost->new($logger, $centreon);
 	$service = CentreonService->new($logger, $centreon);
-	$nagiosLog = CentreonLog->new($logger, $centstorage);
-	my $centreonDownTime = CentreonDownTime->new($logger, $centstatus);
-	$serviceEvents = CentreonServiceStateEvents->new($logger, $centstorage, $centreonDownTime);
-	$hostEvents = CentreonHostStateEvents->new($logger, $centstorage, $centreonDownTime);
+	$serviceEvents = CentreonServiceStateEvents->new($logger, $centstorage);
+	$hostEvents = CentreonHostStateEvents->new($logger, $centstorage);
 	
 	# Class that builds events
-	$processEvents = CentreonProcessStateEvents->new($logger, $host, $service, $nagiosLog, $hostEvents, $serviceEvents, $centreonDownTime);
+	$dashboard = CentreonDashboard->new($logger, $centstorage);
 }
 
-# For a given period returns in a table each	
+# For a given period returns in a table each
 sub getDaysFromPeriod {
 	my ($start, $end) = (shift, shift);
 	
@@ -141,16 +137,26 @@ sub getDaysFromPeriod {
 sub rebuildIncidents {
     my $time_period = shift;
     # Empty tables
-    $serviceEvents->truncateStateEvents();
-    $hostEvents->truncateStateEvents();
+    $dashboard->truncateServiceStats();
+    $dashboard->truncateHostStats();
     # Getting first log and last log times
-    my ($start, $end) = $nagiosLog->getFirstLastLogTime();
+    my ($start, $end) = $hostEvents->getFirstLastIncidentTimes();
    	my $periods = getDaysFromPeriod($start, $end);
+   	my ($allIds, $allNames) = $host->getAllHosts(0);
     # archiving logs for each days
     foreach(@$periods) {
-    	$logger->writeLog("INFO", "Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-		$processEvents->parseHostLog($_->{"day_start"}, $_->{"day_end"});
-		$processEvents->parseServiceLog($_->{"day_start"}, $_->{"day_end"});
+    	$logger->writeLog("INFO", "[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+    	my $hostStateDurations = $hostEvents->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+		$dashboard->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
+    }
+    ($start, $end) = $serviceEvents->getFirstLastIncidentTimes();
+   	$periods = getDaysFromPeriod($start, $end);
+   	($allIds, $allNames) = $service->getAllServices(0);
+    # archiving logs for each days
+    foreach(@$periods) {
+    	$logger->writeLog("INFO", "[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+		my $serviceStateDurations = $serviceEvents->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+		$dashboard->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
     }
 }
 
