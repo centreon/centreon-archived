@@ -44,6 +44,7 @@ INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_ssl', '0');
 INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_tls', '0');
 INSERT INTO `options` (`key`,`value`) values ('ldap_srv_dns', '0');
 INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_domain', '0');
+INSERT INTO `options` (`key`,`value`) values ('broker', 'Ndo');
 
 --
 -- Structure de la table `downtime`

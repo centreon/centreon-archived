@@ -187,7 +187,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
 ('monitoring_engine','NAGIOS'),
-('display_autologin_shortcut','1');
+('display_autologin_shortcut','1'),
+('broker', 'Ndo');
 
 --
 -- Contenu de la table `giv_components_template`
