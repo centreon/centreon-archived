@@ -453,8 +453,9 @@
 				    $service_description = $serviceCache[$id];
 				}
 
-				if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin)
+				if (isset($host_name) && (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin) {
 					$tab_svc[$host_name][$id] = $service_description;
+				}
 
 				unset($host_name);
 				unset($service_description);
@@ -474,8 +475,9 @@
 		$str_unitH = "";
 
 		foreach ($tab_host_name as $host_name ) {
-			if ($str_unitH != "")
+			if ($str_unitH != "") {
 				$str_unitH .= ", ";
+			}
 			$str_unitH .= "'$host_name'";
 		}
 
@@ -505,7 +507,7 @@
 				}
 			}
 		}
-		if (count($tab_SG) > 0){
+		if (count($tab_SG) > 0) {
 			foreach ($tab_SG as $SG){
 				($flag == 1 || $str_unitH != "") ? $str_unitSVC .= "OR" : NULL;
 				$str_unitSVC .= " (`host_name` = '".$SG["h"]."' AND `service_description` = '".$SG["s"]."') ";
@@ -557,7 +559,7 @@
 			if ($id != 0) {
 				$other_services = array();
 				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if ($svc_id = $DBRESULT2->fetchRow()){
+				if ($svc_id = $DBRESULT2->fetchRow()) {
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 						$meta = $DBRESULT_meta->fetchRow();
@@ -571,8 +573,9 @@
 				$DBRESULT2->free();
 			}
 		} else {
-			if ($is_admin)
+			if ($is_admin) {
 				$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
+			}
 		}
 	}
 
