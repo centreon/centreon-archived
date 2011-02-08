@@ -108,7 +108,8 @@
 		$rq = "SELECT sum(`UPnbEvent`) as UP_A, sum(`UPTimeScheduled`) as UP_T, ".				
 					" sum(`DOWNnbEvent`) as DOWN_A, sum(`DOWNTimeScheduled`) as DOWN_T, " .
 					" sum(`UNREACHABLEnbEvent`) as UNREACHABLE_A, sum(`UNREACHABLETimeScheduled`) as UNREACHABLE_T, " .
-					" sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T " .
+					" sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, " .
+					" sum(`MaintenanceTime`) as MAINTENANCE_T " .
 			  "FROM `log_archive_host` ".
 			  "WHERE `host_id` = ".$host_id." AND `date_start` >=  ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
@@ -125,7 +126,8 @@
 		$timeTab = getTotalTimeFromInterval($start_date, $end_date, $reportTimePeriod);
 		if ($timeTab["reportTime"] > 0) {
 			$hostStats["UNDETERMINED_T"] += $timeTab["reportTime"] - ($hostStats["UP_T"] + $hostStats["DOWN_T"]
-															+ $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"]);
+															+ $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"]
+															+ $hostStats["MAINTENANCE_T"]);
 		} else {
 			$hostStats["UNDETERMINED_T"] = $timeTab["totalTime"];
 		}
@@ -133,12 +135,13 @@
 		/*
 		 * Calculate percentage of time (_TP => Total time percentage) for each status 
 		 */
-		$time = $hostStats["TOTAL_TIME"] = $hostStats["UP_T"] + $hostStats["DOWN_T"] + $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"];
+		$time = $hostStats["TOTAL_TIME"] = $hostStats["UP_T"] + $hostStats["DOWN_T"] 
+											+ $hostStats["UNREACHABLE_T"] + $hostStats["UNDETERMINED_T"] + $hostStats["MAINTENANCE_T"];
 		$hostStats["UP_TP"] = round($hostStats["UP_T"] / $time * 100, 2); 
 		$hostStats["DOWN_TP"] = round($hostStats["DOWN_T"] / $time * 100, 2); 
 		$hostStats["UNREACHABLE_TP"] = round($hostStats["UNREACHABLE_T"] / $time * 100, 2); 
 		$hostStats["UNDETERMINED_TP"] = round($hostStats["UNDETERMINED_T"] / $time * 100, 2);
-		
+		$hostStats["MAINTENANCE_TP"] = round($hostStats["MAINTENANCE_T"] / $time * 100, 2);
 		/*
 		 * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
 		 */
@@ -162,6 +165,7 @@
 		$hostStats["DOWN_TF"] = getTimeString($hostStats["DOWN_T"], $reportTimePeriod);
 		$hostStats["UNREACHABLE_TF"] = getTimeString($hostStats["UNREACHABLE_T"], $reportTimePeriod);
 		$hostStats["UNDETERMINED_TF"] = getTimeString($hostStats["UNDETERMINED_T"], $reportTimePeriod);
+		$hostStats["MAINTENANCE_TF"] = getTimeString($hostStats["MAINTENANCE_T"], $reportTimePeriod);
 		
 		/*
 		 * Number Total of alerts 
@@ -202,19 +206,22 @@
 		
 		/* the hostgroup availability is the average availability of all host from the the hostgroup */
 		foreach ($hostStatsLabels as $name)
-			if ($name == "UP_T" || $name == "DOWN_T" || $name == "UNREACHABLE_T" || $name == "UNDETERMINED_T")
+			if ($name == "UP_T" || $name == "DOWN_T" || $name == "UNREACHABLE_T" 
+				|| $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T")
 				$hostgroupStats["average"][$name] /= $count;
 		/*
 		 * Calculate percentage of time (_TP => Total time percentage) for each status 
 		 */
 		$hostgroupStats["average"]["TOTAL_TIME"] = $hostgroupStats["average"]["UP_T"] +  $hostgroupStats["average"]["DOWN_T"]
-						+  $hostgroupStats["average"]["UNREACHABLE_T"] +  $hostgroupStats["average"]["UNDETERMINED_T"];
+						+  $hostgroupStats["average"]["UNREACHABLE_T"] +  $hostgroupStats["average"]["UNDETERMINED_T"]
+						+  $hostgroupStats["average"]["MAINTENANCE_T"];
 		
 		$time = $hostgroupStats["average"]["TOTAL_TIME"];
 		$hostgroupStats["average"]["UP_TP"] = round($hostgroupStats["average"]["UP_T"] / $time * 100, 2);
 		$hostgroupStats["average"]["DOWN_TP"] = round($hostgroupStats["average"]["DOWN_T"] / $time * 100, 2);
 		$hostgroupStats["average"]["UNREACHABLE_TP"] = round($hostgroupStats["average"]["UNREACHABLE_T"] / $time * 100, 2);
 		$hostgroupStats["average"]["UNDETERMINED_TP"] = round($hostgroupStats["average"]["UNDETERMINED_T"] / $time * 100, 2);
+		$hostgroupStats["average"]["MAINTENANCE_TP"] = round($hostgroupStats["average"]["MAINTENANCE_T"] / $time * 100, 2);
 		/*
 		 * Calculate percentage of time (_MP => Mean Time percentage) for each status ignoring undetermined time
 		 */
@@ -266,7 +273,7 @@
 			}
 		else
 			$svcStr = "''";
-		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
+		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 				
 		/* initialising all host services stats to 0 */
 		foreach ($services_ids as $id => $description)
@@ -278,15 +285,16 @@
 		foreach ($status as $key => $value) {
 			$hostServiceStats["average"][$value."_TP"] = 0;
 			$hostServiceStats["average"][$value."_MP"] = 0;
-			if ($value != "UNDETERMINED")
+			if ($value != "UNDETERMINED" && $value != "MAINTENANCE")
 				$hostServiceStats["average"][$value."_A"] = 0;
 		}
 		$days_of_week = getReportDaysStr($reportTimePeriod);
 		$rq = "SELECT service_id, sum(`OKTimeScheduled`) as OK_T, sum(`OKnbEvent`) as OK_A, ".
 					 "sum(`WARNINGTimeScheduled`)  as WARNING_T, sum(`WARNINGnbEvent`) as WARNING_A, ".
-					 "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, ".				
+					 "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, ".	
 					 "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, ".
-					 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T ".
+					 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, ".
+					"sum(`MaintenanceTime`) as MAINTENANCE_T ".
 			  "FROM `log_archive_service` ".
 			  "WHERE `host_id` = ".$host_id." ".
 			  $oreon->user->access->queryBuilder("AND", "service_id", $svcStr) . 
@@ -306,7 +314,8 @@
 			if ($timeTab["reportTime"]) {
 				$hostServiceStats[$id]["UNDETERMINED_T"] += $timeTab["reportTime"]
 										- ($hostServiceStats[$id]["OK_T"] + $hostServiceStats[$id]["WARNING_T"] + $hostServiceStats[$id]["CRITICAL_T"]
-										+ $hostServiceStats[$id]["UNKNOWN_T"] + $hostServiceStats[$id]["UNDETERMINED_T"]);
+										+ $hostServiceStats[$id]["UNKNOWN_T"] + $hostServiceStats[$id]["UNDETERMINED_T"]
+										+ $hostServiceStats[$id]["MAINTENANCE_T"]);
 			}else {
 				foreach ($status as $key => $value)
 					$hostServiceStats[$id][$value."_T"] = 0;
@@ -316,7 +325,7 @@
 			 * Calculate percentage of time (_TP => Total time percentage) for each status 
 			 */
 			$hostServiceStats[$id]["TOTAL_TIME"] = $hostServiceStats[$id]["OK_T"] + $hostServiceStats[$id]["WARNING_T"] + $hostServiceStats[$id]["CRITICAL_T"]
-						+ $hostServiceStats[$id]["UNKNOWN_T"] + $hostServiceStats[$id]["UNDETERMINED_T"];
+						+ $hostServiceStats[$id]["UNKNOWN_T"] + $hostServiceStats[$id]["UNDETERMINED_T"] + $hostServiceStats[$id]["MAINTENANCE_T"];
 			$time = $hostServiceStats[$id]["TOTAL_TIME"];
 			foreach ($status as $key => $value)
 				$hostServiceStats[$id][$value."_TP"] = round($hostServiceStats[$id][$value."_T"] / $time * 100, 2);
@@ -346,7 +355,7 @@
 			 */
 			foreach ($status as $key => $value) {
 				$hostServiceStats["average"][$value."_TP"] += $hostServiceStats[$id][$value."_TP"];
-				if ($value != "UNDETERMINED") {
+				if ($value != "UNDETERMINED" && $value != "MAINTENANCE") {
 					$hostServiceStats["average"][$value."_MP"] += $hostServiceStats[$id][$value."_MP"];
 					$hostServiceStats["average"][$value."_A"] += $hostServiceStats[$id][$value."_A"];
 				}
@@ -359,7 +368,7 @@
 		if ($i) {
 			foreach ($status as $key => $value) {
 				$hostServiceStats["average"][$value."_TP"] = round($hostServiceStats["average"][$value."_TP"] / $i, 2);;
-				if ($value != "UNDETERMINED")
+				if ($value != "UNDETERMINED" && $value != "MAINTENANCE")
 					$hostServiceStats["average"][$value."_MP"] = round($hostServiceStats["average"][$value."_MP"] / $i, 2);
 			}
 		}
@@ -374,7 +383,7 @@
 	function getLogInDbForOneSVC($host_id, $service_id, $start_date, $end_date, $reportTimePeriod){
 		global $pearDBO;
 		
-		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
+		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 		
 		foreach (getServicesStatsValueName() as $name)
 			$serviceStats[$name] = 0;
@@ -383,7 +392,8 @@
 					 "sum(`WARNINGTimeScheduled`)  as WARNING_T, sum(`WARNINGnbEvent`) as WARNING_A, ".
 					 "sum(`UNKNOWNTimeScheduled`) as UNKNOWN_T, sum(`UNKNOWNnbEvent`) as UNKNOWN_A, ".				
 					 "sum(`CRITICALTimeScheduled`) as CRITICAL_T, sum(`CRITICALnbEvent`) as CRITICAL_A, ".
-					 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T ".
+					 "sum(`UNDETERMINEDTimeScheduled`) as UNDETERMINED_T, ".
+					"sum(`MaintenanceTime`) as MAINTENANCE_T ".
 			  "FROM `log_archive_service` ".
 			  "WHERE `host_id` = ".$host_id." AND service_id = ".$service_id." AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
@@ -396,7 +406,7 @@
 		if ($timeTab["reportTime"]) {
 			$serviceStats["UNDETERMINED_T"] += $timeTab["reportTime"]
 									- ($serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-									+ $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"]);
+									+ $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"]);
 		}else {
 			foreach ($status as $key => $value)
 				$serviceStats[$value."_T"] = 0;
@@ -407,23 +417,23 @@
 		 * Calculate percentage of time (_TP => Total time percentage) for each status 
 		 */
 		$serviceStats["TOTAL_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-					+ $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"];
+					+ $serviceStats["UNKNOWN_T"] + $serviceStats["UNDETERMINED_T"] + $serviceStats["MAINTENANCE_T"];
 		$time = $serviceStats["TOTAL_TIME"];
 		foreach ($status as $key => $value)
 			$serviceStats[$value."_TP"] = round($serviceStats[$value."_T"] / $time * 100, 2);
 		/*
 		 * The same percentage (_MP => Mean Time percentage) is calculated ignoring undetermined time
 		 */
-		$serviceStats["MEAN_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"] + $serviceStats["CRITICAL_T"]
-					+ $serviceStats["UNKNOWN_T"];
+		$serviceStats["MEAN_TIME"] = $serviceStats["OK_T"] + $serviceStats["WARNING_T"] 
+									+ $serviceStats["CRITICAL_T"] + $serviceStats["UNKNOWN_T"];
 		$time = $serviceStats["MEAN_TIME"];
 		if ($serviceStats["MEAN_TIME"] <= 0) {
 			foreach ($status as $key => $value)
-				if ($value != "UNDETERMINED")
+				if ($value != "UNDETERMINED" && $value != "MAINTENANCE")
 					$serviceStats[$value."_MP"] = 0;
 		}else {
 			foreach ($status as $key => $value)
-				if ($value != "UNDETERMINED")
+				if ($value != "UNDETERMINED" && $value != "MAINTENANCE")
 					$serviceStats[$value."_MP"] = round($serviceStats[$value."_T"] / $time * 100, 2);
 		}
 		/*
@@ -448,7 +458,7 @@
 		
 		$serviceStatsLabels = array();
 		$serviceStatsLabels = getServicesStatsValueName();
-		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED");
+		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 		/* Initialising hostgroup stats to 0 */
 		foreach ($serviceStatsLabels as $name)
 			$serviceGroupStats["average"][$name] = 0;
@@ -482,7 +492,8 @@
 		 * Average time for all status (OK, Critical, Warning, Unknown)
 		 */
 		foreach ($serviceStatsLabels as $name) {
-			if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T" || $name == "UNKNOWN_T" || $name == "UNDETERMINED_T")		
+			if ($name == "OK_T" || $name == "WARNING_T" || $name == "CRITICAL_T" 
+				|| $name == "UNKNOWN_T" || $name == "UNDETERMINED_T" || $name == "MAINTENANCE_T")		
 				if ($count)
 					$serviceGroupStats["average"][$name] /= $count;
 				else
@@ -494,7 +505,7 @@
 		 */
 		$serviceGroupStats["average"]["TOTAL_TIME"] = $serviceGroupStats["average"]["OK_T"] +  $serviceGroupStats["average"]["WARNING_T"]
 						+  $serviceGroupStats["average"]["CRITICAL_T"] +  $serviceGroupStats["average"]["UNKNOWN_T"]
-						+  $serviceGroupStats["average"]["UNDETERMINED_T"];
+						+  $serviceGroupStats["average"]["UNDETERMINED_T"] + $serviceGroupStats["average"]["MAINTENANCE_T"];
 		
 		$time = $serviceGroupStats["average"]["TOTAL_TIME"];
 		foreach ($status as $key => $value) {
@@ -518,11 +529,11 @@
 		$time = $serviceGroupStats["average"]["MEAN_TIME"];
 		if ($time <= 0) {
 			foreach ($status as $key => $value)
-				if ($value != "UNDETERMINED")
+				if ($value != "UNDETERMINED" && $value != "MAINTENANCE")
 					$serviceGroupStats["average"][$value."_MP"] = 0;
 		} else {
 			foreach ($status as $key => $value)
-				if ($value != "UNDETERMINED")
+				if ($value != "UNDETERMINED" && $value != "MAINTENANCE")
 						$serviceGroupStats["average"][$value."_MP"] = round($serviceGroupStats["average"][$value."_T"] / $time * 100, 2);
 		}
 		return $serviceGroupStats;

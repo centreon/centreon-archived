@@ -94,9 +94,12 @@
 		/* 
 		 * Flash chart datas
 		 */
-		$pie_chart_get_str =  "&value[ok]=".$servicesgroupStats["average"]["OK_TP"]."&value[warning]=".
-								$servicesgroupStats["average"]["WARNING_TP"]."&value[critical]=".$servicesgroupStats["average"]["CRITICAL_TP"].
-								"&value[unknown]=".$servicesgroupStats["average"]["UNKNOWN_TP"]."&value[undetermined]=".$servicesgroupStats["average"]["UNDETERMINED_TP"];
+		$pie_chart_get_str =  "&value[ok]=".$servicesgroupStats["average"]["OK_TP"].
+							"&value[warning]=".$servicesgroupStats["average"]["WARNING_TP"].
+							"&value[critical]=".$servicesgroupStats["average"]["CRITICAL_TP"].
+							"&value[unknown]=".$servicesgroupStats["average"]["UNKNOWN_TP"].
+							"&value[maintenance]=".$servicesgroupStats["average"]["MAINTENANCE_TP"].
+							"&value[undetermined]=".$servicesgroupStats["average"]["UNDETERMINED_TP"];
 
 		/* 
 		 * Exporting variables for ihtml
@@ -152,7 +155,11 @@
 		/* 
 		 * Status colors 
 		 */
-		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);
+		$color = substr($oreon->optGen["color_up"],1).
+				':'.substr($oreon->optGen["color_down"],1).
+				':'.substr($oreon->optGen["color_unreachable"],1).
+				':'.substr($oreon->optGen["color_maintenance"],1).
+				':'.substr($oreon->optGen["color_undetermined"],1);
 
 		/*
 		 * Ajax timeline

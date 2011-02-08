@@ -102,8 +102,11 @@
 		/* 
 		 * Flash chart datas 
 		 */
-		$pie_chart_get_str =  "&value[down]=".$hostStats["DOWN_TP"]."&value[up]=".
-		$hostStats["UP_TP"]."&value[unreachable]=".$hostStats["UNREACHABLE_TP"]."&value[undetermined]=".$hostStats["UNDETERMINED_TP"];
+		$pie_chart_get_str =  "&value[down]=".$hostStats["DOWN_TP"].
+							"&value[up]=".$hostStats["UP_TP"].
+							"&value[unreachable]=".$hostStats["UNREACHABLE_TP"].
+							"&value[undetermined]=".$hostStats["UNDETERMINED_TP"].
+							"&value[maintenance]=".$hostStats["MAINTENANCE_TP"];
 		
 		/* 
 		 * Exporting variables for ihtml 
@@ -149,7 +152,9 @@
 		/*
 		 * Status colors
 		 */
-		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);
+		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).
+						':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1).
+						':'.substr($oreon->optGen["color_maintenance"],1);
 		
 		/*
 		 * Ajax timeline

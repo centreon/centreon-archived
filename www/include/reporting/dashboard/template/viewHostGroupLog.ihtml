@@ -97,11 +97,17 @@
 							<td class='ListColRight'>{$summary.UNREACHABLE_MP}%</td>
 							<td class='ListColRight'>{$summary.UNREACHABLE_A}</td>
 						</tr>
-						<tr class="list_two">
+						<tr class="list_one">
+							<td {$style.MAINTENANCE}>{$states.MAINTENANCE}</td>
+							<td class='ListColRight'>{$summary.MAINTENANCE_TP}%</td>
+							<td class='ListColRight'></td>
+							<td class='ListColRight'></td>
+						</tr>
+						<tr class="list_one">
 							<td {$style.UNDETERMINED}>{$states.UNDETERMINED}</td>
 							<td class='ListColRight'>{$summary.UNDETERMINED_TP}%</td>
 							<td class='ListColRight'></td>
-							<td class='ListColRight'>{$summary.UNDETERMINED_A}</td>
+							<td class='ListColRight'></td>
 						</tr>
 						<!-- Total -->
 						<tr class='list_lvl_2'>
@@ -117,14 +123,15 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=11>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+							<td class="FormHeader" colspan=12>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$hostTitle}</td>							
 							<td colspan=2 class="ListColHeaderCenter">{$states.UP}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.DOWN}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$states.UNREACHABLE}</td>
-							<td colspan=2 class="ListColHeaderCenter">{$states.UNDETERMINED}</td>
+							<td class="ListColHeaderCenter">{$states.MAINTENANCE}</td>
+							<td class="ListColHeaderCenter">{$states.UNDETERMINED}</td>
 						</tr>
 						 <tr class='list_lvl_1'>
                             <td class="ListColHeaderCenter"></td>
@@ -134,6 +141,7 @@
                             <td class="ListColHeaderCenter">{$Alert}</td>
                             <td class="ListColHeaderCenter">%</td>
                             <td class="ListColHeaderCenter">{$Alert}</td>
+                            <td class="ListColHeaderCenter">%</td>
                             <td class="ListColHeaderCenter">%</td>
                         </tr>
 						{foreach item=tb from=$components}
@@ -145,6 +153,7 @@
 							<td {$style.DOWN} style="width:30px;">{$tb.DOWN_A}</td>
 							<td {$style.UNREACHABLE}>{$tb.UNREACHABLE_TP}% ({$tb.UNREACHABLE_MP}%)</td>
 							<td {$style.UNREACHABLE} style="width:30px;">{$tb.UNREACHABLE_A}</td>
+							<td {$style.MAINTENANCE}>{$tb.MAINTENANCE_TP}%</td>
 							<td {$style.UNDETERMINED}>{$tb.UNDETERMINED_TP}%</td>
 						</tr>
 						{/foreach}

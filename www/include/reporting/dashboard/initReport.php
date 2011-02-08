@@ -97,6 +97,7 @@
 	 * Translations and styles
 	 */
 	$oreon->optGen["color_undetermined"] = "#F0F0F0";
+	$oreon->optGen["color_maintenance"] = "#CC99FF";
 
 	$tpl->assign('style_ok', 		"class='ListColCenter' style='background:" . $oreon->optGen["color_ok"]."'");
 	$tpl->assign('style_ok_alert', 		"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_ok"]."'");
@@ -108,6 +109,7 @@
 	$tpl->assign('style_unknown_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_unknown"]."'");
 	$tpl->assign('style_pending' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'");
 	$tpl->assign('style_pending_alert' , 	"class='ListColCenter' style='width: 25px; background:" . $oreon->optGen["color_undetermined"]."'");
+	$tpl->assign('style_maintenance' , 		"class='ListColCenter' style='background:" . $oreon->optGen["color_maintenance"]."'");
 
 	$tpl->assign('actualTitle', _("Actual"));
 
@@ -121,6 +123,7 @@
 	$tpl->assign('UnknownTitle', _("Unknown"));
 	$tpl->assign('CriticalTitle', _("Critical"));
 	$tpl->assign('PendingTitle', _("Undetermined"));
+	$tpl->assign('MaintenanceTitle', _("Scheduled downtime"));
 
 	$tpl->assign('stateLabel', _("State"));
 	$tpl->assign('totalLabel', _("Total"));
@@ -145,6 +148,7 @@
 	 $state["DOWN"] = _("DOWN");
 	 $state["UNREACHABLE"] = _("UNREACHABLE");
 	 $state["UNDETERMINED"] = _("UNDETERMINED");
+	 $state["MAINTENANCE"] = _("SCHEDULED DOWNTIME");
 	 $tpl->assign('states', $state);
 
 	 /*
@@ -154,6 +158,7 @@
 	$style["DOWN"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_down"]."'";
 	$style["UNREACHABLE"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_unreachable"]."'";		
 	$style["UNDETERMINED"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_undetermined"]."'";
+	$style["MAINTENANCE"] = "class='ListColCenter' style='background:" . $oreon->optGen["color_maintenance"]."'";
 	$tpl->assign('style', $style);
 
 	/*

@@ -105,7 +105,8 @@
 		 */
 		$pie_chart_get_str =  "&value[ok]=".$serviceStats["OK_TP"]."&value[warning]=".
 					$serviceStats["WARNING_TP"]."&value[critical]=".$serviceStats["CRITICAL_TP"].
-					"&value[unknown]=".$serviceStats["UNKNOWN_TP"]."&value[undetermined]=".$serviceStats["UNDETERMINED_TP"];
+					"&value[unknown]=".$serviceStats["UNKNOWN_TP"]."&value[undetermined]=".$serviceStats["UNDETERMINED_TP"].
+					"&value[maintenance]=".$serviceStats["MAINTENANCE_TP"];
 		
 		/* 
 		 * Exporting variables for ihtml
@@ -150,7 +151,9 @@
 		/* 
 		 * status colors
 		 */
-		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"],1);
+		$color = substr($oreon->optGen["color_up"],1).':'.substr($oreon->optGen["color_down"],1).
+						':'.substr($oreon->optGen["color_unreachable"],1).':'.substr($oreon->optGen["color_undetermined"], 1).
+						':'.substr($oreon->optGen["color_maintenance"],1);
 		
 		/* 
 		 * Ajax timeline

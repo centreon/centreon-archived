@@ -103,10 +103,16 @@
 							<td class='ListColRight'>{$summary.UNKNOWN_A}</td>
 						</tr>
 						<tr class="list_two">
+							<td {$style_maintenance}>{$MaintenanceTitle}</td>
+							<td class='ListColRight'>{$summary.MAINTENANCE_TP}%</td>
+							<td class='ListColRight'></td>
+							<td class='ListColRight'></td>
+						</tr>
+						<tr class="list_two">
 							<td {$style_pending}>{$PendingTitle}</td>
 							<td class='ListColRight'>{$summary.UNDETERMINED_TP}%</td>
 							<td class='ListColRight'></td>
-							<td class='ListColRight'>{$summary.UNDETERMINED_A}</td>
+							<td class='ListColRight'></td>
 						</tr>
 						<!-- Total -->
 						<tr class='list_lvl_2'>
@@ -122,7 +128,7 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan=12>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+							<td class="FormHeader" colspan=13>&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter" colspan="2"></td>
@@ -130,6 +136,7 @@
 							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
+							<td class="ListColHeaderCenter">{$MaintenanceTitle}</td>
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
@@ -144,6 +151,7 @@
                             <td class="ListColHeaderCenter">%</td>
                             <td class="ListColHeaderCenter">{$Alert}</td>
                             <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">%</td>
                         </tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
@@ -157,6 +165,7 @@
 							<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICAL_A}</td>
 							<td {$style_unknown}>{$tb.UNKNOWN_TP}% ({$tb.UNKNOWN_MP}%)</td>
 							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWN_A}</td>
+							<td {$style_maintenance}>{$tb.MAINTENANCE_TP}%</td>
 							<td {$style_pending}>{$tb.UNDETERMINED_TP}%</td>
 						</tr>
 						{/foreach}

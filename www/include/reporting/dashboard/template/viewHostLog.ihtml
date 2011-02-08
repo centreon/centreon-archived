@@ -102,11 +102,18 @@
 							<td class='ListColRight'>{$summary.UNREACHABLE_A}</td>
 						</tr>
 						<tr class="list_two">
+							<td {$style.MAINTENANCE}>{$states.MAINTENANCE}</td>
+							<td class='ListColCenter'>{$summary.MAINTENANCE_TF}</td>
+							<td class='ListColRight'>{$summary.MAINTENANCE_TP}%</td>
+							<td class='ListColRight'></td>
+							<td class='ListColRight'></td>
+						</tr>
+						<tr class="list_one">
 							<td {$style.UNDETERMINED}>{$states.UNDETERMINED}</td>
 							<td class='ListColCenter'>{$summary.UNDETERMINED_TF}</td>
 							<td class='ListColRight'>{$summary.UNDETERMINED_TP}%</td>
 							<td class='ListColRight'></td>
-							<td class='ListColRight'>{$summary.UNDETERMINED_A}</td>
+							<td class='ListColRight'></td>
 						</tr>
 						<!-- Total -->
 						<tr class='list_lvl_2'>
@@ -123,7 +130,7 @@
 				<td colspan=2 style=' padding:5px;'>
 					<table class="ListTable">
 						<tr class='ListHeader'>
-							<td class="FormHeader" colspan="10">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
+							<td class="FormHeader" colspan="11">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' style='padding-bottom:2px'>&nbsp;&nbsp;{$svcTitle}</td>
 						</tr>
 						<tr class='list_lvl_1'>
 							<td class="ListColHeaderCenter">{$serviceTitle}</td>
@@ -131,6 +138,7 @@
 							<td colspan=2 class="ListColHeaderCenter">{$WarningTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$CriticalTitle}</td>
 							<td colspan=2 class="ListColHeaderCenter">{$UnknownTitle}</td>
+							<td class="ListColHeaderCenter">{$MaintenanceTitle}</td>
 							<td class="ListColHeaderCenter">{$PendingTitle}</td>
 						</tr>
 						 <tr class='list_lvl_1'>
@@ -144,6 +152,7 @@
                             <td class="ListColHeaderCenter">%</td>
                             <td class="ListColHeaderCenter">{$Alert}</td>
                             <td class="ListColHeaderCenter">%</td>
+                            <td class="ListColHeaderCenter">%</td>
                    		</tr>
 						{foreach item=tb from=$components}
 						<tr class={cycle values="list_two, list_one"}>
@@ -156,6 +165,7 @@
 							<td {$style_critical_alert style="width:30px;"}>{$tb.CRITICAL_A}</td>
 							<td {$style_unknown}>{$tb.UNKNOWN_TP}% ({$tb.UNKNOWN_MP}%)</td>
 							<td {$style_unknown_alert} style="width:30px;">{$tb.UNKNOWN_A}</td>
+							<td {$style_maintenance}>{$tb.MAINTENANCE_TP}%</td>
 							<td {$style_pending}>{$tb.UNDETERMINED_TP}%</td>
 						</tr>
 						{/foreach}
@@ -169,6 +179,7 @@
 							<td class='ListColHeaderCenter'{$style_critical_alert}>{$components_avg.CRITICAL_A}</td>
 							<td class='ListColHeaderCenter'{$style_unknown}>{$components_avg.UNKNOWN_TP}% ({$components_avg.UNKNOWN_MP}%)</td>
 							<td class='ListColHeaderCenter'{$style_unknown_alert}>{$components_avg.UNKNOWN_A}</td>
+							<td class='ListColHeaderCenter'{$style_maintenance}>{$components_avg.MAINTENANCE_TP}%</td>
 							<td class='ListColHeaderCenter'{$style_pending}>{$components_avg.UNDETERMINED_TP}%</td>
 						</tr>
 					</table>

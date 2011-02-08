@@ -66,7 +66,7 @@
 	 * be displayed on dashboard for host and hostgroup
 	 */
 	function getHostStatsValueName() {
-		return (array("UP_T", "UP_A", "DOWN_T", "DOWN_A", "UNREACHABLE_T", "UNREACHABLE_A", "UNDETERMINED_T",
+		return (array("UP_T", "UP_A", "DOWN_T", "DOWN_A", "UNREACHABLE_T", "UNREACHABLE_A", "UNDETERMINED_T", "MAINTENANCE_T",
 						"UP_TP", "DOWN_TP", "UNREACHABLE_TP", "UNDETERMINED_TP"));
 	}
 	
@@ -75,7 +75,7 @@
 	 * displayed on dashboard for services and servicegroup
 	 */
 	function getServicesStatsValueName() {
-		return (array("OK_T", "OK_A", "WARNING_T", "WARNING_A", "CRITICAL_T", "CRITICAL_A", "UNKNOWN_T", "UNKNOWN_A", "UNDETERMINED_T",
+		return (array("OK_T", "OK_A", "WARNING_T", "WARNING_A", "CRITICAL_T", "CRITICAL_A", "UNKNOWN_T", "UNKNOWN_A", "UNDETERMINED_T", "MAINTENANCE_T",
 					"OK_TP", "WARNING_TP", "CRITICAL_TP", "UNKNOWN_TP", "UNDETERMINED_TP"));
 	}
 	/*
