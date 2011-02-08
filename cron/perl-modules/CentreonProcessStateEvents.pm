@@ -19,7 +19,7 @@ sub new {
 	$self->{"nagiosLog"} = shift;
 	$self->{"hostEvents"} = shift;
 	$self->{"serviceEvents"} = shift;
-	$self->{"centreoDownTime"} = shift;
+	$self->{"centreonDownTime"} = shift;
 	bless $self, $class;
     
 	return $self;
@@ -48,14 +48,19 @@ sub parseServiceLog {
 		my $id  = $row->{'host_name'}.";;".$row->{'service_description'};
 		if (defined($allIds->{$id})) {
 			if (defined($currentEvents->{$id})) {
-				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
+				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id | in_downtime. The last one is optionnal
 				if ($eventInfos->[1] != $serviceStates{$row->{'status'}}) {
+					my ($hostId, $serviceId) = split (";;", $allIds->{$id});
 					if ($eventInfos->[2] != 0) {
 						# If eventId of log is defined, update the last day event
-						$events->updateEventEndTime($eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2],$eventInfos->[3], 0, $downTime);
+						$events->updateEventEndTime($hostId, $serviceId, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 0, $downTime);
 					}else {
-						my ($hostId, $serviceId) = split (";;", $allIds->{$id});
-						$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
+						if ($hostId == 330 && $serviceId == 4339) {
+							print "INSERT CURRENT EVENT\n";
+						}
+						if ($row->{'ctime'} > $eventInfos->[0]) {
+							$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
+						}
 					}
 					$eventInfos->[0] = $row->{'ctime'};
 					$eventInfos->[1] = $serviceStates{$row->{'status'}};
@@ -70,6 +75,7 @@ sub parseServiceLog {
 			
 		}
 	}
+	
 	$self->insertLastServiceEvents($end, $currentEvents, $allIds, $downTime);
 }
 
@@ -94,6 +100,7 @@ sub parseHostLog {
 	my $logs = $nagiosLog->getLogOfHosts($start, $end);
 	print "getting downtime\n";
 	my $downTime = $centreonDownTime->getDownTime($allIds, $start, $end, 1);
+	
 	print "processing logs\n";
     while(my $row = $logs->fetchrow_hashref()) {
 		my $id  = $row->{'host_name'};
@@ -105,7 +112,9 @@ sub parseHostLog {
 						# If eventId of log is defined, update the last day event
 						$events->updateEventEndTime($allIds->{$id}, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2],$eventInfos->[3], 0, $downTime);
 					}else {
-						$events->insertEvent($allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
+						if ($row->{'ctime'} > $eventInfos->[0]) {
+							$events->insertEvent($allIds->{$id}, $eventInfos->[1], $eventInfos->[0], $row->{'ctime'}, 0, $downTime);
+						}
 					}
 					$eventInfos->[0] = $row->{'ctime'};
 					$eventInfos->[1] = $hostStates{$row->{'status'}};
@@ -136,12 +145,15 @@ sub insertLastServiceEvents {
 	my ($end,$currentEvents, $allIds, $downTime)  = (shift, shift, shift, shift);
 	
 	while(my ($id, $eventInfos) = each (%$currentEvents)) {
-			if ($eventInfos->[2] != 0) {
-				$events->updateEventEndTime($eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
-			}else {
-				my ($hostId, $serviceId) = split (";;", $allIds->{$id});
-				$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
+		my ($hostId, $serviceId) = split (";;", $allIds->{$id});
+		if ($eventInfos->[2] != 0) {
+			$events->updateEventEndTime($hostId, $serviceId, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
+		}else {
+			if ($hostId == 330 && $serviceId == 4339) {
+				print "UPDATE LAST EVENTS\n";
 			}
+			$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
+		}
 	}
 }
 

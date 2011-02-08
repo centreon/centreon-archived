@@ -102,9 +102,13 @@ sub updateEventEndTime {
 	my ($hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
 
 	my ($events, $updateTime);
-	($start, $updateTime, $events) = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime);
+	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId, $start, $end, $downTime);
 	
-	if (!scalar(@$events) && $updateTime) {
+	my $totalEvents = 0;
+	if (defined($events)) {
+		$totalEvents = scalar(@$events);
+	}
+	if (!$totalEvents && $updateTime) {
 		my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `last_update`=".$lastUpdate.
 					" WHERE `hoststateevents_id` = ".$eventId;
 		$centstorage->query($query);
@@ -114,7 +118,7 @@ sub updateEventEndTime {
 					" WHERE `hoststateevents_id` = ".$eventId;
 			$centstorage->query($query);
 		}
-		$self->insertEventTable($hostId, $state, $lastUpdate, $start, $end, $events);
+		$self->insertEventTable($hostId, $state, $lastUpdate, $events);
 	}
 }
 
@@ -129,11 +133,10 @@ sub insertEvent {
 	my $self = shift;
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	
-	my ($hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift);
+	my ($hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift);
 	
-	my $events;
-	($start, $events) = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime);
-	$self->insertEventTable($hostId, $state, $lastUpdate, $start, $end, $events);
+	my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime);
+	$self->insertEventTable($hostId, $state, $lastUpdate, $events);
 	
 }
 
@@ -141,27 +144,21 @@ sub insertEventTable {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	
-	my ($hostId, $state, $lastUpdate, $start, $end, $events) =  (shift, shift, shift, shift, shift, shift);
+	my ($hostId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift);
 	
 	my $query_start = "INSERT INTO `hoststateevents`".
 			" (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`)".
 			" VALUES (";
 	my $count = 0;
+	my $totalEvents = 0;
+
 	for($count = 0; $count < scalar(@$events) - 1; $count++) {
 		my $tab = $events->[$count];
 		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
 	}
-	if ($start < $end) {
-		my $tab = $events->[$count];
-		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
-		$centstorage->query($query_start.$query_end);
-		$query_end = $hostId.", ".$state.", ".$start.", ".$end.", ".$lastUpdate.", 0)";
-		$centstorage->query($query_start.$query_end);
-	}else {
-		my $tab = $events->[$count];
-		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
-		$centstorage->query($query_start.$query_end);
-	}
+	my $tab = $events->[$count];
+	my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
+	$centstorage->query($query_start.$query_end);
 }
 
 # Truncate service incident table

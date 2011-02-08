@@ -103,12 +103,16 @@ sub updateEventEndTime {
 	my $centstorage = $self->{"centstorage"};
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	#my ($startTime, $endTime, $state,$eventId, $downTime, $lastUpdate) = (shift, shift, shift, shift, shift, shift);
-	my ($hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
+	my ($hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift, shift);
 	
 	my ($events, $updateTime);
-	($start, $updateTime, $events) = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime);
+	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId.";;".$serviceId, $start, $end, $downTimeFlag, $downTime);
 	
-	if (!scalar(@$events) && $updateTime) {
+	my $totalEvents = 0;
+	if (defined($events)) {
+		$totalEvents = scalar(@$events);
+	}
+	if (!$totalEvents && $updateTime) {
 		my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `last_update`=".$lastUpdate.
 					" WHERE `servicestateevents_id` = ".$eventId;
 		$centstorage->query($query);
@@ -118,7 +122,10 @@ sub updateEventEndTime {
 					" WHERE `servicestateevents_id` = ".$eventId;
 			$centstorage->query($query);
 		}
-		$self->insertEventTable($hostId, $state, $lastUpdate, $start, $end, $events);
+		if ($hostId == 330 && $serviceId == 4339) {
+			print "UPDATING\n";
+		}
+		$self->insertEventTable($hostId, $serviceId, $state, $lastUpdate, $events);
 	}
 }
 
@@ -133,36 +140,41 @@ sub insertEvent {
 	my $self = shift;
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	my ($hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift);
-	
-	my $events;
-	($start, $events) = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime);
-	$self->insertEventTable($hostId, $serviceId, $state, $lastUpdate, $start, $end, $events);
+	if ($hostId == 330 && $serviceId == 4339) {
+		print "INSERT EVENT: ".$state. " ". localtime($start)." ".localtime($end)."\n";
+	}
+	my $events = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime);
+	$self->insertEventTable($hostId, $serviceId, $state, $lastUpdate, $events);
 }
 
 sub insertEventTable {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	
-	my ($hostId, $serviceId, $state, $lastUpdate, $start, $end, $events) =  (shift, shift, shift, shift, shift, shift, shift);
+	my ($hostId, $serviceId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift, shift);
 	
-	my $query_start = "INSERT INTO `hoststateevents`".
+	my $query_start = "INSERT INTO `servicestateevents`".
 			" (`host_id`, `service_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`)".
 			" VALUES (";
+			
 	my $count = 0;
-	for($count = 0; $count < scalar(@$events) - 1; $count++) {
-		my $tab = $events->[$count];
+	my @tableau = @$events;
+	
+	for($count = 0; $count < scalar(@tableau) - 1; $count++) {
+		my $tab = $tableau[$count];
+		if ($hostId == 330 && $serviceId == 4339) {
+			print "--inserting ".$serviceId." ".$state. " ". localtime($tab->[0])." ".localtime($tab->[1])."\n";
+		}
 		my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
 	}
-	if ($start < $end) {
-		my $tab = $events->[$count];
-		my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
-		$centstorage->query($query_start.$query_end);
-		$query_end = $hostId.", ".$serviceId.", ".$state.", ".$start.", ".$end.", ".$lastUpdate.", 0)";
-		$centstorage->query($query_start.$query_end);
-	}else {
-		my $tab = $events->[$count];
-		my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
-		$centstorage->query($query_start.$query_end);
+	my $tab = $events->[$count];
+	if ($hostId == 330 && $serviceId == 4339) {
+		print "inserting ".$serviceId." ".$state. " ". localtime($tab->[0])." ".localtime($tab->[1])."\n";
+	}
+	my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
+	$centstorage->query($query_start.$query_end);
+	if ($hostId == 330 && $serviceId == 4339) {
+		print "finished inserting\n";
 	}
 }
 

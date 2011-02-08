@@ -74,6 +74,7 @@ sub connect {
 		$self->{"password"},
 		{ "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
 	  ); 
+	  my $instance = $self->{"instance"};
 	  if (!defined($self->{"instance"})) {
 	  	$logger->writeLog("FATAL", "MySQL error : cannot connect to database ".$self->{"db"});
 	  }

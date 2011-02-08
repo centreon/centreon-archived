@@ -28,17 +28,18 @@ sub getDownTime {
 	my $start = shift;
 	my $end = shift;
 	my $type = shift; # if 1 => host, if 2 => service
-	my $query = "SELECT `name1`, `name2`".
+	my $query = "SELECT `name1`, `name2`,".
 						" UNIX_TIMESTAMP(`actual_start_time`) as start_time,".
 						" UNIX_TIMESTAMP(`actual_end_time`) as end_time".
 				" FROM `nagios_downtimehistory` d, `nagios_objects` o".
-				" WHERE o.`object_id` = d.`object_id` AND o.`objecttype` = '".$type."'".
+				" WHERE o.`object_id` = d.`object_id` AND o.`objecttype_id` = '".$type."'".
+						" AND was_started = 1".
 						" AND UNIX_TIMESTAMP(`actual_start_time`) < ".$end.
 						" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
 				" ORDER BY `name1` ASC, `actual_start_time` ASC, `actual_end_time` ASC";
 	my $sth = $centreon->query($query);
 	
-	my @periods;
+	my @periods = ();
 	while (my $row = $sth->fetchrow_hashref()) {
 		my $id = $row->{"name1"};
 		if ($type == 2) {
@@ -82,8 +83,12 @@ sub splitInsertEventDownTime {
 	my $end = shift;
 	my $downTimes = shift;
 	
-	my @events;
-	for (my $i = 0; $i < scalar($downTimes) && $start < $end; $i++) {
+	my @events = ();
+	my $total = 0;
+	if (defined($downTimes)) {
+		$total = scalar(@$downTimes);
+	}
+	for (my $i = 0; $i < $total && $start < $end; $i++) {
  		my $tab = $_;
  		my $id = $tab->[0];
  		my $downTimeStart = $tab->[1];
@@ -97,14 +102,20 @@ sub splitInsertEventDownTime {
  			}
  			if ($downTimeStart < $end && $downTimeEnd > $start) {
  				if ($downTimeStart > $start) {
- 					$events[scalar(@events)] = \($start, $downTimeStart, 0);
+ 					my @tab = ($start, $downTimeStart, 0);
+ 					$events[scalar(@events)] = \@tab;
  				}
- 				$events[scalar(@events)] = \($start, $downTimeStart, 1);
+ 				my @tab = ($downTimeStart, $downTimeEnd, 1);
+ 				$events[scalar(@events)] = \@tab;
  				$start = $downTimeEnd;
  			}
  		}
 	}
-	return ($start, \@events);
+	if ($start < $end) {
+		my @tab = ($start, $end, 0);
+		$events[scalar(@events)] = \@tab;
+	}
+	return (\@events);
 }
 
 sub splitUpdateEventDownTime {
@@ -117,9 +128,13 @@ sub splitUpdateEventDownTime {
 	my $downTimes = shift;
 	
 	my $updated = 0;
-	my @events;
+	my @events = ();
 	my $updateTime = 0;
-	for (my $i = 0; $i < scalar(@$downTimes) && $start < $end; $i++) {
+	my $total = 0;
+	if (defined($downTimes)) {
+		$total = scalar(@$downTimes);
+	};
+	for (my $i = 0; $i <  $total && $start < $end; $i++) {
  		my $tab = $_;
  		my $id = $tab->[0];
  		my $downTimeStart = $tab->[1];
@@ -136,29 +151,38 @@ sub splitUpdateEventDownTime {
 					$updated = 1;
 					if ($downTimeStart > $start) {
 						if ($downTimeFlag == 1) {
-							$events[scalar(@events)] = \($start, $downTimeStart, 0);
+							my @tab = ($start, $downTimeStart, 0);
+							$events[scalar(@events)] = \@tab;
 						}else {
 							$updateTime = $downTimeStart;
 						}
-						$events[scalar(@events)] = \($downTimeStart, $downTimeEnd, 1);
+						my @tab = ($downTimeStart, $downTimeEnd, 1);
+						$events[scalar(@events)] = \@tab;
 					}else {
 						if ($downTimeFlag == 1) {
 							$updateTime = $downTimeEnd;
 						}else {
-							$events[scalar(@events)] = \($downTimeStart, $downTimeEnd, 1);
+							my @tab = ($downTimeStart, $downTimeEnd, 1);
+							$events[scalar(@events)] = \@tab;
 						}			
 					}
 				}else {
 					if ($downTimeStart > $start) {
-						$events[scalar(@events)] = \($start, $downTimeStart, 0);
+						my @tab = ($start, $downTimeStart, 0);
+						$events[scalar(@events)] = \@tab;
 					}
-					$events[scalar(@events)] = \($downTimeStart, $downTimeEnd, 1);
+					my @tab = ($downTimeStart, $downTimeEnd, 1);
+					$events[scalar(@events)] = \@tab;
 				}
 				$start = $downTimeEnd;
 			}
  		}
 	}
-	return ($start, $updateTime, \@events);
+	if ($start < $end) {
+		my @tab = ($start, $end, 0);
+		$events[scalar(@events)] = \@tab;
+	}
+	return ($updateTime, \@events);
 }
 
 1;
