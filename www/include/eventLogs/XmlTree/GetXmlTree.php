@@ -41,7 +41,8 @@
 	/*
 	 * pearDB init
 	 */
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	//include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 
 	/**
@@ -482,7 +483,6 @@
 			 * Display HG
 			 */
 			$buffer->startElement("item");
-			$buffer->writeAttribute("nocheckbox", "1");
 			$buffer->writeAttribute("open", "1");
 			$buffer->writeAttribute("call", "1");
 			$buffer->writeAttribute("select", "1");
@@ -500,7 +500,6 @@
 			 */
 			if (getServiceGroupCount($search_host)) {
 				$buffer->startElement("item");
-				$buffer->writeAttribute("nocheckbox", "1");
 				$buffer->writeAttribute("open", "1");
 				$buffer->writeAttribute("call", "1");
 				$buffer->writeAttribute("select", "1");
@@ -619,7 +618,6 @@
 		}
 
 		$buffer->startElement("item");
-		$buffer->writeAttribute("nocheckbox", "1");
 		$buffer->writeAttribute("open", "1");
 		$buffer->writeAttribute("call", "1");
 		$buffer->writeAttribute("select", "1");
@@ -652,7 +650,6 @@
 	    			$buffer->writeAttribute("checked", "1");
 	    		}
 	    		$buffer->writeAttribute("child", "1");
-	    		$buffer->writeAttribute("nocheckbox", "1");
 	    		$buffer->writeAttribute("id", "HG_".$hg_id);
 	    		$buffer->writeAttribute("text", $hg_name);
 	    		$buffer->writeAttribute("im0", "../16x16/clients.gif");
@@ -733,7 +730,6 @@
 		       	$buffer->startElement("item");
 				$buffer->writeAttribute("child", "1");
 				$buffer->writeAttribute("id", "HO_0");
-				$buffer->writeAttribute("nocheckbox", "1");
 				$buffer->writeAttribute("text", _("Orphan hosts"));
 				$buffer->writeAttribute("im0", "../16x16/clients.gif");
 				$buffer->writeAttribute("im1", "../16x16/clients.gif");
@@ -827,7 +823,6 @@
 		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 		if ($DBRESULT->numrows()) {
 			$buffer->startElement("item");
-			$buffer->writeAttribute("nocheckbox", "1");
 			$buffer->writeAttribute("open", "1");
 			$buffer->writeAttribute("call", "1");
 			$buffer->writeAttribute("select", "1");
