@@ -382,7 +382,7 @@ sub get_poller()	{
 		if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
 		while (($id, $ssh_port, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
 		    $must_update_ds = 0;
-		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id);
+		    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id . " AND nagios_activate = '1'");
 		    if (!$cfg_item->execute) {
 				die "Error:" . $cfg_item->errstr . "\n";
 		    }
