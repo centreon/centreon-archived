@@ -169,6 +169,19 @@
 	} else {
 		echo '<td align="right"><b><span class="go">PASS</span></b></td></tr>';
 	}
+	
+	/*
+	 * Post Update in PHP
+	 */
+	print "<tr><td><b>PHP Script : Post Upgrade</b></td>";
+	if (file_exists("./php/Update-".$_SESSION["script"].".post.php")) {
+		if (include_once("./php/Update-".$_SESSION["script"].".post.php"))
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		else
+			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+	} else {
+		echo '<td align="right"><b><span class="go">OK</span></b></td></tr>';
+	}
 
 	aff_middle();
 	$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";

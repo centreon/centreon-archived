@@ -38,6 +38,12 @@ CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
 --
 ALTER TABLE `auth_ressource_info`
   ADD CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE;
+  
+-- New ldap options
+INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_ssl', '0');
+INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_tls', '0');
+INSERT INTO `options` (`key`,`value`) values ('ldap_srv_dns', '0');
+INSERT INTO `options` (`key`,`value`) values ('ldap_dns_use_domain', '0');
 
 --
 -- Structure de la table `downtime`
