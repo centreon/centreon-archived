@@ -38,10 +38,10 @@
 
 	if (!isset($oreon))
 		exit();
-		
+
 	/**
      * Parsing a Zend license file
-     * 
+     *
      * @param string $file The file name
      * @return array
      */
@@ -152,11 +152,11 @@
 				/*
 				 * Check Update
 				 */
-				if (is_dir("./".$moduleinfo["name"]."/UPGRADE")) {
-					$handle2 = opendir("./".$moduleinfo["name"]."/UPGRADE");
+				if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
+					$handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
 					while (false !== ($filename2 = readdir($handle2)))	{
-						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
-							include_once("./".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
+						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
+							include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
 							if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
 								$elemArr[$i]["RowMenu_upgrade"] = 1;
 							}
