@@ -154,7 +154,6 @@ sub rebuildIncidents {
     }
 }
 
-
 # MAIN function
 sub main {
 	

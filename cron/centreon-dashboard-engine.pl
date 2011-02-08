@@ -141,22 +141,26 @@ sub rebuildIncidents {
     $dashboard->truncateHostStats();
     # Getting first log and last log times
     my ($start, $end) = $hostEvents->getFirstLastIncidentTimes();
-   	my $periods = getDaysFromPeriod($start, $end);
-   	my ($allIds, $allNames) = $host->getAllHosts(0);
-    # archiving logs for each days
-    foreach(@$periods) {
-    	$logger->writeLog("INFO", "[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-    	my $hostStateDurations = $hostEvents->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
-		$dashboard->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
+    if (defined($start) && defined($end)) {
+   		my $periods = getDaysFromPeriod($start, $end);
+   		my ($allIds, $allNames) = $host->getAllHosts(0);
+    	# archiving logs for each days
+    	foreach(@$periods) {
+    		$logger->writeLog("INFO", "[HOST] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+    		my $hostStateDurations = $hostEvents->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+			$dashboard->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
+    	}
     }
-    ($start, $end) = $serviceEvents->getFirstLastIncidentTimes();
-   	$periods = getDaysFromPeriod($start, $end);
-   	($allIds, $allNames) = $service->getAllServices(0);
-    # archiving logs for each days
-    foreach(@$periods) {
-    	$logger->writeLog("INFO", "[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-		my $serviceStateDurations = $serviceEvents->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
-		$dashboard->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
+ 	($start, $end) = $serviceEvents->getFirstLastIncidentTimes();
+   	if (defined($start) && defined($end)) {
+   		my $periods = getDaysFromPeriod($start, $end);
+   		my ($allIds, $allNames) = $service->getAllServices(0);
+    	# archiving logs for each days
+    	foreach(@$periods) {
+    		$logger->writeLog("INFO", "[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+			my $serviceStateDurations = $serviceEvents->getStateEventDurations($_->{"day_start"}, $_->{"day_end"});
+			$dashboard->insertServiceStats($allNames, $serviceStateDurations, $_->{"day_start"}, $_->{"day_end"});
+    	}
     }
 }
 
