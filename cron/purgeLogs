@@ -46,7 +46,21 @@ use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_d
 
 require "@CENTREON_ETC@/conf.pm";
 
-my $VarLib = "@CENTREON_VARLIB@";
+my $VarLib 	= "@CENTREON_VARLIB@";
+my $LOG 	= "@CENTREON_LOG@/centreon-purge.log";
+
+sub writeLogFile($){
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+   
+   	# Add initial 0 if value is under 10
+    $hour = "0".$hour if ($hour < 10);
+    $min = "0".$min if ($min < 10);
+    $sec = "0".$sec if ($sec < 10);
+   	
+    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
+    close LOG or warn $!;
+}
 
 # logAnalyser's lock file
 my $lock_file = "$VarLib/logAnalyser.lock";
@@ -54,11 +68,12 @@ my $pid;
 for (my $x = 0; -e "$lock_file" ; $x++) {
 	sleep(1);
 	if ($x >= 1000) {
-		print "Cannot purge logs. Lock file found : $lock_file";
+		writeLogFile("Cannot purge logs. Lock file found : $lock_file");
 		exit();
 	}
 }
 
+# Manage Lock
 $pid = getpgrp(0);
 `echo $pid > $lock_file`;
 
@@ -69,7 +84,7 @@ my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql
 my $retention;
 my $sth_config = $dbh->prepare("SELECT `archive_retention` FROM `config`");
 if (!$sth_config->execute) {
-	print "Error:" . $sth_config->errstr . "\n";
+	writeLogFile("Error:" . $sth_config->errstr);
 } else {
 	my $data = $sth_config->fetchrow_hashref();
 	$retention = $data->{'archive_retention'};
@@ -80,13 +95,19 @@ if (!$sth_config->execute) {
 if (defined($retention) && $retention ne 0){
     my $last_log = time() - ($retention * 24 * 60 * 60);
   	
-  	# Drop Database
+	writeLogFile("Begin centstorage.log purge");
+
+  	# Pugre Log Database
     my $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
     if (!defined($res)) {
-    	print "SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'\n";
+    	writeLogFile("SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'");
     }
     undef($res);
+
+	writeLogFile("End centstorage.log purge");
 }
 $dbh->disconnect();
+
 `rm -rf $lock_file`;
+
 exit;

@@ -82,6 +82,7 @@ if (-x $PID){
 	exit(2);
 }
 
+# Require Libs
 require $installedPath."lib/misc.pm";
 require $installedPath."lib/purge.pm";
 
@@ -204,10 +205,10 @@ sub getStorageDir($){
 #
 
 # data Bin purge
-writeLogFile("Begin centstorage.data_bin purge\n");
+writeLogFile("Begin centstorage.data_bin purge");
 
 # Purge All bin data
 purgeMysqlData();
 
-writeLogFile("Finishing centstorage.data_bin purge\n");
+writeLogFile("Finishing centstorage.data_bin purge");
 
