@@ -4,8 +4,8 @@ use warnings;
 
 package CentreonProcessStateEvents;
 
-require "@INSTALL_DIR_OREON@/cron/cron/perl-modules/variables.pm";
-use vars qw (%serviceStates %hostStates %servicStateIds %hostStateIds);
+#use vars qw (%serviceStates %hostStates %servicStateIds %hostStateIds);
+#require "/home/msugumaran/merethis/centreon-bi-server/centreon/cron/perl-modules/variables.pm";
 
 # Constructor
 # parameters:
@@ -33,7 +33,7 @@ sub parseServiceLog {
 	my $self = shift;
 	# parameters:
     my ($start ,$end) = (shift,shift);
-    
+    my %serviceStates = ("OK" => 0, "WARNING" => 1, "CRITICAL" => 2, "UNKNOWN" => 3);
 	my $service = $self->{"service"};
 	my $nagiosLog = $self->{"nagiosLog"};
 	my $events = $self->{"serviceEvents"};
@@ -84,7 +84,7 @@ sub parseHostLog {
 	my $self = shift;
 	# parameters:
     my ($start ,$end) = (shift,shift);
-    
+    my %hostStates = ("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2, "PENDING" => 4);
     my $host = $self->{"host"};
 	my $nagiosLog = $self->{"nagiosLog"};
 	my $events = $self->{"hostEvents"};
