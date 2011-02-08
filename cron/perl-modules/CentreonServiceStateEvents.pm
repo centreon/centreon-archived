@@ -86,9 +86,6 @@ sub getLastStates {
     	my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
     	if (defined($serviceNames->{$serviceId})) {
 		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'servicestateevents_id'}, $row->{'in_downtime'});
-		    if ($row->{'host_id'} == 17 && $row->{'service_id'} == 34) {
-		    	print localtime($row->{'end_time'})." ".$row->{'state'}."\n";
-		    }
 			$currentStates->{$serviceNames->{$serviceId}} = \@tab;
     	}
 	}
@@ -109,7 +106,7 @@ sub updateEventEndTime {
 	my ($hostId, $serviceId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift, shift);
 	
 	my ($events, $updateTime);
-	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId.";;".$serviceId, $start, $end, $downTimeFlag, $downTime);
+	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId.";;".$serviceId, $start, $end, $downTimeFlag, $downTime, $state);
 	my $totalEvents = 0;
 	if (defined($events)) {
 		$totalEvents = scalar(@$events);
@@ -139,7 +136,7 @@ sub insertEvent {
 	my $self = shift;
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	my ($hostId, $serviceId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift);
-	my $events = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime);
+	my $events = $centreonDownTime->splitInsertEventDownTime($hostId.";;".$serviceId, $start, $end, $downTime, $state);
 	$self->insertEventTable($hostId, $serviceId, $state, $lastUpdate, $events);
 }
 
@@ -157,9 +154,6 @@ sub insertEventTable {
 	for($count = 0; $count < scalar(@$events) - 1; $count++) {
 		my $tab = $events->[$count];
 		my $query_end = $hostId.", ".$serviceId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
-		if ($hostId.";;".$serviceId eq "17;;34") {
-			print $query_start.$query_end."\n";
-		}
 		$centstorage->query($query_start.$query_end);
 	}
 	if (scalar(@$events)) {

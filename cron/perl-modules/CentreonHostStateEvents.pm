@@ -102,8 +102,8 @@ sub updateEventEndTime {
 	my ($hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
 
 	my ($events, $updateTime);
-	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId, $start, $end, $downTime);
-	
+	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId, $start, $end, $downTimeFlag,$downTime, $state);
+
 	my $totalEvents = 0;
 	if (defined($events)) {
 		$totalEvents = scalar(@$events);
@@ -135,7 +135,7 @@ sub insertEvent {
 	
 	my ($hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift);
 	
-	my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime);
+	my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime, $state);
 	$self->insertEventTable($hostId, $state, $lastUpdate, $events);
 	
 }

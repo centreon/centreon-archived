@@ -1,6 +1,6 @@
 # Program global variables
 
-$varLibCentreon = "/home/msugumaran/centreon/var/";
+$varLibCentreon = "@STORAGE_DIRECTORY@";
 $lock_file = $varLibCentreon."/archive-monitoring-incidents.lock";
 
 

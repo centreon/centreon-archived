@@ -8,19 +8,19 @@ use Time::Local;
 
 # variables from external packages
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_database_status $mysql_host $mysql_user $mysql_passwd);
-require "/home/msugumaran/centreon/conf/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 use vars qw ($PROGNAME $VERSION $varLibCentreon $lock_file %options %serviceStates %hostStates %servicStateIds %hostStateIds);
 require "perl-modules/variables.pm";
 
 # Packages used as classes
-require "perl-modules/CentreonLogger.pm";
-require "perl-modules/CentreonDB.pm";
-require "perl-modules/CentreonHost.pm";
-require "perl-modules/CentreonService.pm";
-require "perl-modules/CentreonServiceStateEvents.pm";
-require "perl-modules/CentreonHostStateEvents.pm";
-require "perl-modules/CentreonDashboard.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonLogger.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonDB.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonHost.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonService.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonServiceStateEvents.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonHostStateEvents.pm";
+require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonDashboard.pm";
 
 # Variables
 my $pid= getpgrp(0);
@@ -185,7 +185,7 @@ sub main {
     
     $logger->writeLog("INFO", "Starting program...(pid=$pid)");
     
-    if (!defined($options{'rebuild'})) {
+    if (defined($options{'rebuild'})) {
 		rebuildIncidents();
     }else {
     	my $currentTime = time;

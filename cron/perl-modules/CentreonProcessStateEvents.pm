@@ -4,7 +4,7 @@ use warnings;
 
 package CentreonProcessStateEvents;
 
-require "/home/msugumaran/merethis/centreon-bi-server/centreon/cron/perl-modules/variables.pm";
+require "@INSTALL_DIR_OREON@/cron/cron/perl-modules/variables.pm";
 use vars qw (%serviceStates %hostStates %servicStateIds %hostStateIds);
 
 # Constructor
@@ -52,9 +52,6 @@ sub parseServiceLog {
 				if ($eventInfos->[1] != $serviceStates{$row->{'status'}}) {
 					my ($hostId, $serviceId) = split (";;", $allIds->{$id});
 					if ($eventInfos->[2] != 0) {
-						if ($allIds->{$id} eq "17;;34") {
-							print "====> updating ".localtime($eventInfos->[0])." ".localtime($row->{'ctime'})."\n";
-						}
 						# If eventId of log is defined, update the last day event
 						$events->updateEventEndTime($hostId, $serviceId, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 0, $downTime);
 					}else {
@@ -97,7 +94,7 @@ sub parseHostLog {
 	my $currentEvents = $events->getLastStates($allNames);
 	my $logs = $nagiosLog->getLogOfHosts($start, $end);
 	my $downTime = $centreonDownTime->getDownTime($allIds, $start, $end, 1);
-	
+
     while(my $row = $logs->fetchrow_hashref()) {
 		my $id  = $row->{'host_name'};
 		if (defined($allIds->{$id})) {
@@ -142,14 +139,8 @@ sub insertLastServiceEvents {
 	while(my ($id, $eventInfos) = each (%$currentEvents)) {
 		my ($hostId, $serviceId) = split (";;", $allIds->{$id});
 		if ($eventInfos->[2] != 0) {
-			if ($allIds->{$id} eq "17;;34") {
-				print "updating\n";
-			}
 			$events->updateEventEndTime($hostId, $serviceId, $eventInfos->[0], $end, $eventInfos->[1], $eventInfos->[2], $eventInfos->[3], 1, $downTime);
 		}else {
-			if ($allIds->{$id} eq "17;;34") {
-				print "inserting\n";
-			}
 			$events->insertEvent($hostId, $serviceId, $eventInfos->[1], $eventInfos->[0], $end, 1, $downTime);
 		}
 	}

@@ -37,6 +37,7 @@ sub getDownTime {
 						" AND UNIX_TIMESTAMP(`actual_start_time`) < ".$end.
 						" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
 				" ORDER BY `name1` ASC, `actual_start_time` ASC, `actual_end_time` ASC";
+
 	my $sth = $centreon->query($query);
 	
 	my @periods = ();
@@ -82,10 +83,11 @@ sub splitInsertEventDownTime {
 	my $start = shift;
 	my $end = shift;
 	my $downTimes = shift;
+	my $state = shift;
 	
 	my @events = ();
 	my $total = 0;
-	if (defined($downTimes)) {
+	if (defined($downTimes) && $state != 0) {
 		$total = scalar(@$downTimes);
 	}
 	for (my $i = 0; $i < $total && $start < $end; $i++) {
@@ -101,16 +103,12 @@ sub splitInsertEventDownTime {
  				$downTimeStart = $end;
  			}
  			if ($downTimeStart < $end && $downTimeEnd > $start) {
- 				print "==================".localtime($start). " ".localtime($downTimeStart)." | ".localtime($end)." ".localtime($downTimeEnd)."\n";
-				
  				if ($downTimeStart > $start) {
  					my @tab = ($start, $downTimeStart, 0);
  					$events[scalar(@events)] = \@tab;
- 					print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%".localtime($start)." - ".localtime($downTimeStart)."\n";
  				}
  				my @tab = ($downTimeStart, $downTimeEnd, 1);
  				$events[scalar(@events)] = \@tab;
- 				print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%".localtime($downTimeStart)." - ".localtime($downTimeEnd)."\n";
  				$start = $downTimeEnd;
  			}
  		}
@@ -118,7 +116,6 @@ sub splitInsertEventDownTime {
 	if ($start < $end) {
 		my @tab = ($start, $end, 0);
 		$events[scalar(@events)] = \@tab;
-		print "%%%%%%%%%%%%%%%%%%%%%%%%%%%%".localtime($start)." - ".localtime($end)."\n";
 	}
 	return (\@events);
 }
@@ -131,19 +128,21 @@ sub splitUpdateEventDownTime {
 	my $end = shift;
 	my $downTimeFlag = shift;
 	my $downTimes = shift;
+	my $state = shift;
 	
 	my $updated = 0;
 	my @events = ();
 	my $updateTime = 0;
 	my $total = 0;
-	if (defined($downTimes)) {
+	if (defined($downTimes) && $state != 0) {
 		$total = scalar(@$downTimes);
 	}
 	for (my $i = 0; $i <  $total && $start < $end; $i++) {
- 		my $tab = $downTimes->[$i];
+		my $tab = $downTimes->[$i];
  		my $id = $tab->[0];
  		my $downTimeStart = $tab->[1];
  		my $downTimeEnd = $tab->[2];
+ 
  		if ($id eq $objectId) {
  			if ($downTimeStart < $start) {
  				$downTimeStart = $start;
