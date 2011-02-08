@@ -10,8 +10,8 @@ use Time::Local;
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "@CENTREON_ETC@/conf.pm";
 
-use vars qw ($PROGNAME $VERSION $varLibCentreon $lock_file %options %serviceStates %hostStates %servicStateIds %hostStateIds);
-require "perl-modules/variables.pm";
+#use vars qw ($PROGNAME $VERSION $varLibCentreon $lock_file %options %serviceStates %hostStates %servicStateIds %hostStateIds);
+#require "perl-modules/variables.pm";
 
 # Packages used as classes
 require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonLogger.pm";
@@ -26,14 +26,15 @@ require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonDownTime.pm";
 
 # Variables
 my $pid= getpgrp(0);
-$PROGNAME = "$0";
-$VERSION = "1.0";
+my $PROGNAME = "$0";
+my $VERSION = "1.0";
+my $varLibCentreon="@STORAGE_DIRECTORY@";
 
 my ($centreon, $centstorage, $centstatus, $logger, $processEvents, $serviceEvents, $hostEvents, $nagiosLog, $service, $host);
 
 # program exit function
 sub exit_pgr() {
-	system("rm -f ".$lock_file);
+	system("rm -f ".$varLibCentreon."/archive-monitoring-incidents.lock");
     if (defined($centreon)) {
 		$centreon->disconnect;
     }
@@ -163,7 +164,7 @@ sub rebuildIncidents {
 sub main {
 	
     initVars();
-    
+    my %options;
     Getopt::Long::Configure('bundling');
     GetOptions ("h|help" => \$options{"help"}, 
 		"l|use-lock" => \$options{"lock"},
