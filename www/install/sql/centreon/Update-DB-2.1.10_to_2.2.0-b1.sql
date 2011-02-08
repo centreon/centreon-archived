@@ -304,5 +304,6 @@ UPDATE `cfg_nagios` SET `downtime_file` = NULL, `comment_file` = NULL;
 ALTER TABLE `nagios_server` ADD COLUMN `monitoring_engine` VARCHAR(20) NULL AFTER `init_script`;
 
 UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/nagiosStats.php' WHERE topology_page = '10201' AND topology_parent = '102' AND topology_name = 'Graphs'; 
+UPDATE `topology` SET `topology_url` = './include/Administration/corePerformance/performanceInfo.php' WHERE topology_page = '10203' AND topology_name = 'Performance Info';
 
 UPDATE `informations` SET `value` = '2.2.0-b1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.10' LIMIT 1;
