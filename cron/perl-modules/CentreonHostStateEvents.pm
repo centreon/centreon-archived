@@ -155,10 +155,13 @@ sub insertEventTable {
 	for($count = 0; $count < scalar(@$events) - 1; $count++) {
 		my $tab = $events->[$count];
 		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
+		$centstorage->query($query_start.$query_end);
 	}
-	my $tab = $events->[$count];
-	my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
-	$centstorage->query($query_start.$query_end);
+	if (scalar(@$events)) {
+		my $tab = $events->[$count];
+		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
+		$centstorage->query($query_start.$query_end);
+	}
 }
 
 # Truncate service incident table
