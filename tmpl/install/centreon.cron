@@ -5,11 +5,13 @@
 # rewrite file with new cron line
 CRONTAB_EXEC_USER=""
 
-# Cron for log analyser - for reporting
-0 1 1-31 * * @NAGIOS_USER@ @PERL_BIN@ @INSTALL_DIR_CENTREON@/cron/archiveDayLog >> @CENTREON_LOG@/archiveDayLog.log 2>&1
-
 # Cron for CentACL
 * * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centAcl.php >> @CENTREON_LOG@/centAcl.log 2>&1
 
 # Cron for Centreon-Downtime
 */5 * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centreon-downtime.php >> @CENTREON_LOG@/centreon-downtime.log 2>&1
+
+# Cron to build state events
+0 3 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/archive-monitoring-incidents.pl -l >> @CENTREON_LOG@/archive-monitoring-incidents.log
+# Cron to build reporting
+0 6 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/centreon-dashboard-engine.pl -l >> @CENTREON_LOG@/centreon-dashboard-engine.log 

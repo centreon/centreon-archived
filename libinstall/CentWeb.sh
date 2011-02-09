@@ -290,15 +290,6 @@ check_result $? "$(gettext "Install Centreon cron.d file")"
 
 ## cron binary
 cp -R $TMP_DIR/src/cron/ $TMP_DIR/final/
-log "INFO" "$(gettext "Change macros for archiveDayLog")"
-${SED}  -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/archiveDayLog > \
-	$TMP_DIR/work/cron/archiveDayLog
-check_result $? "$(gettext "Change macros for archiveDayLog")"
-
-cp -f $TMP_DIR/work/cron/archiveDayLog \
-	$TMP_DIR/final/cron/archiveDayLog
 
 log "INFO" "$(gettext "Change macros for centAcl.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
@@ -316,6 +307,26 @@ check_result $? "$(gettext "Change macros for centreon-downtime.php")"
 
 cp -f $TMP_DIR/work/cron/centreon-downtime.php \
 	$TMP_DIR/final/cron/centreon-downtime.php >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Change macros for archive-monitoring-incidents.pl")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMP_DIR/src/cron/archive-monitoring-incidents.pl > $TMP_DIR/work/cron/archive-monitoring-incidents.pl
+check_result $? "$(gettext "Change macros for archive-monitoring-incidents.pl")"
+
+cp -f $TMP_DIR/work/cron/archive-monitoring-incidents.pl \
+	$TMP_DIR/final/cron/archive-monitoring-incidents.pl >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Change macros for centreon-dashboard-engine.pl")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMP_DIR/src/cron/centreon-dashboard-engine.pl > $TMP_DIR/work/cron/centreon-dashboard-engine.pl
+check_result $? "$(gettext "Change macros for centreon-dashboard-engine.pl")"
+
+cp -f $TMP_DIR/work/cron/centreon-dashboard-engine.pl \
+	$TMP_DIR/final/cron/centreon-dashboard-engine.pl >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \

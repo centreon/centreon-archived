@@ -14,21 +14,21 @@ require "@CENTREON_ETC@/conf.pm";
 #require "perl-modules/variables.pm";
 
 # Packages used as classes
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonLogger.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonDB.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonHost.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonService.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonLog.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonServiceStateEvents.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonHostStateEvents.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonProcessStateEvents.pm";
-require "@INSTALL_DIR_OREON@/cron/perl-modules/CentreonDownTime.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonLogger.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonDB.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonHost.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonService.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonLog.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonServiceStateEvents.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonHostStateEvents.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonProcessStateEvents.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonDownTime.pm";
 
 # Variables
 my $pid= getpgrp(0);
 my $PROGNAME = "$0";
 my $VERSION = "1.0";
-my $varLibCentreon="@STORAGE_DIRECTORY@";
+my $varLibCentreon="@CENTREON_VARLIB@";
 
 my ($centreon, $centstorage, $centstatus, $logger, $processEvents, $serviceEvents, $hostEvents, $nagiosLog, $service, $host);
 
