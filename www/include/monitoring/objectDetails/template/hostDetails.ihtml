@@ -259,7 +259,7 @@
 					{if $aclAct.host_schedule_downtime || $admin == 1}	
 						<tr class='list_one'>
 							<td class="ListColLeft" id="host_downtime">
-								<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='main.php?p=20218&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a>
+								<img src='./img/icones/16x16/warning.gif' border='1'>&nbsp;<a href='main.php?p=20106&o=ah&host_name={$h.host_name}'>{$m_mon_SCH_downtime}</a>
 							</td>
 						</tr>
 					{/if}
