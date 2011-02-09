@@ -5,13 +5,16 @@
 # rewrite file with new cron line
 CRONTAB_EXEC_USER=""
 
+############################
 # Cron for CentACL
 * * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centAcl.php >> @CENTREON_LOG@/centAcl.log 2>&1
 
+############################
 # Cron for Centreon-Downtime
 */5 * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centreon-downtime.php >> @CENTREON_LOG@/centreon-downtime.log 2>&1
 
+############################
 # Cron to build state events
-0 3 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/archive-monitoring-incidents.pl -l >> @CENTREON_LOG@/archive-monitoring-incidents.log
+0 3 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/eventReportBuilder.pl -l >> @CENTREON_LOG@/eventReportBuilder.log 2>&1
 # Cron to build reporting
-0 6 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/centreon-dashboard-engine.pl -l >> @CENTREON_LOG@/centreon-dashboard-engine.log 
+0 6 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/dashboardBuilder.pl -l >> @CENTREON_LOG@/dashboardBuilder.log 2>&1
