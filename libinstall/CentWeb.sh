@@ -334,6 +334,15 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
+log "INFO" "$(gettext "Change right for archive-monitoring-incidents.pl")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/archive-monitoring-incidents.pl >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for archive-monitoring-incidents.pl")"
+
+log "INFO" "$(gettext "Change right for centreon-dashboard-engine.pl")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-dashboard-engine.pl >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for centreon-dashboard-engine.pl")"
+
+
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
 echo -e "\n$line"
