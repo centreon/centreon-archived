@@ -282,7 +282,7 @@ class CentreonDowntime
 	 *   	'dtp_day_of_month' => array, // The days of month
 	 *   	'dtp_fixed' => int, // If the downtime is fixed (0: flexible, 1: fixed)
 	 *   	'dtp_duration' => int, // If the downtime is fexible, the duration of the downtime
-	 *   	'obj_name' => string, // The name of object (host_name, hg_name, service_name or sg_name)
+	 *   	'obj_name' => string, // The name of object (host_name, hg_name, service_description or sg_name)
 	 *   	'obj_id' => int, // The object id
 	 *   	'host_name' => string // The hostname for a service only for type service 
 	 *	)
@@ -306,7 +306,7 @@ class CentreonDowntime
 					$clause = ' AND dtr.hg_hg_id = hg.hg_id';
 					break;
 				case 'svc':
-					$name = ', s.service_name as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name';
+					$name = ', s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name';
 					$table = ', downtime_service_relation dtr, service s, host h, host_service_relation hsr';
 					$clause = ' AND dtr.service_service_id = s.service_id AND hsr.service_service_id = s.service_id AND hsr.host_host_id = h.host_id AND h.host_id = dtr.host_host_id';
 					break;
