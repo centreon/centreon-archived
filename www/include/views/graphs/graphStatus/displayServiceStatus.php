@@ -165,7 +165,7 @@
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
 			$GraphTemplate["vertical_label"] = "sds";
 
-		$command_line .= " --interlaced $base --imgformat PNG --width=".$width." --height=".$height." ";
+		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
 
 		/*
