@@ -78,6 +78,10 @@
 		 * Lock in MySQL
 		 */
 		$DBRESULT =& $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+		if (PEAR::isError($DBRESULT)) {
+		    print "Error to check is process running.";
+		    exit(1);
+		}
 	    $data =& $DBRESULT->fetchRow();
 
 	    $is_running = $data["running"];
@@ -99,7 +103,7 @@
 	     * Sync ACL with ldap
 	     */
 	    $queryOptions = "SELECT `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
-	    $res = $pearDB->query($query);
+	    $res = $pearDB->query($queryOptions);
 	    while ($row = $res->fetchRow()) {
 	        switch ($row['value']) {
 	            case 'ldap_auth_enable':

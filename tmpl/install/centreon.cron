@@ -11,7 +11,7 @@ CRONTAB_EXEC_USER=""
 
 ############################
 # Cron for Centreon-Downtime
-*/5 * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/centreon-downtime.php >> @CENTREON_LOG@/centreon-downtime.log 2>&1
+*/5 * * * * @WEB_USER@ @PHP_BIN@ -q @INSTALL_DIR_CENTREON@/cron/downtimeManager.php >> @CENTREON_LOG@/downtimeManager.log 2>&1
 
 ############################
 # Cron to build state events
