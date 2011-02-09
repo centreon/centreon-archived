@@ -254,6 +254,7 @@
 		if (openid.indexOf(',') != -1) {
 			multi = 1;
 		}
+		openid = openid.replace('SS_', 'HS_');
 		graph_4_host(openid, multi);
 	}
 
