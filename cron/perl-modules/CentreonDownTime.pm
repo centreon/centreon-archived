@@ -53,6 +53,7 @@ sub getDownTime {
 			if ($row->{"end_time"} > $end || $row->{"end_time"} == 0) {
 				$row->{"end_time"} = $end;
 			}
+			
 			my $insert = 1;
 			for (my $i = 0; $i < scalar(@periods) && $insert; $i++) {
 				my $checkTab = $periods[$i];
@@ -89,18 +90,21 @@ sub splitInsertEventDownTime {
 	my $total = 0;
 	if (defined($downTimes) && $state != 0) {
 		$total = scalar(@$downTimes);
+		
 	}
 	for (my $i = 0; $i < $total && $start < $end; $i++) {
  		my $tab = $downTimes->[$i];
  		my $id = $tab->[0];
  		my $downTimeStart = $tab->[1];
  		my $downTimeEnd = $tab->[2];
+ 		
  		if ($id eq $objectId) {
+ 			
  			if ($downTimeStart < $start) {
  				$downTimeStart = $start;
  			}
  			if ($downTimeEnd > $end) {
- 				$downTimeStart = $end;
+ 				$downTimeEnd = $end;
  			}
  			if ($downTimeStart < $end && $downTimeEnd > $start) {
  				if ($downTimeStart > $start) {
