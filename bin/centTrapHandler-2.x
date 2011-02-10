@@ -341,6 +341,7 @@ sub getTrapsInfos($$$$$) {
 		# REPLACE MACROS
 		$traps_execution_command =~ s/\&quot\;/\"/g;
 		$traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
+		$traps_execution_command =~ s/\&#039\;/'/g;
 		$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
 		$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
 		$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
