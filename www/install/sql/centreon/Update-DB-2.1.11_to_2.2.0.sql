@@ -314,4 +314,7 @@ UPDATE topology set topology_url = './include/monitoring/downtime/downtimeHost.p
 UPDATE topology set topology_url = './include/monitoring/comments/commentService.php' WHERE topology_page = '20219';
 UPDATE topology set topology_url = './include/monitoring/comments/commentHost.php' WHERE topology_page = '20107';
 
+-- Delete the Directories page for Media
+DELETE FROM `topology` WHERE `topology_page` = 5010202;
+
 UPDATE `informations` SET `value` = '2.2.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.11' LIMIT 1;
