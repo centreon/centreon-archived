@@ -60,6 +60,8 @@ CREATE TABLE IF NOT EXISTS `acl_group_contactgroups_relations` (
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `cg_cg_id` ) REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE ;
 ALTER TABLE `acl_group_contactgroups_relations` ADD FOREIGN KEY ( `acl_group_id` ) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE ;
 
+ALTER TABLE `traps` ADD `traps_advanced_treatment` enum('0','1') default '0' AFTER `traps_submit_result_enable`;
+
 CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
   `tmo_id` int(11) NOT NULL AUTO_INCREMENT,
   `trap_id` int(11) DEFAULT NULL,
