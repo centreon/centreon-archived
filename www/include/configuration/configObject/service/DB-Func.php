@@ -456,7 +456,7 @@
 						 	$DBRESULT3 = $pearDB->query($mTpRq1);
 							while ($sv = $DBRESULT3->fetchRow()) {
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
-							    $macVal = $hst['svc_macro_value'];
+							    $macVal = $sv['svc_macro_value'];
 								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
 											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $macVal ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
