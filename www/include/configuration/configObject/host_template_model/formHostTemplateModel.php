@@ -37,7 +37,7 @@
  */
 
     require_once $centreon_path . 'www/class/centreonLDAP.class.php';
- 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';	
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
 	#
 	## Database retrieve information for Host
@@ -208,7 +208,7 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 	$attrsAdvSelect2 = array("style" => "width: 300px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$advancedSelectTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -329,7 +329,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($advancedSelectTemplate);
 	echo $ams3->getElementJs(false);
 
 
@@ -339,7 +339,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($advancedSelectTemplate);
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
@@ -392,7 +392,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_svTpls', array(_("Linked Service Templates"), _("Available"), _("Selected")), $svTpls, $attrsAdvSelect2, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($advancedSelectTemplate);
 	echo $ams3->getElementJs(false);
 
 	#
