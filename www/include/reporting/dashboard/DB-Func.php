@@ -62,7 +62,7 @@
 		 * request
 		 */
 		$hosts = array("NULL" => "");
-		$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR $searchSTR AND host_register = '1' ORDER BY host_name");
+		$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR $searchSTR AND host_register = '1' ORDER BY LOWER(LOWER(host_name))");
 		while ($row = $DBRESULT->fetchRow()) {
 			if (!isset($lca) || isset($lca["LcaHost"][$row['host_name']]))
 				$hosts[$row["host_id"]] = $row["host_name"];
@@ -113,7 +113,7 @@
 			  "FROM `log_archive_host` ".
 			  "WHERE `host_id` = ".$host_id." AND `date_start` >=  ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
-			  "GROUP BY `host_id`";
+			  "GROUP BY `host_id` ";
 		$DBRESULT = & $pearDBO->query($rq);
 		if ($row = $DBRESULT->fetchRow())
 			$hostStats = $row;
@@ -300,7 +300,7 @@
 			  $oreon->user->access->queryBuilder("AND", "service_id", $svcStr) . 
 			  "AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 			 		 "AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
-			  "GROUP BY `service_id`";
+			  "GROUP BY `service_id` ";
 		$DBRESULT = $pearDBO->query($rq);
 		while ($row = $DBRESULT->fetchRow()){
 			if (isset($hostServiceStats[$row["service_id"]]))
@@ -397,7 +397,7 @@
 			  "FROM `log_archive_service` ".
 			  "WHERE `host_id` = ".$host_id." AND service_id = ".$service_id." AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
-			  "GROUP BY `service_id`";
+			  "GROUP BY `service_id`"
 		$DBRESULT = & $pearDBO->query($rq);
 		
 		if ($row = $DBRESULT->fetchRow())
@@ -559,7 +559,8 @@
 									"AND servicegroup_relation.host_host_id = host.host_id " .
 									"AND servicegroup_relation.host_host_id IS NOT NULL " .
 									//$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
-									"AND service.service_activate = '1'");
+									"AND service.service_activate = '1' ".
+									" ORDER BY LOWER(`host_name`), LOWER(`service_description`)");
 		while ($elem = $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
@@ -576,7 +577,8 @@
 									"AND service.service_id = servicegroup_relation.service_service_id " .
 									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
 									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
-									"AND service.service_activate = '1'");
+									"AND service.service_activate = '1' ".
+									" ORDER BY LOWER(`service_description`)");
 		while ($elem = $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
@@ -646,7 +648,7 @@
 					"FROM `hostgroup` " .
 					"WHERE $searchSTR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$oreon->user->access->queryBuilder("WHERE", "host_host_id", $lcaHoststr).") " .
 						$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) . 	
-					"ORDER BY `hg_name`";
+					"ORDER BY LOWER(`hg_name`)";
 		$DBRESULT = $pearDB->query($query);
 		while ($hg = $DBRESULT->fetchRow())
 			$hgs[$hg["hg_id"]] = $hg["hg_name"];
@@ -668,7 +670,7 @@
 		
 		$hosts = array();
 		$DBRESULT = $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
-									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by h.host_name");
+									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by LOWER(h.host_name)");
 		while ($elem = $DBRESULT->fetchRow()) 
 			$hosts[$elem["host_host_id"]] = $elem["host_name"];
 		$DBRESULT->free();
@@ -692,7 +694,7 @@
 		$query = 	"SELECT `sg_name`, `sg_id` FROM `servicegroup` ".
 					"WHERE $searchSTR `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ". 
 						$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
-					"ORDER BY `sg_name`";
+					"ORDER BY LOWER(`sg_name`)";
 		$DBRESULT = $pearDB->query($query);
 		while ($elem = $DBRESULT->fetchRow()) {
 			$sg[$elem["sg_id"]] = $elem["sg_name"];
@@ -769,7 +771,7 @@
 		$DBRESULT = $pearDB->query(" SELECT `service_id`, `service_description` ".
 						" FROM `service`, `host_service_relation` hsr".
 						" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
-						" AND service_activate = '1'");
+						" AND service_activate = '1' ORDER BY LOWER(`service_description`)");
 		while ($elem = $DBRESULT->fetchRow())	{
 			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
 			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
@@ -797,7 +799,9 @@
 		
 		$hosts = array();
 		$DBRESULT = $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation`".
-									" WHERE host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = '".$hg_id."'");
+									" WHERE host.host_id = hostgroup_relation.host_host_id ".
+											" AND hostgroup_relation.hostgroup_hg_id = '".$hg_id."' ".
+									" ORDER BY LOWER(`host_name`)");
 		while ($row = $DBRESULT->fetchRow())
 			$hosts[$row["host_id"]] = $row["host_name"];
 		$DBRESULT->free();
