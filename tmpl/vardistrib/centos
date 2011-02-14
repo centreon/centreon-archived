@@ -1,6 +1,6 @@
 # -*-Shell-script-*-
-# SVN: $URL: http://svn.centreon.com/trunk/centreon/tmpl/vardistrib/centos $
-# SVN: $Id: centos 6176 $
+# SVN: $URL$
+# SVN: $Id$
 #
 # This file contain reconfigured variables used in install scripts
 # By default, when you use ./install.sh -f centos, you'll accept GPL licence.

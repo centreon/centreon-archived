@@ -1,5 +1,5 @@
 # -*-Shell-script-*-
-# SVN: $URL: http://svn.centreon.com/trunk/centreon/tmpl/vardistrib/opensuse $
+# SVN: $URL$
 # SVN: $Id$
 #
 # This file contain reconfigured variables used in install scripts
