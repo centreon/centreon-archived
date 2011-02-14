@@ -15,6 +15,7 @@
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$genOpt_nagios_version}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ns_ip_address.label}</td><td class="FormRowValue">{$form.ns_ip_address.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.localhost.label}</td><td class="FormRowValue">{$form.localhost.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/lock.gif'>&nbsp;&nbsp;{$form.header.SSH_Informations}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.Nagios_Informations}</td></tr>

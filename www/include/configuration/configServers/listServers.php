@@ -101,9 +101,9 @@
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/* Access level */
-	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r'; 
+	($centreon->user->access->page($p) == 1) ? $lvl_access = 'w' : $lvl_access = 'r';
 	$tpl->assign('mode_access', $lvl_access);
 
 	/*
@@ -118,12 +118,13 @@
 	$tpl->assign("headerMenu_version", _("Version"));
 	$tpl->assign("headerMenu_startTime", _("Start time"));
 	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_default", _("Default"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT id, name, ns_activate, ns_ip_address, localhost FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -153,6 +154,7 @@
 						"RowMenu_link"=>"?p=".$p."&o=c&server_id=".$config['id'],
 						"RowMenu_localisation"=>$config["localhost"] ? _("Yes") : "-",
 						"RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
+						"RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
 						"RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
 						"RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["program_start_time"] : "-",
 						"RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",

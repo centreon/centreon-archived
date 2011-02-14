@@ -106,23 +106,29 @@
 	$form->addGroup($Tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
 	$Tab = array();
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'is_default', null, _("Yes"), '1');
+	$Tab[] = &HTML_QuickForm::createElement('radio', 'is_default', null, _("No"), '0');
+	$form->addGroup($Tab, 'is_default', _("Is default poller ?"), '&nbsp;');
+
+	$Tab = array();
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
 
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
-		"name"=>'',
-		"localhost"=>'0',
-		"ns_ip_address"=>"127.0.0.1",
-		"nagios_bin"=>"/usr/sbin/nagios",
-		"nagiostats_bin"=>"/usr/sbin/nagiostats",
-		"monitoring_engine" => $centreon->optGen["monitoring_engine"],
-		"init_script"=>"/etc/init.d/nagios",
-		"ns_activate"=>'1',
-		"ssh_port" => '22',
-		"ssh_private_key" => '~/.ssh/rsa.id',
-		"nagios_perfdata" => "/var/log/nagios/service-perfdata"));
+		"name" => '',
+		"localhost" => '0',
+		"ns_ip_address" => "127.0.0.1",
+		"nagios_bin" => "/usr/sbin/nagios",
+		"nagiostats_bin" => "/usr/sbin/nagiostats",
+		"monitoring_engine"  =>  $centreon->optGen["monitoring_engine"],
+		"init_script" => "/etc/init.d/nagios",
+		"ns_activate" => '1',
+		"is_default"  =>  '0',
+		"ssh_port"  =>  '22',
+		"ssh_private_key"  =>  '~/.ssh/rsa.id',
+		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata"));
 	} else {
 		if (isset($cfg_server))
 			$form->setDefaults($cfg_server);

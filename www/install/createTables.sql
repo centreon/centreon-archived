@@ -1686,6 +1686,7 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
   `id` int(11) NOT NULL auto_increment,
   `name` varchar(40) default NULL,
   `localhost` enum('0','1') default NULL,
+  `is_default` int(11) default 0,
   `last_restart` int(11) default NULL,
   `ns_ip_address` varchar(255) default NULL,
   `ns_activate` enum('1','0') default '1',
