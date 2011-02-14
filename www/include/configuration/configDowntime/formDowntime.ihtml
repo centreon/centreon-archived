@@ -88,7 +88,6 @@ function getServices(host_id) {
 			if (_services.length == 0) {
 				_selbox.setAttribute('disabled', 'disabled');
 			} else {
-				console.log(_selbox);
 				_selbox.removeAttribute('disabled');
 			}
 			

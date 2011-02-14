@@ -75,6 +75,11 @@ function getTrap(mnftr_id) {
 				_selbox.options[0] = null;
 			}
 
+			if (_traps.length == 0) {
+				_selbox.setAttribute('disabled', 'disabled');
+			} else {
+				_selbox.removeAttribute('disabled');
+			}
 
 			for (var i = 0 ; i < _traps.length ; i++) {
 				var _trap = _traps[i];
