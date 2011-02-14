@@ -1797,8 +1797,12 @@ function check_httpd_directory()
 			DIR_APACHE="/usr/local/apache2/conf"
 			DIR_APACHE_CONF="/usr/local/apache2/conf"
 		elif [ -d /etc/apache2 ] ; then
-			DIR_APACHE="/etc/apache2"
+			DIR_APACHE="/etc/apache2"			
 			DIR_APACHE_CONF="/etc/apache2/conf.d"
+			if [ ! -d "$DIR_APACHE_CONF" ] ; then
+				mkdir "$DIR_APACHE_CONF"
+				echo_success "$(gettext "Created Apache configuration directory")" "$ok"
+			fi
 		elif [ -d /etc/httpd/conf ] ; then
 			DIR_APACHE="/etc/httpd/conf"
 			DIR_APACHE_CONF="/etc/httpd/conf.d"
