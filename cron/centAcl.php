@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2010 MERETHIS
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -90,7 +90,14 @@
 
 	    if (count($data) == 0) {
 	       $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
-	       $is_running = 0;
+	       $DBRESULT =& $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+			if (PEAR::isError($DBRESULT)) {
+			    print "Error to check is process running.";
+			    exit(1);
+			}
+	    	$data =& $DBRESULT->fetchRow();
+	    	$appID = $data["id"];
+	       	$is_running = 0;
 	    }
 
 	    if ($is_running == 0) {
