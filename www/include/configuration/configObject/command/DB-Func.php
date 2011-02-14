@@ -217,7 +217,7 @@
 		$plugins = array();
 		$is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
 		$handle[$rep] = opendir($rep);
-		while (false !== ($filename = readdir($handle[$rep]))){
+		while (false != ($filename = readdir($handle[$rep]))){
 			if ($filename != "." && $filename != ".."){
 				if (is_dir($rep.$filename)){
 					$plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
