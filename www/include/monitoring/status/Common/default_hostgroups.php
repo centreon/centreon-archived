@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2010 MERETHIS
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -31,8 +31,8 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL: http://svn.centreon.com/branches/centreon-2.1/www/include/monitoring/status/Common/default_poller.php $
- * SVN : $Id: default_poller.php 10348 2010-04-19 10:08:17Z shotamchay $
+ * SVN : $URL$
+ * SVN : $Id$
  * 
  */
  
