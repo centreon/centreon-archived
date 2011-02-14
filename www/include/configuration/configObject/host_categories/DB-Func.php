@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configObject/hostgroup/DB-Func.php $
- * SVN : $Id: DB-Func.php 8217 2009-05-27 09:55:44Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  *
  */
 

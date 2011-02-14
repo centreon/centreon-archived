@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configObject/hostgroup/hostGroup.php $
- * SVN : $Id: hostGroup.php 8144 2009-05-20 21:11:21Z jmathis $
+ * SVN : $URL$
+ * SVN : $Id$
  *
  */
 

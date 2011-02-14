@@ -32,7 +32,7 @@
  * For more information : contact@centreon.com
  *
  * SVN : $URL$
- * SVN : $Id: formHostGroup.php 8144 2009-05-20 21:11:21Z jmathis $
+ * SVN : $Id$
  *
  */
 
