@@ -299,34 +299,34 @@ check_result $? "$(gettext "Change macros for centAcl.php")"
 cp -f $TMP_DIR/work/cron/centAcl.php \
 	$TMP_DIR/final/cron/centAcl.php >> "$LOG_FILE" 2>&1
 
-log "INFO" "$(gettext "Change macros for centreon-downtime.php")"
+log "INFO" "$(gettext "Change macros for downtimeManager.php")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/centreon-downtime.php > $TMP_DIR/work/cron/centreon-downtime.php
-check_result $? "$(gettext "Change macros for centreon-downtime.php")"
+	$TMP_DIR/src/cron/downtimeManager.php > $TMP_DIR/work/cron/downtimeManager.php
+check_result $? "$(gettext "Change macros for downtimeManager.php")"
 
-cp -f $TMP_DIR/work/cron/centreon-downtime.php \
-	$TMP_DIR/final/cron/centreon-downtime.php >> "$LOG_FILE" 2>&1
+cp -f $TMP_DIR/work/cron/downtimeManager.php \
+	$TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
 
-log "INFO" "$(gettext "Change macros for archive-monitoring-incidents.pl")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/archive-monitoring-incidents.pl > $TMP_DIR/work/cron/archive-monitoring-incidents.pl
-check_result $? "$(gettext "Change macros for archive-monitoring-incidents.pl")"
-
-cp -f $TMP_DIR/work/cron/archive-monitoring-incidents.pl \
-	$TMP_DIR/final/cron/archive-monitoring-incidents.pl >> "$LOG_FILE" 2>&1
-
-log "INFO" "$(gettext "Change macros for centreon-dashboard-engine.pl")"
+log "INFO" "$(gettext "Change macros for eventReportBuilder.pl")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/centreon-dashboard-engine.pl > $TMP_DIR/work/cron/centreon-dashboard-engine.pl
-check_result $? "$(gettext "Change macros for centreon-dashboard-engine.pl")"
+	$TMP_DIR/src/cron/eventReportBuilder.pl > $TMP_DIR/work/cron/eventReportBuilder.pl
+check_result $? "$(gettext "Change macros for eventReportBuilder.pl")"
 
-cp -f $TMP_DIR/work/cron/centreon-dashboard-engine.pl \
-	$TMP_DIR/final/cron/centreon-dashboard-engine.pl >> "$LOG_FILE" 2>&1
+cp -f $TMP_DIR/work/cron/eventReportBuilder.pl \
+	$TMP_DIR/final/cron/eventReportBuilder.pl >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Change macros for dashboardBuilder.pl")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
+	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMP_DIR/src/cron/dashboardBuilder.pl > $TMP_DIR/work/cron/dashboardBuilder.pl
+check_result $? "$(gettext "Change macros for dashboardBuilder.pl")"
+
+cp -f $TMP_DIR/work/cron/dashboardBuilder.pl \
+	$TMP_DIR/final/cron/dashboardBuilder.pl >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -334,13 +334,13 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
-log "INFO" "$(gettext "Change right for archive-monitoring-incidents.pl")"
-${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/archive-monitoring-incidents.pl >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for archive-monitoring-incidents.pl")"
+log "INFO" "$(gettext "Change right for eventReportBuilder.pl")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/eventReportBuilder.pl >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for eventReportBuilder.pl")"
 
-log "INFO" "$(gettext "Change right for centreon-dashboard-engine.pl")"
-${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/centreon-dashboard-engine.pl >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for centreon-dashboard-engine.pl")"
+log "INFO" "$(gettext "Change right for dashboardBuilder.pl")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder.pl >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for dashboardBuilder.pl")"
 
 
 ## Prepare to install all pear modules needed.
