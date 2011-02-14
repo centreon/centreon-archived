@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2010 MERETHIS
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -107,7 +107,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2010 <a href="mailto:infos@centreon.com">Centreon</a></td>
+				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2011 <a href="mailto:infos@centreon.com">Centreon</a></td>
 			</tr>
 		</table>
 	</div>
