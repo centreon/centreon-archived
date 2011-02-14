@@ -1,4 +1,14 @@
-## Centreon 2.2.0
+## Centreon 2.2-RC1
+
+=> fix: problem with search in monitoring
+=> fix: problem with hardcoded path in the monitoring
+=> enhancement: Capability to add wildcard in Data Source Name for graphs
+=> enhancement: able to show downtime history
+=> enhancement: better management of long output
+=> fix: problem with configuration generation engine
+=> fix: problem with treeview in graphs and eventlog view.
+
+## Centreon 2.2-b1
 
 => feature: Add shortcut from host configuration page to service configuration page
 => feature: Improve trap management with adding rules for status detection
