@@ -269,7 +269,7 @@ function construct_HostGroupSelectList(id) {
 		if (!$oreon->user->access->admin) {
 			$query = "SELECT DISTINCT hg.hg_alias " .
 				 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
-				 		"WHERE hg.hg_id = arhr.hg_hg_id" .
+				 		"WHERE hg.hg_id = arhr.hg_hg_id " .
 				 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
 				 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias";
 			$DBRESULT = $pearDB->query($query);
