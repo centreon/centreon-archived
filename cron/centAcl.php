@@ -127,17 +127,44 @@
 	     * is more than update period
 	     */
 	    if ($ldap_enable == 1 && $ldap_last_update < (time() + LDAP_UPDATE_PERIOD)) {
-    	    /**
+    	    /*
     	     * Connect to LDAP Server
     	     */
 	    	$ldapConn = new CentreonLDAP($pearDB, null);
     	    $ldapConn->connect();
     	    $listGroup = array();
-    	    $res = $pearDB->query("SELECT cg_id, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
+    	    $res = $pearDB->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
     	    while ($row = $res->fetchRow()) {
+    	        /*
+    	         * Test is the group a not move or delete in ldap 
+    	         */
+    	        if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
+    	            $dn = $ldapConn->findGroupDn($row['cg_name']);
+    	            if (false === $dn) {
+    	                /*
+    	                 * Delete the ldap group in contactgroup
+    	                 */
+    	                $queryDelete = "DELETE FROM contactgroup WHERE cg_id = " . $row['cg_id'];
+    	                if (PEAR::isError($pearDB->query($queryDelete))) {
+    	                    print "Error in delete contactgroup for ldap group : " . $row['cg_name'] . "\n";
+    	                }
+    	                continue;
+    	            } else {
+    	                /*
+    	                 * Update the ldap group in contactgroup
+    	                 */
+    	                $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $row['cg_ldap_dn'] . "' WHERE cg_id = " . $row['cg_id'];
+    	                if (PEAR::isError($pearDB->query($queryUpdateDn))) {
+    	                    print "Error in update contactgroup for ldap group : " . $row['cg_name'] . "\n";
+    	                    continue;
+    	                } else {
+    	                    $row['cg_ldap_dn'] = $dn;
+    	                }
+    	            }
+    	        }
     	        $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
 
-    	        /**
+    	        /*
     	         * Refresh Users Groups.
     	         */
     	        $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation WHERE contactgroup_cg_id = " . $row['cg_id'];
