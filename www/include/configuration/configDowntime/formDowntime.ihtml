@@ -120,62 +120,65 @@ function getServices(host_id) {
 </div>
 <div id="tab1" class="tab">
 <table class="ListTable">
-<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page={if $msg.nagios >= 3}configobject.html{/if}{if $msg.nagios <= 2}xodtemplate.html#service{/if}" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
-<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_name"> {$form.downtime_name.label}</td><td class="FormRowValue">{$form.downtime_name.html}</td></tr>
-<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="downtime_description"> {$form.downtime_description.label}</td><td class="FormRowValue">{$form.downtime_description.html}</td></tr>
-<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_activate"> {$form.downtime_activate.label}</td><td class="FormRowValue">{$form.downtime_activate.html}</td></tr>
-<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.periods}</td></tr>
-<tr class="list_two">
-	<td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
-	<td class="FormRowField"><table>
-		{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
-		<tr><td style="vertical-align: top">{if $o != "w"}<img src="./img/icones/16x16/navigate_plus.gif" onclick="addPeriods()" />{/if}</td><td><div id="tabs_periods">{if $o == "w"}
-		{foreach item=period from=$periods_tab}
-		{assign var='nbperiod' value='1'}
-		{if $period.month_cycle == 'none'}
-		{assign var='type_string' value=$monthly_basis}
-		{elseif $period.month_cycle == 'all'}
-		{assign var='type_string' value=$weekly_basis}
-		{else}
-		{assign var='type_string' value=$specific_date}
-		{/if}
-		<table width="100%">
-			<tr>
-				<td colspan="2"><b>{$periods} {$nbperiod}</b></td>
-			</tr>
-			<tr>
-				<td>{$downtime_type} : </td><td>{$type_string}</td>
-			</tr>
-			<tr>
-				<td style="vertical-align: top;">{$days}</td><td>
-				{if $period.month_cycle == 'none'}
-				{assign var="nbDay" value="0"}
-				{foreach item=day from=$period.day_of_month}{$day}&nbsp;{if $nbDay % 7 == 0}<br/>{/if}{assign var="nbDay" value=$nbDay+1}{/foreach}
-				{elseif $period.month_cycle == 'all'}
-				{foreach item=day from=$period.day_of_week}{$week_days.$day}<br/>{/foreach}
-				{else}
-				{$period.month_cycle} {$period.day_of_week} {$of_month}
-				{/if}
-				<br/></td>
-			</tr>
-			<tr>
-				<td>{$time_period}</td>
-				<td>{$period.start_time} - {$period.end_time}</td>
-			</tr>
-			<tr>
-				<td>{$fixed}{if $period.fixed == '1'} (x) {/if}{$flexible}{if $period.fixed == '0'} (x){/if}</td>
-				<td>{if $period.fixed == '0'}{$period.duration} {$seconds}{/if}</td>
-			</tr>
-			<tr>
-				<td colspan="2"><hr/></td>
-			</tr>
-		</table>
-		{assign var="i" value=$i+1}
-		{/foreach}
-		{/if}</div></td></tr>
-	</table></td>
-</tr>
+	<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page={if $msg.nagios >= 3}configobject.html{/if}{if $msg.nagios <= 2}xodtemplate.html#service{/if}" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_name"> {$form.downtime_name.label}</td><td class="FormRowValue">{$form.downtime_name.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="downtime_description"> {$form.downtime_description.label}</td><td class="FormRowValue">{$form.downtime_description.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="downtime_activate"> {$form.downtime_activate.label}</td><td class="FormRowValue">{$form.downtime_activate.html}</td></tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/calendar.gif'>&nbsp;&nbsp;{$form.header.periods}</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField"><img class="helpTooltip" name="downtime_period"> {$periods}</td>
+		<td class="FormRowField"><table>
+			{if $period_err }<tr><td colspan="2" style="color: red;">{$period_err}</td></tr>{/if}
+			<tr><td style="vertical-align: top">{if $o != "w"}<img src="./img/icones/16x16/navigate_plus.gif" onclick="addPeriods()" />{/if}</td><td><div id="tabs_periods">{if $o == "w"}
+			{foreach item=period from=$periods_tab}
+			{assign var='nbperiod' value='1'}
+			{if $period.month_cycle == 'none'}
+			{assign var='type_string' value=$monthly_basis}
+			{elseif $period.month_cycle == 'all'}
+			{assign var='type_string' value=$weekly_basis}
+			{else}
+			{assign var='type_string' value=$specific_date}
+			{/if}
+			<table width="100%">
+				<tr>
+					<td colspan="2"><b>{$periods} {$nbperiod}</b></td>
+				</tr>
+				<tr>
+					<td>{$downtime_type} : </td><td>{$type_string}</td>
+				</tr>
+				<tr>
+					<td style="vertical-align: top;">{$days}</td><td>
+					{if $period.month_cycle == 'none'}
+					{assign var="nbDay" value="0"}
+					{foreach item=day from=$period.day_of_month}{$day}&nbsp;{if $nbDay % 7 == 0}<br/>{/if}{assign var="nbDay" value=$nbDay+1}{/foreach}
+					{elseif $period.month_cycle == 'all'}
+					{foreach item=day from=$period.day_of_week}{$week_days.$day}<br/>{/foreach}
+					{else}
+					{$period.month_cycle} {$period.day_of_week} {$of_month}
+					{/if}
+					<br/></td>
+				</tr>
+				<tr>
+					<td>{$time_period}</td>
+					<td>{$period.start_time} - {$period.end_time}</td>
+				</tr>
+				<tr>
+					<td>{$fixed}{if $period.fixed == '1'} (x) {/if}{$flexible}{if $period.fixed == '0'} (x){/if}</td>
+					<td>{if $period.fixed == '0'}{$period.duration} {$seconds}{/if}</td>
+				</tr>
+				<tr>
+					<td colspan="2"><hr/></td>
+				</tr>
+			</table>
+			{assign var="i" value=$i+1}
+			{/foreach}
+			{/if}</div></td></tr>
+		</table></td>
+	</tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+	{/if}
 </table>
 </div>
 <div id="tab2" class="tab">
@@ -186,6 +189,9 @@ function getServices(host_id) {
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.hostgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hostgroup_relation.html}</p></td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="svc_name"> {$form.svc_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.host4svc.html}{$form.svc_relation.html}</p></td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.svcgroup_relation.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.svcgroup_relation.html}</p></td></tr>
+	{if $o == "a" || $o == "c"}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+	{/if}
 </table>
 </div>
 <div id="validForm">
