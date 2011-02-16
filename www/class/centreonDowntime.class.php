@@ -401,8 +401,12 @@ class CentreonDowntime
 	 */
 	public function add($name, $desc, $activate)
 	{
+		if ($desc == "") {
+			$desc = $name;
+		}
+		
 		$query = "INSERT INTO downtime (dt_name, dt_description, dt_activate) VALUES ('" . CentreonDB::escape($name) . "', '" . CentreonDB::escape($desc) . "', '" . $activate . "')";
-		if(PEAR::isError($this->db->query($query))) {
+		if (PEAR::isError($this->db->query($query))) {
 			return false;
 		}
 		$query = "SELECT dt_id FROM downtime WHERE dt_name = '" . CentreonDB::escape($name) . "'";
