@@ -1,7 +1,7 @@
 <script type="text/javascript">
 var period_id = {$period_tab};
 </script>
-<table class="ListTable">
+<table class="ListTable" style='padding-top:0px;margin-top:0px;'>
 <tr class="list_one">
 	<td class="FormRowField">{$days}</td>
 	<td class="FormRowField"><select name="periods[{$period_tab}][days]">

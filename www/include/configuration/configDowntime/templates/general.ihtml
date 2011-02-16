@@ -1,4 +1,4 @@
-<table class="ListTable">
+<table class="ListTable" style='padding-top:0px;margin-top:0px;'>
 <tr class="list_lvl_1">
 	<td class="FormRowField">{ $weekly_basis }&nbsp;<input type="radio" name="periods[{$period_tab}][period_type]" value="weekly_basis" checked="checked" onclick="selectPeriodType('weekly_basis', {$period_tab});" /></td>
 	<td class="FormRowField">{ $monthly_basis }&nbsp;<input type="radio" name="periods[{$period_tab}][period_type]" value="monthly_basis" onclick="selectPeriodType('monthly_basis', {$period_tab});" /></td>
