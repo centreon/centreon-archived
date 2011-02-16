@@ -62,7 +62,7 @@ class CentreonContactgroup
     {
         /* Contactgroup from database */
         $contactgroups = array();
-        $query = "SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name";
+        $query = "SELECT cg_id, cg_name FROM contactgroup WHERE cg_type != 'ldap' ORDER BY cg_name";
 	    $res = $this->db->query($query);
     	while ($contactgroup = $res->fetchRow()) {
     		$contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
@@ -103,6 +103,15 @@ class CentreonContactgroup
      */
     public function insertLdapGroup($cg_name)
     {
+        /*
+         * Check if contactgroup is not in databas
+         */
+        $queryCheck = "SELECT cg_id FROM contactgroup WHERE cg_name = '" . $cg_name . "'";
+        $res = $this->db->query($queryCheck);
+        if ($res->numRows() == 1) {
+            $row = $res->fetchRow();
+            return $row['cg_id'];
+        }
         $ldap = new CentreonLDAP($this->db, null);
         $ldap->connect();
         $ldap_dn = $ldap->findGroupDn($cg_name);

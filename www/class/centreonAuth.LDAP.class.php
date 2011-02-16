@@ -35,6 +35,8 @@
  * SVN : $Id$
  * 
  */
+
+require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  
 
 /**
@@ -104,9 +106,13 @@ class CentreonAuthLDAP {
 	 */
 	function checkPassword() {
 	    
-	    /* Check if it's a new user */
+	    /*
+	     * Check if it's a new user
+	     */
+	    $newUser = false;
 	    if (!isset($this->contactInfos['contact_ldap_dn'])) {
-	        
+	        $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
+	        $newUser = true;
 	    }
 		
 		/*
@@ -130,6 +136,9 @@ class CentreonAuthLDAP {
 				case 0:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
+					if ($newUser) {
+					    $this->updateUserDn();
+					}
 				   	return 1;
 				   	break;
 				case 2:
@@ -186,14 +195,18 @@ class CentreonAuthLDAP {
 		    }
 		    
 		    if (isset($this->contactInfos['contact_id'])) {
-		        /* Update the user dn */
+		        /*
+		         * Update the user dn 
+		         */
 		        $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
 				$query = "UPDATE contact SET contact_ldap_dn = '" .  $dn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
 				$this->pearDB->query($query);
 				$this->contactInfos['contact_ldap_dn'] = $dn;
 				return true;
 		    } else {
-		        /* Find the template ID */
+		        /* 
+		         * Find the template ID 
+		         */
 		        $query = "SELECT contact_id FROM contact WHERE contact_register = '1'";
 		        $res = $this->pearDB->query($query);
 		        if ($res->numRows() == 0) {
@@ -202,8 +215,10 @@ class CentreonAuthLDAP {
 		        }
 		        $row = $res->fetchRow();
 		        $tmplId = $row['contact_id'];
-		        /* Insert user in database */
-		        $userInfos =  $this->ldap->getEntry($userdn);
+		        /*
+		         * Insert user in database
+		         */
+		        $userInfos =  $this->ldap->getEntry($userDn);
 		        $userDisplay = $userInfos[$this->ldap->getAttrName('user', 'name')];
 		        $userEmail = "NULL";
 		        if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
@@ -214,19 +229,18 @@ class CentreonAuthLDAP {
 		            $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
 		        }
 		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager)
-		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userdn . "', " . $userEmail . ", " . $userPager . ")";
+		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userDn . "', " . $userEmail . ", " . $userPager . ")";
 		        if (false === PEAR::isError($this->pearDB->query($query))) {
-		            return true;
 		            /*
 		             * Get the contact_id
 		             */
 		            $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $userDn ."'";
-		            $res = $pearDB->query($query);
+		            $res = $this->pearDB->query($query);
 		            $row = $res->fetchRow();
 		            $contact_id = $row['contact_id'];
 		            $listGroup = $this->ldap->listGroupsForUser($userDn);
 		            $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join(",'", $listGroup) . "')";
-		            $res = $pearDB->query($query);
+		            $res = $this->pearDB->query($query);
 		            /*
 		             * Insert the relation between contact and contact group
 		             */
@@ -234,8 +248,9 @@ class CentreonAuthLDAP {
 		                $query = "INSERT INTO contactgroup_contact_relation
     	            						(contactgroup_cg_id, contact_contact_id)
     	            					VALUES (" . $row['cg_id'] . ", " . $contact_id . ")";
-		                $pearDB->query($query);
+		                $this->pearDB->query($query);
 		            }
+		            return true;
 		        }
 		    }
 		}

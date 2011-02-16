@@ -318,7 +318,7 @@ class CentreonLDAP {
 		$infos = array();
 		foreach ($entry[0] as $info => $value) {
 		    if ($value['count'] == 1) {
-				$infos[$info] = $value;
+				$infos[$info] = $value[0];
 			} else if ($value['count'] > 1) {
 			    $infos[$info] = array();
 			    for ($i = 0; $i < $value['count']; $i++) {
@@ -830,15 +830,15 @@ class CentreonLdapAdmin
 		$attr = array();
 		$attr['alias'] = 'uid';
 		$attr['email'] = 'mail';
-		$attr['name'] = 'displayName';
+		$attr['name'] = 'cn';
 		$attr['pager'] = 'mobile';
 		$attr['group'] = '';
 		$attr['firstname'] = 'givenname';
 		$attr['lastname'] = 'sn';
 		$infos['user_attr'] = $attr;
-		$infos['group_filter'] = "(&(group=%s)(objectClass=groupOfNames))";
+		$infos['group_filter'] = "(&(cn=%s)(objectClass=groupOfNames))";
 		$attr = array();
-		$attr['group_name'] = '';
+		$attr['group_name'] = 'cn';
 		$attr['member'] = 'member';
 		$infos['group_attr'] = $attr;
 		return $infos;

@@ -193,7 +193,9 @@ class CentreonAuth {
 				$this->error = "Invalid user";
 			}
     	} else if ($this->ldap_auto_import) {
-    	    /* Add temporary userinfo auth_type */
+    	    /*
+    	     * Add temporary userinfo auth_type
+    	     */
     	    $this->userInfos['contact_alias'] = $username;
     	    $this->userInfos['contact_auth_type'] = "ldap";
     	    $this->checkPassword($password);
