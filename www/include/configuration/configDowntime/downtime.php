@@ -36,53 +36,56 @@
  *
  */
 
-if (!isset($centreon))
-	exit();
-	
-isset($_GET["dt_id"]) ? $dtG = $_GET["dt_id"] : $dtG = NULL;
-isset($_POST["dt_id"]) ? $dtP = $_POST["dt_id"] : $dtP = NULL;
-$dtG ? $downtime_id = CentreonDB::escape($dtG) : $downtime_id = CentreonDB::escape($dtP);
-
-isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
-isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
-$cG ? $select = $cG : $select = $cP;
-
-isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
-isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
-$cG ? $dupNbr = $cG : $dupNbr = $cP;
-	
-require_once "HTML/QuickForm.php";
-require_once 'HTML/QuickForm/advmultiselect.php';
-require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-$path = "./include/configuration/configDowntime/";
-	
-require_once "./class/centreonDowntime.class.php";
-$downtime = new CentreonDowntime($pearDB);
-
-require_once "./include/common/common-Func.php";
-
-if (isset($_POST["o1"]) && isset($_POST["o2"])){
-	if ($_POST["o1"] != "") {
-		$o = $_POST["o1"];
+	if (!isset($centreon)) {
+		exit();
 	}
-	if ($_POST["o2"] != "") {
-		$o = $_POST["o2"];
-	}
-}
-
-/* Set the real page */
-if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
-	$p = $ret['topology_page'];
+		
+	isset($_GET["dt_id"]) ? $dtG = $_GET["dt_id"] : $dtG = NULL;
+	isset($_POST["dt_id"]) ? $dtP = $_POST["dt_id"] : $dtP = NULL;
+	$dtG ? $downtime_id = CentreonDB::escape($dtG) : $downtime_id = CentreonDB::escape($dtP);
 	
-switch ($o)	{
-	case "a" : require_once($path."formDowntime.php"); break; #Add a downtime
-	case "w" : require_once($path."formDowntime.php"); break; #Watch a downtime
-	case "c" : require_once($path."formDowntime.php"); break; #Modify a downtime
-	case "s" : $downtime->enable($downtime_id); require_once($path."listDowntime.php"); break; #Activate a service
-	case "ms" : $downtime->multiEnable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
-	case "u" : $downtime->disable($downtime_id); require_once($path."listDowntime.php"); break; #Desactivate a service
-	case "mu" : $downtime->multiDisable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
-	case "m" : $downtime->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listDowntime.php"); break; #Duplicate n services
-	case "d" : $downtime->multiDelete(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break; #Delete n services
-	default : require_once($path."listDowntime.php"); break;
-}
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+	
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
+		
+	require_once "HTML/QuickForm.php";
+	require_once 'HTML/QuickForm/advmultiselect.php';
+	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
+	$path = "./include/configuration/configDowntime/";
+		
+	require_once "./class/centreonDowntime.class.php";
+	$downtime = new CentreonDowntime($pearDB);
+	
+	require_once "./include/common/common-Func.php";
+	
+	if (isset($_POST["o1"]) && isset($_POST["o2"])){
+		if ($_POST["o1"] != "") {
+			$o = $_POST["o1"];
+		}
+		if ($_POST["o2"] != "") {
+			$o = $_POST["o2"];
+		}
+	}
+	
+	/* Set the real page */
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
+		$p = $ret['topology_page'];
+	}
+		
+	switch ($o)	{
+		case "a" : require_once($path."formDowntime.php"); break; #Add a downtime
+		case "w" : require_once($path."formDowntime.php"); break; #Watch a downtime
+		case "c" : require_once($path."formDowntime.php"); break; #Modify a downtime
+		case "s" : $downtime->enable($downtime_id); require_once($path."listDowntime.php"); break; #Activate a service
+		case "ms" : $downtime->multiEnable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
+		case "u" : $downtime->disable($downtime_id); require_once($path."listDowntime.php"); break; #Desactivate a service
+		case "mu" : $downtime->multiDisable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
+		case "m" : $downtime->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listDowntime.php"); break; #Duplicate n services
+		case "d" : $downtime->multiDelete(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break; #Delete n services
+		default : require_once($path."listDowntime.php"); break;
+	}
+?>
