@@ -38,7 +38,7 @@
 
  	if (!isset($oreon))
  		exit();
- 		
+
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
@@ -269,7 +269,7 @@
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 	$attrsAdvSelect_big = array("style" => "width: 300px; height: 200px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$templateMultiSelect	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -301,7 +301,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	#
@@ -381,7 +381,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'service_cs', array(_("Implied Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	/*
@@ -390,7 +390,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'service_cgs', array(_("Implied Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('text', 'service_first_notification_delay', _("First notification delay"), $attrsText2);
@@ -448,7 +448,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'service_traps', array(_("Service Trap Relation"), _("Available"), _("Selected")), $traps, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	if ($o == "mc")	{
@@ -461,7 +461,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked to host templates"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	# trap vendor
@@ -587,7 +587,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'service_categories', array(_("Categories"), _("Available"), _("Selected")), $service_categories, $attrsAdvSelect_small, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	/*
