@@ -64,7 +64,7 @@
 			$host_name = NULL;
 
 			$data = array();
-			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320), "persistant" => 1);
+			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320), "persistant" => 1, "host_or_hg" => '1', "with_services" => '0');
 			if (isset($host_id))
 				$data["host_id"] = $host_id;
 			/*
@@ -82,6 +82,22 @@
 				$hosts[$host["host_id"]]= $host["host_name"];
 			}
 			$DBRESULT->free();
+			
+			/*
+			 * Get the list of hostgroup
+			 */
+			$hgStr = $oreon->user->access->getHostGroupsString("ID", $pearDBndo);
+			$hg = array(""=>"");
+			$query = "SELECT hg_id, hg_name
+				FROM hostgroup
+				WHERE hg_activate = '1' " . 
+				$oreon->user->access->queryBuilder("AND", "", $hgStr) .
+				" ORDER BY hg_name";
+			$res = $pearDB->query($query);
+			while ($row = $res->fetchRow()) {
+			    $hg[$row['hg_id']] = $row['hg_name'];
+			}
+			$res->free();
 
 			$debug = 0;
 			$attrsTextI		= array("size"=>"3");
@@ -101,15 +117,25 @@
 			 */
 			$redirect = $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
+			
+	        $host_or_hg[] = &HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Host"), '1', array('id' => 'host_or_hg_host', 'onclick' => "toggleParams('host');"));
+	        $host_or_hg[] = &HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Hostgroup"), '0', array('id' => 'host_or_hg_hg', 'onclick' => "toggleParams('hostgroup');"));
+	        $form->addGroup($host_or_hg, 'host_or_hg', _("Select a downtime type"), '&nbsp;');
 
 		    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
+		    $selHg = $form->addElement('select', 'hostgroup_id', _("Hostgroup"), $hg);
 		    $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
 			$form->addElement('text', 'start', _("Start Time"), $attrsText);
 			$form->addElement('text', 'end', _("End Time"), $attrsText);
 			$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+			
+			$with_services[] = &HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
+	        $with_services[] = &HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
+	        $form->addGroup($with_services, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
+			
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-			$form->addRule('host_id', _("Required Field"), 'required');
+			//$form->addRule('host_id', _("Required Field"), 'required');
 			$form->addRule('end', _("Required Field"), 'required');
 			$form->addRule('start', _("Required Field"), 'required');
 			$form->addRule('comment', _("Required Field"), 'required');
@@ -119,6 +145,7 @@
 			$res = $form->addElement('reset', 'reset', _("Reset"));
 
 		  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
+		  	    $values = $form->getSubmitValues();
 				if (!isset($_POST["persistant"]))
 					$_POST["persistant"] = 0;
 				if (!isset($_POST["comment"]))
@@ -128,7 +155,28 @@
 				if (isset($_POST['duration'])) {
                     $duration = $_POST['duration'];
 			    }
-				$ecObj->AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"], $duration);
+			    $dt_w_services = false;
+			    if ($values['with_services']['with_services'] == 1) {
+			        $dt_w_services = true;
+			    }
+			    if ($values['host_or_hg']['host_or_hg'] == 1) {
+			        /*
+			         * Set a downtime for only host
+			         */
+				    $ecObj->AddHostDowntime($_POST["host_id"], $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"], $duration, $dt_w_services);
+			    } else {
+			        /*
+			         * Set a downtime for hostgroup
+			         */
+			        $hg = new CentreonHostgroups($pearDB);
+			        $hostlist = $hg->getHostGroupHosts($_POST['hostgroup_id']);
+			        $host_acl_id = preg_split('/,/', $hostStr);
+			        foreach ($hostlist as $host_id) {
+			            if ($oreon->user->access->admin || in_array($host_id, $host_acl_id)) {
+			                $ecObj->AddHostDowntime($host_id, $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"], $duration, $dt_w_services);
+			            }
+			        }
+			    }
 				require_once("viewHostDowntime.php");
 		    } else {
 				/*

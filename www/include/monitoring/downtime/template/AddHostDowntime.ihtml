@@ -1,13 +1,36 @@
 {$form.javascript}
+{literal}
+<script type="text/javascript">
+function toggleParams(type) {
+	if (type == 'host') {
+		Effect.Fade('hostgroup_input', { duration : 0 });
+		Effect.Appear('host_input', { duration : 0 });
+	} else {
+		Effect.Fade('host_input', { duration : 0 });
+		Effect.Appear('hostgroup_input', { duration : 0 });
+	}
+}
+
+Event.observe(window, "load", function() { toggleParams('host'); });
+</script>
+{/literal}
 <div align=center>
 	<form {$form.attributes}>
 		<table class="ListTableMedium">
 			<tr class="ListHeader">
 				<td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$form.header.title}</td>
 			<tr>
-			<tr class="list_two">
+			<tr class="list_one">
+				<td  class="ListColLeft">{$form.host_or_hg.label}</td>
+				<td  class="ListColLeft">{$form.host_or_hg.html}</td>
+			</tr>
+			<tr class="list_two" id="host_input">
 				<td  class="ListColLeft">{$form.host_id.label}</td>
 				<td  class="ListColLeft">{$form.host_id.html}</td>
+			</tr>
+			<tr class="list_two" id="hostgroup_input">
+				<td  class="ListColLeft">{$form.hostgroup_id.label}</td>
+				<td  class="ListColLeft">{$form.hostgroup_id.html}</td>
 			</tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.persistant.label}</td>
@@ -26,6 +49,10 @@
 				<td  class="ListColLeft">{$form.end.html}</td>
 			</tr>
 			<tr class="list_one">
+				<td  class="ListColLeft">{$form.with_services.label}</td>
+				<td  class="ListColLeft">{$form.with_services.html}</td>
+			</tr>
+			<tr class="list_two">
 				<td  class="ListColLeft" valign='top'>{$form.comment.label}</td>
 				<td  class="ListColLeft">{$form.comment.html}</td>
 			</tr>

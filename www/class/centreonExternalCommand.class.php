@@ -320,7 +320,7 @@ class CentreonExternalCommand {
 	 * @param string $end
 	 * @param int $persistant
 	 */
-	public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null)
+	public function AddHostDowntime($host, $comment, $start, $end, $persistant, $duration = null, $with_services = false)
 	{
 		global $centreon;
 
@@ -343,6 +343,9 @@ class CentreonExternalCommand {
 		   $duration = $start_time - $end_time;
 		}
 		$this->set_process_command("SCHEDULE_HOST_DOWNTIME;".getMyHostName($host).";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
+		if ($with_services === true) {
+		    $this->set_process_command("SCHEDULE_HOST_SVC_DOWNTIME;".getMyHostName($host).";".$start_time.";".$end_time.";".$persistant.";0;".$duration.";".$centreon->user->get_alias().";".$comment."\n", $poller_id);
+		}
 		$this->write();
 	}
 
