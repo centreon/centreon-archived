@@ -217,6 +217,25 @@ class CentreonAuthLDAP {
 		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userdn . "', " . $userEmail . ", " . $userPager . ")";
 		        if (false === PEAR::isError($this->pearDB->query($query))) {
 		            return true;
+		            /*
+		             * Get the contact_id
+		             */
+		            $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $userDn ."'";
+		            $res = $pearDB->query($query);
+		            $row = $res->fetchRow();
+		            $contact_id = $row['contact_id'];
+		            $listGroup = $this->ldap->listGroupsForUser($userDn);
+		            $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join(",'", $listGroup) . "')";
+		            $res = $pearDB->query($query);
+		            /*
+		             * Insert the relation between contact and contact group
+		             */
+		            while ($row = $res->fetchRow()) {
+		                $query = "INSERT INTO contactgroup_contact_relation
+    	            						(contactgroup_cg_id, contact_contact_id)
+    	            					VALUES (" . $row['cg_id'] . ", " . $contact_id . ")";
+		                $pearDB->query($query);
+		            }
 		        }
 		    }
 		}

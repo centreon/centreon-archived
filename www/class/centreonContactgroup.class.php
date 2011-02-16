@@ -56,7 +56,7 @@ class CentreonContactgroup
     /**
      * Get the list of contactgroups with his id, or his name for a ldap groups if is not sync in database
      * 
-     * @param unknown_type $withLdap
+     * @param bool $withLdap if include LDAP group
      */
     public function getListContactgroup($withLdap = false)
     {

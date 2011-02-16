@@ -60,7 +60,7 @@ class CentreonLDAP {
 	 * @param DB $pearDB The database connection
 	 * @param CentreonLog $CentreonLog The logging object
 	 */
-	public function __construct($pearDB, $CentreonLog)
+	public function __construct($pearDB, $CentreonLog = null)
 	{
 		$this->CentreonLog = $CentreonLog;
 		$this->_db = $pearDB;
@@ -539,7 +539,7 @@ class CentreonLDAP {
 	{
 		$dbresult = $this->_db->query("SELECT ari_name, ari_value
 			FROM auth_ressource_info
-			WHERE ari_name IN ('port', 'use_ssl', 'use_tls') AND ar_id = " . $id);
+			WHERE ari_name IN ('port', 'use_ssl', 'use_tls', 'protocol_version') AND ar_id = " . $id);
 		$infos = array();
 		while ($row = $dbresult->fetchRow()) {
 			$infos[$row['ari_name']] = $row['ari_value'];
@@ -631,7 +631,7 @@ class CentreonLdapAdmin
 	 */
 	public function setGeneralOptions($options)
 	{
-	    $keyOptions = array('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns');
+	    $keyOptions = array('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_contact_tmpl');
 	    if ($options['ldap_srv_dns'] == "1") {
 	        $keyOptions[] = 'ldap_dns_use_ssl';
 	        $keyOptions[] = 'ldap_dns_use_tls';
