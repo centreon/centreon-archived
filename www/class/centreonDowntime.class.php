@@ -427,6 +427,11 @@ class CentreonDowntime
 	 * @param int $activate If the downtime is activated (0 Downtime is deactivated, 1 Downtime is activated)
 	 */
 	public function modify($id, $name, $desc, $activate) {
+		
+		if ($desc == "") {
+			$desc = $name;
+		}
+		
 		$query = "UPDATE downtime SET
 			dt_name = '" . CentreonDB::escape($name) . "',
 			dt_description = '" . CentreonDB::escape($desc) . "',
