@@ -145,7 +145,7 @@
 
 
 	if ($centreon->user->access->checkAction("host_comment")) {
-		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add a comment"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	}
 
 	$tpl->assign("p", $p);
