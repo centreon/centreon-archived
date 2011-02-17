@@ -64,6 +64,8 @@
 
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 
+	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("Ndo" => "NDOutils", "Centreon Broker" => "Centreon Broker"));
+
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -76,6 +78,7 @@
 		if ($elem)
 			return rtrim($elem, "/")."/";
 	}
+
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('nagios_path', 'slash');
 	$form->applyFilter('nagios_path_img', 'slash');
@@ -138,6 +141,7 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign("genOpt_nagios_version", _("Monitoring Engine"));
+	$tpl->assign("genOpt_dbLayer", _("Monitoring database layer"));
 	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
 	$tpl->assign("genOpt_monitoring_properties", "Monitoring engine properties");

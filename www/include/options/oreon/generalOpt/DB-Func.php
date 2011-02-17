@@ -3,37 +3,37 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 	if (!isset($oreon))
@@ -44,7 +44,7 @@
 		 * Purge
 		 */
 		$DBRESULT = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
-		
+
 		/*
 		 * Add
 		 */
@@ -90,38 +90,39 @@
 	}
 
 	function updateGeneralOptInDB ($gopt_id = NULL)	{
-		if (!$gopt_id) 
+		if (!$gopt_id)
 			return;
 		updateGeneralOpt($gopt_id);
 	}
 
 	function updateNagiosConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? htmlentities($ret["nagios_path_img"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? htmlentities($ret["nagios_path_plugins"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+		updateOption($pearDB, "broker", isset($ret["broker"]) && $ret["broker"] != NULL ? htmlentities($ret["broker"], ENT_QUOTES, "UTF-8") : "Ndo");
+
 		$oreon->initOptGen($pearDB);
 	}
 
 	function updateSNMPConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		updateOption($pearDB, "snmp_community", isset($ret["snmp_community"]) && $ret["snmp_community"] != NULL ? $ret["snmp_community"] : "NULL");
 		updateOption($pearDB, "snmp_version", isset($ret["snmp_version"]) && $ret["snmp_version"] != NULL ? $ret["snmp_version"] : "NULL");
 		updateOption($pearDB, "snmp_trapd_path_conf", isset($ret["snmp_trapd_path_conf"]) && $ret["snmp_trapd_path_conf"] != NULL ? $ret["snmp_trapd_path_conf"] : "NULL");
 		updateOption($pearDB, "snmptt_unknowntrap_log_file", isset($ret["snmptt_unknowntrap_log_file"]) && $ret["snmptt_unknowntrap_log_file"] != NULL ? $ret["snmptt_unknowntrap_log_file"] : "NULL");
 		updateOption($pearDB, "snmpttconvertmib_path_bin", isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $ret["snmpttconvertmib_path_bin"] : "NULL");
 		updateOption($pearDB, "perl_library_path", isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $ret["perl_library_path"] : "NULL");
-		
+
 		$oreon->initOptGen($pearDB);
 	}
 
@@ -143,7 +144,7 @@
 
 	function updateLdapConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-				
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
 
@@ -157,18 +158,18 @@
 		updateOption($pearDB, "ldap_search_user_pwd", isset($ret["ldap_search_user_pwd"]) && $ret["ldap_search_user_pwd"] != NULL ? htmlentities($ret["ldap_search_user_pwd"], ENT_QUOTES, "UTF-8"): "");
 		updateOption($pearDB, "ldap_search_filter", isset($ret["ldap_search_filter"]) && $ret["ldap_search_filter"] != NULL ? htmlentities($ret["ldap_search_filter"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "ldap_search_timeout", isset($ret["ldap_search_timeout"]) && $ret["ldap_search_timeout"] != NULL ? htmlentities($ret["ldap_search_timeout"], ENT_QUOTES, "UTF-8"): "NULL");
-		updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8"): "NULL");		
+		updateOption($pearDB, "ldap_search_limit", isset($ret["ldap_search_limit"]) && $ret["ldap_search_limit"] != NULL ? htmlentities($ret["ldap_search_limit"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "ldap_protocol_version", isset($ret["ldap_protocol_version"]) && $ret["ldap_protocol_version"] != NULL ? htmlentities($ret["ldap_protocol_version"], ENT_QUOTES, "UTF-8"): "NULL");
-	
+
 		$oreon->initOptGen($pearDB);
 	}
 
 	function updateColorsConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-			
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		updateOption($pearDB, "color_up", isset($ret["color_up"]) && $ret["color_up"] != NULL ? htmlentities($ret["color_up"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "color_down", isset($ret["color_down"]) && $ret["color_down"] != NULL ? htmlentities($ret["color_down"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "color_unreachable", isset($ret["color_unreachable"]) && $ret["color_unreachable"] != NULL ? htmlentities($ret["color_unreachable"], ENT_QUOTES, "UTF-8"): "NULL");
@@ -182,22 +183,22 @@
 		updateOption($pearDB, "color_downtime", isset($ret["color_downtime"]) && $ret["color_downtime"] != NULL ? htmlentities($ret["color_downtime"], ENT_QUOTES, "UTF-8"): "NULL ");
 		updateOption($pearDB, "color_host_down", isset($ret["color_host_down"]) && $ret["color_host_down"] != NULL ? htmlentities($ret["color_host_down"], ENT_QUOTES, "UTF-8"): "NULL ");
 		updateOption($pearDB, "color_host_unreachable", isset($ret["color_host_unreachable"]) && $ret["color_host_unreachable"] != NULL ? htmlentities($ret["color_host_unreachable"], ENT_QUOTES, "UTF-8"): "NULL ");
-		
+
 		$oreon->initOptGen($pearDB);
 	}
 
 	function updateGeneralConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		if (!isset($ret["session_expire"]) || $ret["session_expire"] == 0)
 			$ret["session_expire"] = 2;
-		
+
 		updateOption($pearDB, "oreon_path", isset($ret["oreon_path"]) && $ret["oreon_path"] != NULL ? htmlentities($ret["oreon_path"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "oreon_web_path", isset($ret["oreon_web_path"]) && $ret["oreon_web_path"] != NULL ? htmlentities($ret["oreon_web_path"], ENT_QUOTES, "UTF-8"): "NULL");
-		updateOption($pearDB, "oreon_refresh", isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8"): "NULL");		
+		updateOption($pearDB, "oreon_refresh", isset($ret["oreon_refresh"]) && $ret["oreon_refresh"] != NULL ? htmlentities($ret["oreon_refresh"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "session_expire", isset($ret["session_expire"]) && $ret["session_expire"] != NULL ? htmlentities($ret["session_expire"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "maxViewMonitoring", isset($ret["maxViewMonitoring"]) && $ret["maxViewMonitoring"] != NULL ? htmlentities($ret["maxViewMonitoring"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "maxViewConfiguration", isset($ret["maxViewConfiguration"]) && $ret["maxViewConfiguration"] != NULL ? htmlentities($ret["maxViewConfiguration"], ENT_QUOTES, "UTF-8"): "NULL");
@@ -219,34 +220,34 @@
 
 	function updateRRDToolConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		updateOption($pearDB, "rrdtool_path_bin", isset($ret["rrdtool_path_bin"]) && $ret["rrdtool_path_bin"] != NULL ? htmlentities($ret["rrdtool_path_bin"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_version", isset($ret["rrdtool_version"]) && $ret["rrdtool_version"] != NULL ? htmlentities($ret["rrdtool_version"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+
 		updateOption($pearDB, "rrdtool_title_font", isset($ret["rrdtool_title_font"]) && $ret["rrdtool_title_font"] != NULL ? htmlentities($ret["rrdtool_title_font"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_title_fontsize", isset($ret["rrdtool_title_fontsize"]) && $ret["rrdtool_title_fontsize"] != NULL ? htmlentities($ret["rrdtool_title_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+
 		updateOption($pearDB, "rrdtool_unit_font", isset($ret["rrdtool_unit_font"]) && $ret["rrdtool_unit_font"] != NULL ? htmlentities($ret["rrdtool_unit_font"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_unit_fontsize", isset($ret["rrdtool_unit_fontsize"]) && $ret["rrdtool_unit_fontsize"] != NULL ? htmlentities($ret["rrdtool_unit_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+
 		updateOption($pearDB, "rrdtool_axis_font", isset($ret["rrdtool_axis_font"]) && $ret["rrdtool_axis_font"] != NULL ? htmlentities($ret["rrdtool_axis_font"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_axis_fontsize", isset($ret["rrdtool_axis_fontsize"]) && $ret["rrdtool_axis_fontsize"] != NULL ? htmlentities($ret["rrdtool_axis_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+
 		updateOption($pearDB, "rrdtool_watermark_font", isset($ret["rrdtool_watermark_font"]) && $ret["rrdtool_watermark_font"] != NULL ? htmlentities($ret["rrdtool_watermark_font"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_watermark_fontsize", isset($ret["rrdtool_watermark_fontsize"]) && $ret["rrdtool_watermark_fontsize"] != NULL ? htmlentities($ret["rrdtool_watermark_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+
 		updateOption($pearDB, "rrdtool_legend_font", isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != NULL ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_legend_fontsize", isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != NULL ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
-		
+
 		$oreon->initOptGen($pearDB);
 	}
-	
+
 	function updateODSConfigData()	{
 		global $form, $pearDBO;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (!isset($ret["len_storage_rrd"]))
@@ -282,26 +283,26 @@
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT = $pearDBO->query($rq);
-	}	
-	
+	}
+
 	function updateCASConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
-		
+
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		
+
 		updateOption($pearDB, "auth_cas_enable", isset($ret["auth_cas_enable"]["auth_cas_enable"]) && $ret["auth_cas_enable"]["auth_cas_enable"] != NULL ? $ret["auth_cas_enable"]["auth_cas_enable"] : "NULL");
 		updateOption($pearDB, "cas_server", isset($ret["cas_server"]) && $ret["cas_server"] != NULL ? $ret["cas_server"] : "NULL");
 		updateOption($pearDB, "cas_port", isset($ret["cas_port"]) && $ret["cas_port"] != NULL ? $ret["cas_port"] : "NULL");
 		updateOption($pearDB, "cas_url", isset($ret["cas_url"]) && $ret["cas_url"] != NULL ? $ret["cas_url"] : "NULL");
 		updateOption($pearDB, "cas_version", isset($ret["cas_version"]) && $ret["cas_version"] != NULL ? $ret["cas_version"] : "NULL");
-	
+
 		$oreon->initOptGen($pearDB);
 	}
-	
+
 	function updateReportingTimePeriodInDB() {
 		global $form, $pearDB;
-		
+
 		$ret = $form->getSubmitValues();
 		(isset($ret["dayList"]["report_Monday"])) ? $ret["dayList"]["report_Monday"] = 1  : $ret["dayList"]["report_Monday"] = 0;
 		(isset($ret["dayList"]["report_Tuesday"])) ? $ret["dayList"]["report_Tuesday"] = 1  : $ret["dayList"]["report_Tuesday"] = 0;
@@ -310,23 +311,23 @@
 		(isset($ret["dayList"]["report_Friday"])) ? $ret["dayList"]["report_Friday"] = 1  : $ret["dayList"]["report_Friday"] = 0;
 		(isset($ret["dayList"]["report_Saturday"])) ? $ret["dayList"]["report_Saturday"] = 1  : $ret["dayList"]["report_Saturday"] = 0;
 		(isset($ret["dayList"]["report_Sunday"])) ? $ret["dayList"]["report_Sunday"] = 1  : $ret["dayList"]["report_Sunday"] = 0;
-		
-		foreach ($ret["dayList"] as $key => $value){ 	
+
+		foreach ($ret["dayList"] as $key => $value){
 			$query = "UPDATE `contact_param` SET `cp_value` = '".$ret["dayList"][$key]."' WHERE `cp_contact_id` IS NULL AND `cp_key` = '$key'";
 			$DBRESULT = $pearDB->query($query);
 		}
-		
+
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_start'";
 		$DBRESULT = $pearDB->query($query);
-		
+
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_minute_start"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_minute_start'";
 		$DBRESULT = $pearDB->query($query);
-		
+
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_hour_end"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_hour_end'";
 		$DBRESULT = $pearDB->query($query);
-		
+
 		$query = "UPDATE `contact_param` SET cp_value = '".$ret["report_minute_end"]."' WHERE cp_contact_id IS NULL AND cp_key = 'report_minute_end'";
 		$DBRESULT = $pearDB->query($query);
 	}
-	
+
 ?>
