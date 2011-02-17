@@ -4,7 +4,6 @@
 <table class="ajaxOption">
 	<tr>
 		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
-		<!--<td>&nbsp;&nbsp;{$Hostgroup}: <select name='hostgroup'>{$hostgroup}</select></td>-->
 		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
 		<td>&nbsp;&nbsp;{$ViewAll}: <input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /></td>
 	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
@@ -13,6 +12,7 @@
 <br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
+	<td>{if $msgh}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}</td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}
@@ -20,10 +20,7 @@
 </table>
 <table class="ListTable">
 	<tr class='ListHeader'>			
-		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$dtm_host_downtime}</td>
-		<td align='right'>
-			{if $msgh}<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}&nbsp;&nbsp;&nbsp;
-		</td>			
+		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$dtm_host_downtime}</td>		
 	</tr>
 </table>
 <br />
@@ -43,7 +40,7 @@
 	{foreach item=tdh from=$tab_downtime_host}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tdh.host_name};{$tdh.internal_downtime_id}]'></td>
-		<td class="ListColLeft" width="150">{$tdh.host_name}</td>
+		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tdh.host_name}'>{$tdh.host_name}</a></td>
 		<td class="ListColCenter" width="120">{$tdh.scheduled_start_time}</td>
 		<td class="ListColCenter" width="120">{$tdh.scheduled_end_time}</td>
 		<td class="ListColRight" width="60">{$tdh.duration} {$secondes}</td>
@@ -56,7 +53,7 @@
 	<tr>
 		<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="dh"><input type="submit" name="{$delete}" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgh.delConfirm}')"></td>
 		<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
-		<td class="ListColFooterRight" align="right"><a href="{$msgh.addL}">{$msgh.addT}</a></td>
+		<td class="ListColFooterRight" align="right">&nbsp;</td>
 	</tr>		
 </table>	
 {else}

@@ -153,7 +153,7 @@
 	$form->setDefaults($tab);
 
 	if ($centreon->user->access->checkAction("host_schedule_downtime")) {
-		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add a downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	}
 
 	$tpl->assign("p", $p);

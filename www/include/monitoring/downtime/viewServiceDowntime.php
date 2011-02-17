@@ -83,7 +83,6 @@
 
 	$pearDBndo = new CentreonDB("ndo");
 
-
 	/*
 	 * Smarty template Init
 	 */
@@ -165,10 +164,11 @@
 	$form->setDefaults($tab);
 
 	if ($oreon->user->access->checkAction("service_schedule_downtime")) {
-		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgs', array ("addL"=>"?p=".$p."&o=as", "addT"=>_("Add a downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
 	}
 
 	$tpl->assign("p", $p);
+	$tpl->assign("o", $o);
 
 	$tpl->assign("tab_downtime_svc", $tab_downtime_svc);
 	$tpl->assign("nb_downtime_svc", count($tab_downtime_svc));

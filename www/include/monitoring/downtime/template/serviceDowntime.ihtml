@@ -14,6 +14,7 @@
 <hidden name="p" value='{$p}'>	
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
+	<td>{if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}</td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}
@@ -22,9 +23,6 @@
 <table class="ListTable">
 	<tr class='ListHeader'>
 	<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_service_downtime}</td>		
-	<td align='right'>
-		{if $msgs}<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
-	</td>		
 </tr>
 </table>
 <br />	
@@ -45,8 +43,8 @@
 	{foreach item=tds from=$tab_downtime_svc}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
-		<td class="ListColLeft" width="150">{$tds.host_name}</td>
-		<td class="ListColLeft" width="150">{$tds.service_description}</td>
+		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tds.host_name}'>{$tds.host_name}</a></td>
+		<td class="ListColLeft" width="150"><a href='./main.php?p=202&o=svcd&host_name={$tds.host_name}&service_description={$tds.service_description}'>{$tds.service_description}</a></td>
 		<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
 		<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
 		<td class="ListColRight" width="120">{$tds.duration} {$secondes}</td>
@@ -59,7 +57,7 @@
 	<tr>
 		<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="{$delete}" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
 		<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
-		<td class="ListColFooterRight" align="right"><a href="{$msgs.addL}">{$msgs.addT}</a></td>
+		<td class="ListColFooterRight" align="right">&nbsp;</td>
 	</tr>	
 </table>	
 {else}
