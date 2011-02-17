@@ -65,7 +65,7 @@ sub send_command {
 	eval {
 		local $SIG{ALRM} = sub { die "TIMEOUT"; };
 		alarm($TIMEOUT);
-		exec @_;
+		system @_;
 		alarm(0);
 	};
 	if ($@) {
