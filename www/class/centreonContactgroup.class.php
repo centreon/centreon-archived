@@ -62,7 +62,11 @@ class CentreonContactgroup
     {
         /* Contactgroup from database */
         $contactgroups = array();
-        $query = "SELECT cg_id, cg_name FROM contactgroup WHERE cg_type != 'ldap' ORDER BY cg_name";
+        $query = "SELECT cg_id, cg_name FROM contactgroup";
+        if (false === $withLdap) {
+            $query .= " WHERE cg_type != 'ldap'";
+        }
+        $query .= " ORDER BY cg_name";
 	    $res = $this->db->query($query);
     	while ($contactgroup = $res->fetchRow()) {
     		$contactgroups[$contactgroup["cg_id"]] = $contactgroup["cg_name"];
