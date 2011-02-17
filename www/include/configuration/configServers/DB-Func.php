@@ -89,13 +89,14 @@
 			$row = $DBRESULT->fetchRow();
 			$row["id"] = '';
 			$row["ns_activate"] = '0';
+			$row["is_default"] = '0';
 			$row["localhost"] = '0';
 			$DBRESULT->free();
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "name" ? ($server_name = $value2 = $value2."_".$i) : null;
-					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					$val ? $val .= ($value2 != NULL ? (", '".$value2."'"):", NULL") : $val .= ($value2 != NULL ? ("'".$value2."'") : "NULL");
 				}
 				if (testExistence($server_name))	{
 					$val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
