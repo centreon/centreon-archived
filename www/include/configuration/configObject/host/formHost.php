@@ -39,9 +39,9 @@
 
 	if (!isset($oreon))
 		exit();
-		
+
     require_once $centreon_path . 'www/class/centreonLDAP.class.php';
- 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';		
+ 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
 	/*
 	 * Database retrieve information for Host
@@ -263,7 +263,7 @@
 	$attrsAdvSelectsmall= array("style" => "width: 270px; height: 50px;");
 	$attrsAdvSelectbig 	= array("style" => "width: 270px; height: 130px;");
 	$attrsTextarea 		= array("rows"=>"4", "cols"=>"80");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$templateMultiSelect	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 
 	#
@@ -427,7 +427,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_cs', array(_("Linked Contacts"), _("Available"), _("Selected")), $notifCs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	/*
@@ -436,7 +436,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
@@ -491,7 +491,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_parents', array(_("Parent Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	if ($o == "mc")	{
@@ -504,7 +504,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'host_childs', array(_("Child Hosts"), _("Available"), _("Selected")), $hostPs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	if ($o == "mc")	{
@@ -517,7 +517,7 @@
         $ams3 = $form->addElement('advmultiselect', 'host_hgs', array(_("Parent Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 
 	if ($o == "mc")	{
@@ -531,7 +531,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'nagios_server_id', array(_("Monitored from"), _("Available"), _("Selected")), $nsServers, $attrsAdvSelectsmall);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($templateMultiSelect);
 	echo $ams3->getElementJs(false);
 	*/
 	#
