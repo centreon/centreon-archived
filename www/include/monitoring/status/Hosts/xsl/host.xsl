@@ -120,7 +120,7 @@
 	    <td class="ListColRight"><xsl:value-of select="lsc"/></td>
 		<xsl:if test = "//i/o = 'h_unhandled' or //i/o = 'hpb'">
 			<td class="ListColRight" style="white-space:nowrap;">
-				<xsl:value-of select="last_hard_state_change"/>
+				<xsl:value-of select="lhs"/>
 			</td>
 		</xsl:if>
 	    <td class="ListColCenter"><xsl:value-of select="tr"/></td>
