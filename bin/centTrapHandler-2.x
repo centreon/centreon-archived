@@ -43,7 +43,7 @@ use strict;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug);
-use vars qw($cmdFile $etc);
+use vars qw($cmdFile $etc $TIMEOUT);
 
 ###############################
 # Init 
@@ -51,9 +51,31 @@ use vars qw($cmdFile $etc);
 $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
 $etc = "@CENTREON_ETC@";
 
+# Timeout for write in cmd in seconds
+$TIMEOUT = 10;
+
 ###############################
 # require config file
 require $etc."/conf.pm";
+
+###############################
+## Executre a command Nagios or Centcore
+#
+sub send_command {
+	eval {
+		local $SIG{ALRM} = sub { die "TIMEOUT"; };
+		alarm($TIMEOUT);
+		exec @_;
+		alarm(0);
+	};
+	if ($@) {
+		if ($@ =~ "TIMEOUT") {
+			print "ERROR:Send command timeout\n";
+			return 0;
+		}
+	}
+	return 1;
+}
 
 ###############################
 ## GET HOSTNAME FROM IP ADDRESS
@@ -300,11 +322,13 @@ sub getTrapsInfos($$$$$) {
 	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
 		  # No matching rules
 		  if ($location != 0){
-		      my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+		      my $submit = "/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $conf[0]";
+		      send_command($submit);
 		  } else {
 		      my $id = get_hostNagiosServerID($dbh, $this_host);
 		      if (defined($id) && $id != 0) {
-		          my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $cmdFile`;
+		          my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile";
+		          send_command($submit);
 		          undef($id);
 		      }
 		  }
@@ -314,11 +338,13 @@ sub getTrapsInfos($$$$$) {
 	    # Force service execution with external command
 	    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
 		if ($location != 0){
-		    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime" >> $conf[0]`;
+		    my $submit = "/bin/echo \"[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $conf[0]";
+		    send_command($submit);
 		} else {
 		    my $id = get_hostNagiosServerID($dbh, $this_host);
 		    if (defined($id) && $id != 0) {
-			my $submit = `/bin/echo "EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime" >> $cmdFile`;
+			my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
+			send_command($submit);
 			undef($id);
 		    }
 		}
