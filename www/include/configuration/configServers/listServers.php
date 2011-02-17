@@ -147,19 +147,19 @@
 			$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$config["name"],
-						"RowMenu_ip_address"=>$config["ns_ip_address"],
-						"RowMenu_link"=>"?p=".$p."&o=c&server_id=".$config['id'],
-						"RowMenu_localisation"=>$config["localhost"] ? _("Yes") : "-",
+		$elemArr[$i] = array("MenuClass" => "list_".$style,
+						"RowMenu_select" => $selectedElements->toHtml(),
+						"RowMenu_name" => $config["name"],
+						"RowMenu_ip_address" => $config["ns_ip_address"],
+						"RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
+						"RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
 						"RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
 						"RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
 						"RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
 						"RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["program_start_time"] : "-",
 						"RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
-						"RowMenu_status"=>$config["ns_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options"=>$moptions);
+						"RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
+						"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);

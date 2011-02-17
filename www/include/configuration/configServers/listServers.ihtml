@@ -42,7 +42,7 @@
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_id_default}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
