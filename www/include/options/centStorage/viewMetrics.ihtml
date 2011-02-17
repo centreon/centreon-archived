@@ -23,7 +23,6 @@
 	 		<td class="ListColCenter">{$Critical}</td>
 	 		<td class="ListColCenter">{$Min}</td>
 	 		<td class="ListColCenter">{$Max}</td>
-	 		<td class="ListColCenter">{$NumberOfValues}</td>
 	 		<td class="ListColCenter">{$Hidden}</td>
 	 		<td class="ListColCenter">{$Locked}</td>
 	 	</tr>
@@ -36,7 +35,6 @@
 	 		<td class="ListColCenter">{$d.crit}</td>
 	 		<td class="ListColCenter">{$d.min}</td>
 	 		<td class="ListColCenter">{$d.max}</td>
-	 		<td class="ListColCenter">{$d.nb}</td>
 	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
 		</tr>
