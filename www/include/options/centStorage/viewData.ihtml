@@ -1,6 +1,14 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 <form name='form' method='POST'>
 	<input name="o" type="hidden">
+	<table class="ajaxOption">
+		<tr>
+			<td>{$Hosts} : <input type='text' name='searchH' value="{$searchH}" /></td>
+			<td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value="{$searchS}" /></td>
+			<!--<td>{$Pollers} : <input type='text' name='poller' value="{$poller}" /></td>-->
+            <td><input type='submit' name='Search' value='{$Search}' /></td>
+		</tr>
+	</table><br />
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 			<td class="Toolbar_TDSelectAction_Top">
@@ -24,7 +32,6 @@
 	 		<td class="ListColCenter">{$Hidden}</td>
 	 		<td class="ListColCenter">{$Locked}</td>
 	 		<td class="ListColCenter">{$StorageType}</td>
-	 		<!--<td class="ListColRight">{$Actions}</td>-->
 	 	</tr>
 	 	{assign var='host_name' value=''}
 		{foreach item=d from=$data}
@@ -37,7 +44,6 @@
 	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
 	 		<td class="ListColCenter">{$d.storage_type}</td>
-	 		<!--<td class="ListColRight"><a href='./main.php?p={$p}&o=d&id={$d.id}'><img src='./img/icones/16x16/delete.gif' alt='{$d.delete}'></a> &nbsp;&nbsp;<a href='./main.php?p={$p}&o=rb&id={$d.id}'><img src='./img/icones/16x16/gear.gif' alt='{$d.rebuild}'></a></td>-->
 		</tr> 	
 	 	{assign var='host_name' value=$d.host_name}	
 		{/foreach}
