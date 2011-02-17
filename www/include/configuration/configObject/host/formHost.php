@@ -293,8 +293,8 @@
 		$form->addElement('text', 'host_alias', _("Alias"), $attrsText);
 	}
 	$form->addElement('text', 'host_address', _("IP Address / DNS"), $attrsText);
-	$form->addElement('select', 'host_snmp_version', _("Version"), array(NULL=>NULL, 1=>"1", "2c"=>"2c", 3=>"3"));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
+	$form->addElement('select', 'host_snmp_version', _("Version"), array(NULL=>NULL, 1=>"1", "2c"=>"2c", 3=>"3"));
 
 	/*
 	 * Include GMT Class
@@ -313,6 +313,16 @@
 	unset ($GMTList);
 
 	$form->addElement('select', 'nagios_server_id', _("Monitored from"), $nsServers);
+	/*
+	 * Get deault poller id
+	 */
+	$DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
+	$defaultServer = $DBRESULT->fetchRow();
+	$DBRESULT->free();
+	if (isset($defaultServer) && $defaultServer) {
+		$form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
+	}
+
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Templates"), $hTpls);
 
