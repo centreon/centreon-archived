@@ -27,6 +27,9 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$ndo2db_access}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ndo2db_user.label}</td><td class="FormRowValue">{$form.ndo2db_user.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ndo2db_group.label}</td><td class="FormRowValue">{$form.ndo2db_group.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		{/if}
 	</table>
 	</div>	
 	<div id='tab2' class='tab'>
@@ -40,6 +43,9 @@
 		<tr class="list_one"><td class="FormRowField">{$form.db_prefix.label}</td><td class="FormRowValue">{$form.db_prefix.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.db_user.label}</td><td class="FormRowValue">{$form.db_user.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.db_pass.label}</td><td class="FormRowValue">{$form.db_pass.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		{/if}
 	</table>
 	</div>	
 	<div id='tab3' class='tab'>
@@ -51,6 +57,9 @@
 		<tr class="list_one"><td class="FormRowField">{$form.max_servicechecks_age.label}</td><td class="FormRowValue">{$form.max_servicechecks_age.html}&nbsp;{$minutes}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.max_hostchecks_age.label}</td><td class="FormRowValue">{$form.max_hostchecks_age.html}&nbsp;{$minutes}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.max_eventhandlers_age.label}</td><td class="FormRowValue">{$form.max_eventhandlers_age.html}&nbsp;{$minutes}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		{/if}
 	</table>
 	</div>
 	<div id="validForm">

@@ -30,6 +30,9 @@
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;{$informations5}&nbsp;</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.data_processing_options.label}</td><td class="FormRowValue">{$form.data_processing_options.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.config_output_options.label}</td><td class="FormRowValue">{$form.config_output_options.html}</td></tr>
+		{if $o == "a" || $o == "c"}
+			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
+		{/if}
 	</table>
 	</div>
 	<div id="validForm">
