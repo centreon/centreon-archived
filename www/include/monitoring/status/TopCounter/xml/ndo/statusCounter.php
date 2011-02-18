@@ -39,7 +39,7 @@
 	$debug = 0;
 
 	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -247,12 +247,12 @@
 	$DBRESULT->free();
 	$error = "Pollers $pollerListInError not running.";
 
-	$request = 	"SELECT stat_value, i.instance_id, instance_name " .
-				"FROM `nagios_stats` ns, instance i " .
+	$request = 	"SELECT stat_value, i.instance_id, name " .
+				"FROM `nagios_stats` ns, instances i " .
 				"WHERE ns.stat_label = 'Service Check Latency' " .
 				"	AND ns.stat_key LIKE 'Average' " .
 				"	AND ns.instance_id = i.instance_id" .
-				"	AND i.instance_name IN ($pollerList)";
+				"	AND i.name IN ($pollerList)";
 	$DBRESULT = $obj->DBC->query($request);
 	while ($ndo = $DBRESULT->fetchRow()) {
 		if ($latency != 2 && $ndo["stat_value"] >= 60) {
