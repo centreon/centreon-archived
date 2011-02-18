@@ -525,7 +525,7 @@
 	    $xml->writeElement('icon', $tab_icone[$key]);
 	    $xml->writeElement('sid', $tab_objectid[$key]);
 	    $xml->writeElement('hid', $tab_hobjectid[$key]);
-	    $xml->writeElement('domId', $tab_hostobjectid[$key] . "_" . $domId);
+	    $xml->writeElement('domId', $tab_hobjectid[$key] . "_" . $domId);
 	    $xml->writeElement('class', $style);
 	    if ($tab_state[$key] == 1) {
 	        $xml->writeElement('state', _('Warning'));
