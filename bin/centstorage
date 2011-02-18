@@ -425,16 +425,16 @@ sub checkAndUpdate($$){
 	    
 	    if (defined($data_service[0]) && $data_service[0] ne 0) {
 		# perfdata index status time type counter rebuild
-		$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
+		$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $config->{'storage_type'}, $valueRecorded, $data_service[2], $config); 
 	    }
 	} else {
 	    # Get Service infos
-	    writeLogFile(" --> ".$_[1]." / ".$_[2]);
+	    # writeLogFile(" --> ".$_[1]." / ".$_[2]);
 	    @data_service = identify_service($_[1], $_[2]); # return index_id and storage
 	    
 	    if (defined($data_service[0]) && $data_service[0] ne 0) {
 		# perfdata index status time type counter rebuild configuration
-		$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $data_service[1], $valueRecorded, $data_service[2], $config); 
+		$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $config->{'storage_type'}, $valueRecorded, $data_service[2], $config); 
 	    }
 	    
 	    # Update status 
