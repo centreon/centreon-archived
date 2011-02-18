@@ -109,10 +109,10 @@
 	    /* ***********************************************
 	     * Sync ACL with ldap
 	     */
-	    $queryOptions = "SELECT `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
+	    $queryOptions = "SELECT `key`, value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
 	    $res = $pearDB->query($queryOptions);
 	    while ($row = $res->fetchRow()) {
-	        switch ($row['value']) {
+	        switch ($row['key']) {
 	            case 'ldap_auth_enable':
 	                $ldap_enable = $row['value'];
 	                break;
@@ -178,6 +178,8 @@
     	            $pearDB->query($queryAddRelation);
     	        }
     	    }
+    	    $queryUpdateTime = "UPDATE `options` SET `value` = '" . time() . "' WHERE `key` = 'ldap_last_acl_update'";
+    	    $pearDB->query($queryUpdateTime);
 	    }
 
 	    /* ***********************************************

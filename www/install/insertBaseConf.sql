@@ -127,6 +127,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('ldap_search_timeout','60'),
 ('ldap_search_limit','60'),
 ('ldap_last_acl_update', '0'),
+('ldap_contact_tmpl', '0'),
 ('color_up','#19EE11'),
 ('color_down','#F91E05'),
 ('color_unreachable','#82CFD8'),

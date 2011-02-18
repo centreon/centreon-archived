@@ -138,6 +138,7 @@ class CentreonAuthLDAP {
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
 					if ($newUser) {
 					    $this->updateUserDn();
+					    return -1;
 					}
 				   	return 1;
 				   	break;
@@ -207,14 +208,18 @@ class CentreonAuthLDAP {
 		        /* 
 		         * Find the template ID 
 		         */
-		        $query = "SELECT contact_id FROM contact WHERE contact_register = '1'";
+		        $query = "SELECT `value` FROM `options` WHERE `key` = 'ldap_contact_tmpl'";
 		        $res = $this->pearDB->query($query);
 		        if ($res->numRows() == 0) {
 		            $this->CentreonLog->insertLog(3, "LDAP AUTH : No contact template defined.");
 		            return false;
 		        }
 		        $row = $res->fetchRow();
-		        $tmplId = $row['contact_id'];
+		        if ($row['value'] == 0) {
+		            $this->CentreonLog->insertLog(3, "LDAP AUTH : No contact template defined.");
+		            return false;
+		        }
+		        $tmplId = $row['value'];
 		        /*
 		         * Insert user in database
 		         */
@@ -228,8 +233,8 @@ class CentreonAuthLDAP {
 		        if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
 		            $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
 		        }
-		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager)
-		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userDn . "', " . $userEmail . ", " . $userPager . ")";
+		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager, contact_oreon, contact_activate)
+		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userDn . "', " . $userEmail . ", " . $userPager . ", '1', '1')";
 		        if (false === PEAR::isError($this->pearDB->query($query))) {
 		            /*
 		             * Get the contact_id
