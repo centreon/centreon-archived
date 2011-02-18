@@ -99,6 +99,20 @@
 			$proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
 			$proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
 		}
+		
+		/*
+		 * Get servicegroups list
+		 */
+		$query = "SELECT DISTINCT sg.sg_name
+			FROM servicegroup sg, servicegroup_relation sgr
+			WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
+		    $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", $pearDBndo));
+		$DBRESULT = $pearDB->query($query);
+		while ($row = $DBRESULT->fetchRow()) {
+		    $serviceGroups[] = $row['sg_name'];
+		}
+		$DBRESULT->free();
+		
 
 		/*
 		 * Get service category
@@ -110,7 +124,7 @@
               	$serviceCategories[] = getMyCategorieName($sc_id);
             }
         }
-
+        
 		$tab_status = array();
 
 		/*
@@ -420,23 +434,35 @@
 		 * Hostgroups Display
 		 */
 		$tpl->assign("hostgroups_label", _("Host Groups"));
-		if (isset($hostGroups))
+		if (isset($hostGroups)) {
 			$tpl->assign("hostgroups", $hostGroups);
+		}
+			
+		/*
+		 * Servicegroup Display
+		 */
+		$tpl->assign("servicegroups_label", _("Service groups"));
+		if (isset($serviceGroups)) {
+		    $tpl->assign("servicegroups", $serviceGroups);
+		}
 
 		/*
 		 * Service Categories
 		 */
 		$tpl->assign("sg_label", _("Service Categories"));
-		if (isset($serviceCategories))
+		if (isset($serviceCategories)) {
 			$tpl->assign("service_categories", $serviceCategories);
+		}
 
 		/*
 		 * Macros
 		 */
-		if (isset($proc_warning) && $proc_warning)
+		if (isset($proc_warning) && $proc_warning) {
 			$tpl->assign("proc_warning", $proc_warning);
-		if (isset($proc_critical) && $proc_critical)
+		}
+		if (isset($proc_critical) && $proc_critical) {
 			$tpl->assign("proc_critical", $proc_critical);
+		}
 
 		/*
 		 * Tips translations

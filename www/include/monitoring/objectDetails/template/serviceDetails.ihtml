@@ -393,6 +393,14 @@
 						</td>
 					</tr>
 					<tr class='list_two'>
+						<td class="ListColLeft">{$servicegroups_label} : </td>
+						<td class="ListColLeft">
+						{foreach item=sg from=$servicegroups}
+							&nbsp;&nbsp;&nbsp;-&nbsp;{$sg}</a><br>
+						{/foreach}
+						</td>
+					</tr>
+					<tr class='list_one'>
 						<td class="ListColLeft">{$sg_label} : </td>
 						<td class="ListColLeft">
 						{foreach item=sc from=$service_categories}
