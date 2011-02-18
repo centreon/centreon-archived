@@ -57,7 +57,7 @@
 <script type="text/javascript">
 	var _debug = 0;
 
-	var _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php";
+	var _addrXML = "./include/monitoring/status/ServicesHostGroups/xml/<?php print $centreon->broker->getBroker(); ?>/serviceGridByHGXML.php";
 	var _addrXSL = "./include/monitoring/status/ServicesHostGroups/xsl/serviceGridByHG.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>

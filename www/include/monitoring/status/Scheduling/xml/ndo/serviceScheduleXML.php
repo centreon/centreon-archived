@@ -313,9 +313,9 @@
 	}
 	/* end */
 
-	if (!$ct)
+	if (!$ct) {
 		$buffer->writeElement("infos", "none");
-
+	}
 
 	$buffer->endElement();
 	header('Content-Type: text/xml');

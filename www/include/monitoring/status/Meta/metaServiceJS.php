@@ -248,7 +248,7 @@ function goM(_time_reload,_sid,_o){
 
 	_lock = 1;
 	var proc = new Transformation();
-	var _addrXML = "./include/monitoring/status/Meta/xml/metaServiceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
+	var _addrXML = "./include/monitoring/status/Meta/xml/<?php print $centreon->broker->getBroker(); ?>/metaServiceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
@@ -266,7 +266,7 @@ function goM(_time_reload,_sid,_o){
 function displayPOPUP(id){
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
-	var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
+	var _addrXMLSpan = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
 	var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 	proc_popup.setXml(_addrXMLSpan);
 	proc_popup.setXslt(_addrXSLSpan);
@@ -286,7 +286,7 @@ function displayPOPUP(id){
 function displayPOPUP_svc(id){
 	var span = document.getElementById('span_'+id);
 	var proc_popup = new Transformation();
-	var _addrXMLSpan = "./include/monitoring/status/Services/xml/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
+	var _addrXMLSpan = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
 	var _addrXSLSpan = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 	proc_popup.setXml(_addrXMLSpan);
 	proc_popup.setXslt(_addrXSLSpan);

@@ -36,8 +36,9 @@
  * 
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include("./include/common/autoNumLimit.php");
 
@@ -46,7 +47,9 @@
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["sort_type"]) ? $sort_type = "hostGroup_name" : $sort_type = $_GET["sort_type"];
 
-	# start quickSearch form
+	/*
+	 * start quickSearch form
+	 */
 	include_once("./include/common/quickSearch.php");
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
@@ -55,7 +58,9 @@
 	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once($path_hg."hostGroupJS.php");
 
-	# Smarty template Init
+	/*
+	 * Smarty template Init
+	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path_hg, $tpl, "/templates/");
 

@@ -238,8 +238,7 @@
 				" AND no.is_active = 1" .
 				" AND nss.problem_has_been_acknowledged = 0" .
 				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
-	}
-	else {
+	} else {
 		$rq2 = 	" SELECT nss.current_state, ". $ndo_base_prefix ."services.host_object_id".
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, " . $ndo_base_prefix."services" .
 				" WHERE no.object_id = nss.service_object_id".
