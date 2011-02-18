@@ -92,11 +92,11 @@ var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
 
 
 // Hosts WS For Poppin
-var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/ndo/makeXMLForOneHost.php";
+var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneHost.php";
 var _addrXSLSpanhost = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 
 // Services WS For Poppin
-var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/ndo/makeXMLForOneService.php";
+var _addrXMLSpanSvc = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneService.php";
 var _addrXSLSpanSvc = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 
 // Position
