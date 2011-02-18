@@ -48,6 +48,7 @@
 	$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1");
 	if (PEAR::isError($DBRESULT)) {
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+	}
 	$confNDO = $DBRESULT->fetchRow();
 	$DBRESULT->free();
 
