@@ -139,7 +139,8 @@ class CentreonXMLBGRequest
 		 */
 		$this->hostObj		= new CentreonHost($this->DB);
 		$this->serviceObj	= new CentreonService($this->DB);
-		$this->broker 		= new CentreonBroker();
+		$this->broker 		= new CentreonBroker($this->DB);
+		
 		/*
 		 * Init Object Monitoring
 		 */

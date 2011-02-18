@@ -136,7 +136,7 @@ class Centreon	{
 		/*
 		 * Objects
 		 */
-		$this->objects = new CentreonObjects($this->DB);
+		$this->objects = new CentreonObjects($pearDB);
 
 		/*
 		 * Cache
@@ -146,7 +146,7 @@ class Centreon	{
 		/*
 		 * Engine
 		 */
-		$this->broker = new CentreonBroker();
+		$this->broker = new CentreonBroker($pearDB);
 	}
 
 	/**
