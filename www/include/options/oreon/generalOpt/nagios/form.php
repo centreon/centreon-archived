@@ -64,7 +64,7 @@
 
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 
-	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("Ndo" => "NDOutils", "Centreon Broker" => "Centreon Broker"));
+	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("Ndo" => "NDOutils", "broker" => "Centreon Broker"));
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
