@@ -3,11 +3,11 @@
 <xsl:template match="/">
 	<table class="ListTable">
 	<tr class='ListHeader'>
-		<td colspan="2" class="ListColHeaderLeft" style="white-space:nowrap;" id="alias" width="200"></td>
+		<td colspan="2" class="ListColHeaderLeft" style="white-space:nowrap;" id="alias" width="160"></td>
 		<xsl:if test="//i/s = 1">
-			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
+			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="70">Status</td>
 		</xsl:if>
-		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="service_description"></td>
+		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="services"></td>
 	</tr>
 	<xsl:for-each select="//hg">
 		<tr class='list_lvl_1'>

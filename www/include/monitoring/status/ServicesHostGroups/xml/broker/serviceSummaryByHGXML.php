@@ -36,7 +36,7 @@
  *
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
     //include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
@@ -76,70 +76,48 @@
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$grouplistStr = $obj->access->getAccessGroupsString();
-	/** **************************************
-	 * Get Icone list
-	 *
-	 */
-	$hostIcones = array();
-	$query = "SELECT no.name1, h.icon_image FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts h WHERE no.object_id = h.host_object_id";
-	$DBRESULT = $obj->DBNdo->query($query);
-	while ($data = $DBRESULT->fetchRow()) {
-		$hostIcones[$data['name1']] = $data['icon_image'];
-	}
-	$DBRESULT->free();
 
-	/** **************************************
-	 * invert HG Name and Alias
-	 */
-	$tabAliasName = array();
-	$row = array();
-	$DBRESULT_PAGINATION = $obj->DB->query("SELECT hg_name, hg_alias FROM hostgroup");
-	while ($row &= $DBRESULT_PAGINATION->numRows()) {
-		$tabAliasName[$row["hg_name"]] = $row["hg_alias"];
-	}
-	$DBRESULT_PAGINATION->free();
 
 	/** **************************************
 	 * Get Host status
 	 *
 	 */
-	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT no.name1 as host_name, hg.alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
-			" FROM " .$obj->ndoPrefix."hostgroups hg," .$obj->ndoPrefix."hostgroup_members hgm, " .$obj->ndoPrefix."hoststatus hs, " .$obj->ndoPrefix."objects no";
+	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias,hg.name, hgm.hostgroup_id, h.host_id, h.state ".
+			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
-	$rq1 .=	" WHERE hs.host_object_id = hgm.host_object_id".
-			" AND no.object_id = hgm.host_object_id" .
+	$rq1 .=	" WHERE h.host_id = hgm.host_id".
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND no.name1 not like '_Module_%' ";
+			" AND h.name not like '_Module_%' ";
 	if (!$obj->is_admin) {
-		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.alias", $obj->access->getHostGroupsString("ALIAS"));
+		$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 	}
 	if ($instance != -1) {
-		$rq1 .= " AND no.instance_id = ".$instance;
+		$rq1 .= " AND h.instance_id = ".$instance;
 	}
 	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
-		$rq1 .= " AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
+		$rq1 .= " AND h.host_id IN (" .
+				" SELECT s.host_id FROM services s " .
+				" WHERE s.state != 0)";
 	}
 	if ($o == "svcSumHG_ack_0") {
-		$rq1 .=	" AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
+		$rq1 .=	" AND h.host_id IN (" .
+				" SELECT s.host_id FROM services s " .
+				" WHERE s.acknowledged = 0 AND s.state != 0)";
 	}
 	if ($o == "svcSumHG_ack_1"){
-		$rq1 .= " AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
+		$rq1 .= " AND h.host_id IN (" .
+				" SELECT s.host_id FROM services s " .
+				" WHERE s.acknowledged = 1 AND s.state != 0)";
 	}
 	if ($search != "") {
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		$rq1 .= " AND h.name like '%" . $search . "%' ";
 	}
 	if ($hg != "") {
-		$rq1 .= " AND hg.alias = '" . $hg . "'";
+		$rq1 .= " AND hg.name = '" . $hg . "'";
 	}
-	$rq1 .= " ORDER BY $sort_type, host_name $order ";
+	$rq1 .= " ORDER BY $sort_type, h.name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$obj->XML = new CentreonXML();
@@ -149,8 +127,8 @@
 	$ct = 0;
 
 	$tab_final = array();
-	$DBRESULT_NDO = $obj->DBNdo->query($rq1);
-	$numRows = $obj->DBNdo->numberRows();
+	$DBRESULT = $obj->DBC->query($rq1);
+	$numRows = $obj->DBC->numberRows();
 
 	$obj->XML->startElement("i");
 	$obj->XML->writeElement("numrows", $numRows);
@@ -160,7 +138,7 @@
 	$o == "svcOVHG" ? $obj->XML->writeElement("s", "1") : $obj->XML->writeElement("s", "0");
 	$obj->XML->endElement();
 
-	while ($ndo = $DBRESULT_NDO->fetchRow()) {
+	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!isset($tab_final[$ndo["alias"]])) {
 			$tab_final[$ndo["alias"]] = array();
 		}
@@ -174,10 +152,10 @@
 		$tab_final[$ndo["alias"]][$ndo["host_name"]][2] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2, $obj);
 		$tab_final[$ndo["alias"]][$ndo["host_name"]][3] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3, $obj);
 		$tab_final[$ndo["alias"]][$ndo["host_name"]][4] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
-		$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["current_state"];
-		$tab_final[$ndo["alias"]][$ndo["host_name"]]["hid"] = $ndo["host_object_id"];
+		$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["state"];
+		$tab_final[$ndo["alias"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
 	}
-	$DBRESULT_NDO->free();
+	$DBRESULT->free();
 
 	$hg = "";
 	$count = 0;
