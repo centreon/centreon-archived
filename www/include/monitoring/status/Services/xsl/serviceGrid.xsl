@@ -9,7 +9,7 @@
 				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"  width="70">Status</td>
 			</xsl:if>
 			</xsl:for-each>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
+		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="services"></td>
 	</tr>
 	<xsl:for-each select="//l">
 	<tr>

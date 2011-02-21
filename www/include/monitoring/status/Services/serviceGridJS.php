@@ -80,6 +80,10 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
+		var h = document.getElementById('services');
+		h.innerHTML = '<?php echo _("Services information")?>';
+	  	h.indice = 'service_description';
+
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
 		if (_order == 'ASC') {

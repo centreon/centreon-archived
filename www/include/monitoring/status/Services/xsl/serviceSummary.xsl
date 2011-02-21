@@ -5,7 +5,7 @@
 	<tr class='ListHeader'>
 		<td colspan="2" class="ListColHeaderLeft" style="white-space:nowrap;" id="host_name" width="200"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state" width="70">Status</td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="services"></td>
+		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="services"></td>
 	</tr>
 	<xsl:for-each select="//l">
 	<tr>
