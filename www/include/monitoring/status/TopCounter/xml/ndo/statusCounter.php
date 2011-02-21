@@ -271,19 +271,19 @@
 	if ($status != 0) {
 		$errorPstt = "$error";
 	} else {
-		$errorPstt = _("OK : all pollers are running");
+		$errorPstt = _("OK: all pollers are running");
 	}
 
 	if ($latency != 0) {
 		$errorLtc = _("Latency detected on your platform; check configuration for better optimisation");
 	} else {
-		$errorLtc = _("OK : no latency detected on your platform");
+		$errorLtc = _("OK: no latency detected on your platform");
 	}
 
 	if ($activity != 0) {
 		$errorAct = _("Some database poller updates are not active; check your nagios platform");
 	} else {
-		$errorAct = _("OK : all database poller updates are active");
+		$errorAct = _("OK: all database poller updates are active");
 	}
 
 	/* *********************************************
