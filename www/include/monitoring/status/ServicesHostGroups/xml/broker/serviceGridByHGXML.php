@@ -37,7 +37,7 @@
  */
 
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
     //include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
@@ -79,56 +79,44 @@
 	$grouplistStr = $obj->access->getAccessGroupsString();
 
 	/** **************************************
-	 * Get Icone list
-	 *
-	 */
-	$hostIcones = array();
-	$query = "SELECT no.name1, h.icon_image FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts h WHERE no.object_id = h.host_object_id";
-	$DBRESULT = $obj->DBNdo->query($query);
-	while ($data = $DBRESULT->fetchRow()) {
-		$hostIcones[$data['name1']] = $data['icon_image'];
-	}
-	$DBRESULT->free();
-
-	/** **************************************
 	 * Get Host status
 	 *
 	 */
-	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs ".
-			" FROM " .$obj->ndoPrefix."hostgroups hg," .$obj->ndoPrefix."hostgroup_members hgm, " .$obj->ndoPrefix."hoststatus hs, " .$obj->ndoPrefix."objects no";
+	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.name AS alias, h.host_id id, h.name as host_name, hgm.hostgroup_id, h.state hs, h.icon_image ".
+			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
-	$rq1 .= " WHERE hs.host_object_id = hgm.host_object_id".
-			" AND no.object_id = hgm.host_object_id" .
+	$rq1 .= " WHERE h.host_id = hgm.host_id".
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND no.name1 not like '_Module_%'";
+			" AND h.enabled = '1' ".
+			" AND h.name not like '_Module_%'";
 	if (!$obj->is_admin) {
-		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.alias", $obj->access->getHostGroupsString("ALIAS"));
+		$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));
 	}
 	if ($instance != -1) {
-		$rq1 .= 	" AND no.instance_id = ".$instance;
+		$rq1 .= 	" AND h.instance_id = ".$instance;
 	}
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb") {
-		$rq1 .= " AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
+		$rq1 .= " AND h.host_id IN (" .
+				" SELECT s.host_id FROM services s " .
+				" WHERE s.state != 0)";
 	}
 	if ($o == "svcOVHG_ack_0") {
-		$rq1 .= 	" AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
+		$rq1 .= 	" AND h.host_id IN (" .
+					" SELECT s.host_id FROM services s " .
+					" WHERE s.acknowledged = 0 AND s.state != 0)";
 	}
 	if ($o == "svcOVHG_ack_1"){
-		$rq1 .= 	" AND no.name1 IN (" .
-					" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-					" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
+		$rq1 .= 	" AND h.host_id IN (" .
+					" SELECT s.host_id FROM services s " .
+					" WHERE s.acknowledged = 1 AND s.state != 0)";
 	}
 	if ($search != "") {
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		$rq1 .= " AND h.name like '%" . $search . "%' ";
 	}
 	if ($hg != "") {
-		$rq1 .= " AND hg.alias = '" . $hg . "'";
+		$rq1 .= " AND hg.hostgroup_id = '" . $hg . "'";
 	}
 	$rq1 .= " ORDER BY $sort_type, host_name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
@@ -137,64 +125,66 @@
 	$tabHG = array();
 	$tab_finalH = array();
 
-	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
-	$numRows = $obj->DBNdo->numberRows();
-	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
+	$DBRESULT = $obj->DBC->query($rq1);
+	$numRows = $obj->DBC->numberRows();
+	while ($ndo = $DBRESULT->fetchRow())	{
 		if (!isset($tab_finalH[$ndo["alias"]])) {
 			$tab_finalH[$ndo["alias"]] = array($ndo["host_name"] => array());
 		}
 		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["hs"];
+		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["icon"] = $ndo['icon_image'];
 		$tab_finalH[$ndo["alias"]][$ndo["host_name"]]["tab_svc"] = array();
 		$tabH[$ndo["host_name"]] = $ndo["id"];
 		$tabHG[$ndo["alias"]] = $ndo["hostgroup_id"];
 	}
-	$DBRESULT_NDO1->free();
+	$DBRESULT->free();
 
 
 	/** **************************************
 	 * Get Services status
 	 *
 	 */
-	$rq1 = 	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
-		 	" FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss ";
+	$rq1 = 	" SELECT DISTINCT s.service_id, h.name as host_name, s.description, s.state svcs " .
+		 	" FROM services s, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
-	$rq1 .=  " WHERE no.objecttype_id = '2' AND nss.service_object_id = no.object_id ".
-			 " AND no.name1 NOT LIKE '_Module_%' ".
-			 " AND no.is_active = 1 ";
-	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND","no.name2", "centreon_acl.service_description") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
+	$rq1 .=  " WHERE h.host_id = s.host_id ".
+			 " AND h.name NOT LIKE '_Module_%' ".
+			 " AND h.enabled = '1' " .
+			 " AND s.enabled = '1' ";
+	$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND","s.description", "centreon_acl.service_description") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-		$rq1 .= " AND nss.current_state != 0 ";
+		$rq1 .= " AND s.state != 0 ";
 	}
 	if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1") {
-		$rq1 .= "AND nss.problem_has_been_acknowledged = 1";
+		$rq1 .= "AND s.acknowledged = 1";
 	}
 	if ($o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-		$rq1 .= "AND nss.problem_has_been_acknowledged = 0";
+		$rq1 .= "AND s.acknowledged = 0";
 	}
 	if ($search != "") {
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
+		$rq1 .= " AND h.name like '%" . $search . "%' ";
 	}
 	if ($instance != -1) {
-		$rq1 .= " AND no.instance_id = ".$instance;
+		$rq1 .= " AND h.instance_id = ".$instance;
 	}
-	$rq1 .= " ORDER BY svc_name";
+	$rq1 .= " ORDER BY s.description";
 
 	$tabService = array();
 	$tabHost = array();
-	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
-	while ($ndo = $DBRESULT_NDO1->fetchRow())	{
+	$DBRESULT = $obj->DBC->query($rq1);
+	while ($ndo = $DBRESULT->fetchRow())	{
 		if (!isset($tabService[$ndo["host_name"]])) {
 			$tabService[$ndo["host_name"]] = array();
 		}
 		if (!isset($tabService[$ndo["host_name"]])) {
 			$tabService[$ndo["host_name"]] = array("tab_svc" => array());
 		}
-		$tabService[$ndo["host_name"]]["tab_svc"][$ndo["svc_name"]] = $ndo["svcs"];
-		$tabHost[$ndo["host_name"]] = $ndo["id"];
+		$tabService[$ndo["host_name"]]["tab_svc"][$ndo["description"]] = $ndo["svcs"];
+		$tabHost[$ndo["host_name"]] = $ndo["service_id"];
 	}
-	$DBRESULT_NDO1->free();
+	$DBRESULT->free();
 
 	/*
 	 * Begin XML Generation
