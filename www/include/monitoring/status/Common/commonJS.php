@@ -40,11 +40,11 @@
 		exit();
 	}
 
-	$broker = "ndo";
-
 	if (!isset($default_poller)) {
 		include_once "./include/monitoring/status/Common/default_poller.php";
 	}
+
+	$broker = $centreon->broker->getBroker();
 
 ?>
 // Dynamique
@@ -265,38 +265,52 @@ function construct_HostGroupSelectList(id) {
 		_select.appendChild(k);
 		var i = 1;
 <?php
-		$hg = array();
+		$hgNdo = array();
+		$hgBrk = array();
 		if (!$oreon->user->access->admin) {
-			$query = "SELECT DISTINCT hg.hg_alias " .
+			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name " .
 				 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
 				 		"WHERE hg.hg_id = arhr.hg_hg_id " .
 				 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
 				 		"AND hg.hg_activate = '1' ORDER BY hg.hg_alias";
 			$DBRESULT = $pearDB->query($query);
 			while ($data = $DBRESULT->fetchRow()) {
-				$hg[$data["name"]] = 1;
+				$hgNdo[$data["name"]] = 1;
+				$hgBrk[$data["name"]] = 1;
 			}
 			$DBRESULT->free();
 			unset($data);
 		}
 
 		if ($broker == 'broker') {
-			$DBRESULT = $pearDBndo->query("SELECT DISTINCT `name`, hostgroup_id FROM `hostgroups` ORDER BY `name`");
+			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta_%' ORDER BY `name`");
 		} else {
 			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}
 		while ($hostgroups = $DBRESULT->fetchRow()) {
-			if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hg[$hostgroups["name"]]))) { ?>
-				var m = document.createElement('option');
-				m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";
-				_select.appendChild(m);
-				var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
-				m.appendChild(n);
-				_select.appendChild(m);
-				select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
-				i++;
-<?php 		}
-
+			if ($broker == 'broker') {
+				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) { ?>
+					var m = document.createElement('option');
+					m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";
+					_select.appendChild(m);
+					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
+					m.appendChild(n);
+					_select.appendChild(m);
+					select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
+					i++;
+	<?php 		}
+			} else {
+				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
+					var m = document.createElement('option');
+					m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";
+					_select.appendChild(m);
+					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
+					m.appendChild(n);
+					_select.appendChild(m);
+					select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
+					i++;
+	<?php 		}
+			}
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
