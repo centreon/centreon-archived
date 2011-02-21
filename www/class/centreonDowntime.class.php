@@ -521,8 +521,8 @@ class CentreonDowntime
 		    if ($obj_type == 'svc') {
 		        $obj_id = str_replace('-', ', ', $obj_id);
 		    }
-			$query = str_replace('%obj_id%', $obj_id, $query);
-			$this->db->query($query);
+			$queryInsert = str_replace('%obj_id%', $obj_id, $query);
+			$this->db->query($queryInsert);
 		}
 	}
 	
