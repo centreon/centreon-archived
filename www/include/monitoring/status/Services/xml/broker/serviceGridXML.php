@@ -85,7 +85,7 @@
 	/** *********************************************
 	 * Get Host status
 	 */
-	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT name, state, icon_image, host_id " .
+	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
 				" FROM hosts ";
 	if ($hostgroups) {
 		$rq1 .= ", host_hostgroups hg ";
@@ -93,31 +93,31 @@
 	if (!$obj->is_admin) {
 		$rq1 	.= ", centreon_acl ";
 	}
-	$rq1 .=		" WHERE name NOT LIKE '_Module_%' ";
-	$rq1 .= $obj->access->queryBuilder("AND", "name", "centreon_acl.host_name").$obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
+	$rq1 .=		" WHERE hosts.name NOT LIKE '_Module_%' ";
+	$rq1 .= $obj->access->queryBuilder("AND", "hosts.name", "centreon_acl.host_name").$obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
-		$rq1 .= " AND host_id IN (" .
+		$rq1 .= " AND hosts.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
 				" WHERE s.state != 0)";
 	}
 	if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
-		$rq1 .= " AND host_id IN (" .
+		$rq1 .= " AND hosts.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
 				" WHERE s.acknowledged = '1')";
 	}
 	if ($search != "") {
-		$rq1 .= " AND name like '%" . $search . "%' ";
+		$rq1 .= " AND hosts.name like '%" . $search . "%' ";
 	}
 	if ($instance != -1) {
-		$rq1 .= " AND instance_id = ".$instance."";
+		$rq1 .= " AND hosts.instance_id = ".$instance."";
 	}
 	if ($hostgroups) {
-	    $rq1 .= " AND host_id = hg.host_id ";
-	    $rq1 .= " AND hg.hostgroup_id IN (SELECT hostgroup_id FROM hostgroups WHERE alias LIKE '".$hostgroups."') ";
+	    $rq1 .= " AND hosts.host_id = hg.host_id ";
+	    $rq1 .= " AND hg.hostgroup_id = '".$hostgroups."' ";
 	}
 	switch ($sort_type) {
-		case 'current_state' : $rq1 .= " ORDER BY state ". $order.",name "; break;
-		default : $rq1 .= " ORDER BY name ". $order; break;
+		case 'current_state' : $rq1 .= " ORDER BY hosts.state ". $order.",hosts.name "; break;
+		default : $rq1 .= " ORDER BY hosts.name ". $order; break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
