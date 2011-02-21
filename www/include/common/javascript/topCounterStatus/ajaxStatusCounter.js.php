@@ -15,7 +15,7 @@
  */
 <?php
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "/etc/centreon/centreon.conf.php";
 
     require_once $centreon_path . "www/class/centreonSession.class.php";
     require_once $centreon_path . "www/class/centreon.class.php";
@@ -52,7 +52,7 @@ function getXhrC(){
 	return xhrC;
 }
 
-function reloadStatusCounter(_relaod_time, _sid){
+function reloadStatusCounter(_relaod_time, _sid) {
 
 	_form=document.getElementById('AjaxBankBasic');
 	_version=_form.version.value;
@@ -94,7 +94,7 @@ function reloadStatusCounter(_relaod_time, _sid){
 					_linkHosttotal.appendChild(_text_total_host);
 					document.getElementById('hosts').appendChild(_linkHosttotal);
 
-					document.getElementById('host_up').innerHTML = '';//_statistic_host_up;
+					document.getElementById('host_up').innerHTML = '';
 					var _text_host_up = document.createTextNode(_statistic_host_up);
 					var _linkHostup = document.createElement("a");
 				  	_linkHostup.href = 'main.php?p=20103&o=h&search=';
@@ -108,14 +108,14 @@ function reloadStatusCounter(_relaod_time, _sid){
 					_linkHostProblem.appendChild(_text_host_down);
 					document.getElementById('host_down').appendChild(_linkHostProblem);
 
-					document.getElementById('host_unreachable').innerHTML = '';//_statistic_host_unreachable;
+					document.getElementById('host_unreachable').innerHTML = '';
 					var _text_host_unreachable = document.createTextNode(_statistic_host_unreachable);
 					var _linkHostunreachable = document.createElement("a");
 				  	_linkHostunreachable.href = 'main.php?p=20103&o=hpb&search=';
 					_linkHostunreachable.appendChild(_text_host_unreachable);
 					document.getElementById('host_unreachable').appendChild(_linkHostunreachable);
 
-					document.getElementById('host_pending').innerHTML = '';//_statistic_host_pending;
+					document.getElementById('host_pending').innerHTML = '';
 					var _text_host_pending = document.createTextNode(_statistic_host_pending);
 					var _linkHostpending = document.createElement("a");
 				  	_linkHostpending.href = 'main.php?p=20103&o=hpb&search=';
@@ -125,12 +125,12 @@ function reloadStatusCounter(_relaod_time, _sid){
 					/*
 					 * svc
 					 */
-					document.getElementById('services').innerHTML = '';
+					document.getElementById('service_total').innerHTML = '';
 					var _text_total_service = document.createTextNode(_statistic_total_service);
 					var _linkservice_total = document.createElement("a");
 				  	_linkservice_total.href = 'main.php?p=20201&o=svc&search=';
 					_linkservice_total.appendChild(_text_total_service);
-					document.getElementById('services').appendChild(_linkservice_total);
+					document.getElementById('service_total').appendChild(_linkservice_total);
 
 					// Ok service Stats
 					document.getElementById('service_ok').innerHTML = '';
@@ -226,8 +226,7 @@ function reloadStatusCounter(_relaod_time, _sid){
 	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
 }
 
-function setQuickTip()
-{
+function setQuickTip() {
 	new Ext.ToolTip({
 			target: 'host_down',
 			autoLoad: {url: 'include/monitoring/status/TopCounter/quicktipContent.php?type=host&status=1&sid=' + _sid},

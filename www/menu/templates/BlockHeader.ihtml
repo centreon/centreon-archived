@@ -78,7 +78,7 @@
 						<td>{$Pending}</td>
 					</tr>
 					<tr>
-						<td><div id="services" style='background:white;text-align:center'>?</div></td>
+						<td><div id="service_total" style='background:white;text-align:center'>?</div></td>
 						<td style='background:{$color.OK}'><div id="service_ok" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.WARNING}'><div id="service_warning" style='background:white;text-align:center'>?</div></td>
 						<td	style='background:{$color.CRITICAL}'><div id="service_critical" style='background:white;text-align:center'>?</div></td>
