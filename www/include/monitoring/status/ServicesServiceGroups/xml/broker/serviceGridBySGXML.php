@@ -84,16 +84,6 @@
 	$obj->setInstanceHistory($instance);
 
 	/** **********************************************
-	 * Get Icone list
-	 */
-	$query = "SELECT no.name1, h.icon_image FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts h WHERE no.object_id = h.host_object_id";
-	$DBRESULT = $obj->DBNdo->query($query);
-	while ($data = $DBRESULT->fetchRow()) {
-		$hostIcones[$data['name1']] = $data['icon_image'];
-	}
-	$DBRESULT->free();
-
-	/** **********************************************
 	 * Prepare pagination
 	 */
 	$rq1 = "SELECT DISTINCT h.name as host_name, sg.alias, sg.name AS sg_name".
@@ -116,10 +106,7 @@
 		$rq1 .= " AND s.state != 0 AND s.acknowledged = 0" ;
 	}
 	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
-		$rq1 .= " AND s.service_id IN (" .
-			" SELECT s.service_id FROM services s " .
-			" WHERE s.acknowledged = '1'" .
-			")";
+		$rq1 .= " AND s.acknowledged = '1'";
 	}
 	if ($search != ""){
 		$rq1 .= " AND h.name like '%" . $search . "%' ";
@@ -138,47 +125,6 @@
 	$DBRESULT->free();
 
 	if ($numRows) {
-		/*
-		 * Check ndo version
-		 */
-		$request = "SELECT count(*) FROM servicegroups LIMIT 1";
-		$DBRESULT = $obj->DBC->query($request);
-		while ($row = $DBRESULT->fetchRow()) {
-			if ($row["count(*)"] > 0) {
-				$custom_ndo = 0;
-				break;
-			} else {
-				$request = "SELECT count(*) FROM servicegroups LIMIT 1";
-				$DBRESULT2 = $obj->DBC->query($request);
-				while ($row2 = $DBRESULT2->fetchRow()) {
-					if ($row2["count(*)"] > 0) {
-						$custom_ndo = 1;
-						break;
-					} else {
-						$custom_ndo = 0;
-						break;
-					}
-				}
-				$DBRESULT2->free();
-			}
-		}
-		$DBRESULT->free();
-
-		/** *********************************************
-		 * Create Buffer for host status
-		 */
-		$rq = "SELECT h.state, h.display_name, h.host_id FROM hosts h " .
- 	            "WHERE h.display_name IN ($tabString)";
-		$DBRESULT = $obj->DBC->query($rq);
-		$tabHostStatus = array();
-		$tabHost = array();
-		while ($row = $DBRESULT->fetchRow()) {
-			$tabHostStatus[$row["display_name"]] = $row["state"];
-			$tabHost[$row["display_name"]] = $row["host_id"];
-		}
-		unset($row);
-		$DBRESULT->free();
-
 
 		/** ******************************************
 		 * Get all informations
@@ -238,7 +184,7 @@
 		/** *****************************************
 		 * Prepare Finale Request
 		 */
-		$rq1 =	"SELECT sg.alias, sg.name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, s.state".
+		$rq1 =	"SELECT sg.alias, sg.name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, s.state, h.icon_image, h.host_id, h.state AS host_state ".
 			" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h".
 			" WHERE sgm.servicegroup_id = sg.servicegroup_id " .
 			" AND s.service_id = sgm.service_id" .
@@ -265,7 +211,11 @@
 		if ($search != "") {
 			$rq1 .= " AND h.name like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name, service_description " . $order;
+		if ($sort_type == "host_state") {
+			$rq1 .= " ORDER BY sg.alias, host_state $order, host_name, service_description ";
+		} else {
+			$rq1 .= " ORDER BY sg.alias, host_name $order, service_description ";
+		}
 	}
 
 	/** ***************************************************
@@ -313,20 +263,20 @@
 				}
 				$flag = 1;
 				$h = $tab["host_name"];
-				$hs = $tabHostStatus[$tab["host_name"]];
+				$hs = $tab["host_state"];
 				$obj->XML->startElement("h");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 				$obj->XML->writeElement("hn", $tab["host_name"], false);
-				if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
-					$obj->XML->writeElement("hico", $hostIcones[$tab["host_name"]]);
+				if ($tab["icon_image"]) {
+					$obj->XML->writeElement("hico", $tab["icon_image"]);
 				} else {
 					$obj->XML->writeElement("hico", "none");
 				}
 				$obj->XML->writeElement("hnl", urlencode($tab["host_name"]));
-				$obj->XML->writeElement("hid", $tabHost[$tab["host_name"]]);
+				$obj->XML->writeElement("hid", $tab["host_id"]);
 				$obj->XML->writeElement("hcount", $count);
-				$obj->XML->writeElement("hs", _($obj->statusHost[$hs]));
-				$obj->XML->writeElement("hc", $obj->colorHost[$hs]);
+				$obj->XML->writeElement("hs", _($obj->statusHost[$tab["host_state"]]));
+				$obj->XML->writeElement("hc", $obj->colorHost[$tab["host_state"]]);
 				$count++;
 			}
 			$obj->XML->startElement("svc");

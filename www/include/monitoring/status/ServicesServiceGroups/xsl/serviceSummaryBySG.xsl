@@ -7,7 +7,7 @@
 		<xsl:if test="//i/s = 1">
 			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40">Status</td>
 		</xsl:if>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
+		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="services"></td>
 	</tr>
 	<xsl:for-each select="//sg">	
 		<tr class='list_lvl_1'>
@@ -32,8 +32,8 @@
 				<xsl:element name="a">
 				  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
 					<xsl:attribute name="class">infobulle</xsl:attribute>
-					<xsl:attribute name="onmouseover">displayPOPUP('host', '<xsl:value-of select="hid"/>_<xsl:value-of select="hcount"/>', '<xsl:value-of select="hid"/>');</xsl:attribute>
-					<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>_<xsl:value-of select="hcount"/>');</xsl:attribute>
+					<xsl:attribute name="onmouseover">displayPOPUP('host', '<xsl:value-of select="hcount"/>_<xsl:value-of select="hid"/>', '<xsl:value-of select="hid"/>');</xsl:attribute>
+					<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hcount"/>_<xsl:value-of select="hid"/>');</xsl:attribute>
 					<xsl:value-of select="hn"/>
 					<xsl:element name="span">
 						<xsl:attribute name="id">span_<xsl:value-of select="hcount"/>_<xsl:value-of select="hid"/></xsl:attribute>

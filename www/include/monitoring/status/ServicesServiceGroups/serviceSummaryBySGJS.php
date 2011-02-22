@@ -66,8 +66,8 @@ var _addrXSL = "./include/monitoring/status/ServicesServiceGroups/xsl/serviceSum
 _hostgroup_enable = 0;
 
 function set_header_title(){
-	var _img_asc = mk_img('./img/icones/7x7/sort_asc.gif', "asc");
-	var _img_desc = mk_img('./img/icones/7x7/sort_desc.gif', "desc");
+	var _img_asc = mk_imgOrder('./img/icones/7x7/sort_asc.gif', "asc");
+	var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "desc");
 
 	if(document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
@@ -76,9 +76,9 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-		var h = document.getElementById('service_description');
+		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo _("Services informations")?>';
-	  	h.indice = 'service_description';
+	  	h.indice = 'services';
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
