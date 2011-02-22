@@ -49,6 +49,7 @@
 	/*
 	 * start quickSearch form
 	 */
+	$o = "";
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 

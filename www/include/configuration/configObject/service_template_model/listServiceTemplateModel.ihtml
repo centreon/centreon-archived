@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
