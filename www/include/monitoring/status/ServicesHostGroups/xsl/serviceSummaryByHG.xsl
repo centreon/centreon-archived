@@ -5,7 +5,7 @@
 	<tr class='ListHeader'>
 		<td colspan="2" class="ListColHeaderLeft" style="white-space:nowrap;" id="alias" width="160"></td>
 		<xsl:if test="//i/s = 1">
-			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="70">Status</td>
+			<td class="ListColHeaderLeft" style="white-space:nowrap;" id="host_state" width="70">Status</td>
 		</xsl:if>
 		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="services"></td>
 	</tr>
