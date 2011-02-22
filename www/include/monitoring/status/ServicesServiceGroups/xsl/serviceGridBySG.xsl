@@ -7,7 +7,7 @@
 		<xsl:if test="//i/s = 1">
 			<td class="ListColHeaderCenter" style="white-space:nowrap;" id="host_state" width="40"></td>
 		</xsl:if>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
+		<td class="ListColHeaderLeft" style="white-space:nowrap;" id="services"></td>
 	</tr>
 	<xsl:for-each select="//sg">		
 			<tr class='list_lvl_1'>

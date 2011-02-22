@@ -86,9 +86,9 @@ function set_header_title(){
 			h.style.cursor = "pointer";
 		}
 
-		var h = document.getElementById('service_description');
+		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo _("Services informations")?>';
-	  	h.indice = 'service_description';
+	  	h.indice = 'services';
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
