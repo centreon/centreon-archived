@@ -109,7 +109,7 @@
 	    /* ***********************************************
 	     * Sync ACL with ldap
 	     */
-	    $queryOptions = "SELECT `key`, value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
+	    $queryOptions = "SELECT `key`, `value` FROM `options` WHERE `key` IN ('ldap_auth_enable', 'ldap_last_acl_update')";
 	    $res = $pearDB->query($queryOptions);
 	    while ($row = $res->fetchRow()) {
 	        switch ($row['key']) {
@@ -136,7 +136,7 @@
     	    $res = $pearDB->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
     	    while ($row = $res->fetchRow()) {
     	        /*
-    	         * Test is the group a not move or delete in ldap 
+    	         * Test is the group a not move or delete in ldap
     	         */
     	        if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
     	            $dn = $ldapConn->findGroupDn($row['cg_name']);
