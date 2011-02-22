@@ -75,7 +75,7 @@ function set_header_title() {
 
 		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo _("Services information")?>';
-	  	h.indice = 'service_description';
+	  	h.indice = 'services';
 
 		if (document.getElementById('current_state')){
 			var h = document.getElementById('current_state');

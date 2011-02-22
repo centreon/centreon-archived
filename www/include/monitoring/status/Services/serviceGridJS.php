@@ -82,7 +82,7 @@ function set_header_title(){
 
 		var h = document.getElementById('services');
 		h.innerHTML = '<?php echo _("Services information")?>';
-	  	h.indice = 'service_description';
+	  	h.indice = 'services';
 
 		var h = document.getElementById(_sort_type);
 		var _linkaction_asc = document.createElement("a");
