@@ -198,14 +198,14 @@
 		/*
 		 * Running
 		 */
-		if ($status != 2 && $ndo["running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit / 5)) {
+		if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 5))) {
 			$status = 1;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
 			}
 			$pollerListInError .= $ndo["name"];
 		}
-		if ($ndo["running"] == 0 && (time() - $ndo["last_update"] >= $timeUnit / 2)) {
+		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 2)) {
 			$status = 2;
 			if ($pollerListInError != "") {
 				$pollerListInError .= ", ";
