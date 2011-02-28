@@ -140,7 +140,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('oreon_web_path','/centreon/'),
 ('oreon_refresh','60'),
 ('session_expire','120'),
-('maxViewMonitoring','100'),
+('maxViewMonitoring','30'),
 ('maxViewConfiguration','30'),
 ('AjaxTimeReloadMonitoring','15'),
 ('AjaxTimeReloadStatistic','15'),
