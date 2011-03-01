@@ -166,7 +166,7 @@
 		$obj->XML->writeElement("current_state_name", _("Host Status"), 0);
 		$obj->XML->startElement("plugin_output");
 		$obj->XML->writeAttribute("name", _("Status Information"));
-		$obj->XML->text($data["output"], 0, 0);
+		$obj->XML->text($data["output"], 0);
 		$obj->XML->endElement();
 
 		/*

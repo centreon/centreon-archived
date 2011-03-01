@@ -755,7 +755,7 @@
 			$buffer->writeElement("class", $tab_class[$cpts % 2]);
 			$buffer->writeElement("date", $centreonGMT->getDate(_("Y/m/d"), $log["ctime"]));
 			$buffer->writeElement("time", $centreonGMT->getDate(_("H:i:s"), $log["ctime"]));
-			$buffer->writeElement("output", $log["output"], false);
+			$buffer->writeElement("output", $log["output"]);
 			$buffer->writeElement("contact", $log["notification_contact"], false);
 			$buffer->writeElement("contact_cmd", $log["notification_cmd"], false);
 			$buffer->endElement();

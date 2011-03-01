@@ -98,7 +98,7 @@
 	 * Graphs Tables
 	 */
 	$graphs = array();
-	
+
 	/** **************************************************
 	 * Get Service status
 	 */
@@ -323,7 +323,7 @@
 		$obj->XML->writeElement("svc_id", $data["service_id"]);
 		$obj->XML->writeElement("sc", 	$obj->colorService[$data["state"]]);
 		$obj->XML->writeElement("cs", 	_($obj->statusService[$data["state"]]), false);
-		$obj->XML->writeElement("po", 	$data["plugin_output"], false);
+		$obj->XML->writeElement("po", 	$data["plugin_output"]);
 		$obj->XML->writeElement("ca", 	$data["current_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
 		$obj->XML->writeElement("ne", 	$data["notify"]);
 		$obj->XML->writeElement("pa", 	$data["acknowledged"]);

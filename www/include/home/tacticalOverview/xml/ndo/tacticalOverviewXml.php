@@ -493,7 +493,7 @@
 	    $xml->writeElement('ip', $tab_hostprobip[$key]);
 	    $xml->writeElement('duration', $tab_hostprobduration[$key]);
 	    $xml->writeElement('last', $tab_hostproblast[$key]);
-	    $xml->writeElement('output', $tab_hostproboutput[$key], false);
+	    $xml->writeElement('output', $tab_hostproboutput[$key]);
 	    $xml->writeElement('icon', (isset($tab_hosticone[$key]) ? $tab_hosticone[$key] : ""));
 	    $xml->writeElement('hid', (isset($tab_hostobjectid[$key]) ? $tab_hostobjectid[$key] : ""));
 	    $xml->writeElement('domId', $tab_hostobjectid[$key] + '_' + $domId);
@@ -521,7 +521,7 @@
 	    $xml->writeElement('ip', $tab_ip[$key]);
 	    $xml->writeElement('duration', $tab_duration[$key]);
 	    $xml->writeElement('last', $tab_last[$key]);
-	    $xml->writeElement('output', $tab_output[$key], false);
+	    $xml->writeElement('output', $tab_output[$key]);
 	    $xml->writeElement('icon', $tab_icone[$key]);
 	    $xml->writeElement('sid', $tab_objectid[$key]);
 	    $xml->writeElement('hid', $tab_hobjectid[$key]);

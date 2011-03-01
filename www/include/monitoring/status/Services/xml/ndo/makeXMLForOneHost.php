@@ -194,7 +194,7 @@
 		$buffer->writeElement("current_state_name", _("Host Status"), 0);
 		$buffer->startElement("plugin_output");
 		$buffer->writeAttribute("name", _("Status Information"));
-		$buffer->text($ndo["output"], 0, 0);
+		$buffer->text($ndo["output"], 0);
 		$buffer->endElement();
 		$buffer->writeElement("performance_data", $ndo["perfdata"]);
 		$buffer->writeElement("performance_data_name", _("Performance Data"), 0);
