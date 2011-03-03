@@ -153,7 +153,8 @@
 		return ($nagios_id);
 	}
 
-	function insertNagios($ret = array())	{
+	function insertNagios($ret = array(), $brokerTab = array())
+	{
 		global $form, $pearDB, $centreon;
 
 		if (!count($ret))
@@ -322,18 +323,25 @@
 		$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
 		$nagios_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
+
 		/*
 		 *  Insert multiple broker module
 		 */
-		if (isset($_POST['lsOfBroker'])) {
-			if (isset($_POST['nbOfBroker']) && $_POST['nbOfBroker'] != 0) {
-				for ($lsIn=0;$lsIn <= $_POST['lsOfBroker']; $lsIn++){
+		if (isset($_POST['lsOfBroker']) || count($brokerTab)) {
+		    $brokerConf = array();
+		    if (isset($_POST['lsOfBroker'])) {
+		        $brokerConf = $_POST;
+		    } else {
+                $brokerConf = $brokerTab;
+		    }
+			if (isset($brokerConf['nbOfBroker']) && $brokerConf['nbOfBroker'] != 0) {
+				for ($lsIn=0;$lsIn <= $brokerConf['lsOfBroker']; $lsIn++){
 					$inBr = "in_broker_".$lsIn;
-					if (isset($_POST[$inBr]) && $_POST[$inBr]) {
+					if (isset($brokerConf[$inBr]) && $brokerConf[$inBr]) {
 						# Insert broker module
-					    $rq = "INSERT INTO cfg_nagios_broker_module (`nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$_POST[$inBr]."')";
+					    $rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$brokerConf[$inBr]."')";
+					    $DBRESULT = $pearDB->query($rq);
 					}
-					$DBRESULT = $pearDB->query($rq);
 				}
 			} else {
 				$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";

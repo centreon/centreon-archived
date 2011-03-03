@@ -100,6 +100,8 @@
 		$nagiosCFG = array();
 		$flag = false;
 		# Fill with buffer value
+		$brokerTab = array();
+		$brokerCount = 0;
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/^[ \t]*([0-9a-zA-Z\_]+)[ \t]*=[ \t]*(.+)/", $str, $regs))	{
@@ -124,6 +126,13 @@
 					case "service_perfdata_command" : $nagiosCFG[trim($regs[1])] = getMyCommandID(trim($regs[2])); break;
 					case "host_perfdata_file_processing_command" : $nagiosCFG[trim($regs[1])] = getMyCommandID(trim($regs[2])); break;
 					case "service_perfdata_file_processing_command" : $nagiosCFG[trim($regs[1])] = getMyCommandID(trim($regs[2])); break;
+					case "broker_module":
+					    $idx = 'in_broker_' . $brokerCount;
+					    $brokerTab[$idx] = trim($regs[2]);
+					    $brokerTab['lsOfBroker'] = $brokerCount;
+					    $brokerCount++;
+					    $brokerTab['nbOfBroker'] = $brokerCount;
+					    break;
 					default : $nagiosCFG[trim($regs[1])] = trim($regs[2]); break;
 				}
 			}
@@ -137,7 +146,7 @@
 		}
 		# Add in db
 		require_once("./include/configuration/configNagios/DB-Func.php");
-		if (insertNagios($nagiosCFG))
+		if (insertNagios($nagiosCFG, $brokerTab))
 			return true;
 		else
 			return false;
