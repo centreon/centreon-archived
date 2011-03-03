@@ -40,6 +40,7 @@
 		exit();
 	}
 
+	global $centreon_path;
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
