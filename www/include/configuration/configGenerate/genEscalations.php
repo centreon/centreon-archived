@@ -133,6 +133,7 @@
 
 				if (isset($strTemp))
 					$strDef .= print_line("contact_groups", $strTemp);
+				$strDef .= print_line("contacts", "");
 				if (isset($escalation["first_notification"]))
 					$strDef .= print_line("first_notification", $escalation["first_notification"]);
 				if (isset($escalation["last_notification"]))
@@ -227,6 +228,7 @@
 
 					if (isset($strTemp))
 						$str .= print_line("contact_groups", $strTemp);
+					$str .= print_line("contacts", "");
 					if ($escalation["first_notification"] != NULL)
 						$str .= print_line("first_notification", $escalation["first_notification"]);
 					if ($escalation["last_notification"] != NULL)
@@ -290,6 +292,7 @@
 
 				if (isset($strTemp))
 					$str .= print_line("contact_groups", $strTemp);
+				$str .= print_line("contacts", "");
 				if ($escalation["first_notification"] != NULL)
 					$str .= print_line("first_notification", $escalation["first_notification"]);
 				if ($escalation["last_notification"] != NULL)
@@ -379,6 +382,7 @@
 
 									if (isset($strTemp))
 										$strDef .= print_line("contact_groups", $strTemp);
+									$strDef .= print_line("contacts", "");
 									if (isset($escalation["first_notification"]))
 										$strDef .= print_line("first_notification", $escalation["first_notification"]);
 									if (isset($escalation["last_notification"]))
@@ -441,6 +445,7 @@
 
 				if (isset($strTemp))
 					$str .= print_line("contact_groups", $strTemp);
+				$str .= print_line("contacts", "");
 				if (isset($escalation["first_notification"]))
 					$str .= print_line("first_notification", $escalation["first_notification"]);
 				if (isset($escalation["last_notification"]))
@@ -506,6 +511,7 @@
 
 						if (isset($strTemp))
 							$strDef .= print_line("contact_groups", $strTemp);
+						$strDef .= print_line("contacts", "");
 						if (isset($escalation["first_notification"]))
 							$strDef .= print_line("first_notification", $escalation["first_notification"]);
 						if (isset($escalation["last_notification"]))
