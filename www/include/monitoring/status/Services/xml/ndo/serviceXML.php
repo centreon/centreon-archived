@@ -287,7 +287,7 @@
 		if ($o == "svc_unhandled") {
             $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
-        $rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService ";
+        $rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchOutput $searchHost $searchService ";
         if ($o == "svc_unhandled") {
             $rq .= " AND nss.service_object_id  = s.service_object_id
             	    AND s.host_object_id = hs.host_object_id
@@ -300,7 +300,7 @@
 	    if ($o == "svc_unhandled") {
             $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
-		$rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchHost $searchService $ACLCondition";
+		$rq .= " WHERE no.object_id = ns.service_object_id AND no.object_id = nss.service_object_id $rq_state $instance_filter AND no.name1 NOT LIKE '_Module_%' $hgCondition $searchOutput $searchHost $searchService $ACLCondition";
         if ($o == "svc_unhandled") {
             $rq .= " AND nss.service_object_id  = s.service_object_id
             	    AND s.host_object_id = hs.host_object_id

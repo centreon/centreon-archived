@@ -162,6 +162,22 @@
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 
+	$keyPrefix = "";
+	$statusList = array("" => "",
+	                    "up" => _("Up"),
+	                    "down" => _("Down"),
+	                    "unreachable" => _("Unreachable"));
+	if ($o == "h") {
+	    $keyPrefix = "h";
+	} elseif ($o == "hpb") {
+        $keyPrefix = "h";
+        unset($statusList["up"]);
+	} elseif ($o == "h_unhandled") {
+	    $keyPrefix = "h_unhandled";
+	    unset($statusList["up"]);
+	}
+	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('onChange' => "filterStatus(this.value);"));
+
 	$tpl->assign('limit', $limit);
 	$tpl->assign('hostStr', _('Host'));
 	$tpl->assign('pollerStr', _('Poller'));
@@ -173,3 +189,25 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("host.ihtml");
 ?>
+<script type='text/javascript'>
+document.onLoad = preInit();
+var _keyPrefix;
+
+function preInit()
+{
+	_keyPrefix = '<?php echo $keyPrefix;?>';
+	_sid = '<?php echo $sid?>';
+	_tm = <?php echo $tM?>;
+}
+
+function filterStatus(value)
+{
+	if (value) {
+		_o = _keyPrefix + '_' + value;
+	} else {
+		_o = '<?php echo $o;?>';
+	}
+	window.clearTimeout(_timeoutID);
+	initM(_tm, _sid, _o);
+}
+</script>

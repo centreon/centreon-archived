@@ -119,12 +119,26 @@
 	}
 	if ($o == "hpb") {
 		$rq1 .= " AND h.state != 0 ";
+	} elseif ($o == "h_up") {
+        $rq1 .= " AND h.state = 0 ";
+	} elseif ($o == "h_down") {
+        $rq1 .= " AND h.state = 1 ";
+	} elseif ($o == "h_unreachable") {
+        $rq1 .= " AND h.state = 2 ";
 	}
-	if ($o == "h_unhandled") {
-		$rq1 .= " AND h.state != 0 ";
-		$rq1 .= " AND h.state_type = '1'";
-		$rq1 .= " AND h.acknowledged = 0";
-		$rq1 .= " AND h.scheduled_downtime_depth = 0";
+	if (preg_match("/^h_unhandled/", $o)) {
+	    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
+	        if (isset($matches[1]) && $matches[1] == 'down') {
+				$rq1 .= " AND h.state = 1 ";
+			} elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
+                $rq1 .= " AND h.state = 2 ";
+			}
+	    } else {
+	        $rq1 .= " AND h.state != 0 ";
+	    }
+        $rq1 .= " AND h.state_type = '1'";
+        $rq1 .= " AND h.acknowledged = 0";
+        $rq1 .= " AND h.scheduled_downtime_depth = 0";
 	}
 
 	if ($hostgroups) {

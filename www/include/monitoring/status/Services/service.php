@@ -222,6 +222,23 @@
 	$o2->setSelected(NULL);
 	$tpl->assign('limit', $limit);
 
+	$keyPrefix = "";
+	$statusList = array("" => "",
+	                    "ok" => _("OK"),
+	                    "warning" => _("Warning"),
+	                    "critical" => _("Critical"),
+	                    "unknown" => _("Unknown"));
+	if ($o == "svc") {
+	    $keyPrefix = "svc";
+	} elseif ($o == "svcpb") {
+        $keyPrefix = "svc";
+        unset($statusList["ok"]);
+	} elseif ($o == "svc_unhandled") {
+	    $keyPrefix = "svc_unhandled";
+	    unset($statusList["ok"]);
+	}
+	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('onChange' => "filterStatus(this.value);"));
+
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('hostStr', _('Host'));
@@ -233,3 +250,25 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("service.ihtml");
 ?>
+<script type='text/javascript'>
+document.onLoad = preInit();
+var _keyPrefix;
+
+function preInit()
+{
+	_keyPrefix = '<?php echo $keyPrefix;?>';
+	_sid = '<?php echo $sid?>';
+	_tm = <?php echo $tM?>;
+}
+
+function filterStatus(value)
+{
+	if (value) {
+		_o = _keyPrefix + '_' + value;
+	} else {
+		_o = '<?php echo $o;?>';
+	}
+	window.clearTimeout(_timeoutID);
+	initM(_tm, _sid, _o);
+}
+</script>

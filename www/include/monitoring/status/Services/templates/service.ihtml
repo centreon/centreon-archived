@@ -8,6 +8,8 @@
 		<td><input type='text' name='host_search' id='host_search'></td>
 	    <td>{$serviceStr}:</td>
 		<td><input type='text' name='search' id='input_search'></td>
+		<td>{$form.statusFilter.label}:</td>
+		<td>{$form.statusFilter.html}</td>
 	    <td>{$outputStr}:</td>
 		<td><input type='text' name='output_search' id='output_search'></td>	    
 	    {if $poller_listing}

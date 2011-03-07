@@ -119,11 +119,27 @@
 	if ($search != "") {
 		$rq1 .= " AND (no.name1 LIKE '%" . $search . "%' OR nh.alias LIKE '%" . $search . "%' OR nh.address LIKE '%" . $search . "%') ";
 	}
+
 	if ($o == "hpb") {
 		$rq1 .= " AND nhs.current_state != 0 ";
+	} elseif ($o == "h_up") {
+        $rq1 .= " AND nhs.current_state = 0 ";
+	} elseif ($o == "h_down") {
+        $rq1 .= " AND nhs.current_state = 1 ";
+	} elseif ($o == "h_unreachable") {
+        $rq1 .= " AND nhs.current_state = 2 ";
 	}
-	if ($o == "h_unhandled") {
-		$rq1 .= " AND nhs.current_state != 0 ";
+
+	if (preg_match("/^h_unhandled/", $o)) {
+	    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
+	        if (isset($matches[1]) && $matches[1] == 'down') {
+				$rq1 .= " AND nhs.current_state = 1 ";
+			} elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
+                $rq1 .= " AND nhs.current_state = 2 ";
+			}
+	    } else {
+	        $rq1 .= " AND nhs.current_state != 0 ";
+	    }
 		$rq1 .= " AND nhs.state_type = '1'";
 		$rq1 .= " AND nhs.problem_has_been_acknowledged = 0";
 		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";

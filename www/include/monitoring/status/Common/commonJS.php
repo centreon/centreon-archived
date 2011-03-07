@@ -880,7 +880,7 @@ function monitoring_refresh()	{
 	_on = 1;
 
 	window.clearTimeout(_timeoutID);
-	initM(<?php echo $tM?>,"<?php echo $sid?>","<?php echo $o?>");
+	initM(<?php echo $tM?>,"<?php echo $sid?>",_o);
 	_on = _tmp_on;
 	viewDebugInfo('refresh');
 }
