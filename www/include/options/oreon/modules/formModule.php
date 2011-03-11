@@ -106,12 +106,7 @@
 				 *  Rebuilds modules in oreon object
 				 */
 				$oreon->creatModuleList($pearDB);
-				print_r($centreon->user->access->topologyStr);
-				print "<br>";
 				$oreon->user->access->updateTopologyStr();
-
-				print_r($centreon->user->access->topologyStr);
-				print "Update TOPO";
 			} else {
 				$tpl->assign("output4", _("Unable to install module"));
 			}
@@ -165,7 +160,7 @@
 									include_once($php_file_path);
 								}
 								$oreon->creatModuleList($pearDB);
-								$oreon->user->access->setTopology();
+								$oreon->user->access->updateTopologyStr();
 							} else {
 								$tpl->assign("output4", _("Unable to install module"));
 							}
