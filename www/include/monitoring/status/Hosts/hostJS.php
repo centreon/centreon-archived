@@ -121,16 +121,18 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
-		var h = document.getElementById(_sort_type);
-		var _linkaction_asc = document.createElement("a");
-		if (_order == 'ASC') {
-			_linkaction_asc.appendChild(_img_asc);
-		} else {
-			_linkaction_asc.appendChild(_img_desc);
+		if (_sort_type) {
+    		var h = document.getElementById(_sort_type);
+    		var _linkaction_asc = document.createElement("a");
+    		if (_order == 'ASC') {
+    			_linkaction_asc.appendChild(_img_asc);
+    		} else {
+    			_linkaction_asc.appendChild(_img_desc);
+    		}
+    		_linkaction_asc.href = '#' ;
+    		_linkaction_asc.onclick=function(){change_order()};
+    		h.appendChild(_linkaction_asc);
 		}
-		_linkaction_asc.href = '#' ;
-		_linkaction_asc.onclick=function(){change_order()};
-		h.appendChild(_linkaction_asc);
 	}
 }
 

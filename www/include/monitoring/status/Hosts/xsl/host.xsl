@@ -14,16 +14,24 @@
 			<xsl:if test="o = 'h_unhandled' or o = 'hpb'">
 				<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_hard_state_change">
 					<xsl:value-of select="hard_state_label"/>
-				</td>
+				</td>		
 			</xsl:if>
 		</xsl:for-each>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_check_attempt"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>	
 	</tr>
 	<xsl:for-each select="//l">
+	<xsl:if test = "//i/o = 'h_unhandled' or //i/o = 'hpb'">
+		<xsl:if test="parenth = 1">			
+			<tr class='list_lvl_1'><td colspan="10"><xsl:value-of select="//i/parent_host_label" /></td></tr>
+		</xsl:if>
+		<xsl:if test="delim = 1">			
+			<tr class='list_lvl_1'><td colspan="10"><xsl:value-of select="//i/regular_host_label" /></td></tr>
+		</xsl:if>
+	</xsl:if>
 	<tr>
 		<xsl:attribute name="id">trStatus</xsl:attribute>
-  		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>
+  		<xsl:attribute name="class"><xsl:value-of select="@class" /></xsl:attribute>  		
 		<td class="ListColPicker">
 		<xsl:element name="input">
 			<xsl:attribute name="type">checkbox</xsl:attribute>
@@ -57,7 +65,14 @@
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:attribute name="onmouseover">displayPOPUP('host', '<xsl:value-of select="hid"/>_<xsl:value-of select="hcount"/>', '<xsl:value-of select="hid"/>');</xsl:attribute>
 					<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>_<xsl:value-of select="hcount"/>');</xsl:attribute>
-					<xsl:value-of select="hn"/>
+					<xsl:if test="//i/o = 'h_unhandled' or //i/o = 'hpb'">
+						<xsl:if test="isp = 1 and s != 0">
+							<xsl:attribute name="style">
+	              				<xsl:text>font-weight: bold;</xsl:text>
+	            			</xsl:attribute>
+						</xsl:if>
+					</xsl:if>
+						<xsl:value-of select="hn"/>					
 					<xsl:element name="span">
 						<xsl:attribute name="id">span_<xsl:value-of select="hid"/>_<xsl:value-of select="hcount"/></xsl:attribute>
 					</xsl:element>

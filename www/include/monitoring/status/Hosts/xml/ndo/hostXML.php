@@ -68,7 +68,12 @@
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	if ($o == "hpb" || $o == "h_unhandled") {
+	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+	} else {
+	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	}
+
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 
@@ -101,14 +106,21 @@
 			" nhs.state_type," .
 			" nhs.current_check_attempt, " .
 			" nhs.scheduled_downtime_depth, " .
-			" nh.host_object_id " .
-			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."hosts nh";
+			" nh.host_object_id, " .
+	        " hph.host_parenthost_id as is_parent ".
+			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
 	if ($hostgroups) {
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
 	}
+
+	$rq1 .= ", " . $obj->ndoPrefix."hosts nh " ;
+
+	$rq1 .= " LEFT JOIN " . $obj->ndoPrefix . "host_parenthosts hph ";
+    $rq1 .= " ON hph.parent_host_object_id = nh.host_object_id ";
+
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%'";
@@ -152,6 +164,7 @@
 	if ($instance != -1) {
 		$rq1 .= " AND no.instance_id = ".$instance;
 	}
+	$rq1 .= " GROUP BY host_name ";
 	switch ($sort_type) {
 		case 'host_name' :
 			$rq1 .= " order by no.name1 ". $order;
@@ -178,7 +191,7 @@
 			$rq1 .= " order by nhs.output ". $order.",no.name1 ";
 			break;
 		default :
-			$rq1 .= " order by no.name1 ";
+			$rq1 .= " order by is_parent DESC, nhs.current_state DESC, no.name1 ASC ";
 			break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
@@ -196,8 +209,11 @@
 	$obj->XML->writeElement("p", $p);
 	$obj->XML->writeElement("o", $o);
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
+	$obj->XML->writeElement("parent_host_label", _("Parent Hosts"));
+	$obj->XML->writeElement("regular_host_label", _("Regular Hosts"));
 	$obj->XML->endElement();
 
+	$delimInit = 0;
 	while ($ndo = $DBRESULT->fetchRow()) {
 
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
@@ -214,18 +230,23 @@
 			$hard_duration = "N/A";
 		}
 
+		if ($ndo['is_parent']) {
+		    $delimInit = 1;
+		}
+
 		$obj->XML->startElement("l");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("o", 	$ct++);
 		$obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["current_state"]]);
 		$obj->XML->writeElement("f", 	$flag);
 		$obj->XML->writeElement("hid",	$ndo["host_object_id"]);
-		$obj->XML->writeElement("hn",	$ndo["host_name"], false);
+		$obj->XML->writeElement("hn",	$ndo['host_name'], false);
 		$obj->XML->writeElement("hnl",	urlencode($ndo["host_name"]));
 		$obj->XML->writeElement("a", 	($ndo["address"] ? $ndo["address"] : "N/A"));
 		$obj->XML->writeElement("ou", 	($ndo["output"] ? $ndo["output"] : "N/A"));
 		$obj->XML->writeElement("lc", 	($ndo["last_check"] != 0 ? $obj->GMT->getDate($dateFormat, $ndo["last_check"]) : "N/A"));
 		$obj->XML->writeElement("cs", 	_($obj->statusHost[$ndo["current_state"]]), false);
+		$obj->XML->writeElement("s", 	$ndo["current_state"]);
 		$obj->XML->writeElement("pha", 	$ndo["problem_has_been_acknowledged"]);
         $obj->XML->writeElement("pce", 	$ndo["passive_checks_enabled"]);
         $obj->XML->writeElement("ace", 	$ndo["active_checks_enabled"]);
@@ -238,6 +259,19 @@
         $obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);
         $obj->XML->writeElement("tr", 	$ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
+        $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
+        $parenth = 0;
+        if ($ct === 1 && $ndo['is_parent']) {
+            $parenth = 1;
+        }
+        if (!$sort_type && $delimInit && !$ndo['is_parent']) {
+            $delim = 1;
+            $delimInit = 0;
+        } else {
+            $delim = 0;
+        }
+        $obj->XML->writeElement("parenth", $parenth);
+        $obj->XML->writeElement("delim", $delim);
 
         $hostObj = new CentreonHost($obj->DB);
 		if ($ndo["notes"] != "") {

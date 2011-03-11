@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2010 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -58,7 +58,7 @@
 <script type="text/javascript">
 var _debug = 0;
 
-var _addrXML = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/serviceXML.php";
+var _addrXML = "./include/monitoring/status/Services/xml/ndo/serviceXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
