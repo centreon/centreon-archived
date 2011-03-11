@@ -322,7 +322,7 @@ class CentreonACL
  	/*
  	 *  Topology setter
  	 */
- 	public function setTopology() {
+ 	private function setTopology() {
 	  	global $pearDB;
 
 	  	if ($this->admin) {
@@ -806,7 +806,8 @@ class CentreonACL
  	 * Update topologystr value
  	 */
  	public function updateTopologyStr() {
-		$this->topologyStr = $this->getTopologyString();
+		$this->setTopology();
+ 		$this->topologyStr = $this->getTopologyString();
  	}
 
 
