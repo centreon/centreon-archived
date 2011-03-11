@@ -172,7 +172,7 @@
 			$rq1 .= " order by nhs.current_check_attempt ". $order.",no.name1 ";
 			break;
 		case 'ip' :
-			$rq1 .= " order by nh.address ". $order.",no.name1 ";
+			$rq1 .= " order by inet_aton(nh.address) ". $order.",no.name1 ";
 			break;
 		case 'plugin_output' :
 			$rq1 .= " order by nhs.output ". $order.",no.name1 ";

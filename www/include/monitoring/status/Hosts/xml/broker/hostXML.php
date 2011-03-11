@@ -168,7 +168,7 @@
 			$rq1 .= " ORDER BY h.check_attempt ". $order.",h.name ";
 			break;
 		case 'ip' :
-			$rq1 .= " ORDER BY h.address ". $order.",h.name ";
+			$rq1 .= " ORDER BY inet_aton(h.address) ". $order.",h.name ";
 			break;
 		case 'plugin_output' :
 			$rq1 .= " ORDER BY h.output ". $order.",h.name ";
