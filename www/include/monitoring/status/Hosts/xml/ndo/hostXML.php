@@ -209,8 +209,8 @@
 	$obj->XML->writeElement("p", $p);
 	$obj->XML->writeElement("o", $o);
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
-	$obj->XML->writeElement("parent_host_label", _("Parent Hosts"));
-	$obj->XML->writeElement("regular_host_label", _("Regular Hosts"));
+	$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
+	$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
 	$obj->XML->endElement();
 
 	$delimInit = 0;
