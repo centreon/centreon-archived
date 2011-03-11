@@ -117,6 +117,23 @@ class CentreonMonitoring {
 
 	/**
 	 *
+	 * Proxy function
+	 * @param unknown_type $hostList
+	 * @param unknown_type $objXMLBG
+	 * @param unknown_type $o
+	 * @param unknown_type $instance
+	 * @param unknown_type $hostgroups
+	 */
+	public function getServiceStatusCount($host_name, $objXMLBG, $o, $obj) {
+		if ($this->objBroker->getBroker() == "broker") {
+			return $this->getServiceStatusCountBroker($host_name, $objXMLBG, $o, $obj);
+		} else if ($this->objBroker->getBroker() == "ndo") {
+			return $this->getServiceStatusCountNDO($host_name, $objXMLBG, $o, $obj);
+		}
+	}
+
+	/**
+	 *
 	 * Enter description here ...
 	 * @param $host_name
 	 * @param $objXMLBG
@@ -124,7 +141,48 @@ class CentreonMonitoring {
 	 * @param $status
 	 * @param $obj
 	 */
-	public function getServiceAllStatusCount($host_name, $objXMLBG, $o, $obj) {
+	public function getServiceAllStatusCountBroker($host_name, $objXMLBG, $o, $obj) {
+
+		$rq = 	" SELECT count(s.service_id) AS nb".
+				" FROM services s".
+				" WHERE s.state = '".$status."'";
+
+		if ($o == "svcSum_ack_0") {
+			$rq .= " AND s.acknowledged = 0 AND s.state != 0";
+		} else if ($o == "svcSum_ack_1") {
+			$rq .= " AND s.acknowledged = 1 AND s.state != 0";
+		}
+
+		$rq .= 	" AND nss.service_object_id".
+				" IN (".
+				" SELECT nno.object_id".
+				" FROM " .$objXMLBG->ndoPrefix."objects nno";
+
+		if (!$objXMLBG->is_admin) {
+			$rq	.=	", centreon_acl";
+		}
+		$rq	.=	" WHERE nno.objecttype_id = 2 " .
+				" AND nno.name1 LIKE '".$host_name."'";
+		if (!$objXMLBG->is_admin) {
+			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (". $obj->access->getAccessGroupsString().")";
+		}
+		$rq .=  ")";
+
+		$DBRESULT = $objXMLBG->DBNdo->query($rq);
+		$tab = $DBRESULT->fetchRow();
+		return ($tab["nb"]);
+	}
+
+	/**
+	 *
+	 * Enter description here ...
+	 * @param $host_name
+	 * @param $objXMLBG
+	 * @param $o
+	 * @param $status
+	 * @param $obj
+	 */
+	public function getServiceAllStatusCountNDO($host_name, $objXMLBG, $o, $obj) {
 
 		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
 				" FROM " .$objXMLBG->ndoPrefix."servicestatus nss".
