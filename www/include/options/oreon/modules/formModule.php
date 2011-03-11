@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	/*
 	 * Smarty template Init
@@ -59,7 +60,7 @@
 	/*
 	 * "Name" case, it's not a module which is installed
 	 */
-	if ($name)	{
+	if ($name) {
 		$flag = false;
 		include_once($centreon_path . "www/modules/".$name."/conf.php");
 		$tpl->assign("module_rname", $module_conf[$name]["rname"]);
@@ -74,6 +75,7 @@
 			$tpl->assign("module_infosTxt", false);
 
 		$form1 = new HTML_QuickForm('Form', 'post', "?p=".$p);
+
 		if ($form1->validate())	{
 			/*
 			 * Insert Module in DB
@@ -104,9 +106,15 @@
 				 *  Rebuilds modules in oreon object
 				 */
 				$oreon->creatModuleList($pearDB);
+				print_r($centreon->user->access->topologyStr);
+				print "<br>";
+				$oreon->user->access->updateTopologyStr();
 
-			} else
+				print_r($centreon->user->access->topologyStr);
+				print "Update TOPO";
+			} else {
 				$tpl->assign("output4", _("Unable to install module"));
+			}
 		} else {
 			$form1->addElement('submit', 'install', _("Install Module"));
 			$redirect = $form1->addElement('hidden', 'o');
@@ -157,9 +165,10 @@
 									include_once($php_file_path);
 								}
 								$oreon->creatModuleList($pearDB);
-							}
-							else
+								$oreon->user->access->setTopology();
+							} else {
 								$tpl->assign("output4", _("Unable to install module"));
+							}
 						}
 						if (!$upgrade_ok)	{
 							$form->addElement('submit', 'upgrade', _("Upgrade"));
@@ -171,17 +180,21 @@
 							$infos_streams = file($centreon_path . "www/modules/".$moduleinfo["name"]."/UPGRADE/".$filename."/infos/infos.txt");
 							$infos_streams = implode("<br />", $infos_streams);
 							$upgrade_infosTxt = $infos_streams;
-						}
-						else
+						} else {
 							$upgrade_infosTxt = false;
-						$elemArr[$i] = array("upgrade_rname" => $upgrade_conf[$moduleinfo["name"]]["rname"],
+						}
+
+						$elemArr[$i] = array(
+							"upgrade_rname" => $upgrade_conf[$moduleinfo["name"]]["rname"],
 							"upgrade_release_from" => $upgrade_conf[$moduleinfo["name"]]["release_from"],
 							"upgrade_release_to" => $upgrade_conf[$moduleinfo["name"]]["release_to"],
 							"upgrade_author" => $upgrade_conf[$moduleinfo["name"]]["author"],
 							"upgrade_infos" => $upgrade_conf[$moduleinfo["name"]]["infos"],
 							"upgrade_infosTxt" => $upgrade_infosTxt,
 							"upgrade_is_validUp" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? _("Yes") : _("No"),
-							"upgrade_choice" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false);
+							"upgrade_choice" => $moduleinfo["mod_release"] === $upgrade_conf[$moduleinfo["name"]]["release_from"] ? true : false
+						);
+
 						$i++;
 						$hid_id = $form->addElement('hidden', 'id');
 						$hid_id->setValue($id);
@@ -211,5 +224,8 @@
 		$tpl->assign('form2', $renderer->toArray());
 	}
 
+	/**
+	 * Display form
+	 */
 	$tpl->display("formModule.ihtml");
 ?>

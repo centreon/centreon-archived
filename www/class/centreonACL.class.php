@@ -322,8 +322,7 @@ class CentreonACL
  	/*
  	 *  Topology setter
  	 */
- 	public function setTopology()
- 	{
+ 	public function setTopology() {
 	  	global $pearDB;
 
 	  	if ($this->admin) {
@@ -420,8 +419,7 @@ class CentreonACL
  	/*
  	 *  Access groups Getter
  	 */
- 	public function getAccessGroups()
- 	{
+ 	public function getAccessGroups() {
  		return ($this->accessGroups);
  	}
 
@@ -431,8 +429,7 @@ class CentreonACL
  	 *  - ID => will return the id's of the element
  	 *  - NAME => will return the names of the element
  	 */
- 	public function getAccessGroupsString($flag = null, $escape = true)
- 	{
+ 	public function getAccessGroupsString($flag = null, $escape = true) {
  		$string = "";
  		$i = 0;
  		if (!isset($flag)) {
@@ -803,6 +800,15 @@ class CentreonACL
  		$this->checkUpdateACL();
  		return $this->topology;
  	}
+
+ 	/**
+ 	 *
+ 	 * Update topologystr value
+ 	 */
+ 	public function updateTopologyStr() {
+		$this->topologyStr = $this->getTopologyString();
+ 	}
+
 
  	public function getTopologyString()
  	{
