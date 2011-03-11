@@ -1,3 +1,12 @@
+## Centreon 2.3.0-b3
+
+=> feature: New status filter on Host/Service Monitoring pages, no more submenus for filtering statuses
+=> feature: Display Top and Secondary priority hosts on Host Monitoring Problem pages when there is host inheritance
+
+## Centreon 2.3.0-b1
+
+=> feature: Downtimes can be scheduled periodically
+ 
 ## Centreon 2.2-RC1
 
 => fix: problem with search in monitoring
