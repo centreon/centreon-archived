@@ -36,9 +36,6 @@
  *
  */
 
- /*
-  *  This class contains the access information of a user
-  */
 /**
  *
  * Class for Access Control List management
@@ -325,15 +322,17 @@ class CentreonACL
  	/*
  	 *  Topology setter
  	 */
- 	private function setTopology()
+ 	public function setTopology()
  	{
 	  	global $pearDB;
 
 	  	if ($this->admin) {
  			$query = "SELECT topology_page FROM topology WHERE topology_page IS NOT NULL";
  			$DBRES = $pearDB->query($query);
- 			while ($row = $DBRES->fetchRow())
+ 			while ($row = $DBRES->fetchRow()) {
  				$this->topology[$row['topology_page']] = 1;
+ 			}
+			$DBRES->free();
  		} else {
 		  	if (count($this->accessGroups) > 0) {
 		  	 	/*
@@ -360,26 +359,29 @@ class CentreonACL
 														"AND acl_topology.acl_topo_activate = '1' " .
 														"AND acl_topology.acl_topo_id = acl_topology_relations.acl_topo_id");
 
-						while ($topo_page = $DBRESULT2->fetchRow()){
-							if ($str_topo != "")
+						while ($topo_page = $DBRESULT2->fetchRow()) {
+							if ($str_topo != "") {
 								$str_topo .= ", ";
+							}
 							$str_topo .= $topo_page["topology_topology_id"];
 					 		$count++;
 					 		$tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
 						}
 						$DBRESULT2->free();
 					}
+					$DBRESULT->free();
 					unset($topo_group);
 					unset($topo_page);
 					$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
 					unset($DBRESULT);
 
 					$DBRESULT = $pearDB->query("SELECT topology_page, topology_id FROM topology WHERE $ACL topology_page IS NOT NULL");
-					while ($topo_page = $DBRESULT->fetchRow())
+					while ($topo_page = $DBRESULT->fetchRow()) {
 						$this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
+					}
+					$DBRESULT->free();
 					unset($topo_page);
 					unset($tmp_topo_page);
-					$DBRESULT->free();
 				}
 				unset($DBRESULT);
 		  	} else  {
