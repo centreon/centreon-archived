@@ -599,6 +599,11 @@
 	$debugLevel["16"]= _("Host/service check information");
 	$debugLevel["32"]= _("Notification information");
 	$debugLevel["64"]= _("Event broker information");
+	$debugLevel["128"]= _("External Commands");
+	$debugLevel["256"]= _("Commands");
+	$debugLevel["512"]= _("Downtimes");
+	$debugLevel["1024"]= _("Comments");
+	$debugLevel["2048"]= _("Macros");
 	foreach ($debugLevel as $key => $val) {
 		if ($key == "-1" || $key == "0") {
 			$debugCheck[] = &HTML_QuickForm::createElement('checkbox', $key, '&nbsp;', $val, array("id"=>"debug".$key, "onClick"=>"unCheckOthers(this.id);"));
