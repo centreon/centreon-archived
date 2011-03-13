@@ -182,9 +182,9 @@ sub identify_metric($$$$$$$$){
 		# O -> BD Mysql & 1 -> RRDTool
 		if (defined($data[1])) {
 		    if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
-			updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+			updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
 		    } elsif (defined($_[4]) && $_[4] eq 2) { 
-			updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+			updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
 			updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 		    }
 		}	    
@@ -271,7 +271,7 @@ sub identify_hidden_metric($$$$$$$$){ # perfdata index status time type counter 
 	    if (defined($data[1]) && defined($_[4])){
 		if ($_[6] eq 0){
 		    # no rebuild running
-		    updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'});
+		    updateRRDDBforHiddenSVC($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], $begin, $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
 		}
 		# Storage Type
 		# O -> RRDTool only,  2 -> RRDTool + MySQL

@@ -78,6 +78,16 @@
 			foreach ($selected as $key => $value){
 				$DBRESULT = $pearDBO->query("UPDATE metrics SET `locked` = '0' WHERE `metric_id` = '".$key."'");
 			}
+		} else if ($_POST["o1"] == "dst_g" || $_POST["o2"] == "dst_g"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '".$key."'");
+			}
+		} else if ($_POST["o1"] == "dst_c" || $_POST["o2"] == "dst_c"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '".$key."'");
+			}
 		}
 	}
 
@@ -92,8 +102,9 @@
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");
 	$yesOrNo = array(NULL => "No", 0 => "No", 1 => "Yes", 2 => "Rebuilding");
+	$rrd_dst = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 
-	$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index_id"]."'");
+	$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index_id"]."' ORDER BY metric_name");
 	unset($data);
 	for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++){
 		$metric = array();
@@ -103,6 +114,7 @@
 		$metric["metric_name"] = str_replace("#S#", "/", $metric["metric_name"]);
 		$metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
 		$metric["unit_name"] = $metrics["unit_name"];
+		$metric["data_source_type"] = $rrd_dst[$metrics["data_source_type"]];
 		$metric["hidden"] = $yesOrNo[$metrics["hidden"]];
 		$metric["locked"] = $yesOrNo[$metrics["locked"]];
 		$metric["min"] = $metrics["min"];
@@ -138,16 +150,20 @@
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 4) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 4 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 5) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 5 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 6) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 8) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex == 9) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	$attrs2 = array(
@@ -158,16 +174,20 @@
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 4) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 4 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 5) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 5 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 6) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 8) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex == 9) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
+	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 = $form->getElement('o1');
@@ -191,6 +211,7 @@
 	$tpl->assign("Min", _("Min"));
 	$tpl->assign("Max", _("Max"));
 	$tpl->assign("NumberOfValues", _("Number of values"));
+	$tpl->assign("DataSourceType", _("Data source type"));
 	$tpl->assign("Hidden", _("Hidden"));
 	$tpl->assign("Locked", _("Locked"));
 

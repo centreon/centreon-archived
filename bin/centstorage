@@ -49,7 +49,7 @@ use RRDs;
 use File::Copy;
 
 # Init Globals
-use vars qw($debug $LOG %status $generalcounter);
+use vars qw($debug $LOG %status $generalcounter @rrd_dst);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 use vars qw($con_oreon $con_ods);
 
@@ -58,6 +58,9 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 
 # Init status tab
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
+
+# Init RRD:DST -- Data Source Type
+@rrd_dst = ( "GAUGE","COUNTER","DERIVE","ABSOLUTE");
 
 $debug = 0;
 my $stop = 1;
@@ -517,7 +520,7 @@ sub updateServiceState($$$$$$) {
     # call function to check if DB exist and else create it
     if (defined($index) && defined($status) && $_[2]){
 	if (-e $rrdtoolDBPath."/".$index.".rrd"){
-	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $_[2], $status);
+	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $_[2], $status, 0);
 	} else {
 	    my $begin = time() - 200000;
 	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
@@ -527,9 +530,9 @@ sub updateServiceState($$$$$$) {
 
 	    $nb_value = getLenStorageDB() / $interval;
 	    
-	    createRRDDatabase($rrdtoolDBPath, $index, $begin, $interval, "status", $nb_value);
+	    createRRDDatabase($rrdtoolDBPath, $index, $begin, $interval, "status", $nb_value, 0);
 	    tuneRRDDatabase($rrdtoolDBPath, $index, "status", $interval_hb);
-	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $_[2], $status);
+	    updateRRDDatabase($rrdtoolDBPath, $index, "status", $_[2], $status, 0);
 	    
 	    undef($begin);
 	}
@@ -554,10 +557,10 @@ sub replaceMetricSpecialChar($){
 #
 # Create RRDTool Databases
 #
-sub createRRDDatabase($$$$$$){
-    my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd) = @_;
+sub createRRDDatabase($$$$$$$){
+    my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd, $data_source_type) = @_;
     
-    RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr(replaceMetricSpecialChar($metric_name), 0, 19).":GAUGE:".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
+    RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$rrd_dst[$data_source_type].":".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
     my $ERR = RRDs::error;
     if( $ERR) {
 	writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR");
@@ -593,11 +596,16 @@ sub removeOldRRDDatabase($$$$){
     writeLogFile("Rebuild database : ".$RRDdatabase_path.$metric_id.".rrd (interval : $interval - Len : $my_len_storage_rrd)");		
 }
 
-sub updateRRDDatabase($$$$$){
-    my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value) = @_;
+sub updateRRDDatabase($$$$$$){
+    my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value, $data_source_type) = @_;
     
     $value =~ s/\,/\./g;
-    RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
+    if ( $data_source_type == 0 ) {
+        RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
+    } else {
+        # 'Data Source Type' : COUNTER need long integer
+        RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%.0f", $value));
+    }
     my $ERR = RRDs::error;
     if ($ERR){
 	writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR");
@@ -609,11 +617,16 @@ sub updateRRDDatabase($$$$$){
     undef($ERR);
 }
 
-sub updateRRDDatabaseForRebuild($$$$$){
-    my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value) = @_;
+sub updateRRDDatabaseForRebuild($$$$$$){
+    my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value, $data_source_type) = @_;
     
     $value =~ s/\,/\./g;
-    RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
+    if ( $data_source_type == 0 ) {
+        RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
+    } else {
+        # 'Data Source Type' : COUNTER need long integer
+        RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%.0f", $value));
+    }
     my $ERR = RRDs::error;
     if ($ERR){
 	if ($ERR =~ /([0-9]*) when last update time is ([0-9]*)/) {
@@ -667,7 +680,7 @@ sub CheckRebuild(){
 	$interval = 330 if (!defined($interval));
 
 	my $interval_hb = $interval * 10;
-	my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
+	my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name, data_source_type FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
 	if (!$sth3->execute) {writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "");}
 
 	writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght($con_oreon).")") if ($interval == 0);
@@ -692,14 +705,14 @@ sub CheckRebuild(){
 			removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
 
 			# Create DB
-			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd);
+			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd, $metric->{'data_source_type'});
 			tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
 
 			undef($begin);
 			undef($my_len_storage_rrd);
 			$flag++;
 		    }
-		    updateRRDDatabaseForRebuild($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'});				
+		    updateRRDDatabaseForRebuild($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'}, $metric->{'data_source_type'});
 		}
 		undef($sth4);
 		# -----------------------------------------------------

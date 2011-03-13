@@ -88,7 +88,7 @@ sub updateRRDDB($$$$$$$$) {
     $_[3] =~ s/,/./g;
     # call function to check if DB exist and else create it
     if (-e $_[0]."/".$_[1].".rrd") {
-	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3]);
+	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
     } else {
 	if ($_[0] && $_[1] && $_[5]) {
 
@@ -99,9 +99,9 @@ sub updateRRDDB($$$$$$$$) {
 	    # Caclulate number of value 
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 
-	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value);
+	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
 	    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
-	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3]);
+	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
 
 	    undef($begin);
 	}
@@ -155,7 +155,7 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 
     # call function to check if DB exist and else create it
     if (-e $_[0]."/".$_[1].".rrd"){
-	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3]);
+	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
     } else {
 	if ($_[0] && $_[1] && $_[5]){
 	    my $begin = $_[4] - 200000;
@@ -167,9 +167,9 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 	    # Caclulate number of value 
 	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
 
-	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value);
+	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
 	    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
-	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3]);
+	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
 
 	    undef($begin);
 	}
