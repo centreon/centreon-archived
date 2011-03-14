@@ -24,6 +24,8 @@
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.nagiostats_bin.label}</td><td class="FormRowValue">{$form.nagiostats_bin.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.CentreonBroker}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.Misc}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
 		{if $o == "a" || $o == "c"}

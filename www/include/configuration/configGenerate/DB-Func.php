@@ -604,4 +604,25 @@ Modified for Oreon by Christophe Coraboeuf
 	  	}
 	  	fclose($handle);
 	}
+	
+	
+	/**
+	 * Get the configuration path for Centreon Broker
+	 * 
+	 * @param int $ns_id The nagios server id
+	 * @return string
+	 */
+	function getCentreonBrokerDirCfg($ns_id)
+	{
+	    global $pearDB;
+	    $query = "SELECT centreonbroker_cfg_path
+	    	FROM nagios_server
+	    	WHERE id = " . $ns_id;
+	    $res = $pearDB->query($query);
+	    $row = $res->fetchRow();
+	    if (trim($row['centreonbroker_cfg_path']) != '') {
+	        return trim($row['centreonbroker_cfg_path']);
+	    }
+	    return null;
+	}
 ?>

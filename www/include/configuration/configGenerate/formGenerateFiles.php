@@ -273,7 +273,30 @@
 								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")." <font color='res'>KO</font>");
 							}
 						}
-						if (strlen($msg_copy[$host["id"]])) {
+						/*
+						 * Centreon Broker
+						 */
+						$listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.xml");
+						if (count($listBrokerFile) > 0) {
+						    $centreonBrokerDirCfg = getCentreonBrokerDirCfg($host['id']);
+						    if (!is_null($centreonBrokerDirCfg)) {
+    						    if (!is_dir($centreonBrokerDirCfg)) {
+    						        $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s does not exists!") . "<br>", $centreonBrokerDirCfg);
+    						    } elseif (!is_writable($centreonBrokerDirCfg)) {
+    						        $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s is not writable for webserver's user!") . "<br>", $centreonBrokerDirCfg);
+    						    } else {
+    						        foreach ($listBrokerFile as $fileCfg) {
+    						            $bool = @copy($fileCfg, $centreonBrokerDirCfg . '/' . basename($fileCfg));
+    						            $filename = array_pop(explode("/", $fileCfg));
+        						        if (!$bool) {
+            								$msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")." <font color='res'>KO</font>");
+            							}
+    						        }
+    						    }
+						    }
+						}
+						
+					    if (strlen($msg_copy[$host["id"]])) {
 							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
 						} else {
 							$msg_copy[$host["id"]] .= _("<br><b>Centreon : </b>All configuration files copied with success.");
@@ -282,6 +305,9 @@
 						passthru("echo 'SENDCFGFILE:".$host['id']."' >> $centcore_pipe", $return);
 						if (!isset($msg_restart[$host["id"]])) {
 							$msg_restart[$host["id"]] = "";
+						}
+						if (count(glob($centreonBrokerPath . $host['id'] . "/*.xml")) > 0) {
+						    passthru("echo 'SENDCBCFG:".$host['id']."' >> $centcore_pipe", $return);
 						}
 						$msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>All configuration will be send to ".$host['name']." by centcore in several minutes.");
 					}

@@ -26,6 +26,9 @@ CREATE TABLE cfg_centreonbroker_info (
 
 ALTER TABLE `cfg_centreonbroker_info`
   ADD CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE;
+  
+-- Add column for Centreon Broker configuration path in pollers
+ALTER TABLE `nagios_server` ADD COLUMN `centreonbroker_cfg_path` VARCHAR(255) AFTER `nagios_perfdata`;
 
 
 UPDATE `informations` SET `value` = '2.3.0-b5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-b4' LIMIT 1;

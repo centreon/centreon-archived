@@ -114,6 +114,12 @@
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
 	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
+	
+	/*
+	 * Centreon Broker
+	 */
+	$form->addElement('header', 'CentreonBroker', _("CentreonBroker"));
+	$form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
@@ -128,7 +134,8 @@
 		"is_default"  =>  '0',
 		"ssh_port"  =>  '22',
 		"ssh_private_key"  =>  '~/.ssh/rsa.id',
-		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata"));
+		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata",
+		"centreonbroker_cfg_path" => "/etc/centreon/broker"));
 	} else {
 		if (isset($cfg_server))
 			$form->setDefaults($cfg_server);
