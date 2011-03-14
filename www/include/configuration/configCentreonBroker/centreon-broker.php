@@ -43,6 +43,14 @@
     isset($_GET["id"]) ? $cG = $_GET["id"] : $cG = NULL;
 	isset($_POST["id"]) ? $cP = $_POST["id"] : $cP = NULL;
 	$cG ? $id = $cG : $id = $cP;
+	
+	isset($_GET["select"]) ? $cG = $_GET["select"] : $cG = NULL;
+	isset($_POST["select"]) ? $cP = $_POST["select"] : $cP = NULL;
+	$cG ? $select = $cG : $select = $cP;
+
+	isset($_GET["dupNbr"]) ? $cG = $_GET["dupNbr"] : $cG = NULL;
+	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
+	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
 	/*
 	 * Pear library
@@ -86,7 +94,7 @@
 			require_once($path."listCentreonBroker.php"); 
 			break; #Desactivate a CentreonBroker CFG
 		case "m" : 
-			multipleNdo2dbInDB(isset($select) ? $select : array(), $dupNbr);  // @todo
+			multipleCentreonBrokerInDB(isset($select) ? $select : array(), $dupNbr);
 			require_once($path."listCentreonBroker.php"); 
 			break; #Duplicate n CentreonBroker CFGs
 		case "d" : 

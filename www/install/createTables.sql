@@ -339,6 +339,28 @@ CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
 
 -- --------------------------------------------------------
 
+-- Tables for config Centreon-broker
+CREATE TABLE cfg_centreonbroker (
+	config_id INT NOT NULL AUTO_INCREMENT,
+	config_name VARCHAR(100) NOT NULL,
+	config_activate ENUM('0', '1') DEFAULT '0',
+	ns_nagios_server INT NOT NULL,
+	PRIMARY KEY (`config_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE cfg_centreonbroker_info (
+	config_id INT NOT NULL,
+	config_key VARCHAR(50) NOT NULL,
+	config_value VARCHAR(255) NOT NULL,
+	config_group VARCHAR (50) NOT NULL,
+	config_group_id INT DEFAULT NULL,
+	KEY cfg_centreonbroker_info_idx01 (config_id),
+	KEY cfg_centreonbroker_info_idx02 (config_id, config_group)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `cfg_centreonbroker_info`
+  ADD CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE;
+
 --
 -- Structure de la table `cfg_cgi`
 --

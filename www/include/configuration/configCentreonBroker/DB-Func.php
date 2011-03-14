@@ -216,4 +216,58 @@
 	        }
 	    }
 	}
+	
+	/**
+	 * Duplicate a configuration
+	 * 
+	 * @param array $ids List of id CentreonBroker configuration
+	 * @param array $nbr List of number a duplication
+	 */
+	function multipleCentreonBrokerInDB($ids, $nbrDup)
+	{
+	    foreach($ids as $id => $value)	{
+			global $pearDB;
+			$DBRESULT = $pearDB->query("SELECT config_name, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id);
+			$row = $DBRESULT->fetchRow();
+			$DBRESULT->free();
+			/*
+			 * Prepare values
+			 */
+			$values = array();
+			$values['activate']['activate'] = '0';
+			$values['ns_nagios_server'] = $row['ns_nagios_server'];
+			$query = "SELECT config_key, config_value, config_group, config_group_id
+				FROM cfg_centreonbroker_info
+				WHERE config_id = " . $id;
+			$res = $pearDB->query($query);
+    	    $values['output'] = array();
+    	    $values['input'] = array();
+    	    $values['logger'] = array();
+    	    while ($rowOpt = $res->fetchRow()) {
+    	        $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] = $rowOpt['config_value'];
+    	    }
+			/*
+			 * Copy the configuration
+			 */
+			$j = 1;
+			for ($i = 1; $i <= $nbrDup[$id]; $i++)	{
+			    $nameNOk = true;
+			    /*
+			     * Find the name
+			     */
+			    while ($nameNOk) {
+				    $newname = $row['config_name'] . '_' . $j;
+				    $query = "SELECT COUNT(*) as nb FROM cfg_centreonbroker WHERE config_name = '" . $newname . "'";
+				    $res = $pearDB->query($query);
+				    $rowNb = $res->fetchRow();
+				    if ($rowNb['nb'] == 0) {
+				        $nameNOk = false;
+				    }
+				    $j++; 
+			    }
+			    $values['name'] = $newname;
+			    insertCentreonBrokerInDB($values);
+			}
+		}
+	}
 ?>
