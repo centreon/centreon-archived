@@ -101,11 +101,26 @@
 		$ret = array();
 		$ret = $form->getSubmitValues();
 
-		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? htmlentities($ret["nagios_path_img"], ENT_QUOTES, "UTF-8") : "NULL");
-		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? htmlentities($ret["nagios_path_plugins"], ENT_QUOTES, "UTF-8") : "NULL");
+		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? $pearDB->escape($ret["nagios_path_img"]) : "NULL");
+		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? $pearDB->escape($ret["nagios_path_plugins"]) : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
-		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? htmlentities($ret["mailer_path_bin"], ENT_QUOTES, "UTF-8") : "NULL");
-		updateOption($pearDB, "broker", isset($ret["broker"]) && $ret["broker"] != NULL ? htmlentities($ret["broker"], ENT_QUOTES, "UTF-8") : "Ndo");
+		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL");
+		updateOption($pearDB, "broker", isset($ret["broker"]) && $ret["broker"] != NULL ? $pearDB->escape($ret["broker"]) : "Ndo");
+        /*
+         * Acknowledgement part
+         */
+		updateOption($pearDB, "monitoring_ack_sticky", isset($ret["monitoring_ack_sticky"]) && $ret['monitoring_ack_sticky'] ? 1 : 0);
+		updateOption($pearDB, "monitoring_ack_notify", isset($ret["monitoring_ack_notify"]) && $ret['monitoring_ack_notify'] ? 1 : 0);
+		updateOption($pearDB, "monitoring_ack_persistent", isset($ret["monitoring_ack_persistent"]) && $ret['monitoring_ack_persistent'] ? 1 : 0);
+		updateOption($pearDB, "monitoring_ack_active_checks", isset($ret["monitoring_ack_active_checks"]) && $ret['monitoring_ack_active_checks'] ? 1 : 0);
+		updateOption($pearDB, "monitoring_ack_svc", isset($ret["monitoring_ack_svc"]) && $ret['monitoring_ack_svc'] ? 1 : 0);
+
+		/**
+		 * Downtime part
+		 */
+		updateOption($pearDB, "monitoring_dwt_duration", isset($ret["monitoring_dwt_duration"]) && $ret['monitoring_dwt_duration'] ? $pearDB->escape($ret['monitoring_dwt_duration']) : 3600);
+        updateOption($pearDB, "monitoring_dwt_fixed", isset($ret["monitoring_dwt_fixed"]) && $ret['monitoring_dwt_fixed'] ? 1 : 0);
+        updateOption($pearDB, "monitoring_dwt_svc", isset($ret["monitoring_dwt_svc"]) && $ret['monitoring_dwt_svc'] ? 1 : 0);
 
 		$oreon->initOptGen($pearDB);
 	}

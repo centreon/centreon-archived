@@ -11,8 +11,17 @@
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"></td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/flag_red.gif'>&nbsp;&nbsp;{$acknowledgement_default_settings}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.monitoring_ack_sticky.label}</td><td class="FormRowValue">{$form.monitoring_ack_sticky.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.monitoring_ack_notify.label}</td><td class="FormRowValue">{$form.monitoring_ack_notify.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.monitoring_ack_persistent.label}</td><td class="FormRowValue">{$form.monitoring_ack_persistent.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.monitoring_ack_svc.label}</td><td class="FormRowValue">{$form.monitoring_ack_svc.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.monitoring_ack_active_checks.label}</td><td class="FormRowValue">{$form.monitoring_ack_active_checks.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/flag_red.gif'>&nbsp;&nbsp;{$downtime_default_settings}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>		
 	</table>
 	{if !$valid}
 		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>

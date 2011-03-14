@@ -86,13 +86,13 @@
 
 	if (!isset($user_params["force_check"]))
 		$user_params["force_check"] = 1;
-
+/*
 	$sticky = $user_params["ack_sticky"];
 	$notify = $user_params["ack_notify"];
 	$persistent = $user_params["ack_persistent"];
 	$force_check = $user_params["force_check"];
 	$ack_services = $user_params["ack_services"];
-
+*/
 	$form = new HTML_QuickForm('select_form', 'GET', 'main.php');
 
 	$form->addElement('header', 'title', _("Acknowledge problems"));
@@ -104,19 +104,29 @@
 	$form->setDefaults(array("comment" => sprintf(_("Acknowledged by %s"), $oreon->user->alias)));
 
 	$chckbox[] = $form->addElement('checkbox', 'persistent', _("Persistent"), "", array("id"=>"persistent"));
-	$chckbox[0]->setChecked($persistent);
+	if (isset($oreon->optGen['monitoring_ack_persistent']) && $oreon->optGen['monitoring_ack_persistent']) {
+	    $chckbox[0]->setChecked(true);
+	}
 
 	$chckbox2[] = $form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"), "", array("id"=>"ackhostservice"));
-	$chckbox2[0]->setChecked($ack_services);
+	if (isset($oreon->optGen['monitoring_ack_svc']) && $oreon->optGen['monitoring_ack_svc']) {
+	    $chckbox2[0]->setChecked(true);
+	}
 
 	$chckbox3[] = $form->addElement('checkbox', 'sticky', _("Sticky"), "", array("id"=>"sticky"));
-	$chckbox3[0]->setChecked($sticky);
+	if (isset($oreon->optGen['monitoring_ack_sticky']) && $oreon->optGen['monitoring_ack_sticky']) {
+	    $chckbox3[0]->setChecked(true);
+	}
 
 	$chckbox4[] = $form->addElement('checkbox', 'force_check', _("Force active checks"), "", array("id"=>"force_check"));
-	$chckbox4[0]->setChecked($force_check);
+	if (isset($oreon->optGen['monitoring_ack_active_checks']) && $oreon->optGen['monitoring_ack_active_checks']) {
+	    $chckbox4[0]->setChecked(true);
+	}
 
 	$chckbox5[] = $form->addElement('checkbox', 'notify', _("Notify"), "", array("id"=>"notify"));
-	$chckbox5[0]->setChecked($notify);
+	if (isset($oreon->optGen['monitoring_ack_notify']) && $oreon->optGen['monitoring_ack_notify']) {
+	    $chckbox5[0]->setChecked(true);
+	}
 
 	$form->addElement('hidden', 'author', $oreon->user->get_alias(), array("id"=>"author"));
 

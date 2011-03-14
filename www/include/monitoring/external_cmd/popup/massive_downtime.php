@@ -84,7 +84,11 @@
 					   )
 					);
 	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
-	$form->setDefaults(array('duration' => 3600));
+	$defaultDuration = 3600;
+	if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
+	    $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
+	}
+	$form->setDefaults(array('duration' => $defaultDuration));
 
 	$chckbox[] = $form->addElement('checkbox', 'fixed', _("Fixed"), "", array("id"=>"fixed"));
 	$chckbox[0]->setChecked(true);
@@ -106,6 +110,18 @@
 
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
+
+	$defaultFixed = "";
+	if (isset($oreon->optGen['monitoring_dwt_fixed']) && $oreon->optGen['monitoring_dwt_fixed']) {
+        $defaultFixed = "checked";
+	}
+	$tpl->assign('defaultFixed', $defaultFixed);
+
+	$defaultSetDwtOnSvc = "";
+	if (isset($oreon->optGen['monitoring_dwt_svc']) && $oreon->optGen['monitoring_dwt_svc']) {
+        $defaultSetDwtOnSvc = "checked";
+	}
+	$tpl->assign('defaultSetDwtOnSvc', $defaultSetDwtOnSvc);
 
 	$tpl->assign('o', $o);
 	$tpl->assign('p', $p);

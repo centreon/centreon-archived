@@ -17,7 +17,7 @@
 			</tr>
 			<tr class="list_one">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.fixed.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" onClick="toggleFields(this);" checked></td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="fixed" onClick="toggleFields(this);" {$defaultFixed}></td>
 			</tr>
 			<tr class="list_two">
 				<td class="FormRowField" style='padding-left:15px;'>{$authorlabel}</td>
@@ -30,7 +30,7 @@
 			{if $cmd == '75'}
 			<tr class="list_two">
 	            <td class="FormRowField" style='padding-left:15px;'>{$form.downtimehostservice.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="downtimehostservice" checked></td>
+				<td class="FormRowValue" style='padding-left:15px;'><input type="checkbox" id="downtimehostservice" {$defaultSetDwtOnSvc}></td>
 	        </tr>
 			{/if}
 		</table>

@@ -61,10 +61,24 @@
 	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
-
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
-
 	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("Ndo" => "NDOutils", "broker" => "Centreon Broker"));
+
+	/*
+	 * Acknowledgement form
+	 */
+    $form->addElement('checkbox', 'monitoring_ack_sticky', _("Sticky"));
+    $form->addElement('checkbox', 'monitoring_ack_notify', _("Notify"));
+    $form->addElement('checkbox', 'monitoring_ack_persistent', _("Persistent"));
+    $form->addElement('checkbox', 'monitoring_ack_active_checks', _("Force Active Checks"));
+    $form->addElement('checkbox', 'monitoring_ack_svc', _("Acknowledge services attached to hosts"));
+
+    /*
+     * Downtime form
+     */
+    $form->addElement('checkbox', 'monitoring_dwt_fixed', _("Fixed"));
+    $form->addElement('checkbox', 'monitoring_dwt_svc', _("Set downtimes on services attached to hosts"));
+    $form->addElement('text', 'monitoring_dwt_duration', _("Duration"), $attrsText2);
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
@@ -145,7 +159,9 @@
 	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
 	$tpl->assign("genOpt_monitoring_properties", "Monitoring engine properties");
-
+    $tpl->assign("acknowledgement_default_settings", _("Default acknowledgement settings"));
+    $tpl->assign("downtime_default_settings", _("Default downtime settings"));
+    $tpl->assign("seconds", _("seconds"));
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");
 ?>
