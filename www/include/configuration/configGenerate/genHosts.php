@@ -78,7 +78,7 @@
 	 * Create HG Cache
 	 */
 	$hgCache = array();
-	$DBRESULT2 = $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id");
+	$DBRESULT2 = $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id AND hg.hg_activate = '1'");
 	while ($hg = $DBRESULT2->fetchRow()) {
 		if (!isset($hgCache[$hg["host_host_id"]]))
 			$hgCache[$hg["host_host_id"]] = array();
