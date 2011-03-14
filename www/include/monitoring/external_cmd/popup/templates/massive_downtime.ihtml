@@ -2,7 +2,7 @@
 <form {$form.attributes}>
 	<div align=center>
 		 <table class="ListTableMedium">
-		 	<tr class="ListHeader"><td colspan='2' class="tactical_light_header"><img src="./img/icones/16x16/flag_red.gif">&nbsp;&nbsp;{$form.header.title}</td></tr>
+		 	<tr class="ListHeader"><td colspan='2' class="tactical_light_header"><img src="./img/icones/16x16/warning.gif">&nbsp;&nbsp;{$form.header.title}</td></tr>
 			<tr class="list_two">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
 				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}</td>

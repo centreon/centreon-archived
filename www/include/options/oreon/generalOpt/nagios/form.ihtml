@@ -18,7 +18,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.monitoring_ack_persistent.label}</td><td class="FormRowValue">{$form.monitoring_ack_persistent.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.monitoring_ack_svc.label}</td><td class="FormRowValue">{$form.monitoring_ack_svc.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.monitoring_ack_active_checks.label}</td><td class="FormRowValue">{$form.monitoring_ack_active_checks.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/flag_red.gif'>&nbsp;&nbsp;{$downtime_default_settings}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$downtime_default_settings}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>		
