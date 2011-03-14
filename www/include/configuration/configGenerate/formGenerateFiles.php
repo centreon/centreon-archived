@@ -138,14 +138,21 @@
 			 */
 			$gbArr = manageDependencies();
 
+			/**
+			 * Declare Poller ID
+			 */
+			global $pollerID;
+
 			/*
 			 * Request id and host type.
 			 */
 			$DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
-			if (PEAR::isError($DBRESULT_Servers))
+			if (PEAR::isError($DBRESULT_Servers)) {
 				print "DB Error : ".$DBRESULT_Servers->getDebugInfo()."<br />";
+			}
 			while ($tab = $DBRESULT_Servers->fetchRow()){
 				if (isset($ret["host"]) && ($tab['id'] == $ret["host"] || $ret["host"] == 0)) {
+					$pollerID = $tab['id'];
 					unset($DBRESULT2);
 					if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN" &&
 					    $tab['localhost']) {
@@ -177,19 +184,24 @@
 						/*
 						 * Meta Services Generation
 						 */
-						if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
-							foreach ($files as $filename)
+						if ($files = glob("./include/configuration/configGenerate/metaService/*.php")) {
+							foreach ($files as $filename) {
 								require_once($filename);
-
-						/*
-						 * Module Generation
-						 */
-						foreach ($oreon->modules as $key => $value) {
-							if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php"))
-								foreach ($files as $filename)
-									require_once ($filename);
+							}
 						}
 					}
+
+					/*
+					 * Module Generation
+					 */
+					foreach ($oreon->modules as $key => $value) {
+						if ($value["gen"] && $files = glob("./modules/".$key."/generate_files/*.php")) {
+							foreach ($files as $filename) {
+								require_once ($filename);
+							}
+						}
+					}
+
 					unset($generatedHG);
 					unset($generatedSG);
 					unset($generatedS);
