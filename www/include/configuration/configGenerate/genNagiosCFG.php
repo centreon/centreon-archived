@@ -110,7 +110,7 @@
 	/*
 	 * Include for Module the cfg file
 	 */
-	foreach ($oreon->modules as $name => $tab2)
+	foreach ($oreon->modules as $name => $tab2) {
 		if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php")) {
 			foreach ($files as $filename)	{
 				$cfg = NULL;
