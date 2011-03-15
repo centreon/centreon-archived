@@ -1,5 +1,6 @@
 ## Centreon 2.3.0-b3
 
+=> feature: Default settings can be set on Acknowledgement and Downtime forms (Host/Service Monitoring pages)
 => feature: New status filter on Host/Service Monitoring pages, no more submenus for filtering statuses
 => feature: Display Top and Secondary priority hosts on Host Monitoring Problem pages when there is host inheritance
 
