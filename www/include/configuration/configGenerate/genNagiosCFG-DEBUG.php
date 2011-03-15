@@ -98,7 +98,7 @@
 	    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN") {
             $str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/shinkenBroker.cfg\n";
 		}
-	    if ($files = glob("./include/configuration/configGenerate/metaService/*.php"))
+	    if ($files = glob("./include/configuration/configGenerate/metaService/*.php")) {
 			foreach ($files as $filename)	{
 				$cfg = NULL;
 				$file = basename($filename);
@@ -106,17 +106,20 @@
 				$cfg .= $file[0];
 				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
 			}
-		# Include for Module the cfg file
-		foreach ($oreon->modules as $name => $tab2)
-			if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php")) {
-				foreach ($files as $filename)	{
-					$cfg = NULL;
-					$file = basename($filename);
-					$file = explode(".", $file);
-					$cfg .= $file[0];
-					$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
-				}
+	    }
+	}
+
+	# Include for Module the cfg file
+	foreach ($oreon->modules as $name => $tab2) {
+		if ($oreon->modules[$name]["gen"] && $files = glob("./modules/$name/generate_files/*.php")) {
+			foreach ($files as $filename)	{
+				$cfg = NULL;
+				$file = basename($filename);
+				$file = explode(".", $file);
+				$cfg .= $file[0];
+				$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/".$cfg.".cfg\n";
 			}
+		}
 	}
 	$str .= "resource_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/resource.cfg\n";
 
