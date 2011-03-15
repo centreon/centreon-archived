@@ -68,7 +68,7 @@
 			$host_name = NULL;
 
 			$data = array();
-			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320), "persistant" => 1);
+			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
 			if (isset($host_id))
 				$data["host_id"] = $host_id;
 			if (isset($service_id))
@@ -112,12 +112,20 @@
 
 		    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts, array("onChange" =>"this.form.submit();"));
 			$selSv = $form->addElement('select', 'service_id', _("Service"), $services);
-		    $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
+		    $chbx = $form->addElement('checkbox', 'persistant', _("Fixed"), null, array('id' => 'fixed', 'onClick' => 'javascript:setDurationField()'));
+	        if (isset($oreon->optGen['monitoring_dwt_fixed']) && $oreon->optGen['monitoring_dwt_fixed']) {
+	            $chbx->setChecked(true);
+		    }
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 			$form->addElement('text', 'start', _("Start Time"), $attrsText);
 			$form->addElement('text', 'end', _("End Time"), $attrsText);
 			$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
+			$defaultDuration = 3600;
+	        if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
+	            $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
+	        }
+	        $form->setDefaults(array('duration' => $defaultDuration));
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 			$form->addRule('host_id', _("Required Field"), 'required');
