@@ -68,7 +68,7 @@ class CentreonDowntime
 	public function setSearch($search = '')
 	{
 		if ('' !== $search) {
-			$this->search = " WHERE dt_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
+			$this->search = " dt_name LIKE '%" . htmlentities($search, ENT_QUOTES, "UTF-8") . "%'";
 		}
 	}
 
@@ -113,9 +113,15 @@ class CentreonDowntime
 	 * @param int $limit The limit by page for pagination
 	 * @return array The list of downtime
 	 */
-	public function getList($num, $limit)
+	public function getList($num, $limit, $type = NULL)
 	{
-		$query = "SELECT SQL_CALC_FOUND_ROWS dt_id, dt_name, dt_description, dt_activate FROM downtime" . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+		if ($type == "h") {
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE downtime.dt_id IN(SELECT dt_id FROM downtime_host_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_hostgroup_relation) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+		} else if ($type == "s") {
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime WHERE downtime.dt_id IN (SELECT dt_id FROM downtime_service_relation) OR downtime.dt_id IN (SELECT dt_id FROM downtime_servicegroup_relation) " . ($this->search == '' ? "" : " AND ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+		} else {
+			$query = "SELECT SQL_CALC_FOUND_ROWS downtime.dt_id, dt_name, dt_description, dt_activate FROM downtime " . ($this->search == '' ? "" : " WHERE ") . $this->search . " ORDER BY dt_name LIMIT " . $num * $limit . ", " . $limit;
+		}
 		$res = $this->db->query($query);
 		if (PEAR::isError($res)) {
 			return array();
