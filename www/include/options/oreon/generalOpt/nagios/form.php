@@ -158,7 +158,7 @@
 	$tpl->assign("genOpt_dbLayer", _("Monitoring database layer"));
 	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
-	$tpl->assign("genOpt_monitoring_properties", "Monitoring engine properties");
+	$tpl->assign("genOpt_monitoring_properties", "Monitoring properties");
     $tpl->assign("acknowledgement_default_settings", _("Default acknowledgement settings"));
     $tpl->assign("downtime_default_settings", _("Default downtime settings"));
     $tpl->assign("seconds", _("seconds"));
