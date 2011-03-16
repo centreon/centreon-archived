@@ -78,16 +78,20 @@
 		$p = $ret['topology_page'];
 	}
 
-	switch ($o)	{
-		case "a" : require_once($path."formDowntime.php"); break; #Add a downtime
-		case "w" : require_once($path."formDowntime.php"); break; #Watch a downtime
-		case "c" : require_once($path."formDowntime.php"); break; #Modify a downtime
-		case "s" : $downtime->enable($downtime_id); require_once($path."listDowntime.php"); break; #Activate a service
-		case "ms" : $downtime->multiEnable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
-		case "u" : $downtime->disable($downtime_id); require_once($path."listDowntime.php"); break; #Desactivate a service
-		case "mu" : $downtime->multiDisable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
-		case "m" : $downtime->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listDowntime.php"); break; #Duplicate n services
-		case "d" : $downtime->multiDelete(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break; #Delete n services
-		default : require_once($path."listDowntime.php"); break;
+	if (isset($_GET["period_form"]) || isset($_GET["period"]) && $o == "") {
+		require_once $path."ajaxForms.php";
+	} else {
+		switch ($o)	{
+			case "a" : require_once($path."formDowntime.php"); break; #Add a downtime
+			case "w" : require_once($path."formDowntime.php"); break; #Watch a downtime
+			case "c" : require_once($path."formDowntime.php"); break; #Modify a downtime
+			case "s" : $downtime->enable($downtime_id); require_once($path."listDowntime.php"); break; #Activate a service
+			case "ms" : $downtime->multiEnable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
+			case "u" : $downtime->disable($downtime_id); require_once($path."listDowntime.php"); break; #Desactivate a service
+			case "mu" : $downtime->multiDisable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
+			case "m" : $downtime->duplicate(isset($select) ? $select : array(), $dupNbr); require_once($path."listDowntime.php"); break; #Duplicate n services
+			case "d" : $downtime->multiDelete(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break; #Delete n services
+			default : require_once($path."listDowntime.php"); break;
+		}
 	}
 ?>

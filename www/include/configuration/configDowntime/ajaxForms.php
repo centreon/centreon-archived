@@ -39,35 +39,35 @@
 	if (!isset($centreon)) {
 		return;
 	}
-	
+
 	if (isset($_GET['period'])) {
 		$period_tab = $_GET['period'];
 	} else {
 		$period_tab = 1;
 	}
-	
+
 	if (isset($_GET['period_form'])) {
 		$form = $_GET['period_form'];
 	} else {
 		$form = "general";
 	}
-	
+
 	$path = "./include/configuration/configDowntime/";
-	
+
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, 'templates/');
-	
+
 	$tpl->assign("period_tab", $period_tab);
-	
+
 	$tpl->assign("days", _("Days"));
 	$tpl->assign("seconds", _("Seconds"));
 	$tpl->assign("downtime_type", _("Downtime type"));
 	$tpl->assign("fixed", _("Fixed"));
 	$tpl->assign("flexible", _("Flexible"));
-	
+
 	switch ($form) {
 		case "weekly_basis":
 			$tpl->assign("time_period", _("Time period"));
@@ -104,8 +104,9 @@
 			$tpl->assign("monthly_basis", _("Monthly basis"));
 			$tpl->assign("specific_date", _("Specific date"));
 			$tmpl = 'general.ihtml';
-			break;			
+			break;
 	}
 	$tpl->assign('o', '');
+	$tpl->assign('p', $p);
 	$tpl->display($tmpl);
 ?>

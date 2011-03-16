@@ -322,6 +322,7 @@
 
 		$form->accept($renderer);
 		$tpl->assign('o', $o);
+		$tpl->assign('p', $p);
 		$tpl->assign('form', $renderer->toArray());
 
 		$tpl->assign('v', $centreon->user->get_version());
