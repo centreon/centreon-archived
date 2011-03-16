@@ -3,54 +3,44 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
-		
-	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
+	}
 
-	
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	#
-	# End of "database-retrieved" information
-	##########################################################
-	##########################################################
-	# Var information to format the element
-	#
+	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
 
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
@@ -76,7 +66,7 @@
 	$ldapUseDns[] = &HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("Yes"), '1', array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);"));
 	$ldapUseDns[] = &HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("No"), '0', array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);"));
 	$form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
-	
+
 	$ldapDnsUseSsl[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');
 	$ldapDnsUseSsl[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("No"), '0');
 	$form->addGroup($ldapDnsUseSsl, 'ldap_dns_use_ssl', _("Use SSL connection"), '&nbsp;');
@@ -84,7 +74,7 @@
 	$ldapDnsUseTls[] = &HTML_QuickForm::createElement('radio', 'ldap_dns_use_tls', null, _("No"), '0');
 	$form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
 	$form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
-	
+
 	$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = 1";
 	$res = $pearDB->query($query);
 	$tmplList = array();
@@ -92,9 +82,9 @@
 	    $tmplList[$row['contact_id']] = $row['contact_name'];
 	}
 	$form->addElement('select', 'ldap_contact_tmpl', _('Contact template'), $tmplList, array('id' => 'ldap_contact_tmpl'));
-	
+
 	$form->addElement('header', 'ldapinfo', _("LDAP Information"));
-	
+
 	$form->addElement('text', 'ldap_binduser', _("Bind user"), $attrsText);
 	$form->addElement('text', 'ldap_bindpass', _("Bind password"), $attrsText);
 	$form->addElement('select', 'ldap_version_protocol', _("Protocol version"), array('2' => 2, '3' => 3));
@@ -132,9 +122,9 @@
 	# Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path.'ldap/', $tpl);
-	
+
 	$ldapAdmin = new CentreonLdapAdmin($pearDB);
-	
+
 	$defaultOpt = array('ldap_auth_enable' => '0',
 		'ldap_auto_import' => '0',
 		'ldap_srv_dns' => '0',
@@ -143,24 +133,32 @@
 		'ldap_dns_use_ssl' => '0',
 	    'ldap_dns_use_tls' => '0',
 	    'ldap_contact_tmpl' => '0');
-	
+
 	$query = "SELECT `key`, `value` FROM `options`
 		WHERE `key` IN ('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain', 'ldap_contact_tmpl')";
 	$res = $pearDB->query($query);
 	while ($row = $res->fetchRow()) {
 	    $gopt[$row['key']] = $row['value'];
 	}
-	
+
 	$gopt = array_merge($defaultOpt, $gopt);
-	
+
 	$tmpOptions = $ldapAdmin->getTemplate();
 	$gopt['ldap_template'] = $tmpOptions['tmpl'];
-    $gopt['ldap_version_protocol'] = $tmpOptions['protocol_version'];
-    $gopt['ldap_binduser'] = $tmpOptions['bind_dn'];
+	if (isset($tmpOptions['protocol_version'])) {
+ 		$gopt['ldap_version_protocol'] = $tmpOptions['protocol_version'];
+	} else {
+		$gopt['ldap_version_protocol'] = 3;
+	}
+ 	$gopt['ldap_binduser'] = $tmpOptions['bind_dn'];
     $gopt['ldap_bindpass'] = $tmpOptions['bind_pass'];
     $gopt['ldap_user_basedn'] = $tmpOptions['user_base_search'];
     $gopt['ldap_group_basedn'] = $tmpOptions['group_base_search'];
-    $gopt['ldap_user_filter'] = $tmpOptions['user_filter'];
+    if (isset($tmpOptions['user_filter'])) {
+    	$gopt['ldap_user_filter'] = $tmpOptions['user_filter'];
+    } else {
+    	$gopt['ldap_user_filter'] = "";
+    }
     $gopt['ldap_user_uid_attr'] = $tmpOptions['alias'];
     $gopt['ldap_user_group'] = $tmpOptions['user_group'];
     $gopt['ldap_user_name'] = $tmpOptions['user_name'];
@@ -172,7 +170,7 @@
     $gopt['ldap_group_gid_attr'] = $tmpOptions['group_name'];
     $gopt['ldap_group_member'] = $tmpOptions['group_member'];
 	unset($tmpOptions);
-	
+
 	$form->setDefaults($gopt);
 
 	$subC = $form->addElement('submit', 'submitC', _("Save"));
@@ -181,8 +179,12 @@
 
     $valid = false;
 	if ($form->validate())	{
-	    
+
 	    $values = $form->getSubmitValues();
+
+	    if (!isset($values['ldap_contact_tmpl'])) {
+	    	$values['ldap_contact_tmpl'] = "";
+	    }
 
 	    /* Set the general options for ldap */
 	    $options = array('ldap_auth_enable' => $values['ldap_auth_enable']['ldap_auth_enable'],
@@ -194,11 +196,11 @@
 	        'ldap_contact_tmpl' => $values['ldap_contact_tmpl']
 	        );
 	    $ldapAdmin->setGeneralOptions($options);
-	    
+
 	    /* Get the template ID */
 	    $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
 	    $res = $pearDB->query($queryTemplate);
-	    
+
 	    /* Prepare options */
 	    $options = array();
 	    $options['tmpl'] = $values['ldap_template'];
@@ -246,15 +248,15 @@
 	        $options['group_name'] = $tmplOptions['group_attr']['group_name'];
 	        $options['group_member'] = $tmplOptions['group_attr']['member'];
 	    }
-	    
+
 	    if (false === PEAR::isError($res) && $res->numRows() == 1) {
 	        $row = $res->fetchRow();
 	        $idTmpl = $row['ar_id'];
-	        $ldapAdmin->modifyTemplate($idTmpl, $options);	        
+	        $ldapAdmin->modifyTemplate($idTmpl, $options);
 	    } else {
 	        $ldapAdmin->addTemplate($options);
 	    }
-	    
+
 	    $hostOld = array();
 	    if (isset($_POST['ldapHosts'])) {
     	    foreach ($_POST['ldapHosts'] as $ldapHost) {
@@ -264,7 +266,7 @@
     	    }
     	    $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap' AND ar_id NOT IN (" . join(', ', $hostOld) . ")";
     	    $pearDB->query($query);
-    	    
+
     	    foreach ($_POST['ldapHosts'] as $ldapHost) {
     	        if (!isset($ldapHost['use_ssl'])) {
     	            $ldapHost['use_ssl'] = '0';
@@ -282,23 +284,22 @@
 	        $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap'";
 	        $pearDB->query($query);
 	    }
-		
+
 		$o = "w";
    		$valid = true;
 		$form->freeze();
 
 	}
+
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
 	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 	}
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ldap'"));
 
-
-	#
-	##Apply a template definition
-	#
-
+	/*
+	 * Apply a template definition
+	 */
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -308,8 +309,8 @@
 	$tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");
-	
+
 	$nbOfInitialRows = 0;
-	
+
 	require_once $path.'ldap/javascript/ldapJs.php';
 ?>
