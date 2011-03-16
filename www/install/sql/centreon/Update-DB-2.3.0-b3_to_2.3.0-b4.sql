@@ -79,4 +79,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 DELETE FROM topology WHERE topology_page = '606';
 DELETE FROM topology WHERE topology_parent = '606';
 
+UPDATE topology SET topology_order = 40 WHERE topology_page = '50501';
+
+
 UPDATE `informations` SET `value` = '2.3.0-b4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-b3' LIMIT 1;
