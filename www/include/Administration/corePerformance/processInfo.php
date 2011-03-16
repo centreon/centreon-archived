@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	require_once "./include/monitoring/common-Func.php";
 
@@ -71,7 +72,12 @@
 	    $pollerList[$data["id"]] = $data["name"];
 	}
 	$DBRESULT->free();
+	
+	/*
+	 * Get poller ID
+	 */
 	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
+	
 	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["pollers"])) {
 		$form->setDefaults(array('pollers' => $selectedPoller));
@@ -85,50 +91,77 @@
 	/*
 	 * Get Poller List
 	 */
-	$ndo_base_prefix = getNDOPrefix();
+	if ($centreon->broker->getBroker() != "Broker") {
+		$ndo_base_prefix = getNDOPrefix();
+	}
+
 	$tab_nagios_server = array();
 	$DBRESULT = $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
 								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
 								"WHERE ndomod.activate = '1' " .
 								"AND ndomod.ns_nagios_server = n.id AND n.id = '".$pearDB->escape($selectedPoller)."' " .
 								"ORDER BY n.localhost DESC");
-
 	while ($nagios = $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
+		
+		if ($centreon->broker->getBroker() == "broker") {
+			$query = "SELECT last_log_rotation, start_time, end_time, " .
+						"last_command_check, last_alive AS status_update_time, running AS is_currently_running, ".
+						"pid AS process_id, daemon_mode, " .
+						"notifications AS notifications_enabled, active_service_checks AS active_service_checks_enabled, passive_service_checks AS passive_service_checks_enabled, " .
+						"active_host_checks AS active_host_checks_enabled, passive_host_checks AS passive_host_checks_enabled, event_handlers AS event_handlers_enabled, flap_detection AS flap_detection_enabled, " .
+						"failure_prediction AS failure_prediction_enabled, process_perfdata AS process_performance_data, obsess_over_hosts, obsess_over_services, " .
+						"modified_host_attributes, modified_service_attributes, global_host_event_handler, global_service_event_handler " .
+						"FROM instances WHERE name LIKE '".$nagios['name']."'";
+			$DBRESULT3 = $pearDBO->query($query);
+			$data = $DBRESULT3->fetchRow();
+			/*
+			 * Convert Date
+			 */
+			if ($data["last_log_rotation"] != 0) {
+				$data['last_log_rotation'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["last_log_rotation"]);
+			} else {
+				$data['last_log_rotation'] = "N/A";
+			}
+			$data['program_start_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["start_time"]);
+			$data['program_end_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["end_time"]);
+			$data['last_command_check'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["last_command_check"]);
 
-		$DBRESULT2 = $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['name']."'");
-		$row = $DBRESULT2->fetchRow();
-		$DBRESULT2->free();
-
-		$instance_id = $row['instance_id'];
-		if ($instance_id) {
-
-			$DBRESULT3 = $pearDBndo->query(
-					"SELECT program_version, programstatus_id, " .
+			$procInfo[$nagios['id']] = $data;
+			$DBRESULT3->free();
+		} else {
+			$DBRESULT2 = $pearDBndo->query("SELECT instance_id FROM `".$ndo_base_prefix."instances` WHERE instance_name LIKE '".$nagios['name']."'");
+			$row = $DBRESULT2->fetchRow();
+			$DBRESULT2->free();
+			$instance_id = $row['instance_id'];
+			if ($instance_id) {
+	
+				$query = "SELECT program_version, programstatus_id, " .
 					"pp.instance_id, UNIX_TIMESTAMP(status_update_time),  UNIX_TIMESTAMP(program_start_time),  UNIX_TIMESTAMP(program_end_time), " .
 					"is_currently_running, ps.process_id, daemon_mode, UNIX_TIMESTAMP(last_command_check), " .
 					"UNIX_TIMESTAMP(last_log_rotation), notifications_enabled, active_service_checks_enabled, passive_service_checks_enabled, " .
 					"active_host_checks_enabled, passive_host_checks_enabled, event_handlers_enabled, flap_detection_enabled, " .
 					"failure_prediction_enabled, process_performance_data, obsess_over_hosts, obsess_over_services, " .
 					"modified_host_attributes, modified_service_attributes, global_host_event_handler, global_service_event_handler " .
-					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' ORDER BY program_date DESC LIMIT 1");
-
-			$data = $DBRESULT3->fetchRow();
-
-			/*
-			 * Convert Date
-			 */
-			if ($data["UNIX_TIMESTAMP(last_log_rotation)"] != 0)
-				$data['last_log_rotation'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_log_rotation)"]);
-			else
-				$data['last_log_rotation'] = "N/A";
-
-			$data['program_start_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_start_time)"]);
-			$data['program_end_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_end_time)"]);
-			$data['last_command_check'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_command_check)"]);
-
-			$procInfo[$nagios['id']] = $data;
-			$DBRESULT3->free();
+					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' ORDER BY program_date DESC LIMIT 1";
+				$DBRESULT3 = $pearDBndo->query($query);
+				$data = $DBRESULT3->fetchRow();
+	
+				/*
+				 * Convert Date
+				 */
+				if ($data["UNIX_TIMESTAMP(last_log_rotation)"] != 0) {
+					$data['last_log_rotation'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_log_rotation)"]);
+				} else {
+					$data['last_log_rotation'] = "N/A";
+				}
+				$data['program_start_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_start_time)"]);
+				$data['program_end_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_end_time)"]);
+				$data['last_command_check'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_command_check)"]);
+	
+				$procInfo[$nagios['id']] = $data;
+				$DBRESULT3->free();
+			}		
 		}
 	}
 	$DBRESULT->free();
@@ -162,14 +195,17 @@
 	if (isset($procInfo)) {
 		$tpl->assign("procInfo", $procInfo);
 	}
-	if (isset($host_list) && $host_list)
+	if (isset($host_list) && $host_list) {
 		$tpl->assign('host_list', $host_list);
-
-	if (isset($tab_server) && $tab_server)
+	}
+	if (isset($tab_server) && $tab_server) {
 		$tpl->assign('tab_server', $tab_server);
-
-	/* Nagios Process Information */
-	$tpl->assign("processInfoLabel", _("Nagios Process Information"));
+	}
+	
+	/* 
+	 * Nagios Process Information
+	 */
+	$tpl->assign("processInfoLabel", _("Scheduling Process Information"));
 	$tpl->assign("str_prog_version", _("Program Version"));
 	$tpl->assign("str_prog_start_time", _("Program Start Time"));
 	$tpl->assign("str_last_log_rotation", _("Last Log File Rotation:"));
@@ -188,66 +224,33 @@
 	$tpl->assign("str_flap_detection", _("Flap detection enabled?"));
 	$tpl->assign("yes_no_tab", $yes_no_tab);
 
-
-	$str_shutdown = _("Shutdown the Nagios process");
-	$str_start = _("Start the Nagios process");
-	$str_restart = _("Restart the Nagios process");
-	$str_notif_enable = _("Enable notifications");
-	$str_notif_disable = _("Disable notifications");
-	$str_start_svc_check = _("Start executing service checks");
-	$str_stop_svc_check = _("Stop executing service checks");
-	$str_start_passive_svc_check = _("Start accepting passive service checks");
-	$str_stop_passive_svc_check = _("Stop accepting passive service checks");
-	$str_start_host_check = _("Start executing host checks");
-	$str_stop_host_check = _("Stop executing host checks");
-	$str_start_passive_host_check = _("Start accepting passive host checks");
-	$str_stop_passive_host_check = _("Stop accepting passive host checks");
-	$str_handler_enable = _("Enable event handlers");
-	$str_handler_disable = _("Disable event handlers");
-	$str_start_host_obsess = _("Start obsessing over hosts");
-	$str_stop_host_obsess = _("Stop obsessing over hosts");
-	$str_start_svc_obsess = _("Start obsessing over services");
-	$str_stop_svc_obsess = _("Stop obsessing over services");
-	$str_flap_detection_enable = _("Enable flap detection");
-	$str_flap_detection_disable = _("Disable flap detection");
-	$str_perfdata_enable = _("Enable performance data");
-	$str_perfdata_disable = _("Disable performance data");
-
-	/* Process commands */
+	/*
+	 * Process commands
+	 */
 	$tpl->assign("commandLabel", _("Process Commands"));
-	$tpl->assign("str_shutdown", $str_shutdown);
-	$tpl->assign("str_start", $str_start);
-	$tpl->assign("str_restart", $str_restart);
-
-	$tpl->assign("str_notif_enable", $str_notif_enable);
-	$tpl->assign("str_notif_disable", $str_notif_disable);
-
-	$tpl->assign("str_start_svc_check", $str_start_svc_check);
-	$tpl->assign("str_stop_svc_check", $str_stop_svc_check);
-
-	$tpl->assign("str_start_passive_svc_check", $str_start_passive_svc_check);
-	$tpl->assign("str_stop_passive_svc_check", $str_stop_passive_svc_check);
-
-	$tpl->assign("str_start_host_check", $str_start_host_check);
-	$tpl->assign("str_stop_host_check", $str_stop_host_check);
-
-	$tpl->assign("str_start_passive_host_check", $str_start_passive_host_check);
-	$tpl->assign("str_stop_passive_host_check", $str_stop_passive_host_check);
-
-	$tpl->assign("str_handler_enable", $str_handler_enable);
-	$tpl->assign("str_handler_disable", $str_handler_disable);
-
-	$tpl->assign("str_start_host_obsess", $str_start_host_obsess);
-	$tpl->assign("str_stop_host_obsess", $str_stop_host_obsess);
-
-	$tpl->assign("str_start_svc_obsess", $str_start_svc_obsess);
-	$tpl->assign("str_stop_svc_obsess", $str_stop_svc_obsess);
-
-	$tpl->assign("str_flap_detection_enable", $str_flap_detection_enable);
-	$tpl->assign("str_flap_detection_disable", $str_flap_detection_disable);
-
-	$tpl->assign("str_perfdata_enable", $str_perfdata_enable);
-	$tpl->assign("str_perfdata_disable", $str_perfdata_disable);
+	$tpl->assign("str_shutdown", _("Shutdown the Nagios process"));
+	$tpl->assign("str_start", _("Start the Nagios process"));
+	$tpl->assign("str_restart", _("Restart the Nagios process"));
+	$tpl->assign("str_notif_enable", _("Enable notifications"));
+	$tpl->assign("str_notif_disable", _("Disable notifications"));
+	$tpl->assign("str_start_svc_check", _("Start executing service checks"));
+	$tpl->assign("str_stop_svc_check", _("Stop executing service checks"));
+	$tpl->assign("str_start_passive_svc_check", _("Start accepting passive service checks"));
+	$tpl->assign("str_stop_passive_svc_check", _("Stop accepting passive service checks"));
+	$tpl->assign("str_start_host_check", _("Start executing host checks"));
+	$tpl->assign("str_stop_host_check", _("Stop executing host checks"));
+	$tpl->assign("str_start_passive_host_check", _("Start accepting passive host checks"));
+	$tpl->assign("str_stop_passive_host_check", _("Stop accepting passive host checks"));
+	$tpl->assign("str_handler_enable", _("Enable event handlers"));
+	$tpl->assign("str_handler_disable", _("Disable event handlers"));
+	$tpl->assign("str_start_host_obsess", _("Start obsessing over hosts"));
+	$tpl->assign("str_stop_host_obsess", _("Stop obsessing over hosts"));
+	$tpl->assign("str_start_svc_obsess", _("Start obsessing over services"));
+	$tpl->assign("str_stop_svc_obsess", _("Stop obsessing over services"));
+	$tpl->assign("str_flap_detection_enable", _("Enable flap detection"));
+	$tpl->assign("str_flap_detection_disable", _("Disable flap detection"));
+	$tpl->assign("str_perfdata_enable", _("Enable performance data"));
+	$tpl->assign("str_perfdata_disable", _("Disable performance data"));
 
 	$shutdown_img = "<img src='./img/icones/16x16/stop.gif'>";
 	$start_img = "<img src='./img/icones/16x16/media_play.gif'>";
