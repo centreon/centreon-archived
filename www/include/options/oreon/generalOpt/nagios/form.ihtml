@@ -20,7 +20,8 @@
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$downtime_default_settings}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
-		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 	{if !$valid}
 		<div id="validForm"><p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p></div>

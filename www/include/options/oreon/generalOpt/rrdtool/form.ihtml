@@ -26,6 +26,7 @@
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.watermark_title}</td></tr>
  	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_watermark_font.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_font.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_watermark_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_fontsize.html}&nbsp;px</td></tr>
+	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	
 </table>
 {if !$valid}

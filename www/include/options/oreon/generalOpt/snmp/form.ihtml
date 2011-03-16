@@ -11,6 +11,7 @@
 	<tr class="list_two"><td class="FormRowField">{$form.snmpttconvertmib_path_bin.label}</td><td class="FormRowValue">{$form.snmpttconvertmib_path_bin.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.snmptt_unknowntrap_log_file.label}</td><td class="FormRowValue">{$form.snmptt_unknowntrap_log_file.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.perl_library_path.label}</td><td class="FormRowValue">{$form.perl_library_path.html}</td></tr>
+	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">

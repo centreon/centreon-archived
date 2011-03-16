@@ -11,6 +11,7 @@
 			<td class="ListColLeft">{$elemArr[elem].select}</td>
 		</tr>
 		{/section}
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 	<div id="validForm">
 		<input type=submit value="{$submitTitle}">

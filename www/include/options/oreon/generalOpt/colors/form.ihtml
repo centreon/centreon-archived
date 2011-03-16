@@ -60,6 +60,7 @@
     <tr class="list_one"><td class="FormRowField">{$form.color_host_unreachable.label}</td><td class="FormRowValue">
     {$form.color_host_unreachable.html}&nbsp;&nbsp;{$form.color_host_unreachable_color.html}&nbsp;&nbsp;{$form.color_host_unreachable_modify.html}
     </td></tr>
+    <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">

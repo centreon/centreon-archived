@@ -35,6 +35,7 @@
 	<tr class="list_one" id="ldap_group_filter"><td class="FormRowField">{$form.ldap_group_filter.label}</td><td class="FormRowValue">{$form.ldap_group_filter.html}</td></tr>
 	<tr class="list_two" id="ldap_group_gid_attr"><td class="FormRowField">{$form.ldap_group_gid_attr.label}</td><td class="FormRowValue">{$form.ldap_group_gid_attr.html}</td></tr>
 	<tr class="list_one" id="ldap_group_member"><td class="FormRowField">{$form.ldap_group_member.label}</td><td class="FormRowValue">{$form.ldap_group_member.html}</td></tr>
+	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">
