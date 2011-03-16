@@ -51,7 +51,7 @@
 
 	$poller = $_GET["poller"];
 	$cmd = $_GET["cmd"];
-	$sid = $_GET["sid"];
+	$sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
 	$type = $_GET["type"];
 
 	$pearDB = new CentreonDB();
