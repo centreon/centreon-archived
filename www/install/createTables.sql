@@ -339,7 +339,9 @@ CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
 
 -- --------------------------------------------------------
 
--- Tables for config Centreon-broker
+--
+-- Structure de la table `cfg_centreonbroker`
+--
 CREATE TABLE cfg_centreonbroker (
 	config_id INT NOT NULL AUTO_INCREMENT,
 	config_name VARCHAR(100) NOT NULL,
@@ -347,6 +349,12 @@ CREATE TABLE cfg_centreonbroker (
 	ns_nagios_server INT NOT NULL,
 	PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cfg_centreonbroker_info`
+--
 
 CREATE TABLE cfg_centreonbroker_info (
 	config_id INT NOT NULL,
@@ -358,8 +366,7 @@ CREATE TABLE cfg_centreonbroker_info (
 	KEY cfg_centreonbroker_info_idx02 (config_id, config_group)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `cfg_centreonbroker_info`
-  ADD CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE;
+-- --------------------------------------------------------
 
 --
 -- Structure de la table `cfg_cgi`
@@ -2709,3 +2716,10 @@ ALTER TABLE `traps_matching_properties` ADD FOREIGN KEY ( `trap_id` ) REFERENCES
 --
 ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `hostcategories_hc_id` ) REFERENCES `hostcategories` (`hc_id`) ON DELETE CASCADE ;
 ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `host_host_id` ) REFERENCES `host` (`host_id`) ON DELETE CASCADE ;
+
+--
+-- Contraintes pour la table cfg_centreonbroker_info
+--
+
+ALTER TABLE `cfg_centreonbroker_info`
+  ADD CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE;
