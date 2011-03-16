@@ -33,5 +33,3 @@ CREATE TABLE IF NOT EXISTS `servicestateevents` (
   `in_downtime` tinyint(4) NOT NULL,
   PRIMARY KEY  (`servicestateevents_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63812 ;
-
-ALTER TABLE `metrics` ADD `data_source_type` ENUM( '0', '1', '2', '3' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' AFTER `metric_name` ;
