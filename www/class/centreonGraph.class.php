@@ -281,14 +281,13 @@ class CentreonGraph	{
 
 	public function initCurveList() {
 		$cpt = 0;
-		$metrics = array();
 		if (isset($this->metricsEnabled) && count($this->metricsEnabled) > 0) {
 			$selector = "metric_id IN (".implode(",", array_map(array("CentreonGraph", "quote"), $this->metricsEnabled)).")";
 		} else {
 			$selector = "index_id = '".$this->index."'";
 		}
 		$this->_log("initCurveList with selector= ".$selector);
-		$DBRESULT = $this->DBC->query("SELECT index_id, metric_id, metric_name, unit_name, warn, crit, min, max FROM metrics WHERE ".$selector." AND `hidden` = '0' ORDER BY metric_name");
+		$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$selector." AND m.hidden = '0' ORDER BY m.metric_name");
 		while ($metric = $DBRESULT->fetchRow()){
 			$this->_log("found metric ".$metric["metric_id"]." with selector= ".$selector);
 			if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
@@ -301,7 +300,7 @@ class CentreonGraph	{
 			}
 
 			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
+#			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
 			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
 			$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
@@ -310,7 +309,7 @@ class CentreonGraph	{
 			/** **********************************
 			 * Copy Template values
 			 */
-			$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE `ds_name` = '".$metric["metric_name"]."'");
+			$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE ( host_id = '".$metric["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$metric["service_id"]."' OR service_id IS NULL ) AND ds_name  = '".$metric["metric_name"]."' ORDER BY host_id DESC");
 			$ds_data = $DBRESULT2->fetchRow();
 			$DBRESULT2->free();
 			if (!$ds_data) {
@@ -380,9 +379,25 @@ class CentreonGraph	{
 				$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
 
 			$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
+			$this->metrics[$metric["metric_id"]]["stack"] = $ds_data["ds_stack"];
+			$this->metrics[$metric["metric_id"]]["order"] = $ds_data["ds_order"];
 			$cpt++;
 		}
 		$DBRESULT->free();
+
+                /*
+                 * sort metrics by order [DONE]
+                 */
+		$s_metrics = array();
+		foreach ($this->metrics as $key => $om) {
+			$om["key"] = $key;
+			$s_metrics[] = $om;
+		}	
+		uasort($s_metrics, array("CentreonGraph", "_cmporder"));
+		$this->metrics = array();
+		foreach ($s_metrics as $key => $om) {
+			$this->metrics[$s_metrics[$key]["key"]] = $om;
+		}
 
 		/*
 		 * add data definitions for each metric
@@ -403,12 +418,28 @@ class CentreonGraph	{
 
 	public function createLegend() {
 		$cpt = 0;
-		uasort($this->metrics, array("CentreonGraph", "_cmplegend"));
+		$rpn_values = "";
+		$rpn_expr = "";
 		foreach ($this->metrics as $key => $tm) {
-			if ($this->metrics[$key]["ds_filled"])
-				$this->addArgument("AREA:v".$cpt.$tm["ds_color_area"].$tm["ds_transparency"]);
+			if ($this->metrics[$key]["ds_filled"] || $this->metrics[$key]["ds_stack"]) {
+				$arg = "AREA:v".$cpt.$tm["ds_color_area"];
+				if ( $this->metrics[$key]["ds_filled"] )
+					$arg .= $tm["ds_transparency"];
+				else
+					$arg .= "00";
+				if ( $cpt != 0 && $this->metrics[$key]["ds_stack"] )
+					$arg .= "::STACK CDEF:vc".($cpt)."=v".($cpt).$rpn_values.$rpn_expr;
+				$rpn_values .= ",v".($cpt);
+				$rpn_expr .= ",+";
+				$this->addArgument($arg);
+			}
 
-			$arg = "LINE".$tm["ds_tickness"].":v".$cpt.$tm["ds_color_line"].":\"".$this->metrics[$key]["legend"];
+			if (!$this->metrics[$key]["ds_stack"] || $cpt == 0)
+				$arg = "LINE".$tm["ds_tickness"].":v".($cpt);
+			else
+				$arg = "LINE".$tm["ds_tickness"].":vc".($cpt);
+
+			$arg .= $tm["ds_color_line"].":\"".$this->metrics[$key]["legend"];
 			for ($i = $this->metrics[$key]["legend_len"]; $i != $this->longer + 1; $i++)
 				$arg .= " ";
 			$arg .= "\"";
@@ -762,6 +793,10 @@ class CentreonGraph	{
 			'#ff99ff', '#ffcc00', '#ffcc33', '#ffcc66', '#ffcc99', '#ffcccc',
 			'#ffccff', '#ffff00', '#ffff33', '#ffff66', '#ffff99', '#ffffcc');
 			return $web_safe_colors[rand(0,sizeof($web_safe_colors))];
+	}
+
+	private function _cmporder($a, $b) {
+		return strcmp($a["ds_order"], $b["ds_order"]);
 	}
 
 	private function _log($message) {

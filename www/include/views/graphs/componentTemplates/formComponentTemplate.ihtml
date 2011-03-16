@@ -7,14 +7,37 @@
 	<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField">{$form.ds_name.label}</td>
-		<td class="FormRowValue">
-					{$form.ds_name.html}
-					&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" onclick="insertValueQuery(1)" />&nbsp;
-					{$form.datasources.html}
+		<td id="td_ds"><table id="table_ds" border="0"><tr>
+			<td id="td_ds_html" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.ds_name.html}</td>
+			{if $o == "a" || $o == "c"}
+				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
+					&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" onclick="insertValueQuery()" />&nbsp;
+				</td>
+			{/if}
+		</tr></table></td>
+	</tr>
+	<tr class="list_one">
+		<td class="FormRowField">
+			{if $o == "a" || $o == "c"}
+				<div style="text-decoration: underline;">{$form.host_id.label}</div>
+				{$form.hsr_text.label}
+			{/if}
+			{if $o == "w"}
+				<div>{$form.host_id.label}</div>
+			{/if}
+			
+		</td>
+		<td id="td_list_hsr" class="FormRowValue">
+			{$form.host_id.html}
+			&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
 		</td>
 	</tr>
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_stack.label}</td><td class="FormRowValue">{$form.ds_stack.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ds_order.label}</td><td class="FormRowValue">{$form.ds_order.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_invert.label}</td><td class="FormRowValue">{$form.ds_invert.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.color}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}px</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField">{$form.ds_color_line.label}</td>
 		<td class="FormRowValue">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}&nbsp;&nbsp;{$form.ds_color_line_modify.html}</td>
@@ -24,8 +47,7 @@
 		<td class="FormRowValue">{$form.ds_color_area.html}&nbsp;&nbsp;{$form.ds_color_area_color.html}&nbsp;&nbsp;{$form.ds_color_area_modify.html}</td>
 	</tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ds_transparency.label}</td><td class="FormRowValue">{$form.ds_transparency.html}%</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ds_invert.label}</td><td class="FormRowValue">{$form.ds_invert.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.legend}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ds_max.label}</td><td class="FormRowValue">{$form.ds_max.html}</td></tr>

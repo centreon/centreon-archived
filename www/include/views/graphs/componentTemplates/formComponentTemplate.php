@@ -45,6 +45,13 @@
 		 * Set base value
 		 */
 		$compo = array_map("myDecode", $res->fetchRow());
+		$res->free();
+		$hs_data = array();
+		$res =& $pearDBO->query("SELECT id FROM index_data WHERE host_id='".$compo["host_id"]."' AND service_id='".$compo["service_id"]."' LIMIT 1;");
+		
+		$hs_data = array_map("myDecode", $res->fetchRow());
+		$compo["index_id"]=$hs_data["id"];
+		$res->free();
 	}
 
 
@@ -73,9 +80,29 @@
 	$DBRESULT->free();
 
 	/*
+	 * Host list with perf data come from DBO -> Store in $indds Array
+	 */
+	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
+	$mx_l = strlen($indds[""]);
+
+	$dbindd =& $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
+	if (PEAR::isError($dbindd))
+		print "DB Error : ".$dbindd->getDebugInfo()."<br />";
+	while($indd = $dbindd->fetchRow()) {
+		$indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
+		$hn_l = strlen($indd["host_name"]);
+		if ( $hn_l > $mx_l)
+		$mx_l = $hn_l;
+	}
+	/* cosmetics */
+	$dbindd->free();
+	for ($i = strlen($indds[""]); $i != $mx_l; $i++)
+		$indds[""] .= "&nbsp;";
+
+	/*
 	 * Define Styles
 	 */
-	$attrsText 		= array("size"=>"30");
+	$attrsText 	= array("size"=>"40");
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
@@ -96,15 +123,19 @@
 	 *  Basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
+	$form->addElement('header', 'options', _("Optional Modifier"));
 	$form->addElement('header', 'color', _("Colors"));
 	$form->addElement('header', 'legend', _("Legend"));
 	$form->addElement('text', 'name', _("Template Name"), $attrsText);
+	$form->addElement('checkbox', 'ds_stack', _("Stack"), $stack);
 
 	for ($cpt = 1; $cpt <= 100; $cpt++) {
 		$orders[$cpt] = $cpt;
 	}
 
 	$form->addElement('select', 'ds_order', _("Order"), $orders);
+	$form->addElement('select', 'host_id', _("Host / Service Data Source"), $indds, "onChange=update_select_list(0,this.value);update_select_list(1,0);");
+	$form->addElement('static', 'hsr_text',_("Choose a host, then its associated service.<BR>If you want a specific curve."));
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	$form->addElement('select', 'datasources', null, $datasources);
 
@@ -169,13 +200,14 @@
 	/*
 	 * Form Rules
 	 */
-	$form->registerRule('exist', 'callback', 'testExistence');
+	$form->registerRule('existName', 'callback', 'NameHsrTestExistence');
+	$form->registerRule('existDs', 'callback', 'DsHsrTestExistence');
 
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('ds_name', _("Compulsory Name"), 'required');
-	$form->addRule('ds_name', _("Name is already in use"), 'exist');
+	$form->addRule('name', _("Compulsory Name"), 'required');
 	$form->addRule('ds_name', _("Required Field"), 'required');
-	$form->addRule('ds_legend', _("Required Field"), 'required');
+	$form->addRule('name', _("Name already in use for this Host/Service"), 'existName');
+	$form->addRule('ds_name', _("Data Source already in use for this Host/Service"), 'existDs');
 	$form->addRule('ds_color_line', _("Required Field"), 'required');
 
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
@@ -198,15 +230,31 @@
 		 * Modify
 		 */
 		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Delete"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")"));
 		$form->setDefaults($compo);
 	} else if ($o == "a")	{
 		/*
 		 * Add
 		 */
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Delete"));
+		$res =& $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
 		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
+	}
+	if ($o == "c" || $o == "a") {
+?>
+	<script type='text/javascript'>
+		function insertValueQuery() {
+			var e_input = document.Form.ds_name;
+			var e_select = document.getElementById('sl_list_metrics');
+			var sd_o = e_select.selectedIndex;
+			if ( sd_o != 0) {
+				var chaineAj = '';
+				chaineAj = e_select.options[sd_o].text;
+				chaineAj = chaineAj.replace(/\s*$/,"");
+				e_input.value = chaineAj;
+			}
+		}
+	</script><?php
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));
 
@@ -224,14 +272,6 @@
 			var height = 300;
 			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
 						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
-		}
-		function insertValueQuery(elem)
-		{
-		    var myQuery = document.Form.ds_name;
-		    if(elem == 1)	{
-			var myListBox = document.Form.datasources;
-			document.Form.ds_name.value = myListBox.value;
-		    }
 		}
 	</script>
     "
@@ -264,4 +304,17 @@
 		$tpl->assign('o', $o);
 		$tpl->display("formComponentTemplate.ihtml");
 	}
+	include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
+?><script type="text/javascript">
+<?php
+	if ($o == "c" || $o == "w") {
+		isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=$compo["host_id"];
+		isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=$compo["index_id"];
+	} else if ($o == "a") {
+		isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=0;
+		isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=0;
+	}
 ?>
+	update_select_list(0,'<?php echo $ph_id;?>','<?php echo $ix_id;?>');
+	update_select_list(1,'<?php echo $ix_id;?>');
+</script>

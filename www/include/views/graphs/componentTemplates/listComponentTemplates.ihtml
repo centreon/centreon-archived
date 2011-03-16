@@ -19,11 +19,25 @@
 			<td></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_stack}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_order}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_Transp}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_tickness}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_fill}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
+		{assign var=title_mode value=0}
 		{section name=elem loop=$elemArr}
+		{if $elemArr[elem].title != $title_value}
+			{assign var=title_mode value=0}
+		{/if}
+		{if $elemArr[elem].title && $title_mode == 0}
+			<tr class="list_lvl_1">
+				<td class="ListColLeft" colspan="10"><b>{$elemArr[elem].title}</b></td>
+			</tr>
+			{assign var=title_mode value=1}
+			{assign var=title_value value=$elemArr[elem].title}
+		{/if}
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td align="center" width='30'>			
@@ -36,8 +50,11 @@
 			</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft">{$elemArr[elem].RowMenu_desc}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_stack}</td>
+			<td class="ListColCenter">{if $elemArr[elem].RowMenu_order}{$elemArr[elem].RowMenu_order}{else}-{/if}</td>
 			<td class="ListColRight">{if $elemArr[elem].RowMenu_transp}{$elemArr[elem].RowMenu_transp}&nbsp;%&nbsp;&nbsp;{else}-&nbsp;&nbsp;{/if}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_tickness}&nbsp;px&nbsp;</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_fill}</td>
 			<td class="ListColRight">{$elemArr[elem].RowMenu_options}</td>
 		</tr>
 		{/section}

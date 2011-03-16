@@ -81,5 +81,8 @@ DELETE FROM topology WHERE topology_parent = '606';
 
 UPDATE topology SET topology_order = 40 WHERE topology_page = '50501';
 
+-- Add column for templates curves : link curves by host/service too
+ALTER TABLE `giv_components_template` ADD `host_id` INT( 11 ) NULL AFTER `compo_id` ;
+ALTER TABLE `giv_components_template` ADD `service_id` INT( 11 ) NULL AFTER `host_id` ;
 
 UPDATE `informations` SET `value` = '2.3.0-b4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-b3' LIMIT 1;

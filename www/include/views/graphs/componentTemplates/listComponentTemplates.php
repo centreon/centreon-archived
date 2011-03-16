@@ -69,11 +69,21 @@
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Data Source Name"));
+	$tpl->assign("headerMenu_stack", _("Stack"));
+	$tpl->assign("headerMenu_order", _("Order"));
 	$tpl->assign("headerMenu_Transp", _("Transparency"));
 	$tpl->assign("headerMenu_tickness", _("Thickness"));
+	$tpl->assign("headerMenu_fill", _("Filling"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
-	$rq = "SELECT compo_id, name, ds_name, ds_color_line, ds_color_area, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template gc $SearchTool ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+	if ( $SearchTool != NULL ) {
+		$ClWh1 = "AND host_id IS NULL";
+		$ClWh2 = "AND gct.host_id = h.host_id";
+	} else {
+		$ClWh1 = "WHERE host_id IS NULL";
+		$ClWh2 = "WHERE gct.host_id = h.host_id";
+	}
+	$rq = "( SELECT compo_id, NULL as host_name, host_id, service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template $SearchTool $ClWh1 ) UNION ( SELECT compo_id, host_name, gct.host_id, gct.service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template AS gct, host AS h $SearchTool $ClWh2 ) ORDER BY host_name, name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
 		
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -86,18 +96,30 @@
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
+	$yesOrNo = array(NULL => "No", 0 => "No", 1 => "Yes");
 	$elemArr = array();
 	for ($i = 0; $compo = $DBRESULT->fetchRow(); $i++) {		
 		$selectedElements = $form->addElement('checkbox', "select[".$compo['compo_id']."]");	
 		$moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$compo['compo_id']."]'></input>";
+		$titles = & $pearDB->query("SELECT h.host_name FROM giv_components_template AS gct, host AS h WHERE gct.host_id = '".$compo["host_id"]."' AND gct.host_id = h.host_id");
+		if ($titles->numRows()) {
+			$title =& $titles->fetchRow();
+		} else {
+			$title = array("host_name"=>"Global");
+		}
+		$titles->free();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style, 
+						"title"=>$title["host_name"],
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$compo["name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&compo_id=".$compo['compo_id'],
 						"RowMenu_desc"=>$compo["ds_name"],
+						"RowMenu_stack"=>$yesOrNo[$compo["ds_stack"]],
+						"RowMenu_order"=>$compo["ds_order"],
 						"RowMenu_transp"=>$compo["ds_transparency"],
 						"RowMenu_clrLine"=>$compo["ds_color_line"],
 						"RowMenu_clrArea"=>$compo["ds_color_area"],
+						"RowMenu_fill"=>$yesOrNo[$compo["ds_filled"]],
 						"RowMenu_tickness"=>$compo["ds_tickness"],
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
