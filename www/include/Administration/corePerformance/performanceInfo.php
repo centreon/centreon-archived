@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	require_once "./include/monitoring/common-Func.php";
 
@@ -65,8 +66,11 @@
 	    $pollerList[$data["id"]] = $data["name"];
 	}
 	$DBRESULT->free();
+
+
 	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
 	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
+
 	if (isset($selectedPoller) && $selectedPoller) {
 		$form->setDefaults(array('pollers' => $selectedPoller));
 		$host_list[$selectedPoller] = $pollerList[$selectedPoller];
@@ -196,11 +200,12 @@
 	$tpl->assign("empty_page_label", _("No poller selected. Please select a poller to see reports."));
 
 
-	if (isset($host_list) && $host_list)
+	if (isset($host_list) && $host_list) {
 		$tpl->assign('host_list', $host_list);
-
-	if (isset($tab_server) && $tab_server)
+	}
+	if (isset($tab_server) && $tab_server) {
 		$tpl->assign('tab_server', $tab_server);
+	}
 
 	$tpl->assign("performanceInfoLabel", _("Nagios Performance Information"));
 	$tpl->display("performanceInfo.ihtml");
