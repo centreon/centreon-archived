@@ -809,6 +809,11 @@ function unCheckOthers(id) {
 	document.getElementById("debug16").checked = false;
 	document.getElementById("debug32").checked = false;
 	document.getElementById("debug64").checked = false;
+	document.getElementById("debug128").checked = false;
+	document.getElementById("debug256").checked = false;
+	document.getElementById("debug512").checked = false;
+	document.getElementById("debug1024").checked = false;
+	document.getElementById("debug2048").checked = false;
 }
 
 function unCheckAllAndNaught() {
