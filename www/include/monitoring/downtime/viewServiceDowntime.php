@@ -121,7 +121,7 @@
 				"ORDER BY dtm.actual_start_time DESC " .
 				"LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$request =	"SELECT SQL_CALC_FOUND_ROWS dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
+		$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
 				"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .
