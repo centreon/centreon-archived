@@ -180,14 +180,14 @@
 				"all_hostgroups = '".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"all_servicegroups = '".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
 				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
-				"acl_res_comment = '".htmlentities($ret["acl_res_comment"], ENT_QUOTES, "UTF-8")."', " .
+				"acl_res_comment = '".htmlentities((!isset($ret["acl_res_comment"]) ? "" : $ret["acl_res_comment"]), ENT_QUOTES, "UTF-8")."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
 		$DBRESULT = $pearDB->query($rq);
 	}
 
 	/** ****************
-	 * 
+	 *
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
@@ -207,7 +207,7 @@
 	}
 
 	/** ******************
-	 * 
+	 *
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
@@ -227,7 +227,7 @@
 	}
 
 	/** ******************
-	 * 
+	 *
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
@@ -248,9 +248,9 @@
             }
         }
 	}
-	
+
 	/** ********************
-	 * 
+	 *
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
