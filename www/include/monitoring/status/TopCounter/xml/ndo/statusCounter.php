@@ -98,7 +98,7 @@
 	 * Get Service stats
 	 */
 	if (!$obj->is_admin) {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+		$rq2 = 	" SELECT COUNT(DISTINCT CONCAT(no.name1,';', no.name2)) as count, nss.current_state" .
 				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, centreon_acl " .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
@@ -107,7 +107,7 @@
 				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				" AND no.is_active = 1 GROUP BY nss.current_state";
 	} else {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+		$rq2 = 	" SELECT count(nss.current_state) AS count, nss.current_state" .
 				" FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
@@ -117,7 +117,7 @@
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
 	$DBRESULT = $obj->DBNdo->query($rq2);
 	while ($ndo = $DBRESULT->fetchRow()) {
-		$svc_stat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+		$svc_stat[$ndo["current_state"]] = $ndo["count"];
 		$serviceCounter += $svc_stat[$ndo["current_state"]];
 	}
 	$DBRESULT->free();

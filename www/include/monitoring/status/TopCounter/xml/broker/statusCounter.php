@@ -98,7 +98,7 @@
 	 * Get Service stats
 	 */
 	if (!$obj->is_admin) {
-		$rq2 = 	" SELECT count(services.state), services.state" .
+		$rq2 = 	" SELECT COUNT(DISTINCT CONCAT(hosts.host_id,';', service_id)) as count, services.state" .
 				" FROM services, hosts, centreon_acl " .
 				" WHERE hosts.name NOT LIKE '_Module_%' ".
 				" AND hosts.host_id = services.host_id".
@@ -107,7 +107,7 @@
 				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				" GROUP BY services.state";
 	} else {
-		$rq2 = 	" SELECT count(services.state), services.state" .
+		$rq2 = 	" SELECT count(services.state) AS count, services.state" .
 				" FROM services, hosts" .
 				" WHERE hosts.name NOT LIKE '_Module_%' ".
 				" AND hosts.host_id = services.host_id".
@@ -117,7 +117,7 @@
 	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
 	$DBRESULT = $obj->DBC->query($rq2);
 	while ($data = $DBRESULT->fetchRow()) {
-		$svc_stat[$data["state"]] = $data["count(services.state)"];
+		$svc_stat[$data["state"]] = $data["count"];
 		$serviceCounter += $svc_stat[$data["state"]];
 	}
 	$DBRESULT->free();
