@@ -120,7 +120,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	$DBRESULT = $pearDBNdo->query("SELECT * FROM centreon_acl WHERE group_id IN ($groups) ORDER BY host_name, service_description");
+	$DBRESULT = $pearDBNdo->query("SELECT DISTINCT host_name, service_description, host_id, service_id FROM centreon_acl WHERE group_id IN ($groups) ORDER BY host_name, service_description");
 	for ($i = 0; $resources = $DBRESULT->fetchRow(); $i++) {
 
 		if ((isset($ehiCache[$resources["host_id"]]) && $ehiCache[$resources["host_id"]])) {
