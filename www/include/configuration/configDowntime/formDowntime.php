@@ -325,7 +325,6 @@
 		$tpl->assign('p', $p);
 		$tpl->assign('form', $renderer->toArray());
 
-		$tpl->assign('v', $centreon->user->get_version());
 		$tpl->display("formDowntime.ihtml");
 	}
 ?>
