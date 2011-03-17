@@ -92,7 +92,6 @@
 				WHERE hg_activate = '1' " .
 				$oreon->user->access->queryBuilder("AND", "hg_id", $hgStr) .
 				" ORDER BY hg_name";
-				print $query;
 			$res = $pearDB->query($query);
 			while ($row = $res->fetchRow()) {
 			    $hg[$row['hg_id']] = $row['hg_name'];
