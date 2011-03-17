@@ -550,7 +550,7 @@ class CentreonACL
  			switch($flag) {
  				case "ID" : $string .= "'".$key."'"; break;
  				case "NAME" : $string .= "'".$value."'"; break;
- 				case "ALIAS" : $string .= "'".$this->hostGroupsAlias[$key]."'"; break;
+ 				case "ALIAS" : $string .= "'".addslashes($this->hostGroupsAlias[$key])."'"; break;
  				default : $string .= "'".$key."'"; break;
  			}
  			$i++;
