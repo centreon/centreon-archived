@@ -107,7 +107,7 @@
 				"AND obj.object_id = cmt.object_id " .
 				"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NOT NULL " .
