@@ -92,20 +92,20 @@
 	$form->addElement('header', 'opt', 		_("Export Options"));
 	$form->addElement('header', 'result', 	_("Actions"));
 
-    $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, $attrSelect);
+    $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, array("id" => "host", "style" => "width: 220px;"));
 
-	$form->addElement('checkbox', 'comment', _("Include Comments"));
+	$form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'comment'));
 
-	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"));
+	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"), null, array('id' => 'ndebug'));
 	$form->setDefaults(array('debug' => '1'));
 
-	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"));
+	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'gen'));
 	$form->setDefaults(array('gen' => '1'));
-	$form->addElement('checkbox', 'move', _("Move Export Files"));
-	$form->addElement('checkbox', 'restart', _("Restart Nagios"));
+	$form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'move'));
+	$form->addElement('checkbox', 'restart', _("Restart Nagios"), null, array('id' => 'restart'));
 
 	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
-	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, $attrSelect);
+	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'restart_mode', 'style' => 'width: 220px;'));
 	$form->setDefaults(array('restart_mode' => '2'));
 
 	$redirect = $form->addElement('hidden', 'o');
@@ -117,9 +117,10 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	$sub = $form->addElement('submit', 'submit', _("Export"));
+	$sub = $form->addElement('button', 'submit', _("Export"), array('id' => 'exportBtn', 'onClick' => 'generationProcess();'));
 	$msg = NULL;
 	$stdout = NULL;
+
 	if ($form->validate()) {
 		$ret = $form->getSubmitValues();
 
@@ -307,7 +308,7 @@
     						    }
 						    }
 						}
-						
+
 					    if (strlen($msg_copy[$host["id"]])) {
 							$msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
 						} else {
@@ -407,8 +408,9 @@
 	if (isset($host_list) && $host_list)
 		$tpl->assign('host_list', $host_list);
 
+	$tpl->assign("consoleLabel", _("Console"));
+	$tpl->assign("progressLabel", _("Progress"));
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	# prepare help texts
 	$helptext = "";
 	include_once("help.php");
 	foreach ($help as $key => $text) {
@@ -428,7 +430,36 @@
 	$tpl->assign('o', $o);
 	$tpl->display("formGenerateFiles.ihtml");
 ?>
+<script type='text/javascript' src='./include/configuration/configGenerate/javascript/generation.js'></script>
 <script type='text/javascript'>
 var tooltip = new CentreonToolTip();
 tooltip.render();
+var progressBar = new S2.UI.ProgressBar('progress_bar');
+var msgTab = new Array();
+msgTab['start'] = "<?php echo _("Preparing environment");?>";
+msgTab['gen'] = "<?php echo _("Generating files");?>";
+msgTab['move'] = "<?php echo _("Moving files");?>";
+msgTab['restart'] = "<?php echo _("Restarting engine");?>";
+msgTab['abort'] = "<?php echo _("Aborted.");?>";
+msgTab['noPoller'] = "<?php echo _("No poller selected");?>";
+
+function generationProcess()
+{
+	updateProgress(0);
+	document.getElementById('console').style.visibility = 'visible';
+	$('consoleContent').update(msgTab['start'] + "... ");
+	$('consoleDetails').update("");
+	initEnvironment();
+	updateProgress(10);
+	if (generateOption) {
+		generateFiles();
+	} else if (moveOption) {
+		moveFiles();
+	} else if (restartOption) {
+		restartPollers();
+	} else {
+		updateProgress(100);
+	}
+}
+
 </script>
