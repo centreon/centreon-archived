@@ -472,7 +472,7 @@ class CentreonDowntime
 		} else {
 			$infos['duration'] = "'" . $infos['duration'] . "'";
 		}
-		if (isset($infos['days'])) {
+		if (!isset($infos['days'])) {
 			$infos['days'] = array();
 		}
 		switch ($infos['period_type']) {
