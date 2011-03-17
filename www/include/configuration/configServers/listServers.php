@@ -47,6 +47,12 @@
 	include("./include/common/autoNumLimit.php");
 
 	/*
+	 * Init GMT class
+	 */
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
+
+	/*
 	 * start quickSearch form
 	 */
 	include_once("./include/common/quickSearch.php");
@@ -73,27 +79,43 @@
 	/*
 	 * Get information info RTM
 	 */
-	$ndoPrefix = getNDOPrefix();
-	$nagiosInfo = array();
-	$DBRESULT = $pearDBNdo->query("SELECT program_start_time, is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
-	while ($info = $DBRESULT->fetchRow()) {
-		$nagiosInfo[$info["instance_name"]] = $info;
+	if ($centreon->broker->getBroker() == "broker") {
+		$nagiosInfo = array();
+		$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name FROM instances");
+		while ($info = $DBRESULT->fetchRow()) {
+			$nagiosInfo[$info["instance_name"]] = $info;
+		}
+		$DBRESULT->free();
+	} else {
+		$ndoPrefix = getNDOPrefix();
+		$nagiosInfo = array();
+		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time), is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
+		while ($info = $DBRESULT->fetchRow()) {
+			$nagiosInfo[$info["instance_name"]] = $info;
+		}
+		$DBRESULT->free();
 	}
-	$DBRESULT->free();
 
 	/*
-	 * Get Nagios / Icinga version
+	 * Get Nagios / Icinga / Shinken / Scheduler version
 	 */
 	$pollerNumber = count($nagios_servers);
 	if ($pollerNumber == 0) {
 		$pollerNumber = 1;
 	}
-	$DBRESULT = $pearDBNdo->query("SELECT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
-	while ($info = $DBRESULT->fetchRow()) {
-		$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+	if ($centreon->broker->getBroker() == "broker") {
+		$DBRESULT = $pearDBO->query("SELECT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances LIMIT $pollerNumber");
+		while ($info = $DBRESULT->fetchRow()) {
+			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+		}
+		$DBRESULT->free();
+	} else {
+		$DBRESULT = $pearDBNdo->query("SELECT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
+		while ($info = $DBRESULT->fetchRow()) {
+			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
+		}
+		$DBRESULT->free();
 	}
-	$DBRESULT->free();
-
 	include("./include/common/checkPagination.php");
 
 	/*
@@ -156,7 +178,7 @@
 						"RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
 						"RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
 						"RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
-						"RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["program_start_time"] : "-",
+						"RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
 						"RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
 						"RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options" => $moptions);
