@@ -36,7 +36,7 @@
  *
  */
 
-    include_once("@CENTREON_ETC@/centreon.conf.php");
+    include_once("/etc/centreon/centreon.conf.php");
 
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
@@ -46,7 +46,7 @@
 	 */
 	$db = new CentreonDB();
 	$xml = new CentreonXML();
-	
+
 	$xml->startElement('root');
 	$xml->startElement('main');
 	/*
@@ -84,7 +84,7 @@
 	$xml->writeElement('password', _('Password'));
 	$xml->endElement(); /* lang */
 	$xml->endElement(); /* main */
-	
+
 	if (isset($_GET['config_id']) && $_GET['config_id'] != 0) {
 	    $query = "SELECT config_key, config_value, config_group_id FROM cfg_centreonbroker_info WHERE config_id = " . $_GET['config_id'] . " AND config_group = 'output' ORDER BY config_group_id";
 	    $res = $db->query($query);
@@ -123,8 +123,8 @@
     	$xml->writeElement('compress', 'false');
     	$xml->endElement();
 	}
-	
-	
+
+
 	/*
 	 * Display
 	 */

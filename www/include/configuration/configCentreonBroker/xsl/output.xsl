@@ -24,7 +24,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
 					<xsl:value-of select="//main/lang/name"/>
@@ -42,7 +42,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
 					<xsl:value-of select="//main/lang/failover"/>
@@ -60,7 +60,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
 					<xsl:value-of select="//main/lang/type"/>
@@ -159,7 +159,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_protocol</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -187,7 +187,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_host</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -206,7 +206,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_port</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -225,7 +225,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_netif</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -244,7 +244,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_tls</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -277,7 +277,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_tls_ca</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -296,7 +296,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_tls_cert</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -315,7 +315,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_tls_key</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -334,7 +334,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_tls_compress</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -364,7 +364,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_socket</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -383,7 +383,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_filename</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -402,7 +402,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_db</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -421,7 +421,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">two</xsl:attribute>
+				<xsl:attribute name="class">list_two</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_user</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
@@ -440,7 +440,7 @@
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
-				<xsl:attribute name="class">one</xsl:attribute>
+				<xsl:attribute name="class">list_one</xsl:attribute>
 				<xsl:attribute name="id">output_<xsl:value-of select="id" />_password</xsl:attribute>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowField</xsl:attribute>
