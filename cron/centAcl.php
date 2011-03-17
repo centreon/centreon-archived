@@ -72,7 +72,21 @@
     	 */
     	$pearDB 	= new CentreonDB();
     	$pearDBO 	= new CentreonDB("centstorage");
-    	$pearDBndo 	= new CentreonDB("ndo");
+
+    	/*
+    	 * Detect Which DB layer is used
+    	 */
+    	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'monitoring_engine'");
+		if (PEAR::isError($DBRESULT)) {
+		    print "Cannot Get Monitoring Engine";
+		    exit(1);
+		}
+	    $engineData =& $DBRESULT->fetchRow();
+	    $engine = $engineData["value"];
+
+		if ($engine != 'broker') {
+    		$pearDBndo 	= new CentreonDB("ndo");
+		}
 
 		/*
 		 * Lock in MySQL
@@ -197,8 +211,11 @@
     		$strList = "''";
     	}
     	$DBRESULT->free();
-    	$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
-
+    	if ($engine != 'broker') {
+    		$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
+    	} else {
+    		$pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
+    	}
 
     	/* ************************************************
     	 * Check if some ACL have global options for
@@ -529,8 +546,9 @@
     											"AND service_activate = '1'");
     			if ($DBRESULT3->numRows()) {
     		  		while ($h =& $DBRESULT3->fetchRow()){
-    					if (!isset($tabElem[$h["host_name"]]))
+    					if (!isset($tabElem[$h["host_name"]])) {
     						$tabElem[$h["host_name"]] = array();
+    					}
     		  			$tabElem[$h["host_name"]][$h["service_description"]] = $h["host_id"].",".$h["service_id"];
     		  		}
     			}
@@ -553,7 +571,11 @@
     		/*
     		 * Delete old data for this group
     		 */
-    		$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+    		if ($engine != 'broker') {
+    			$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+    		} else {
+				$DBRESULT =& $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+    		}
 
     		$str = "";
     		if (count($tabElem)) {
@@ -567,7 +589,11 @@
     					$str .= "('".$host."', '".addslashes($desc)."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
     					$i++;
     					if ($i >= 1000) {
-    						$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
+    						if ($engine != 'broker') {
+    							$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
+    						} else {
+    							$DBRESULTNDO =& $pearDBO->query($strBegin.$str);
+    						}
     						$str = "";
     						$i = 0;
     					}
@@ -578,7 +604,11 @@
     			 * Insert datas
     			 */
     			if ($str != "") {
-    				$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
+    				if ($engine != 'broker') {
+    					$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
+    				} else {
+						$DBRESULTNDO =& $pearDBO->query($strBegin.$str);
+    				}
     				$str = "";
     			}
     		}
