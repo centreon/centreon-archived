@@ -232,7 +232,7 @@
 		 * Contact
 		 */
 		$contact = array();
-		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate ='1'");
+		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_enable_notifications = '1' AND contact_activate = '1'");
 		while ($contact = $DBRESULT->fetchRow()) {
 			$cctEnb[$contact["contact_id"]] = 1;
 			unset($contact);
@@ -243,7 +243,7 @@
 		 * ContactGroup
 		 */
 		$contactGroup = array();
-		$DBRESULT = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_activate ='1'");
+		$DBRESULT = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_activate = '1'");
 		while ($contactGroup = $DBRESULT->fetchRow()) {
 			$cgEnb[$contactGroup["cg_id"]] = 1;
 		}
@@ -255,8 +255,9 @@
 		 */
 		$host = array();
 		$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host.host_register = '0' AND host.host_activate = '1'");
-		while($host = $DBRESULT->fetchRow())
+		while ($host = $DBRESULT->fetchRow()) {
 			$hostEnb[$host["host_id"]] = $host["host_name"];
+		}
 		$DBRESULT->free();
 
 		/*
@@ -604,11 +605,11 @@ Modified for Oreon by Christophe Coraboeuf
 	  	}
 	  	fclose($handle);
 	}
-	
-	
+
+
 	/**
 	 * Get the configuration path for Centreon Broker
-	 * 
+	 *
 	 * @param int $ns_id The nagios server id
 	 * @return string
 	 */
