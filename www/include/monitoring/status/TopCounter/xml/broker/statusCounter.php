@@ -36,7 +36,7 @@
  *
  */
 
-	ini_set("display_errors", "On");
+	ini_set("display_errors", "Off");
 
 	$debug = 0;
 
@@ -79,9 +79,11 @@
 	if (!$obj->is_admin) {
 		$rq1 .= " , centreon_acl ";
 	}
-	$rq1 .= " WHERE name NOT LIKE '_Module_%' " .
-			" AND hosts.host_id = centreon_acl.host_id " .
-			$obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
+	$rq1 .= " WHERE name NOT LIKE '_Module_%' ";
+	if (!$obj->is_admin) {
+		$rq1 .= " AND hosts.host_id = centreon_acl.host_id ";
+	}
+	$rq1 .= $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
 			" GROUP BY state";
 
 	$hostCounter = 0;
