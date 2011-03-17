@@ -80,7 +80,7 @@
 		$rq1 .= " , centreon_acl ";
 	}
 	$rq1 .= " WHERE name NOT LIKE '_Module_%' " .
-			$obj->access->queryBuilder("AND", "host_id", "centreon_acl.host_id") .
+			" AND hosts.host_id = centreon_acl.host_id " .
 			$obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
 			" GROUP BY state";
 
@@ -98,12 +98,12 @@
 	 * Get Service stats
 	 */
 	if (!$obj->is_admin) {
-		$rq2 = 	" SELECT COUNT(DISTINCT CONCAT(hosts.host_id,';', service_id)) as count, services.state" .
+		$rq2 = 	" SELECT COUNT(DISTINCT CONCAT(hosts.host_id,';', services.service_id)) as count, services.state" .
 				" FROM services, hosts, centreon_acl " .
 				" WHERE hosts.name NOT LIKE '_Module_%' ".
 				" AND hosts.host_id = services.host_id".
 				" AND services.host_id = centreon_acl.host_id ".
-				" AND service_id = centreon_acl.service_id " .
+				" AND services.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				" GROUP BY services.state";
 	} else {
