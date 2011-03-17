@@ -23,7 +23,7 @@ function initEnvironment()
 	exportBtn.disabled = true;	
 	if (selectedPoller == "-1") {
 		$('consoleContent').insert("<b><font color='red'>NOK</font></b> ("+ msgTab['noPoller'] +")<br/>");
-		abortProcess();
+		abortProgress();
 		return null;
 	}
 	$('consoleContent').insert("<b><font color='green'>OK</font></b><br/>");

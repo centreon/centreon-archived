@@ -450,15 +450,17 @@ function generationProcess()
 	$('consoleContent').update(msgTab['start'] + "... ");
 	$('consoleDetails').update("");
 	initEnvironment();
-	updateProgress(10);
-	if (generateOption) {
-		generateFiles();
-	} else if (moveOption) {
-		moveFiles();
-	} else if (restartOption) {
-		restartPollers();
-	} else {
-		updateProgress(100);
+	if (selectedPoller != "-1") {
+    	updateProgress(10);
+    	if (generateOption) {
+    		generateFiles();
+    	} else if (moveOption) {
+    		moveFiles();
+    	} else if (restartOption) {
+    		restartPollers();
+    	} else {
+    		updateProgress(100);
+    	}
 	}
 }
 
