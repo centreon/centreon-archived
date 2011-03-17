@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonDB.class.php";
@@ -47,7 +48,6 @@
 	/*
 	 * Init GMT class
 	 */
-
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
@@ -70,7 +70,6 @@
 			/*
 			 * Database retrieve information for differents elements list we need on the page
 			 */
-
 			$hosts = array(""=>"");
 			$query = "SELECT host_id, host_name " .
 					"FROM `host` " .
@@ -91,8 +90,9 @@
 			$query = "SELECT hg_id, hg_name
 				FROM hostgroup
 				WHERE hg_activate = '1' " .
-				$oreon->user->access->queryBuilder("AND", "", $hgStr) .
+				$oreon->user->access->queryBuilder("AND", "hg_id", $hgStr) .
 				" ORDER BY hg_name";
+				print $query;
 			$res = $pearDB->query($query);
 			while ($row = $res->fetchRow()) {
 			    $hg[$row['hg_id']] = $row['hg_name'];
@@ -143,7 +143,6 @@
 
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-			//$form->addRule('host_id', _("Required Field"), 'required');
 			$form->addRule('end', _("Required Field"), 'required');
 			$form->addRule('start', _("Required Field"), 'required');
 			$form->addRule('comment', _("Required Field"), 'required');
@@ -205,8 +204,7 @@
 				$tpl->assign('o', $o);
 				$tpl->display("AddHostDowntime.ihtml");
 		    }
-		}
-		else {
+		} else {
 			require_once("../errors/alt_error.php");
 		}
 ?>
