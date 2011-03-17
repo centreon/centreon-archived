@@ -72,7 +72,10 @@
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
-	$tpl->assign("headerMenu_desc", _("Poller"));
+	$tpl->assign("headerMenu_desc", _("Requester"));
+	$tpl->assign("headerMenu_outputs", _("Outputs"));
+	$tpl->assign("headerMenu_inputs", _("Inputs"));
+	$tpl->assign("headerMenu_loggers", _("Loggers"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
@@ -82,7 +85,7 @@
 	if ($search) {
 		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate FROM cfg_centreonbroker WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY config_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate FROM cfg_centreonbroker  ORDER BY config_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate FROM cfg_centreonbroker ORDER BY config_name LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT = $pearDB->query($rq);
 
@@ -115,12 +118,33 @@
 		}
 		$moptions .= "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['config_id']."]'></input>";
 
+		/*
+		 * Number of output
+		 */
+		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'output' AND config_id = '1'");
+		$outputNumber = $pearDB->numberRows();
+
+		/*
+		 * Number of output
+		 */
+		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'input' AND config_id = '1'");
+		$inputNumber = $pearDB->numberRows();
+
+		/*
+		 * Number of output
+		 */
+		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'logger' AND config_id = '1'");
+		$loggerNumber = $pearDB->numberRows();
+
 		$elemArr[$i] = array(
 						"MenuClass" => "list_".$style,
 						"RowMenu_select" => $selectedElements->toHtml(),
 						"RowMenu_name" => $config["config_name"],
 						"RowMenu_link" => "?p=".$p."&o=c&id=".$config['config_id'],
 						"RowMenu_desc" => substr($nagios_servers[$config["ns_nagios_server"]], 0, 40),
+						"RowMenu_inputs" => $inputNumber,
+						"RowMenu_outputs" => $outputNumber,
+						"RowMenu_loggers" => $loggerNumber,
 						"RowMenu_status" => $config["config_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";

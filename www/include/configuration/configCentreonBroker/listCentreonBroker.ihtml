@@ -22,6 +22,9 @@
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_inputs}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_outputs}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_loggers}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
@@ -30,6 +33,9 @@
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_inputs}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_outputs}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_loggers}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
 			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
