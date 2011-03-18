@@ -72,12 +72,12 @@
 	    $pollerList[$data["id"]] = $data["name"];
 	}
 	$DBRESULT->free();
-	
+
 	/*
 	 * Get poller ID
 	 */
 	isset($_POST['pollers']) && $_POST['pollers'] != "" ? $selectedPoller = $_POST['pollers'] : $selectedPoller = $defaultPoller;
-	
+
 	$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
 	if (isset($_POST["pollers"])) {
 		$form->setDefaults(array('pollers' => $selectedPoller));
@@ -91,7 +91,7 @@
 	/*
 	 * Get Poller List
 	 */
-	if ($centreon->broker->getBroker() != "Broker") {
+	if ($centreon->broker->getBroker() == "ndo") {
 		$ndo_base_prefix = getNDOPrefix();
 	}
 
@@ -103,7 +103,7 @@
 								"ORDER BY n.localhost DESC");
 	while ($nagios = $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
-		
+
 		if ($centreon->broker->getBroker() == "broker") {
 			$query = "SELECT last_log_rotation, start_time, end_time, " .
 						"last_command_check, last_alive AS status_update_time, running AS is_currently_running, ".
@@ -135,7 +135,7 @@
 			$DBRESULT2->free();
 			$instance_id = $row['instance_id'];
 			if ($instance_id) {
-	
+
 				$query = "SELECT program_version, programstatus_id, " .
 					"pp.instance_id, UNIX_TIMESTAMP(status_update_time),  UNIX_TIMESTAMP(program_start_time),  UNIX_TIMESTAMP(program_end_time), " .
 					"is_currently_running, ps.process_id, daemon_mode, UNIX_TIMESTAMP(last_command_check), " .
@@ -146,7 +146,7 @@
 					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' ORDER BY program_date DESC LIMIT 1";
 				$DBRESULT3 = $pearDBndo->query($query);
 				$data = $DBRESULT3->fetchRow();
-	
+
 				/*
 				 * Convert Date
 				 */
@@ -158,10 +158,10 @@
 				$data['program_start_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_start_time)"]);
 				$data['program_end_time'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(program_end_time)"]);
 				$data['last_command_check'] = $centreonGMT->getDate(_("d/m/Y H:i:s"), $data["UNIX_TIMESTAMP(last_command_check)"]);
-	
+
 				$procInfo[$nagios['id']] = $data;
 				$DBRESULT3->free();
-			}		
+			}
 		}
 	}
 	$DBRESULT->free();
@@ -201,8 +201,8 @@
 	if (isset($tab_server) && $tab_server) {
 		$tpl->assign('tab_server', $tab_server);
 	}
-	
-	/* 
+
+	/*
 	 * Nagios Process Information
 	 */
 	$tpl->assign("processInfoLabel", _("Scheduling Process Information"));
