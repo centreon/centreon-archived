@@ -36,7 +36,7 @@
  *
  */
 
-	ini_set("display_errors", "On");
+	ini_set("display_errors", "Off");
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
@@ -49,7 +49,7 @@
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
-
+	
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
 	} else {
@@ -76,7 +76,6 @@
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-
 	/*
 	 * Backup poller selection
 	 */
@@ -91,7 +90,7 @@
 	$tabIcone = array();
 
 	/** *********************************************
-	 * Get Host status
+	 * Get status
 	 */
 	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
 				" FROM hosts ";
@@ -151,6 +150,7 @@
 	$DBRESULT_NDO1 = $obj->DBC->query($rq1);
 	while ($ndo = $DBRESULT_NDO1->fetchRow()){
 		$tab_final[$ndo["name"]]["nb_service_k"] = 0;
+		$tab_final[$ndo["name"]]["host_id"] = $ndo["host_id"];
 		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0") {
 			$tab_final[$ndo["name"]]["nb_service_k"] = $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 0, $obj);
 		}
@@ -159,7 +159,8 @@
 		$tab_final[$ndo["name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 3, $obj);
 		$tab_final[$ndo["name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["name"], $obj, $o, 4, $obj);
 		$tab_final[$ndo["name"]]["cs"] = $ndo["state"];
-		if ($ndo["icon_image"] != "") {
+
+		if (isset($ndo["icon_image"]) && $ndo["icon_image"] != "") {
 			$tabIcone[$ndo["name"]] = $ndo["icon_image"];
 		} else {
 			$tabIcone[$ndo["name"]] = "none";
@@ -173,7 +174,7 @@
 		$obj->XML->writeElement("hn", $host_name, false);
 		$obj->XML->writeElement("hnl", urlencode($host_name));
 		$obj->XML->writeElement("hid", $tab["host_id"], false);
-		$obj->XML->writeElement("ico", $tab["icon_image"]);
+		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
 		$obj->XML->writeElement("sk", $tab["nb_service_k"]);

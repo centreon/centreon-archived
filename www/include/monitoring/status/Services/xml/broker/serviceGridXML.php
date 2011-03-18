@@ -94,7 +94,8 @@
 		$rq1 	.= ", centreon_acl ";
 	}
 	$rq1 .=		" WHERE hosts.name NOT LIKE '_Module_%' ";
-	$rq1 .= $obj->access->queryBuilder("AND", "hosts.name", "centreon_acl.host_name").$obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
+	$rq1 .=		" AND hosts.host_id = centreon_acl.host_id ";
+	$rq1 .= $obj->access->queryBuilder("AND", "group_id", $obj->grouplistStr);
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
 		$rq1 .= " AND hosts.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
@@ -120,7 +121,7 @@
 		default : $rq1 .= " ORDER BY hosts.name ". $order; break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-
+	
 	/*
 	 * Execute request
 	 */
