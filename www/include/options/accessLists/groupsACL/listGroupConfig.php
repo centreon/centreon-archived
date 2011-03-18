@@ -84,10 +84,15 @@
 	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
-	#Different style between each lines
+
+	/*
+	 * Different style between each lines
+	 */
 	$style = "one";
 
-	#Fill a tab with a mutlidimensionnal Array we put in $tpl
+	/*
+	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
+	 */
 	$elemArr = array();
 	for ($i = 0; $group = $DBRESULT->fetchRow(); $i++) {
 		$selectedElements = $form->addElement('checkbox', "select[".$group['acl_group_id']."]");
