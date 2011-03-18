@@ -54,9 +54,6 @@
 	 */
 	include_once("./class/centreonDB.class.php");
 
-	$pearDBndo = new CentreonDB("ndo");
-
-
 	/*
 	 * Pear library
 	 */
