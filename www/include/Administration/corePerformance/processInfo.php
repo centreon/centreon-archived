@@ -56,7 +56,10 @@
 	unset($tpl);
 	unset($path);
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+		$ndo_base_prefix = getNDOPrefix();
+	}
 
 	$form = new HTML_QuickForm('form', 'post', "?p=".$p);
 
@@ -91,11 +94,7 @@
 	/*
 	 * Get Poller List
 	 */
-	if ($centreon->broker->getBroker() == "ndo") {
-		$ndo_base_prefix = getNDOPrefix();
-	}
-
-	$tab_nagios_server = array();
+		$tab_nagios_server = array();
 	$DBRESULT = $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
 								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
 								"WHERE ndomod.activate = '1' " .
