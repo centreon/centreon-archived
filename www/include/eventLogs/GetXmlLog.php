@@ -36,12 +36,11 @@
  *
  */
 
- 	ini_set("display_errors", "Off");
+ 	ini_set("display_errors", "On");
 
 	/*
 	 * XML tag
 	 */
-
 	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
 
 	/** ****************************
@@ -49,7 +48,7 @@
 	 */
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
-	/**
+	/*
 	 * Require Classes
 	 */
 	require_once $centreon_path . "www/include/eventLogs/common-Func.php";
@@ -75,7 +74,9 @@
 	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
-	$pearDBndo 	= new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo 	= new CentreonDB("ndo");
+	}
 
 	/*
 	 * Include Access Class
@@ -105,14 +106,17 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
 
+	/*
+	 * Check Session
+	 */
 	$contact_id = check_session($sid, $pearDB);
 
 	$is_admin = isUserAdmin($sid);
 	if (isset($sid) && $sid){
 		$access = new CentreonAcl($contact_id, $is_admin);
-		$lca = array("LcaHost" => $access->getHostServicesName($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
-		$lcaSTR = $access->getHostsString("NAME", $pearDBndo);
-		$servicestr = $access->getServicesString("NAME", $pearDBndo);
+		$lca = array("LcaHost" => $access->getHostServicesName(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+		$lcaSTR = $access->getHostsString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+		$servicestr = $access->getServicesString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
 	}
 
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";

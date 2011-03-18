@@ -36,21 +36,13 @@
  *
  */
 
-	ini_set("display_errors", "Off");
+	ini_set("display_errors", "On");
 
 	/*
 	 * pearDB init
 	 */
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDB.class.php";
-
-	/**
-	 * Create DB connector
-	 */
-	$pearDB 	= new CentreonDB();
-	$pearDBO 	= new CentreonDB("centstorage");
-	$pearDBndo 	= new CentreonDB("ndo");
 
 	/*
 	 * PHP functions
@@ -63,7 +55,16 @@
 
 	$oreon = $_SESSION["centreon"];
 
-	/**
+	/*
+	 * Create DB connector
+	 */
+	$pearDB 	= new CentreonDB();
+	$pearDBO 	= new CentreonDB("centstorage");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo 	= new CentreonDB("ndo");
+	}
+
+	/*
 	 * Translations
 	 */
 	$locale = $oreon->user->get_lang();
@@ -173,9 +174,9 @@
 		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
 		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
-		$hoststr = $access->getHostsString("ID", $pearDBndo);
-		$servicestr = $access->getServicesString("ID", $pearDBndo);
+		$lca = array("LcaHost" => $access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+		$hoststr = $access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+		$servicestr = $access->getServicesString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
 	} else {
 		exit();
 	}
