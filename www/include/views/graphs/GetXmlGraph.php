@@ -54,10 +54,21 @@
 	include_once $centreon_path . "www/class/centreonDB.class.php";
 	include_once $centreon_path . "www/class/centreonACL.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
-			
+	include_once $centreon_path . "www/class/centreonBroker.class.php";
+
+	/*
+	 * Database connect
+	 */
 	$pearDB 	= new CentreonDB();
-	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
+	
+	/*
+	 * Get Broker Engine
+	 */
+	$objBroker = new CentreonBroker($pearDB);
+	if ($objBroker->getBroker() == "ndo") {
+		$pearDBndo 	= new CentreonDB("ndo");
+	}
 	
 	/*
 	 * Start document root
@@ -100,7 +111,7 @@
 	$is_admin = isUserAdmin($sid);
 	$access = new CentreonACL($contact_id, $is_admin);
 	
-	$lca = $access->getHostServices($pearDBndo);		
+	$lca = $access->getHostServices(($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));		
 
 	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
 	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8") : $template_id = "1";
@@ -352,7 +363,12 @@
 			/*
 			 * verify if metrics in parameter is for this index
 			 */
-			$metrics_active = $_GET["metric"];
+			if (isset($_GET["metric"])) {
+				$metrics_active = $_GET["metric"];
+			} else {
+				$metrics_active = array();
+			}
+			
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)
@@ -519,7 +535,11 @@
 			/*
 			 *  verify if metrics in parameter is for this index
 			 */
-			$metrics_active = $_GET["metric"];
+			if (isset($_GET["metric"])) {
+				$metrics_active = $_GET["metric"];
+			} else {
+				$metrics_active = array();
+			}
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)

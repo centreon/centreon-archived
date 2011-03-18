@@ -40,28 +40,42 @@
 	 * Include config file
 	 */
     include_once "@CENTREON_ETC@/centreon.conf.php";
-	//include_once "/etc/centreon/centreon.conf.php";
-
-	/**
+	
+	/*
 	 * Include Dependancies
 	 */
-	include_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path . "www/class/centreonSession.class.php";
+	require_once $centreon_path . "www/class/centreon.class.php";
+	require_once $centreon_path . "www/class/centreonLang.class.php";
+	require_once $centreon_path . "www/class/centreonBroker.class.php";
 
+	/*
+	 * Database Connection
+	 */
 	$pearDB 	= new CentreonDB();
-	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
 
-	/** PHP functions */
+	/*
+	 * Get Broker Engine
+	 */
+	$objBroker = new CentreonBroker($pearDB);
+	if ($objBroker->getBroker() == "ndo") {
+		$pearDBndo 	= new CentreonDB("ndo");
+	}
+	
+	
+	/*
+	 * PHP functions
+	 */
 	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
-
-	/** Tanslation */
-	require_once ($centreon_path . "www/class/centreonSession.class.php");
-	require_once ($centreon_path . "www/class/centreon.class.php");
-	require_once ($centreon_path . "www/class/centreonLang.class.php");
 
 	CentreonSession::start();
 	$oreon = $_SESSION["centreon"];
 
+	/*
+	 * Tanslation
+	 */
 	$centreonLang = new CentreonLang($centreon_path, $oreon);
 	$centreonLang->bindLang();
 
@@ -84,13 +98,14 @@
 		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
 		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+		$lca = array("LcaHost" => $access->getHostServices(($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 
-		$hoststr = $access->getHostsString("ID", $pearDBndo);
-		$servicestr = $access->getServicesString("ID", $pearDBndo);
-	} else
+		$hoststr = $access->getHostsString("ID", ($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+		$servicestr = $access->getServicesString("ID", ($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+	} else {
 		exit();
-
+	}
+		
 	$normal_mode = 1;
 
 	/**
