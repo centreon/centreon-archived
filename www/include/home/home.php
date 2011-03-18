@@ -123,7 +123,7 @@
 					" AND hosts.name NOT LIKE '_Module_%' ".
 					" AND services.host_id = centreon_acl.host_id ".
 					" AND services.service_id = centreon_acl.service_id " .
-					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
+					" AND centreon_acl.group_id IN (".$oreon->user->access->getResourceGroupsString().") ".
 					" GROUP BY services.state ORDER by services.state";
 		} else {
 			$rq2 = 	" SELECT count(services.state) count, services.state state" .

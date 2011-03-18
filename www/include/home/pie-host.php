@@ -88,7 +88,7 @@
 	if ($oreon->broker->getBroker() == "broker") {
 		$rq1 = 	" SELECT count(DISTINCT name) cnt, state " .
 				" FROM `hosts` " .
-				$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+				$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBO)) .
 				" GROUP BY state " .
 				" ORDER by state";
 		$DBRESULT = $pearDBO->query($rq1);
