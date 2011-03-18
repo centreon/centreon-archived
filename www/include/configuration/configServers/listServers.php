@@ -36,13 +36,16 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($centreon)) {
 		exit();
+	}
 
 	/*
 	 * Connect to NDO database.
 	 */
-	$pearDBNdo = new CentreonDB("ndo");
+	if ($centreon->broker->getBroker() == "ndo") {
+		$pearDBNdo = new CentreonDB("ndo");
+	}
 
 	include("./include/common/autoNumLimit.php");
 
@@ -58,13 +61,9 @@
 	include_once("./include/common/quickSearch.php");
 
 	$LCASearch = "";
-	if (isset($search))
+	if (isset($search)) {
 		$LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
-
-	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `nagios_server`");
-
-	$tmp = & $DBRESULT->fetchRow();
-	$rows = $tmp["COUNT(*)"];
+	}
 
 	/*
 	 * nagios servers comes from DB
@@ -116,7 +115,6 @@
 		}
 		$DBRESULT->free();
 	}
-	include("./include/common/checkPagination.php");
 
 	/*
 	 * Smarty template Init
@@ -146,8 +144,12 @@
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
+
+	$rows = $pearDB->numberRows();
+
+	include("./include/common/checkPagination.php");
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
@@ -163,13 +165,14 @@
 	for ($i = 0; $config = $DBRESULT->fetchRow(); $i++) {
 		$moptions = "";
 		$selectedElements = $form->addElement('checkbox', "select[".$config['id']."]");
-		if ($config["ns_activate"])
+		if ($config["ns_activate"]) {
 			$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-		else
+		} else {
 			$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
-		$elemArr[$i] = array("MenuClass" => "list_".$style,
+		}
+		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
+		$elemArr[$i] = array(
+						"MenuClass" => "list_".$style,
 						"RowMenu_select" => $selectedElements->toHtml(),
 						"RowMenu_name" => $config["name"],
 						"RowMenu_ip_address" => $config["ns_ip_address"],
