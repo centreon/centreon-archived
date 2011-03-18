@@ -193,7 +193,7 @@
 	 * Get Status global for Services
 	 */
 	if (!$is_admin) {
-		$rq2 = 	" SELECT count(state), state" .
+		$rq2 = 	" SELECT count(DISTINCT CONCAT(h.host_id,';',s.service_id)) AS count, s.state" .
 				" FROM services s, hosts h, centreon_acl" .
 				" WHERE h.host_id = s.host_id".
 				" AND h.name NOT LIKE '_Module_%' ".
@@ -203,17 +203,17 @@
 				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
 	else {
-		$rq2 = 	" SELECT count(s.state), s.state".
+		$rq2 = 	" SELECT count(s.state) AS count, s.state".
 				" FROM services s, hosts h " .
 				" WHERE h.host_id = s.host_id".
 				" AND h.name not like '_Module_%' ".
-				" AND s.enabled = 1 GROUP BY s.state ORDER by s.state";
+				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 	$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($ndo = $resNdo2->fetchRow()) {
-		$SvcStat[$ndo["state"]] = $ndo["count(s.state)"];
+		$SvcStat[$ndo["state"]] = $ndo["count"];
 	}
 	$resNdo2->free();
 
@@ -264,13 +264,13 @@
 		        " s.scheduled_downtime_depth " .
 				" FROM services s, centreon_acl, hosts h" .
 				" WHERE h.host_id = s.host_id " .
-				" AND (s.problem_has_been_acknowledged = 1 OR " .
+				" AND (s.acknowledged = 1 OR " .
 				" s.scheduled_downtime_depth > 0) " .
 				" AND s.enabled = 1 " .
 				" AND s.host_id = centreon_acl.host_id ".
 				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND h.host_name NOT LIKE '_Module_%' ";
+				" AND h.name NOT LIKE '_Module_%' ";
 	} else {
 		$rq1 = 	" SELECT DISTINCT s.state, " .
 		        " s.acknowledged, " .
@@ -339,7 +339,7 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h, centreon_acl " .
 				" WHERE h.host_id = s.host_id " .
 				" AND s.state > 0" .
@@ -352,7 +352,7 @@
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" ORDER BY s.state ASC, h.name";
 	} else {
-		$rq1 = 	" SELECT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h" .
 				" WHERE h.host_id = s.host_id " .
 				" AND s.state > 0" .
@@ -397,7 +397,7 @@
 			}
 			$tab_output[$j] = $ndo["output"];
 			$tab_icone[$j] = $ndo["icon_image"];
-			$tab_objectid[$j] = $ndo['service_id'];
+			$tab_objectid[$j] = $ndo['host_id'] . "_" . $ndo['service_id'];
 			$tab_hobjectid[$j] = $ndo['host_id'];
 			$j++;
 		}

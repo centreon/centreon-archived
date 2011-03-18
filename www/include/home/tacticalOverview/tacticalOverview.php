@@ -57,21 +57,22 @@
 <script type='text/javascript' src='./class/centreonAjax.js'></script>
 <script type='text/javascript'>
 var _sid = '<?php echo session_id();?>';
-var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/<?php print $oreon->broker->getBroker(); ?>/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
+var broker = '<?php  echo $oreon->broker->getBroker();?>';
+var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/' + broker +'/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
 var ajaxOverlay = new CentreonAjaxOverlay();
 ajax.setTime(10);
 setTimeout('ajax.start()', 200);
 
 function showHostOverlay(id, domId) {
 	var span = document.getElementById('span_' + domId);
-	var xmlPage = "./include/monitoring/status/Services/xml/<?php print $oreon->broker->getBroker(); ?>/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
+	var xmlPage = "./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
 	var xslPage = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
 	ajaxOverlay.show(xmlPage, xslPage, 'span_' + domId);
 }
 
 function showServiceOverlay(id) {
 	var span = document.getElementById('span_'+id);
-	var xmlPage = "./include/monitoring/status/Services/xml/<?php print $oreon->broker->getBroker(); ?>/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
+	var xmlPage = "./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
 	var xslPage = "./include/monitoring/status/Services/xsl/popupForService.xsl";
 	ajaxOverlay.show(xmlPage, xslPage, 'span_'+id);
 }
