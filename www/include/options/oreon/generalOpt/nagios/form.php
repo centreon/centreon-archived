@@ -62,7 +62,7 @@
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
-	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("Ndo" => "NDOutils", "broker" => "Centreon Broker"));
+	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("ndo" => "NDOutils", "broker" => "Centreon Broker"));
 
 	/*
 	 * Acknowledgement form
