@@ -110,15 +110,15 @@
 			" h.check_attempt, " .
 			" h.scheduled_downtime_depth, " .
 			" h.host_id, " .
-			" hph.parent_id as is_parent ".
-			" FROM `hosts` h";
+			" hph.parent_id as is_parent ";
+	$rq1 .= " FROM ";
 	if (!$obj->is_admin) {
-		$rq1 .= ", centreon_acl ";
+		$rq1 .= " centreon_acl, ";
 	}
 	if ($hostgroups) {
-		$rq1 .= ", hosts_hostgroups hhg ";
+		$rq1 .= " hosts_hostgroups hhg, ";
 	}
-
+	$rq1 .=" `hosts` h ";
 	$rq1 .= " LEFT JOIN hosts_hosts_parents hph ";
     $rq1 .= " ON hph.parent_id = h.host_id ";
 
