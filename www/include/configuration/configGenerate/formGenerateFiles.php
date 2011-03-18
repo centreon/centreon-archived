@@ -433,6 +433,7 @@
 <script type='text/javascript' src='./include/configuration/configGenerate/javascript/generation.js'></script>
 <script type='text/javascript'>
 var tooltip = new CentreonToolTip();
+var session_id = "<?php echo session_id();?>";
 tooltip.render();
 var progressBar = new S2.UI.ProgressBar('progress_bar');
 var msgTab = new Array();

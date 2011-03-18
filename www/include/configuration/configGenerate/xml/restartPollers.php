@@ -1,6 +1,6 @@
 <?php
 
-if (!isset($_POST['poller']) || !isset($_POST['mode'])) {
+if (!isset($_POST['poller']) || !isset($_POST['mode']) || !isset($_POST['sid'])) {
     exit;
 }
 
@@ -22,7 +22,9 @@ try {
     require_once $centreon_path . "www/class/centreonXML.class.php";
 
     session_start();
-
+    if ($_POST['sid'] != session_id()) {
+        exit;
+    }
     $oreon = $_SESSION['centreon'];
     $centreon = $oreon;
 

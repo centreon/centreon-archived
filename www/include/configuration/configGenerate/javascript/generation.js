@@ -38,6 +38,7 @@ function generateFiles()
 	new Ajax.Request('./include/configuration/configGenerate/xml/generateFiles.php', {
 		method: 'post',
 		parameters: {
+						sid: session_id,
 						poller: selectedPoller,
 						comment: commentOption,
 						debug: debugOption						
@@ -72,6 +73,7 @@ function moveFiles()
 	new Ajax.Request('./include/configuration/configGenerate/xml/moveFiles.php', {
 		method: 'post',
 		parameters: {
+						sid: session_id,				
 						poller: selectedPoller
 					},
 		onSuccess: function (response) {
@@ -97,6 +99,7 @@ function restartPollers()
 	new Ajax.Request('./include/configuration/configGenerate/xml/restartPollers.php', {
 		method: 'post',
 		parameters: {
+						sid: session_id,
 						poller: selectedPoller,						
 						mode: restartMode
 					},
