@@ -3,51 +3,57 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	require_once './class/centreonDuration.class.php';
 	include_once("./include/monitoring/common-Func.php");
 	include_once("./include/monitoring/external_cmd/cmd.php");
 
 	/*
+	 * Init Continue Value
+	 */
+	$continue = true;
+
+	/*
 	 * DB Connect
 	 */
 	include_once("./class/centreonDB.class.php");
-	
+
 	$pearDBndo = new CentreonDB("ndo");
 
 
@@ -65,20 +71,25 @@
 	}
 
 	if (isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 1){
-		if (!isset($param["sticky"]))
+		if (!isset($param["sticky"])) {
 			$param["sticky"] = 0;
-		if (!isset($param["notify"]))
+		}
+		if (!isset($param["notify"])) {
 			$param["notify"] = 0;
-		if (!isset($param["persistent"]))
+		}
+		if (!isset($param["persistent"])) {
 			$param["persistent"] = 0;
+		}
 		acknowledgeService($param);
-	} else if(isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0)
+	} else if(isset($param["cmd"]) && $param["cmd"] == 15 && isset($param["author"]) && isset($param["en"]) && $param["en"] == 0) {
 		acknowledgeServiceDisable();
+	}
 
-	if (isset($param["cmd"]) && $param["cmd"] == 16 && isset($param["output"]))
+	if (isset($param["cmd"]) && $param["cmd"] == 16 && isset($param["output"])) {
 		submitPassiveCheck();
+	}
 
-	if ($o == "svcSch"){
+	if ($o == "svcSch") {
 		$param["sort_types"] = "next_check";
 		$param["order"] = "sort_asc";
 	}
@@ -89,7 +100,7 @@
 	$pathRoot 		= "./include/monitoring/";
 	$pathExternal 	= "./include/monitoring/external_cmd/";
 	$pathDetails	= "./include/monitoring/objectDetails/";
-	
+
 	/*
 	 * Special Paths
 	 */
@@ -98,102 +109,114 @@
 	$sg_path 	= $path."ServicesServiceGroups/";
 	$meta_path 	= $path."Meta/";
 	$path_sch 	= $path."Scheduling/";
-	
-	if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) 
-		print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
-	else {
+
+	if ($centreon->broker->getBroker() != "broker") {
+		$pearDBndo = new CentreonDB("ndo");
+
 		/*
-		 * Check if ACL table exists
+		 * Check NDO connection
 		 */
-		if ($err_msg = table_not_exists("centreon_acl")) 
+		if (preg_match("/error/", $pearDBndo->toString(), $str) || preg_match("/failed/", $pearDBndo->toString(), $str)) {
+			print "<div class='msg'>"._("Connection Error to NDO DataBase ! \n")."</div>";
+			$continue = false;
+		}
+
+		/*
+		 * Check table ACL exists
+		 */
+		if ($err_msg = table_not_exists("centreon_acl")) {
 			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
-		
+			$continue = false;
+		}
+	}
+
+	if ($continue) {
 		switch ($o)	{
 			/*
 			 * View of Service
 			 */
-			case "svc" 			: 
-				require_once($svc_path."service.php"); 
+			case "svc" 			:
+				require_once($svc_path."service.php");
 				break;
-			case "svcpb" 		: 
-				require_once($svc_path."service.php");		
+			case "svcpb" 		:
+				require_once($svc_path."service.php");
 				break;
-			case "svc_warning" 	: 
-				require_once($svc_path."service.php");		
+			case "svc_warning" 	:
+				require_once($svc_path."service.php");
 				break;
-			case "svc_critical" : 
-				require_once($svc_path."service.php");		
+			case "svc_critical" :
+				require_once($svc_path."service.php");
 				break;
-			case "svc_unknown" 	: 
-				require_once($svc_path."service.php");		
+			case "svc_unknown" 	:
+				require_once($svc_path."service.php");
 				break;
-			case "svc_ok" 		: 
-				require_once($svc_path."service.php");		
+			case "svc_ok" 		:
+				require_once($svc_path."service.php");
 				break;
-			case "svc_unhandled": 
-				require_once($svc_path."service.php");		
-				break;			
+			case "svc_unhandled":
+				require_once($svc_path."service.php");
+				break;
 			/*
-			 * Special Views 
+			 * Special Views
 			 */
-			case "svcd" 		: 
-				require_once($pathDetails."serviceDetails.php"); 		
+			case "svcd" 		:
+				require_once($pathDetails."serviceDetails.php");
 				break;
-			case "svcak" 		: 
-				require_once("./include/monitoring/acknowlegement/serviceAcknowledge.php"); 
+			case "svcak" 		:
+				require_once("./include/monitoring/acknowlegement/serviceAcknowledge.php");
 				break;
-			case "svcpc" 		: 
+			case "svcpc" 		:
 				require_once("./include/monitoring/submitPassivResults/servicePassiveCheck.php");
 				break;
 
-			case "svcgrid" 		: 
-				require_once($svc_path."serviceGrid.php"); 				
-				break;
-			case "svcOV" 		: 
+			case "svcgrid" 		:
 				require_once($svc_path."serviceGrid.php");
 				break;
-			case "svcSum" 		: 
+			case "svcOV" 		:
+				require_once($svc_path."serviceGrid.php");
+				break;
+			case "svcSum" 		:
 				require_once($svc_path."serviceSummary.php");
 				break;
 			/*
 			 * View by Service Groups
 			 */
-			case "svcgridSG" 	: 
+			case "svcgridSG" 	:
 				require_once($sg_path."serviceGridBySG.php");
 				break;
-			case "svcOVSG" 		: 
+			case "svcOVSG" 		:
 				require_once($sg_path."serviceGridBySG.php");
 				break;
-			case "svcSumSG" 	: 
+			case "svcSumSG" 	:
 				require_once($sg_path."serviceSummaryBySG.php");
 				break;
-			
+
 			/*
 			 * View By hosts groups
-			 */			
-			case "svcgridHG" 	: 
+			 */
+			case "svcgridHG" 	:
 				require_once($hg_path."serviceGridByHG.php");
 				break;
-			case "svcOVHG" 		: 
+			case "svcOVHG" 		:
 				require_once($hg_path."serviceGridByHG.php");
 				break;
-			case "svcSumHG" 	: 
+			case "svcSumHG" 	:
 				require_once($hg_path."serviceSummaryByHG.php");
 				break;
 			/*
 			 * Meta Services
 			 */
-			case "meta" 		: 
+			case "meta" 		:
 				require_once($meta_path."/metaService.php");
 				break;
 			/*
 			 * Scheduling Queue
 			 */
-			case "svcSch" 		: 
+			case "svcSch" 		:
 				require_once($path_sch."serviceSchedule.php");
 				break;
-			default 			: 
-				require_once($svc_path."service.php"); 					
+			default 			:
+				require_once($svc_path."service.php");
 				break;
 		}
 	}
