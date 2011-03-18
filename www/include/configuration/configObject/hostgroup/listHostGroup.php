@@ -36,11 +36,17 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	include("./include/common/autoNumLimit.php");
 
+	/*
+	 * Object init
+	 */
+    $mediaObj = new CentreonMedia($pearDB);
+    
 	/*
 	 * start quickSearch form
 	 */
@@ -54,14 +60,6 @@
 	if (isset($search) && $search) {
 		$SearchTool = " (hg_name LIKE '%".CentreonDB::escape($search)."%' OR hg_alias LIKE '%".CentreonDB::escape($search)."%') AND ";
 	}
-
-	$request = "SELECT COUNT(*) FROM hostgroup WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation)";
-
-	$DBRESULT = $pearDB->query($request);
-	$tmp = & $DBRESULT->fetchRow();
-	$rows = $tmp["COUNT(*)"];
-
-	include("./include/common/checkPagination.php");
 
 	/*
 	 *  Smarty template Init
@@ -92,9 +90,15 @@
 	 * Hostgroup list
 	 */
 
-	$rq = "SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) ORDER BY hg_name LIMIT ".$num * $limit .", $limit";
+	$rq = "SELECT SQL_CALC_FOUND_ROWS hg_id, hg_name, hg_alias, hg_activate, hg_icon_image FROM hostgroup WHERE $SearchTool hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) ORDER BY hg_name LIMIT ".$num * $limit .", $limit";
 	$DBRESULT = $pearDB->query($rq);
 
+	/*
+	 * Pagination
+	 */
+	$rows = $pearDB->numberRows();
+	include("./include/common/checkPagination.php");
+	
 	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -141,7 +145,11 @@
 		$DBRESULT2 = $pearDB->query($rq);
 		$nbrhostgroupDeact = $DBRESULT2->fetchRow();
 
-
+		if ($hg['hg_icon_image'] != "") {
+			$hgIcone = "./img/media/" . $mediaObj->getFilename($hg['hg_icon_image']);
+		} else {
+			$hgIcone = "./img/icones/16x16/clients.gif";
+		}
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
 						"RowMenu_name"=>$hg["hg_name"],
@@ -149,6 +157,7 @@
 						"RowMenu_desc"=>html_entity_decode($hg["hg_alias"]),
 						"RowMenu_status"=>$hg["hg_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_hostAct"=>$nbrhostAct["nbr"],
+						"RowMenu_icone" => $hgIcone,
 						"RowMenu_hostDeact"=>$nbrhostDeact["nbr"],
 						"RowMenu_hostgroupAct"=>$nbrhostgroupAct["nbr"],
 						"RowMenu_hostgroupDeact"=>$nbrhostgroupDeact["nbr"],
