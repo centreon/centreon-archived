@@ -72,7 +72,7 @@
 	 */
 	$pearDB 		= new CentreonDB();
 	$pearDBO 		= new CentreonDB("centstorage");
-	if ($oreon->broker->getBroker() == "Ndo") {
+	if ($oreon->broker->getBroker() == "ndo") {
 		$pearDBndo	= new CentreonDB("ndo");
 		$ndo_base_prefix = getNDOPrefix();
 	}
