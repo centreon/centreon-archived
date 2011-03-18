@@ -83,9 +83,9 @@ class CentreonMonitoring {
 	 * @param $status
 	 * @param $obj
 	 */
-	public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj) {
+	public function getServiceStatusCountNDO($host_name, $objXMLBG, $o, $status, $obj) {
 
-		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
+		$rq = 	" SELECT DISTINCT no.name1, no.name2, count( nss.service_object_id ) AS nb".
 				" FROM " .$objXMLBG->ndoPrefix."servicestatus nss".
 				" WHERE nss.current_state = '".$status."'";
 
@@ -114,6 +114,42 @@ class CentreonMonitoring {
 		$tab = $DBRESULT->fetchRow();
 		return ($tab["nb"]);
 	}
+	
+	/**
+	 *
+	 * Enter description here ...
+	 * @param $host_name
+	 * @param $objXMLBG
+	 * @param $o
+	 * @param $status
+	 * @param $obj
+	 */
+	public function getServiceStatusCountBroker($host_name, $objXMLBG, $o, $status, $obj) {
+
+		$rq = 	" SELECT DISTINCT s.host_id, s.service_id, s.state ".
+				" FROM services s, `hosts` h".(!$objXMLBG->is_admin ? ", centreon_acl " : "").
+				" WHERE s.state = '".$status."'".
+				" AND s.host_id = h.host_id ".
+				" AND h.name = '$host_name' ";
+
+		if ($o == "svcSum_ack_0") {
+			$rq .= " AND s.acknowledged = 0 AND s.state != 0";
+		} else if ($o == "svcSum_ack_1") {
+			$rq .= " AND s.acknowledged = 1 AND s.state != 0";
+		}
+		if (!$objXMLBG->is_admin) {
+			$rq .= 	" AND h.host_id = centreon_acl.host_id ". 
+					" AND s.service_id = centreon_acl.service_id ". 
+					" AND centreon_acl.group_id IN (". $obj->access->getAccessGroupsString().")";
+		}
+		$DBRESULT = $objXMLBG->DBC->query($rq);
+		$cpt = 0;
+		while ($tab = $DBRESULT->fetchRow()) {
+			$cpt++;
+		}
+		$DBRESULT->free();
+		return ($cpt);
+	}
 
 	/**
 	 *
@@ -124,11 +160,11 @@ class CentreonMonitoring {
 	 * @param unknown_type $instance
 	 * @param unknown_type $hostgroups
 	 */
-	public function getServiceStatusCount($host_name, $objXMLBG, $o, $obj) {
+	public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj) {
 		if ($this->objBroker->getBroker() == "broker") {
-			return $this->getServiceStatusCountBroker($host_name, $objXMLBG, $o, $obj);
+			return $this->getServiceStatusCountBroker($host_name, $objXMLBG, $o, $status, $obj);
 		} else if ($this->objBroker->getBroker() == "ndo") {
-			return $this->getServiceStatusCountNDO($host_name, $objXMLBG, $o, $obj);
+			return $this->getServiceStatusCountNDO($host_name, $objXMLBG, $o, $status, $obj);
 		}
 	}
 
@@ -250,9 +286,9 @@ class CentreonMonitoring {
 		$rq = 		" SELECT h.name, s.description as service_name, s.state, s.service_id " .
 					" FROM hosts h, services s";
 
-		if (!$objXMLBG->is_admin)
+		if (!$objXMLBG->is_admin) {
 			$rq .= ", centreon_acl ";
-
+		}
 		$rq .= 		" WHERE h.host_id = s.host_id " .
 					" AND s.enabled = '1' " .
 					" AND h.name NOT LIKE '_Module_%'";
@@ -271,8 +307,9 @@ class CentreonMonitoring {
 			$rq .= 	" AND h.instance_id = ".$instance;
 		}
 		$grouplistStr = $objXMLBG->access->getAccessGroupsString();
-		$rq .= 	$objXMLBG->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $objXMLBG->access->queryBuilder("AND", "h.name", "centreon_acl.description").$objXMLBG->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
-
+		if (!$objXMLBG->is_admin) {
+			$rq .= "AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id ".$objXMLBG->access->queryBuilder("AND", "centreon_acl.group_id", $grouplistStr);
+		}
 		$tab = array();
 		$DBRESULT = $objXMLBG->DBC->query($rq);
 		while ($svc = $DBRESULT->fetchRow()) {
