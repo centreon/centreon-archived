@@ -68,9 +68,17 @@
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+	if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
+	    $sort_type = "name";
+	} else {
+    	if ($o == "hpb" || $o == "h_unhandled") {
+    	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+    	} else {
+    	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "name");
+    	}
+	}
 
 	/*
 	 * Backup poller selection
@@ -101,7 +109,8 @@
 			" h.state_type," .
 			" h.check_attempt, " .
 			" h.scheduled_downtime_depth, " .
-			" h.host_id " .
+			" h.host_id, " .
+			" hph.parent_id as is_parent ".
 			" FROM `hosts` h";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
@@ -109,6 +118,10 @@
 	if ($hostgroups) {
 		$rq1 .= ", hosts_hostgroups hhg ";
 	}
+
+	$rq1 .= " LEFT JOIN hosts_hosts_parents hph ";
+    $rq1 .= " ON hph.parent_id = h.host_id ";
+
 	$rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
 
 	if (!$obj->is_admin) {
@@ -174,7 +187,7 @@
 			$rq1 .= " ORDER BY h.output ". $order.",h.name ";
 			break;
 		default :
-			$rq1 .= " ORDER BY h.name ";
+			$rq1 .= " ORDER BY is_parent DESC, h.state DESC, h.name ASC";
 			break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
@@ -191,9 +204,13 @@
 	$obj->XML->writeElement("limit", $limit);
 	$obj->XML->writeElement("p", $p);
 	$obj->XML->writeElement("o", $o);
+	$obj->XML->writeElement("sort_type", $sort_type);
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
+	$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
+	$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
 	$obj->XML->endElement();
 
+	$delimInit = 0;
 	while ($ndo = $DBRESULT->fetchRow()) {
 
 		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
@@ -208,6 +225,10 @@
 			$hard_duration = " N/A ";
 		} else {
 			$hard_duration = "N/A";
+		}
+
+	    if ($ndo['is_parent']) {
+		    $delimInit = 1;
 		}
 
 		$obj->XML->startElement("l");
@@ -234,6 +255,19 @@
         $obj->XML->writeElement("ne", 	$ndo["notify"]);
         $obj->XML->writeElement("tr", 	$ndo["check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
+        $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
+        $parenth = 0;
+        if ($ct === 1 && $ndo['is_parent']) {
+            $parenth = 1;
+        }
+        if (!$sort_type && $delimInit && !$ndo['is_parent']) {
+            $delim = 1;
+            $delimInit = 0;
+        } else {
+            $delim = 0;
+        }
+        $obj->XML->writeElement("parenth", $parenth);
+        $obj->XML->writeElement("delim", $delim);
 
         $hostObj = new CentreonHost($obj->DB);
 		if ($ndo["notes"] != "") {

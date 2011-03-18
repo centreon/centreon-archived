@@ -21,8 +21,8 @@
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>	
 	</tr>
 	<xsl:for-each select="//l">
-	<xsl:if test = "//i/o = 'h_unhandled' or //i/o = 'hpb'">
-		<xsl:if test="parenth = 1">			
+	<xsl:if test = "//i/o = 'h_unhandled' or //i/o = 'hpb' and //i/sort_type = ''">
+		<xsl:if test="parenth = 1">
 			<tr class='list_lvl_1'><td colspan="10"><xsl:value-of select="//i/parent_host_label" /></td></tr>
 		</xsl:if>
 		<xsl:if test="delim = 1">			

@@ -65,7 +65,7 @@
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
-	!isset($_GET["sort_type"]) ? $sort_type = "host_name" : $sort_type = $_GET["sort_type"];
+	!isset($_GET["sort_type"]) ? $sort_type = "" : $sort_type = $_GET["sort_type"];
 
 	/*
 	 * Check search value in Host search field
