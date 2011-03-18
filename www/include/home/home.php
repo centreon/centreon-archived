@@ -56,6 +56,9 @@
 	if ($oreon->broker->getBroker() == "ndo") {
 		$pearDBndo = new CentreonDb("ndo");
 		$ndo_base_prefix = getNDOPrefix();
+		if ($err_msg = table_not_exists("centreon_acl")) {
+			print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
+		}
 	}
 
 	/**
@@ -64,15 +67,6 @@
 	$tabSatusHost 		= array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
 	$tabSatusService 	= array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
 
-
-	/**
-	 * The user must install the ndo table with the 'centreon_acl'
-	 */
-/*
-	if ($err_msg = table_not_exists("centreon_acl")) {
-		print "<div class='msg'>"._("Warning: ").$err_msg."</div>";
-	}
-*/
 	/**
 	 * Directory of Home pages
 	 */
@@ -108,6 +102,7 @@
 				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 		$DBRESULT = $pearDBndo->query($rq1);
 	}
+
 	$data = array();
 	$statHosts = _("Hosts");
 	while ($ndo = $DBRESULT->fetchRow()){
