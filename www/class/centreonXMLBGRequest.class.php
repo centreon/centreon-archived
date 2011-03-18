@@ -130,9 +130,6 @@ class CentreonXMLBGRequest
 		 */
 		$this->DB 		= new CentreonDB();
 		$this->DBC 		= new CentreonDB("centstorage");
-		if ($dbNeeds) {
-			$this->DBNdo= new CentreonDB("ndo");
-		}
 
 		/*
 		 * Init Objects
@@ -140,6 +137,13 @@ class CentreonXMLBGRequest
 		$this->hostObj		= new CentreonHost($this->DB);
 		$this->serviceObj	= new CentreonService($this->DB);
 		$this->broker 		= new CentreonBroker($this->DB);
+
+		/*
+		 * Connect NDO
+		 */
+		if ($dbNeeds && $this->broker->getBroker() == "ndo") {
+			$this->DBNdo= new CentreonDB("ndo");
+		}
 
 		/*
 		 * Init Object Monitoring
