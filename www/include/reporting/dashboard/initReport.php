@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit;
+	}
 
 	$path = "./include/reporting/dashboard";
 
@@ -63,13 +64,17 @@
 	/*
 	 * Add quickSearch toolbar
 	 */
-	if ($p != 30702)
+	if ($p != 30702) {
 		require_once "./include/common/quickSearch.php";
+	}
 
 	/*
 	 * Create DB connexion
 	 */
-	$pearDBndo 	= new CentreonDB("ndo");
+	$pearDBO = new CentreonDB("centstorage");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo 	= new CentreonDB("ndo");
+	}
 
 	$debug = 0;
 
@@ -190,9 +195,9 @@
 	/*
   	 * LCA
   	 */
-	$lcaHoststr 	= $oreon->user->access->getHostsString("ID", $pearDBndo);
+	$lcaHoststr 	= $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo));
 	$lcaHostGroupstr = $oreon->user->access->getHostGroupsString();
-	$lcaSvcstr 	= $oreon->user->access->getServicesString("ID", $pearDBndo);
+	$lcaSvcstr 	= $oreon->user->access->getServicesString("ID", ($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo));
 
 	/*
 	 * setting variables for link with services

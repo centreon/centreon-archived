@@ -57,7 +57,7 @@
 	$form = new HTML_QuickForm('formItem', 'post', "?p=".$p);
 
 	$host_name = getMyHostName($host_id);
-	$items  = $oreon->user->access->getHostServices($pearDBndo, $host_id);
+	$items  = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo), $host_id);
 
 	$itemsForUrl = array();
 	foreach ($items as $key => $value) {
