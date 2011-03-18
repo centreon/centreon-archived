@@ -56,10 +56,10 @@
 
 	$db	 	= new CentreonDB();
 	$pearDB = $db;
-	$dbb 	= new CentreonDB("ndo");
+	$dbb 	= new CentreonDB("centstorage");
     $centreon = $_SESSION['centreon'];
 
-	$acl_host_name_list = $centreon->user->access->getHostsString("NAME", $dbb);
+	$acl_host_id_list = $centreon->user->access->getHostsString("ID", $dbb);
 	$acl_access_group_list = $centreon->user->access->getAccessGroupsString();
 
 	$is_admin = $centreon->user->access->admin;
@@ -68,34 +68,31 @@
 	$general_opt = getStatusColor($db);
 
 	// Get Status Globals for hosts
-	$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
-			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
-			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
-			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
-			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+	$rq1 = 	" SELECT count(state), state" .
+			" FROM hosts " .
+			" WHERE enabled = 1 " .
+			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
+			" AND name NOT LIKE '_Module_%' " .
+			" GROUP BY state " .
+			" ORDER BY state";
 
 	$resNdo1 = $dbb->query($rq1);
 
 	$hostStatus = array(0=>0, 1=>0, 2=>0, 3=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
-		$hostStatus[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
+		$hostStatus[$ndo["state"]] = $ndo["count(state)"];
 	}
 	$resNdo1->free();
 
 	// Get Hosts Problems
-	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
-			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h " .
-			" WHERE obj.object_id = hs.host_object_id".
-			" AND obj.object_id = h.host_object_id" .
-			" AND obj.is_active = 1 " .
-			$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_name_list) .
-			" AND hs.current_state <> 0" .
-			" AND hs.problem_has_been_acknowledged = 0" .
-			" AND hs.scheduled_downtime_depth = 0" .
-			" ORDER by hs.current_state";
+	$rq1 = 	" SELECT DISTINCT host_id, name , state, last_check, output, icon_image, address, last_state_change AS lsc" .
+			" FROM hosts " .
+			" WHERE enabled = 1 " .
+			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
+			" AND state <> 0" .
+			" AND acknowledged = 0" .
+			" AND scheduled_downtime_depth = 0" .
+			" ORDER by state";
 	$resNdoHosts = $dbb->query($rq1);
 
 	$nbhostpb = 0;
@@ -109,14 +106,14 @@
     $tab_hostobjectid = array(0=>0, 1=>0, 2=>0, 3=>0);
 
     while ($ndo = $resNdoHosts->fetchRow()) {
-	    $tab_hostprobname[$nbhostpb] = $ndo["name1"];
-        $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
+	    $tab_hostprobname[$nbhostpb] = $ndo["name"];
+        $tab_hostprobstate[$nbhostpb] = $ndo["state"];
         $tab_hostproblast[$nbhostpb] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
         $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
         $tab_hostproboutput[$nbhostpb] = $ndo["output"];
     	$tab_hostprobip[$nbhostpb] = $ndo["address"];
     	$tab_hosticone[$nbhostpb] = $ndo["icon_image"];
-    	$tab_hostobjectid[$nbhostpb] = $ndo['host_object_id'];
+    	$tab_hostobjectid[$nbhostpb] = $ndo['host_id'];
 		$nbhostpb++;
 	}
 	$resNdoHosts->free();
@@ -125,20 +122,18 @@
 	/*
 	 * Get the id's of problem hosts
 	*/
-	$rq1 = 	" SELECT ".$ndo_base_prefix."hoststatus.host_object_id, " .$ndo_base_prefix. "hoststatus.current_state ".
-			" FROM ".$ndo_base_prefix."servicestatus, ".$ndo_base_prefix."hoststatus, " . $ndo_base_prefix."services, " . $ndo_base_prefix. "objects" .
-			" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" .
-			" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
-			" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
-			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
-			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-			" GROUP BY ".$ndo_base_prefix."services.host_object_id";
+	$rq1 = 	" SELECT h.host_id, h.state ".
+			" FROM services s, hosts h " .
+			" WHERE s.host_id = h.host_id " .
+			" AND h.enabled = 1 " .
+			$centreon->user->access->queryBuilder("AND", "h.host_id", $acl_host_id_list) .
+			" AND h.name NOT LIKE '_Module_%' " .
+			" GROUP BY s.host_id";
 	$resNdo1 = $dbb->query($rq1);
 	$pbCount = 0;
 	while ($ndo = $resNdo1->fetchRow()) {
-		if ($ndo["current_state"] != 0) {
-			$hostPb[$pbCount] = $ndo["host_object_id"];
+		if ($ndo["state"] != 0) {
+			$hostPb[$pbCount] = $ndo["host_id"];
 			$pbCount++;
 		}
 	}
@@ -147,47 +142,46 @@
 	/*
 	 * Get Host Ack  UP(0), DOWN(1),  UNREACHABLE(2)
 	 */
-	$rq1 = 	" SELECT DISTINCT ".$ndo_base_prefix."objects.name1, ".
-	        $ndo_base_prefix."hoststatus.current_state, ".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged, ".
-	        $ndo_base_prefix."hoststatus.scheduled_downtime_depth " .
-			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-			" AND (".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 OR " .
-	        " " . $ndo_base_prefix."hoststatus.scheduled_downtime_depth > 0) ".
-			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
-			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+	$rq1 = 	" SELECT name, ".
+	        " state, acknowledged, ".
+	        " scheduled_downtime_depth " .
+			" FROM hosts " .
+			" WHERE enabled = 1 " .
+			" AND (acknowledged = 1 OR " .
+	        " scheduled_downtime_depth > 0) ".
+			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
+			" ORDER by state";
 
 	$hostAck = array(0=>0, 1=>0, 2=>0, 3=>0);
 	$hostDt = array(0=>0, 1=>0, 2=>0, 3=>0);
 	$resNdo1 = $dbb->query($rq1);
 	while ($ndo = $resNdo1->fetchRow()) {
-		if ($ndo['problem_has_been_acknowledged']) {
-		    $hostAck[$ndo["current_state"]]++;
+		if ($ndo['acknowledged']) {
+		    $hostAck[$ndo["state"]]++;
 		}
 		if ($ndo['scheduled_downtime_depth']) {
-		    $hostDt[$ndo['current_state']]++;
+		    $hostDt[$ndo['state']]++;
 		}
-		$hostUnhand[$ndo["current_state"]]--;
+		$hostUnhand[$ndo["state"]]--;
 	}
 	$resNdo1->free();
 
 	/*
 	 * Get Host inactive objects
 	 */
-	$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
-			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
-			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .
-			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
-			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
-			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+	$rq1 = 	" SELECT count(state), state" .
+			" FROM hosts " .
+			" WHERE enabled = 0 " .
+			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
+			" AND name NOT LIKE '_Module_%' " .
+			" GROUP BY state " .
+			" ORDER BY state";
 
 	$resNdo1 = $dbb->query($rq1);
 	$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
 	while ($ndo = $resNdo1->fetchRow())	{
-		$hostInactive[$ndo["current_state"]] = $ndo["count(".$ndo_base_prefix."hoststatus.current_state)"];
-		$hostUnhand[$ndo["current_state"]] -= $hostInactive[$ndo["current_state"]];
+		$hostInactive[$ndo["state"]] = $ndo["count(state)"];
+		$hostUnhand[$ndo["state"]] -= $hostInactive[$ndo["state"]];
 	}
 	$resNdo1->free();
 
@@ -199,27 +193,27 @@
 	 * Get Status global for Services
 	 */
 	if (!$is_admin) {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.name1 = centreon_acl.host_name ".
-				" AND no.name2 = centreon_acl.service_description " .
+		$rq2 = 	" SELECT count(state), state" .
+				" FROM services s, hosts h, centreon_acl" .
+				" WHERE h.host_id = s.host_id".
+				" AND h.name NOT LIKE '_Module_%' ".
+				" AND h.host_id = centreon_acl.host_id ".
+				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
 	else {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state".
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 not like '_Module_%' ".
-				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
+		$rq2 = 	" SELECT count(s.state), s.state".
+				" FROM services s, hosts h " .
+				" WHERE h.host_id = s.host_id".
+				" AND h.name not like '_Module_%' ".
+				" AND s.enabled = 1 GROUP BY s.state ORDER by s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 	$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($ndo = $resNdo2->fetchRow()) {
-		$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+		$SvcStat[$ndo["state"]] = $ndo["count(s.state)"];
 	}
 	$resNdo2->free();
 
@@ -227,35 +221,33 @@
 	 * Get on pb host
 	 */
 	if (!$is_admin) {
-		$rq2 = 	" SELECT nss.current_state, " . $ndo_base_prefix ."services.host_object_id".
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl, " . $ndo_base_prefix."services" .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND nss.service_object_id = ".$ndo_base_prefix."services.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.name1 = centreon_acl.host_name ".
-				" AND no.name2 = centreon_acl.service_description " .
+		$rq2 = 	" SELECT s.state, s.host_id".
+				" FROM services s, hosts h, centreon_acl " .
+				" WHERE h.host_id = s.host_id".
+				" AND h.name NOT LIKE '_Module_%' ".
+				" AND h.host_id = centreon_acl.host_id ".
+				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND no.is_active = 1" .
-				" AND nss.problem_has_been_acknowledged = 0" .
-				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
+				" AND s.enabled = 1" .
+				" AND s.acknowledged = 0" .
+				" AND s.state > 0 GROUP BY s.service_id";
 	} else {
-		$rq2 = 	" SELECT nss.current_state, ". $ndo_base_prefix ."services.host_object_id".
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, " . $ndo_base_prefix."services" .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND nss.service_object_id = ".$ndo_base_prefix."services.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.is_active = 1" .
-				" AND nss.problem_has_been_acknowledged = 0" .
-				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
+		$rq2 = 	" SELECT s.state, s.host_id".
+				" FROM services s, hosts h " .
+				" WHERE h.host_id = s.host_id".
+				" AND h.name NOT LIKE '_Module_%' ".
+				" AND s.enabled = 1" .
+				" AND s.acknowledged = 0" .
+				" AND s.state > 0 GROUP BY s.service_id";
 	}
 	$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	$resNdo1 = $dbb->query($rq2);
 	while($ndo = $resNdo1->fetchRow())	{
-		if ($ndo["current_state"] != 0) {
+		if ($ndo["state"] != 0) {
 			for ($i = 0; $i < $pbCount; $i++) {
-				if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"])) {
-					$onPbHost[$ndo["current_state"]]++;
+				if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_id"])) {
+					$onPbHost[$ndo["state"]]++;
 				}
 			}
 		}
@@ -267,28 +259,28 @@
 	 * Get Service Acknowledgements and Downtimes OK(0), WARNING(1),  CRITICAL(2), UNKNOWN(3)
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT DISTINCT ".$ndo_base_prefix."objects.object_id, " . $ndo_base_prefix."servicestatus.current_state, " .
-		        $ndo_base_prefix."servicestatus.problem_has_been_acknowledged, " .
-		        $ndo_base_prefix."servicestatus.scheduled_downtime_depth " .
-				" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus, centreon_acl" .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
-				" AND (".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 OR " .
-				" " . $ndo_base_prefix."servicestatus.scheduled_downtime_depth > 0) " .
-				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name ".
-				" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .
+		$rq1 = 	" SELECT DISTINCT s.state, " .
+		        " s.acknowledged, " .
+		        " s.scheduled_downtime_depth " .
+				" FROM services s, centreon_acl, hosts h" .
+				" WHERE h.host_id = s.host_id " .
+				" AND (s.problem_has_been_acknowledged = 1 OR " .
+				" s.scheduled_downtime_depth > 0) " .
+				" AND s.enabled = 1 " .
+				" AND s.host_id = centreon_acl.host_id ".
+				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
+				" AND h.host_name NOT LIKE '_Module_%' ";
 	} else {
-		$rq1 = 	" SELECT DISTINCT ".$ndo_base_prefix."objects.object_id, " . $ndo_base_prefix."servicestatus.current_state, " .
-		        $ndo_base_prefix."servicestatus.problem_has_been_acknowledged, " .
-		        $ndo_base_prefix."servicestatus.scheduled_downtime_depth " .
-				" FROM ".$ndo_base_prefix."objects, ".$ndo_base_prefix."servicestatus" .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."servicestatus.service_object_id" .
-				" AND (".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 OR " .
-				" " . $ndo_base_prefix."servicestatus.scheduled_downtime_depth > 0) " .
-				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
+		$rq1 = 	" SELECT DISTINCT s.state, " .
+		        " s.acknowledged, " .
+		        " s.scheduled_downtime_depth " .
+				" FROM services s, hosts h" .
+				" WHERE h.host_id = s.host_id " .
+				" AND (s.acknowledged = 1 OR " .
+				" s.scheduled_downtime_depth > 0) " .
+				" AND s.enabled = 1 " .
+				" AND h.name NOT LIKE '_Module_%' ";
 	}
 	$resNdo1 = $dbb->query($rq1);
 
@@ -296,12 +288,12 @@
 	$svcAck = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	$svcDt = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo1->fetchRow()) {
-	    $svcAckDt[$ndo["current_state"]]++;
-	    if ($ndo['problem_has_been_acknowledged']) {
-	        $svcAck[$ndo["current_state"]]++;
+	    $svcAckDt[$ndo["state"]]++;
+	    if ($ndo['acknowledged']) {
+	        $svcAck[$ndo["state"]]++;
 	    }
 	    if ($ndo['scheduled_downtime_depth']) {
-	        $svcDt[$ndo["current_state"]]++;
+	        $svcDt[$ndo["state"]]++;
 	    }
 	}
 	$resNdo1->free();
@@ -311,27 +303,27 @@
 	 * Get Services Inactive objects
 	 */
 	if (!$is_admin) {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.name1 = centreon_acl.host_name ".
-				" AND no.name2 = centreon_acl.service_description " .
+		$rq2 = 	" SELECT count(s.state), s.state" .
+				" FROM services s, hosts h, centreon_acl " .
+				" WHERE h.host_id = s.host_id".
+				" AND h.name NOT LIKE '_Module_%' ".
+				" AND s.host_id = centreon_acl.host_id ".
+				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
-				" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
+				" AND s.enabled = 0 GROUP BY s.state ORDER BY s.state";
 	}
 	else {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
-				" WHERE no.object_id = nss.service_object_id".
-				" AND no.name1 NOT LIKE '_Module_%' ".
-				" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
+		$rq2 = 	" SELECT count(s.state), s.state" .
+				" FROM services s, hosts h" .
+				" WHERE h.host_id = s.host_id".
+				" AND h.name NOT LIKE '_Module_%' ".
+				" AND s.enabled = 0 GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 
 	$svcInactive = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($ndo = $resNdo2->fetchRow()) {
-		$svcInactive[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+		$svcInactive[$ndo["state"]] = $ndo["count(s.state)"];
 	}
 	$resNdo2->free();
 
@@ -347,32 +339,28 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
-				" WHERE obj.object_id = stat.service_object_id" .
-				" AND stat.service_object_id = svc.service_object_id" .
-				" AND obj.name1 = ht.display_name" .
-				" AND stat.current_state > 0" .
-				" AND stat.problem_has_been_acknowledged = 0" .
-				" AND stat.scheduled_downtime_depth = 0" .
-				" AND obj.is_active = 1" .
-				" AND obj.name1 NOT LIKE '_Module_%' " .
-				" AND obj.name1 = centreon_acl.host_name ".
-				" AND obj.name2 = centreon_acl.service_description " .
+		$rq1 = 	" SELECT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+				" FROM services s, hosts h, centreon_acl " .
+				" WHERE h.host_id = s.host_id " .
+				" AND s.state > 0" .
+				" AND s.acknowledged = 0" .
+				" AND s.scheduled_downtime_depth = 0" .
+				" AND s.enabled = 1" .
+				" AND h.name NOT LIKE '_Module_%' " .
+				" AND s.host_id = centreon_acl.host_id ".
+				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" ORDER by stat.current_state ASC, obj.name1";
+				" ORDER BY s.state ASC, h.name";
 	} else {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
-				" WHERE obj.object_id = stat.service_object_id" .
-				" AND stat.service_object_id = svc.service_object_id" .
-				" AND obj.name1 = ht.display_name" .
-				" AND stat.current_state > 0" .
-				" AND stat.problem_has_been_acknowledged = 0" .
-		        " AND stat.scheduled_downtime_depth = 0" .
-				" AND obj.is_active = 1" .
-				" AND obj.name1 NOT LIKE '_Module_%' " .
-				" ORDER by stat.current_state ASC, obj.name1";
+		$rq1 = 	" SELECT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+				" FROM services s, hosts h" .
+				" WHERE h.host_id = s.host_id " .
+				" AND s.state > 0" .
+				" AND s.acknowledged = 0" .
+		        " AND s.scheduled_downtime_depth = 0" .
+				" AND s.enabled = 1" .
+				" AND h.name NOT LIKE '_Module_%' " .
+				" ORDER BY s.state ASC, h.name";
 	}
 	$resNdo1 = $dbb->query($rq1);
 
@@ -392,25 +380,25 @@
 		$is_unhandled = 1;
 
 		for ($i = 0; $i < $pbCount && $is_unhandled; $i++){
-			if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
+			if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_id"]))
 				$is_unhandled = 0;
 		}
 
 		if ($is_unhandled) {
-			$tab_hostname[$j] = $ndo["name1"];
-			$tab_svcname[$j] = $ndo["name2"];
-			$tab_state[$j] = $ndo["current_state"];
+			$tab_hostname[$j] = $ndo["name"];
+			$tab_svcname[$j] = $ndo["description"];
+			$tab_state[$j] = $ndo["state"];
 			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
 			$tab_ip[$j] = $ndo["address"];
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
 	    		$tab_duration[$j] = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-			} else if ($ndo["last_state_change"] > 0) {
+			} elseif ($ndo["last_state_change"] > 0) {
 				$tab_duration[$j] = " - ";
 			}
 			$tab_output[$j] = $ndo["output"];
 			$tab_icone[$j] = $ndo["icon_image"];
-			$tab_objectid[$j] = $ndo['service_object_id'];
-			$tab_hobjectid[$j] = $ndo['host_object_id'];
+			$tab_objectid[$j] = $ndo['service_id'];
+			$tab_hobjectid[$j] = $ndo['host_id'];
 			$j++;
 		}
 	}
