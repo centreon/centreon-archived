@@ -962,6 +962,7 @@ class CentreonACL
 			while ($row = $DBRESULT->fetchRow()) {
 				$tab[$row['host_name']][$row['service_description']] = 1;
 			}
+			$DBRESULT->free();
 		} else {
 			if ($this->admin) {
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_name = '".$host_name."'";
@@ -972,6 +973,7 @@ class CentreonACL
 			while ($row = $DBRESULT->fetchRow()) {
 				$tab[$row['service_id']] = $row['service_description'];
 			}
+			$DBRESULT->free();
 		}
 
 		return $tab;
