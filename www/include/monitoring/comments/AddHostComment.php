@@ -42,12 +42,14 @@
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonDB.class.php";
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+	}
 
 	/*
 	 * Init GMT class
 	 */
-	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
+	$hostStr = $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 	if ($oreon->user->access->checkAction("host_comment")) {

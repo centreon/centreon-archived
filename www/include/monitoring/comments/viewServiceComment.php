@@ -75,10 +75,12 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "template/");
 
-	$ndo_base_prefix = getNDOPrefix();
 	include_once("./class/centreonDB.class.php");
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+		$ndo_base_prefix = getNDOPrefix();
+	}
 
 	/*
 	 * Pear library
@@ -96,39 +98,64 @@
 	/*
 	 * Service Comments
 	 */
-	if ($is_admin) {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NOT NULL " .
-				(isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
-				(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
-				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-				"AND obj.object_id = cmt.object_id " .
-				"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+	if ($oreon->broker->getBroker() == "ndo") {
+		if ($is_admin) {
+			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
+					"WHERE obj.name1 IS NOT NULL " .
+					"AND obj.name2 IS NOT NULL " .
+					(isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
+					(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
+					(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
+					"AND obj.object_id = cmt.object_id " .
+					"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		} else {
+			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
+					"WHERE obj.name1 IS NOT NULL " .
+					"AND obj.name2 IS NOT NULL " .
+					"AND obj.object_id = cmt.object_id " .
+					"AND obj.name1 = centreon_acl.host_name " .
+					(isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
+					(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
+					(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
+					"AND obj.name2 = centreon_acl.service_description " .
+					"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
+					"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		}
+		$DBRESULT_NDO = $pearDBndo->query($rq2);
+		$rows = $pearDBndo->numberRows();
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
+			$tab_comments_svc[$i] = $data;
+			$tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
+			$tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
+		}
+		unset($data);
 	} else {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NOT NULL " .
-				"AND obj.object_id = cmt.object_id " .
-				"AND obj.name1 = centreon_acl.host_name " .
-				(isset($search_service) && $search_service != "" ? " AND obj.name2 LIKE '%$search_service%'" : "") .
-				(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
-				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-				"AND obj.name2 = centreon_acl.service_description " .
-				"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
-				"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_name, c.service_description " .
+				"FROM comments c ";
+		if ($is_admin) {
+			$rq2 .=	", centreon_acl acl ";
+		}
+		$rq2 .=	"WHERE c.service_description <> ''  " .
+			(isset($search_service) && $search_service != "" ? " AND c.service_description LIKE '%$search_service%'" : "") .
+			(isset($host_name) && $host_name != "" ? " AND c.host_name LIKE '%$host_name%'" : "") .
+			(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
+		if ($is_admin) {
+			$rq2 .=	" AND c.host_name = acl.host_name AND c.service_description = acl.service_description " .
+					"AND c.expires = '0' ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		}
+		$DBRESULT = $pearDBO->query($rq2);
+		$rows = $pearDBO->numberRows();
+		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+			$tab_comments_svc[$i] = $data;
+			$tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
+			$tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
+		}
+		unset($data);
+		$DBRESULT->free();
 	}
-	$DBRESULT_NDO = $pearDBndo->query($rq2);
-	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
-		$tab_comments_svc[$i] = $data;
-		$tab_comments_svc[$i]["is_persistent"] = $en[$tab_comments_svc[$i]["is_persistent"]];
-		$tab_comments_svc[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_svc[$i]["entry_time"]);
-	}
-	unset($data);
 
-	$rows = $pearDBndo->numberRows();
 	include("./include/common/checkPagination.php");
 
 	/*

@@ -77,10 +77,12 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, "template/");
 
-	$ndo_base_prefix = getNDOPrefix();
 	include_once("./class/centreonDB.class.php");
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+		$ndo_base_prefix = getNDOPrefix();
+	}
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
@@ -89,7 +91,7 @@
 
 	$en = array("0" => _("No"), "1" => _("Yes"));
 
-	$acl_host_list = $centreon->user->access->getHostsString("NAME", $pearDBndo);
+	$acl_host_list = $centreon->user->access->getHostsString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
 
 	$search_request = "";
 	if (isset($host_name)) {
@@ -104,36 +106,62 @@
 	/** *******************************************
 	 * Hosts Comments
 	 */
-	if ($is_admin) {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NULL " .
-				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-				($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
-				"AND obj.object_id = cmt.object_id $search_request " .
-				"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
+	if ($oreon->broker->getBroker() == "ndo") {
+		if ($is_admin) {
+			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
+					"WHERE obj.name1 IS NOT NULL " .
+					"AND obj.name2 IS NULL " .
+					(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
+					($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
+					"AND obj.object_id = cmt.object_id $search_request " .
+					"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
+		} else {
+			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
+					"WHERE obj.name1 IS NOT NULL " .
+					"AND obj.name2 IS NULL " .
+					(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
+					($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
+					"AND obj.object_id = cmt.object_id $search_request " .
+					$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
+					" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
+		}
+		$DBRESULT_NDO = $pearDBndo->query($rq2);
+		$rows = $pearDBndo->numberRows();
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
+			$tab_comments_host[$i] = $data;
+			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
+			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
+		}
+		unset($data);
 	} else {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-				"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NULL " .
-				(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-				($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
-				"AND obj.object_id = cmt.object_id $search_request " .
-				$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
-				" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_name " .
+				"FROM comments c ";
+		if ($is_admin) {
+			$rq2 .=	", centreon_acl acl ";
+		}
+		$rq2 .=	"WHERE c.service_description = ''  " .
+			(isset($host_name) && $host_name != "" ? " AND c.host_name LIKE '%$host_name%'" : "") .
+			(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
+		if ($is_admin) {
+			$rq2 .=	" AND c.host_name = acl.host_name " .
+					"AND c.expires = '0' ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		}
+		$DBRESULT = $pearDBO->query($rq2);
+		$rows = $pearDBO->numberRows();
+		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
+			$tab_comments_host[$i] = $data;
+			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
+			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
+		}
+		unset($data);
+		$DBRESULT->free();
 	}
-	$DBRESULT_NDO = $pearDBndo->query($rq2);
 
-	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
-		$tab_comments_host[$i] = $data;
-		$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
-		$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
-	}
-	unset($data);
-
-	$rows = $pearDBndo->numberRows();
+	/*
+	 * Pagination
+	 */
 	include("./include/common/checkPagination.php");
 
 	/*
@@ -171,12 +199,21 @@
 	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
 
-	$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
-	$options = "<option value='0'></options>";
-	while ($data = $DBRESULT->fetchRow()) {
-        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
-    }
-    $DBRESULT->free();
+	if ($oreon->broker->getBroker() == "ndo") {
+		$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
+		$options = "<option value='0'></options>";
+		while ($data = $DBRESULT->fetchRow()) {
+	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
+	    }
+	    $DBRESULT->free();
+	} else {
+		$DBRESULT = $pearDBO->query("SELECT hostgroup_id, name FROM hostgroups ORDER BY name");
+		$options = "<option value='0'></options>";
+		while ($data = $DBRESULT->fetchRow()) {
+	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["name"]."</option>";
+	    }
+	    $DBRESULT->free();
+	}
 
 	$tpl->assign('hostgroup', $options);
 	unset($options);
