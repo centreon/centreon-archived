@@ -79,10 +79,12 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-	$ndo_base_prefix = getNDOPrefix();
 	include_once("./class/centreonDB.class.php");
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+		$ndo_base_prefix = getNDOPrefix();
+	}
 
 	/*
 	 * Smarty template Init
@@ -99,7 +101,7 @@
 
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 
-	$hostStr = $centreon->user->access->getHostsString("NAME", $pearDBndo);
+	$hostStr = $centreon->user->access->getHostsString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
 
 	/************************************
 	 * Hosts Downtimes
@@ -111,31 +113,34 @@
 		$downtimeTable = "scheduleddowntime";
 	}
 
-	$request =	"SELECT SQL_CALC_FOUND_ROWS dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), " .
-			"dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, ".
-			"unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, was_started " .
-			"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
-			(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
-			"WHERE obj.name1 IS NOT NULL " .
-			"AND obj.name2 IS NULL " .
-			(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
-			(isset($search_output) && $search_output != "" ? " AND dtm.comment_data LIKE '%$search_output%'" : "") .
-			(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
-			"AND obj.object_id = dtm.object_id " .
-			$centreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
-			(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
-			"ORDER BY dtm.scheduled_start_time DESC " .
-			"LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT_NDO = $pearDBndo->query($request);
-	$tab_downtime_host = array();
-	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
-		$tab_downtime_host[$i] = $data;
-		$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
-		$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
-	}
-	$DBRESULT_NDO->free();
-	unset($data);
+	if ($oreon->broker->getBroker() == "ndo") {
+		$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), " .
+				"dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, ".
+				"unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, was_started " .
+				"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
+				(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
+				"WHERE obj.name1 IS NOT NULL " .
+				"AND obj.name2 IS NULL " .
+				(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
+				(isset($search_output) && $search_output != "" ? " AND dtm.comment_data LIKE '%$search_output%'" : "") .
+				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
+				"AND obj.object_id = dtm.object_id " .
+				$centreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
+				(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
+				"ORDER BY dtm.scheduled_start_time DESC " .
+				"LIMIT ".$num * $limit.", ".$limit;
+		$DBRESULT_NDO = $pearDBndo->query($request);
+		$tab_downtime_host = array();
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
+			$tab_downtime_host[$i] = $data;
+			$tab_downtime_host[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_start_time"])." ";
+			$tab_downtime_host[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$i]["scheduled_end_time"])." ";
+		}
+		$DBRESULT_NDO->free();
+		unset($data);
+	} else {
 
+	}
 	$rows = $pearDBndo->numberRows();
 	include("./include/common/checkPagination.php");
 

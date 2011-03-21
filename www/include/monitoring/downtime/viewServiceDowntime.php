@@ -78,10 +78,12 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-	$ndo_base_prefix = getNDOPrefix();
 	include_once("./class/centreonDB.class.php");
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+		$ndo_base_prefix = getNDOPrefix();
+	}
 
 	/*
 	 * Smarty template Init
@@ -108,46 +110,50 @@
 	} else {
 		$downtimeTable = "scheduleddowntime";
 	}
-	if ($is_admin) {
-		$request =	"SELECT SQL_CALC_FOUND_ROWS dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
-				"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NOT NULL " .
-				"AND obj.object_id = dtm.object_id " .
-				(isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
-				(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
-				(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
-				(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
-				"ORDER BY dtm.actual_start_time DESC " .
-				"LIMIT ".$num * $limit.", ".$limit;
+	if ($oreon->broker->getBroker() == "ndo") {
+		if ($is_admin) {
+			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
+					"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
+					"WHERE obj.name1 IS NOT NULL " .
+					"AND obj.name2 IS NOT NULL " .
+					"AND obj.object_id = dtm.object_id " .
+					(isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
+					(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
+					(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
+					(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
+					"ORDER BY dtm.actual_start_time DESC " .
+					"LIMIT ".$num * $limit.", ".$limit;
+		} else {
+			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
+					"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
+					"WHERE obj.name1 IS NOT NULL " .
+					"AND obj.name2 IS NOT NULL " .
+					"AND obj.object_id = dtm.object_id " .
+					"AND obj.name1 = centreon_acl.host_name " .
+					(isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
+					(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
+					(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
+					"AND obj.name2 = centreon_acl.service_description " .
+					"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
+					(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
+					"ORDER BY dtm.actual_start_time DESC " .
+					"LIMIT ".$num * $limit.", ".$limit;
+		}
+		$DBRESULT_NDO = $pearDBndo->query($request);
+		$rows = $pearDBndo->numberRows();
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
+			$tab_downtime_svc[$i] = $data;
+			$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
+			$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
+		}
+		unset($data);
 	} else {
-		$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
-				"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
-				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NOT NULL " .
-				"AND obj.object_id = dtm.object_id " .
-				"AND obj.name1 = centreon_acl.host_name " .
-				(isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
-				(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
-				(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
-				"AND obj.name2 = centreon_acl.service_description " .
-				"AND centreon_acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
-				(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
-				"ORDER BY dtm.actual_start_time DESC " .
-				"LIMIT ".$num * $limit.", ".$limit;
+
 	}
-	$DBRESULT_NDO = $pearDBndo->query($request);
-	for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
-		$tab_downtime_svc[$i] = $data;
-		$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
-		$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
-	}
-	unset($data);
 
 	/*
 	 * Number Rows
 	 */
-	$rows = $pearDBndo->numberRows();
 	include("./include/common/checkPagination.php");
 
 

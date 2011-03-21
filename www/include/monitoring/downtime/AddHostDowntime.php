@@ -43,20 +43,21 @@
 	include_once $centreon_path."www/class/centreonGMT.class.php";
 	include_once $centreon_path."www/class/centreonDB.class.php";
 
-	$pearDBndo = new CentreonDB("ndo");
+	if ($oreon->broker->getBroker() == "ndo") {
+		$pearDBndo = new CentreonDB("ndo");
+	}
 
 	/*
 	 * Init GMT class
 	 */
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
-	$hostStr = $oreon->user->access->getHostsString("ID", $pearDBndo);
+	$hostStr = $oreon->user->access->getHostsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
 
 	if ($oreon->user->access->checkAction("host_schedule_downtime")) {
 		/*
 		 * Init
 		 */
-
 		if (isset($_GET["host_name"])){
 			$host_id = getMyHostID($_GET["host_name"]);
 			$host_name = $_GET["host_name"];
