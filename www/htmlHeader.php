@@ -55,7 +55,7 @@
 <link href="./include/common/javascript/prototype-datepicker.css" rel="stylesheet" type="text/css" media="screen"/>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
-<script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects"></script>
+<script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
 <script type="text/javascript" src="./include/common/javascript/modalbox.js"></script>
 <script type="text/javascript" src="./include/common/javascript/prototype-datepicker.js"></script>
 <?php } ?>
