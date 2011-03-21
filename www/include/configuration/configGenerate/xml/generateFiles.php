@@ -72,9 +72,11 @@ function printDebug($xml)
     return $returnCode;
 }
 
-$path = "/usr/local/centreon/www/include/configuration/configGenerate/";
-$nagiosCFGPath = "/usr/local/centreon/filesGeneration/nagiosCFG/";
-$centreonBrokerPath = "/usr/local/centreon/filesGeneration/broker/";
+require_once "@CENTREON_ETC@/centreon.conf.php";
+
+$path = $centreon_path . "www/include/configuration/configGenerate/";
+$nagiosCFGPath = $centreon_path . "filesGeneration/nagiosCFG/";
+$centreonBrokerPath = $centreon_path . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/nagiosCFG/";
 
 $poller = $_POST['poller'];
@@ -86,7 +88,6 @@ $ret['host'] = $poller;
 $ret['comment'] = $comment;
 $ret['debug'] = $debug;
 
-require_once "/etc/centreon/centreon.conf.php";
 chdir($centreon_path . "www");
 require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
 require_once $centreon_path . "www/class/centreonDB.class.php";

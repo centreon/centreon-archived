@@ -10,7 +10,7 @@ try {
     $ret = array();
     $ret['host'] = $poller;
 
-    require_once "/etc/centreon/centreon.conf.php";
+    require_once "@CENTREON_ETC@/centreon.conf.php";
     chdir($centreon_path . "www");
     $nagiosCFGPath = "$centreon_path/filesGeneration/nagiosCFG/";
     $centreonBrokerPath = "$centreon_path/filesGeneration/broker/";
@@ -27,7 +27,7 @@ try {
     $oreon = $_SESSION['centreon'];
     $centreon = $oreon;
 
-    $centcore_pipe = "/var/lib/centreon/centcore.cmd";
+    $centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
 	if ($centcore_pipe == "/centcore.cmd") {
 		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
