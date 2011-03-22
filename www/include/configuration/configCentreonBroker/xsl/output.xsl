@@ -411,7 +411,7 @@
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowValue</xsl:attribute>
 					<xsl:element name="input">
-						<xsl:attribute name="type">password</xsl:attribute>
+						<xsl:attribute name="type">text</xsl:attribute>
 						<xsl:attribute name="name">output[<xsl:value-of select="id" />][db]</xsl:attribute>
 						<xsl:attribute name="size">30</xsl:attribute>
 						<xsl:if test="db">
