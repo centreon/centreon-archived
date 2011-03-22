@@ -85,7 +85,7 @@
 			case "a" : require_once($path."formDowntime.php"); break; #Add a downtime
 			case "w" : require_once($path."formDowntime.php"); break; #Watch a downtime
 			case "c" : require_once($path."formDowntime.php"); break; #Modify a downtime
-			case "s" : $downtime->enable($downtime_id); require_once($path."listDowntime.php"); break; #Activate a service
+			case "e" : $downtime->enable($downtime_id); require_once($path."listDowntime.php"); break; #Activate a service
 			case "ms" : $downtime->multiEnable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
 			case "u" : $downtime->disable($downtime_id); require_once($path."listDowntime.php"); break; #Desactivate a service
 			case "mu" : $downtime->multiDisable(isset($select) ? $select : array()); require_once($path."listDowntime.php"); break;
