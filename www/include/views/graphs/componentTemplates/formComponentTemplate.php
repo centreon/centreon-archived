@@ -123,7 +123,7 @@
 	 *  Basic information
 	 */
 	$form->addElement('header', 'information', _("General Information"));
-	$form->addElement('header', 'options', _("Optional Modifier"));
+	$form->addElement('header', 'options', _("Display Optional Modifier"));
 	$form->addElement('header', 'color', _("Colors"));
 	$form->addElement('header', 'legend', _("Legend"));
 	$form->addElement('text', 'name', _("Template Name"), $attrsText);
@@ -171,6 +171,9 @@
 	$form->addElement('checkbox', 'ds_invert', _("Invert"));
 	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
 	$form->addElement('select', 'ds_tickness', _("Thickness"), array("1"=>"1", "2"=>"2", "3"=>"3"));
+	$form->addElement('text', 'ds_legend', _("Legend Name"), $attrsText);
+	$form->addElement('checkbox', 'ds_hidecurve', _("Display Only The Legend"));
+	$form->addElement('select', 'ds_jumpline', _("Empty Line After This Legend"), array("0"=>"0", "1"=>"1", "2"=>"2", "3"=>"3"));
 	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 	/*

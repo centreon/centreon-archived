@@ -58,6 +58,11 @@
 	require_once $centreon_path."www/include/common/common-Func.php";
 
 	/**
+	 * Set One curve
+	 **/
+	$obj->splitcurves = true;
+
+	/**
 	 * Set arguments from GET
 	 */
 	$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );

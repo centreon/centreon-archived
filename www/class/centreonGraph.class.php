@@ -98,6 +98,7 @@ class CentreonGraph	{
 	var $metricsEnabled;
 	var $metrics;
 	var $longer;
+	var $splitcurves;
 
 	static function _cmplegend($a, $b) {
 		return strnatcasecmp($a["legend"], $b["legend"]);
@@ -172,6 +173,7 @@ class CentreonGraph	{
 		$this->metricsEnabled = array();
 		$this->metricsActive = array();
 		$this->metrics = array();
+		$this->splitcurves = false;
 
 		$DBRESULT = $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
 		$config = $DBRESULT->fetchRow();
@@ -369,10 +371,14 @@ class CentreonGraph	{
 				}
 			}
 
-			if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
-				$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
+			if ( strlen($ds_data["ds_legend"]) > 0 ) {
+				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_legend"];
 			} else {
-				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+				if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
+					$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
+				} else {
+					$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+				}
 			}
 
 			if (strcmp($metric["unit_name"], ""))
@@ -407,9 +413,9 @@ class CentreonGraph	{
 		if (isset($this->metrics))
 			foreach ($this->metrics as $key => $tm){
 				if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-					$this->addArgument("DEF:va".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*");
+					$this->addArgument("DEF:va".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*");
 				else
-					$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($this->metrics[$key]["metric"],0 , 19).":AVERAGE");
+					$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0 , 19).":AVERAGE");
 				if ($tm["legend_len"] > $this->longer)
 					$this->longer = $tm["legend_len"];
 				$cpt++;
@@ -421,27 +427,39 @@ class CentreonGraph	{
 		$rpn_values = "";
 		$rpn_expr = "";
 		foreach ($this->metrics as $key => $tm) {
-			if ($this->metrics[$key]["ds_filled"] || $this->metrics[$key]["ds_stack"]) {
-				$arg = "AREA:v".$cpt.$tm["ds_color_area"];
-				if ( $this->metrics[$key]["ds_filled"] )
-					$arg .= $tm["ds_transparency"];
-				else
-					$arg .= "00";
-				if ( $cpt != 0 && $this->metrics[$key]["ds_stack"] )
-					$arg .= "::STACK CDEF:vc".($cpt)."=v".($cpt).$rpn_values.$rpn_expr;
-				$rpn_values .= ",v".($cpt);
-				$rpn_expr .= ",+";
-				$this->addArgument($arg);
+			if (!$this->splitcurves && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
+				$arg = "COMMENT:\"";
+			} else {
+				if ($tm["ds_filled"] || $tm["ds_stack"]) {
+					$arg = "AREA:v".$cpt.$tm["ds_color_area"];
+					if ( $tm["ds_filled"] ) {
+						$arg .= $tm["ds_transparency"];
+					} else {
+						$arg .= "00";
+					}
+					if ( $cpt != 0 && $tm["ds_stack"] ) {
+						$arg .= "::STACK CDEF:vc".($cpt)."=v".($cpt).$rpn_values.$rpn_expr;
+					}
+					$rpn_values .= ",v".($cpt);
+					$rpn_expr .= ",+";
+					$this->addArgument($arg);
+				}
+
+				if (!$tm["ds_stack"] || $cpt == 0) {
+					$arg = "LINE".$tm["ds_tickness"].":v".($cpt);
+				} else {
+					$arg = "LINE".$tm["ds_tickness"].":vc".($cpt);
+				}
+				$arg .= $tm["ds_color_line"].":\"";
 			}
-
-			if (!$this->metrics[$key]["ds_stack"] || $cpt == 0)
-				$arg = "LINE".$tm["ds_tickness"].":v".($cpt);
-			else
-				$arg = "LINE".$tm["ds_tickness"].":vc".($cpt);
-
-			$arg .= $tm["ds_color_line"].":\"".$this->metrics[$key]["legend"];
-			for ($i = $this->metrics[$key]["legend_len"]; $i != $this->longer + 1; $i++)
+			$arg .= $tm["legend"];
+			for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
 				$arg .= " ";
+			}
+			// Add 2 more spaces if display only legend is set
+			if (!$this->splitcurves && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
+				$arg .= "  ";
+			}
 			$arg .= "\"";
 			$this->addArgument($arg);
 
@@ -468,6 +486,13 @@ class CentreonGraph	{
 					$this->addArgument("HRULE:".$tm["warn"].$this->general_opt["color_warning"].":\"Warning \: ".$tm["warn"]."\\l\" ");
 				if (isset($tm["crit"]) && $tm["crit"] != 0)
 					$this->addArgument("HRULE:".$tm["crit"].$this->general_opt["color_critical"].":\"Critical \: ".$tm["crit"]."\"");
+			}
+			if ( !$this->splitcurves ) {
+				$cline=0;
+				while ($cline < $tm["ds_jumpline"]) {
+					$this->addArgument("COMMENT:\"\\c\"");
+					$cline++;
+				}
 			}
 			$cpt++;
 		}

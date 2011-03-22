@@ -50,12 +50,15 @@
 	<tr class="list_one"><td class="FormRowField">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.legend}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ds_max.label}</td><td class="FormRowValue">{$form.ds_max.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ds_min.label}</td><td class="FormRowValue">{$form.ds_min.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
-	<!--<tr class="list_one"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
-	<tr class="list_two"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_legend.label}</td><td class="FormRowValue">{$form.ds_legend.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ds_hidecurve.label}</td><td class="FormRowValue">{$form.ds_hidecurve.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_jumpline.label}</td><td class="FormRowValue">{$form.ds_jumpline.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ds_max.label}</td><td class="FormRowValue">{$form.ds_max.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_min.label}</td><td class="FormRowValue">{$form.ds_min.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
+	<!--<tr class="list_two"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
+	<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required.note}</td></tr>
 	{/if}

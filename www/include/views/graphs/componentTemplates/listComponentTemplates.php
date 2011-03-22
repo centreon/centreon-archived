@@ -69,6 +69,7 @@
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Data Source Name"));
+	$tpl->assign("headerMenu_legend", _("Legend"));
 	$tpl->assign("headerMenu_stack", _("Stack"));
 	$tpl->assign("headerMenu_order", _("Order"));
 	$tpl->assign("headerMenu_Transp", _("Transparency"));
@@ -83,7 +84,7 @@
 		$ClWh1 = "WHERE host_id IS NULL";
 		$ClWh2 = "WHERE gct.host_id = h.host_id";
 	}
-	$rq = "( SELECT compo_id, NULL as host_name, host_id, service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template $SearchTool $ClWh1 ) UNION ( SELECT compo_id, host_name, gct.host_id, gct.service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template AS gct, host AS h $SearchTool $ClWh2 ) ORDER BY host_name, name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "( SELECT compo_id, NULL as host_name, host_id, service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, ds_legend, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template $SearchTool $ClWh1 ) UNION ( SELECT compo_id, host_name, gct.host_id, gct.service_id, name, ds_stack, ds_order, ds_name, ds_color_line, ds_color_area, ds_filled, ds_legend, default_tpl1, ds_tickness, ds_transparency FROM giv_components_template AS gct, host AS h $SearchTool $ClWh2 ) ORDER BY host_name, name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = & $pearDB->query($rq);
 		
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -114,6 +115,7 @@
 						"RowMenu_name"=>$compo["name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&compo_id=".$compo['compo_id'],
 						"RowMenu_desc"=>$compo["ds_name"],
+						"RowMenu_legend"=>$compo["ds_legend"],
 						"RowMenu_stack"=>$yesOrNo[$compo["ds_stack"]],
 						"RowMenu_order"=>$compo["ds_order"],
 						"RowMenu_transp"=>$compo["ds_transparency"],

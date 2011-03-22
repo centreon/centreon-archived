@@ -45,6 +45,13 @@
 	    return strnatcasecmp($a["metric_name"], $b["metric_name"]);
 	}
 
+	function cmpmetricorder($a, $b) {
+		if ( $a["ds_order"] == $b["ds_order"] ) {
+			return 0;
+		}
+		return ( $a["ds_order"] < $b["ds_order"] ) ? -1 : 1;
+	}
+
 	/*
 	 * Include Config file
 	 */	
@@ -351,14 +358,44 @@
 			$service_id = $svc_id["service_id"];
 			$index_id = $svc_id["id"];
 		
-			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-			for ($counter = 0;$metrics_ret = $DBRESULT2->fetchRow(); $counter++){
+			/* 
+			 * Real Metrics
+			 */
+			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."'  AND `hidden` = '0' ORDER BY `metric_name`");
+			/* Find host,service link to index */
+			$dbindd =& $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
+			$indd =& $dbindd->fetchRow();
+			$dbindd->free();
+			$counter = 0;
+			while ($metrics_ret =& $DBRESULT2->fetchRow()){
+				/* Find legend if exist	*/
+				/* And use it instead of the metric name */
+				$dbds =& $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data =& $dbds->fetchRow();
+				$dbds->free();
+				if ( strlen($ds_data["ds_legend"]) > 0) {
+					$metrics_ret["metric_name"]=$ds_data["ds_legend"];
+				}
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#S#', "/", $metrics_ret["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#BS#', "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+				$metrics[$metrics_ret["metric_id"]]["ds_order"] = $ds_data["ds_order"];
 				$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
+				$counter++;
 			}
 			$DBRESULT2->free();
+
+			/* Sort By Order */
+			$s_metrics = array();
+			foreach ($metrics as $key => $om) {
+				$om["key"] = $key;
+				$s_metrics[] = $om;
+			}
+			usort($s_metrics, "cmpmetricorder");
+			$metrics = array();
+			foreach ($s_metrics as $key => $om) {
+				$metrics[$s_metrics[$key]["key"]] = $om;
+			}
 			
 			/*
 			 * verify if metrics in parameter is for this index
@@ -379,7 +416,7 @@
 				if (isset($_GET["metric"]) && $pass){
 					$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
 					foreach ($metrics_active as $key => $metric){
-						if (isset($metrics_active[$key])){
+						if (isset($metrics_active[$key]) && $metrics_active[$key] == 1){
 							$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index."');");
 						}
 					}
@@ -408,10 +445,13 @@
 			
 			if ($split){
 				$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-				for ($counter = 1;$metrics_ret = $DBRESULT2->fetchRow(); $counter++){
+				$counter = 1;
+				for ($i = 1;$metrics_ret =& $DBRESULT2->fetchRow(); $i++){
 					if (isset($metrics_active[$metrics_ret["metric_id"]]) && $metrics_active[$metrics_ret["metric_id"]])
 						$metrics_list[$metrics_ret["metric_id"]] = $counter;
+					$counter++;
 				}
+				$DBRESULT2->free();
 			}		
 			$tab_period['Daily']	= (time() - (60 * 60 * 24));
 			$tab_period['Weekly']	= (time() - 60 * 60 * 24 * 7);
@@ -522,16 +562,44 @@
 			if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1))
 				$split = 1;
 		
+			/*
+			 * Real Metrics
+			 */
 			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' AND hidden = '0' ORDER BY `metric_name`");
+			/* Find host,service link to index */
+			$dbindd =& $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
+			$indd =& $dbindd->fetchRow();
+			$dbindd->free();
 			$counter = 0;
 			while ($metrics_ret = $DBRESULT2->fetchRow()){			
+				/* Find legend if exist */
+				/* And use it instead of the metric name */
+				$dbds =& $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data =& $dbds->fetchRow();
+				$dbds->free();
+				if ( strlen($ds_data["ds_legend"]) > 0)
+					$metrics_ret["metric_name"]=$ds_data["ds_legend"];
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#BS#", "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
+				$metrics[$metrics_ret["metric_id"]]["ds_order"] = $ds_data["ds_order"];
 				$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
 				$counter++;
 			}
+			$DBRESULT2->free();
 				
+			/* Sort By Order */
+			$s_metrics = array();
+			foreach ($metrics as $key => $om) {
+				$om["key"] = $key;
+				$s_metrics[] = $om;
+			}
+			usort($s_metrics, "cmpmetricorder");
+			$metrics = array();
+			foreach ($s_metrics as $key => $om) {
+				$metrics[$s_metrics[$key]["key"]] = $om;
+			}
+
 			/*
 			 *  verify if metrics in parameter is for this index
 			 */
@@ -540,6 +608,7 @@
 			} else {
 				$metrics_active = array();
 			}
+
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)
@@ -547,9 +616,9 @@
 						$pass = 1;
 			
 			if (isset($_GET["metric"]) && $pass){
-				$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$id."'");
+				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index_id."'");
 				foreach ($metrics_active as $key => $metric){
-					if (isset($metrics_active[$metric["metric_id"]])){
+					if (isset($metrics_active[$key]) && $metrics_active[$key] == 1){
 						$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
 					}
 				}

@@ -88,4 +88,10 @@ ALTER TABLE `giv_components_template` ADD `service_id` INT( 11 ) NULL AFTER `hos
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 607, NULL, './include/common/javascript/scriptaculous/s2.js ', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60701, NULL, './include/common/javascript/scriptaculous/s2.js ', NULL);
 
+-- Add column for templates curves : ds_hidecurve / ds_legend / ds_jumpline
+ALTER TABLE `giv_components_template`
+ADD `ds_hidecurve` ENUM( '0', '1' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `ds_order`,
+ADD `ds_legend` VARCHAR( 200 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `ds_invert` ,
+ADD `ds_jumpline` ENUM( '0', '1', '2', '3' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `ds_legend` ;
+
 UPDATE `informations` SET `value` = '2.3.0-b4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-b3' LIMIT 1;

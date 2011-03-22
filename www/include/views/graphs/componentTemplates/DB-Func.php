@@ -156,9 +156,9 @@
 		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
 			$ret["ds_color_area"] = $ret["ds_color_line"];
 			
-		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_name` , " .
+		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
 				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
-				" `ds_stack`, `default_tpl1`, `comment` ) ";
+				" `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
 		if ( $ret["index_id"] != NULL ) {
 			$sql_qy =& $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
@@ -171,6 +171,7 @@
 		}
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_hidecurve"]) && $ret["ds_hidecurve"] != NULL ? $rq .= "'".htmlentities($ret["ds_hidecurve"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -182,6 +183,8 @@
 		isset($ret["ds_tickness"]) && $ret["ds_tickness"] != NULL ? $rq .= "'".htmlentities($ret["ds_tickness"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_transparency"]) && $ret["ds_transparency"] != NULL ? $rq .= "'".htmlentities($ret["ds_transparency"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_legend"]) && $ret["ds_legend"] != NULL ? $rq .= "'".htmlentities($ret["ds_legend"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_jumpline"]) && $ret["ds_jumpline"] != NULL ? $rq .= "'".htmlentities($ret["ds_jumpline"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_stack"]) && $ret["ds_stack"] != NULL ? $rq .= "'".htmlentities($ret["ds_stack"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
@@ -213,13 +216,15 @@ fwrite($fh, $rq);
 	
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET `host_id` = ";
-		isset($hs_id["host_id"]) && $hs_id["host_id"] != NULL ? $rq .= "'".htmlentities($hs_id["host_id"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($hs_id["host_id"]) && $hs_id["host_id"] != NULL ? $rq .= "'".htmlentities($hs_id["host_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`service_id` = ";
-		isset($hs_id["service_id"]) && $hs_id["service_id"] != NULL ? $rq .= "'".htmlentities($hs_id["service_id"], ENT_QUOTES)."', ": $rq .= "NULL, ";
+		isset($hs_id["service_id"]) && $hs_id["service_id"] != NULL ? $rq .= "'".htmlentities($hs_id["service_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`name` = ";	
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`ds_order` = ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		$rq .= "`ds_hidecurve` = ";
+		isset($ret["ds_hidecurve"]) && $ret["ds_hidecurve"] != NULL ? $rq .= "'".htmlentities($ret["ds_hidecurve"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .=	"ds_name = ";
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".htmlentities($ret["ds_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_line = ";
@@ -241,7 +246,11 @@ fwrite($fh, $rq);
 		$rq .= 	"ds_transparency = ";
 		isset($ret["ds_transparency"]) && $ret["ds_transparency"] != NULL ? $rq .= "'".$ret["ds_transparency"]."', ": $rq .= "NULL, ";
 		$rq .= 	"ds_invert = ";
-		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]["ds_invert"]."', ": $rq .= "NULL, ";
+		isset($ret["ds_invert"]) && $ret["ds_invert"] != NULL ? $rq .= "'".$ret["ds_invert"]."', ": $rq .= "NULL, ";
+		$rq .=  "ds_legend = ";
+		isset($ret["ds_legend"]) && $ret["ds_legend"] != NULL ? $rq .= "'".htmlentities($ret["ds_legend"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		$rq .=  "ds_jumpline = ";
+		isset($ret["ds_jumpline"]) && $ret["ds_jumpline"] != NULL ? $rq .= "'".htmlentities($ret["ds_jumpline"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`ds_stack` = ";
 		isset($ret["ds_stack"]) && $ret["ds_stack"] != NULL ? $rq .= "'".$ret["ds_stack"]."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
