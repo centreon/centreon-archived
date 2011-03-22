@@ -72,7 +72,6 @@
 	$xml->endElement(); /* lang */
 	$xml->endElement(); /* main */
 
-
 	if (isset($_GET['config_id']) && $_GET['config_id'] != 0) {
 	    $query = "SELECT config_key, config_value, config_group_id FROM cfg_centreonbroker_info WHERE config_id = " . $_GET['config_id'] . " AND config_group = 'logger' ORDER BY config_group_id";
 	    $res = $db->query($query);
@@ -84,16 +83,28 @@
 	        foreach ($infos as $id => $info) {
 	            $xml->startElement('logger');
 	            $xml->writeElement('id', $id);
+	            $type = '';
+	            $name = null;
 	            foreach ($info as $key => $value) {
+	                if ($key == 'type') {
+	                    $type = $value;
+	                }
 	                if ($key == 'config' || $key == 'debug' || $key == 'info' || $key == 'error') {
 	                    if ($value == '0') {
 	                        $xml->writeElement($key, 'false');
 	                    } else {
 	                        $xml->writeElement($key, 'true');
 	                    }
+	                } elseif ($key == 'name') {
+	                    $name = $value;
 	                } else {
                         $xml->writeElement($key, $value);
 	                }
+	            }
+	            if (!is_null($name) && $type == 'file') {
+	                $xml->writeElement('file', $name);
+	            } elseif (!is_null($name) && $type == 'standard') {
+	                $xml->writeElement('output', $name);
 	            }
 	            $xml->endElement();
 	        }

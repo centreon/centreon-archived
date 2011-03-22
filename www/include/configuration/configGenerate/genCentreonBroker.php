@@ -49,9 +49,9 @@
 
 	$ns_id = $tab['id'];
 
-	$query = "SELECT csi.config_key, csi.config_value, csi.config_group, csi.config_group_id
-		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs
-		WHERE csi.config_id = cs.config_id AND ns_nagios_server = " . $ns_id;
+	$query = "SELECT csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name 
+		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
+		WHERE csi.config_id = cs.config_id AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
 
 	$res = $pearDB->query($query);
     if (false === PEAR::isError($res) && $res->numRows()) {
@@ -63,6 +63,10 @@
 	    }
 	    $fileXml = new CentreonXML();
 	    $fileXml->startElement('centreonBroker');
+	    
+	    $fileXml->writeElement('instance', $ns_id);
+	    $fileXml->writeElement('instance_name', $row['name']);
+	    
 	    foreach ($groups as $group => $listInfos) {
 	        if (count($listInfos) > 0) {
     	        $fileXml->startElement($group);
