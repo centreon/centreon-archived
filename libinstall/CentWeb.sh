@@ -161,6 +161,7 @@ ${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@INIT_D@|'"$INIT_D"'|g' \
 	-e 's|@NDOMOD_BINARY@|'"$NDOMOD_BINARY"'|g' \
 	-e 's|@P1_PL@|'"$NAGIOS_P1_FILE"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	$TMP_DIR/src/www/install/insertBaseConf.sql > \
 	$TMP_DIR/work/www/install/insertBaseConf.sql
 check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
