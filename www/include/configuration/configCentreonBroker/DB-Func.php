@@ -208,7 +208,6 @@
     	            if (isset($infos[$field])) {
     	                $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id)
     	            		VALUES (" . $id . ", '" . $field . "', '" . $infos[$field] . "', '" . $group . "', " . $gid . ")";
-    	                file_put_contents('/tmp/log', $query, FILE_APPEND);
     	                $pearDB->query($query);
     	            }
     	        }
