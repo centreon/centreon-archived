@@ -9,7 +9,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.3.0-b3');
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '@CENTREON_ETC@/broker');
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `monitoring_engine`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '@CENTREON_ETC@/broker', 'NAGIOS');
 
 --
 -- Contenu de la table `cfg_cgi`
