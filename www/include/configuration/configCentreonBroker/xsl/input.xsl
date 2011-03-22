@@ -16,7 +16,7 @@
 					<xsl:attribute name="class">ListColLvl1_name</xsl:attribute>
 					<xsl:attribute name="style">text-align: right</xsl:attribute>
 					<xsl:element name="a">
-						<xsl:attribute name="href">javascript:deleteRow('logger',<xsl:value-of select="id" />);</xsl:attribute>
+						<xsl:attribute name="href">javascript:deleteRow('input',<xsl:value-of select="id" />);</xsl:attribute>
 						<xsl:element name="img">
 							<xsl:attribute name="src">./img/icones/16x16/delete.gif</xsl:attribute>
 						</xsl:element>
