@@ -105,7 +105,13 @@
 		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? $pearDB->escape($ret["nagios_path_plugins"]) : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL");
-		updateOption($pearDB, "broker", isset($ret["broker"]) && $ret["broker"] != NULL ? $pearDB->escape($ret["broker"]) : "Ndo");
+		$brokerOpt = "Ndo";
+		if (isset($ret['broker']) && $ret['broker']) {
+		    $brokerOpt = $pearDB->escape($ret['broker']);
+		}
+		updateOption($pearDB, "broker", $brokerOpt);
+		$oreon->broker = new CentreonBroker($pearDB);
+
         /*
          * Acknowledgement part
          */
