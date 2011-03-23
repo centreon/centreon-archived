@@ -237,6 +237,9 @@ check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG >> "$LOG_FILE" 2>&1
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
+	$CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1	
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
 [ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \
