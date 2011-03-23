@@ -76,16 +76,18 @@
     	/*
     	 * Detect Which DB layer is used
     	 */
-    	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'monitoring_engine'");
+    	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'broker'");
 		if (PEAR::isError($DBRESULT)) {
 		    print "Cannot Get Monitoring Engine";
 		    exit(1);
 		}
-	    $engineData =& $DBRESULT->fetchRow();
-	    $engine = $engineData["value"];
+	    $row = $DBRESULT->fetchRow();
+	    $dbLayer = $row["value"];
 
-		if ($engine != 'broker') {
+		if ($dbLayer == 'ndo') {
     		$pearDBndo 	= new CentreonDB("ndo");
+		} else {
+		    $pearDBndo 	= $pearDBO;
 		}
 
 		/*

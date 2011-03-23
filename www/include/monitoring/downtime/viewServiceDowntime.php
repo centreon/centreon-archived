@@ -175,7 +175,7 @@
 					"AND s.host_id = h.host_id " .
 			        "AND h.host_id = a.host_id " .
 			        "AND a.service_id = s.service_id " .
-					"AND d.cancelled = 0" .
+					"AND d.cancelled = 0 " .
 					(isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .

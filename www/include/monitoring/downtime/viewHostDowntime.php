@@ -151,6 +151,7 @@
 				(isset($search_output) && $search_output != "" ? " AND d.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
+				"AND d.cancelled = 0 " .
 				$centreon->user->access->queryBuilder("AND", "h.name", $hostStr) .
 				(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
 				"ORDER BY d.start_time DESC " .
