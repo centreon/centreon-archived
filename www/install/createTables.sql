@@ -1352,8 +1352,11 @@ CREATE TABLE IF NOT EXISTS `extended_service_information` (
 
 CREATE TABLE IF NOT EXISTS `giv_components_template` (
   `compo_id` int(11) NOT NULL auto_increment,
+  `host_id` int(11) DEFAULT NULL,
+  `service_id` int(11) DEFAULT NULL,
   `name` varchar(255) default NULL,
   `ds_order` int(11) default NULL,
+  `ds_hidecurve` enum('0','1') DEFAULT NULL,
   `ds_name` varchar(200) default NULL,
   `ds_color_line` varchar(255) default NULL,
   `ds_color_area` varchar(255) default NULL,
@@ -1365,6 +1368,8 @@ CREATE TABLE IF NOT EXISTS `giv_components_template` (
   `ds_tickness` int(11) default NULL,
   `ds_transparency` varchar(254) default NULL,
   `ds_invert` enum('0','1') default NULL,
+  `ds_legend` varchar(200) DEFAULT NULL,
+  `ds_jumpline` enum('0','1','2','3') DEFAULT NULL,
   `ds_stack` enum('0','1') default NULL,
   `default_tpl1` enum('0','1') default NULL,
   `comment` text,

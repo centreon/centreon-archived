@@ -302,6 +302,7 @@ CREATE TABLE IF NOT EXISTS `metrics` (
   `metric_id` int(11) NOT NULL auto_increment,
   `index_id` int(11) default NULL,
   `metric_name` varchar(255) default NULL,
+  `data_source_type` enum('0','1','2','3') DEFAULT NULL,
   `unit_name` varchar(32) default NULL,
   `warn` float default NULL,
   `crit` float default NULL,
