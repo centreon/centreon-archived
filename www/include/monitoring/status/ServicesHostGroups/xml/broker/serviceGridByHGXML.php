@@ -230,8 +230,8 @@
 					}
 					$obj->XML->writeElement("o", $ct);
 					$obj->XML->writeElement("hn", $host_name, false);
-					if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
-						$obj->XML->writeElement("hico", $hostIcones[$host_name]);
+					if (isset($tab["icon"]) && $tab["icon"]) {
+						$obj->XML->writeElement("hico", $tab["icon"]);
 					} else {
 						$obj->XML->writeElement("hico", "none");
 					}

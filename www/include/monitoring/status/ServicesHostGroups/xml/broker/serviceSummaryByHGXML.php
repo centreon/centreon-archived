@@ -82,7 +82,7 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias,hg.name, hgm.hostgroup_id, h.host_id, h.state ".
+	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias,hg.name, hgm.hostgroup_id, h.host_id, h.state, h.icon_image ".
 			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
@@ -154,6 +154,7 @@
 		$tab_final[$ndo["alias"]][$ndo["host_name"]][4] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
 		$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["state"];
 		$tab_final[$ndo["alias"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
+		$tab_final[$ndo["alias"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
 	}
 	$DBRESULT->free();
 
@@ -184,8 +185,8 @@
 				$obj->XML->writeElement("spc", $obj->colorService[4] );
 				$obj->XML->writeElement("o", $ct++);
 				$obj->XML->writeElement("hn", $host_name, false);
-				if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
-					$obj->XML->writeElement("hico", $hostIcones[$host_name]);
+				if (isset($tab["icon"]) && $tab["icon"]) {
+					$obj->XML->writeElement("hico", $tab["icon"]);
 				} else {
 					$obj->XML->writeElement("hico", "none");
 				}
