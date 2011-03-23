@@ -33,7 +33,7 @@
 --
 -- Holds the current version of the database schema.
 --
-CREATE TABLE schemaversion (
+CREATE TABLE IF NOT EXISTS schemaversion (
   software varchar(128) NOT NULL,
   version int NOT NULL
 ) ENGINE=InnoDB;
@@ -43,7 +43,7 @@ INSERT INTO schemaversion (software, version) VALUES ('centreon-broker', 1);
 --
 -- Store information about Nagios instances.
 --
-CREATE TABLE instances (
+CREATE TABLE IF NOT EXISTS instances (
   instance_id int NOT NULL,
   name varchar(255) NOT NULL default 'localhost',
 
@@ -84,7 +84,7 @@ CREATE TABLE instances (
 --
 -- Monitored hosts.
 --
-CREATE TABLE hosts (
+CREATE TABLE IF NOT EXISTS hosts (
   host_id int NOT NULL,
   name varchar(255) NOT NULL,
   instance_id int NOT NULL,
@@ -181,7 +181,7 @@ CREATE TABLE hosts (
 --
 -- Host groups.
 --
-CREATE TABLE hostgroups (
+CREATE TABLE IF NOT EXISTS hostgroups (
   hostgroup_id int NOT NULL auto_increment,
   instance_id int NOT NULL,
   name varchar(255) NOT NULL,
@@ -201,7 +201,7 @@ CREATE TABLE hostgroups (
 --
 -- Relationships between hosts and host groups.
 --
-CREATE TABLE hosts_hostgroups (
+CREATE TABLE IF NOT EXISTS hosts_hostgroups (
   host_id int NOT NULL,
   hostgroup_id int NOT NULL,
 
@@ -216,7 +216,7 @@ CREATE TABLE hosts_hostgroups (
 --
 -- Hosts dependencies.
 --
-CREATE TABLE hosts_hosts_dependencies (
+CREATE TABLE IF NOT EXISTS hosts_hosts_dependencies (
   dependent_host_id int NOT NULL,
   host_id int NOT NULL,
 
@@ -236,7 +236,7 @@ CREATE TABLE hosts_hosts_dependencies (
 --
 -- Hosts parenting relationships.
 --
-CREATE TABLE hosts_hosts_parents (
+CREATE TABLE IF NOT EXISTS hosts_hosts_parents (
   child_id int NOT NULL,
   parent_id int NOT NULL,
 
@@ -251,7 +251,7 @@ CREATE TABLE hosts_hosts_parents (
 --
 -- Monitored services.
 --
-CREATE TABLE services (
+CREATE TABLE IF NOT EXISTS services (
   host_id int NOT NULL,
   description varchar(255) NOT NULL,
   service_id int NOT NULL,
@@ -350,7 +350,7 @@ CREATE TABLE services (
 --
 -- Groups of services.
 --
-CREATE TABLE servicegroups (
+CREATE TABLE IF NOT EXISTS servicegroups (
   servicegroup_id int NOT NULL auto_increment,
   instance_id int NOT NULL,
   name varchar(255) NOT NULL,
@@ -369,7 +369,7 @@ CREATE TABLE servicegroups (
 --
 -- Relationships between services and service groups.
 --
-CREATE TABLE services_servicegroups (
+CREATE TABLE IF NOT EXISTS services_servicegroups (
   host_id int NOT NULL,
   service_id int NOT NULL,
   servicegroup_id int NOT NULL,
@@ -385,7 +385,7 @@ CREATE TABLE services_servicegroups (
 --
 -- Services dependencies.
 --
-CREATE TABLE services_services_dependencies (
+CREATE TABLE IF NOT EXISTS services_services_dependencies (
   dependent_host_id int NOT NULL,
   dependent_service_id int NOT NULL,
   host_id int NOT NULL,
@@ -407,7 +407,7 @@ CREATE TABLE services_services_dependencies (
 --
 -- Holds acknowledgedments information.
 --
-CREATE TABLE acknowledgements (
+CREATE TABLE IF NOT EXISTS acknowledgements (
   acknowledgement_id int NOT NULL auto_increment,
   entry_time int NOT NULL,
   host_id int NOT NULL,
@@ -434,7 +434,7 @@ CREATE TABLE acknowledgements (
 --
 -- Holds comments information.
 --
-CREATE TABLE comments (
+CREATE TABLE IF NOT EXISTS comments (
   comment_id int NOT NULL auto_increment,
   entry_time int NOT NULL,
   host_id int NOT NULL,
@@ -464,7 +464,7 @@ CREATE TABLE comments (
 --
 -- Custom variables.
 --
-CREATE TABLE customvariables (
+CREATE TABLE IF NOT EXISTS customvariables (
   customvariable_id int NOT NULL auto_increment,
   host_id int default NULL,
   name varchar(255) default NULL,
@@ -484,7 +484,7 @@ CREATE TABLE customvariables (
 --
 -- Downtimes.
 --
-CREATE TABLE downtimes (
+CREATE TABLE IF NOT EXISTS downtimes (
   downtime_id int NOT NULL auto_increment,
   entry_time int default NULL,
   host_id int NOT NULL,
@@ -515,7 +515,7 @@ CREATE TABLE downtimes (
 --
 -- Event handlers.
 --
-CREATE TABLE eventhandlers (
+CREATE TABLE IF NOT EXISTS eventhandlers (
   eventhandler_id int NOT NULL auto_increment,
   host_id int default NULL,
   service_id int default NULL,
@@ -543,7 +543,7 @@ CREATE TABLE eventhandlers (
 --
 -- Historization of flapping statuses.
 --
-CREATE TABLE flappingstatuses (
+CREATE TABLE IF NOT EXISTS flappingstatuses (
   flappingstatus_id int NOT NULL auto_increment,
   host_id int default NULL,
   service_id int default NULL,
@@ -568,7 +568,7 @@ CREATE TABLE flappingstatuses (
 --
 -- Correlated issues.
 --
-CREATE TABLE issues (
+CREATE TABLE IF NOT EXISTS issues (
   issue_id int NOT NULL auto_increment,
   host_id int default NULL,
   service_id int default NULL,
@@ -587,7 +587,7 @@ CREATE TABLE issues (
 --
 -- Issues parenting.
 --
-CREATE TABLE issues_issues_parents (
+CREATE TABLE IF NOT EXISTS issues_issues_parents (
   child_id int NOT NULL,
   end_time int default NULL,
   start_time int NOT NULL,
@@ -603,7 +603,7 @@ CREATE TABLE issues_issues_parents (
 --
 -- Nagios logs.
 --
-CREATE TABLE logs (
+CREATE TABLE IF NOT EXISTS logs (
   log_id int NOT NULL auto_increment,
 
   ctime int default NULL,
@@ -630,7 +630,7 @@ CREATE TABLE logs (
 --
 -- Nagios modules.
 --
-CREATE TABLE modules (
+CREATE TABLE IF NOT EXISTS modules (
   module_id int NOT NULL auto_increment,
   instance_id int NOT NULL,
 
@@ -648,7 +648,7 @@ CREATE TABLE modules (
 --
 --  Notifications.
 --
-CREATE TABLE notifications (
+CREATE TABLE IF NOT EXISTS notifications (
   notification_id int NOT NULL auto_increment,
   host_id int default NULL,
   service_id int default NULL,
@@ -676,7 +676,7 @@ CREATE TABLE notifications (
 --
 --  Host states.
 --
-CREATE TABLE hoststateevents (
+CREATE TABLE IF NOT EXISTS hoststateevents (
   hoststateevent_id int NOT NULL auto_increment,
   host_id int NOT NULL,
   start_time int NOT NULL,
@@ -696,7 +696,7 @@ CREATE TABLE hoststateevents (
 --
 --  Service states.
 --
-CREATE TABLE servicestateevents (
+CREATE TABLE IF NOT EXISTS servicestateevents (
   servicestateevent_id int NOT NULL auto_increment,
   host_id int NOT NULL,
   service_id int NOT NULL,
