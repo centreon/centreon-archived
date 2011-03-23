@@ -83,6 +83,8 @@
 	if ($oreon->broker->getBroker() == "ndo") {
 		$pearDBndo = new CentreonDB("ndo");
 		$ndo_base_prefix = getNDOPrefix();
+	} else {
+	    $pearDBndo = new CentreonDB("centstorage");
 	}
 
 	/*
@@ -148,7 +150,48 @@
 		}
 		unset($data);
 	} else {
-
+        if ($is_admin) {
+			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id,
+						d.entry_time, duration, d.author as author_name, d.comment_data,
+						d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time,
+						d.started as was_started, h.name as host_name, s.description as service_description " .
+					"FROM downtimes d, services s, hosts h " .
+					"WHERE d.service_id  = s.service_id " .
+					"AND s.host_id = h.host_id " .
+					"AND d.cancelled = 0 " .
+					(isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
+					(isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
+					(isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+					(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
+					"ORDER BY d.start_time DESC " .
+					"LIMIT ".$num * $limit.", ".$limit;
+		} else {
+			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id,
+						d.entry_time, duration, d.author as author_name, d.comment_data,
+						d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time,
+						d.started as was_started, h.name as host_name, s.description as service_description " .
+					"FROM downtimes d, services s, hosts h, centreon_acl a " .
+					"WHERE d.service_id  = s.service_id " .
+					"AND s.host_id = h.host_id " .
+			        "AND h.host_id = a.host_id " .
+			        "AND a.service_id = s.service_id " .
+					"AND d.cancelled = 0" .
+					(isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
+					(isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
+					(isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
+					"AND a.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
+					(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
+					"ORDER BY d.start_time DESC " .
+					"LIMIT ".$num * $limit.", ".$limit;
+		}
+		$DBRESULT_NDO = $pearDBndo->query($request);
+		$rows = $pearDBndo->numberRows();
+		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++) {
+			$tab_downtime_svc[$i] = $data;
+			$tab_downtime_svc[$i]["scheduled_start_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_start_time"])." ";
+			$tab_downtime_svc[$i]["scheduled_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$i]["scheduled_end_time"])." ";
+		}
+		unset($data);
 	}
 
 	/*
