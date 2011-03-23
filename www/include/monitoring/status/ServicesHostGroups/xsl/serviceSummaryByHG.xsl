@@ -30,6 +30,8 @@
 				<xsl:if test="hico != 'none'">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/media/<xsl:value-of select="hico"/></xsl:attribute>
+					  	<xsl:attribute name="width">16</xsl:attribute>
+							<xsl:attribute name="height">16</xsl:attribute>
 						<xsl:attribute name="style">padding-right:4px;</xsl:attribute>
 					</xsl:element>
 				</xsl:if>
