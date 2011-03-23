@@ -477,7 +477,7 @@
 			}
 		}
 
-		$req = "SELECT * FROM `log` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
+		$req = "SELECT * FROM `".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")."` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
 
 		/*
 		 * Add Host
@@ -546,13 +546,13 @@
 				$host_name = getMyHostName($h_id);
 				array_push ($tab_host_name, "'".$host_name."'");
 			}
-			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` IN (".implode(",", $tab_host_name).") ";
+			$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` IN (".implode(",", $tab_host_name).") ";
 			if ($error  == 'true' || $notification == 'true')
 				$req .= ' OR `host_name` is null';
 			$req .= ")";
 		} else if($type == "HH") {
 			$host_name = getMyHostName($id);
-			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."' ";
+			$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."' ";
 			if ($error  == 'true' || $notification == 'true')
 				$req .= ' OR `host_name` is null';
 			$req .= ")";
@@ -561,7 +561,7 @@
 			$host_id = getMyHostActivateService($id, $search_service);
 			$host_name = getMyHostName($host_id);
 
-			$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."'";
+			$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."'";
 			if ($error  == 'true' || $notification == 'true')
 				$req .= ' OR `host_name` is null';
 			$req .= ")";
@@ -586,7 +586,7 @@
 			}
 		} else {
 			if ($is_admin) {
-				$req = "SELECT * FROM log WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
+				$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
 			}
 		}
 	}
