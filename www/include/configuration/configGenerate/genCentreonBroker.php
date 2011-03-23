@@ -77,8 +77,8 @@
     	                }
     	            }
     	        }
+    	        $fileXml->endElement();
 	        }
-	        $fileXml->endElement();
 	    }
 	    $fileXml->endElement();
 
