@@ -3,53 +3,53 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configNdo2db/formNdo2db.php $
  * SVN : $Id: formNdo2db.php 11685 2011-02-14 16:14:15Z jmathis $
- * 
+ *
  */
 
 	if (!isset($oreon)) {
 		exit();
 	}
-	
+
 	/*
 	 * nagios servers comes from DB
-	 */ 
+	 */
 	$nagios_servers = array();
 	$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
 	while($nagios_server = $DBRESULT->fetchRow()) {
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 	}
 	$DBRESULT->free();
-	
+
 	##########################################################
 	# Var information to format the element
 	#
@@ -70,13 +70,13 @@
 	} else if ($o == "w") {
 		$form->addElement('header', 'title', _("View a Centreon-Broker Configuration"));
 	}
-	
+
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/*
 	 * TAB 1 - General informations
 	 */
@@ -93,21 +93,21 @@
 	 * TAB 2 - Outputs
 	 */
 	$tpl->assign('centreonbroker_output', _("Centreon-Broker outputs"));
-	$tpl->assign('output_add', _("Add a output"));
-	
+	$tpl->assign('output_add', _("Add an output"));
+
 	/*
 	 * TAB 3 - Inputs
 	 */
 	$tpl->assign('centreonbroker_input', _("Centreon-Broker inputs"));
-	$tpl->assign('input_add', _("Add a input"));
-	
+	$tpl->assign('input_add', _("Add an input"));
+
 	/*
 	 * TAB 4 - logger
 	 */
 	$tpl->assign('centreonbroker_logger', _("Centreon-Broker loggers"));
 	$tpl->assign('logger_add', _("Add a logger"));
-	
-	
+
+
 	/*
 	 * Default values
 	 */
@@ -141,16 +141,16 @@
     			}
 			}
 		}
-	}	
+	}
 	$form->addElement('hidden', 'id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
+
 	/*
 	 * Form Rules
 	 */
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
-	
+
 	if ($o == "w")	{
 		if ($centreon->user->access->page($p) != 2) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
@@ -169,7 +169,7 @@
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
-	
+
 	$valid = false;
 	if ($form->validate())	{
 		$nagiosObj = $form->getElement('id');
@@ -190,11 +190,11 @@
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);	
-		$tpl->assign('form', $renderer->toArray());	
+		$form->accept($renderer);
+		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
-		$tpl->assign('sort1', _("General"));		
-		$tpl->assign('sort2', _("Output"));		
+		$tpl->assign('sort1', _("General"));
+		$tpl->assign('sort2', _("Output"));
 		$tpl->assign('sort3', _("Input"));
 		$tpl->assign('sort4', _("Logger"));
 		$tpl->display("formCentreonBroker.ihtml");
