@@ -80,6 +80,7 @@ DELETE FROM topology WHERE topology_page = '606';
 DELETE FROM topology WHERE topology_parent = '606';
 
 UPDATE topology SET topology_order = 40 WHERE topology_page = '50501';
+UPDATE topology SET topology_order = 60, topology_page = '50503', topology_parent = '505', topology_icone = './img/icones/16x16/data_into.gif' WHERE topology_page = '503';
 
 -- Add column for templates curves : link curves by host/service too
 ALTER TABLE `giv_components_template` ADD `host_id` INT( 11 ) NULL AFTER `compo_id` ;
