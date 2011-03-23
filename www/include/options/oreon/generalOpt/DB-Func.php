@@ -110,7 +110,10 @@
 		    $brokerOpt = $pearDB->escape($ret['broker']);
 		}
 		updateOption($pearDB, "broker", $brokerOpt);
-		$oreon->broker = new CentreonBroker($pearDB);
+		if ($oreon->broker != $brokerOpt) {
+		    $oreon->broker = new CentreonBroker($pearDB);
+            $pearDB->query("UPDATE acl_resources SET changed = 1");
+		}
 
         /*
          * Acknowledgement part
