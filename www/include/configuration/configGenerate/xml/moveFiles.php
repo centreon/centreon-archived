@@ -80,8 +80,11 @@ try {
                     $centreonBrokerDirCfg = getCentreonBrokerDirCfg($host['id']);
                     if (!is_null($centreonBrokerDirCfg)) {
                         if (!is_dir($centreonBrokerDirCfg)) {
-                            $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s does not exists!") . "<br>", $centreonBrokerDirCfg);
-                        } elseif (!is_writable($centreonBrokerDirCfg)) {
+                            if (!mkdir($centreonBrokerDirCfg, 0755)) {
+                                $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s does not exist and could not be created!") . "<br>", $centreonBrokerDirCfg);
+                            }
+                        }
+                        if (!is_writable($centreonBrokerDirCfg)) {
                             $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s is not writable for webserver's user!") . "<br>", $centreonBrokerDirCfg);
                         } else {
                             foreach ($listBrokerFile as $fileCfg) {
