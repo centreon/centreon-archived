@@ -37,7 +37,6 @@
  */
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	//include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/class/centreonGMT.class.php";
 	include_once $centreon_path . "www/class/centreonXML.class.php";

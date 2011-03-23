@@ -39,7 +39,7 @@
 	/**
 	 * Require Centreon Config file
 	 */
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	/**
 	 * Include Monitoring Classes
@@ -145,7 +145,7 @@
 
 		$obj->XML->writeElement("hostname", $data["name"], false);
 		$obj->XML->writeElement("address", $data["address"]);
-		$obj->XML->startElement("state");
+		$obj->XML->startElement("current_state");
 		$obj->XML->writeAttribute("color", $obj->colorHost[$data["state"]]);
 		$obj->XML->text(_($obj->statusHost[$data["state"]]), false);
 		$obj->XML->endElement();
