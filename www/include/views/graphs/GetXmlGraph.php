@@ -285,7 +285,7 @@
 	}
 
 	function returnType($type, $multi){
-		if ($multi && $type == 'HS')
+		if ($multi && ($type == 'HS' || $type == 'SS'))
 			$type = "SS";
 		else if ($multi && $type == 'MS')
 			$type = "SM";
