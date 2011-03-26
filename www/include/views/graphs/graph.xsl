@@ -408,7 +408,12 @@
 												</xsl:element>
 											</xsl:element>
 										</td>
-										<td style="vertical-align: top;width: 32px;"><img src="./img/icones/1x1/blank.gif" style="vertical-align:top;" /></td>
+										<xsl:if test="split = 1">
+											<td style="vertical-align: top;width: 16px;">
+												<img src="./img/icones/1x1/blank.gif" style="vertical-align:top;" /></td>
+											<td style="vertical-align: top;width: 16px;">
+												<img src="./img/icones/1x1/blank.gif" style="vertical-align:top;" /></td>
+										</xsl:if>
 									</tr>
 								</table>
 							</li>
