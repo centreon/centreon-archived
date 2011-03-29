@@ -68,15 +68,15 @@ class CentreonXML {
     /*
      *  Simply puts text
      */
-    public function text($txt, $cdata = true, $encode = true) {
-        $txt = preg_replace('/[\x00-\x19\x7F]/', "", $txt);
-        if ($encode == false) {
-            $this->buffer->writeCData($txt);
+    public function text($txt, $cdata = true, $encode = 0) {
+        $txt = html_entity_decode($txt);
+        if ($encode || !$this->is_utf8($txt)) {
+            $this->buffer->writeCData(utf8_encode($txt));
         } else {
             if ($cdata) {
-                $this->buffer->writeCData(utf8_encode(html_entity_decode($txt)));
+                $this->buffer->writeCData($txt);
             } else {
-                $this->buffer->text(utf8_encode(html_entity_decode($txt)));
+                $this->buffer->text($txt);
             }
         }
     }
