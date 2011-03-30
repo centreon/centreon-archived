@@ -60,7 +60,7 @@
 	/**
 	 * Set One curve
 	 **/
-	$obj->splitcurves = true;
+	$obj->onecurve = true;
 
 	/**
 	 * Set arguments from GET
