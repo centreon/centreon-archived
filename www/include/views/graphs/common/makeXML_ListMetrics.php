@@ -58,12 +58,28 @@
 	$s_datas = array();
 	$o_datas = array(""=>"List of known metrics&nbsp;&nbsp;&nbsp;");
 	$mx_l = strlen($o_datas[""]);
+	$where = "";
+	$def_type = array(0=>"CDEF",1=>"VDEF");
+
+	if (isset($_GET["vdef"]) && $_GET["vdef"] == 0)
+		$where = " AND def_type='".$_GET["vdef"]."'";
 	
 	if (isset($_GET["index_id"]) && $_GET["index_id"] != 0) {
 		$pq_sql =& $pearDBO->query("SELECT metric_id, metric_name FROM metrics as ms, index_data as ixd WHERE ms.index_id = ixd.id and ms.index_id='".$_GET["index_id"]."';");
 		while($fw_sql = $pq_sql->fetchRow()) {
 			$sd_l = strlen($fw_sql["metric_name"]);
 			$fw_sql["metric_name"] = $fw_sql["metric_name"]."&nbsp;&nbsp;&nbsp;";
+			$s_datas[] = $fw_sql;
+			if ( $sd_l > $mx_l )
+				$mx_l = $sd_l;
+    	}
+		$pq_sql->free();
+		$pq_sql =& $pearDB->query("SELECT vmetric_id, vmetric_name, def_type FROM virtual_metrics WHERE index_id='".$_GET["index_id"]."'".$where.";");
+		
+		while($fw_sql = $pq_sql->fetchRow()) {
+			$sd_l = strlen($fw_sql["vmetric_name"]." [CDEF]");
+			$fw_sql["metric_name"] = $fw_sql["vmetric_name"]." [".$def_type[$fw_sql["def_type"]]."]&nbsp;&nbsp;&nbsp;";
+			$fw_sql["metric_id"] = "v".$fw_sql["vmetric_id"];
 			$s_datas[] = $fw_sql;
 			if ( $sd_l > $mx_l )
 				$mx_l = $sd_l;

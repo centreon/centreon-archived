@@ -41,15 +41,14 @@
 		header("Content-type: text/xml"); 
 	} 
 
-	function cmpmetricname($a, $b) {
-	    return strnatcasecmp($a["metric_name"], $b["metric_name"]);
-	}
-
-	function cmpmetricorder($a, $b) {
-		if ( $a["ds_order"] == $b["ds_order"] ) {
-			return 0;
-		}
-		return ( $a["ds_order"] < $b["ds_order"] ) ? -1 : 1;
+	/* Ordering By : ds_order, then metric_name */
+	function cmpmultiple($a, $b) {
+		if ($a["ds_order"]<$b["ds_order"])
+			return -1;
+		else if ($a["ds_order"]>$b["ds_order"])
+			return 1;
+		return strnatcasecmp($a["metric_name"], $b["metric_name"]);
+		return 0;
 	}
 
 	/*
@@ -361,17 +360,16 @@
 			/* 
 			 * Real Metrics
 			 */
-			$DBRESULT2 =& $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."'  AND `hidden` = '0' ORDER BY `metric_name`");
+			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."'  AND `hidden` = '0' ORDER BY `metric_name`");
 			/* Find host,service link to index */
-			$dbindd =& $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
-			$indd =& $dbindd->fetchRow();
+			$dbindd = $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
+			$indd = $dbindd->fetchRow();
 			$dbindd->free();
-			$counter = 0;
-			while ($metrics_ret =& $DBRESULT2->fetchRow()){
+			while ($metrics_ret = $DBRESULT2->fetchRow()){
 				/* Find legend if exist	*/
 				/* And use it instead of the metric name */
-				$dbds =& $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
-				$ds_data =& $dbds->fetchRow();
+				$dbds = $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data = $dbds->fetchRow();
 				$dbds->free();
 				if ( strlen($ds_data["ds_legend"]) > 0) {
 					$metrics_ret["metric_name"]=$ds_data["ds_legend"];
@@ -380,23 +378,42 @@
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace('#BS#', "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
 				$metrics[$metrics_ret["metric_id"]]["ds_order"] = $ds_data["ds_order"];
-				$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
-				$counter++;
 			}
 			$DBRESULT2->free();
 
-			/* Sort By Order */
-			$s_metrics = array();
-			foreach ($metrics as $key => $om) {
-				$om["key"] = $key;
-				$s_metrics[] = $om;
+			/*
+			 * Virtual Metrics
+			 */
+			$DBRESULT2 = $pearDB->query("SELECT vmetric_id metric_id, vmetric_name metric_name FROM virtual_metrics WHERE index_id = '".$index."' AND ( `hidden` = '0' OR `hidden` IS NULL ) AND vmetric_activate = '1' ORDER BY 'metric_name'");
+			/* Don't seach for Host-id/Service_id for the index... */
+			/* It's the same as the real metrics */
+			while ($metrics_ret = $DBRESULT2->fetchRow()){
+				/* Find legend if exist */
+				/* And use it instead of the metric name */
+				$dbds = $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data = $dbds->fetchRow();
+				$dbds->free();
+				$mid = "v".$metrics_ret["metric_id"];
+				if ( strlen($ds_data["ds_legend"]) > 0)
+					$metrics_ret["metric_name"]=$ds_data["ds_legend"];
+				$metrics[$mid]["metric_name"] = str_replace('#S#', "/", $metrics_ret["metric_name"]);
+				$metrics[$mid]["metric_name"] = str_replace('#BS#', "\\", $metrics[$mid]["metric_name"]);
+				$metrics[$mid]["metric_id"] = $metrics_ret["metric_id"];
+				$metrics[$mid]["ds_order"] = $ds_data["ds_order"];
 			}
-			usort($s_metrics, "cmpmetricorder");
-			$metrics = array();
-			foreach ($s_metrics as $key => $om) {
-				$metrics[$s_metrics[$key]["key"]] = $om;
-			}
+			$DBRESULT2->free();
+
 			
+			/* Sort By : ds_order, then metric_name */
+			uasort($metrics, "cmpmultiple");
+
+			/* Insert class */
+			$counter = 0;
+			foreach ($metrics as $key => $om) {
+                                $metrics[$key]["class"] = $tab_class[$counter % 2];
+				$counter++;
+                        }
+
 			/*
 			 * verify if metrics in parameter is for this index
 			 */
@@ -405,13 +422,13 @@
 			} else {
 				$metrics_active = array();
 			}
-			
+
 			$pass = 0;
 			if (isset($metrics_active))
 				foreach ($metrics_active as $key => $value)
 					if (isset($metrics[$key]))
 						$pass = 1;
-			
+	
 			if ($msg_error == 0)	{
 				if (isset($_GET["metric"]) && $pass){
 					$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
@@ -428,10 +445,10 @@
 							$metrics_active[$metric["metric_id"]] = 1;		
 					else
 						foreach ($metrics as $key => $value)
-							$metrics_active[$key] = 1;	
+							$metrics_active[$key] = 1;
 				}
 			}
-		
+
 			if ($svc_id["host_name"] == "_Module_Meta")
 				$svc_id["host_name"] = "Meta Services";
 				
@@ -444,16 +461,31 @@
 			}	
 			
 			if ($split){
+				/*
+				 * Real Metrics
+				 */
 				$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
 				$counter = 1;
-				for ($i = 1;$metrics_ret =& $DBRESULT2->fetchRow(); $i++){
+				for ($i = 1;$metrics_ret = $DBRESULT2->fetchRow(); $i++){
 					if (isset($metrics_active[$metrics_ret["metric_id"]]) && $metrics_active[$metrics_ret["metric_id"]])
 						$metrics_list[$metrics_ret["metric_id"]] = $counter;
 					$counter++;
 				}
 				$DBRESULT2->free();
+
+				/*
+				 * Virtual Metrics
+				 */
+				$DBRESULT2 = $pearDB->query("SELECT vmetric_id metric_id, vmetric_name metric_name FROM virtual_metrics WHERE index_id = '".$index."' AND (`hidden` = '0' OR `hidden` IS NULL ) AND vmetric_activate = '1' ORDER BY `metric_name`");
+				for ($i = 1;$metrics_ret = $DBRESULT2->fetchRow(); $i++){
+					$mid = "v".$metrics_ret["metric_id"];
+					if (isset($metrics_active[$mid]) && $metrics_active[$mid])
+						$metrics_list[$mid] = $counter;
+					$counter++;
+				}
+				$DBRESULT2->free();
 			}		
-			$tab_period['Daily']	= (time() - (60 * 60 * 24));
+			$tab_period['Daily']	= (time() - 60 * 60 * 24);
 			$tab_period['Weekly']	= (time() - 60 * 60 * 24 * 7);
 			$tab_period['Monthly']	= (time() - 60 * 60 * 24 * 31);
 			$tab_period['Yearly']	= (time() - 60 * 60 * 24 * 365);
@@ -485,11 +517,10 @@
 				$buffer->writeElement("end", time());				
 		
 				if ($split) {
-					uasort($metrics, "cmpmetricname");
 					foreach ($metrics as $metric_id => $metric)	{
 						$buffer->startElement("metric");
 						$buffer->writeElement("metric_id", $metric_id);
-						$buffer->endElement();						
+						$buffer->endElement();
 					}
 				}
 				$buffer->endElement();				
@@ -567,15 +598,14 @@
 			 */
 			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' AND hidden = '0' ORDER BY `metric_name`");
 			/* Find host,service link to index */
-			$dbindd =& $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
-			$indd =& $dbindd->fetchRow();
+			$dbindd = $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
+			$indd = $dbindd->fetchRow();
 			$dbindd->free();
-			$counter = 0;
 			while ($metrics_ret = $DBRESULT2->fetchRow()){			
 				/* Find legend if exist */
 				/* And use it instead of the metric name */
-				$dbds =& $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
-				$ds_data =& $dbds->fetchRow();
+				$dbds = $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data = $dbds->fetchRow();
 				$dbds->free();
 				if ( strlen($ds_data["ds_legend"]) > 0)
 					$metrics_ret["metric_name"]=$ds_data["ds_legend"];
@@ -583,25 +613,41 @@
 				$metrics[$metrics_ret["metric_id"]]["metric_name"] = str_replace("#BS#", "\\", $metrics[$metrics_ret["metric_id"]]["metric_name"]);
 				$metrics[$metrics_ret["metric_id"]]["metric_id"] = $metrics_ret["metric_id"];
 				$metrics[$metrics_ret["metric_id"]]["ds_order"] = $ds_data["ds_order"];
-				$metrics[$metrics_ret["metric_id"]]["class"] = $tab_class[$counter % 2];
-				$counter++;
+			}
+			$DBRESULT2->free();
+
+			/*
+			 * Virtual Metrics
+			 */
+			$DBRESULT2 = $pearDB->query("SELECT vmetric_id metric_id, vmetric_name metric_name FROM virtual_metrics WHERE index_id = '".$svc_id["id"]."' AND ( `hidden` = '0' OR `hidden` IS NULL ) AND vmetric_activate = '1' ORDER BY `metric_name`");
+			while ($metrics_ret = $DBRESULT2->fetchRow()){
+				/* Find legend if exist */
+				/* And use it instead of the metric name */
+				$dbds = $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data = $dbds->fetchRow();
+				$dbds->free();
+				$mid = "v".$metrics_ret["metric_id"];
+				if ( strlen($ds_data["ds_legend"]) > 0)
+					$metrics_ret["metric_name"]=$ds_data["ds_legend"];
+				$metrics[$mid]["metric_name"] = str_replace("#S#", "/", $metrics_ret["metric_name"]);
+				$metrics[$mid]["metric_name"] = str_replace("#BS#", "\\", $metrics[$mid]["metric_name"]);
+				$metrics[$mid]["metric_id"] = $metrics_ret["metric_id"];
+				$metrics[$mid]["ds_order"] = $ds_data["ds_order"];
 			}
 			$DBRESULT2->free();
 				
-			/* Sort By Order */
-			$s_metrics = array();
+			/* Sort By : ds_order, then metric_name */
+			uasort($metrics, "cmpmultiple");
+
+			/* Insert class */
+			$counter = 0;
 			foreach ($metrics as $key => $om) {
-				$om["key"] = $key;
-				$s_metrics[] = $om;
-			}
-			usort($s_metrics, "cmpmetricorder");
-			$metrics = array();
-			foreach ($s_metrics as $key => $om) {
-				$metrics[$s_metrics[$key]["key"]] = $om;
-			}
+                                $metrics[$key]["class"] = $tab_class[$counter % 2];
+				$counter++;
+                        }
 
 			/*
-			 *  verify if metrics in parameter is for this index
+			 * verify if metrics in parameter is for this index
 			 */
 			if (isset($_GET["metric"])) {
 				$metrics_active = $_GET["metric"];
@@ -614,9 +660,9 @@
 				foreach ($metrics_active as $key => $value)
 					if (isset($metrics[$key]))
 						$pass = 1;
-			
+
 			if (isset($_GET["metric"]) && $pass){
-				$DBRESULT =& $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index_id."'");
+				$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index_id."'");
 				foreach ($metrics_active as $key => $metric){
 					if (isset($metrics_active[$key]) && $metrics_active[$key] == 1){
 						$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index_id."');");
@@ -630,9 +676,9 @@
 						$metrics_active[$metric["metric_id"]] = 1;		
 				else
 					foreach ($metrics as $key => $value)
-						$metrics_active[$key] = 1;	
+						$metrics_active[$key] = 1;
 			}
-		
+
 			if ($multi)
 				$buffer->startElement("multi_svc");				
 			else
@@ -654,16 +700,16 @@
 						
 			if (!$multi){
 				if ($split == 0){
-					$buffer->startElement("metricsTab");					
+					$buffer->startElement("metricsTab");
 					$flag = 0;
 					$str = "";
 					foreach ($metrics as $id => $metric)	{
 						if (isset($_GET["metric"]) && isset($_GET["metric"][$id]) && $_GET["metric"][$id] == 1){
-                        	if ($flag)
-                            	$str .= "&amp;";
-                            $flag = 1;
-                            $str .= "metric[".$id."]";
-                        }
+							if ($flag)
+								$str .= "&amp;";
+							$flag = 1;
+							$str .= "metric[".$id."]";
+						}
 					}
 					$buffer->text($str);
 					$buffer->endElement();					
@@ -674,7 +720,7 @@
 					$buffer->startElement("metrics");
 					$buffer->writeElement("metric_id", $id);					
 					if (isset($_GET["metric"]) && isset($_GET["metric"][$id]) && $_GET["metric"][$id] == 1) {
-						$buffer->writeElement("select", "1");						
+						$buffer->writeElement("select", "1");
 					} else {
 						$buffer->writeElement("select", "0");
 					}						

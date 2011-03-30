@@ -395,14 +395,14 @@ function nextPeriod() {
 			//multi = 1;
 		} else {
 			var _checked = "0";
-			if (document.formu2 && document.formu2.elements["metric"]){
+			if (document.formu3 && document.formu3.elements["metric"]){
 				//multi = 1;
-				for (i=0; i < document.formu2.elements["metric"].length; i++) {
+				for (i=0; i < document.formu3.elements["metric"].length; i++) {
 					_checked = "0";
-					if (document.formu2.elements["metric"][i].checked)	{
+					if (document.formu3.elements["metric"][i].checked)	{
 						_checked = "1";
 					}
-					_metrics += '&metric['+document.formu2.elements["metric"][i].value+']='+_checked ;
+					_metrics += '&metric['+document.formu3.elements["metric"][i].value+']='+_checked ;
 				}
 			}
 		}

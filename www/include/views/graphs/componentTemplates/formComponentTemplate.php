@@ -253,7 +253,7 @@
 			if ( sd_o != 0) {
 				var chaineAj = '';
 				chaineAj = e_select.options[sd_o].text;
-				chaineAj = chaineAj.replace(/\s*$/,"");
+				chaineAj = chaineAj.replace(/\s(\[[CV]DEF\]|)\s*$/,"");
 				e_input.value = chaineAj;
 			}
 		}
@@ -307,6 +307,7 @@
 		$tpl->assign('o', $o);
 		$tpl->display("formComponentTemplate.ihtml");
 	}
+	$vdef = 0; /* don't list VDEF in metrics list */
 	include_once("./include/views/graphs/common/makeJS_formMetricsList.php");
 ?><script type="text/javascript">
 <?php

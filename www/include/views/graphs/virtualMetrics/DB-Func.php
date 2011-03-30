@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2009 MERETHIS
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,22 +19,38 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
  *
- * DB-Func.php david PORTE $
+ * For more information : contact@centreon.com
+ *
+ * SVN : $URL$
+ * SVN : $Id$
  *
  */
 	if (!isset($oreon))
 		exit;
 
-	/* Need Global Varriables */
-	$rmetrics = array();
-	$vmetrics = array();
-	$mlist = array();
-	$ptr = array(0, 0);
- 	
-	function escape_command($command) {
-		return ereg_replace("(\\\$|`)", "", $command);
+	function _TestRPNInfinityLoop () {
+                global $form;
+                $gsvs = NULL;
+                if (isset($form))
+                        $gsvs = $form->getSubmitValues();
+
+		if ( $gsvs["vmetric_name"] != NULL && preg_match("/".$gsvs["vmetric_name"]."/",$gsvs["rpn_function"]) ) {
+			return false;
+		} else {
+			return true;
+		}
 	}
+
 
 	function NameTestExistence ($vmetric_name = NULL, $index_id = NULL) {
 		global $pearDB, $pearDBO, $form;
@@ -118,30 +134,7 @@
 		$vmetric_id = insertVirtualMetric();
 		return ($vmetric_id);
 	}
-
-	/* recursive function */
-	function enableVirtualMetricInDB($vmetric_id = null) {
-		if (!$vmetric_id) return;
-		global $pearDB;
-		$v_ena = array();		
-		$v_ena = enableVirtualMetric($vmetric_id);
-		foreach($v_ena as $pkey => $v_id) {
-//			if ( checkRRDGraphData($v_id) == 0 )
-				$p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='".$v_id."';");
-//			else
-//				break;
-		}
-	}
 	
-	function disableVirtualMetricInDB($vmetric_id = null, $force = 0) {
-		if (!$vmetric_id) return;
-		global $pearDB;
-		$v_dis= array();
-		$v_dis = disableVirtualMetric($vmetric_id, $force);
-		foreach($v_dis as $pkey => $vm)
-			$p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='".$vm."';");
-	}
-
 	function insertVirtualMetric()	{
 		global $form, $pearDB;
 		$h_id = NULL;
@@ -156,15 +149,12 @@
 		isset($ret["rpn_function"]) && $ret["rpn_function"] != NULL ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
 		isset($ret["unit_name"]) && $ret["unit_name"] != NULL ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
 		isset($ret["vhidden"]) && $ret["vhidden"] != NULL ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
-		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL, ";
+		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "NULL, NULL";
 		$rq .= ")";
+`echo "Insert VMetric 'RQ' : $rq" >> /opt/app/centreon/www/include/views/graphs/virtualMetrics/DB.log`;
 		$DBRESULT = $pearDB->query($rq);
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		$DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
-		if (PEAR::isError($DBRESULT))
-			print "DB Error : ".$DBRESULT->getDebugInfo();
 		$vmetric_id = $DBRESULT->fetchRow();
 		return ($vmetric_id["MAX(vmetric_id)"]);
 	}
@@ -193,14 +183,26 @@
 		$rq .= "WHERE vmetric_id = '".$vmetric_id."'";
 		$DBRESULT = $pearDB->query($rq);
 
-//		if ( checkRRDGraphData($vmetric_id) == 0 )
+		# Check RRDGraph Data
+		if ( checkRRDGraphData($vmetric_id, 1) == 0 )
 			enableVirtualMetricInDB($vmetric_id);
-//		else
-//			disableVirtualMetricInDB($vmetric_id, 1);
+		else
+			disableVirtualMetricInDB($vmetric_id, 1);
 		
 	}		
 
-	/* recursive function */
+	function disableVirtualMetricInDB($vmetric_id = null, $force = 0) {
+        	if (!$vmetric_id)
+			return;
+
+        	global $pearDB;
+
+		$v_dis= array();
+		$v_dis = disableVirtualMetric($vmetric_id, $force);
+		foreach($v_dis as $pkey => $vm)
+			$p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '0' WHERE `vmetric_id` ='".$vm."';");
+	}
+
 	function &disableVirtualMetric($v_id = null, $force = 0) {
 		global $pearDB;
 
@@ -228,17 +230,29 @@
 		}
 	}
 
-	/* recursive function */
-	function &enableVirtualMetric($v_id, $v_name = null, $index_id = null) {
+	function enableVirtualMetricInDB($vmetric_id = null) {
+		if (!$vmetric_id)
+			return;
+
+		global $pearDB;
+	
+		$v_ena = array();		
+		$v_ena = enableVirtualMetric($vmetric_id);
+
+		foreach($v_ena as $pkey => $v_id) {
+			if ( checkRRDGraphData($v_id) == 0 )
+				$p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='".$v_id."';");
+			else
+				break;
+		}
+	}
+
+	function &enableVirtualMetric($v_id, $v_name, $index_id) {
 		global $pearDB;
 
+		$l_where = "vmetric_id = '".$v_id."'";
 		if ( is_null($v_id) )
-			if ( is_null($v_name) || is_null($index_id) )
-			    return;
-			else
-			    $l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
-		else
-			$l_where = "vmetric_id = '".$v_id."'";
+			$l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
 		
 		$l_pqy = $pearDB->query("SELECT vmetric_id, index_id, rpn_function FROM virtual_metrics WHERE ".$l_where." AND (vmetric_activate = '0' OR vmetric_activate IS NULL);");	
 		if ( $l_pqy->numRows() == 1 ) {

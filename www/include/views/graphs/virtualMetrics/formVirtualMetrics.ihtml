@@ -37,8 +37,7 @@
 			<td id="td_rpn_value" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.rpn_function.html}</td>
 			{if $o == "a" || $o == "c"}
 				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
-					<input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery();" style="margin-left: 18px;" />
-					&nbsp;&nbsp;&nbsp;&nbsp;
+					&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" onclick="insertValueQuery()" />&nbsp;
 				</td>
 			{/if}
 		</tr></table></td>

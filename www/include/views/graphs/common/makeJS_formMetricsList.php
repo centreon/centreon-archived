@@ -39,6 +39,7 @@
 ?><script type="text/javascript">
 
 var _o = '<?php echo $o;?>';
+var _vdef = '<?php echo $vdef;?>';
 
 function resetLists(db_id, def_id){
 	update_select_list(0, db_id, def_id);
@@ -149,7 +150,7 @@ function update_select_list(xml_id, db_id, def_id){
     if (xhr == null)
      	alert("AJAX is not supported");
     xhr.onreadystatechange = function() { get_select_options(xhr, xml_id, def_id); };
-    xhr.open("GET", "./include/views/graphs/common/" + xmlFile[xml_id]+ "=" + db_id, true);
+    xhr.open("GET", "./include/views/graphs/common/" + xmlFile[xml_id]+ "=" + db_id + "&vdef=" +_vdef, true);
     xhr.send(null);
 }
 

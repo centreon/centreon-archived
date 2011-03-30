@@ -96,13 +96,15 @@ class CentreonGraph	{
 	var $graphID;
 	var $metricsActive;
 	var $metricsEnabled;
+	var $rmetrics;
+	var $vmetrics;
+	var $mpointer;
+	var $mlist;
+	var $vname;
 	var $metrics;
 	var $longer;
-	var $splitcurves;
-
-	static function _cmplegend($a, $b) {
-		return strnatcasecmp($a["legend"], $b["legend"]);
-	}
+	var $onecurve;
+	var $checkcurve;
 
 	/*
 	 * Class constructor
@@ -116,7 +118,7 @@ class CentreonGraph	{
 	 * $headType	bool 	send XML header
 	 * $debug		bool 	debug flag.
 	 */
-	function CentreonGraph($session_id, $index, $debug, $compress = NULL) {
+	function CentreonGraph($session_id, $index = NULL, $debug, $compress = NULL) {
 		if (!isset($debug)) {
 			$this->debug = 0;
 		}
@@ -172,8 +174,14 @@ class CentreonGraph	{
 		$this->templateInformations = array();
 		$this->metricsEnabled = array();
 		$this->metricsActive = array();
+		$this->rmetrics = array();
+		$this->vmetrics = array();
+		$this->mpointer = array(0,0);
+		$this->mlist = array();
+		$this->vname = array();
 		$this->metrics = array();
-		$this->splitcurves = false;
+		$this->onecurve = false;
+		$this->checkcurve = false;
 
 		$DBRESULT = $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
 		$config = $DBRESULT->fetchRow();
@@ -188,12 +196,15 @@ class CentreonGraph	{
 		$DBRESULT->free();
 		unset($opt);
 
-		$DBRESULT = $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
-		while ($metric_Active = $DBRESULT->fetchRow()){
-			$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
+		if (isset($index)) {
+			$DBRESULT = $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
+			while ($metric_Active = $DBRESULT->fetchRow()){
+				$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
+			}
+			$DBRESULT->free();
+			unset($metric_Active);
 		}
-		$DBRESULT->free();
-		unset($metric_Active);
+
 
 	}
 
@@ -281,145 +292,236 @@ class CentreonGraph	{
 
 	private static function quote($elem) { return "'".$elem."'"; }
 
+	private static function vquote($elem) { return "'".substr($elem,1,strlen($elem)-1)."'"; }
+
 	public function initCurveList() {
-		$cpt = 0;
 		if (isset($this->metricsEnabled) && count($this->metricsEnabled) > 0) {
-			$selector = "metric_id IN (".implode(",", array_map(array("CentreonGraph", "quote"), $this->metricsEnabled)).")";
+			/* Zoom or Metric Image */
+			$l_rmEnabled = array();
+			$l_vmEnabled = array();
+			foreach( $this->metricsEnabled as $l_id ) {
+				if ( preg_match("/^v/",$l_id) ) {
+					$l_vmEnabled[] = $l_id;
+					
+				} else {
+					$l_rmEnabled[] = $l_id;
+				}
+			}
+			/* Create selector for reals metrics */
+			if ( count($l_rmEnabled) ) {
+				$l_rselector = "metric_id IN (".implode(",", array_map(array("CentreonGraph", "quote"), $l_rmEnabled)).")";
+				$this->_log("initCurveList with selector [real]= ".$l_rselector);
+			}
+			if ( count($l_vmEnabled) ) {
+				$l_vselector = "vmetric_id IN (".implode(",", array_map(array("CentreonGraph", "vquote"), $l_vmEnabled)).")";
+				$this->_log("initCurveList with selector [virtual]= ".$l_vselector);
+			}
+			
 		} else {
-			$selector = "index_id = '".$this->index."'";
+			/* Full Image */
+			$l_rselector = "index_id = '".$this->index."'";
+			$l_vselector = $l_rselector;
+			$this->_log("initCurveList with selector= ".$l_rselector);
 		}
-		$this->_log("initCurveList with selector= ".$selector);
-		$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$selector." AND m.hidden = '0' ORDER BY m.metric_name");
-		while ($metric = $DBRESULT->fetchRow()){
-			$this->_log("found metric ".$metric["metric_id"]." with selector= ".$selector);
+
+		/* Manage reals metrics */
+		if (isset($l_rselector)) {
+			$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$l_rselector." AND m.hidden = '0' ORDER BY m.metric_name");
+			while ($rmetric = $DBRESULT->fetchRow()){
+				$this->mlist[$rmetric["metric_id"]] = $this->mpointer[0]++;
+				$this->rmetrics[] = $rmetric;	
+	 		}
+			$DBRESULT->free();
+		}
+
+		/* Manage virtuals metrics */
+		if (isset($l_vselector)) {
+			$DBRESULT = $this->DB->query("SELECT vmetric_id FROM virtual_metrics WHERE ".$l_vselector." ORDER BY vmetric_name");
+			while ($vmetric = $DBRESULT->fetchRow()){
+				$this->manageVMetric($vmetric["vmetric_id"], NULL, NULL);
+			}
+			$DBRESULT->free();
+		}
+
+		/* Merge all metrics */
+		$mmetrics = array_merge($this->rmetrics, $this->vmetrics);
+                        $DBRESULT->free();
+
+		foreach( $mmetrics as $key => $metric) {
+			$this->_log("found metric ".$metric["metric_id"]);
 			if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
-				$this->_log("metric disabled ".$metric["metric_id"]);
-				continue;
+				if ( isset($metric["need"]) ) {
+					$metric["need"] = 1; /* Hidden Metric */
+				} else {
+					$this->_log("metric disabled ".$metric["metric_id"]);
+					continue;
+				}
 			}
 			if ( isset($this->metricsActive) && count($this->metricsActive) && !isset($this->metricsActive[$metric["metric_id"]]) ) {
-				$this->_log("metric inactive ".$metric["metric_id"]);
-				continue;
+                                if ( isset($metric["need"]) ) {
+                                        $metric["need"] = 1; /* Hidden Metric */
+                                } else {
+					$this->_log("metric inactive ".$metric["metric_id"]);
+                                        continue;
+                                }
 			}
 
+			if (isset($metric["virtual"]))
+				$this->metrics[$metric["metric_id"]]["virtual"] = $metric["virtual"];
 			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 #			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
 			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
 			$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
-			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
-			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 
-			/** **********************************
-			 * Copy Template values
-			 */
-			$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE ( host_id = '".$metric["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$metric["service_id"]."' OR service_id IS NULL ) AND ds_name  = '".$metric["metric_name"]."' ORDER BY host_id DESC");
-			$ds_data = $DBRESULT2->fetchRow();
-			$DBRESULT2->free();
-			if (!$ds_data) {
-				$ds = array();
-
-				/** *******************************************
-				 * Get Matching Template
+			if (!isset($metric["need"]) || $metric["need"] != 1) {
+				/** **********************************
+				 * Copy Template values
 				 */
-				$DBRESULT3 = $this->DB->query("SELECT * FROM giv_components_template");
-				if ($DBRESULT3->numRows()) {
-					while ($data = $DBRESULT3->fetchRow()) {
-						$DBRESULT4 = $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$metric["metric_name"]."' AND metric_name LIKE '".$data["ds_name"]."'");
-						if ($DBRESULT4->numRows()) {
-							$ds_data = $data;
-							$DBRESULT4->free();
-							break;
-						}
-						$DBRESULT4->free();
-					}
-				}
-				$DBRESULT3->free();
+				$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE ( host_id = '".$metric["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$metric["service_id"]."' OR service_id IS NULL ) AND ds_name  = '".$metric["metric_name"]."' ORDER BY host_id DESC");
+				$ds_data = $DBRESULT2->fetchRow();
+				$DBRESULT2->free();
 
-				if (!isset($ds_data) && !$ds_data) {
+				if (!$ds_data) {
+					$ds = array();
+
 					/** *******************************************
-					 * Get default info in default template
+					 * Get Matching Template
 					 */
-					$DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+					$DBRESULT3 = $this->DB->query("SELECT * FROM giv_components_template");
 					if ($DBRESULT3->numRows()) {
-						foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
-							$ds[$key] = $ds_val;
+						while ($data = $DBRESULT3->fetchRow()) {
+							$DBRESULT4 = $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$metric["metric_name"]."' AND metric_name LIKE '".$data["ds_name"]."'");
+							if ($DBRESULT4->numRows()) {
+								$ds_data = $data;
+								$DBRESULT4->free();
+								break;
+							}
+							$DBRESULT4->free();
 						}
 					}
 					$DBRESULT3->free();
 
-					/** ******************************************
-					 * Get random color. Only line will be set
-					 */
-					$ds["ds_color_line"] = $this->getRandomWebColor();
-					$this->metrics[$metric["metric_id"]]["ds_id"] = $ds;
-					$ds_data = $ds;
-				}
-			}
+					if (!isset($ds_data) && !$ds_data) {
+						/** *******************************************
+						 * Get default info in default template
+						 */
+						$DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+						if ($DBRESULT3->numRows()) {
+							foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
+								$ds[$key] = $ds_val;
+							}
+						}
+						$DBRESULT3->free();
 
-			/** **********************************
-			 * Fetch Datas
-			 */
-			foreach ($ds_data as $key => $ds_d) {
-				if ($key == "ds_transparency") {
-					$transparency = dechex(255-($ds_d*255)/100);
-					if (strlen($transparency) == 1) {
-						$transparency = "0" . $transparency;
+						/** ******************************************
+						 * Get random color. Only line will be set
+						 */
+						$ds["ds_color_line"] = $this->getRandomWebColor();
+						/* $this->metrics[$metric["metric_id"]]["ds_id"] = $ds; */
+						$ds_data = $ds;
 					}
-					$this->metrics[$metric["metric_id"]][$key] = $transparency;
-					unset($transparency);
-				} else {
-					$this->metrics[$metric["metric_id"]][$key] = $ds_d;
 				}
-			}
 
-			if ( strlen($ds_data["ds_legend"]) > 0 ) {
-				$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_legend"];
+				/** **********************************
+				 * Fetch Datas
+				 */
+				foreach ($ds_data as $key => $ds_d) {
+					if ($key == "ds_transparency") {
+						$transparency = dechex(255-($ds_d*255)/100);
+						if (strlen($transparency) == 1) {
+							$transparency = "0" . $transparency;
+						}
+						$this->metrics[$metric["metric_id"]][$key] = $transparency;
+						unset($transparency);
+					} else {
+						$this->metrics[$metric["metric_id"]][$key] = $ds_d;
+					}
+				}
+
+				if ( strlen($ds_data["ds_legend"]) > 0 ) {
+					$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_legend"];
+				} else {
+					if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
+						$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
+					} else {
+						$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+					}
+				}
+
+				if (strcmp($metric["unit_name"], ""))
+					$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+
+				$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
+				$this->metrics[$metric["metric_id"]]["stack"] = $ds_data["ds_stack"];
+				if (isset($metric["need"])) {
+					$this->metrics[$metric["metric_id"]]["need"] = $metric["need"];
+				} else {
+					$this->metrics[$metric["metric_id"]]["ds_order"] = $ds_data["ds_order"];
+				}
 			} else {
-				if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
-					$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
-				} else {
-					$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
-				}
+				/* the metric is need for a CDEF metric, but not display */
+				$this->metrics[$metric["metric_id"]]["need"] = $metric["need"];
+				$this->metrics[$metric["metric_id"]]["ds_order"] = "0";
 			}
-
-			if (strcmp($metric["unit_name"], ""))
-				$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-
-			$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
-			$this->metrics[$metric["metric_id"]]["stack"] = $ds_data["ds_stack"];
-			$this->metrics[$metric["metric_id"]]["order"] = $ds_data["ds_order"];
-			$cpt++;
+			if (isset($metric["def_type"]))
+				$this->metrics[$metric["metric_id"]]["def_type"] = $metric["def_type"];
+			if (isset($metric["cdef_order"]))
+				$this->metrics[$metric["metric_id"]]["cdef_order"] = $metric["cdef_order"];
+			if (isset($metric["rpn_function"]))
+				$this->metrics[$metric["metric_id"]]["rpn_function"] = $metric["rpn_function"];
+			if (isset($metric["ds_hidecurve"]))
+				$this->metrics[$metric["metric_id"]]["ds_hidecurve"] = $metric["ds_hidecurve"];
+			if (isset($metric["warn"]))
+                        	$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+			if (isset($metric["crit"]))
+                        	$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 		}
 		$DBRESULT->free();
 
                 /*
-                 * sort metrics by order [DONE]
+                 * Sort by ds_order,then legend
                  */
-		$s_metrics = array();
-		foreach ($this->metrics as $key => $om) {
-			$om["key"] = $key;
-			$s_metrics[] = $om;
-		}	
-		uasort($s_metrics, array("CentreonGraph", "_cmporder"));
-		$this->metrics = array();
-		foreach ($s_metrics as $key => $om) {
-			$this->metrics[$s_metrics[$key]["key"]] = $om;
-		}
+		uasort($this->metrics, array("CentreonGraph", "_cmpmultiple"));
 
 		/*
 		 * add data definitions for each metric
 		 */
 		$cpt = 0;
+		$lcdef = array();
 		$this->longer = 0;
-		if (isset($this->metrics))
+		if (isset($this->metrics)) {
 			foreach ($this->metrics as $key => $tm){
-				if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-					$this->addArgument("DEF:va".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0 , 19).":AVERAGE CDEF:v".$cpt."=va".$cpt.",-1,*");
-				else
-					$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0 , 19).":AVERAGE");
+				if (!isset($tm["virtual"]) && isset($tm["need"]) && $tm["need"] == 1) {
+					$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE");
+					$this->vname[$tm["metric"]] = "v".$cpt;
+					$cpt++;
+					continue;
+				}
+				if (isset($tm["virtual"])) {
+					$lcdef[$key] = $tm;
+					$this->vname[$tm["metric"]] = "vv".$cpt;
+					$cpt++;
+				} else {
+					if (isset($tm["ds_invert"]) && $tm["ds_invert"])
+						$this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
+					else
+						$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE");
+					$this->vname[$tm["metric"]] = "v".$cpt;
+					$cpt++;
+				}
 				if ($tm["legend_len"] > $this->longer)
 					$this->longer = $tm["legend_len"];
-				$cpt++;
 			}
+		}
+		$deftype = array(0 => "CDEF", 1 => "VDEF");
+		uasort($lcdef, array("CentreonGraph", "_cmpcdeforder"));
+		foreach ($lcdef as $key => $tm){
+			$rpn = $this->subsRPN($tm["rpn_function"],$this->vname);
+			$arg = $deftype[$tm["def_type"]].":".$this->vname[$tm["metric"]]."=".$rpn;
+			if (isset($tm["ds_invert"]) && $tm["ds_invert"])
+				$arg .= ",-1,*";
+			$this->addArgument($arg);
+		}
 	}
 
 	public function createLegend() {
@@ -427,74 +529,81 @@ class CentreonGraph	{
 		$rpn_values = "";
 		$rpn_expr = "";
 		foreach ($this->metrics as $key => $tm) {
-			if (!$this->splitcurves && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
+			if ( isset($tm["need"]) && $tm["need"] == 1 )
+				continue;
+			if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
 				$arg = "COMMENT:\"";
 			} else {
 				if ($tm["ds_filled"] || $tm["ds_stack"]) {
-					$arg = "AREA:v".$cpt.$tm["ds_color_area"];
+					$arg = "AREA:".$this->vname[$tm["metric"]].$tm["ds_color_area"];
 					if ( $tm["ds_filled"] ) {
 						$arg .= $tm["ds_transparency"];
 					} else {
 						$arg .= "00";
 					}
 					if ( $cpt != 0 && $tm["ds_stack"] ) {
-						$arg .= "::STACK CDEF:vc".($cpt)."=v".($cpt).$rpn_values.$rpn_expr;
+						$arg .= "::STACK CDEF:vc".$cpt."=".$rpn_values.$this->vname[$tm["metric"]].$rpn_expr;
 					}
-					$rpn_values .= ",v".($cpt);
+					$rpn_values .= $this->vname[$tm["metric"]].",";
 					$rpn_expr .= ",+";
 					$this->addArgument($arg);
 				}
 
-				if (!$tm["ds_stack"] || $cpt == 0) {
-					$arg = "LINE".$tm["ds_tickness"].":v".($cpt);
+
+				if (!isset($tm["ds_stack"]) || !$tm["ds_stack"] || $cpt == 0) {
+					$arg = "LINE".$tm["ds_tickness"].":".$this->vname[$tm["metric"]];
 				} else {
 					$arg = "LINE".$tm["ds_tickness"].":vc".($cpt);
 				}
 				$arg .= $tm["ds_color_line"].":\"";
 			}
-			$arg .= $tm["legend"];
-			for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
-				$arg .= " ";
-			}
-			// Add 2 more spaces if display only legend is set
-			if (!$this->splitcurves && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
-				$arg .= "  ";
-			}
-			$arg .= "\"";
-			$this->addArgument($arg);
 
-			if ($tm["ds_last"]){
-				$arg = "GPRINT:v".($cpt).":LAST:\"Last\:%7.2lf".($this->gprintScaleOption);
-				$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+			if (!$this->checkcurve) {
+				$arg .= $tm["legend"];
+				for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
+					$arg .= " ";
+				}
+				// Add 2 more spaces if display only legend is set
+				if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
+					$arg .= "  ";
+				}
+				$arg .= "\"";
 				$this->addArgument($arg);
-			}
-			if ($tm["ds_min"]){
-				$arg = "GPRINT:v".($cpt).":MIN:\"Min\:%7.2lf".($this->gprintScaleOption);
-				$tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
-				$this->addArgument($arg);
-			}
-			if ($tm["ds_max"]){
-				$arg = "GPRINT:v".($cpt).":MAX:\"Max\:%7.2lf".($this->gprintScaleOption);
-				$tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
-				$this->addArgument($arg);
-			}
-			if ($tm["ds_average"]){
-				$this->addArgument("GPRINT:v".($cpt).":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
-			}
-			if (count($this->metrics) == 1) {
-				if (isset($tm["warn"]) && $tm["warn"] != 0)
-					$this->addArgument("HRULE:".$tm["warn"].$this->general_opt["color_warning"].":\"Warning \: ".$tm["warn"]."\\l\" ");
-				if (isset($tm["crit"]) && $tm["crit"] != 0)
-					$this->addArgument("HRULE:".$tm["crit"].$this->general_opt["color_critical"].":\"Critical \: ".$tm["crit"]."\"");
-			}
-			if ( !$this->splitcurves ) {
-				$cline=0;
-				while ($cline < $tm["ds_jumpline"]) {
-					$this->addArgument("COMMENT:\"\\c\"");
-					$cline++;
+
+				if ($tm["ds_last"]){
+					$arg = "GPRINT:".$this->vname[$tm["metric"]].":LAST:\"Last\:%7.2lf".($this->gprintScaleOption);
+					$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+					$this->addArgument($arg);
+				}
+				if ($tm["ds_min"]){
+					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MIN:\"Min\:%7.2lf".($this->gprintScaleOption);
+					$tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+					$this->addArgument($arg);
+				}
+				if ($tm["ds_max"]){
+					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MAX:\"Max\:%7.2lf".($this->gprintScaleOption);
+					$tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
+					$this->addArgument($arg);
+				}
+				if ($tm["ds_average"]){
+					$this->addArgument("GPRINT:".$this->vname[$tm["metric"]].":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
+				}
+				if (count($this->metrics) == 1) {
+					if (isset($tm["warn"]) && $tm["warn"] != 0)
+						$this->addArgument("HRULE:".$tm["warn"].$this->general_opt["color_warning"].":\"Warning \: ".$tm["warn"]."\\l\" ");
+					if (isset($tm["crit"]) && $tm["crit"] != 0)
+						$this->addArgument("HRULE:".$tm["crit"].$this->general_opt["color_critical"].":\"Critical \: ".$tm["crit"]."\"");
+				}
+				if ( !$this->onecurve ) {
+					$cline=0;
+					while ($cline < $tm["ds_jumpline"]) {
+						$this->addArgument("COMMENT:\"\\c\"");
+						$cline++;
+					}
 				}
 			}
-			$cpt++;
+			if ($tm["ds_stack"])
+				$cpt++;
 		}
 	}
 
@@ -760,14 +869,18 @@ class CentreonGraph	{
 		/*
 		 * Send Binary Data
 		 */
-		$fp = popen($commandLine." 2>&1"  , 'r');
-		if (isset($fp) && $fp ) {
-			$str ='';
-			while (!feof ($fp)) {
-		  		$buffer = fgets($fp, 4096);
-		 		$str = $str . $buffer ;
+		if (!$this->checkcurve) {
+			$fp = popen($commandLine." 2>&1"  , 'r');
+			if (isset($fp) && $fp ) {
+				$str ='';
+				while (!feof ($fp)) {
+		  			$buffer = fgets($fp, 4096);
+		 			$str = $str . $buffer ;
+				}
+				print $str;
 			}
-			print $str;
+		} else {
+			return $commandLine;
 		}
 	}
 
@@ -820,9 +933,116 @@ class CentreonGraph	{
 			return $web_safe_colors[rand(0,sizeof($web_safe_colors))];
 	}
 
-	private function _cmporder($a, $b) {
-		return strcmp($a["ds_order"], $b["ds_order"]);
+	private function _cmpmultiple($a, $b) {
+		if ($a["ds_order"]<$b["ds_order"])
+			return -1;
+		else if ($a["ds_order"]>$b["ds_order"])
+			return 1;
+		return strnatcasecmp($a["legend"], $b["legend"]);
+		return 0;
 	}
+
+	private function _cmpcdeforder($a, $b) {
+		if ( $a["cdef_order"] == $b["cdef_order"] )
+			return 0;
+		return ( $a["cdef_order"] < $b["cdef_order"] ) ? -1 : 1;
+	}
+
+        private function subsRPN($rpn, $vname, $suffix = NULL) {
+                $l_list = split(",",$rpn);
+                $l_rpn = "";
+                $l_err = 0;
+                foreach( $l_list as $l_m) {
+                        if ( isset($vname[$l_m]) ) {
+                                if ( $suffix == NULL )
+                                        $l_rpn .= $vname[$l_m].",";
+                                else if ( isset($vname[$l_m.$suffix]) )
+                                        $l_rpn .= $vname[$l_m.$suffix].",";
+                                else
+                                        $l_err = 1;
+                        } else
+                                $l_rpn .= $l_m.",";
+                }
+                if ( $l_err == 0 )
+                        return substr($l_rpn,0,strlen($l_rpn) - 1);
+                else
+                        return "No_RPN_Found";
+        }
+
+        /* need : [0]->need/visible [1]->need/hidden */
+        private function manageVMetric($v_id, $v_name, $index_id) {
+                /* Recursif function */
+
+                /* Manage Virtual Metrics */
+                $l_whidden = "";
+                if (!$this->checkcurve)
+                        $l_whidden = " AND ( hidden = '0' OR hidden IS NULL ) AND vmetric_activate = '1'";
+
+                if ( is_null($v_id) )
+                        $l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
+                else
+                        $l_where = "vmetric_id = '".$v_id."'".$l_whidden;
+                $l_pqy = $this->DB->query("SELECT vmetric_id metric_id, index_id, vmetric_name metric_name, unit_name, def_type, rpn_function FROM virtual_metrics WHERE ".$l_where." ORDER BY metric_name");
+                /* There is only one metric_id */
+                if ( $l_pqy->numRows() == 1 ) {
+                        $l_vmetric = $l_pqy->fetchRow();
+                        $l_pqy->free();
+                        if ( !isset($this->mlist["v".$l_vmetric["metric_id"]]) ) {
+                                if ( is_null($v_id) )
+                                        $l_vmetric["need"] = 1; /* 1 : Need this virtual metric : Hidden */
+                                /* Find Host/Service For this metric_id */
+                                $l_poqy = $this->DBC->query("SELECT host_id, service_id FROM index_data WHERE id = '".$l_vmetric["index_id"]."'");
+                                $l_indd = $l_poqy->fetchRow();
+                                $l_poqy->free();
+                                /* Check for real or virtual metric(s) in the RPN function */
+                                $l_mlist = split(",",$l_vmetric["rpn_function"]);
+                                foreach ( $l_mlist as $l_mnane ) {
+                                        /* Check for a real metric */
+                                        $l_poqy = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data as i WHERE index_id = id AND index_id = '".$l_vmetric["index_id"]."' AND metric_name = '".$l_mnane."'");
+                                        if ( $l_poqy->numRows() == 1) {
+                                                /* Find a real metric in the RPN function */
+                                                $l_rmetric = $l_poqy->fetchrow();
+                                                $l_poqy->free();
+                                                $l_rmetric["need"] = 1; /* 1 : Need this real metric - hidden */
+                                                if ( !isset($this->mlist[$l_rmetric["metric_id"]]) ) {
+                                                        $this->mlist[$l_rmetric["metric_id"]] = $this->mpointer[0]++;
+                                                        $this->rmetrics[] = $l_rmetric;
+                                                } else {
+                                                        /* We Already Find the real metrics in the array */
+                                                        /* Make sure, it's add */
+                                                        $l_pointer = $this->mlist[$l_rmetric["metric_id"]];
+                                                        if ( !isset($this->rmetrics[$l_pointer]["need"]) )
+                                                                $this->rmetrics[$l_pointer]["need"] = 0;
+                                                }
+                                        } elseif ( $l_poqy->numRows() == 0 ) {
+                                                /* key : id or vname and iid */
+                                                $l_poqy->free();
+                                                $this->manageVMetric(NULL, $l_mnane, $l_vmetric["index_id"]);
+                                        } else
+                                                $l_poqy->free();
+                                }
+                                $l_vmetric["metric_id"] = "v".$l_vmetric["metric_id"];
+                                $l_vmetric["host_id"] = $l_indd["host_id"];
+                                $l_vmetric["service_id"] = $l_indd["service_id"];
+                                $l_vmetric["virtual"] = 1;
+                                $l_vmetric["cdef_order"]=$this->mpointer[1];
+                                $this->mlist[$l_vmetric["metric_id"]] = $this->mpointer[1]++;
+                                $this->vmetrics[] = $l_vmetric;
+                        } else {
+                                /* We Already Find the virtual metrics in the array */
+                                /* Make sure, it's add */
+                                $l_pointer = $this->mlist["v".$l_vmetric["metric_id"]];
+                                if ( is_null($v_id) )
+                                        if ( !isset($this->vmetrics[$l_pointer]["need"]) || $this->vmetrics[$l_pointer]["need"] != 1 )
+                                                $this->vmetrics[$l_pointer]["need"] = 0;
+                                else
+                                        if ( !isset($this->vmetrics[$l_pointer]["need"]) || $this->vmetrics[$l_pointer]["need"] == 1 )
+                                                $this->vmetrics[$l_pointer]["need"] = 0;
+                        }
+                } else {
+                        $l_pqy->free();
+                }
+        }
 
 	private function _log($message) {
 		if ($this->general_opt['debug_rrdtool'])

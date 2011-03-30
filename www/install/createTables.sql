@@ -1759,7 +1759,7 @@ CREATE TABLE IF NOT EXISTS `ns_host_relation` (
 CREATE TABLE IF NOT EXISTS `ods_view_details` (
   `dv_id` int(11) NOT NULL auto_increment,
   `index_id` int(11) default NULL,
-  `metric_id` int(11) default NULL,
+  `metric_id` VARCHAR(12) default NULL,
   `contact_id` int(11) default NULL,
   `all_user` enum('0','1') default NULL,
   PRIMARY KEY  (`dv_id`)
@@ -2168,6 +2168,27 @@ CREATE TABLE IF NOT EXISTS `view_img_dir_relation` (
   KEY `directory_parent_index` (`dir_dir_parent_id`),
   KEY `image_index` (`img_img_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `virtual_metrics`
+--
+
+CREATE TABLE IF NOT EXISTS `virtual_metrics` (
+  `vmetric_id` int(11) NOT NULL AUTO_INCREMENT,
+  `index_id` int(11) DEFAULT NULL,
+  `vmetric_name` varchar(255) DEFAULT NULL,
+  `def_type` enum('0','1') DEFAULT '0',
+  `rpn_function` varchar(255) DEFAULT NULL,
+  `unit_name` varchar(32) DEFAULT NULL,
+  `hidden` enum('0','1') DEFAULT '0',
+  `comment` text,
+  `vmetric_activate` enum('0','1') DEFAULT NULL,
+  `ck_state` enum('0','1','2') DEFAULT NULL,
+  PRIMARY KEY (`vmetric_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
 
 --
 -- Contraintes pour les tables export�es

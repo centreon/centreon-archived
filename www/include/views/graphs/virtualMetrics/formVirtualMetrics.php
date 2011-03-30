@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2009 MERETHIS
+ * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -19,8 +19,20 @@
  * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
  *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
  *
- * formVirtualMetrics.php david PORTE $
+ * For more information : contact@centreon.com
+ *
+ * SVN : $URL$
+ * SVN : $Id$
  *
  */
 
@@ -141,9 +153,11 @@
 
 
 	$form->registerRule('existName', 'callback', 'NameTestExistence');
-    $form->registerRule('checkService', 'callback', 'checkServiceSet');
+	$form->registerRule('RPNInfinityLoop', 'callback', '_TestRPNInfinityLoop');
+	$form->registerRule('checkService', 'callback', 'checkServiceSet');
 	$form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName');
 	$form->addRule('host_id', _("Required Field 'Service' list"), 'checkService');
+	$form->addRule('rpn_function', _("Can't Use This Virtual Metric '".$_POST["vmetric_name"]."' In This RPN Function"), 'RPNInfinityLoop');
 	
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
@@ -180,7 +194,7 @@
 			var e_txtarea = document.Form.rpn_function;
 			var e_select = document.getElementById('sl_list_metrics');
 			var sd_o = e_select.selectedIndex;
-			if (e_select.options[sd_o].value != "null") {
+			if (sd_o != 0) {
 				var chaineAj = '';
 				chaineAj = e_select.options[sd_o].text;
 				//chaineAj = chaineAj.substring(0, chaineAj.length - 3);

@@ -95,4 +95,27 @@ ADD `ds_hidecurve` ENUM( '0', '1' ) CHARACTER SET utf8 COLLATE utf8_general_ci N
 ADD `ds_legend` VARCHAR( 200 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `ds_invert` ,
 ADD `ds_jumpline` ENUM( '0', '1', '2', '3' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL AFTER `ds_legend` ;
 
+-- Add table : 'virtual_metrics' : RRD:CDEF [Virtual/Metrics]
+CREATE TABLE IF NOT EXISTS `virtual_metrics` (
+  `vmetric_id` int(11) NOT NULL AUTO_INCREMENT,
+  `index_id` int(11) DEFAULT NULL,
+  `vmetric_name` varchar(255) DEFAULT NULL,
+  `def_type` enum('0','1') DEFAULT '0',
+  `rpn_function` varchar(255) DEFAULT NULL,
+  `unit_name` varchar(32) DEFAULT NULL,
+  `hidden` enum('0','1') DEFAULT '0',
+  `comment` text,
+  `vmetric_activate` enum('0','1') DEFAULT NULL,
+  `ck_state` enum('0','1','2') DEFAULT NULL,
+  PRIMARY KEY (`vmetric_id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+
+-- Update 'topology' : RRD:CDEF [Virtual/Metrics]
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES
+(NULL, 'Virtuals', NULL, 402, NULL, NULL, 46, NULL, NULL, '0', '0', '1', NULL, NULL, NULL),
+(NULL, 'Metrics', './img/icones/16x16/chart.gif', 402, 40208, 80, 46, './include/views/graphs/virtualMetrics/virtualMetrics.php', NULL, '0', '0', '1', NULL, NULL, NULL);
+
+-- Change 'ods_view_details' field 'metric_id' from int(11) to varchar(12) : RRD:CDEF [Virtual/Metrics]
+ALTER TABLE `ods_view_details` CHANGE `metric_id` `metric_id` VARCHAR( 12 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+
 UPDATE `informations` SET `value` = '2.3.0-b4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-b3' LIMIT 1;

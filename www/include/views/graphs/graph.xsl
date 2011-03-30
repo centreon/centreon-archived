@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+<xsl:variable name="cellsPerRow" select="7" />
 <xsl:template match="root">
 <div id="openid" style="display:none">
 	<xsl:value-of select="//opid"/>
@@ -141,7 +142,7 @@
 	</div>
 </xsl:if>
 <xsl:if test="svc_zoom">
-	    <div id="div2"   valign="top" align='left'>
+	    <div id="div3"   valign="top" align='left'>
 		<form name="formu2">
     	    <table class="ajaxOption">
 				<tr>
@@ -177,23 +178,17 @@
 					</xsl:element>
 					<xsl:value-of select="//lang/giv_split_component"/>
            		</td>
-				<xsl:for-each select="//metrics">
-           		<td style="padding-left:10px;">
-					<xsl:element name='input'>
-						<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
-						<xsl:attribute name="type">checkbox</xsl:attribute>
-						<xsl:attribute name="name">metric</xsl:attribute>
-						<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>
-						<xsl:if test="select = 1">
-							<xsl:attribute name="checked">checked</xsl:attribute>
-						</xsl:if>
-					</xsl:element>
-           			<xsl:value-of select="metric_name"/>
-           		</td>
-				</xsl:for-each>
 				</tr>
         	</table>
 		</form>
+		<form name="formu3">
+			<table class="ajaxOption">
+				<xsl:for-each select="//metrics[position() mod $cellsPerRow = 1]">
+					<tr><xsl:apply-templates select=".|following-sibling::metrics[position() &lt; $cellsPerRow]"/></tr>
+				</xsl:for-each>
+			</table>
+		</form>
+
    	</div>
 	<div>
 		<table class="ListTable">
@@ -435,5 +430,19 @@
 	</table>
 </div>
 </xsl:if>
+</xsl:template>
+<xsl:template match="metrics">
+	<td>
+		<xsl:element name='input'>
+		<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
+		<xsl:attribute name="type">checkbox</xsl:attribute>
+		<xsl:attribute name="name">metric</xsl:attribute>
+		<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>
+		<xsl:if test="select = 1">
+			<xsl:attribute name="checked">checked</xsl:attribute>
+		</xsl:if>
+		</xsl:element>
+			<xsl:value-of select="metric_name"/>
+	</td>
 </xsl:template>
 </xsl:stylesheet>
