@@ -231,7 +231,7 @@
 		multi = 1;
 		if (document.getElementById('openid'))
 			document.getElementById('openid').innerHTML = tree.getAllChecked();
-		graph_4_host(tree.getAllChecked(), 1);
+		graph_4_host(tree.getAllChecked(), 1, 1);
 	}
 
 	function onNodeSelect(nodeId){
@@ -241,7 +241,7 @@
 		if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
 			var graphView4xml = document.getElementById('graphView4xml');
 			graphView4xml.innerHTML="";
-			graph_4_host(nodeId);
+			graph_4_host(nodeId, null, 1);
 		}
 	}
 
@@ -364,9 +364,12 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, pStart, pEnd, metrics)	{
+	function graph_4_host(id, multi, l_select, pStart, pEnd, metrics)	{
 		if (!multi)
 			multi = 0;
+
+		if (l_select === undefined)
+			l_select = 0;
 
 
 		if (pStart && pEnd){
@@ -394,15 +397,17 @@ function nextPeriod() {
 			_metrics += '&metric['+metrics+']=1';
 			//multi = 1;
 		} else {
-			var _checked = "0";
-			if (document.formu3 && document.formu3.elements["metric"]){
-				//multi = 1;
-				for (i=0; i < document.formu3.elements["metric"].length; i++) {
-					_checked = "0";
-					if (document.formu3.elements["metric"][i].checked)	{
-						_checked = "1";
+			if (!l_select) {
+				var _checked = "0";
+				if (document.formu3 && document.formu3.elements["metric"]){
+					//multi = 1;
+					for (i=0; i < document.formu3.elements["metric"].length; i++) {
+						_checked = "0";
+						if (document.formu3.elements["metric"][i].checked)	{
+							_checked = "1";
+						}
+						_metrics += '&metric['+document.formu3.elements["metric"][i].value+']='+_checked ;
 					}
-					_metrics += '&metric['+document.formu3.elements["metric"][i].value+']='+_checked ;
 				}
 			}
 		}
@@ -540,7 +545,7 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = ctime2time(end);
 		if (img_name.indexOf('__M:') != -1 && s_multi) {
             metrics = img_name.substring(img_name.indexOf('__M:') + 4);
-            graph_4_host(id, 0, "", "", metrics);
+            graph_4_host(id, 0, null, "", "", metrics);
             return false;
         }
         graph_4_host(id, 0);

@@ -141,13 +141,15 @@
 		$s_id = NULL;
 		$ret = array();
 		$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
+		$rq = "INSERT INTO `virtual_metrics` ( `vmetric_id` , `index_id`, `vmetric_name`, `def_type` , `rpn_function`, `unit_name` , `warn`, `crit`, `hidden` , `comment` , `vmetric_activate`, `ck_state`) ";
 		$rq .= "VALUES ( NULL, ";
                 isset($ret["index_id"]) && $ret["index_id"] != NULL ? $rq .= "'".$ret["index_id"]."', ": $rq .= "NULL, ";
 		isset($ret["vmetric_name"]) && $ret["vmetric_name"] != NULL ? $rq .= "'".htmlentities($ret["vmetric_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["def_type"]) && $ret["def_type"] != NULL ? $rq .= "'".$ret["def_type"]."', ": $rq .= "NULL, ";
 		isset($ret["rpn_function"]) && $ret["rpn_function"] != NULL ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
 		isset($ret["unit_name"]) && $ret["unit_name"] != NULL ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
+		isset($ret["warn"]) && $ret["warn"] != NULL ? $rq .= "'".$ret["warn"]."', ": $rq .= "NULL, ";
+		isset($ret["crit"]) && $ret["crit"] != NULL ? $rq .= "'".$ret["crit"]."', ": $rq .= "NULL, ";
 		isset($ret["vhidden"]) && $ret["vhidden"] != NULL ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "NULL, NULL";
@@ -175,6 +177,10 @@
 		isset($ret["rpn_function"]) && $ret["rpn_function"] != NULL ? $rq .= "'".$ret["rpn_function"]."', ": $rq .= "NULL, ";
 		$rq .=  "unit_name = ";
 		isset($ret["unit_name"]) && $ret["unit_name"] != NULL ? $rq .= "'".$ret["unit_name"]."', ": $rq .= "NULL, ";
+		$rq .=  "warn = ";
+		isset($ret["warn"]) && $ret["warn"] != NULL ? $rq .= "'".$ret["warn"]."', ": $rq .= "NULL, ";
+		$rq .=  "crit = ";
+		isset($ret["crit"]) && $ret["crit"] != NULL ? $rq .= "'".$ret["crit"]."', ": $rq .= "NULL, ";
 		$rq .=  "hidden = ";
 		isset($ret["vhidden"]) && $ret["vhidden"] != NULL ? $rq .= "'".$ret["vhidden"]."', ": $rq .= "NULL, ";
 		$rq .=  "comment = ";

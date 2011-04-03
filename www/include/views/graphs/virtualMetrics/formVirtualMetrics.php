@@ -126,6 +126,8 @@
 	$form->addElement('static', 'rpn_text',_("<br><i><b><font color=\"#B22222\">Notes </font>:</b></i><br>&nbsp;&nbsp;&nbsp;- Do not mix metrics of different sources.<br>&nbsp;&nbsp;&nbsp;- Only aggregation functions work in VDEF rpn expressions."));
 	#$form->addElement('select', 'real_metrics', null, $rmetrics);
 	$form->addElement('text', 'unit_name', _("Metric Unit"), $attrsText2);
+	$form->addElement('text', 'warn', _("Warning Threshold"), $attrsText2);
+	$form->addElement('text', 'crit', _("Critical Threshold"), $attrsText2);
 	## Options
 	$form->addElement('checkbox', 'vhidden', _("Hidden Graph And Legend"), "", "onChange=manageVDEF();");
 	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);

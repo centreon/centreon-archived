@@ -39,6 +39,7 @@
 	$n = "";
 	$name = "";
 	$title = "";
+	$hcolor = "000000";
 	
 	function filter_get($str){
 		if (preg_match("/([a-zA-Z0-9\_\-\%\ ]*)/", $str, $matches))
@@ -50,10 +51,14 @@
 		$n = filter_var($_GET["n"], FILTER_SANITIZE_SPECIAL_CHARS);
 		$name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
 		$title = filter_var($_GET["title"], FILTER_SANITIZE_SPECIAL_CHARS);
+		if (isset($_GET["hcolor"]))
+			$hcolor = filter_var($_GET["hcolor"], FILTER_SANITIZE_SPECIAL_CHARS);
 	} else {
 		$n = filter_get($_GET["n"]);
 		$name = filter_get($_GET["name"]);
 		$title = filter_get($_GET["title"]);
+		if (isset($_GET["hcolor"]))
+			$hcolor = filter_get($_GET["hcolor"]);
 	}
 	$name1 = $n."";
 	$name2 = $n."_color";
@@ -103,7 +108,6 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 		
 		// calcul de la couleur � partir des coordonn�es du clic
 		var part_width = document.all ? document.all.color_picker.width/6 : document.getElementById('color_picker').width/6;
-		var part_detail = detail/2;
 		var im_height = document.all ? document.all.color_picker.height : document.getElementById('color_picker').height;
 		
 		
@@ -129,25 +133,7 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 		changeFinalColor('#' + dechex(red) + dechex(green) + dechex(blue));
 		
 		// mise � jour de la barre de droite en fonction de cette couleur
-		for(i = 0; i < detail; i++)
-		{
-			if ((i >= 0) && (i < part_detail))
-			{
-				var final_coef = i/part_detail ;
-				var final_red = dechex(255 - (255 - red) * final_coef);
-				var final_green = dechex(255 - (255 - green) * final_coef);
-				var final_blue = dechex(255 - (255 - blue) * final_coef);
-			}
-			else
-			{
-				var final_coef = 2 - i/part_detail ;
-				var final_red = dechex(red * final_coef);
-				var final_green = dechex(green * final_coef);
-				var final_blue = dechex(blue * final_coef);
-			}
-			color = final_red + final_green + final_blue ;
-			document.all ? document.all('gs'+i).style.backgroundColor = '#'+color : document.getElementById('gs'+i).style.backgroundColor = '#'+color;
-		}
+		UpdateGradBarColor(red, green, blue);
 		
 	}
 	
@@ -158,6 +144,33 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 		document.forms['colpick_form'].elements['btn_choose_color'].style.borderColor = color;
 	}
 	
+
+	function UpdateGradBarColor(red, green, blue) {
+		if (red == null)
+			red=00;
+		if (green == null)
+			green=00;
+		if (blue == null)
+			blue=00;
+		var part_detail = detail/2;
+		for(i = 0; i < detail; i++) {
+			if ((i >= 0) && (i < part_detail)) {
+				var final_coef = i/part_detail ;
+				var final_red = dechex(255 - (255 - red) * final_coef);
+				var final_green = dechex(255 - (255 - green) * final_coef);
+				var final_blue = dechex(255 - (255 - blue) * final_coef);
+			} else {
+				var final_coef = 2 - i/part_detail ;
+				var final_red = dechex(red * final_coef);
+				var final_green = dechex(green * final_coef);
+				var final_blue = dechex(blue * final_coef);
+			}
+			color = final_red + final_green + final_blue ;
+			document.all ? document.all('gs'+i).style.backgroundColor = '#'+color : document.getElementById('gs'+i).style.backgroundColor = '#'+color;
+		}
+	}
+
+
 	// "renvoyer" la couleur en cliquant sur OK
 	function send_color()
 	{
@@ -206,6 +219,7 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 						</td>
 					</tr>
 				</table>
+			</td>
 			<td style="background-color:#ffffff; width:20px; height:2px; padding:0px;"></td>
 			<td>
 				<table border="1" cellspacing="0" cellpadding="0" class="table_black_border" style="cursor:crosshair">
@@ -236,4 +250,8 @@ td  { font-size: 12px; font-family: Verdana, Sans-Serif; text-align:center; back
 	</table>
 	</form>
 </body>
+<script type="text/javascript">
+	changeFinalColor('#<?php echo $hcolor;?>');
+	UpdateGradBarColor('<?php echo hexdec(substr($hcolor,0,2));?>','<?php echo hexdec(substr($hcolor,2,2));?>','<?php echo hexdec(substr($hcolor,4,2));?>');
+</script>
 </html>

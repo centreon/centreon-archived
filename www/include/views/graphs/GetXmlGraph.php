@@ -403,7 +403,6 @@
 			}
 			$DBRESULT2->free();
 
-			
 			/* Sort By : ds_order, then metric_name */
 			uasort($metrics, "cmpmultiple");
 
@@ -417,6 +416,7 @@
 			/*
 			 * verify if metrics in parameter is for this index
 			 */
+			$active_force = 0;
 			if (isset($_GET["metric"])) {
 				$metrics_active = $_GET["metric"];
 			} else {
@@ -428,7 +428,7 @@
 				foreach ($metrics_active as $key => $value)
 					if (isset($metrics[$key]))
 						$pass = 1;
-	
+			
 			if ($msg_error == 0)	{
 				if (isset($_GET["metric"]) && $pass){
 					$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
@@ -444,11 +444,11 @@
 						while ($metric = $DBRESULT->fetchRow())
 							$metrics_active[$metric["metric_id"]] = 1;		
 					else
-						foreach ($metrics as $key => $value)
-							$metrics_active[$key] = 1;
+						$active_force = 1;
 				}
 			}
 
+		
 			if ($svc_id["host_name"] == "_Module_Meta")
 				$svc_id["host_name"] = "Meta Services";
 				
@@ -460,32 +460,7 @@
 				$svc_id["service_description"] = $meta["meta_name"];
 			}	
 			
-			if ($split){
-				/*
-				 * Real Metrics
-				 */
-				$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."' AND `hidden` = '0' ORDER BY `metric_name`");
-				$counter = 1;
-				for ($i = 1;$metrics_ret = $DBRESULT2->fetchRow(); $i++){
-					if (isset($metrics_active[$metrics_ret["metric_id"]]) && $metrics_active[$metrics_ret["metric_id"]])
-						$metrics_list[$metrics_ret["metric_id"]] = $counter;
-					$counter++;
-				}
-				$DBRESULT2->free();
-
-				/*
-				 * Virtual Metrics
-				 */
-				$DBRESULT2 = $pearDB->query("SELECT vmetric_id metric_id, vmetric_name metric_name FROM virtual_metrics WHERE index_id = '".$index."' AND (`hidden` = '0' OR `hidden` IS NULL ) AND vmetric_activate = '1' ORDER BY `metric_name`");
-				for ($i = 1;$metrics_ret = $DBRESULT2->fetchRow(); $i++){
-					$mid = "v".$metrics_ret["metric_id"];
-					if (isset($metrics_active[$mid]) && $metrics_active[$mid])
-						$metrics_list[$mid] = $counter;
-					$counter++;
-				}
-				$DBRESULT2->free();
-			}		
-			$tab_period['Daily']	= (time() - 60 * 60 * 24);
+			$tab_period['Daily']	= (time() - (60 * 60 * 24));
 			$tab_period['Weekly']	= (time() - 60 * 60 * 24 * 7);
 			$tab_period['Monthly']	= (time() - 60 * 60 * 24 * 31);
 			$tab_period['Yearly']	= (time() - 60 * 60 * 24 * 365);
@@ -504,6 +479,7 @@
 	
 			$buffer->writeElement("id", $id);
 			$buffer->writeElement("index", $index);
+
 			$buffer->writeElement("flagperiod", $flag_period);
 			$buffer->writeElement("opid", $openid);
 			$buffer->writeElement("split", $split);
@@ -518,9 +494,11 @@
 		
 				if ($split) {
 					foreach ($metrics as $metric_id => $metric)	{
-						$buffer->startElement("metric");
-						$buffer->writeElement("metric_id", $metric_id);
-						$buffer->endElement();
+						if ($active_force || isset($metrics_active[$metric_id]) && $metrics_active[$metric_id] == 1) {
+							$buffer->startElement("metric");
+							$buffer->writeElement("metric_id", $metric_id);
+							$buffer->endElement();
+						}
 					}
 				}
 				$buffer->endElement();				
@@ -649,6 +627,7 @@
 			/*
 			 * verify if metrics in parameter is for this index
 			 */
+			$active_force = 0;
 			if (isset($_GET["metric"])) {
 				$metrics_active = $_GET["metric"];
 			} else {
@@ -675,8 +654,7 @@
 					while ($metric = $DBRESULT->fetchRow())
 						$metrics_active[$metric["metric_id"]] = 1;		
 				else
-					foreach ($metrics as $key => $value)
-						$metrics_active[$key] = 1;
+					$active_force = 1;
 			}
 
 			if ($multi)
@@ -704,7 +682,7 @@
 					$flag = 0;
 					$str = "";
 					foreach ($metrics as $id => $metric)	{
-						if (isset($_GET["metric"]) && isset($_GET["metric"][$id]) && $_GET["metric"][$id] == 1){
+						if ($active_force || isset($metrics_active[$id]) && $metrics_active[$id] == 1) {
 							if ($flag)
 								$str .= "&amp;";
 							$flag = 1;
@@ -719,7 +697,8 @@
 				foreach ($metrics as $id => $metric){
 					$buffer->startElement("metrics");
 					$buffer->writeElement("metric_id", $id);					
-					if (isset($_GET["metric"]) && isset($_GET["metric"][$id]) && $_GET["metric"][$id] == 1) {
+
+					if ($active_force || isset($metrics_active[$id]) && $metrics_active[$id] == 1) {
 						$buffer->writeElement("select", "1");
 					} else {
 						$buffer->writeElement("select", "0");
@@ -739,11 +718,13 @@
 				$buffer->endElement();				
 			} else {
 				foreach ($metrics as $id => $metric){
-					$buffer->startElement("metrics");
-					$buffer->writeElement("metric_id", $id);
-					$buffer->writeElement("select", "1");
-					$buffer->writeElement("metric_name", $metric["metric_name"]);
-					$buffer->endElement();					
+					if ($active_force || isset($metrics_active[$id]) && $metrics_active[$id] == 1) {
+						$buffer->startElement("metrics");
+						$buffer->writeElement("metric_id", $id);
+						$buffer->writeElement("select", "1");
+						$buffer->writeElement("metric_name", $metric["metric_name"]);
+						$buffer->endElement();					
+					}
 				}
 				$buffer->endElement();				
 			}

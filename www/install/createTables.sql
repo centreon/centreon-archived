@@ -1360,6 +1360,8 @@ CREATE TABLE IF NOT EXISTS `giv_components_template` (
   `ds_name` varchar(200) default NULL,
   `ds_color_line` varchar(255) default NULL,
   `ds_color_area` varchar(255) default NULL,
+  `ds_color_area_warn` varchar(14) DEFAULT NULL,
+  `ds_color_area_crit` varchar(14) DEFAULT NULL,
   `ds_filled` enum('0','1') default NULL,
   `ds_max` enum('0','1') default NULL,
   `ds_min` enum('0','1') default NULL,

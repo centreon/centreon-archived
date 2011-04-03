@@ -118,4 +118,9 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 -- Change 'ods_view_details' field 'metric_id' from int(11) to varchar(12) : RRD:CDEF [Virtual/Metrics]
 ALTER TABLE `ods_view_details` CHANGE `metric_id` `metric_id` VARCHAR( 12 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
+-- Add column for display warning and critical area in split view graph
+ALTER TABLE `giv_components_template` 
+ADD `ds_color_area_warn` VARCHAR(14) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `ds_color_area` ,
+ADD `ds_color_area_crit` VARCHAR(14) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL AFTER `ds_color_area_warn`;
+
 UPDATE `informations` SET `value` = '2.3.0-b4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-b3' LIMIT 1;

@@ -1,4 +1,3 @@
-{$colorJS}
 {$form.javascript}
 <form {$form.attributes}>
  <table class="ListTable">
@@ -40,11 +39,31 @@
 	<tr class="list_one"><td class="FormRowField">{$form.ds_tickness.label}</td><td class="FormRowValue">{$form.ds_tickness.html}px</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField">{$form.ds_color_line.label}</td>
-		<td class="FormRowValue">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}&nbsp;&nbsp;{$form.ds_color_line_modify.html}</td>
+		{if $o == "a" || $o == "c"}
+			<td id="td_ds_color_line" class="FormRowValue"">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}</td>
+		{/if}
+		{if $o == "w"}
+			<td id="td_ds_color_line" class="FormRowValue" style="font-size: 11px; font-family: Courier New;">{$form.ds_color_line_read.html}</td>
+		
+		{/if}
 	</tr>
 	<tr class="list_one">
 		<td class="FormRowField">{$form.ds_color_area.label}</td>
-		<td class="FormRowValue">{$form.ds_color_area.html}&nbsp;&nbsp;{$form.ds_color_area_color.html}&nbsp;&nbsp;{$form.ds_color_area_modify.html}</td>
+		<td class="FormRowField">
+			<table>
+				<tr>
+					{if $o == "a" || $o == "c"}
+						<td id="td_ds_color_area" class="FormRowValue" style="padding: 0px 5px 0px 0px; border-width: 0px 1px 0px 0px;">{$form.ds_color_area.html}&nbsp;&nbsp;{$form.ds_color_area_color.html}</td>
+						<td id="td_ds_color_area_warn" class="FormRowValue" style="padding: 0px 5px 0px 5px; border-width: 0px 1px;">{$form.ds_color_area_warn.html}&nbsp;&nbsp;{$form.ds_color_area_warn_color.html}</td>
+						<td id="td_ds_color_area_crit" class="FormRowValue" style="padding: 0px 0px 0px 5px; border-width: 0px 0px 0px 1px;">{$form.ds_color_area_crit.html}&nbsp;&nbsp;{$form.ds_color_area_crit_color.html}</td>
+					{/if}
+					{if $o == "w"}
+						<td id="td_ds_color_area" class="FormRowValue" style="padding: 0px 5px 0px 0px; border-width: 0px 1px 0px 0px; font-size: 11px; font-family: Courier New;">{$form.ds_color_area_read.html}</td>
+						<td id="td_ds_color_area_warn" class="FormRowValue" style="padding: 0px 5px 0px 5px; border-width: 0px 1px; font-size: 11px; font-family: Courier New;">{$form.ds_color_area_warn_read.html}</td>
+						<td id="td_ds_color_area_crit" class="FormRowValue" style="padding: 0px 0px 0px 5px; border-width: 0px 0px 0px 1px; font-size: 11px; font-family: Courier New;">{$form.ds_color_area_crit_read.html}</td>
+					{/if}
+				</tr>
+			</table>
 	</tr>
 	<tr class="list_two"><td class="FormRowField">{$form.ds_transparency.label}</td><td class="FormRowValue">{$form.ds_transparency.html}%</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ds_filled.label}</td><td class="FormRowValue">{$form.ds_filled.html}</td></tr>

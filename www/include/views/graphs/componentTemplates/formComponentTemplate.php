@@ -38,6 +38,14 @@
 	if (!isset($oreon))
 		exit;
 
+	/* Load 2 generals options */
+	$l_general_opt = array();
+	$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(warn|crit)'");
+	while ($opt = $DBRESULT->fetchRow()) {
+		$l_general_opt[$opt['key']] = $opt['value'];
+	}
+	$DBRESULT->free();
+
 	$compo = array();
 	if (($o == "c" || $o == "w") && $compo_id)	{
 		$res = $pearDB->query("SELECT * FROM giv_components_template WHERE compo_id = '".$compo_id."' LIMIT 1");
@@ -86,8 +94,6 @@
 	$mx_l = strlen($indds[""]);
 
 	$dbindd =& $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
-	if (PEAR::isError($dbindd))
-		print "DB Error : ".$dbindd->getDebugInfo()."<br />";
 	while($indd = $dbindd->fetchRow()) {
 		$indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
 		$hn_l = strlen($indd["host_name"]);
@@ -139,29 +145,31 @@
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	$form->addElement('select', 'datasources', null, $datasources);
 
-	$TabColorNameAndLang = array("ds_color_line"=>_("Line color"),"ds_color_area"=>_("Area color"));
+	$l_dsColorList = array( 
+		"ds_color_line" => array( "label" => _("Line color"), "color" => "#0000FF"),
+		"ds_color_area" => array( "label" => _("Area color"), "color" => "#FFFFFF"),
+		"ds_color_area_warn" => array( "label" => _("Warning Area color"), "color" => $l_general_opt["color_warning"]),
+		"ds_color_area_crit" => array( "label" => _("Critical Area color"), "color" => $l_general_opt["color_critical"])
+	);
 
-	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
-		$nameLang = $val;
-		if ($nameColor == "ds_color_area") {
-			isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = "#FFFFFF";
-		} else if ($nameColor == "ds_color_line")
-			isset($compo[$nameColor]) ?	$codeColor = $compo[$nameColor] : $codeColor = "#0000FF";
+	$l_ptitle = _("Pick a color");
+	foreach($l_dsColorList as $l_dsColor => $l_dCData) {
+		if (isset($compo[$l_dsColor]) && !empty($compo[$l_dsColor]))
+			$l_hxColor = $compo[$l_dsColor];
+		else
+			$l_hxColor = $l_dCData["color"];
+		$attColText = array("value"=>$l_hxColor,"size"=>"7","maxlength"=>"7","style"=>"text-align: center; font-size: 11px; font-family: 'Courier New';");
+		$attColText = array("value"=>$l_hxColor,"size"=>"7","maxlength"=>"7","style"=>"text-align: center;");
+		$form->addElement('text', $l_dsColor, $l_dCData["label"],  $attColText);
 
-		$title = _("Pick a color");
-		$attrsText3 	= array("value"=>$codeColor,"size"=>"9","maxlength"=>"7");
-		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
-
-		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color: ".$codeColor."; border-color:".$codeColor.";");
-		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
-		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
-
-		if ($o == "c" || $o == "a")	{
-			$form->addElement('button', $nameColor.'_modify', _("Modify"), $attrsText5);
-		}
+		$attColAreaR = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;");
+		$attColAreaW = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;", "onclick"=>"popup_color_picker('$l_dsColor','".$l_dCData["label"]."','$l_ptitle');");
+		$form->addElement('button', $l_dsColor.'_color', "", $attColAreaW);
+		$form->addElement('button', $l_dsColor.'_read', "", $attColAreaR);
 	}
 
-	$form->addElement('text', 'ds_transparency', _("Transparency"), $attrsText3);
+	$attTransext = array("size"=>"2","maxlength"=>"3","style"=>"text-align: center;");
+	$form->addElement('text', 'ds_transparency', _("Transparency"), $attTransext);
 
 	$form->addElement('checkbox', 'ds_filled', _("Filling"));
 	$form->addElement('checkbox', 'ds_max', _("Print Max value"));
@@ -241,7 +249,7 @@
 		 */
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
 		$res =& $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
-		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
+		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_area_warn" => "#F8C706", "ds_color_area_crit" => "#F91E05", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
 	}
 	if ($o == "c" || $o == "a") {
 ?>
@@ -257,29 +265,37 @@
 				e_input.value = chaineAj;
 			}
 		}
+
+		function dechex(n) {
+			var strhex = '0123456789ABCDEF';
+			return strhex.charAt(Math.floor(n/16)) + strhex.charAt(n%16);
+		}
+
+		function popup_color_picker(t,name,title) {
+			// Windows Size
+			var width = 400;
+			var height = 300;
+			// Send BackGround Color
+			var hcolor = '000000';
+			var i_elem = document.getElementsByName(t+'_color').item(0);
+			if ( i_elem != null ) {
+				var bckcolor = i_elem.style.backgroundColor;
+				var exp = new RegExp('rgb','g');
+				if (exp.test(bckcolor)) {
+					exp = new RegExp('[0-9]+','g');
+					var tab_rgb = bckcolor.match(exp);
+					hcolor = dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
+				}
+			} 
+			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title+'&hcolor='+hcolor, 'cp', 'resizable=no, location=no, width='
+						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
+		}
 	</script><?php
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));
 
 	$tpl->assign("sort1", _("Properties"));
 	$tpl->assign("sort2", _("Graphs"));
-
-	/*
-	 * Picker Color JS
-	 */
-	$tpl->assign('colorJS',"
-	<script type='text/javascript'>
-		function popup_color_picker(t,name,title)
-		{
-			var width = 400;
-			var height = 300;
-			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
-						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
-		}
-	</script>
-    "
-    );
-
 	$valid = false;
 	if ($form->validate())	{
 		$compoObj = $form->getElement('compo_id');

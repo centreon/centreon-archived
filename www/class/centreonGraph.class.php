@@ -453,6 +453,19 @@ class CentreonGraph	{
 
 				$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
 				$this->metrics[$metric["metric_id"]]["stack"] = $ds_data["ds_stack"];
+				if ($this->onecurve) {
+					if (isset($metric["warn"]) && $metric["warn"] != 0) {
+                        			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
+						if (!isset($ds_data["ds_color_area_warn"]) || empty($ds_data["ds_color_area_warn"]))
+							$this->metrics[$metric["metric_id"]]["ds_color_area_warn"] = $this->general_opt["color_warning"];
+					}
+					if (isset($metric["crit"]) && $metric["crit"] != 0) {
+                        			$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
+						if (!isset($ds_data["ds_color_area_crit"]) || empty($ds_data["ds_color_area_crit"]))
+                        			$this->metrics[$metric["metric_id"]]["ds_color_area_crit"] = $this->general_opt["color_critical"];
+					}
+				}
+
 				if (isset($metric["need"])) {
 					$this->metrics[$metric["metric_id"]]["need"] = $metric["need"];
 				} else {
@@ -471,10 +484,6 @@ class CentreonGraph	{
 				$this->metrics[$metric["metric_id"]]["rpn_function"] = $metric["rpn_function"];
 			if (isset($metric["ds_hidecurve"]))
 				$this->metrics[$metric["metric_id"]]["ds_hidecurve"] = $metric["ds_hidecurve"];
-			if (isset($metric["warn"]))
-                        	$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
-			if (isset($metric["crit"]))
-                        	$this->metrics[$metric["metric_id"]]["crit"] = $metric["crit"];
 		}
 		$DBRESULT->free();
 
@@ -502,10 +511,25 @@ class CentreonGraph	{
 					$this->vname[$tm["metric"]] = "vv".$cpt;
 					$cpt++;
 				} else {
-					if (isset($tm["ds_invert"]) && $tm["ds_invert"])
+					$l_CMP = ",GT,";
+					if (isset($tm["ds_invert"]) && $tm["ds_invert"]) {
+						/* Switching RRD options lower-limit & upper-limit */
+						if ($this->onecurve)
+							$this->switchRRDLimitOption($this->_RRDoptions["lower-limit"],$this->_RRDoptions["upper-limit"]);
 						$this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
-					else
+						if (isset($tm["warn"]) && $tm["warn"] != 0)
+							$this->metrics[$key]["warn"] *= -1;
+						if (isset($tm["crit"]) && $tm["crit"] != 0)
+							$this->metrics[$key]["crit"] *= -1;
+						if ($this->onecurve)
+							$l_CMP = ",LT,";
+					} else
 						$this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE");
+					if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
+						$this->addArgument("CDEF:ok".$cpt."=v".$cpt.",".$this->metrics[$key]["warn"].$l_CMP.$this->metrics[$key]["warn"].",v".$cpt.",IF");
+						$this->addArgument("CDEF:oc".$cpt."=v".$cpt.",".$this->metrics[$key]["crit"].$l_CMP."v".$cpt.",".$this->metrics[$key]["crit"].",-,0,IF");
+						$this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$this->metrics[$key]["warn"].$l_CMP."v".$cpt.",".$this->metrics[$key]["warn"].",-,oc".$cpt.",-,0,IF");
+					}
 					$this->vname[$tm["metric"]] = "v".$cpt;
 					$cpt++;
 				}
@@ -518,9 +542,26 @@ class CentreonGraph	{
 		foreach ($lcdef as $key => $tm){
 			$rpn = $this->subsRPN($tm["rpn_function"],$this->vname);
 			$arg = $deftype[$tm["def_type"]].":".$this->vname[$tm["metric"]]."=".$rpn;
-			if (isset($tm["ds_invert"]) && $tm["ds_invert"])
-				$arg .= ",-1,*";
-			$this->addArgument($arg);
+			$l_CMP = ",GT,";
+			if (isset($tm["ds_invert"]) && $tm["ds_invert"]) {
+				$this->addArgument($arg.",-1,*");
+				/* Switching RRD options lower-limit & upper-limit */
+				if ($this->onecurve)
+					$this->switchRRDLimitOption($this->_RRDoptions["lower-limit"],$this->_RRDoptions["upper-limit"]);
+				if (isset($tm["warn"]) && $tm["warn"] != 0)
+					$this->metrics[$key]["warn"] *= -1;
+				if (isset($tm["crit"]) && $tm["crit"] != 0)
+					$this->metrics[$key]["crit"] *= -1;
+				if ($this->onecurve)
+				$l_CMP = ",LT,";
+			} else
+				$this->addArgument($arg);
+			if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
+				$nb=substr($this->vname[$tm["metric"]],2,strlen($this->vname[$tm["metric"]])-2);
+				$this->addArgument("CDEF:ok".$nb."=".$this->vname[$tm["metric"]].",".$this->metrics[$key]["warn"].$l_CMP.$this->metrics[$key]["warn"].",".$this->vname[$tm["metric"]].",IF");
+				$this->addArgument("CDEF:oc".$nb."=".$this->vname[$tm["metric"]].",".$this->metrics[$key]["crit"].$l_CMP.$this->vname[$tm["metric"]].",".$this->metrics[$key]["crit"].",-,0,IF");
+				$this->addArgument("CDEF:ow".$nb."=".$this->vname[$tm["metric"]].",".$this->metrics[$key]["warn"].$l_CMP.$this->vname[$tm["metric"]].",".$this->metrics[$key]["warn"].",-,oc".$nb.",-,0,IF");
+			}
 		}
 	}
 
@@ -535,7 +576,13 @@ class CentreonGraph	{
 				$arg = "COMMENT:\"";
 			} else {
 				if ($tm["ds_filled"] || $tm["ds_stack"]) {
-					$arg = "AREA:".$this->vname[$tm["metric"]].$tm["ds_color_area"];
+					if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
+						$nb=$cpt;
+						if (isset($tm["virtual"]))
+							$nb=substr($this->vname[$tm["metric"]],2,strlen($this->vname[$tm["metric"]])-2);
+						$arg = "AREA:ok".$nb.$tm["ds_color_area"];
+					} else
+						$arg = "AREA:".$this->vname[$tm["metric"]].$tm["ds_color_area"];
 					if ( $tm["ds_filled"] ) {
 						$arg .= $tm["ds_transparency"];
 					} else {
@@ -547,13 +594,17 @@ class CentreonGraph	{
 					$rpn_values .= $this->vname[$tm["metric"]].",";
 					$rpn_expr .= ",+";
 					$this->addArgument($arg);
+					if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
+						$this->addArgument("AREA:ow".$nb.$tm["ds_color_area_warn"]."CF::STACK");
+						$this->addArgument("AREA:oc".$nb.$tm["ds_color_area_crit"]."CF::STACK");
+					}
 				}
 
 
 				if (!isset($tm["ds_stack"]) || !$tm["ds_stack"] || $cpt == 0) {
 					$arg = "LINE".$tm["ds_tickness"].":".$this->vname[$tm["metric"]];
 				} else {
-					$arg = "LINE".$tm["ds_tickness"].":vc".($cpt);
+					$arg = "LINE".$tm["ds_tickness"].":vc".$cpt;
 				}
 				$arg .= $tm["ds_color_line"].":\"";
 			}
@@ -588,11 +639,11 @@ class CentreonGraph	{
 				if ($tm["ds_average"]){
 					$this->addArgument("GPRINT:".$this->vname[$tm["metric"]].":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
 				}
-				if (count($this->metrics) == 1) {
+				if ($this->onecurve) {
 					if (isset($tm["warn"]) && $tm["warn"] != 0)
-						$this->addArgument("HRULE:".$tm["warn"].$this->general_opt["color_warning"].":\"Warning \: ".$tm["warn"]."\\l\" ");
+						$this->addArgument("HRULE:".$tm["warn"].$tm["ds_color_area_warn"].":\"Warning \: ".$tm["warn"]."\\l\" ");
 					if (isset($tm["crit"]) && $tm["crit"] != 0)
-						$this->addArgument("HRULE:".$tm["crit"].$this->general_opt["color_critical"].":\"Critical \: ".$tm["crit"]."\"");
+						$this->addArgument("HRULE:".$tm["crit"].$tm["ds_color_area_crit"].":\"Critical \: ".$tm["crit"]."\"");
 				}
 				if ( !$this->onecurve ) {
 					$cline=0;
@@ -774,6 +825,17 @@ class CentreonGraph	{
 		if (strpos($value, " ")!==false)
 			$value = "'".$value."'";
 		$this->_RRDoptions[$name] = $value;
+	}
+
+	private function switchRRDLimitOption($lower = null, $upper = null) {
+		if (is_null($lower))
+			unset($this->_RRDoptions["upper-limit"]);
+		else
+			$this->_RRDoptions["upper-limit"] = $lower;
+		if (is_null($upper))
+			unset($this->_RRDoptions["lower-limit"]);
+		else
+			$this->_RRDoptions["lower-limit"] = $upper;
 	}
 
 	public function setCommandLineTimeLimit($flag) {
@@ -982,7 +1044,7 @@ class CentreonGraph	{
                         $l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
                 else
                         $l_where = "vmetric_id = '".$v_id."'".$l_whidden;
-                $l_pqy = $this->DB->query("SELECT vmetric_id metric_id, index_id, vmetric_name metric_name, unit_name, def_type, rpn_function FROM virtual_metrics WHERE ".$l_where." ORDER BY metric_name");
+                $l_pqy = $this->DB->query("SELECT vmetric_id metric_id, index_id, vmetric_name metric_name, unit_name, warn, crit, def_type, rpn_function FROM virtual_metrics WHERE ".$l_where." ORDER BY metric_name");
                 /* There is only one metric_id */
                 if ( $l_pqy->numRows() == 1 ) {
                         $l_vmetric = $l_pqy->fetchRow();
@@ -1025,6 +1087,8 @@ class CentreonGraph	{
                                 $l_vmetric["host_id"] = $l_indd["host_id"];
                                 $l_vmetric["service_id"] = $l_indd["service_id"];
                                 $l_vmetric["virtual"] = 1;
+                                $l_vmetric["warn"] = $l_vmetric["warn"];
+                                $l_vmetric["crit"] = $l_vmetric["crit"];
                                 $l_vmetric["cdef_order"]=$this->mpointer[1];
                                 $this->mlist[$l_vmetric["metric_id"]] = $this->mpointer[1]++;
                                 $this->vmetrics[] = $l_vmetric;

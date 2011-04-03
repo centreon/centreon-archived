@@ -157,7 +157,7 @@
 			$ret["ds_color_area"] = $ret["ds_color_line"];
 			
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
-				" `ds_color_line` , `ds_color_area` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
+				" `ds_color_line` , `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				" `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
 		if ( $ret["index_id"] != NULL ) {
@@ -175,6 +175,8 @@
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_color_area_warn"]) && $ret["ds_color_area_warn"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area_wrn"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_color_area_crit"]) && $ret["ds_color_area_crit"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area_crit"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -231,6 +233,10 @@ fwrite($fh, $rq);
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".$ret["ds_color_line"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_color_area = ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".$ret["ds_color_area"]."', ": $rq .= "NULL, ";
+		$rq .= "ds_color_area_warn = ";
+		isset($ret["ds_color_area_warn"]) && $ret["ds_color_area_warn"] != NULL ? $rq .= "'".$ret["ds_color_area_warn"]."', ": $rq .= "NULL, ";
+		$rq .= "ds_color_area_crit = ";
+		isset($ret["ds_color_area_crit"]) && $ret["ds_color_area_crit"] != NULL ? $rq .= "'".$ret["ds_color_area_crit"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_filled = ";
 		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".$ret["ds_filled"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_max = ";
