@@ -280,8 +280,6 @@
 			$ret["len_storage_mysql"] = 1;
 		if (!isset($ret["autodelete_rrd_db"]))
 			$ret["autodelete_rrd_db"] = 0;
-		if ($ret["sleep_time"] <= 10)
-			$ret["sleep_time"] = 10;
 		if ($ret["purge_interval"] <= 20)
 			$ret["purge_interval"] = 20;
 		if (!isset($ret["auto_drop"]))
@@ -297,7 +295,6 @@
 				`len_storage_rrd` = '".$ret["len_storage_rrd"]."',
 				`len_storage_mysql` = '".$ret["len_storage_mysql"]."',
 				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
-				`sleep_time` = '".$ret["sleep_time"]."',
 				`purge_interval` = '".$ret["purge_interval"]."',
 				`auto_drop` = '".$ret["auto_drop"]."',
 				`drop_file` = '".$ret["drop_file"]."',

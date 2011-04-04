@@ -16,7 +16,6 @@
 	<tr class="list_one"><td class="FormRowField">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.coreOptions}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.sleep_time.label}</td><td class="FormRowValue">{$form.sleep_time.html}({$ods_sleep_time_expl})</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.purge_interval.label}</td><td class="FormRowValue">{$form.purge_interval.html}({$ods_purge_interval_expl})</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.Input}</td></tr>
