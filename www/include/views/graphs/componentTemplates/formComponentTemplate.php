@@ -35,10 +35,13 @@
  * SVN : $Id$
  *
  */
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit;
+	}
 
-	/* Load 2 generals options */
+	/*
+	 * Load 2 generals options
+	 */
 	$l_general_opt = array();
 	$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` RLIKE '^color_(warn|crit)'");
 	while ($opt = $DBRESULT->fetchRow()) {
@@ -52,30 +55,35 @@
 		/*
 		 * Set base value
 		 */
-		$compo = array_map("myDecode", $res->fetchRow());
+		$tab = $res->fetchRow();
+		$compo = array_map("myDecode", $tab);
 		$res->free();
-		$hs_data = array();
-		$res =& $pearDBO->query("SELECT id FROM index_data WHERE host_id='".$compo["host_id"]."' AND service_id='".$compo["service_id"]."' LIMIT 1;");
-		
-		$hs_data = array_map("myDecode", $res->fetchRow());
-		$compo["index_id"]=$hs_data["id"];
-		$res->free();
-	}
 
+		$hs_data = array();
+		$res =& $pearDBO->query("SELECT id FROM index_data WHERE host_id = '".$compo["host_id"]."' AND service_id = '".$compo["service_id"]."' LIMIT 1");
+		$tab = $res->fetchRow();
+		if (is_array($tab)) {
+			$hs_data = array_map("myDecode", $tab);
+			$compo["index_id"] = $hs_data["id"];
+			$res->free();
+		} else {
+			$compo["index_id"] = 0;
+		}
+	}
 
 	/*
 	 * Graphs comes from DB -> Store in $graphs Array
 	 */
 	$graphs = array();
 	$res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
-	while ($graph = $res->fetchRow())
+	while ($graph = $res->fetchRow()) {
 		$graphs[$graph["graph_id"]] = $graph["name"];
+	}
 	$res->free();
 
 	/*
 	 * List of known data sources
 	 */
-
 	$datasources = array();
 	$DBRESULT = $pearDBO->query("SELECT DISTINCT `metric_name`, `unit_name` FROM `metrics` ORDER BY `metric_name`");
 	while ($row = $DBRESULT->fetchRow()){
@@ -93,17 +101,20 @@
 	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
 	$mx_l = strlen($indds[""]);
 
-	$dbindd =& $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
-	while($indd = $dbindd->fetchRow()) {
+	$dbindd =& $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data ORDER BY host_name, service_description");
+	while ($indd = $dbindd->fetchRow()) {
 		$indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
 		$hn_l = strlen($indd["host_name"]);
-		if ( $hn_l > $mx_l)
-		$mx_l = $hn_l;
+		if ( $hn_l > $mx_l) {
+			$mx_l = $hn_l;
+		}
 	}
 	/* cosmetics */
 	$dbindd->free();
+	/*
 	for ($i = strlen($indds[""]); $i != $mx_l; $i++)
 		$indds[""] .= "&nbsp;";
+	*/
 
 	/*
 	 * Define Styles
@@ -145,7 +156,7 @@
 	$form->addElement('text', 'ds_name', _("Data Source Name"), $attrsText);
 	$form->addElement('select', 'datasources', null, $datasources);
 
-	$l_dsColorList = array( 
+	$l_dsColorList = array(
 		"ds_color_line" => array( "label" => _("Line color"), "color" => "#0000FF"),
 		"ds_color_area" => array( "label" => _("Area color"), "color" => "#FFFFFF"),
 		"ds_color_area_warn" => array( "label" => _("Warning Area color"), "color" => $l_general_opt["color_warning"]),
@@ -153,7 +164,7 @@
 	);
 
 	$l_ptitle = _("Pick a color");
-	foreach($l_dsColorList as $l_dsColor => $l_dCData) {
+	foreach ($l_dsColorList as $l_dsColor => $l_dCData) {
 		if (isset($compo[$l_dsColor]) && !empty($compo[$l_dsColor]))
 			$l_hxColor = $compo[$l_dsColor];
 		else
@@ -286,7 +297,7 @@
 					var tab_rgb = bckcolor.match(exp);
 					hcolor = dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
 				}
-			} 
+			}
 			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title+'&hcolor='+hcolor, 'cp', 'resizable=no, location=no, width='
 						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
 		}
