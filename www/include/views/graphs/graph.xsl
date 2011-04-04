@@ -368,7 +368,7 @@
 													<xsl:attribute name="href">#</xsl:attribute>
 													<xsl:element name="img">
 														<xsl:attribute name="id"><xsl:value-of select="../opid"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
-												  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="//index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
+												  		<xsl:attribute name="src">./include/views/graphs/generateGraphs/generateMetricImage.php?session_id=<xsl:value-of select="//sid"/>&amp;cpt=1&amp;index=<xsl:value-of select="../index"/>&amp;metric=<xsl:value-of select="metric_id"/>&amp;end=<xsl:value-of select="//end"/>&amp;start=<xsl:value-of select="//start"/></xsl:attribute>
 													</xsl:element>
 												</xsl:element>
 											</td>
