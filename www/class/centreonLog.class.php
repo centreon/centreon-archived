@@ -56,8 +56,9 @@ class CentreonUserLog {
 		 * Get Log directory path
 		 */
 		$DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'debug_path'");
-		while ($res = $DBRESULT->fetchRow())
+		while ($res = $DBRESULT->fetchRow()) {
 			$this->ldapInfos[$res["key"]] = $res["value"];
+		}
 		$DBRESULT->free(); 
 
 		/*
@@ -69,9 +70,9 @@ class CentreonUserLog {
 			$this->path = "@CENTREON_LOG@/";
 		}
 		
-		$this->errorType[1] = $this->path."/error-login-";
-		$this->errorType[2] = $this->path."/error-sql-";
-		$this->errorType[3] = $this->path."/error-ldap-";
+		$this->errorType[1] = $this->path."/login.log";
+		$this->errorType[2] = $this->path."/sql-error.log";
+		$this->errorType[3] = $this->path."/ldap.log";
 	}
 	
 	/*
@@ -81,7 +82,7 @@ class CentreonUserLog {
 		/*
 		 * Construct alerte message
 		 */
-		$string = date("H:i")."|".$this->uid."|$page|$option|$str";
+		$string = date("Y-m-d H:i")."|".$this->uid."|$page|$option|$str";
 		
 		/*
 		 * Display error on Standard exit
@@ -99,7 +100,7 @@ class CentreonUserLog {
 		/*
 		 * print Error in log file.
 		 */
-		exec("echo \"".$string."\" >> ".$this->errorType[$id].date("Y-m-d").".log");
+		exec("echo \"".$string."\" >> ".$this->errorType[$id]);
 	}
 	
 	public function setUID($uid)  {
@@ -138,9 +139,9 @@ class CentreonLog {
 		 */
 		$this->path = "@CENTREON_LOG@/";
 		
-		$this->errorType[1] = $this->path."/error-login-";
-		$this->errorType[2] = $this->path."/error-sql-";
-		$this->errorType[3] = $this->path."/error-ldap-";
+		$this->errorType[1] = $this->path."/login.log";
+		$this->errorType[2] = $this->path."/sql-error.log";
+		$this->errorType[3] = $this->path."/ldap.log";
 	}
 	
 	/*
@@ -150,7 +151,7 @@ class CentreonLog {
 		/*
 		 * Construct alerte message
 		 */
-		$string = date("H:i")."|$page|$option|$str";
+		$string = date("Y-m-d H:i")."|$page|$option|$str";
 		
 		/*
 		 * Display error on Standard exit
@@ -170,7 +171,7 @@ class CentreonLog {
 		/*
 		 * print Error in log file.
 		 */
-		exec("echo \"".$string."\" >> ".$this->errorType[$id].date("Y-m-d").".log");
+		exec("echo \"".$string."\" >> ".$this->errorType[$id]);
 	}
 	
 }
