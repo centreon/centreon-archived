@@ -46,6 +46,7 @@ require_once $centreon_path."www/class/centreonDB.class.php";
 require_once $centreon_path."www/class/centreonHost.class.php";
 require_once $centreon_path."www/class/centreonService.class.php";
 require_once $centreon_path."www/class/centreonSession.class.php";
+require_once $centreon_path."www/include/common/common-Func.php";
 
 /*
  * Class for XML/Ajax request
@@ -145,6 +146,11 @@ class CentreonGraph	{
 		 */
 		$this->hostObj		= new CentreonHost($this->DB);
 		$this->serviceObj	= new CentreonService($this->DB);
+
+		/*
+		 * User ID / Contact ID
+		 */
+		$this->user_id = check_session($this->session_id, $this->DB);
 
 		/*
 		 * Timezone management
