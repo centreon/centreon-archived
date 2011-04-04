@@ -184,6 +184,7 @@
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	}
 	$DBRESULT->free();
+	
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
@@ -191,6 +192,15 @@
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	}
 	$DBRESULT->free();
+	
+	# Check commands comes from DB -> Store in $checkCmdEvent Array
+	$checkCmdEvent = array(null => null);
+	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
+	while ($checkCmd = $DBRESULT->fetchRow()) {
+		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
+	}
+	$DBRESULT->free();	
+	
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$cg = new CentreonContactgroup($pearDB);
@@ -211,6 +221,7 @@
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	}
 	$DBRESULT->free();
+	
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
@@ -218,6 +229,7 @@
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	}
 	$DBRESULT->free();
+	
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
 	$DBRESULT = $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
@@ -334,7 +346,7 @@
 	if ($o != "mc") {
 		$form->setDefaults(array('service_event_handler_enabled' => '2'));
 	}
-	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmds, 'onchange=setArgument(this.form,"command_command_id2","example2")');
+	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsTextLong);
 
 	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
