@@ -102,6 +102,8 @@ CREATE TABLE IF NOT EXISTS `virtual_metrics` (
   `vmetric_name` varchar(255) DEFAULT NULL,
   `def_type` enum('0','1') DEFAULT '0',
   `rpn_function` varchar(255) DEFAULT NULL,
+  `warn` int(11) DEFAULT NULL,
+  `crit` int(11) DEFAULT NULL,
   `unit_name` varchar(32) DEFAULT NULL,
   `hidden` enum('0','1') DEFAULT '0',
   `comment` text,
