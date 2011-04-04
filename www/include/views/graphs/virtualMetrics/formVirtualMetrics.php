@@ -67,15 +67,16 @@
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
-	#	
+	#
 	# Existing Data Index List comes from DBO -> Store in $indds Array
 	#
 	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
 	$mx_l = strlen($indds[""]);
 
 	$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");
-	if (PEAR::isError($dbindd))
+	if (PEAR::isError($dbindd)) {
 		print "DB Error : ".$dbindd->getDebugInfo()."<br />";
+	}
 	while($indd = $dbindd->fetchRow()) {
 		$indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
 		$hn_l = strlen($indd["host_name"]);
@@ -83,15 +84,14 @@
 			$mx_l = $hn_l;
 	}
 	$dbindd->free();
-	for ($i = strlen($indds[""]); $i != $mx_l; $i++)
-		$indds[""] .= "&nbsp;";
+
 	#
 	# End of "database-retrieved" information
 	##########################################################
 	##########################################################
 	# Var information to format the element
 	#
-	
+
 	$attrsText 	= array("size"=>"30");
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
@@ -138,11 +138,11 @@
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
-	
+
 	$form->addElement('hidden', 'vmetric_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-	
+
 
 	#
 	## Form Rules
@@ -159,8 +159,8 @@
 	$form->registerRule('checkService', 'callback', 'checkServiceSet');
 	$form->addRule('vmetric_name', _("Name already in use for this Host/Service"), 'existName');
 	$form->addRule('host_id', _("Required Field 'Service' list"), 'checkService');
-	$form->addRule('rpn_function', _("Can't Use This Virtual Metric '".$_POST["vmetric_name"]."' In This RPN Function"), 'RPNInfinityLoop');
-	
+	$form->addRule('rpn_function', _("Can't Use This Virtual Metric '".(isset($_POST["vmetric_name"]) ? htmlentities($_POST["vmetric_name"], ENT_QUOTES, "UTF-8") : '')."' In This RPN Function"), 'RPNInfinityLoop');
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
 
 	#
@@ -225,7 +225,7 @@
 			var vdef_state = document.Form.def_type.value;
 			if ( vdef_state == 1) {
 				e_checkbox.checked = true;
-			} 
+			}
 		}
 	</script><?php
 	}
@@ -271,7 +271,7 @@
 			isset($_POST["host_id"]) && $_POST["host_id"] != NULL ? $ph_id=$_POST["host_id"]: $ph_id=0;
 			isset($_POST["index_id"]) && $_POST["index_id"] != NULL ? $ix_id=$_POST["index_id"]: $ix_id=0;
 		}
-?>	
+?>
 	update_select_list(0,'<?php echo $ph_id;?>','<?php echo $ix_id;?>');
 	update_select_list(1,'<?php echo $ix_id;?>');
 </script>
