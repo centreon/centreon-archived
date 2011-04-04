@@ -145,7 +145,7 @@ sub getServicesIncludeTemplate($$$$) {
 # GET SERVICE DESCRIPTION
 #
 
-sub getServiceInformations($$$$)	{
+sub getServiceInformations($$$)	{
 
     my $sth = $_[0]->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '$_[2]'");
     $sth->execute();
@@ -185,7 +185,7 @@ sub getServiceInformations($$$$)	{
 # GET HOSTNAME AND SERVICE DESCRIPTION
 #
 
-sub getTrapsInfos($$$$){
+sub getTrapsInfos($$$$$){
     my $ip = shift;
     my $hostname = shift;
     my $oid = shift;
