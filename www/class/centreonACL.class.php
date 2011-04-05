@@ -882,7 +882,7 @@ class CentreonACL
 	  *  Otherwise, it returns all the services of a specific host
 	  *
 	  */
-	 public function getHostServices($pearDBndo, $host_id = null)
+	 public function getHostServices($DB, $host_id = null)
 	 {
 		global $pearDB;
 
@@ -901,7 +901,7 @@ class CentreonACL
 				$DBRESULT->free();
 			} else {
 				$query = "SELECT host_id, service_id FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
-				$DBRESULT = $pearDBndo->query($query);
+				$DBRESULT = $DB->query($query);
 				while ($row = $DBRESULT->fetchRow()) {
 					$tab[$row['host_id']][$row['service_id']] = 1;
 				}
@@ -934,7 +934,7 @@ class CentreonACL
 
 			} else {
 				$query = "SELECT service_id, service_description FROM centreon_acl WHERE host_id = '".$host_id."' AND group_id IN (".$this->getAccessGroupsString().")";
-				$DBRESULT = $pearDBndo->query($query);
+				$DBRESULT = $DB->query($query);
 				while ($row = $DBRESULT->fetchRow()) {
 					$tab[$row['service_id']] = $row['service_description'];
 				}
