@@ -114,7 +114,11 @@
 		$metric["metric_name"] = str_replace("#S#", "/", $metric["metric_name"]);
 		$metric["metric_name"] = str_replace("#BS#", "\\", $metric["metric_name"]);
 		$metric["unit_name"] = $metrics["unit_name"];
-		$metric["data_source_type"] = $rrd_dst[$metrics["data_source_type"]];
+		if ( !isset($metrics["data_source_type"]) || isset($metrics["data_source_type"]) && $metrics["data_source_type"] == NULL) {
+			$metric["data_source_type"] = $rrd_dst["0"];
+		} else {
+			$metric["data_source_type"] = $rrd_dst[$metrics["data_source_type"]];
+		}
 		$metric["hidden"] = $yesOrNo[$metrics["hidden"]];
 		$metric["locked"] = $yesOrNo[$metrics["locked"]];
 		$metric["min"] = $metrics["min"];
