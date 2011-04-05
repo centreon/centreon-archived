@@ -589,7 +589,7 @@
 
  		if (isset($ret["use"]) && $ret["use"]){
  			$already_stored = array();
- 			$tplTab = split(",", $ret["use"]);
+ 			$tplTab = preg_split(",", $ret["use"]);
  			$j = 0;
  			foreach ($tplTab as $val) {
  				$tplId = getMyHostID($val);
@@ -1069,7 +1069,7 @@
 
 		elseif (isset($ret["use"]) && $ret["use"]) {
  			$already_stored = array();
- 			$tplTab = split(",", $ret["use"]);
+ 			$tplTab = preg_split(",", $ret["use"]);
  			$j = 0;
 			$DBRES = $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id` = '".$host_id."'");
  			foreach ($tplTab as $val) {

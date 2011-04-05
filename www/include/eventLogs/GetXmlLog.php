@@ -386,7 +386,7 @@
 	 * If multi checked
 	 */
 	if ($multi == 1) {
-		$tab_id = split(",", $openid);
+		$tab_id = preg_split(",", $openid);
 		$tab_host_name = array();
 		$tab_svc = array();
 		/*
@@ -397,7 +397,7 @@
 		$flag_already_call = 0;
 
 		foreach ($tab_id as $openid) {
-			$tab_tmp = split("_", $openid);
+			$tab_tmp = preg_split("_", $openid);
 			if (isset($tab_tmp[1]))
 				$id = $tab_tmp[1];
 			if (isset($tab_tmp[2])) {
@@ -416,8 +416,8 @@
 			} else if ($type == 'ST'){
 				$services = getMyServiceGroupServices($id);
 				foreach ($services as $svc_id => $svc_name)	{
-					$tab_tmp = split("_", $svc_id);
-					$tab = split(":", $svc_name);
+					$tab_tmp = preg_split("_", $svc_id);
+					$tab = preg_split(":", $svc_name);
                     $host_name = $tab[3];
                     $svc_name = $tab[0];
                     if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name])))) {

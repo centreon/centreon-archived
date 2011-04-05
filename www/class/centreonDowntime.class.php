@@ -200,7 +200,7 @@ class CentreonDowntime
 			$days = $row['dtp_day_of_week'];
 			/* Make a array if the cycle is all */
 			if ($row['dtp_month_cycle'] == 'all') {
-				$days = split(',', $days);
+				$days = preg_split(',', $days);
 			}
 			$start_time = substr($row['dtp_start_time'], 0, strrpos($row['dtp_start_time'], ':'));
 			$end_time = substr($row['dtp_end_time'], 0, strrpos($row['dtp_end_time'], ':'));
@@ -209,7 +209,7 @@ class CentreonDowntime
 				'end_time' => $end_time,
 				'day_of_week' => $days,
 				'month_cycle' => $row['dtp_month_cycle'],
-				'day_of_month' => split(',', $row['dtp_day_of_month']),
+				'day_of_month' => preg_split(',', $row['dtp_day_of_month']),
 				'fixed' => $row['dtp_fixed'],
 				'duration' => $row['dtp_duration']
 			);

@@ -145,7 +145,7 @@ function smarty_function_html_select_date($params, &$smarty)
         // strftime to make yyyy-mm-dd
         $time = strftime('%Y-%m-%d', smarty_make_timestamp($time));
     }
-    // Now split this in pieces, which later can be used to set the select
+    // Now preg_split this in pieces, which later can be used to set the select
     $time = explode("-", $time);
 
     // make syntax "+N" or "-N" work with start_year and end_year

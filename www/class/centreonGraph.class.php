@@ -308,7 +308,7 @@ class CentreonGraph	{
 			foreach( $this->metricsEnabled as $l_id ) {
 				if ( preg_match("/^v/",$l_id) ) {
 					$l_vmEnabled[] = $l_id;
-					
+
 				} else {
 					$l_rmEnabled[] = $l_id;
 				}
@@ -322,7 +322,7 @@ class CentreonGraph	{
 				$l_vselector = "vmetric_id IN (".implode(",", array_map(array("CentreonGraph", "vquote"), $l_vmEnabled)).")";
 				$this->_log("initCurveList with selector [virtual]= ".$l_vselector);
 			}
-			
+
 		} else {
 			/* Full Image */
 			$l_rselector = "index_id = '".$this->index."'";
@@ -335,7 +335,7 @@ class CentreonGraph	{
 			$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$l_rselector." AND m.hidden = '0' ORDER BY m.metric_name");
 			while ($rmetric = $DBRESULT->fetchRow()){
 				$this->mlist[$rmetric["metric_id"]] = $this->mpointer[0]++;
-				$this->rmetrics[] = $rmetric;	
+				$this->rmetrics[] = $rmetric;
 	 		}
 			$DBRESULT->free();
 		}
@@ -710,7 +710,7 @@ class CentreonGraph	{
 				/*
 				 * Graph is based on a module check point
 				 */
-				$tab = split("_", $this->indexData["service_description"]);
+				$tab = preg_split("_", $this->indexData["service_description"]);
 				$DBRESULT = $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
 				$tempRes = $DBRESULT->fetchRow();
 				$DBRESULT->free();
@@ -809,7 +809,7 @@ class CentreonGraph	{
 		$fond 	= imagecolorallocate($image,0xEF,0xF2,0xFB);
 		$textcolor = imagecolorallocate($image, 0, 0, 255);
 		// imagestring($image, 5, 0, 0, "Session: ".$_GET['session_id']."svc_id: ".$_GET["index"], $textcolor);
-		
+
 		/*
 		 * Send Header
 		 */
@@ -929,7 +929,7 @@ class CentreonGraph	{
 			$commandLine .= " ".$arg." ";
 		}
 
-		$commandLine = ereg_replace("(\\\$|`)", "", $commandLine);
+		$commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
 		if ($this->GMT->used())
 			$commandLine = "export TZ='CMT".$this->GMT->getMyGMTForRRD()."' ; ".$commandLine;
 
@@ -1017,7 +1017,7 @@ class CentreonGraph	{
 	}
 
         private function subsRPN($rpn, $vname, $suffix = NULL) {
-                $l_list = split(",",$rpn);
+                $l_list = preg_split(",",$rpn);
                 $l_rpn = "";
                 $l_err = 0;
                 foreach( $l_list as $l_m) {
@@ -1063,7 +1063,7 @@ class CentreonGraph	{
                                 $l_indd = $l_poqy->fetchRow();
                                 $l_poqy->free();
                                 /* Check for real or virtual metric(s) in the RPN function */
-                                $l_mlist = split(",",$l_vmetric["rpn_function"]);
+                                $l_mlist = preg_split(",",$l_vmetric["rpn_function"]);
                                 foreach ( $l_mlist as $l_mnane ) {
                                         /* Check for a real metric */
                                         $l_poqy = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data as i WHERE index_id = id AND index_id = '".$l_vmetric["index_id"]."' AND metric_name = '".$l_mnane."'");

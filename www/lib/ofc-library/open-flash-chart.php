@@ -175,7 +175,7 @@ class graph
 	{
 		// we replace the comma so it is not URL escaped
 		// if it is, flash just thinks it is a comma
-		// which is no good if we are splitting the
+		// which is no good if we are preg_splitting the
 		// string on commas.
 		$tmp = str_replace( ',', '#comma#', $text );
 		// now we urlescape all dodgy characters (like & % $ etc..)

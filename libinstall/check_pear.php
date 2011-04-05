@@ -46,7 +46,7 @@ function get_list($file) {
 	$packages = array();
 	$fd = fopen($file, 'r');
 	while ($line = fgets($fd)) {
-		list($name, $version, $status) = split('::', trim($line));
+		list($name, $version, $status) = preg_split('::', trim($line));
 		$package = array('name' => $name, 'version' => $version);
 		if ($status) {
 			$package['status'] = $status;

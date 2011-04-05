@@ -136,13 +136,13 @@
 		if (is_numeric($end)) {
 			$end_time = $end;
 		} else if (isset($end) && $end != "") {
-			list($m, $d ,$y) = split('/', $end);
+			list($m, $d ,$y) = preg_split('/', $end);
 			$end = mktime(24, 0, 0, $m, $d, $y);
 			if ($end < $end_time)
 				$end_time = $end;
 		}
 		if (!is_numeric($start) && isset($start) && $start != "") {
-			list($m, $d, $y) = split('/', $start);
+			list($m, $d, $y) = preg_split('/', $start);
 			$start_time = mktime(0, 0, 0, $m, $d, $y);
 		} else
 			$start_time = $start;
@@ -177,7 +177,7 @@
 	}
 
 	function my_getTimeTamps($dateSTR)	{
-		list($m,$d,$y) = split('/',$dateSTR);
+		list($m,$d,$y) = preg_split('/',$dateSTR);
 		return (mktime(0,0,0,$m,$d,$y));
 	}
 	

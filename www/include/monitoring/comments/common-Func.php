@@ -42,7 +42,7 @@
 		global $oreon, $_GET, $pearDB;
 		
 		foreach ($hosts as $key => $value)	{
-			$res = split(";", $key);
+			$res = preg_split(";", $key);
 			write_command(" DEL_".$type."_COMMENT;".$res[1]."\n", GetMyHostPoller($pearDB, $res[0]));
 		}
 	}

@@ -181,12 +181,12 @@ function smarty_function_fetch($params, &$smarty)
                         $content .= fgets($fp,4096);
                     }
                     fclose($fp);
-                    $csplit = split("\r\n\r\n",$content,2);
+                    $cpreg_split = preg_split("\r\n\r\n",$content,2);
 
-                    $content = $csplit[1];
+                    $content = $cpreg_split[1];
 
                     if(!empty($params['assign_headers'])) {
-                        $smarty->assign($params['assign_headers'],split("\r\n",$csplit[0]));
+                        $smarty->assign($params['assign_headers'],preg_split("\r\n",$cpreg_split[0]));
                     }
                 }
             } else {

@@ -65,11 +65,11 @@ if (!(isset($lng) && file_exists('./sysinfo/includes/lang/' . $centreon->user->g
     $lng = 'en';
     // see if the browser knows the right languange.
     if(isset($HTTP_ACCEPT_LANGUAGE)) {
-        $plng = split(',', $HTTP_ACCEPT_LANGUAGE);
+        $plng = preg_split(',', $HTTP_ACCEPT_LANGUAGE);
         if(count($plng) > 0) {
             while(list($k,$v) = each($plng)) {
-                $k = split(';', $v, 1);
-                $k = split('-', $k[0]);
+                $k = preg_split(';', $v, 1);
+                $k = preg_split('-', $k[0]);
                 if(file_exists('./sysinfo/includes/lang/' . $k[0] . '.php')) {
                     $lng = $k[0];
                     break;

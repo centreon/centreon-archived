@@ -318,7 +318,7 @@
 			return true;
 		} else {
 			if (strstr($hourString, ",")) {
-				$tab1 = split(",", $hourString);
+				$tab1 = preg_split(",", $hourString);
 				for ($i = 0 ; isset($tab1[$i]) ; $i++) {
 					if (preg_match("/([0-9]*):([0-9]*)-([0-9]*):([0-9]*)/", $tab1[$i], $str)) {
 						if ($str[1] > 24 || $str[3] > 24)

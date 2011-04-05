@@ -471,15 +471,15 @@
 				$serviceGroupStats[$host_service_id][$name] = 0;
 			}
 			$servicesStats = array();
-			$res = preg_split("/_/", $host_service_id);
+			$res = preg_preg_split("/_/", $host_service_id);
 			$servicesStats = getLogInDbForOneSVC($res[0], $res[1], $start_date, $end_date, $reportTimePeriod);
 
 			if (isset($servicesStats)) {
 				$serviceGroupStats[$host_service_id] = $servicesStats;
-				$res = preg_split("/_/", $host_service_id);
+				$res = preg_preg_split("/_/", $host_service_id);
 				$serviceGroupStats[$host_service_id]["HOST_ID"] = $res[0];
 				$serviceGroupStats[$host_service_id]["SERVICE_ID"] = $res[1];
-				$res = preg_split("/:::/", $host_service_name);
+				$res = preg_preg_split("/:::/", $host_service_name);
 				$serviceGroupStats[$host_service_id]["HOST_NAME"] = $res[0];
 				$serviceGroupStats[$host_service_id]["SERVICE_DESC"] = $res[1];
 				foreach ($serviceStatsLabels as $name)

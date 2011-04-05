@@ -272,8 +272,8 @@ class Smarty_Compiler extends Smarty {
         /* Gather all template tags. */
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);
         $template_tags = $_match[1];
-        /* Split content by template tags to obtain non-template content. */
-        $text_blocks = preg_split("~{$ldq}.*?{$rdq}~s", $source_content);
+        /* preg_split content by template tags to obtain non-template content. */
+        $text_blocks = preg_preg_split("~{$ldq}.*?{$rdq}~s", $source_content);
 
         /* loop through text blocks */
         for ($curr_tb = 0, $for_max = count($text_blocks); $curr_tb < $for_max; $curr_tb++) {
@@ -438,7 +438,7 @@ class Smarty_Compiler extends Smarty {
         if (substr($template_tag, 0, 1) == '*' && substr($template_tag, -1) == '*')
             return '';
         
-        /* Split tag into two three parts: command, command modifiers and the arguments. */
+        /* preg_split tag into two three parts: command, command modifiers and the arguments. */
         if(! preg_match('~^(?:(' . $this->_num_const_regexp . '|' . $this->_obj_call_regexp . '|' . $this->_var_regexp
                 . '|\/?' . $this->_reg_obj_regexp . '|\/?' . $this->_func_regexp . ')(' . $this->_mod_regexp . '*))
                       (?:\s+(.*))?$
@@ -1706,7 +1706,7 @@ class Smarty_Compiler extends Smarty {
     function _parse_var($var_expr)
     {
         $_has_math = false;
-        $_math_vars = preg_split('~('.$this->_dvar_math_regexp.'|'.$this->_qstr_regexp.')~', $var_expr, -1, PREG_SPLIT_DELIM_CAPTURE);
+        $_math_vars = preg_preg_split('~('.$this->_dvar_math_regexp.'|'.$this->_qstr_regexp.')~', $var_expr, -1, PREG_preg_split_DELIM_CAPTURE);
 
         if(count($_math_vars) > 1) {
             $_first_var = "";

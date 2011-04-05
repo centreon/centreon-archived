@@ -1617,7 +1617,7 @@ class Smarty
     function _parse_resource_name(&$params)
     {
 
-        // split tpl_path by the first colon
+        // preg_split tpl_path by the first colon
         $_resource_name_parts = explode(':', $params['resource_name'], 2);
 
         if (count($_resource_name_parts) == 1) {
@@ -1744,7 +1744,7 @@ class Smarty
         if(isset($auto_id)) {
             // make auto_id safe for directory names
             $auto_id = str_replace('%7C',$_compile_dir_sep,(urlencode($auto_id)));
-            // split into separate directories
+            // preg_split into separate directories
             $_return .= $auto_id . $_compile_dir_sep;
         }
 

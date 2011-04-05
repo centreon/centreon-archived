@@ -261,8 +261,8 @@
 function form2ctime(dpart, tpart) {
         // dpart : MM/DD/YYYY
         // tpart : HH:mm
-        var dparts = dpart.split("/");
-        var tparts = tpart.split(":");
+        var dparts = dpart.preg_split("/");
+        var tparts = tpart.preg_split(":");
         return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime();
 }
 
@@ -418,10 +418,10 @@ function nextPeriod() {
 			_tpl_id = document.formu2.template_select.value;
 		}
 
-		// Split metric
-		var _split = 0;
-		if (document.formu2 && document.formu2.split && document.formu2.split.checked)	{
-			_split = 1;
+		// preg_split metric
+		var _preg_split = 0;
+		if (document.formu2 && document.formu2.preg_split && document.formu2.preg_split.checked)	{
+			_preg_split = 1;
 		}
 
 		var _status = 0;
@@ -442,7 +442,7 @@ function nextPeriod() {
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&preg_split='+_preg_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
 
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);
@@ -535,7 +535,7 @@ function nextPeriod() {
         }
         var start = parseInt((img_url.start * 1000) + ((coords.x1 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
         var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
-        var id = img_name.split('__')[0];
+        var id = img_name.preg_split('__')[0];
         id = id.replace('HS_', 'SS_');
 
         document.FormPeriod.period.selectedIndex = 0;

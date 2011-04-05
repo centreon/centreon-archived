@@ -56,9 +56,9 @@
 	}
 
 	if (isset($_GET['textArea']) && $_GET['textArea']) {
-		$tab = split(";;;", $_GET['textArea']);
+		$tab = preg_split(";;;", $_GET['textArea']);
 		foreach ($tab as $key=>$value) {
-			$tab2 = split(" : ", $value, 2);
+			$tab2 = preg_split(" : ", $value, 2);
 			$index = str_replace("ARG", "", $tab2[0]);
 			if (isset($tab2[0]) && $tab2[0])
 				$args[$index] = $tab2[1];

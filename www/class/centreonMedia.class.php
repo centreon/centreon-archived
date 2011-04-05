@@ -75,7 +75,7 @@ class CentreonMedia
 	function getImageId($imagename, $dirname = null)
 	{
 		if (!isset($dirname)) {
-			$tab = split("/", $imagename);
+			$tab = preg_split("/", $imagename);
 			isset($tab[0]) ? $dirname = $tab[0] : $dirname = null;
 			isset($tab[1]) ? $imagename = $tab[1] : $imagename = null;
 		}

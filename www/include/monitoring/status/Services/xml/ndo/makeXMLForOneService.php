@@ -76,7 +76,7 @@
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = htmlentities($_GET["disable"]) : $disable = "disable";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 
-	$tmpTab = split("_", $svc_id);
+	$tmpTab = preg_split("_", $svc_id);
 	if (isset($tmpTab[1])) {
 	    $svc_id = $tmpTab[1];
 	}
@@ -209,7 +209,7 @@
 		 * Long Output
 		 */
 		$buffer->writeElement("long_name", _("Extended Status Information"), 0);
-       	$lo_array = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $ndo["long_output"]);
+       	$lo_array = preg_preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $ndo["long_output"]);
         foreach ($lo_array as $val) {
         	if ($val != "") {
 				$buffer->startElement("long_output_data");
@@ -218,7 +218,7 @@
 	        }
         }
 
-		$tab_perf = split(" ", $ndo["perfdata"]);
+		$tab_perf = preg_split(" ", $ndo["perfdata"]);
 		foreach ($tab_perf as $val) {
 			$buffer->startElement("performance_data");
 			$buffer->writeElement("perf_data", $val);

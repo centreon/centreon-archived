@@ -214,14 +214,14 @@
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
-				$t = split("\-", $ret[$i]);
+				$t = preg_split("\-", $ret[$i]);
 				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 				$DBRESULT = $pearDB->query($rq);
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
 		for ($i = 0; $i < count($ret); $i++)	{
-			$t = split("\-", $ret[$i]);
+			$t = preg_split("\-", $ret[$i]);
 			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
 			$DBRESULT = $pearDB->query($rq);
 		}

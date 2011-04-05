@@ -54,7 +54,7 @@
 	if (strstr($page, "http:"))
 		header("Location: $page");
 
-	$tab_pages = split("/", $page);
+	$tab_pages = preg_split("/", $page);
 	foreach ($tab_pages as $value)
 		$page = $value;
 

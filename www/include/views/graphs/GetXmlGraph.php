@@ -121,7 +121,7 @@
 
 	(isset($_GET["sid"]) 			&& !check_injection($_GET["sid"])) ? $sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8") : $sid = "-1";
 	(isset($_GET["template_id"]) 	&& !check_injection($_GET["template_id"])) ? $template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8") : $template_id = "1";
-	(isset($_GET["split"]) 			&& !check_injection($_GET["split"])) ? $split = htmlentities($_GET["split"], ENT_QUOTES, "UTF-8") : $split = "0";
+	(isset($_GET["preg_split"]) 			&& !check_injection($_GET["preg_split"])) ? $preg_split = htmlentities($_GET["preg_split"], ENT_QUOTES, "UTF-8") : $preg_split = "0";
 	(isset($_GET["status"]) 		&& !check_injection($_GET["status"])) ? $status = htmlentities($_GET["status"], ENT_QUOTES, "UTF-8") : $status = "0";
 	(isset($_GET["warning"]) 		&& !check_injection($_GET["warning"])) ? $warning = htmlentities($_GET["warning"], ENT_QUOTES, "UTF-8") : $warning = "0";
 	(isset($_GET["critical"]) 		&& !check_injection($_GET["critical"])) ? $critical = htmlentities($_GET["critical"], ENT_QUOTES, "UTF-8") : $critical = "0";
@@ -149,7 +149,7 @@
 		$flag_period = 0;
 	
 	if (!strncmp($openid, "SS_HS", 5)){
-		$tab = split("_", $openid);
+		$tab = preg_split("_", $openid);
 		$openid = "SS_".$tab[2]."_".$tab[3];
 		unset($tab);
 	}
@@ -199,7 +199,7 @@
 	$tab_id = array();
 	
 	if ($multi == 0){
-		$tab_tmp = split("_", $openid);
+		$tab_tmp = preg_split("_", $openid);
 		$type = $tab_tmp[0];
 		$id = "";
 		for ($i = 1; $i <= (count($tab_tmp) - 1); $i++)
@@ -207,10 +207,10 @@
 		array_push($tab_id, $type.$id);
 	} else {
 		$buffer->writeElement("opid", $openid);
-		$buffer->writeElement("splitvalue", $_GET["split"]);	
-		$tab_tmp = split(",", $openid);
+		$buffer->writeElement("preg_splitvalue", $_GET["preg_split"]);	
+		$tab_tmp = preg_split(",", $openid);
 		foreach ($tab_tmp as $openid) {
-			$tab_tmp = split("_", $openid);
+			$tab_tmp = preg_split("_", $openid);
 			if (isset($tab_tmp[1]))
 				$id = $tab_tmp[1];
 			$type = $tab_tmp[0];
@@ -246,7 +246,7 @@
 				
 				$services = getMyServiceGroupServices($id);
 				foreach ($services as $svc_id => $svc_name)	{ 
-					$tab_tmp = split("_", $svc_id);
+					$tab_tmp = preg_split("_", $svc_id);
 					if (service_has_graph($tab_tmp[0], $tab_tmp[1]) && (($is_admin) || (!$is_admin && isset($lca[$tab_tmp[0]]) && isset($lca[$tab_tmp[0]][$tab_tmp[1]]) ))) {
 						$oid = "HS_".$tab_tmp[1]."_".$tab_tmp[0];
 						array_push($tab_id, $oid);	
@@ -275,7 +275,7 @@
 
 	if (count($tab_tmp)){
 		foreach ($tab_tmp as $openid)	{
-			$tab = split("_", $openid);
+			$tab = preg_split("_", $openid);
 			if (isset($tab[2]) && $tab[2])
 				$tab_real_id[$tab[0] ."_". $tab[1]."_".$tab[2]] = $openid;
 			else if (isset($tab[1]) && $tab[1])
@@ -298,7 +298,7 @@
 
 	foreach ($tab_real_id as $key => $openid) {
 		$bad_value = 0;
-		$tab_tmp = split("_", $openid);
+		$tab_tmp = preg_split("_", $openid);
 		
 		if (isset($tab_tmp[2]) && $tab_tmp[2])
 			$id = $tab_tmp[1]."_".$tab_tmp[2];
@@ -324,14 +324,14 @@
 			$DBRESULT->free();
 
 			if ($type == "HS"){
-				$tab_tmp = split("_", $real_id);
+				$tab_tmp = preg_split("_", $real_id);
 				$DBRESULT2 = $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
 				$svc_id = $DBRESULT2->fetchRow();
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 				$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 				$GraphTemplate = $DBRESULT2->fetchRow();
-				if ($GraphTemplate["split_component"] == 1)
-					$split = 1;
+				if ($GraphTemplate["preg_split_component"] == 1)
+					$preg_split = 1;
 			}	
 			if ($type == "MS"){			
 				$other_services = array();
@@ -482,7 +482,7 @@
 
 			$buffer->writeElement("flagperiod", $flag_period);
 			$buffer->writeElement("opid", $openid);
-			$buffer->writeElement("split", $split);
+			$buffer->writeElement("preg_split", $preg_split);
 			$buffer->writeElement("status", $status);
 			$buffer->writeElement("warning", $warning);
 			$buffer->writeElement("critical", $critical);			
@@ -492,7 +492,7 @@
 				$buffer->writeElement("start", $start);
 				$buffer->writeElement("end", time());				
 		
-				if ($split) {
+				if ($preg_split) {
 					foreach ($metrics as $metric_id => $metric)	{
 						if ($active_force || isset($metrics_active[$metric_id]) && $metrics_active[$metric_id] == 1) {
 							$buffer->startElement("metric");
@@ -530,7 +530,7 @@
 			$elem = array();
 		
 			if ($type == "SS"){
-				$tab_tmp = split("_", $openid);
+				$tab_tmp = preg_split("_", $openid);
 				$DBRESULT2 = $pearDBO->query("SELECT id, service_id, service_description, host_name, special FROM index_data WHERE `trashed` = '0' AND special = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
 				$svc_id = $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
@@ -539,8 +539,8 @@
 				$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 				$GraphTemplate = $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
-				if ($GraphTemplate["split_component"] == 1 ) 
-					$split = 1;
+				if ($GraphTemplate["preg_split_component"] == 1 ) 
+					$preg_split = 1;
 			}	
 			if ($type == "SM"){
 				$other_services = array();
@@ -568,8 +568,8 @@
 	
 			$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 			$GraphTemplate = $DBRESULT2->fetchRow();
-			if (($GraphTemplate["split_component"] == 1 && !isset($_GET["split"])) || (isset($_GET["split"]) && $_GET["split"]["split"] == 1))
-				$split = 1;
+			if (($GraphTemplate["preg_split_component"] == 1 && !isset($_GET["preg_split"])) || (isset($_GET["preg_split"]) && $_GET["preg_split"]["preg_split"] == 1))
+				$preg_split = 1;
 		
 			/*
 			 * Real Metrics
@@ -669,7 +669,7 @@
 			$buffer->writeElement("start", $start);
 			$buffer->writeElement("end", $end);
 			$buffer->writeElement("index", $index_id);
-			$buffer->writeElement("split", $split);
+			$buffer->writeElement("preg_split", $preg_split);
 			$buffer->writeElement("critical", $critical);
 			$buffer->writeElement("warning", $warning);
 			$buffer->writeElement("status", $status);
@@ -677,7 +677,7 @@
 			$buffer->writeElement("multi", $multi);
 						
 			if (!$multi){
-				if ($split == 0){
+				if ($preg_split == 0){
 					$buffer->startElement("metricsTab");
 					$flag = 0;
 					$str = "";
@@ -738,7 +738,7 @@
 	$buffer->startElement("lang");
 	$buffer->writeElement("giv_gg_tpl", _("Template"), 0);
 	$buffer->writeElement("advanced", _("Options"), 0);
-	$buffer->writeElement("giv_split_component", _("Split Components"), 0);
+	$buffer->writeElement("giv_preg_split_component", _("preg_split Components"), 0);
 	$buffer->writeElement("status", _("Display Status"), 0);
 	$buffer->writeElement("warning", _("Warning"), 0);
 	$buffer->writeElement("critical", _("Critical"), 0);

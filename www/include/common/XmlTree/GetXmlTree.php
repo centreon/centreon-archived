@@ -138,7 +138,7 @@
 			 */
 			$data = getMyServiceGroupActivateServices($id);
 			foreach ($data as $key => $value){
-				$tab_value = split("_", $key);
+				$tab_value = preg_split("_", $key);
 				$host_name = getMyHostName($tab_value[0]);
 				$service_description = getMyServiceName($tab_value[1], $tab_value[0]);
 				$buffer->startElement("item");
@@ -154,7 +154,7 @@
 			/*
 			 * get services for host
 			 */
-			$tab_id = split('_', $id);
+			$tab_id = preg_split('_', $id);
 			$id = $tab_id[0];
 			$services = getMyHostActiveServices($id);
 			foreach ($services as $svc_id => $svc_name) {
@@ -347,14 +347,14 @@
 		$buffer->startElement("tree");
 		$buffer->writeAttribute("id", "1");		
 		
-		$tab_id = split(",",$url_var);
+		$tab_id = preg_split(",",$url_var);
 		foreach ($tab_id as $openid) {
 			$type = substr($openid, 0, 2);
 			$id = substr($openid, 3, strlen($openid));
 	
 			$buffer->writeElement("id", $id);			
 	
-			$id_full = split('_', $id);
+			$id_full = preg_split('_', $id);
 			$id = $id_full[0];
 			
 			if ($type == "HH") {
@@ -457,7 +457,7 @@
 						 */
 						if($host_open){
 							$services = getMyHostServices($host_id);
-							foreach($services as $svc_id => $svc_name)	{//$tab_id = split(",",$openid);
+							foreach($services as $svc_id => $svc_name)	{//$tab_id = preg_split(",",$openid);
 					           	$buffer->startElement("item");					    		
 					    		if (isset($svcs_selected[$svc_id]))
 					    			$buffer->writeAttribute("checked", "1");

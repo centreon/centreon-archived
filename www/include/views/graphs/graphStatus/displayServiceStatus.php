@@ -36,7 +36,7 @@
  *
  */
 	function escape_command($command) {
-		return ereg_replace("(\\\$|`)", "", $command);
+		return preg_replace("/(\\\$|`)/", "", $command);
 	}
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";

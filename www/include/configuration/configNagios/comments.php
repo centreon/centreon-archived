@@ -41,7 +41,7 @@ $nagios_comment = array();
 $nagios_comment["log_file"] = "This is the main log file where service and host events are logged for historical purposes.  This should be the first option specified in the config file!!!";
 
 $nagios_comment["cfg_file"]=" This is the configuration file in which you define hosts, host groups, contacts, contact groups, services, etc.  I guess it would "
- . "be better called an object definition file, but for historical reasons it isn\'t.  You can split object definitions into several "
+ . "be better called an object definition file, but for historical reasons it isn\'t.  You can preg_split object definitions into several "
  . "different config files by using multiple cfg_file statements here. Nagios will read and process all the config files you define. "
  . "This can be very useful if you want to keep command definitions  separate from host and contact definitions... "
  . "Plugin commands (service and host check commands) Arguments are likely to change between different releases of the "

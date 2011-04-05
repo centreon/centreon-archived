@@ -143,7 +143,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
   <tr>
 		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
     	<td align="right"><?php
-    		$tab_path = split(":", get_include_path());
+    		$tab_path = preg_split(":", get_include_path());
     		$ok = 0;
     		foreach ($tab_path as $path){
     			if (file_exists($path. '/PEAR.php')){

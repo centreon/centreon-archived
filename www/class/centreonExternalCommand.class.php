@@ -290,7 +290,7 @@ class CentreonExternalCommand {
  	 */
  	public function DeleteDowntime($type, $hosts = array()){
 		foreach ($hosts as $key => $value) {
-			$res = split(";", $key);
+			$res = preg_split(";", $key);
 			$poller_id = $this->getPollerID($res[0]);
 			$this->set_process_command("DEL_".$type."_DOWNTIME;".$res[1], $poller_id);
 		}
@@ -303,9 +303,9 @@ class CentreonExternalCommand {
 	 * @param string $string
 	 */
 	private function getDate($string) {
-		$res = preg_split("/ /", $string);
-		$res3 = preg_split("/\//", $res[0]);
-		$res4 = preg_split("/:/", $res[1]);
+		$res = preg_preg_split("/ /", $string);
+		$res3 = preg_preg_split("/\//", $res[0]);
+		$res4 = preg_preg_split("/:/", $res[1]);
 		$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
 		unset($res);
 		return $end_time;

@@ -53,7 +53,7 @@ aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 5);
 	$msg = NULL;  
 	$alldeps = NULL;
 	
-	$tab_path = split(":", get_include_path());
+	$tab_path = preg_split(":", get_include_path());
 	
 	foreach ($pear_module as $module) {	?>
    <tr>

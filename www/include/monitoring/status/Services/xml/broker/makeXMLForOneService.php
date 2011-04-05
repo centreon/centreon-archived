@@ -82,7 +82,7 @@
 	$disable 		= $obj->checkArgument("disable", $_GET, "disable");
 	$dateFormat		= $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 
-	$tab = split('_', $svc_id);
+	$tab = preg_split('_', $svc_id);
 	$host_id = $tab[0];
 	$service_id = $tab[1];
 
@@ -174,7 +174,7 @@
 		 */
 		/*
 		$obj->XML->writeElement("long_name", _("Extended Status Information"), 0);
-       	$lo_array = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $data["long_output"]);
+       	$lo_array = preg_preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $data["long_output"]);
         foreach ($lo_array as $val) {
         	if ($val != "") {
 				$obj->XML->startElement("long_output_data");
@@ -184,7 +184,7 @@
         }
         */
 
-		$tab_perf = split(" ", $data["perfdata"]);
+		$tab_perf = preg_split(" ", $data["perfdata"]);
 		foreach ($tab_perf as $val) {
 			$obj->XML->startElement("performance_data");
 			$obj->XML->writeElement("perf_data", $val);

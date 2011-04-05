@@ -69,7 +69,7 @@
 
 		if ($actions == true || $is_admin) {
 			$tab_forced = array("0" => "", "1" => "_FORCED");
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" SCHEDULE".$tab_forced[$forced]."_SVC_CHECK;". urldecode($tab_data[0]) . ";" . urldecode($tab_data[1]) . ";" . time(), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
 			return $flg;
 		}
@@ -146,7 +146,7 @@
 		$actions = $oreon->user->access->checkAction("service_checks");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_SVC_CHECK;". urldecode($tab_data["0"]) .";".urldecode($tab_data["1"]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
 			return $flg;
 		}
@@ -162,7 +162,7 @@
 		$actions = $oreon->user->access->checkAction("service_passive_checks");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_PASSIVE_SVC_CHECKS;". urldecode($tab_data[0]) . ";". urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
 			return $flg;
 		}
@@ -178,7 +178,7 @@
 		$actions = $oreon->user->access->checkAction("service_notifications");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_SVC_NOTIFICATIONS;". urldecode($tab_data[0]) . ";". urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
 			return $flg;
 		}
@@ -194,7 +194,7 @@
 		$actions = $oreon->user->access->checkAction("service_event_handler");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_SVC_EVENT_HANDLER;". urldecode($tab_data[0]) .";".urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data["0"])));
 			return $flg;
 		}
@@ -210,7 +210,7 @@
 		$actions = $oreon->user->access->checkAction("host_event_handler");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_HOST_EVENT_HANDLER;". urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
 			return $flg;
 		}
@@ -226,7 +226,7 @@
 		$actions = $oreon->user->access->checkAction("service_flap_detection");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_SVC_FLAP_DETECTION;". urldecode($tab_data[0]) .";".urldecode($tab_data[1]), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
 			return $flg;
 		}
@@ -242,7 +242,7 @@
 		$actions = $oreon->user->access->checkAction("host_flap_detection");
 
 		if ($actions == true || $is_admin) {
-			$tab_data = split(";", $arg);
+			$tab_data = preg_split(";", $arg);
 			$flg = send_cmd(" " . $tab[$type] . "_HOST_FLAP_DETECTION;". urldecode($arg), GetMyHostPoller($pearDB, urldecode($arg)));
 			return $flg;
 		}
@@ -254,7 +254,7 @@
 	 */
 	function notifi_host_hostgroup($arg, $type){
 		global $pearDB, $tab, $is_admin;
-		$tab_data = split(";", $arg);
+		$tab_data = preg_split(";", $arg);
 		$flg = send_cmd(" " . $tab[$type] . "_HOST_NOTIFICATIONS;". urldecode($tab_data[0]), GetMyHostPoller($pearDB, urldecode($tab_data[0])));
 		return $flg;
 	}
@@ -406,7 +406,7 @@
 
 		if ($actions == true || $is_admin) {
 			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;".urldecode($ressource[0]).";".urldecode($ressource[1]).";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -419,7 +419,7 @@
 
 		if ($actions == true || $is_admin) {
 			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;".urldecode($ressource[0]).";".urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -436,7 +436,7 @@
 
 		if ($actions == true || $is_admin) {
 			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" ACKNOWLEDGE_HOST_PROBLEM;".urldecode($ressource[0]).";1;1;1;".$oreon->user->alias.";".$comment, GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -449,7 +449,7 @@
 
 		if ($actions == true || $is_admin) {
 			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;".urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -465,7 +465,7 @@
 		$actions = $oreon->user->access->checkAction("host_notifications");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" ENABLE_SVC_NOTIFICATIONS;".urldecode($ressource[0]).";".urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -477,7 +477,7 @@
 		$actions = $oreon->user->access->checkAction("service_notifications");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" DISABLE_SVC_NOTIFICATIONS;".urldecode($ressource[0]).";".urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -493,7 +493,7 @@
 		$actions = $oreon->user->access->checkAction("host_notifications");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" ENABLE_HOST_NOTIFICATIONS;".urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -505,7 +505,7 @@
 		$actions = $oreon->user->access->checkAction("host_notifications");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" DISABLE_HOST_NOTIFICATIONS;".urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -521,7 +521,7 @@
 		$actions = $oreon->user->access->checkAction("service_checks");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" ENABLE_SVC_CHECK;".urldecode($ressource[0]).";".urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -533,7 +533,7 @@
 		$actions = $oreon->user->access->checkAction("service_checks");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" DISABLE_SVC_CHECK;".urldecode($ressource[0]).";".urldecode($ressource[1]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -549,7 +549,7 @@
 		$actions = $oreon->user->access->checkAction("host_checks");
 
 		if ($actions == true || $is_admin) {
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" ENABLE_HOST_CHECK;".urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}
@@ -563,7 +563,7 @@
 
 		if ($actions == true || $is_admin) {
 			global $pearDB,$tab, $is_admin;
-			$ressource = split(";", $key);
+			$ressource = preg_split(";", $key);
 			$flg = send_cmd(" DISABLE_HOST_CHECK;".urldecode($ressource[0]), GetMyHostPoller($pearDB, urldecode($ressource[0])));
 			return $flg;
 		}

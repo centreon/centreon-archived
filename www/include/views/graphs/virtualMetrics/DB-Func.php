@@ -264,7 +264,7 @@
 		if ( $l_pqy->numRows() == 1 ) {
 			$p_vmetric = $l_pqy->fetchRow();
 			$l_pqy->free();
-			$l_mlist = split(",",$p_vmetric["rpn_function"]);
+			$l_mlist = preg_split(",",$p_vmetric["rpn_function"]);
 			foreach ( $l_mlist as $l_mnane ){
 				$lv_ena = enableVirtualMetric(NULL, $l_mnane, $p_vmetric["index_id"]);
 				if ( is_array($lv_ena))

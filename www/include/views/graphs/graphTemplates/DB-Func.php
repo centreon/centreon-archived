@@ -121,7 +121,7 @@
 			noDefaultOreonGraph();
 		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
 				"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
-				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `split_component` , `scaled`, " .
+				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `preg_split_component` , `scaled`, " .
 				"`stacked` , `comment` ) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
@@ -142,7 +142,7 @@
 		isset($ret["col_top"]) && $ret["col_top"] != NULL ? $rq .= "'".htmlentities($ret["col_top"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-		isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
+		isset($ret["preg_split_component"]) && $ret["preg_split_component"] != NULL ? $rq .= "'".$ret["preg_split_component"]."', ": $rq .= "NULL, ";
 		isset($ret["scaled"]) && $ret["scaled"] != NULL ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
 		isset($ret["stacked"]) && $ret["stacked"] != NULL ? $rq .= "'".htmlentities($ret["stacked"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
@@ -196,8 +196,8 @@
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-		$rq .= "split_component = ";
-		isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
+		$rq .= "preg_split_component = ";
+		isset($ret["preg_split_component"]) && $ret["preg_split_component"] != NULL ? $rq .= "'".$ret["preg_split_component"]."', ": $rq .= "NULL, ";
 		$rq .= "scaled = ";
  	    isset($ret["scaled"]) && $ret["scaled"] != NULL ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
 		$rq .= "stacked = ";

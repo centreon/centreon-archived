@@ -46,7 +46,7 @@
 		$version = htmlentities($_GET["version"], ENT_QUOTES, "UTF-8");
 	}
 
-	$tab_images = split("/", $img);
+	$tab_images = preg_split("/", $img);
 	foreach ($tab_images as $value)
 		$image = $value;
 	

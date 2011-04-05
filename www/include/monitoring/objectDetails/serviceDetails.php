@@ -71,7 +71,7 @@
 		$svc_description = $_GET["service_description"];
 	} else {
 		foreach ($_GET["select"] as $key => $value) {
-			$tab_data = split(";", $key);
+			$tab_data = preg_split(";", $key);
 		}
 		$host_name = $tab_data[0];
 		$svc_description = $tab_data[1];

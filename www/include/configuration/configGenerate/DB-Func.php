@@ -110,7 +110,7 @@
 
 	function ComputeGMTTime($day, $daybefore, $dayafter, $gmt, $conf) {
 		global $PeriodBefore, $PeriodAfter, $Period;
-		$tabPeriod = split(",", $conf);
+		$tabPeriod = preg_split(",", $conf);
 		foreach ($tabPeriod as $period) {
 			/*
 			 * Match hours

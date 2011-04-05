@@ -56,7 +56,7 @@
 		$cmd = str_replace("'", "&#39;", $cmd);
 		
 		$cmd = str_replace("\n", "<br>", $cmd);
-		$informations = split(";", $key);
+		$informations = preg_split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller)) {
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
 		} else if (isHostLocalhost($pearDB, $informations[0])) {
@@ -81,7 +81,7 @@
 		$cmd = str_replace("'", "&#39;", $cmd);
 
 		$cmd = str_replace("\n", "<br>", $cmd);
-		$informations = split(";", $key);
+		$informations = preg_split(";", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller)) {
 			$str = "[" . time() . "]" . $cmd . "\n";
 			$destination = $oreon->Nagioscfg["command_file"];

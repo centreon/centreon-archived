@@ -45,7 +45,7 @@
  	$error_msg = "";
 	$command = $_GET["command_line"];
 	$example = $_GET["command_example"];		
-	$args = split("!", $example);
+	$args = preg_split("!", $example);
 	
 	for ($i = 0; $i < count($args); $i++)
 	    $args[$i] = escapeshellarg ($args[$i]);
@@ -104,8 +104,8 @@
 	} else {
 		$command = $resource_def;
 		$command = str_replace('@DOLLAR@', '$', $command);
-		$splitter = split(";", $command);
-		$command = $splitter[0];
+		$preg_splitter = preg_split(";", $command);
+		$command = $preg_splitter[0];
 		$stdout = array();
 		unset($stdout);
 		

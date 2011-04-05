@@ -67,11 +67,13 @@ class CentreonSession
 	}
 
 	function unregister_var($register_var) {
-		session_unregister($register_var);
+		unset($_SESSION[$register_var]);
 	}
 
 	function register_var($register_var) {
-		session_register($register_var);
+		if (!isset($_SESSION[$register_var])) {
+            $_SESSION[$register_var] = $$register_var;
+		}
 	}
 
 	function checkSession($session_id, $pearDB) {
