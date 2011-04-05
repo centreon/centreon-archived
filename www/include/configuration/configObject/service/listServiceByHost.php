@@ -84,7 +84,7 @@
 	 */
 	$tplService = array();
 	$templateFilter = "<option value='0'></option>";
-	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_alias FROM service WHERE service_register = '0' ORDER BY service_description");
+	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_alias FROM service WHERE service_register = '0' AND service_activate = '1' ORDER BY service_description");
 	while ($tpl = $DBRESULT->fetchRow()) {
 		$tplService[$tpl["service_id"]] = $tpl["service_alias"];
 		$templateFilter .= "<option value='".$tpl["service_id"]."'".(($tpl["service_id"] == $template) ? " selected" : "").">".$tpl["service_description"]."</option>";
