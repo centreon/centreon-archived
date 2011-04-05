@@ -151,9 +151,9 @@
 	 */
 	if (isset($_POST["svc_id"])) {
 		$id = "";
-	    $services = preg_split(",", $_POST["svc_id"]);
+	    $services = preg_split("/\,/", $_POST["svc_id"]);
 		foreach ($services as $str) {
-			$buf_svc = preg_split(";", $str);
+			$buf_svc = preg_split("/\;/", $str);
 			$id .= "HS_" . getMyServiceID($buf_svc[1], getMyHostID($buf_svc[0])).",";
 		}
 	}
