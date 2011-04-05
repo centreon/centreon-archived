@@ -116,7 +116,7 @@
  	public function checkIllegalChar($host_name, $poller_id = null) {
  		$DBRESULT = $this->DB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
 		while ($data = $DBRESULT->fetchRow()) {
-			$tab = str_preg_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
+			$tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
 			foreach ($tab as $char) {
 				$host_name = str_replace($char, "", $host_name);
 			}

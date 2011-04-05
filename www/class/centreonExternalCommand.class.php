@@ -290,7 +290,7 @@ class CentreonExternalCommand {
  	 */
  	public function DeleteDowntime($type, $hosts = array()){
 		foreach ($hosts as $key => $value) {
-			$res = preg_split(";", $key);
+			$res = preg_split("/\;/", $key);
 			$poller_id = $this->getPollerID($res[0]);
 			$this->set_process_command("DEL_".$type."_DOWNTIME;".$res[1], $poller_id);
 		}

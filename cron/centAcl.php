@@ -587,7 +587,7 @@
     					if ($str != "") {
     						$str .= ', ';
     					}
-    					$id_tmp = preg_split(",", $t);
+    					$id_tmp = preg_split("/\,/", $t);
     					$str .= "('".$host."', '".addslashes($desc)."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
     					$i++;
     					if ($i >= 1000) {

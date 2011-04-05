@@ -710,7 +710,7 @@ class CentreonGraph	{
 				/*
 				 * Graph is based on a module check point
 				 */
-				$tab = preg_split("_", $this->indexData["service_description"]);
+				$tab = preg_split("/\_/", $this->indexData["service_description"]);
 				$DBRESULT = $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
 				$tempRes = $DBRESULT->fetchRow();
 				$DBRESULT->free();
@@ -1063,7 +1063,7 @@ class CentreonGraph	{
                                 $l_indd = $l_poqy->fetchRow();
                                 $l_poqy->free();
                                 /* Check for real or virtual metric(s) in the RPN function */
-                                $l_mlist = preg_split(",",$l_vmetric["rpn_function"]);
+                                $l_mlist = preg_split("/\,/", $l_vmetric["rpn_function"]);
                                 foreach ( $l_mlist as $l_mnane ) {
                                         /* Check for a real metric */
                                         $l_poqy = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data as i WHERE index_id = id AND index_id = '".$l_vmetric["index_id"]."' AND metric_name = '".$l_mnane."'");

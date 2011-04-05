@@ -113,7 +113,7 @@
 					$ret2 = get_child($ret['topology_page'], $centreon->user->access->topologyStr);
 					if ($ret2["topology_url_opt"])	{
 						if (!$o) {
-							$tab = preg_split("\=", $ret2["topology_url_opt"]);
+							$tab = preg_split("/\=/", $ret2["topology_url_opt"]);
 							$o = $tab[1];
 						}
 						$p = $ret2["topology_page"];
@@ -122,7 +122,7 @@
 						$url = $ret2["topology_url"];
 						reset_search_page($url);
 						if ($ret2["topology_url_opt"]){
-							$tab = preg_split("\=", $ret2["topology_url_opt"]);
+							$tab = preg_split("/\=/", $ret2["topology_url_opt"]);
 							$o = $tab[1];
 						}
 					} else {
@@ -141,7 +141,7 @@
 				} else {
 					if ($ret["topology_url_opt"]){
 						if (!$o) {
-							$tab = preg_split("\=", $ret["topology_url_opt"]);
+							$tab = preg_split("/\=/", $ret["topology_url_opt"]);
 							$o = $tab[1];
 						}
 						$p = $ret["topology_page"];

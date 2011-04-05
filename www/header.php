@@ -126,7 +126,7 @@
 			$p = NULL;
 		}
 		if (isset($root_menu["topology_url_opt"])) {
-			$tab = preg_split("\=", $root_menu["topology_url_opt"]);
+			$tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
 			if (isset($tab[1])) {
 				$o = $tab[1];
 			}
