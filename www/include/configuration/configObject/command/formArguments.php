@@ -34,8 +34,8 @@
  */
 
     require_once("@CENTREON_ETC@/centreon.conf.php");
-	//require_once("/etc/centreon/centreon.conf.php");
-	require_once($centreon_path . "/www/class/centreonSession.class.php");
+
+    require_once($centreon_path . "/www/class/centreonSession.class.php");
 	require_once($centreon_path . "/www/class/centreon.class.php");
 
 	session_start();

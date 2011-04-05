@@ -39,7 +39,7 @@
 	/**
 	 * Require configuration.
 	 */
-	include_once "/etc/centreon/centreon.conf.php";
+	include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	/**
 	 * Require Sepecific XML / Ajax Class
