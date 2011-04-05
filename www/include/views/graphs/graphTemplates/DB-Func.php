@@ -3,39 +3,39 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
  	if (!isset($oreon))
 		exit();
 
@@ -48,7 +48,7 @@
 		$res = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template WHERE name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$graph = $res->fetchRow();
 		#Modif case
-		if ($res->numRows() >= 1 && $graph["graph_id"] == $id)	
+		if ($res->numRows() >= 1 && $graph["graph_id"] == $id)
 			return true;
 		#Duplicate entry
 		else if ($res->numRows() >= 1 && $graph["graph_id"] != $id)
@@ -56,14 +56,14 @@
 		else
 			return true;
 	}
-	
+
 	function deleteGraphTemplateInDB ($graphs = array())	{
 		global $pearDB;
 		foreach($graphs as $key=>$value)
 			$pearDB->query("DELETE FROM giv_graphs_template WHERE graph_id = '".$key."'");
 		defaultOreonGraph();
 	}
-	
+
 	function multipleGraphTemplateInDB ($graphs = array(), $nbrDup = array())	{
 		foreach($graphs as $key=>$value)	{
 			global $pearDB;
@@ -84,7 +84,7 @@
 			}
 		}
 	}
-	
+
 	function defaultOreonGraph ()	{
 		global $pearDB;
 		$rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'";
@@ -94,24 +94,24 @@
 			$pearDB->query($rq);
 		}
 	}
-	
+
 	function noDefaultOreonGraph ()	{
 		global $pearDB;
 		$rq = "UPDATE giv_graphs_template SET default_tpl1 = '0'";
 		$pearDB->query($rq);
 	}
-	
-	
+
+
 	function updateGraphTemplateInDB ($graph_id = NULL)	{
 		if (!$graph_id) return;
 		updateGraphTemplate($graph_id);
-	}	
-	
+	}
+
 	function insertGraphTemplateInDB ()	{
 		$graph_id = insertGraphTemplate();
 		return ($graph_id);
 	}
-	
+
 	function insertGraphTemplate()	{
 		global $form;
 		global $pearDB;
@@ -121,7 +121,7 @@
 			noDefaultOreonGraph();
 		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
 				"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
-				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `preg_split_component` , `scaled`, " .
+				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `split_component` , `scaled`, " .
 				"`stacked` , `comment` ) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
@@ -142,7 +142,7 @@
 		isset($ret["col_top"]) && $ret["col_top"] != NULL ? $rq .= "'".htmlentities($ret["col_top"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-		isset($ret["preg_split_component"]) && $ret["preg_split_component"] != NULL ? $rq .= "'".$ret["preg_split_component"]."', ": $rq .= "NULL, ";
+		isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
 		isset($ret["scaled"]) && $ret["scaled"] != NULL ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
 		isset($ret["stacked"]) && $ret["stacked"] != NULL ? $rq .= "'".htmlentities($ret["stacked"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
@@ -153,7 +153,7 @@
 		$graph_id = $res->fetchRow();
 		return ($graph_id["MAX(graph_id)"]);
 	}
-	
+
 	function updateGraphTemplate($graph_id = null)	{
 		if (!$graph_id) return;
 		global $form, $pearDB;
@@ -196,8 +196,8 @@
 		isset($ret["col_bot"]) && $ret["col_bot"] != NULL ? $rq .= "'".htmlentities($ret["col_bot"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "default_tpl1 = ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
-		$rq .= "preg_split_component = ";
-		isset($ret["preg_split_component"]) && $ret["preg_split_component"] != NULL ? $rq .= "'".$ret["preg_split_component"]."', ": $rq .= "NULL, ";
+		$rq .= "split_component = ";
+		isset($ret["split_component"]) && $ret["split_component"] != NULL ? $rq .= "'".$ret["split_component"]."', ": $rq .= "NULL, ";
 		$rq .= "scaled = ";
  	    isset($ret["scaled"]) && $ret["scaled"] != NULL ? $rq .= "'".$ret["scaled"]."', ": $rq .= "'0', ";
 		$rq .= "stacked = ";
@@ -207,5 +207,5 @@
 		$rq .= "WHERE graph_id = '".$graph_id."'";
 		$pearDB->query($rq);
 		defaultOreonGraph();
-	}	
+	}
 ?>

@@ -40,7 +40,7 @@
 	 * Include config file
 	 */
     include_once "@CENTREON_ETC@/centreon.conf.php";
-	
+
 	/*
 	 * Include Dependancies
 	 */
@@ -63,8 +63,8 @@
 	if ($objBroker->getBroker() == "ndo") {
 		$pearDBndo 	= new CentreonDB("ndo");
 	}
-	
-	
+
+
 	/*
 	 * PHP functions
 	 */
@@ -105,7 +105,7 @@
 	} else {
 		exit();
 	}
-		
+
 	$normal_mode = 1;
 
 	/**
@@ -242,7 +242,7 @@
 			 */
 			$data = getMyServiceGroupActivateServices($id);
 			foreach ($data as $key => $value){
-				$tab_value = preg_split("_", $key);
+				$tab_value = preg_split("/\_/", $key);
 				$host_name = $hostCache[$tab_value[0]];
 				$service_description = $serviceCache[$tab_value[1]];
 				if (checkIfServiceSgIsEn($tab_value[0], $tab_value[1])) {
@@ -260,7 +260,7 @@
 			/**
 			 * get services for host
 			 */
-			$tab_value = preg_split("_", $id);
+			$tab_value = preg_split("/\_/", $id);
 			$id = $tab_value[0];
 			$services = getMyHostActiveServices($id, $search_service);
 			$graphList = getMyHostGraphs($id);
@@ -497,14 +497,14 @@
 		$buffer->startElement("tree");
 		$buffer->writeAttribute("id", "1");
 
-		$tab_id = preg_split(",",$url_var);
+		$tab_id = preg_split("/\,/",$url_var);
 		foreach ($tab_id as $openid) {
 			$type = substr($openid, 0, 2);
 			$id = substr($openid, 3, strlen($openid));
 
 			$buffer->writeElement("id", $id);
 
-			$id_full = preg_split('_', $id);
+			$id_full = preg_split('/\_/', $id);
 			$id = $id_full[0];
 			$buffer->startElement("idfull");
 			$buffer->endElement();

@@ -152,7 +152,7 @@
 
 
 	$form->addElement('checkbox', 'stacked', _("Stacking"));
-	$form->addElement('checkbox', 'preg_split_component', _("preg_split Components"));
+	$form->addElement('checkbox', 'split_component', _("Split Components"));
 	$form->addElement('checkbox', 'scaled', _("Scale Graph Values"));
 	$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));

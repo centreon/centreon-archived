@@ -68,12 +68,12 @@
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Description"));
-	$tpl->assign("headerMenu_preg_split_component", _("preg_split Components"));
+	$tpl->assign("headerMenu_split_component", _("Split Components"));
 	$tpl->assign("headerMenu_base", _("Base"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
 	#List
-	$rq = "SELECT graph_id, name, default_tpl1, vertical_label, base, preg_split_component FROM giv_graphs_template gg $SearchTool ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT graph_id, name, default_tpl1, vertical_label, base, split_component FROM giv_graphs_template gg $SearchTool ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$res = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -94,7 +94,7 @@
 						"RowMenu_link"=>"?p=".$p."&o=c&graph_id=".$graph['graph_id'],
 						"RowMenu_desc"=>$graph["vertical_label"],
 						"RowMenu_base"=>$graph["base"],
-						"RowMenu_preg_split_component"=>$graph["preg_split_component"] ? _("Yes") : _("No"),
+						"RowMenu_split_component"=>$graph["split_component"] ? _("Yes") : _("No"),
 						"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
