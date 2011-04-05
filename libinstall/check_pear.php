@@ -3,8 +3,8 @@
 /*
  * Centreon is developped with GPL Licence 2.0 :
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
- * Developped by : Julien Mathis - Romain Le Merlus 
- * 
+ * Developped by : Julien Mathis - Romain Le Merlus
+ *
  * The Software is provided to you AS IS and WITH ALL FAULTS.
  * Centreon makes no representation and gives no warranty whatsoever,
  * whether express or implied, and without limitation, with regard to the quality,
@@ -12,7 +12,7 @@
  * In no event will Centreon be liable for any direct, indirect, punitive, special,
  * incidental or consequential damages however they may arise and even if Centreon has
  * been previously advised of the possibility of such damages.
- * 
+ *
  * For information : contact@centreon.com
  *
  * Developper: Maximilien Bersoult
@@ -21,8 +21,8 @@
 
 /*
  * Error Level
- */ 
-error_reporting(E_ERROR | E_PARSE); 
+ */
+error_reporting(E_ERROR | E_PARSE);
 
 function usage() {
 	print $argv[0] . " check|install [file]\n";
@@ -46,7 +46,7 @@ function get_list($file) {
 	$packages = array();
 	$fd = fopen($file, 'r');
 	while ($line = fgets($fd)) {
-		list($name, $version, $status) = preg_split('::', trim($line));
+		list($name, $version, $status) = preg_split('/::/', trim($line));
 		$package = array('name' => $name, 'version' => $version);
 		if ($status) {
 			$package['status'] = $status;
@@ -122,13 +122,13 @@ function upgrade($packages) {
 		if (is_null($package_info)) {
 			continue;
 		}
-		
+
 		if ($package['name'] == "PEAR") {
         	ob_start();
             $ok = $cmd->run('install', array('soft' => true, 'nodeps' => true, 'force' => true), array($package['name']));
         	ob_end_clean();
         }
-		
+
 		$installed_version = $package_info->getVersion();
 		if (version_compare($package['version'], $installed_version, '>')) {
 			echo "\033[s" . $package['name'] . "\033[0m\033[33G" . $package['version'] . "\033[0m\033[45G" . $installed_version . "\t";
