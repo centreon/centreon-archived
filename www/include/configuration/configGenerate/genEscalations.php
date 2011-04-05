@@ -327,7 +327,7 @@
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]])) {
 					$services = getMyServiceGroupActivateServices($sg["sg_id"]);
 					foreach ($services as $key => $desc){
-						$tmptab = preg_split("_", $key);
+						$tmptab = preg_split("/\_/", $key);
 						$host_location = getMyHostFieldOnHost($tmptab[0], "host_location");
 						if (!isset($hosts[$host_location]))
 							$hosts[$host_location] = array();
@@ -347,7 +347,7 @@
 				foreach ($value as $host){
 					if (isset($host) && count($host))
 						foreach ($host as $ids => $escalation) {
-							$tabHS = preg_split("_", $ids);
+							$tabHS = preg_split("/\_/", $ids);
 							if (isset($host_instance[$tabHS[0]]) && isset($hostGenerated[$host_id])) {
 								$host = array();
 								$strDef = "";

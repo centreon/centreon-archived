@@ -247,9 +247,9 @@
 		$pearDB->query("DELETE FROM `command_arg_description` WHERE cmd_id = '".$cmd_id."'");
 		$query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) VALUES ";
 		if (isset($ret['listOfArg']) && $ret['listOfArg']) {
-			$tab1 = preg_split("\n", $ret['listOfArg']);
+			$tab1 = preg_split("/\\n/", $ret['listOfArg']);
 			foreach ($tab1 as $key => $value) {
-				$tab2 = preg_split(" : ", $value, 2);
+				$tab2 = preg_split("/\ \:\ /", $value, 2);
 				$query .= "('" . $pearDB->escape($cmd_id) . "', '" . $pearDB->escape($tab2[0]) . "', '" .$pearDB->escape($tab2[1]). "'),";
 			}
 			$query = trim($query, ",");

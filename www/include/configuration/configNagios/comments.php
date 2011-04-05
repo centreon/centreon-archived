@@ -3,37 +3,37 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 $nagios_comment = array();
@@ -41,7 +41,7 @@ $nagios_comment = array();
 $nagios_comment["log_file"] = "This is the main log file where service and host events are logged for historical purposes.  This should be the first option specified in the config file!!!";
 
 $nagios_comment["cfg_file"]=" This is the configuration file in which you define hosts, host groups, contacts, contact groups, services, etc.  I guess it would "
- . "be better called an object definition file, but for historical reasons it isn\'t.  You can preg_split object definitions into several "
+ . "be better called an object definition file, but for historical reasons it isn\'t.  You can split object definitions into several "
  . "different config files by using multiple cfg_file statements here. Nagios will read and process all the config files you define. "
  . "This can be very useful if you want to keep command definitions  separate from host and contact definitions... "
  . "Plugin commands (service and host check commands) Arguments are likely to change between different releases of the "
@@ -51,17 +51,17 @@ $nagios_comment["status_file"]="This is where the current status of all monitore
  . "hosts is stored.  Its contents are read and processed by the CGIs. "
  . "The contentsof the status file are deleted every time Nagios "
  . "restarts. ";
- 
+
 $nagios_comment["object_cache_file"] = "This directive is used to specify a file in which a cached copy of object definitions should be stored."
 . "The cache file is (re)created every time Nagios is (re)started and is used by the CGIs."
-. "It is intended to speed up config file caching in the CGIs and allow you to edit the source object config files while Nagios is running without affecting the output displayed in the CGIs."; 
+. "It is intended to speed up config file caching in the CGIs and allow you to edit the source object config files while Nagios is running without affecting the output displayed in the CGIs.";
 
 $nagios_comment["nagios_user"]=" NAGIOS USER "
  . "This determines the effective user that Nagios should run as.   "
  . "You can either supply a username or a UID. ";
 
 $nagios_comment["nagios_group"]=" NAGIOS GROUP "
- . "This determines the effective group that Nagios should run as.  " 
+ . "This determines the effective group that Nagios should run as.  "
  . "You can either supply a group name or a GID. ";
 
 $nagios_comment["check_external_commands"]="This option allows you to specify whether or not Nagios should check "
@@ -206,7 +206,7 @@ $nagios_comment["max_concurrent_checks"]="This option allows you to specify the 
   . "any service checks from being parallelized.  A value of 0 "
   . "will not restrict the number of concurrent checks that are "
   . "being executed. ";
- 
+
 $nagios_comment["max_service_check_spread"]="This option determines the maximum number of minutes from when Nagios starts that all services (that are scheduled to be regularly checked) are checked.<br />"
   . "This option will automatically adjust the service inter-check delay (if necessary) to ensure that the initial checks of all services occur within the timeframe you specify.<br />"
   . "In general, this option will not have an affect on service check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
@@ -216,7 +216,7 @@ $nagios_comment["max_host_check_spread"]="This option determines the maximum num
   . "This option will automatically adjust the host inter-check delay (if necessary) to ensure that the initial checks of all hosts occur within the timeframe you specify.<br />"
   . "In general, this option will not have an affect on host check scheduling if scheduling information is being retained using the use_retained_scheduling_info option.<br />"
   . "Default value is 30 (minutes). ";
- 
+
 $nagios_comment["check_result_reaper_frequency"]="This is the frequency (in seconds!) that Nagios will process "
   . "the results of services that have been checked. ";
 
@@ -259,7 +259,7 @@ $nagios_comment["use_retained_program_state"]="This setting determines whether o
   . "retention file. If you want to use retained program status "
   . "information, set this value to 1.  If not, set this value "
   . "to 0. ";
-  
+
 $nagios_comment["use_retained_scheduling_info"]="This setting determines whether or not Nagios will retain scheduling info (next check times) for hosts and services when it restarts.<br />"
   . "If you are adding a large number (or percentage) of hosts and services, I would recommend disabling this option when you first restart Nagios, as it can adversely skew the spread of initial checks.<br />"
   . "Otherwise you will probably want to leave it enabled.";
@@ -286,7 +286,7 @@ $nagios_comment["execute_service_checks"]="This determines whether or not Nagios
 $nagios_comment["accept_passive_service_checks"]="This determines whether or not Nagios will accept passive "
   . "service checks results when it initially (re)starts. "
   . "Values: 1 = accept passive checks, 0 = reject passive checks ";
-  
+
 $nagios_comment["log_passive_checks"]="This variable determines whether or not Nagios will log passive host and service checks that it receives from the external command file.<br />"
   . "If you are setting up a distributed monitoring environment or plan on handling a large number of passive checks on a regular basis, you may wish to disable this option so your log file doesn\'t get too large.";
 
@@ -322,7 +322,7 @@ $nagios_comment["process_performance_data"]="This determines whether or not Nagi
  $nagios_comment["service_perfdata_command"]="This option allows you to specify a command to be run after every service check to process service performance data that may be returned from the check.<br />"
   . "The command argument is the short name of a command definition that you define in your object configuration file.<br />"
   . "This command is only executed if the process_performance_data option is enabled globally and if the process_perf_data directive in the service definition is enabled.";
- 
+
   $nagios_comment["host_perfdata_file"]="This option allows you to specify a file to which host performance data will be written after every host check.<br />"
   . "Data will be written to the performance file as specified by the host_perfdata_file_template option.<br />"
   . "Performance data is only written to this file if the process_performance_data option is enabled globally and if the process_perf_data directive in the host definition is enabled.";
@@ -330,7 +330,7 @@ $nagios_comment["process_performance_data"]="This determines whether or not Nagi
  $nagios_comment["service_perfdata_file"]="This option allows you to specify a file to which service performance data will be written after every service check.<br />"
   . "Data will be written to the performance file as specified by the service_perfdata_file_template option. <br />"
   . "Performance data is only written to this file if the process_performance_data option is enabled globally and if the process_perf_data directive in the service definition is enabled.";
-  
+
   $nagios_comment["host_perfdata_file_template"]="This option determines what (and how) data is written to the host performance data file.<br />"
   . "The template may contain macros, special characters ( t for tab, r for carriage return, n for newline) and plain text.<br />"
   . "A newline is automatically added after each write to the performance data file.";
@@ -338,7 +338,7 @@ $nagios_comment["process_performance_data"]="This determines whether or not Nagi
  $nagios_comment["service_perfdata_file_template"]="This option determines what (and how) data is written to the service performance data file.<br />"
   . "The template may contain macros, special characters (t for tab, r for carriage return, n for newline) and plain text.<br />"
   . "A newline is automatically added after each write to the performance data file.";
-  
+
   $nagios_comment["host_perfdata_file_mode"]="This option determines whether the host performance data file is opened in write or append mode.<br />"
   . "Unless the file is a named pipe, you will probably want to use the default mode of append.<br />"
   . "a = Open file in append mode (default)<br />w = Open file in write mode ";
@@ -346,13 +346,13 @@ $nagios_comment["process_performance_data"]="This determines whether or not Nagi
  $nagios_comment["service_perfdata_file_mode"]="This option determines whether the service performance data file is opened in write or append mode.<br />"
   . "Unless the file is a named pipe, you will probably want to use the default mode of append.<br />"
   . "a = Open file in append mode (default)<br />w = Open file in write mode ";
- 
+
   $nagios_comment["host_perfdata_file_processing_interval"]="This option allows you to specify the interval (in seconds) at which the host performance data file is processed using the host performance data file processing command.<br />"
   . "A value of 0 indicates that the performance data file should not be processed at regular intervals.";
 
  $nagios_comment["service_perfdata_file_processing_interval"]="This option allows you to specify the interval (in seconds) at which the service performance data file is processed using the service performance data file processing command.<br />"
   . "A value of 0 indicates that the performance data file should not be processed at regular intervals.";
-  
+
  $nagios_comment["host_perfdata_file_processing_command"]="This option allows you to specify the command that should be executed to process the host performance data file.<br />"
  . "The command argument is the short name of a command definition that you define in your object configuration file.<br />"
   . "The interval at which this command is executed is determined by the host_perfdata_file_processing_interval directive.";
@@ -360,14 +360,14 @@ $nagios_comment["process_performance_data"]="This determines whether or not Nagi
  $nagios_comment["service_perfdata_file_processing_command"]="This option allows you to specify the command that should be executed to process the service performance data file.<br />"
  . "The command argument is the short name of a command definition that you define in your object configuration file.<br />"
   . "The interval at which this command is executed is determined by the service_perfdata_file_processing_interval directive.";
- 
+
 $nagios_comment["obsess_over_services"]="This determines whether or not Nagios will obsess over service "
   . "checks and run the ocsp_command defined below.  Unless you\'re "
   . "planning on implementing distributed monitoring, do not enable "
   . "this option.  Read the HTML docs for more information on "
   . "implementing distributed monitoring. "
   . "Values: 1 = obsess over services, 0 = do not obsess (default) ";
-  
+
 $nagios_comment["obsess_over_hosts"]="This value determines whether or not Nagios will &laquo;obsess&laquo; over host checks results and run the obsessive compulsive host processor command you define.<br />"
   . "I know - funny name, but it was all I could think of.<br />"
   . "This option is useful for performing distributed monitoring.<br />"
@@ -385,7 +385,7 @@ $nagios_comment["ochp_command"]="This option allows you to specify a command to 
   . "The command argument is the short name of a command definition that you define in your object configuration file.<br />"
   . "The maximum amount of time that this command can run is controlled by the ochp_timeout option.<br />"
   . "This command is only executed if the obsess_over_hosts option is enabled globally and if the obsess_over_host directive in the host definition is enabled.";
-  
+
 $nagios_comment["check_for_orphaned_services"]="This determines whether or not Nagios will periodically  "
   . "check for orphaned services.  Since service checks are not "
   . "rescheduled until the results of their previous execution  "
@@ -404,13 +404,13 @@ $nagios_comment["check_service_freshness"]="This option determines whether or no
 
 $nagios_comment["service_freshness_check_interval"]="This setting determines how often (in seconds) Nagios will periodically check the &laquo;freshness&laquo; of service check results.<br />"
   . "If you have disabled service freshness checking (with the check_service_freshness option), this option has no effect.";
- 
+
 $nagios_comment["check_host_freshness"]="This option determines whether or not Nagios will periodically check the &laquo;freshness&laquo; of host checks.<br />"
   . "Enabling this option is useful for helping to ensure that passive host checks are received in a timely manner.";
 
 $nagios_comment["host_freshness_check_interval"]="This setting determines how often (in seconds) Nagios will periodically check the &laquo;freshness&laquo; of host check results.<br />"
   . "If you have disabled host freshness checking (with the check_host_freshness option), this option has no effect.";
-  
+
 $nagios_comment["freshness_check_interval"]="This setting determines how often (in seconds) Nagios will "
   . "check the freshness of service check results.  If you have "
   . "disabled service freshness checking, this option has no effect. ";
@@ -443,21 +443,21 @@ $nagios_comment["date_format"]="This option determines how short dates are displ
   . "euro    	(DD-MM-YYYY HH:MM:SS) <br />"
   . "iso8601		(YYYY-MM-DD HH:MM:SS) <br />"
   . "strict-iso8601	(YYYY-MM-DDTHH:MM:SS) ";
- 
+
 $nagios_comment["illegal_object_name_chars"]="This options allows you to specify illegal characters that cannot "
   . "be used in host names, service descriptions, or names of other "
   . "object types. ";
- 
+
 $nagios_comment["use_regexp_matching"]="If you\'ve enabled regular expression matching of various object directives using the use_regexp_matching option, this option will determine when object directives are treated as regular expressions.<br />"
   . "If this option is disabled (the default), directives will only be treated as regular expressions if the contain a * or ? wildcard character.<br />"
   . "If this option is enabled, all appropriate directives will be treated as regular expression - be careful when enabling this!<br />"
   . "0 = Don\'t use true regular expression matching (default)<br />1 = Use true regular expression matching ";
- 
+
  $nagios_comment["use_true_regexp_matching"]="If you\'ve enabled regular expression matching of various object directives using the use_regexp_matching option, this option will determine when object directives are treated as regular expressions.<br />"
   . "If this option is disabled (the default), directives will only be treated as regular expressions if the contain a * or ? wildcard character..<br />"
   . "If this option is enabled, all appropriate directives will be treated as regular expression - be careful when enabling this!<br />"
   . "0 = Don\'t use regular expression matching (default)<br />1 = Use regular expression matching ";
-  
+
 $nagios_comment["illegal_macro_output_chars"]="This options allows you to specify illegal characters that are "
   . "stripped from macros before being used in notifications, event "
   . "handlers, etc.  This DOES NOT affect macros used in service or "
@@ -474,14 +474,14 @@ $nagios_comment["admin_pager"]="The pager number/address for the administrator o
   . "Nagios never uses this value itself, but you can access this "
   . "value by using the \$ADMINPAGER\$ macro in your notification "
   . "commands. ";
-  
+
 $nagios_comment["auto_reschedule_checks"]="This option determines whether or not Nagios will attempt to automatically reschedule active host and service checks to  &laquo;smooth&laquo; them out over time.<br />"
   . "This can help to balance the load on the monitoring server, as it will attempt to keep the time between consecutive checks consistent, at the expense of executing checks on a more rigid schedule.";
- 
+
 $nagios_comment["auto_rescheduling_interval"]="This option determines how often (in seconds) Nagios will attempt to automatically reschedule checks.<br />"
   . "This option only has an effect if the auto_reschedule_checks option is enabled.<br />"
   . "Default is 30 seconds.";
-  
+
 $nagios_comment["auto_rescheduling_window"]="This option determines the &laquo;window&laquo; of time (in seconds) that Nagios will look at when automatically rescheduling checks.<br />"
   . "Only host and service checks that occur in the next X seconds (determined by this variable) will be rescheduled.<br />"
   . "This option only has an effect if the auto_reschedule_checks option is enabled.<br />"

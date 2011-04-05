@@ -102,7 +102,7 @@
         foreach ($matches[1] as $key => $value) {
 		    $argTab[$value] = $value;
 		}
-        $exampleTab = preg_split('!', $row2['command_example']);
+        $exampleTab = preg_split('/\!/', $row2['command_example']);
         if (is_array($exampleTab)) {
             foreach ($exampleTab as $key => $value) {
                 $nbTmp = $key;
@@ -119,7 +119,7 @@
         $res3 = $db->query($query3);
         if ($res3->numRows()) {
             $row3 = $res3->fetchRow();
-            $valueTab = preg_split('!', $row3['command_command_id_arg']);
+            $valueTab = preg_split('/\!/', $row3['command_command_id_arg']);
             if (is_array($valueTab)) {
                 foreach($valueTab as $key => $value) {
                     $nbTmp = $key;

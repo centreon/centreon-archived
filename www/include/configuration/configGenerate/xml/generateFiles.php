@@ -29,7 +29,7 @@ function printDebug($xml)
         $msg_debug[$host['id']] = str_replace ("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
 
-        $lines = preg_split("<br />", $msg_debug[$host['id']]);
+        $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = "";
         $i = 0;
         foreach ($lines as $line) {
