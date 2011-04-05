@@ -246,6 +246,16 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 		set_header_title();
 	}
 
+	function unsetCheckboxes()
+	{
+		for (keyz in _selectedElem) {
+			if (keyz == _selectedElem[keyz]) {
+				removeFromSelectedElem(decodeURIComponent(keyz));
+				document.getElementById(decodeURIComponent(keyz)).checked = false;
+			}
+		}
+	}
+
 	function cmdCallback(cmd) {
 		var keyz;
 
@@ -324,6 +334,7 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 		}
 		xhr_cmd.send(null);
 		Modalbox.hide();
+		unsetCheckboxes();
 	}
 
 	function toggleFields(fixed)

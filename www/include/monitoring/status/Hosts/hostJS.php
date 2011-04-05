@@ -224,6 +224,16 @@ function goM(_time_reload, _sid, _o) {
 	set_header_title();
 }
 
+function unsetCheckboxes()
+{
+	for (keyz in _selectedElem) {
+		if (keyz == _selectedElem[keyz]) {
+			removeFromSelectedElem(decodeURIComponent(keyz));
+			document.getElementById(decodeURIComponent(keyz)).checked = false;
+		}
+	}
+}
+
 function cmdCallback(cmd) {
 	var keyz;
 
@@ -308,6 +318,7 @@ function send_the_command() {
 	}
     xhr_cmd.send(null);
 	Modalbox.hide();
+	unsetCheckboxes();
 }
 
 function toggleFields(fixed)
