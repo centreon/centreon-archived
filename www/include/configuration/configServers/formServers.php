@@ -81,7 +81,7 @@
 	 */
 	$form->addElement('header', 'Server_Informations', _("Server Information"));
 	$form->addElement('header', 'SSH_Informations', _("SSH Information"));
-	$form->addElement('header', 'Nagios_Informations', _("Nagios Information"));
+	$form->addElement('header', 'Nagios_Informations', _("Scheduler Information"));
 	$form->addElement('header', 'Misc', _("Miscelleneous"));
 	$form->addElement('select', 'monitoring_engine', _("Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 
@@ -89,36 +89,36 @@
 	 * Nagios Configuration basic information
 	 */
 	$form->addElement('header', 'information', _("Satellite configuration"));
-	$form->addElement('text', 'name', _("Sattelite Name"), $attrsText);
+	$form->addElement('text', 'name', _("Poller Name"), $attrsText);
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
 
-	$form->addElement('text', 'nagios_bin', _("nagios Binary"), $attrsText2);
-	$form->addElement('text', 'nagiostats_bin', _("nagiostats Binary"), $attrsText2);
+	$form->addElement('text', 'nagios_bin', _("Scheduler Binary"), $attrsText2);
+	$form->addElement('text', 'nagiostats_bin', _("Nagios Statistics Binary"), $attrsText2);
 	$form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 	$form->addElement('text', 'ssh_private_key', _("SSH Private key"), $attrsText2);
 	$form->addElement('text', 'ssh_port', _("SSH port"), $attrsText3);
 
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'localhost', null, _("No"), '0');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'localhost', null, _("Yes"), '1');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'localhost', null, _("No"), '0');
 	$form->addGroup($Tab, 'localhost', _("Localhost ?"), '&nbsp;');
 
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'is_default', null, _("Yes"), '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'is_default', null, _("No"), '0');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'is_default', null, _("Yes"), '1');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'is_default', null, _("No"), '0');
 	$form->addGroup($Tab, 'is_default', _("Is default poller ?"), '&nbsp;');
 
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
-	
+
 	/*
 	 * Centreon Broker
 	 */
-	$form->addElement('header', 'CentreonBroker', _("CentreonBroker"));
+	$form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
 	$form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
@@ -200,6 +200,13 @@
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+
+		include_once("help.php");
+		$helptext = "";
+        foreach ($help as $key => $text) {
+            $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+        }
+        $tpl->assign("helptext", $helptext);
 		$tpl->display("formServers.ihtml");
 	}
 ?>
