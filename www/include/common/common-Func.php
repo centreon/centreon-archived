@@ -1570,7 +1570,7 @@
 		if ($handle  = opendir($chemintotal))   {
 		    while ($file = readdir($handle))
 		    	if (!is_dir("$chemintotal/$file") && strcmp($file, "index.php") && strcmp($file, "index.html") && strcmp($file, "index.ihtml")) {
-					$tab = preg_split('\.', $file);
+					$tab = preg_split('/\./', $file);
 		      		$langs .= "-".$tab[0] . " ";
 		      	}
 			closedir($handle);
@@ -1769,7 +1769,7 @@
 	function purgeVar($myVar){
 		$myVar = str_replace("\'", '', $myVar);
 		$myVar = str_replace("\"", '', $myVar);
-		$tab_myVar = preg_split(";", $myVar);
+		$tab_myVar = preg_split("/\;/", $myVar);
 		$mhost = $tab_myVar[0];
 		unset($tab_myVar);
 		return $myVar;

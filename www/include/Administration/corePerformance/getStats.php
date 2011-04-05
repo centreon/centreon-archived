@@ -55,7 +55,7 @@
 	}
 
 	foreach ($_GET as $key => $get){
-		$tab = preg_split(';', $_GET[$key]);
+		$tab = preg_split('/\;/', $_GET[$key]);
 		$_GET[$key] = $tab[0];
 		if (function_exists("filter_var")){
 			$_GET[$key] = filter_var($_GET[$key], FILTER_SANITIZE_SPECIAL_CHARS);
