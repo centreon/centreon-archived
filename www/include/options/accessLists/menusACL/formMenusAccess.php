@@ -103,8 +103,8 @@
 	echo $ams1->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Enabled"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Disabled"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Enabled"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'acl_topo_activate', null, _("Disabled"), '0');
 	$form->addGroup($tab, 'acl_topo_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('acl_topo_activate' => '1'));
 
@@ -145,7 +145,7 @@
 		$acl_topos2[$a]['readonly'] = $topo1['readonly'];
 		$acl_topos2[$a]["childs"] = array();
 
-		$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, _($topo1["topology_name"]), array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
+		$acl_topos[] = HTML_QuickForm::createElement('checkbox', $topo1["topology_id"], null, _($topo1["topology_name"]), array("style"=>"margin-top: 5px;", "id"=>$topo1["topology_id"]));
 
 		$b = 0;
 	 	$DBRESULT2 = $pearDB->query("SELECT topology_id, topology_page, topology_name, topology_parent, readonly FROM topology WHERE topology_parent = '".$topo1["topology_page"]."' AND topology_show = '1' ORDER BY topology_order");
@@ -158,7 +158,7 @@
 			$acl_topos2[$a]["childs"][$b]['readonly'] = $topo2['readonly'];
 			$acl_topos2[$a]["childs"][$b]["childs"] = array();
 
-		 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, _($topo2["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 20px;"));
+		 	$acl_topos[] = HTML_QuickForm::createElement('checkbox', $topo2["topology_id"], NULL, _($topo2["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 20px;"));
 			$c = 0;
 		 	$DBRESULT3 = $pearDB->query("SELECT topology_id, topology_name, topology_parent, topology_page, topology_group, readonly FROM topology WHERE topology_parent = '".$topo2["topology_page"]."' AND topology_page IS NOT NULL ORDER BY topology_group, topology_order");
 			while ($topo3 = $DBRESULT3->fetchRow()){
@@ -176,7 +176,7 @@
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]['readonly'] = $topo3['readonly'];
 				$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"] = array();
 
-			 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, _($topo3["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 40px;"));
+			 	$acl_topos[] = HTML_QuickForm::createElement('checkbox', $topo3["topology_id"], null, _($topo3["topology_name"])."<br />", array("style"=>"margin-top: 5px; margin-left: 40px;"));
 				$d = 0;
 			 	$DBRESULT4 = $pearDB->query("SELECT topology_id, topology_name, topology_parent, readonly FROM topology WHERE topology_parent = '".$topo3["topology_page"]."' AND topology_page IS NOT NULL AND topology_show = '1' ORDER BY topology_order");
 				while ($topo4 = $DBRESULT4->fetchRow()){
@@ -189,7 +189,7 @@
 					$acl_topos2[$a]["childs"][$b]["childs"][$c]["childs"][$d]["childs"] = array();
 
 					/*old*/
-				 	$acl_topos[] =  &HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, _("Name"), array("style"=>"margin-top: 5px; margin-left: 55px;"));
+				 	$acl_topos[] = HTML_QuickForm::createElement('checkbox', $topo4["topology_id"], null, _("Name"), array("style"=>"margin-top: 5px; margin-left: 55px;"));
 					/*old*/
 					$d++;
 				}
