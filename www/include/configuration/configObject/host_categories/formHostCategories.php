@@ -168,15 +168,15 @@
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'hc_comment', _("Comments"), $attrsTextarea);
-	$hcActivation[] = &HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Enabled"), '1');
-	$hcActivation[] = &HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Disabled"), '0');
+	$hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Enabled"), '1');
+	$hcActivation[] = HTML_QuickForm::createElement('radio', 'hc_activate', null, _("Disabled"), '0');
 	$form->addGroup($hcActivation, 'hc_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('hc_activate' => '1'));
 
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 

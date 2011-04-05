@@ -51,7 +51,7 @@
 	else
 		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM purge_policy");
 		
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

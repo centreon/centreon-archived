@@ -119,7 +119,7 @@
 	 */
 	$str = "";
 	$request = "SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" .$id."'";
-	$DBRESULT = & $pearDB->query($request);
+	$DBRESULT = $pearDB->query($request);
 	while ($hg = $DBRESULT->fetchRow()) {
 		if ($str != "")
 			$str .= ", ";
@@ -140,7 +140,7 @@
 			"AND `date_start` >= '".$start_date."' " .
 			"AND `date_end` <= '".$end_date."' " .
 			"GROUP BY `date_end`, `date_start`  ORDER BY `date_start` desc";
-	$DBRESULT = & $pearDBO->query($rq);
+	$DBRESULT = $pearDBO->query($rq);
 
 	echo _("Day").";"._("Duration").";".
 	 	_("Up Mean Time").";"._("Up Alert").";".

@@ -57,7 +57,7 @@
 	$request = "SELECT COUNT(*) FROM hostcategories $SearchTool";
 
 	$DBRESULT = $pearDB->query($request);
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

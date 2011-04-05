@@ -70,20 +70,20 @@
 
 	$form->addElement('header', 'opt', _("Upload Options"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'del', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'del', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'del', null, _("No"), '0');
 	$form->addGroup($tab, 'del', _("Delete all configuration for the chosen type of files"), '&nbsp;');
 	$form->setDefaults(array('del' => '0'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'overwrite', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'overwrite', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'overwrite', null, _("No"), '0');
 	$form->addGroup($tab, 'overwrite', _("Update definition in case of double definition"), '&nbsp;');
 	$form->setDefaults(array('overwrite' => '1'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
 	$form->addGroup($tab, 'comment', _("Include comments"), '&nbsp;');
 	$form->setDefaults(array('comment' => '0'));
 
@@ -91,16 +91,16 @@
 	$form->addElement('header', 'fileMis1', _("For archive upload, be sure that the first line of each file has no importance because it is not handled.<br />Avoid to begin with a definition."));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("nagios.cfg"), 'nagios');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("resource.cfg"), 'res');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'Type', null, _("Template based method file"), 'cfg');
+	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("nagios.cfg"), 'nagios');
+	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
+	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("resource.cfg"), 'res');
+	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("Template based method file"), 'cfg');
 	$form->addGroup($tab, 'Type', _("Type"), '<br />');
 	$form->setDefaults(array('Type' => array("Type"=>"cfg")));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, _("Check Command"), '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'cmdType', null, _("Notification Command"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'cmdType', null, _("Check Command"), '2');
+	$tab[] = HTML_QuickForm::createElement('radio', 'cmdType', null, _("Notification Command"), '1');
 	$form->addGroup($tab, 'cmdType', _("Command Type"), '&nbsp;');
 	$form->setDefaults(array('cmdType' => array("cmdType"=>"2")));
 	$form->addElement('header', 'fileCmt1', _("It is recommanded to upload all the Command definitions first by specifying their types."));
@@ -111,8 +111,8 @@
 
 	$form->addElement('header', 'result', _("Result"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
 	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '0'));
 

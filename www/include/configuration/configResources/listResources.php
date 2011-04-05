@@ -53,9 +53,9 @@
 	if (isset($search) && $search)
 		$SearchTool = " WHERE resource_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 
-	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM cfg_resource".$SearchTool);
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_resource".$SearchTool);
 	
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

@@ -145,15 +145,15 @@
 	## Further informations
 	#
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$sgActivation[] = &HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Enabled"), '1');
-	$sgActivation[] = &HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Disabled"), '0');
+	$sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Enabled"), '1');
+	$sgActivation[] = HTML_QuickForm::createElement('radio', 'sg_activate', null, _("Disabled"), '0');
 	$form->addGroup($sgActivation, 'sg_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('sg_activate' => '1'));
 	$form->addElement('textarea', 'sg_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 

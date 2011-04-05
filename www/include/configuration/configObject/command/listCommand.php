@@ -66,7 +66,7 @@
 	
 	$DBRESULT = $pearDB->query($req);
 
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include_once "./include/common/checkPagination.php";

@@ -162,8 +162,8 @@
 	$form->addElement('select', 'calcul_type', _("Calculation Type"), $calType);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("Service List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("SQL matching"), '2');
+	$tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("Service List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("SQL matching"), '2');
 	$form->addGroup($tab, 'meta_select_mode', _("Selection Mode"), '<br />');
 	$form->setDefaults(array('meta_select_mode' => array('meta_select_mode'=>'1')));
 
@@ -184,9 +184,9 @@
 	 */
 	$form->addElement('header', 'notification', _("Notification"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("No"), '0');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Default"), '2');
+	$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'notifications_enabled', null, _("Default"), '2');
 	$form->addGroup($tab, 'notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	$form->setDefaults(array('notifications_enabled' => '2'));
 
@@ -199,11 +199,11 @@
 	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
 	$form->addElement('select', 'notification_period', _("Notification Period"), $tps);
 
- 	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
-	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
-	$msNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
+ 	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
+	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+	$msNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
 
 	$form->addGroup($msNotifOpt, 'ms_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
@@ -212,15 +212,15 @@
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
-	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Enabled"), '1');
-	$msActivation[] = &HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Disabled"), '0');
+	$msActivation[] = HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Enabled"), '1');
+	$msActivation[] = HTML_QuickForm::createElement('radio', 'meta_activate', null, _("Disabled"), '0');
 	$form->addGroup($msActivation, 'meta_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('meta_activate' => '1'));
 	$form->addElement('textarea', 'meta_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 

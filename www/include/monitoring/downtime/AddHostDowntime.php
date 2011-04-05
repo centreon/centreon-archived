@@ -118,8 +118,8 @@
 			$redirect = $form->addElement('hidden', 'o');
 			$redirect->setValue($o);
 
-	        $host_or_hg[] = &HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Host"), '1', array('id' => 'host_or_hg_host', 'onclick' => "toggleParams('host');"));
-	        $host_or_hg[] = &HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Hostgroup"), '0', array('id' => 'host_or_hg_hg', 'onclick' => "toggleParams('hostgroup');"));
+	        $host_or_hg[] = HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Host"), '1', array('id' => 'host_or_hg_host', 'onclick' => "toggleParams('host');"));
+	        $host_or_hg[] = HTML_QuickForm::createElement('radio', 'host_or_hg', null, _("Hostgroup"), '0', array('id' => 'host_or_hg_hg', 'onclick' => "toggleParams('hostgroup');"));
 	        $form->addGroup($host_or_hg, 'host_or_hg', _("Select a downtime type"), '&nbsp;');
 
 		    $selHost = $form->addElement('select', 'host_id', _("Host Name"), $hosts);
@@ -137,8 +137,8 @@
 	        }
 	        $form->setDefaults(array('duration' => $defaultDuration));
 
-			$with_services[] = &HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
-	        $with_services[] = &HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
+			$with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
+	        $with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
 	        $form->addGroup($with_services, 'with_services', _("Set downtime for hosts services"), '&nbsp;');
 
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);

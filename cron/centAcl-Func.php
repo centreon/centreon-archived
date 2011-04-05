@@ -125,8 +125,8 @@
 					"AND acl_resources_sc_relations.acl_res_id = acl_resources.acl_res_id " .
 					"AND acl_resources.acl_res_id = '".$res_id."' " .
 					"AND acl_res_activate = '1'";
-		$DBRESULT =& $pearDB->query($request);
-		while ($res =& $DBRESULT->fetchRow()) {
+		$DBRESULT = $pearDB->query($request);
+		while ($res = $DBRESULT->fetchRow()) {
 			$tab_categories[$res["sc_id"]] = $res["sc_id"];
 		}
 		$DBRESULT->free();
@@ -198,17 +198,17 @@
 			$condition = " WHERE ";
 		}
 
-		$DBRESULT =& $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
+		$DBRESULT = $pearDB->query("SELECT argr.`acl_res_id` FROM `acl_res_group_relations` argr, `acl_resources` ar ".$condition." " .
 									"argr.acl_res_id = ar.acl_res_id " .
 									"AND ar.acl_res_activate = '1'");
-		while ($res =& $DBRESULT->fetchRow()) {
-			$DBRESULT2 =& $pearDB->query(	"SELECT `service_service_id` " .
+		while ($res = $DBRESULT->fetchRow()) {
+			$DBRESULT2 = $pearDB->query(	"SELECT `service_service_id` " .
 											"FROM `servicegroup`, `acl_resources_sg_relations`, `servicegroup_relation` " .
 											"WHERE `acl_res_id` = '".$res["acl_res_id"]."' " .
 											"AND `acl_resources_sg_relations`.`sg_id` = `servicegroup`.`sg_id` " .
 											"AND `servicegroup_relation`.`servicegroup_sg_id` = `servicegroup`.`sg_id` " .
 											"AND `servicegroup_relation`.`host_host_id` = '".$host_id."'");
-			while ($service =& $DBRESULT2->fetchRow()) {
+			while ($service = $DBRESULT2->fetchRow()) {
 				if (isset($svcCache[$service["service_service_id"]])) {
 					$svc[$svcCache[$service["service_service_id"]]] = $service["service_service_id"];
 				}
@@ -263,7 +263,7 @@
 				"AND rgr.acl_group_id = '".$group_id."' " .
 				"AND rhr.host_host_id = '".$host_id."' " .
 				"AND res.acl_res_activate = '1'";
-		$DBRES =& $pearDB->query($query);
+		$DBRES = $pearDB->query($query);
 		if ($DBRES->numRows())
 			return true;
 
@@ -277,7 +277,7 @@
 				"AND res.acl_res_activate = '1' " .
 				"AND hgr.host_host_id NOT IN (SELECT host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = rhgr.acl_res_id)";
 
-		$DBRES2 =& $pearDB->query($query2);
+		$DBRES2 = $pearDB->query($query2);
 		if (PEAR::isError($DBRES2))
 			print "DB Error : ".$DBRES2->getDebugInfo()."<br />";
 		if ($DBRES2->numRows())

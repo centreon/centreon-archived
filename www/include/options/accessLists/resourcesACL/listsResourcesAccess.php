@@ -54,7 +54,7 @@
 	}
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM acl_resources" . $SearchStr);
 
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

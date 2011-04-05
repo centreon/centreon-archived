@@ -91,24 +91,24 @@
 						"31104000"=>_("Last Year"));	
 	$sel = $form->addElement('select', 'purge_policy_retention', _("Retention Period"), $periods);
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_host', null, _("No"), '0');
 	$form->addGroup($tab, 'purge_policy_host', _("Host Definition Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_service', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_service', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_service', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_service', null, _("No"), '0');
 	$form->addGroup($tab, 'purge_policy_service', _("Service Definition Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_metric', null, _("No"), '0');
 	$form->addGroup($tab, 'purge_policy_metric', _("Metric Definition Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_bin', null, _("No"), '0');
 	$form->addGroup($tab, 'purge_policy_bin', _("Bin Deletion"), '&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'purge_policy_raw', null, _("No"), '0');
 	$form->addGroup($tab, 'purge_policy_raw', _("Raw Deletion"), '&nbsp;');
 	
 	$form->setDefaults(array('purge_policy_bin'=>'1', 'purge_policy_raw'=>'1', 'purge_policy_metric'=>'0', 'purge_policy_service'=>'0', 'purge_policy_host'=>'0', ));
@@ -116,8 +116,8 @@
 	$form->addElement('textarea', 'purge_policy_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

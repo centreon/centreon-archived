@@ -56,7 +56,7 @@
 	require_once("./class/centreonDB.class.php");
 	$pearDBO = new CentreonDB("centstorage");	
 	
-	$DBRESULT = & $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
+	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."'");	
 
 	$meta = $DBRESULT->fetchRow();
 	$tpl->assign("meta", array(	"meta" => _("Meta Service"),
@@ -75,7 +75,7 @@
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
-	$DBRESULT = & $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
 	

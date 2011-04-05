@@ -81,12 +81,12 @@
 		} else if ($_POST["o1"] == "dst_g" || $_POST["o2"] == "dst_g"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '0' WHERE `metric_id` = '".$key."'");
 			}
 		} else if ($_POST["o1"] == "dst_c" || $_POST["o2"] == "dst_c"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT =& $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '".$key."'");
 			}
 		}
 	}

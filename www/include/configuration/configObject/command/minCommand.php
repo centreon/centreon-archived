@@ -106,8 +106,8 @@
 	}
 	
 	
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
-	$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+	$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
+	$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
 	
 	$v1 = $form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 	$v1->freeze();

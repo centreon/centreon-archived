@@ -80,8 +80,8 @@
 	$form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
 	$form->addGroup($tab, 'optimize', _("Run Optimisation test (-s)"), '&nbsp;');
 	$form->setDefaults(array('optimize' => '0'));
 	

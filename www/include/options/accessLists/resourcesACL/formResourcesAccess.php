@@ -214,21 +214,21 @@
 	$form->addElement('text', 	'acl_res_alias', _("Description"), $attrsText2);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Enabled"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Disabled"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Enabled"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'acl_res_activate', null, _("Disabled"), '0');
 	$form->addGroup($tab, 'acl_res_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('acl_res_activate' => '1'));
 
 	/*
 	 * All ressources
 	 */
-	$allHosts[] = &HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id, "hostAdvancedSelect")'));
+	$allHosts[] = HTML_QuickForm::createElement('checkbox', 'all_hosts', '&nbsp;', "", array('id' => 'all_hosts', 'onclick' => 'advancedDisplay(this.id, "hostAdvancedSelect")'));
 	$form->addGroup($allHosts, 'all_hosts', _("Include all hosts"), '&nbsp;&nbsp;', '');
 
-	$allHostgroups[] = &HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id, "hostgroupAdvancedSelect")'));
+	$allHostgroups[] = HTML_QuickForm::createElement('checkbox', 'all_hostgroups', '&nbsp;', "", array('id' => 'all_hostgroups', 'onclick' => 'advancedDisplay(this.id, "hostgroupAdvancedSelect")'));
 	$form->addGroup($allHostgroups, 'all_hostgroups', _("Include all hostgroups"), '&nbsp;&nbsp;');
 
-	$allServiceGroups[] = &HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "", array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id, "servicegroupAdvancedSelect")'));
+	$allServiceGroups[] = HTML_QuickForm::createElement('checkbox', 'all_servicegroups', '&nbsp;', "", array('id' => 'all_servicegroups', 'onclick' => 'advancedDisplay(this.id, "servicegroupAdvancedSelect")'));
 	$form->addGroup($allServiceGroups, 'all_servicegroups', _("Include all servicegroups"), '&nbsp;&nbsp;');
 
 	/*

@@ -50,9 +50,9 @@
 	$SearchTool = NULL;
 	if (isset($search) && $search)
 		$SearchTool = "WHERE (`category_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR `category_alias` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
-	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `command_categories` $SearchTool");
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `command_categories` $SearchTool");
 
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$DBRESULT->free();
 	$rows = $tmp["COUNT(*)"];
 

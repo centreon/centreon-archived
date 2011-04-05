@@ -331,9 +331,9 @@
 	#
 	$form->addElement('header', 'check', _("Service State"));
 
-	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Yes"), '1');
-	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("No"), '0');
-	$serviceIV[] = &HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Default"), '2');
+	$serviceIV[] = HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Yes"), '1');
+	$serviceIV[] = HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("No"), '0');
+	$serviceIV[] = HTML_QuickForm::createElement('radio', 'service_is_volatile', null, _("Default"), '2');
 	$form->addGroup($serviceIV, 'service_is_volatile', _("Is Volatile"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_is_volatile' => '2'));
@@ -349,9 +349,9 @@
 	$form->addElement('text', 'service_normal_check_interval', _("Normal Check Interval"), $attrsText2);
 	$form->addElement('text', 'service_retry_check_interval', _("Retry Check Interval"), $attrsText2);
 
-	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("Yes"), '1');
-	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("No"), '0');
-	$serviceEHE[] = &HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("Default"), '2');
+	$serviceEHE[] = HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("Yes"), '1');
+	$serviceEHE[] = HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("No"), '0');
+	$serviceEHE[] = HTML_QuickForm::createElement('radio', 'service_event_handler_enabled', null, _("Default"), '2');
 	$form->addGroup($serviceEHE, 'service_event_handler_enabled', _("Event Handler Enabled"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_event_handler_enabled' => '2'));
@@ -359,17 +359,17 @@
 	$form->addElement('select', 'command_command_id2', _("Event Handler"), $checkCmdEvent, 'onchange=setArgument(this.form,"command_command_id2","example2")');
 	$form->addElement('text', 'command_command_id_arg2', _("Args"), $attrsText);
 
-	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
-	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("No"), '0');
-	$serviceACE[] = &HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Default"), '2');
+	$serviceACE[] = HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Yes"), '1');
+	$serviceACE[] = HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("No"), '0');
+	$serviceACE[] = HTML_QuickForm::createElement('radio', 'service_active_checks_enabled', null, _("Default"), '2');
 	$form->addGroup($serviceACE, 'service_active_checks_enabled', _("Active Checks Enabled"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_active_checks_enabled' => '2'));
 	}
 
-	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("Yes"), '1');
-	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("No"), '0');
-	$servicePCE[] = &HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("Default"), '2');
+	$servicePCE[] = HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("Yes"), '1');
+	$servicePCE[] = HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("No"), '0');
+	$servicePCE[] = HTML_QuickForm::createElement('radio', 'service_passive_checks_enabled', null, _("Default"), '2');
 	$form->addGroup($servicePCE, 'service_passive_checks_enabled', _("Passive Checks Enabled"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_passive_checks_enabled' => '2'));
@@ -381,9 +381,9 @@
 	## Notification informations
 	##
 	$form->addElement('header', 'notification', _("Notification"));
-	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("Yes"), '1');
-	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("No"), '0');
-	$serviceNE[] = &HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("Default"), '2');
+	$serviceNE[] = HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("Yes"), '1');
+	$serviceNE[] = HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("No"), '0');
+	$serviceNE[] = HTML_QuickForm::createElement('radio', 'service_notifications_enabled', null, _("Default"), '2');
 	$form->addGroup($serviceNE, 'service_notifications_enabled', _("Notification Enabled"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_notifications_enabled' => '2'));
@@ -391,8 +391,8 @@
 
 	if ($o == "mc")	{
 		$mc_mod_cgs = array();
-		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Incremental"), '0');
-		$mc_mod_cgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Replacement"), '1');
+		$mc_mod_cgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Incremental"), '0');
+		$mc_mod_cgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_cgs', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
@@ -418,26 +418,26 @@
 	$form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
 
- 	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
-	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
-	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
-	$serviceNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
+ 	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
+	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"));
+	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"));
 	$form->addGroup($serviceNotifOpt, 'service_notifOpts', _("Notification Type"), '&nbsp;&nbsp;');
 
- 	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"));
-	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-	$serviceStalOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+ 	$serviceStalOpt[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"));
+	$serviceStalOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+	$serviceStalOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
+	$serviceStalOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
 	$form->addGroup($serviceStalOpt, 'service_stalOpts', _("Stalking Options"), '&nbsp;&nbsp;');
 
 	#
 	## Further informations
 	#
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, _("Enabled"), '1');
-	$serviceActivation[] = &HTML_QuickForm::createElement('radio', 'service_activate', null, _("Disabled"), '0');
+	$serviceActivation[] = HTML_QuickForm::createElement('radio', 'service_activate', null, _("Enabled"), '1');
+	$serviceActivation[] = HTML_QuickForm::createElement('radio', 'service_activate', null, _("Disabled"), '0');
 	$form->addGroup($serviceActivation, 'service_activate', _("Status"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_activate' => '1'));
@@ -459,8 +459,8 @@
 
 	if ($o == "mc")	{
 		$mc_mod_Pars = array();
-		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Incremental"), '0');
-		$mc_mod_Pars[] = &HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Replacement"), '1');
+		$mc_mod_Pars[] = HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Incremental"), '0');
+		$mc_mod_Pars[] = HTML_QuickForm::createElement('radio', 'mc_mod_Pars', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
@@ -480,8 +480,8 @@
 	$form->addElement('header', 'links', _("Relations"));
 	if ($o == "mc")	{
 		$mc_mod_sgs = array();
-		$mc_mod_sgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Incremental"), '0');
-		$mc_mod_sgs[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Replacement"), '1');
+		$mc_mod_sgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Incremental"), '0');
+		$mc_mod_sgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sgs'=>'0'));
 	}
@@ -494,8 +494,8 @@
 	$form->addElement('header', 'traps', _("SNMP Traps"));
  	if ($o == "mc")	{
 		$mc_mod_traps = array();
-		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Incremental"), '0');
-		$mc_mod_traps[] = &HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Replacement"), '1');
+		$mc_mod_traps[] = HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Incremental"), '0');
+		$mc_mod_traps[] = HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_traps, 'mc_mod_traps', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_traps'=>'0'));
 	}
@@ -536,25 +536,25 @@
 
 	$form->addElement('header', 'treatment', _("Data Processing"));
 
-	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Yes"), '1');
-	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("No"), '0');
-	$serviceOOS[] = &HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Default"), '2');
+	$serviceOOS[] = HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Yes"), '1');
+	$serviceOOS[] = HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("No"), '0');
+	$serviceOOS[] = HTML_QuickForm::createElement('radio', 'service_obsess_over_service', null, _("Default"), '2');
 	$form->addGroup($serviceOOS, 'service_obsess_over_service', _("Obsess Over Service"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_obsess_over_service' => '2'));
 	}
 
-	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("Yes"), '1');
-	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("No"), '0');
-	$serviceCF[] = &HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("Default"), '2');
+	$serviceCF[] = HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("Yes"), '1');
+	$serviceCF[] = HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("No"), '0');
+	$serviceCF[] = HTML_QuickForm::createElement('radio', 'service_check_freshness', null, _("Default"), '2');
 	$form->addGroup($serviceCF, 'service_check_freshness', _("Check Freshness"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_check_freshness' => '2'));
 	}
 
-	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("Yes"), '1');
-	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("No"), '0');
-	$serviceFDE[] = &HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("Default"), '2');
+	$serviceFDE[] = HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("Yes"), '1');
+	$serviceFDE[] = HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("No"), '0');
+	$serviceFDE[] = HTML_QuickForm::createElement('radio', 'service_flap_detection_enabled', null, _("Default"), '2');
 	$form->addGroup($serviceFDE, 'service_flap_detection_enabled', _("Flap Detection Enabled"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_flap_detection_enabled' => '2'));
@@ -564,25 +564,25 @@
 	$form->addElement('text', 'service_low_flap_threshold', _("Low Flap Threshold"), $attrsText2);
 	$form->addElement('text', 'service_high_flap_threshold', _("High Flap Threshold"), $attrsText2);
 
-	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Yes"), '1');
-	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("No"), '0');
-	$servicePPD[] = &HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Default"), '2');
+	$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Yes"), '1');
+	$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("No"), '0');
+	$servicePPD[] = HTML_QuickForm::createElement('radio', 'service_process_perf_data', null, _("Default"), '2');
 	$form->addGroup($servicePPD, 'service_process_perf_data', _("Process Perf Data"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_process_perf_data' => '2'));
 	}
 
-	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Yes"), '1');
-	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("No"), '0');
-	$serviceRSI[] = &HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
+	$serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Yes"), '1');
+	$serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("No"), '0');
+	$serviceRSI[] = HTML_QuickForm::createElement('radio', 'service_retain_status_information', null, _("Default"), '2');
 	$form->addGroup($serviceRSI, 'service_retain_status_information', _("Retain Status Information"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_retain_status_information' => '2'));
 	}
 
-	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("Yes"), '1');
-	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("No"), '0');
-	$serviceRNI[] = &HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("Default"), '2');
+	$serviceRNI[] = HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("Yes"), '1');
+	$serviceRNI[] = HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("No"), '0');
+	$serviceRNI[] = HTML_QuickForm::createElement('radio', 'service_retain_nonstatus_information', null, _("Default"), '2');
 	$form->addGroup($serviceRNI, 'service_retain_nonstatus_information', _("Retain Non Status Information"), '&nbsp;');
 	if ($o != "mc") {
 		$form->setDefaults(array('service_retain_nonstatus_information' => '2'));
@@ -613,8 +613,8 @@
 
 	if ($o == "mc")	{
 		$mc_mod_sc = array();
-		$mc_mod_sc[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Incremental"), '0');
-		$mc_mod_sc[] = &HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Replacement"), '1');
+		$mc_mod_sc[] = HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Incremental"), '0');
+		$mc_mod_sc[] = HTML_QuickForm::createElement('radio', 'mc_mod_sc', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_sc, 'mc_mod_sc', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_sc'=>'0'));
 	}
@@ -656,8 +656,8 @@
 	}
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 

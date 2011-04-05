@@ -67,7 +67,7 @@
 			$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
 		}
 		
-		$DBRESULT = & $pearDBO->query("SELECT  * FROM `log_archive_host` WHERE host_id = " . $_GET["id"] . " order by date_start desc");
+		$DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_host` WHERE host_id = " . $_GET["id"] . " order by date_start desc");
 		while ($row = $DBRESULT->fetchRow()) {
 			fillBuffer($statesTab, $row, $color);
 		}

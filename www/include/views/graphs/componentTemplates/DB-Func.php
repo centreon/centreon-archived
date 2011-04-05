@@ -3,37 +3,37 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
  	if (!isset($oreon))
 		exit;
@@ -46,14 +46,14 @@
 		$sql = "SELECT compo_id FROM giv_components_template WHERE ";
 		$sql .= "name = '".$gsvs["name"]."' ";
 		if ( $gsvs["index_id"] != NULL ) {
-			$sql_qy =& $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$gsvs["index_id"]."' LIMIT 1;");
-			$hs_id =& $sql_qy->fetchRow();
+			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$gsvs["index_id"]."' LIMIT 1;");
+			$hs_id = $sql_qy->fetchRow();
 			$sql_qy->free();
 			$sql .= "AND host_id = '".$hs_id["host_id"]."' AND service_id = '".$hs_id["service_id"]."'";
 		} else {
 			$sql .= "AND host_id iS NULL  AND service_id IS NULL";
 		}
-		$DBRESULT =& $pearDB->query($sql);
+		$DBRESULT = $pearDB->query($sql);
 		$compo = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $gsvs["compo_id"]) {
@@ -74,15 +74,15 @@
 		$sql = "SELECT compo_id FROM giv_components_template WHERE ";
 		$sql .= "ds_name = '".$gsvs["ds_name"]."' ";
 		if ( $gsvs["index_id"] != NULL ) {
-			$sql_qy =& $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$gsvs["index_id"]."' LIMIT 1;");
-			$hs_id =& $sql_qy->fetchRow();
+			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$gsvs["index_id"]."' LIMIT 1;");
+			$hs_id = $sql_qy->fetchRow();
 			$sql_qy->free();
 			$sql .= "AND host_id = '".$hs_id["host_id"]."' AND service_id = '".$hs_id["service_id"]."'";
 		} else {
 			$sql .= "AND host_id iS NULL  AND service_id IS NULL";
 		}
-		$DBRESULT =& $pearDB->query($sql);
-		$compo =& $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query($sql);
+		$compo = $DBRESULT->fetchRow();
 		#Modif case
 		if ($DBRESULT->numRows() >= 1 && $compo["compo_id"] == $gsvs["compo_id"])
 			return true;
@@ -92,15 +92,15 @@
 		else
 			return true;
 	}
-	
+
 	function deleteComponentTemplateInDB ($compos = array())	{
 		global $pearDB;
 		foreach($compos as $key => $value){
 			$DBRESULT = $pearDB->query("DELETE FROM giv_components_template WHERE compo_id = '".$key."'");
 		}
 		defaultOreonGraph();
-	}	
-	
+	}
+
 	function defaultOreonGraph ()	{
 		global $pearDB;
 		$DBRESULT = $pearDB->query("SELECT DISTINCT compo_id FROM giv_components_template WHERE default_tpl1 = '1'");
@@ -114,7 +114,7 @@
 		$rq = "UPDATE giv_components_template SET default_tpl1 = '0'";
 		$DBRESULT = $pearDB->query($rq);
 	}
-	
+
 	function multipleComponentTemplateInDB ($compos = array(), $nbrDup = array())	{
 		global $pearDB;
 		foreach($compos as $key=>$value) {
@@ -135,34 +135,34 @@
 			}
 		}
 	}
-	
+
 	function updateComponentTemplateInDB ($compo_id = NULL)	{
 		if (!$compo_id) return;
 		updateComponentTemplate($compo_id);
-	}	
-	
+	}
+
 	function insertComponentTemplateInDB ()	{
 		$compo_id = insertComponentTemplate();
 		return ($compo_id);
 	}
-	
+
 	function insertComponentTemplate()	{
 		global $form, $pearDB, $pearDBO;
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
-		
+
 		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
 			$ret["ds_color_area"] = $ret["ds_color_line"];
-			
+
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
 				" `ds_color_line` , `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				" `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
 		if ( $ret["index_id"] != NULL ) {
-			$sql_qy =& $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
-			$hs_id =& $sql_qy->fetchRow();
+			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
+			$hs_id = $sql_qy->fetchRow();
 			$sql_qy->free();
 			$rq .= "'".$hs_id["host_id"]."', ";
 			$rq .= "'".$hs_id["service_id"]."', ";
@@ -198,7 +198,7 @@ fwrite($fh, $rq);
 		$compo_id = $DBRESULT->fetchRow();
 		return ($compo_id["MAX(compo_id)"]);
 	}
-	
+
 	function updateComponentTemplate($compo_id = null)	{
 		if (!$compo_id) return;
 		global $form, $pearDB, $pearDBO;
@@ -206,22 +206,22 @@ fwrite($fh, $rq);
 		$ret = $form->getSubmitValues();
 		$hs_id = array();
 		if ( $ret["index_id"] != NULL ) {
-			$sql_qy =& $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
-			$hs_id =& $sql_qy->fetchRow();
+			$sql_qy = $pearDBO->query("SELECT host_id, service_id  FROM index_data WHERE id='".$ret["index_id"]."' LIMIT 1;");
+			$hs_id = $sql_qy->fetchRow();
 			$sql_qy->free();
 		}
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
-		
+
 		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
 			$ret["ds_color_area"] = $ret["ds_color_line"];
-	
+
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET `host_id` = ";
 		isset($hs_id["host_id"]) && $hs_id["host_id"] != NULL ? $rq .= "'".htmlentities($hs_id["host_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`service_id` = ";
 		isset($hs_id["service_id"]) && $hs_id["service_id"] != NULL ? $rq .= "'".htmlentities($hs_id["service_id"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		$rq .= "`name` = ";	
+		$rq .= "`name` = ";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "`ds_order` = ";
 		isset($ret["ds_order"]) && $ret["ds_order"] != NULL ? $rq .= "'".htmlentities($ret["ds_order"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -266,6 +266,6 @@ fwrite($fh, $rq);
 		$rq .= "WHERE compo_id = '".$compo_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		defaultOreonGraph();
-	}		
-	
+	}
+
 ?>

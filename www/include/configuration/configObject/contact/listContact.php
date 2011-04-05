@@ -59,11 +59,11 @@
 
 
 	if (isset($search)) {
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')");
 	} else {
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM contact");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM contact");
 	}
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

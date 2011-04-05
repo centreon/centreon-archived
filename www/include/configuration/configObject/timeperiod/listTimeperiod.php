@@ -78,7 +78,7 @@
 	/*
 	 * Timeperiod list
 	 */
-	$DBRESULT = &$pearDB->query("SELECT tp_id, tp_name, tp_alias FROM timeperiod $SearchTool ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT = $pearDB->query("SELECT tp_id, tp_name, tp_alias FROM timeperiod $SearchTool ORDER BY tp_name LIMIT ".$num * $limit.", ".$limit);
 	
 	$search = tidySearchKey($search, $advanced_search);
 	

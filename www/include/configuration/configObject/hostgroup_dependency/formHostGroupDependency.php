@@ -109,24 +109,24 @@
 	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
 	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
 	$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"), array('id' => 'hPending', 'onClick' => 'uncheckAllH(this);'));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'uncheckAllH(this);'));
 	$form->addGroup($tab, 'notification_failure_criteria', _("Notification Failure Criteria"), '&nbsp;&nbsp;');
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'p', '&nbsp;', _("Pending"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"));
 	$form->addGroup($tab, 'execution_failure_criteria', _("Execution Failure Criteria"), '&nbsp;&nbsp;');
 
 	$ams1 = $form->addElement('advmultiselect', 'dep_hgParents', array(_("Host Groups Name"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
@@ -144,8 +144,8 @@
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

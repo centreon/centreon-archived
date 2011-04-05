@@ -86,13 +86,13 @@
 	$form->addElement('text', 'report_minute_end', 		_("End Minute"), $attrsText);
 
 	$Opt = array();
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Monday', 	'&nbsp;', _("Monday"));
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Tuesday', 	'&nbsp;', _("Tuesday"));
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Wednesday', '&nbsp;', _("Wednesday"));
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Thursday', 	'&nbsp;', _("Thursday"));
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Friday', 	'&nbsp;', _("Friday"));
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Saturday', 	'&nbsp;', _("Saturday"));
- 	$Opt[] = &HTML_QuickForm::createElement('checkbox', 'report_Sunday', 	'&nbsp;', _("Sunday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Monday', 	'&nbsp;', _("Monday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Tuesday', 	'&nbsp;', _("Tuesday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Wednesday', '&nbsp;', _("Wednesday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Thursday', 	'&nbsp;', _("Thursday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Friday', 	'&nbsp;', _("Friday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Saturday', 	'&nbsp;', _("Saturday"));
+ 	$Opt[] = HTML_QuickForm::createElement('checkbox', 'report_Sunday', 	'&nbsp;', _("Sunday"));
 	$form->addGroup($Opt, 'dayList', _("Days") , '&nbsp;&nbsp;');
 
 

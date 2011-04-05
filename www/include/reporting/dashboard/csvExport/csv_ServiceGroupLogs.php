@@ -124,7 +124,7 @@
 				   ._("Critical Mean Time").";"._("Critical Alert")."\n";
 	$str = "";
 	$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$id."'";
-	$DBRESULT = & $pearDB->query($request);
+	$DBRESULT = $pearDB->query($request);
 	while ($sg = $DBRESULT->fetchRow()) {
 		if ($str != "") {
 			$str .= ", ";
@@ -148,7 +148,7 @@
 				"AND `date_start` >= '".$start_date."' " .
 				"AND `date_end` <= '".$end_date."' " .
 				"GROUP BY `date_end`, `date_start` order by `date_start` desc";
-	$res = & $pearDBO->query($request);
+	$res = $pearDBO->query($request);
 	$statesTab = array("OK", "WARNING", "CRITICAL", "UNKNOWN");
 	while ($row = $res->fetchRow()) {
 		$duration = $row["date_end"] - $row["date_start"];

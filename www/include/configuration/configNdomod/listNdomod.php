@@ -50,9 +50,9 @@
 	if (isset($search) && $search)
 		$SearchTool = " WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ";
 	
-	$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndomod` $SearchTool");
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `cfg_ndomod` $SearchTool");
 
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	/*

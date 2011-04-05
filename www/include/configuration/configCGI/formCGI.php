@@ -85,8 +85,8 @@
 	$form->addElement('text', 'cgi_name', _("CGI File Name"), $attrsText);
 	$form->addElement('textarea', 'cgi_comment', _("Comments"), $attrsTextarea);
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'cgi_activate', null, _("Enabled"), '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'cgi_activate', null, _("Disabled"), '0');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'cgi_activate', null, _("Enabled"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'cgi_activate', null, _("Disabled"), '0');
 	$form->addGroup($nagTab, 'cgi_activate', _("Status"), '&nbsp;');	
 	
 	## Part 1
@@ -97,8 +97,8 @@
 	## Part 2
 	$form->addElement('text', 'nagios_check_command', _("Nagios Process Check Command"), $attrsText2);
 	$nagTab = array();
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, _("Yes"), '1');
-	$nagTab[] = &HTML_QuickForm::createElement('radio', 'use_authentication', null, _("No"), '0');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_authentication', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_authentication', null, _("No"), '0');
 	$form->addGroup($nagTab, 'use_authentication', _("Authentication Usage"), '&nbsp;');
 	$form->addElement('text', 'default_user_name', _("Default User Name"), $attrsText);
 	$form->addElement('textarea', 'authorized_for_system_information', _("System/Process Information Access"), $attrsTextarea);
@@ -127,8 +127,8 @@
 	$form->addElement('textarea', 'ping_syntax', _("Ping Syntax"), $attrsTextarea);
 		
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	
 	$form->setDefaults(array(

@@ -123,15 +123,15 @@
 	$sel->setOptions(array($services1, $services2));
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
 	$form->addGroup($tab, 'activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('activate' => '1'));
 	$form->addElement('textarea', 'msr_comment', _("Comments"), $attrsTextarea);
 	
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

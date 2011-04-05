@@ -198,14 +198,14 @@
 	 * Further informations
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$groupActivation[] = &HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Enabled"), '1');
-	$groupActivation[] = &HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Disabled"), '0');
+	$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Enabled"), '1');
+	$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_group_activate', null, _("Disabled"), '0');
 	$form->addGroup($groupActivation, 'acl_group_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('acl_group_activate' => '1'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 

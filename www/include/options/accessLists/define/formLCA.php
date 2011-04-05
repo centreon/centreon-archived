@@ -152,14 +152,14 @@ $lca["lca_topos"] = array();
 	$form->addElement('text', 'lca_name', _("ACL Definition"), $attrsText);
 	$form->addElement('text', 'lca_alias', _("Alias"), $attrsText);
 /*	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, _("Menu"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, _("Resources"), '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_type', null, _("Both"), '3');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_type', null, _("Menu"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_type', null, _("Resources"), '2');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_type', null, _("Both"), '3');
 	$form->addGroup($tab, 'lca_type', _("Type"), '&nbsp;');
 	$form->setDefaults(array('lca_type' => '3')); */
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, _("Enabled"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_activate', null, _("Disabled"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_activate', null, _("Enabled"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_activate', null, _("Disabled"), '0');
 	$form->addGroup($tab, 'lca_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('lca_activate' => '1'));
 
@@ -190,8 +190,8 @@ $lca["lca_topos"] = array();
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'lca_hg_childs', null, _("No"), '0');
 	$form->addGroup($tab, 'lca_hg_childs', _("Include Host Groups -> Hosts"), '&nbsp;');
 	$form->setDefaults(array('lca_hg_childs' => '1'));
 
@@ -297,8 +297,8 @@ $lca["lca_topos"] = array();
 	$form->addGroup($lca_topos, 'lca_topos', _("Visible page"), '&nbsp;&nbsp;');
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("More Actions"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

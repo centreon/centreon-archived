@@ -69,7 +69,7 @@
 	} else {
 		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM host WHERE host_register = '0'");
 	}
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

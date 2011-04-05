@@ -68,7 +68,7 @@
 		}
 		
 		$str = "";
-		$DBRESULT = & $pearDB->query("SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$_GET["id"]."'");
+		$DBRESULT = $pearDB->query("SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$_GET["id"]."'");
 		while ($sg = $DBRESULT->fetchRow()) {
 			if ($str != "")
 				$str .= ", ";

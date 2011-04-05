@@ -79,7 +79,7 @@
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 	$rq = "SELECT  * FROM virtual_metrics $SearchTool ORDER BY index_id,vmetric_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT = & $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	if (PEAR::isError($DBRESULT)) {
 		print "Mysql Error : ".$DBRESULT->getDebugInfo();
 	}

@@ -106,13 +106,13 @@
 	//$form->addElement('text', 'enable_autologin', _("Enable Autologin"));
 	//$form->addElement('text', 'display_autologin_shortcut', _("Display Autologin shortcut"));
 	
-	$options1[] = &HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+	$options1[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 	$form->addGroup($options1, 'enable_autologin', _("Enable Autologin"), '&nbsp;&nbsp;');
 	
-	$options2[] = &HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+	$options2[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 	$form->addGroup($options2, 'display_autologin_shortcut', _("Display Autologin shortcut"), '&nbsp;&nbsp;');
 	
-	$options3[] = &HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
+	$options3[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 	$form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 	
 	/*

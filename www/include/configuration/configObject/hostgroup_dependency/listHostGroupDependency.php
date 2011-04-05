@@ -54,8 +54,8 @@
 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
-	$DBRESULT = & $pearDB->query($rq);
-	$tmp = & $DBRESULT->fetchRow();
+	$DBRESULT = $pearDB->query($rq);
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");

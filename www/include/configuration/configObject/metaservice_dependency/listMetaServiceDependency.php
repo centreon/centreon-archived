@@ -54,7 +54,7 @@
 	if ($search)
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	$DBRESULT = $pearDB->query($rq);
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
 	include("./include/common/checkPagination.php");

@@ -52,7 +52,7 @@
 		$SearchTool = " WHERE (alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') OR (name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 
 	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM traps_vendor $SearchTool");
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 

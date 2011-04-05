@@ -254,8 +254,8 @@
 	$form->addElement('header', 'groupLinks', _("Group Relations"));
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
-		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
-		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Replacement"), '1');
+		$mc_mod_cg[] = HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Incremental"), '0');
+		$mc_mod_cg[] = HTML_QuickForm::createElement('radio', 'mc_mod_cg', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_cg, 'mc_mod_cg', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cg'=>'0'));
 	}
@@ -270,8 +270,8 @@
 	 */
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_oreon', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_oreon', _("Reach Centreon Front-end"), '&nbsp;');
 
 	$form->addElement('password', 'contact_passwd', _("Password"), array("size"=>"30", "autocomplete"=>"off"));
@@ -279,8 +279,8 @@
     $form->addElement('select', 'contact_lang', _("Default Language"), $langs);
     $form->addElement('select', 'contact_type_msg', _("Mail Type"), array(NULL=>NULL, "txt"=>"txt", "html"=>"html", "pdf"=>"pdf"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_admin', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_admin', _("Admin"), '&nbsp;');
 
 	/**
@@ -288,8 +288,8 @@
 	 */
 	if ($o == "mc")	{
 		$mc_mod_cg = array();
-		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_acl', null, _("Incremental"), '0');
-		$mc_mod_cg[] = &HTML_QuickForm::createElement('radio', 'mc_mod_acl', null, _("Replacement"), '1');
+		$mc_mod_cg[] = HTML_QuickForm::createElement('radio', 'mc_mod_acl', null, _("Incremental"), '0');
+		$mc_mod_cg[] = HTML_QuickForm::createElement('radio', 'mc_mod_acl', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_cg, 'mc_mod_acl', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_acl'=>'0'));
 	}
@@ -335,8 +335,8 @@
    	$form->addElement('header', 'notification', _("Notification"));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
 	$form->setDefaults(array('contact_enable_notifications' => '0'));
 
@@ -344,20 +344,20 @@
 	 * Host notifications
 	 */
 	$form->addElement('header', 'hostNotification', _("Host"));
- 	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);'));
-	$hostNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
+ 	$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"), array('id' => 'hDown', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"), array('id' => 'hUnreachable', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'hRecovery', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'hFlapping', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'hScheduled', 'onClick' => 'uncheckAllH(this);'));
+	$hostNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'hNone', 'onClick' => 'javascript:uncheckAllH(this);'));
 	$form->addGroup($hostNotifOpt, 'contact_hostNotifOpts', _("Host Notification Options"), '&nbsp;&nbsp;');
     $form->addElement('select', 'timeperiod_tp_id', _("Host Notification Period"), $notifTps);
 	unset($hostNotifOpt);
 
 	if ($o == "mc")	{
 		$mc_mod_hcmds = array();
-		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
-		$mc_mod_hcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
+		$mc_mod_hcmds[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Incremental"), '0');
+		$mc_mod_hcmds[] = HTML_QuickForm::createElement('radio', 'mc_mod_hcmds', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_hcmds, 'mc_mod_hcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_hcmds'=>'0'));
 	}
@@ -372,19 +372,19 @@
 	 * Service notifications
 	 */
 	$form->addElement('header', 'serviceNotification', _("Service"));
- 	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"), array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"), array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
-	$svNotifOpt[] = &HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
+ 	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"), array('id' => 'sWarning', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"), array('id' => 'sUnknown', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"), array('id' => 'sCritical', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"), array('id' => 'sRecovery', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'f', '&nbsp;', _("Flapping"), array('id' => 'sFlapping', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 's', '&nbsp;', _("Downtime Scheduled"), array('id' => 'sScheduled', 'onClick' => 'uncheckAllS(this);'));
+	$svNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'n', '&nbsp;', _("None"), array('id' => 'sNone', 'onClick' => 'uncheckAllS(this);'));
 	$form->addGroup($svNotifOpt, 'contact_svNotifOpts', _("Service Notification Options"), '&nbsp;&nbsp;');
 	$form->addElement('select', 'timeperiod_tp_id2', _("Service Notification Period"), $notifTps);
  	if ($o == "mc")	{
 		$mc_mod_svcmds = array();
-		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
-		$mc_mod_svcmds[] = &HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
+		$mc_mod_svcmds[] = HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Incremental"), '0');
+		$mc_mod_svcmds[] = HTML_QuickForm::createElement('radio', 'mc_mod_svcmds', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_svcmds, 'mc_mod_svcmds', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_svcmds'=>'0'));
 	}
@@ -398,21 +398,21 @@
 	 * Further informations
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Enabled"), '1');
-	$cctActivation[] = &HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Disabled"), '0');
+	$cctActivation[] = HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Enabled"), '1');
+	$cctActivation[] = HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Disabled"), '0');
 	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
 
-	$cctRegister[] = &HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '1');
-	$cctRegister[] = &HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '0');
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '1');
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '0');
 	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
 	$form->setDefaults(array('contact_register' => '0'));
 
 	$form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

@@ -138,12 +138,12 @@
 
 	if (isset($tabCommandType)) {
 		foreach ($tabCommandType as $id => $name) {
-			$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);
+			$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);
 		}
 	} else {
-		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
-		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
-		$cmdType[] = &HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
+		$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
+		$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+		$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
 	}
 	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
 
@@ -165,8 +165,8 @@
 	$form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action' => '1'));
 	$form->setDefaults(array("listOfArg"=>$strArgDesc));

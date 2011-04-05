@@ -47,11 +47,11 @@
 	# end quickSearch form
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db` WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
 	else
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db`");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `cfg_ndo2db`");
 
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	/*

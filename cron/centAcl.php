@@ -76,7 +76,7 @@
     	/*
     	 * Detect Which DB layer is used
     	 */
-    	$DBRESULT =& $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'broker'");
+    	$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'broker'");
 		if (PEAR::isError($DBRESULT)) {
 		    print "Cannot Get Monitoring Engine";
 		    exit(1);
@@ -93,12 +93,12 @@
 		/*
 		 * Lock in MySQL
 		 */
-		$DBRESULT =& $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+		$DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
 		if (PEAR::isError($DBRESULT)) {
 		    print "Error to check is process running.";
 		    exit(1);
 		}
-	    $data =& $DBRESULT->fetchRow();
+	    $data = $DBRESULT->fetchRow();
 
 	    $is_running = $data["running"];
 	    $appID = $data["id"];
@@ -106,12 +106,12 @@
 
 	    if (count($data) == 0) {
 	       $DBRESULT = $pearDB->query("INSERT INTO cron_operation (name, system, activate) VALUES ('centAcl.php', '1', '1')");
-	       $DBRESULT =& $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
+	       $DBRESULT = $pearDB->query("SELECT id, running FROM cron_operation WHERE name LIKE 'centAcl.php'");
 			if (PEAR::isError($DBRESULT)) {
 			    print "Error to check is process running.";
 			    exit(1);
 			}
-	    	$data =& $DBRESULT->fetchRow();
+	    	$data = $DBRESULT->fetchRow();
 	    	$appID = $data["id"];
 	       	$is_running = 0;
 	    }
@@ -294,8 +294,8 @@
         $res->free();
 
     	$hostCache = array();
-    	$DBRESULT =& $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
-    	while ($h =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1'");
+    	while ($h = $DBRESULT->fetchRow()) {
     		$hostCache[$h["host_id"]] = $h["host_name"];
     	}
     	$DBRESULT->free();
@@ -319,8 +319,8 @@
     	 * Get all included Hosts
     	 */
     	$hostIncCache = array();
-    	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_host_relations` WHERE acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
-      	while ($h =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_host_relations` WHERE acl_resources_host_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
+      	while ($h = $DBRESULT->fetchRow()) {
       		if (!isset($hostIncCache[$h["acl_res_id"]])) {
       			$hostIncCache[$h["acl_res_id"]] = array();
       		}
@@ -332,8 +332,8 @@
     	 * Get all excluded Hosts
     	 */
     	$hostExclCache = array();
-    	$DBRESULT =& $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_resources_hostex_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
-      	while ($h =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT host_id, host_name, acl_res_id FROM `host`, `acl_resources_hostex_relations` WHERE acl_resources_hostex_relations.host_host_id = host.host_id AND host.host_register = '1' AND host.host_activate = '1'");
+      	while ($h = $DBRESULT->fetchRow()) {
       		if (!isset($hostExclCache[$h["acl_res_id"]])) {
       			$hostExclCache[$h["acl_res_id"]] = array();
       		}
@@ -345,8 +345,8 @@
     	 * Service Cache
     	 */
     	$svcCache = array();
-    	$DBRESULT =& $pearDB->query("SELECT service_id, service_description FROM `service` WHERE service_register = '1'");
-      	while ($s =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM `service` WHERE service_register = '1'");
+      	while ($s = $DBRESULT->fetchRow()) {
       		$svcCache[$s["service_id"]] = $s["service_description"];
       	}
     	$DBRESULT->free();
@@ -355,8 +355,8 @@
     	 * Host Host relation
     	 */
     	$hostHGRelation = array();
-    	$DBRESULT =& $pearDB->query("SELECT * FROM hostgroup_relation");
-    	while ($hg =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT * FROM hostgroup_relation");
+    	while ($hg = $DBRESULT->fetchRow()) {
     		if (!isset($hostHGRelation[$hg["hostgroup_hg_id"]])) {
     			$hostHGRelation[$hg["hostgroup_hg_id"]] = array();
     		}
@@ -371,8 +371,8 @@
     	 */
     	$hsRelation = array();
     	$hgsRelation = array();
-    	$DBRESULT =& $pearDB->query("SELECT hostgroup_hg_id, host_host_id, service_service_id FROM host_service_relation");
-    	while ($sr =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, host_host_id, service_service_id FROM host_service_relation");
+    	while ($sr = $DBRESULT->fetchRow()) {
     		if (isset($sr["host_host_id"]) && $sr["host_host_id"]) {
     			if (!isset($hsRelation[$sr["host_host_id"]])) {
     				$hsRelation[$sr["host_host_id"]] = array();
@@ -395,16 +395,16 @@
     	 * Create Servive template modele Cache
     	 */
     	$svcTplCache = array();
-    	$DBRESULT =& $pearDB->query("SELECT service_template_model_stm_id, service_id FROM service");
-    	while ($tpl =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT service_template_model_stm_id, service_id FROM service");
+    	while ($tpl = $DBRESULT->fetchRow()) {
     		$svcTplCache[$tpl["service_id"]] = $tpl["service_template_model_stm_id"];
     	}
     	$DBRESULT->free();
     	unset($tpl);
 
     	$svcCatCache = array();
-    	$DBRESULT =& $pearDB->query("SELECT sc_id, service_service_id FROM `service_categories_relation`");
-    	while ($res =& $DBRESULT->fetchRow()) {
+    	$DBRESULT = $pearDB->query("SELECT sc_id, service_service_id FROM `service_categories_relation`");
+    	while ($res = $DBRESULT->fetchRow()) {
     		if (!isset($svcCatCache[$res["service_service_id"]] )) {
     			$svcCatCache[$res["service_service_id"]]  = array();
     		}
@@ -453,8 +453,8 @@
     			"AND acl_groups.acl_group_activate = '1' ".
     			"AND (acl_groups.acl_group_changed = '1' ".
     				"OR acl_resources.changed = '1')";
-    	$DBRESULT1 =& $pearDB->query($query);
-    	while ($result =& $DBRESULT1->fetchRow()) {
+    	$DBRESULT1 = $pearDB->query($query);
+    	while ($result = $DBRESULT1->fetchRow()) {
     	    $tabGroups[$result["acl_group_id"]] = 1;
     	}
     	$DBRESULT1->free();
@@ -479,14 +479,14 @@
     		/* ************************************************
     		 * Select
     		 */
-    		$DBRESULT2 =& $pearDB->query("SELECT `acl_resources`.`acl_res_id` FROM `acl_res_group_relations`, `acl_resources` " .
+    		$DBRESULT2 = $pearDB->query("SELECT `acl_resources`.`acl_res_id` FROM `acl_res_group_relations`, `acl_resources` " .
     									"WHERE `acl_res_group_relations`.`acl_group_id` = '".$acl_group_id."' " .
     									"AND `acl_res_group_relations`.acl_res_id = `acl_resources`.acl_res_id " .
     									"AND `acl_resources`.acl_res_activate = '1'");
     		if ($debug) {
     			$time_start = microtime_float2();
     		}
-    		while ($res2 =& $DBRESULT2->fetchRow()){
+    		while ($res2 = $DBRESULT2->fetchRow()){
     			$Host = array();
     			/* ------------------------------------------------------------------ */
 
@@ -540,14 +540,14 @@
     			/*
     			 * get all Service groups
     			 */
-    			$DBRESULT3 =& $pearDB->query(	"SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service` " .
+    			$DBRESULT3 = $pearDB->query(	"SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service` " .
     											"WHERE acl_res_id = '".$res2["acl_res_id"]."' " .
     											"AND host.host_id = servicegroup_relation.host_host_id " .
     											"AND service.service_id = servicegroup_relation.service_service_id " .
     											"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id " .
     											"AND service_activate = '1'");
     			if ($DBRESULT3->numRows()) {
-    		  		while ($h =& $DBRESULT3->fetchRow()){
+    		  		while ($h = $DBRESULT3->fetchRow()){
     					if (!isset($tabElem[$h["host_name"]])) {
     						$tabElem[$h["host_name"]] = array();
     					}
@@ -574,9 +574,9 @@
     		 * Delete old data for this group
     		 */
     		if ($engine != 'broker') {
-    			$DBRESULT =& $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+    			$DBRESULT = $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
     		} else {
-				$DBRESULT =& $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
+				$DBRESULT = $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
     		}
 
     		$str = "";
@@ -592,9 +592,9 @@
     					$i++;
     					if ($i >= 1000) {
     						if ($engine != 'broker') {
-    							$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
+    							$DBRESULTNDO = $pearDBndo->query($strBegin.$str);
     						} else {
-    							$DBRESULTNDO =& $pearDBO->query($strBegin.$str);
+    							$DBRESULTNDO = $pearDBO->query($strBegin.$str);
     						}
     						$str = "";
     						$i = 0;
@@ -607,9 +607,9 @@
     			 */
     			if ($str != "") {
     				if ($engine != 'broker') {
-    					$DBRESULTNDO =& $pearDBndo->query($strBegin.$str);
+    					$DBRESULTNDO = $pearDBndo->query($strBegin.$str);
     				} else {
-						$DBRESULTNDO =& $pearDBO->query($strBegin.$str);
+						$DBRESULTNDO = $pearDBO->query($strBegin.$str);
     				}
     				$str = "";
     			}

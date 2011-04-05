@@ -47,10 +47,10 @@
 	include_once("./include/common/quickSearch.php");
 	
 	if (isset($search))
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'");
 	else
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM meta_service");
-	$tmp = & $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM meta_service");
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 	
 	include("./include/common/checkPagination.php");
@@ -85,7 +85,7 @@
 		$rq = "SELECT *  FROM meta_service WHERE meta_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
 	else
 		$rq = "SELECT * FROM meta_service ORDER BY meta_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT = & $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$form = new HTML_QuickForm('select_form', 'GET', "?p=".$p);
 	

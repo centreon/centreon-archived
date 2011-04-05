@@ -85,8 +85,8 @@
 	$form->addElement('text', 'name', _("Name"), $attrsText);
 	$form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
 	$status = array();
-	$status[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
-	$status[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
+	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
+	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 	$form->addGroup($status, 'activate', _("Status"), '&nbsp;');
 
 	/*

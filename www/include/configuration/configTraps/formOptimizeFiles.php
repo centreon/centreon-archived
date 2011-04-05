@@ -60,55 +60,55 @@
 	$form->addElement('header', 'opt', _("Export Options"));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'generate', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'generate', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'generate', null, _("No"), '0');
 	$form->addGroup($tab, 'generate', _("Generate Files"), '&nbsp;');
 	$form->setDefaults(array('generate' => '1'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, _("Dependencies Management"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, _("Current Activation"), '2');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'level', null, _("None"), '3');
+	$tab[] = HTML_QuickForm::createElement('radio', 'level', null, _("Dependencies Management"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'level', null, _("Current Activation"), '2');
+	$tab[] = HTML_QuickForm::createElement('radio', 'level', null, _("None"), '3');
 	$form->addGroup($tab, 'level', _("Relations between Elements"), '<br />');
 	$form->setDefaults(array('level' => '1'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'comment', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'comment', null, _("No"), '0');
 	$form->addGroup($tab, 'comment', _("Include Comments"), '&nbsp;');
 	$form->setDefaults(array('comment' => '0'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'xml', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'xml', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'xml', null, _("No"), '0');
 	$form->addGroup($tab, 'xml', _("Export in XML too"), '&nbsp;');
 	$form->setDefaults(array('xml' => '0'));
 	$form->addElement('header', 'traps', _("SNMP Traps"));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'genTraps', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'genTraps', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'genTraps', null, _("No"), '0');
 	$form->addGroup($tab, 'genTraps', _("Export configuration files"), '&nbsp;');
 	$form->setDefaults(array('genTraps' => '0'));
 	$form->addElement('header', 'result', _("Result"));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
 	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '1'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'optimize', null, _("No"), '0');
 	$form->addGroup($tab, 'optimize', _("Run Optimisation test (-s)"), '&nbsp;');
 	$form->setDefaults(array('optimize' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'move', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'move', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'move', null, _("No"), '0');
 	$form->addGroup($tab, 'move', _("Move Export Files"), '&nbsp;');
 	$form->setDefaults(array('move' => '0'));
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("Yes"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'restart', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'restart', null, _("Yes"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'restart', null, _("No"), '0');
 	$form->addGroup($tab, 'restart', _("Restart Nagios"), '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
 

@@ -48,12 +48,12 @@
 	include_once("./include/common/quickSearch.php");
 
 	if (isset($search)){
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM servicegroup WHERE (sg_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sg_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')");
 	} else {
-		$DBRESULT = & $pearDB->query("SELECT COUNT(*) FROM servicegroup");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM servicegroup");
 	}
 
-	$tmp = & $DBRESULT->fetchRow();
+	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
 	include("./include/common/checkPagination.php");
@@ -80,7 +80,7 @@
 		$rq = "SELECT sg_id, sg_name, sg_alias, sg_activate FROM servicegroup ORDER BY sg_name LIMIT ".$num * $limit.", ".$limit;
 	}
 
-	$DBRESULT = & $pearDB->query($rq);
+	$DBRESULT = $pearDB->query($rq);
 	
 	$search = tidySearchKey($search, $advanced_search);
 	

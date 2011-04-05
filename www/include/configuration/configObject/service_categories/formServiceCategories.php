@@ -138,14 +138,14 @@
 	$ams1->setElementTemplate($template);
 	echo $ams1->getElementJs(false);
 
-	$sc_activate[] = &HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
-	$sc_activate[] = &HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
+	$sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
+	$sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Disabled"), '0');
 	$form->addGroup($sc_activate, 'sc_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('sc_activate' => '1'));
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

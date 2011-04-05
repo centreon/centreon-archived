@@ -121,8 +121,8 @@
 	$form->addElement('text', 'max_eventhandlers_age', _("Event history retention"), $attrsText3);
 	
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'activate', _("Status"), '&nbsp;');	
 		
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){

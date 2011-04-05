@@ -195,15 +195,15 @@
 	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);
 	$form->addElement('select', 'escalation_period', _("Escalation Period"), $tps);
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'd', '&nbsp;', _("Down"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unreachable"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 	$form->addGroup($tab, 'escalation_options1', _("Hosts Escalation Options"), '&nbsp;&nbsp;');
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
-	$tab[] = &HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'c', '&nbsp;', _("Critical"));
+	$tab[] = HTML_QuickForm::createElement('checkbox', 'r', '&nbsp;', _("Recovery"));
 	$form->addGroup($tab, 'escalation_options2', _("Services Escalation Options"), '&nbsp;&nbsp;');
 	$form->addElement('textarea', 'esc_comment', _("Comments"), $attrsTextarea);
 
@@ -269,8 +269,8 @@
 	echo $ams1->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 

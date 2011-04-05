@@ -114,7 +114,7 @@
 			  "WHERE `host_id` = ".$host_id." AND `date_start` >=  ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `host_id` ";
-		$DBRESULT = & $pearDBO->query($rq);
+		$DBRESULT = $pearDBO->query($rq);
 		if ($row = $DBRESULT->fetchRow())
 			$hostStats = $row;
 
@@ -398,7 +398,7 @@
 			  "WHERE `host_id` = ".$host_id." AND service_id = ".$service_id." AND `date_start` >= ".$start_date." AND `date_end` <= ".$end_date." ".
 			  		"AND DATE_FORMAT( FROM_UNIXTIME( `date_start`), '%W') IN (".$days_of_week.") ".
 			  "GROUP BY `service_id`";
-		$DBRESULT = & $pearDBO->query($rq);
+		$DBRESULT = $pearDBO->query($rq);
 
 		if ($row = $DBRESULT->fetchRow())
 			$serviceStats = $row;

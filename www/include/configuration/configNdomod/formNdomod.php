@@ -100,8 +100,8 @@
 	$form->addElement('text', 'config_output_options', _("Output options"), $attrsText3);
 	
 	$Tab = array();
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
-	$Tab[] = &HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), '1');
+	$Tab[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'activate', _("Status"), '&nbsp;');	
 		
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){

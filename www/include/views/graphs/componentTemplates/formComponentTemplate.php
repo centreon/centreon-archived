@@ -60,7 +60,7 @@
 		$res->free();
 
 		$hs_data = array();
-		$res =& $pearDBO->query("SELECT id FROM index_data WHERE host_id = '".$compo["host_id"]."' AND service_id = '".$compo["service_id"]."' LIMIT 1");
+		$res = $pearDBO->query("SELECT id FROM index_data WHERE host_id = '".$compo["host_id"]."' AND service_id = '".$compo["service_id"]."' LIMIT 1");
 		$tab = $res->fetchRow();
 		if (is_array($tab)) {
 			$hs_data = array_map("myDecode", $tab);
@@ -101,7 +101,7 @@
 	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
 	$mx_l = strlen($indds[""]);
 
-	$dbindd =& $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data ORDER BY host_name, service_description");
+	$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data ORDER BY host_name, service_description");
 	while ($indd = $dbindd->fetchRow()) {
 		$indds[$indd["host_id"]] = $indd["host_name"]."&nbsp;&nbsp;&nbsp;";
 		$hn_l = strlen($indd["host_name"]);
@@ -206,8 +206,8 @@
 	echo $ams1->getElementJs(false);
 
 	$tab = array();
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = &HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
@@ -252,14 +252,14 @@
 		 * Modify
 		 */
 		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")"));
+		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetLists(".$compo["host_id"].",".$compo["index_id"].")"));
 		$form->setDefaults($compo);
 	} else if ($o == "a")	{
 		/*
 		 * Add
 		 */
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res =& $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
+		$res = $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
 		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_area_warn" => "#F8C706", "ds_color_area_crit" => "#F91E05", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
 	}
 	if ($o == "c" || $o == "a") {
