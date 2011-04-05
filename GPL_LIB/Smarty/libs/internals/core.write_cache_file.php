@@ -39,7 +39,7 @@ function smarty_core_write_cache_file($params, &$smarty)
         // smarty_core_process_compiled_includes() on a cache-read
         
         $match_count = count($match[0]);
-        $results = preg_preg_split('!(\{/?nocache\:[0-9a-f]{32}#\d+\})!', $params['results'], -1, PREG_preg_split_DELIM_CAPTURE);
+        $results = preg_split('!(\{/?nocache\:[0-9a-f]{32}#\d+\})!', $params['results'], -1, preg_split_DELIM_CAPTURE);
         
         $level = 0;
         $j = 0;

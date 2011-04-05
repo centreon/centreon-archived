@@ -174,7 +174,7 @@
 		 */
 		/*
 		$obj->XML->writeElement("long_name", _("Extended Status Information"), 0);
-       	$lo_array = preg_preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $data["long_output"]);
+       	$lo_array = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $data["long_output"]);
         foreach ($lo_array as $val) {
         	if ($val != "") {
 				$obj->XML->startElement("long_output_data");

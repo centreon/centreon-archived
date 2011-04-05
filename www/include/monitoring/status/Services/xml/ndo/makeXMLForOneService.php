@@ -209,7 +209,7 @@
 		 * Long Output
 		 */
 		$buffer->writeElement("long_name", _("Extended Status Information"), 0);
-       	$lo_array = preg_preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $ndo["long_output"]);
+       	$lo_array = preg_split('/<br \/>|<br>|\\\n|\x0A|\x0D\x0A/', $ndo["long_output"]);
         foreach ($lo_array as $val) {
         	if ($val != "") {
 				$buffer->startElement("long_output_data");

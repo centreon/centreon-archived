@@ -21,7 +21,7 @@
 function smarty_modifier_count_words($string)
 {
     // preg_split text by ' ',\r,\n,\f,\t
-    $preg_split_array = preg_preg_split('/\s+/',$string);
+    $preg_split_array = preg_split('/\s+/',$string);
     // count matches that contain alphanumerics
     $word_count = preg_grep('/[a-zA-Z0-9\\x80-\\xff]/', $preg_split_array);
 

@@ -46,7 +46,7 @@
      * @return array
      */
     function parse_zend_license_file($file) {
-        $lines = preg_preg_split('/\n/', file_get_contents($file));
+        $lines = preg_split('/\n/', file_get_contents($file));
         $infos = array();
         foreach ($lines as $line) {
             if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {

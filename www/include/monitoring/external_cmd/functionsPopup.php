@@ -170,22 +170,22 @@
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
 
-			$res = preg_preg_split("/ /", $start);
+			$res = preg_split("/ /", $start);
 			if (count($res) != 2) {
 				throw new Exception('Start date format is not valid');
 			}
-			$res1 = preg_preg_split("/\//", $res[0]);
-			$res2 = preg_preg_split("/:/", $res[1]);
+			$res1 = preg_split("/\//", $res[0]);
+			$res2 = preg_split("/:/", $res[1]);
 
 			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
 			$start_time = $centreonGMT->getUTCDate($start_time);
 
-			$res = preg_preg_split("/ /", $end);
+			$res = preg_split("/ /", $end);
         	if (count($res) != 2) {
 				throw new Exception('End date format is not valid');
 			}
-			$res3 = preg_preg_split("/\//", $res[0]);
-			$res4 = preg_preg_split("/:/", $res[1]);
+			$res3 = preg_split("/\//", $res[0]);
+			$res4 = preg_split("/:/", $res[1]);
 			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
 			$end_time = $centreonGMT->getUTCDate($end_time);
             if (!$duration) {
@@ -241,21 +241,21 @@
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
 
-			$res = preg_preg_split("/ /", $start);
+			$res = preg_split("/ /", $start);
         	if (count($res) != 2) {
 				throw new Exception('Start date format is not valid');
 			}
-			$res1 = preg_preg_split("/\//", $res[0]);
-			$res2 = preg_preg_split("/:/", $res[1]);
+			$res1 = preg_split("/\//", $res[0]);
+			$res2 = preg_split("/:/", $res[1]);
 			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0], -1);
 
 			$start_time = $centreonGMT->getUTCDate($start_time);
-			$res = preg_preg_split("/ /", $end);
+			$res = preg_split("/ /", $end);
         	if (count($res) != 2) {
 				throw new Exception('End date format is not valid');
 			}
-			$res3 = preg_preg_split("/\//", $res[0]);
-			$res4 = preg_preg_split("/:/", $res[1]);
+			$res3 = preg_split("/\//", $res[0]);
+			$res4 = preg_split("/:/", $res[1]);
 			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
 			$end_time = $centreonGMT->getUTCDate($end_time);
 			if (!$duration) {

@@ -273,7 +273,7 @@ class Smarty_Compiler extends Smarty {
         preg_match_all("~{$ldq}\s*(.*?)\s*{$rdq}~s", $source_content, $_match);
         $template_tags = $_match[1];
         /* preg_split content by template tags to obtain non-template content. */
-        $text_blocks = preg_preg_split("~{$ldq}.*?{$rdq}~s", $source_content);
+        $text_blocks = preg_split("~{$ldq}.*?{$rdq}~s", $source_content);
 
         /* loop through text blocks */
         for ($curr_tb = 0, $for_max = count($text_blocks); $curr_tb < $for_max; $curr_tb++) {
@@ -1706,7 +1706,7 @@ class Smarty_Compiler extends Smarty {
     function _parse_var($var_expr)
     {
         $_has_math = false;
-        $_math_vars = preg_preg_split('~('.$this->_dvar_math_regexp.'|'.$this->_qstr_regexp.')~', $var_expr, -1, PREG_preg_split_DELIM_CAPTURE);
+        $_math_vars = preg_split('~('.$this->_dvar_math_regexp.'|'.$this->_qstr_regexp.')~', $var_expr, -1, preg_split_DELIM_CAPTURE);
 
         if(count($_math_vars) > 1) {
             $_first_var = "";
