@@ -44,7 +44,7 @@
 	if (isset($_GET['select'])) {
 		foreach ($_GET['select'] as $key => $value) {
 			if ($cmd == '72') {
-				$tmp = preg_split(";", urlencode($key));
+				$tmp = preg_split("/\;/", urlencode($key));
 				$select[] = $tmp[0];
 			} else {
 				$select[] = urlencode($key);

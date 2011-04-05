@@ -27,7 +27,7 @@
 		global $oreon, $key, $pearDB;
 		$str = NULL;
 
-		$informations = preg_split(";", $key);
+		$informations = preg_split("/\;/", $key);
 		if ($poller && isPollerLocalhost($pearDB, $poller))
 			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
 		else if (isHostLocalhost($pearDB, $informations[0]))
@@ -49,7 +49,7 @@
         $actions = $oreon->user->access->checkAction("host_acknowledgement");
 
         $key = urldecode($key);
-		$tmp = preg_split(";", $key);
+		$tmp = preg_split("/\;/", $key);
 		$host_name = $tmp[0];
 
 		isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
@@ -103,7 +103,7 @@
 
 		$key = urldecode($key);
 
-		$tmp = preg_split(";", $key);
+		$tmp = preg_split("/\;/", $key);
 
 		if (!isset($tmp[0])) {
 			throw new Exception('No host found');
@@ -158,7 +158,7 @@
         if ($actions == true || $is_admin) {
         	$key = urldecode($key);
 
-        	$tmp = preg_split(";", $key);
+        	$tmp = preg_split("/\;/", $key);
         	if (!isset($tmp[0])) {
 				throw new Exception('No host found');
 			}
@@ -222,7 +222,7 @@
 
         if ($actions == true || $is_admin) {
         	$key = urldecode($key);
-        	$tmp = preg_split(";", $key);
+        	$tmp = preg_split("/\;/", $key);
 
         	if (!isset($tmp[0])) {
 				throw new Exception('No host found');

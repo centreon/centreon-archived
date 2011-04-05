@@ -43,7 +43,7 @@
 	if (isset($_GET['select'])) {
 		foreach ($_GET['select'] as $key => $value) {
 			if ($cmd == '75') {
-				$tmp = preg_split(";", $key);
+				$tmp = preg_split("/\;/", $key);
 				$select[] = $tmp[0];
 			}
 			else {

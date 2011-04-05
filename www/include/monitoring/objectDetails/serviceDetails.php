@@ -71,7 +71,7 @@
 		$svc_description = $_GET["service_description"];
 	} else {
 		foreach ($_GET["select"] as $key => $value) {
-			$tab_data = preg_split(";", $key);
+			$tab_data = preg_split("/\;/", $key);
 		}
 		$host_name = $tab_data[0];
 		$svc_description = $tab_data[1];
@@ -99,7 +99,7 @@
 			$proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
 			$proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
 		}
-		
+
 		/*
 		 * Get servicegroups list
 		 */
@@ -112,7 +112,7 @@
 		    $serviceGroups[] = $row['sg_name'];
 		}
 		$DBRESULT->free();
-		
+
 
 		/*
 		 * Get service category
@@ -124,7 +124,7 @@
               	$serviceCategories[] = getMyCategorieName($sc_id);
             }
         }
-        
+
 		$tab_status = array();
 
 		/*
@@ -437,7 +437,7 @@
 		if (isset($hostGroups)) {
 			$tpl->assign("hostgroups", $hostGroups);
 		}
-			
+
 		/*
 		 * Servicegroup Display
 		 */

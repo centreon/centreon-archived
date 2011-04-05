@@ -44,7 +44,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("@CENTREON_ETC@/centreon.conf.php");
+	include_once("/etc/centreon/centreon.conf.php");
 
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
@@ -111,27 +111,26 @@
 
 	/* Get Service status */
 	$rq =		" SELECT " .
-				" DISTINCT no.name1 as host_name," .
-				" nss.process_performance_data," .
-				" nss.current_state," .
-				" nss.output as plugin_output," .
-				" nss.current_check_attempt as current_attempt," .
-				" nss.status_update_time as status_update_time," .
-				" unix_timestamp(nss.last_state_change) as last_state_change," .
-				" unix_timestamp(nss.last_check) as last_check," .
-				" unix_timestamp(nss.next_check) as next_check," .
-				" nss.notifications_enabled," .
-				" nss.problem_has_been_acknowledged," .
-				" nss.passive_checks_enabled," .
-				" nss.active_checks_enabled," .
-				" nss.event_handler_enabled," .
-				" nss.is_flapping," .
-				" nss.flap_detection_enabled," .
-				" no.object_id," .
-				" no.name2 as service_description" .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
-
-	$rq .= 	" WHERE no.object_id = nss.service_object_id".
+				" DISTINCT h.name as host_name," .
+				" s.process_performance_data," .
+				" s.current_state," .
+				" s.output as plugin_output," .
+				" s.attempts," .
+				" s.status_update_time," .
+				" s.last_state_change," .
+				" s.last_check," .
+				" s.next_check," .
+				" s.notificaty," .
+				" s.acknowledged," .
+				" s.passive_checks," .
+				" s.active_checks," .
+				" s.event_handler," .
+				" s.is_flapping," .
+				" s.flap_detection," .
+				" s.service_id," .
+				" s.description as service_description" .
+				" FROM services s, hosts h";
+	$rq .= 	" WHERE s.host_id = host_id".
 			" AND no.name1 LIKE '_Module_Meta'" .
 			" AND no.is_active = 1" .
 		  	" AND objecttype_id = 2";
@@ -237,7 +236,7 @@
 				$class = "list_four";
 		}
 
-		$tabID = preg_split("_", $ndo["service_description"]);
+		$tabID = preg_split("/\_/", $ndo["service_description"]);
 		$id = $tabID[1];
 
 		$DBRESULT= $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");

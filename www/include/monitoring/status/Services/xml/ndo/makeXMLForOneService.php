@@ -76,7 +76,7 @@
 	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = htmlentities($_GET["disable"]) : $disable = "disable";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 
-	$tmpTab = preg_split("_", $svc_id);
+	$tmpTab = preg_split("/\_/", $svc_id);
 	if (isset($tmpTab[1])) {
 	    $svc_id = $tmpTab[1];
 	}
@@ -218,7 +218,7 @@
 	        }
         }
 
-		$tab_perf = preg_split(" ", $ndo["perfdata"]);
+		$tab_perf = preg_split("/\ /", $ndo["perfdata"]);
 		foreach ($tab_perf as $val) {
 			$buffer->startElement("performance_data");
 			$buffer->writeElement("perf_data", $val);

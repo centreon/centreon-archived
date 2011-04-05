@@ -237,7 +237,7 @@
 				$class = "list_four";
 		}
 
-		$tabID = preg_split("_", $ndo["service_description"]);
+		$tabID = preg_split("/\_/", $ndo["service_description"]);
 		$id = $tabID[1];
 
 		$DBRESULT= $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
