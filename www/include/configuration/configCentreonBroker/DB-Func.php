@@ -3,87 +3,97 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
     if (!isset($oreon)) {
         exit();
     }
-    
+
     /**
      * Enable a Centreon Broker configuration
-     * 
+     *
      * @param int $id The Centreon Broker configuration in database
      */
     function enableCentreonBrokerInDB($id) {
-        if (!$id) return;
         global $pearDB;
+
+        if (!$id) {
+        	return;
+        }
+
         $query = "UPDATE cfg_centreonbroker SET config_activate = '1' WHERE config_id = " . $id;
         $pearDB->query($query);
     }
-    
+
     /**
      * Disable a Centreon Broker configuration
-     * 
+     *
      * @param int $id The Centreon Broker configuration in database
      */
     function disablCentreonBrokerInDB($id) {
-        if (!$id) return;
         global $pearDB;
-        $query = "UPDATE cfg_centreonbroker SET config_activate = '0' WHERE config_id = " . $id;
+
+        if (!$id) {
+        	return;
+        }
+
+    	$query = "UPDATE cfg_centreonbroker SET config_activate = '0' WHERE config_id = " . $id;
         $pearDB->query($query);
     }
-    
+
     /**
      * Delete Centreon Broker configurations
-     * 
+     *
      * @param array $id The Centreon Broker configuration in database
      */
     function deleteCentreonBrokerInDB($ids = array())	{
 		global $pearDB;
+
 		foreach ($ids as $key => $value)	{
 			$pearDB->query("DELETE FROM cfg_centreonbroker WHERE config_id = ".$key);
 		}
 	}
-	
+
 	/**
 	 * Get the information of a server
-	 * 
+	 *
 	 * @param int $id
 	 * @return array
 	 */
 	function getCentreonBrokerInformation($id) {
 	    global $pearDB;
+
 	    $query = "SELECT config_name, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id;
 	    $res = $pearDB->query($query);
 	    if (PEAR::isError($res)) {
@@ -100,15 +110,15 @@
 	            "ns_nagios_server" => $row['ns_nagios_server']
 	    );
 	}
-    
+
 	/**
 	 * Insert into database the Centreon Broker configuration
-	 * 
+	 *
 	 * @param array $values The post values
 	 */
-	function insertCentreonBrokerInDB($values)
-	{
-	    global $pearDB;
+	function insertCentreonBrokerInDB($values) {
+		global $pearDB;
+
 	    /*
 	     * Insert the Centreon Broker configuration
 	     */
@@ -117,6 +127,7 @@
 	    if (PEAR::isError($pearDB->query($query))) {
 	        return false;
 	    }
+
 	    /*
 	     * Get the ID
 	     */
@@ -129,16 +140,16 @@
 	    $id = $row['config_id'];
 	    updateCentreonBrokerInfos($id, $values);
 	}
-	
+
 	/**
-	 * Update the Centreon Broker configuration 
-	 * 
+	 * Update the Centreon Broker configuration
+	 *
 	 * @param int $id The config id
 	 * @param array $values The post values
 	 */
-	function updateCentreonBrokerInDB($id, $values)
-	{
+	function updateCentreonBrokerInDB($id, $values) {
 	    global $pearDB;
+
 	    /*
 	     * Insert the Centreon Broker configuration
 	     */
@@ -150,15 +161,14 @@
 	    }
 	    updateCentreonBrokerInfos($id, $values);
 	}
-	
+
 	/**
-	 * Update the informations for Centreon Broker 
-	 * 
+	 * Update the informations for Centreon Broker
+	 *
 	 * @param int $id The id
 	 * @param array $values The post values
 	 */
-	function updateCentreonBrokerInfos($id, $values)
-	{
+	function updateCentreonBrokerInfos($id, $values) {
 	    global $pearDB;
 	    /*
 	     * List of field for insert
@@ -200,7 +210,7 @@
         	    }
 	        }
 	    }
-	    
+
 	    foreach ($groups_infos as $group => $groups) {
 	        foreach ($groups as $gid => $infos) {
 	            $gid = $gid + 1;
@@ -220,20 +230,21 @@
 	        }
 	    }
 	}
-	
+
 	/**
 	 * Duplicate a configuration
-	 * 
+	 *
 	 * @param array $ids List of id CentreonBroker configuration
 	 * @param array $nbr List of number a duplication
 	 */
-	function multipleCentreonBrokerInDB($ids, $nbrDup)
-	{
-	    foreach($ids as $id => $value)	{
+	function multipleCentreonBrokerInDB($ids, $nbrDup) {
+	    foreach ($ids as $id => $value)	{
 			global $pearDB;
+
 			$DBRESULT = $pearDB->query("SELECT config_name, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id);
 			$row = $DBRESULT->fetchRow();
 			$DBRESULT->free();
+
 			/*
 			 * Prepare values
 			 */
@@ -243,13 +254,15 @@
 			$query = "SELECT config_key, config_value, config_group, config_group_id
 				FROM cfg_centreonbroker_info
 				WHERE config_id = " . $id;
-			$res = $pearDB->query($query);
+			$DBRESULT = $pearDB->query($query);
     	    $values['output'] = array();
     	    $values['input'] = array();
     	    $values['logger'] = array();
-    	    while ($rowOpt = $res->fetchRow()) {
+    	    while ($rowOpt = $DBRESULT->fetchRow()) {
     	        $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] = $rowOpt['config_value'];
     	    }
+    	    $DBRESULT->free();
+
 			/*
 			 * Copy the configuration
 			 */
@@ -267,7 +280,7 @@
 				    if ($rowNb['nb'] == 0) {
 				        $nameNOk = false;
 				    }
-				    $j++; 
+				    $j++;
 			    }
 			    $values['name'] = $newname;
 			    insertCentreonBrokerInDB($values);

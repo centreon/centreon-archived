@@ -252,28 +252,27 @@
 				</xsl:element>
 				<xsl:element name="td">
 					<xsl:attribute name="class">FormRowValue</xsl:attribute>
-					 
 					<xsl:element name="input">
 						<xsl:attribute name="id">input_<xsl:value-of select="id" />_tls_en</xsl:attribute>
 						<xsl:attribute name="type">radio</xsl:attribute>
 						<xsl:attribute name="name">output[<xsl:value-of select="id" />][tls]</xsl:attribute>
 						<xsl:attribute name="value">1</xsl:attribute>
 						<xsl:attribute name="onChange">toggleTls('output',<xsl:value-of select="id" />,1);</xsl:attribute>
-						<xsl:if test="use_tls='true'">
-						<xsl:attribute name="checked">checked</xsl:attribute>
+						<xsl:if test="tls = '1'">
+							<xsl:attribute name="checked">checked</xsl:attribute>
 						</xsl:if>
 					</xsl:element>
-					 <xsl:value-of select="//main/lang/yes"/> 
+					<xsl:value-of select="//main/lang/yes"/> 
 					<xsl:element name="input">
 						<xsl:attribute name="type">radio</xsl:attribute>
 						<xsl:attribute name="name">output[<xsl:value-of select="id" />][tls]</xsl:attribute>
 						<xsl:attribute name="value">0</xsl:attribute>
 						<xsl:attribute name="onChange">toggleTls('output',<xsl:value-of select="id" />,0);</xsl:attribute>
-						<xsl:if test="use_tls='false'">
-						<xsl:attribute name="checked">checked</xsl:attribute>
+						<xsl:if test="tls = '0'">
+							<xsl:attribute name="checked">checked</xsl:attribute>
 						</xsl:if>
 					</xsl:element>
-					 <xsl:value-of select="//main/lang/no"/>
+					<xsl:value-of select="//main/lang/no"/>
 				</xsl:element>
 			</xsl:element>
 			<xsl:element name="tr">
