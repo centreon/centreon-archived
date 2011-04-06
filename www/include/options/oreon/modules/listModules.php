@@ -142,7 +142,7 @@
 										"RowMenu_author" => $moduleinfo["author"],
 										"RowMenu_licenseExpire" => $license_expires,
 										"RowMenu_upgrade" => 0,
-										"RowMenu_picture" => (file_exists("./$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
+										"RowMenu_picture" => (file_exists("./modules/$filename/icone.gif") ? "./modules/$filename/icone.gif" : "./img/icones/16x16/component_green.gif"),
 										"RowMenu_isinstalled" => _("Yes"),
 										"RowMenu_link" => "?p=".$p."&o=w&id=".$moduleinfo["id"],
 										"RowMenu_link_install" => NULL,
@@ -183,10 +183,10 @@
 
 					$picturePath = "./img/icones/16x16/component_green.gif";
 					if (file_exists($centreon_path . "www/modules/".$filename."/icone.gif")) {
-						$picturePath = $centreon_path . "www/modules/".$filename."/icone.gif";
+						$picturePath =  "./modules/".$filename."/icone.gif";
 					}
 					if (file_exists($centreon_path . "www/modules/".$filename."/.api/icone.gif")) {
-						$picturePath = $centreon_path . "www/modules/".$filename."/.api/icone.gif";
+						$picturePath =  "./modules/".$filename."/.api/icone.gif";
 					}
 					if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
 						if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
