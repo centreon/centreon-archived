@@ -1,0 +1,2 @@
+ALTER TABLE `centreon_acl` CHANGE `host_name` `host_name` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL;
+ALTER TABLE `centreon_acl` CHANGE `service_description` `service_description` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL;
