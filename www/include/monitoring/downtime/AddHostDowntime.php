@@ -86,7 +86,7 @@
 			/*
 			 * Get the list of hostgroup
 			 */
-			$hgStr = $oreon->user->access->getHostGroupsString("ID", $pearDBndo);
+			$hgStr = $oreon->user->access->getHostGroupsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)	);
 			$hg = array(""=>"");
 			$query = "SELECT hg_id, hg_name
 				FROM hostgroup

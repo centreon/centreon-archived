@@ -222,12 +222,21 @@
 	/**
 	 * Get Hostgroups
 	 */
-	$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
-	$options = "<option value='0'></options>";
-	while ($data = $DBRESULT->fetchRow()) {
-        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
-    }
-    $DBRESULT->free();
+	if ($oreon->broker->getBroker() == "ndo") {
+		$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
+		$options = "<option value='0'></options>";
+		while ($data = $DBRESULT->fetchRow()) {
+	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
+	    }
+	    $DBRESULT->free();
+	} else {
+		$DBRESULT = $pearDBO->query("SELECT hostgroup_id, name FROM hostgroups ORDER BY name");
+		$options = "<option value='0'></options>";
+		while ($data = $DBRESULT->fetchRow()) {
+	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["name"]."</option>";
+	    }
+	    $DBRESULT->free();
+	}
 
 	$tpl->assign('hostgroup', $options);
 	unset($options);
