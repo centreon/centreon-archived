@@ -2094,6 +2094,7 @@ CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
   `trap_id` int(11) DEFAULT NULL,
   `tmo_order` int(11) DEFAULT NULL,
   `tmo_regexp` varchar(255) DEFAULT NULL,
+  `tmo_string` varchar(255) DEFAULT NULL,
   `tmo_status` int(11) DEFAULT NULL,
   PRIMARY KEY (`tmo_id`),
   KEY `trap_id` (`trap_id`)
