@@ -285,7 +285,7 @@ function construct_HostGroupSelectList(id) {
 		if ($broker == 'broker') {
 			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta_%' ORDER BY `name`");
 		} else {
-			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
+			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}
 		while ($hostgroups = $DBRESULT->fetchRow()) {
 			if ($broker == 'broker') {
@@ -302,12 +302,12 @@ function construct_HostGroupSelectList(id) {
 			} else {
 				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
 					var m = document.createElement('option');
-					m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";
+					m.value= "<?php echo $hostgroups["alias"]; ?>";
 					_select.appendChild(m);
 					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
 					m.appendChild(n);
 					_select.appendChild(m);
-					select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
+					select_index["<?php echo $hostgroups["alias"]; ?>"] = i;
 					i++;
 	<?php 		}
 			}
