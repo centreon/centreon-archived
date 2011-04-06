@@ -132,17 +132,17 @@
 		}
 		unset($data);
 	} else {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_name, c.service_description " .
-				"FROM comments c ";
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
+				"FROM comments c, hosts h, services s ";
 		if ($is_admin) {
 			$rq2 .=	", centreon_acl acl ";
 		}
-		$rq2 .=	"WHERE c.service_description <> ''  " .
-			(isset($search_service) && $search_service != "" ? " AND c.service_description LIKE '%$search_service%'" : "") .
-			(isset($host_name) && $host_name != "" ? " AND c.host_name LIKE '%$host_name%'" : "") .
+		$rq2 .=	"WHERE s.description <> '' AND c.host_id = h.host_id AND c.service_id = s.service_id AND c.host_id = s.host_id  " .
+			(isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
+			(isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
 			(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
 		if ($is_admin) {
-			$rq2 .=	" AND c.host_name = acl.host_name AND c.service_description = acl.service_description " .
+			$rq2 .=	" AND h.name = acl.host_name AND s.description = acl.service_description " .
 					"AND c.expires = '0' ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 		}
 		$DBRESULT = $pearDBO->query($rq2);
