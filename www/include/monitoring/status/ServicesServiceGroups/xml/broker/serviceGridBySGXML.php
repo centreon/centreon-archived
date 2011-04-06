@@ -36,7 +36,7 @@
  *
  */
 
-	ini_set("display_errors", "On");
+	ini_set("display_errors", "Off");
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
@@ -128,7 +128,7 @@
 		/** ******************************************
 		 * Get all informations
 		 */
-		$rq1 = 	"SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, h.name as host_name".
+		$rq1 = 	"SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, sg.name as name, h.name as host_name".
 				" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ".
 				" WHERE s.service_id = sgm.service_id" .
 				" AND h.host_id = s.host_id" .
@@ -163,10 +163,10 @@
 		$sg_table = array();
 		while ($row = $DBRESULT_PAGINATION->fetchRow()) {
 		    $host_table[$row["host_name"]] = $row["host_name"];
-			if (!isset($sg_table[$row["alias"]])) {
-            	$sg_table[$row["alias"]] = array();
+			if (!isset($sg_table[$row["name"]])) {
+            	$sg_table[$row["name"]] = array();
 			}
-        	$sg_table[$row["alias"]][$row["host_name"]] = $row["host_name"];
+        	$sg_table[$row["name"]][$row["host_name"]] = $row["host_name"];
 		}
 		$DBRESULT_PAGINATION->free();
 
@@ -211,9 +211,9 @@
 			$rq1 .= " AND h.name like '%" . $search . "%' ";
 		}
 		if ($sort_type == "host_state") {
-			$rq1 .= " ORDER BY sg.alias, host_state $order, host_name, service_description ";
+			$rq1 .= " ORDER BY sg.name, host_state $order, host_name, service_description ";
 		} else {
-			$rq1 .= " ORDER BY sg.alias, host_name $order, service_description ";
+			$rq1 .= " ORDER BY sg.name, host_name $order, service_description ";
 		}
 	}
 
@@ -241,17 +241,17 @@
 	$count = 0;
 	$DBRESULT = $obj->DBC->query($rq1);
 	while ($tab = $DBRESULT->fetchRow()) {
-		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
-			if ($sg != $tab["alias"]) {
+		if (isset($sg_table[$tab["name"]]) && isset($sg_table[$tab["name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
+			if ($sg != $tab["name"]) {
 				$flag = 0;
 				if ($sg != "") {
 					$obj->XML->endElement();
 					$obj->XML->endElement();
 				}
-				$sg = $tab["alias"];
+				$sg = $tab["name"];
 				$h = "";
 				$obj->XML->startElement("sg");
-				$obj->XML->writeElement("sgn", $tab["alias"]);
+				$obj->XML->writeElement("sgn", $tab["name"]);
 				$obj->XML->writeElement("o", $ct);
 			}
 			$ct++;
