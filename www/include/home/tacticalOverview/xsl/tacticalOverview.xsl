@@ -278,7 +278,18 @@
 									<xsl:attribute name="id">span_<xsl:value-of select="domId"/></xsl:attribute>
 								</xsl:element>
 							</xsl:element>
-						</xsl:element>
+							<xsl:if test='host_notesurl != ""'>
+								<xsl:element name='a'>
+									<xsl:attribute name='href'>
+										<xsl:value-of select='host_notesurl'/>
+									</xsl:attribute>
+									<xsl:attribute name='target'>_new</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name='src'>./img/icones/15x7/weblink.gif</xsl:attribute>
+									</xsl:element>
+								</xsl:element>	
+							</xsl:if>
+						</xsl:element>						
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColCenter</xsl:attribute>
 							<xsl:attribute name='style'>background-color:<xsl:value-of select='bgcolor'/>;font-weight:bold;white-space:nowrap;</xsl:attribute>
@@ -686,7 +697,7 @@
 									<xsl:attribute name='class'>ListColLeft</xsl:attribute>
 									<xsl:attribute name='style'>
 										white-space: nowrap;
-									</xsl:attribute>
+									</xsl:attribute>									
 									<xsl:element name='a'>
 										<xsl:attribute name='onmouseover'>showServiceOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
 										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
@@ -699,6 +710,17 @@
 											<xsl:attribute name='id'>span_<xsl:value-of select='sid'/></xsl:attribute>
 										</xsl:element>
 									</xsl:element>
+									<xsl:if test='notes_url != ""'>
+										<xsl:element name='a'>
+											<xsl:attribute name='href'>
+												<xsl:value-of select='notes_url'/>
+											</xsl:attribute>
+											<xsl:attribute name='target'>_new</xsl:attribute>											
+											<xsl:element name='img'>
+												<xsl:attribute name='src'>./img/icones/15x7/weblink.gif</xsl:attribute>
+											</xsl:element>
+										</xsl:element>	
+									</xsl:if>
 								</xsl:element>
 								<xsl:element name='td'>
 									<xsl:attribute name='class'>ListColCenter</xsl:attribute>

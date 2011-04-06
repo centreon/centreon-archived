@@ -85,7 +85,7 @@
 	$resNdo1->free();
 
 	// Get Hosts Problems
-	$rq1 = 	" SELECT DISTINCT host_id, name , state, last_check, output, icon_image, address, last_state_change AS lsc" .
+	$rq1 = 	" SELECT DISTINCT host_id, name, notes_url, state, last_check, output, icon_image, address, last_state_change AS lsc" .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
 			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
@@ -95,9 +95,20 @@
 			" ORDER by state";
 	$resNdoHosts = $dbb->query($rq1);
 
+    $tab_macros = array('/\$hostid\$/i',
+ 						'/\$hostname\$/i',
+                        '/\$HOSTNOTESURL\$/i',
+	                    '/\$hoststate\$/i',
+        	            '/\$LASTHOSTCHECK\$/i',
+                	    '/\$hostoutput\$/i',
+                        '/\$hosticon\$/i',
+	                    '/\$hostaddress\$/i',
+        	            '/\$LASTHOSTSTATECHANGE\$/i');
+
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
     $tab_hostprobstate[$nbhostpb] = "";
+    $tab_hostnotesurl[$nbhostpb] = "";
     $tab_hostproblast[$nbhostpb] = "";
     $tab_hostprobduration[$nbhostpb] = "";
     $tab_hostproboutput[$nbhostpb] = "";
@@ -108,6 +119,7 @@
     while ($ndo = $resNdoHosts->fetchRow()) {
 	    $tab_hostprobname[$nbhostpb] = $ndo["name"];
         $tab_hostprobstate[$nbhostpb] = $ndo["state"];
+        $tab_hostnotesurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
         $tab_hostproblast[$nbhostpb] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
         $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
         $tab_hostproboutput[$nbhostpb] = $ndo["output"];
@@ -339,7 +351,7 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h, centreon_acl " .
 				" WHERE h.host_id = s.host_id " .
 				" AND s.state > 0" .
@@ -352,7 +364,7 @@
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" ORDER BY s.state ASC, h.name";
 	} else {
-		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h" .
 				" WHERE h.host_id = s.host_id " .
 				" AND s.state > 0" .
@@ -368,6 +380,7 @@
 	$tab_hostname[$j] = "";
 	$tab_svcname[$j] = "";
 	$tab_state[$j] = "";
+	$tab_notes_url[$j] = "";
 	$tab_last[$j] = "";
 	$tab_duration[$j] = "";
 	$tab_output[$j] = "";
@@ -375,6 +388,18 @@
 	$tab_icone[$j] = "";
 	$tab_objectid[$j] = "";
 	$tab_hobjectid[$j] = "";
+
+	$tab_macros = array('/\$hostname\$/i',
+                        '/\$hostid\$/i',
+                        '/\$serviceid$/i',
+                        '/\$servicedesc\$/i',
+                        '/\$SERVICENOTESURL\$/i',
+                        '/\$servicestate\$/i',
+                        '/\$LASTSERVICECHECK\$/i',
+                        '/\$serviceoutput\$/i',
+                        '/\$LASTSERVICESTATECHANGE\$/i',
+                        '/\$hostaddress\$/i',
+                        '/\$hosticon\$/i');
 
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;
@@ -388,6 +413,7 @@
 			$tab_hostname[$j] = $ndo["name"];
 			$tab_svcname[$j] = $ndo["description"];
 			$tab_state[$j] = $ndo["state"];
+			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
 			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
 			$tab_ip[$j] = $ndo["address"];
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
@@ -477,6 +503,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
+	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('ip', $tab_hostprobip[$key]);
 	    $xml->writeElement('duration', $tab_hostprobduration[$key]);
 	    $xml->writeElement('last', $tab_hostproblast[$key]);
@@ -504,6 +531,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
 	    $xml->writeElement('servicename', $val, false);
+	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
 	    $xml->writeElement('ip', $tab_ip[$key]);
 	    $xml->writeElement('duration', $tab_duration[$key]);
