@@ -568,12 +568,17 @@ sub syncTraps($) {
         $port = $ns_server->{'ssh_port'};
     }
     
-    if ($id == 0) {
-	`$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-	my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
-	if ($ls > 1) {
-	    `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-	}
+    if ($ns_server->{'localhost'} == "0") {
+		`$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+		my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
+		if ($ls > 1) {
+	    	#`$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+	    	`$ssh -q ".$ns_server->{'ns_ip_address'}." -p $port 'rm -f /etc/snmp/centreon_traps/*.conf 2> /dev/null'`;
+			`$scp -P $port /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+		}
+		my $cmd = "$ssh -q ".$ns_server->{'ns_ip_address'}." -p $port 'sed -i s/centTrapHandler-2\.x/centTrapHandlerForPoller-2\.x/ /etc/snmp/centreon_traps/*.conf'";
+		`$cmd`;	
+		writeLogFile("SNMPTT Config Synchronization : ".$ns_server->{'ns_ip_address'}." ($id) -> files transfered : $ls");
     }
 }
 

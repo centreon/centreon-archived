@@ -3,19 +3,40 @@
 	 <input type="hidden" name="level" value="1"> 
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
 	 	<tr class="list_one"><td class="FormRowField">{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<br /><br /><br /><br />
-	{if $msg}
-	<table class="ListTable">
-	 	<tr class="ListHeader">
-	 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
-	 	</tr>
-	 	<tr class="list_two_fixe">
-	 		<td class="ListColLvl1_name">{$msg}</td>
-	 	</tr>
-	 </table>
+	{if $msg_restart}
+	<div>
+		<ul id="mainnav">
+		{assign var='cpt' value=0}
+		{foreach from=$host_list key=key item=item}
+			{if $msg_restart[$key] || $msg_copy[$key] || $msg_debug[$key]}
+			{assign var='cpt' value=$cpt+1}
+			<li class="a" id='c{$cpt}'><a href="#generate"  onclick="javascript:montre('{$cpt}');">{$host_list[$key]}</a></li>
+			{/if}
+		{/foreach}
+		</ul>
+	</div>
+	<a name="generate">
+	{assign var='cpt' value=0}
+	{foreach from=$tab_server key=key item=item}
+	{assign var='cpt' value=$cpt+1}
+		<div id='tab{$cpt}' class='tab'>
+			<table class="ListTable">
+			 	<tr class="ListHeader">
+			 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
+			 	</tr>
+			 	<tr class="list_two_fixe">	 		
+			 		<td class="ListColLvl1_name">{$msg_restart[$key]}</td>
+			 	</tr>
+			 </table>
+		 </div>
+	 {/foreach}
 	{/if}
 	{$form.hidden}
 </form>
