@@ -159,7 +159,7 @@ sub rrd_process {
 	    	$tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
 	    
 	    	if (!-e $global_cmd_buffer) {
-				RRDs::create($global_cmd_buffer, "-s $interval", "DS:In_Use:GAUGE:600:0:U", "DS:Max_Used:GAUGE:600:0:U", "DS:Total_Available:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create($global_cmd_buffer, "-s $interval", "DS:In_Use:GAUGE:600:0:U", "DS:Max_Used:GAUGE:600:0:U", "DS:Total_Available:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 		  		RRDs::tune($global_cmd_buffer, "-h", "In_Use:3000");
 		  		RRDs::tune($global_cmd_buffer, "-h", "Max_Used:3000");
 		  		RRDs::tune($global_cmd_buffer, "-h", "Total_Available:3000");
@@ -178,7 +178,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
 		    if (!-e $global_active_service_latency) {
-				RRDs::create ($global_active_service_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_active_service_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 				RRDs::tune($global_cmd_buffer, "-h", "Min:3000");
 				RRDs::tune($global_cmd_buffer, "-h", "Max:3000");
 				RRDs::tune($global_cmd_buffer, "-h", "Average:3000");
@@ -197,7 +197,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
 		    if (!-e $global_active_service_execution) {
-				RRDs::create ($global_active_service_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_active_service_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Max:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Average:3000");
@@ -216,7 +216,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
 		    if (!-e $global_active_service_last) {
-				RRDs::create ($global_active_service_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_active_service_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Last_Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Last_5_Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Last_15_Min:3000");
@@ -237,7 +237,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
 		    if (!-e $global_services_states) {
-				RRDs::create ($global_services_states, "-s $interval", "DS:Ok:GAUGE:600:0:U", "DS:Warn:GAUGE:600:0:U", "DS:Unk:GAUGE:600:0:U", "DS:Crit:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_services_states, "-s $interval", "DS:Ok:GAUGE:600:0:U", "DS:Warn:GAUGE:600:0:U", "DS:Unk:GAUGE:600:0:U", "DS:Crit:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 				RRDs::tune($global_cmd_buffer, "-h", "Ok:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Warn:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Unk:3000");
@@ -258,7 +258,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
 		    if (!-e $global_active_host_latency) {
-				RRDs::create ($global_active_host_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_active_host_latency, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Max:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Average:3000");
@@ -277,7 +277,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
 		    if (!-e $global_active_host_execution) {
-				RRDs::create ($global_active_host_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_active_host_execution, "-s $interval", "DS:Min:GAUGE:600:0:U", "DS:Max:GAUGE:600:0:U", "DS:Average:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Max:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Average:3000");
@@ -296,7 +296,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
 		    if (!-e $global_active_host_last) {
-				RRDs::create ($global_active_host_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create ($global_active_host_last, "-s $interval", "DS:Last_Min:GAUGE:600:0:U", "DS:Last_5_Min:GAUGE:600:0:U", "DS:Last_15_Min:GAUGE:600:0:U", "DS:Last_Hour:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 				RRDs::tune($global_cmd_buffer, "-h", "Last_Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Last_5_Min:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Last_15_Min:3000");
@@ -317,7 +317,7 @@ sub rrd_process {
 		    $tab[$j+1] = trim($tab[$j+1]);
 		    $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
 		    if (!-e $global_hosts_states) {
-				RRDs::create($global_hosts_states, "-s $interval", "DS:Up:GAUGE:600:0:U", "DS:Down:GAUGE:600:0:U", "DS:Unreach:GAUGE:600:0:U", "RRA:AVERAGE:0.5:1:105120");
+				RRDs::create($global_hosts_states, "-s $interval", "DS:Up:GAUGE:600:0:U", "DS:Down:GAUGE:600:0:U", "DS:Unreach:GAUGE:600:0:U", "RRA:AVERAGE:0:1:4320", "RRA:AVERAGE:0.5:6:4320", "RRA:AVERAGE:0.5:72:1440");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Up:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Down:3000");
 			  	RRDs::tune($global_cmd_buffer, "-h", "Unreach:3000");
