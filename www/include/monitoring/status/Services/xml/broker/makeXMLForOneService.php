@@ -128,8 +128,7 @@
 	 * Request
 	 */
 	$DBRESULT = $obj->DBC->query($rq1);
-	if ($data = $DBRESULT->fetchRow()){
-
+	if ($data = $DBRESULT->fetchRow()) {
 		$obj->XML->writeElement("svc_name", $data["description"], false);
 
 		if ($data["icon_image"] == "") {

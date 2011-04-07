@@ -43,11 +43,13 @@
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
+    include_once $centreon_path . "www/class/centreonService.class.php";
 
 	/*
 	 * Create XML Request Objects
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
+	$svcObj = new CentreonService($obj->DB);
 	CentreonSession::start();
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
@@ -123,7 +125,7 @@
 		default : $rq1 .= " ORDER BY hosts.name ". $order; break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-	
+
 	/*
 	 * Execute request
 	 */
@@ -179,6 +181,7 @@
 					$obj->XML->writeElement("sn", $svc, false);
 					$obj->XML->writeElement("snl", urlencode($svc));
 					$obj->XML->writeElement("sc", $obj->colorService[$state]);
+					$obj->XML->writeElement("svc_id", $svcObj->getServiceId($svc, $host_name));
 					$obj->XML->endElement();
 				}
 			}

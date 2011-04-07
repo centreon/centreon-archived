@@ -36,21 +36,25 @@
  *
  */
 
- /*
+ /**
   *  Class that contains various methods for managing services
   */
  class CentreonService {
  	private $DB;
 
- 	/*
+ 	/**
  	 *  Constructor
+ 	 *
+ 	 *  @param CentreonDB $pearDB
  	 */
  	function CentreonService($pearDB) {
  		$this->DB = $pearDB;
  	}
 
- 	/*
+ 	/**
  	 *  Method that returns service description from service_id
+ 	 *
+ 	 *  @param int $svc_id
  	 */
  	public function getServiceDesc($svc_id) {
  		$rq = "SELECT service_description FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
@@ -61,38 +65,55 @@
  		return $row['service_description'];
  	}
 
- 	/*
+ 	/**
  	 *  Method that returns the id of a service
+ 	 *
+ 	 *  @param string $svc_desc
+ 	 *  @param string $host_name
+ 	 *  @return int
  	 */
- 	public function getServiceId($svc_desc, $host_name) {
- 		$rq = "SELECT s.service_id" .
-				" FROM service s" .
-				" JOIN (SELECT hsr.service_service_id FROM host_service_relation hsr" .
-				" JOIN host h" .
-				"     ON hsr.host_host_id = h.host_id" .
-				"     	WHERE h.host_name = '".$host_name."'" .
-				"     UNION" .
-				"    	 SELECT hsr.service_service_id FROM hostgroup_relation hgr" .
-				" JOIN host h" .
-				"     ON hgr.host_host_id = h.host_id" .
-				" JOIN host_service_relation hsr" .
-				"     ON hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
-				"     	WHERE h.host_name = '".$host_name."' ) ghsrv" .
-				" ON s.service_id = ghsrv.service_service_id" .
-				" WHERE s.service_description = '".$svc_desc."' LIMIT 1";
- 		$DBRES = $this->DB->query($rq);
- 		if (!$DBRES->numRows()) {
- 			return null;
+ 	public function getServiceId($svc_desc, $host_name)
+ 	{
+ 		static $hostSvcTab = array();
+
+ 		if (!isset($hostSvcTab[$host_name])) {
+     	    $rq = "SELECT s.service_id, s.service_description " .
+    				" FROM service s" .
+    				" JOIN (SELECT hsr.service_service_id FROM host_service_relation hsr" .
+    				" JOIN host h" .
+    				"     ON hsr.host_host_id = h.host_id" .
+    				"     	WHERE h.host_name = '".$this->DB->escape($host_name)."'" .
+    				"     UNION" .
+    				"    	 SELECT hsr.service_service_id FROM hostgroup_relation hgr" .
+    				" JOIN host h" .
+    				"     ON hgr.host_host_id = h.host_id" .
+    				" JOIN host_service_relation hsr" .
+    				"     ON hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
+    				"     	WHERE h.host_name = '".$this->DB->escape($host_name)."' ) ghsrv" .
+    				" ON s.service_id = ghsrv.service_service_id";
+     		$DBRES = $this->DB->query($rq);
+     		$hostSvcTab[$host_name] = array();
+     		while ($row = $DBRES->fetchRow()) {
+     		    $hostSvcTab[$host_name][$row['service_description']] = $row['service_id'];
+     		}
  		}
- 		$row = $DBRES->fetchRow();
- 		return $row['service_id'];
+ 		if (isset($hostSvcTab[$host_name]) && isset($hostSvcTab[$host_name][$svc_desc])) {
+ 		    return $hostSvcTab[$host_name][$svc_desc];
+ 		}
+ 		return null;
  	}
 
+ 	/**
+ 	 * Get Service alias
+ 	 *
+ 	 * @param int $sid
+ 	 * @return string
+ 	 */
  	public function getServiceName($sid)
  	{
  		$query = "SELECT service_alias
  			FROM service
- 			WHERE service_id = " . $sid;
+ 			WHERE service_id = " . $this->DB->escape($sid);
  		$res = $this->DB->query($query);
  		if ($res->numRows() == 0) {
  			return null;
@@ -102,9 +123,10 @@
  	}
 
  	/**
- 	 *
  	 * Check illegal char defined into nagios.cfg file
- 	 * @param varchar $name
+ 	 *
+ 	 * @param string $name
+ 	 * @return string
  	 */
  	public function checkIllegalChar($name) {
  		$DBRESULT = $this->DB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
@@ -118,8 +140,13 @@
 		return $name;
  	}
 
- 	/*
+ 	/**
  	 *  Returns a string that replaces on demand macros by their values
+ 	 *
+ 	 *  @param int $svc_id
+ 	 *  @param string $string
+ 	 *  @param int $antiLoop
+ 	 *  @return string
  	 */
  	public function replaceMacroInString($svc_id, $string, $antiLoop = null) {
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
@@ -132,8 +159,9 @@
          * replace if not template
          */
         if ($row['service_register']) {
-	 		if (preg_match("/\$SERVICEDESC\$/", $string))
+	 		if (preg_match("/\$SERVICEDESC\$/", $string)) {
 	 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string);
+	 		}
         }
  		$matches = array();
  		$pattern = '|(\$_SERVICE[0-9a-zA-Z\_\-]+\$)|';
