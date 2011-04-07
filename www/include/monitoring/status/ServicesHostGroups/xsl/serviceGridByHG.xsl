@@ -71,8 +71,18 @@
 							background-color:<xsl:value-of select="sc"/>;
 						</xsl:attribute>
 						<xsl:element name="a">
-						  	<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hnl"/>&amp;service_description=<xsl:value-of select="snl"/></xsl:attribute>
+							<xsl:attribute name="href">main.php?o=svcd&amp;p=202&amp;host_name=<xsl:value-of select="../hnl"/>&amp;service_description=<xsl:value-of select="snl"/></xsl:attribute>
+							<xsl:attribute name="class">infobulle</xsl:attribute>
+							<xsl:attribute name="onmouseover">
+								displayPOPUP('service', '<xsl:value-of select="../hcount"/>_<xsl:value-of select="../hid"/>_<xsl:value-of select="svc_id"/>', '<xsl:value-of select="../hid"/>_<xsl:value-of select="svc_id"/>');
+							</xsl:attribute>
+							<xsl:attribute name="onmouseout">
+								hiddenPOPUP('<xsl:value-of select="../hcount"/>_<xsl:value-of select="../hid"/>_<xsl:value-of select="svc_id"/>');
+							</xsl:attribute>						  	
 							<xsl:value-of select="sn"/>
+							<xsl:element name="span">
+								<xsl:attribute name="id">span_<xsl:value-of select="../hcount"/>_<xsl:value-of select="../hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+							</xsl:element>
 						</xsl:element>
 					</span>&#160;						
 					</xsl:for-each>
