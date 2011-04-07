@@ -47,7 +47,6 @@ log "INFO" "$(gettext "Change macros for ")centFillTrapDB, centGenSnmpttConfFile
 flg_error=0
 for FILE in  $TMP_DIR/src/bin/centFillTrapDB \
 	$TMP_DIR/src/bin/centGenSnmpttConfFile \
-	#$TMP_DIR/src/bin/centTrapHandler-2.x ; do
 	$TMP_DIR/src/bin/centTrapHandler-2.x \
 	$TMP_DIR/src/bin/centTrapHandlerForPoller-2.x; do
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
