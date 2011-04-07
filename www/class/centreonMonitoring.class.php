@@ -52,7 +52,8 @@ class CentreonMonitoring {
 	 *
 	 * Enter description here ...
 	 */
-	public function __construct($DB) {
+	public function __construct($DB)
+	{
 		$this->DB = $DB;
 		$this->objBroker = new CentreonBroker($DB);
 	}
@@ -62,7 +63,8 @@ class CentreonMonitoring {
 	 * Enter description here ...
 	 * @param unknown_type $pollerId
 	 */
-	public function setPoller($pollerId) {
+	public function setPoller($pollerId)
+	{
 		$this->poller = $pollerId;
 	}
 
@@ -70,23 +72,24 @@ class CentreonMonitoring {
 	 *
 	 * Enter description here ...
 	 */
-	public function getPoller() {
+	public function getPoller()
+	{
 		return $this->poller;
 	}
 
 	/**
+	 * Get Service Status Count for Ndo
 	 *
-	 * Enter description here ...
 	 * @param $host_name
 	 * @param $objXMLBG
 	 * @param $o
 	 * @param $status
 	 * @param $obj
 	 */
-	public function getServiceStatusCountNDO($host_name, $objXMLBG, $o, $status, $obj) {
-
-		$rq = 	" SELECT DISTINCT no.name1, no.name2, count( nss.service_object_id ) AS nb".
-				" FROM " .$objXMLBG->ndoPrefix."servicestatus nss".
+	public function getServiceStatusCountNDO($host_name, $objXMLBG, $o, $status, $obj)
+	{
+		$rq = 	" SELECT DISTINCT count( nss.service_object_id ) AS nb ".
+				" FROM " .$objXMLBG->ndoPrefix."servicestatus nss " .
 				" WHERE nss.current_state = '".$status."'";
 
 		if ($o == "svcSum_ack_0") {
@@ -94,6 +97,7 @@ class CentreonMonitoring {
 		} else if ($o == "svcSum_ack_1") {
 			$rq .= " AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0";
 		}
+
 
 		$rq .= 	" AND nss.service_object_id".
 				" IN (".
@@ -109,12 +113,11 @@ class CentreonMonitoring {
 			$rq .= 	" AND nno.name1 = centreon_acl.host_name AND nno.name2 = centreon_acl.service_description AND centreon_acl.group_id IN (". $obj->access->getAccessGroupsString().")";
 		}
 		$rq .=  ")";
-
 		$DBRESULT = $objXMLBG->DBNdo->query($rq);
 		$tab = $DBRESULT->fetchRow();
 		return ($tab["nb"]);
 	}
-	
+
 	/**
 	 *
 	 * Enter description here ...
@@ -138,8 +141,8 @@ class CentreonMonitoring {
 			$rq .= " AND s.acknowledged = 1 AND s.state != 0";
 		}
 		if (!$objXMLBG->is_admin) {
-			$rq .= 	" AND h.host_id = centreon_acl.host_id ". 
-					" AND s.service_id = centreon_acl.service_id ". 
+			$rq .= 	" AND h.host_id = centreon_acl.host_id ".
+					" AND s.service_id = centreon_acl.service_id ".
 					" AND centreon_acl.group_id IN (". $obj->access->getAccessGroupsString().")";
 		}
 		$DBRESULT = $objXMLBG->DBC->query($rq);
