@@ -88,7 +88,7 @@
 	} else {
 		$ndoPrefix = getNDOPrefix();
 		$nagiosInfo = array();
-		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time), is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
+		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time) as program_start_time, is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]] = $info;
 		}
@@ -147,7 +147,7 @@
 	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
-	$rows = $pearDB->numberRows();
+	$rows = $DBRESULT->numRows();
 
 	include("./include/common/checkPagination.php");
 
