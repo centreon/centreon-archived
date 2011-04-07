@@ -36,7 +36,26 @@
  *
  */
 
-	ini_set("Display_error", "On");
+	function getServiceObjectId($svc_description, $host_name, $monObj)
+    {
+        static $hostSvcTab = array();
+
+ 		if (!isset($hostSvcTab[$host_name])) {
+     	    $rq = "SELECT s.service_object_id as service_id, s.display_name as service_description ".
+     	    	  "FROM ".$monObj->ndoPrefix. "services s, ".$monObj->ndoPrefix."hosts h " .
+     	          "WHERE s.host_object_id = h.host_object_id " .
+     	          "AND h.display_name LIKE '" . $monObj->DBNdo->escape($host_name) . "' ";
+     		$res = $monObj->DBNdo->query($rq);
+     		$hostSvcTab[$host_name] = array();
+     		while ($row = $res->fetchRow()) {
+     		    $hostSvcTab[$host_name][$row['service_description']] = $row['service_id'];
+     		}
+ 		}
+ 		if (isset($hostSvcTab[$host_name]) && isset($hostSvcTab[$host_name][$svc_description])) {
+ 		    return $hostSvcTab[$host_name][$svc_description];
+ 		}
+ 		return null;
+    }
 
 	function get_Host_Status($host_name, $pearDBndo, $general_opt){
 		global $ndo_base_prefix;

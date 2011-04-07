@@ -174,6 +174,7 @@
 			$obj->XML->writeElement("sn", $svc, false);
 			$obj->XML->writeElement("snl", urlencode($svc));
 			$obj->XML->writeElement("sc", $obj->colorService[$state]);
+			$obj->XML->writeElement("svc_id", getServiceObjectId($svc, $host_name, $obj));
 			$obj->XML->endElement();
 		}
 		$obj->XML->writeElement("o", $ct++);

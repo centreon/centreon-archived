@@ -239,7 +239,7 @@
 		/** *****************************************
 		 * Prepare Finale Request
 		 */
-		$rq1 =	"SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
+		$rq1 =	"SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state, ss.service_object_id ".
 			" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
 			" WHERE ss.service_object_id = sgm.service_object_id";
 			if ($custom_ndo == 0) {
@@ -296,7 +296,7 @@
 	$flag = 0;
 	$count = 0;
 	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
-	while ($tab = $DBRESULT_NDO1->fetchRow() && $numRows) {
+	while ($tab = &$DBRESULT_NDO1->fetchRow() && $numRows) {
 		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
 			if ($sg != $tab["alias"]) {
 				$flag = 0;
@@ -338,6 +338,7 @@
 			$obj->XML->writeElement("sn", $tab["service_description"]);
 			$obj->XML->writeElement("snl", urlencode($tab["service_description"]));
 			$obj->XML->writeElement("sc", $obj->colorService[$tab["current_state"]]);
+			$obj->XML->writeElement("svc_id", $tab['service_object_id']);
 			$obj->XML->endElement();
 		}
 	}

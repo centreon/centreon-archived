@@ -36,7 +36,6 @@
  *
  */
 
-
 	include_once "@CENTREON_ETC@/centreon.conf.php";
     //include_once "@CENTREON_ETC@/centreon.conf.php";
 
@@ -235,6 +234,7 @@
 							$obj->XML->writeElement("sn", $svc);
 							$obj->XML->writeElement("snl", urlencode($svc));
 							$obj->XML->writeElement("sc", $obj->colorService[$state]);
+							$obj->XML->writeElement("svc_id", getServiceObjectId($svc, $host_name, $obj));
 							$obj->XML->endElement();
 						}
 					}
