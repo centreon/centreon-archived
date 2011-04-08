@@ -3,55 +3,57 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset ($oreon))
 		exit ();
-		
+
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-			
-	function testExistence ($name = NULL)	{
+
+	function testExistence ($name = null)
+	{
 		global $pearDB;
 		global $form;
-		$id = NULL;
-		if (isset($form))
+		$id = null;
+		if (isset($form)) {
 			$id = $form->getSubmitValue('meta_id');
+		}
 		$DBRESULT = $pearDB->query("SELECT meta_id FROM meta_service WHERE meta_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$meta = $DBRESULT->fetchRow();
 		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] == $id)
 			return true;
 		#Duplicate entry
 		else if ($DBRESULT->numRows() >= 1 && $meta["meta_id"] != $id)
@@ -59,46 +61,58 @@
 		else
 			return true;
 	}
-	
-	function enableMetaServiceInDB ($meta_id = null)	{
-		if (!$meta_id) return;
+
+	function enableMetaServiceInDB ($meta_id = null)
+	{
+		if (!$meta_id) {
+		    return;
+		}
 		global $pearDB;
 		$DBRESULT = $pearDB->query("UPDATE meta_service SET meta_activate = '1' WHERE meta_id = '".$meta_id."'");
 	}
-	
-	function disableMetaServiceInDB ($meta_id = null)	{
-		if (!$meta_id) return;
+
+	function disableMetaServiceInDB ($meta_id = null)
+	{
+		if (!$meta_id) {
+		    return;
+		}
 		global $pearDB;
 		$DBRESULT = $pearDB->query("UPDATE meta_service SET meta_activate = '0' WHERE meta_id = '".$meta_id."'");
 	}
-	
-	function deleteMetaServiceInDB ($metas = array())	{
+
+	function deleteMetaServiceInDB ($metas = array())
+	{
 		global $pearDB;
 		foreach($metas as $key=>$value)	{
-			$DBRESULT = $pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$key."'");
+			$pearDB->query("DELETE FROM meta_service WHERE meta_id = '".$pearDB->escape($key)."'");
+			$pearDB->query("DELETE FROM service WHERE service_description = 'meta_".$pearDB->escape($key)."' AND service_register = '2'");
 		}
 	}
-	
-	function enableMetricInDB ($msr_id = null)	{
+
+	function enableMetricInDB ($msr_id = null)
+	{
 		if (!$msr_id) return;
 		global $pearDB;
 		$DBRESULT = $pearDB->query("UPDATE meta_service_relation SET activate = '1' WHERE msr_id = '".$msr_id."'");
 	}
-	
-	function disableMetricInDB ($msr_id = null)	{
+
+	function disableMetricInDB ($msr_id = null)
+	{
 		if (!$msr_id) return;
 		global $pearDB;
 		$DBRESULT = $pearDB->query("UPDATE meta_service_relation SET activate = '0' WHERE msr_id = '".$msr_id."'");
 	}
-	
-	function deleteMetricInDB ($metrics = array())	{
+
+	function deleteMetricInDB ($metrics = array())
+	{
 		global $pearDB;
-		foreach($metrics as $key=>$value)	{
+		foreach($metrics as $key=>$value) {
 			$DBRESULT = $pearDB->query("DELETE FROM meta_service_relation WHERE msr_id = '".$key."'");
 		}
-	}	
-	
-	function multipleMetaServiceInDB ($metas = array(), $nbrDup = array())	{
+	}
+
+	function multipleMetaServiceInDB ($metas = array(), $nbrDup = array())
+	{
 		# Foreach Meta Service
 		foreach($metas as $key=>$value)	{
 			global $pearDB;
@@ -139,20 +153,25 @@
 			}
 		}
 	}
-	
-	function updateMetaServiceInDB ($meta_id = NULL)	{
-		if (!$meta_id) return;
+
+	function updateMetaServiceInDB ($meta_id = null)
+	{
+		if (!$meta_id) {
+		    return;
+		}
 		updateMetaService($meta_id);
 		updateMetaServiceContactGroup($meta_id);
-	}	
-	
-	function insertMetaServiceInDB ()	{
+	}
+
+	function insertMetaServiceInDB ()
+	{
 		$meta_id = insertMetaService();
 		updateMetaServiceContactGroup($meta_id);
 		return ($meta_id);
 	}
-	
-	function multipleMetricInDB ($metrics = array(), $nbrDup = array())	{
+
+	function multipleMetricInDB ($metrics = array(), $nbrDup = array())
+	{
 		# Foreach Meta Service
 		foreach($metrics as $key=>$value)	{
 			global $pearDB;
@@ -171,14 +190,16 @@
 			}
 		}
 	}
-		
-	function insertMetaService($ret = array())	{
+
+	function insertMetaService($ret = array())
+	{
 		global $form;
 		global $pearDB;
-		if (count($ret))
-			;	
-		else
+		if (count($ret)) {
+			;
+		} else {
 			$ret = $form->getSubmitValues();
+		}
 		$rq = "INSERT INTO meta_service " .
 				"(meta_name, meta_display, check_period, max_check_attempts, normal_check_interval, retry_check_interval, notification_interval, " .
 				"notification_period, notification_options, notifications_enabled, calcul_type, meta_select_mode, regexp_str, metric, warning, critical, " .
@@ -209,9 +230,12 @@
 		$meta_id = $DBRESULT->fetchRow();
 		return ($meta_id["MAX(meta_id)"]);
 	}
-	
-	function updateMetaService($meta_id = null)	{
-		if (!$meta_id) return;
+
+	function updateMetaService($meta_id = null)
+	{
+		if (!$meta_id) {
+		    return;
+		}
 		global $form;
 		global $pearDB;
 		$ret = array();
@@ -258,9 +282,12 @@
 		$rq .= " WHERE meta_id = '".$meta_id."'";
 		$DBRESULT = $pearDB->query($rq);
 	}
-		
-	function updateMetaServiceContactGroup($meta_id = null)	{
-		if (!$meta_id) return;
+
+	function updateMetaServiceContactGroup($meta_id = null)
+	{
+		if (!$meta_id) {
+		    return;
+		}
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM meta_contactgroup_relation ";
@@ -273,7 +300,7 @@
 		    if (!is_numeric($ret[$i])) {
 		        $res = $cg->insertLdapGroup($ret[$i]);
 		        if ($res != 0) {
-		            $ret[$i] = $res; 
+		            $ret[$i] = $res;
 		        } else {
 		            continue;
 		        }
@@ -285,19 +312,24 @@
 			$DBRESULT = $pearDB->query($rq);
 		}
 	}
-	
-	function updateMetricInDB ($msr_id = NULL)	{
-		if (!$msr_id) return;
+
+	function updateMetricInDB ($msr_id = null)
+	{
+		if (!$msr_id) {
+		    return;
+		}
 		updateMetric($msr_id);
-	}	
-	
-	function insertMetricInDB ()	{
+	}
+
+	function insertMetricInDB ()
+	{
 		$msr_id = insertMetric();
 		updateMetricContactGroup($msr_id);
 		return ($msr_id);
 	}
-	
-	function insertMetric($ret = array())	{
+
+	function insertMetric($ret = array())
+	{
 		global $form;
 		global $pearDB;
 		global $oreon;
@@ -316,9 +348,12 @@
 		$msr_id = $DBRESULT->fetchRow();
 		return ($msr_id["MAX(msr_id)"]);
 	}
-	
-	function updateMetric($msr_id = null)	{
-		if (!$msr_id) return;
+
+	function updateMetric($msr_id = null)
+	{
+		if (!$msr_id) {
+		    return;
+		}
 		global $form;
 		global $pearDB;
 		global $oreon;
@@ -326,16 +361,16 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE meta_service_relation SET " ;
 		$rq .= "meta_id = ";
-		$ret["meta_id"] != NULL ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
+		$ret["meta_id"] != null ? $rq .= "'".$ret["meta_id"]."', ": $rq .= "NULL, ";
 		$rq .= "host_id = ";
-		$ret["host_id"] != NULL ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
+		$ret["host_id"] != null ? $rq .= "'".$ret["host_id"]."', ": $rq .= "NULL, ";
 		$rq .= "metric_id = ";
-		$ret["metric_id"] != NULL ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
+		$ret["metric_id"] != null ? $rq .= "'".$ret["metric_id"]."', ": $rq .= "NULL, ";
 		$rq .= "msr_comment = ";
-		$ret["msr_comment"] != NULL ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		$ret["msr_comment"] != null ? $rq .= "'".htmlentities($ret["msr_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		$rq .= "activate = ";
-		$ret["activate"]["activate"] != NULL ? $rq .= "'".$ret["activate"]["activate"]."' " : $rq .= "NULL ";
+		$ret["activate"]["activate"] != null ? $rq .= "'".$ret["activate"]["activate"]."' " : $rq .= "NULL ";
 		$rq .= " WHERE msr_id = '".$msr_id."'";
-		$DBRESULT = $pearDB->query($rq);		
+		$DBRESULT = $pearDB->query($rq);
 	}
 ?>
