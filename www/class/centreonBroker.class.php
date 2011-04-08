@@ -39,7 +39,7 @@
 class CentreonBroker
 {
 	private $name;
-	private $DB;
+	private $db;
 
 	/*
 	 * Constructor class
@@ -47,30 +47,33 @@ class CentreonBroker
 	 * @access public
 	 * @return 	object	object session
 	 */
-	public function __construct($DB) {
-		$this->DB = $DB;
-		$this->getBrokerName();
+	public function __construct($db)
+	{
+		$this->db = $db;
+		$this->setBrokerName();
 	}
 
 	/**
 	 * Get Broker engine name
 	 */
-	private function getBrokerName() {
-		$DBRESULT = $this->DB->query("SELECT `value` FROM options WHERE `key` LIKE 'Broker'");
-		$data = $DBRESULT->fetchRow();
+	private function setBrokerName()
+	{
+		$res = $this->db->query("SELECT `value` FROM options WHERE `key` LIKE 'Broker'");
+		$data = $res->fetchRow();
 		if (isset($data["value"]) && $data["value"] != "") {
 			$this->name = strtolower($data["value"]);
 		} else {
 			$this->name = "ndo";
 		}
-		unset($DBRESULT);
+		unset($res);
 		unset($data);
 	}
 
 	/*
 	 * return broker engine
 	 */
-	public function getBroker() {
+	public function getBroker()
+	{
 		return $this->name;
 	}
 }
