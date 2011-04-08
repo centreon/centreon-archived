@@ -191,9 +191,9 @@ class CentreonXMLBGRequest
 		$this->en 			= array("0" => _("No"), "1" => _("Yes"));
 		$this->stateType	= array("1" => "H", "0" => "S");
 		$this->stateTypeFull= array("1" => "HARD", "0" => "SOFT");
-		$this->statusHost 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE");
+		$this->statusHost 	= array("0" => "UP", "1" => "DOWN", "2" => "UNREACHABLE", "4" => "PENDING");
 		$this->statusService= array("0" => "OK", "1" => "WARNING", "2" => "CRITICAL", "3" => "UNKNOWN", "4" => "PENDING");
-		$this->colorHost 	= array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"]);
+		$this->colorHost 	= array(0 => $this->general_opt["color_up"], 1 => $this->general_opt["color_down"], 2 => $this->general_opt["color_unreachable"], 4 => $this->general_opt["color_pending"]);
 		$this->colorService	= array(0 => $this->general_opt["color_ok"], 1 => $this->general_opt["color_warning"], 2 => $this->general_opt["color_critical"], 3 => $this->general_opt["color_unknown"], 4 => $this->general_opt["color_pending"]);
 		$this->colorHostInService = array(0 => "normal", 1 => "#FD8B46", 2 => "normal");
 	}
