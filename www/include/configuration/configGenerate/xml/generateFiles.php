@@ -61,6 +61,11 @@ function printDebug($xml)
                     }
                 }
             }
+        } else {
+            $show = "block";
+            $pollerNameColor = "red";
+            $toggler = "<label id='togglerp_".$pollerId."' style='display: none'>[ + ]</label><label id='togglerm_".$pollerId."'>[ - ]</label>";
+            $returnCode = 1;
         }
         $str .= "<a href='#' onClick=\"toggleDebug('".$pollerId."'); return false;\"/>";
         $str .= $toggler . "</a> ";
