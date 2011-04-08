@@ -52,6 +52,7 @@
 <link href="<?php echo $skin; ?>style.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?><?php echo $colorfile; ?>" rel="stylesheet" type="text/css"/>
 <link href="./include/common/javascript/modalbox.css" rel="stylesheet" type="text/css" media="screen"/>
+<link href="<?php echo $skin; ?>Modalbox/<?php echo $colorfile; ?>" rel="stylesheet" type="text/css" media="screen"/>
 <link href="./include/common/javascript/prototype-datepicker.css" rel="stylesheet" type="text/css" media="screen"/>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
