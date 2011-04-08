@@ -32,11 +32,11 @@
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">#</xsl:attribute>
 				<xsl:attribute name="class">infobulle</xsl:attribute>
-				<xsl:attribute name="onmouseover">displayPOPUP_svc('<xsl:value-of select="svc_id"/>');</xsl:attribute>
+				<xsl:attribute name="onmouseover">displayPOPUP('svc', '<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>', '<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>
 				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="svc_id"/>');</xsl:attribute>
 				<xsl:value-of select="sd" disable-output-escaping="yes" />
 				<xsl:element name="span">
-					<xsl:attribute name="id">span_<xsl:value-of select="svc_id"/></xsl:attribute>
+					<xsl:attribute name="id">span_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
 				</xsl:element>
 			</xsl:element>
 		</td>

@@ -44,7 +44,7 @@
 	$debugXML = 0;
 	$buffer = '';
 
-	include_once("/etc/centreon/centreon.conf.php");
+	require_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once($centreon_path."www/class/centreonDuration.class.php");
 	include_once($centreon_path."www/class/centreonACL.class.php");
@@ -112,74 +112,72 @@
 	/* Get Service status */
 	$rq =		" SELECT " .
 				" DISTINCT h.name as host_name," .
-				" s.process_performance_data," .
-				" s.current_state," .
+				" s.process_perfdata," .
+				" s.state," .
 				" s.output as plugin_output," .
-				" s.attempts," .
-				" s.status_update_time," .
+				" s.check_attempt," .
+				" s.last_update," .
 				" s.last_state_change," .
 				" s.last_check," .
 				" s.next_check," .
-				" s.notificaty," .
+				" s.notify," .
 				" s.acknowledged," .
 				" s.passive_checks," .
 				" s.active_checks," .
 				" s.event_handler," .
-				" s.is_flapping," .
+				" s.flapping," .
 				" s.flap_detection," .
 				" s.service_id," .
-				" s.description as service_description" .
+				" s.description as service_description," .
+				" s.host_id " .
 				" FROM services s, hosts h";
-	$rq .= 	" WHERE s.host_id = host_id".
-			" AND no.name1 LIKE '_Module_Meta'" .
-			" AND no.is_active = 1" .
-		  	" AND objecttype_id = 2";
+	$rq .= 	" WHERE s.host_id = h.host_id ".
+			" AND h.name LIKE '_Module_Meta' ";
 
 	if (!$is_admin) {
 		$ACLString = "";
 		foreach ($access->getMetaServices() as $key => $empty) {
-			if ($ACLString != "")
+			if ($ACLString != "") {
 				$ACLString .= ",";
+			}
 			$ACLString .= "'meta_".$key."'";
 		}
-		if ($ACLString == "")
+		if ($ACLString == "") {
 			$ACLString = "''";
-		$rq .= " AND no.name2 IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
-	}
-	if ($search_type_host && $search_type_service && $search){
-		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
-	} else if (!$search_type_service && $search_type_host && $search){
-		$rq .= " AND no.name1 like '%" . $search . "%'";
-	} else if ($search_type_service && !$search_type_host && $search){
-		$rq .= " AND no.name2 like '%" . $search . "%'";
+		}
+		$rq .= " AND s.description IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
 	}
 
-	if ($o == "svcpb")
-		$rq .= " AND nss.current_state != 0";
-	if ($o == "svc_ok")
-		$rq .= " AND nss.current_state = 0 ";
-	if ($o == "svc_warning")
-		$rq .= " AND nss.current_state = 1 ";
-	if ($o == "svc_critical")
-		$rq .= " AND nss.current_state = 2 ";
-	if ($o == "svc_unknown")
-		$rq .= " AND nss.current_state = 3 ";
+	if ($o == "svcpb") {
+		$rq .= " AND s.state != 0";
+	}
+	if ($o == "svc_ok") {
+		$rq .= " AND s.state = 0 ";
+	}
+	if ($o == "svc_warning") {
+		$rq .= " AND s.state = 1 ";
+	}
+	if ($o == "svc_critical") {
+		$rq .= " AND s.state = 2 ";
+	}
+	if ($o == "svc_unknown") {
+		$rq .= " AND s.state = 3 ";
+	}
 	if ($o == "svc_unhandled") {
-		$rq .= " AND nss.current_state != 0";
-		$rq .= " AND nss.problem_has_been_acknowledged = 0";
-		$rq .= " AND nss.scheduled_downtime_depth = 0";
+		$rq .= " AND s.state != 0 ";
+		$rq .= " AND s.acknowledged = 0 ";
+		$rq .= " AND s.scheduled_downtime_depth = 0 ";
 	}
 
 	$rq_pagination = $rq;
 
 	switch ($sort_type){
-		case 'host_name' : $rq .= " order by no.name1 ". $order.",no.name2 "; break;
-		case 'service_description' : $rq .= " order by no.name2 ". $order.",no.name1 "; break;
-		case 'current_state' : $rq .= " order by nss.current_state ". $order.",no.name1,no.name2 "; break;
-		case 'last_state_change' : $rq .= " order by nss.last_state_change ". $order.",no.name1,no.name2 "; break;
-		case 'last_check' : $rq .= " order by nss.last_check ". $order.",no.name1,no.name2 "; break;
-		case 'current_attempt' : $rq .= " order by nss.current_check_attempt ". $order.",no.name1,no.name2 "; break;
-		default : $rq .= " order by no.name1 ". $order; break;
+		case 'service_description' : $rq .= " ORDER BY s.description ". $order; break;
+		case 'current_state' : $rq .= " ORDER BY s.state ". $order.", s.description "; break;
+		case 'last_state_change' : $rq .= " ORDER BY s.last_state_change ". $order.", s.description "; break;
+		case 'last_check' : $rq .= " ORDER BY s.last_check ". $order.",s.description "; break;
+		case 'current_attempt' : $rq .= " ORDER BY s.check_attempt ". $order.", s.description "; break;
+		default : $rq .= " ORDER BY s.description ". $order; break;
 	}
 
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
@@ -187,7 +185,7 @@
 	$ct = 0;
 	$flag = 0;
 
-	$DBRESULT_NDO2 = $pearDBndo->query($rq_pagination);
+	$DBRESULT_NDO2 = $pearDBO->query($rq_pagination);
 
 	/*
 	 * Get Pagination Rows
@@ -212,34 +210,35 @@
 	$host_prev = "";
 	$class = "list_one";
 
-	$DBRESULT_NDO2 = $pearDBndo->query($rq);
+	$DBRESULT_NDO2 = $pearDBO->query($rq);
 
 	while ($ndo = $DBRESULT_NDO2->fetchRow()) {
 
-		$color_service = $tab_color_service[$ndo["current_state"]];
+		$color_service = $tab_color_service[$ndo["state"]];
 		$passive = 0;
 		$active = 1;
 		$last_check = " ";
 		$duration = " ";
 
-		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"])
+		if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
 			$duration = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-		else if ($ndo["last_state_change"] > 0)
+		} elseif ($ndo["last_state_change"] > 0) {
 			$duration = " - ";
+		}
 
 		$class == "list_one" ? $class = "list_two" : $class = "list_one";
 
-		if ($tab_status_svc[$ndo["current_state"]] == "CRITICAL"){
-			$ndo["problem_has_been_acknowledged"] == 1 ? $class = "list_four" : $class = "list_down";
+		if ($tab_status_svc[$ndo["state"]] == "CRITICAL"){
+			$ndo["acknowledged"] == 1 ? $class = "list_four" : $class = "list_down";
 		} else {
-			if ($ndo["problem_has_been_acknowledged"] == 1)
+			if ($ndo["acknowledged"] == 1)
 				$class = "list_four";
 		}
 
 		$tabID = preg_split("/\_/", $ndo["service_description"]);
 		$id = $tabID[1];
 
-		$DBRESULT= $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
+		$DBRESULT = $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
 		$dataMeta = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
@@ -247,28 +246,25 @@
 		$buffer->writeAttribute("class", $class);
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);
-		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
-		$buffer->writeElement("sd", $dataMeta['meta_name'], false);
-		$buffer->writeElement("svc_id", $ndo["object_id"]);
-
-		$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
-		$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
-
-		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
+		$buffer->writeElement("ppd", $ndo["process_perfdata"]);
+		$buffer->writeElement("sd", $dataMeta['meta_name']);
+		$buffer->writeElement("svc_id", $ndo["service_id"]);
+        $buffer->writeElement("hid", $ndo["host_id"]);
+		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
-		$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
-		$buffer->writeElement("po", $ndo["plugin_output"], false);
-		$buffer->writeElement("ca", $ndo["current_attempt"]);
-		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
-		$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
-		$buffer->writeElement("pc", $ndo["passive_checks_enabled"]);
-		$buffer->writeElement("ac", $ndo["active_checks_enabled"]);
-		$buffer->writeElement("eh", $ndo["event_handler_enabled"]);
-		$buffer->writeElement("is", $ndo["is_flapping"]);
-		$buffer->writeElement("fd", $ndo["flap_detection_enabled"]);
-		$buffer->writeElement("ha", $ndo["problem_has_been_acknowledged"]);
-		$buffer->writeElement("hae", $ndo["active_checks_enabled"]);
-        $buffer->writeElement("hpe", $ndo["passive_checks_enabled"]);
+		$buffer->writeElement("cs", _($tab_status_svc[$ndo["state"]]));
+		$buffer->writeElement("po", $ndo["plugin_output"]);
+		$buffer->writeElement("ca", $ndo["check_attempt"]);
+		$buffer->writeElement("ne", $ndo["notify"]);
+		$buffer->writeElement("pa", $ndo["acknowledged"]);
+		$buffer->writeElement("pc", $ndo["passive_checks"]);
+		$buffer->writeElement("ac", $ndo["active_checks"]);
+		$buffer->writeElement("eh", $ndo["event_handler"]);
+		$buffer->writeElement("is", $ndo["flapping"]);
+		$buffer->writeElement("fd", $ndo["flap_detection"]);
+		$buffer->writeElement("ha", $ndo["acknowledged"]);
+		$buffer->writeElement("hae", $ndo["active_checks"]);
+        $buffer->writeElement("hpe", $ndo["passive_checks"]);
         $buffer->writeElement("nc", date($date_time_format_status, $ndo["next_check"]));
         $buffer->writeElement("lc", date($date_time_format_status, $ndo["last_check"]));
 		$buffer->writeElement("d", $duration);
