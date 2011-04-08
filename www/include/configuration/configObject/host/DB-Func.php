@@ -272,10 +272,11 @@
 							}
 						}
 						# Register Host -> Duplicate the Service list
-						if ($row["host_register"])
+						if ($row["host_register"] == 1) {
 							multipleServiceInDB($serviceArr, $serviceNbr, $hostInf, 0);
+						}
 						# Host Template -> Link to the existing Service Template List
-						else	{
+						else {
 							$DBRESULT = $pearDB->query("SELECT DISTINCT service_service_id FROM host_service_relation WHERE host_host_id = '".$key."'");
 							while($svs = $DBRESULT->fetchRow()){
 								$DBRESULT1 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$maxId["MAX(host_id)"]."', NULL, '".$svs["service_service_id"]."')");

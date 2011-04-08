@@ -162,7 +162,7 @@
         /*
          * replace if not template
          */
-        if ($row['host_register']) {
+        if ($row['host_register'] == 1) {
 			if (strpos($string, "\$HOSTADDRESS$"))
 	 			$string = str_replace("\$HOSTADDRESS\$", $this->getHostAddress($host_id), $string);
 			if (strpos($string, "\$HOSTNAME$"))

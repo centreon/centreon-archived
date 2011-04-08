@@ -719,7 +719,7 @@
 		 */
 		$tmpConf["dupSvTplAssoc"] = array("dupSvTplAssoc" => 1);
 
-		if ($tmpConf["host_register"]["host_register"]) {
+		if ($tmpConf["host_register"]["host_register"] == 1) {
 			if (!hostExists($tmpConf['host_name'])) {
 				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
 			} else {

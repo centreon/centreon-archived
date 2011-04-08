@@ -208,10 +208,11 @@
 			return;
 		$DBRESULT = $pearDB->query("SELECT host_register FROM host WHERE host_id = '".$host_id."' LIMIT 1");
 		$row = $DBRESULT->fetchRow();
-		if ($row["host_register"])
+		if ($row["host_register"] == 1) {
 			return true;
-		else
+		} else {
 			return false;
+		}
 	}
 
 	function getMyHostAddress($host_id = NULL)	{

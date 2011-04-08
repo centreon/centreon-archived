@@ -158,7 +158,7 @@
         /*
          * replace if not template
          */
-        if ($row['service_register']) {
+        if ($row['service_register'] == 1) {
 	 		if (preg_match("/\$SERVICEDESC\$/", $string)) {
 	 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string);
 	 		}
