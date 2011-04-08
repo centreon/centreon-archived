@@ -163,7 +163,6 @@
 		"ds_color_area_crit" => array( "label" => _("Critical Area color"), "color" => $l_general_opt["color_critical"])
 	);
 
-	$l_ptitle = _("Pick a color");
 	foreach ($l_dsColorList as $l_dsColor => $l_dCData) {
 		if (isset($compo[$l_dsColor]) && !empty($compo[$l_dsColor]))
 			$l_hxColor = $compo[$l_dsColor];
@@ -174,7 +173,7 @@
 		$form->addElement('text', $l_dsColor, $l_dCData["label"],  $attColText);
 
 		$attColAreaR = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;");
-		$attColAreaW = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;", "onclick"=>"popup_color_picker('$l_dsColor','".$l_dCData["label"]."','$l_ptitle');");
+		$attColAreaW = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;", "onclick"=>"popup_color_picker('$l_dsColor','".$l_dCData["label"]."');");
 		$form->addElement('button', $l_dsColor.'_color', "", $attColAreaW);
 		$form->addElement('button', $l_dsColor.'_read', "", $attColAreaR);
 	}
@@ -277,30 +276,24 @@
 			}
 		}
 
-		function dechex(n) {
-			var strhex = '0123456789ABCDEF';
-			return strhex.charAt(Math.floor(n/16)) + strhex.charAt(n%16);
-		}
-
-		function popup_color_picker(t,name,title) {
-			// Windows Size
-			var width = 400;
-			var height = 300;
-			// Send BackGround Color
-			var hcolor = '000000';
-			var i_elem = document.getElementsByName(t+'_color').item(0);
-			if ( i_elem != null ) {
-				var bckcolor = i_elem.style.backgroundColor;
-				var exp = new RegExp('rgb','g');
-				if (exp.test(bckcolor)) {
-					exp = new RegExp('[0-9]+','g');
-					var tab_rgb = bckcolor.match(exp);
-					hcolor = dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
-				}
-			}
-			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title+'&hcolor='+hcolor, 'cp', 'resizable=no, location=no, width='
-						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
-		}
+                function popup_color_picker(t,name) {
+                        var width = 318 ;
+                        var height = 314;
+                        var hcolor = '000000';
+                        var i_elem = document.getElementsByName(t+'_color').item(0);
+                        if ( i_elem != null ) {
+                                var bckcolor = i_elem.style.backgroundColor;
+                                var exp = new RegExp('rgb','g');
+                                if (exp.test(bckcolor)) {
+                                        exp = new RegExp('[0-9]+','g');
+                                        var tab_rgb = bckcolor.match(exp);
+                                        hcolor = dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
+                                } else {
+                                        hcolor = bckcolor.substr(1,6);
+                                }
+                        }
+                        Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title: 'Pick a color', width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
+                }
 	</script><?php
 	}
 	$tpl->assign('msg', array ("changeL"=>"?p=".$p."&o=c&compo_id=".$compo_id, "changeT"=>_("Modify")));

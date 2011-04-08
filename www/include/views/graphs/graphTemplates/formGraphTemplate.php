@@ -138,10 +138,9 @@
 	while (list($nameColor, $val) = each($TabColorNameAndLang))	{
 		$nameLang = $val;
 		isset($graph[$nameColor]) ?	$codeColor = $graph[$nameColor] : $codeColor = NULL;
-		$title = _("Pick a color");
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color:".$codeColor."; border-color:".$codeColor.";");
-		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang','$title');");
+		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang');");
 
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
@@ -222,13 +221,24 @@
 
 	$tpl->assign('colorJS',"
 	<script type='text/javascript'>
-		function popup_color_picker(t,name,title)
-		{
-			var width = 400;
-			var height = 300;
-			window.open('./include/common/javascript/color_picker.php?n='+t+'&name='+name+'&title='+title, 'cp', 'resizable=no, location=no, width='
-						+width+', height='+height+', menubar=no, status=yes, scrollbars=no, menubar=no');
-		}
+		function popup_color_picker(t,name) {
+			var width = 318;
+			var height = 314;
+			var hcolor = '000000';
+			var i_elem = document.getElementsByName(t+'_color').item(0);
+			if ( i_elem != null ) {
+				var bckcolor = i_elem.style.backgroundColor;
+				var exp = new RegExp('rgb','g');
+				if (exp.test(bckcolor)) {
+					exp = new RegExp('[0-9]+','g');
+					var tab_rgb = bckcolor.match(exp);
+					hcolor = dechex(parseInt(tab_rgb[0]))+dechex(parseInt(tab_rgb[1]))+dechex(parseInt(tab_rgb[2]));
+				} else {
+					hcolor = bckcolor.substr(1,6);
+				}
+			}
+			Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title: 'Pick a color', width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
+}
 	</script>
     "
     );
