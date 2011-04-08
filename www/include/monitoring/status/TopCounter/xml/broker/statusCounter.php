@@ -132,6 +132,7 @@
         $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
 		    	"FROM services s, `hosts` h, centreon_acl " .
     			"WHERE s.host_id IS NOT NULL " .
+				" 	AND s.host_id = h.host_id " .
 				"	AND s.scheduled_downtime_depth = '0' " .
 				"	AND s.acknowledged = '0' " .
 				"	AND s.state <> '0' " .
@@ -144,6 +145,7 @@
 	    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
 		    	"FROM services s, `hosts` h " .
     			"WHERE s.host_id IS NOT NULL " .
+	    		" 	AND s.host_id = h.host_id " .
 				"	AND s.scheduled_downtime_depth = '0' " .
 				"	AND s.acknowledged = '0' " .
 				"	AND s.state <> '0' " .
