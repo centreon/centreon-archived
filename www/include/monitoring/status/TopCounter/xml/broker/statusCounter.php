@@ -87,7 +87,7 @@
 			" GROUP BY state";
 
 	$hostCounter = 0;
-	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0);
+	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4=> 0);
 	$DBRESULT = $obj->DBC->query($rq1);
 	while ($data = $DBRESULT->fetchRow()) {
 		$host_stat[$data["state"]] = $data["count(DISTINCT name)"];
