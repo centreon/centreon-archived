@@ -115,6 +115,13 @@
             $pearDB->query("UPDATE acl_resources SET changed = 1");
 		}
 
+		/*
+		 * Tactical Overview part
+		 */
+        updateOption($pearDB, "tactical_host_limit", $ret['tactical_host_limit']);
+        updateOption($pearDB, "tactical_service_limit", $ret['tactical_service_limit']);
+        updateOption($pearDB, "tactical_refresh_interval", $ret['tactical_refresh_interval']);
+
         /*
          * Acknowledgement part
          */

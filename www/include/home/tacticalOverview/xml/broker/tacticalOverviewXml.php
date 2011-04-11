@@ -59,6 +59,18 @@
 	$dbb 	= new CentreonDB("centstorage");
     $centreon = $_SESSION['centreon'];
 
+    /**
+     * Options
+     */
+    $hostLimit = 100;
+    if (isset($centreon->optGen['tactical_host_limit'])) {
+        $hostLimit = $centreon->optGen['tactical_host_limit'];
+    }
+    $svcLimit = 100;
+    if (isset($centreon->optGen['tactical_service_limit'])) {
+        $svcLimit = $centreon->optGen['tactical_service_limit'];
+    }
+
 	$acl_host_id_list = $centreon->user->access->getHostsString("ID", $dbb);
 	$acl_access_group_list = $centreon->user->access->getAccessGroupsString();
 
@@ -92,7 +104,7 @@
 			" AND state <> 0" .
 			" AND acknowledged = 0" .
 			" AND scheduled_downtime_depth = 0" .
-			" ORDER by state";
+			" ORDER by state LIMIT ". $hostLimit;
 	$resNdoHosts = $dbb->query($rq1);
 
     $tab_macros = array('/\$hostid\$/i',
@@ -362,7 +374,7 @@
 				" AND s.host_id = centreon_acl.host_id ".
 				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" ORDER BY s.state ASC, h.name";
+				" ORDER BY s.state ASC, h.name LIMIT " . $svcLimit;
 	} else {
 		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h" .
@@ -372,7 +384,7 @@
 		        " AND s.scheduled_downtime_depth = 0" .
 				" AND s.enabled = 1" .
 				" AND h.name NOT LIKE '_Module_%' " .
-				" ORDER BY s.state ASC, h.name";
+				" ORDER BY s.state ASC, h.name LIMIT " . $svcLimit;
 	}
 	$resNdo1 = $dbb->query($rq1);
 

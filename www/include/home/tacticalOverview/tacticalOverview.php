@@ -42,6 +42,11 @@
 
 	$path = "./include/home/tacticalOverview/";
 
+	$refreshInterval = 10;
+    if (isset($centreon->optGen['tactical_refresh_interval'])) {
+        $refreshInterval = $centreon->optGen['tactical_refresh_interval'];
+    }
+
 	/*
 	 * Smarty template Init
 	 */
@@ -56,11 +61,12 @@
 ?>
 <script type='text/javascript' src='./class/centreonAjax.js'></script>
 <script type='text/javascript'>
+var refreshInterval = <?php echo $refreshInterval; ?>;
 var _sid = '<?php echo session_id();?>';
 var broker = '<?php  echo $oreon->broker->getBroker();?>';
 var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/' + broker +'/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
 var ajaxOverlay = new CentreonAjaxOverlay();
-ajax.setTime(10);
+ajax.setTime(refreshInterval);
 setTimeout('ajax.start()', 200);
 
 function showHostOverlay(id, domId) {

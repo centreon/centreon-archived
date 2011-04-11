@@ -31,6 +31,9 @@ INSERT INTO `options` (`key`, `value`) VALUES('monitoring_ack_notify', '0');
 INSERT INTO `options` (`key`, `value`) VALUES('monitoring_ack_sticky', '1');
 INSERT INTO `options` (`key`, `value`) VALUES('monitoring_dwt_fixed', '1');
 INSERT INTO `options` (`key`, `value`) VALUES('monitoring_dwt_svc', '1');
+INSERT INTO `options` (`key`, `value`) VALUES('tactical_host_limit', '100');
+INSERT INTO `options` (`key`, `value`) VALUES('tactical_service_limit', '100');
+INSERT INTO `options` (`key`, `value`) VALUES('tactical_refresh_interval', '20');
 
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Centreon-Broker', NULL, 609, NULL, NULL, 11, NULL, NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Configuration', './img/icones/16x16/text_code_colored.gif', 609, 60904, 40, 11, './include/configuration/configCentreonBroker/centreon-broker.php', NULL, '0', '0', '1', NULL, NULL, NULL);

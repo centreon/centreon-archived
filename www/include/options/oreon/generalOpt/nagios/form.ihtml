@@ -9,8 +9,12 @@
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$genOpt_dbLayer}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.broker.label}</td><td class="FormRowValue">{$form.broker.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$tacticalOverviewOptions}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.tactical_host_limit.label}</td><td class="FormRowValue">{$form.tactical_host_limit.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.tactical_service_limit.label}</td><td class="FormRowValue">{$form.tactical_service_limit.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.tactical_refresh_interval.label}</td><td class="FormRowValue">{$form.tactical_refresh_interval.html}&nbsp;{$seconds}</td></tr>		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/flag_red.gif'>&nbsp;&nbsp;{$acknowledgement_default_settings}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.monitoring_ack_sticky.label}</td><td class="FormRowValue">{$form.monitoring_ack_sticky.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.monitoring_ack_notify.label}</td><td class="FormRowValue">{$form.monitoring_ack_notify.html}</td></tr>

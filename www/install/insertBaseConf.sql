@@ -196,7 +196,10 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('monitoring_ack_notify', '0'),
 ('monitoring_ack_sticky', '1'),
 ('monitoring_dwt_fixed', '1'),
-('monitoring_dwt_svc', '1');
+('monitoring_dwt_svc', '1'),
+('tactical_host_limit', '100'),
+('tactical_service_limit', '100'),
+('tactical_refresh_interval', '20');
 
 --
 -- Contenu de la table `giv_components_template`

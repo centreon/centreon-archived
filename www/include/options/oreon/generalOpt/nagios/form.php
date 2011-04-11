@@ -65,6 +65,17 @@
 	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("ndo" => "NDOutils", "broker" => "Centreon Broker"));
 
 	/*
+	 * Tactical Overview form
+	 */
+	$limitArray = array();
+	for ($i = 10; $i <= 100; $i += 10) {
+	    $limitArray[$i] = $i;
+	}
+    $form->addElement('select', 'tactical_host_limit', _("Maximum number of hosts to show"), $limitArray);
+    $form->addElement('select', 'tactical_service_limit', _("Maximum number of services to show"), $limitArray);
+    $form->addElement('text', 'tactical_refresh_interval', _("Page refresh interval"), $attrsText2);
+
+	/*
 	 * Acknowledgement form
 	 */
     $form->addElement('checkbox', 'monitoring_ack_sticky', _("Sticky"));
@@ -107,6 +118,7 @@
 
 	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
+	$form->addRule('tactical_refresh_interval', _("Refresh interval must be numeric"), 'numeric');
 
 	/*
 	 * Smarty template Init
@@ -157,6 +169,7 @@
 	$tpl->assign("genOpt_nagios_version", _("Monitoring Engine"));
 	$tpl->assign("genOpt_dbLayer", _("Monitoring database layer"));
 	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
+	$tpl->assign("tacticalOverviewOptions", _("Tactical Overview"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
 	$tpl->assign("genOpt_monitoring_properties", "Monitoring properties");
     $tpl->assign("acknowledgement_default_settings", _("Default acknowledgement settings"));
