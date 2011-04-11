@@ -1017,7 +1017,7 @@ class CentreonGraph	{
 	}
 
         private function subsRPN($rpn, $vname, $suffix = NULL) {
-                $l_list = preg_split(",",$rpn);
+                $l_list = preg_split("/\,/",$rpn);
                 $l_rpn = "";
                 $l_err = 0;
                 foreach( $l_list as $l_m) {
