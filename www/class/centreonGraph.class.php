@@ -332,7 +332,7 @@ class CentreonGraph	{
 
 		/* Manage reals metrics */
 		if (isset($l_rselector)) {
-			$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$l_rselector." AND m.hidden = '0' ORDER BY m.metric_name");
+			$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, replace(format(warn,9),',','') warn, replace(format(crit,9),',','') crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$l_rselector." AND m.hidden = '0' ORDER BY m.metric_name");
 			while ($rmetric = $DBRESULT->fetchRow()){
 				$this->mlist[$rmetric["metric_id"]] = $this->mpointer[0]++;
 				$this->rmetrics[] = $rmetric;
@@ -646,10 +646,12 @@ class CentreonGraph	{
 					$this->addArgument("GPRINT:".$this->vname[$tm["metric"]].":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
 				}
 				if ($this->onecurve) {
-					if (isset($tm["warn"]) && $tm["warn"] != 0)
-						$this->addArgument("HRULE:".$tm["warn"].$tm["ds_color_area_warn"].":\"Warning \: ".$tm["warn"]."\\l\" ");
-					if (isset($tm["crit"]) && $tm["crit"] != 0)
-						$this->addArgument("HRULE:".$tm["crit"].$tm["ds_color_area_crit"].":\"Critical \: ".$tm["crit"]."\"");
+					if (isset($tm["warn"]) && !empty($tm["warn"]) && $tm["warn"] != 0) {
+						$this->addArgument("HRULE:".$tm["warn"].$tm["ds_color_area_warn"].":\"Warning  \: ".$this->humanReadable($tm["warn"], $tm["unit"])."\\l\" ");
+					}
+					if (isset($tm["crit"]) && !empty($tm["crit"]) && $tm["crit"] != 0) {
+						$this->addArgument("HRULE:".$tm["crit"].$tm["ds_color_area_crit"].":\"Critical \: ".$this->humanReadable($tm["crit"], $tm["unit"])."\"");
+					}
 				}
 				if ( !$this->onecurve ) {
 					$cline=0;
@@ -662,6 +664,50 @@ class CentreonGraph	{
 			if ($tm["ds_stack"])
 				$cpt++;
 		}
+	}
+
+
+	private function humanReadable($l_value = NULL, $l_unit) {
+
+		if (empty($l_value)) {
+			return;
+		}
+
+		$l_px = array( "8" => array("1000" => "Y", "1024" =>"Yi"), "7" => array("1000" => "Z", "1024" =>"Zi"), "6" => array("1000" => "E", "1024" =>"Ei"), "5" => array("1000" => "P", "1024" =>"Pi"), "4" => array("1000" => "T", "1024" =>"Ti"), "3" => array("1000" => "G", "1024" =>"Gi"), "2" => array("1000" => "M", "1024" =>"Mi"), "1" => array("1000" => "k", "1024" =>"Ki"), "0" => "", "-1" => "m", "-2" => "µ", "-3" => "n");
+		$l_cpx = 0;
+		$l_sign ="";
+		// base : default [1000]
+		if (isset($this->_RRDoptions["base"])) {
+			$l_base = $this->_RRDoptions["base"];
+		} else {
+			$l_base = 1000;
+		}
+		// unit
+		$l_unit = preg_replace("/^[YZEPTGMkKmµn]/", "", $l_unit);
+
+		if ($l_value<0) {
+			$l_sign = "-";
+			$l_value *= -1;
+		}
+
+		if ($l_value<1) {
+			do {
+				$l_value *= $l_base;
+				$l_cpx--;
+			} while ($l_value < 1);
+		} else {
+			while ($l_value > $l_base) {
+				$l_value /= $l_base;
+				$l_cpx++;
+			}
+		}
+		if ($l_cpx > 0) {
+			$l_upx = $l_px[$l_cpx][$l_base];
+		} else {
+			$l_upx = $l_px[$l_cpx];
+		}
+
+		return $l_sign.sprintf("%.2f",$l_value).$l_upx.$l_unit;
 	}
 
 	private function _getDefaultGraphTemplate() {
@@ -1050,7 +1096,7 @@ class CentreonGraph	{
                         $l_where = "vmetric_name = '".$v_name."' AND index_id ='".$index_id."'";
                 else
                         $l_where = "vmetric_id = '".$v_id."'".$l_whidden;
-                $l_pqy = $this->DB->query("SELECT vmetric_id metric_id, index_id, vmetric_name metric_name, unit_name, warn, crit, def_type, rpn_function FROM virtual_metrics WHERE ".$l_where." ORDER BY metric_name");
+		$l_pqy = $this->DB->query("SELECT vmetric_id metric_id, index_id, vmetric_name metric_name, unit_name, replace(format(warn,9),',','') warn, replace(format(crit,9),',','') crit, def_type, rpn_function FROM virtual_metrics WHERE ".$l_where." ORDER BY metric_name");
                 /* There is only one metric_id */
                 if ( $l_pqy->numRows() == 1 ) {
                         $l_vmetric = $l_pqy->fetchRow();
@@ -1066,7 +1112,7 @@ class CentreonGraph	{
                                 $l_mlist = preg_split("/\,/", $l_vmetric["rpn_function"]);
                                 foreach ( $l_mlist as $l_mnane ) {
                                         /* Check for a real metric */
-                                        $l_poqy = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, warn, crit FROM metrics AS m, index_data as i WHERE index_id = id AND index_id = '".$l_vmetric["index_id"]."' AND metric_name = '".$l_mnane."'");
+					$l_poqy = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, replace(format(warn,9),',','') warn, replace(format(crit,9),',','') crit FROM metrics AS m, index_data as i WHERE index_id = id AND index_id = '".$l_vmetric["index_id"]."' AND metric_name = '".$l_mnane."'");
                                         if ( $l_poqy->numRows() == 1) {
                                                 /* Find a real metric in the RPN function */
                                                 $l_rmetric = $l_poqy->fetchrow();
