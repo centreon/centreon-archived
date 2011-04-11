@@ -204,6 +204,8 @@
 	 */
 	$timeUnit = $minInterval * $intervalLength;
 
+	$inactivInstance = "";
+
 	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
 				"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
 				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id AND ".$obj->ndoPrefix."instances.instance_name IN ($pollerList)";

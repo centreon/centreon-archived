@@ -416,10 +416,9 @@
 			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
 			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
 			$tab_ip[$j] = $ndo["address"];
+			$tab_duration[$j] = " - ";
 			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
 	    		$tab_duration[$j] = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-			} elseif ($ndo["last_state_change"] > 0) {
-				$tab_duration[$j] = " - ";
 			}
 			$tab_output[$j] = $ndo["output"];
 			$tab_icone[$j] = $ndo["icon_image"];
