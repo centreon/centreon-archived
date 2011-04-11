@@ -40,9 +40,9 @@ require_once ("DB.php");
 
 class CentreonDB
 {
-	
+
 	private static $instance = array();
-	
+
 	protected $db_type = "mysql";
 	protected $db_port = "3306";
 	protected $retry;
@@ -281,7 +281,7 @@ class CentreonDB
 	{
 		$this->requestExecuted++;
 		if (count($placeHolders)) {
-            $DBRES = $thsi->db->query($query_string, $placeHolders);
+            $DBRES = $this->db->query($query_string, $placeHolders);
 		} else {
     	    $DBRES = $this->db->query($query_string);
 		}
@@ -329,7 +329,7 @@ class CentreonDB
 
 	/**
 	 * Factory for singleton
-	 * 
+	 *
 	 * @param string $name The name of centreon datasource
 	 * @throws Exception
 	 * @return CentreonDB
@@ -344,7 +344,7 @@ class CentreonDB
 		}
 		return self::$instance[$name];
 	}
-	
+
 	/**
 	 * return number of rows
 	 *
