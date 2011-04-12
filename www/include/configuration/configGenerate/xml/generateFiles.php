@@ -164,7 +164,7 @@ try {
                  */
                 if ($files = glob($path . "metaService/*.php")) {
                     foreach ($files as $filename) {
-                        require_once($filename);
+                        include($filename);
                     }
                 }
             }
