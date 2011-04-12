@@ -161,6 +161,7 @@
 	if ($instance != -1) {
 		$rq1 .= " AND h.instance_id = ".$instance;
 	}
+	$rq1 .= " AND h.enabled = 1 ";
 	switch ($sort_type) {
 		case 'name' :
 			$rq1 .= " ORDER BY h.name ". $order;

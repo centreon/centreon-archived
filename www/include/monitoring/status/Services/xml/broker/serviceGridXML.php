@@ -103,12 +103,12 @@
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0") {
 		$rq1 .= " AND hosts.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.state != 0)";
+				" WHERE s.state != 0 AND s.enabled = 1)";
 	}
 	if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1") {
 		$rq1 .= " AND hosts.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.acknowledged = '1')";
+				" WHERE s.acknowledged = '1' AND s.enabled = 1)";
 	}
 	if ($search != "") {
 		$rq1 .= " AND hosts.name like '%" . $search . "%' ";
@@ -120,6 +120,8 @@
 	    $rq1 .= " AND hosts.host_id = hg.host_id ";
 	    $rq1 .= " AND hg.hostgroup_id = '".$hostgroups."' ";
 	}
+	$rq1 .= " AND hosts.enabled = 1 ";
+
 	switch ($sort_type) {
 		case 'current_state' : $rq1 .= " ORDER BY hosts.state ". $order.",hosts.name "; break;
 		default : $rq1 .= " ORDER BY hosts.name ". $order; break;

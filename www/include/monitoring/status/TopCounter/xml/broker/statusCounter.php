@@ -83,6 +83,7 @@
 	if (!$obj->is_admin) {
 		$rq1 .= " AND hosts.host_id = centreon_acl.host_id ";
 	}
+	$rq1 .= " AND hosts.enabled = 1 ";
 	$rq1 .= $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
 			" GROUP BY state";
 
@@ -107,12 +108,16 @@
 				" AND services.host_id = centreon_acl.host_id ".
 				" AND services.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
+		        " AND hosts.enabled = 1 " .
+		        " AND services.enabled = 1 " .
 				" GROUP BY services.state";
 	} else {
 		$rq2 = 	" SELECT count(services.state) AS count, services.state" .
 				" FROM services, hosts" .
 				" WHERE hosts.name NOT LIKE '_Module_%' ".
 				" AND hosts.host_id = services.host_id".
+				" AND hosts.enabled = 1 " .
+		        " AND services.enabled = 1 " .
 				" GROUP BY services.state";
 	}
 	$serviceCounter = 0;
@@ -138,6 +143,8 @@
 				"	AND s.state <> '0' " .
             	"   AND s.host_id = centreon_acl.host_id ".
 				"   AND s.service_id = centreon_acl.service_id " .
+        		"   AND s.enabled = 1 " .
+				"   AND h.enabled = 1 " .
         		"   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				"	AND h.state = '0' " .
 				" GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
@@ -150,6 +157,8 @@
 				"	AND s.acknowledged = '0' " .
 				"	AND s.state <> '0' " .
 				"	AND h.state = '0' " .
+	    		"   AND s.enabled = 1 " .
+	    		"   AND h.enabled = 1 " .
 				" GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
 	}
 	$DBRESULT = $obj->DBC->query($rq3);

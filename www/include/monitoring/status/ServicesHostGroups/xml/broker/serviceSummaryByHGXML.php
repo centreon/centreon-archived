@@ -98,17 +98,17 @@
 	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
 		$rq1 .= " AND h.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.state != 0)";
+				" WHERE s.state != 0 AND s.enabled = 1)";
 	}
 	if ($o == "svcSumHG_ack_0") {
 		$rq1 .=	" AND h.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.acknowledged = 0 AND s.state != 0)";
+				" WHERE s.acknowledged = 0 AND s.state != 0 AND s.enabled = 1)";
 	}
 	if ($o == "svcSumHG_ack_1"){
 		$rq1 .= " AND h.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.acknowledged = 1 AND s.state != 0)";
+				" WHERE s.acknowledged = 1 AND s.state != 0 AND s.enabled = 1)";
 	}
 	if ($search != "") {
 		$rq1 .= " AND h.name like '%" . $search . "%' ";
@@ -116,6 +116,7 @@
 	if ($hg != "") {
 		$rq1 .= " AND hg.name = '" . $hg . "'";
 	}
+	$rq1 .= " AND h.enabled = 1 ";
 	$rq1 .= " ORDER BY $sort_type, h.name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
