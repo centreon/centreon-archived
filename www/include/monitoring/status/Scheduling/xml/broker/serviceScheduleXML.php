@@ -149,7 +149,7 @@
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
-	$request .= " WHERE h.host_id = s.host_id AND s.service_id IS NOT NULL AND s.service_id != 0 ";
+	$request .= " WHERE h.host_id = s.host_id AND s.service_id IS NOT NULL AND s.service_id != 0 AND h.enabled = 1 AND s.enabled = 1 ";
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
