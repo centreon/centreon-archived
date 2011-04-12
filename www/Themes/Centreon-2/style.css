@@ -421,3 +421,5 @@ a.infobulle span,.img_volante 		{display:none;position:absolute;z-index:500;}
 .list_one,.list_two,.list_three,.list_four,.line_ack,.line_downtime,.list_unreachable,.row_disabled		{font-weight:400;vertical-align:middle;}
 
 div.ams		{text-align:center;font-style:italic;}
+
+form label { margin-left: 3px; }
