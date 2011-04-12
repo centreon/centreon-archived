@@ -223,6 +223,7 @@
 				" AND h.name NOT LIKE '_Module_%' ".
 				" AND h.host_id = centreon_acl.host_id ".
 				" AND s.service_id = centreon_acl.service_id " .
+		        " AND h.enabled = 1 " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
@@ -231,6 +232,7 @@
 				" FROM services s, hosts h " .
 				" WHERE h.host_id = s.host_id".
 				" AND h.name not like '_Module_%' ".
+				" AND h.enabled = 1 " .
 				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
@@ -386,7 +388,6 @@
 				" AND h.name NOT LIKE '_Module_%' " .
 				" ORDER BY s.state ASC, h.name LIMIT " . $svcLimit;
 	}
-	$resNdo1 = $dbb->query($rq1);
 
 	$j = 0;
 	$tab_hostname[$j] = "";
@@ -412,7 +413,7 @@
                         '/\$LASTSERVICESTATECHANGE\$/i',
                         '/\$hostaddress\$/i',
                         '/\$hosticon\$/i');
-
+    $resNdo1 = $dbb->query($rq1);
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;
 
