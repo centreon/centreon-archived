@@ -16,5 +16,6 @@ CRONTAB_EXEC_USER=""
 ############################
 # Cron to build state events
 0 3 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/eventReportBuilder.pl -l >> @CENTREON_LOG@/eventReportBuilder.log 2>&1
+
 # Cron to build reporting
 0 6 * * * @NAGIOS_USER@ @INSTALL_DIR_CENTREON@/cron/dashboardBuilder.pl -l >> @CENTREON_LOG@/dashboardBuilder.log 2>&1
