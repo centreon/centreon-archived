@@ -729,3 +729,7 @@ CREATE TABLE IF NOT EXISTS servicestateevents (
   FOREIGN KEY (host_id, service_id) REFERENCES services (host_id, service_id)
     ON DELETE CASCADE
 ) ENGINE=InnoDB;
+
+
+ALTER TABLE `log` ADD COLUMN `instance` int(11) NOT NULL default '1' AFTER `msg_type`;
+ALTER TABLE `log` ADD INDEX(`instance`);

@@ -68,7 +68,6 @@ $LOG = "@CENTREON_LOG@/logAnalyser.log";
 ## Init Date
 my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
 
-
 # Write logs in a file.
 sub writeLogFile($){
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
@@ -96,6 +95,20 @@ if (!$sth->execute) {
     die "Error:" . $sth->errstr . "\n";
 }
 $data = $sth->fetchrow_hashref();
+
+########################
+# Check if is db layer 
+# is centreon broker
+########################
+my $dbLayer = $dbhoreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+if (!$dbLayer->execute()) {
+	die "Error:" . $dbLayer->errstr . "\n";
+}
+my $dataLayer = $dbLayer->fetchrow_hashref();
+if ($dataLayer->{'value'} eq "broker") {
+	$dbLayer->finish();
+	exit;
+}
 
 my $sthbis;
 my $appID;
@@ -397,7 +410,7 @@ sub parseArchive($$) {
 
     my $archives;
     if ($localhost){
-		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '".$_[0]."' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = 1");
+		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '".$_[0]."' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = 1 AND `cfg_nagios`.`nagios_activate` = '1'");
 		if (!$sth->execute()) {
 		    die "Error:" . $sth->errstr . "\n";
 		}
