@@ -560,7 +560,7 @@ sub replaceMetricSpecialChar($){
 sub createRRDDatabase($$$$$$$){
     my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd, $data_source_type) = @_;
     
-    RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$rrd_dst[$data_source_type].":".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".$my_len_storage_rrd);
+    RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$rrd_dst[$data_source_type].":".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".($my_len_storage_rrd / 12));
     my $ERR = RRDs::error;
     if( $ERR) {
 	writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR");
