@@ -173,8 +173,9 @@ sub insertEvent {
 	my ($hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift);
 	
 	my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime, $state);
-	$self->insertEventTable($hostId, $state, $lastUpdate, $events);
-	
+	if ($state ne "") {
+		$self->insertEventTable($hostId, $state, $lastUpdate, $events);
+	}
 }
 
 sub insertEventTable {
@@ -196,8 +197,10 @@ sub insertEventTable {
 	}
 	if (scalar(@$events)) {
 		my $tab = $events->[$count];
-		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";
-		$centstorage->query($query_start.$query_end);
+		if (defined($hostId) && defined($state)) {
+			my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";		
+			$centstorage->query($query_start.$query_end);
+		}
 	}
 }
 

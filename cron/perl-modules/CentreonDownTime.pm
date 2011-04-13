@@ -44,15 +44,17 @@ package CentreonDownTime;
 # parameters:
 # $logger: instance of class CentreonLogger
 # $centreon: Instance of centreonDB class for connection to Centreon database
+# $dbLayer : Database Layer : ndo | broker
 # $centstorage: (optionnal) Instance of centreonDB class for connection to Centstorage database
 sub new {
 	my $class = shift;
 	my $self  = {};
 	$self->{"logger"}	= shift;
 	$self->{"centstatus"} = shift;
+	$self->{'dbLayer'} = shift;
 	if (@_) {
 		$self->{"centstorage"}  = shift;
-	}
+	}	
 	bless $self, $class;
 	return $self;
 }
@@ -65,15 +67,30 @@ sub getDownTime {
 	my $start = shift;
 	my $end = shift;
 	my $type = shift; # if 1 => host, if 2 => service
-	my $query = "SELECT `name1`, `name2`,".
-						" UNIX_TIMESTAMP(`actual_start_time`) as start_time,".
-						" UNIX_TIMESTAMP(`actual_end_time`) as end_time".
-				" FROM `nagios_downtimehistory` d, `nagios_objects` o".
-				" WHERE o.`object_id` = d.`object_id` AND o.`objecttype_id` = '".$type."'".
-						" AND was_started = 1".
-						" AND UNIX_TIMESTAMP(`actual_start_time`) < ".$end.
-						" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
-				" ORDER BY `name1` ASC, `actual_start_time` ASC, `actual_end_time` ASC";
+	my $dbLayer = $self->{'dbLayer'};
+	my $query;
+	
+	if ($dbLayer eq "ndo") {
+		$query = "SELECT `name1`, `name2`,".
+				" UNIX_TIMESTAMP(`actual_start_time`) as start_time,".
+				" UNIX_TIMESTAMP(`actual_end_time`) as end_time".
+			" FROM `nagios_downtimehistory` d, `nagios_objects` o".
+			" WHERE o.`object_id` = d.`object_id` AND o.`objecttype_id` = '".$type."'".
+			" AND was_started = 1".
+			" AND UNIX_TIMESTAMP(`actual_start_time`) < ".$end.
+			" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
+			" ORDER BY `name1` ASC, `actual_start_time` ASC, `actual_end_time` ASC";
+	} elsif ($dbLayer eq "broker") {
+		$query = "SELECT h.name as name1, s.description as name2, " .
+				 "d.start_time, d.end_time " .
+				 "FROM `hosts` h, `downtimes` d " .
+				 "LEFT JOIN services s ON s.service_id = d.service_id " .
+				 "WHERE started = 1 " .
+				 "AND d.host_id = h.host_id " .
+				 "AND start_time < " . $end . " " .
+				 "AND (end_time > " . $start . " || end_time = 0) " .
+				 "ORDER BY name1 ASC, start_time ASC, end_time ASC";		
+	}
 
 	my $sth = $centreon->query($query);
 	
@@ -125,7 +142,7 @@ sub splitInsertEventDownTime {
 	
 	my @events = ();
 	my $total = 0;
-	if (defined($downTimes) && $state != 0) {
+	if ($state ne "" && defined($downTimes) && defined($state) && $state != 0) {
 		$total = scalar(@$downTimes);
 		
 	}

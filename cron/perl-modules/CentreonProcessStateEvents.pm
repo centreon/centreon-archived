@@ -56,6 +56,7 @@ sub new {
 	$self->{"hostEvents"} = shift;
 	$self->{"serviceEvents"} = shift;
 	$self->{"centreonDownTime"} = shift;
+	$self->{"dbLayer"} = shift;
 	bless $self, $class;
     
 	return $self;
@@ -83,9 +84,13 @@ sub parseServiceLog {
     while(my $row = $logs->fetchrow_hashref()) {
 		my $id  = $row->{'host_name'}.";;".$row->{'service_description'};
 		if (defined($allIds->{$id})) {
+			my $statusCode = $row->{'status'};			
+			if ($self->{'dbLayer'} eq "ndo") {
+				$statusCode = $serviceStates{$row->{'status'}};
+			}			
 			if (defined($currentEvents->{$id})) {
-				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id | in_downtime. The last one is optionnal
-				if ($eventInfos->[1] != $serviceStates{$row->{'status'}}) {
+				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id | in_downtime. The last one is optionnal				
+				if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {										
 					my ($hostId, $serviceId) = split (";;", $allIds->{$id});
 					if ($eventInfos->[2] != 0) {
 						# If eventId of log is defined, update the last day event
@@ -96,13 +101,14 @@ sub parseServiceLog {
 						}
 					}
 					$eventInfos->[0] = $row->{'ctime'};
-					$eventInfos->[1] = $serviceStates{$row->{'status'}};
+					$eventInfos->[1] = $statusCode;					
 					$eventInfos->[2] = 0;
 					$eventInfos->[3] = 0;
 					$currentEvents->{$id} = $eventInfos;
 				}
-			}else {
-				my @tab = ($row->{'ctime'}, $serviceStates{$row->{'status'}}, 0, 0);
+			} else {
+				my @tab;				
+				@tab = ($row->{'ctime'}, $statusCode, 0, 0);				
 				$currentEvents->{$id} = \@tab;
 			}
 			
@@ -134,9 +140,13 @@ sub parseHostLog {
     while(my $row = $logs->fetchrow_hashref()) {
 		my $id  = $row->{'host_name'};
 		if (defined($allIds->{$id})) {
+			my $statusCode = $row->{'status'};			
+			if ($self->{'dbLayer'} eq "ndo") {
+				$statusCode = $hostStates{$row->{'status'}};
+			}
 			if (defined($currentEvents->{$id})) {
 				my $eventInfos =  $currentEvents->{$id}; # $eventInfos is a reference to a table containing : incident start time | status | state_event_id. The last one is optionnal
-				if ($eventInfos->[1] != $hostStates{$row->{'status'}}) {
+				if ($statusCode ne "" && defined($eventInfos->[1]) && $eventInfos->[1] ne "" && $eventInfos->[1] != $statusCode) {
 					if ($eventInfos->[2] != 0) {
 						# If eventId of log is defined, update the last day event
 						$events->updateEventEndTime($allIds->{$id}, $eventInfos->[0], $row->{'ctime'}, $eventInfos->[1], $eventInfos->[2],$eventInfos->[3], 0, $downTime);
@@ -146,13 +156,13 @@ sub parseHostLog {
 						}
 					}
 					$eventInfos->[0] = $row->{'ctime'};
-					$eventInfos->[1] = $hostStates{$row->{'status'}};
+					$eventInfos->[1] = $statusCode;
 					$eventInfos->[2] = 0;
 					$eventInfos->[3] = 0;
 					$currentEvents->{$id} = $eventInfos;
 				}
 			}else {
-				my @tab = ($row->{'ctime'}, $hostStates{$row->{'status'}}, 0, 0);
+				my @tab = ($row->{'ctime'}, $statusCode, 0, 0);
 				$currentEvents->{$id} = \@tab;
 			}
 		}

@@ -66,7 +66,7 @@ my $PROGNAME = "$0";
 my $VERSION = "1.0";
 my $varLibCentreon="@CENTREON_VARLIB@";
 
-my ($centreon, $centstorage, $centstatus, $logger, $processEvents, $serviceEvents, $hostEvents, $nagiosLog, $service, $host);
+my ($centreon, $centstorage, $centstatus, $logger, $processEvents, $serviceEvents, $hostEvents, $nagiosLog, $service, $host, $dbLayer);
 
 # program exit function
 sub exit_pgr() {
@@ -83,9 +83,18 @@ sub exit_pgr() {
 }
 
 # program usage echo
-sub print_usage () {
+sub print_usage() {
     print "Usage: $PROGNAME [-h||--help] [-v|--version] [-r|--rebuild] [-l|--lock]\n";
     exit;
+}
+
+# get db layer
+sub getDbLayer() {
+	my $res = $centreon->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+	if (my $row = $res->fetchrow_hashref()) { 
+		return $row->{'value'};
+	}
+	return "ndo";
 }
 
 # function that checks if the log is already built
@@ -129,21 +138,30 @@ sub initVars {
 	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd);
 	
 	# Getting centstatus database name
-	my $sth = $centreon->query("select db_name from cfg_ndo2db where activate='1' limit 1");
-	if (my $row = $sth->fetchrow_hashref()) {
-		# connecting to censtatus
-		$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $mysql_host, $mysql_user, $mysql_passwd);
+	$dbLayer = getDbLayer();
+	if ($dbLayer eq "ndo") {
+		my $sth = $centreon->query("SELECT db_name, db_host, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+		if (my $row = $sth->fetchrow_hashref()) {
+			#connecting to censtatus
+			$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $row->{'db_host'}, $row->{'db_user'}, $row->{'db_pass'});
+		}
+	} elsif ($dbLayer eq "broker") {
+		$centstatus = $centstorage;
+	} else {
+		$logger->writeLog("ERROR", "Unsupported database layer: " . $dbLayer);
+		exit_pgr();
 	}
+	
 	# classes to query database tables 
 	$host = CentreonHost->new($logger, $centreon);
 	$service = CentreonService->new($logger, $centreon);
-	$nagiosLog = CentreonLog->new($logger, $centstorage);
-	my $centreonDownTime = CentreonDownTime->new($logger, $centstatus);
+	$nagiosLog = CentreonLog->new($logger, $centstorage, $dbLayer);
+	my $centreonDownTime = CentreonDownTime->new($logger, $centstatus, $dbLayer);
 	$serviceEvents = CentreonServiceStateEvents->new($logger, $centstorage, $centreonDownTime);
 	$hostEvents = CentreonHostStateEvents->new($logger, $centstorage, $centreonDownTime);
 	
 	# Class that builds events
-	$processEvents = CentreonProcessStateEvents->new($logger, $host, $service, $nagiosLog, $hostEvents, $serviceEvents, $centreonDownTime);
+	$processEvents = CentreonProcessStateEvents->new($logger, $host, $service, $nagiosLog, $hostEvents, $serviceEvents, $centreonDownTime, $dbLayer);
 }
 
 # For a given period returns in a table each	
