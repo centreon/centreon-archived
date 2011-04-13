@@ -88,6 +88,7 @@
 	}
 	$rq1 .=	" WHERE h.host_id = hgm.host_id".
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
+			" AND h.enabled = '1' ".
 			" AND h.name not like '_Module_%' ";
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME"));

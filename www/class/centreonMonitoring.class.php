@@ -133,6 +133,8 @@ class CentreonMonitoring {
 				" FROM services s, `hosts` h".(!$objXMLBG->is_admin ? ", centreon_acl " : "").
 				" WHERE s.state = '".$status."'".
 				" AND s.host_id = h.host_id ".
+				" AND s.enabled = '1' ".
+				" AND h.enabled = '1' ".
 				" AND h.name = '$host_name' ";
 
 		if ($o == "svcSum_ack_0") {
@@ -294,6 +296,7 @@ class CentreonMonitoring {
 		}
 		$rq .= 		" WHERE h.host_id = s.host_id " .
 					" AND s.enabled = '1' " .
+					" AND h.enabled = '1' ".
 					" AND h.name NOT LIKE '_Module_%'";
 
 		if ($o == "svcgrid_pb" || $o == "svcOV_pb") {
