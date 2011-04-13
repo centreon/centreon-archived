@@ -191,6 +191,7 @@
 	} else if ($o == "svc_unknown") {
 		$request .= " AND s.state = 3";
 	}
+    $request .= " AND h.name NOT LIKE '_Module_%' ";
 
 	/**
 	 * HostGroup Filter
