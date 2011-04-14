@@ -487,6 +487,54 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Broker password</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["dbLocation"]."' WHERE config_key = 'host' AND config_group_id = 'output';";
+		if ($DEBUG)
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Broker DB password</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["pwdOreonDB"]."' WHERE config_key = 'password' AND config_group_id = 'output';";
+		if ($DEBUG)
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Broker DB name</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["nameOdsDB"]."' WHERE config_key = 'db' AND config_group_id = 'output';";
+		if ($DEBUG)
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set RRDTool properties</b></td>';
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
