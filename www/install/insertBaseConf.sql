@@ -114,6 +114,29 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(5, 5, 'blue_css.php');
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(6, 6, 'blue_css.php');
 
+-- 
+-- Broker configuration
+--
+
+INSERT INTO `cfg_centreonbroker` (`config_id`, `config_name`, `config_activate`, `ns_nagios_server`) VALUES (1, 'Central', '1', 1);
+
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'name', 'Central', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'failover', '', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'type', 'mysql', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'host', 'localhost', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'port', '3306', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'db', 'centstorage', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'user', 'centreon', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'password', 'centreon', 'output', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'type', 'file', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'config', '1', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'info', '1', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'debug', '1', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'error', '1', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'level', '3', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'name', '/tmp/crentreon-broker.log', 'logger', 1);
+INSERT INTO `cfg_centreonbroker_info` (`config_id`, `config_key`, `config_value`, `config_group`, `config_group_id`) VALUES(1, 'name', '/var/log/centreon/centreon-broker.log', 'logger', 1);
+
 --
 -- Contenu de la table `general_opt`
 --
