@@ -320,4 +320,4 @@ DELETE FROM `topology` WHERE `topology_page` = 5010202;
 ALTER TABLE `metrics` CHANGE `min` `min` FLOAT NULL DEFAULT NULL;
 ALTER TABLE `metrics` CHANGE `max` `max` FLOAT NULL DEFAULT NULL;
 
-UPDATE `informations` SET `value` = '2.2.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.11' LIMIT 1;
+UPDATE `informations` SET `value` = '2.2.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.13' LIMIT 1;
