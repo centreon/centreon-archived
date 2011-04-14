@@ -76,9 +76,30 @@
 	$pearDBO 	= new CentreonDB("centstorage");
 	if ($oreon->broker->getBroker() == "ndo") {
 		$pearDBndo 	= new CentreonDB("ndo");
+		define("STATUS_OK", "OK");
+	    define("STATUS_WARNING", "WARNING");
+	    define("STATUS_CRITICAL", "CRITICAL");
+	    define("STATUS_UNKNOWN", "UNKNOWN");
+	    define("STATUS_PENDING", "PENDING");
+	    define("STATUS_UP", "UP");
+	    define("STATUS_DOWN", "DOWN");
+	    define("STATUS_UNREACHABLE", "UNREACHABLE");
+	    define("TYPE_SOFT", "SOFT");
+	    define("TYPE_HARD", "HARD");
+	} elseif ($oreon->broker->getBroker() == "broker") {
+	    define("STATUS_OK", 0);
+	    define("STATUS_WARNING", 1);
+	    define("STATUS_CRITICAL", 2);
+	    define("STATUS_UNKNOWN", 3);
+	    define("STATUS_PENDING", 4);
+	    define("STATUS_UP", 0);
+	    define("STATUS_DOWN", 1);
+	    define("STATUS_UNREACHABLE", 2);
+	    define("TYPE_SOFT", 0);
+	    define("TYPE_HARD", 1);
 	}
 
-	/*
+	/**
 	 * Include Access Class
 	 */
 	include_once $centreon_path . "www/class/centreonACL.class.php";
@@ -264,8 +285,8 @@
 
 	$general_opt = getStatusColor($pearDB);
 
-	$tab_color_service 	= array("OK" => $general_opt["color_ok"], "WARNING" => $general_opt["color_warning"], "CRITICAL" => $general_opt["color_critical"], "UNKNOWN" => $general_opt["color_unknown"], "PENDING" => $general_opt["color_pending"]);
-	$tab_color_host		= array("UP" => $general_opt["color_up"], "DOWN" => $general_opt["color_down"], "UNREACHABLE" => $general_opt["color_unreachable"]);
+	$tab_color_service 	= array(STATUS_OK => $general_opt["color_ok"], STATUS_WARNING => $general_opt["color_warning"], STATUS_CRITICAL => $general_opt["color_critical"], STATUS_UNKNOWN => $general_opt["color_unknown"], STATUS_PENDING => $general_opt["color_pending"]);
+	$tab_color_host		= array(STATUS_UP => $general_opt["color_up"], STATUS_DOWN => $general_opt["color_down"], STATUS_UNREACHABLE => $general_opt["color_unreachable"]);
 
 	$tab_type 			= array("1" => "HARD", "0" => "SOFT");
 	$tab_class 			= array("0" => "list_one", "1" => "list_two");
@@ -331,20 +352,20 @@
 	if ($error == 'true')
 		array_push($msg_status_set, "'NULL'");
 	if ($up == 'true')
-		array_push($msg_status_set, "'UP'");
+		array_push($msg_status_set, "'".STATUS_UP."'");
 	if ($down == 'true' )
-		array_push($msg_status_set, "'DOWN'");
+		array_push($msg_status_set, "'".STATUS_DOWN."'");
 	if ($unreachable == 'true' )
-		array_push($msg_status_set, "'UNREACHABLE'");
+		array_push($msg_status_set, "'".STATUS_UNREACHABLE."'");
 
 	if ($ok == 'true')
-		array_push($msg_status_set, "'OK'");
+		array_push($msg_status_set, "'".STATUS_OK."'");
 	if ($warning == 'true')
-		array_push($msg_status_set, "'WARNING'");
+		array_push($msg_status_set, "'".STATUS_WARNING."'");
 	if ($critical == 'true')
-		array_push($msg_status_set, "'CRITICAL'");
+		array_push($msg_status_set, "'".STATUS_CRITICAL."'");
 	if ($unknown == 'true')
-		array_push($msg_status_set, "'UNKNOWN'");
+		array_push($msg_status_set, "'".STATUS_UNKNOWN."'");
 
 	$flag_begin = 0;
 	if ($notification == 'true') {
@@ -365,7 +386,7 @@
 		if (count($msg_status_set) > 0)
 		 	$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set) . ") ";
 		if ($oh == 'true')
-			$msg_req .= " AND `type` = 'HARD' ";
+			$msg_req .= " AND `type` = '".TYPE_HARD."' ";
 		$msg_req .=	") ";
 	}
 	if ($error == 'true') {
@@ -578,8 +599,6 @@
 						$DBRESULT_meta->free();
 						$svc_id["service_description"] = $meta["meta_name"];
 					}
-					$svc_id["service_description"] = str_replace("#S#", "/", $svc_id["service_description"]);
-					$svc_id["service_description"] = str_replace("#BS#", "\\", $svc_id["service_description"]);
 					$svc_id[$svc_id["id"]] = $svc_id["service_description"];
 				}
 				$DBRESULT2->free();
@@ -718,8 +737,12 @@
 		while ($log = $DBRESULT->fetchRow()) {
 			$buffer->startElement("line");
 			$buffer->writeElement("msg_type", $log["msg_type"]);
+			$displayType = $log['type'];
+			if (isset($tab_type[$log['type']])) {
+			    $displayType = $tab_type[$log['type']];
+			}
 			$log["msg_type"] > 1 ? $buffer->writeElement("retry", "") : $buffer->writeElement("retry", $log["retry"]);
-			$log["msg_type"] == 2 || $log["msg_type"] == 3 ? $buffer->writeElement("type", "NOTIF") : $buffer->writeElement("type", $log["type"]);
+			$log["msg_type"] == 2 || $log["msg_type"] == 3 ? $buffer->writeElement("type", "NOTIF") : $buffer->writeElement("type", $displayType);
 
 			/*
 			 * Color initialisation for services and hosts status
@@ -740,7 +763,13 @@
 
 			$buffer->startElement("status");
 			$buffer->writeAttribute("color", $color);
-			$buffer->text($log["status"]);
+			$displayStatus = $log["status"];
+			if ($log['service_description'] && isset($tab_status_service[$log['status']])) {
+			    $displayStatus = $tab_status_service[$log['status']];
+			} elseif (isset($tab_status_host[$log['status']])) {
+			    $displayStatus = $tab_status_host[$log['status']];
+			}
+			$buffer->text($displayStatus);
 			$buffer->endElement();
 			if ($log["host_name"] == "_Module_Meta") {
 				preg_match('/meta_([0-9]*)/', $log["service_description"], $matches);
