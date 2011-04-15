@@ -55,7 +55,6 @@
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
-	$pearDBndo 	= new CentreonDB("ndo");
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
