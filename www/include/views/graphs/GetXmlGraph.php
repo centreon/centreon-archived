@@ -314,7 +314,6 @@
 		 * for one svc -> daily,weekly,monthly,yearly..
 		 */
 		if ($type == "HS" || $type == "MS"){
-			$msg_error 		= 0;
 			$elem 			= array();
 
 			$graphTs = array(NULL => NULL);
@@ -429,23 +428,26 @@
 					if (isset($metrics[$key]))
 						$pass = 1;
 
-			if ($msg_error == 0)	{
-				if (isset($_GET["metric"]) && $pass){
-					$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
-					foreach ($metrics_active as $key => $metric){
-						if (isset($metrics_active[$key]) && $metrics_active[$key] == 1){
-							$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index."');");
-						}
+			if (isset($_GET["metric"]) && $pass){
+				$DBRESULT = $pearDB->query("DELETE FROM `ods_view_details` WHERE index_id = '".$index."'");
+				foreach ($metrics_active as $key => $metric){
+					if (isset($metrics_active[$key]) && $metrics_active[$key] == 1){
+						$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$key."', '".$contact_id."', '0', '".$index."');");
 					}
-				} else {
-					$DBRESULT = $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index."' AND `contact_id` = '".$contact_id."'");
-					$metrics_active = array();
-					if ($DBRESULT->numRows())
-						while ($metric = $DBRESULT->fetchRow())
-							$metrics_active[$metric["metric_id"]] = 1;
-					else
-						$active_force = 1;
 				}
+			} else {
+				$DBRESULT = $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index."' AND `contact_id` = '".$contact_id."'");
+				$metrics_active = array();
+				if ($DBRESULT->numRows()){
+					while ($metric = $DBRESULT->fetchRow()){
+						$metrics_active[$metric["metric_id"]] = 1;
+					}
+                                } else {
+                                        $active_force = 1;
+                                        foreach ($metrics as $id => $metric)    {
+                                                $DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$id."', '".$contact_id."', '0', '".$index_id."');");
+}
+                                }
 			}
 
 
@@ -651,11 +653,16 @@
 			} else {
 				$DBRESULT = $pearDB->query("SELECT metric_id FROM `ods_view_details` WHERE index_id = '".$index_id."' AND `contact_id` = '".$contact_id."'");
 				$metrics_active = array();
-				if ($DBRESULT->numRows())
-					while ($metric = $DBRESULT->fetchRow())
+				if ($DBRESULT->numRows()) {
+					while ($metric = $DBRESULT->fetchRow()) {
 						$metrics_active[$metric["metric_id"]] = 1;
-				else
+					}
+				} else {
 					$active_force = 1;
+                                        foreach ($metrics as $id => $metric)    {
+						$DBRESULT = $pearDB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$id."', '".$contact_id."', '0', '".$index_id."');");
+}
+				}
 			}
 
 			if ($multi)
