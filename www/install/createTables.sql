@@ -1762,6 +1762,7 @@ CREATE TABLE IF NOT EXISTS `ods_view_details` (
   `dv_id` int(11) NOT NULL auto_increment,
   `index_id` int(11) default NULL,
   `metric_id` VARCHAR(12) default NULL,
+  `rnd_color` varchar(7) DEFAULT NULL,
   `contact_id` int(11) default NULL,
   `all_user` enum('0','1') default NULL,
   PRIMARY KEY  (`dv_id`)

@@ -422,7 +422,7 @@ class CentreonGraph	{
 						/** ******************************************
 						 * Get random color. Only line will be set
 						 */
-						$ds["ds_color_line"] = $this->getRandomWebColor();
+						$ds["ds_color_line"] = $this->getOVDColor($metric["metric_id"]);
 						/* $this->metrics[$metric["metric_id"]]["ds_id"] = $ds; */
 						$ds_data = $ds;
 					}
@@ -1005,6 +1005,23 @@ class CentreonGraph	{
 			else
 				return htmlentities($defaultValue, ENT_QUOTES, "UTF-8");
 		}
+	}
+
+	public function getOVDColor($l_mid) {
+		$DBRESULT = $this->DB->query("SELECT `rnd_color` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `metric_id` = '".$l_mid."' AND `contact_id` = '".$this->user_id."'");
+                if ($DBRESULT->numRows()) {
+			$l_ovd = $DBRESULT->fetchRow();
+			$DBRESULT->free();
+			if (isset($l_ovd["rnd_color"]) && !empty($l_ovd["rnd_color"]) && preg_match("/^\#[a-f0-9]{6,6}/i", $l_ovd["rnd_color"])) {
+				return $l_ovd["rnd_color"];
+			}
+			$l_rndcolor = $this->getRandomWebColor();
+			// Update ods_view_details
+			$DBRESULT = $this->DB->query("UPDATE `ods_view_details` SET `rnd_color` = '".$l_rndcolor."' WHERE `index_id` = '".$this->index."' AND `metric_id` = '".$l_mid."' AND `contact_id` = '".$this->user_id."';");
+		} else {
+			$l_rndcolor = $this->getRandomWebColor();
+		}
+		return $l_rndcolor;
 	}
 
 	public 	function getRandomWebColor() {
