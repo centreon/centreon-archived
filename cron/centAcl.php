@@ -213,7 +213,7 @@
     		$strList = "''";
     	}
     	$DBRESULT->free();
-    	if ($engine != 'broker') {
+    	if ($dbLayer != 'broker') {
     		$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
     	} else {
     		$pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
@@ -573,11 +573,7 @@
     		/*
     		 * Delete old data for this group
     		 */
-    		if ($engine != 'broker') {
-    			$DBRESULT = $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
-    		} else {
-				$DBRESULT = $pearDBO->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
-    		}
+            $DBRESULT = $pearDBndo->query("DELETE FROM `centreon_acl` WHERE `group_id` = '".$acl_group_id."'");
 
     		$str = "";
     		if (count($tabElem)) {
@@ -591,11 +587,7 @@
     					$str .= "('".$host."', '".addslashes($desc)."', '".$id_tmp[0]."' , '".$id_tmp[1]."' , ".$acl_group_id.") ";
     					$i++;
     					if ($i >= 1000) {
-    						if ($engine != 'broker') {
-    							$DBRESULTNDO = $pearDBndo->query($strBegin.$str);
-    						} else {
-    							$DBRESULTNDO = $pearDBO->query($strBegin.$str);
-    						}
+                            $DBRESULTNDO = $pearDBndo->query($strBegin.$str);
     						$str = "";
     						$i = 0;
     					}
@@ -606,11 +598,7 @@
     			 * Insert datas
     			 */
     			if ($str != "") {
-    				if ($engine != 'broker') {
-    					$DBRESULTNDO = $pearDBndo->query($strBegin.$str);
-    				} else {
-						$DBRESULTNDO = $pearDBO->query($strBegin.$str);
-    				}
+                    $DBRESULTNDO = $pearDBndo->query($strBegin.$str);
     				$str = "";
     			}
     		}
