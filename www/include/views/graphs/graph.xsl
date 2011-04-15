@@ -100,7 +100,7 @@
 							</xsl:variable>
 							<xsl:if test="//split = 0">
 								<xsl:element name="a">
-									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '', 1, '<xsl:value-of select="start"/>', '<xsl:value-of select="end"/>'); return false;</xsl:attribute>
+									<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '', 0, '<xsl:value-of select="start"/>', '<xsl:value-of select="end"/>'); return false;</xsl:attribute>
 									<xsl:attribute name="href">#</xsl:attribute>
 										<xsl:element name="img">
 											<xsl:attribute name="id"><xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="name"/></xsl:attribute>
@@ -114,7 +114,7 @@
 									<tr>
 										<td style="vertical-align: top">
 										<xsl:element name="a">
-											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '',1 ,'<xsl:value-of select="../start"/>', '<xsl:value-of select="../end"/>'); return false;</xsl:attribute>
+											<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>', '', 0,'<xsl:value-of select="../start"/>', '<xsl:value-of select="../end"/>'); return false;</xsl:attribute>
 											<xsl:attribute name="href">#</xsl:attribute>
 											<xsl:element name="img">
 												<xsl:attribute name="id"><xsl:value-of select="//zoom_type"/><xsl:value-of select="//id"/>__P:<xsl:value-of select="../name"/>__M:<xsl:value-of select="metric_id"/></xsl:attribute>
@@ -434,7 +434,7 @@
 <xsl:template match="metrics">
 	<td>
 		<xsl:element name='input'>
-		<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>'); return false;</xsl:attribute>
+		<xsl:attribute name="onClick">graph_4_host('<xsl:value-of select="//opid"/>', '', 1); return false;</xsl:attribute>
 		<xsl:attribute name="type">checkbox</xsl:attribute>
 		<xsl:attribute name="name">metric</xsl:attribute>
 		<xsl:attribute name="value"><xsl:value-of select="metric_id"/></xsl:attribute>

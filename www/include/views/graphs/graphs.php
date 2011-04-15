@@ -231,7 +231,7 @@
 		multi = 1;
 		if (document.getElementById('openid'))
 			document.getElementById('openid').innerHTML = tree.getAllChecked();
-		graph_4_host(tree.getAllChecked(), 1, 1);
+		graph_4_host(tree.getAllChecked(), 1);
 	}
 
 	function onNodeSelect(nodeId){
@@ -241,7 +241,7 @@
 		if (nodeId.substring(0,2) == 'HS' || nodeId.substring(0,2) == 'MS'){
 			var graphView4xml = document.getElementById('graphView4xml');
 			graphView4xml.innerHTML="";
-			graph_4_host(nodeId, null, 1);
+			graph_4_host(nodeId, null);
 		}
 	}
 
@@ -254,7 +254,9 @@
 		if (openid.indexOf(',') != -1) {
 			multi = 1;
 		}
-		openid = openid.replace('HS_', 'SS_');
+		if (multi == 0) {
+			openid = openid.replace('HS_', 'SS_');
+		}
 		graph_4_host(openid, multi);
 	}
 
@@ -364,12 +366,13 @@ function nextPeriod() {
 		document.FormPeriod.EndTime.value = EndTime;
 	}
 
-	function graph_4_host(id, multi, l_select, pStart, pEnd, metrics)	{
+	function graph_4_host(id, multi, l_mselect, pStart, pEnd, metrics)	{
 		if (!multi)
 			multi = 0;
-
-		if (l_select === undefined)
+		// no metric selection : default
+		if (l_mselect === undefined) {
 			l_select = 0;
+		}
 
 
 		if (pStart && pEnd){
@@ -397,7 +400,7 @@ function nextPeriod() {
 			_metrics += '&metric['+metrics+']=1';
 			//multi = 1;
 		} else {
-			if (!l_select) {
+			if (l_mselect) {
 				var _checked = "0";
 				if (document.formu3 && document.formu3.elements["metric"]){
 					//multi = 1;
