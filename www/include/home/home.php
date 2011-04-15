@@ -88,7 +88,8 @@
 	if ($oreon->broker->getBroker() == "broker") {
 		$rq1 = 	" SELECT count(DISTINCT name) cnt, state " .
 			" FROM `hosts` " .
-			$oreon->user->access->queryBuilder("WHERE", "name", $oreon->user->access->getHostsString("NAME", $pearDBO)) .
+		    " WHERE hosts.enabled = 1 " .
+			$oreon->user->access->queryBuilder("AND", "name", $oreon->user->access->getHostsString("NAME", $pearDBO)) .
 			" GROUP BY state " .
 			" ORDER by state";
 		$DBRESULT = $pearDBO->query($rq1);
@@ -123,6 +124,8 @@
 					" AND hosts.name NOT LIKE '_Module_%' ".
 					" AND services.host_id = centreon_acl.host_id ".
 					" AND services.service_id = centreon_acl.service_id " .
+					" AND hosts.enabled = 1 " .
+			        " AND services.enabled = 1 ".
 					" AND centreon_acl.group_id IN (".$oreon->user->access->getResourceGroupsString().") ".
 					" GROUP BY services.state ORDER by services.state";
 		} else {
@@ -130,6 +133,8 @@
 					" FROM services, hosts " .
 					" WHERE services.host_id = hosts.host_id ".
 					" AND hosts.name NOT LIKE '_Module_%' ".
+			        " AND hosts.enabled = 1 " .
+			        " AND services.enabled = 1 " .
 					" GROUP BY services.state ORDER by services.state";
 		}
 		$DBRESULT = $pearDBO->query($rq2);

@@ -106,6 +106,8 @@
 					" AND hosts.name NOT LIKE '_Module_%' ".
 					" AND services.host_id = centreon_acl.host_id ".
 					" AND services.service_id = centreon_acl.service_id " .
+			        " AND hosts.enabled = 1 " .
+					" AND services.enabled = 1 " .
 					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
 					" GROUP BY services.state ORDER by services.state";
 		} else {
@@ -113,6 +115,8 @@
 					" FROM services, hosts " .
 					" WHERE services.host_id = hosts.host_id ".
 					" AND hosts.name NOT LIKE '_Module_%' ".
+			        " AND hosts.enabled = 1 ".
+					" AND services.enabled = 1 ".
 					" GROUP BY services.state ORDER by services.state";
 		}
 		$DBRESULT = $pearDBO->query($rq2);
