@@ -109,10 +109,17 @@ if (navigator.appName.substring(0, 3) == "Net") {
 document.onmousemove = position;
 
 
+function monitoringCallBack(t)
+{
+	resetSelectedCheckboxes();
+	mk_pagination(t.getXmlDocument());
+	set_header_title();
+}
+
 function resetSelectedCheckboxes()
 {
 	$$('input[type="checkbox"]').each(function(el) {
-		if (_selectedElem[encodeURIComponent(el.id)]) {
+		if (typeof(_selectedElem) != "undefined" && _selectedElem[encodeURIComponent(el.id)]) {
 			el.checked = true;
 		}
 	});

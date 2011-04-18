@@ -168,7 +168,7 @@ function set_header_title(){
 	  	h.title = '<?php echo _("Sort by retries number"); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
-
+		var _selectedElem = new Array();
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?php echo _("Status information"); ?>';
 	  	h.indice = 'plugin_output';
@@ -249,6 +249,7 @@ function goM(_time_reload,_sid,_o){
 	_lock = 1;
 	var proc = new Transformation();
 	var _addrXML = "./include/monitoring/status/Meta/xml/<?php print $centreon->broker->getBroker(); ?>/metaServiceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
+	proc.setCallback(monitoringCallBack);
 	proc.setXml(_addrXML);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");

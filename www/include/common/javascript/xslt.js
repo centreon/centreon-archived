@@ -117,9 +117,6 @@ function loadXML(url) {
 }
 
 function Transformation() {
-
-	var xsltRequest = GetXmlHttpRequest();
-
     var xml;
     var xmlDoc;
     var xslt;
@@ -249,85 +246,48 @@ function Transformation() {
 	         _setText("centreonMsg", " Loading...");
 	         _setValign("centreonMsg", "bottom");
 		}
-	    if (document.recalc) {
-	        var xmlID 	= randomID();
-	        var xsltID	= randomID();
-	        var change = function() {
-	            var c = 'complete'; // ?loading ?interactive
-	            var u = 'undefined';
-	            //var transformed = false;
-	            if (typeof document.all[xmlID] != u && document.all[xmlID].readyState != null && typeof document.all[xsltID] != u && document.all[xsltID].readyState != null) {
-					window.setTimeout(function() {                	
-		                if (transformed) {
-							return;
-						}
-		              	if (document.all[xmlID].readyState == 'complete' || document.all[xmlID].readyState == 'loading') {
-			                xmlDoc = document.all[xmlID].XMLDocument;
-			                xsltDoc = document.all[xsltID].XMLDocument;			                
-			                mk_pagination(xmlDoc);
-							document.all[target].innerHTML = document.all[xmlID].transformNode(document.all[xsltID].XMLDocument);
-							callback(t);
-							set_header_title();
-							transformed = true;
-							_clear("centreonMsg");
-						}
-					}, 50);
-				}
-			}
-			var xm = document.createElement('xml');
-			xm.onreadystatechange = change;
-			xm.id = xmlID;
-			xm.src = xml;
-			
-			var xs = document.createElement('xml');
-			xs.onreadystatechange = change;
-	        xs.id = xsltID;
-	        xs.src = xslt;
-	
-			document.body.insertBefore(xm);
-			document.body.insertBefore(xs);
-	
+		
+		var change = function() {
+            if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
+                    if (transformed) {
+                            return;
+                    }
+                    xsltDoc = xsltRequest.responseXML;
+                    xmlDoc = xmlRequest.responseXML;
+                    if (document.ActiveXObject) {                    	
+                    	document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
+                    } else {
+                    	var resultDoc;
+    					var processor = new XSLTProcessor();
+    					document.getElementById(target).innerHTML = '';
+    					processor.importStylesheet(xsltDoc);
+    					resultDoc = processor.transformToFragment(xmlDoc, document);    					
+    					document.getElementById(target).appendChild(resultDoc);
+                    }
+                    callback(t);                	
+                    transformed = true;
+                    _clear("centreonMsg");
+            }
+		}
+		
+		var xmlRequest;
+		var xsltRequest;
+		
+		if (document.ActiveXObject) {
+			xmlRequest = new ActiveXObject("Msxml2.XMLHTTP");
+			xsltRequest = new ActiveXObject("Msxml2.XMLHTTP");
 		} else {
-			/* 
-			 * legerement plus rapide avec FF
-			 */
-	        var xmlRequest = GetXmlHttpRequest();
-			
-			//console.log(xsltRequest);
-	
-			var change = function() {
-				if (xmlRequest.readyState == 4 && xmlRequest.responseXML && xsltRequest.status == 200 && xsltRequest.readyState == 4 && xsltRequest.statusText == "OK" && xsltRequest.responseText ) {
-					if (transformed) {
-						return;
-					}
-	                xsltDoc = xsltRequest.responseXML;
-	                xmlDoc = xmlRequest.responseXML;
-	
-					var resultDoc;
-					var processor = new XSLTProcessor();
-					document.getElementById(target).innerHTML = '';
-	
-					processor.importStylesheet(xsltDoc);
-					resultDoc = processor.transformToFragment(xmlDoc, document);					
-					mk_paginationFF(xmlDoc);				
-					document.getElementById(target).appendChild(resultDoc);
-					callback(t);
-					set_header_title();
-	                transformed = true;
-	                _clear("centreonMsg");
-				}
-			}
-	  		xmlRequest.open("GET", xml, true);
-			xmlRequest.onreadystatechange = change;
-			xmlRequest.send(null);
-
-			if (xsltRequest.readyState != 4){
-				xsltRequest.open("GET", xslt);
-				xsltRequest.overrideMimeType("text/xml");
-				xsltRequest.onreadystatechange = change;
-				xsltRequest.send(null);
-			}
-	    }
+			xmlRequest = GetXmlHttpRequest();
+			xsltRequest = GetXmlHttpRequest();
+		}
+		xmlRequest.open("GET", xml, true);
+		xmlRequest.onreadystatechange = change;
+		xmlRequest.send(null);		
+		if (xsltRequest.readyState != 4) {
+            xsltRequest.open("GET", xslt);
+            xsltRequest.onreadystatechange = change;
+            xsltRequest.send(null);
+		}
 	}
 	
 	/**
@@ -351,7 +311,7 @@ function Transformation() {
 
 function browserSupportsXSLT() {
     var support = false;
-    if (document.recalc) { // IE 5+
+    if (document.ActiveXObject) { // IE 6+
         support = true;
     }
     var u = 'undefined';

@@ -55,6 +55,7 @@ function CentreonAjax(xmlFile, xslFile, elementId)
 	this._time;
 	this._proc;
 	this._tObj;
+	this._callback;
 	var _self = this;
 	
 	this.setTime = function (t)
@@ -77,12 +78,18 @@ function CentreonAjax(xmlFile, xslFile, elementId)
 		this._target = elementId;
 	}
 	
+	this.setCallback = function (cb)
+	{
+		this._callback = cb;
+	}
+	
 	this.start = function ()
 	{		
 		_self._proc = new Transformation();
+		_self._proc.setCallback(_self._callback);
 		_self._proc.setXml(_self._xmlFile);
 		_self._proc.setXslt(_self._xslFile);
-		_self._proc.transform(_self._target);
+		_self._proc.transform(_self._target);		
 		if (_self._time) {
 			_self._tObj = setTimeout(function(){_self.start();}, _self._time);
 		}

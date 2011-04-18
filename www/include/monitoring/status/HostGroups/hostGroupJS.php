@@ -46,7 +46,7 @@
 
 	$sid = session_id();
 	$time = time();
-	
+
 ?>
 <script type="text/javascript">
 var _debug = 0;
@@ -94,7 +94,8 @@ function goM(_time_reload, _sid ,_o) {
 	var proc = new Transformation();
 
 	proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&instance='+_instance+'&time=<?php print time(); ?>')
-	proc.setXslt(_addrXSL)
+	proc.setXslt(_addrXSL);
+	proc.setCallback(monitoringCallBack);
 	proc.transform("forAjax");
 	_lock = 0;
 	_timeoutID = setTimeout('goM("'+ _time_reload +'","'+ _sid +'","'+_o+'")', _time_reload);

@@ -233,7 +233,7 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 			_counter += 1;
 		}
 
-		proc.setCallback(resetSelectedCheckboxes);
+		proc.setCallback(monitoringCallBack);
 		proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
