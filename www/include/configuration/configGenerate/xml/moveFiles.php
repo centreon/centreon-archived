@@ -69,7 +69,7 @@ try {
                     $bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].basename($filename));
                     $filename = array_pop(explode("/", $filename));
                     if (!$bool) {
-                        $msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")." <font color='res'>KO</font>");
+                        throw new Exception("Could not copy files");
                     }
                 }
                 /*
@@ -91,7 +91,7 @@ try {
                                 $bool = @copy($fileCfg, $centreonBrokerDirCfg . '/' . basename($fileCfg));
                                 $filename = array_pop(explode("/", $fileCfg));
                                 if (!$bool) {
-                                    $msg_copy[$host["id"]] .= display_copying_file($filename, " - "._("movement")." <font color='res'>KO</font>");
+                                    throw new Exception("Could not copy files");
                                 }
                             }
                         }
