@@ -90,35 +90,35 @@ function reloadStatusCounter(_relaod_time, _sid) {
 					document.getElementById('hosts').innerHTML = '';
 					var _text_total_host = document.createTextNode(_statistic_total_host);
 					var _linkHosttotal = document.createElement("a");
-				  	_linkHosttotal.href = 'main.php?p=20103&o=h&search=';
+				  	_linkHosttotal.href = 'main.php?p=20102&o=h&search=';
 					_linkHosttotal.appendChild(_text_total_host);
 					document.getElementById('hosts').appendChild(_linkHosttotal);
 
 					document.getElementById('host_up').innerHTML = '';
 					var _text_host_up = document.createTextNode(_statistic_host_up);
 					var _linkHostup = document.createElement("a");
-				  	_linkHostup.href = 'main.php?p=20103&o=h&search=';
+				  	_linkHostup.href = 'main.php?p=20102&o=h_up&search=';
 					_linkHostup.appendChild(_text_host_up);
 					document.getElementById('host_up').appendChild(_linkHostup);
 
 					document.getElementById('host_down').innerHTML = '';
 					var _text_host_down = document.createTextNode(_statistic_host_down);
 					var _linkHostProblem = document.createElement("a");
-				  	_linkHostProblem.href = 'main.php?p=20103&o=hpb&search=';
+				  	_linkHostProblem.href = 'main.php?p=20102&o=h_down&search=';
 					_linkHostProblem.appendChild(_text_host_down);
 					document.getElementById('host_down').appendChild(_linkHostProblem);
 
 					document.getElementById('host_unreachable').innerHTML = '';
 					var _text_host_unreachable = document.createTextNode(_statistic_host_unreachable);
 					var _linkHostunreachable = document.createElement("a");
-				  	_linkHostunreachable.href = 'main.php?p=20103&o=hpb&search=';
+				  	_linkHostunreachable.href = 'main.php?p=20102&o=h_unreachable&search=';
 					_linkHostunreachable.appendChild(_text_host_unreachable);
 					document.getElementById('host_unreachable').appendChild(_linkHostunreachable);
 
 					document.getElementById('host_pending').innerHTML = '';
 					var _text_host_pending = document.createTextNode(_statistic_host_pending);
 					var _linkHostpending = document.createElement("a");
-				  	_linkHostpending.href = 'main.php?p=20103&o=hpb&search=';
+				  	_linkHostpending.href = 'main.php?p=20102&o=h_pending&search=';
 					_linkHostpending.appendChild(_text_host_pending);
 					document.getElementById('host_pending').appendChild(_linkHostpending);
 
@@ -136,7 +136,7 @@ function reloadStatusCounter(_relaod_time, _sid) {
 					document.getElementById('service_ok').innerHTML = '';
 					var _text_service_ok = document.createTextNode(_statistic_service_ok);
 					var _linkservice_ok = document.createElement("a");
-				  	_linkservice_ok.href = 'main.php?p=2020101&o=svc_ok&search=';
+				  	_linkservice_ok.href = 'main.php?p=20201&o=svc_ok&search=';
 					_linkservice_ok.appendChild(_text_service_ok);
 					document.getElementById('service_ok').appendChild(_linkservice_ok);
 
@@ -144,7 +144,7 @@ function reloadStatusCounter(_relaod_time, _sid) {
 					document.getElementById('service_warning').innerHTML = '';
 					var _text_service_warning = document.createTextNode(_statistic_service_warningU+"/"+_statistic_service_warning);
 					var _linkservice_warning = document.createElement("a");
-				  	_linkservice_warning.href = 'main.php?p=2020102&o=svc_warning&search=';
+				  	_linkservice_warning.href = 'main.php?p=20201&o=svc_warning&search=';
 					_linkservice_warning.appendChild(_text_service_warning);
 					document.getElementById('service_warning').appendChild(_linkservice_warning);
 
@@ -152,7 +152,7 @@ function reloadStatusCounter(_relaod_time, _sid) {
 					document.getElementById('service_critical').innerHTML = '';
 					var _text_service_critical = document.createTextNode(_statistic_service_criticalU+"/"+_statistic_service_critical);
 					var _linkservice_critical = document.createElement("a");
-				  	_linkservice_critical.href = 'main.php?p=2020103&o=svc_critical&search=';
+				  	_linkservice_critical.href = 'main.php?p=20201&o=svc_critical&search=';
 					_linkservice_critical.appendChild(_text_service_critical);
 					document.getElementById('service_critical').appendChild(_linkservice_critical);
 
@@ -160,7 +160,7 @@ function reloadStatusCounter(_relaod_time, _sid) {
 					document.getElementById('service_unknown').innerHTML = '';
 					var _text_service_unknown = document.createTextNode(_statistic_service_unknownU+"/"+_statistic_service_unknown);
 					var _linkservice_unknown = document.createElement("a");
-				  	_linkservice_unknown.href = 'main.php?p=2020104&o=svc_unknown&search=';
+				  	_linkservice_unknown.href = 'main.php?p=20201&o=svc_unknown&search=';
 					_linkservice_unknown.appendChild(_text_service_unknown);
 					document.getElementById('service_unknown').appendChild(_linkservice_unknown);
 
