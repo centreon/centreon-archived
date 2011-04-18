@@ -254,7 +254,7 @@ function Transformation() {
                     }
                     xsltDoc = xsltRequest.responseXML;
                     xmlDoc = xmlRequest.responseXML;
-                    if (document.ActiveXObject) {                    	
+                    if (window.ActiveXObject) {                    	
                     	document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
                     } else {
                     	var resultDoc;
@@ -273,7 +273,7 @@ function Transformation() {
 		var xmlRequest;
 		var xsltRequest;
 		
-		if (document.ActiveXObject) {
+		if (window.ActiveXObject) {
 			xmlRequest = new ActiveXObject("Msxml2.XMLHTTP");
 			xsltRequest = new ActiveXObject("Msxml2.XMLHTTP");
 		} else {
@@ -311,7 +311,7 @@ function Transformation() {
 
 function browserSupportsXSLT() {
     var support = false;
-    if (document.ActiveXObject) { // IE 6+
+    if (window.ActiveXObject) { // IE 6+
         support = true;
     }
     var u = 'undefined';
