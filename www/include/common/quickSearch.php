@@ -108,7 +108,7 @@
 	$form_search->addElement('hidden', 'p');
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');
-	$form_search->addElement('hidden', 'o', $o);
+	//$form_search->addElement('hidden', 'o', $o);
 
 	$tabQuickSearch = array(602 => 1, 60201 => 1, 20207 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
 							2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20208 => 1,
