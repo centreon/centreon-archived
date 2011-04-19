@@ -58,14 +58,18 @@
 	    $groups['output'] = array();
 	    $groups['input'] = array();
 	    $groups['logger'] = array();
+	    $ns_name = null;
 	    while ($row = $res->fetchRow()) {
+	        if (is_null($ns_name)) {
+	            $ns_name = $row['name'];
+	        }
 	        $groups[$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
 	    }
 	    $fileXml = new CentreonXML();
 	    $fileXml->startElement('centreonBroker');
 	    
 	    $fileXml->writeElement('instance', $ns_id);
-	    $fileXml->writeElement('instance_name', $row['name']);
+	    $fileXml->writeElement('instance_name', $ns_name);
 	    
 	    foreach ($groups as $group => $listInfos) {
 	        if (count($listInfos) > 0) {
