@@ -132,12 +132,20 @@
 	/*
 	 * Initialize the downtime class with broker
 	 */
-	if (!file_exists($centreonClasspath . '/centreonDowntime.' . $broker . '.class.php')) {
+	if ($broker == "ndo") {
+        $brokerName = "Ndo";
+	} elseif ($broker == "broker") {
+        $brokerName = "Broker";
+	} else {
+	    file_put_contents('php://stderr', "Unsupported Database Layer.\n");
+		exit(1);
+	}
+	if (!file_exists($centreonClasspath . '/centreonDowntime.' . $brokerName . '.class.php')) {
 		file_put_contents('php://stderr', "The broker class does not exists.\n");
 		exit(1);
 	}
-	require_once $centreonClasspath . '/centreonDowntime.' . $broker . '.class.php';
-	$classname = "CentreonDowntime" . $broker;
+	require_once $centreonClasspath . '/centreonDowntime.' . $brokerName . '.class.php';
+	$classname = "CentreonDowntime" . $brokerName;
 	$downtime = new $classname($pearDB);
 
 	/*
