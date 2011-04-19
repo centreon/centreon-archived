@@ -67,7 +67,7 @@ var broker = '<?php  echo $oreon->broker->getBroker();?>';
 var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/' + broker +'/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
 var ajaxOverlay = new CentreonAjaxOverlay();
 ajax.setTime(refreshInterval);
-setTimeout('ajax.start()', 200);
+document.onLoad = ajax.start();
 
 function showHostOverlay(id, domId) {
 	var span = document.getElementById('span_' + domId);

@@ -55,7 +55,7 @@ function CentreonAjax(xmlFile, xslFile, elementId)
 	this._time;
 	this._proc;
 	this._tObj;
-	this._callback;
+	this._callback = null;
 	var _self = this;
 	
 	this.setTime = function (t)

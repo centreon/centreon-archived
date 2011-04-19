@@ -264,7 +264,9 @@ function Transformation() {
     					resultDoc = processor.transformToFragment(xmlDoc, document);    					
     					document.getElementById(target).appendChild(resultDoc);
                     }
-                    callback(t);                	
+                    if (callback) {
+                    	callback(t);
+                    }
                     transformed = true;
                     _clear("centreonMsg");
             }
