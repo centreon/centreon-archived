@@ -37,6 +37,7 @@
  */
 
  	ini_set("display_errors", "Off");
+    ini_set("error_reporting", "E_ALL & ~E_DEPRECATED");
 
 	/*
 	 * Define Local Functions
