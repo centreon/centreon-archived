@@ -148,8 +148,6 @@ sub identify_metric($$$$$$$$){
 	    # Check if metric is known...
 	    $data[0] = removeSpecialCharInMetric($data[0]);
 
-	    writeLogFile("DATA: ".$_[1]." => $metric_name");
-
 	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
 	    if (!$sth1->execute()) {
 		writeLogFile("Error:" . $sth1->errstr . "\n");
