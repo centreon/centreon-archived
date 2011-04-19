@@ -93,6 +93,7 @@
 	require_once $centreonClasspath . '/centreonDB.class.php';
 	require_once $centreonClasspath . '/centreonGMT.class.php';
 	require_once $centreonClasspath . '/centreonHost.class.php';
+	require_once $centreonClasspath . '/centreonService.class.php';
 	require_once $centreonClasspath . '/centreonHostgroups.class.php';
 	require_once $centreonClasspath . '/centreonServicegroups.class.php';
 	require_once $centreonClasspath . '/centreonDowntime.class.php';
@@ -301,7 +302,10 @@
 					$serviceClass = new CentreonService($pearDB);
 					$services = $sg->getServiceGroupServices($period['obj_id']);
 					foreach ($services as $service){
-						$currentHostDate = $gmt->getHostCurrentDatetime($service['host_host_id'], 'U');
+                        if (!isset($service['host_host_id'])) {
+                            continue;
+                        }
+					    $currentHostDate = $gmt->getHostCurrentDatetime($service['host_host_id'], 'U');
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
 							$host_name = $hostClass->getHostName($service['host_host_id']);
