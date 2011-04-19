@@ -210,7 +210,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('enable_autologin','0'),
 ('monitoring_engine','NAGIOS'),
 ('display_autologin_shortcut','1'),
-('broker', 'Ndo'), 
+('broker', 'ndo'), 
 ('monitoring_ack_svc', '1'),
 ('monitoring_dwt_duration', '3600'),
 ('monitoring_ack_active_checks', '1'),
