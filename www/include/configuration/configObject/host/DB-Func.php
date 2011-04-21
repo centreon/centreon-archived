@@ -1509,7 +1509,7 @@
 		else
 			$ret = $form->getSubmitValue("host_parents");
 		for ($i = 0; $i < count($ret); $i++)	{
-		    if ($ret[$i] != $host_id) {
+		    if (isset($ret[$i]) && $ret[$i] != $host_id && $ret[$i] != "") {
 				$rq = "INSERT INTO host_hostparent_relation ";
 				$rq .= "(host_parent_hp_id, host_host_id) ";
 				$rq .= "VALUES ";
@@ -1532,7 +1532,7 @@
 		$ret = $form->getSubmitValue("host_parents");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($hpars[$ret[$i]]) && isset($ret[$i]))	{
-			    if ($ret[$i] != $host_id) {
+			    if (isset($ret[$i]) && $ret[$i] != $host_id && $ret[$i] != "") {
 					$rq = "INSERT INTO host_hostparent_relation ";
 					$rq .= "(host_parent_hp_id, host_host_id) ";
 					$rq .= "VALUES ";
@@ -1552,12 +1552,12 @@
 		$ret = array();
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
-		    if ($ret[$i] != $host_id) {
-			$rq = "INSERT INTO host_hostparent_relation ";
-			$rq .= "(host_parent_hp_id, host_host_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$host_id."', '".$ret[$i]."')";
-			$DBRESULT = $pearDB->query($rq);
+		    if (isset($ret[$i]) && $ret[$i] != $host_id && $ret[$i] != "") {
+    			$rq = "INSERT INTO host_hostparent_relation ";
+    			$rq .= "(host_parent_hp_id, host_host_id) ";
+    			$rq .= "VALUES ";
+    			$rq .= "('".$host_id."', '".$ret[$i]."')";
+    			$DBRESULT = $pearDB->query($rq);
 		    }
 		}
 	}
@@ -1575,12 +1575,12 @@
 		$ret = $form->getSubmitValue("host_childs");
 		for($i = 0; $i < count($ret); $i++)	{
 			if (!isset($hchs[$ret[$i]]) && isset($ret[$i]))	{
-			    if ($ret[$i] != $host_id) {
-				$rq = "INSERT INTO host_hostparent_relation ";
-				$rq .= "(host_parent_hp_id, host_host_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$host_id."', '".$ret[$i]."')";
-				$DBRESULT = $pearDB->query($rq);
+			    if (isset($ret[$i]) && $ret[$i] != $host_id && $ret[$i] != "") {
+    				$rq = "INSERT INTO host_hostparent_relation ";
+    				$rq .= "(host_parent_hp_id, host_host_id) ";
+    				$rq .= "VALUES ";
+    				$rq .= "('".$host_id."', '".$ret[$i]."')";
+    				$DBRESULT = $pearDB->query($rq);
 			    }
 			}
 		}
@@ -1666,11 +1666,13 @@
 		            continue;
 		        }
 			}
-			$rq = "INSERT INTO contactgroup_host_relation ";
-			$rq .= "(host_host_id, contactgroup_cg_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$host_id."', '".$ret[$i]."')";
-			$DBRESULT = $pearDB->query($rq);
+			if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
+    			$rq = "INSERT INTO contactgroup_host_relation ";
+    			$rq .= "(host_host_id, contactgroup_cg_id) ";
+    			$rq .= "VALUES ";
+    			$rq .= "('".$host_id."', '".$ret[$i]."')";
+    			$DBRESULT = $pearDB->query($rq);
+			}
 		}
 	}
 
@@ -1718,11 +1720,13 @@
     		            continue;
     		        }
     			}
-				$rq = "INSERT INTO contactgroup_host_relation ";
-				$rq .= "(host_host_id, contactgroup_cg_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$host_id."', '".$ret[$i]."')";
-				$DBRESULT = $pearDB->query($rq);
+    			if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
+    				$rq = "INSERT INTO contactgroup_host_relation ";
+    				$rq .= "(host_host_id, contactgroup_cg_id) ";
+    				$rq .= "VALUES ";
+    				$rq .= "('".$host_id."', '".$ret[$i]."')";
+    				$DBRESULT = $pearDB->query($rq);
+    			}
 			}
 		}
 	}

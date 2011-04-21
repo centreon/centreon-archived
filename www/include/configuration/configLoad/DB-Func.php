@@ -1167,7 +1167,7 @@
 					else if (strstr($cmd_name, "check_graph"))
 						$cmd = array_pop($cmd);
 					if (isset($tmpConf["command_command_id2"]) && count($cmd))
-						$tmpConf["command_command_id2_arg"] = "!".implode("!", $cmd);
+						$tmpConf["command_command_id_arg2"] = "!".implode("!", $cmd);
 					unset ($tmpConf[$key]);
 					break;
 				case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
