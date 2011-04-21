@@ -36,7 +36,7 @@
  *
  */
 
-	if (!isset($centreon)) {
+	if (!isset($oreon) && !isset($centreon)) {
 		exit ();
 	}
 
@@ -75,8 +75,11 @@
 	 * @param $argArray
 	 * @return string
 	 */
-    function getCommandArgs($argArray = array())
+    function getCommandArgs($argArray = array(), $conf = array())
     {
+        if (isset($conf['command_command_id_arg'])) {
+            return $conf['command_command_id_arg'];
+        }
         $argTab = array();
 		foreach ($argArray as $key => $value) {
 		    if (preg_match('/^ARG(\d+)/', $key, $matches)) {
@@ -652,7 +655,7 @@
 				isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
 
 				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
-				$ret['command_command_id_arg'] = getCommandArgs($_POST);
+				$ret['command_command_id_arg'] = getCommandArgs($_POST, $ret);
 				isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
 
 
@@ -972,7 +975,7 @@
 		$rq .= "service_comment = ";
 		isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
 
-		$ret["command_command_id_arg"] = getCommandArgs($_POST);
+		$ret["command_command_id_arg"] = getCommandArgs($_POST, $ret);
 		$rq .= "command_command_id_arg = ";
 		isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL ? $rq .= "'".CentreonDB::escape($ret["command_command_id_arg"])."', " : $rq .= "NULL, ";
 		$rq .= "command_command_id_arg2 = ";
@@ -1212,7 +1215,7 @@
 			$rq .= "service_comment = '".CentreonDB::escape($ret["service_comment"])."', ";
 			$fields["service_comment"] = CentreonDB::escape($ret["service_comment"]);
 		}
-		$ret["command_command_id_arg"] = getCommandArgs($_POST);
+		$ret["command_command_id_arg"] = getCommandArgs($_POST, $ret);
 		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL) {
 			$rq .= "command_command_id_arg = '".CentreonDB::escape($ret["command_command_id_arg"])."', ";
 			$fields["command_command_id_arg"] = CentreonDB::escape($ret["command_command_id_arg"]);
@@ -1354,11 +1357,13 @@
 		            continue;
 		        }
 			}
-			$rq = "INSERT INTO contactgroup_service_relation ";
-			$rq .= "(contactgroup_cg_id, service_service_id) ";
-			$rq .= "VALUES ";
-			$rq .= "('".$ret[$i]."', '".$service_id."')";
-			$DBRESULT = $pearDB->query($rq);
+			if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
+    			$rq = "INSERT INTO contactgroup_service_relation ";
+    			$rq .= "(contactgroup_cg_id, service_service_id) ";
+    			$rq .= "VALUES ";
+    			$rq .= "('".$ret[$i]."', '".$service_id."')";
+    			$DBRESULT = $pearDB->query($rq);
+			}
 		}
 	}
 
@@ -1385,11 +1390,13 @@
     		            continue;
     		        }
     			}
-				$rq = "INSERT INTO contactgroup_service_relation ";
-				$rq .= "(contactgroup_cg_id, service_service_id) ";
-				$rq .= "VALUES ";
-				$rq .= "('".$ret[$i]."', '".$service_id."')";
-				$DBRESULT = $pearDB->query($rq);
+    			if (isset($ret[$i]) && $ret[$i] && $ret[$i] != "") {
+    				$rq = "INSERT INTO contactgroup_service_relation ";
+    				$rq .= "(contactgroup_cg_id, service_service_id) ";
+    				$rq .= "VALUES ";
+    				$rq .= "('".$ret[$i]."', '".$service_id."')";
+    				$DBRESULT = $pearDB->query($rq);
+    			}
 			}
 		}
 	}
