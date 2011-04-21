@@ -575,14 +575,14 @@
 	 * URL
 	 */
 	$xml->writeElement("url_hostPb",     "main.php?p=20103&o=hpb&search=");
-	$xml->writeElement("url_hostOK",     "main.php?p=20103&o=h&search=");
+	$xml->writeElement("url_hostOK",     "main.php?p=20102&o=h_up&search=");
 	$xml->writeElement("url_host_unhand","main.php?p=20105&o=h_unhandled&search=");
 	$xml->writeElement("url_svc_unhand", "main.php?p=20215&o=svc_unhandled&search=");
 	$xml->writeElement("url_svc_ack",    "main.php?p=2020402&o=svcOV&acknowledge=1&search=");
-	$xml->writeElement("url_ok",         "main.php?p=2020101&o=svc_ok&search=");
-	$xml->writeElement("url_critical",   "main.php?p=2020103&o=svc_critical&search=");
-	$xml->writeElement("url_warning",    "main.php?p=2020102&o=svc_warning&search=");
-	$xml->writeElement("url_unknown",    "main.php?p=2020104&o=svc_unknown&search=");
+	$xml->writeElement("url_ok",         "main.php?p=20201&o=svc_ok&search=");
+	$xml->writeElement("url_critical",   "main.php?p=20201&o=svc_critical&search=");
+	$xml->writeElement("url_warning",    "main.php?p=20201&o=svc_warning&search=");
+	$xml->writeElement("url_unknown",    "main.php?p=20201&o=svc_unknown&search=");
 	$xml->writeElement("url_hostdetail", "main.php?p=201&o=hd&host_name=");
 	$xml->writeElement("url_svcdetail",  "main.php?p=202&o=svcd&host_name=");
 	$xml->writeElement("url_svcdetail2", "&service_description=");
