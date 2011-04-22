@@ -67,7 +67,6 @@
 	$attrsText3 	= array("size"=>"10");
 	$attrsText4 	= array("size"=>"5");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	/*
 	 *  Form begin

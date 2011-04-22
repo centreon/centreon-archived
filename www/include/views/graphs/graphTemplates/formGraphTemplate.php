@@ -68,7 +68,7 @@
 	$attrsText2 	= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"3", "cols"=>"30");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -163,7 +163,7 @@
 	$ams1 = $form->addElement('advmultiselect', 'graph_compos', array(_("Data Source List"),_("Available"), _("Selected")), $compos, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($template);
+	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
 	$tab = array();

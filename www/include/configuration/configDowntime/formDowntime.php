@@ -56,7 +56,7 @@
 	$attrsAdvSelect 		= array("style" => "width: 270px; height: 100px;");
 	$attrsAdvSelect_big 	= array("style" => "width: 270px; height: 200px;");
 	$attrsTextarea 			= array("rows"=>"5", "cols"=>"40");
-	$templateMultiSelect	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	/*
 	 * Init QuickFrom
@@ -102,7 +102,7 @@
 	$am_host = $form->addElement('advmultiselect', 'host_relation', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
 	$am_host->setButtonAttributes('add', array('value' =>  _("Add")));
 	$am_host->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_host->setElementTemplate($templateMultiSelect);
+	$am_host->setElementTemplate($eTemplate);
 	echo $am_host->getElementJs(false);
 
 	/*
@@ -117,7 +117,7 @@
 	$am_hostgroup = $form->addElement('advmultiselect', 'hostgroup_relation', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect_big, SORT_ASC);
 	$am_hostgroup->setButtonAttributes('add', array('value' =>  _("Add")));
 	$am_hostgroup->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_hostgroup->setElementTemplate($templateMultiSelect);
+	$am_hostgroup->setElementTemplate($eTemplate);
 	echo $am_hostgroup->getElementJs(false);
 
 	/*
@@ -144,7 +144,7 @@
 	$am_svc = $form->addElement('advmultiselect', 'svc_relation', array(_("Linked with Services"), _("Available"), _("Selected")), $svcs, $attrsAdvSelect_big, SORT_ASC);
 	$am_svc->setButtonAttributes('add', array('value' =>  _("Add")));
 	$am_svc->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_svc->setElementTemplate($templateMultiSelect);
+	$am_svc->setElementTemplate($eTemplate);
 	echo $am_svc->getElementJs(false);
 
 	/*
@@ -159,7 +159,7 @@
 	$am_svcgroup = $form->addElement('advmultiselect', 'svcgroup_relation', array(_("Linked with Serfvice Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect_big, SORT_ASC);
 	$am_svcgroup->setButtonAttributes('add', array('value' =>  _("Add")));
 	$am_svcgroup->setButtonAttributes('remove', array('value' => _("Remove")));
-	$am_svcgroup->setElementTemplate($templateMultiSelect);
+	$am_svcgroup->setElementTemplate($eTemplate);
 	echo $am_svcgroup->getElementJs(false);
 
 	$form->addRule('downtime_name', _("Name"), 'required');

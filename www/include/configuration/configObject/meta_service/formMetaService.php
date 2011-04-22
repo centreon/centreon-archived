@@ -137,7 +137,7 @@
 	$attrsText2		= array("size"=>"6");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -193,7 +193,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'ms_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('text', 'notification_interval', _("Notification Interval"), $attrsText2);

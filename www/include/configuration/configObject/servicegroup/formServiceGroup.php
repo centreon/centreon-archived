@@ -104,7 +104,7 @@
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 400px; height: 250px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"40");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	#
 	## Form begin
@@ -131,14 +131,14 @@
 	$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($template);
+	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
 	$form->addElement('header', 'relation', _("Relations"));
 	$ams1 = $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Host Group Services"), _("Available"), _("Selected")), $hgServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($template);
+	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
 	#

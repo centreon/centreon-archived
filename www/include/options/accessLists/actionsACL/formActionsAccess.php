@@ -87,7 +87,7 @@
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
-	$template 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
+	$eTemplate 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
@@ -164,7 +164,7 @@
     $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
-	$ams1->setElementTemplate($template);
+	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
 	# Further informations

@@ -200,7 +200,7 @@
 	$attrsTextMail 	= array("size"=>"90");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"15", "cols"=>"100");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
@@ -262,7 +262,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'contact_cgNotif', array(_("Linked to Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
 
 	/**
@@ -296,7 +296,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'contact_acl_groups', array(_("Access list groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
 
 	/**
@@ -365,7 +365,7 @@
 	$ams1 = $form->addElement('advmultiselect', 'contact_hostNotifCmds', array(_("Host Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($template);
+	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
 	/** ******************************
@@ -391,7 +391,7 @@
 	$ams2 = $form->addElement('advmultiselect', 'contact_svNotifCmds', array(_("Service Notification Commands"), _("Available"), _("Selected")), $notifCmds, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams2->setElementTemplate($template);
+	$ams2->setElementTemplate($eTemplate);
 	echo $ams2->getElementJs(false);
 
 	/**

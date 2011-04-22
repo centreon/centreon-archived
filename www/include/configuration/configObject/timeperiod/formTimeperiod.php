@@ -101,7 +101,7 @@
 	$attrsText 		= array("size"=>"35");
 	$attrsTextLong	= array("size"=>"55");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 130px;");
-	$template	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	/*
 	 * Form begin
@@ -143,7 +143,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'tp_include', array(_("Include Timeperiods"), _("Available"), _("Selected")), $includeTP, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
 
 	/*
@@ -152,7 +152,7 @@
 	$ams3 = $form->addElement('advmultiselect', 'tp_exclude', array(_("Exclude Timeperiods"), _("Available"), _("Selected")), $excludeTP, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($template);
+	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
 
 	/*

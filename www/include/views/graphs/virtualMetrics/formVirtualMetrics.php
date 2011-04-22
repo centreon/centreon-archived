@@ -96,7 +96,6 @@
 	$attrsText2 	= array("size"=>"10");
 	$attrsAdvSelect = array("style" => "width: 200px; height: 100px;");
 	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
-	$template 		= "<table><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
 	#
 	## Form begin
