@@ -141,6 +141,8 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 40205, 'c', './include/common/javascript/color_picker_mb.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 5010103, NULL, './include/common/javascript/color_picker_mb.js', NULL);
 
+DELETE FROM `topology_JS` WHERE `id_page` IN ('20215', '20202', '20201', '20105', '20103', '20102') AND `Init` = 'initM' ;
+
 -- Add column to save random line color
 ALTER TABLE `ods_view_details` ADD `rnd_color` VARCHAR(7) NULL DEFAULT NULL AFTER `metric_id`;
 

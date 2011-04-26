@@ -176,7 +176,7 @@
 	    $keyPrefix = "h_unhandled";
 	    unset($statusList["up"]);
 	}
-	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('onChange' => "filterStatus(this.value);"));
+	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
 
 	$tpl->assign('limit', $limit);
 	$tpl->assign('hostStr', _('Host'));
@@ -198,6 +198,7 @@ function preInit()
 	_keyPrefix = '<?php echo $keyPrefix;?>';
 	_sid = '<?php echo $sid?>';
 	_tm = <?php echo $tM?>;
+	filterStatus(document.getElementById('statusFilter').value);
 }
 
 function filterStatus(value)

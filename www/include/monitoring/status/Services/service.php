@@ -237,7 +237,7 @@
 	    $keyPrefix = "svc_unhandled";
 	    unset($statusList["ok"]);
 	}
-	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('onChange' => "filterStatus(this.value);"));
+	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -259,6 +259,7 @@ function preInit()
 	_keyPrefix = '<?php echo $keyPrefix;?>';
 	_sid = '<?php echo $sid?>';
 	_tm = <?php echo $tM?>;
+	filterStatus(document.getElementById('statusFilter').value);
 }
 
 function filterStatus(value)
