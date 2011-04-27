@@ -525,6 +525,56 @@
 			updateServiceContact($service_id);
 		}
 
+		# Function for updating notification options
+		# 1 - MC with deletion of existing options (Replacement)
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update
+		if (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && $ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
+				updateServiceNotifs($service_id);		
+		} 	elseif (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && !$ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
+				updateServiceNotifs_MC($service_id);	
+		} else {
+			updateServiceNotifs($service_id);
+		}	
+
+		# Function for updating notification interval options
+		# 1 - MC with deletion of existing options (Replacement) 
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update
+		if (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) {
+			updateServiceNotifOptionInterval($service_id);
+		} 	elseif (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) && !$ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) {
+			updateServiceNotifOptionInterval_MC($service_id);
+		} else {
+			updateServiceNotifOptionInterval($service_id);
+		}
+
+		# Function for updating first notification delay options
+		# 1 - MC with deletion of existing options (Replacement)
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update, default behavior
+		if (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) {
+			updateServiceNotifOptionFirstNotificationDelay($service_id);
+		} 	elseif (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) && !$ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) {
+			updateServiceNotifOptionFirstNotificationDelay_MC($service_id);
+		} else {
+			updateServiceNotifOptionFirstNotificationDelay($service_id);
+		}
+ 	
+
+		# Function for updating notification timeperiod options
+		# 1 - MC with deletion of existing options (Replacement)
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update
+		if (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) {
+			updateServiceNotifOptionTimeperiod($service_id);
+		} 	elseif (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) && !$ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) {
+			updateServiceNotifOptionTimeperiod_MC($service_id);
+		} else {
+			updateServiceNotifOptionTimeperiod($service_id);
+		}
+		
+		
 		# Function for updating host/hg parent
 		# 1 - MC with deletion of existing host/hg parent
 		# 2 - MC with addition of new host/hg parent
@@ -587,6 +637,10 @@
 		$service_id = $tmp_fields['service_id'];
 		updateServiceContactGroup($service_id, $ret);
 		updateServiceContact($service_id, $ret);
+		updateServiceNotifs($service_id, $ret);		
+		updateServiceNotifOptionInterval($service_id, $ret);
+		updateServiceNotifOptionTimeperiod($service_id, $ret);
+		updateServiceNotifOptionFirstNotificationDelay($service_id, $ret);
 		updateServiceHost($service_id, $ret);
 		updateServiceServiceGroup($service_id, $ret);
 		insertServiceExtInfos($service_id, $ret);
@@ -920,8 +974,8 @@
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id2 = ";
 		isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
-		$rq .= "timeperiod_tp_id2 = ";
-		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
+		/*$rq .= "timeperiod_tp_id2 = ";
+		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";*/
 		# If we are doing a MC, we don't have to set name and alias field
 		if (!$from_MC)	{
 			$rq .= "service_description = ";
@@ -961,14 +1015,14 @@
 		isset($ret["service_retain_status_information"]["service_retain_status_information"]) && $ret["service_retain_status_information"]["service_retain_status_information"] != 2 ? $rq .= "'".$ret["service_retain_status_information"]["service_retain_status_information"]."', " : $rq .= "'2', ";
 		$rq .= "service_retain_nonstatus_information = ";
 		isset($ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]) && $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', " : $rq .= "'2', ";
-		$rq .= "service_notification_interval = ";
-		isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";
-		$rq .= "service_notification_options = ";
-		isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, ";
+		/*$rq .= "service_notification_interval = ";
+		isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";*/
+	/*	$rq .= "service_notification_options = ";
+		isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, "; */
 		$rq .= "service_notifications_enabled = ";
 		isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
-		$rq .= "service_first_notification_delay = ";
-		isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= " NULL, ";
+		/*$rq .= "service_first_notification_delay = ";
+		isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= " NULL, ";*/
 		$rq .= "service_stalking_options = ";
 		isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 
@@ -1013,7 +1067,7 @@
 		$fields["command_command_id"] = $ret["command_command_id"];
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		$fields["command_command_id2"] = $ret["command_command_id2"];
-		$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+		//$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		$fields["service_description"] = CentreonDB::escape($ret["service_description"]);
 		if (isset($fields["service_alias"]))
 			$fields["service_alias"] = CentreonDB::escape($ret["service_alias"]);
@@ -1033,11 +1087,11 @@
 		$fields["service_process_perf_data"] = $ret["service_process_perf_data"]["service_process_perf_data"];
 		$fields["service_retain_status_information"] = $ret["service_retain_status_information"]["service_retain_status_information"];
 		$fields["service_retain_nonstatus_information"] = $ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
-		$fields["service_notification_interval"] = $ret["service_notification_interval"];
-		$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
-		$fields["service_notifOpts"] = "";
+	//	$fields["service_notification_interval"] = $ret["service_notification_interval"];
+	//	$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
+		/*$fields["service_notifOpts"] = "";
 		if (isset($ret["service_notifOpts"]))
-			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
+			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));*/
 		if (isset($fields["service_notifications_enabled"]))
 			$fields["service_notifications_enabled"] = $fields["service_notifications_enabled"]["service_notifications_enabled"];
 		$fields["service_stalOpts"] = "";
@@ -1119,10 +1173,10 @@
 			$rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
 			$fields["command_command_id2"] = $ret["command_command_id2"];
 		}
-		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
+		/*if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
 			$rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
 			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		}
+		}*/
 		if (isset($ret["service_alias"]) && $ret["service_alias"] != NULL) {
 			$rq .= "service_alias = '".$ret["service_alias"]."', ";
 			$fields["service_alias"] = $ret["service_alias"];
@@ -1191,18 +1245,18 @@
 			$rq .= "service_retain_nonstatus_information = '".$ret["service_retain_nonstatus_information"]["service_retain_nonstatus_information"]."', ";
 			$fields["service_retain_nonstatus_information"]["service_retain_nonstatus_information"];
 		}
-		if (isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL) {
+		/*if (isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL) {
 			$rq .= "service_notification_interval = '".$ret["service_notification_interval"]."', ";
 			$fields["service_notification_interval"] = $ret["service_notification_interval"];
-		}
-	    if (isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL) {
+		}*/
+	    /*if (isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL) {
 			$rq .= "service_first_notification_delay = '".$ret["service_first_notification_delay"]."', ";
 			$fields["service_first_notification_delay"] = $ret["service_first_notification_delay"];
-		}
-		if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) {
+		}*/
+		/*if (isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL) {
 			$rq .= "service_notification_options = '".implode(",", array_keys($ret["service_notifOpts"]))."', ";
 			$fields["service_notifOpts"] = implode(",", array_keys($ret["service_notifOpts"]));
-		}
+		}*/
 		if (isset($ret["service_notifications_enabled"]["service_notifications_enabled"])) {
 			$rq .= "service_notifications_enabled = '".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', ";
 			$fields["service_notifications_enabled"] = $ret["service_notifications_enabled"]["service_notifications_enabled"];
@@ -1367,6 +1421,154 @@
 		}
 	}
 
+	
+	function updateServiceNotifs($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["service_notifOpts"]))
+			$ret = $ret["service_notifOpts"];
+		else
+			$ret = $form->getSubmitValue("service_notifOpts");
+		
+		$rq = "UPDATE service SET " ;
+		$rq .= "service_notification_options = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".implode(",", array_keys($ret))."' " : $rq .= "NULL ";
+		$rq .= "WHERE service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);			
+					
+	}
+	
+	# For massive change. incremental mode
+	function updateServiceNotifs_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		$rq = "SELECT * FROM service ";
+		$rq .= "WHERE service_id = '".$service_id."' LIMIT 1";
+		$DBRESULT =& $pearDB->query($rq);
+		$service = array();
+		$service = array_map("myDecodeService", $DBRESULT->fetchRow());				
+		
+		$ret = $form->getSubmitValue("service_notifOpts");
+		
+		isset($service["service_notification_options"]) && $service["service_notification_options"] != NULL ? $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
+		
+		if (isset($temp) && $temp != NULL) {
+		    $rq = "UPDATE service SET " ;
+			$rq .= "service_notification_options = '". trim ($temp ,',')."' ";
+			$rq .= "WHERE service_id = '".$service_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}		
+			
+	}	
+	
+	
+	function updateServiceNotifOptionInterval($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["service_notification_interval"]))
+			$ret = $ret["service_notification_interval"];
+		else
+			$ret = $form->getSubmitValue("service_notification_interval");
+
+		$rq = "UPDATE service SET " ;
+		$rq .= "service_notification_interval = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret."' " : $rq .= "NULL ";
+		$rq .= "WHERE service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+	}
+	
+	# For massive change. incremental mode
+	function updateServiceNotifOptionInterval_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		$ret = $form->getSubmitValue("service_notification_interval");
+		
+		if (isset($ret) && $ret != NULL) {
+		    $rq = "UPDATE service SET " ;
+			$rq .= "service_notification_interval = '".$ret."' ";
+			$rq .= "WHERE service_id = '".$service_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}			
+		
+	}	
+	
+	function updateServiceNotifOptionTimeperiod($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["timeperiod_tp_id2"]))
+			$ret = $ret["timeperiod_tp_id2"];
+		else
+			$ret = $form->getSubmitValue("timeperiod_tp_id2");
+
+		$rq = "UPDATE service SET " ;
+		$rq .= "timeperiod_tp_id2 = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret."' " : $rq .= "NULL ";
+		$rq .= "WHERE service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+	}
+	
+	# For massive change. incremental mode
+	function updateServiceNotifOptionTimeperiod_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		$ret = $form->getSubmitValue("timeperiod_tp_id2");
+		
+		if (isset($ret) && $ret != NULL) {
+		    $rq = "UPDATE service SET " ;
+			$rq .= "timeperiod_tp_id2 = '".$ret."' ";
+			$rq .= "WHERE service_id = '".$service_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}			
+		
+	}	
+
+	function updateServiceNotifOptionFirstNotificationDelay($service_id = null, $ret = array())	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["service_first_notification_delay"]))
+			$ret = $ret["service_first_notification_delay"];
+		else
+			$ret = $form->getSubmitValue("service_first_notification_delay");
+
+		$rq = "UPDATE service SET " ;
+		$rq .= "service_first_notification_delay = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret."' " : $rq .= "NULL ";
+		$rq .= "WHERE service_id = '".$service_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+	}
+	
+	# For massive change. incremental mode
+	function updateServiceNotifOptionFirstNotificationDelay_MC($service_id = null)	{
+		if (!$service_id) return;
+		global $form;
+		global $pearDB;
+		
+		$ret = $form->getSubmitValue("service_first_notification_delay");
+		
+		if (isset($ret) && $ret != NULL) {
+		    $rq = "UPDATE service SET " ;
+			$rq .= "service_first_notification_delay = '".$ret."' ";
+			$rq .= "WHERE service_id = '".$service_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}			
+		
+	}		
+	
+	
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateServiceContactGroup_MC($service_id = null)	{
 		if (!$service_id) return;
