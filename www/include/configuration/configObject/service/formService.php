@@ -423,7 +423,7 @@
 	}
 
 	$form->addElement('text', 'service_first_notification_delay', _("First notification delay"), $attrsText2);
-	
+
 	if ($o == "mc")	{
 		$mc_mod_notifopt_notification_interval = array();
 		$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
@@ -431,7 +431,7 @@
 		$form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_notifopt_notification_interval'=>'0'));
 	}
-	
+
 	$form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
 
 	if ($o == "mc")	{
@@ -440,7 +440,7 @@
 		$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
-	}	
+	}
 
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
 
@@ -732,7 +732,12 @@
 			$form->addRule('service_normal_check_interval', _("Required Field"), 'required');
 			$form->addRule('service_retry_check_interval', _("Required Field"), 'required');
 			$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-			$form->addRule('service_cgs', _("Compulsory Contact Group"), 'required');
+			if (!$form->getSubmitValue('service_cs')) {
+			    $form->addRule('service_cgs', _("Compulsory Contact Group"), 'required');
+			}
+			if (!$form->getSubmitValue('service_cgs')) {
+			    $form->addRule('service_cs', _("Compulsory Contact"), 'required');
+			}
 			$form->addRule('service_notification_interval', _("Required Field"), 'required');
 			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
 			$form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
