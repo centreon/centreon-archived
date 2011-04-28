@@ -3,7 +3,7 @@
 			padding : 0px;
 			border : 0px;
 }
-.containerTableStyle { overflow : auto; position:relative; top:0; font-size : 12px; -khtml-user-select: none;}
+.containerTableStyle { overflow : visible; position:relative; top:0; font-size : 12px; -khtml-user-select: none;}
 .containerTableStyleRTL span { direction: rtl; unicode-bidi: bidi-override;  }
 .containerTableStyleRTL { direction: rtl; overflow : auto; position:relative; top:0; font-size : 12px;}
 .standartTreeRow {	font-family : Verdana, Geneva, Arial, Helvetica, sans-serif; 	font-size : 12px; -moz-user-select: none;  }
