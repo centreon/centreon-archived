@@ -245,6 +245,21 @@
 		}
 	}
 
+	function getMyHostIDByAddress($host_address = NULL)	{
+		if (!$host_address) return;
+		global $pearDB;
+		while(1)	{
+			$DBRESULT =& $pearDB->query("SELECT host_id, host_address, host_template_model_htm_id FROM host WHERE host_name = '".$host_address."' or host_address = '".$host_address ."' LIMIT 1");
+			$row =& $DBRESULT->fetchRow();
+			if ($row["host_id"])
+				return html_entity_decode($row["host_id"], ENT_QUOTES, "UTF-8");
+			else if ($row["host_template_model_htm_id"])
+				$host_id = $row["host_template_model_htm_id"];
+			else
+				break;
+		}
+	}
+
 	function getMyHostParents($host_id = NULL)	{
 		if (!$host_id) return;
 		global $pearDB;
