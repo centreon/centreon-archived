@@ -39,30 +39,44 @@
  /**
   *  Class that contains various methods for managing services
   */
- class CentreonService {
- 	private $DB;
+ class CentreonService
+ {
+ 	protected $db;
 
  	/**
  	 *  Constructor
  	 *
- 	 *  @param CentreonDB $pearDB
+ 	 *  @param CentreonDB $db
  	 */
- 	function CentreonService($pearDB) {
- 		$this->DB = $pearDB;
+ 	public function __construct($db)
+ 	{
+ 		$this->db = $db;
  	}
 
  	/**
  	 *  Method that returns service description from service_id
  	 *
  	 *  @param int $svc_id
+ 	 *  @return string
  	 */
- 	public function getServiceDesc($svc_id) {
- 		$rq = "SELECT service_description FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
- 		$DBRES = $this->DB->query($rq);
- 		if (!$DBRES->numRows())
- 			return NULL;
- 		$row = $DBRES->fetchRow();
- 		return $row['service_description'];
+ 	public function getServiceDesc($svc_id)
+ 	{
+ 		static $svcTab = array();
+
+ 	    if (!isset($svcTab[$svc_id])) {
+     		$rq = "SELECT service_description
+     			   FROM service
+     			   WHERE service_id = ".$this->db->escape($svc_id)." LIMIT 1";
+     		$res = $this->db->query($rq);
+     		if ($res->numRows()) {
+     		    $row = $res->fetchRow();
+     		    $svcTab[$svc_id] = $row['service_description'];
+     		}
+ 	    }
+ 	    if (isset($svcTab[$svc_id])) {
+ 	        return $svcTab[$svc_id];
+ 	    }
+ 	    return null;
  	}
 
  	/**
@@ -82,16 +96,16 @@
     				" JOIN (SELECT hsr.service_service_id FROM host_service_relation hsr" .
     				" JOIN host h" .
     				"     ON hsr.host_host_id = h.host_id" .
-    				"     	WHERE h.host_name = '".$this->DB->escape($host_name)."'" .
+    				"     	WHERE h.host_name = '".$this->db->escape($host_name)."'" .
     				"     UNION" .
     				"    	 SELECT hsr.service_service_id FROM hostgroup_relation hgr" .
     				" JOIN host h" .
     				"     ON hgr.host_host_id = h.host_id" .
     				" JOIN host_service_relation hsr" .
     				"     ON hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
-    				"     	WHERE h.host_name = '".$this->DB->escape($host_name)."' ) ghsrv" .
+    				"     	WHERE h.host_name = '".$this->db->escape($host_name)."' ) ghsrv" .
     				" ON s.service_id = ghsrv.service_service_id";
-     		$DBRES = $this->DB->query($rq);
+     		$DBRES = $this->db->query($rq);
      		$hostSvcTab[$host_name] = array();
      		while ($row = $DBRES->fetchRow()) {
      		    $hostSvcTab[$host_name][$row['service_description']] = $row['service_id'];
@@ -111,15 +125,22 @@
  	 */
  	public function getServiceName($sid)
  	{
- 		$query = "SELECT service_alias
- 			FROM service
- 			WHERE service_id = " . $this->DB->escape($sid);
- 		$res = $this->DB->query($query);
- 		if ($res->numRows() == 0) {
- 			return null;
+ 		static $svcTab = array();
+
+ 		if (!isset($svcTab[$sid])) {
+     	    $query = "SELECT service_alias
+     				  FROM service
+     				  WHERE service_id = " . $this->db->escape($sid);
+     		$res = $this->db->query($query);
+     		if ($res->numRows()) {
+                $row = $res->fetchRow();
+     		    $svcTab[$sid] = $row['service_alias'];
+     		}
  		}
- 		$row = $res->fetchRow();
- 		return $row['service_alias'];
+ 		if (isset($svcTab[$sid])) {
+ 		    return $svcTab[$sid];
+ 		}
+ 		return null;
  	}
 
  	/**
@@ -128,8 +149,9 @@
  	 * @param string $name
  	 * @return string
  	 */
- 	public function checkIllegalChar($name) {
- 		$DBRESULT = $this->DB->query("SELECT illegal_object_name_chars FROM cfg_nagios");
+ 	public function checkIllegalChar($name)
+ 	{
+ 		$DBRESULT = $this->db->query("SELECT illegal_object_name_chars FROM cfg_nagios");
 		while ($data = $DBRESULT->fetchRow()) {
 			$tab = str_split(html_entity_decode($data['illegal_object_name_chars'], ENT_QUOTES, "UTF-8"));
 			foreach ($tab as $char) {
@@ -148,9 +170,10 @@
  	 *  @param int $antiLoop
  	 *  @return string
  	 */
- 	public function replaceMacroInString($svc_id, $string, $antiLoop = null) {
+ 	public function replaceMacroInString($svc_id, $string, $antiLoop = null)
+ 	{
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
-        $DBRES = $this->DB->query($rq);
+        $DBRES = $this->db->query($rq);
         if (!$DBRES->numRows())
         	return $string;
         $row = $DBRES->fetchRow();
@@ -169,7 +192,7 @@
  		$i = 0;
  		while (isset($matches[1][$i])) {
  			$rq = "SELECT svc_macro_value FROM on_demand_macro_service WHERE svc_svc_id = '".$svc_id."' AND svc_macro_name LIKE '".$matches[1][$i]."'";
- 			$DBRES = $this->DB->query($rq);
+ 			$DBRES = $this->db->query($rq);
 	 		while ($row = $DBRES->fetchRow()) {
 	 			$string = str_replace($matches[1][$i], $row['svc_macro_value'], $string);
 	 		}
@@ -177,7 +200,7 @@
  		}
  		if ($i) {
 	 		$rq2 = "SELECT service_template_model_stm_id FROM service WHERE service_id = '".$svc_id."'";
-	 		$DBRES2 = $this->DB->query($rq2);
+	 		$DBRES2 = $this->db->query($rq2);
 	 		while ($row2 = $DBRES2->fetchRow()) {
 	 		    if (!isset($antiLoop) || !$antiLoop) {
 	 		        $string = $this->replaceMacroInString($row2['service_template_model_stm_id'], $string, $row2['service_template_model_stm_id']);
@@ -189,5 +212,4 @@
  		return $string;
  	}
  }
-
  ?>
