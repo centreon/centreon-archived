@@ -42,7 +42,8 @@ class CentreonGMT{
 	var $myGMT;
 	var $use;
 
-	function CentreonGMT($DB){
+	public function __construct($DB)
+	{
 		/*
 		 * Define Table of GMT line
 		 */
@@ -186,7 +187,7 @@ class CentreonGMT{
 		$DBRESULT->free();
 		$this->myGMT = $info["contact_location"];
 	}
-	
+
 	function getHostCurrentDatetime($host_id, $date_format = 'c')
 	{
 		global $pearDB;
@@ -197,7 +198,7 @@ class CentreonGMT{
 			if (!PEAR::isError($res)) {
 				$row = $res->fetchRow();
 				if (!is_null($row['host_location']))  {
-					$date = $date + $row['host_location'] * 3600; 
+					$date = $date + $row['host_location'] * 3600;
 				}
 			}
 		}

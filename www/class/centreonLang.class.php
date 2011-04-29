@@ -53,7 +53,7 @@
  	 * @param Centreon $centreon
  	 * @return void
  	 */
- 	public function CentreonLang($centreon_path, $centreon = null)
+ 	public function __construct($centreon_path, $centreon = null)
  	{
 		if (isset($centreon)) {
 			$this->_lang = $centreon->user->lang;

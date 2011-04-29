@@ -57,7 +57,8 @@ class CentreonExternalCommand {
  	/*
  	 *  Constructor
  	 */
- 	function CentreonExternalCommand($oreon) {
+ 	public function __construct($oreon)
+ 	{
  		global $oreon;
 
  		$this->obj = $oreon;
@@ -83,7 +84,8 @@ class CentreonExternalCommand {
  	 *
  	 * Write command in Nagios or Centcore Pipe.
  	 */
- 	public function write() {
+ 	public function write()
+ 	{
  		global $oreon;
 
  		$varlib = "@CENTREON_VARLIB@";
@@ -128,7 +130,8 @@ class CentreonExternalCommand {
  	/*
  	 *  set basic process commands
  	 */
- 	public function set_process_command($command, $poller) {
+ 	public function set_process_command($command, $poller)
+ 	{
  		if ($this->debug) {
 			print "POLLER: $poller<br>";
 			print "COMMAND: $command<br>";
@@ -141,7 +144,8 @@ class CentreonExternalCommand {
  	/*
  	 *  set list of external commands
  	 */
- 	private function setExternalCommandList() {
+ 	private function setExternalCommandList()
+ 	{
  		# Services Actions
 		$this->actions["service_checks"][0] = "ENABLE_SVC_CHECK";
 		$this->actions["service_checks"][1] = "DISABLE_SVC_CHECK";
@@ -250,7 +254,8 @@ class CentreonExternalCommand {
  	 * @param $pearDB
  	 * @param $host_name
  	 */
-	public function getPollerID($host = NULL){
+	public function getPollerID($host = nulle)
+	{
 		if (!isset($host)) {
 			return 0;
 		}
@@ -274,7 +279,8 @@ class CentreonExternalCommand {
  	 *
  	 * get list of external commands
  	 */
- 	public function getExternalCommandList() {
+ 	public function getExternalCommandList()
+ 	{
  		return $this->actions;
  	}
 
@@ -288,7 +294,8 @@ class CentreonExternalCommand {
  	 * @param string $type
  	 * @param array $hosts
  	 */
- 	public function DeleteDowntime($type, $hosts = array()){
+ 	public function DeleteDowntime($type, $hosts = array())
+ 	{
 		foreach ($hosts as $key => $value) {
 			$res = preg_split("/\;/", $key);
 			$poller_id = $this->getPollerID($res[0]);
@@ -302,7 +309,8 @@ class CentreonExternalCommand {
 	 * Get date from string
 	 * @param string $string
 	 */
-	private function getDate($string) {
+	private function getDate($string)
+	{
 		$res = preg_split("/ /", $string);
 		$res3 = preg_split("/\//", $res[0]);
 		$res4 = preg_split("/:/", $res[1]);

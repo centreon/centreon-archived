@@ -3,37 +3,37 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 class CentreonLogAction {
@@ -42,14 +42,16 @@ class CentreonLogAction {
 	/*
 	 * Initializes variables
 	 */
-	function CentreonLogAction($usr) {
+	public function __construct($usr)
+	{
 		$this->logUser = $usr;
 	}
-	
+
 	/*
  	 *  Inserts configuration into DB
  	 */
- 	function insertFieldsNameValue($logId, $fields) {
+ 	function insertFieldsNameValue($logId, $fields)
+ 	{
  		global $pearDBO;
 
  		$query = "INSERT INTO `log_action_modification` (field_name, field_value, action_log_id) VALUES ";
@@ -57,47 +59,50 @@ class CentreonLogAction {
  			$query .= "('".$key."', '".$value."', '".$logId."'), ";
  		}
  		$query[strlen($query)-2] = " "; //removes the last coma
- 		$DBRESULT = $pearDBO->query($query); 		
+ 		$DBRESULT = $pearDBO->query($query);
  		unset($DBRESULT);
  	}
-	
+
 	/*
  	 *  Inserts logs : add, delete or modification of an object
  	 */
- 	function insertLog($object_type, $object_id, $object_name, $action_type, $fields = NULL) {
+ 	function insertLog($object_type, $object_id, $object_name, $action_type, $fields = null)
+ 	{
  		global $pearDBO;
  		$now = time();
  		$str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('".$now."', '".$object_type."', '".$object_id."', '".$object_name."', '".$action_type."', '".$this->logUser->user_id."')";
  		$DBRESULT = $pearDBO->query($str_query);
- 		
- 		$DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");		
+
+ 		$DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
 		$logId = $DBRESULT2->fetchRow();
 		if ($fields)
 			$this->insertFieldsNameValue($logId["MAX(action_log_id)"], $fields);
  	}
- 	
+
  	/*
 	 * returns the contact name
 	 */
-	function getContactname($id) {
+	function getContactname($id)
+	{
 		global $pearDB;
-	
-		$DBRESULT = $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '$id' LIMIT 1");				
+
+		$DBRESULT = $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '$id' LIMIT 1");
 		while ($data = $DBRESULT->fetchRow())
 			$name = $data["contact_name"];
 		unset($data);
-		$DBRESULT->free();	
+		$DBRESULT->free();
 		return $name;
 	}
-	
+
 	/*
 	 * returns the list of actions ("create","delete","change","massive change", "enable", "disable")
 	 */
-	function listAction($id, $object_type) { 
+	function listAction($id, $object_type)
+	{
 		global $pearDBO;
 		$list_actions = array();
 		$i = 0;
-		
+
 		$DBRESULT = $pearDBO->query("SELECT * FROM log_action WHERE object_id ='".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date DESC");
 		while ($data = $DBRESULT->fetchRow()) {
 			$list_actions[$i]["action_log_id"] = $data["action_log_id"];
@@ -110,30 +115,31 @@ class CentreonLogAction {
 			$i++;
 		}
 		$DBRESULT->free();
-		unset($data);		
+		unset($data);
 		return $list_actions;
 	}
-	
+
 	/*
 	 *  returns list of modifications
 	 */
-	function listModification($id, $object_type) {
+	function listModification($id, $object_type)
+	{
 		global $pearDBO;
 		$list_modifications = array();
 		$ref = array();
 		$i = 0;
 		$j = 0;
 		$first_ref_flag = 0;
-		
-		$DBRESULT = $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER  BY action_log_date ASC");	
-		
+
+		$DBRESULT = $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER  BY action_log_date ASC");
+
 		while ($row = $DBRESULT->fetchRow()) {
-			$DBRESULT2 = $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");			
+			$DBRESULT2 = $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");
 			while ($field = $DBRESULT2->fetchRow()) {
 				if (($row["action_type"] == "mc" || $row["action_type"] == "a" || $row["action_type"] == "c") && (!$first_ref_flag || $first_ref_flag == $field["action_log_id"])) {
 					$ref[$field["field_name"]] = $field["field_value"];
 					$first_ref_flag = $field["action_log_id"];
-					
+
 					$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
 					$list_modifications[$i]["field_name"] = $field["field_name"];
 					$list_modifications[$i]["field_value_before"] = "";//$field["field_value"];
@@ -162,31 +168,32 @@ class CentreonLogAction {
 		}
 		return $list_modifications;
 	}
-	 
+
 	/*
 	 *  Display clear action labels
 	 */
-	function replaceActiontype($action) {
-		
+	function replaceActiontype($action)
+	{
 		$actionList = array();
 		$actionList["d"] = "Delete";
 		$actionList["c"] = "Change";
 		$actionList["a"] = "Create";
 		$actionList["disable"] = "Disable";
 		$actionList["enable"] = "Enable";
-		$actionList["mc"] = "Massive change";	
-		
+		$actionList["mc"] = "Massive change";
+
 		foreach ($actionList as $key => $value) {
 			if ($action == $key)
 				$action = $value;
 		}
 		return $action;
 	}
-	
+
 	/*
 	 *  list object types
 	 */
-	function listObjecttype() {
+	function listObjecttype()
+	{
 		$object_type_tab = array();
 
 		$object_type_tab[0] = _("All");
@@ -203,8 +210,8 @@ class CentreonLogAction {
 		$object_type_tab[11] = "host dependency";
 		$object_type_tab[12] = "hostgroup dependency";
 		$object_type_tab[13] = "service dependency";
-		$object_type_tab[14] = "servicegroup dependency";	
-		
+		$object_type_tab[14] = "servicegroup dependency";
+
 		return $object_type_tab;
 	}
 }

@@ -52,7 +52,8 @@
  	 * Constructor
  	 * @param $pearDB
  	 */
- 	function __construct($pearDB) {
+ 	function __construct($pearDB)
+ 	{
  		$this->DB = $pearDB;
  	}
 
@@ -63,7 +64,8 @@
  	 * @param unknown_type $searchHost
  	 * @param unknown_type $level
  	 */
- 	public function getHostGroupHosts($hg_id = NULL)	{
+ 	public function getHostGroupHosts($hg_id = null)
+ 	{
 		if (!$hg_id) {
 			return;
 		}
@@ -151,7 +153,8 @@
 	 * Enter description here ...
 	 * @param $hg_id
 	 */
- 	function getHostGroupHostGroups($hg_id = NULL) {
+ 	function getHostGroupHostGroups($hg_id = null)
+ 	{
 		if (!$hg_id) {
 			return;
 		}
@@ -174,7 +177,8 @@
 	 *
 	 * Enter description here ...
 	 */
-	private function setHgHgCache() {
+	private function setHgHgCache()
+	{
 		$this->relationCache = array();
 		$DBRESULT = $this->DB->query("SELECT /* SQL_CACHE */ hg_parent_id, hg_child_id FROM hostgroup_hg_relation");
 		while ($data = $DBRESULT->fetchRow()) {
@@ -187,7 +191,8 @@
 		unset($data);
 	}
 
-	public function getAllHostgroupsInCache($DB) {
+	public function getAllHostgroupsInCache($DB)
+	{
 		$hostgroups = array();
 
 		$this->unsetCache();
@@ -200,7 +205,8 @@
 		return $hostgroups;
 	}
 
-	private function unsetCache() {
+	private function unsetCache()
+	{
 		$this->dataTree = array();
 	}
 }

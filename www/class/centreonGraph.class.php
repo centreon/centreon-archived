@@ -119,7 +119,8 @@ class CentreonGraph	{
 	 * $headType	bool 	send XML header
 	 * $debug		bool 	debug flag.
 	 */
-	function CentreonGraph($session_id, $index = NULL, $debug, $compress = NULL) {
+	public function __construct($session_id, $index = null, $debug, $compress = null)
+	{
 		if (!isset($debug)) {
 			$this->debug = 0;
 		}
@@ -214,7 +215,8 @@ class CentreonGraph	{
 
 	}
 
-	public function setMetricList($metrics) {
+	public function setMetricList($metrics)
+	{
 		if (is_array($metrics) && count($metrics)) {
 			$this->metricsEnabled = array_keys($metrics);
 		} else if ($metrics != "") {
@@ -222,7 +224,8 @@ class CentreonGraph	{
 		}
 	}
 
-	public function init() {
+	public function init()
+	{
 		$this->setRRDOption("interlaced");
 		$this->setRRDOption("imgformat", "PNG");
 		if (isset($this->templateInformations["vertical_label"])) {
@@ -300,7 +303,8 @@ class CentreonGraph	{
 
 	private static function vquote($elem) { return "'".substr($elem,1,strlen($elem)-1)."'"; }
 
-	public function initCurveList() {
+	public function initCurveList()
+	{
 		if (isset($this->metricsEnabled) && count($this->metricsEnabled) > 0) {
 			/* Zoom or Metric Image */
 			$l_rmEnabled = array();
@@ -571,7 +575,8 @@ class CentreonGraph	{
 		}
 	}
 
-	public function createLegend() {
+	public function createLegend()
+	{
 		$cpt = 0;
 		$rpn_values = "";
 		$rpn_expr = "";
@@ -667,8 +672,8 @@ class CentreonGraph	{
 	}
 
 
-	private function humanReadable($l_value = NULL, $l_unit) {
-
+	private function humanReadable($l_value = null, $l_unit)
+	{
 		if (empty($l_value)) {
 			return;
 		}
@@ -710,8 +715,8 @@ class CentreonGraph	{
 		return $l_sign.sprintf("%.2f",$l_value).$l_upx.$l_unit;
 	}
 
-	private function _getDefaultGraphTemplate() {
-
+	private function _getDefaultGraphTemplate()
+	{
 		$template_id = $this->_getServiceGraphID();
 		if ($template_id != "") {
 			$this->template_id = $template_id;
@@ -740,8 +745,8 @@ class CentreonGraph	{
 		}
 	}
 
-	public function setTemplate($template_id = NULL) {
-
+	public function setTemplate($template_id = null)
+	{
 		if (isset($template_id)) {
 			$template_id = htmlentities($template_id, ENT_QUOTES, "UTF-8");
 		}
@@ -773,7 +778,8 @@ class CentreonGraph	{
 
 	}
 
-	private function _getServiceGraphID()	{
+	private function _getServiceGraphID()
+	{
 		$service_id = $this->indexData["service_id"];
 
 		$tab = array();
@@ -800,7 +806,8 @@ class CentreonGraph	{
 	/*
 	 * Get index Data
 	 */
-	private function _getIndexData() {
+	private function _getIndexData()
+	{
 		if (isset($this->metricsEnabled))
 			$svc_instance = $this->metrics[$this->metricsEnabled[0]]["index_id"];
 		else
@@ -843,14 +850,16 @@ class CentreonGraph	{
 	/*
 	 * Display Start and end time on graph
 	 */
-	public function addArgument($arg) {
+	public function addArgument($arg)
+	{
 		$this->_arguments[$this->_argcount++] = $arg;
 	}
 
 	/**
 	 * Geneate image...
 	 */
-	public function displayError() {
+	public function displayError()
+	{
 		$image 	= imagecreate(250,100);
 		$fond 	= imagecolorallocate($image,0xEF,0xF2,0xFB);
 		$textcolor = imagecolorallocate($image, 0, 0, 255);
@@ -865,21 +874,25 @@ class CentreonGraph	{
 		exit;
 	}
 
-	public function setFont($name, $value) {
+	public function setFont($name, $value)
+	{
 		$this->_fonts[$name] = $value;
 	}
 
-	public function setColor($name, $value) {
+	public function setColor($name, $value)
+	{
 		$this->_colors[$name] = $value;
 	}
 
-	public function setRRDOption($name, $value = null) {
+	public function setRRDOption($name, $value = null)
+	{
 		if (strpos($value, " ")!==false)
 			$value = "'".$value."'";
 		$this->_RRDoptions[$name] = $value;
 	}
 
-	private function switchRRDLimitOption($lower = null, $upper = null) {
+	private function switchRRDLimitOption($lower = null, $upper = null)
+	{
 		if (is_null($lower))
 			unset($this->_RRDoptions["upper-limit"]);
 		else
@@ -890,22 +903,26 @@ class CentreonGraph	{
 			$this->_RRDoptions["lower-limit"] = $upper;
 	}
 
-	public function setCommandLineTimeLimit($flag) {
+	public function setCommandLineTimeLimit($flag)
+	{
 		if (isset($flag))
 			$this->_flag = $flag;
 	}
 
-	public function setOption($name, $bool = true) {
+	public function setOption($name, $bool = true)
+	{
 		$this->_options[$name] = $bool;
 	}
 
-	public function getOption($name) {
+	public function getOption($name)
+	{
 		if (isset($this->_options[$name]))
 			return $this->_options[$name];
 		return false;
 	}
 
-	public function setHeaders($encoding) {
+	public function setHeaders($encoding)
+	{
 		header("Content-Type: image/png");
 		header("Content-Transfer-Encoding: binary");
 		header("Content-Disposition: attachment; filename=\"".$this->filename.".png\";");
@@ -915,7 +932,8 @@ class CentreonGraph	{
 		}
 	}
 
-	public function displayImageFlow() {
+	public function displayImageFlow()
+	{
 		$commandLine = "";
 
 		/*
@@ -998,7 +1016,8 @@ class CentreonGraph	{
 		}
 	}
 
-	public function checkArgument($name, $tab, $defaultValue) {
+	public function checkArgument($name, $tab, $defaultValue)
+	{
 		if (isset($name) && isset($tab)) {
 			if (isset($tab[$name]))
 				return htmlentities($tab[$name], ENT_QUOTES, "UTF-8");
@@ -1007,7 +1026,8 @@ class CentreonGraph	{
 		}
 	}
 
-	public function getOVDColor($l_mid) {
+	public function getOVDColor($l_mid)
+	{
 		$DBRESULT = $this->DB->query("SELECT `rnd_color` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `metric_id` = '".$l_mid."' AND `contact_id` = '".$this->user_id."'");
                 if ($DBRESULT->numRows()) {
 			$l_ovd = $DBRESULT->fetchRow();
@@ -1024,7 +1044,8 @@ class CentreonGraph	{
 		return $l_rndcolor;
 	}
 
-	public 	function getRandomWebColor() {
+	public 	function getRandomWebColor()
+	{
 		$web_safe_colors = array('#000033', '#000066', '#000099', '#0000cc',
 			'#0000ff', '#003300', '#003333', '#003366', '#003399', '#0033cc',
 			'#0033ff', '#006600', '#006633', '#006666', '#006699', '#0066cc',
@@ -1064,7 +1085,8 @@ class CentreonGraph	{
 			return $web_safe_colors[rand(0,sizeof($web_safe_colors))];
 	}
 
-	private function _cmpmultiple($a, $b) {
+	private function _cmpmultiple($a, $b)
+	{
 		if ($a["ds_order"]<$b["ds_order"])
 			return -1;
 		else if ($a["ds_order"]>$b["ds_order"])
@@ -1073,13 +1095,15 @@ class CentreonGraph	{
 		return 0;
 	}
 
-	private function _cmpcdeforder($a, $b) {
+	private function _cmpcdeforder($a, $b)
+	{
 		if ( $a["cdef_order"] == $b["cdef_order"] )
 			return 0;
 		return ( $a["cdef_order"] < $b["cdef_order"] ) ? -1 : 1;
 	}
 
-        private function subsRPN($rpn, $vname, $suffix = NULL) {
+        private function subsRPN($rpn, $vname, $suffix = null)
+        {
                 $l_list = preg_split("/\,/",$rpn);
                 $l_rpn = "";
                 $l_err = 0;

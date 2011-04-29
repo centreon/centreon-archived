@@ -127,8 +127,8 @@ class CentreonMonitoring {
 	 * @param $status
 	 * @param $obj
 	 */
-	public function getServiceStatusCountBroker($host_name, $objXMLBG, $o, $status, $obj) {
-
+	public function getServiceStatusCountBroker($host_name, $objXMLBG, $o, $status, $obj)
+	{
 		$rq = 	" SELECT DISTINCT s.host_id, s.service_id, s.state ".
 				" FROM services s, `hosts` h".(!$objXMLBG->is_admin ? ", centreon_acl " : "").
 				" WHERE s.state = '".$status."'".
@@ -165,7 +165,8 @@ class CentreonMonitoring {
 	 * @param unknown_type $instance
 	 * @param unknown_type $hostgroups
 	 */
-	public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj) {
+	public function getServiceStatusCount($host_name, $objXMLBG, $o, $status, $obj)
+	{
 		if ($this->objBroker->getBroker() == "broker") {
 			return $this->getServiceStatusCountBroker($host_name, $objXMLBG, $o, $status, $obj);
 		} else if ($this->objBroker->getBroker() == "ndo") {
@@ -182,8 +183,8 @@ class CentreonMonitoring {
 	 * @param $status
 	 * @param $obj
 	 */
-	public function getServiceAllStatusCountBroker($host_name, $objXMLBG, $o, $obj) {
-
+	public function getServiceAllStatusCountBroker($host_name, $objXMLBG, $o, $obj)
+	{
 		$rq = 	" SELECT count(s.service_id) AS nb".
 				" FROM services s".
 				" WHERE s.state = '".$status."'";
@@ -223,7 +224,8 @@ class CentreonMonitoring {
 	 * @param $status
 	 * @param $obj
 	 */
-	public function getServiceAllStatusCountNDO($host_name, $objXMLBG, $o, $obj) {
+	public function getServiceAllStatusCountNDO($host_name, $objXMLBG, $o, $obj)
+	{
 
 		$rq = 	" SELECT count( nss.service_object_id ) AS nb".
 				" FROM " .$objXMLBG->ndoPrefix."servicestatus nss".
@@ -265,7 +267,8 @@ class CentreonMonitoring {
 	 * @param unknown_type $instance
 	 * @param unknown_type $hostgroups
 	 */
-	public function getServiceStatus($hostList, $objXMLBG, $o, $instance, $hostgroups) {
+	public function getServiceStatus($hostList, $objXMLBG, $o, $instance, $hostgroups)
+	{
 		if ($this->objBroker->getBroker() == "broker") {
 			return $this->getServiceStatusBroker($hostList, $objXMLBG, $o, $instance, $hostgroups);
 		} else if ($this->objBroker->getBroker() == "ndo") {
@@ -283,7 +286,8 @@ class CentreonMonitoring {
 	 * @param unknown_type $instance
 	 * @param unknown_type $hostgroups
 	 */
-	private function getServiceStatusBroker($hostList, $objXMLBG, $o, $instance, $hostgroups) {
+	private function getServiceStatusBroker($hostList, $objXMLBG, $o, $instance, $hostgroups)
+	{
 		if ($hostList == "") {
            return array();
         }
@@ -337,7 +341,8 @@ class CentreonMonitoring {
 	 * @param unknown_type $instance
 	 * @param unknown_type $hostgroups
 	 */
-	private function getServiceStatusNDO($hostList, $objXMLBG, $o, $instance, $hostgroups) {
+	private function getServiceStatusNDO($hostList, $objXMLBG, $o, $instance, $hostgroups)
+	{
 		if ($hostList == "") {
            return array();
         }
