@@ -211,7 +211,7 @@ sub getLocalOptionsField($){
     }
     my $data = $sth2->fetchrow_hashref();
     $sth2->finish();
-    return $data->{$_[0]};
+    return $data->{'value'};
 }
 
 sub getLocalServerID(){
