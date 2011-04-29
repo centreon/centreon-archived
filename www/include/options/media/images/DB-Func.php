@@ -114,6 +114,7 @@
                 switch ($fileinfo["type"]) {
 			// known archive types
                         case "application/zip" :
+						case "application/x-zip" :
                         case "application/x-tar" :
                         case "application/x-gzip" :
                         case "application/x-bzip" :
