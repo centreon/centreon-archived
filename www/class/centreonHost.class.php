@@ -57,13 +57,22 @@
 	 * Method that returns a hostname from host_id
 	 * @param unknown_type $host_id
 	 */
- 	public function getHostName($host_id) {
- 		$rq = "SELECT host_name FROM host WHERE host_id = '".$host_id."' LIMIT 1";
- 		$DBRES = $this->DB->query($rq);
- 		if (!$DBRES->numRows())
- 			return NULL;
- 		$row = $DBRES->fetchRow();
- 		return $row['host_name'];
+ 	public function getHostName($host_id)
+ 	{
+ 		static $hosts = array();
+
+ 		if (!isset($hosts[$host_id])) {
+     	    $rq = "SELECT host_name FROM host WHERE host_id = '".$this->DB->escape($host_id)."' LIMIT 1";
+     		$DBRES = $this->DB->query($rq);
+     		if (!$DBRES->numRows())
+     			return NULL;
+     		$row = $DBRES->fetchRow();
+     		$hosts[$host_id] = $row['host_name'];
+ 		}
+ 		if (isset($hosts[$host_id])) {
+ 		    return $hosts[$host_id];
+ 		}
+ 		return "";
  	}
 
  	/**

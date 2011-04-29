@@ -799,6 +799,8 @@
 
 		$DB = new CentreonDB();
 		$svcObj = new CentreonService($DB);
+		$hostObj = new CentreonHost($DB);
+		$hgObj = new CentreonHostgroups($DB);
 		$mediaObj = new CentreonMedia($DB);
 
 		foreach ($tmpConf as $key => $value) {
@@ -809,8 +811,6 @@
 				case "icon_image" : $tmpConf["esi_icon_image"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;
 				case "icon_image_alt" : $tmpConf["esi_icon_image_alt"] = $mediaObj->getImageId($tmpConf[$key]); unset ($tmpConf[$key]); break;												case "host_name" :
 					$tmpConf["host_name"] = trim($tmpConf[$key]);
-					$tmpConf["host_name"] = str_replace("/", "#S#", $tmpConf["host_name"]);
-					$tmpConf["host_name"] = str_replace("\\", "#BS#", $tmpConf["host_name"]);
 					break;
 				case "service_description" :
 					$tmpConf["service_descriptions"] = explode(",", $tmpConf[$key]);
@@ -818,11 +818,16 @@
 			}
 		}
 
-		if (isset($tmpConf["host_name"]) && isset($tmpConf["service_descriptions"])) {
+		if ((isset($tmpConf['hostgroup_name']) || isset($tmpConf["host_name"])) && isset($tmpConf["service_descriptions"])) {
 			foreach ($tmpConf["service_descriptions"] as $key2 => $value2)	{
-				$value2 = str_replace("/", "#S#", $value2);
-				$value2 = str_replace("\\", "#BS#", $value2);
-				$tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $tmpConf["host_name"]);
+			    if (isset($tmpConf['host_name'])) {
+			        $hostname = $tmpConf['host_name'];
+				} elseif (isset($tmpConf['hostgroup_name'])) {
+                    $hgId = $hgObj->getHostgroupId($tmpConf['hostgroup_name']);
+                    $randomHostId = array_shift($hgObj->getHostGroupHosts($hgId));
+                    $hostname = $hostObj->getHostName($randomHostId);
+				}
+			    $tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $hostname);
 				if (!$tmpConf["service_descriptions"][$key2])
 					unset($tmpConf["service_descriptions"][$key2]);
 			}

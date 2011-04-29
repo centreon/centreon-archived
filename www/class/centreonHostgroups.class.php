@@ -98,6 +98,54 @@
 		return $hosts;
 	}
 
+ 	/**
+	 * Get Hostgroup Name
+	 *
+	 * @param int $hg_id
+	 * @return string
+	 */
+	public function getHostgroupName($hg_id)
+	{
+        static $names = array();
+
+        if (!isset($names[$hg_id])) {
+            $query = "SELECT hg_name FROM hostgroup WHERE hg_id = " . $this->DB->escape($hg_id);
+            $res = $this->DB->query($query);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $names[$hg_id] = $row['hg_name'];
+            }
+        }
+        if (isset($names[$hg_id])) {
+            return $names[$hg_id];
+        }
+        return "";
+	}
+
+	/**
+	 * Get Hostgroup Id
+	 *
+	 * @param string $hg_name
+	 * @return int
+	 */
+	public function getHostgroupId($hg_name)
+	{
+        static $ids = array();
+
+        if (!isset($ids[$hg_name])) {
+            $query = "SELECT hg_id FROM hostgroup WHERE hg_name = '" . $this->DB->escape($hg_name) . "'";
+            $res = $this->DB->query($query);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $ids[$hg_name] = $row['hg_id'];
+            }
+        }
+        if (isset($ids[$hg_name])) {
+            return $ids[$hg_name];
+        }
+        return 0;
+	}
+
 	/**
 	 *
 	 * Enter description here ...
