@@ -118,6 +118,34 @@
  	}
 
  	/**
+ 	 * Get Service Id From Hostgroup Name
+ 	 *
+ 	 * @param string $service_desc
+ 	 * @param string $hgName
+ 	 * @return int
+ 	 */
+ 	public function getServiceIdFromHgName($service_desc, $hgName)
+ 	{
+        static $hgSvcTab = array();
+
+        if (!isset($hgSvcTab[$hgName])) {
+            $rq = "SELECT hsr.service_service_id, s.service_description
+            		FROM host_service_relation hsr, hostgroup hg, service s
+            		WHERE hsr.hostgroup_hg_id = hg.hg_id
+        			AND hsr.service_service_id = s.service_id
+            		AND hg.hg_name LIKE '".$this->db->escape($hgName)."' ";
+            $res = $this->db->query($rq);
+            while ($row = $res->fetchRow()) {
+                $hgSvcTab[$hgName][$row['service_description']] = $row['service_service_id'];
+            }
+        }
+        if (isset($hgSvcTab[$hgName]) && isset($hgSvcTab[$hgName][$service_desc])) {
+            return $hgSvcTab[$hgName][$service_desc];
+        }
+        return null;
+ 	}
+
+ 	/**
  	 * Get Service alias
  	 *
  	 * @param int $sid
