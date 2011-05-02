@@ -1307,7 +1307,7 @@
 			$tmpConf["sg_activate"]["sg_activate"] = "1";
 			$tmpConf["sg_comment"] = date("d/m/Y - H:i:s", time());
 			if ($debug_nagios_import == 1)
-					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["servicegroup_name"]."\n", 3, $debug_path."cfgimport.log");
+					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
 			insertServiceGroupInDB($tmpConf);
 			$nbr["sg"] += 1;
 			return true;
