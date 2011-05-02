@@ -65,6 +65,9 @@
  	{
  		static $hosts = array();
 
+ 		if (!isset($host_id) || !$host_id) {
+ 		    return null;
+ 		}
  		if (!isset($hosts[$host_id])) {
      	    $rq = "SELECT host_name
      	    	   FROM host
@@ -92,6 +95,9 @@
  	{
  	    static $aliasTab = array();
 
+ 	    if (!isst($host_id) || !$host_id) {
+ 	        return null;
+ 	    }
  	    if (!isset($aliasTab[$host_id])) {
      	    $rq = "SELECT host_alias
      	    	   FROM host
@@ -119,6 +125,9 @@
  	{
  		static $addrTab = array();
 
+ 		if (!isset($host_id) || !$host_id) {
+ 		    return null;
+ 		}
  		if (!isset($addrTab[$host_id])) {
      	    $rq = "SELECT host_address
      	    	   FROM host
@@ -146,6 +155,9 @@
  	{
  		static $ids = array();
 
+ 	    if (!isset($host_name) || !$host_name) {
+ 		    return null;
+ 		}
  		if (!isset($ids[$host_name])) {
      	    $rq = "SELECT host_id
      	    	   FROM host

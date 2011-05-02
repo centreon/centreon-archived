@@ -820,14 +820,21 @@
 
 		if ((isset($tmpConf['hostgroup_name']) || isset($tmpConf["host_name"])) && isset($tmpConf["service_descriptions"])) {
 			foreach ($tmpConf["service_descriptions"] as $key2 => $value2)	{
+			    $hostname = null;
 			    if (isset($tmpConf['host_name'])) {
 			        $hostname = $tmpConf['host_name'];
 				} elseif (isset($tmpConf['hostgroup_name'])) {
                     $hgId = $hgObj->getHostgroupId($tmpConf['hostgroup_name']);
-                    $randomHostId = array_shift($hgObj->getHostGroupHosts($hgId));
-                    $hostname = $hostObj->getHostName($randomHostId);
+                    if (isset($hgId)) {
+                        $randomHostId = array_shift($hgObj->getHostGroupHosts($hgId));
+                        if (isset($randomHostId) && $randomHostId) {
+                            $hostname = $hostObj->getHostName($randomHostId);
+                        }
+                    }
 				}
-			    $tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $hostname);
+			    if (isset($hostname) && $hostname) {
+				    $tmpConf["service_descriptions"][$key2] = $svcObj->getServiceId(trim($value2), $hostname);
+			    }
 				if (!$tmpConf["service_descriptions"][$key2])
 					unset($tmpConf["service_descriptions"][$key2]);
 			}
