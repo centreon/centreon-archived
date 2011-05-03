@@ -8,6 +8,40 @@
 
 => feature: Downtimes can be scheduled periodically
  
+ 
+## Centreon 2.2.0
+
+=> fix: bug #2305: service extended info imported from existing config not imported
+=> fix: bug #2280: Tactical Overview blank page
+=> fix: bug #2298: hostgroups.cfg is missing members line
+=> fix: bug #2301: plugin help not possible to see due to missing executable of the plugin
+=> fix: bug #2300: check command command args not imported
+=> fix: bug #2299: contact groups and contacts not linked after importing existing nagios config
+=> fix: bug #2296: meta_escalations.cfg is empty
+=> fix: bug #2287: bug on quick search right after form save
+=> fix: bug #2282: Schedule downtime for Host redirects to Service downtimes
+=> fix: bug #2277: Unable to import nagios service template file
+ 
+## Centreon 2.2-RC2
+
+=> fix: problem with search in service template
+=> fix: problem with search in host template
+=> fix: remove debug in centstorage
+=> fix: bug #2169
+=> fix: problem with ACL menu configuration -> some menu were not displayed
+=> fix: problem with graph size for status
+=> fix: problem with nagiosPerfTrace when a poller is disabled
+=> fix: problem with host downtime
+=> fix: bug #2123
+=> fix: improve reactivity time for status counter
+=> fix: fix problem with external command in centcore when this command us keywords
+=> fix: fix a submit button bug for chrome
+=> fix: fix problem on downtime delete
+=> fix: remove #S# and #BS#
+=> fix: special chars in LDAP connection system
+=> fix: problem with declaration function in centTrapHandlerForPoller
+=> fix: problem with upgrade of config generation engine 
+ 
 ## Centreon 2.2-RC1
 
 => fix: problem with search in monitoring
