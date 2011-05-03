@@ -73,6 +73,10 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
+				<td>Christophe Coraboeuf</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
 				<td>Nicolas Cordier</td>
 			</tr>
 			<tr>
