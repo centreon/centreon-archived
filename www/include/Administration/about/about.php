@@ -124,10 +124,10 @@
 		<div style="padding-left: 30px;">
 			<img src="./img/Paris-Business.jpg" alt="Logo Join Community">
 		</div>
-		<br><br>
+		<br/><br/><br/><br/><br/><br/><br/>
 		<div style="text-align:left;">
-			<br><h3><b><?php echo _("Contributors"); ?> :</b></h3><br>
 			<table width="80%">
+				<thead><h3><b><?php echo _("Contributors"); ?> :</b></h3></thead>
 				<tr>
 					<td>Marisa Belijar</td>
 					<td>Tobias Boehnert</td>
