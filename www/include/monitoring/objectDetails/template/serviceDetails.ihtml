@@ -342,7 +342,7 @@
 						{/if}
 						</td>
 					</tr>
-				{if $service_data.current_state != OK && $service_data.state_type != SOFT}
+				{if $service_data.current_state != OK}
 					<tr class='list_one'>
 						<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.problem_has_been_acknowledged]};'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$en[$service_data.problem_has_been_acknowledged]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
