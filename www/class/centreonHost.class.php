@@ -95,7 +95,7 @@
  	{
  	    static $aliasTab = array();
 
- 	    if (!isst($host_id) || !$host_id) {
+ 	    if (!isset($host_id) || !$host_id) {
  	        return null;
  	    }
  	    if (!isset($aliasTab[$host_id])) {
