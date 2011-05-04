@@ -220,6 +220,8 @@
 	$obj->XML->writeElement("tr2", _("Notification information"), 0);
 	$obj->XML->writeElement("tr3", _("Last Status Change"), 0);
     $obj->XML->writeElement("tr4", _("Extended information"), 0);
+    $obj->XML->writeElement("tr5", _("Status Information"), 0);
+
 	/*
 	 * End buffer
 	 */

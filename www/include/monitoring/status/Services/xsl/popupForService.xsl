@@ -22,6 +22,18 @@
 				<b><xsl:value-of select="plugin_output"/></b>
 			</td>
 		</tr>
+		<xsl:if test="notes != ''">
+		<tr class='list_separator'>
+			<td class='separator' colspan='2'><xsl:value-of select='tr4'></xsl:value-of></td>
+		</tr>
+		<tr class='list_one'>
+			<td class="ColPopup">&#160;<xsl:value-of select="notes/@name"/></td>
+			<td class="ColPopup">&#160;<xsl:value-of select="notes"/></td>
+		</tr>
+		</xsl:if>
+		<tr class='list_separator' colspan='2'>
+			<td class='separator' colspan='2'><xsl:value-of select='tr5'></xsl:value-of></td>
+		</tr>
 		<tr class='list_one'>
 			<td class="ColPopup" style='vertical-align:top;'>&#160;<xsl:value-of select="long_name" /></td>
             <td class="ColPopup">
@@ -117,16 +129,7 @@
 		<tr class='list_two'>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_time_unknown/@name"/></td>
 			<td class="ColPopup">&#160;<xsl:value-of select="last_time_unknown"/></td>
-		</tr>
-		<xsl:if test="notes != ''">
-		<tr class='list_separator'>
-			<td class='separator' colspan='2'><xsl:value-of select='tr4'></xsl:value-of></td>
-		</tr>
-		<tr class='list_one'>
-			<td class="ColPopup">&#160;<xsl:value-of select="notes/@name"/></td>
-			<td class="ColPopup">&#160;<xsl:value-of select="notes"/></td>
-		</tr>
-		</xsl:if>
+		</tr>		
 	</table>
 </xsl:template>
 </xsl:stylesheet>
