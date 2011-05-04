@@ -89,7 +89,7 @@
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
-						  		<xsl:value-of select="//i/http_link"/>&#160;:<xsl:value-of select="hnu"/></xsl:attribute>
+						  		<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/></xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
@@ -101,7 +101,7 @@
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
-						  		<xsl:value-of select="//i/http_action_link"/>&#160;:<xsl:value-of select="hau"/></xsl:attribute>
+						  		<xsl:value-of select="//i/http_action_link"/>&#160;:&#160;<xsl:value-of select="hau"/></xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
@@ -168,7 +168,7 @@
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
-						  		<xsl:value-of select='//i/http_link'/>&#160;:<xsl:value-of select="snu"/>
+						  		<xsl:value-of select='//i/http_link'/>&#160;:&#160;<xsl:value-of select="snu"/>
 						  	</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
@@ -181,7 +181,7 @@
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
-						  		<xsl:value-of select='//i/http_action_link'/>&#160;:<xsl:value-of select="sau"/>
+						  		<xsl:value-of select='//i/http_action_link'/>&#160;:&#160;<xsl:value-of select="sau"/>
 						  	</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
