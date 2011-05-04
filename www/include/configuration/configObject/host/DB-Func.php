@@ -437,6 +437,55 @@
 			updateHostContact($host_id);
 		}
 
+		# Function for updating notification options
+		# 1 - MC with deletion of existing options (Replacement)
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update
+		if (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && $ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
+                        updateHostNotifs($host_id);		
+		} elseif (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && !$ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
+                        updateHostNotifs_MC($host_id);	
+		} else {
+                        updateHostNotifs($host_id);
+		}	
+
+		# Function for updating notification interval options
+		# 1 - MC with deletion of existing options (Replacement) 
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update
+		if (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) {
+			updateHostNotifOptionInterval($host_id);
+		} elseif (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) && !$ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) {
+			updateHostNotifOptionInterval_MC($host_id);
+		} else {
+			updateHostNotifOptionInterval($host_id);
+		}
+
+		# Function for updating first notification delay options
+		# 1 - MC with deletion of existing options (Replacement)
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update, default behavior
+		if (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) && $ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) {
+			updateHostNotifOptionFirstNotificationDelay($host_id);
+		} elseif (isset($ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) && !$ret["mc_mod_notifopt_first_notification_delay"]["mc_mod_notifopt_first_notification_delay"]) {
+			updateHostNotifOptionFirstNotificationDelay_MC($host_id);
+		} else {
+			updateHostNotifOptionFirstNotificationDelay($host_id);
+		}
+ 	
+
+		# Function for updating notification timeperiod options
+		# 1 - MC with deletion of existing options (Replacement)
+		# 2 - MC with addition of new options (incremental)
+		# 3 - Normal update
+		if (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) && $ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) {
+			updateHostNotifOptionTimeperiod($host_id);
+		} 	elseif (isset($ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) && !$ret["mc_mod_notifopt_timeperiod"]["mc_mod_notifopt_timeperiod"]) {
+			updateHostNotifOptionTimeperiod_MC($host_id);
+		} else {
+			updateHostNotifOptionTimeperiod($host_id);
+		}		
+		
 		# Function for updating host hg
 		# 1 - MC with deletion of existing hg
 		# 2 - MC with addition of new hg
@@ -490,6 +539,10 @@
 		updateHostHostChild($host_id, $ret);
 		updateHostContactGroup($host_id, $ret);
 		updateHostContact($host_id, $ret);
+		updateHostNotifs($host_id, $ret);		
+		updateHostNotifOptionInterval($host_id, $ret);
+		updateHostNotifOptionTimeperiod($host_id, $ret);
+		updateHostNotifOptionFirstNotificationDelay($host_id, $ret);		
 		updateHostHostGroup($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
@@ -949,8 +1002,8 @@
 		isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL ? $rq .= "'".$ret["command_command_id_arg1"]."', ": $rq .= "NULL, ";
 		$rq .= "timeperiod_tp_id = ";
 		isset($ret["timeperiod_tp_id"]) && $ret["timeperiod_tp_id"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id"]."', ": $rq .= "NULL, ";
-		$rq .= "timeperiod_tp_id2 = ";
-		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
+		/*$rq .= "timeperiod_tp_id2 = ";
+		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";*/
 		$rq .= "command_command_id2 = ";
 		isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL ? $rq .= "'".$ret["command_command_id2"]."', ": $rq .= "NULL, ";
 		$rq .= "command_command_id_arg2 = ";
@@ -997,16 +1050,16 @@
 		isset($ret["host_retain_status_information"]["host_retain_status_information"]) && $ret["host_retain_status_information"]["host_retain_status_information"] != 2 ? $rq .= "'".$ret["host_retain_status_information"]["host_retain_status_information"]."', " : $rq .= "'2', ";
 		$rq .= "host_retain_nonstatus_information = ";
 		isset($ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]) && $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"] != 2 ? $rq .= "'".$ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]."', " : $rq .= "'2', ";
-		$rq .= "host_notification_interval = ";
-		isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'".$ret["host_notification_interval"]."', " : $rq .= "NULL, ";
-		$rq .= "host_first_notification_delay = ";
+	/*	$rq .= "host_notification_interval = ";
+		isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL ? $rq .= "'".$ret["host_notification_interval"]."', " : $rq .= "NULL, ";*/
+	/*	$rq .= "host_first_notification_delay = ";
 		isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= "NULL, ";
 		$rq .= "host_notification_options = ";
-		isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";
+		isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";*/
 		$rq .= "host_notifications_enabled = ";
 		isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
-		$rq .= "host_first_notification_delay = ";
-		isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= " NULL, ";
+		/*$rq .= "host_first_notification_delay = ";
+		isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= " NULL, ";*/
 		$rq .= "host_stalking_options = ";
 		isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
 		$rq .= "host_snmp_community = ";
@@ -1113,7 +1166,7 @@
 		if (isset($ret["command_command_id"])) $fields["command_command_id"] = $ret["command_command_id"];
 		if (isset($ret["command_command_id_arg1"])) $fields["command_command_id_arg1"] = $ret["command_command_id_arg1"];
 		if (isset($ret["timeperiod_tp_id"])) $fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
-		if (isset($ret["timeperiod_tp_id2"])) $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
+	//	if (isset($ret["timeperiod_tp_id2"])) $fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
 		if (isset($ret["command_command_id2"])) $fields["command_command_id2"] = $ret["command_command_id2"];
 		if (isset($ret["command_command_id_arg2"])) $fields["command_command_id_arg2"] = $ret["command_command_id_arg2"];
 		if (isset($ret["host_name"])) $fields["host_name"] = CentreonDB::escape($ret["host_name"]);
@@ -1136,14 +1189,14 @@
 		if (isset($ret["host_process_perf_data"])) $fields["host_process_perf_data"] = $ret["host_process_perf_data"]["host_process_perf_data"];
 		if (isset($ret["host_retain_status_information"])) $fields["host_retain_status_information"] = $ret["host_retain_status_information"]["host_retain_status_information"];
 		if (isset($ret["host_retain_nonstatus_information"])) $fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
-		if (isset($ret["host_notification_interval"])) $fields["host_notification_interval"] = $ret["host_notification_interval"];
-		if (isset($ret["host_first_notification_delay"])) $fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
-		$fields["host_notifOpts"] = "";
+	//	if (isset($ret["host_notification_interval"])) $fields["host_notification_interval"] = $ret["host_notification_interval"];
+	//	if (isset($ret["host_first_notification_delay"])) $fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+	/*	$fields["host_notifOpts"] = "";
 		if (isset($ret["host_notifOpts"]))
-			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
+			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));*/
 		if (isset($ret["host_notifications_enabled"])) $fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
-		if (isset($ret["host_first_notification_delay"]))
-			$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
+	//	if (isset($ret["host_first_notification_delay"]))
+	//		$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
 		$fields["host_stalOpts"] = "";
 		if (isset($ret["host_stalOpts"]))
 			$fields["host_stalOpts"] = implode(",", array_keys($ret["host_stalOpts"]));
@@ -1230,10 +1283,10 @@
 			$rq .= "timeperiod_tp_id = '".$ret["timeperiod_tp_id"]."', ";
 			$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
 		}
-		if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
+	/*	if (isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL) {
 			$rq .= "timeperiod_tp_id2 = '".$ret["timeperiod_tp_id2"]."', ";
 			$fields["timeperiod_tp_id2"] = $ret["timeperiod_tp_id2"];
-		}
+		}*/
 		if (isset($ret["command_command_id2"]) && $ret["command_command_id2"] != NULL) {
 			$rq .= "command_command_id2 = '".$ret["command_command_id2"]."', ";
 			$fields["command_command_id2"] = $ret["command_command_id2"];
@@ -1310,18 +1363,18 @@
 			$rq .= "host_retain_nonstatus_information = '".$ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"]."', ";
 			$fields["host_retain_nonstatus_information"] = $ret["host_retain_nonstatus_information"]["host_retain_nonstatus_information"];
 		}
-		if (isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL) {
+		/*if (isset($ret["host_notification_interval"]) && $ret["host_notification_interval"] != NULL) {
 			$rq .= "host_notification_interval = '".$ret["host_notification_interval"]."', ";
 			$fields["host_notification_interval"] = $ret["host_notification_interval"];
-		}
-	    if (isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL) {
+		}*/
+	   /* if (isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL) {
 			$rq .= "host_first_notification_delay = '".$ret["host_first_notification_delay"]."', ";
 			$fields["host_first_notification_delay"] = $ret["host_first_notification_delay"];
-		}
-		if (isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL) {
+		}*/
+		/*if (isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL) {
 			$rq .= "host_notification_options = '".implode(",", array_keys($ret["host_notifOpts"]))."', ";
 			$fields["host_notifOpts"] = implode(",", array_keys($ret["host_notifOpts"]));
-		}
+		}*/
 		if (isset($ret["host_notifications_enabled"]["host_notifications_enabled"])) {
 			$rq .= "host_notifications_enabled = '".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', ";
 			$fields["host_notifications_enabled"] = $ret["host_notifications_enabled"]["host_notifications_enabled"];
@@ -1754,8 +1807,150 @@
 				$DBRESULT = $pearDB->query($rq);
 			}
 		}
+	}	
+	
+	function updateHostNotifs($host_id = null, $ret = array())	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["host_notifOpts"]))
+			$ret = $ret["host_notifOpts"];
+		else
+			$ret = $form->getSubmitValue("host_notifOpts");
+		
+		$rq = "UPDATE host SET " ;
+		$rq .= "host_notification_options  = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".implode(",", array_keys($ret))."' " : $rq .= "NULL ";
+		$rq .= "WHERE host_id = '".$host_id."'";
+		$DBRESULT =& $pearDB->query($rq);	
+					
 	}
+	
+	# For massive change. incremental mode
+	function updateHostNotifs_MC($host_id = null)	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		$rq = "SELECT * FROM host ";
+		$rq .= "WHERE host_id = '".$host_id."' LIMIT 1";
+		$DBRESULT =& $pearDB->query($rq);
+		$host = array();
+		$host = array_map("myDecode", $DBRESULT->fetchRow());				
+		
+		$ret = $form->getSubmitValue("host_notifOpts");
+		
+		isset($host["host_notification_options"]) && $host["host_notification_options"] != NULL ? $temp = $host["host_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
+		
+		if (isset($temp) && $temp != NULL) {
+		    $rq = "UPDATE host SET " ;
+			$rq .= "host_notification_options = '". trim ($temp ,',')."' ";
+			$rq .= "WHERE host_id = '".$host_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}			
+	}	
+	
+	
+	function updateHostNotifOptionInterval($host_id = null, $ret = array())	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["host_notification_interval"]))
+			$ret = $ret["host_notification_interval"];
+		else
+			$ret = $form->getSubmitValue("host_notification_interval");
 
+		$rq = "UPDATE host SET " ;
+		$rq .= "host_notification_interval = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret."' " : $rq .= "NULL ";
+		$rq .= "WHERE host_id = '".$host_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+	}
+	
+	# For massive change. incremental mode
+	function updateHostNotifOptionInterval_MC($host_id = null)	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		$ret = $form->getSubmitValue("host_notification_interval");
+		
+		if (isset($ret) && $ret != NULL) {
+		    $rq = "UPDATE host SET " ;
+			$rq .= "host_notification_interval = '".$ret."' ";
+			$rq .= "WHERE host_id = '".$host_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}		
+	}	
+	
+	function updateHostNotifOptionTimeperiod($host_id = null, $ret = array())	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		if (isset($ret["timeperiod_tp_id2"]))
+			$ret = $ret["timeperiod_tp_id2"];
+		else
+			$ret = $form->getSubmitValue("timeperiod_tp_id2");
+
+		$rq = "UPDATE host SET " ;
+		$rq .= "timeperiod_tp_id2 = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret."' " : $rq .= "NULL ";
+		$rq .= "WHERE host_id = '".$host_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+	}
+	
+	# For massive change. incremental mode
+	function updateHostNotifOptionTimeperiod_MC($host_id = null)	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		$ret = $form->getSubmitValue("timeperiod_tp_id2");
+		
+		if (isset($ret) && $ret != NULL) {
+		    $rq = "UPDATE host SET " ;
+			$rq .= "timeperiod_tp_id2 = '".$ret."' ";
+			$rq .= "WHERE host_id = '".$host_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}		
+	}	
+
+	function updateHostNotifOptionFirstNotificationDelay($host_id = null, $ret = array())	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+
+		if (isset($ret["host_first_notification_delay"])) 
+			$ret = $ret["host_first_notification_delay"];
+		  else 
+			$ret = $form->getSubmitValue("host_first_notification_delay");
+
+
+		$rq = "UPDATE host SET " ;
+		$rq .= "host_first_notification_delay = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret."' " : $rq .= "NULL ";
+		$rq .= "WHERE host_id = '".$host_id."'";
+		$DBRESULT =& $pearDB->query($rq);
+	}
+	
+	# For massive change. incremental mode
+	function updateHostNotifOptionFirstNotificationDelay_MC($host_id = null)	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		
+		$ret = $form->getSubmitValue("host_first_notification_delay");
+		
+		if (isset($ret) && $ret != NULL) {
+		    $rq = "UPDATE host SET " ;
+			$rq .= "host_first_notification_delay = '".$ret."' ";
+			$rq .= "WHERE host_id = '".$host_id."'";
+			$DBRESULT =& $pearDB->query($rq);
+		}		
+	}		
 
 	function updateHostHostGroup($host_id, $ret = array())	{
 		global $form, $pearDB;

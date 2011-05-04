@@ -26,7 +26,7 @@
 	{/if}
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="address"> {$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="snmp_options"> {$form.host_snmp_community.label} && {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
-	{if $o == "mc"}
+	{if $o == "mc" && $form.nagios_server_id.label}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_nsid.label}</td><td class="FormRowValue">{$form.mc_mod_nsid.html}</td></tr>
 	{/if}
 	{if $form.nagios_server_id.label}
@@ -114,9 +114,21 @@
 	{/if}
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.host_cs.label}</td><td class="FormRowValue">{$form.host_cs.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.host_cgs.label}</td><td class="FormRowValue">{$form.host_cgs.html}</td></tr>
+	{if $o == "mc"}
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_notification_interval.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td></tr>
+	{/if}		
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_interval"> {$form.host_notification_interval.label}</td><td class="FormRowValue">{$form.host_notification_interval.html}{$time_unit}</td></tr>
+	{if $o == "mc"}
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_timeperiod.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_timeperiod.html}</td></tr>
+	{/if}	
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="notification_period"> {$form.timeperiod_tp_id2.label}</td><td class="FormRowValue">{$form.timeperiod_tp_id2.html}</td></tr>
+	{if $o == "mc"}
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopts.label}</td><td class="FormRowValue">{$form.mc_mod_notifopts.html}</td></tr>
+	{/if}		
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_options"> {$form.host_notifOpts.label}</td><td class="FormRowValue">{$form.host_notifOpts.html}</td></tr>	
+	{if $o == "mc"}
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_first_notification_delay.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_first_notification_delay.html}</td></tr>
+	{/if}		
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="first_notification_delay"> {$form.host_first_notification_delay.label}</td><td class="FormRowValue">{$form.host_first_notification_delay.html} {$time_unit}</td></tr>	
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>

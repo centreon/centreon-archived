@@ -405,9 +405,43 @@
 	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
 
+	if ($o == "mc")	{
+		$mc_mod_notifopt_first_notification_delay = array();
+		$mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
+		$mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_notifopt_first_notification_delay, 'mc_mod_notifopt_first_notification_delay', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_notifopt_first_notification_delay'=>'0'));
+	}
+
 	$form->addElement('text', 'service_first_notification_delay', _("First notification delay"), $attrsText2);
+
+	if ($o == "mc")	{
+		$mc_mod_notifopt_notification_interval = array();
+		$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Incremental"), '0');
+		$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_notifopt_notification_interval'=>'0'));
+	}	
+	
 	$form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
+
+	if ($o == "mc")	{
+		$mc_mod_notifopt_timeperiod = array();
+		$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Incremental"), '0');
+		$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
+	}	
+	
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
+
+	if ($o == "mc")	{
+		$mc_mod_notifopts = array();
+		$mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Incremental"), '0');
+		$mc_mod_notifopts[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopts', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_notifopts, 'mc_mod_notifopts', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_notifopts'=>'0'));
+	}
 
  	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'w', '&nbsp;', _("Warning"));
 	$serviceNotifOpt[] = HTML_QuickForm::createElement('checkbox', 'u', '&nbsp;', _("Unknown"));
