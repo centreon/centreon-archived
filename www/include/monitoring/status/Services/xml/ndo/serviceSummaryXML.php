@@ -92,7 +92,7 @@
 	 * Get Host status
 	 */
 	$rq1 = 		" SELECT " .
-				" DISTINCT no.name1 as host_name, nhs.current_state, icon_image" .
+				" DISTINCT no.name1 as host_name, nhs.current_state, icon_image, nh.host_object_id " .
 				" FROM " .$obj->ndoPrefix."objects no, " .$obj->ndoPrefix."hoststatus nhs, " .$obj->ndoPrefix."hosts nh ";
 
 	if ($hostgroups) {
@@ -174,6 +174,7 @@
 		$tab_final[$ndo["host_name"]]["nb_service_u"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3, $obj);
 		$tab_final[$ndo["host_name"]]["nb_service_p"] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
 		$tab_final[$ndo["host_name"]]["cs"] = $ndo["current_state"];
+		$tab_final[$ndo["host_name"]]["host_id"] = $ndo["host_object_id"];
 		if ($ndo["icon_image"] != "") {
 			$tabIcone[$ndo["host_name"]] = $ndo["icon_image"];
 		} else {
@@ -187,6 +188,7 @@
 		$obj->XML->writeElement("o", $ct++);
 		$obj->XML->writeElement("hn", $host_name, false);
 		$obj->XML->writeElement("hnl", urlencode($host_name));
+		$obj->XML->writeElement("hid", $tab["host_id"], false);
 		$obj->XML->writeElement("ico", $tabIcone[$host_name]);
 		$obj->XML->writeElement("hs", _($obj->statusHost[$tab["cs"]]), false);
 		$obj->XML->writeElement("hc", $obj->colorHost[$tab["cs"]]);
