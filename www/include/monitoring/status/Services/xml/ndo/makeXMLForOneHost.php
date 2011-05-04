@@ -138,6 +138,7 @@
 			" nhs.current_notification_number," .
 			" nhs.scheduled_downtime_depth," .
 			" nhs.output," .
+			" nh.notes," .
 			" ROUND(nhs.percent_state_change) as percent_state_change," .
 			" nh.notifications_enabled," .
 			" nh.event_handler_enabled," .
@@ -243,6 +244,11 @@
 		$buffer->writeAttribute("name", _("Last time unreachable"));
 		$buffer->text(get_centreon_date( $ndo["last_time_unreachable"]));
 		$buffer->endElement();
+
+		$buffer->startElement("notes");
+		$buffer->writeAttribute("name", _("Notes"));
+		$buffer->text($ndo['notes']);
+		$buffer->endElement();
 	} else
 		$buffer->writeElement("infos", "none");
 
@@ -252,6 +258,7 @@
 	$buffer->writeElement("tr1", _("Check information"), 0);
 	$buffer->writeElement("tr2", _("Notification information"), 0);
 	$buffer->writeElement("tr3", _("Last Status Change"), 0);
+	$buffer->writeElement("tr4", _("Extended information"), 0);
 
 	/*
 	 * End buffer

@@ -328,6 +328,7 @@
 	$obj->XML->writeElement("o", $o);
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->writeElement("http_link", _("HTTP Link"));
+	$obj->XML->writeElement("http_action_link", _("HTTP Action Link"));
 	$obj->XML->writeElement("host_currently_downtime", _("Host is currently on downtime"));
 	$obj->XML->writeElement("problem_ack", _("Problem has been acknowledged"));
 	$obj->XML->writeElement("host_passive_mode", _("This host is only checked in passive mode"));
@@ -397,12 +398,18 @@
 				$obj->XML->writeAttribute("none", "0");
 				$obj->XML->text($ndo["host_name"], true, false);
 				$obj->XML->endElement();
-				$obj->XML->writeElement("hau", $host_status[$ndo["host_name"]]["action_url"]);
 
 				if ($host_status[$ndo["host_name"]]["notes_url"]) {
 					$obj->XML->writeElement("hnu", str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["notes_url"]));
-				} else
+				} else {
 					$obj->XML->writeElement("hnu", "none");
+				}
+
+			    if ($host_status[$ndo["host_name"]]["action_url"]) {
+					$obj->XML->writeElement("hau", str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["action_url"]));
+				} else {
+					$obj->XML->writeElement("hau", "none");
+				}
 
 				$obj->XML->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);
 				$obj->XML->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);
@@ -450,6 +457,21 @@
 			} else {
 				$obj->XML->writeElement("snu", 'none');
 			}
+
+		    if ($ndo["action_url"] != "") {
+				$ndo["action_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["action_url"]);
+				$ndo["action_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["action_url"]);
+				if (isset($host_status[$ndo["host_name"]]['host_alias']) && $host_status[$ndo["host_name"]]['host_alias']) {
+				    $ndo["action_url"] = str_replace("\$HOSTALIAS\$", $host_status[$ndo["host_name"]]['host_alias'], $ndo["action_url"]);
+				}
+				if (isset($host_status[$ndo["host_name"]]['address']) && $host_status[$ndo["host_name"]]['address']) {
+                    $ndo["action_url"] = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]['address'], $ndo["action_url"]);
+				}
+				$obj->XML->writeElement("sau", $ndo["action_url"]);
+			} else {
+				$obj->XML->writeElement("sau", 'none');
+			}
+
 
 			if ($ndo["notes"] != "") {
 				$ndo["notes"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes"]);

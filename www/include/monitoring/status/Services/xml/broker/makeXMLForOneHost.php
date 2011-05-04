@@ -106,6 +106,7 @@
 			" notification_number," .
 			" scheduled_downtime_depth," .
 			" output," .
+			" notes," .
 			" ROUND(percent_state_change) as percent_state_change," .
 			" notify," .
 			" event_handler_enabled," .
@@ -202,6 +203,11 @@
 		$obj->XML->writeAttribute("name", _("Last time unreachable"));
 		$obj->XML->text($obj->GMT->getDate($dateFormat, $data["last_time_unreachable"]));
 		$obj->XML->endElement();
+
+		$obj->XML->startElement("notes");
+		$obj->XML->writeAttribute("name", _("Notes"));
+		$obj->XML->text($data['notes']);
+		$obj->XML->endElement();
 	} else {
 		$obj->XML->writeElement("infos", "none");
 	}
@@ -213,7 +219,7 @@
 	$obj->XML->writeElement("tr1", _("Check information"), 0);
 	$obj->XML->writeElement("tr2", _("Notification information"), 0);
 	$obj->XML->writeElement("tr3", _("Last Status Change"), 0);
-
+    $obj->XML->writeElement("tr4", _("Extended information"), 0);
 	/*
 	 * End buffer
 	 */

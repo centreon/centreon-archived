@@ -146,6 +146,7 @@
 			" nss.scheduled_downtime_depth," .
 			" nss.output," .
 			" nss.long_output," .
+			" ns.notes," .
 			" ROUND(nss.percent_state_change) as percent_state_change," .
 			" nss.notifications_enabled," .
 			" nss.perfdata," .
@@ -272,6 +273,11 @@
 		$buffer->writeAttribute("name", _("Last critical time"));
 		$buffer->text(get_centreon_date( $ndo["last_time_critical"]));
 		$buffer->endElement();
+
+		$buffer->startElement("notes");
+		$buffer->writeAttribute("name", _("Notes"));
+		$buffer->text($ndo['notes']);
+		$buffer->endElement();
 	} else
 		$buffer->writeElement("infos", "none");
 
@@ -284,6 +290,8 @@
 	$buffer->writeElement("tr1", _("Check information"), 0);
 	$buffer->writeElement("tr2", _("Notification Information"), 0);
 	$buffer->writeElement("tr3", _("Last Status Change"), 0);
+	$buffer->writeElement("tr4", _("Extended information"), 0);
+
 	/*
 	 * End Buffer
 	 */

@@ -108,6 +108,7 @@
 			" s.scheduled_downtime_depth," .
 			" s.output," .
 			//" s.long_output," .
+			" s.notes," .
 			" ROUND(s.percent_state_change) as percent_state_change," .
 			" s.notify," .
 			" s.perfdata," .
@@ -249,6 +250,11 @@
 		}
 		$obj->XML->text($obj->GMT->getDate($dateFormat,  $data["last_time_critical"]));
 		$obj->XML->endElement();
+
+		$obj->XML->startElement("notes");
+		$obj->XML->writeAttribute("name", _("Notes"));
+		$obj->XML->text($data['notes']);
+		$obj->XML->endElement();
 	} else {
 		$obj->XML->writeElement("infos", "none");
 	}
@@ -260,6 +266,8 @@
 	$obj->XML->writeElement("tr1", _("Check information"), 0);
 	$obj->XML->writeElement("tr2", _("Notification Information"), 0);
 	$obj->XML->writeElement("tr3", _("Last Status Change"), 0);
+	$obj->XML->writeElement("tr4", _("Extended information"), 0);
+
 	/*
 	 * End Buffer
 	 */

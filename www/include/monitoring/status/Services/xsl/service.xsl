@@ -93,6 +93,18 @@
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
+				<xsl:if test="hau != 'none'">
+					<xsl:element name="a">
+					  	<xsl:attribute name="class">infobulle</xsl:attribute>
+					  	<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
+						<xsl:attribute name="target">_blank</xsl:attribute>
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+						  	<xsl:attribute name="title">
+						  		<xsl:value-of select="//i/http_action_link"/>&#160;<xsl:value-of select="hnn"/></xsl:attribute>
+						</xsl:element>
+					</xsl:element>
+				</xsl:if>
 				<xsl:if test="hdtm != 0">
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
@@ -157,6 +169,19 @@
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
 						  		<xsl:value-of select='//i/http_link'/>&#160;<xsl:value-of select="sn"/>
+						  	</xsl:attribute>
+						</xsl:element>
+				</xsl:element>
+			</xsl:if>
+			<xsl:if test="sau != 'none'">
+				<xsl:element name="a">
+				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+				  	<xsl:attribute name="target">_blank</xsl:attribute>
+				  	<xsl:attribute name="href"><xsl:value-of select="sau"/></xsl:attribute>
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>
+						  	<xsl:attribute name="title">
+						  		<xsl:value-of select='//i/http_action_link'/>&#160;<xsl:value-of select="sn"/>
 						  	</xsl:attribute>
 						</xsl:element>
 				</xsl:element>

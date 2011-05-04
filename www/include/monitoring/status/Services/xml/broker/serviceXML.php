@@ -229,6 +229,7 @@
 	$obj->XML->writeElement("o", $o);
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->writeElement("http_link", _("HTTP Link"));
+	$obj->XML->writeElement("http_action_link", _("HTTP Action Link"));
 	$obj->XML->writeElement("host_currently_downtime", _("Host is currently on downtime"));
 	$obj->XML->writeElement("problem_ack", _("Problem has been acknowledged"));
 	$obj->XML->writeElement("host_passive_mode", _("This host is only checked in passive mode"));
@@ -295,12 +296,18 @@
 			$obj->XML->writeAttribute("none", "0");
 			$obj->XML->text($data["name"], true, false);
 			$obj->XML->endElement();
-			$obj->XML->writeElement("hau", $data["h_action_url"]);
 
 			if ($data["h_notes_url"]) {
 				$obj->XML->writeElement("hnu", str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]));
-			} else
+			} else {
 				$obj->XML->writeElement("hnu", "none");
+			}
+
+		    if ($data["h_action_url"]) {
+				$obj->XML->writeElement("hau", str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]));
+			} else {
+				$obj->XML->writeElement("hau", "none");
+			}
 
 			$obj->XML->writeElement("hnn", 	$data["h_notes"]);
 			$obj->XML->writeElement("hico", $data["h_icon_images"]);
@@ -346,6 +353,20 @@
 			$obj->XML->writeElement("snu", $data["notes_url"]);
 		} else {
 			$obj->XML->writeElement("snu", 'none');
+		}
+
+	    if ($data["action_url"] != "") {
+			$data["action_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["action_url"]);
+			$data["action_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["action_url"]);
+			if (isset($data["alias"]) && $data["alias"]) {
+			    $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
+			}
+			if (isset($data['address']) && $data['address']) {
+                    $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["action_url"]);
+			}
+			$obj->XML->writeElement("sau", $data["action_url"]);
+		} else {
+			$obj->XML->writeElement("sau", 'none');
 		}
 
 		if ($data["notes"] != "") {
