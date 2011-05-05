@@ -315,6 +315,7 @@ sub getTrapsInfos($$$$$) {
 		    $tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
 		    $tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
 		    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+		    $tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
 		    $tmoString =~ s/\@TIME\@/$datetime/g;
 		    
 		    if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
