@@ -78,7 +78,30 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 		$pearDBO->disconnect();
 ?>
 <script type='text/javascript'>
-var centreonTooltip = new CentreonToolTip();
-centreonTooltip.setTitle('<?php echo _("Help"); ?>');
-centreonTooltip.render();
+document.onLoad = initWholePage();
+
+/**
+ * Init whole page
+ */
+function initWholePage()
+{
+	var centreonTooltip = new CentreonToolTip();
+	centreonTooltip.setTitle('<?php echo _("Help"); ?>');
+	centreonTooltip.render();
+	setQuickSearchPosition();
+}
+
+/**
+ * set quick search position
+ */
+function setQuickSearchPosition()
+{
+	if ($('QuickSearch')) {
+    	if ($('header').visible()) {
+    		$('QuickSearch').setStyle({ top: '86px' });
+    	} else {
+    		$('QuickSearch').setStyle({ top: '3px' });
+    	}
+	}
+}
 </script>

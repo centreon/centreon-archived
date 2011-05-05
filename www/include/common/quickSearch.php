@@ -85,7 +85,7 @@
 	} else {
 		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_service", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
 	}
-	$attrsText["title"] = _("Host Name Search Key");
+	$attrsText["title"] = _("Search");
 	$attrsSubmit = array("style"=>"display:none;");
 
 	if (!isset($limit)) {
