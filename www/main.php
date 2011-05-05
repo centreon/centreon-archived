@@ -198,9 +198,9 @@
 		include_once "menu/Menu.php";
 	}
 
-	if (!$centreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'blind', { duration : 0 });</script> <?php }
-	if (!$centreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'blind', { duration : 0 });</script> <?php }
-	if (!$centreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'blind', { duration : 0 });</script> <?php }
+	if (!$centreon->user->showDiv("header")) { ?> <script type="text/javascript">new Effect.toggle('header', 'appear', { duration : 0, afterFinish: function() { setQuickSearchPosition(); } });</script> <?php }
+	if (!$centreon->user->showDiv("menu_3")) { ?> <script type="text/javascript">new Effect.toggle('menu_3', 'appear', { duration : 0 });</script> <?php }
+	if (!$centreon->user->showDiv("menu_2")) { ?> <script type="text/javascript">new Effect.toggle('menu_2', 'appear', { duration : 0 });</script> <?php }
 
 	/*
 	 * Display PathWay
