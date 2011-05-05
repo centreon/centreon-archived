@@ -372,6 +372,7 @@
 				" AND s.acknowledged = 0" .
 				" AND s.scheduled_downtime_depth = 0" .
 				" AND s.enabled = 1" .
+				" AND h.enabled = 1" .
 				" AND h.name NOT LIKE '_Module_%' " .
 				" AND s.host_id = centreon_acl.host_id ".
 				" AND s.service_id = centreon_acl.service_id " .
@@ -385,6 +386,7 @@
 				" AND s.acknowledged = 0" .
 		        " AND s.scheduled_downtime_depth = 0" .
 				" AND s.enabled = 1" .
+				" AND h.enabled = 1" .
 				" AND h.name NOT LIKE '_Module_%' " .
 				" ORDER BY s.state ASC, h.name LIMIT " . $svcLimit;
 	}
