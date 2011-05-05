@@ -42,8 +42,15 @@
 use strict;
 use DBI;
 
-use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug);
+use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
 use vars qw($cmdFile $etc $TIMEOUT);
+
+eval "use HTML::Entities";
+if ($@) {
+	$htmlentities = 0;
+} else {
+	$htmlentities = 1;
+}
 
 ###############################
 # Init 
@@ -298,8 +305,12 @@ sub getTrapsInfos($$$$$) {
 		    
 		    ##########################
 		    # REPLACE MACROS
-		    $tmoString =~ s/\&quot\;/\"/g;
-		    $tmoString =~ s/\&#039\;\&#039\;/"/g;
+		    if ($htmlentities == 1) {
+		    	$tmoString = decode_entities($tmoString);
+		    } else {
+			    $tmoString =~ s/\&quot\;/\"/g;
+			    $tmoString =~ s/\&#039\;\&#039\;/"/g;
+		    }
 		    $tmoString =~ s/\@HOSTNAME\@/$this_host/g;
 		    $tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
 		    $tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
@@ -365,9 +376,13 @@ sub getTrapsInfos($$$$$) {
 
 		##########################
 		# REPLACE MACROS
-		$traps_execution_command =~ s/\&quot\;/\"/g;
-		$traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
-		$traps_execution_command =~ s/\&#039\;/'/g;
+		if ($htmlentities == 1) {
+	    	$traps_execution_command = decode_entities($traps_execution_command);
+	    } else {
+		  	$traps_execution_command =~ s/\&quot\;/\"/g;
+			$traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
+			$traps_execution_command =~ s/\&#039\;/'/g;
+	    }
 		$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
 		$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
 		$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
