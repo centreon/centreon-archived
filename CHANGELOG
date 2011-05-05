@@ -93,6 +93,27 @@
 => enhancement: Add more options in search engine in monitoring
 => enhancement: Add overlay in montoring on host link in all gird and summary pages
 
+## Centreon 2.1.13
+
+=> fix: problem with update of LDAP cache
+=> fix: module cannot generate configuration for pollers.
+
+## Centreon 2.1.12
+
+=> fix: problem with traps and services link configuration
+=> fix: problem with ACL menu configuration -> some menu were not displayed
+
+## Centreon 2.1.11
+
+=> fix: Remove problem with regexp in Centcore when matching command name
+=> fix: Improve reactivity of pollers TopCounter status 
+=> fix: fix typo error in about
+=> fix: Problem with cache refresh for LDAP auth
+=> fix: During service duplication, contact wasn't duplicated
+=> fix: problem with config files generation for escalades 
+=> enhancement: Improve rebuild engine for logs
+=> fix: remove infinite loop in service configuration page
+=> fix: improve loading hostgroups and hosts cfg files
 
 ## Centreon 2.1.10
 
