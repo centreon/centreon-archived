@@ -732,12 +732,6 @@
 			$form->addRule('service_normal_check_interval', _("Required Field"), 'required');
 			$form->addRule('service_retry_check_interval', _("Required Field"), 'required');
 			$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-			if (!$form->getSubmitValue('service_cs')) {
-			    $form->addRule('service_cgs', _("Compulsory Contact Group"), 'required');
-			}
-			if (!$form->getSubmitValue('service_cgs')) {
-			    $form->addRule('service_cs', _("Compulsory Contact"), 'required');
-			}
 			$form->addRule('service_notification_interval', _("Required Field"), 'required');
 			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
 			$form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
