@@ -239,15 +239,15 @@
 
 	$form->addElement('select', 'host_template_model_htm_id', _("Host Template"), $hTpls);
 	$form->addElement('text', 'host_parallel_template', _("Host Parallel Templates"), $hTpls);
-	
+
 	if ($o == "mc")	{
 		$mc_mod_tplp = array();
 		$mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Incremental"), '0');
 		$mc_mod_tplp[] = HTML_QuickForm::createElement('radio', 'mc_mod_tplp', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_tplp, 'mc_mod_tplp', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_tplp'=>'0'));
-	}	
-	
+	}
+
 	?>
 	<script type="text/javascript" src="lib/wz_tooltip/wz_tooltip.js"></script>
 	<?php
@@ -366,7 +366,7 @@
 		$form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_notifopt_notification_interval'=>'0'));
 	}
-	
+
 	$form->addElement('text', 'host_notification_interval', _("Notification Interval"), $attrsText2);
 
 	if ($o == "mc")	{
@@ -375,8 +375,8 @@
 		$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
-	}	
-	
+	}
+
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
 
 	if ($o == "mc")	{
@@ -511,10 +511,10 @@
 	$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 	$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
-	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)"));
+	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
-	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)"));
-	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"),$extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)"));
+	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"),$extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
 

@@ -184,7 +184,7 @@
 		$tps[$tp["tp_id"]] = $tp["tp_name"];
 	}
 	$DBRESULT->free();
-	
+
 	# Check commands comes from DB -> Store in $checkCmds Array
 	$checkCmds = array(NULL=>NULL);
 	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' ORDER BY command_name");
@@ -192,15 +192,15 @@
 		$checkCmds[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	}
 	$DBRESULT->free();
-	
+
 	# Check commands comes from DB -> Store in $checkCmdEvent Array
 	$checkCmdEvent = array(null => null);
 	$DBRESULT = $pearDB->query("SELECT command_id, command_name FROM command WHERE command_type = '2' OR command_type = '3' ORDER BY command_name");
 	while ($checkCmd = $DBRESULT->fetchRow()) {
 		$checkCmdEvent[$checkCmd["command_id"]] = $checkCmd["command_name"];
 	}
-	$DBRESULT->free();	
-	
+	$DBRESULT->free();
+
 	# Contact Groups comes from DB -> Store in $notifCcts Array
 	$notifCgs = array();
 	$cg = new CentreonContactgroup($pearDB);
@@ -221,7 +221,7 @@
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	}
 	$DBRESULT->free();
-	
+
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(NULL=>NULL);
 	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
@@ -229,7 +229,7 @@
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
 	}
 	$DBRESULT->free();
-	
+
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
 	$DBRESULT = $pearDB->query("SELECT traps_id, traps_name FROM traps ORDER BY traps_name");
@@ -421,8 +421,8 @@
 		$mc_mod_notifopt_notification_interval[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_notification_interval', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_notifopt_notification_interval, 'mc_mod_notifopt_notification_interval', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_notifopt_notification_interval'=>'0'));
-	}	
-	
+	}
+
 	$form->addElement('text', 'service_notification_interval', _("Notification Interval"), $attrsText2);
 
 	if ($o == "mc")	{
@@ -431,8 +431,8 @@
 		$mc_mod_notifopt_timeperiod[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_timeperiod', null, _("Replacement"), '1');
 		$form->addGroup($mc_mod_notifopt_timeperiod, 'mc_mod_notifopt_timeperiod', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_notifopt_timeperiod'=>'0'));
-	}	
-	
+	}
+
 	$form->addElement('select', 'timeperiod_tp_id2', _("Notification Period"), $tps);
 
 	if ($o == "mc")	{
@@ -617,7 +617,7 @@
 	$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
 	$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);
-	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id"=>"esi_icon_image", "onChange"=>"showLogo('esi_icon_image_img',this.value)"));
+	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id"=>"esi_icon_image", "onChange"=>"showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
 	$form->addElement('header', 'oreon', _("Centreon"));
