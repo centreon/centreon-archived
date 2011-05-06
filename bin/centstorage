@@ -114,11 +114,14 @@ require $installedPath."lib/verifyHostServiceIdName.pm";
 require $installedPath."lib/identifyMetric.pm";
 require $installedPath."lib/updateFunctions.pm";
 
-sub CheckMySQLConnexion(){
-    while ((!defined($con_oreon)) && (!defined($con_ods))){
-        if (!defined($con_oreon)) {
+#########################################
+# Database connection management
+#########################################
+sub CheckMySQLConnexion() {
+    while ((!defined($con_oreon) || !$con_oreon->ping) && (!defined($con_ods) || !$con_ods->ping)){
+        if (!defined($con_oreon) || !$con_oreon->ping) {
             $con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-            if (!defined($con_oreon)) {
+            if (!defined($con_oreon) || !$con_oreon->ping) {
                 writeLogFile("Error when connecting to database : " . $DBI::errstr . "");
                 sleep(2);
             }
@@ -127,9 +130,9 @@ sub CheckMySQLConnexion(){
             undef($con_oreon);
             $con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
         }
-        if (!defined($con_ods)) {
+        if (!defined($con_ods) || !$con_ods->ping) {
             $con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-            if (!defined($con_ods)) {
+            if (!defined($con_ods) || !$con_ods->ping) {
                 writeLogFile("Error when connecting to database : " . $DBI::errstr . "");
                 sleep(2);
             }
@@ -141,11 +144,11 @@ sub CheckMySQLConnexion(){
     }
 }
 
-sub CreateConnexionForCentstorage(){
-    while (!defined($con_ods)){
-        if (!defined($con_ods)) {
+sub CreateConnexionForCentstorage() {
+    while (!defined($con_ods) || !$con_ods->ping) {
+        if (!defined($con_ods) || !$con_ods->ping) {
             $con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-            if (!defined($con_ods)) {
+            if (!defined($con_ods) || !$con_ods->ping) {
                 writeLogFile("Error when connecting to database : ".$DBI::errstr."");
                 sleep(5);
             }
@@ -154,11 +157,11 @@ sub CreateConnexionForCentstorage(){
     return $con_ods;
 }
 
-sub CreateConnexionForOreon(){
-    while (!defined($con_oreon)){
-        if (!defined($con_oreon)) {
+sub CreateConnexionForOreon() {
+    while (!defined($con_oreon) || !$con_oreon->ping){
+        if (!defined($con_oreon) || !$con_oreon->ping) {
             $con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-            if (!defined($con_oreon)) {
+            if (!defined($con_oreon) || !$con_oreon->ping) {
                 writeLogFile("Error when connecting to database : ".$DBI::errstr."");
                 sleep(5);
             }
