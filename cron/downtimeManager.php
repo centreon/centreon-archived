@@ -56,13 +56,17 @@
 	function sendCommand($db, $host_id, $cmd)
 	{
 		$varlib = "@CENTREON_VARLIB@";
-	 	if ($varlib == "" || $varlib == "@CENTREON_VARLIB@") {
+	 	if ($varlib == "") {
 	 		$varlib = "/var/lib/centreon";
 	 	}
 
 		$query = "SELECT ns.localhost, ns.id, cn.command_file
-			FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
-			WHERE cn.nagios_server_id = ns.id AND nsh.nagios_server_id = ns.id AND host_host_id = " .$host_id;
+				  FROM cfg_nagios cn, nagios_server ns, ns_host_relation nsh
+			      WHERE cn.nagios_server_id = ns.id
+			      AND nsh.nagios_server_id = ns.id
+			      AND cn.nagios_activate = '1'
+			      AND ns.ns_activate = '1'
+			      AND host_host_id = " .$host_id;
 		$res = $db->query($query);
 		if (PEAR::isError($res)) {
 			return false;
