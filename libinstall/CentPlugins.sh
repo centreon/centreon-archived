@@ -67,8 +67,8 @@ check_result $flg_error "$(gettext "Change macros for CentPlugins")"
 ## Copy in final dir
 log "INFO" "$(gettext "Copying plugins in final directory")"
 cp -r $TMP_DIR/work/plugins/* $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
-mkdir -p $TMP_DIR/final/plugins/Centreon/SNMP >> $LOG_FILE 2>&1
-cp $TMP_DIR/srv/plugins/src/Centreon/SNMP/Utils.pm $TMP_DIR/final/plugins/Centreon/SNMP >> $LOG_FILE 2>&1
+cp -r $BASE_DIR/plugins/src/Centreon $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
+chown -R $NAGIOS_USER:$NAGIOS_GROUP $TMP_DIR/final/plugins/Centreon
 
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
@@ -76,8 +76,6 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 -p $TMP_DIR/final/plugins \
 	$TMP_DIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
 	
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-m 755 -p $TMP_DIR/final/plugins/Centreon/SNMP/* $NAGIOS_PLUGIN/Centreon/SNMP/ >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Installing the plugins")"
 
 ## change right for a specific file
