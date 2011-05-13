@@ -353,10 +353,30 @@
 			/**
 			 * Send Host Group list
 			 */
-			if ($search != "")
-				$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND (host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".$access->queryBuilder("AND", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
-			else
-				$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup WHERE hg_id NOT IN (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation) AND (hg_id IN (SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL) OR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr).") ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString("ID")).") ORDER BY `hg_name`");
+			$rq = "";
+			if ($search != "") {
+				$rq = "SELECT hg_id, hg_name
+					   FROM hostgroup
+					   WHERE hg_id NOT IN
+					   		(SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation)
+					   AND (hg_id IN
+					   				(SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL)
+					   	    	OR hg_id IN
+					   	    		(SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND
+					   	    		(host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".
+				                $access->queryBuilder("AND", "host_host_id", $hoststr).")
+				           ) ORDER BY `hg_name`";
+			} else {
+				$rq = "SELECT hg_id, hg_name
+					   FROM hostgroup
+					   WHERE hg_id NOT IN
+					   		(SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation)
+					   AND (hg_id IN
+					   				(SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL)
+					   			OR hg_id IN
+					   				(SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr)."))  ORDER BY `hg_name`";
+			}
+			$DBRESULT = $pearDB->query($rq);
 			while ($HG = $DBRESULT->fetchRow()) {
 				$i++;
 				if (HG_has_one_or_more_host($HG["hg_id"], $hgHCache, $hgHgCache, $is_admin, $lca)){
