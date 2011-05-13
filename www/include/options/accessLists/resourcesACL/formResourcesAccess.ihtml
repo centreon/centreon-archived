@@ -27,7 +27,7 @@
 		<tr class="list_two"><td class="FormRowField">{$form.acl_groups.label}</td><td class="FormRowValue">{$form.acl_groups.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.acl_res_activate.label}</td><td class="FormRowValue">{$form.acl_res_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.lca_comment.label}</td><td class="FormRowValue">{$form.lca_comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.acl_res_comment.label}</td><td class="FormRowValue">{$form.acl_res_comment.html}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 </div>

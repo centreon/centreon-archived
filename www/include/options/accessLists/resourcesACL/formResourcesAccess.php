@@ -328,7 +328,7 @@
 	 * Further informations
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$form->addElement('textarea', 'lca_comment', _("Comments"), $attrsTextarea);
+	$form->addElement('textarea', 'acl_res_comment', _("Comments"), $attrsTextarea);
 
 
 	$form->addElement('hidden', 'acl_res_id');

@@ -41,9 +41,10 @@
 	 * Test resources ACL existence
 	 * @param $name
 	 */
-	function testExistence($name = NULL) {
+	function testExistence($name = null)
+	{
 		global $pearDB, $form;
-		$id = NULL;
+		$id = null;
 
 		if (isset($form)) {
 			$id = $form->getSubmitValue('lca_id');
@@ -64,7 +65,8 @@
 	 * Enable ACL Entry in DB
 	 * @param $acl_id
 	 */
-	function enableLCAInDB ($acl_id = null)	{
+	function enableLCAInDB ($acl_id = null)
+	{
 		global $pearDB;
 
 		if (!$acl_id) {
@@ -79,7 +81,8 @@
 	 * Disable ACL Entry in DB
 	 * @param $acl_id
 	 */
-	function disableLCAInDB ($acl_id = null)	{
+	function disableLCAInDB ($acl_id = null)
+	{
 		global $pearDB;
 
 		if (!$acl_id) {
@@ -94,7 +97,8 @@
 	 * Delete ACL entry in DB
 	 * @param $acls
 	 */
-	function deleteLCAInDB ($acls = array())	{
+	function deleteLCAInDB ($acls = array())
+	{
 		global $pearDB;
 
 		foreach ($acls as $key => $value){
@@ -109,10 +113,11 @@
 	 * @param $lcas
 	 * @param $nbrDup
 	 */
-	function multipleLCAInDB ($lcas = array(), $nbrDup = array())	{
+	function multipleLCAInDB ($lcas = array(), $nbrDup = array())
+	{
 		global $pearDB;
 
-		foreach ($lcas as $key => $value)	{
+		foreach ($lcas as $key => $value) {
 			$DBRESULT = $pearDB->query("SELECT * FROM `acl_resources` WHERE acl_res_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["acl_res_id"] = '';
@@ -147,7 +152,8 @@
 	 * @param $acl_group_id
 	 * @param $ret
 	 */
-	function duplicateGroups($idTD, $acl_id, $pearDB) {
+	function duplicateGroups($idTD, $acl_id, $pearDB)
+	{
 		$request = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) SELECT '$acl_id' AS acl_res_id, acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$idTD'";
 		$DBRESULT = $pearDB->query($request);
 	}
@@ -158,7 +164,8 @@
 	 * @param $acl_group_id
 	 * @param $ret
 	 */
-	function duplicateContactGroups($idTD, $acl_id, $pearDB) {
+	function duplicateContactGroups($idTD, $acl_id, $pearDB)
+	{
 		$request = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) SELECT acl_res_id, '$acl_id' AS acl_group_id FROM acl_res_group_relations WHERE acl_group_id = '$idTD'";
 		$DBRESULT = $pearDB->query($request);
 	}
@@ -168,7 +175,8 @@
 	 * Update ACL entry
 	 * @param $acl_id
 	 */
-	function updateLCAInDB ($acl_id = NULL)	{
+	function updateLCAInDB ($acl_id = null)
+	{
 		if (!$acl_id) {
 			return;
 		}
@@ -189,7 +197,8 @@
 	 *
 	 * Insert ACL entry
 	 */
-	function insertLCAInDB ()	{
+	function insertLCAInDB()
+	{
 		$acl_id = insertLCA();
 		updateGroups($acl_id);
 		updateHosts($acl_id);
@@ -208,21 +217,22 @@
 	 *
 	 * Insert LCA in DB
 	 */
-	function insertLCA() {
+	function insertLCA()
+	{
 		global $form, $pearDB;
 
 		$ret = array();
 		$ret = $form->getSubmitValues();
 		$rq = "INSERT INTO `acl_resources` ";
 		$rq .= "(acl_res_name, acl_res_alias, all_hosts, all_hostgroups, all_servicegroups, acl_res_activate, changed, acl_res_comment) ";
-		$rq .= "VALUES ('".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', " .
-				"'".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', " .
-				"'".(isset($ret["all_hosts"]["all_hosts"]) ? htmlentities($ret["all_hosts"]["all_hosts"], ENT_QUOTES, "UTF-8") : 0)."', " .
-				"'".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
-				"'".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
-				"'".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
+		$rq .= "VALUES ('".$pearDB->escape($ret["acl_res_name"])."', " .
+				"'".$pearDB->escape($ret["acl_res_alias"])."', " .
+				"'".(isset($ret["all_hosts"]["all_hosts"]) ? $pearDB->escape($ret["all_hosts"]["all_hosts"]) : 0)."', " .
+				"'".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? $pearDB->escape($ret["all_hostgroups"]["all_hostgroups"]) : 0)."', " .
+				"'".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? $pearDB->escape($ret["all_servicegroups"]["all_servicegroups"]) : 0)."', " .
+				"'".$pearDB->escape($ret["acl_res_activate"]["acl_res_activate"])."', " .
 				"'1', " .
-				"'".htmlentities($ret["acl_res_comment"], ENT_QUOTES, "UTF-8")."')";
+				"'".$pearDB->escape($ret["acl_res_comment"])."')";
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(acl_res_id) FROM `acl_resources`");
 		$acl = $DBRESULT->fetchRow();
@@ -235,7 +245,8 @@
 	 * Update resource ACL in DB
 	 * @param $acl_id
 	 */
-	function updateLCA($acl_id = null) {
+	function updateLCA($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -246,13 +257,13 @@
 		$ret = $form->getSubmitValues();
 
 		$rq = "UPDATE `acl_resources` ";
-		$rq .= "SET acl_res_name = '".htmlentities($ret["acl_res_name"], ENT_QUOTES, "UTF-8")."', " .
-				"acl_res_alias = '".htmlentities($ret["acl_res_alias"], ENT_QUOTES, "UTF-8")."', " .
-				"all_hosts = '".(isset($ret["all_hosts"]["all_hosts"]) ? htmlentities($ret["all_hosts"]["all_hosts"], ENT_QUOTES, "UTF-8") : 0)."', " .
-				"all_hostgroups = '".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? htmlentities($ret["all_hostgroups"]["all_hostgroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
-				"all_servicegroups = '".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? htmlentities($ret["all_servicegroups"]["all_servicegroups"], ENT_QUOTES, "UTF-8") : 0)."', " .
-				"acl_res_activate = '".htmlentities($ret["acl_res_activate"]["acl_res_activate"], ENT_QUOTES, "UTF-8")."', " .
-				"acl_res_comment = '".htmlentities((!isset($ret["acl_res_comment"]) ? "" : $ret["acl_res_comment"]), ENT_QUOTES, "UTF-8")."', " .
+		$rq .= "SET acl_res_name = '".$pearDB->escape($ret["acl_res_name"])."', " .
+				"acl_res_alias = '".$pearDB->escape($ret["acl_res_alias"])."', " .
+				"all_hosts = '".(isset($ret["all_hosts"]["all_hosts"]) ? $pearDB->escape($ret["all_hosts"]["all_hosts"]) : 0)."', " .
+				"all_hostgroups = '".(isset($ret["all_hostgroups"]["all_hostgroups"]) ? $pearDB->escape($ret["all_hostgroups"]["all_hostgroups"]) : 0)."', " .
+				"all_servicegroups = '".(isset($ret["all_servicegroups"]["all_servicegroups"]) ? $pearDB->escape($ret["all_servicegroups"]["all_servicegroups"]) : 0)."', " .
+				"acl_res_activate = '".$pearDB->escape($ret["acl_res_activate"]["acl_res_activate"])."', " .
+				"acl_res_comment = '".$pearDB->escape(!isset($ret["acl_res_comment"]) ? "" : $ret["acl_res_comment"])."', " .
 				"changed = '1' " .
 				"WHERE acl_res_id = '".$acl_id."'";
 		$DBRESULT = $pearDB->query($rq);
@@ -263,7 +274,8 @@
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
-	function updateGroups($acl_id = null) {
+	function updateGroups($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -273,12 +285,13 @@
 		$DBRESULT = $pearDB->query("DELETE FROM acl_res_group_relations WHERE acl_res_id = '".$acl_id."'");
 		$ret = array();
 		$ret = $form->getSubmitValue("acl_groups");
-		if (isset($ret))
+		if (isset($ret)) {
 			foreach ($ret as $key => $value) {
 				if (isset($value)) {
 					$DBRESULT = $pearDB->query("INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) VALUES ('".$acl_id."', '".$value."')");
 				}
 			}
+		}
 	}
 
 	/** ******************
@@ -286,7 +299,8 @@
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
-	function updateHosts($acl_id = null) {
+	function updateHosts($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -310,7 +324,8 @@
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
-	function updatePollers($acl_id = null) {
+	function updatePollers($acl_id = null)
+	{
         global $form, $pearDB;
 
         if (!$acl_id) {
@@ -334,7 +349,8 @@
 	 * @param $acl_id
 	 * @return unknown_type
 	 */
-	function updateHostexcludes($acl_id = null)	{
+	function updateHostexcludes($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -358,7 +374,8 @@
 	 * Update hostgroups entry in DB
 	 * @param $acl_id
 	 */
-	function updateHostGroups($acl_id = null)	{
+	function updateHostGroups($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -382,7 +399,8 @@
 	 * Update Service categories entries in DB
 	 * @param $acl_id
 	 */
-	function updateServiceCategories($acl_id = null)	{
+	function updateServiceCategories($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -406,7 +424,8 @@
 	 * Update HG entries in DB
 	 * @param $acl_id
 	 */
-	function updateHostCategories($acl_id = null)	{
+	function updateHostCategories($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -430,7 +449,8 @@
 	 * Update Service groups entries in DB
 	 * @param $acl_id
 	 */
-	function updateServiceGroups($acl_id = null)	{
+	function updateServiceGroups($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
@@ -454,7 +474,8 @@
 	 * Update Meta services entries in DB
 	 * @param $acl_id
 	 */
-	function updateMetaServices($acl_id = null)	{
+	function updateMetaServices($acl_id = null)
+	{
 		global $form, $pearDB;
 
 		if (!$acl_id) {
