@@ -182,7 +182,7 @@
 	/*
 	 * Get minimum check interval
 	 */
-	$request = "SELECT MIN(check_interval) FROM ".$obj->ndoPrefix."services";
+	$request = "SELECT MIN(check_interval) FROM ".$obj->ndoPrefix."services WHERE active_checks_enabled = 1";
 	$DBRESULT = $obj->DBNdo->query($request);
 	if (isset($DBRESULT) && $DBRESULT->numRows()) {
 		$data = $DBRESULT->fetchRow();

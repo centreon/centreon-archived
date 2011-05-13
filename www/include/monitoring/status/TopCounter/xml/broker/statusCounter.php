@@ -180,7 +180,7 @@
 	/*
 	 * Get minimum check interval
 	 */
-	$request = "SELECT MIN(check_interval) FROM services";
+	$request = "SELECT MIN(check_interval) FROM services WHERE active_checks = 1";
 	$DBRESULT = $obj->DBC->query($request);
 	if (isset($DBRESULT) && $DBRESULT->numRows()) {
 		$data = $DBRESULT->fetchRow();
