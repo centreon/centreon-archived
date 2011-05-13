@@ -112,7 +112,7 @@
 	 * Further informations
 	 */
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$form->addElement('textarea', 'lca_comment', _("Comments"), $attrsTextarea);
+	$form->addElement('textarea', 'acl_comments', _("Comments"), $attrsTextarea);
 
 	/*
 	 * Create buffer group list for Foorth level.
