@@ -49,6 +49,8 @@
 	include_once $centreon_path."/www/class/centreonDB.class.php";
 	include_once $centreon_path."/www/class/centreonLDAP.class.php";
 
+	$centreonDbName = $conf_centreon['db'];
+
 	function programExit($msg) {
 	    echo "[".date("Y-m-d H:i:s")."] ".$msg."\n";
 	    exit;
@@ -201,22 +203,11 @@
 	    /* ***********************************************
     	 * Remove data from old groups (deleted groups)
     	 */
-    	$strList = "";
-    	$DBRESULT =& $pearDB->query("SELECT acl_group_id FROM acl_groups WHERE acl_group_activate = '1'");
-    	while ($data =& $DBRESULT->fetchRow()) {
-			if ($strList != "") {
-				$strList .= ",";
-			}
-			$strList .= "'".$data["acl_group_id"]."'";
-    	}
-    	if ($strList == "") {
-    		$strList = "''";
-    	}
-    	$DBRESULT->free();
+    	$aclGroupToDelete = "SELECT DISTINCT acl_group_id FROM $centreonDbName.acl_groups WHERE acl_group_activate = '1'";
     	if ($dbLayer != 'broker') {
-    		$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
+    		$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
     	} else {
-    		$pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($strList)");
+    		$pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
     	}
 
     	/* ************************************************
