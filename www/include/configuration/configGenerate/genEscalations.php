@@ -180,7 +180,7 @@
 			$strTemp = NULL;
 			$hg = array();
 			while ($hg = $DBRESULT2->fetchRow()) {
-				if (isset($gbArr[3][$hg["hg_id"]]) && isset($hgHostGenerated[$hg["hg_id"]])) {
+				if (isset($gbArr[3][$hg["hg_id"]]) && isset($hgHostGenerated[$hg["hg_name"]])) {
 					$hostList = getMyHostGroupHosts($hg["hg_id"]);
 					foreach ($hostList as $host_id) {
 						if (isset($hostGenerated[$host_id])) {
