@@ -1338,7 +1338,8 @@ CREATE TABLE IF NOT EXISTS `nagios_systemcommands` (
   `output` varchar(255) NOT NULL default '',
   `long_output` varchar(8192) NOT NULL default '',
   PRIMARY KEY  (`systemcommand_id`),
-  KEY `instance_id` (`instance_id`)
+  KEY `instance_id` (`instance_id`),
+  KEY `start_time` (`start_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Historical system commands that are executed' AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
