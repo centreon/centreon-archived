@@ -221,7 +221,7 @@
 		$command_line .= " LINE1:vname#000000:\"trend\" ";
 
 		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
-		$command_line .= " GPRINT:v1:LAST:\"Last\:%7.2lf%s\"";
+		$command_line .= " GPRINT:v1:MIN:\"Min\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:MAX:\"Max\:%7.2lf%s\"";
 		$command_line .= " GPRINT:v1:AVERAGE:\"Average\:%7.2lf%s\\l\"";
 
