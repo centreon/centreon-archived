@@ -235,6 +235,7 @@ check_result $? "$(gettext "Install nagiosPerfTrace")"
 log "INFO" "$(gettext "Change macros for purgeLogs")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	$TMP_DIR/src/cron/purgeLogs > $TMP_DIR/work/cron/purgeLogs
 check_result $? "$(gettext "Change macros for purgeLogs")"
 
