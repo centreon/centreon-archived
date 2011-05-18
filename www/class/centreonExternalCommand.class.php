@@ -89,7 +89,7 @@ class CentreonExternalCommand {
  		global $oreon;
 
  		$varlib = "@CENTREON_VARLIB@";
- 		if ($varlib == "" || $varlib == "@CENTREON_VARLIB@") {
+ 		if ($varlib == "") {
  			$varlib = "/var/lib/centreon";
  		}
 
