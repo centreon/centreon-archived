@@ -109,6 +109,7 @@ if ($dataLayer->{'value'} eq "broker") {
 	$dbLayer->finish();
 	exit;
 }
+$dbLayer->finish();
 
 my $sthbis;
 my $appID;
