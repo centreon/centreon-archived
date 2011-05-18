@@ -175,6 +175,8 @@
 				$action_list[90] = _("Services : Enable Check");
 			if ($action_name == "service_checks" || $allActions == true)
 				$action_list[91] = _("Services : Disable Check");
+			if ($action_name == "service_schedule_downtime" || $allActions == true)
+			    $action_list[74] = _("Services: Set Downtime");
 			if ($action_name == "host_acknowledgement" || $allActions == true)
 				$action_list[72] = _("Hosts : Acknowledge");
 			if ($action_name == "host_acknowledgement" || $allActions == true)
@@ -187,6 +189,8 @@
 				$action_list[92] = _("Hosts : Enable Check");
 			if ($action_name == "host_checks" || $allActions == true)
 				$action_list[93] = _("Hosts : Disable Check");
+			if ($action_name == "host_schedule_downtime" || $allActions == true)
+			    $action_list[75] = _("Hosts: Set Downtime");
 		}
 	} else {
 		$action_list[3] = _("Schedule immediate check");
