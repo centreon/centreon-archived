@@ -144,30 +144,46 @@ sub CheckMySQLConnexion() {
     }
 }
 
-sub CreateConnexionForCentstorage() {
-    while (!defined($con_ods) || !$con_ods->ping) {
-        if (!defined($con_ods) || !$con_ods->ping) {
-            $con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-            if (!defined($con_ods) || !$con_ods->ping) {
-                writeLogFile("Error when connecting to database : ".$DBI::errstr."");
-                sleep(5);
-            }
-        }
+sub CreateConnexionForCentstorage(){
+    my $strgcnx;
+    while (!defined($strgcnx) || !$strgcnx->ping){
+	if (!defined($strgcnx)) {
+	    $strgcnx = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	    if (!defined($strgcnx)) {
+		writeLogFile("Error when connecting to database : ".$DBI::errstr."");
+		sleep(5);
+	    }
+	}
     }
-    return $con_ods;
+    return $strgcnx;
 }
 
-sub CreateConnexionForOreon() {
-    while (!defined($con_oreon) || !$con_oreon->ping){
-        if (!defined($con_oreon) || !$con_oreon->ping) {
-            $con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-            if (!defined($con_oreon) || !$con_oreon->ping) {
-                writeLogFile("Error when connecting to database : ".$DBI::errstr."");
-                sleep(5);
-            }
-        }
+sub CreateConnexionForOreon(){
+    my $oreoncnx;
+    while (!defined($oreoncnx) || !$oreoncnx->ping){
+	if (!defined($oreoncnx)) {
+	    $oreoncnx = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	    if (!defined($oreoncnx)) {
+		writeLogFile("Error when connecting to database : ".$DBI::errstr."");
+		sleep(5);
+	    }
+	}
     }
-    return $con_oreon;
+    return $oreoncnx;
+}
+
+sub CreateConnexionForNDO(){
+    my $ndocnx;
+    while (!defined($ndocnx) || !$ndocnx->ping){
+	if (!defined($ndocnx)) {
+	    $ndocnx = DBI->connect("DBI:mysql:database=".$mysql_database_ndo.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	    if (!defined($ndocnx)) {
+		writeLogFile("Error when connecting to database : ".$DBI::errstr."");
+		sleep(5);
+	    }
+	}
+    }
+    return $ndocnx;
 }
 
 ########################################
