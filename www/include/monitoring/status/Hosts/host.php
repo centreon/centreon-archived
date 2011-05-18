@@ -177,8 +177,17 @@
 	} elseif ($o == "h_unhandled") {
 	    $keyPrefix = "h_unhandled";
 	    unset($statusList["up"]);
+	} elseif (preg_match("/h_([a-z]+)/", $o, $matches)) {
+	    if (isset($matches[1])) {
+            $keyPrefix = "h";
+            $defaultStatus = $matches[1];
+        }
 	}
+
 	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
+    if (isset($defaultStatus)) {
+        $form->setDefaults(array('statusFilter' => $defaultStatus));
+    }
 
 	$tpl->assign('limit', $limit);
 	$tpl->assign('hostStr', _('Host'));

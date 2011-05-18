@@ -240,8 +240,16 @@
 	} elseif ($o == "svc_unhandled") {
 	    $keyPrefix = "svc_unhandled";
 	    unset($statusList["ok"]);
-	}
+	} elseif (preg_match("/svc_([a-z]+)/", $o, $matches)) {
+        if (isset($matches[1])) {
+            $keyPrefix = "svc";
+            $defaultStatus = $matches[1];
+        }
+    }
 	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
+    if (isset($defaultStatus)) {
+        $form->setDefaults(array('statusFilter' => $defaultStatus));
+    }
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
