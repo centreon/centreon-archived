@@ -259,7 +259,7 @@
 				"FROM service sv, host, host_service_relation hsr " .
 		        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
 				"WHERE $searchHostallone sv.service_id IN (".($tmp ? $tmp : 'NULL').") " .
-						($searchHostallone != "" ? "AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " : "") .
+						($searchHostallone == "" ? "AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " : "") .
 						"AND sv.service_register = '1' $sqlFilterCase " .
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
