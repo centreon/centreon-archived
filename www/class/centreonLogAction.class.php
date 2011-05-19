@@ -56,7 +56,7 @@ class CentreonLogAction {
 
  		$query = "INSERT INTO `log_action_modification` (field_name, field_value, action_log_id) VALUES ";
  		foreach ($fields as $key => $value) {
- 			$query .= "('".$key."', '".$value."', '".$logId."'), ";
+ 			$query .= "('".CentreonDB::escape($key)."', '".CentreonDB::escape($value)."', '".$logId."'), ";
  		}
  		$query[strlen($query)-2] = " "; //removes the last coma
  		$DBRESULT = $pearDBO->query($query);
