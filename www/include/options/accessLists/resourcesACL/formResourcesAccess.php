@@ -244,7 +244,7 @@
 
 	$form->addElement('header', 'Host_infos', _("Shared Resouces"));
 	$form->addElement('header', 'help', _("Help"));
-	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to shared to people present in group selected on the previous tab. You have also the possibilty to exclude host on selected hostgroup. You can also do filters on selected hosts services. If you select a service category, user will only see only services of the selected categories."));
+	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to share to people present in group(s) selected on the previous tab. You have also the possibilty to exclude host(s) on selected hostgroup(s). You can also filter on selected hosts services. If you select a service category, the user will only see services of the selected categories."));
 
 	/*
 	 * Pollers
