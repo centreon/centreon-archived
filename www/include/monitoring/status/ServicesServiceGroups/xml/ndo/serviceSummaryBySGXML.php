@@ -299,7 +299,7 @@
 				$obj->XML->startElement("h");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 				$obj->XML->writeElement("hn", $h, false);
-				if (isset($hostIcones[$host_name]) && $hostIcones[$host_name]) {
+				if (isset($hostIcones[$h]) && $hostIcones[$h]) {
 					$obj->XML->writeElement("hico", $hostIcones[$h]);
 				} else {
 					$obj->XML->writeElement("hico", "none");
@@ -343,12 +343,14 @@
 		$obj->XML->startElement("h");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("hn", $h);
-		if (isset($hostIcones[$host_name])) {
+		if (isset($hostIcones[$h]) && $hostIcones[$h]) {
 			$obj->XML->writeElement("hico", $hostIcones[$h]);
 		} else {
 			$obj->XML->writeElement("hico", "none");
 		}
+		$obj->XML->writeElement("hnl", urlencode($h));
 		$obj->XML->writeElement("hs", _($obj->statusHost[$hs]));
+		$obj->XML->writeElement("hid", $tabHost[$h]);
 		$obj->XML->writeElement("hc", $obj->colorHost[$hs]);
 		$obj->XML->writeElement("sk", $nb_service[0]);
 		$obj->XML->writeElement("sw", $nb_service[1]);
