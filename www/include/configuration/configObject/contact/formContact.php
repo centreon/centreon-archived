@@ -185,7 +185,7 @@
 	}
 
 	$contactTpl = array(NULL => "           ");
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '1' $strRestrinction ORDER BY contact_name");
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = '0' $strRestrinction ORDER BY contact_name");
 	while ($contacts = $DBRESULT->fetchRow()) {
 		$contactTpl[$contacts["contact_id"]] = $contacts["contact_name"];
 	}
@@ -403,8 +403,8 @@
 	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
 
-	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '1');
-	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '0');
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '0');
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '1');
 	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
 	$form->setDefaults(array('contact_register' => '0'));
 
