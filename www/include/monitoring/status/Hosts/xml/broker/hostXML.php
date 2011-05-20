@@ -232,8 +232,22 @@
 		    $delimInit = 1;
 		}
 
+	    $class = null;
+        if ($ndo["scheduled_downtime_depth"] > 0) {
+            $class = "line_downtime";
+        } else if ($ndo["current_state"] == 1) {
+            $ndo["problem_has_been_acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
+        } else {
+            if ($ndo["problem_has_been_acknowledged"] == 1)
+                $class = "line_ack";
+        }
+
 		$obj->XML->startElement("l");
-		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
+		$trClass = $obj->getNextLineClass();
+        if (isset($class)) {
+            $trClass = $class;
+        }
+		$obj->XML->writeAttribute("class", $trClass);
 		$obj->XML->writeElement("o", 	$ct++);
 		$obj->XML->writeElement("hc", 	$obj->colorHost[$ndo["state"]]);
 		$obj->XML->writeElement("f", 	$flag);

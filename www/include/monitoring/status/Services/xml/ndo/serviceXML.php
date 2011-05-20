@@ -364,6 +364,7 @@
 				$hard_duration = CentreonDuration::toString(time() - $ndo["last_hard_state_change"]);
 			}
 
+			$class = null;
 			if ($ndo["scheduled_downtime_depth"] > 0) {
 				$class = "line_downtime";
 			} else if ($ndo["current_state"] == 2) {
@@ -374,7 +375,11 @@
 			}
 
 			$obj->XML->startElement("l");
-			$obj->XML->writeAttribute("class", $obj->getNextLineClass());
+			$trClass = $obj->getNextLineClass();
+			if (isset($class)) {
+			    $trClass = $class;
+			}
+			$obj->XML->writeAttribute("class", $trClass);
 			$obj->XML->writeElement("o", $ct++);
 
 			if ($host_prev == $ndo["host_name"]) {
