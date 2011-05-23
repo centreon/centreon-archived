@@ -56,8 +56,8 @@
 	    exit;
 	}
 
-	(int)$nbProc = exec("ps -edf | grep centAcl.php | grep -v grep | wc -l");
-	if ($nbProc > 2) {
+	$nbProc = exec("ps -edf | grep centAcl.php | grep -v grep | wc -l");
+	if ((int)$nbProc > 1) {
 		programExit("More than one centAcl.php process currently running. Going to exit...");
 	}
 
