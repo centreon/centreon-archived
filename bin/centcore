@@ -237,8 +237,8 @@ sub getServerConfig($){
 }
 
 sub CheckMySQLConnexion() {
-    while ((!defined($con) || !$con->ping)){
-	if (!defined($con) || !$con->ping)) {
+    while (!defined($con) || !$con->ping()) {
+	if (!defined($con) || !$con->ping()) {
 	    $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
 	    if (!defined($con)) {
 		writeLogFile("Error when connecting to database : " . $DBI::errstr . "\n");
