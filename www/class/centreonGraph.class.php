@@ -261,10 +261,11 @@ class CentreonGraph	{
 		if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"])
 			$this->setColor("CANVAS", $this->templateInformations["bg_grid_color"]);
 
-		if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"])
+		if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"]) {
 			$this->setColor("BACK", $this->templateInformations["bg_color"]);
-		else
+		} else {
 			$this->setColor("BACK", "#F0F0F0");
+		}
 
 		if (isset($this->templateInformations["police_color"]) && $this->templateInformations["police_color"])
 			$this->setColor("FONT", $this->templateInformations["police_color"]);
@@ -303,8 +304,8 @@ class CentreonGraph	{
 
 	private static function vquote($elem) { return "'".substr($elem,1,strlen($elem)-1)."'"; }
 
-	public function initCurveList()
-	{
+	public function initCurveList() {
+
 		if (isset($this->metricsEnabled) && count($this->metricsEnabled) > 0) {
 			/* Zoom or Metric Image */
 			$l_rmEnabled = array();
@@ -355,10 +356,11 @@ class CentreonGraph	{
 
 		/* Merge all metrics */
 		$mmetrics = array_merge($this->rmetrics, $this->vmetrics);
-                        $DBRESULT->free();
+        $DBRESULT->free();
 
-		foreach( $mmetrics as $key => $metric) {
+		foreach ($mmetrics as $key => $metric) {
 			$this->_log("found metric ".$metric["metric_id"]);
+
 			if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
 				if ( isset($metric["need"]) ) {
 					$metric["need"] = 1; /* Hidden Metric */
@@ -367,17 +369,19 @@ class CentreonGraph	{
 					continue;
 				}
 			}
+
 			if ( isset($this->metricsActive) && count($this->metricsActive) && !isset($this->metricsActive[$metric["metric_id"]]) ) {
-                                if ( isset($metric["need"]) ) {
-                                        $metric["need"] = 1; /* Hidden Metric */
-                                } else {
+            	if ( isset($metric["need"]) ) {
+                	$metric["need"] = 1; /* Hidden Metric */
+                } else {
 					$this->_log("metric inactive ".$metric["metric_id"]);
-                                        continue;
-                                }
+                	continue;
+                }
 			}
 
-			if (isset($metric["virtual"]))
+			if (isset($metric["virtual"])) {
 				$this->metrics[$metric["metric_id"]]["virtual"] = $metric["virtual"];
+			}
 			$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 #			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
 			$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
@@ -448,21 +452,22 @@ class CentreonGraph	{
 					}
 				}
 
-				if ( strlen($ds_data["ds_legend"]) > 0 ) {
+				if (isset($ds_data["ds_legend"]) && strlen($ds_data["ds_legend"]) > 0 ) {
 					$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_legend"];
 				} else {
-					if (!preg_match('/DS/', $ds_data["ds_name"], $matches)){
+					if (!isset($ds_data["ds_name"]) || !preg_match('/DS/', $ds_data["ds_name"], $matches)){
 						$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
 					} else {
-						$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_name"];
+						$this->metrics[$metric["metric_id"]]["legend"] = (isset($ds_data["ds_name"]) ? $ds_data["ds_name"] : "");
 					}
 				}
 
-				if (strcmp($metric["unit_name"], ""))
+				if (strcmp($metric["unit_name"], "")) {
 					$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+				}
 
 				$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
-				$this->metrics[$metric["metric_id"]]["stack"] = $ds_data["ds_stack"];
+				$this->metrics[$metric["metric_id"]]["stack"] = (isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0);
 				if ($this->onecurve) {
 					if (isset($metric["warn"]) && $metric["warn"] != 0) {
                         			$this->metrics[$metric["metric_id"]]["warn"] = $metric["warn"];
@@ -479,27 +484,31 @@ class CentreonGraph	{
 				if (isset($metric["need"])) {
 					$this->metrics[$metric["metric_id"]]["need"] = $metric["need"];
 				} else {
-					$this->metrics[$metric["metric_id"]]["ds_order"] = $ds_data["ds_order"];
+					$this->metrics[$metric["metric_id"]]["ds_order"] = (isset($ds_data["ds_order"]) && $ds_data["ds_order"] ? $ds_data["ds_order"] : 0);
 				}
 			} else {
 				/* the metric is need for a CDEF metric, but not display */
 				$this->metrics[$metric["metric_id"]]["need"] = $metric["need"];
 				$this->metrics[$metric["metric_id"]]["ds_order"] = "0";
 			}
-			if (isset($metric["def_type"]))
+			if (isset($metric["def_type"])) {
 				$this->metrics[$metric["metric_id"]]["def_type"] = $metric["def_type"];
-			if (isset($metric["cdef_order"]))
+			}
+			if (isset($metric["cdef_order"])) {
 				$this->metrics[$metric["metric_id"]]["cdef_order"] = $metric["cdef_order"];
-			if (isset($metric["rpn_function"]))
+			}
+			if (isset($metric["rpn_function"])) {
 				$this->metrics[$metric["metric_id"]]["rpn_function"] = $metric["rpn_function"];
-			if (isset($metric["ds_hidecurve"]))
+			}
+			if (isset($metric["ds_hidecurve"])) {
 				$this->metrics[$metric["metric_id"]]["ds_hidecurve"] = $metric["ds_hidecurve"];
+			}
 		}
 		$DBRESULT->free();
 
-                /*
-                 * Sort by ds_order,then legend
-                 */
+        /*
+         * Sort by ds_order,then legend
+         */
 		uasort($this->metrics, array("CentreonGraph", "_cmpmultiple"));
 
 		/*
@@ -586,7 +595,7 @@ class CentreonGraph	{
 			if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
 				$arg = "COMMENT:\"";
 			} else {
-				if ($tm["ds_filled"] || $tm["ds_stack"]) {
+				if ((isset($tm["ds_filled"]) && $tm["ds_filled"]) || (isset($tm["ds_stack"]) && $tm["ds_stack"])) {
 					if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
 						$nb=$cpt;
 						if (isset($tm["virtual"]))
@@ -610,7 +619,6 @@ class CentreonGraph	{
 						$this->addArgument("AREA:oc".$nb.$tm["ds_color_area_crit"]."CF::STACK");
 					}
 				}
-
 
 				if (!isset($tm["ds_stack"]) || !$tm["ds_stack"] || $cpt == 0) {
 					$arg = "LINE".$tm["ds_tickness"].":".$this->vname[$tm["metric"]];
@@ -659,15 +667,19 @@ class CentreonGraph	{
 					}
 				}
 				if ( !$this->onecurve ) {
-					$cline=0;
+					$cline = 0;
+					if (!isset($tm["ds_jumpline"])) {
+						$tm["ds_jumpline"] = 0;
+					}
 					while ($cline < $tm["ds_jumpline"]) {
 						$this->addArgument("COMMENT:\"\\c\"");
 						$cline++;
 					}
 				}
 			}
-			if ($tm["ds_stack"])
+			if (isset($tm["ds_stack"]) && $tm["ds_stack"]) {
 				$cpt++;
+			}
 		}
 	}
 
@@ -1207,4 +1219,5 @@ class CentreonGraph	{
 	}
 
 }
+
 ?>
