@@ -530,6 +530,7 @@
 			$tmpConf["contact_lang"] = "en";
 			$tmpConf["contact_activate"]["contact_activate"] = "1";
 			$tmpConf["contact_comment"] = date("d/m/Y - H:i:s", time());
+			$tmpConf["contact_enable_notifications"]["contact_enable_notifications"] = "1";
 			insertContactInDB($tmpConf);
 			$nbr["cct"] += 1;
 			return true;
