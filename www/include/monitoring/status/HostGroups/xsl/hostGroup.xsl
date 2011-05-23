@@ -16,6 +16,7 @@
 				<td class="ListColLeft">
 						<xsl:element name="a">						  	
 							<xsl:attribute name="class">pop</xsl:attribute>
+							<xsl:attribute name="href"><xsl:value-of select="hgurl"/></xsl:attribute>
   							<xsl:value-of select="hn"/>
 						</xsl:element>
 				</td>

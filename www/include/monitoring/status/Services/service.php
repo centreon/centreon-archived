@@ -100,6 +100,9 @@
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$rows = 10;
 
+	if (isset($_REQUEST['hg'])) {
+        $_SESSION['monitoring_default_hostgroups'] = $_REQUEST['hg'];
+	}
 	include_once("./include/monitoring/status/Common/default_poller.php");
 	include_once("./include/monitoring/status/Common/default_hostgroups.php");
 	include_once($svc_path."/serviceJS.php");

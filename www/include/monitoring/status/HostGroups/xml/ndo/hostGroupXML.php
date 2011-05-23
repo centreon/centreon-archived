@@ -213,6 +213,7 @@
 				$obj->XML->writeElement("suc", $obj->colorService[3]);
 				$obj->XML->writeElement("sp", $stat["s"][4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4]);
+				$obj->XML->writeElement("hgurl", "main.php?p=20201&o=svc&hg=".$name);
 				$obj->XML->endElement();
 			}
 		}
