@@ -171,12 +171,23 @@
 	 */
 
 	if ($oreon->CentreonGMT->used() == 1) {
-		$DBRESULT = $pearDB->query("SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc WHERE ehgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
-
+		$DBRESULT = $pearDB->query("SELECT DISTINCT esc.*
+									FROM escalation_hostgroup_relation ehgr, escalation esc, hostgroup_relation hgr, ns_host_relation nhr
+									WHERE ehgr.escalation_esc_id = esc.esc_id
+									AND ehgr.hostgroup_hg_id = hgr.hostgroup_hg_id
+									AND hgr.host_host_id = nhr.host_host_id
+									AND nhr.nagios_server_id = ".$tab['id']."
+									ORDER BY esc.esc_name");
 		$escalation = array();
 		while ($escalation = $DBRESULT->fetchRow())	{
 			$hosts = array();
-			$DBRESULT2 = $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name
+										  FROM escalation_hostgroup_relation ehgr, hostgroup hg, hostgroup_relation hgr, ns_host_relation nhr
+										  WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."'
+										  AND hg.hg_id = ehgr.hostgroup_hg_id
+										  AND hg.hg_id = hgr.hostgroup_hg_id
+										  AND hgr.host_host_id = nhr.host_host_id
+										  AND nhr.nagios_server_id = ".$tab['id']);
 			$strTemp = NULL;
 			$hg = array();
 			while ($hg = $DBRESULT2->fetchRow()) {
@@ -252,16 +263,26 @@
 			$DBRESULT->free();
 		}
 	} else {
-		$DBRESULT = $pearDB->query("SELECT DISTINCT esc.* FROM escalation_hostgroup_relation ehgr, escalation esc WHERE ehgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
-
+		$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.*
+								     FROM escalation_hostgroup_relation ehgr, escalation esc, hostgroup_relation hgr, ns_host_relation nhr
+								     WHERE ehgr.escalation_esc_id = esc.esc_id
+								     AND ehgr.hostgroup_hg_id = hgr.hostgroup_hg_id
+								     AND hgr.host_host_id = nhr.host_host_id
+								     AND nhr.nagios_server_id = ".$tab['id']."
+								     ORDER BY esc.esc_name");
 		$escalation = array();
 		while ($escalation = $DBRESULT->fetchRow())	{
-
-			$DBRESULT2 = $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name FROM escalation_hostgroup_relation ehgr, hostgroup hg WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."' AND hg.hg_id = ehgr.hostgroup_hg_id");
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT hg.hg_id, hg.hg_name
+			 							  FROM escalation_hostgroup_relation ehgr, hostgroup hg, hostgroup_relation hgr, ns_host_relation nhr
+			 							  WHERE ehgr.escalation_esc_id = '".$escalation["esc_id"]."'
+			 							  AND hg.hg_id = ehgr.hostgroup_hg_id
+			 							  AND hg.hg_id = hgr.hostgroup_hg_id
+			 							  AND hgr.host_host_id = nhr.host_host_id
+			 							  AND nhr.nagios_server_id = ".$tab['id']);
 			$hg = array();
 			$strTemp = NULL;
 			while ($hg = $DBRESULT2->fetchRow()) {
-				if (isset($gbArr[3][$hg["hg_id"]]) && isset($hgHostGenerated[$hg["hg_id"]]))
+				if (isset($gbArr[3][$hg["hg_id"]]) && isset($hgHostGenerated[$hg["hg_name"]]))
 					$strTemp != NULL ? $strTemp .= ", ".$hg["hg_name"] : $strTemp = $hg["hg_name"];
 			}
 			$DBRESULT2->free();
@@ -313,7 +334,13 @@
 	/*
 	 * PART 3 - Escalations for all ServiceGroups
 	 */
-	$DBRESULT = $pearDB->query("SELECT DISTINCT esc.* FROM escalation_servicegroup_relation esgr, escalation esc WHERE esgr.escalation_esc_id = esc.esc_id ORDER BY esc.esc_name");
+	$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.*
+								 FROM escalation_servicegroup_relation esgr, escalation esc, servicegroup_relation sgr, ns_host_relation nhr
+								 WHERE esgr.escalation_esc_id = esc.esc_id
+								 AND esgr.servicegroup_sg_id = sgr.servicegroup_sg_id
+								 AND sgr.host_host_id = nhr.host_host_id
+								 AND nhr.nagios_server_id = ".$tab['id']."
+								 ORDER BY esc.esc_name");
 	$escalation = array();
 	$strTemp = NULL;
 	if ($oreon->CentreonGMT->used() == 1) {
@@ -322,7 +349,12 @@
 		 */
 		unset($hosts);
 		while ($escalation = $DBRESULT->fetchRow()) {
-			$DBRESULT2 = $pearDB->query("SELECT DISTINCT sg.sg_id FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id
+										  FROM escalation_servicegroup_relation esgr, servicegroup sg, servicegroup_relation sgr, ns_host_relation nhr
+										  WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."'
+										  AND sg.sg_id = esgr.servicegroup_sg_id
+										  AND sgr.host_host_id = nhr.host_host_id
+										  AND nhr.nagios_server_id = ".$tab['id']);
 			while ($sg = $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]])) {
 					$services = getMyServiceGroupActivateServices($sg["sg_id"]);
@@ -412,7 +444,12 @@
 		while ($escalation = $DBRESULT->fetchRow()) {
 			$strTemp = "";
 			$sg = array();
-			$DBRESULT2 = $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name FROM escalation_servicegroup_relation esgr, servicegroup sg WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."' AND sg.sg_id = esgr.servicegroup_sg_id");
+			$DBRESULT2 =& $pearDB->query("SELECT DISTINCT sg.sg_id, sg.sg_name
+										  FROM escalation_servicegroup_relation esgr, servicegroup sg, servicegroup_relation sgr, ns_host_relation nhr
+										  WHERE esgr.escalation_esc_id = '".$escalation["esc_id"]."'
+										  AND sg.sg_id = esgr.servicegroup_sg_id
+										  AND sgr.host_host_id = nhr.host_host_id
+										  AND nhr.nagios_server_id = ".$tab['id']);
 			while ($sg = $DBRESULT2->fetchRow()) {
 				if (isset($gbArr[5][$sg["sg_id"]]) && isset($generatedSG[$sg["sg_id"]]))
 					$strTemp != NULL ? $strTemp .= ", ".$sg["sg_name"] : $strTemp = $sg["sg_name"];
