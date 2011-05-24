@@ -527,7 +527,7 @@
 			$tmpConf["contact_oreon"]["contact_oreon"] = "0";
 			$tmpConf["contact_admin"]["contact_admin"] = "0";
 			$tmpConf["contact_type_msg"] = "txt";
-			$tmpConf["contact_lang"] = "en";
+			$tmpConf["contact_lang"] = "en_US";
 			$tmpConf["contact_activate"]["contact_activate"] = "1";
 			$tmpConf["contact_comment"] = date("d/m/Y - H:i:s", time());
 			$tmpConf["contact_enable_notifications"]["contact_enable_notifications"] = "1";

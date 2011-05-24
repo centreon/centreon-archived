@@ -859,7 +859,7 @@
 				$tmpConf["contact_oreon"]["contact_oreon"] = "0";
 				$tmpConf["contact_admin"]["contact_admin"] = "0";
 				$tmpConf["contact_type_msg"] = "txt";
-				$tmpConf["contact_lang"] = "en";
+				$tmpConf["contact_lang"] = "en_US";
 				$tmpConf["contact_auth_type"] = "ldap";
 				$tmpConf["contact_ldap_dn"] = $tmpContacts["dn"][$select_key];;
 				$tmpConf["contact_activate"]["contact_activate"] = "1";
