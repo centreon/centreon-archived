@@ -45,19 +45,22 @@ use DBI;
 use File::Copy;
 use File::Path qw(mkpath);
 
-use vars qw($debug $LOG %status $generalcounter $stop $method);
+use vars qw($debug $LOG %status $generalcounter $stop $method $perfdataSync $logSync timeBetween2SyncPerf);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods);
 use vars qw($con $ssh $scp $rsync $rsyncWT $echo $sudo $installedPath $timeout);
 use vars qw(%commandBuffer);
 
 if (POSIX::getuid() == 0 ) { 
-    print  STDERR "You must not execute centcore with root user \n"; exit 1;
+    print STDERR "You must not execute centcore with root user \n"; exit 1;
 }
 
 #######################################
 # Initiate options
-my $debug = 0;
+$debug = 0;
 $timeout = 5; 
+$timeBetween2SyncPerf = 60;
+$perfdataSync = 1;
+$logSync = 1;
 
 #######################################
 # Configure Paths
@@ -112,8 +115,6 @@ sub writeLogFile($){
     print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
     close LOG or warn $!;
 }
-
-my $timeBetween2SyncPerf = 60;
 
 # checking if pid file exists.
 if (-x $PID){
@@ -180,8 +181,12 @@ sub GetAllNagiosServerPerfData(){
 	writeLogFile("Error when getting server properties : ".$sth2->errstr);
     }
     while (my $data = $sth2->fetchrow_hashref()){
-	GetPerfData($data->{'id'});
-	GetLogFile($data->{'id'});
+	if ($perfdataSync == 1) {
+		GetPerfData($data->{'id'});
+	}
+	if ($logSync == 1) {
+		GetLogFile($data->{'id'});
+    }
     }
     $sth2->finish();
     $con->disconnect();
