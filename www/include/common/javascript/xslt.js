@@ -240,11 +240,13 @@ function Transformation() {
 	    }
 		
 		if (!document.getElementById("centreonMsg_img")) {
-			 _setAlign("centreonMsg", "center");
-	         _setTextStyle("centreonMsg", "bold");
-	         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
-	         _setText("centreonMsg", " Loading...");
-	         _setValign("centreonMsg", "bottom");
+			 if (typeof _setAlign == 'function') {				
+				 _setAlign("centreonMsg", "center");
+		         _setTextStyle("centreonMsg", "bold");
+		         _setImage("centreonMsg", "./img/misc/ajax-loader.gif");
+		         _setText("centreonMsg", " Loading...");
+		         _setValign("centreonMsg", "bottom");
+			 }
 		}
 		
 		var change = function() {
@@ -268,7 +270,9 @@ function Transformation() {
                     	callback(t);
                     }
                     transformed = true;
-                    _clear("centreonMsg");
+                    if (typeof _clear == 'function') {
+                    	_clear("centreonMsg");
+                    }
             }
 		}
 		
