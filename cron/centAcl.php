@@ -531,12 +531,23 @@
     			/*
     			 * get all Service groups
     			 */
-    			$DBRESULT3 = $pearDB->query(	"SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service` " .
-    											"WHERE acl_res_id = '".$res2["acl_res_id"]."' " .
-    											"AND host.host_id = servicegroup_relation.host_host_id " .
-    											"AND service.service_id = servicegroup_relation.service_service_id " .
-    											"AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id " .
-    											"AND service_activate = '1'");
+    			$sgReq = "SELECT tb.* FROM
+    					 	(SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
+						 	 WHERE acl_res_id = '".$res2["acl_res_id"]."'
+						 	 AND host.host_id = servicegroup_relation.host_host_id
+						 	 AND service.service_id = servicegroup_relation.service_service_id
+						 	 AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
+						 	 AND service_activate = '1'
+						  UNION
+						  	SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`, `hostgroup`, `hostgroup_relation`
+						 	 WHERE acl_res_id = '".$res2["acl_res_id"]."'
+						 	 AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
+						 	 AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id
+						 	 AND hostgroup_relation.host_host_id = host.host_id
+						 	 AND service.service_id = servicegroup_relation.service_service_id
+						 	 AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
+						 	 AND service_activate = '1') tb";
+    			$DBRESULT3 =& $pearDB->query($sgReq);
     			if ($DBRESULT3->numRows()) {
     		  		while ($h = $DBRESULT3->fetchRow()){
     					if (!isset($tabElem[$h["host_name"]])) {
