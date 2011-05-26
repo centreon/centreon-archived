@@ -39,16 +39,14 @@
 
 sub getLastRestart(){
 
-    # Create connection
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    if (defined($con)) {
-	my $sth1_oreon = $con->prepare("SELECT `last_restart` FROM `nagios_server`");
+	CheckMySQLConnexion();
+	
+    my $sth1_oreon = $con_oreon->prepare("SELECT `last_restart` FROM `nagios_server`");
 	if (!$sth1_oreon->execute()) {
 	    writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr);
 	}
 	my $data_oreon = $sth1_oreon->fetchrow_hashref();
 	undef($sth1_oreon);
-	$con->disconnect();
 	return $data_oreon->{'last_restart'};
     } else {
 	return 0;
@@ -58,52 +56,54 @@ sub getLastRestart(){
 # Get last time restart of nagios
 
 sub getLastRestartInMemory(){
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    my $sth = $con->prepare("SELECT last_restart FROM statistics");
+
+	CheckMySQLConnexion();
+
+    my $sth = $con_ods->prepare("SELECT last_restart FROM statistics");
     if (!$sth->execute) {
     	writeLogFile("Error - getLastRestartInMemory :" . $sth->errstr);
     }
     my $data = $sth->fetchrow_hashref();
     undef($sth);
-    $con->disconnect();
     return $data->{'last_restart'};
 }
 
 sub saveLastRestartInMemory($){
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    my $sth = $con->prepare("UPDATE statistics SET `last_restart` = '".$_[0]."'");
+	CheckMySQLConnexion();
+
+    my $sth = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$_[0]."'");
     if (!$sth->execute) {
     	writeLogFile("Error - saveLastRestartInMemory : " . $sth->errstr);
     }
-    $con->disconnect();
     undef($sth);
 }
 
 # Get if purge is activ
 
 sub getPurgeConfig(){
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    my $sth = $con->prepare("SELECT autodelete_rrd_db FROM config");
+
+	CheckMySQLConnexion();
+
+    my $sth = $con_ods->prepare("SELECT autodelete_rrd_db FROM config");
     if (!$sth->execute) {
     	writeLogFile("Error - getPurgeConfig :" . $sth->errstr);
     }
     my $data = $sth->fetchrow_hashref();
     undef($sth);
-    $con->disconnect();
     return $data->{'autodelete_rrd_db'};
 }
 
 # Get repository of RRDTool db
 
 sub getStorageDir(){
-    $con = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    my $sth = $con->prepare("SELECT RRDdatabase_path FROM config");
+	CheckMySQLConnexion();
+
+    my $sth = $con_ods->prepare("SELECT RRDdatabase_path FROM config");
     if (!$sth->execute) {
     	writeLogFile("Error - getStorageDir : " . $sth->errstr);
     }
     my $data = $sth->fetchrow_hashref();
     undef($sth);
-    $con->disconnect();
     return $data->{'RRDdatabase_path'};
 }
 
@@ -113,8 +113,9 @@ sub DeleteOldRrdDB(){
     my ($data, %base);
 
     # Connection to MySQL DB
-    $conods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    my $sth = $conods->prepare("SELECT metric_id FROM metrics");
+	CheckMySQLConnexion();
+
+    my $sth = $con_ods->prepare("SELECT metric_id FROM metrics");
     if (!$sth->execute) {
     	writeLogFile("Error:" . $sth->errstr);
     }
@@ -139,7 +140,6 @@ sub DeleteOldRrdDB(){
 	    }
 	}
     }
-    $conods->disconnect();
     undef($some_dir);
     undef(@files);
     undef($data);
@@ -156,35 +156,32 @@ sub check_HostServiceID() {
     writeLogFile("Sync : Nagios restart - Process start");
 
     # connection to MySQL DB
-    my $conO = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    my $conC = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+   	CheckMySQLConnexion();
 
     # Create Service Cache 
-    my $sth = $conO->prepare("SELECT service_description, service_id FROM service WHERE service_register = '1'");
+    my $sth = $con_oreon->prepare("SELECT service_description, service_id FROM service WHERE service_register = '1'");
     if (!$sth->execute()) {
         writeLogFile("Sync | Cache Service : Error -> " . $sth->errstr . "\n");
     }
     while ($data = $sth->fetchrow_hashref()) {
-	#writeLogFile("Cache : ".$data->{'service_id'}." => ".$data->{'service_description'}."\n");
-	$serviceCache{$data->{'service_id'}} = $data->{'service_description'};
+		$serviceCache{$data->{'service_id'}} = $data->{'service_description'};
     }
     undef($data);
     undef($sth);
 
     # Create Host Cache
-    $sth = $conO->prepare("SELECT host_name, host_id FROM host WHERE host_register = '1'");
+    $sth = $con_oreon->prepare("SELECT host_name, host_id FROM host WHERE host_register = '1'");
     if (!$sth->execute()) {
         writeLogFile("Sync | Cache Host : Error -> " . $sth->errstr . "\n");
     }
     while ($data = $sth->fetchrow_hashref()) {
-	#writeLogFile("Cache : ".$data->{'host_id'}." => ".$data->{'host_name'}."\n");
-	$hostCache{$data->{'host_id'}} = $data->{'host_name'};
+		$hostCache{$data->{'host_id'}} = $data->{'host_name'};
     }
     undef($data);
     undef($sth);
 
     # Get index data in buffer
-    my $sth1 = $conC->prepare("SELECT host_name, host_id, service_description, service_id FROM index_data ORDER BY host_name");
+    my $sth1 = $con_ods->prepare("SELECT host_name, host_id, service_description, service_id FROM index_data ORDER BY host_name");
     if (!$sth1->execute()) {
 	writeLogFile("Sync : Error -> " . $sth1->errstr . "\n");
     }
@@ -197,8 +194,6 @@ sub check_HostServiceID() {
 		$service_description = $serviceCache{$data->{'service_id'}};
 	    }
 	    if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
-		$str = "UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
-		writeLogFile($str);
 		my $sth2 = $conC->prepare($str);
 		writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
 		undef($sth2);
@@ -208,7 +203,7 @@ sub check_HostServiceID() {
 	}
     }
     if (defined($last_restart) && $last_restart) {
-	$sth1 = $con->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
+	$sth1 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
 	if (!$sth1->execute) {
 	    writeLogFile("Error:" . $sth1->errstr . "\n");
 	}
@@ -216,8 +211,6 @@ sub check_HostServiceID() {
     }
     undef(%hostCache);
     undef(%serviceCache);
-    $conO->disconnect();
-    $conC->disconnect();
     writeLogFile("Sync : Process end");
 }
 

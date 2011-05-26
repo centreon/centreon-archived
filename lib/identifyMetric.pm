@@ -41,9 +41,6 @@ sub removeBackSpace($){
 }
 
 sub putSpecialCharInMetric($){
-#    $_[0] =~ s/#S#/\//g;
-#    $_[0] =~ s/#BS#/\\/g;
-#    $_[0] =~ s/#P#/\%/g;
     $_[0] =~ s/\-/\./g;
     $_[0] =~ s/\-/\,/g;
     $_[0] =~ s/\-/\:/g;
@@ -52,9 +49,6 @@ sub putSpecialCharInMetric($){
 }
 
 sub removeSpecialCharInMetric($){
-#    $_[0] =~ s/\//#S#/g;
-#    $_[0] =~ s/\\/#BS#/g;
-#    $_[0] =~ s/\%/#P#/g;
     $_[0] =~ s/\./\-/g;
     $_[0] =~ s/\,/\-/g;
     $_[0] =~ s/\:/\-/g;
@@ -65,11 +59,10 @@ sub removeSpecialCharInMetric($){
 sub insertMetrics($$$$$$$){
     my ($index_id, $name, $unit, $warn, $crit, $min, $max) = @_;
 
-    my $con_ods = CreateConnexionForCentstorage();	
+    CreateConnexionForCentstorage();	
     my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$index_id."', '".$name."', '".$unit."', '".$warn."', '".$crit."', '".$min."', '".$max."')");
     writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
     undef($sth2);
-    $con_ods->disconnect();
 }
 
 sub updateMetricInformation($$$$$){
@@ -112,9 +105,8 @@ sub identify_metric($$$$$$$$){
     $generalcounter = $_[5];
     $just_insert = 0;
 
-    my $con_ods 	= CreateConnexionForCentstorage();
-    my $con_oreon 	= CreateConnexionForOreon();
-
+    CheckMySQLConnexion();
+    
     # Cut perfdata    	
     my $metric = removeBackSpace($_[0]);
 

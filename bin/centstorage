@@ -154,7 +154,6 @@ sub CreateConnexionForCentstorage() {
             }
         }
     }
-    return $con_ods;
 }
 
 sub CreateConnexionForOreon() {
@@ -167,31 +166,16 @@ sub CreateConnexionForOreon() {
             }
         }
     }
-    return $con_oreon;
-}
-
-sub CreateConnexionForNDO(){
-    my $ndocnx;
-    while (!defined($ndocnx) || !$ndocnx->ping){
-	if (!defined($ndocnx)) {
-	    $ndocnx = DBI->connect("DBI:mysql:database=".$mysql_database_ndo.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-	    if (!defined($ndocnx)) {
-		writeLogFile("Error when connecting to database : ".$DBI::errstr."");
-		sleep(5);
-	    }
-	}
-    }
-    return $ndocnx;
 }
 
 ########################################
 # return perfdata file path
 ########################################
 
-sub getPerfDataFile($){
+sub getPerfDataFile() {
     my ($filename, $sth2, $data, $con);
-    $con = $_[0];
-    $sth2 = $con->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
+    CreateConnexionForOreon();
+    $sth2 = $con_oreon->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
     if (!$sth2->execute){
 		writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "");
 		return "";
@@ -284,7 +268,7 @@ sub GetPerfData() {
     CheckMySQLConnexion();				
 
     # Get path of perfdata file
-    my $PFDT = getPerfDataFile($con_oreon);
+    my $PFDT = getPerfDataFile();
 
     if (!defined($PFDT)) {
 	writeLogFile("Could not find perf data file!");

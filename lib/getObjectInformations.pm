@@ -67,9 +67,9 @@ sub getHostID($$){
 sub getHostName($){
     return 0 if (!$_[0]);
 
-    my $con = CreateConnexionForOreon();
+    CreateConnexionForOreon();
 
-    my $sth2 = $con->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
+    my $sth2 = $con_oreon->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
     if (!$sth2->execute) {
 	writeLogFile("Error:" . $sth2->errstr . "\n");
     }
@@ -78,8 +78,7 @@ sub getHostName($){
     my $host_name = $data_host->{'host_name'};
     undef($data_host);
     $sth2->finish();
-    $con->disconnect();
-
+    
     return $host_name;
 }
 
@@ -89,8 +88,8 @@ sub getHostName($){
 sub getServiceID($$){
     $_[1] =~ s/\&/\&amp\;/g;
 
-    my $con = CreateConnexionForOreon();								
-    my $sth2 = $con->prepare(	"SELECT service_id FROM service, host_service_relation hsr ".
+    CreateConnexionForOreon();								
+    my $sth2 = $con_oreon->prepare("SELECT service_id FROM service, host_service_relation hsr ".
 				"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
 				"AND service_description = '".$_[1]."' AND `service_register` = '1' LIMIT 1");
 
@@ -100,7 +99,7 @@ sub getServiceID($$){
     my $data = $sth2->fetchrow_hashref();
     $sth2->finish();
     if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
-	$sth2 = $con->prepare(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+	$sth2 = $con_oreon->prepare(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` = '1'");
 	if (!$sth2->execute) {writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");}
@@ -110,16 +109,13 @@ sub getServiceID($$){
 	undef($data2);
 	undef($sth2);
 	if (defined($service_id)){
-	    $con->disconnect();
 	    return $service_id;
 	} else {
-	    $con->disconnect();
 	    return 0;
 	}
     } else {
 	$service_id = $data->{'service_id'};
 	undef($data);
-	$con->disconnect();
 	return $service_id;
     }
 }
@@ -129,9 +125,9 @@ sub getServiceID($$){
 
 sub getServiceName($){	
     if ($_[0]){
-	my $con = CreateConnexionForOreon();
-	my $sth2 = $con->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` = '1'");
-	if (!$sth2->execute) {
+	CreateConnexionForOreon();
+	my $sth2 = $con_oreon->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` = '1'");
+	if (!$sth2->execute()) {
 	    writeLogFile("Error getting service name : " . $sth2->errstr . "\n");
 	}
 	my $data = $sth2->fetchrow_hashref();
@@ -140,7 +136,6 @@ sub getServiceName($){
 
 	if (defined($service_description)){
 	    $sth2->finish();
-	    $con->disconnect();
 	    return $service_description;
 	} else {
 	    return 0;
@@ -157,9 +152,9 @@ sub getMyServiceField($$)	{
     my $service_id = $_[0];
     my $field = $_[1];
 
-    my $con = CreateConnexionForOreon();
+    CreateConnexionForOreon();
     while(1){
-	my $sth1 = $con->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+	my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
     	if (!$sth1->execute) {
 	    writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");
     	}
@@ -167,7 +162,6 @@ sub getMyServiceField($$)	{
     	if (defined($data->{$field}) && $data->{$field}){
 	    undef($service_id);
 	    $sth1->finish();
-	    $con->disconnect();
 	    return $data->{$field};
     	} elsif ($data->{'service_template_model_stm_id'}){
 	    $service_id = $data->{'service_template_model_stm_id'};
@@ -207,13 +201,12 @@ sub getServiceCheckInterval($$){ # metric_id
 }
 
 sub getServiceCheckIntervalWithSVCid($) { # metric_id
-    my $conO = CreateConnexionForCentstorage();
+    CreateConnexionForCentstorage();
 
-    $sth1 = $conO->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
+    $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
     if (!$sth1->execute) {writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");}
     my $data_hst_svc = $sth1->fetchrow_hashref();
     $sth1->finish();
-    $conO->disconnect();
     undef($sth1);
     undef($data_metric);
 
@@ -223,15 +216,14 @@ sub getServiceCheckIntervalWithSVCid($) { # metric_id
 }
 
 sub getServiceCheckIntervalFromService($) { # service_id
-    my $conO = CreateConnexionForCentstorage();
+    CreateConnexionForCentstorage();
 
-    $sth1 = $conO->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
+    $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
     writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n") if (!$sth1->execute);
     my $data_hst_svc = $sth1->fetchrow_hashref(); 
     $sth1->finish();
 
     my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
-    $conO->disconnect();
     undef($data_hst_svc);
     return $return;
 }

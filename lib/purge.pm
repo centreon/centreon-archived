@@ -39,8 +39,7 @@ sub CheckMySQLDrain(){
     my ($data, $data_hg, $sth3, %base, %srv_list, %metricToDel);
 
     # Connecte MySQL To centreon and centstorage
-    $con_oreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    $con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	CheckMySQLConnexion();
 
     # Get services by hosts
     my $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL ");
