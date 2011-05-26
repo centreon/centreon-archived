@@ -736,6 +736,12 @@ sub checkRun()
 	    if (!$sthbis->execute) {
 	        die "Error:" . $sthbis->errstr . "\n";
 	    }
+	    $sthRun = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'archiveDayLog'");
+		if (!$sthRun->execute) {
+			die "Error:" . $sthRun->errstr . "\n";
+		}
+		$data = $sthRun->fetchrow_hashref();
+		$appID = $data->{'id'};
 	}
 }
 
