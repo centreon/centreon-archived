@@ -85,9 +85,6 @@ document.onLoad = initWholePage();
  */
 function initWholePage()
 {
-	var centreonTooltip = new CentreonToolTip();
-	centreonTooltip.setTitle('<?php echo _("Help"); ?>');
-	centreonTooltip.render();
 	setQuickSearchPosition();
 }
 

@@ -262,5 +262,9 @@
 	if (!$min) {
 		include_once "footer.php";
 	}
-
 ?>
+<script type='text/javascript'>
+var centreonTooltip = new CentreonToolTip();
+centreonTooltip.setTitle('<?php echo _("Help"); ?>');
+centreonTooltip.render();
+</script>
