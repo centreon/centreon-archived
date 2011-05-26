@@ -446,6 +446,7 @@
 			 */
 			$cpt = 0;
 			$str = 0;
+			$meta = array();
 			if ($is_admin) {
 				$query = "SELECT count(*) FROM meta_service WHERE meta_activate = '1'";
 				$DBRESULT2 = $pearDB->query($query);
