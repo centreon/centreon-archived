@@ -283,7 +283,7 @@
 
 	if ($obj->is_admin) {
 		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-						 " FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."services ns ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
+						 " FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."services ns ".(isset($hgCondition) && $hgCondition != "" ? ", ".$obj->ndoPrefix."hostgroup_members hm, ".$obj->ndoPrefix."hostgroups hg " : " ");
 		if ($o == "svc_unhandled") {
             $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
@@ -296,7 +296,7 @@
         }
 	} else {
 		$rq = " SELECT count(DISTINCT UPPER(CONCAT(no.name1,';', no.name2))) " .
-						 " FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."services ns, centreon_acl ".(isset($hgCondition) && $hgCondition != "" ? ", nagios_hostgroup_members hm, nagios_hostgroups hg " : " ");
+						 " FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."services ns, centreon_acl ".(isset($hgCondition) && $hgCondition != "" ? ", ".$obj->ndoPrefix."hostgroup_members hm, ".$obj->ndoPrefix."hostgroups hg " : " ");
 	    if ($o == "svc_unhandled") {
             $rq .= ", " . $obj->ndoPrefix."hoststatus hs, ".$obj->ndoPrefix."services s ";
 		}
