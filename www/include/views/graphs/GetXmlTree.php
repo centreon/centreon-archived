@@ -450,7 +450,7 @@
 			if ($is_admin) {
 				$query = "SELECT count(*) FROM meta_service WHERE meta_activate = '1'";
 				$DBRESULT2 = $pearDB->query($query);
-				$meta = $DBRESULT->fetchRow();
+				$meta = $DBRESULT2->fetchRow();
 			} else {
 				$meta["count(*)"] = 0;
 			}
