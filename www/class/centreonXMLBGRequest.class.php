@@ -205,7 +205,7 @@ class CentreonXMLBGRequest
 	 */
 	public function reloadSession()
 	{
-		$DBRESULT2 = $this->DB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".$this->session_id."' LIMIT 1");
+		$DBRESULT2 = $this->DB->query("UPDATE `session` SET `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE `session_id` = '".$this->session_id."'");
 	}
 
 	/*
