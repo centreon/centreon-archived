@@ -185,15 +185,16 @@
 		/** *****************************************
 		 * Prepare Finale Request
 		 */
-		$rq1 =	"SELECT sg.alias, sg.name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, s.state, h.icon_image, h.host_id, h.state AS host_state ".
-			" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h".
-			" WHERE sgm.servicegroup_id = sg.servicegroup_id " .
-			" AND s.service_id = sgm.service_id" .
-			" AND s.host_id = sgm.host_id" .
-			" AND s.host_id = h.host_id" .
-			" AND h.name IN ($hostList)" .
-			" AND s.enabled = '1'" .
-			$obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+		$rq1 =	"SELECT sg.alias, sg.name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, " .
+				"s.state, h.icon_image, h.host_id, h.state AS host_state ".
+				" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h".
+				" WHERE sgm.servicegroup_id = sg.servicegroup_id " .
+				" AND s.service_id = sgm.service_id" .
+				" AND s.host_id = sgm.host_id" .
+				" AND s.host_id = h.host_id" .
+				" AND h.name IN ($hostList)" .
+				" AND s.enabled = '1'" .
+				$obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 		if ($instance != -1) {
 			$rq1 .= " AND h.instance_id = ".$instance;
 		}
