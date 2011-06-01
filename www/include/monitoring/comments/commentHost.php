@@ -70,7 +70,7 @@
 			require_once($path."AddHostComment.php");
 			break;
 		case "dh" :
-			DeleteComment("HOST",isset($_POST["select"]) ? $_POST["select"] : array());
+			DeleteComment("HOST",isset($_GET["select"]) ? $_GET["select"] : array());
 			require_once($path."viewHostComment.php");
 			break;
 		case "vh" :
