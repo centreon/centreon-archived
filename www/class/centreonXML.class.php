@@ -90,16 +90,15 @@ class CentreonXML {
     protected function is_utf8($string)
     {
 		$res = 0;
-        $res += preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E])*$%xs', $string);
-        $res += preg_match('%^(?:[\xC2-\xDF][\x80-\xBF])*$%xs', $string);
-        $res += preg_match('%^(?:\xE0[\xA0-\xBF][\x80-\xBF])*$%xs', $string);
-        $res += preg_match('%^(?:[\xE1-\xEC\xEE\xEF][\x80-\xBF]{2})*$%xs', $string);
-        $res += preg_match('%^(?:\xED[\x80-\x9F][\x80-\xBF])*$%xs', $string);
-        $res += preg_match('%^(?:\xF0[\x90-\xBF][\x80-\xBF]{2})*$%xs', $string);
+        $res += preg_match('%^(?:[\x09\x0A\x0D\x20-\x7E] |
+                                 [\xC2-\xDF][\x80-\xBF] |
+                                 \xE0[\xA0-\xBF][\x80-\xBF] |
+                                 [\xE1-\xEC\xEE\xEF][\x80-\xBF]{2})*$%xs', $string);
+        $res += preg_match('%^(?:\xED[\x80-\x9F][\x80-\xBF] |
+                                \xF0[\x90-\xBF][\x80-\xBF]{2})*$%xs', $string);
         $res += preg_match('%^(?:[\xF1-\xF3][\x80-\xBF]{3})*$%xs', $string);
         $res += preg_match('%^(?:\xF4[\x80-\x8F][\x80-\xBF]{2})*$%xs', $string);
-        	
-		return $res;			
+        return $res;
     }
 
     /*
