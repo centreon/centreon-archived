@@ -141,11 +141,16 @@ function loadInfo(config_id, type) {
     proc.setXslt(addrXSL);
     proc.setCallback(function(){
     	var element = document.getElementById(type);
-    	element.appendChild(document.getElementById('tmp_xslt').firstChild.firstChild);
+    	var nbLength = document.getElementById('tmp_xslt').childNodes.length;
+    	for (i = 0; i < nbLength; i++) {
+    		element.appendChild(document.getElementById('tmp_xslt').childNodes[i].firstChild);	
+    	}
     	document.getElementById('tmp_xslt').innerHTML = '';
-    	elId = type + '_' + pos_id + '_type';
-    	changeType(type, pos_id, document.getElementById(elId).selectedIndex, document.getElementById(elId));
-    	pos_id = pos_id + 1;
+    	for (i = 0; i < nbLength; i++) {
+	    	elId = type + '_' + pos_id + '_type';
+	    	changeType(type, pos_id, document.getElementById(elId).selectedIndex, document.getElementById(elId));
+	    	pos_id = pos_id + 1;
+    	}
     });
     proc.transform('tmp_xslt');
 }
