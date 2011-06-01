@@ -121,19 +121,19 @@
 		/*
 		 * Number of output
 		 */
-		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'output' AND config_id = '1'");
+		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'output' AND config_id = " . $config['config_id']);
 		$outputNumber = $pearDB->numberRows();
 
 		/*
 		 * Number of output
 		 */
-		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'input' AND config_id = '1'");
+		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'input' AND config_id = " .$config['config_id']);
 		$inputNumber = $pearDB->numberRows();
 
 		/*
 		 * Number of output
 		 */
-		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'logger' AND config_id = '1'");
+		$pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT(config_group_id) FROM cfg_centreonbroker_info WHERE config_group = 'logger' AND config_id = " . $config['config_id']);
 		$loggerNumber = $pearDB->numberRows();
 
 		$elemArr[$i] = array(
