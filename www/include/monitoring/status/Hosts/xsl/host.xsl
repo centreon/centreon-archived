@@ -90,6 +90,12 @@
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
+			<xsl:if test="isf != 0">
+				<xsl:element name="img">
+				  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>
+				  	<xsl:attribute name="title">Host is flapping</xsl:attribute>
+				</xsl:element>			
+			</xsl:if>
 			<xsl:if test="hdtm != 0">
 				<xsl:element name="img">
 				  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>

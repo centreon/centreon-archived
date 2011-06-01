@@ -110,6 +110,7 @@
 			" h.check_attempt, " .
 			" h.scheduled_downtime_depth, " .
 			" h.host_id, " .
+			" h.flapping, " .
 			" hph.parent_id as is_parent ";
 	$rq1 .= " FROM ";
 	if (!$obj->is_admin) {
@@ -271,6 +272,7 @@
         $obj->XML->writeElement("tr", 	$ndo["check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
         $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
+        $obj->XML->writeElement("isf",  $ndo["flapping"]);
         $parenth = 0;
         if ($ct === 1 && $ndo['is_parent']) {
             $parenth = 1;

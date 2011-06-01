@@ -107,6 +107,7 @@
 			" nhs.current_check_attempt, " .
 			" nhs.scheduled_downtime_depth, " .
 			" nh.host_object_id, " .
+			" nhs.is_flapping, " .
 	        " hph.host_parenthost_id as is_parent ".
 			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no ";
 	if (!$obj->is_admin) {
@@ -275,6 +276,7 @@
         $obj->XML->writeElement("tr", 	$ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
         $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
+        $obj->XML->writeElement("isf",  	$ndo["is_flapping"]);
         $parenth = 0;
         if ($ct === 1 && $ndo['is_parent']) {
             $parenth = 1;
