@@ -41,54 +41,61 @@
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 
 	$dir_conf = $centreonBrokerPath . '/' . $tab['id'];
-	$file_conf = $dir_conf . '/centreon-broker.xml';
 
 	if (!is_dir($dir_conf) && is_writable($centreonBrokerPath)) {
 	    mkdir($dir_conf);
 	}
 
 	$ns_id = $tab['id'];
+	
+	$files = array();
 
-	$query = "SELECT csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name 
+	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name 
 		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
-		WHERE csi.config_id = cs.config_id AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
+		WHERE csi.config_id = cs.config_id AND cs.config_activate = 1 AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
 
 	$res = $pearDB->query($query);
     if (false === PEAR::isError($res) && $res->numRows()) {
-	    $groups['output'] = array();
-	    $groups['input'] = array();
-	    $groups['logger'] = array();
 	    $ns_name = null;
 	    while ($row = $res->fetchRow()) {
+    	    $filename = $row['config_filename'];
+            if (!isset($files[$filename])) {
+                $files[$filename]['output'] = array();
+        	    $files[$filename]['input'] = array();
+        	    $files[$filename]['logger'] = array();
+            }
 	        if (is_null($ns_name)) {
 	            $ns_name = $row['name'];
 	        }
-	        $groups[$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
+	        $files[$filename][$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
 	    }
-	    $fileXml = new CentreonXML();
-	    $fileXml->startElement('centreonBroker');
 	    
-	    $fileXml->writeElement('instance', $ns_id);
-	    $fileXml->writeElement('instance_name', $ns_name);
-	    
-	    foreach ($groups as $group => $listInfos) {
-	        if (count($listInfos) > 0) {
-    	        $fileXml->startElement($group);
-    	        foreach ($listInfos as $infos) {
-    	            foreach ($infos as $key => $value) {
-    	                if (trim($value) != '') {
-    	                    $fileXml->writeElement($key, $value);
-    	                }
-    	            }
+	    foreach ($files as $filename => $groups) {
+    	    $fileXml = new CentreonXML();
+    	    $fileXml->startElement('centreonBroker');
+    	    
+    	    $fileXml->writeElement('instance', $ns_id);
+    	    $fileXml->writeElement('instance_name', $ns_name);
+    	    
+    	    foreach ($groups as $group => $listInfos) {
+    	        if (count($listInfos) > 0) {
+        	        $fileXml->startElement($group);
+        	        foreach ($listInfos as $infos) {
+        	            foreach ($infos as $key => $value) {
+        	                if (trim($value) != '') {
+        	                    $fileXml->writeElement($key, $value);
+        	                }
+        	            }
+        	        }
+        	        $fileXml->endElement();
     	        }
-    	        $fileXml->endElement();
-	        }
+    	    }
+    	    $fileXml->endElement();
+    
+    	    ob_start();
+            $fileXml->output();
+            file_put_contents($dir_conf . '/' . $filename, ob_get_contents());
+            ob_end_clean();
 	    }
-	    $fileXml->endElement();
-
-	    ob_start();
-        $fileXml->output();
-        file_put_contents($file_conf, ob_get_contents());
-        ob_end_clean();
 	}
 ?>

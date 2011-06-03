@@ -345,6 +345,7 @@ CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
 CREATE TABLE cfg_centreonbroker (
 	config_id INT NOT NULL AUTO_INCREMENT,
 	config_name VARCHAR(100) NOT NULL,
+	config_filename VARCHAR(255) NOT NULL,
 	config_activate ENUM('0', '1') DEFAULT '0',
 	ns_nagios_server INT NOT NULL,
 	PRIMARY KEY (`config_id`)

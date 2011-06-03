@@ -94,11 +94,12 @@
 	function getCentreonBrokerInformation($id) {
 	    global $pearDB;
 
-	    $query = "SELECT config_name, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id;
+	    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id;
 	    $res = $pearDB->query($query);
 	    if (PEAR::isError($res)) {
 	        return array(
         		"name" => '',
+	            "filename" => '',
         		"activate" => '1'
     		);
 	    }
@@ -106,6 +107,7 @@
 	    return array(
 	    		"id" => $id,
         		"name" => $row['config_name'],
+	            "filename" => $row['config_filename'],
         		"activate" =>  $row['config_activate'],
 	            "ns_nagios_server" => $row['ns_nagios_server']
 	    );
@@ -122,8 +124,8 @@
 	    /*
 	     * Insert the Centreon Broker configuration
 	     */
-	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_activate, ns_nagios_server)
-	    	VALUES ('" . $values['name'] . "', '" . $values['activate']['activate'] . "', " . $values['ns_nagios_server'] . ")";
+	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, config_activate, ns_nagios_server)
+	    	VALUES ('" . $values['name'] . "', '" . $values['filename'] . "', '" . $values['activate']['activate'] . "', " . $values['ns_nagios_server'] . ")";
 	    if (PEAR::isError($pearDB->query($query))) {
 	        return false;
 	    }
@@ -154,7 +156,7 @@
 	     * Insert the Centreon Broker configuration
 	     */
 	    $query = "UPDATE cfg_centreonbroker
-	    	SET config_name = '" . $values['name'] . "', config_activate = '" . $values['activate']['activate'] . "', ns_nagios_server = " . $values['ns_nagios_server'] . "
+	    	SET config_name = '" . $values['name'] . "', config_filename = '" . $values['filename'] . "', config_activate = '" . $values['activate']['activate'] . "', ns_nagios_server = " . $values['ns_nagios_server'] . "
 	    	WHERE config_id = " . $id;
 	    if (PEAR::isError($pearDB->query($query))) {
 	        return false;

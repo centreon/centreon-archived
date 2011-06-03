@@ -82,6 +82,7 @@
 	$tpl->assign('centreonbroker_configuration', _("Centreon-Broker Informations"));
 	$form->addElement('header', 'information', _("Centreon-Broker configuration"));
 	$form->addElement('text', 'name', _("Name"), $attrsText);
+	$form->addElement('text', 'filename', _("Config file name"), $attrsText);
 	$form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
 	$status = array();
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
