@@ -139,7 +139,7 @@
 				"   AND no.name2 = centreon_acl.service_description " .
         		"   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
 				"	AND (" .
-				"		SELECT 1 " .
+				"		SELECT no.name1 " .
 				"		FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no2 " .
 				"		WHERE nhs.host_object_id = no2.object_id " .
 				"			AND no2.name1 = no.name1 " .
@@ -155,7 +155,7 @@
 				"	AND nss.problem_has_been_acknowledged = '0' " .
 				"	AND nss.current_state != '0' " .
 				"	AND (" .
-				"		SELECT 1 " .
+				"		SELECT no.name1 " .
 				"		FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no2 " .
 				"		WHERE nhs.host_object_id = no2.object_id " .
 				"			AND no2.name1 = no.name1 " .
