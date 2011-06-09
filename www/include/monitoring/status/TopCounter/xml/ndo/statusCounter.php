@@ -138,7 +138,7 @@
             	"   AND no.name1 = centreon_acl.host_name ".
 				"   AND no.name2 = centreon_acl.service_description " .
         		"   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
-				"	AND (" .
+				"	AND no.name1 IN (" .
 				"		SELECT no.name1 " .
 				"		FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no2 " .
 				"		WHERE nhs.host_object_id = no2.object_id " .
@@ -154,7 +154,7 @@
 				"	AND nss.scheduled_downtime_depth = '0' " .
 				"	AND nss.problem_has_been_acknowledged = '0' " .
 				"	AND nss.current_state != '0' " .
-				"	AND (" .
+				"	AND no.name1 IN (" .
 				"		SELECT no.name1 " .
 				"		FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no2 " .
 				"		WHERE nhs.host_object_id = no2.object_id " .
