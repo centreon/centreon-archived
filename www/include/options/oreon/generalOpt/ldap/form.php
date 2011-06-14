@@ -75,12 +75,14 @@
 	$form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
 	$form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
 
-	$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = 1";
+	$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'";
 	$res = $pearDB->query($query);
 	$tmplList = array();
 	while ($row = $res->fetchRow()) {
 	    $tmplList[$row['contact_id']] = $row['contact_name'];
 	}
+	$now->free();
+
 	$form->addElement('select', 'ldap_contact_tmpl', _('Contact template'), $tmplList, array('id' => 'ldap_contact_tmpl'));
 
 	$form->addElement('header', 'ldapinfo', _("LDAP Information"));
