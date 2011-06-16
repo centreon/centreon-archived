@@ -126,8 +126,10 @@
 							$tab = preg_split("/\=/", $ret2["topology_url_opt"]);
 							$o = $tab[1];
 						}
+					} elseif ($ret['topology_url']) {
+						$url = $ret['topology_url'];
 					} else {
-						$url = "./alt_error.php";
+					    $url = "./alt_error.php";
 					}
 				}
 			} else if ($redirect["topology_page"] >= 100 && $redirect["topology_page"] < 1000) {
