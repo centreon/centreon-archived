@@ -205,11 +205,29 @@ class CentreonGraph	{
 
 		if (isset($index)) {
 			$DBRESULT = $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
-			while ($metric_Active = $DBRESULT->fetchRow()){
-				$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
+			if ($DBRESULT->numRows()) {
+				while ($metric_Active = $DBRESULT->fetchRow()){
+					$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
+				}
+				$DBRESULT->free();
+				unset($metric_Active);
+			} else {
+				$DBRESULT->free();
+				$DBRESULT2 = $this->DBC->query("SELECT metric_id FROM metrics WHERE index_id = '".$this->index."'  AND `hidden` = '0' ORDER BY `metric_name`");
+				while ($milist = $DBRESULT2->fetchRow()){
+					$odsm[$milist["metric_id"]] = 1;
+				}
+				$DBRESULT2 = $this->DB->query("SELECT vmetric_id metric_id FROM virtual_metrics WHERE index_id = '".$this->index."' AND ( `hidden` = '0' OR `hidden` IS NULL ) AND vmetric_activate = '1' ORDER BY 'metric_name'");
+				while ($milist = $DBRESULT2->fetchRow()){
+					$vmilist = "v".$milist["metric_id"];
+					$odsm[$vmilist] = 1;
+				}
+				foreach ($odsm as $mid => $val)    {
+					$DBRESULT = $this->DB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$mid."', '".$this->user_id."', '0', '".$this->index."');");
+				}
+				$DBRESULT2->free();
+				unset($odsm);
 			}
-			$DBRESULT->free();
-			unset($metric_Active);
 		}
 	}
 
