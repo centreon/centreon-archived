@@ -124,6 +124,11 @@
 					$cmd_id = $DBRESULT->fetchRow();
 					$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
 				}
+				
+				/*
+				 * Duplicate Arguments
+				 */
+				duplicateArgDesc($cmd_id["MAX(command_id)"], $key);
 			}
 		}
 	}
@@ -255,5 +260,18 @@
 			$query = trim($query, ",");
 			$pearDB->query($query);
 		}
+	}
+	
+	/**
+	 * Duplicate The argument description of a command 
+	 * @param $cmd_id
+	 * @param $ret
+	 * @return unknown_type
+	 */
+	function duplicateArgDesc($new_cmd_id, $cmd_id) {
+		global $pearDB;
+
+		$query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) SELECT '$new_cmd_id', macro_name, macro_description FROM command_arg_description WHERE cmd_id = '$cmd_id'";
+		$pearDB->query($query);
 	}
 ?>
