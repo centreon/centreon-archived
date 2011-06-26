@@ -377,7 +377,7 @@
 				" AND s.host_id = centreon_acl.host_id ".
 				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" ORDER BY s.state ASC, h.name LIMIT " . $svcLimit;
+				" ORDER BY s.state ASC, s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	} else {
 		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h" .
@@ -388,7 +388,7 @@
 				" AND s.enabled = 1" .
 				" AND h.enabled = 1" .
 				" AND h.name NOT LIKE '_Module_%' " .
-				" ORDER BY s.state ASC, h.name LIMIT " . $svcLimit;
+				" ORDER BY s.state ASC, s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	}
 
 	$j = 0;

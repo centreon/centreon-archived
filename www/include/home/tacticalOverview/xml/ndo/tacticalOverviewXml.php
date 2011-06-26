@@ -386,7 +386,7 @@
 				" AND obj.name1 = centreon_acl.host_name ".
 				" AND obj.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" ORDER by stat.current_state ASC, obj.name1 LIMIT " . $svcLimit;
+				" ORDER by stat.current_state ASC, last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	} else {
 		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
 				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
@@ -398,7 +398,7 @@
 		        " AND stat.scheduled_downtime_depth = 0" .
 				" AND obj.is_active = 1" .
 				" AND obj.name1 NOT LIKE '_Module_%' " .
-				" ORDER by stat.current_state ASC, obj.name1 LIMIT " . $svcLimit;
+				" ORDER by stat.current_state ASC, last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	}
 	$resNdo1 = $dbb->query($rq1);
 
