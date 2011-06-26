@@ -52,12 +52,15 @@
 
 		# Set ServiceGroup Childs
 		$DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL ORDER BY service_service_id");
-		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++)
+		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
-
-		$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL GROUP BY service_service_id");
-		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++)
+		}
+		$DBRESULT->free();	
+			
+		$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL ORDER BY service_service_id");
+		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
+		}
 		$DBRESULT->free();
 	}
 	#
