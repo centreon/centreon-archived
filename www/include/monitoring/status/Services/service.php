@@ -162,37 +162,37 @@
 	 */
 	if (isset($authorized_actions) && $allActions == false) {
 		foreach ($authorized_actions as $action_name) {
-			if ($action_name == "service_schedule_check" || $allActions == true)
+			if ($action_name == "service_schedule_check")
 				$action_list[3] = _("Schedule immediate check");
-			if ($action_name == "service_schedule_forced_check" || $allActions == true)
+			if ($action_name == "service_schedule_forced_check")
 				$action_list[4] = _("Schedule immediate check (Forced)");
-			if ($action_name == "service_acknowledgement" || $allActions == true)
+			if ($action_name == "service_acknowledgement")
 				$action_list[70] = _("Services : Acknowledge");
-			if ($action_name == "service_acknowledgement" || $allActions == true)
+			if ($action_name == "service_acknowledgement")
 				$action_list[71] = _("Services : Disacknowledge");
-			if ($action_name == "service_notifications" || $allActions == true)
+			if ($action_name == "service_notifications")
 				$action_list[80] = _("Services : Enable Notification");
-			if ($action_name == "service_notifications" || $allActions == true)
+			if ($action_name == "service_notifications")
 				$action_list[81] = _("Services : Disable Notification");
-			if ($action_name == "service_checks" || $allActions == true)
+			if ($action_name == "service_checks")
 				$action_list[90] = _("Services : Enable Check");
-			if ($action_name == "service_checks" || $allActions == true)
+			if ($action_name == "service_checks")
 				$action_list[91] = _("Services : Disable Check");
-			if ($action_name == "service_schedule_downtime" || $allActions == true)
+			if ($action_name == "service_schedule_downtime")
 			    $action_list[74] = _("Services: Set Downtime");
-			if ($action_name == "host_acknowledgement" || $allActions == true)
+			if ($action_name == "host_acknowledgement")
 				$action_list[72] = _("Hosts : Acknowledge");
-			if ($action_name == "host_acknowledgement" || $allActions == true)
+			if ($action_name == "host_acknowledgement")
 				$action_list[73] = _("Hosts : Disacknowledge");
-			if ($action_name == "host_notifications" || $allActions == true)
+			if ($action_name == "host_notifications")
 				$action_list[82] = _("Hosts : Enable Notification");
-			if ($action_name == "host_notifications" || $allActions == true)
+			if ($action_name == "host_notifications")
 				$action_list[83] = _("Hosts : Disable Notification");
-			if ($action_name == "host_checks" || $allActions == true)
+			if ($action_name == "host_checks")
 				$action_list[92] = _("Hosts : Enable Check");
-			if ($action_name == "host_checks" || $allActions == true)
+			if ($action_name == "host_checks")
 				$action_list[93] = _("Hosts : Disable Check");
-			if ($action_name == "host_schedule_downtime" || $allActions == true)
+			if ($action_name == "host_schedule_downtime")
 			    $action_list[75] = _("Hosts: Set Downtime");
 		}
 	} else {

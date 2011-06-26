@@ -126,19 +126,19 @@
 	 */
 	if(isset($authorized_actions) && $allActions == false){
 		foreach($authorized_actions as $action_name) {
-			if($action_name == "host_acknowledgement" || $allActions == true)
+			if($action_name == "host_acknowledgement")
 				$action_list[72] = _("Hosts : Acknowledge");
-			if($action_name == "host_acknowledgement" || $allActions == true)
+			if($action_name == "host_acknowledgement")
 				$action_list[73] = _("Hosts : Disacknowledge");
-			if($action_name == "host_notifications" || $allActions == true)
+			if($action_name == "host_notifications")
 				$action_list[82] = _("Hosts : Enable Notification");
-			if($action_name == "host_notifications" || $allActions == true)
+			if($action_name == "host_notifications")
 				$action_list[83] = _("Hosts : Disable Notification");
-			if($action_name == "host_checks" || $allActions == true)
+			if($action_name == "host_checks")
 				$action_list[92] = _("Hosts : Enable Check");
-			if($action_name == "host_checks" || $allActions == true)
+			if($action_name == "host_checks")
 				$action_list[93] = _("Hosts : Disable Check");
-            if($action_name == "host_schedule_downtime" || $allActions == true)
+            if($action_name == "host_schedule_downtime")
 				$action_list[75] = _("Hosts : Set Downtime");
 		}
 	} else {
