@@ -105,9 +105,9 @@
 
 				foreach ($row as $key2=>$value2) {
 					$key2 == "command_name" ? ($command_name = $value2 = $value2."_".$i) : null;
-					$val ? $val .= ($value2 != NULL?(", '".$value2."'"):", NULL") : $val .= ($value2 != NULL?("'".$value2."'"):"NULL");
+					$val ? $val .= ($value2 != NULL?(", '".$pearDB->escape($value2)."'"):", NULL") : $val .= ($value2 != NULL?("'".$pearDB->escape($value2)."'"):"NULL");
 					if ($key2 != "command_id") {
-						$fields[$key2] = $value2;
+						$fields[$key2] = $pearDB->escape($value2);
 					}
 					if (isset($command_name)) {
 					    $fields["command_name"] = $command_name;
