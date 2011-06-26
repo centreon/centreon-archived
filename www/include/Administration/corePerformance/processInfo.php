@@ -396,7 +396,7 @@
 	        xhr_cmd = new ActiveXObject("Microsoft.XMLHTTP");
 	    }
 	    xhr_cmd.onreadystatechange = function() { display_result(xhr_cmd, poller, cmd + '_' + poller); };
-	    xhr_cmd.open("GET", "./include/nagiosStats/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&type=" + actiontype, true);
+	    xhr_cmd.open("GET", "./include/Administration/corePerformance/processCommands.php?cmd=" + cmd + "&poller=" + poller + "&sid=" + _sid + "&type=" + actiontype, true);
 	    xhr_cmd.send(null);
 	}
 
