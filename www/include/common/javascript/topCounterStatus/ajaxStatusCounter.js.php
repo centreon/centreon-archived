@@ -1,3 +1,4 @@
+<?php
 /*
  * Centreon is developped with GPL Licence 2.0 :
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.txt
@@ -13,7 +14,7 @@
  *
  * For information : contact@centreon.com
  */
-<?php
+
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 
