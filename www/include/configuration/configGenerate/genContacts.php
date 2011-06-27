@@ -43,7 +43,7 @@
 		mkdir($nagiosCFGPath.$tab['id']."/");
 
 	$handle = create_file($nagiosCFGPath.$tab['id']."/contacts.cfg", $oreon->user->get_name());
-	$DBRESULT = $pearDB->query("SELECT * FROM contact ORDER BY `contact_name`");
+	$DBRESULT = $pearDB->query("SELECT * FROM contact WHERE `contact_register` = '1' ORDER BY `contact_name`");
 	$contact = array();
 	$i = 1;
 	$str = NULL;
