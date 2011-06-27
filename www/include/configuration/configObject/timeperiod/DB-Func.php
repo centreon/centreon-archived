@@ -111,7 +111,7 @@
 	function multipleTimeperiodInDB ($timeperiods = array(), $nbrDup = array())	{
 		global $oreon;
 
-		foreach($timeperiods as $key=>$value)	{
+		foreach ($timeperiods as $key => $value)	{
 			global $pearDB;
 
 			$fields = array();
@@ -133,7 +133,7 @@
 					if ($key2 == "tp_name") {
 					    $value2 .= "_" . $i;
 					}
-				    $key2 == "tp_name" ? ($tp_name = $value2) : $tp_name = null;
+				    $key2 == "tp_name" ? ($tp_name = $value2) : "";
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "tp_id") {
 						$fields[$key2] = $value2;
@@ -146,8 +146,8 @@
 					$DBRESULT = $pearDB->query($val ? $rq = "INSERT INTO timeperiod VALUES (".$val.")" : $rq = null);
 
 					/*
-		 			* Get Max ID
-		 			*/
+		 			 * Get Max ID
+		 			 */
 					$DBRESULT = $pearDB->query("SELECT MAX(tp_id) FROM `timeperiod`");
 					$tp_id = $DBRESULT->fetchRow();
 
