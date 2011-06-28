@@ -86,7 +86,7 @@
  	 *  @param string $host_name
  	 *  @return int
  	 */
- 	public function getServiceId($svc_desc, $host_name)
+ 	public function getServiceId($svc_desc = null, $host_name)
  	{
  		static $hostSvcTab = array();
 
@@ -110,6 +110,9 @@
      		while ($row = $DBRES->fetchRow()) {
      		    $hostSvcTab[$host_name][$row['service_description']] = $row['service_id'];
      		}
+ 		}
+ 		if (!isset($svc_desc) && isset($hostSvcTab[$host_name])) {
+ 		    return $hostSvcTab[$host_name];
  		}
  		if (isset($hostSvcTab[$host_name]) && isset($hostSvcTab[$host_name][$svc_desc])) {
  		    return $hostSvcTab[$host_name][$svc_desc];
