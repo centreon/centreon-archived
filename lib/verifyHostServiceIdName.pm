@@ -47,9 +47,10 @@ sub getLastRestart(){
 	}
 	my $data_oreon = $sth1_oreon->fetchrow_hashref();
 	undef($sth1_oreon);
-	return $data_oreon->{'last_restart'};
+	if (defined($data_oreon->{'last_restart'})) {
+ 		return $data_oreon->{'last_restart'};
     } else {
-	return 0;
+		return 0;
     }
 }
 
@@ -130,15 +131,15 @@ sub DeleteOldRrdDB(){
     @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
     closedir DIR;
     for (@files) {
-	if (!defined($base{$_})){
-	    if (!-d $some_dir."/".$_){
-		if (unlink($some_dir."/".$_)){
-		    writeLogFile("Sync : purge: ".$some_dir."/".$_." removed");
-		} else {
-		    writeLogFile("Sync : Error -> Unable to remove ".$some_dir.$_);
+		if (!defined($base{$_})){
+		    if (!-d $some_dir."/".$_){
+				if (unlink($some_dir."/".$_)){
+				    writeLogFile("Sync : purge: ".$some_dir."/".$_." removed");
+				} else {
+				    writeLogFile("Sync : Error -> Unable to remove ".$some_dir.$_);
+				}
+		    }
 		}
-	    }
-	}
     }
     undef($some_dir);
     undef(@files);
@@ -186,28 +187,29 @@ sub check_HostServiceID() {
 	writeLogFile("Sync : Error -> " . $sth1->errstr . "\n");
     }
     while ($data = $sth1->fetchrow_hashref()) {
-	if (defined($data->{'host_id'})) {	    
-	    if (defined($hostCache{$data->{'host_id'}})) {
-		$host_name = $hostCache{$data->{'host_id'}};
-	    }	 
-	    if (defined($serviceCache{$data->{'service_id'}})) {
-		$service_description = $serviceCache{$data->{'service_id'}};
-	    }
-	    if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
-		my $sth2 = $conC->prepare($str);
-		writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
-		undef($sth2);
-	    }
-	    undef($host_name);
-	    undef($service_description);
-	}
+		if (defined($data->{'host_id'})) {	    
+		    if (defined($hostCache{$data->{'host_id'}})) {
+				$host_name = $hostCache{$data->{'host_id'}};
+		    }	 
+		    if (defined($serviceCache{$data->{'service_id'}})) {
+				$service_description = $serviceCache{$data->{'service_id'}};
+		    }
+		    if (defined($host_name) && $host_name && defined($service_description) && $service_description && defined($data->{'host_name'}) && defined($data->{'service_description'}) && (($host_name ne $data->{'host_name'}) || ($service_description ne $data->{'service_description'}))){
+				$str = "UPDATE index_data SET `host_name` = '".$host_name."', `service_description` = '".$service_description."' WHERE `host_id` = '".$data->{'host_id'}."' AND `service_id` = '".$data->{'service_id'}."'";
+				my $sth2 = $con_ods->prepare($str);
+				writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
+				undef($sth2);
+		    }
+		    undef($host_name);
+		    undef($service_description);
+		}
     }
     if (defined($last_restart) && $last_restart) {
-	$sth1 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
-	if (!$sth1->execute) {
-	    writeLogFile("Error:" . $sth1->errstr . "\n");
-	}
-	undef($sth1);
+		$sth1 = $con_ods->prepare("UPDATE statistics SET `last_restart` = '".$last_restart."'");
+		if (!$sth1->execute) {
+		    writeLogFile("Error:" . $sth1->errstr . "\n");
+		}
+		undef($sth1);
     }
     undef(%hostCache);
     undef(%serviceCache);

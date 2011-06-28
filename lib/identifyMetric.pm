@@ -37,6 +37,7 @@
 
 sub removeBackSpace($){
     $_[0] =~ s/\n//g;
+    $_[0] =~ s/\ \'/\'/g;
     return $_[0];
 }
 
@@ -59,9 +60,12 @@ sub removeSpecialCharInMetric($){
 sub insertMetrics($$$$$$$){
     my ($index_id, $name, $unit, $warn, $crit, $min, $max) = @_;
 
-    CreateConnexionForCentstorage();	
+    CreateConnexionForCentstorage();
+    
     my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$index_id."', '".$name."', '".$unit."', '".$warn."', '".$crit."', '".$min."', '".$max."')");
-    writeLogFile("Error:" . $sth2->errstr . "\n") if (!$sth2->execute);
+    if (!$sth2->execute()) { 
+    	writeLogFile("Error:" . $sth2->errstr . "\n");
+    }
     undef($sth2);
 }
 
@@ -69,30 +73,30 @@ sub updateMetricInformation($$$$$){
     my ($id, $warn, $crit, $min, $max) = @_;
 
     if ($warn ne "" || $crit ne "" || $min ne "" || $max ne "") {
-	my $str = "";
-	$str .= "`warn` = '".$warn."'" if ($warn ne "");
-	if ($crit ne ""){
-	    $str .= ", " if ($str ne "");
-	    $str .= "`crit` = '".$crit."' ";
-	}
-	if ($min ne ""){
-	    $str .= ", " if ($str ne "");
-	    $str .= "`min` = '".$min."' ";
-	}
-	if ($max ne ""){
-	    $str .= ", " if ($str ne "");
-	    $str .= "`max` = '".$max."' ";
-	}
-	if (defined($id)) {
-	    $sth1 = $con_ods->prepare("UPDATE `metrics` SET $str WHERE `metric_id` = '".$id."'");
-	    if (!$sth1->execute) {
-		writeLogFile("Error:" . $sth1->errstr . "\n");
-	    }
-	    undef($sth1);
-	} else {
-	    writeLogFile("Metric id not found. Check database informations.\n");
-	}
-	undef($str);
+		my $str = "";
+		$str .= "`warn` = '".$warn."'" if ($warn ne "");
+		if ($crit ne ""){
+		    $str .= ", " if ($str ne "");
+		    $str .= "`crit` = '".$crit."' ";
+		}
+		if ($min ne ""){
+		    $str .= ", " if ($str ne "");
+		    $str .= "`min` = '".$min."' ";
+		}
+		if ($max ne ""){
+		    $str .= ", " if ($str ne "");
+		    $str .= "`max` = '".$max."' ";
+		}
+		if (defined($id)) {
+		    $sth1 = $con_ods->prepare("UPDATE `metrics` SET $str WHERE `metric_id` = '".$id."'");
+		    if (!$sth1->execute()) {
+				writeLogFile("Error:" . $sth1->errstr . "\n");
+		    }
+		    undef($sth1);
+		} else {
+		    writeLogFile("Metric id not found. Check database informations.\n");
+		}
+		undef($str);
     }		   	
 }
 
@@ -110,81 +114,86 @@ sub identify_metric($$$$$$$$){
     # Cut perfdata    	
     my $metric = removeBackSpace($_[0]);
 
-    while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ \\\%]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
-	my $metric_name = $1;
-	$metric_name =~ s/^\s+//;
-	$metric_name =~ s/\s+$//;
-	my $unit = "";
-	my $value = $2;
-	my $warn = "";
-	my $critical = "";
-	my $min = "";
-	my $max = "";
-
-	if (defined($3)){$unit = $3;} else {$unit = "";}
-	if (defined($4)){$warn = $4;} else {$warn = "";}
-	if (defined($5)){$critical = $5;} else {$critical = "";}
-	if (defined($6)){$min = $6;} else {$min = "";}
-	if (defined($7)){$max = $7;} else {$max = "";}
-
-	my $cpt = 1;
-	my $x = 0;
-	while (defined($$cpt)){
-	    $data[$x] = $$cpt;
-	    $cpt++;
-	    $x++;
-	}
-
-	@data = ($metric_name, $value, $unit, $warn, $critical, $min, $max); # metric, value, unit, warn, critical, min, max
-	if (defined($metric_name) && $metric_name && defined($value)) {
-	    # Check if metric is known...
-	    $data[0] = removeSpecialCharInMetric($data[0]);
-
-	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-	    if (!$sth1->execute()) {
-		writeLogFile("Error:" . $sth1->errstr . "\n");
-	    } else {
-		if ($sth1->rows() eq 0) {
-		    $just_insert = 1;  
-		    insertMetrics($_[1], $data[0], $data[2], $data[3], $data[4], $data[5], $data[6]);
-
-		    # Get ID
-		    $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
-		    if (!$sth1->execute) {
-			writeLogFile("Error:" . $sth1->errstr . "\n");
-		    }
+    //while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ \\\%]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
+	while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ ]+)\s*\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
+	
+		my $metric_name = $1;
+		$metric_name =~ s/^\s+//;
+		$metric_name =~ s/\s+$//;
+		my $unit = "";
+		my $value = $2;
+		my $warn = "";
+		my $critical = "";
+		my $min = "";
+		my $max = "";
+	
+		if (defined($3)){$unit = $3;} else {$unit = "";}
+		if (defined($4)){$warn = $4;} else {$warn = "";}
+		if (defined($5)){$critical = $5;} else {$critical = "";}
+		if (defined($6)){$min = $6;} else {$min = "";}
+		if (defined($7)){$max = $7;} else {$max = "";}
+	
+		my $cpt = 1;
+		my $x = 0;
+		while (defined($$cpt)) {
+			writeLogFile "$x: $$cpt" if ($debug);
+		    $data[$x] = $$cpt;
+		    $cpt++;
+		    $x++;
 		}
-		my $metric = $sth1->fetchrow_hashref();
-		$sth1->finish();
-
-		# Update metric attributs
-		if ($just_insert || (defined($data[2]) && defined($metric->{'unit_name'}) && $metric->{'unit_name'} ne $data[2])) {
-		    my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."', `warn` = '".$data[3]."', `crit` = '".$data[4]."', `min` = '".$data[5]."', `max` = '".$data[6]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
-		    if (!$sth1->execute) {
-			writeLogFile("Error:" . $sth1->errstr . "\n");
-		    }
-		    undef($sth1);
-		}
-
-		updateMetricInformation($metric->{'metric_id'}, $data[3], $data[4], $data[5], $data[6]);
+	
+		# metric, value, unit, warn, critical, min, max
+		@data = ($metric_name, $value, $unit, $warn, $critical, $min, $max); 
+	
+		if (defined($metric_name) && $metric_name && defined($value)) {
+		    # Check if metric is known...
+		    $data[0] = removeSpecialCharInMetric($data[0]);
+	
+		    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+		    if (!$sth1->execute()) {
+				writeLogFile("Error:" . $sth1->errstr . "\n");
+		    } else {
+				if ($sth1->rows() eq 0) {
+				    $just_insert = 1;  
+				    insertMetrics($_[1], $data[0], $data[2], $data[3], $data[4], $data[5], $data[6]);
 		
-		# Check Storage Type
-		# O -> BD Mysql & 1 -> RRDTool
-		if (defined($data[1])) {
-		    # manage 'data_source_type' default value : NULL = '0'
-                    $metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
-		    if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
-			updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
-		    } elsif (defined($_[4]) && $_[4] eq 2) { 
-			updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
-			updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
+				    # Get ID
+				    $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+				    if (!$sth1->execute()) {
+						writeLogFile("Error:" . $sth1->errstr . "\n");
+				    }
+				}
+				my $metric = $sth1->fetchrow_hashref();
+				$sth1->finish();
+	
+				# Update metric attributs
+				if ($just_insert || (defined($data[2]) && defined($metric->{'unit_name'}) && $metric->{'unit_name'} ne $data[2])) {
+				    my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."', `warn` = '".$data[3]."', `crit` = '".$data[4]."', `min` = '".$data[5]."', `max` = '".$data[6]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
+				    if (!$sth1->execute()) {
+						writeLogFile("Error:" . $sth1->errstr . "\n");
+				    }
+				    undef($sth1);
+				}
+		
+				updateMetricInformation($metric->{'metric_id'}, $data[3], $data[4], $data[5], $data[6]);
+				
+				# Check Storage Type
+				# O -> BD Mysql & 1 -> RRDTool
+				if (defined($data[1])) {
+				    # manage 'data_source_type' default value : NULL = '0'
+		            $metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
+				    if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
+						updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
+				    } elsif (defined($_[4]) && $_[4] eq 2) { 
+						updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
+						updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
+				    }
+				}	    
 		    }
-		}	    
-	    }
-	    $just_insert = 0;
-	}
-	undef($sth1);
-	undef(@data);
+		    $just_insert = 0;
+		}
+		undef($sth1);
+		undef(@data);
     }
     undef($metric_name);
     undef($value);

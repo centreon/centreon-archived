@@ -35,11 +35,12 @@
 #
 ####################################################################################
 
-sub getPurgeInterval(){
+sub getPurgeInterval() {
 	my $data;
 	my $purge_interval;
 
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	CreateConnexionForOreon();
+	
 	my $sth2 = $con_ods->prepare("SELECT purge_interval FROM config");
 	if (!$sth2->execute) {writeLogFile("Error - getPurgeInterval : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
@@ -57,9 +58,12 @@ sub getRRDdatabase_path(){
 	my $data;
 	my $RRDdatabase_path;
 
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	CreateConnexionForOreon();
+	
 	my $sth2 = $con_ods->prepare("SELECT RRDdatabase_path FROM config");
-	if (!$sth2->execute) {writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");}
+	if (!$sth2->execute()) {
+		writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");
+	}
 	$data = $sth2->fetchrow_hashref();
 	$RRDdatabase_path = $data->{'RRDdatabase_path'};
 	undef($sth2);	
@@ -70,10 +74,13 @@ sub getRRDdatabase_path(){
 sub getRRDdatabase_status_path(){
 	my $data;
 	my $RRDdatabase_status_path;
-
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	
+	CreateConnexionForOreon();
+	
 	my $sth2 = $con_ods->prepare("SELECT RRDdatabase_status_path FROM config");
-	if (!$sth2->execute) {writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");}
+	if (!$sth2->execute()) {
+		writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");
+	}
 	$data = $sth2->fetchrow_hashref();
 	$RRDdatabase_status_path = $data->{'RRDdatabase_status_path'};
 	undef($sth2);	
@@ -85,9 +92,12 @@ sub getLenStorageDB(){
 	my $data;
 	my $len_storage_rrd;
 
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	CreateConnexionForOreon();
+	
 	my $sth2 = $con_ods->prepare("SELECT len_storage_rrd FROM config");
-	if (!$sth2->execute) {writeLogFile("Error - len_storage_rrd : " . $sth2->errstr . "\n");}
+	if (!$sth2->execute()) {
+		writeLogFile("Error - len_storage_rrd : " . $sth2->errstr . "\n");
+	}
 	$data = $sth2->fetchrow_hashref();
 	if (!defined($data->{'len_storage_rrd'}) || !$data->{'len_storage_rrd'}){
 		$len_storage_rrd = 10;
@@ -104,9 +114,12 @@ sub getSleepTime(){
 	my $data;
 	my $sleep_time;
 
-	$con_ods = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
+	CreateConnexionForOreon();
+
 	my $sth2 = $con_ods->prepare("SELECT sleep_time FROM config");
-	if (!$sth2->execute) {writeLogFile("Error - getSleepTime : " . $sth2->errstr . "\n");}
+	if (!$sth2->execute()) {
+		writeLogFile("Error - getSleepTime : " . $sth2->errstr . "\n");
+	}
 	$data = $sth2->fetchrow_hashref();
 	if (!defined($data->{'sleep_time'}) || !$data->{'sleep_time'}){
 		$sleep_time = 10;

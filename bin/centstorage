@@ -174,7 +174,9 @@ sub CreateConnexionForOreon() {
 
 sub getPerfDataFile() {
     my ($filename, $sth2, $data, $con);
+    
     CreateConnexionForOreon();
+    
     $sth2 = $con_oreon->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
     if (!$sth2->execute){
 		writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "");
@@ -184,7 +186,6 @@ sub getPerfDataFile() {
     $filename = $data->{'nagios_perfdata'};
     undef($sth2);
     undef($data);
-    undef($con);
     return $filename;
 }
 
@@ -196,21 +197,16 @@ sub movePerfDataFile($){
     my $PERFDATA = $_[0];
 
     # Copy file before reading
-    if ( -f $PERFDATA . "_read" ) {
-    	writeLogFile("The " . $PERFDATA . "_read already exists.");
-    	return(1);
+    if (copy($PERFDATA, $PERFDATA."_read")){
+		# Erase old perfdata file.
+		`echo "# New File " > $PERFDATA`;
+		undef($PERFDATA);
+		return(1);
     } else {
-	    if (copy($PERFDATA, $PERFDATA."_read")){
-			# Erase old perfdata file.
-			`echo "# New File " > $PERFDATA`;
-			undef($PERFDATA);
-			return(1);
-	    } else {
-			writeLogFile("Cannot copy $PERFDATA file : $!");
-			undef($PERFDATA);
-			return (0);
-	    }
-	}
+		writeLogFile("Cannot copy $PERFDATA file : $!");
+		undef($PERFDATA);
+		return (0);
+    }
 }
 
 ########################################
@@ -247,7 +243,7 @@ sub getGeneralConfig(){
 
     my $sth1 = $con_ods->prepare("SELECT * FROM `config`");
     if (!$sth1->execute) {
-	writeLogFile("Error:" . $sth1->errstr . "\n");
+		writeLogFile("Error:" . $sth1->errstr . "\n");
     }
     my $config = $sth1->fetchrow_hashref();
     $sth1->finish();
@@ -325,7 +321,7 @@ sub GetPerfData() {
 			}
 
 			# flush buffer
-			if ($counterData >= 200) {
+			if ($counterData >= 400) {
 			    my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
 			    if (!$sth1->execute) {
 				writeLogFile("Error:" . $sth1->errstr . "");
@@ -508,8 +504,6 @@ sub updateServiceState($$$$$$) {
 	} else {
 	    my $begin = time() - 200000;
 	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght($con_oreon);
-	    #	    $interval = 3 if (!defined($interval));
-	    #	    $interval = getIntervalLenght($con_oreon) * $interval;
 	    my $interval_hb = $interval * 10;
 
 	    $nb_value = getLenStorageDB() / $interval;
@@ -631,8 +625,8 @@ sub CheckRebuild(){
 
     # ---------------------------------------------
     # enable db connexion
-    my $con_ods = CreateConnexionForCentstorage();
-    my $con_oreon = CreateConnexionForOreon();
+    CreateConnexionForCentstorage();
+    CreateConnexionForOreon();
 
     # ---------------------------------------------
     # Rebuild database
@@ -714,7 +708,7 @@ sub CheckRebuild(){
     undef($sth2);
     undef($data);
     if (defined($con_oreon)){
-	$con_oreon->disconnect();
+		$con_oreon->disconnect();
     }
     if (defined($con_ods)){
      	$con_ods->disconnect();
@@ -722,16 +716,13 @@ sub CheckRebuild(){
 }
 
 
-sub killProc($){
-#    my $str = " - ". $_[0]." ->";
+sub killProc($) {
     if ($_[0]){
-	if (waitpid($_[0], WNOHANG)){
-#	    print $str."0\n";
-	    return 0;
-	} else {
-#	    print $str.$_[0]."\n";
-	    return $_[0];
-	}	
+		if (waitpid($_[0], WNOHANG)){
+		    return 0;
+		} else {
+		    return $_[0];
+		}	
     }
 }
 
@@ -756,7 +747,7 @@ sub signalstartprogram() {
 sub signalstopprogram() {
     writeLogFile("Stopping centstrorage engine...");
     if (!unlink($PID)) {
-	writeLogFile("Error When removing pid file : $!") ;
+		writeLogFile("Error When removing pid file : $!") ;
     }
 }
 
