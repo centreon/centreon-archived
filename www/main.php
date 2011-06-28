@@ -37,7 +37,12 @@
  */
 
  	ini_set("display_errors", "Off");
-    ini_set("error_reporting", "E_ALL & ~E_DEPRECATED");
+ 	if (defined("E_DEPRECATED")) {
+ 	    ini_set("error_reporting", E_ALL ^ E_DEPRECATED);    
+ 	} else {
+ 	    ini_set("error_reporting", E_ALL);
+ 	}
+    
 
 	/*
 	 * Define Local Functions
