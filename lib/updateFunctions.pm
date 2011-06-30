@@ -95,7 +95,7 @@ sub updateRRDDB($$$$$$$$) {
 		if ($_[0] && $_[1] && $_[5]) {
 	
 		    $begin = $_[4] - 200000;
-		    $interval = getServiceCheckInterval($_[1]) * getIntervalLenght($con_oreon);
+		    $interval = getServiceCheckInterval($_[1]) * getIntervalLenght();
 		    $interval_hb = $interval * 10;
 	
 		    # Caclulate number of value 
