@@ -1404,7 +1404,7 @@ class CentreonGraph	{
 	 * @param unknown_type $metric_id
 	 */
 	private function checkDBAvailability($metric_id) {
-		if (!file_exists($this->dbPath.$metric_id.".rrd")) {
+		if (!file_exists($this->dbPath.$metric_id.".rrd") && !preg_match("/^v/",$metric_id)) {
 			return 0;
 		}
 		return 1;
