@@ -33,7 +33,7 @@ Timeline.DefaultEventSource.prototype.loadXML = function(xml, url) {
     while (node != null) {
         if (node.nodeType == 1) {
             var description = "";
-            if (node.firstChild != null && node.firstChild.nodeType == 3) {
+            if (node.firstChild != null && node.firstChild.nodeType == 3 || node.firstChild.nodeType == 4) {
                 description = node.firstChild.nodeValue;
             }
             var evt = new Timeline.DefaultEventSource.Event(
