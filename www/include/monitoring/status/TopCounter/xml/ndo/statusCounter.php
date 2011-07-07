@@ -128,39 +128,33 @@
 	 */
 	if (!$obj->is_admin) {
         $rq3 =  "SELECT COUNT(DISTINCT CONCAT(no.name1,';', no.name2)) as number, nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth, nss.current_state " .
-		    	"FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, centreon_acl " .
+		    	"FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, " . $obj->ndoPrefix."hoststatus nhs, " . $obj->ndoPrefix."services ns, centreon_acl " .
     			"WHERE no.object_id = nss.service_object_id " .
 				"	AND no.name1 NOT LIKE '_Module_%' " .
 				"	AND no.is_active = 1 " .
 				"	AND nss.scheduled_downtime_depth = '0' " .
 				"	AND nss.problem_has_been_acknowledged = '0' " .
 				"	AND nss.current_state != '0' " .
+        		"   AND no.object_id = ns.service_object_id " .
+	            "   AND ns.host_object_id = nhs.host_object_id " .
+	            "   AND nhs.current_state = '0' ".
             	"   AND no.name1 = centreon_acl.host_name ".
 				"   AND no.name2 = centreon_acl.service_description " .
         		"   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
-				"	AND no.name1 IN (" .
-				"		SELECT no.name1 " .
-				"		FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no2 " .
-				"		WHERE nhs.host_object_id = no2.object_id " .
-				"			AND no2.name1 = no.name1 " .
-				"			AND nhs.current_state = '0') " .
-				"		GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
+				"	GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
 	} else {
 	    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(no.name1,';', no.name2)) as number, nss.state_type, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth, nss.current_state " .
-		    	"FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no " .
+		    	"FROM ".$obj->ndoPrefix."servicestatus nss, ".$obj->ndoPrefix."objects no, " . $obj->ndoPrefix."hoststatus nhs, " . $obj->ndoPrefix."services ns ".
     			"WHERE no.object_id = nss.service_object_id " .
 				"	AND no.name1 NOT LIKE '_Module_%' " .
 				"	AND no.is_active = 1 " .
 				"	AND nss.scheduled_downtime_depth = '0' " .
 				"	AND nss.problem_has_been_acknowledged = '0' " .
 				"	AND nss.current_state != '0' " .
-				"	AND no.name1 IN (" .
-				"		SELECT no.name1 " .
-				"		FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no2 " .
-				"		WHERE nhs.host_object_id = no2.object_id " .
-				"			AND no2.name1 = no.name1 " .
-				"			AND nhs.current_state = '0') " .
-				"		GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
+	            "   AND no.object_id = ns.service_object_id " .
+	            "   AND ns.host_object_id = nhs.host_object_id " .
+	            "   AND nhs.current_state = '0' ".
+				"	GROUP BY nss.current_state, nss.problem_has_been_acknowledged, nss.scheduled_downtime_depth";
 	}
 
 	$DBRESULT = $obj->DBNdo->query($rq3);
