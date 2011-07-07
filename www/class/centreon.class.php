@@ -191,7 +191,10 @@ class Centreon	{
 			return;
 
 		$this->Nagioscfg = array();
-		$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT * FROM cfg_nagios, nagios_server
+								    WHERE nagios_server.id = cfg_nagios.nagios_server_id
+								    AND nagios_server.localhost = '1'
+								    AND cfg_nagios.nagios_activate = '1' LIMIT 1");
 		$this->Nagioscfg = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 	}
