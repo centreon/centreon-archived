@@ -127,7 +127,7 @@
 		$rq .= "VALUES (";
 		isset($ret["resource_name"]) && $ret["resource_name"] != NULL ? $rq .= "'".$pearDB->escape($ret["resource_name"])."', " : $rq .= "NULL, ";
 		isset($ret["resource_line"]) && $ret["resource_line"] != NULL ? $rq .= "'".$pearDB->escape($ret["resource_line"])."', " : $rq .= "NULL, ";
-		isset($ret["resource_comment"]) && $ret["resource_comment"] != NULL ? $rq .= "'".$pearDB->escpae($ret["resource_comment"])."', " : $rq .= "NULL, ";
+		isset($ret["resource_comment"]) && $ret["resource_comment"] != NULL ? $rq .= "'".$pearDB->escape($ret["resource_comment"])."', " : $rq .= "NULL, ";
 		isset($ret["resource_activate"]["resource_activate"]) && $ret["resource_activate"]["resource_activate"] != NULL ? $rq .= "'".$ret["resource_activate"]["resource_activate"]."'" : $rq .= "NULL";
 		$rq .= ")";
 		$DBRESULT = $pearDB->query($rq);
