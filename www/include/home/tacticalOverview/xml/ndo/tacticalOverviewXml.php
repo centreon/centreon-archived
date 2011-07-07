@@ -631,7 +631,7 @@
 	/*
 	 *  Strings for service problems
 	 */
-	$xml->writeElement("str_unhandled", _("Unhandled Service problems"));
+	$xml->writeElement("str_unhandled", sprintf(_("Unhandled Service problems (last %s)"), $svcLimit));
 	$xml->writeElement("str_no_unhandled", _("No unhandled service problem"));
 	$xml->writeElement("str_hostname", _("Host Name"));
 	$xml->writeElement("str_servicename", _("Service Name"));
@@ -645,7 +645,7 @@
 	/*
 	 *  Strings for hosts problems
 	 */
-	$xml->writeElement("str_hostprobunhandled", _("Unhandled Host problems"));
+	$xml->writeElement("str_hostprobunhandled", sprintf(_("Unhandled Host problems (last %s)"), $hostLimit));
 	$xml->writeElement("str_hostprobno_unhandled", _("No unhandled host problem"));
 	$xml->writeElement("str_hostprobhostname", _("Host Name"));
 	$xml->writeElement("str_hostprobstatus", _("Status"));
