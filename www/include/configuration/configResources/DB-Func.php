@@ -106,7 +106,7 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_resource ";
 		$rq .= "SET resource_name = '".$pearDB->escape($ret["resource_name"])."', " .
-				"resource_line = '".$pearDB->escpae($ret["resource_line"])."', " .
+				"resource_line = '".$pearDB->escape($ret["resource_line"])."', " .
 				"resource_comment= '".$pearDB->escape($ret["resource_comment"])."', " .
 				"resource_activate= '".$ret["resource_activate"]["resource_activate"]."' " .
 				"WHERE resource_id = '".$resource_id."'";
