@@ -92,7 +92,6 @@
 	$form->addElement('text', 'purge_interval', _("Purge check interval"), $attrsText2);
 	$form->addElement('checkbox', 'auto_drop', _("Drop Data in another file"));
 	$form->addElement('text', 'drop_file', _("Drop file"), $attrsText);
-	$form->addElement('text', 'perfdata_file', _("Perfdata"), $attrsText);
 	
 	$storage_type = array(0 => "RRDTool", 2 => _("RRDTool & MySQL"));	
 	$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);

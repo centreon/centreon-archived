@@ -305,7 +305,6 @@
 				`purge_interval` = '".$ret["purge_interval"]."',
 				`auto_drop` = '".$ret["auto_drop"]."',
 				`drop_file` = '".$ret["drop_file"]."',
-				`perfdata_file` = '".$ret["perfdata_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
 				`nagios_log_file` = '".$ret["nagios_log_file"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',

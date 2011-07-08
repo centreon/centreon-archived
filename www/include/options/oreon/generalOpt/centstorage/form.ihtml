@@ -20,7 +20,6 @@
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.Input}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.storage_type.label}</td><td class="FormRowValue">{$form.storage_type.html}</td></tr>
- 	<tr class="list_one"><td class="FormRowField">{$form.perfdata_file.label}</td><td class="FormRowValue">{$form.perfdata_file.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_down.gif'>&nbsp;&nbsp;{$form.header.Drop}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.auto_drop.label}</td><td class="FormRowValue">{$form.auto_drop.html}</td></tr>
