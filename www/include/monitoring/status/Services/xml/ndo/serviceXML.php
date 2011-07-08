@@ -404,17 +404,19 @@
 				$obj->XML->text($ndo["host_name"], true, false);
 				$obj->XML->endElement();
 
+				$hostNotesUrl = "none";
 				if ($host_status[$ndo["host_name"]]["notes_url"]) {
-					$obj->XML->writeElement("hnu", str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["notes_url"]));
-				} else {
-					$obj->XML->writeElement("hnu", "none");
+					$hostNotesUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["notes_url"]);
+					$hostNotesUrl = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]["address"], $hostNotesUrl);
 				}
+                $obj->XML->writeElement("hnu", $hostNotesUrl);
 
+                $hostActionUrl = "none";
 			    if ($host_status[$ndo["host_name"]]["action_url"]) {
-					$obj->XML->writeElement("hau", str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["action_url"]));
-				} else {
-					$obj->XML->writeElement("hau", "none");
+					$hostActionUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["action_url"]);
+					$hostActionUrl = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]["address"], $hostActionUrl);
 				}
+				$obj->XML->writeElement("hau", $hostActionUrl);
 
 				$obj->XML->writeElement("hnn", $host_status[$ndo["host_name"]]["notes"]);
 				$obj->XML->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);

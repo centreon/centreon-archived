@@ -302,17 +302,19 @@
 			$obj->XML->text($data["name"], true, false);
 			$obj->XML->endElement();
 
+			$hostNotesUrl = "none";
 			if ($data["h_notes_url"]) {
-				$obj->XML->writeElement("hnu", str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]));
-			} else {
-				$obj->XML->writeElement("hnu", "none");
+				$hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
+				$hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
 			}
+			$obj->XML->writeElement("hnu", $hostNotesUrl);
 
+			$hostActionUrl = "none";
 		    if ($data["h_action_url"]) {
-				$obj->XML->writeElement("hau", str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]));
-			} else {
-				$obj->XML->writeElement("hau", "none");
+				$hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
+				$hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
 			}
+			$obj->XML->writeElement("hau", $hostActionUrl);
 
 			$obj->XML->writeElement("hnn", 	$data["h_notes"]);
 			$obj->XML->writeElement("hico", $data["h_icon_images"]);
