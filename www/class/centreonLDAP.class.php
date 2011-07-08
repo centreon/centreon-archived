@@ -264,7 +264,7 @@ class CentreonLDAP {
 	    $filter = preg_replace('/%s/', $pattern, $this->_groupSearchInfo['filter']);
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 	    if (false === $result) {
-	        print ldap_error($this->_ds);
+	        //print ldap_error($this->_ds);
 	        return array();
 	    }
 	    $entries = ldap_get_entries($this->_ds, $result);
@@ -341,7 +341,7 @@ class CentreonLDAP {
 	    $filter =  '(&' . preg_replace('/%s/', '*', $this->_groupSearchInfo['filter']) . '(' . $this->_groupSearchInfo['member'] . '=' . $userdn . '))';
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 	    if (false === $result) {
-	        print ldap_error($this->_ds);
+	        //print ldap_error($this->_ds);
 	        return array();
 	    }
 	    $entries = ldap_get_entries($this->_ds, $result);
