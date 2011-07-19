@@ -328,5 +328,5 @@
 	 */
 	$tpl->display("BlockHeader.ihtml");
 	$tpl->display("menu.ihtml");
-	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : print '<div id="contener"><!-- begin contener --><table id="Tcontener"><tr><td id="Tmainpage" class="TcTD">';
+	count($elemArr[3]) ? $tpl->display("BlockMenuType3.ihtml") : $tpl->display("noLeftMenu.ihtml");
 ?>
