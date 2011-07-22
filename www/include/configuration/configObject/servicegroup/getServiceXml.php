@@ -53,7 +53,7 @@ $hostId = $_POST['host_id'];
 $xml = new CentreonXML();
 $xml->startElement("response");
 if ($hostId != "") {
-    $query = "SELECT host_name, service_id, service_description
+    $query = "SELECT host_id, host_name, service_id, service_description
     		  FROM service s, host_service_relation hsr, host h
     		  WHERE s.service_id = hsr.service_service_id
     		  AND hsr.host_host_id = h.host_id ";
@@ -64,7 +64,7 @@ if ($hostId != "") {
     $res = $db->query($query);
     while ($row = $res->fetchRow()) {
         $xml->startElement("services");
-        $xml->writeElement("id", $row['service_id']);
+        $xml->writeElement("id", $row['host_id']."-".$row['service_id']);
         $xml->writeElement("description", sprintf("%s - %s", $row['host_name'], $row['service_description']));
         $xml->endElement();
     }

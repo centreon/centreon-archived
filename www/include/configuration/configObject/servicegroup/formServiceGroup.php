@@ -44,6 +44,7 @@
 	#
 
 	$sg = array();
+	$hServices = array();
 	if (($o == "c" || $o == "w") && $sg_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$sg_id."' LIMIT 1");
 
@@ -62,25 +63,25 @@
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
 		}
 		$DBRESULT->free();
+
+		$query = "SELECT host_id, host_name, service_id, service_description
+    		  FROM service s, servicegroup_relation sgr, host h
+    		  WHERE s.service_id = sgr.service_service_id
+    		  AND sgr.host_host_id = h.host_id
+    		  AND sgr.servicegroup_sg_id = "  . $sg_id;
+        $res = $pearDB->query($query);
+        while ($row = $res->fetchRow()) {
+            $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+            $hServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
+        }
 	}
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Services comes from DB -> Store in $hServices Array and $hgServices
-	//$hServices = array();
 	$hgServices = array();
 	$initName = NULL;
 
-	/*
-	$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow())	{
-		$services = getMyHostServices($host["host_id"]);
-		foreach ($services as $key => $s)
-			$hServices[$host["host_id"]."-".$key] = $host["host_name"]."&nbsp;-&nbsp;".$s;
-		unset($services);
-	}
-	$DBRESULT->free();
-	*/
 	$DBRESULT = $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 									"FROM host_service_relation hsr, service sv, hostgroup hg " .
 									"WHERE sv.service_register = '1' " .
@@ -140,7 +141,7 @@
     }
     $form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), array(), $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
@@ -281,11 +282,15 @@ function hostFilterSelect(elem)
 			var response = xhr.responseXML.documentElement;
 			var _services = response.getElementsByTagName("services");
 			var _selbox;
+
 			if (document.getElementById("sg_hServices-f")) {
 				_selbox = document.getElementById("sg_hServices-f");
+				_selected = document.getElementById("sg_hServices-t");
 			} else if (document.getElementById("__sg_hServices")) {
 				_selbox = document.getElementById("__sg_hServices");
+				_selected = document.getElementById("_sg_hServices");
 			}
+
 			while ( _selbox.options.length > 0 ){
 				_selbox.options[0] = null;
 			}
@@ -300,9 +305,18 @@ function hostFilterSelect(elem)
 				var _svc 		 = _services[i];
 				var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
 				var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+				var validFlag = true;
 
-				new_elem = new Option(_description,_id);
-				_selbox.options[_selbox.length] = new_elem;
+				for (var j = 0; j < _selected.length; j++) {
+					if (_id == _selected.options[j].value) {
+						validFlag = false;
+					}
+				}
+
+				if (validFlag == true) {
+    				new_elem = new Option(_description,_id);
+    				_selbox.options[_selbox.length] = new_elem;
+				}
 			}
 		}
 	}
