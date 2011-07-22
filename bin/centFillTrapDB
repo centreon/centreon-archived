@@ -66,13 +66,21 @@ sub existsInDB($$) {
 #
 
 sub getStatus($$) {
-    my ($val, $type) = @_;
-    if ($val =~ /[I|i][N|n][F|f][O|o][R|r][M|m][A|a][T|t][I|i][O|o][N|n][A|a][L|l]|[N|n][O|o][R|r][M|m][A|a][L|l]/) {
-		return 0;
-    } elsif ($val =~ /^[W|w][A|a][R|r][N|n][I|i][N|n][G|g]|[M|m][I|i][N|n][O|o][R|r]$/) {
-		return 1;
-    } elsif ($val =~ /^[C|c][R|r][I|i][T|t][I|i][C|c][A|a][L|l]|[M|m][A|a][J|j][O|o][R|r]$/) {
-		return 2;
+    my ($val, $name) = @_;
+    if ($val =~ /up/i) {
+        return 0;
+    } elsif ($val =~ /warning|degraded|minor/i) {
+        return 1;
+    } elsif ($val =~ /critical|major|failure|error|down/i) {
+        return 2;
+    }else {
+        if ($name =~ /normal|up/i || $name =~ /on$/i) {
+            return 0;
+        } elsif ($name =~ /warning|degraded|minor/i) {
+            return 1;
+        } elsif ($name =~ /critical|major|fail|error|down|bad/i | $name =~ /off|low$/i) {
+            return 2;
+        }
     }
     return 3;
 }
@@ -96,7 +104,7 @@ sub main($$) {
 				print "Trap oid : $name => $oid already exists in database\n";
 				$last_oid = $oid;
 		    } else {
-				$val = getStatus($val,$type);
+				$val = getStatus($val,$name);
 				my $sth = $dbh->prepare("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES ('$name', '$oid', '$val', '$manuf', '1')");
 				$sth->execute();
 				$sth->finish();
