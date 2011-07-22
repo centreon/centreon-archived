@@ -55,8 +55,8 @@
 		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
 			$sg["sg_hServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
 		}
-		$DBRESULT->free();	
-			
+		$DBRESULT->free();
+
 		$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_service_id FROM servicegroup_relation WHERE servicegroup_sg_id = '".$sg_id."' AND hostgroup_hg_id IS NOT NULL ORDER BY service_service_id");
 		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
 			$sg["sg_hgServices"][$i] = $services["hostgroup_hg_id"]."-".$services["service_service_id"];
@@ -67,10 +67,11 @@
 	## Database retrieve information for differents elements list we need on the page
 	#
 	# Services comes from DB -> Store in $hServices Array and $hgServices
-	$hServices = array();
+	//$hServices = array();
 	$hgServices = array();
 	$initName = NULL;
 
+	/*
 	$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_register = '1' ORDER BY host_name");
 	while ($host = $DBRESULT->fetchRow())	{
 		$services = getMyHostServices($host["host_id"]);
@@ -79,7 +80,7 @@
 		unset($services);
 	}
 	$DBRESULT->free();
-
+	*/
 	$DBRESULT = $pearDB->query(	"SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_description, sv.service_template_model_stm_id, sv.service_id " .
 									"FROM host_service_relation hsr, service sv, hostgroup hg " .
 									"WHERE sv.service_register = '1' " .
@@ -130,8 +131,16 @@
 	##
 	## Services Selection
 	##
+	$hostFilter = array(null => null,
+	                    0    => sprintf('__%s__', _('ALL')));
+    $query = "SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name ";
+    $res = $pearDB->query($query);
+    while ($row = $res->fetchRow()) {
+        $hostFilter[$row['host_id']] = $row['host_name'];
+    }
+    $form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
 	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'sg_hServices', array(_("Linked Host Services"), _("Available"), _("Selected")), array(), $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
@@ -245,3 +254,57 @@
 		$tpl->display("formServiceGroup.ihtml");
 	}
 ?>
+<script type='text/javascript'>
+function hostFilterSelect(elem)
+{
+	var arg = 'host_id='+elem.value;
+
+	if (window.XMLHttpRequest) {
+		var xhr = new XMLHttpRequest();
+	} else if(window.ActiveXObject){r
+    	try {
+    		var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+    	} catch (e) {
+    		var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    	}
+	} else {
+	   var xhr = false;
+	}
+
+	xhr.open("POST","./include/configuration/configObject/servicegroup/getServiceXml.php", true);
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xhr.send(arg);
+
+	xhr.onreadystatechange = function()
+	{
+		if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
+			var response = xhr.responseXML.documentElement;
+			var _services = response.getElementsByTagName("services");
+			var _selbox;
+			if (document.getElementById("sg_hServices-f")) {
+				_selbox = document.getElementById("sg_hServices-f");
+			} else if (document.getElementById("__sg_hServices")) {
+				_selbox = document.getElementById("__sg_hServices");
+			}
+			while ( _selbox.options.length > 0 ){
+				_selbox.options[0] = null;
+			}
+
+			if (_services.length == 0) {
+				_selbox.setAttribute('disabled', 'disabled');
+			} else {
+				_selbox.removeAttribute('disabled');
+			}
+
+			for (var i = 0 ; i < _services.length ; i++) {
+				var _svc 		 = _services[i];
+				var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+				var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+
+				new_elem = new Option(_description,_id);
+				_selbox.options[_selbox.length] = new_elem;
+			}
+		}
+	}
+}
+</script>
