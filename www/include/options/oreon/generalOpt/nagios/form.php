@@ -43,6 +43,8 @@
 	while ($opt = $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
+	$DBRESULT->free();
+
 
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
