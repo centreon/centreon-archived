@@ -126,7 +126,7 @@
 		"localhost" => '0',
 		"ns_ip_address" => "127.0.0.1",
 		"nagios_bin" => "/usr/sbin/nagios",
-		"nagiostats_bin" => "/usr/sbin/nagiostats",
+		"nagiostats_bin" => "/usr/bin/nagiostats",
 		"monitoring_engine"  =>  $centreon->optGen["monitoring_engine"],
 		"init_script" => "/etc/init.d/nagios",
 		"ns_activate" => '1',
