@@ -756,7 +756,6 @@ sub checkRun()
 sub main {
 	
     #Getting options
-    my %options;
     Getopt::Long::Configure('bundling');
     GetOptions ("h|help" 	=> \$options{"help"},
 		"d|debug" 	=> \$options{"debug"},
