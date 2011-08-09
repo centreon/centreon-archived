@@ -1268,29 +1268,29 @@ class CentreonGraph	{
 	 * @param unknown_type $vname
 	 * @param unknown_type $suffix
 	 */
-    private function subsRPN($rpn, $vname, $suffix = null) {
+	private function subsRPN($rpn, $vname, $suffix = null) {
 		$l_list = preg_split("/\,/",$rpn);
-        $l_rpn = "";
-        $l_err = 0;
-        foreach ($l_list as $l_m) {
-        	if (isset($vname[$l_m])) {
-            	if ($suffix == NULL) {
-                	$l_rpn .= $vname[$l_m].",";
-            	} else if (isset($vname[$l_m.$suffix])) {
-                	$l_rpn .= $vname[$l_m.$suffix].",";
-        		} else {
-                	$l_err = 1;
-        		}
-            } else {
-            	$l_rpn .= $l_m.",";
-            }
-            if ($l_err == 0) {
-            	return substr($l_rpn,0,strlen($l_rpn) - 1);
-            } else {
-            	return "No_RPN_Found";
-            }
+        	$l_rpn = "";
+        	$l_err = 0;
+        	foreach ($l_list as $l_m) {
+        		if (isset($vname[$l_m])) {
+            			if ($suffix == NULL) {
+                			$l_rpn .= $vname[$l_m].",";
+            			} else if (isset($vname[$l_m.$suffix])) {
+                			$l_rpn .= $vname[$l_m.$suffix].",";
+        			} else {
+                			$l_err = 1;
+        			}
+            		} else {
+            			$l_rpn .= $l_m.",";
+            		}
+		}
+		if ($l_err == 0) {
+			return substr($l_rpn,0,strlen($l_rpn) - 1);
+		} else {
+			return "No_RPN_Found";
+		}
         }
-	}
 
 	/**
 	 *
