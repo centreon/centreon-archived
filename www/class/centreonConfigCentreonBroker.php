@@ -209,6 +209,9 @@ class CentreonConfigCentreonBroker
         $qf->addElement('hidden', $tag . '[' . $formId . '][type]');
         $qf->setDefaults(array($tag . '[' . $formId . '][type]' => $type));
         
+        $qf->addElement('hidden', $tag . '[' . $formId . '][blockId]');
+        $qf->setDefaults(array($tag . '[' . $formId . '][blockId]' => $blockId));
+        
         foreach ($fields as $field) {
             $elementName = $tag . '[' . $formId . '][' . $field['fieldname'] . ']';
             $elementType = null;
@@ -423,6 +426,37 @@ class CentreonConfigCentreonBroker
 	        }
 	    }
 	    return true;
+    }
+    
+    public function getForms($config_id, $tag, $page, $tpl)
+    {
+        $query = "SELECT config_key, config_value, config_group_id
+        	FROM cfg_centreonbroker_info
+        	WHERE config_id = %d AND config_group = '%s'
+        	ORDER BY config_group_id";
+        $res = $this->db->query(sprintf($query, $config_id, $tag));
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $formsInfos = array();
+        while ($row = $res->fetchRow()) {
+            $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $row['config_key'] . ']';  
+            $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
+            if ($row['config_key'] == 'blockId') {
+                $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
+            }
+        }
+        $forms = array();
+        foreach (array_keys($formsInfos) as $key) {
+            $qf = $this->quickFormById($formsInfos[$key]['blockId'], $page, $key);
+            $qf->setDefaults($formsInfos[$key]['defaults']);
+            $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+            $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+        	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+        	$qf->accept($renderer);
+            $forms[] = $renderer->toArray();
+        }
+        return $forms;
     }
     
     /**

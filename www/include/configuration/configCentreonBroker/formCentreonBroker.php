@@ -95,7 +95,7 @@
 	
 	$tabs = array();
 	foreach ($tags as $tagId => $tag) {
-	    $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _('Add a ' . $tag), 'nb' => 0, 'blocks' => $cbObj->getListConfigBlock($tagId));
+	    $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _('Add a ' . $tag), 'nb' => 0, 'blocks' => $cbObj->getListConfigBlock($tagId), 'forms' => array());
 	}
 
 	/*
@@ -107,28 +107,18 @@
     		"activate" => '1'
 		));
 		$tpl->assign('config_id', 0);
-		$groups = array('output', 'input', 'logger');
-		foreach ($groups as $group) {
-		    $tpl->assign($group, 0);
-		}
 	} else {
 		if (isset($_GET['id']) && $_GET['id'] != 0) {
 		    $id = $_GET['id'];
 		    $tpl->assign('config_id', $id);
 			$form->setDefaults(getCentreonBrokerInformation($id));
 			/*
-			 * Get the number of output/input/logger
+			 * Get informations for modify
 			 */
-			$groups = array('output', 'input', 'logger');
-			foreach ($groups as $group) {
-    			$query = "SELECT COUNT(DISTINCT config_group_id) as nb FROM cfg_centreonbroker_info WHERE config_id = " . $id . " AND config_group = '" . $group . "'";
-    			$res = $pearDB->query($query);
-    			if (!PEAR::isError($res)) {
-    			    $row = $res->fetchRow();
-    			    $tpl->assign($group, $row['nb']);
-    			} else {
-    			    $tpl->assign($group, 0);
-    			}
+			$nbTabs = count($tabs);
+			for ($i = 0; $i < $nbTabs; $i++) {
+			    $tabs[$i]['forms'] = $cbObj->getForms($id, $tabs[$i]['id'], $p, $tpl);
+			    $tabs[$i]['nb'] = count($tabs[$i]['forms']);
 			}
 		}
 	}

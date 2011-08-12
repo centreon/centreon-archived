@@ -81,10 +81,9 @@
 	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
-	$tpl->assign('form', $renderer->toArray());
-	$tpl->assign('tag', $tag);
-	$tpl->assign('pos', $pos);
-	$tpl->assign('blockId', $id);
+	$tpl->assign('formBlock', $renderer->toArray());
+	$tpl->assign('tagBlock', $tag);
+	$tpl->assign('posBlock', $pos);
 	$tpl->assign('helps', $helps);
 	
 	$tpl->display("blockConfig.ihtml");
