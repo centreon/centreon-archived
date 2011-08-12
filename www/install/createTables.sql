@@ -1734,6 +1734,7 @@ CREATE TABLE IF NOT EXISTS `nagios_server` (
   `nagiostats_bin` varchar(255) default NULL,
   `nagios_perfdata` varchar(255) default NULL,
   `centreonbroker_cfg_path` varchar(255) default NULL,
+  `centreonbroker_module_path` varchar(255) default NULL,
   `ssh_port` int(11) default NULL,
   `ssh_private_key` varchar(255) default NULL,
   PRIMARY KEY  (`id`)

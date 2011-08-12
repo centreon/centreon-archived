@@ -119,6 +119,7 @@
 	 */
 	$form->addElement('header', 'CentreonBroker', _("Centreon Broker"));
 	$form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
+	$form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
 
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
