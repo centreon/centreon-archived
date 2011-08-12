@@ -33,7 +33,9 @@
 			<tbody id="{$tab.id}_0">
 				<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$tab.name}</td></tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><a href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
+				<tr class="list_one"><td class="FormRowField" colspan="2"><select id="block_{$tab.id}">{foreach from=$tab.blocks item=block}
+				<option value="{$block.id}">{$block.name}</option>
+				{/foreach}</select>&nbsp;<a href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
 			</tbody>
 		</table>
 	</div>
@@ -74,7 +76,7 @@ function Infos() {
 
 var infos = new Infos();
 {/literal}
-{foreach from=tabs item=tab}
+{foreach from=$tabs item=tab}
 infos.setPos("{$tab.id}", {$tab.nb});
 {/foreach}
 {literal}
@@ -83,7 +85,8 @@ function addInfo(type) {
 	var prev_id = infos.getPos(type);
 	var id = prev_id + 1;
 	var id_name = type + '_' + id;
-	var blockId = "2";
+	var blockId = $('block_' + type).getValue();
+	console.log(blockId);
 	var params;
 
     var tbody = new Element('tbody');

@@ -48,7 +48,7 @@
 	 * Cast the block id in int
 	 */
 	try {
-	    $id = (int)$_GET['blockId'];
+	    $id = (string)$_GET['blockId'];
 	    $tag = (string)$_GET['tag'];
 	    $pos = (int)$_GET['pos'];
 	} catch (Exception $e) {
@@ -57,20 +57,14 @@
 	
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
 	
-	/*
-	 * Check if the block as the tag
-	 */
-	if (!in_array($tag, $cbObj->getListTagsByBlockId($id))) {
-	    exit();
-	}
-	
-	$form = $cbObj->quickFormById($id, $tag, $_GET['p'], $pos);
+	$form = $cbObj->quickFormById($id, $_GET['p'], $pos);
 	
 	$helps = array();
-	$infos = $cbObj->getBlockInfos($id);
+	list($tagId, $typeId) = explode('_', $id);
+	$fields = $cbObj->getBlockInfos($typeId);
 	$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));;
 	$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));;
-	foreach ($infos['fields'] as $field) {
+	foreach ($fields as $field) {
 	    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
 	}
 	

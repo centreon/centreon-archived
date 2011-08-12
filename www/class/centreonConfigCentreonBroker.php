@@ -36,14 +36,20 @@
  *
  */
 
+/**
+ * Class for Centreon Broker configuration
+ * 
+ * @author Maximilien Bersoult <mbersoult@merethis.com>
+ */
 class CentreonConfigCentreonBroker
 {
     private $db;
-    private $tags = null;
     private $attrText = array("size"=>"30");
     private $attrInt = array("size"=>"10");
     
-    private $tagsByBlock = array();
+    private $tagsCache = null;
+    private $blockCache = array();
+    
     private $blockInfoCache = array();
     private $listValues = array();
     private $defaults = array();
@@ -61,7 +67,7 @@ class CentreonConfigCentreonBroker
     public function __sleep()
     {
         $this->db = null;
-        return array('tags', 'attrText', 'attrInt', 'blockInfoCache', 'listValues', 'defaults');
+        return array('attrText', 'attrInt', 'tagsCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults');
     }
     
     /**
@@ -81,68 +87,98 @@ class CentreonConfigCentreonBroker
      */
     public function getTags()
     {
-        if (!is_null($this->tags)) {
-            return $this->tags;
+        if (!is_null($this->tagsCache)) {
+            return $this->tagsCache;
         }
-        $query = "SELECT tagname
-        	FROM cb_config_tag
+        $query = "SELECT cb_tag_id, tagname
+        	FROM cb_tag
         	ORDER BY tagname";
         $res = $this->db->query($query);
         if (PEAR::isError($res)) {
             return array();
         }
-        $this->tags = array();
+        $this->tagsCache = array();
         while ($row = $res->fetchRow()) {
-            $this->tags[] = $row['tagname'];
+            $this->tagsCache[$row['cb_tag_id']] = $row['tagname'];
         }
-        return $this->tags;
+        return $this->tagsCache;
     }
     
     /**
-     * Get the list of tags
+     * Get the tagname
      * 
-     * @param int $blockId The block id
+     * @param int $tagId The tag id
+     * @return string|null null in error
+     */
+    public function getTagName($tagId)
+    {
+        if (!is_null($this->tagsCache) && isset($this->tagsCache[$tagId])) {
+            return $this->tagsCache[$tagId];
+        }
+        $query = "SELECT tagname
+        	FROM cb_tag
+        	WHERE cb_tag_id = %d";
+        $res = $this->db->query(sprintf($query, $tagId));
+        if (PEAR::isError($res)) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        if (is_null($row)) {
+            return null;
+        }        
+        return $row['tagname'];
+    }
+    
+    /**
+     * Return the list of config block
+     * 
+     * The id is 'tag_id'_'type_id'
+     * The name is "module_name - type_name"
+     * 
+     * @param int $tagId The tag id
      * @return array
      */
-    public function getListTagsByBlockId($blockId)
+    public function getListConfigBlock($tagId)
     {
-        if (isset($this->tagsByBlock[$blockId])) {
-            return $this->tagsByBlock[$blockId];
+        if (isset($this->blockCache[$tagId])) {
+            return $this->blockCache[$tagId];
         }
-        $this->tagsByBlock[$blockId] = array();
-        $query = "SELECT ct.tagname
-        	FROM cb_config_tag ct, cb_config_block_tag_rel cbt
-        	WHERE ct.cb_config_tag_id = cbt.cb_config_tag_id AND cbt.cb_config_block_id = %d
-        	ORDER BY ct.tagname";
-        $res = $this->db->query(sprintf($query, $blockId));
-        if (!PEAR::isError($res)) {
-            while ($row = $res->fetchRow()) {
-                $this->tagsByBlock[$blockId][] = $row['tagname'];
-            }
+        $query = "SELECT m.name, t.cb_type_id, t.type_name
+        	FROM cb_module m, cb_type t, cb_tag_type_relation ttr
+        	WHERE m.cb_module_id = t.cb_module_id AND ttr.cb_type_id = t.cb_type_id AND ttr.cb_tag_id = %d";
+        $res = $this->db->query(sprintf($query, $tagId));
+        if (PEAR::isError($res)) {
+            return array();
         }
-        return $this->tagsByBlock[$blockId];
+        $this->blockCache[$tagId] = array();
+        while ($row = $res->fetchRow()) {
+            $name = $row['name'] . ' - ' . $row['type_name'];
+            $id = $tagId . '_' . $row['cb_type_id'];
+            $this->blockCache[$tagId][] = array('id' => $id, 'name' => $name);
+        }
+        return $this->blockCache[$tagId];
     }
     
     /**
      * Create the HTML_QuickForm object with element for a block
      * 
-     * @param int $blockId The block id
-     * @param string $tag The tag name
+     * @param int $blockId The block id ('tag_id'_'type_id')
      * @param int $page The centreon page id
      * @param int $formId The form post
      * @return HTML_QuickForm
      */
-    public function quickFormById($blockId, $tag, $page, $formId = 1)
+    public function quickFormById($blockId, $page, $formId = 1)
     {
-        $infos = $this->getBlockInfos($blockId);
+        list($tagId, $typeId) = explode('_', $blockId);
+        $fields = $this->getBlockInfos($typeId);
+        $tag = $this->getTagName($tagId);
         
         $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
         
         $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), $this->attrText);
         $qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
-        $qf->addElement('select', $tag . '[' . $formId . '][type]', _('Type'), $infos['types']);
         
-        foreach ($infos['fields'] as $field) {
+        foreach ($fields as $field) {
             $elementName = $tag . '[' . $formId . '][' . $field['fieldname'] . ']';
             $elementType = null;
             $elementAttr = array();
@@ -205,70 +241,44 @@ class CentreonConfigCentreonBroker
              * Defaults values
              */
             if (!is_null($field['value']) && $field['value'] === false) {
-                $qf->setDefaults(array($elementName, $field['value']));
+                $qf->setDefaults(array($elementName => $field['value']));
             }
             if (!is_null($default)) {
                 $qf->setDefaults(array($elementName => $default));
             }
         }
+        print "<pre>";
+        var_dump($qf);
+        print "</pre>";
         return $qf;
     }
     
     /**
      * Get informations for a block
      * 
-     * @param int $blockId The block id
+     * @param int $typeId The type id
      * @return array
      */
-    public function getBlockInfos($blockId)
+    public function getBlockInfos($typeId)
     {
-        if (isset($this->blockInfoCache[$blockId])) {
-            return $this->blockInfoCache[$blockId];
-        }
-        /*
-         * Get list of modules
-         */
-        $modules = array();
-        $query = "SELECT m.cb_module_id
-			FROM cb_module m, cb_config_block b, cb_config_block_module_rel mbr
-				WHERE m.is_activated = 1
-					AND (m.cb_module_id = mbr.cb_module_id AND b.cb_config_block_id = mbr.cb_config_block_id AND m.is_bundle = 0 AND b.cb_config_block_id = %d)
-					OR (m.bundle = (
-						SELECT m2.cb_module_id
-							FROM cb_module m2, cb_config_block b2, cb_config_block_module_rel mbr2
-							WHERE m2.is_activated = 1
-								AND m2.cb_module_id = mbr2.cb_module_id AND b2.cb_config_block_id = mbr2.cb_config_block_id AND m2.is_bundle = 1 AND b2.cb_config_block_id = %d))";
-        $res = $this->db->query(sprintf($query, $blockId, $blockId));
-        if (PEAR::isError($res)) {
-            return false;
-        }
-        while ($row = $res->fetchRow()) {
-            $modules[] = $row['cb_module_id'];
-        }
-        
-        /*
-         * Get the list of type for a block
-         */
-        $types = array();
-        $query = "SELECT type_name, type_shortname
-        	FROM cb_type
-        	WHERE module_id IN (%s)";
-        $res = $this->db->query(sprintf($query, join(', ', $modules)));
-        if (PEAR::isError($res)) {
-            return false;
-        }
-        while ($row = $res->fetchRow()) {
-            $types[$row['type_shortname']] = $row['type_name'];
+        if (isset($this->blockInfoCache[$typeId])) {
+            return $this->blockInfoCache[$typeId];
         }
         
         /*
          * Get the list of fields for a block
          */
         $fields = array();
-        $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.description, f.external, mfr.is_required, mfr.order_display
-        	FROM cb_field f, cb_module_field_rel mfr
-        		WHERE f.cb_field_id = mfr.cb_field_id AND mfr.cb_module_id IN (%s)";
-        $res = $this->db->query(sprintf($query, join(', ', $modules)));
+        $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.description, f.external, tfr.is_required, tfr.order_display
+        	FROM cb_field f, cb_type_field_relation tfr
+        		WHERE f.cb_field_id = tfr.cb_field_id AND (tfr.cb_type_id = %d
+        			OR tfr.cb_type_id IN (SELECT t.cb_type_id
+        				FROM cb_type t, cb_module_relation mr
+        				WHERE mr.inherit_config = 1 AND t.cb_module_id IN (SELECT mr2.cb_module_id
+        					FROM cb_type t2, cb_module_relation mr2
+        					WHERE t2.cb_module_id = mr2.module_depend_id AND t2.cb_type_id = %d)))
+        	ORDER BY tfr.order_display";
+        $res = $this->db->query(sprintf($query, $typeId, $typeId));
         if (PEAR::isError($res)) {
             return false;
         }
@@ -289,8 +299,8 @@ class CentreonConfigCentreonBroker
             $fields[] = $field;
         }
         usort($fields, array($this, 'sortField'));
-        $this->blockInfoCache[$blockId] = array('types' => $types, 'fields' => $fields);
-        return $this->blockInfoCache[$blockId];
+        $this->blockInfoCache[$typeId] = $fields;
+        return $this->blockInfoCache[$typeId];
     }
     
     /**

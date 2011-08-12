@@ -94,8 +94,8 @@
 	$tags = $cbObj->getTags();
 	
 	$tabs = array();
-	foreach ($tags as $tag) {
-	    $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _('Add a ' . $tag), 'nb' => 0);
+	foreach ($tags as $tagId => $tag) {
+	    $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _('Add a ' . $tag), 'nb' => 0, 'blocks' => $cbObj->getListConfigBlock($tagId));
 	}
 
 	/*
