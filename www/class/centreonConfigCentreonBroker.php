@@ -133,7 +133,7 @@ class CentreonConfigCentreonBroker
                    foreach ($this->getListValues($field['id']) as $key => $value) {
     	               $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['name'], null, _($value), $key);
                    }
-	               $form->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
+	               $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
                    break;
                case 'text':
                default:
@@ -150,9 +150,9 @@ class CentreonConfigCentreonBroker
                 $roValue = $this->getInfoDb($field['value']);
                 $field['value'] = 'DB[' . $field['value'] . ']';
                 if (is_array($roValue)) {
-                    $qf->addElement('select', $tag . '_' . $formId . _ . $field['name'], _($field['displayname']), $roValue);
+                    $qf->addElement('select', $tag . '_' . $formId . '_' . $field['name'], _($field['displayname']), $roValue);
                 } else {
-                    $qf->addElement('text', $tag . '_' . $formId . _ . $field['name'] , _($field['displayname']), $this->attrText);
+                    $qf->addElement('text', $tag . '_' . $formId . '_' . $field['name'] , _($field['displayname']), $this->attrText);
                 }
                 $qf->freeze($roElementName);
             }
@@ -232,7 +232,7 @@ class CentreonConfigCentreonBroker
          * Get the list of fields for a block
          */
         $fields = array();
-        $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.external, mfr.is_required
+        $query = "SELECT f.cb_field_id, f.fieldname, f.displayname, f.fieldtype, f.description, f.external, mfr.is_required, mfr.order_display
         	FROM cb_field f, cb_module_field_rel mfr
         		WHERE f.cb_field_id = mfr.cb_field_id AND mfr.cb_module_id IN (%s)";
         $res = $this->db->query(sprintf($query, join(', ', $modules)));
@@ -245,16 +245,37 @@ class CentreonConfigCentreonBroker
             $field['fieldname'] = $row['fieldname'];
             $field['displayname'] = $row['displayname'];
             $field['fieldtype'] = $row['fieldtype'];
+            $field['description'] = $row['description'];
             $field['required'] = $row['is_required'];
-            if (is_null($row['external']) || $row['external'] != 'null') {
+            $field['order'] = $row['order_display'];
+            if (!is_null($row['external']) || $row['external'] != 'null') {
                 $field['value'] = $row['external'];
             } else {
                 $field['value'] = null;
             }
             $fields[] = $field;
         }
+        usort($fields, array($this, 'sortField'));
         $this->blockInfoCache[$blockId] = array('types' => $types, 'fields' => $fields);
         return $this->blockInfoCache[$blockId];
+    }
+    
+    /**
+     * Sort the fields by order display
+     * 
+     * @param array $field1 The first field to sort
+     * @param array $field2 The second field to sort
+     * @return int
+     */
+    private function sortField($field1, $field2)
+    {
+        if ($field1['order'] == $field2['order']) {
+            return 0;
+        } elseif ($field1['order'] < $field2['order']) {
+            return -1;
+        } else {
+            return 1;
+        }
     }
     
     private function getListValues($fieldId)

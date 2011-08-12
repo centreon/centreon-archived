@@ -64,7 +64,15 @@
 	    exit();
 	}
 	
-	$form = $cbObj->quickFormById($id, $tag, $pos);
+	$form = $cbObj->quickFormById($id, $tag, $_GET['p'], $pos);
+	
+	$helps = array();
+	$infos = $cbObj->getBlockInfos($id);
+	$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));;
+	$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));;
+	foreach ($infos['fields'] as $field) {
+	    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
+	}
 	
 	/*
 	 * Smarty template Init
@@ -83,6 +91,7 @@
 	$tpl->assign('tag', $tag);
 	$tpl->assign('pos', $pos);
 	$tpl->assign('blockId', $id);
+	$tpl->assign('helps', $helps);
 	
 	$tpl->display("blockConfig.ihtml");
 ?>

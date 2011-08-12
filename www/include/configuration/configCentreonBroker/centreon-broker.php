@@ -59,6 +59,8 @@
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 	
+	require_once './class/centreonConfigCentreonBroker.php';
+	
 	/*
 	 * Path to the configuration dir
 	 */
@@ -76,6 +78,9 @@
 	}
 		
 	switch ($o) {
+	    case "j" :
+	        require_once($path."blockConfig.php");
+	        break; #For display a block config
 	    case "a" : 
 			require_once($path."formCentreonBroker.php"); 
 			break; #Add CentreonBroker

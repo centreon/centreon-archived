@@ -1,23 +1,29 @@
 <tr class="list_lvl_1">
-  <td class="ListColLvl1_name">{$tag|capitalize} {$blockId}</td>
+  <td class="ListColLvl1_name">{$tag|capitalize} {$pos}</td>
   <td class="ListColLvl1_name" style="text-align: right;"><a href="javascript:deleteRow('output', {$blockId});"><img src="./img/icones/16x16/delete.gif"/></a></td>
 </tr>
 {foreach from=$form key=tagKey item=tagEl}
 {if $tagKey == $tag}
 {foreach from=$tagEl key=posKey item=posEl}
 {if $posKey == $pos}
-{foreach from=$posEl item=element}
+{foreach from=$posEl item=element name=elementFor}
 {if $smarty.foreach.elementFor.index % 2 == 0}
 {assign var='classEl' value='list_one'}
 {else}
 {assign var='classEl' value='list_two'}
 {/if}
 <tr class="{$classEl}">
-  <td class="FormRowField">{$element.label}</td>
+  <td class="FormRowField">
+  	<img class="helpTooltip" name="{$element.name}" />
+  	{$element.label}
+  </td>
   <td class="FormRowValue">{$element.html}</td>
 </tr>
 {/foreach}
 {/if}
 {/foreach} 
 {/if}
+{/foreach}
+{foreach from=$helps item=help}
+<span style="display: none;" id="help:{$help.name}">{$help.desc}</span>
 {/foreach}
