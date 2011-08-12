@@ -109,7 +109,6 @@ function addInfo(type) {
 
 function deleteRow(type, id) {
 	var row_name = type + '_' + id;
-	console.log(row_name);
 	var parent = document.getElementById(type);
 	var delEl = document.getElementById(row_name);
 	parent.removeChild(delEl);

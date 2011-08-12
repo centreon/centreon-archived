@@ -250,9 +250,9 @@ class CentreonConfigCentreonBroker
                 $roValue = $this->getInfoDb($field['value']);
                 $field['value'] = 'DB[' . $field['value'] . ']';
                 if (is_array($roValue)) {
-                    $qf->addElement('select', $tag . '_' . $formId . '_' . $field['name'], _($field['displayname']), $roValue);
+                    $qf->addElement('select', $tag . '_' . $formId . '_' . $field['fieldname'], _($field['displayname']), $roValue);
                 } else {
-                    $qf->addElement('text', $tag . '_' . $formId . '_' . $field['name'] , _($field['displayname']), $this->attrText);
+                    $qf->addElement('text', $tag . '_' . $formId . '_' . $field['fieldname'] , _($field['displayname']), $this->attrText);
                 }
                 $qf->freeze($roElementName);
             }
@@ -278,7 +278,11 @@ class CentreonConfigCentreonBroker
                 $qf->setDefaults(array($elementName => $field['value']));
             }
             if (!is_null($default)) {
-                $qf->setDefaults(array($elementName => $default));
+                if ($field['fieldtype'] != 'radio') {
+                    $qf->setDefaults(array($elementName => $default));
+                } else {
+                    $qf->setDefaults(array($elementName . '[' . $field['fieldname'] . ']' => $default));
+                }
             }
         }
         return $qf;
@@ -305,9 +309,9 @@ class CentreonConfigCentreonBroker
         		WHERE f.cb_field_id = tfr.cb_field_id AND (tfr.cb_type_id = %d
         			OR tfr.cb_type_id IN (SELECT t.cb_type_id
         				FROM cb_type t, cb_module_relation mr
-        				WHERE mr.inherit_config = 1 AND t.cb_module_id IN (SELECT mr2.cb_module_id
+        				WHERE mr.inherit_config = 1 AND t.cb_module_id IN (SELECT mr2.module_depend_id
         					FROM cb_type t2, cb_module_relation mr2
-        					WHERE t2.cb_module_id = mr2.module_depend_id AND t2.cb_type_id = %d)))
+        					WHERE t2.cb_module_id = mr2.cb_module_id AND t2.cb_type_id = %d)))
         	ORDER BY tfr.order_display";
         $res = $this->db->query(sprintf($query, $typeId, $typeId));
         if (PEAR::isError($res)) {
