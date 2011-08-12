@@ -39,6 +39,8 @@
 	if (!isset($oreon)) {
 		exit();
 	}
+	
+	$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 	/*
 	 * nagios servers comes from DB
@@ -88,25 +90,13 @@
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 	$form->addGroup($status, 'activate', _("Status"), '&nbsp;');
-
-	/*
-	 * TAB 2 - Outputs
-	 */
-	$tpl->assign('centreonbroker_output', _("Centreon-Broker outputs"));
-	$tpl->assign('output_add', _("Add an output"));
-
-	/*
-	 * TAB 3 - Inputs
-	 */
-	$tpl->assign('centreonbroker_input', _("Centreon-Broker inputs"));
-	$tpl->assign('input_add', _("Add an input"));
-
-	/*
-	 * TAB 4 - logger
-	 */
-	$tpl->assign('centreonbroker_logger', _("Centreon-Broker loggers"));
-	$tpl->assign('logger_add', _("Add a logger"));
-
+	
+	$tags = $cbObj->getTags();
+	
+	$tabs = array();
+	foreach ($tags as $tag) {
+	    $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _('Add a ' . $tag), 'nb' => 0);
+	}
 
 	/*
 	 * Default values
@@ -193,10 +183,9 @@
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
+		$tpl->assign('p', $p);
 		$tpl->assign('sort1', _("General"));
-		$tpl->assign('sort2', _("Output"));
-		$tpl->assign('sort3', _("Input"));
-		$tpl->assign('sort4', _("Logger"));
+		$tpl->assign('tabs', $tabs);
 		$tpl->display("formCentreonBroker.ihtml");
 	}
 ?>

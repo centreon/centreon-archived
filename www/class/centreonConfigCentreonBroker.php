@@ -39,10 +39,11 @@
 class CentreonConfigCentreonBroker
 {
     private $db;
-    private $tags = array();
+    private $tags = null;
     private $attrText = array("size"=>"30");
     private $attrInt = array("size"=>"10");
     
+    private $tagsByBlock = array();
     private $blockInfoCache = array();
     private $listValues = array();
     private $defaults = array();
@@ -74,6 +75,30 @@ class CentreonConfigCentreonBroker
     }
     
     /**
+     * Return the list of tags
+     * 
+     * @return array
+     */
+    public function getTags()
+    {
+        if (!is_null($this->tags)) {
+            return $this->tags;
+        }
+        $query = "SELECT tagname
+        	FROM cb_config_tag
+        	ORDER BY tagname";
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $this->tags = array();
+        while ($row = $res->fetchRow()) {
+            $this->tags[] = $row['tagname'];
+        }
+        return $this->tags;
+    }
+    
+    /**
      * Get the list of tags
      * 
      * @param int $blockId The block id
@@ -81,10 +106,10 @@ class CentreonConfigCentreonBroker
      */
     public function getListTagsByBlockId($blockId)
     {
-        if (!is_null($this->tags[$blockId])) {
-            return $this->tags[$blockId];
+        if (isset($this->tagsByBlock[$blockId])) {
+            return $this->tagsByBlock[$blockId];
         }
-        $this->tags[$blockId] = array();
+        $this->tagsByBlock[$blockId] = array();
         $query = "SELECT ct.tagname
         	FROM cb_config_tag ct, cb_config_block_tag_rel cbt
         	WHERE ct.cb_config_tag_id = cbt.cb_config_tag_id AND cbt.cb_config_block_id = %d
@@ -92,10 +117,10 @@ class CentreonConfigCentreonBroker
         $res = $this->db->query(sprintf($query, $blockId));
         if (!PEAR::isError($res)) {
             while ($row = $res->fetchRow()) {
-                $this->tags[$blockId][] = $row['tagname'];
+                $this->tagsByBlock[$blockId][] = $row['tagname'];
             }
         }
-        return $this->tags[$blockId];
+        return $this->tagsByBlock[$blockId];
     }
     
     /**
@@ -121,7 +146,7 @@ class CentreonConfigCentreonBroker
             $elementName = $tag . '[' . $formId . '][' . $field['fieldname'] . ']';
             $elementType = null;
             $elementAttr = array();
-            $defaults = null;
+            $default = null;
             switch ($field['fieldtype']) {
                case 'int':
                    $elementType = 'text';
@@ -131,20 +156,14 @@ class CentreonConfigCentreonBroker
                    $elementType = 'select';
                    $elementAttr = $this->getListValues($field['id']);
                    $default = $this->getDefaults($field['id']);
-                   if (!is_null($default)) {
-                       $defaults = array($elementName => $default);
-                   }
                    break; 
                case 'radio':
                    $tmpRadio = array();
                    foreach ($this->getListValues($field['id']) as $key => $value) {
-    	               $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['name'], null, _($value), $key);
+    	               $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['fieldname'], null, _($value), $key);
                    }
 	               $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
                    $default = $this->getDefaults($field['id']);
-                   if (!is_null($default)) {
-                       $defaults = array($elementName => $default);
-                   }
                    break;
                case 'text':
                default:
@@ -188,8 +207,8 @@ class CentreonConfigCentreonBroker
             if (!is_null($field['value']) && $field['value'] === false) {
                 $qf->setDefaults(array($elementName, $field['value']));
             }
-            if (!is_null($defaults)) {
-                $qf->setDefaults($defaults);
+            if (!is_null($default)) {
+                $qf->setDefaults(array($elementName => $default));
             }
         }
         return $qf;

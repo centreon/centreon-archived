@@ -3,9 +3,9 @@
 	<div>
 	<ul id="mainnav">
 		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
-		<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
-		<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
-		<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+		{foreach from=$tabs item=tab name=tabForeach}
+		<li class="b" id='c{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}'><a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">{$tab.id|capitalize}</a></li>
+		{/foreach}
 	</ul>
 	</div>
 	<div id="validFormTop">
@@ -21,40 +21,23 @@
 			<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$centreonbroker_configuration}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		</table>
 	</div>
-	<div id='tab2' class='tab'>
-		<table class="ListTable" id="output">
-			<tbody id="logger_0">
+	{foreach from=$tabs item=tab name=tabForeach2}
+	<div id='tab{math equation="x + y" x=$smarty.foreach.tabForeach2.index y=2}' class='tab'>
+		<table class="ListTable" id="{$tab.id}">
+			<tbody id="{$tab.id}_0">
 				<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$centreonbroker_output}</td></tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><a href="javascript:addInfo('output')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$output_add}</a></td></tr>
+				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$tab.name}</td></tr>
+				<tr class="list_one"><td class="FormRowField" colspan="2"><a href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
 			</tbody>
 		</table>
 	</div>
-	<div id='tab3' class='tab'>
-		<table class="ListTable" id="input">
-			<tbody id="logger_0">
-				<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$centreonbroker_input}</td></tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><a href="javascript:addInfo('input')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$input_add}</a></td></tr>
-			</tbody>
-		</table>
-	</div>
-	<div id='tab4' class='tab'>
-		<table class="ListTable" id="logger">
-			<tbody id="logger_0">
-				<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$centreonbroker_logger}</td></tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><a href="javascript:addInfo('logger')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$logger_add}</a></td></tr>
-			</tbody>
-		</table>
-	</div>
-	<div id="tmp_xslt" style="visibility: hidden"></div>
+	{/foreach}
 	<div id="validForm">
 	{if $o == "a" || $o == "c"}
 		<p>{$form.action.html}</p>
@@ -71,205 +54,57 @@ function mk_paginationFF(){};
 function set_header_title(){};
 
 function Infos() {
-	this.output = {/literal}{$output}{literal};
-	this.input = {/literal}{$input}{literal};
-	this.logger = {/literal}{$logger}{literal};
+	this.tags = new Array();
 	
 	this.getPos = function(type){
-		if (type == 'output') {
-			return this.output;
-		} else if (type == 'input') {
-			return this.input;
-		} else if (type == 'logger') {
-			return this.logger;
+		if (this.tags[type] == undefined) {
+			this.tags[type] = 0;
 		}
+		return this.tags[type];
+	};
+	
+	this.setPos = function(type, value){
+		this.tags[type] = value;
 	};
 	
 	this.incrementPos = function(type){
-		if (type == 'output') {
-			this.output++;
-		} else if (type == 'input') {
-			this.input++;
-		} else if (type == 'logger') {
-			this.logger++;
-		}
+		this.tags[type]++;
 	};
 }
 
 var infos = new Infos();
+{/literal}
+{foreach from=tabs item=tab}
+infos.setPos("{$tab.id}", {$tab.nb});
+{/foreach}
+{literal}
 
 function addInfo(type) {
 	var prev_id = infos.getPos(type);
 	var id = prev_id + 1;
-	var id_name = type + '_' + prev_id;
-	
+	var id_name = type + '_' + id;
+	var blockId = "2";
 	var params;
-    var proc;
-    var addrXML;
-    var addrXSL;
 
-    params = '?o={/literal}{$o}{literal}&pos_id=' + id;
-    proc = new Transformation();
-    addrXML = './include/configuration/configCentreonBroker/xml/' + type + 'Xml.php' + params;
-    addrXSL = './include/configuration/configCentreonBroker/xsl/' + type + '.xsl';
-    proc.setXml(addrXML);
-    proc.setXslt(addrXSL);
-    proc.setCallback(function(){
-    	var element = document.getElementById(type);
-    	element.appendChild(document.getElementById('tmp_xslt').firstChild.firstChild);
-    	document.getElementById('tmp_xslt').innerHTML = '';
-    	changeType(type, id, 0, document.getElementById(type + '_' + id + '_type'));
-    });
-    proc.transform('tmp_xslt');
-    
+    var tbody = new Element('tbody');
+    tbody.writeAttribute('id', id_name);
+    console.log(type + '_' + prev_id);
+    Element.insert($(type + '_' + prev_id), {after: tbody});
+    params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
+    new Ajax.Updater(
+    		tbody,
+    		'main.php' + params,
+    		{evalScripts: true}
+    		);
     infos.incrementPos(type);
-}
-
-function loadInfo(config_id, type) {
-	var last_id = infos.getPos(type);
-	
-	var params;
-    var proc;
-    var addrXML;
-    var addrXSL;
-    var pos_id = 1;
-
-    params = '?o={/literal}{$o}{literal}&config_id=' + config_id;
-    proc = new Transformation();
-    addrXML = './include/configuration/configCentreonBroker/xml/' + type + 'Xml.php' + params;
-    addrXSL = './include/configuration/configCentreonBroker/xsl/' + type + '.xsl';
-    proc.setXml(addrXML);
-    proc.setXslt(addrXSL);
-    proc.setCallback(function(){
-    	var element = document.getElementById(type);
-    	var nbLength = document.getElementById('tmp_xslt').childNodes.length;
-    	for (i = 0; i < nbLength; i++) {
-    		element.appendChild(document.getElementById('tmp_xslt').childNodes[i].firstChild);	
-    	}
-    	document.getElementById('tmp_xslt').innerHTML = '';
-    	for (i = 0; i < nbLength; i++) {
-	    	elId = type + '_' + pos_id + '_type';
-	    	changeType(type, pos_id, document.getElementById(elId).selectedIndex, document.getElementById(elId));
-	    	pos_id = pos_id + 1;
-    	}
-    });
-    proc.transform('tmp_xslt');
 }
 
 function deleteRow(type, id) {
 	var row_name = type + '_' + id;
+	console.log(row_name);
 	var parent = document.getElementById(type);
 	var delEl = document.getElementById(row_name);
 	parent.removeChild(delEl);
 }
-
-function changeLoggerType(id, typeLogger, select) {
-	var base_name = 'logger_' + id;
-	var typeLoggerValue = select.options[typeLogger].value;
-	if (typeLoggerValue == 'file') {
-		Effect.Appear(base_name + '_file', { duration : 0 });
-		Effect.Fade(base_name + '_output', { duration : 0 });
-	} else if (typeLoggerValue == 'syslog') {
-		Effect.Fade(base_name + '_file', { duration : 0 });
-		Effect.Fade(base_name + '_output', { duration : 0 });
-	} else if (typeLoggerValue == 'standard') {
-		Effect.Fade(base_name + '_file', { duration : 0 });
-		Effect.Appear(base_name + '_output', { duration : 0 });
-	}
-}
-
-function changeType(page, id, type, select) {
-	if (page == 'logger') {
-		changeLoggerType(id, type, select);
-	} else {
-		var base_name = page + '_' + id;
-		var typeValue = select.options[type].value;
-		if (typeValue == 'ipv4' || typeValue == 'ipv6') {
-			Effect.Appear(base_name + '_host', { duration : 0 });
-			Effect.Appear(base_name + '_port', { duration : 0 });
-			Effect.Appear(base_name + '_netif', { duration : 0 });
-			Effect.Appear(base_name + '_protocol', { duration : 0 });
-			Effect.Appear(base_name + '_tls', { duration : 0 });
-			Effect.Fade(base_name + '_socket', { duration : 0 });
-			Effect.Fade(base_name + '_filename', { duration : 0 });
-			if (page == 'output') {
-				Effect.Fade(base_name + '_db', { duration : 0 });
-				Effect.Fade(base_name + '_user', { duration : 0 });
-				Effect.Fade(base_name + '_password', { duration : 0 });
-			}
-			toggleTls(page, id, 0);
-		} else if (typeValue == 'unix_client' || typeValue == 'unix_server') {
-			Effect.Fade(base_name + '_host', { duration : 0 });
-			Effect.Fade(base_name + '_port', { duration : 0 });
-			Effect.Fade(base_name + '_netif', { duration : 0 });
-			Effect.Appear(base_name + '_protocol', { duration : 0 });
-			Effect.Fade(base_name + '_tls', { duration : 0 });
-			Effect.Appear(base_name + '_socket', { duration : 0 });
-			Effect.Fade(base_name + '_filename', { duration : 0 });
-			if (page == 'output') {
-				Effect.Fade(base_name + '_db', { duration : 0 });
-				Effect.Fade(base_name + '_user', { duration : 0 });
-				Effect.Fade(base_name + '_password', { duration : 0 });
-			}
-			toggleTls(page, id, 0);
-		} else if (typeValue == 'file') {
-			Effect.Fade(base_name + '_host', { duration : 0 });
-			Effect.Fade(base_name + '_port', { duration : 0 });
-			Effect.Fade(base_name + '_netif', { duration : 0 });
-			Effect.Appear(base_name + '_protocol', { duration : 0 });
-			Effect.Fade(base_name + '_tls', { duration : 0 });
-			Effect.Fade(base_name + '_socket', { duration : 0 });
-			Effect.Appear(base_name + '_filename', { duration : 0 });
-			if (page == 'output') {
-				Effect.Fade(base_name + '_db', { duration : 0 });
-				Effect.Fade(base_name + '_user', { duration : 0 });
-				Effect.Fade(base_name + '_password', { duration : 0 });
-			}
-			toggleTls(page, id, 0);
-		} else if (typeValue == 'db2' || typeValue == 'mysql' || typeValue == 'oracle' || typeValue == 'odbc' || typeValue == 'postgres' || typeValue == 'sqlite' || typeValue == 'tds') {
-			Effect.Appear(base_name + '_host', { duration : 0 });
-			Effect.Appear(base_name + '_port', { duration : 0 });
-			Effect.Fade(base_name + '_netif', { duration : 0 });
-			Effect.Fade(base_name + '_protocol', { duration : 0 });
-			Effect.Fade(base_name + '_tls', { duration : 0 });
-			Effect.Fade(base_name + '_socket', { duration : 0 });
-			Effect.Fade(base_name + '_filename', { duration : 0 });
-			if (page == 'output') {
-				Effect.Appear(base_name + '_db', { duration : 0 });
-				Effect.Appear(base_name + '_user', { duration : 0 });
-				Effect.Appear(base_name + '_password', { duration : 0 });
-			}
-			toggleTls(page, id, 0);
-		}
-	}
-}
-
-function toggleTls(page, id, enable) {
-	var base_name = page + '_' + id; 
-	if (enable == 0) {
-		Effect.Fade(base_name + '_tls_ca', { duration : 0 });
-		Effect.Fade(base_name + '_tls_cert', { duration : 0 });
-		Effect.Fade(base_name + '_tls_key', { duration : 0 });
-		Effect.Fade(base_name + '_tls_compress', { duration : 0 });
-	} else if (enable == 1) {
-		Effect.Appear(base_name + '_tls_ca', { duration : 0 });
-		Effect.Appear(base_name + '_tls_cert', { duration : 0 });
-		Effect.Appear(base_name + '_tls_key', { duration : 0 });
-		Effect.Appear(base_name + '_tls_compress', { duration : 0 });
-	}
-}
-
-Event.observe(window, 'load', function(){
-	var config_id = {/literal}{$config_id}{literal};
-	if (infos.getPos('output') > 0) {
-		loadInfo(config_id, 'output');
-	}
-	if (infos.getPos('input') > 0) {
-		loadInfo(config_id, 'input');
-	}
-	if (infos.getPos('logger') > 0) {
-		loadInfo(config_id, 'logger');
-	}
-});
 </script> 
 {/literal}

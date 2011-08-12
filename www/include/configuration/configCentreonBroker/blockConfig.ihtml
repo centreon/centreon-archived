@@ -1,6 +1,6 @@
 <tr class="list_lvl_1">
   <td class="ListColLvl1_name">{$tag|capitalize} {$pos}</td>
-  <td class="ListColLvl1_name" style="text-align: right;"><a href="javascript:deleteRow('output', {$blockId});"><img src="./img/icones/16x16/delete.gif"/></a></td>
+  <td class="ListColLvl1_name" style="text-align: right;"><a href="javascript:deleteRow('{$tag}', {$pos});"><img src="./img/icones/16x16/delete.gif"/></a></td>
 </tr>
 {foreach from=$form key=tagKey item=tagEl}
 {if $tagKey == $tag}
