@@ -311,7 +311,7 @@ class CentreonConfigCentreonBroker
         				FROM cb_type t, cb_module_relation mr
         				WHERE mr.inherit_config = 1 AND t.cb_module_id IN (SELECT mr2.module_depend_id
         					FROM cb_type t2, cb_module_relation mr2
-        					WHERE t2.cb_module_id = mr2.cb_module_id AND t2.cb_type_id = %d)))
+        					WHERE t2.cb_module_id = mr2.cb_module_id AND mr2.inherit_config = 1 AND t2.cb_type_id = %d)))
         	ORDER BY tfr.order_display";
         $res = $this->db->query(sprintf($query, $typeId, $typeId));
         if (PEAR::isError($res)) {
