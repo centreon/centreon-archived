@@ -113,6 +113,7 @@ class CentreonConfigCentreonBroker
         $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
         
         $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), $this->attrText);
+        $qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
         $qf->addElement('select', $tag . '[' . $formId . '][type]', _('Type'), $infos['types']);
         
         foreach ($infos['fields'] as $field) {
@@ -248,7 +249,7 @@ class CentreonConfigCentreonBroker
             $field['description'] = $row['description'];
             $field['required'] = $row['is_required'];
             $field['order'] = $row['order_display'];
-            if (!is_null($row['external']) || $row['external'] != 'null') {
+            if (!is_null($row['external']) && $row['external'] != '') {
                 $field['value'] = $row['external'];
             } else {
                 $field['value'] = null;
@@ -278,6 +279,12 @@ class CentreonConfigCentreonBroker
         }
     }
     
+    /**
+     * Get the list of values for a select or radio
+     * 
+     * @param int $fieldId The field ID
+     * @return array
+     */
     private function getListValues($fieldId)
     {
         if (isset($this->listValues[$fieldId])) {
