@@ -39,6 +39,7 @@
 		exit();
 
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
+	require_once $centreon_path . "/www/class/centreonConfigCentreonBroker.php";
 
 	$dir_conf = $centreonBrokerPath . '/' . $tab['id'];
 
@@ -63,6 +64,8 @@
 	    }
 	}
 	
+	$cbObj = new CentreonConfigCentreonBroker($pearDB);
+	
 	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name 
 		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
 		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
@@ -73,9 +76,9 @@
 	    while ($row = $res->fetchRow()) {
     	    $filename = $row['config_filename'];
             if (!isset($files[$filename])) {
-                $files[$filename]['output'] = array();
-        	    $files[$filename]['input'] = array();
-        	    $files[$filename]['logger'] = array();
+                foreach ($cbObj->getTags() as $tagId => $tagName) {
+                    $files[$filename][$tagName] = array();
+                }
             }
 	        if (is_null($ns_name)) {
 	            $ns_name = $row['name'];
@@ -96,15 +99,15 @@
     	    
     	    foreach ($groups as $group => $listInfos) {
     	        if (count($listInfos) > 0) {
-        	        $fileXml->startElement($group);
         	        foreach ($listInfos as $infos) {
+        	            $fileXml->startElement($group);
         	            foreach ($infos as $key => $value) {
         	                if (trim($value) != '' && $key != 'blockId') {
         	                    $fileXml->writeElement($key, $value);
         	                }
         	            }
+        	            $fileXml->endElement();
         	        }
-        	        $fileXml->endElement();
     	        }
     	    }
     	    $fileXml->endElement();
