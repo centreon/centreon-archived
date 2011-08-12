@@ -340,6 +340,141 @@ CREATE TABLE IF NOT EXISTS `auth_ressource_info` (
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `cb_field`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_field` (
+  `cb_field_id` int(11) NOT NULL auto_increment,
+  `fieldname` varchar(100) NOT NULL,
+  `displayname` varchar(100) NOT NULL,
+  `description` varchar(255) default NULL,
+  `fieldtype` varchar(255) NOT NULL default 'text',
+  `external` varchar(255) default NULL,
+  PRIMARY KEY  (`cb_field_id`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_list`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_list` (
+  `cb_list_id` int(11) NOT NULL,
+  `cb_field_id` int(11) NOT NULL,
+  `default_value` varchar(255) default NULL,
+  PRIMARY KEY  (`cb_list_id`,`cb_field_id`),
+  UNIQUE KEY `cb_field_idx_01` (`cb_field_id`),
+  KEY `fk_cb_list_1` (`cb_field_id`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_list_values`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_list_values` (
+  `cb_list_id` int(11) NOT NULL,
+  `value_name` varchar(255) NOT NULL,
+  `value_value` varchar(255) NOT NULL,
+  PRIMARY KEY  (`cb_list_id`,`value_name`),
+  KEY `fk_cb_list_values_1` (`cb_list_id`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_module`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_module` (
+  `cb_module_id` int(11) NOT NULL auto_increment,
+  `name` varchar(50) NOT NULL,
+  `libname` varchar(50) default NULL,
+  `loading_pos` int(11) default NULL,
+  `is_bundle` int(1) NOT NULL default '0',
+  `is_activated` int(1) NOT NULL default '0',
+  PRIMARY KEY  (`cb_module_id`),
+  UNIQUE KEY `cb_module_idx01` (`name`),
+  UNIQUE KEY `cb_module_idx02` (`libname`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_module_relation`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_module_relation` (
+  `cb_module_id` int(11) NOT NULL,
+  `module_depend_id` int(11) NOT NULL,
+  `inherit_config` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`cb_module_id`,`module_depend_id`),
+  KEY `fk_cb_module_relation_1` (`cb_module_id`),
+  KEY `fk_cb_module_relation_2` (`module_depend_id`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_tag`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_tag` (
+  `cb_tag_id` int(11) NOT NULL auto_increment,
+  `tagname` varchar(50) NOT NULL,
+  PRIMARY KEY  (`cb_tag_id`),
+  UNIQUE KEY `cb_tag_ix01` (`tagname`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_tag_type_relation`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_tag_type_relation` (
+  `cb_tag_id` int(11) NOT NULL,
+  `cb_type_id` int(11) NOT NULL,
+  PRIMARY KEY  (`cb_tag_id`,`cb_type_id`),
+  KEY `fk_cb_tag_type_relation_1` (`cb_tag_id`),
+  KEY `fk_cb_tag_type_relation_2` (`cb_type_id`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_type`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_type` (
+  `cb_type_id` int(11) NOT NULL auto_increment,
+  `type_name` varchar(50) NOT NULL,
+  `type_shortname` varchar(50) NOT NULL,
+  `cb_module_id` int(11) NOT NULL,
+  PRIMARY KEY  (`cb_type_id`),
+  KEY `fk_cb_type_1` (`cb_module_id`)
+) ENGINE=InnoDB;
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `cb_type_field_relation`
+--
+
+CREATE TABLE IF NOT EXISTS `cb_type_field_relation` (
+  `cb_type_id` int(11) NOT NULL,
+  `cb_field_id` int(11) NOT NULL,
+  `is_required` int(11) NOT NULL default '0',
+  `order_display` int(11) NOT NULL default '0',
+  PRIMARY KEY  (`cb_type_id`,`cb_field_id`),
+  KEY `fk_cb_type_field_relation_1` (`cb_type_id`),
+  KEY `fk_cb_type_field_relation_2` (`cb_field_id`)
+) ENGINE=InnoDB;
+
+
+--
 -- Structure de la table `cfg_centreonbroker`
 --
 CREATE TABLE cfg_centreonbroker (
@@ -2757,3 +2892,46 @@ ALTER TABLE `hostcategories_relation` ADD FOREIGN KEY ( `host_host_id` ) REFEREN
 
 ALTER TABLE `cfg_centreonbroker_info`
   ADD CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE;
+
+  --
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `cb_list`
+--
+ALTER TABLE `cb_list`
+  ADD CONSTRAINT `fk_cb_list_1` FOREIGN KEY (`cb_field_id`) REFERENCES `cb_field` (`cb_field_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `cb_list_values`
+--
+ALTER TABLE `cb_list_values`
+  ADD CONSTRAINT `fk_cb_list_values_1` FOREIGN KEY (`cb_list_id`) REFERENCES `cb_list` (`cb_list_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `cb_module_relation`
+--
+ALTER TABLE `cb_module_relation`
+  ADD CONSTRAINT `fk_cb_module_relation_1` FOREIGN KEY (`cb_module_id`) REFERENCES `cb_module` (`cb_module_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_cb_module_relation_2` FOREIGN KEY (`module_depend_id`) REFERENCES `cb_module` (`cb_module_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `cb_tag_type_relation`
+--
+ALTER TABLE `cb_tag_type_relation`
+  ADD CONSTRAINT `fk_cb_tag_type_relation_1` FOREIGN KEY (`cb_tag_id`) REFERENCES `cb_tag` (`cb_tag_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_cb_tag_type_relation_2` FOREIGN KEY (`cb_type_id`) REFERENCES `cb_type` (`cb_type_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `cb_type`
+--
+ALTER TABLE `cb_type`
+  ADD CONSTRAINT `fk_cb_type_1` FOREIGN KEY (`cb_module_id`) REFERENCES `cb_module` (`cb_module_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
+
+--
+-- Contraintes pour la table `cb_type_field_relation`
+--
+ALTER TABLE `cb_type_field_relation`
+  ADD CONSTRAINT `fk_cb_type_field_relation_1` FOREIGN KEY (`cb_type_id`) REFERENCES `cb_type` (`cb_type_id`) ON DELETE CASCADE ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_cb_type_field_relation_2` FOREIGN KEY (`cb_field_id`) REFERENCES `cb_field` (`cb_field_id`) ON DELETE CASCADE ON UPDATE NO ACTION;
