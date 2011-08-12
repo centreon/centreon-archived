@@ -86,13 +86,11 @@ function addInfo(type) {
 	var id = prev_id + 1;
 	var id_name = type + '_' + id;
 	var blockId = $('block_' + type).getValue();
-	console.log(blockId);
 	var params;
 
     var tbody = new Element('tbody');
     tbody.writeAttribute('id', id_name);
-    console.log(type + '_' + prev_id);
-    Element.insert($(type + '_' + prev_id), {after: tbody});
+    Element.insert($(type), {bottom: tbody});
     params = '?p={/literal}{$p}{literal}&o=j&pos=' + id + '&min=1&blockId=' + blockId + '&tag=' + type;
     new Ajax.Updater(
     		tbody,

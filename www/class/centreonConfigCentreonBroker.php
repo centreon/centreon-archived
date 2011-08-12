@@ -48,6 +48,7 @@ class CentreonConfigCentreonBroker
     private $attrInt = array("size"=>"10");
     
     private $tagsCache = null;
+    private $typesCache = null;
     private $blockCache = array();
     
     private $blockInfoCache = array();
@@ -67,7 +68,7 @@ class CentreonConfigCentreonBroker
     public function __sleep()
     {
         $this->db = null;
-        return array('attrText', 'attrInt', 'tagsCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults');
+        return array('attrText', 'attrInt', 'tagsCache', 'typesCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults');
     }
     
     /**
@@ -130,6 +131,32 @@ class CentreonConfigCentreonBroker
     }
     
     /**
+     * Get the typename
+     * 
+     * @param int $typeId The type id
+     * @return string|null null in error
+     */
+    public function getTypeShortname($typeId)
+    {
+        if (!is_null($this->typesCache) && isset($this->typesCache[$typeId])) {
+            return $this->typesCache[$typeId];
+        }
+        $query = "SELECT type_shortname
+        	FROM cb_type
+        	WHERE cb_type_id = %d";
+        $res = $this->db->query(sprintf($query, $typeId));
+        if (PEAR::isError($res)) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        if (is_null($row)) {
+            return null;
+        }        
+        $this->typesCache[$typeId] = $row['type_shortname'];
+        return $this->typesCache[$typeId];
+    }
+    
+    /**
      * Return the list of config block
      * 
      * The id is 'tag_id'_'type_id'
@@ -177,6 +204,10 @@ class CentreonConfigCentreonBroker
         
         $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), $this->attrText);
         $qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
+        
+        $type = $this->getTypeShortname($typeId);
+        $qf->addElement('hidden', $tag . '[' . $formId . '][type]');
+        $qf->setDefaults(array($tag . '[' . $formId . '][type]' => $type));
         
         foreach ($fields as $field) {
             $elementName = $tag . '[' . $formId . '][' . $field['fieldname'] . ']';
@@ -247,9 +278,6 @@ class CentreonConfigCentreonBroker
                 $qf->setDefaults(array($elementName => $default));
             }
         }
-        print "<pre>";
-        var_dump($qf);
-        print "</pre>";
         return $qf;
     }
     
@@ -301,6 +329,100 @@ class CentreonConfigCentreonBroker
         usort($fields, array($this, 'sortField'));
         $this->blockInfoCache[$typeId] = $fields;
         return $this->blockInfoCache[$typeId];
+    }
+    
+    /**
+     * Insert a configuration into the database
+     * 
+     * @param array $values The post array
+     * @return bool
+     */
+    public function insertConfig($values)
+    {
+    	/*
+	     * Insert the Centreon Broker configuration
+	     */
+	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, config_activate, ns_nagios_server)
+	    	VALUES ('" . $values['name'] . "', '" . $values['filename'] . "', '" . $values['activate']['activate'] . "', " . $values['ns_nagios_server'] . ")";
+	    if (PEAR::isError($this->db->query($query))) {
+	        return false;
+	    }
+	    
+	    /*
+	     * Get the ID
+	     */
+	    $query = "SELECT config_id FROM cfg_centreonbroker WHERE config_name = '" . $values['name'] . "'";
+	    $res = $this->db->query($query);
+	    if (PEAR::isError($res)) {
+	        return false;
+	    }
+	    $row = $res->fetchRow();
+	    $id = $row['config_id'];
+	    return $this->updateCentreonBrokerInfos($id, $values);
+    }
+    
+    /**
+     * Update configuration
+     * 
+     * @param int $id The configuration id
+     * @param array $values The post array
+     * @return bool
+     */
+    public function updateConfig($id, $values)
+    {
+        /*
+	     * Insert the Centreon Broker configuration
+	     */
+	    $query = "UPDATE cfg_centreonbroker
+	    	SET config_name = '" . $values['name'] . "', config_filename = '" . $values['filename'] . "', config_activate = '" . $values['activate']['activate'] . "', ns_nagios_server = " . $values['ns_nagios_server'] . "
+	    	WHERE config_id = " . $id;
+	    if (PEAR::isError($this->db->query($query))) {
+	        return false;
+	    }
+	    $this->updateCentreonBrokerInfos($id, $values);
+    }
+    
+    /**
+     * Update the information for a configuration
+     * 
+     * @param int $id The configuration id
+     * @param array $values The post array
+     * @return bool
+     */
+    public function updateCentreonBrokerInfos($id, $values)
+    {
+        /*
+	     * Clean the informations for this id
+	     */
+	    $query = "DELETE FROM cfg_centreonbroker_info WHERE config_id = " . $id;
+	    $this->db->query($query);
+	    
+	    $groups_infos = array();
+        foreach ($this->getTags() as $group) {
+	        /*
+	         * Resort array
+	         */
+	        if (isset($values[$group])) {
+        	    foreach ($values[$group] as $infos) {
+        	        if (!isset($groups_infos[$group])) {
+        	            $groups_infos[$group] = array();
+        	        }
+        	        $groups_infos[$group][] = $infos;
+        	    }
+	        }
+	    }
+	    
+	    foreach ($groups_infos as $group => $groups) {
+	        foreach ($groups as $gid => $infos) {
+	            $gid = $gid + 1;
+	            foreach ($infos as $fieldname => $fieldvalue) {
+	                $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id)
+	            		VALUES (" . $id . ", '" . $fieldname . "', '" . $fieldvalue . "', '" . $group . "', " . $gid . ")";
+	                $this->db->query($query);
+	            }
+	        }
+	    }
+	    return true;
     }
     
     /**

@@ -164,9 +164,9 @@
 	if ($form->validate())	{
 		$nagiosObj = $form->getElement('id');
 		if ($form->getSubmitValue("submitA")) {
-			insertCentreonBrokerInDB($_POST);
+			$cbObj->insertConfig($_POST);
 		} else if ($form->getSubmitValue("submitC")) {
-		    updateCentreonBrokerInDB($_POST['id'], $_POST);
+		    $cbObj->updateConfig($_POST['id'], $_POST);
 		}
 		$o = NULL;
 		$valid = true;

@@ -24,6 +24,7 @@
 {/foreach} 
 {/if}
 {/foreach}
+{$form.hidden}
 {foreach from=$helps item=help}
 <span style="display: none;" id="help:{$help.name}">{$help.desc}</span>
 {/foreach}
