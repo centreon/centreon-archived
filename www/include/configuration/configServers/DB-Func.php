@@ -171,6 +171,7 @@
         isset($ret["nagiostats_bin"]) && $ret["nagiostats_bin"] != NULL ? $rq .= "nagiostats_bin = '".htmlentities(trim($ret["nagiostats_bin"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagiostats_bin = NULL, ";
         isset($ret["nagios_perfdata"]) && $ret["nagios_perfdata"] != NULL ? $rq .= "nagios_perfdata = '".htmlentities(trim($ret["nagios_perfdata"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_perfdata = NULL, ";
         isset($ret["centreonbroker_cfg_path"]) && $ret["centreonbroker_cfg_path"] != NULL ? $rq .= "centreonbroker_cfg_path = '".htmlentities(trim($ret["centreonbroker_cfg_path"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "centreonbroker_cfg_path = NULL, ";
+        isset($ret["centreonbroker_module_path"]) && $ret["centreonbroker_module_path"] != NULL ? $rq .= "centreonbroker_module_path = '".htmlentities(trim($ret["centreonbroker_module_path"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "centreonbroker_module_path = NULL, ";
         isset($ret["ssh_private_key"]) && $ret["ssh_private_key"] != NULL ? $rq .= "ssh_private_key = '".htmlentities(trim($ret["ssh_private_key"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ssh_private_key = NULL, ";
         isset($ret["is_default"]) && $ret["is_default"] != NULL ? $rq .= "is_default = '".htmlentities(trim($ret["is_default"]["is_default"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "is_default = NULL, ";
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
