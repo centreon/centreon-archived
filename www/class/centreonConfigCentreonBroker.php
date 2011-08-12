@@ -50,7 +50,7 @@ class CentreonConfigCentreonBroker
     private $tagsCache = null;
     private $typesCache = null;
     private $blockCache = array();
-    
+    private $fieldtypeCache = array();
     private $blockInfoCache = array();
     private $listValues = array();
     private $defaults = array();
@@ -68,7 +68,7 @@ class CentreonConfigCentreonBroker
     public function __sleep()
     {
         $this->db = null;
-        return array('attrText', 'attrInt', 'tagsCache', 'typesCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults');
+        return array('attrText', 'attrInt', 'tagsCache', 'typesCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults', 'fieldtypeCache');
     }
     
     /**
@@ -422,16 +422,32 @@ class CentreonConfigCentreonBroker
 	    foreach ($groups_infos as $group => $groups) {
 	        foreach ($groups as $gid => $infos) {
 	            $gid = $gid + 1;
-	            foreach ($infos as $fieldname => $fieldvalue) {
-	                $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id)
-	            		VALUES (" . $id . ", '" . $fieldname . "', '" . $fieldvalue . "', '" . $group . "', " . $gid . ")";
-	                $this->db->query($query);
+	            if (isset($infos['blockId'])) {
+	                list($tagId, $typeId) = explode('_', $infos['blockId']);
+	                $fieldtype = $this->getFieldtypes($typeId);
+    	            foreach ($infos as $fieldname => $fieldvalue) {
+    	                if (isset($fieldtype[$fieldname]) && $fieldtype[$fieldname] == 'radio') {
+    	                    $fieldvalue = $fieldvalue[$fieldname];
+    	                }
+    	                $query = "INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id)
+    	            		VALUES (" . $id . ", '" . $fieldname . "', '" . $fieldvalue . "', '" . $group . "', " . $gid . ")";
+    	                $this->db->query($query);
+    	            }
 	            }
 	        }
 	    }
 	    return true;
     }
     
+    /**
+     * Get the list of forms for a config_id
+     * 
+     * @param int $config_id The id of config
+     * @param string $tag The tag name
+     * @param int $page The page topology
+     * @param Smarty $tpl The template Smarty
+     * @return array
+     */
     public function getForms($config_id, $tag, $page, $tpl)
     {
         $query = "SELECT config_key, config_value, config_group_id
@@ -479,6 +495,26 @@ class CentreonConfigCentreonBroker
         } else {
             return 1;
         }
+    }
+    
+    /**
+     * Generate fieldtype array
+     * 
+     * @param int $typeId The type id
+     * @return array
+     */
+    private function getFieldtypes($typeId)
+    {
+        if (isset($this->fieldtypeCache[$typeId])) {
+            return $this->fieldtypeCache[$typeId];
+        }
+        $fieldtypes = array();
+        $block = $this->getBlockInfos($typeId);
+        foreach ($block as $fieldInfos) {
+            $fieldtypes[$fieldInfos['fieldname']] = $fieldInfos['fieldtype'];
+        }
+        $this->fieldtypeCache[$typeId] = $fieldtypes;
+        return $this->fieldtypeCache[$typeId];
     }
     
     /**

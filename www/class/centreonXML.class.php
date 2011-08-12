@@ -45,9 +45,12 @@ class CentreonXML {
     /*
      *  Constructor
      */
-    function CentreonXML() {
+    function CentreonXML($indent = false) {
         $this->buffer = new XMLWriter();
         $this->buffer->openMemory();
+        if ($indent) {
+            $this->buffer->setIndent($indent);
+        }
         $this->buffer->startDocument('1.0', 'UTF-8');
     }
 

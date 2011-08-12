@@ -87,7 +87,7 @@
 	    }
 	    
 	    foreach ($files as $filename => $groups) {
-    	    $fileXml = new CentreonXML();
+    	    $fileXml = new CentreonXML(true);
     	    $fileXml->startElement('centreonBroker');
     	    
     	    $fileXml->writeElement('instance', $ns_id);
