@@ -45,6 +45,7 @@ class CentreonConfigCentreonBroker
     
     private $blockInfoCache = array();
     private $listValues = array();
+    private $defaults = array();
     
     /**
      * Construtor
@@ -59,7 +60,7 @@ class CentreonConfigCentreonBroker
     public function __sleep()
     {
         $this->db = null;
-        return array('tags', 'attrText', 'attrInt', 'blockInfoCache', 'listValues');
+        return array('tags', 'attrText', 'attrInt', 'blockInfoCache', 'listValues', 'defaults');
     }
     
     /**
@@ -120,6 +121,7 @@ class CentreonConfigCentreonBroker
             $elementName = $tag . '[' . $formId . '][' . $field['fieldname'] . ']';
             $elementType = null;
             $elementAttr = array();
+            $defaults = null;
             switch ($field['fieldtype']) {
                case 'int':
                    $elementType = 'text';
@@ -128,13 +130,21 @@ class CentreonConfigCentreonBroker
                case 'select':
                    $elementType = 'select';
                    $elementAttr = $this->getListValues($field['id']);
-                   break;
+                   $default = $this->getDefaults($field['id']);
+                   if (!is_null($default)) {
+                       $defaults = array($elementName => $default);
+                   }
+                   break; 
                case 'radio':
                    $tmpRadio = array();
                    foreach ($this->getListValues($field['id']) as $key => $value) {
     	               $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['name'], null, _($value), $key);
                    }
 	               $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
+                   $default = $this->getDefaults($field['id']);
+                   if (!is_null($default)) {
+                       $defaults = array($elementName => $default);
+                   }
                    break;
                case 'text':
                default:
@@ -177,6 +187,9 @@ class CentreonConfigCentreonBroker
              */
             if (!is_null($field['value']) && $field['value'] === false) {
                 $qf->setDefaults(array($elementName, $field['value']));
+            }
+            if (!is_null($defaults)) {
+                $qf->setDefaults($defaults);
             }
         }
         return $qf;
@@ -303,6 +316,35 @@ class CentreonConfigCentreonBroker
         }
         $this->listValues[$fieldId] = $ret;
         return $this->listValues[$fieldId];
+    }
+    
+    /**
+     * Get the default value for a list
+     * 
+     * @param int $fieldId The field ID
+     * @return string|null
+     */
+    private function getDefaults($fieldId)
+    {
+        if (isset($this->defaults[$fieldId])) {
+            return $this->defaults[$fieldId];
+        }
+        $query = "SELECT default_value
+        	FROM cb_list
+        	WHERE cb_field_id = %d";
+        $res = $this->db->query(sprintf($query, $fieldId));
+        if (PEAR::isError($res)) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        
+        $this->defaults[$fieldId] = null;
+        if (!is_null($row)) {
+            if (!is_null($row['default_value']) && $row['default_value'] != '') {
+                $this->defaults[$fieldId] = $row['default_value'];
+            }
+        }
+        return $this->defaults[$fieldId];
     }
     
     /**
