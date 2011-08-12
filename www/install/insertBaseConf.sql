@@ -700,6 +700,50 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 -- Insert init configuration Centreon Broker
 
 --
+-- Contenu de la table `cb_tag`
+--
+
+INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
+(2, 'input'),
+(3, 'logger'),
+(1, 'output');
+
+--
+-- Contenu de la table `cb_module`
+--
+
+INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_bundle`, `is_activated`) VALUES
+(1, 'SQL', 'sql.so', 80, 0, 1),
+(2, 'TCP', 'tcp.so', 50, 0, 1),
+(3, 'file', 'file.so', 50, 0, 1),
+(4, 'local', 'local.so', 50, 0, 1),
+(5, 'NDO', 'ndo.so', 80, 0, 1),
+(6, 'NEB', 'neb.so', 10, 0, 1),
+(7, 'RRD', 'rrd.so', 30, 0, 1),
+(8, 'Storage', 'storage.so', 20, 0, 1),
+(9, 'Core', NULL, NULL, 1, 1),
+(10, 'Centreon Storage', NULL, NULL, 1, 1),
+(11, 'Compression', 'compression.so', 60, 0, 1);
+
+--
+-- Contenu de la table `cb_type`
+--
+
+INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_id`) VALUES
+(3, 'IPv4', 'ipv4', 2),
+(10, 'IPv6', 'ipv6', 2),
+(11, 'File', 'file', 3),
+(12, 'Local Server Socket', 'local_server', 4),
+(13, 'RRD File Generator', 'rrd', 7),
+(14, 'Perfdata Generator (Centreon Storage)', 'storage', 8),
+(15, 'Local Client Socket', 'local_client', 4),
+(16, 'Broker SQL Database', 'sql', 1),
+(17, 'File', 'file', 9),
+(18, 'Standard', 'standard', 9),
+(19, 'Syslog', 'syslog', 9),
+(20, 'Compressor', 'compressor', 11);
+
+--
 -- Contenu de la table `cb_field`
 --
 
@@ -768,23 +812,6 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (4, 'Very detailed', 'low');
 
 --
--- Contenu de la table `cb_module`
---
-
-INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_bundle`, `is_activated`) VALUES
-(1, 'SQL', 'sql.so', 80, 0, 1),
-(2, 'TCP', 'tcp.so', 50, 0, 1),
-(3, 'file', 'file.so', 50, 0, 1),
-(4, 'local', 'local.so', 50, 0, 1),
-(5, 'NDO', 'ndo.so', 80, 0, 1),
-(6, 'NEB', 'neb.so', 10, 0, 1),
-(7, 'RRD', 'rrd.so', 30, 0, 1),
-(8, 'Storage', 'storage.so', 20, 0, 1),
-(9, 'Core', NULL, NULL, 1, 1),
-(10, 'Centreon Storage', NULL, NULL, 1, 1),
-(11, 'Compression', 'compression.so', 60, 0, 1);
-
---
 -- Contenu de la table `cb_module_relation`
 --
 
@@ -797,15 +824,6 @@ INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_c
 (5, 6, 0),
 (7, 8, 0),
 (8, 6, 0);
-
---
--- Contenu de la table `cb_tag`
---
-
-INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
-(2, 'input'),
-(3, 'logger'),
-(1, 'output');
 
 --
 -- Contenu de la table `cb_tag_type_relation`
@@ -828,24 +846,6 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`) VALUES
 (3, 17),
 (3, 18),
 (3, 19);
-
---
--- Contenu de la table `cb_type`
---
-
-INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_id`) VALUES
-(3, 'IPv4', 'ipv4', 2),
-(10, 'IPv6', 'ipv6', 2),
-(11, 'File', 'file', 3),
-(12, 'Local Server Socket', 'local_server', 4),
-(13, 'RRD File Generator', 'rrd', 7),
-(14, 'Perfdata Generator (Centreon Storage)', 'storage', 8),
-(15, 'Local Client Socket', 'local_client', 4),
-(16, 'Broker SQL Database', 'sql', 1),
-(17, 'File', 'file', 9),
-(18, 'Standard', 'standard', 9),
-(19, 'Syslog', 'syslog', 9),
-(20, 'Compressor', 'compressor', 11);
 
 --
 -- Contenu de la table `cb_type_field_relation`
