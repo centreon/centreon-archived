@@ -52,7 +52,7 @@
 
 	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name 
 		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
-		WHERE csi.config_id = cs.config_id AND cs.config_activate = 1 AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
+		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
 
 	$res = $pearDB->query($query);
     if (false === PEAR::isError($res) && $res->numRows()) {
@@ -82,7 +82,7 @@
         	        $fileXml->startElement($group);
         	        foreach ($listInfos as $infos) {
         	            foreach ($infos as $key => $value) {
-        	                if (trim($value) != '') {
+        	                if (trim($value) != '' && $key != 'blockId') {
         	                    $fileXml->writeElement($key, $value);
         	                }
         	            }
