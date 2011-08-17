@@ -306,20 +306,20 @@
 					$serviceClass = new CentreonService($pearDB);
 					$services = $sg->getServiceGroupServices($period['obj_id']);
 					foreach ($services as $service){
-                        if (!isset($service['host_host_id'])) {
+                        if (!isset($service[0])) {
                             continue;
                         }
-					    $currentHostDate = $gmt->getHostCurrentDatetime($service['host_host_id'], 'U');
+					    $currentHostDate = $gmt->getHostCurrentDatetime($service[0], 'U');
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
-							$host_name = $hostClass->getHostName($service['host_host_id']);
-							$service_name = $serviceClass->getServiceName($service['service_service_id']);
+							$host_name = $hostClass->getHostName($service[0]);
+							$service_name = $serviceClass->getServiceName($service[1]);
 							$listSchedDt = $downtime->isScheduled($period['dt_id'], $host_name, $service_name);
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $host_name, $service_name, $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-										sendCommand($pearDB, $service['host_host_id'], $cmd);
+										sendCommand($pearDB, $service[0], $cmd);
 									}
 								} else if ($period['dt_activate'] == 0 && count($listSchedDt) != 0) {
 									foreach ($listSchedDt as $schelDt) {
@@ -328,7 +328,7 @@
 											sendCommand($pearDB, $service['host_host_id'], $cmd);
 										} else if ($schelDt['downtime_type'] == 2) {
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $service['host_host_id'], $cmd);
+											sendCommand($pearDB, $service[0], $cmd);
 										}
 									}
 								}
