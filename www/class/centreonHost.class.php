@@ -42,8 +42,7 @@
  class CentreonHost
  {
  	protected $db;
-
-
+ 	
  	/**
  	 * Constructor
  	 *
@@ -54,7 +53,203 @@
  	{
  		$this->db = $db;
  	}
-
+ 	
+ 	/**
+ 	 * Get the list of all host
+ 	 *
+ 	 * @param bool $enable If get only host enable
+ 	 * @return array 
+ 	 */
+ 	public function getList($enable = False)
+ 	{
+ 	    $queryList = 'SELECT host_id, host_alias
+ 	    	FROM host
+ 	    	WHERE host_register = "1"';
+ 	    if ($enable) {
+ 	        $queryList .= ' AND host_activate = "1"';
+ 	    }
+ 	    $res = $this->db->query($queryList);
+ 	    if (PEAR::isError($res)) {
+ 	        return array();
+ 	    }
+ 	    $listHost = array();
+ 	    while ($row = $res->fetchRow()) {
+ 	        $listHost[$row['host_id']] = $row['host_alias'];
+ 	    }
+ 	    return $listHost;
+ 	}
+ 	
+ 	/**
+ 	 * Get the list of host children for a host
+ 	 * 
+ 	 * @param int $hostId The parent host id
+ 	 * @param bool $withHg If use hostgroup relation (not use yet)
+ 	 * @return array
+ 	 */
+ 	public function getHostChild($hostId, $withHg = False)
+ 	{
+ 	    if (!is_numeric($hostId)) {
+ 	        return array();
+ 	    }
+ 	    $queryGetChildren = 'SELECT h.host_id, h.host_name
+ 	    	FROM host h, host_hostparent_relation hp
+ 	    	WHERE hp.host_host_id = h.host_id
+ 	    		AND h.host_register = "1"
+ 	    		AND h.host_activate = "1"
+ 	    		AND hp.host_parent_hp_id = ' . $hostId;
+ 	    $res = $this->db->query($queryGetChildren);
+ 	    if (PEAR::isError($res)) {
+ 	        return array();
+ 	    }
+ 	    $listHostChildren = array();
+ 	    while ($row = $res->fetchRow()) {
+ 	        $listHostChildren[$row['host_id']] = $row['host_alias'];
+ 	    }
+ 	    return $listHostChildren;
+ 	}
+ 	
+ 	/**
+ 	 * Get the relation tree
+ 	 * 
+ 	 * @param bool $withHg If use hostgroup relation (not use yet)
+ 	 * @return array
+ 	 */
+ 	public function getHostRelationTree($withHg = False)
+ 	{
+ 	    $queryGetRelationTree = 'SELECT hp.host_parent_hp_id, h.host_id, h.host_name
+ 	    	FROM host h, host_hostparent_relation hp
+ 	    	WHERE hp.host_host_id = h.host_id
+ 	    		AND h.host_register = "1"
+ 	    		AND h.host_activate = "1"';
+ 	    $res = $this->db->query($queryGetRelationTree);
+ 	    if (PEAR::isError($res)) {
+ 	        return array();
+ 	    }
+ 	    $listHostRelactionTree = array();
+ 	    while ($row = $res->fetchRow()) {
+ 	        if (!isset($listHostRelactionTree[$row['host_parent_hp_id']])) {
+ 	            $listHostRelactionTree[$row['host_parent_hp_id']] = array();
+ 	        }
+ 	        $listHostRelactionTree[$row['host_parent_hp_id']][$row['host_id']] =  $row['host_alias'];
+ 	    }
+ 	    return $listHostRelactionTree;
+ 	}
+ 	
+ 	/**
+ 	 * Get list of services for a host
+ 	 * 
+ 	 * @param int $hostId The host id
+ 	 * @param bool $withHg If use hostgroup relation
+ 	 * @return array
+ 	 */
+ 	public function getServices($hostId, $withHg = False)
+ 	{
+ 	    /*
+ 	     * Get service for a host
+ 	     */
+ 	    $queryGetServices = 'SELECT s.service_id, s.service_description
+ 	    	FROM service s, host_service_relation hsr, host h
+ 	    	WHERE s.service_id = hsr.service_service_id
+ 	    		AND s.service_register = "1"
+ 	    		AND s.service_activate = "1"
+ 	    		AND h.host_id = hsr.host_host_id
+ 	    		AND h.host_register = "1"
+ 	    		AND h.host_activate = "1"
+ 	    		AND hsr.host_host_id = ' . $hostId;
+ 	    $res = $this->db->query($queryGetServices);
+ 	    if (PEAR::isError($res)) {
+ 	        return array();
+ 	    }
+ 	    $listServices = array();
+ 	    while ($row = $res->fetchRow()) {
+ 	        $listServices[$row['service_id']] = $row['service_alias'];
+ 	    }
+ 	    /*
+ 	     * With hostgroup
+ 	     */
+ 	    if ($withHg) {
+     	    $queryGetServicesWithHg = 'SELECT s.service_id, s.service_description
+     	    	FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg
+     	    	WHERE s.service_id = hsr.service_service_id
+     	    		AND s.service_register = "1"
+     	    		AND s.service_activate = "1"
+     	    		AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+     	    		AND h.host_id = hgr.host_host_id
+     	    		AND h.host_register = "1"
+     	    		AND h.host_activate = "1"
+     	    		AND hg.hg_id = hgr.hostgroup_hg_id
+     	    		AND hg.hg_activate = "1"
+     	    		AND hgr.host_host_id = ' . $hostId;
+     	    $res = $this->db->query($queryGetServices);
+     	    if (PEAR::isError($res)) {
+     	        return array();
+     	    }
+     	    while ($row = $res->fetchRow()) {
+     	        $listServices[$row['service_id']] = $row['service_alias'];
+     	    }
+ 	    }
+ 	    return $listServices;
+ 	}
+ 	
+ 	/**
+ 	 * Get the relation tree for host / service
+ 	 * 
+ 	 * @param bool $withHg With Hostgroup
+ 	 * @return array
+ 	 */
+ 	public function getHostServiceRelationTree($withHg = False)
+ 	{
+ 	    /*
+ 	     * Get service for a host
+ 	     */
+ 	    $queryGetServices = 'SELECT hsr.host_host_id, s.service_id, s.service_description
+ 	    	FROM service s, host_service_relation hsr, host h
+ 	    	WHERE s.service_id = hsr.service_service_id
+ 	    		AND s.service_register = "1"
+ 	    		AND s.service_activate = "1"
+ 	    		AND h.host_id = hsr.host_host_id
+ 	    		AND h.host_register = "1"
+ 	    		AND h.host_activate = "1"';
+ 	    $res = $this->db->query($queryGetServices);
+ 	    if (PEAR::isError($res)) {
+ 	        return array();
+ 	    }
+ 	    $listServices = array();
+ 	    while ($row = $res->fetchRow()) {
+ 	        if (!isset($listServices[$row['host_host_id']])) {
+ 	            $listServices[$row['host_host_id']] = array();
+ 	        }
+ 	        $listServices[$row['host_host_id']][$row['service_id']] = $row['service_description'];
+ 	    }
+ 	    /*
+ 	     * With hostgroup
+ 	     */
+ 	    if ($withHg) {
+     	    $queryGetServicesWithHg = 'SELECT hgr.host_host_id, s.service_id, s.service_description
+     	    	FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg
+     	    	WHERE s.service_id = hsr.service_service_id
+     	    		AND s.service_register = "1"
+     	    		AND s.service_activate = "1"
+     	    		AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+     	    		AND h.host_id = hgr.host_host_id
+     	    		AND h.host_register = "1"
+     	    		AND h.host_activate = "1"
+     	    		AND hg.hg_id = hgr.hostgroup_hg_id
+     	    		AND hg.hg_activate = "1"';
+     	    $res = $this->db->query($queryGetServices);
+     	    if (PEAR::isError($res)) {
+     	        return array();
+     	    }
+     	    while ($row = $res->fetchRow()) {
+     	        if (!isset($listServices[$row['host_host_id']])) {
+     	            $listServices[$row['host_host_id']] = array();
+     	        }
+     	        $listServices[$row['host_host_id']][$row['service_id']] = $row['service_description'];
+     	    }
+ 	    }
+ 	    return $listServices;
+ 	}
+ 	
 	/**
 	 * Method that returns a hostname from host_id
 	 *

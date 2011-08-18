@@ -55,6 +55,8 @@ class CentreonConfigCentreonBroker
     private $listValues = array();
     private $defaults = array();
     
+    const CORRELATION_STRING = 'correlation_file';
+    
     /**
      * Construtor
      * 
