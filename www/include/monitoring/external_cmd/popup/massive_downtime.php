@@ -53,6 +53,12 @@
 	}
 
 	$path = "$centreon_path/www/include/monitoring/external_cmd/popup/";
+	
+	/*
+	 * Init GMT
+	 */
+	$centreonGMT = new CentreonGMT($pearDB);
+	$centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
 	/*
 	 * Smarty template Init
@@ -79,8 +85,8 @@
 	$form->addElement('text', 'start', _('Start Time'), array('id'=>'start', 'width'=>'30'));
 	$form->addElement('text', 'end', _('End Time'), array('id'=>'end', 'width'=>'30'));
 	$form->setDefaults(array(
-						'start' => date('Y/m/d H:i', time()),
-						'end' => date('Y/m/d H:i', time() + 7200)
+						'start' => $centreonGMT->getDate('Y/m/d H:i', time()),
+						'end' => $centreonGMT->getDate('Y/m/d H:i', time() + 7200)
 					   )
 					);
 	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
