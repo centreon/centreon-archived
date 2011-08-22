@@ -442,15 +442,15 @@
 		# 2 - MC with addition of new options (incremental)
 		# 3 - Normal update
 		if (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && $ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
-                        updateHostNotifs($host_id);		
+                        updateHostNotifs($host_id);
 		} elseif (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && !$ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
-                        updateHostNotifs_MC($host_id);	
+                        updateHostNotifs_MC($host_id);
 		} else {
                         updateHostNotifs($host_id);
-		}	
+		}
 
 		# Function for updating notification interval options
-		# 1 - MC with deletion of existing options (Replacement) 
+		# 1 - MC with deletion of existing options (Replacement)
 		# 2 - MC with addition of new options (incremental)
 		# 3 - Normal update
 		if (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) {
@@ -472,7 +472,7 @@
 		} else {
 			updateHostNotifOptionFirstNotificationDelay($host_id);
 		}
- 	
+
 
 		# Function for updating notification timeperiod options
 		# 1 - MC with deletion of existing options (Replacement)
@@ -484,8 +484,8 @@
 			updateHostNotifOptionTimeperiod_MC($host_id);
 		} else {
 			updateHostNotifOptionTimeperiod($host_id);
-		}		
-		
+		}
+
 		# Function for updating host hg
 		# 1 - MC with deletion of existing hg
 		# 2 - MC with addition of new hg
@@ -539,10 +539,10 @@
 		updateHostHostChild($host_id, $ret);
 		updateHostContactGroup($host_id, $ret);
 		updateHostContact($host_id, $ret);
-		updateHostNotifs($host_id, $ret);		
+		updateHostNotifs($host_id, $ret);
 		updateHostNotifOptionInterval($host_id, $ret);
 		updateHostNotifOptionTimeperiod($host_id, $ret);
-		updateHostNotifOptionFirstNotificationDelay($host_id, $ret);		
+		updateHostNotifOptionFirstNotificationDelay($host_id, $ret);
 		updateHostHostGroup($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
@@ -1807,56 +1807,56 @@
 				$DBRESULT = $pearDB->query($rq);
 			}
 		}
-	}	
-	
+	}
+
 	function updateHostNotifs($host_id = null, $ret = array())	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["host_notifOpts"]))
 			$ret = $ret["host_notifOpts"];
 		else
 			$ret = $form->getSubmitValue("host_notifOpts");
-		
+
 		$rq = "UPDATE host SET " ;
 		$rq .= "host_notification_options  = ";
 		isset($ret) && $ret != NULL ? $rq .= "'".implode(",", array_keys($ret))."' " : $rq .= "NULL ";
 		$rq .= "WHERE host_id = '".$host_id."'";
-		$DBRESULT =& $pearDB->query($rq);	
-					
+		$DBRESULT =& $pearDB->query($rq);
+
 	}
-	
+
 	# For massive change. incremental mode
 	function updateHostNotifs_MC($host_id = null)	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$rq = "SELECT * FROM host ";
 		$rq .= "WHERE host_id = '".$host_id."' LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
 		$host = array();
-		$host = array_map("myDecode", $DBRESULT->fetchRow());				
-		
+		$host = array_map("myDecode", $DBRESULT->fetchRow());
+
 		$ret = $form->getSubmitValue("host_notifOpts");
-		
+
 		isset($host["host_notification_options"]) && $host["host_notification_options"] != NULL ? $temp = $host["host_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
-		
+
 		if (isset($temp) && $temp != NULL) {
 		    $rq = "UPDATE host SET " ;
 			$rq .= "host_notification_options = '". trim ($temp ,',')."' ";
 			$rq .= "WHERE host_id = '".$host_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}			
-	}	
-	
-	
+		}
+	}
+
+
 	function updateHostNotifOptionInterval($host_id = null, $ret = array())	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["host_notification_interval"]))
 			$ret = $ret["host_notification_interval"];
 		else
@@ -1868,28 +1868,28 @@
 		$rq .= "WHERE host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	# For massive change. incremental mode
 	function updateHostNotifOptionInterval_MC($host_id = null)	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$ret = $form->getSubmitValue("host_notification_interval");
-		
+
 		if (isset($ret) && $ret != NULL) {
 		    $rq = "UPDATE host SET " ;
 			$rq .= "host_notification_interval = '".$ret."' ";
 			$rq .= "WHERE host_id = '".$host_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}		
-	}	
-	
+		}
+	}
+
 	function updateHostNotifOptionTimeperiod($host_id = null, $ret = array())	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["timeperiod_tp_id2"]))
 			$ret = $ret["timeperiod_tp_id2"];
 		else
@@ -1901,31 +1901,31 @@
 		$rq .= "WHERE host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	# For massive change. incremental mode
 	function updateHostNotifOptionTimeperiod_MC($host_id = null)	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$ret = $form->getSubmitValue("timeperiod_tp_id2");
-		
+
 		if (isset($ret) && $ret != NULL) {
 		    $rq = "UPDATE host SET " ;
 			$rq .= "timeperiod_tp_id2 = '".$ret."' ";
 			$rq .= "WHERE host_id = '".$host_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}		
-	}	
+		}
+	}
 
 	function updateHostNotifOptionFirstNotificationDelay($host_id = null, $ret = array())	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
 
-		if (isset($ret["host_first_notification_delay"])) 
+		if (isset($ret["host_first_notification_delay"]))
 			$ret = $ret["host_first_notification_delay"];
-		  else 
+		  else
 			$ret = $form->getSubmitValue("host_first_notification_delay");
 
 
@@ -1935,22 +1935,22 @@
 		$rq .= "WHERE host_id = '".$host_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	# For massive change. incremental mode
 	function updateHostNotifOptionFirstNotificationDelay_MC($host_id = null)	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$ret = $form->getSubmitValue("host_first_notification_delay");
-		
+
 		if (isset($ret) && $ret != NULL) {
 		    $rq = "UPDATE host SET " ;
 			$rq .= "host_first_notification_delay = '".$ret."' ";
 			$rq .= "WHERE host_id = '".$host_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}		
-	}		
+		}
+	}
 
 	function updateHostHostGroup($host_id, $ret = array())	{
 		global $form, $pearDB;
@@ -2049,7 +2049,7 @@
 
 		$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2);
 		while ($hTpl = $DBRESULT->fetchRow()) {
-			$rq2 = "SELECT service_service_id FROM `host_service_relation` WHERE host_host_id = " . $hTpl['host_tpl_id'];
+			$rq2 = "SELECT service_service_id, service_register FROM `host_service_relation`, service WHERE service_service_id = service_id AND host_host_id = '" . $hTpl['host_tpl_id']."'";
 			$DBRESULT2 = $pearDB->query($rq2);
 			while ($hTpl2 = $DBRESULT2->fetchRow()) {
 				$alias = getMyServiceAlias($hTpl2["service_service_id"]);
@@ -2057,7 +2057,7 @@
 					$service = array(
 									"service_template_model_stm_id" => $hTpl2["service_service_id"],
 									"service_description" => $alias,
-									"service_register" => array("service_register"=> 1),
+									"service_register" => array("service_register" => ($hTpl2["service_register"] + 1)),
 									"service_activate" => array("service_activate" => 1),
 									"service_hPars" => array("0" => $hID));
 					$service_id = insertServiceInDB($service);
