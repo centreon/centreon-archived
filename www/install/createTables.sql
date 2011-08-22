@@ -2073,7 +2073,7 @@ CREATE TABLE IF NOT EXISTS `service_categories_relation` (
 
 CREATE TABLE IF NOT EXISTS `session` (
   `id` int(11) NOT NULL auto_increment,
-  `session_id` varchar(40) default NULL,
+  `session_id` varchar(256) default NULL,
   `user_id` int(11) default NULL,
   `current_page` int(11) default NULL,
   `last_reload` int(11) default NULL,
