@@ -391,4 +391,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (20, 26, 0, 102),
 (20, 27, 0, 103);
 
+
+INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LONGSERVICEOUTPUT$');
+
 UPDATE `informations` SET `value` = '2.3.0-RC2' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-RC1' LIMIT 1;

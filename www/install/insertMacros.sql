@@ -54,6 +54,7 @@ INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LASTSERVI
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LASTSERVICEUNKNOWN$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LASTSERVICECRITICAL$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$SERVICEOUTPUT$');
+INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LONGSERVICEOUTPUT$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$SERVICEPERFDATA$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$SERVICECHECKCOMMAND$');
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$SERVICEACKAUTHOR$');
