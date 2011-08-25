@@ -1,7 +1,7 @@
 ALTER TABLE `host` CHANGE `host_register` `host_register` ENUM('0','1','2','3') NOT NULL DEFAULT '0';
 ALTER TABLE `service` CHANGE `service_register` `service_register` ENUM('0','1','2','3') NOT NULL DEFAULT '0';
 ALTER TABLE nagios_server ADD COLUMN centreonbroker_module_path VARCHAR(255) DEFAULT NULL AFTER centreonbroker_cfg_path;
-
+ALTER TABLE `cfg_centreonbroker` ADD COLUMN config_filename VARCHAR(255) NOT NULL AFTER config_name;
 --
 -- Structure de la table `cb_field`
 --
