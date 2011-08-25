@@ -205,7 +205,9 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (8, 'Storage', 'storage.so', 20, 0, 1),
 (9, 'Core', NULL, NULL, 1, 1),
 (10, 'Centreon Storage', NULL, NULL, 1, 1),
-(11, 'Compression', 'compression.so', 60, 0, 1);
+(11, 'Compression', 'compression.so', 60, 0, 1),
+(12, 'Failover', NULL, NULL, 0, 1),
+(13, 'Correlation', 'correlation.so', 20, 0, 1);
 
 --
 -- Contenu de la table `cb_type`
@@ -223,7 +225,9 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (17, 'File', 'file', 9),
 (18, 'Standard', 'standard', 9),
 (19, 'Syslog', 'syslog', 9),
-(20, 'Compressor', 'compressor', 11);
+(20, 'Compressor', 'compressor', 11),
+(21, 'Failover', 'failover', 12),
+(22, 'Correlation', 'correlation', 13);
 
 --
 -- Contenu de la table `cb_field`
@@ -256,7 +260,9 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (24, 'level', 'Logging level', 'How much messages must be logged.', 'select', NULL),
 (25, 'compression', 'Compression (zlib)', 'Enable or not data stream compression.', 'radio', NULL),
 (26, 'compression_level', 'Compression level', 'Ranges from 1 (no compression) to 9 (best compression). -1 is the default', 'int', NULL),
-(27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL);
+(27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
+(28, 'failover', 'Failover Name', 'Name of the input or output object that will act as failover.', 'text', NULL),
+(29, 'file', 'Correlation File', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -305,7 +311,9 @@ INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_c
 (4, 11, 1),
 (5, 6, 0),
 (7, 8, 0),
-(8, 6, 0);
+(8, 6, 0),
+(8, 12, 1),
+(13, 6, 0);
 
 --
 -- Contenu de la table `cb_tag_type_relation`
@@ -327,7 +335,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`) VALUES
 (2, 15),
 (3, 17),
 (3, 18),
-(3, 19);
+(3, 19),
+(4, 22);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -389,7 +398,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (19, 24, 1, 5),
 (20, 25, 0, 101),
 (20, 26, 0, 102),
-(20, 27, 0, 103);
+(20, 27, 0, 103),
+(21, 28, 0, 2),
+(22, 29, 1, 1);
 
 
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LONGSERVICEOUTPUT$');
