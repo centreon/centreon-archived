@@ -186,6 +186,7 @@ ALTER TABLE `cb_type_field_relation`
 --
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
+(4, 'correlation'),
 (2, 'input'),
 (3, 'logger'),
 (1, 'output');

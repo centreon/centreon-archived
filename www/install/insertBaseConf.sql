@@ -704,6 +704,7 @@ INSERT INTO `traps` (`traps_id`, `traps_name`, `traps_oid`, `traps_args`, `traps
 --
 
 INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
+(4, 'correlation'),
 (2, 'input'),
 (3, 'logger'),
 (1, 'output');
