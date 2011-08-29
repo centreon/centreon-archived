@@ -825,11 +825,16 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 INSERT INTO `cb_module_relation` (`cb_module_id`, `module_depend_id`, `inherit_config`) VALUES
 (1, 6, 0),
 (1, 8, 0),
+(1, 12, 1),
 (2, 11, 1),
+(2, 12, 1),
 (3, 11, 1),
+(3, 12, 1),
 (4, 11, 1),
+(4, 12, 1),
 (5, 6, 0),
 (7, 8, 0),
+(7, 12, 1),
 (8, 6, 0),
 (8, 12, 1),
 (13, 6, 0);
