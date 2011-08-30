@@ -163,6 +163,7 @@ sub check_HostServiceID() {
     my $sth = $con_oreon->prepare("SELECT service_description, service_id FROM service WHERE service_register = '1'");
     if (!$sth->execute()) {
         writeLogFile("Sync | Cache Service : Error -> " . $sth->errstr . "\n");
+        exit();
     }
     while ($data = $sth->fetchrow_hashref()) {
 		$serviceCache{$data->{'service_id'}} = $data->{'service_description'};
@@ -174,6 +175,7 @@ sub check_HostServiceID() {
     $sth = $con_oreon->prepare("SELECT host_name, host_id FROM host WHERE host_register = '1'");
     if (!$sth->execute()) {
         writeLogFile("Sync | Cache Host : Error -> " . $sth->errstr . "\n");
+        exit();
     }
     while ($data = $sth->fetchrow_hashref()) {
 		$hostCache{$data->{'host_id'}} = $data->{'host_name'};
@@ -184,7 +186,8 @@ sub check_HostServiceID() {
     # Get index data in buffer
     my $sth1 = $con_ods->prepare("SELECT host_name, host_id, service_description, service_id FROM index_data ORDER BY host_name");
     if (!$sth1->execute()) {
-	writeLogFile("Sync : Error -> " . $sth1->errstr . "\n");
+		writeLogFile("Sync : Error -> " . $sth1->errstr . "\n");
+		exit();
     }
     while ($data = $sth1->fetchrow_hashref()) {
 		if (defined($data->{'host_id'})) {	    
