@@ -120,11 +120,17 @@
 					</xsl:element>					
 				</xsl:if>
 				<xsl:if test="ha = 1">
-					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="title">
-					  		<xsl:value-of select='//i/problem_ack'/>
-					  	</xsl:attribute>
+					<xsl:element name="a">
+						<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+						  	<xsl:attribute name="class">infobulle</xsl:attribute>
+							<xsl:attribute name="onmouseover">displayGenericInfo('ackspan_<xsl:value-of select="hid"/>',  '<xsl:value-of select="hackXml"/>', '<xsl:value-of select="hackXsl"/>');</xsl:attribute>
+							<xsl:attribute name="onmouseout">hideGenericInfo('ackspan_<xsl:value-of select="hid"/>');</xsl:attribute>						
+						</xsl:element>
+						<xsl:element name="span">
+							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/></xsl:attribute>
+						</xsl:element>
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hae = 0 and hpe = 1">
@@ -207,12 +213,18 @@
 				</xsl:element>
 			</xsl:if>
 			<xsl:if test="pa = 1">
+				<xsl:element name="a">
+					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="title">					  		
-					  		<xsl:value-of select='//i/problem_ack'/>
-					  	</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:attribute name="onmouseover">displayGenericInfo('ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>',  '<xsl:value-of select="ackXml"/>', '<xsl:value-of select="ackXsl"/>');</xsl:attribute>
+						<xsl:attribute name="onmouseout">hideGenericInfo('ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>						
 					</xsl:element>
+					<xsl:element name="span">
+							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+					</xsl:element>
+				</xsl:element>
 			</xsl:if>
 			<xsl:if test="ac = 0 and pc = 1">
 					<xsl:element name="img">

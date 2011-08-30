@@ -270,8 +270,10 @@
         $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
         $obj->XML->writeElement("ha", 	$ndo["problem_has_been_acknowledged"]);
         $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
-        $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/ndo/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$ndo["host_object_id"]);
-        $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
+        $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/ndo/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$ndo["host_object_id"]);
+        $obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
+        $obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/ndo/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$ndo["host_object_id"]);
+        $obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
         $obj->XML->writeElement("hae", 	$ndo["active_checks_enabled"]);
         $obj->XML->writeElement("hpe", 	$ndo["passive_checks_enabled"]);
         $obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);

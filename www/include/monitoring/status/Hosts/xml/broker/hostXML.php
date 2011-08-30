@@ -268,6 +268,8 @@
         $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);
         $obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/broker/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$ndo['host_id']);
 		$obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
+		$obj->XML->writeElement("hackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$ndo['host_id']);
+		$obj->XML->writeElement("hackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
         $obj->XML->writeElement("hae", 	$ndo["active_checks"]);
         $obj->XML->writeElement("hpe", 	$ndo["passive_checks"]);
         $obj->XML->writeElement("ne", 	$ndo["notify"]);

@@ -111,8 +111,17 @@
 				</xsl:element>
 			</xsl:if>
 			<xsl:if test="ha = 1">
-				<xsl:element name="img">
-				  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+				<xsl:element name="a">
+					<xsl:attribute name="class">infobulle</xsl:attribute>
+					<xsl:element name="img">
+					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:attribute name="onmouseover">displayGenericInfo('ackspan_<xsl:value-of select="hid"/>',  '<xsl:value-of select="hackXml"/>', '<xsl:value-of select="hackXsl"/>');</xsl:attribute>
+						<xsl:attribute name="onmouseout">hideGenericInfo('ackspan_<xsl:value-of select="hid"/>');</xsl:attribute>						
+					</xsl:element>
+					<xsl:element name="span">
+						<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/></xsl:attribute>
+					</xsl:element>
 				</xsl:element>
 			</xsl:if>
 			<xsl:if test="hae = 0 and hpe = 1">
