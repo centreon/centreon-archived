@@ -840,6 +840,35 @@ function hiddenPOPUP(span) {
 	span.innerHTML = '';
 }
 
+/**
+ * Display Generic info
+ *
+ * @param string span_index
+ * @param string xmlResource
+ * @param string xslResource
+ */
+function displayGenericInfo(span_index, xmlResource, xslResource)
+{
+	var span = document.getElementById(span_index);
+	setSpanStyle(span, "-380", "150");
+
+	var proc_popup = new Transformation();
+	proc_popup.setXml(xmlResource);
+	proc_popup.setXslt(xslResource);
+	proc_popup.transform(span_index);
+}
+
+/**
+ * Hide Generic info
+ *
+ * @param string span_index
+ */
+function hideGenericInfo(span_index)
+{
+	var span = document.getElementById(span_index);
+	span.innerHTML = '';
+}
+
 function setSpanStyle(span, top, left) {
 	//calcul auto de la largeur de l'ecran client
 	var l = screen.availWidth;

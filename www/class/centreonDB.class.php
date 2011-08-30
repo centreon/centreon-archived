@@ -187,7 +187,7 @@ class CentreonDB
      */
     protected function connectToNDO($conf_centreon)
     {
-		$DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db LIMIT 1;");
+		$DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
 		if (PEAR::isError($DBRESULT)) {
 			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
 		}

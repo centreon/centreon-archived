@@ -422,6 +422,8 @@
 				$obj->XML->writeElement("hico", $host_status[$ndo["host_name"]]["icon_image"]);
 				$obj->XML->writeElement("hip", $host_status[$ndo["host_name"]]["address"]);
 				$obj->XML->writeElement("hdtm", $host_status[$ndo["host_name"]]["scheduled_downtime_depth"]);
+				$obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/ndo/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$host_status[$ndo["host_name"]]["object_id"]);
+				$obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
 				$obj->XML->writeElement("hid", $host_status[$ndo["host_name"]]["object_id"]);
 			}
 
@@ -450,6 +452,8 @@
 			$obj->XML->writeElement("eh", 	$ndo["event_handler_enabled"]);
 			$obj->XML->writeElement("is", 	$ndo["is_flapping"]);
 			$obj->XML->writeElement("dtm",	$ndo["scheduled_downtime_depth"]);
+            $obj->XML->writeElement("dtmXml", "./include/monitoring/downtime/xml/ndo/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$host_status[$ndo["host_name"]]["object_id"]."&svc_id=".$ndo["object_id"]);
+		    $obj->XML->writeElement("dtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
 
 			if ($ndo["notes_url"] != "") {
 				$ndo["notes_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["notes_url"]);

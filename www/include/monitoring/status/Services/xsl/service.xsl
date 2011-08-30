@@ -106,12 +106,18 @@
 					</xsl:element>
 				</xsl:if>
 				<xsl:if test="hdtm != 0">
-					<xsl:element name="img">
-					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="title">
-					  		<xsl:value-of select='//i/host_currently_downtime'/>
-					  	</xsl:attribute>
-					</xsl:element>
+					<xsl:element name="a">
+						<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:element name="img">
+						  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
+						  	<xsl:attribute name="class">infobulle</xsl:attribute>
+							<xsl:attribute name="onmouseover">displayGenericInfo('dtmspan_<xsl:value-of select="hid"/>',  '<xsl:value-of select="hdtmXml"/>', '<xsl:value-of select="hdtmXsl"/>');</xsl:attribute>
+							<xsl:attribute name="onmouseout">hideGenericInfo('dtmspan_<xsl:value-of select="hid"/>');</xsl:attribute>						
+						</xsl:element>
+						<xsl:element name="span">
+							<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/></xsl:attribute>
+						</xsl:element>
+					</xsl:element>					
 				</xsl:if>
 				<xsl:if test="ha = 1">
 					<xsl:element name="img">
@@ -175,7 +181,7 @@
 			</xsl:if>
 			<xsl:if test="sau != 'none'">
 				<xsl:element name="a">
-				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
+				  	<xsl:attribute name="class">infobulle</xsl:attribute>
 				  	<xsl:attribute name="target">_blank</xsl:attribute>
 				  	<xsl:attribute name="href"><xsl:value-of select="sau"/></xsl:attribute>
 						<xsl:element name="img">
@@ -186,13 +192,19 @@
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
-			<xsl:if test="dtm != 0">
+			<xsl:if test="dtm != 0">					
+				<xsl:element name="a">
+					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="title">					  		
-					  		<xsl:value-of select='//i/service_currently_downtime'/>
-					  	</xsl:attribute>
+					  	<xsl:attribute name="class">infobulle</xsl:attribute>
+						<xsl:attribute name="onmouseover">displayGenericInfo('dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>',  '<xsl:value-of select="dtmXml"/>', '<xsl:value-of select="dtmXsl"/>');</xsl:attribute>
+						<xsl:attribute name="onmouseout">hideGenericInfo('dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>						
 					</xsl:element>
+					<xsl:element name="span">
+							<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+					</xsl:element>
+				</xsl:element>
 			</xsl:if>
 			<xsl:if test="pa = 1">
 					<xsl:element name="img">
