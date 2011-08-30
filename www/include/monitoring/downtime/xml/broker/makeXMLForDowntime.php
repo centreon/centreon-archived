@@ -36,7 +36,7 @@
  *
  */
 
-include_once "/etc/centreon/centreon.conf.php";
+include_once "@CENTREON_ETC@/centreon.conf.php";
 include_once $centreon_path . "www/class/centreonDuration.class.php";
 include_once $centreon_path . "www/class/centreonGMT.class.php";
 include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -82,7 +82,6 @@ $xml = new CentreonXML();
 $xml->startElement("response");
 
 $xml->startElement("label");
-$xml->writeElement("resourceName", "test");
 $xml->writeElement('author', _('Author'));
 $xml->writeElement('fixed', _('Fixed'));
 $xml->writeElement('start', _('Start Time'));
@@ -106,7 +105,6 @@ if (!$service_id) {
     		  FROM downtimes
     		  WHERE host_id = " . CentreonDB::escape($host_id) . "
     		  AND service_id = " . CentreonDB::escape($service_id) . "
-    		  AND started = 1
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
     		  ORDER BY start_time";

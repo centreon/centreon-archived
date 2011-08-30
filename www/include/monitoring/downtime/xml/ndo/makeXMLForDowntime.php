@@ -36,7 +36,7 @@
  *
  */
 
-include_once "/etc/centreon/centreon.conf.php";
+include_once "@CENTREON_ETC@/centreon.conf.php";
 include_once $centreon_path . "www/class/centreonDuration.class.php";
 include_once $centreon_path . "www/class/centreonGMT.class.php";
 include_once $centreon_path . "www/class/centreonXML.class.php";
@@ -96,7 +96,6 @@ $xml = new CentreonXML();
 $xml->startElement("response");
 
 $xml->startElement("label");
-$xml->writeElement("resourceName", "test");
 $xml->writeElement('author', _('Author'));
 $xml->writeElement('fixed', _('Fixed'));
 $xml->writeElement('start', _('Start Time'));
