@@ -509,6 +509,18 @@ sub sendConfigFile($){
     `$cmd`;
     undef($cmd);
     writeLogFile("End: Send config files on poller $id");
+    
+    # Send configuration for Centreon Broker
+    if ( -f $installedPath."/filesGeneration/broker/".$id) {
+	    $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
+	    $origin = $installedPath."/filesGeneration/broker/".$id."/*.xml";
+	    $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+	    my $cmd = "$scp -P $port $origin $dest";
+	    writeLogFile("Start: Send Centreon Broker config files on poller $id");
+	    `$cmd`;
+	    undef($cmd);
+	    writeLogFile("End: Send Centreon Broker config files on poller $id");
+    }
 	
     # Free
     undef($cfg_dir);
