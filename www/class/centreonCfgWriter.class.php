@@ -186,8 +186,8 @@ class CentreonCfgWriter
         file_put_contents($this->file_path, $this->buffer);
         /*if (!(strlen($this->buffer)) || !(fwrite($this->fd, $this->buffer))) {
             throw new Exception(_("Could not write in file") . " : " . $this->file_path);
-        }*/
-        fclose($this->fd);
+        }
+        fclose($this->fd);*/
     }
 
     /**
