@@ -38,10 +38,13 @@
  
 	if (!isset($oreon))
 		exit();
+		
+	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
 
 	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-	while ($res = $DBRESULT->fetchRow())
+	while ($res = $DBRESULT->fetchRow()) {
 		$ldap_auth[$res["key"]] = html_entity_decode($res["value"]);
+	}
 	$DBRESULT->free();
 
 	$attrsText 	= array("size"=>"80");
@@ -91,6 +94,13 @@
 	 * Just watch a contact information
 	 */
 	if ($o == "li")	{
+	    /*
+	     * Get information from template
+	     */
+	    $ldapAdmin = new CentreonLdapAdmin($pearDB);
+	    $tmpOptions = $ldapAdmin->getTemplate();
+	    $ldap_auth['ldap_base_dn'] = $tmpOptions['user_base_search'];
+	    $ldap_auth['ldap_search_filter'] = sprintf($tmpOptions['user_filter'], '*');
 		$subA = $form->addElement('submit', 'submitA', _("Import"));
 		$form->setDefaults($ldap_auth);
 	}
