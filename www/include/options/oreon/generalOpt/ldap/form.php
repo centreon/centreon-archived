@@ -88,7 +88,7 @@
 	$form->addElement('header', 'ldapinfo', _("LDAP Information"));
 
 	$form->addElement('text', 'ldap_binduser', _("Bind user"), $attrsText);
-	$form->addElement('text', 'ldap_bindpass', _("Bind password"), $attrsText);
+	$form->addElement('password', 'ldap_bindpass', _("Bind password"), $attrsText);
 	$form->addElement('select', 'ldap_version_protocol', _("Protocol version"), array('2' => 2, '3' => 3));
 	$form->addElement('select', 'ldap_template', _("Template"), array('0' => _("Custom"), '1' => _("Posix"), '2' => _("Active Directory")), array('id' => 'ldap_template', 'onchange' => 'toggleCustom(this);'));
 	$form->addElement('text', 'ldap_user_basedn', _("Search user base DN"), $attrsText);
