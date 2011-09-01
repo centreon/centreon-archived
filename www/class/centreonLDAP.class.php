@@ -192,7 +192,7 @@ class CentreonLDAP {
 	public function rebind() {
 	    if (isset($this->_ldap['info']['bind_dn']) && isset($this->_ldap['info']['bind_pass'])) {
 	        $this->_debug("LDAP Connect : Credentials : " . $this->_ldap['info']['bind_dn'] . " :: " . $this->_ldap['info']['bind_pass']);
-			if (ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
+			if (@ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
 				$this->_linkId = $this->_ldap['id'];
 				$this->_loadSearchInfo($this->_ldap['tmpl']);
 				return true;
@@ -205,7 +205,7 @@ class CentreonLDAP {
 				return true;
 			}
 		}
-		$this->_debug("LDAP Connect : Bind : " . ldap_errno($ds));
+		$this->_debug("LDAP Connect : Bind : " . ldap_error($this->_ds));
 		return false;  
 	}
 	
