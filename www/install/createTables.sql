@@ -1529,6 +1529,7 @@ CREATE TABLE IF NOT EXISTS `giv_graphs_template` (
   `base` int(11) default '1000',
   `lower_limit` float default NULL,
   `upper_limit` float default NULL,
+  `size_to_max` tinyint(6) NOT NULL,
   `bg_grid_color` varchar(200) default NULL,
   `bg_color` varchar(200) default NULL,
   `police_color` varchar(200) default NULL,

@@ -62,6 +62,13 @@
 	$obj->onecurve = true;
 
 	/**
+	 * Set metric id
+	 */
+	if (isset($_GET["metric"])) {
+		$obj->setMetricList($_GET["metric"]);
+	}
+
+	/**
 	 * Set arguments from GET
 	 */
 	$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
@@ -83,12 +90,6 @@
 		$obj->setCommandLineTimeLimit($_GET["flagperiod"]);
 	}
 
-	/**
-	 * Init Curve list
-	 */
-	if (isset($_GET["metric"])) {
-		$obj->setMetricList($_GET["metric"]);
-	}
 	$obj->initCurveList();
 
 	/**

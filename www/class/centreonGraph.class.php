@@ -53,6 +53,11 @@ require_once $centreon_path."www/include/common/common-Func.php";
  *
  */
 class CentreonGraph	{
+    /**
+     * Percentage over Max limit
+     *
+     */
+    const OVER_MAX_LIMIT_PCT = 3;
 
 	/*
 	 * Objects
@@ -78,6 +83,7 @@ class CentreonGraph	{
 	protected $_colors;
 	protected $_fonts;
 	protected $_flag;
+	protected $maxLimit;
 
 	/*
 	 * Variables
@@ -204,7 +210,10 @@ class CentreonGraph	{
 		unset($opt);
 
 		if (isset($index)) {
-			$DBRESULT = $this->DB->query("SELECT `metric_id` FROM `ods_view_details` WHERE `index_id` = '".$this->index."' AND `contact_id` = '".$this->user_id."'");
+			$DBRESULT = $this->DB->query("SELECT `metric_id`
+										  FROM `ods_view_details`
+										  WHERE `index_id` = '".$this->index."'
+										  AND `contact_id` = '".$this->user_id."'");
 			if ($DBRESULT->numRows()) {
 				while ($metric_Active = $DBRESULT->fetchRow()){
 					$this->metricsActive[$metric_Active["metric_id"]] = $metric_Active["metric_id"];
@@ -213,11 +222,20 @@ class CentreonGraph	{
 				unset($metric_Active);
 			} else {
 				$DBRESULT->free();
-				$DBRESULT2 = $this->DBC->query("SELECT metric_id FROM metrics WHERE index_id = '".$this->index."'  AND `hidden` = '0' ORDER BY `metric_name`");
+				$DBRESULT2 = $this->DBC->query("SELECT metric_id
+												FROM metrics
+												WHERE index_id = '".$this->index."'
+												AND `hidden` = '0'
+												ORDER BY `metric_name`");
 				while ($milist = $DBRESULT2->fetchRow()){
 					$odsm[$milist["metric_id"]] = 1;
 				}
-				$DBRESULT2 = $this->DB->query("SELECT vmetric_id metric_id FROM virtual_metrics WHERE index_id = '".$this->index."' AND ( `hidden` = '0' OR `hidden` IS NULL ) AND vmetric_activate = '1' ORDER BY 'metric_name'");
+				$DBRESULT2 = $this->DB->query("SELECT vmetric_id metric_id
+											   FROM virtual_metrics
+											   WHERE index_id = '".$this->index."'
+											   AND ( `hidden` = '0' OR `hidden` IS NULL )
+											   AND vmetric_activate = '1'
+											   ORDER BY 'metric_name'");
 				while ($milist = $DBRESULT2->fetchRow()){
 					$vmilist = "v".$milist["metric_id"];
 					$odsm[$vmilist] = 1;
@@ -229,6 +247,30 @@ class CentreonGraph	{
 				unset($odsm);
 			}
 		}
+	}
+
+	/**
+	 * Get Maximum Size of metric from index_id
+	 *
+	 * @param int $metricId
+	 * @return float
+	 */
+	protected function getMaxLimit($metricId = null)
+	{
+        $query = "SELECT MAX(`max`) as maxlimit
+        		  FROM metrics
+        		  WHERE index_id = " . $this->DB->escape($this->index);
+        if (isset($metricId)) {
+            $query .= " AND metric_id = " . $this->DB->escape($metricId);
+        }
+        $res = $this->DBC->query($query);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            $maxlimit = $row['maxlimit'];
+            $maxlimit = $maxlimit + ((self::OVER_MAX_LIMIT_PCT / $maxlimit) * 100);
+            return $maxlimit;
+        }
+        return 0;
 	}
 
 	/**
@@ -309,8 +351,16 @@ class CentreonGraph	{
 
 		if (isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL)
 			$this->setRRDOption("lower-limit", $this->templateInformations["lower_limit"]);
-		if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)
+		if (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != "") {
 			$this->setRRDOption("upper-limit", $this->templateInformations["upper_limit"]);
+		} elseif (isset($this->templateInformations["size_to_max"]) && $this->templateInformations["size_to_max"]) {
+		    if ($this->onecurve === true) {
+		        $upperLimit = $this->getMaxLimit($this->metricsEnabled[0]);
+		    } else {
+		        $upperLimit = $this->getMaxLimit();
+		    }
+		    $this->setRRDOption("upper-limit", $upperLimit);
+		}
 		if ((isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL) || (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)) {
 			$this->setRRDOption("rigid");
 			$this->setRRDOption("alt-autoscale-max");
@@ -376,7 +426,12 @@ class CentreonGraph	{
 
 		/* Manage reals metrics */
 		if (isset($l_rselector)) {
-			$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, replace(format(warn,9),',','') warn, replace(format(crit,9),',','') crit FROM metrics AS m, index_data AS i WHERE index_id = id AND ".$l_rselector." AND m.hidden = '0' ORDER BY m.metric_name");
+			$DBRESULT = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, replace(format(warn,9),',','') warn, replace(format(crit,9),',','') crit
+										   FROM metrics AS m, index_data AS i
+										   WHERE index_id = id
+										   AND ".$l_rselector."
+										   AND m.hidden = '0'
+										   ORDER BY m.metric_name");
 			while ($rmetric = $DBRESULT->fetchRow()){
 				$this->mlist[$rmetric["metric_id"]] = $this->mpointer[0]++;
 				$this->rmetrics[] = $rmetric;
@@ -386,7 +441,10 @@ class CentreonGraph	{
 
 		/* Manage virtuals metrics */
 		if (isset($l_vselector)) {
-			$DBRESULT = $this->DB->query("SELECT vmetric_id FROM virtual_metrics WHERE ".$l_vselector." ORDER BY vmetric_name");
+			$DBRESULT = $this->DB->query("SELECT vmetric_id
+										  FROM virtual_metrics
+										  WHERE ".$l_vselector."
+										  ORDER BY vmetric_name");
 			while ($vmetric = $DBRESULT->fetchRow()){
 				$this->manageVMetric($vmetric["vmetric_id"], NULL, NULL);
 			}

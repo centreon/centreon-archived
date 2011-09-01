@@ -120,7 +120,7 @@
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
 		$rq = "INSERT INTO `giv_graphs_template` ( `graph_id` , `name` , " .
-				"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
+				"`vertical_label` , `width` , `height` , `base` , `lower_limit`, `upper_limit` , `size_to_max` , `bg_grid_color` , `bg_color` , `police_color` , `grid_main_color` , " .
 				"`grid_sec_color` , `contour_cub_color` , `col_arrow` , `col_top` , `col_bot` , `default_tpl1` , `split_component` , `scaled`, " .
 				"`stacked` , `comment` ) ";
 		$rq .= "VALUES (";
@@ -132,6 +132,7 @@
 		isset($ret["base"]) && $ret["base"] != NULL ? $rq .= "'".htmlentities($ret["base"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
 		isset($ret["upper_limit"]) && $ret["upper_limit"] != NULL ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
+		isset($ret["size_to_max"]) && $ret["size_to_max"] != NULL ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
 		isset($ret["bg_grid_color"]) && $ret["bg_grid_color"] != NULL ? $rq .= "'".htmlentities($ret["bg_grid_color"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["bg_color"]) && $ret["bg_color"] != NULL ? $rq .= "'".htmlentities($ret["bg_color"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["police_color"]) && $ret["police_color"] != NULL ? $rq .= "'".htmlentities($ret["police_color"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -176,6 +177,8 @@
 		isset($ret["lower_limit"]) && $ret["lower_limit"] != NULL ? $rq .= "'".$ret["lower_limit"]."', ": $rq .= "NULL, ";
 		$rq .= "upper_limit = ";
 		isset($ret["upper_limit"]) && $ret["upper_limit"] != NULL ? $rq .= "'".$ret["upper_limit"]."', ": $rq .= "NULL, ";
+		$rq .= "size_to_max = ";
+		isset($ret["size_to_max"]) && $ret["size_to_max"] != NULL ? $rq .= "'".$ret["size_to_max"]."', ": $rq .= "0, ";
 		$rq .= "bg_grid_color = ";
 		isset($ret["bg_grid_color"]) && $ret["bg_grid_color"] != NULL ? $rq .= "'".htmlentities($ret["bg_grid_color"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "bg_color = ";

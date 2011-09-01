@@ -11,7 +11,14 @@
 	<tr class="list_one"><td class="FormRowField">{$form.width.label}</td><td class="FormRowValue">{$form.width.html}&nbsp;px</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.height.label}</td><td class="FormRowValue">{$form.height.html}&nbsp;px</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.lower_limit.label}</td><td class="FormRowValue">{$form.lower_limit.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.upper_limit.label}</td><td class="FormRowValue">{$form.upper_limit.html}</td></tr>
+	<tr class="list_two">
+		<td class="FormRowField">{$form.upper_limit.label}</td>
+		<td class="FormRowValue">
+			{$form.upper_limit.html}&nbsp;
+			{$form.size_to_max.label}&nbsp;
+			{$form.size_to_max.html}
+		</td>
+	</tr>
 	<tr class="list_one"><td class="FormRowField">{$form.base.label}</td><td class="FormRowValue">{$form.base.html}</td></tr>
 
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.color}</td></tr>

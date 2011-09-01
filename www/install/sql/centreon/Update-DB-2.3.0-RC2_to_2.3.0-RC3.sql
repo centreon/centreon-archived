@@ -1,4 +1,9 @@
 --
+-- Add size_to_max option to graph templates
+--
+ALTER TABLE `giv_graphs_template` ADD COLUMN `size_to_max` TINYINT(6) NOT NULL AFTER upper_limit;
+
+--
 -- Add password type for Centreon Broker field configuration
 --
 UPDATE  `cb_field` SET  `fieldtype` =  'password' WHERE  `cb_field_id` = 9;
