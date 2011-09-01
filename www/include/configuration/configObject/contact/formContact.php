@@ -161,8 +161,9 @@
 
 	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
 	    $ldap = new CentreonLDAP($pearDB, null);
-	    $ldap->connect();
-	    $cgLdap = $ldap->listGroupsForUser($cct['contact_ldap_dn']);
+	    if (false !== $ldap->connect()) {
+	        $cgLdap = $ldap->listGroupsForUser($cct['contact_ldap_dn']);
+	    }
 	}
 
 	/**
@@ -512,7 +513,9 @@
 
 	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap') {
 	    $tpl->assign("ldap_group", _("Group Ldap"));
-	    $tpl->assign("ldapGroups", $cgLdap);
+	    if (isset($cgLdap)) {
+	        $tpl->assign("ldapGroups", $cgLdap);
+	    }
 	}
 
 	$valid = false;
