@@ -123,7 +123,7 @@
 	    foreach ($ids as $id => $value)	{
 			global $pearDB;
 
-			$DBRESULT = $pearDB->query("SELECT config_name, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id);
+			$DBRESULT = $pearDB->query("SELECT config_name, config_filename, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id);
 			$row = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 
@@ -156,6 +156,7 @@
 			     */
 			    while ($nameNOk) {
 				    $newname = $row['config_name'] . '_' . $j;
+				    $newfilename = $j . '_' . $row['config_filename'];
 				    $query = "SELECT COUNT(*) as nb FROM cfg_centreonbroker WHERE config_name = '" . $newname . "'";
 				    $res = $pearDB->query($query);
 				    $rowNb = $res->fetchRow();
@@ -165,7 +166,9 @@
 				    $j++;
 			    }
 			    $values['name'] = $newname;
-			    insertCentreonBrokerInDB($values);
+			    $values['filename'] = $newfilename;
+			    $cbObj = new CentreonConfigCentreonBroker($pearDB);
+			    $cbObj->insertConfig($values);
 			}
 		}
 	}
