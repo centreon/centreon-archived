@@ -129,7 +129,7 @@
 						{/if}
 						</td>
 					</tr>
-						{if $host_notifications || $admin == true}
+						{if $aclAct.host_notifications || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft">{$m_mon_host_notification}</td>
 								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.notifications_enabled]};'>&nbsp;{$en_disable[$host_data.notifications_enabled]}&nbsp;</font></td>
@@ -161,7 +161,7 @@
 								</td>
 						    </tr>
 						{/if}
-						{if $host_event_handler || $admin == true}
+						{if $aclAct.host_event_handler || $admin == true}
 							<tr class='list_one'>
 								<td class="ListColLeft">{$m_mon_event_handler}</td>
 								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.event_handler_enabled]};'>&nbsp;{$en_disable[$host_data.event_handler_enabled]}&nbsp;</font></td>
@@ -177,7 +177,7 @@
 								</td>
 							</tr>
 						{/if}
-						{if $host_flap_detection || $admin == true}
+						{if $aclAct.host_flap_detection || $admin == true}
 						    <tr class='list_two'>
 								<td class="ListColLeft">{$m_mon_flap_detection}</td>
 								<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.flap_detection_enabled]};'>&nbsp;{$en_disable[$host_data.flap_detection_enabled]}&nbsp;</font></td>
@@ -194,7 +194,7 @@
 						    </tr>
 						{/if}
 						{if $host_data.current_state != UP}
-							{if $host_acknowledgement || $admin == true}
+							{if $aclAct.host_acknowledgement || $admin == true}
 								<tr class='list_one'>
 									<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
 									<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.problem_has_been_acknowledged]};'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$en[$host_data.problem_has_been_acknowledged]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
