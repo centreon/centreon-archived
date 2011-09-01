@@ -54,6 +54,9 @@
 										<xsl:attribute name='type'>checkbox</xsl:attribute>
 										<xsl:attribute name='name'>ldapHosts[s_<xsl:value-of select='id'/>][use_ssl]</xsl:attribute>
 										<xsl:attribute name='value'>1</xsl:attribute>
+										<xsl:if test="ssl='checked'">
+											<xsl:attribute name="checked">checked</xsl:attribute>
+										</xsl:if>
 									</xsl:element>
 									<xsl:text>  </xsl:text>
 									<xsl:value-of select="//main/labels/tls"/>
@@ -61,6 +64,9 @@
 										<xsl:attribute name='type'>checkbox</xsl:attribute>
 										<xsl:attribute name='name'>ldapHosts[s_<xsl:value-of select='id'/>][use_tls]</xsl:attribute>
 										<xsl:attribute name='value'>1</xsl:attribute>
+										<xsl:if test="tls='checked'">
+											<xsl:attribute name="checked">checked</xsl:attribute>
+										</xsl:if>
 									</xsl:element>
 									<xsl:text>   </xsl:text>
                                     <xsl:value-of select='//main/labels/order'/>
