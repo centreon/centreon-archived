@@ -117,6 +117,8 @@
 	$DBRESULT3->free();
 	unset($esi);
 
+	$cacheSVCTpl = intCmdParam($pearDB);
+
 	/*
 	 * Create file
 	 */
@@ -478,7 +480,8 @@
 				 * Check Command
 				 */
 				$command = NULL;
-				$command = getMyCheckCmdParam($service["service_id"]);
+				//$command = getMyCheckCmdParam($service["service_id"]);
+				$command = getCheckCmdParam($service["service_id"], $cacheSVCTpl);
 				if ($command)
 					$strTMP .= print_line("check_command", $command);
 

@@ -36,10 +36,81 @@
  *
  */
 
+    /**
+     * Init Command Cache
+     *
+     * @param CentreonDB $DB
+     */
+    function intCmdParam($DB)
+    {
+        $cache = array('tpl' => array(), 'svc' => array());
+
+        $commands = array();
+        $DBRESULT = $DB->query("SELECT command_id, command_name FROM command");
+        while ($data = $DBRESULT->fetchRow()) {
+            $commands[$data["command_id"]] = $data["command_name"];
+        }
+        $DBRESULT->free();
+
+        $i = 0;
+        $DBRESULT =& $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg FROM service ORDER BY service_register ASC");
+        while ($data = $DBRESULT->fetchRow()) {
+            if ($data["service_register"] == 1) {
+                if ($data["command_command_id_arg"] && !$data["command_command_id"]){
+                    $cache["svc"][$data["service_id"]] = db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "cmd", $cache)).db2str($data["command_command_id_arg"]);
+                } elseif ($data["command_command_id"] && !$data["command_command_id_arg"]) {
+                    $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]].db2str(getInfoInSvcTpl($data["service_template_model_stm_id"], "arg", $cache));
+                } elseif ($data["command_command_id"] && $data["command_command_id_arg"]) {
+                    $cache["svc"][$data["service_id"]] = $commands[$data["command_command_id"]].db2str($data["command_command_id_arg"]);
+                } else {
+                    $cache["svc"][$data["service_id"]] = NULL;
+                }
+            } else {
+              $cache["tpl"][$data["service_id"]] = array('arg' => $data["command_command_id_arg"], 'cmd' => $commands[$data["command_command_id"]], 'tpl' => $data["service_template_model_stm_id"]);
+            }
+            $i++;
+        }
+        $DBRESULT->free();
+        return $cache;
+    }
+
+	/**
+	 * Ask information into template cache
+	 *
+	 * @param $tpl
+	 */
+    function getInfoInSvcTpl($tpl, $info, $cache)
+    {
+        if ($info == 'arg' || $info == 'cmd') {
+            if (isset($cache['tpl'][$tpl][$info])) {
+                return $cache['tpl'][$tpl][$info];
+            } elseif (isset($cache['tpl'][$tpl]["tpl"])) {
+                return getInfoInSvcTpl($cache['tpl'][$tpl]["tpl"], $info);
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
+
+	/**
+   	 * Get check command parameters
+   	 *
+   	 * @param $service_id
+   	 */
+    function getCheckCmdParam($service_id = NULL, $cache)
+    {
+        if (isset($cache["svc"][$service_id])) {
+          return $cache["svc"][$service_id];
+        } else {
+          return null;
+        }
+    }
+
  	/*
  	 * Create Service Template Cache
  	 */
-
 	function getMyServiceTPInCache($service_id = NULL, $cache)	{
 		if (!$service_id)
 			return;
