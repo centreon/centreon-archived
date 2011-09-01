@@ -761,7 +761,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (6, 'tls', 'Enable TLS encryption', NULL, 'radio', NULL),
 (7, 'db_host', 'DB host', NULL, 'text', NULL),
 (8, 'db_user', 'DB user', NULL, 'text', NULL),
-(9, 'db_password', 'DB password', NULL, 'text', NULL),
+(9, 'db_password', 'DB password', NULL, 'password', NULL),
 (10, 'db_name', 'DB name', NULL, 'text', NULL),
 (11, 'path', 'File path', NULL, 'text', NULL),
 (12, 'protocol', 'Serialization Protocol', NULL, 'select', NULL),
@@ -924,4 +924,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (20, 26, 0, 102),
 (20, 27, 0, 103),
 (21, 28, 0, 2),
-(22, 29, 1, 1);
+(22, 29, 1, 1),
+(14, 18, 1, 5),
+(16, 18, 1, 3);
