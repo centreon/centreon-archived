@@ -224,7 +224,7 @@
 	 * Get Status global for Services
 	 */
 	if (!$is_admin) {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state" .
+		$rq2 = 	" SELECT COUNT(DISTINCT(nss.service_object_id)) AS counter, nss.current_state" .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
@@ -234,7 +234,7 @@
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 	}
 	else {
-		$rq2 = 	" SELECT count(nss.current_state), nss.current_state".
+		$rq2 = 	" SELECT COUNT(DISTINCT(nss.service_object_id)) AS counter, nss.current_state".
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like '_Module_%' ".
@@ -244,7 +244,7 @@
 	$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
 	while ($ndo = $resNdo2->fetchRow()) {
-		$SvcStat[$ndo["current_state"]] = $ndo["count(nss.current_state)"];
+		$SvcStat[$ndo["current_state"]] = $ndo["counter"];
 	}
 	$resNdo2->free();
 
