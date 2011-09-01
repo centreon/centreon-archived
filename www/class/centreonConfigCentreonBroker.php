@@ -237,6 +237,10 @@ class CentreonConfigCentreonBroker
 	               $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
                    $default = $this->getDefaults($field['id']);
                    break;
+               case 'password':
+                   $elementType = 'password';
+                   $elementAttr = $this->attrText;
+                   break;
                case 'text':
                default:
                    $elementType = 'text';
