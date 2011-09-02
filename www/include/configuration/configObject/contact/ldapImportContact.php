@@ -108,8 +108,11 @@
 	$valid = false;
 	if ($form->validate())	{
 		if (isset($_POST["contact_select"]["select"]) ) {
-			if ($form->getSubmitValue("submitA"))
-				insertLdapContactInDB($_POST["contact_select"]);
+			if ($form->getSubmitValue("submitA")) {
+			    $ldap = new CentreonLdap($pearDB);
+			    $ldap->connect();
+				insertLdapContactInDB($ldap, $_POST["contact_select"]);
+			}
 		}
 		$form->freeze();
 		$valid = true;
