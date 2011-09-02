@@ -80,7 +80,9 @@ try {
         if (!is_dir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"])) {
             mkdir($oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]);
         }
-        copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
+        if (file_exists($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
+        	copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
+        }
     }
     $msg_copy = array();
 
