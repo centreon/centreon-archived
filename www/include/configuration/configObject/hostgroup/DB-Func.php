@@ -144,8 +144,7 @@
 					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
 						if (!$is_admin){
-							$group_list = getGroupListofUser($pearDB);
-							$resource_list = getResourceACLList($group_list);
+							$resource_list = $oreon->user->access->getAccessGroups();
 							if (count($resource_list)){
 								foreach ($resource_list as $res_id)	{
 									$DBRESULT3 = $pearDB->query("INSERT INTO `acl_resources_hg_relations` (acl_res_id, hg_hg_id) VALUES ('".$res_id."', '".$maxId["MAX(hg_id)"]."')");
