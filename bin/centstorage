@@ -389,7 +389,8 @@ sub CheckRestart(){
 	check_HostServiceID();
 	if (getPurgeConfig()){
 	    CheckMySQLDrain();
-	    DeleteOldRrdDB();
+	    deleteStatusDatabase();
+	    deleteMetricsDatabase();
 	}
 	saveLastRestartInMemory($last_restart);
     }

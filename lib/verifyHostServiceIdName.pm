@@ -94,24 +94,35 @@ sub getPurgeConfig(){
     return $data->{'autodelete_rrd_db'};
 }
 
-# Get repository of RRDTool db
-
-sub getStorageDir(){
+# Get repository of RRDTool db for Metrics
+sub getStorageMetricsDir(){
 	CheckMySQLConnexion();
 
     my $sth = $con_ods->prepare("SELECT RRDdatabase_path FROM config");
     if (!$sth->execute) {
-    	writeLogFile("Error - getStorageDir : " . $sth->errstr);
+    	writeLogFile("Error - getStorageMetricsDir : " . $sth->errstr);
     }
     my $data = $sth->fetchrow_hashref();
     undef($sth);
     return $data->{'RRDdatabase_path'};
 }
 
-# Delete RRDTool Database if thy were not link with data in ODS DB.
+# Get repository of RRDTool db for status
+sub getStorageStatusDir(){
+	CheckMySQLConnexion();
 
-sub DeleteOldRrdDB(){
-    my ($data, %base);
+    my $sth = $con_ods->prepare("SELECT RRDdatabase_status_path FROM config");
+    if (!$sth->execute) {
+    	writeLogFile("Error - getStorageStatusDir : " . $sth->errstr);
+    }
+    my $data = $sth->fetchrow_hashref();
+    undef($sth);
+    return $data->{'RRDdatabase_status_path'};
+}
+
+# Delete Metrics RRDTool Database if thy were not link with data
+sub deleteMetricsDatabase() {
+	my ($data, %base);
 
     # Connection to MySQL DB
 	CheckMySQLConnexion();
@@ -126,14 +137,53 @@ sub DeleteOldRrdDB(){
     undef($sth);
     undef($data);
 
-    $some_dir = getStorageDir();
+    $some_dir = getStorageMetricsDir();
     opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
     @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
     closedir DIR;
     for (@files) {
-		if (!defined($base{$_})){
-		    if (!-d $some_dir."/".$_){
-				if (unlink($some_dir."/".$_)){
+		if (!defined($base{$_})) {
+		    if (!-d $some_dir."/".$_) {
+				if (unlink($some_dir."/".$_)) {
+				    writeLogFile("Sync : purge: ".$some_dir."/".$_." removed");
+				} else {
+				    writeLogFile("Sync : Error -> Unable to remove ".$some_dir.$_);
+				}
+		    }
+		}
+    }
+    undef($some_dir);
+    undef(@files);
+    undef($data);
+    undef(%base);
+}
+
+
+# Delete Status RRDTool Database if thy were not link with data
+sub deleteStatusDatabase(){
+    my ($data, %base);
+
+    # Connection to MySQL DB
+	CheckMySQLConnexion();
+
+    my $sth = $con_ods->prepare("SELECT id FROM index_data");
+    if (!$sth->execute) {
+    	writeLogFile("Error:" . $sth->errstr);
+    }
+    while ($data = $sth->fetchrow_hashref()){
+     	$base{$data->{'id'}.".rrd"} = 1;
+    }
+    undef($sth);
+    undef($data);
+
+    $some_dir = getStorageStatusDir();
+    opendir(DIR, $some_dir) || die "can't opendir $some_dir: $!";
+    @files = grep { $_ ne '.' and $_ ne '..' } readdir DIR; 
+    closedir DIR;
+    for (@files) {
+		if (!defined($base{$_})) {
+		    if (!-d $some_dir."/".$_) {
+				if (unlink($some_dir."/".$_)) {
 				    writeLogFile("Sync : purge: ".$some_dir."/".$_." removed");
 				} else {
 				    writeLogFile("Sync : Error -> Unable to remove ".$some_dir.$_);
