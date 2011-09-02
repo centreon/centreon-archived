@@ -92,7 +92,7 @@ class CentreonAuthLDAP {
 	 */
 	private function getLogFlag() {
 		global $pearDB;
-		$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap'");
+		$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
 		$data = $DBRESULT->fetchRow();
 		if (isset($data["value"])) {
 			return $data["value"];
@@ -110,7 +110,7 @@ class CentreonAuthLDAP {
 	     * Check if it's a new user
 	     */
 	    $newUser = false;
-	    if (!isset($this->contactInfos['contact_ldap_dn'])) {
+	    if (!isset($this->contactInfos['contact_ldap_dn']) || $this->contactInfos['contact_ldap_dn'] == '') {
 	        $this->contactInfos['contact_ldap_dn'] = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
 	        $newUser = true;
 	    }
@@ -119,8 +119,9 @@ class CentreonAuthLDAP {
 		 * LDAP BIND
 		 */
 		@ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
-		if ($this->debug)
+		if ($this->debug) {
 			$this->CentreonLog->insertLog(3, "Connexion = ".$this->contactInfos['contact_ldap_dn']." :: ".ldap_error($this->ds));
+		}
 
 		/*
 		 * In some case, we fallback to local Auth
@@ -138,7 +139,6 @@ class CentreonAuthLDAP {
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
 					if ($newUser) {
 					    $this->updateUserDn();
-					    return -1;
 					}
 				   	return 1;
 				   	break;
@@ -200,9 +200,9 @@ class CentreonAuthLDAP {
 		         * Update the user dn 
 		         */
 		        $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
-				$query = "UPDATE contact SET contact_ldap_dn = '" .  $dn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
+				$query = "UPDATE contact SET contact_ldap_dn = '" .  $userDn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
 				$this->pearDB->query($query);
-				$this->contactInfos['contact_ldap_dn'] = $dn;
+				$this->contactInfos['contact_ldap_dn'] = $userDn;
 				return true;
 		    } else {
 		        /* 
