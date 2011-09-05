@@ -436,7 +436,7 @@
 var tooltip = new CentreonToolTip();
 var session_id = "<?php echo session_id();?>";
 tooltip.render();
-var progressBar = new S2.UI.ProgressBar('progress_bar');
+var progressBar;
 var msgTab = new Array();
 msgTab['start'] = "<?php echo _("Preparing environment");?>";
 msgTab['gen'] = "<?php echo _("Generating files");?>";
@@ -445,6 +445,37 @@ msgTab['restart'] = "<?php echo _("Restarting engine");?>";
 msgTab['abort'] = "<?php echo _("Aborted.");?>";
 msgTab['noPoller'] = "<?php echo _("No poller selected");?>";
 
+document.onLoad = initProgressBar();
+
+/**
+ * Init Progress bar
+ *
+ * @return void
+ */
+function initProgressBar()
+{
+	progressBar = new JS_BRAMUS.jsProgressBar(
+					'progress_bar',
+					0,
+					{
+                        animate         : false,
+                        showText        : false,
+                        barImage        : Array(
+                                                'include/common/javascript/scriptaculous/images/bramus/percentImage_back4.png',
+                                                'include/common/javascript/scriptaculous/images/bramus/percentImage_back3.png',
+                                                'include/common/javascript/scriptaculous/images/bramus/percentImage_back2.png',
+                                                'include/common/javascript/scriptaculous/images/bramus/percentImage_back1.png'
+                                        ),
+                        boxImage        : 'include/common/javascript/scriptaculous/images/bramus/percentImage.png'
+                	}
+	);
+}
+
+/**
+ * Generation process
+ *
+ * @return void
+ */
 function generationProcess()
 {
 	updateProgress(0);

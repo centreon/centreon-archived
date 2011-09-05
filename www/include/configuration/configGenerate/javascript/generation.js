@@ -162,7 +162,7 @@ function isError(responseXML)
  */
 function updateProgress(val)
 {
-	progressBar.setValue(val);
+	progressBar.setPercentage(val);
 	$('progressPct').update(val + "%");
 }
 

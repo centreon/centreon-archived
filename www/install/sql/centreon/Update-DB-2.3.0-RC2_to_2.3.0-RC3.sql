@@ -19,4 +19,9 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 -- 
 UPDATE `nagios_server` SET `centreonbroker_cfg_path` = '/etc/centreon-broker', `centreonbroker_module_path` = '/usr/share/centreon/lib/centreon-broker';
 
+--
+-- Update progress bar lib
+--
+UPDATE `topology_JS` SET `PathName_js` = './include/common/javascript/scriptaculous/jsProgressBarHandler.js ' WHERE `PathName_js` = './include/common/javascript/scriptaculous/s2.js ';
+
 UPDATE `informations` SET `value` = '2.3.0-RC3' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-RC2' LIMIT 1;

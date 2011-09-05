@@ -25,7 +25,7 @@
 					{$progressLabel} (<label id='progressPct'></label>)
 				</td>
 				<td class="FormRowValue">
-					<div id="progress_bar" style="width: 230px; height: 10px;"></div>
+					<span id="progress_bar">0%</span>
 				</td>
 			</tr>
 			<tr class="list_two">
