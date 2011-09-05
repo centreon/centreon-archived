@@ -100,7 +100,7 @@
 	 */
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' ORDER BY contact_name");
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' AND contact_register = 1 ORDER BY contact_name");
 	while ($contact = $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
