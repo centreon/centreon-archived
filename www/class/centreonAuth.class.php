@@ -205,6 +205,13 @@ class CentreonAuth {
     	    $this->userInfos['contact_alias'] = $username;
     	    $this->userInfos['contact_auth_type'] = "ldap";
     	    $this->checkPassword($password);
+    	    /*
+    	     * Reset userInfos with imported informations
+    	     */
+    	    $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
+    	    if ($DBRESULT->numRows()) {
+    	        $this->userInfos = $DBRESULT->fetchRow();
+    	    }
     	} else {
     		if ($this->debug)
 	    		$this->CentreonLog->insertLog(1, "No contact found with this login : '$username'");
