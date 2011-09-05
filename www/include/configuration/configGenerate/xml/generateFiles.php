@@ -182,6 +182,7 @@ try {
             require $path."genTimeperiods.php";
             require $path."genCommands.php";
             require $path."genContacts.php";
+            require $path."genContactTemplates.php";
             require $path."genContactGroups.php";
             require $path."genHosts.php";
             require $path."genHostTemplates.php";

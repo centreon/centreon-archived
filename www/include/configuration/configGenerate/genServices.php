@@ -58,7 +58,7 @@
 	 * Build cache for services contact
 	 */
 	$cctSCache = array();
-	$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, csr.service_service_id FROM contact_service_relation csr, contact c WHERE csr.contact_id = c.contact_id AND c.contact_activate = '1'");
+	$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, csr.service_service_id FROM contact_service_relation csr, contact c WHERE csr.contact_id = c.contact_id AND c.contact_activate = '1' AND c.contact_register = 1");
 	while ($contact = $DBRESULT2->fetchRow())	{
 		if (!isset($cctSCache[$contact["service_service_id"]]))
 			$cctSCache[$contact["service_service_id"]] = array();

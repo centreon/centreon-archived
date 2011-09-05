@@ -86,7 +86,7 @@
 		$strDef = "";
 		
 		/*
-		 * Convert spécial char
+		 * Convert spï¿½cial char
 		 */
 		$service["service_description"] = convertServiceSpecialChar($service["service_description"]);
 		$service["service_alias"] 		= convertServiceSpecialChar($service["service_alias"]);
@@ -244,7 +244,7 @@
 			 */
 			$contact = array();
 			$strTMPTemp = NULL;
-			$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id ORDER BY `contact_name`");
+			$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id AND c.contact_activate = '1' AND c.contact_register = 1 ORDER BY `contact_name`");
 			while ($contact = $DBRESULT2->fetchRow())	{
 				if (isset($gbArr[0][$contact["contact_id"]]))
 					$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];

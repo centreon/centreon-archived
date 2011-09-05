@@ -80,6 +80,7 @@
 	$str .= "cfg_file=".$nagios["cfg_dir"]."misccommands.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."checkcommands.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."contactgroups.cfg\n";
+	$str .= "cfg_file=".$nagios["cfg_dir"]."contactTemplates.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."contacts.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."hostgroups.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."servicegroups.cfg\n";

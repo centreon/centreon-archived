@@ -96,7 +96,7 @@
 	 * Create Contact Cache
 	 */
 	$cctCache = array();
-	$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id");
+	$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id AND c.contact_register = 1 AND c.contact_activate = '1'");
 	while ($contact = $DBRESULT2->fetchRow())	{
 		if (!isset($cctCache[$contact["host_host_id"]]))
 			$cctCache[$contact["host_host_id"]] = array();

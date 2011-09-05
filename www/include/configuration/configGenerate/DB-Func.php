@@ -310,6 +310,23 @@
 			unset($contact);
 		}
 		$DBRESULT->free();
+		/*
+		 * Contact with template
+		 */
+		$queryContactWithTemplate = 'SELECT contact_id
+			FROM contact
+			WHERE contact_template_id IN (
+				SELECT contact_id
+					FROM contact
+					WHERE contact_enable_notifications = "1" AND contact_activate = "1" AND contact_register = 0
+			)';
+		$contact = array();
+		$DBRESULT = $pearDB->query($queryContactWithTemplate);
+		while ($contact = $DBRESULT->fetchRow()) {
+			$cctEnb[$contact["contact_id"]] = 1;
+			unset($contact);
+		}
+		$DBRESULT->free();
 
 		/*
 		 * ContactGroup

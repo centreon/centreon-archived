@@ -47,14 +47,17 @@
 	$contact = array();
 	$i = 1;
 	$str = NULL;
+	$queryGetUserAlias = 'SELECT contact_name FROM contact WHERE contact_id = %d';
+	$userCache = array();
 	while ($contact = $DBRESULT->fetchRow())	{
 		if (isset($gbArr[0][$contact["contact_id"]]))	{
 			$ret["comment"] ? ($str .= "# '".$contact["contact_name"]."' contact definition ".$i."\n") : NULL;
 			if ($ret["comment"] && $contact["contact_comment"])	{
 				$comment = array();
 				$comment = explode("\n", $contact["contact_comment"]);
-				foreach ($comment as $cmt)
+				foreach ($comment as $cmt) {
 					$str .= "# ".$cmt."\n";
+				}
 			}
 			
 			/*
@@ -146,6 +149,22 @@
 				$str .= print_line("address5", $contact["contact_address5"]);
 			if (isset($contact["contact_address6"]) && $contact["contact_address6"]) 
 				$str .= print_line("address6", $contact["contact_address6"]);
+				
+			/*
+			 * Template
+			 */
+			if (isset($contact['contact_template_id']) && $contact['contact_template_id'] != 0) {
+			    if (!isset($userCache[$contact['contact_template_id']])) {
+			        $res = $pearDB->query(sprintf($queryGetUserAlias, $contact['contact_template_id']));
+			        if (!PEAR::isError($res)) {
+			            $row = $res->fetchRow();
+			            $userCache[$contact['contact_template_id']] = $row['contact_name'];
+			        }
+			    }
+			    if (isset($userCache[$contact['contact_template_id']])) {
+			        $str .= print_line('use', $userCache[$contact['contact_template_id']]);
+			    }
+			}
 			
 			$str .= "}\n\n";
 			$i++;
