@@ -233,8 +233,8 @@ class CentreonAuthLDAP {
 		        if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
 		            $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
 		        }
-		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager, contact_oreon, contact_activate)
-		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userDn . "', " . $userEmail . ", " . $userPager . ", '1', '1')";
+		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager, contact_oreon, contact_activate, contact_register)
+		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userDn . "', " . $userEmail . ", " . $userPager . ", '1', '1', 1)";
 		        if (false === PEAR::isError($this->pearDB->query($query))) {
 		            /*
 		             * Get the contact_id
