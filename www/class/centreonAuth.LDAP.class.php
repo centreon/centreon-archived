@@ -225,6 +225,10 @@ class CentreonAuthLDAP {
 		         */
 		        $userInfos =  $this->ldap->getEntry($userDn);
 		        $userDisplay = $userInfos[$this->ldap->getAttrName('user', 'name')];
+		        /*
+		         * Replace space by underscore
+		         */
+		        $userDisplay = str_replace(' ', '_', $userDisplay);
 		        $userEmail = "NULL";
 		        if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
 		            $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')] . "'";
