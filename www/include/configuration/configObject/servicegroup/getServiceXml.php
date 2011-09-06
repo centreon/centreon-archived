@@ -60,6 +60,7 @@ if ($hostId != "") {
     if ($hostId) {
         $query .= " AND h.host_id = " . $db->escape($hostId);
     }
+    $query .= " AND s.service_register = '1' ";
     $query .= " ORDER BY host_name, service_description ";
     $res = $db->query($query);
     while ($row = $res->fetchRow()) {
