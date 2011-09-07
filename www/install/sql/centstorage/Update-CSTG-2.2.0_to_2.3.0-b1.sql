@@ -1,6 +1,8 @@
 ALTER TABLE  `log_archive_host` ADD  `MaintenanceTime` INT NULL DEFAULT  '0' AFTER  `UNDETERMINEDTimeScheduled` ;
 ALTER TABLE  `log_archive_service` ADD  `MaintenanceTime` INT NULL DEFAULT  '0' AFTER  `UNDETERMINEDTimeScheduled` ;
 
+ALTER TABLE `metrics` ADD `data_source_type` ENUM( '0', '1', '2', '3' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' AFTER `metric_name` ;
+
 --
 -- Table structure for table `hoststateevents`
 --

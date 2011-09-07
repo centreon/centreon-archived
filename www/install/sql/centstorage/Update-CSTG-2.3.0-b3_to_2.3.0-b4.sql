@@ -733,3 +733,4 @@ CREATE TABLE IF NOT EXISTS servicestateevents (
 
 ALTER TABLE `log` ADD COLUMN `instance` int(11) NOT NULL default '1' AFTER `msg_type`;
 ALTER TABLE `log` ADD INDEX(`instance`);
+
