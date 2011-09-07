@@ -122,8 +122,11 @@
 				"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
 				(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
 				"WHERE obj.name1 IS NOT NULL " .
-				"AND obj.name2 IS NULL " .
-				(isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
+				"AND obj.name2 IS NULL ";
+	    if ($view_all == 1) {
+		    $request .= "AND dtm.was_cancelled = 0 ";
+        }
+		$request .= (isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND dtm.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 				"AND obj.object_id = dtm.object_id " .

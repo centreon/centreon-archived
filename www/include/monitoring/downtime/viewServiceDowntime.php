@@ -118,8 +118,11 @@
 					"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
 					"WHERE obj.name1 IS NOT NULL " .
 					"AND obj.name2 IS NOT NULL " .
-					"AND obj.object_id = dtm.object_id " .
-					(isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
+					"AND obj.object_id = dtm.object_id ";
+			if ($view_all == 1) {
+			    $request .= "AND dtm.was_cancelled = 0 ";
+			}
+			$request .= (isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
 					(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
@@ -131,8 +134,11 @@
 					"WHERE obj.name1 IS NOT NULL " .
 					"AND obj.name2 IS NOT NULL " .
 					"AND obj.object_id = dtm.object_id " .
-					"AND obj.name1 = centreon_acl.host_name " .
-					(isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
+					"AND obj.name1 = centreon_acl.host_name ";
+			if ($view_all == 1) {
+			    $request .= "AND dtm.was_cancelled = 0 ";
+			}
+			$request .= (isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
 					"AND obj.name2 = centreon_acl.service_description " .
@@ -224,7 +230,7 @@
 
 	$tpl->assign("dtm_host_name", _("Host Name"));
 	$tpl->assign("dtm_service_descr", _("Services"));
-	$tpl->assign("dtm_start_time", _("start Time"));
+	$tpl->assign("dtm_start_time", _("Start Time"));
 	$tpl->assign("dtm_end_time", _("End Time"));
 	$tpl->assign("dtm_author", _("Author"));
 	$tpl->assign("dtm_comment", _("Comments"));
