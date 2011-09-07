@@ -56,6 +56,7 @@
 				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
 				while ($metrics = $DBRESULT->fetchRow()){
 					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
+					$pearDB->query("DELETE FROM ods_view_details WHERE metric_id = " . $pearDB->escape($metrics['metric_id']));
 				}
 			}
 		} else if ($_POST["o1"] == "hg" || $_POST["o2"] == "hg"){

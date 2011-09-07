@@ -110,6 +110,7 @@
 					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
 				}
 				$DBRESULT = $pearDBO->query("DELETE FROM index_data WHERE `id` = '".$key."'");
+				$pearDB->query("DELETE FROM ods_view_details WHERE index_id = " . $pearDB->escape($key));
 			}
 		} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
