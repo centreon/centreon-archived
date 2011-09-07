@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.3.0-RC2');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.3.0-RC3');
 
 --
 -- Contenu de la table `nagios_server`
