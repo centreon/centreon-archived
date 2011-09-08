@@ -4,7 +4,7 @@ ALTER TABLE `index_data` CHANGE `service_description` `service_description` varc
 ALTER TABLE  `log_archive_host` ADD  `MaintenanceTime` INT NULL DEFAULT  '0' AFTER  `UNDETERMINEDTimeScheduled` ;
 ALTER TABLE  `log_archive_service` ADD  `MaintenanceTime` INT NULL DEFAULT  '0' AFTER  `UNDETERMINEDTimeScheduled` ;
 
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS `centreon_acl` (
+CREATE TABLE IF NOT EXISTS `centreon_acl` (
   `id` int(11) NOT NULL auto_increment,
   `host_id` int(11) default NULL,
   `host_name` varchar(255) default NULL,

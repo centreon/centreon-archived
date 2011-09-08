@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `servicestateevents` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63812 ;
 
 
-CREATE TABLE IF NOT EXISTS IF NOT EXISTS `centreon_acl` (
+CREATE TABLE IF NOT EXISTS `centreon_acl` (
   `id` int(11) NOT NULL auto_increment,
   `host_id` int(11) default NULL,
   `host_name` varchar(255) default NULL,
