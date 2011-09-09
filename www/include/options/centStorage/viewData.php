@@ -68,6 +68,8 @@
 	require_once("./include/common/common-Func.php");
 	require_once("./class/centreonDB.class.php");
 
+	global $instance;
+
 	/*
 	 * Prepare search engine
 	 */
@@ -95,12 +97,20 @@
 		if ($_POST["o"] == "rg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+				if (isset($instance) && $instance != 0) {
+					$DBRESULT = $pearDBO->query("INSERT INTO rebuild (index_id, status, centreon_instance) VALUES ('".$key."', 1, '".$instance."')");
+				} else {
+					$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
+				}
 			}
 		} else if ($_POST["o"] == "nrg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
+				if (isset($instance) && $instance != 0) {
+					$DBRESULT = $pearDBO->query("INSERT INTO rebuild (index_id, status, centreon_instance) VALUES ('".$key."', 1, '".$instance."')");
+				} else {
+					$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
+				}
 			}
 		} else if ($_POST["o"] == "ed" && isset($_POST["select"])){
 			$selected = $_POST["select"];
@@ -136,11 +146,15 @@
 	}
 
 	if (isset($_POST["o"]) && $_POST["o"] == "d" && isset($_POST["id"])){
-		$DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".$_POST["id"]."'");
+		$DBRESULT = $pearDBO->query("UPDATE index_data SET `trashed` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
 	}
 
 	if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])){
-		$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$_POST["id"]."'");
+		if (isset($instance) && $instance != 0) {
+			$DBRESULT = $pearDBO->query("INSERT INTO rebuild (index_id, status, centreon_instance) VALUES ('".$key."', 2, '".$instance."')");
+		} else {
+			$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
+		}
 	}
 
 	$search_string = "";
