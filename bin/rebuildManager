@@ -394,6 +394,7 @@ sub CheckRebuild(){
 	    writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght().")");
 	} else {
 	    my $sth4;
+	    my $handle;
 	    while ($metric = $sth3->fetchrow_hashref()) {
 		# Replace Special chars
 		$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
@@ -420,12 +421,16 @@ sub CheckRebuild(){
 			# Create DB
 			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd, $metric->{'data_source_type'});
 			tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
-
+			open(FILE,">>".$RRDdatabase_path.$metric->{'metric_id'}.".rrd") || die("Cannot Open File");
+			fcntl(FILE, F_SETLKW);
 			undef($begin);
 			undef($my_len_storage_rrd);
 			$flag++;
 		    }
 		    updateRRDDatabaseForRebuild($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'}, $metric->{'data_source_type'});
+		}
+		if (defined(FILE)) {
+			close(FILE);	
 		}
 		undef($sth4);
 		# -----------------------------------------------------
