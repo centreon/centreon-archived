@@ -92,20 +92,20 @@
 	$form->addElement('header', 'opt', 		_("Export Options"));
 	$form->addElement('header', 'result', 	_("Actions"));
 
-    $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, array("id" => "host", "style" => "width: 220px;"));
+    $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, array("id" => "nhost", "style" => "width: 220px;"));
 
-	$form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'comment'));
+	$form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 
 	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"), null, array('id' => 'ndebug'));
 	$form->setDefaults(array('debug' => '1'));
 
-	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'gen'));
+	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
 	$form->setDefaults(array('gen' => '1'));
-	$form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'move'));
-	$form->addElement('checkbox', 'restart', _("Restart Nagios"), null, array('id' => 'restart'));
+	$form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
+	$form->addElement('checkbox', 'restart', _("Restart Nagios"), null, array('id' => 'nrestart'));
 
 	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
-	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'restart_mode', 'style' => 'width: 220px;'));
+	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 	$form->setDefaults(array('restart_mode' => '2'));
 
 	$redirect = $form->addElement('hidden', 'o');
@@ -431,8 +431,16 @@
 	$tpl->assign('o', $o);
 	$tpl->display("formGenerateFiles.ihtml");
 ?>
-<script type='text/javascript' src='./include/configuration/configGenerate/javascript/generation.js'></script>
 <script type='text/javascript'>
+var selectedPoller;
+var debugOption;
+var commentOption;
+var generateOption;
+var moveOption;
+var restartOption;
+var restartMode;
+var exportBtn;
+
 var tooltip = new CentreonToolTip();
 var session_id = "<?php echo session_id();?>";
 tooltip.render();
@@ -497,4 +505,179 @@ function generationProcess()
 	}
 }
 
+/**
+ * Initializes generation options
+ */
+function initEnvironment()
+{
+	selectedPoller = document.getElementById('nhost').value;
+	commentOption  = document.getElementById('ncomment').checked;
+	debugOption = document.getElementById('ndebug').checked;
+	generateOption = document.getElementById('ngen').checked;
+	moveOption = document.getElementById('nmove').checked;
+	restartOption = document.getElementById('nrestart').checked;
+	restartMode = document.getElementById('nrestart_mode').value;
+	exportBtn = document.getElementById('exportBtn');
+	exportBtn.disabled = true;
+	if (selectedPoller == "-1") {
+		$('consoleContent').insert("<b><font color='red'>NOK</font></b> ("+ msgTab['noPoller'] +")<br/>");
+		abortProgress();
+		return null;
+	}
+	$('consoleContent').insert("<b><font color='green'>OK</font></b><br/>");
+}
+
+/**
+ * Generate files
+ */
+function generateFiles()
+{
+	$('consoleContent').insert(msgTab['gen'] + "... ");
+	new Ajax.Request('./include/configuration/configGenerate/xml/generateFiles.php', {
+		method: 'post',
+		parameters: {
+						sid: session_id,
+						poller: selectedPoller,
+						comment: commentOption,
+						debug: debugOption
+					},
+		onSuccess: function (response) {
+						displayStatusMessage(response.responseXML);
+						displayDetails(response.responseXML);
+						if (isError(response.responseXML) == "1") {
+							abortProgress();
+							return null;
+						}
+						if (moveOption) {
+							updateProgress(33);
+							moveFiles();
+						} else if (restartOption) {
+							updateProgress(50);
+							restartPollers();
+						} else {
+							updateProgress(100);
+							exportBtn.disabled = false;
+						}
+		}
+	});
+}
+
+/**
+ * Move files
+ */
+function moveFiles()
+{
+	$('consoleContent').insert(msgTab['move'] + "... ");
+	new Ajax.Request('./include/configuration/configGenerate/xml/moveFiles.php', {
+		method: 'post',
+		parameters: {
+						sid: session_id,
+						poller: selectedPoller
+					},
+		onSuccess: function (response) {
+						displayStatusMessage(response.responseXML);
+						displayDetails(response.responseXML);
+						if (restartOption) {
+							updateProgress(67);
+							restartPollers();
+						} else {
+							updateProgress(100);
+							exportBtn.disabled = false;
+						}
+		}
+	});
+}
+
+/**
+ * Restart Pollers
+ */
+function restartPollers()
+{
+	$('consoleContent').insert(msgTab['restart'] + "... ");
+	new Ajax.Request('./include/configuration/configGenerate/xml/restartPollers.php', {
+		method: 'post',
+		parameters: {
+						sid: session_id,
+						poller: selectedPoller,
+						mode: restartMode
+					},
+		onSuccess: function (response) {
+						displayStatusMessage(response.responseXML);
+						displayDetails(response.responseXML);
+						updateProgress(100);
+						exportBtn.disabled = false;
+		}
+	});
+}
+
+/**
+ * Display status message
+ */
+function displayStatusMessage(responseXML)
+{
+	var status = responseXML.getElementsByTagName("status");
+	var error = responseXML.getElementsByTagName("error");
+	var str;
+	str = status.item(0).firstChild.data;
+	if (error.length && error.item(0).firstChild.data) {
+		str += " (" + error.item(0).firstChild.data + ")";
+	}
+	str += "<br/>";
+	$('consoleContent').insert(str);
+}
+
+/**
+ * Display details
+ */
+function displayDetails(responseXML)
+{
+	var debug = responseXML.getElementsByTagName("debug");
+	var str;
+
+	str = "";
+	if (debug.length && debug.item(0).firstChild.data) {
+		str = debug.item(0).firstChild.data;
+	}
+	str += "<br/>";
+	$('consoleDetails').insert(str);
+}
+
+/**
+ * Returns 1 if is error
+ * Returns 0 otherwise
+ */
+function isError(responseXML)
+{
+	var statuscode = responseXML.getElementsByTagName("statuscode");
+	if (statuscode.length) {
+		return statuscode.item(0).firstChild.data;
+	}
+	return 0;
+}
+
+/**
+ * Updates progress
+ */
+function updateProgress(val)
+{
+	progressBar.setPercentage(val);
+	$('progressPct').update(val + "%");
+}
+
+/**
+ * Toggle debug
+ */
+function toggleDebug(pollerId)
+{
+	if (pollerId) {
+		Effect.toggle('debug_' + pollerId, 'blind');
+	}
+	$('togglerp_' + pollerId, 'togglerm_' + pollerId).invoke('toggle');
+}
+
+function abortProgress()
+{
+	$('consoleContent').insert(msgTab['abort']);
+	exportBtn.disabled = false;
+}
 </script>
