@@ -50,7 +50,7 @@ use RRDs;
 use File::Copy;
 
 # Init Globals
-use vars qw($debug $LOG %status $generalcounter @rrd_dst);
+use vars qw($debug $LOG %status $generalcounter @rrd_dst $instance);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 use vars qw($con_oreon $con_ods);
 
@@ -61,7 +61,7 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
 # Init RRD:DST -- Data Source Type
-@rrd_dst = ( "GAUGE","COUNTER","DERIVE","ABSOLUTE");
+@rrd_dst = ("GAUGE","COUNTER","DERIVE","ABSOLUTE");
 
 $debug = 0;
 my $stop = 1;
@@ -352,18 +352,25 @@ sub CheckRebuild(){
     $RRDdatabase_status_path = getRRDdatabase_status_path();
     $len_storage_rrd = getLenStorageDB();
 
-    my $sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
+    my $request = "";
+    if (defined($instance) && $instance != 0) {
+	$request = "SELECT index_id AS id FROM rebuild WHERE `status` = '1' AND centreon_instance = '$instance'";
+    } else {
+	$request = "SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'";
+    }
+    my $sth2 = $con_ods->prepare($request);
     if (!$sth2->execute()) {
 	writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."");
     }
     while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()) {
-	my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+	# Add Log 
+	writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."");
+
+	my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."' AND centreon_instance = '$instance'");
 	if (!$sth->execute()) {
 	    writeLogFile("Error when getting perfdata file : " . $sth->errstr . "");
 	}
 	undef($sth);
-
-	writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."");
 
 	# -----------------------------------------------------
 	# Get check interval for this service
@@ -374,10 +381,11 @@ sub CheckRebuild(){
 	} else {
 	    $interval = getServiceCheckIntervalFromService($svc_mst_be_rbld->{'id'}) * getIntervalLenght();
 	}
-	$interval = 330 if (!defined($interval));
-
+	$interval = 300 if (!defined($interval));
 	my $interval_hb = $interval * 10;
-	my $sth3 = $con_ods->prepare("SELECT metric_id, metric_name, data_source_type FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'");
+
+	$request = "SELECT metric_id, metric_name, data_source_type FROM metrics WHERE index_id = '".$svc_mst_be_rbld->{'id'}."'";
+	my $sth3 = $con_ods->prepare($request);
 	if (!$sth3->execute()) {
 	    writeLogFile("Error when getting metrics id who must be rebuild : " . $sth3->errstr . "");
 	}
@@ -389,11 +397,12 @@ sub CheckRebuild(){
 	    while ($metric = $sth3->fetchrow_hashref()) {
 		# Replace Special chars
 		$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
+
 		# manage 'data_source_type' default value : NULL = '0'
 		$metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
 		
 		writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd");					
-		
+
 		# Get All Data
 		$sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
 		if (!$sth4->execute()) {
@@ -405,9 +414,9 @@ sub CheckRebuild(){
 			my $begin = $data->{'ctime'} - 200;
 
 			my $my_len_storage_rrd = $len_storage_rrd / $interval;
-
+			# Init Database
 			removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
-
+			
 			# Create DB
 			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd, $metric->{'data_source_type'});
 			tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
@@ -424,7 +433,14 @@ sub CheckRebuild(){
 	}
 	undef($interval);
 	undef($sth3);
-	$sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+
+	# Set status Flag
+	if (defined($instance) && $instance != 0) {
+	    $request = "DELETE FROM Rebuild WHERE index_id = '".$svc_mst_be_rbld->{'id'}."' AND centreon_instance = '$instance'";
+	} else {
+	    $request = "UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'";
+	}
+	$sth = $con_ods->prepare($request);
 	if (!$sth->execute()) {
 	    writeLogFile("Error when updating rebuild flag for service ". $svc_mst_be_rbld->{'id'} ." : " . $sth->errstr . "");
 	}
