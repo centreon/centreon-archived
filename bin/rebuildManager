@@ -339,7 +339,7 @@ sub updateRRDDatabaseForRebuild($$$$$$){
 sub CheckRebuild(){
     use vars qw($con_oreon $con_ods);
     my ($RRDdatabase_path, $RRDdatabase_status_path, $len_storage_rrd, $svc_mst_be_rbld);
-    my ($data, $ERR, $flag, $metric, $cpt);
+    my ($data, $ERR, $flag, $metric, $cpt, $filehandle);
 
     # ---------------------------------------------
     # enable db connexion
@@ -354,7 +354,7 @@ sub CheckRebuild(){
 
     my $request = "";
     if (defined($instance) && $instance != 0) {
-	$request = "SELECT index_id AS id FROM rebuild WHERE `status` = '1' AND centreon_instance = '$instance'";
+	$request = "SELECT host_name, service_description, index_id AS id, service_description FROM rebuild, index_data WHERE index_data.id = rebuild.index_id AND `status` = '1' AND centreon_instance = '$instance'";
     } else {
 	$request = "SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'";
     }
@@ -366,7 +366,12 @@ sub CheckRebuild(){
 	# Add Log 
 	writeLogFile("Rebuild Graphs for Services : ".$svc_mst_be_rbld->{'id'}."");
 
-	my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."' AND centreon_instance = '$instance'");
+	my $sth;
+	if (defined($instance) && $instance != 0) {
+	    $sth = $con_ods->prepare("UPDATE rebuild SET `status` = '2' WHERE centreon_instance = '".$svc_mst_be_rbld->{'id'}."'");
+	} else {
+	    $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
+	}
 	if (!$sth->execute()) {
 	    writeLogFile("Error when getting perfdata file : " . $sth->errstr . "");
 	}
@@ -395,6 +400,7 @@ sub CheckRebuild(){
 	} else {
 	    my $sth4;
 	    my $handle;
+	    my $openState = 0;
 	    while ($metric = $sth3->fetchrow_hashref()) {
 		# Replace Special chars
 		$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
@@ -421,16 +427,22 @@ sub CheckRebuild(){
 			# Create DB
 			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd, $metric->{'data_source_type'});
 			tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
-			open(FILE,">>".$RRDdatabase_path.$metric->{'metric_id'}.".rrd") || die("Cannot Open File");
-			fcntl(FILE, F_SETLKW);
+
+			# Lock File
+			if (open(FILE,">>".$RRDdatabase_path.$metric->{'metric_id'}.".rrd") || die("Cannot Open File")) {
+			    $openState = 1;
+			    fcntl(FILE, F_SETLKW, 0);
+			}
+
 			undef($begin);
 			undef($my_len_storage_rrd);
 			$flag++;
 		    }
 		    updateRRDDatabaseForRebuild($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'}, $metric->{'data_source_type'});
 		}
-		if (defined(FILE)) {
-			close(FILE);	
+		if ($openState) {
+		    $openState = 0;
+		    close(FILE);	
 		}
 		undef($sth4);
 		# -----------------------------------------------------
@@ -441,7 +453,7 @@ sub CheckRebuild(){
 
 	# Set status Flag
 	if (defined($instance) && $instance != 0) {
-	    $request = "DELETE FROM Rebuild WHERE index_id = '".$svc_mst_be_rbld->{'id'}."' AND centreon_instance = '$instance'";
+	    $request = "DELETE FROM rebuild WHERE index_id = '".$svc_mst_be_rbld->{'id'}."' AND centreon_instance = '$instance'";
 	} else {
 	    $request = "UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'";
 	}
