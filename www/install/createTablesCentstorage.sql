@@ -391,7 +391,22 @@ CREATE TABLE IF NOT EXISTS `hoststateevents` (
   `last_update` tinyint(4) NOT NULL default '0',
   `in_downtime` tinyint(4) NOT NULL,
   PRIMARY KEY  (`hoststateevents_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=212 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `rebuild`
+--
+
+CREATE TABLE `rebuild` (
+   `id` INT NOT NULL AUTO_INCREMENT ,
+   `index_id` INT NULL ,
+   `status` INT NULL ,
+   `centreon_instance` INT NULL ,
+   PRIMARY KEY ( `id` )
+) ENGINE = InnoDB;
 
 -- --------------------------------------------------------
 
@@ -409,7 +424,7 @@ CREATE TABLE IF NOT EXISTS `servicestateevents` (
   `last_update` tinyint(4) NOT NULL default '0',
   `in_downtime` tinyint(4) NOT NULL,
   PRIMARY KEY  (`servicestateevents_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=63812 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 --

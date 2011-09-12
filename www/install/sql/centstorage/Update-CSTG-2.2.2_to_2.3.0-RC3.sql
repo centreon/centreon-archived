@@ -773,3 +773,11 @@ CREATE TABLE IF NOT EXISTS servicestateevents (
 ALTER TABLE `log` ADD COLUMN `instance` int(11) NOT NULL default '1' AFTER `msg_type`;
 ALTER TABLE `log` ADD INDEX(`instance`);
 
+CREATE TABLE `rebuild` (
+   `id` INT NOT NULL AUTO_INCREMENT ,
+   `index_id` INT NULL ,
+   `status` INT NULL ,
+   `centreon_instance` INT NULL ,
+   PRIMARY KEY ( `id` )
+) ENGINE = InnoDB;
+
