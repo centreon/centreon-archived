@@ -49,7 +49,7 @@
 			contact_address1, contact_address2, contact_address3, contact_address4, contact_address5, contact_address6,
 			contact_comment
 		FROM contact
-		WHERE contact_register = 0 AND contact_enable_notifications= '1' AND contact_activate = '1'";
+		WHERE contact_register = 0 AND contact_activate = '1'";
 	$res = $pearDB->query($queryGetTemplateContact);
     $str = "";
     $i = 1;
