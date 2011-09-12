@@ -41,6 +41,9 @@
 	require_once $centreon_path."www/class/centreon.class.php";
 
 	CentreonSession::start();
+	if (!isset($_SESSION['centreon'])) {
+	    die();
+	}
 	$oreon = $_SESSION["centreon"];
 
 	// -----------------------------------------------------
@@ -48,7 +51,8 @@
 	foreach ($value as $key => $val)	{
 		if ($val)
 			if (!isset($oreon->optGen["color_".strtolower($key)])) {
-				$color[] = $oreon->optGen["color_undetermined"];
+				//$color[] = $oreon->optGen["color_undetermined"];
+				$color[] = '#F0F0F0';
 				$val = str_replace(",", ".", $val);
 				$data[] = $val;
 				$legend[] = "";
