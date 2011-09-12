@@ -1,3 +1,115 @@
+## Centreon 2.3.0-RC3
+
+Fixes
+=============
+Bug #1706: Host status issue - Pending Status
+Bug #1710: Topology links - User has to reconnect to see new pages
+Bug #1816: LDAP Search : scanning does not work properly
+Bug #1909: Special characters in SNMP community
+Bug #1969: Storage type configuration doesn't supported by Centstorage
+Bug #2005: ACL and host downtime schedule
+Bug #2013: Infinite loop: Services models heritage can provoke undetected infinite loop, page broken
+Bug #2069: Error in apache2/error.log for graph
+Bug #2139: Args not imported when import services.cfg
+Bug #2155: Remove deprecated split function
+Bug #2157: debug_verbosity is not set by default
+Bug #2178: Reversed text for Administrator Email and Pager
+Bug #2180: Nagios perfdata not properly saved in RRDs
+Bug #2183: Centstorage sleep_time is not taken into account
+Bug #2192: Cron archive-monitoring-incidents.pl
+Bug #2204: Nagios configuration Import does not work
+Bug #2206: debug_level is not set by default
+Bug #2216: Problem with delete button in CentreonBroker form
+Bug #2217: Use CSS in CentreonBroker Form
+Bug #2228: Incorrect Nagios Version displayed on Process Info Page
+Bug #2247: Centreon doesn't support PHP 5.3
+Bug #2252: Eventhandlers for Service Templates just showing Checks, not Misc
+Bug #2254: Deactivated service templates appear in service filters (configuration page)
+Bug #2255: Hostgroup filter doesn't work in monitoring
+Bug #2256: Fixes arbitrary *12 steps (RRD)
+Bug #2257: Dashboard Builder does not rebuild
+Bug #2259: Instance table not updated in database centstorage
+Bug #2263: Improve display option for warning and critical level in graphs
+Bug #2265: centTrapHandler-2.x and HTML entities handling
+Bug #2266: Blank page when hostgroup is duplicated by a non-admin user
+Bug #2274: ACL resource should not updated on hostgroup creation by a non-admin user
+Bug #2278: Navigation problem with graphs
+Bug #2288: Ajax problem on IE9
+Bug #2289: Call to undefined function display_copying_file()
+Bug #2290: Progress bar doesn't work with firefox 4
+Bug #2291: Incorrect link in TopCounter
+Bug #2295: Services by hostgroup not visible in eventlogs
+Bug #2297: Tactical Overview : wrong url
+Bug #2309: Filter problem in monitoring console
+Bug #2312: $USER2$ not used in check_command but service templates still use it
+Bug #2313: 'All Nagios Servers' generation config with debug create an Apache Segmentation fault
+Bug #2319: Centcore : getLocalOptionsField function doesn't work
+Bug #2320: Action URL / Notes URL missing
+Bug #2324: Service page empty if service URL Notes or Action URL are specified
+Bug #2325: Wrong search string at Monitoring -> Services
+Bug #2372: Footer window does not fade away
+Bug #2373: Quick Search box incorrect when the header is hidden.
+Bug #2375: Merge centTrapHandler and centTrapHandlerForPoller
+Bug #2389: logAnalyser fills up the log logAnalyser.log
+Bug #2390: Future downtimes not listed but listed when you select show finished downtimes
+Bug #2393: Heavy load on mysql db (fix included)
+Bug #2397: @CENTREON_LOG@/centreon-purge.log not replaced
+Bug #2399: Colors in Ping Graph will always change after a reload
+Bug #2400: Import OK, but config generation says there are no contact
+Bug #2416: Graphs: "LAST" appear twice
+Bug #2420: Spelling errors on ACL resources footer
+Bug #2421: Wrong search string at Monitoring -> By Service Group
+Bug #2441: contact_register field inverted in database (table contact)
+Bug #2448: centcore broken in 2.3-trunk
+Bug #2522: Problem on search page if service linked to multiple host exist
+Bug #2539: No Login possible PHP5.3
+Bug #2562: Centreon stop exporting if image in media does not exist
+Bug #2570: Delete double inclusion
+Bug #2577: Changing poller name leaves duplicate hosts and services
+Bug #2584: Poller and hostgroup select box empty
+Bug #2590: Synchronize ods_view_details when metric is deleted
+Bug #2591: Commands not generated
+Bug #2598: LDAP validation
+Bug #2602: Services appear twice in home page
+Bug #2612: Configuration file generation not working with IE7
+Bug #2238: Succesful login attempts are also logged into file error-login-xxx.log
+Bug #2308: Massive Change : Unable to reset Notification Options
+Bug #2469: Report host flapping attribute in Monitoring > Hosts
+Bug #2616: contactTemplates.cfg is not generated
+
+Features
+=============
+Enhancement #378: Add more options to RRD curves
+Enhancement #924: Handle GAUGE/COUNTER on RRD graphs
+Enhancement #2161: Centreon Broker Implementation
+Enhancement #1356: Possibility to Schedule downtime for all services of a host
+Enhancement #1380: New advanced periodical downtime system
+Enhancement #1506: Add a downtime to all members of a hostgroup
+Enhancement #1598: Import LDAP - Pager
+Enhancement #1669: Monitoring > Event Logs > Downtime
+Enhancement #1672: Scheduled Downtime and Reporting
+Enhancement #1679: Possibility to set default poller in host configuration form
+Enhancement #1729: LDAP TLS support
+Enhancement #1938: Allows spaces in service template Alias
+Enhancement #2017: Display Service group name in service detail page
+Enhancement #2081: Add timestamp into loganalyser.log
+Enhancement #2128: Direct LDAP connection
+Enhancement #2151: Possibility to select all boxes in Event Log Menu
+Enhancement #2218: Add URL Notes in tactical overview
+Enhancement #2235: Longer input fields for service arguments
+Enhancement #2239: Access to graph with simple readable URL
+Enhancement #2241: Sync SNMPTT config files to remote pollers
+Enhancement #2245: Performance enhancement on centreon_status database
+Enhancement #2311: Custom graph legends
+Enhancement #2317: Media import does not manage 'application/x-zip' file
+Enhancement #2377: Icon update during scrolling with the keyboard
+Enhancement #2384: New overlay window for downtimes on Host/Service monitoring consoles
+Enhancement #2385: New overlay window for acknowledgements on Host/Service monitoring consoles
+Enhancement #2401: Add Host group links in Monitoring > Hosts > Host Groups
+Enhancement #2434: Y-Axis upper limit scaled to "Max" value of metric
+Enhancement #2564: Extended status information for Notifications
+Enhancement #2604: Random colors on RRD graphs when they are not set by user (instead of the plain old blue color)
+
 ## Centreon 2.3.0-b3
 
 => feature: Default settings can be set on Acknowledgement and Downtime forms (Host/Service Monitoring pages)
