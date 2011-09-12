@@ -313,7 +313,7 @@
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
 							$host_name = $hostClass->getHostName($service[0]);
-							$service_name = $serviceClass->getServiceName($service[1]);
+							$service_name = $serviceClass->getServiceDesc($service[1]);
 							$listSchedDt = $downtime->isScheduled($period['dt_id'], $host_name, $service_name);
 							foreach ($dts as $dt) {
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
