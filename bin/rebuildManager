@@ -66,10 +66,10 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 $debug = 0;
 my $stop = 1;
 
-my $LOG = "/usr/local/centreon/log/rebuildManager.log";
+my $LOG = "/var/log/centreon/rebuildManager.log";
 my $PID = "/var/run/centreon/rebuildManager.pid";
 
-my $installedPath = "/usr/local/centreon/";
+my $installedPath = "/usr/share/centreon/";
 
 # Include Configuration Data
 require "/etc/centreon/conf.pm";
