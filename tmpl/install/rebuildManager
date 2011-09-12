@@ -93,10 +93,10 @@ elif [ -f /etc/init.d/functions ]; then
     . /etc/init.d/functions
 fi
 
-prefix=/usr/local/centreon
-centstorageBin=/usr/local/centreon/bin/rebuildManager
+prefix=/usr/share/centreon
+centstorageBin=/usr/bin/rebuildManager
 centstorageCfgFile=/etc/centreon/conf.pm
-centstorageLogDir=/usr/local/centreon/log/
+centstorageLogDir=/var/log/centreon/
 centstorageRunDir=/var/run/centreon
 centstorageRunFile=${centstorageRunDir}/rebuildManager.pid
 centstorageDemLog=${centstorageLogDir}/rebuildManager.log
