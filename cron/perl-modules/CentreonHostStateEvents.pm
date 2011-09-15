@@ -50,6 +50,7 @@ sub new {
 	my $self  = {};
 	$self->{"logger"}	= shift;
 	$self->{"centstorage"}  = shift;
+	$self->{"centreonAck"}  = shift;
 	$self->{"centreonDownTime"}  = shift;
 	bless $self, $class;
 	return $self;
@@ -135,8 +136,9 @@ sub updateEventEndTime {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	my $centreonDownTime = $self->{"centreonDownTime"};
+	my $centreonAck = $self->{"centreonAck"};
 	
-	my ($hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
+	my ($id, $hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
 
 	my ($events, $updateTime);
 	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId, $start, $end, $downTimeFlag,$downTime, $state);
@@ -145,13 +147,14 @@ sub updateEventEndTime {
 	if (defined($events)) {
 		$totalEvents = scalar(@$events);
 	}
+	my $ack = $centreonAck->getHostAckTime($start, $updateTime, $id);
 	if (!$totalEvents && $updateTime) {
-		my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `last_update`=".$lastUpdate.
+		my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.",  `last_update`=".$lastUpdate.
 					" WHERE `hoststateevents_id` = ".$eventId;
 		$centstorage->query($query);
 	}else {
 		if ($updateTime) {
-			my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `last_update`= 0".
+			my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.",  `last_update`= 0".
 					" WHERE `hoststateevents_id` = ".$eventId;
 			$centstorage->query($query);
 		}
@@ -170,35 +173,38 @@ sub insertEvent {
 	my $self = shift;
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	
-	my ($hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift);
+	my ($id, $hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift);
 	
 	my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime, $state);
 	if ($state ne "") {
-		$self->insertEventTable($hostId, $state, $lastUpdate, $events);
+		$self->insertEventTable($id, $hostId, $state, $lastUpdate, $events);
 	}
 }
 
 sub insertEventTable {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
+	my $centreonAck = $self->{"centreonAck"};
 	
-	my ($hostId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift);
+	my ($id, $hostId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift);
 	
 	my $query_start = "INSERT INTO `hoststateevents`".
-			" (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`)".
+			" (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`)".
 			" VALUES (";
 	my $count = 0;
 	my $totalEvents = 0;
 
 	for($count = 0; $count < scalar(@$events) - 1; $count++) {
 		my $tab = $events->[$count];
-		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].")";
+		my $ack = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $id);
+		my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", 0, ".$tab->[2].", ".$ack.")";
 		$centstorage->query($query_start.$query_end);
 	}
 	if (scalar(@$events)) {
 		my $tab = $events->[$count];
 		if (defined($hostId) && defined($state)) {
-			my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].")";		
+			my $ack = $centreonAck->getHostAckTime($tab->[0], $tab->[1], $id);
+			my $query_end = $hostId.", ".$state.", ".$tab->[0].", ".$tab->[1].", ".$lastUpdate.", ".$tab->[2].", ".$ack.")";		
 			$centstorage->query($query_start.$query_end);
 		}
 	}
