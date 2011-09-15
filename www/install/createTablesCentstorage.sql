@@ -383,7 +383,7 @@ CREATE TABLE IF NOT EXISTS `nagios_stats` (
 --
 
 CREATE TABLE IF NOT EXISTS `hoststateevents` (
-  `hoststateevents_id` int(11) NOT NULL auto_increment,
+  `hoststateevent_id` int(11) NOT NULL auto_increment,
   `end_time` int(11) default NULL,
   `host_id` int(11) NOT NULL,
   `start_time` int(11) NOT NULL,
@@ -415,7 +415,7 @@ CREATE TABLE `rebuild` (
 --
 
 CREATE TABLE IF NOT EXISTS `servicestateevents` (
-  `servicestateevents_id` int(11) NOT NULL auto_increment,
+  `servicestateevent_id` int(11) NOT NULL auto_increment,
   `end_time` int(11) default NULL,
   `host_id` int(11) NOT NULL,
   `service_id` int(11) default NULL,
