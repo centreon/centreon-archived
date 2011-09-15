@@ -336,11 +336,16 @@
 			$param["comment"] = str_replace('\'', ' ', $param["comment"]);
 			isset($param['sticky']) && $param['sticky'] == "1" ? $sticky = "2" : $sticky = "1";
 			$flg = send_cmd(" ACKNOWLEDGE_SVC_PROBLEM;".urldecode($param["host_name"]).";".urldecode($param["service_description"]).";".$sticky.";".$param["notify"].";".$param["persistent"].";".$param["author"].";".$param["comment"], GetMyHostPoller($pearDB, urldecode($param["host_name"])));
+			isset($param['force_check']) && $param['force_check'] ? $force_check = 1 : $force_check = 0;
+		    if ($force_check == 1 && $oreon->user->access->checkAction("service_schedule_forced_check") == true) {
+				send_cmd(" SCHEDULE_FORCED_SVC_CHECK;".urldecode($param["host_name"]).";".urldecode($param["service_description"]).";".time(), GetMyHostPoller($pearDB, urldecode($param["host_name"])));
+			}
+			set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
+		    set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
+		    set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
+		    set_user_param($oreon->user->user_id, $pearDB, "force_check", $force_check);
 			return $flg;
 		}
-		set_user_param($oreon->user->user_id, $pearDB, "ack_sticky", $param["sticky"]);
-		set_user_param($oreon->user->user_id, $pearDB, "ack_notify", $param["notify"]);
-		set_user_param($oreon->user->user_id, $pearDB, "ack_persistent", $param["persistent"]);
 		return NULL;
 	}
 
