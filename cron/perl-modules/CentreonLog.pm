@@ -135,7 +135,12 @@ sub getFirstLastLogTime {
 	my $self = shift;
 	my $centstorage = $self->{"centstorage"};
 	
-	my $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log`";
+	my $query;
+	if ($self->{'dbLayer'} eq "ndo") {
+		$query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `log`";
+	} elsif ($self->{'dbLayer'} eq "broker") {
+		$query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `logs`";
+	}
 	my $sth = $centstorage->query($query);
 	my ($start, $end) = (0,0);
     if (my $row = $sth->fetchrow_hashref()) {
