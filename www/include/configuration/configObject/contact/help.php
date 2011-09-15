@@ -32,6 +32,7 @@ $help["password"] = dgettext("help", "Define the password for the centreon login
 $help["password2"] = dgettext("help", "Enter the password again.");
 $help["language"] = dgettext("help", "Define the default language for the user for the centreon front-end here.");
 $help["admin"] = dgettext("help", "Specify if the user has administrative permissions. Administrators are not restricted by access control list (ACL) settings.");
+$help["autologin_key"] = dgettext("help", "Use this key to open graphs page from outside centreon with uri \"/centreon/include/views/graphs/generateGraphs/generateImage.php?username=user&akey=This_autologin_key&timerange=<a href='http://fr2.php.net/manual/en/function.strtotime.php' target=_new>view_strtotime_syntax</a>&hostname=hostname&service=service_description\". the timerange option is optionnal, you may use start and end instead.");
 $help["auth_type"] = dgettext("help", "Specify the source for user credentials. Choose between Centreon and LDAP, whereas LDAP is only available when configured in Administration Options.");
 $help["location"] = dgettext("help", "Select the timezone, in which the user resides, from the list. The timezones are listed as time difference to Greenwich Mean Time (GMT) in hours.");
 

@@ -328,7 +328,7 @@
 
 		$rq = "INSERT INTO `contact` ( " .
 				"`contact_id` , `timeperiod_tp_id` , `timeperiod_tp_id2` , `contact_name` , " .
-				"`contact_alias` , `contact_passwd` , `contact_lang` , `contact_template_id`, " .
+				"`contact_alias` , `contact_autologin_key` , `contact_passwd` , `contact_lang` , `contact_template_id`, " .
 				"`contact_host_notification_options` , `contact_service_notification_options` , " .
 				"`contact_email` , `contact_pager` , `contact_comment` , `contact_oreon`, `contact_register`, `contact_enable_notifications` , " .
 				"`contact_admin` , `contact_type_msg`, `contact_activate`, `contact_auth_type`, " .
@@ -340,6 +340,7 @@
 		isset($ret["timeperiod_tp_id2"]) && $ret["timeperiod_tp_id2"] != NULL ? $rq .= "'".$ret["timeperiod_tp_id2"]."', ": $rq .= "NULL, ";
 		isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["contact_autologin_key"]) && $ret["contact_autologin_key"] != NULL ? $rq .= "'".htmlentities($ret["contact_autologin_key"], ENT_QUOTES)."', ": $rq .= "NULL, ";
 		if ($encryptType == 1)
 			isset($ret["contact_passwd"]) && $ret["contact_passwd"] != NULL ? $rq .= "'".md5($ret["contact_passwd"])."', ": $rq .= "NULL, ";
 		else if ($encryptType == 2)
@@ -473,6 +474,8 @@
 			isset($ret["contact_name"]) && $ret["contact_name"] != NULL ? $rq .= "'".htmlentities($ret["contact_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 			$rq .= "contact_alias = ";
 			isset($ret["contact_alias"]) && $ret["contact_alias"] != NULL ? $rq .= "'".htmlentities($ret["contact_alias"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+			$rq.= "contact_autologin_key = ";
+			isset($ret["contact_autologin_key"]) && $ret["contact_autologin_key"] != NULL ? $rq .= "'".htmlentities($ret["contact_autologin_key"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		}
 		if (isset($ret["contact_passwd"]) && $ret["contact_passwd"]) {
 			if ($encryptType == 1)

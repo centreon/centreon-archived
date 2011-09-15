@@ -36,68 +36,107 @@
  *
  */
 
-	/**
-	 * Include config file
-	 */
-	include "@CENTREON_ETC@/centreon.conf.php";
+/**
+ * Include config file
+ */
+include "@CENTREON_ETC@/centreon.conf.php";
 
-	require_once "$centreon_path/www/class/centreonGraph.class.php";
+require_once "$centreon_path/www/class/centreonGraph.class.php";
+require_once "$centreon_path/www/class/centreonDB.class.php";
 
-	/**
-	 * Create XML Request Objects
-	 */
-	$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
+/**
+ * Check if autlogin key is passed, if so create a session for the user if it not exist
+ */
+if (isset($_GET["akey"]) && isset($_GET['username'])) {
+    $pearDB = new CentreonDB();
+    $DBRESULT = $pearDB->query("SELECT * FROM `contact`
+    						    WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
+    						   	AND `contact_activate` = '1'
+    						   	AND `contact_autologin_key` = '".$pearDB->escape($_GET["akey"])."' LIMIT 1");
+    if ($DBRESULT->numRows()) {
+        $res = $DBRESULT->fetchRow();
+        session_start();
+        $_GET["session_id"] = session_id();
+        $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$res["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+    } else {
+        /**
+         * Return silently in case autologinKey was invalid.
+         */
+        exit;
+    }
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
-		$obj->displayError();
-	}
+}
 
-	require_once $centreon_path."www/include/common/common-Func.php";
+if (isset($_GET["hostname"]) && isset($_GET["service"])) {
+    $pearDBO = new CentreonDB("centstorage");
+    $DBRESULT = $pearDBO->query("SELECT `id`
+    							 FROM index_data
+    							 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
+    							 AND service_description = '".$pearDB->escape($_GET["service"])."'
+    							 LIMIT 1");
+    if ($DBRESULT->numRows()) {
+        $res = $DBRESULT->fetchRow();
+        $_GET["index"] = $res["id"];
+    } else {
+        $_GET["index"] = 0;
+    }
+}
 
-	/**
-	 * Set arguments from GET
-	 */
-	$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
-	$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
+/**
+ * Create XML Request Objects
+ */
+$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
 
- 	$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
+if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+    ;
+} else {
+    $obj->displayError();
+}
 
-	/**
-	 * Template Management
-	 */
- 	if (isset($_GET["template_id"])) {
-		$obj->setTemplate($_GET["template_id"]);
- 	} else {
- 		$obj->setTemplate();
- 	}
+require_once $centreon_path."www/include/common/common-Func.php";
 
-	$obj->init();
-	if (isset($_GET["flagperiod"])) {
-		$obj->setCommandLineTimeLimit($_GET["flagperiod"]);
-	}
+/**
+ * Set arguments from GET
+ */
+$obj->setRRDOption("start", $obj->checkArgument("start", $_GET, time() - (60*60*48)) );
+$obj->setRRDOption("end",   $obj->checkArgument("end", $_GET, time()) );
 
-	/**
-	 * Init Curve list
-	 */
-	if (isset($_GET["metric"])) {
-		$obj->setMetricList($_GET["metric"]);
-	}
-	$obj->initCurveList();
+$obj->GMT->getMyGMTFromSession($obj->session_id, $pearDB);
 
-	/**
-	 * Comment time
-	 */
-	$obj->setOption("comment_time");
+/**
+ * Template Management
+ */
+if (isset($_GET["template_id"])) {
+    $obj->setTemplate($_GET["template_id"]);
+} else {
+    $obj->setTemplate();
+}
 
-	/**
-	 * Create Legende
-	 */
-	$obj->createLegend();
+$obj->init();
+if (isset($_GET["flagperiod"])) {
+    $obj->setCommandLineTimeLimit($_GET["flagperiod"]);
+}
 
-	/**
-	 * Display Images Binary Data
-	 */
-	$obj->displayImageFlow();
+/**
+ * Init Curve list
+ */
+if (isset($_GET["metric"])) {
+    $obj->setMetricList($_GET["metric"]);
+}
+$obj->initCurveList();
+
+/**
+ * Comment time
+ */
+$obj->setOption("comment_time");
+
+/**
+ * Create Legende
+ */
+$obj->createLegend();
+
+/**
+ * Display Images Binary Data
+ */
+$obj->displayImageFlow();
 ?>
