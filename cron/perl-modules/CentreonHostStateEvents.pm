@@ -113,13 +113,13 @@ sub getLastStates {
 	
 	my %currentStates;
 	
-    my $query = "SELECT `host_id`, `state`, `hoststateevents_id`, `end_time`, `in_downtime`".
+    my $query = "SELECT `host_id`, `state`, `hoststateevent_id`, `end_time`, `in_downtime`".
     			" FROM `hoststateevents`".
     			" WHERE `last_update` = 1";
     my $sth = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
     	if (defined($hostNames->{$row->{'host_id'}})) {
-		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'hoststateevents_id'}, $row->{'in_downtime'});
+		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'hoststateevent_id'}, $row->{'in_downtime'});
 			$currentStates{$hostNames->{$row->{'host_id'}}} = \@tab;
     	}
 	}
@@ -138,7 +138,7 @@ sub updateEventEndTime {
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	my $centreonAck = $self->{"centreonAck"};
 	
-	my ($id, $hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift);
+	my ($id, $hostId, $start, $end, $state, $eventId, $downTimeFlag, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift, shift, shift);
 
 	my ($events, $updateTime);
 	($updateTime, $events) = $centreonDownTime->splitUpdateEventDownTime($hostId, $start, $end, $downTimeFlag,$downTime, $state);
@@ -150,12 +150,12 @@ sub updateEventEndTime {
 	my $ack = $centreonAck->getHostAckTime($start, $updateTime, $id);
 	if (!$totalEvents && $updateTime) {
 		my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.",  `last_update`=".$lastUpdate.
-					" WHERE `hoststateevents_id` = ".$eventId;
+					" WHERE `hoststateevent_id` = ".$eventId;
 		$centstorage->query($query);
 	}else {
 		if ($updateTime) {
 			my $query = "UPDATE `hoststateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.",  `last_update`= 0".
-					" WHERE `hoststateevents_id` = ".$eventId;
+					" WHERE `hoststateevent_id` = ".$eventId;
 			$centstorage->query($query);
 		}
 		$self->insertEventTable($hostId, $state, $lastUpdate, $events);
@@ -173,7 +173,7 @@ sub insertEvent {
 	my $self = shift;
 	my $centreonDownTime = $self->{"centreonDownTime"};
 	
-	my ($id, $hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift);
+	my ($id, $hostId, $state, $start, $end, $lastUpdate, $downTime) = (shift, shift, shift, shift, shift, shift, shift);
 	
 	my $events = $centreonDownTime->splitInsertEventDownTime($hostId, $start, $end, $downTime, $state);
 	if ($state ne "") {
@@ -186,7 +186,7 @@ sub insertEventTable {
 	my $centstorage = $self->{"centstorage"};
 	my $centreonAck = $self->{"centreonAck"};
 	
-	my ($id, $hostId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift);
+	my ($id, $hostId, $state, $lastUpdate, $events) =  (shift, shift, shift, shift, shift);
 	
 	my $query_start = "INSERT INTO `hoststateevents`".
 			" (`host_id`, `state`, `start_time`, `end_time`, `last_update`, `in_downtime`, `ack_time`)".

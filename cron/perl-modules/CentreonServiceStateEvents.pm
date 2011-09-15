@@ -116,14 +116,14 @@ sub getLastStates {
 	
 	my $currentStates = {};
 	
-    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevents_id`, `end_time`, `in_downtime`".
+    my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevent_id`, `end_time`, `in_downtime`".
     			" FROM `servicestateevents`".
     			" WHERE `last_update` = 1";
     my $sth = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
     	my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
     	if (defined($serviceNames->{$serviceId})) {
-		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'servicestateevents_id'}, $row->{'in_downtime'});
+		    my @tab = ($row->{'end_time'}, $row->{'state'}, $row->{'servicestateevent_id'}, $row->{'in_downtime'});
 			$currentStates->{$serviceNames->{$serviceId}} = \@tab;
     	}
 	}
@@ -154,12 +154,12 @@ sub updateEventEndTime {
 	my $ack = $centreonAck->getServiceAckTime($start, $updateTime, $hostName, $serviceDescription);
 	if (!$totalEvents && $updateTime) {
 		my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.", `last_update`=".$lastUpdate.
-					" WHERE `servicestateevents_id` = ".$eventId;
+					" WHERE `servicestateevent_id` = ".$eventId;
 		$centstorage->query($query);
 	}else {
 		if ($updateTime) {
 			my $query = "UPDATE `servicestateevents` SET `end_time` = ".$updateTime.", `ack_time`=".$ack.", `last_update`= 0".
-					" WHERE `servicestateevents_id` = ".$eventId;
+					" WHERE `servicestateevent_id` = ".$eventId;
 			$centstorage->query($query);
 		}
 		$self->insertEventTable($id, $hostId, $serviceId, $state, $lastUpdate, $events);
