@@ -91,7 +91,7 @@ sub getServiceID($$){
     
     my $sth2 = $con_oreon->prepare("SELECT service_id FROM service, host_service_relation hsr ".
 				"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
-				"AND service_description = '".$_[1]."' AND `service_register` = '1' LIMIT 1");
+				"AND service_description = '".$_[1]."' AND `service_register` IN ('1', '3') LIMIT 1");
 
     if (!$sth2->execute) {
 		writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");
@@ -101,7 +101,7 @@ sub getServiceID($$){
     if (!defined($data->{'service_id'}) && !$data->{'service_id'}){
 		$sth2 = $con_oreon->prepare(	"SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr" .
 				" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-				" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` = '1'");
+				" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` IN ('1', '3')");
 		if (!$sth2->execute) {
 			writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");
 		}
@@ -130,7 +130,7 @@ sub getServiceName($){
 	
 		CreateConnexionForOreon();
 		
-		my $sth2 = $con_oreon->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` = '1'");
+		my $sth2 = $con_oreon->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` IN ('1', '3')");
 		if (!$sth2->execute()) {
 		    writeLogFile("Error getting service name : " . $sth2->errstr . "\n");
 		}
