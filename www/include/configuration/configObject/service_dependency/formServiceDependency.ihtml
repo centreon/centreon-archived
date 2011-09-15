@@ -17,9 +17,25 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="description"> {$form.dep_description.label}</td><td class="FormRowValue">{$form.dep_description.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="inherits_parent"> {$form.inherits_parent.label}</td><td class="FormRowValue">{$form.inherits_parent.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="execution_failure_criteria"> {$form.execution_failure_criteria.label}</td><td class="FormRowValue">{$form.execution_failure_criteria.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_failure_criteria"> {$form.notification_failure_criteria.label}</td><td class="FormRowValue">{$form.notification_failure_criteria.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_description"> {$form.dep_hSvPar.label}</td><td class="FormRowValue">{$form.dep_hSvPar.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="dependent_service_description"> {$form.dep_hSvChi.label}</td><td class="FormRowValue">{$form.dep_hSvChi.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notification_failure_criteria"> {$form.notification_failure_criteria.label}</td><td class="FormRowValue">{$form.notification_failure_criteria.html}</td></tr>		
+		<tr class="list_two">
+			<td class="FormRowField"><img class="helpTooltip" name="service_description"> {$form.dep_hSvPar.label}</td>
+			<td class="FormRowValue">
+				{$form.host_filterParent.html}
+				{$form.dep_hSvPar.html}
+			</td>
+		</tr>		
+		<tr class="list_one">
+			<td class="FormRowField"><img class="helpTooltip" name="dependent_service_description"> {$form.dep_hSvChi.label}</td>
+			<td class="FormRowValue">
+				{$form.host_filterChild.html}
+				{$form.dep_hSvChi.html}
+			</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField"><img class="helpTooltip" name="dep_hHostChi"> {$form.dep_hHostChi.label}</td>
+			<td class="FormRowValue">{$form.dep_hHostChi.html}</td>
+		</tr>
 		<tr class="list_one"><td class="FormRowField">{$form.dep_comment.label}</td><td class="FormRowValue">{$form.dep_comment.html}</td></tr>
 	</table>
 </div>

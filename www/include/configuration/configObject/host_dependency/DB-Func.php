@@ -39,53 +39,60 @@
 	if (!isset ($oreon))
 		exit ();
 
-	function testHostDependencyExistence ($name = NULL)	{
+	function testHostDependencyExistence ($name = null)
+	{
 		global $pearDB;
 		global $form;
-		$id = NULL;
-		if (isset($form))
+		$id = null;
+		if (isset($form)) {
 			$id = $form->getSubmitValue('dep_id');
+		}
 		$DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".CentreonDB::escape($name)."'");
 		$dep = $DBRESULT->fetchRow();
-		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id)
+
+		if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] == $id) {
 			return true;
-		#Duplicate entry
-		else if ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id)
+		} elseif ($DBRESULT->numRows() >= 1 && $dep["dep_id"] != $id) {
 			return false;
-		else
+	    } else {
 			return true;
+	    }
 	}
 
-	function testHostDependencyCycle ($childs = NULL)	{
+	function testHostDependencyCycle ($childs = null)
+	{
 		global $pearDB;
 		global $form;
 		$parents = array();
 		$childs = array();
-		if (isset($form))	{
+		if (isset($form)) {
 			$parents = $form->getSubmitValue('dep_hostParents');
 			$childs = $form->getSubmitValue('dep_hostChilds');
 			$childs = array_flip($childs);
 		}
-		foreach ($parents as $parent)
-			if (array_key_exists($parent, $childs))
+		foreach ($parents as $parent) {
+			if (array_key_exists($parent, $childs)) {
 				return false;
+			}
+		}
 		return true;
 	}
 
-	function deleteHostDependencyInDB ($dependencies = array())	{
+	function deleteHostDependencyInDB ($dependencies = array())
+	{
 		global $pearDB, $oreon;
-		foreach($dependencies as $key=>$value)	{
+
+		foreach ($dependencies as $key=>$value) {
 			$DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-
 			$DBRESULT = $pearDB->query("DELETE FROM dependency WHERE dep_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("host dependency", $key, $row['dep_name'], "d");
 		}
 	}
 
-	function multipleHostDependencyInDB ($dependencies = array(), $nbrDup = array())	{
-		foreach($dependencies as $key=>$value)	{
+	function multipleHostDependencyInDB ($dependencies = array(), $nbrDup = array())
+	{
+		foreach ($dependencies as $key => $value) {
 			global $pearDB, $oreon;
 			$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -131,25 +138,33 @@
 		}
 	}
 
-	function updateHostDependencyInDB ($dep_id = NULL)	{
-		if (!$dep_id) exit();
+	function updateHostDependencyInDB ($dep_id = null)
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		updateHostDependency($dep_id);
 		updateHostDependencyHostParents($dep_id);
 		updateHostDependencyHostChilds($dep_id);
+		updateHostDependencyServiceChildren($dep_id);
 	}
 
-	function insertHostDependencyInDB ($ret = array())	{
+	function insertHostDependencyInDB ($ret = array())
+	{
 		$dep_id = insertHostDependency($ret);
 		updateHostDependencyHostParents($dep_id, $ret);
 		updateHostDependencyHostChilds($dep_id, $ret);
+		updateHostDependencyServiceChildren($dep_id, $ret);
 		return ($dep_id);
 	}
 
-	function insertHostDependency($ret = array())	{
+	function insertHostDependency($ret = array())
+	{
 		global $form;
 		global $pearDB, $oreon;
-		if (!count($ret))
+		if (!count($ret)) {
 			$ret = $form->getSubmitValues();
+		}
 		$rq = "INSERT INTO dependency ";
 		$rq .= "(dep_name, dep_description, inherits_parent, execution_failure_criteria, notification_failure_criteria, dep_comment) ";
 		$rq .= "VALUES (";
@@ -170,17 +185,22 @@
 		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
 		$fields["dep_comment"] = CentreonDB::escape($ret["dep_comment"]);
 		$fields["dep_hostParents"] = "";
-		if (isset($ret["dep_hostParents"]))
+		if (isset($ret["dep_hostParents"])) {
 			$fields["dep_hostParents"] = implode(",", $ret["dep_hostParents"]);
+		}
 		$fields["dep_hostChilds"] = "";
-		if (isset($ret["dep_hostChilds"]))
+		if (isset($ret["dep_hostChilds"])) {
 			$fields["dep_hostChilds"] = implode(",", $ret["dep_hostChilds"]);
+		}
 		$oreon->CentreonLogAction->insertLog("host dependency", $dep_id["MAX(dep_id)"], CentreonDB::escape($ret["dep_name"]), "a", $fields);
 		return ($dep_id["MAX(dep_id)"]);
 	}
 
-	function updateHostDependency($dep_id = null)	{
-		if (!$dep_id) exit();
+	function updateHostDependency($dep_id = null)
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		global $form;
 		global $pearDB, $oreon;
 		$ret = array();
@@ -207,25 +227,31 @@
 		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
 		$fields["dep_comment"] = CentreonDB::escape($ret["dep_comment"]);
 		$fields["dep_hostParents"] = "";
-		if (isset($ret["dep_hostParents"]))
+		if (isset($ret["dep_hostParents"])) {
 			$fields["dep_hostParents"] = implode(",", $ret["dep_hostParents"]);
+		}
 		$fields["dep_hostChilds"] = "";
-		if (isset($ret["dep_hostChilds"]))
+		if (isset($ret["dep_hostChilds"])) {
 			$fields["dep_hostChilds"] = implode(",", $ret["dep_hostChilds"]);
+		}
 		$oreon->CentreonLogAction->insertLog("host dependency", $dep_id, CentreonDB::escape($ret["dep_name"]), "c", $fields);
 	}
 
-	function updateHostDependencyHostParents($dep_id = null, $ret = array())	{
-		if (!$dep_id) exit();
+	function updateHostDependencyHostParents($dep_id = null, $ret = array())
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM dependency_hostParent_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["dep_hostParents"]))
+		if (isset($ret["dep_hostParents"])) {
 			$ret = $ret["dep_hostParents"];
-		else
+		} else {
 			$ret = $form->getSubmitValue("dep_hostParents");
+		}
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO dependency_hostParent_relation ";
 			$rq .= "(dependency_dep_id, host_host_id) ";
@@ -235,23 +261,57 @@
 		}
 	}
 
-	function updateHostDependencyHostChilds($dep_id = null, $ret = array())	{
-		if (!$dep_id) exit();
+	function updateHostDependencyHostChilds($dep_id = null, $ret = array())
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM dependency_hostChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["dep_hostChilds"]))
+		if (isset($ret["dep_hostChilds"])) {
 			$ret = $ret["dep_hostChilds"];
-		else
+		} else {
 			$ret = $form->getSubmitValue("dep_hostChilds");
-		for($i = 0; $i < count($ret); $i++)	{
+		}
+		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO dependency_hostChild_relation ";
 			$rq .= "(dependency_dep_id, host_host_id) ";
 			$rq .= "VALUES ";
 			$rq .= "('".$dep_id."', '".$ret[$i]."')";
 			$DBRESULT = $pearDB->query($rq);
+		}
+	}
+
+	/**
+	 * Update Host Dependency Service Children
+	 */
+	function updateHostDependencyServiceChildren($dep_id = null, $ret = array())
+	{
+	    if (!$dep_id) {
+		    exit();
+		}
+		global $form;
+		global $pearDB;
+		$rq = "DELETE FROM dependency_serviceChild_relation ";
+		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		if (isset($ret["dep_hSvChi"])) {
+			$ret = $ret["dep_hSvChi"];
+		} else {
+			$ret = $form->getSubmitValue("dep_hSvChi");
+		}
+		for ($i = 0; $i < count($ret); $i++)	{
+		    $exp = explode("_", $ret[$i]);
+			if (count($exp) == 2) {
+				$rq = "INSERT INTO dependency_serviceChild_relation ";
+				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$dep_id."', '".$exp[1]."', '".$exp[0]."')";
+				$DBRESULT = $pearDB->query($rq);
+			}
 		}
 	}
 ?>

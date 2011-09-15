@@ -42,7 +42,7 @@
 class CentreonDependency
 {
     protected $db = null;
-    
+
     /**
  	 * Constructor
  	 *
@@ -52,14 +52,14 @@ class CentreonDependency
     {
         $this->db = $db;
     }
-    
+
     /**
      * Get the service service dependency
-     * 
+     *
      * @param bool $withSg If use servicegroup relation
      * @return array
      */
-    public function getServiceService($withSg = False)
+    public function getServiceService($withSg = false)
     {
         $query = 'SELECT dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
         	FROM dependency_serviceParent_relation dsp, dependency_serviceChild_relation dsc
@@ -74,7 +74,7 @@ class CentreonDependency
         }
         if ($withSg) {
             $querySg = 'SELECT dsgp.servicegroup_sg_id as parent_sg, dsgc.servicegroup_sg_id as child_sg
-            	FROM dependency_servicegroupParent_relation dsgp, dependency_servicegroupChild_relation dsgc 
+            	FROM dependency_servicegroupParent_relation dsgp, dependency_servicegroupChild_relation dsgc
             	WHERE dsgp.dependency_dep_id = dsgc.dependency_dep_id';
             $res = $this->db->query($querySg);
             if (PEAR::isError($res)) {
@@ -96,14 +96,14 @@ class CentreonDependency
         }
         return array_unique($listServices);
     }
-    
+
     /**
      * Get the host host dependency
-     * 
+     *
      * @param bool $withHg If use hostgroup relation
      * @return array
      */
-    public function getHostHost($withHg = False)
+    public function getHostHost($withHg = false)
     {
         $query = 'SELECT dhp.host_host_id as parent_host_id, dhc.host_host_id as child_host_id
         	FROM dependency_hostParent_relation dhp, dependency_hostChild_relation dhc
@@ -117,7 +117,7 @@ class CentreonDependency
             $listHosts[] = $row;
         }
         if ($withHg) {
-            $queryHg = 'SELECT dhgp.hostgroup_hg_id as parent_hg, dhgc.hostgroup_hg_id as child_hg 
+            $queryHg = 'SELECT dhgp.hostgroup_hg_id as parent_hg, dhgc.hostgroup_hg_id as child_hg
             	FROM dependency_hostgroupParent_relation dhgp, dependency_hostgroupChild_relation dhgc
             	WHERE dhgp.dependency_dep_id = dhgc.dependency_dep_id';
             $res = $this->db->query($queryHg);
@@ -137,6 +137,50 @@ class CentreonDependency
             }
         }
         return array_unique($listHosts);
+    }
+
+    /**
+     * Parent Host
+     * Dependent Service
+     *
+     * @return array
+     */
+    public function getHostService()
+    {
+        $query = "SELECT dhp.host_host_id as parent_host_id, dsc.host_host_id as child_host_id, dsc.service_service_id as child_service_id
+        		  FROM dependency_hostParent_relation dhp, dependency_serviceChild_relation dsc
+        		  WHERE dhp.dependency_dep_id = dsc.dependency_dep_id";
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $listHostService = array();
+        while ($row = $res->fetchRow()) {
+            $listHostService[] = $row;
+        }
+        return $listHostService;
+    }
+
+    /**
+     * Parent Service
+     * Dependent Host
+     *
+     * @return array
+     */
+    public function getServiceHost()
+    {
+        $query = "SELECT dsp.host_host_id as parent_host_id, dsp.service_service_id as parent_service_id, dhc.host_host_id as child_host_id
+        		  FROM dependency_serviceParent_relation dsp, dependency_hostChild_relation dhc
+        		  WHERE dsp.dependency_dep_id = dhc.dependency_dep_id";
+        $res = $this->db->query($query);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $listServiceHost = array();
+        while ($row = $res->fetchRow()) {
+            $listServiceHost[] = $row;
+        }
+        return $listServiceHost;
     }
 }
  ?>

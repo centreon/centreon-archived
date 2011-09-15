@@ -39,10 +39,11 @@
 	if (!isset ($oreon))
 		exit ();
 
-	function testServiceDependencyExistence ($name = NULL)	{
+	function testServiceDependencyExistence ($name = null)
+	{
 		global $pearDB;
 		global $form;
-		$id = NULL;
+		$id = null;
 		if (isset($form))
 			$id = $form->getSubmitValue('dep_id');
 		$DBRESULT = $pearDB->query("SELECT dep_name, dep_id FROM dependency WHERE dep_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
@@ -57,7 +58,8 @@
 			return true;
 	}
 
-	function testCycleH ($childs = NULL)	{
+	function testCycleH ($childs = null)
+	{
 		global $pearDB;
 		global $form;
 		$parents = array();
@@ -73,7 +75,8 @@
 		return true;
 	}
 
-	function deleteServiceDependencyInDB ($dependencies = array())	{
+	function deleteServiceDependencyInDB ($dependencies = array())
+	{
 		global $pearDB, $oreon;
 		foreach($dependencies as $key=>$value)	{
 			$DBRESULT2 = $pearDB->query("SELECT dep_name FROM `dependency` WHERE `dep_id` = '".$key."' LIMIT 1");
@@ -84,7 +87,8 @@
 		}
 	}
 
-	function multipleServiceDependencyInDB ($dependencies = array(), $nbrDup = array())	{
+	function multipleServiceDependencyInDB ($dependencies = array(), $nbrDup = array())
+	{
 		foreach($dependencies as $key=>$value)	{
 			global $pearDB, $oreon;
 			$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$key."' LIMIT 1");
@@ -94,7 +98,7 @@
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
 					$key2 == "dep_name" ? ($dep_name = $value2 = $value2."_".$i) : null;
-					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
+					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=null?("'".$value2."'"):"NULL");
 					if ($key2 != "dep_id")
 						$fields[$key2] = $value2;
 					if (isset($dep_name)) {
@@ -128,25 +132,33 @@
 		}
 	}
 
-	function updateServiceDependencyInDB ($dep_id = NULL)	{
-		if (!$dep_id) exit();
+	function updateServiceDependencyInDB ($dep_id = null)
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		updateServiceDependency($dep_id);
 		updateServiceDependencyServiceParents($dep_id);
 		updateServiceDependencyServiceChilds($dep_id);
+		updateServiceDependencyHostChildren($dep_id);
 	}
 
-	function insertServiceDependencyInDB ($ret = array())	{
+	function insertServiceDependencyInDB ($ret = array())
+	{
 		$dep_id = insertServiceDependency($ret);
 		updateServiceDependencyServiceParents($dep_id, $ret);
 		updateServiceDependencyServiceChilds($dep_id, $ret);
+		updateServiceDependencyHostChildren($dep_id, $ret);
 		return ($dep_id);
 	}
 
-	function insertServiceDependency($ret = array())	{
+	function insertServiceDependency($ret = array())
+	{
 		global $form;
 		global $pearDB, $oreon;
-		if (!count($ret))
+		if (!count($ret)) {
 			$ret = $form->getSubmitValues();
+		}
 		$rq = "INSERT INTO dependency ";
 		$rq .= "(dep_name, dep_description, inherits_parent, execution_failure_criteria, notification_failure_criteria, dep_comment) ";
 		$rq .= "VALUES (";
@@ -163,22 +175,33 @@
 
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
-		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-		$fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
-		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
+		if (isset($ret["inherits_parent"]["inherits_parent"])) {
+		    $fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
+		}
+		if (isset($ret["execution_failure_criteria"])) {
+            $fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
+		}
+		if (isset($ret["notification_failure_criteria"])) {
+		    $fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
+		}
 		$fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
 		$fields["dep_hSvPar"] = "";
-		if (isset($ret["dep_hSvPar"]))
+		if (isset($ret["dep_hSvPar"])) {
 			$fields["dep_hSvPar"] = implode(",", $ret["dep_hSvPar"]);
+		}
 		$fields["dep_hSvChi"] = "";
-		if (isset($ret["dep_hSvChi"]))
+		if (isset($ret["dep_hSvChi"])) {
 			$fields["dep_hSvChi"] = implode(",", $ret["dep_hSvChi"]);
+		}
 		$oreon->CentreonLogAction->insertLog("service dependency", $dep_id["MAX(dep_id)"], htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"), "a", $fields);
 		return ($dep_id["MAX(dep_id)"]);
 	}
 
-	function updateServiceDependency($dep_id = null)	{
-		if (!$dep_id) exit();
+	function updateServiceDependency($dep_id = null)
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		global $form;
 		global $pearDB, $oreon;
 		$ret = array();
@@ -206,28 +229,34 @@
 		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
 		$fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
 		$fields["dep_hSvPar"] = "";
-		if (isset($ret["dep_hSvPar"]))
+		if (isset($ret["dep_hSvPar"])) {
 			$fields["dep_hSvPar"] = implode(",", $ret["dep_hSvPar"]);
+		}
 		$fields["dep_hSvChi"] = "";
-		if (isset($ret["dep_hSvChi"]))
+		if (isset($ret["dep_hSvChi"])) {
 			$fields["dep_hSvChi"] = implode(",", $ret["dep_hSvChi"]);
+		}
 		$oreon->CentreonLogAction->insertLog("service dependency", $dep_id, htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 
-	function updateServiceDependencyServiceParents($dep_id = null, $ret = array())	{
-		if (!$dep_id) exit();
+	function updateServiceDependencyServiceParents($dep_id = null, $ret = array())
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM dependency_serviceParent_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["dep_hSvPar"]))
+		if (isset($ret["dep_hSvPar"])) {
 			$ret1 = $ret["dep_hSvPar"];
-		else
+		} else {
 			$ret1 = $form->getSubmitValue("dep_hSvPar");
+		}
 		for($i = 0; $i < count($ret1); $i++)	{
 			$exp = explode("_", $ret1[$i]);
-			if (count($exp) == 2)	{
+			if (count($exp) == 2) {
 				$rq = "INSERT INTO dependency_serviceParent_relation ";
 				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
 				$rq .= "VALUES ";
@@ -237,26 +266,57 @@
 		}
 	}
 
-	function updateServiceDependencyServiceChilds($dep_id = null, $ret = array())	{
-		if (!$dep_id) exit();
+	function updateServiceDependencyServiceChilds($dep_id = null, $ret = array())
+	{
+		if (!$dep_id) {
+		    exit();
+		}
 		global $form;
 		global $pearDB;
 		$rq = "DELETE FROM dependency_serviceChild_relation ";
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["dep_hSvChi"]))
+		if (isset($ret["dep_hSvChi"])) {
 			$ret1 = $ret["dep_hSvChi"];
-		else
+		} else {
 			$ret1 = $form->getSubmitValue("dep_hSvChi");
-		for($i = 0; $i < count($ret1); $i++)	{
+		}
+		for ($i = 0; $i < count($ret1); $i++)	{
 			$exp = explode("_", $ret1[$i]);
-			if (count($exp) == 2)	{
+			if (count($exp) == 2) {
 				$rq = "INSERT INTO dependency_serviceChild_relation ";
 				$rq .= "(dependency_dep_id, service_service_id, host_host_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$dep_id."', '".$exp[1]."', '".$exp[0]."')";
 				$DBRESULT = $pearDB->query($rq);
 			}
+		}
+	}
+
+	/**
+	 * Update Service Dependency Host Children
+	 */
+	function updateServiceDependencyHostChildren($dep_id = null, $ret = array())
+	{
+		if (!$dep_id) {
+		    exit();
+		}
+		global $form;
+		global $pearDB;
+		$rq = "DELETE FROM dependency_hostChild_relation ";
+		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		if (isset($ret["dep_hHostChi"])) {
+			$ret1 = $ret["dep_hHostChi"];
+		} else {
+			$ret1 = $form->getSubmitValue("dep_hHostChi");
+		}
+		for ($i = 0; $i < count($ret1); $i++)	{
+            $rq = "INSERT INTO dependency_hostChild_relation ";
+            $rq .= "(dependency_dep_id, host_host_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$dep_id."', '".$ret1[$i]."')";
+			$DBRESULT = $pearDB->query($rq);
 		}
 	}
 ?>

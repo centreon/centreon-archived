@@ -41,33 +41,53 @@
 	#
 
 	$dep = array();
+	$childServices = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
-		# Set base value
+		// Set base value
 		$dep = array_map("myDecode", $DBRESULT->fetchRow());
 
-		# Set Notification Failure Criteria
+		// Set Notification Failure Criteria
 		$dep["notification_failure_criteria"] = explode(',', $dep["notification_failure_criteria"]);
-		foreach ($dep["notification_failure_criteria"] as $key => $value)
+		foreach ($dep["notification_failure_criteria"] as $key => $value) {
 			$dep["notification_failure_criteria"][trim($value)] = 1;
+		}
 
-		# Set Execution Failure Criteria
+		// Set Execution Failure Criteria
 		$dep["execution_failure_criteria"] = explode(',', $dep["execution_failure_criteria"]);
-		foreach ($dep["execution_failure_criteria"] as $key => $value)
+		foreach ($dep["execution_failure_criteria"] as $key => $value) {
 			$dep["execution_failure_criteria"][trim($value)] = 1;
+		}
 
-		# Set Host Parents
+		// Set Host Parents
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $hostP = $DBRESULT->fetchRow(); $i++)
+		for($i = 0; $hostP = $DBRESULT->fetchRow(); $i++) {
 			$dep["dep_hostParents"][$i] = $hostP["host_host_id"];
+		}
 		$DBRESULT->free();
 
-		# Set Host Childs
+		// Set Host Children
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $hostC = $DBRESULT->fetchRow(); $i++)
+		for($i = 0; $hostC = $DBRESULT->fetchRow(); $i++) {
 			$dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
+		}
 		$DBRESULT->free();
+
+        // Set Service Children
+	    $query = "SELECT host_id, host_name, service_id, service_description
+    		  	  FROM service s, dependency_serviceChild_relation cr, host h
+    		  	  WHERE s.service_id = cr.service_service_id
+    		  	  AND cr.host_host_id = h.host_id
+    		  	  AND cr.dependency_dep_id = "  . $pearDB->escape($dep_id);
+        $res = $pearDB->query($query);
+        $i = 0;
+        while ($row = $res->fetchRow()) {
+            $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+            $childServices[$row["host_id"]."_".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
+            $dep['dep_hSvChi'][$i] = $row["host_id"]."_".$row['service_id'];
+            $i++;
+        }
 	}
 
 	/*
@@ -78,9 +98,13 @@
 	 * Host comes from DB -> Store in $hosts Array
 	 */
 	$hosts = array();
+	$hostFilter = array(null => null,
+	                    0    => sprintf('__%s__', _('ALL')));
 	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while($host = $DBRESULT->fetchRow())
+	while($host = $DBRESULT->fetchRow()) {
 		$hosts[$host["host_id"]] = $host["host_name"];
+		$hostFilter[$host["host_id"]] = $host["host_name"];
+	}
 	$DBRESULT->free();
 
 	/*
@@ -142,6 +166,13 @@
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
+	$form->addElement('select', 'host_filter', _('Host Filter'), $hostFilter, array('onChange' => 'hostFilterSelect(this);'));
+	$ams1 = $form->addElement('advmultiselect', 'dep_hSvChi', array(_("Dependent Services"), _("Available"), _("Selected")), $childServices, $attrsAdvSelect, SORT_ASC);
+	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams1->setElementTemplate($eTemplate);
+	echo $ams1->getElementJs(false);
+
 	$form->addElement('textarea', 'dep_comment', _("Comments"), $attrsTextarea);
 
 	$tab = array();
@@ -161,8 +192,6 @@
 	$form->addRule('dep_name', _("Compulsory Name"), 'required');
 	$form->addRule('dep_description', _("Required Field"), 'required');
 	$form->addRule('dep_hostParents', _("Required Field"), 'required');
-	$form->addRule('dep_hostChilds', _("Required Field"), 'required');
-	$form->addRule('notification_failure_criteria', _("Required Field"), 'required');
 
 	$form->registerRule('cycle', 'callback', 'testHostDependencyCycle');
 	$form->addRule('dep_hostChilds', _("Circular Definition"), 'cycle');
@@ -236,7 +265,8 @@
 	}
 ?>
 <script type="text/javascript">
-function uncheckAllH(object) {
+function uncheckAllH(object)
+{
 	if (object.id == "hNone" && object.checked) {
 		document.getElementById('hUp').checked = false;
 		document.getElementById('hDown').checked = false;
@@ -248,6 +278,72 @@ function uncheckAllH(object) {
 	}
 	else {
 		document.getElementById('hNone').checked = false;
+	}
+}
+
+function hostFilterSelect(elem)
+{
+	var arg = 'host_id='+elem.value;
+
+	if (window.XMLHttpRequest) {
+		var xhr = new XMLHttpRequest();
+	} else if(window.ActiveXObject){r
+    	try {
+    		var xhr = new ActiveXObject("Msxml2.XMLHTTP");
+    	} catch (e) {
+    		var xhr = new ActiveXObject("Microsoft.XMLHTTP");
+    	}
+	} else {
+	   var xhr = false;
+	}
+
+	xhr.open("POST","./include/configuration/configObject/service_dependency/getServiceXml.php", true);
+	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
+	xhr.send(arg);
+
+	xhr.onreadystatechange = function()
+	{
+		if (xhr && xhr.readyState == 4 && xhr.status == 200 && xhr.responseXML){
+			var response = xhr.responseXML.documentElement;
+			var _services = response.getElementsByTagName("services");
+			var _selbox;
+
+			if (document.getElementById("dep_hSvChi-f")) {
+				_selbox = document.getElementById("dep_hSvChi-f");
+				_selected = document.getElementById("dep_hSvChi-t");
+			} else if (document.getElementById("__dep_hSvChi")) {
+				_selbox = document.getElementById("__dep_hSvChi");
+				_selected = document.getElementById("_dep_hSvChi");
+			}
+
+			while ( _selbox.options.length > 0 ){
+				_selbox.options[0] = null;
+			}
+
+			if (_services.length == 0) {
+				_selbox.setAttribute('disabled', 'disabled');
+			} else {
+				_selbox.removeAttribute('disabled');
+			}
+
+			for (var i = 0 ; i < _services.length ; i++) {
+				var _svc 		 = _services[i];
+				var _id 		 = _svc.getElementsByTagName("id")[0].firstChild.nodeValue;
+				var _description = _svc.getElementsByTagName("description")[0].firstChild.nodeValue;
+				var validFlag = true;
+
+				for (var j = 0; j < _selected.length; j++) {
+					if (_id == _selected.options[j].value) {
+						validFlag = false;
+					}
+				}
+
+				if (validFlag == true) {
+    				new_elem = new Option(_description,_id);
+    				_selbox.options[_selbox.length] = new_elem;
+				}
+			}
+		}
 	}
 }
 </script>

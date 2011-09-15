@@ -90,8 +90,8 @@
         $hostDependencies = $depObj->getHostHost(true);
         foreach ($hostDependencies as $hostDependency) {
             $xml->startElement('dependency');
-            $xml->writeAttribute('dependent_host', $hostDependency['child_host_id']);
             $xml->writeAttribute('host_id', $hostDependency['parent_host_id']);
+            $xml->writeAttribute('dependent_host', $hostDependency['child_host_id']);
             $xml->endElement(); /* dependency */
         }
         /*
@@ -100,12 +100,37 @@
         $serviceDependencies = $depObj->getServiceService(true);
         foreach ($serviceDependencies as $serviceDependency) {
             $xml->startElement('dependency');
-            $xml->writeAttribute('dependent_host', $serviceDependency['child_host_id']);
-            $xml->writeAttribute('dependent_service', $serviceDependency['child_service_id']);
             $xml->writeAttribute('host_id', $serviceDependency['parent_host_id']);
             $xml->writeAttribute('service_id', $serviceDependency['parent_service_id']);
+            $xml->writeAttribute('dependent_host', $serviceDependency['child_host_id']);
+            $xml->writeAttribute('dependent_service', $serviceDependency['child_service_id']);
             $xml->endElement(); /* dependency */
         }
+
+        /*
+         * Host Service Dependencies
+         */
+        $hostServiceDependencies = $depObj->getHostService();
+        foreach ($hostServiceDependencies as $dep) {
+            $xml->startElement('dependency');
+            $xml->writeAttribute('host_id', $dep['parent_host_id']);
+            $xml->writeAttribute('dependent_host', $dep['child_host_id']);
+            $xml->writeAttribute('dependent_service', $dep['child_service_id']);
+            $xml->endElement(); /* dependency */
+        }
+
+        /*
+         * Service Host Dependencies
+         */
+        $serviceHostDependencies = $depObj->getServiceHost();
+        foreach ($serviceHostDependencies as $dep) {
+            $xml->startElement('dependency');
+            $xml->writeAttribute('host_id', $dep['parent_host_id']);
+            $xml->writeAttribute('service_id', $dep['parent_service_id']);
+            $xml->writeAttribute('dependent_host', $dep['child_host_id']);
+            $xml->endElement(); /* dependency */
+        }
+
         $xml->endElement(); /* conf */
         ob_start();
         $xml->output();
