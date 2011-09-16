@@ -80,7 +80,18 @@ sub getServiceAckTime {
 			" AND o.`name1` = '".$hostName. "'".
 			" AND o.`name2` = '".$serviceDescription. "'".	
 			" ORDER BY `entry_time` asc";
-	} 
+	} elsif ($dbLayer eq "broker") {
+		$query = "SELECT `entry_time` as ack_time ".
+			" FROM `acknowledgements` a, `services` s, `hosts` h ".
+			" WHERE h.`host_id` = a.`host_id`".
+			" AND a.`host_id` = s.`host_id`".
+			" AND `type` = 1".
+			" AND `entry_time` >= ".$start.
+			" AND `entry_time` <= ".$end.
+			" AND h.`name` = '".$hostName. "'".
+			" AND s.`description` = '".$serviceDescription. "'".	
+			" ORDER BY `entry_time` asc";
+	}
 
 	my $sth = $centreon->query($query);
 	my $ackTime = "NULL";
@@ -110,7 +121,16 @@ sub getHostAckTime {
 			" AND UNIX_TIMESTAMP(`entry_time`) <= ".$end.
 			" AND o.`name1` = '".$hostName. "'".
 			" ORDER BY `entry_time` asc";
-	} 
+	} elsif ($dbLayer eq "broker") {
+		$query = "SELECT entry_time as ack_time ".
+			" FROM `acknowledgements` a, `hosts` h".
+			" WHERE h.`host_id` = a.`host_id`".
+			" AND `type` = 0".
+			" AND `entry_time` >= ".$start.
+			" AND `entry_time` <= ".$end.
+			" AND h.`name` = '".$hostName. "'".
+			" ORDER BY `entry_time` asc";
+	}
 
 	my $sth = $centreon->query($query);
 	my $ackTime = "NULL";

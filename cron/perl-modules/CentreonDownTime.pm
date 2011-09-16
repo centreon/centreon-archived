@@ -86,7 +86,13 @@ sub getDownTime {
 				 "FROM `hosts` h, `downtimes` d " .
 				 "LEFT JOIN services s ON s.service_id = d.service_id " .
 				 "WHERE started = 1 " .
-				 "AND d.host_id = h.host_id " .
+				 "AND d.host_id = h.host_id ";
+		if ($type == 1) {
+			$query .= "AND d.type = 2 "; # That can be confusing, but downtime_type 2 is for host
+		} elsif ($type == 2) {
+			$query .= "AND d.type = 1 "; # That can be confusing, but downtime_type 1 is for service
+		}
+		$query .= "AND d.type = " . $type . " " .
 				 "AND start_time < " . $end . " " .
 				 "AND (end_time > " . $start . " || end_time = 0) " .
 				 "ORDER BY name1 ASC, start_time ASC, end_time ASC";		

@@ -123,7 +123,7 @@ sub getLogOfHosts {
 					" AND `ctime` < ".$end.
 					" AND (`type` = 1 OR (`status` = 0 AND `type` = 0))".
 					" AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
-					" AND `service_description` IS NULL".
+					" AND `service_id` IS NULL".
 				" ORDER BY `ctime`";
 	}
 	my $result = $centstorage->query($query);
