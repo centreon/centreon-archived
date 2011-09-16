@@ -72,7 +72,7 @@ sub getServiceAckTime {
 	
 	if ($dbLayer eq "ndo") {
 		$query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time ".
-			" FROM `nagios_acknowledgments` a, `nagios_objects` o".
+			" FROM `nagios_acknowledgements` a, `nagios_objects` o".
 			" WHERE o.`object_id` = a.`object_id`".
 			" AND `acknowledgement_type` = '1'".
 			" AND UNIX_TIMESTAMP(`entry_time`) >= ".$start.
@@ -103,7 +103,7 @@ sub getHostAckTime {
 	
 	if ($dbLayer eq "ndo") {
 		$query = "SELECT UNIX_TIMESTAMP(`entry_time`) as ack_time ".
-			" FROM `nagios_acknowledgments` a, `nagios_objects` o".
+			" FROM `nagios_acknowledgements` a, `nagios_objects` o".
 			" WHERE o.`object_id` = a.`object_id`".
 			" AND `acknowledgement_type` = '0'".
 			" AND UNIX_TIMESTAMP(`entry_time`) >= ".$start.
