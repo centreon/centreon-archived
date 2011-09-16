@@ -46,9 +46,6 @@ use Time::Local;
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
 require "@CENTREON_ETC@/conf.pm";
 
-#use vars qw ($PROGNAME $VERSION $varLibCentreon $lock_file %options %serviceStates %hostStates %servicStateIds %hostStateIds);
-#require "perl-modules/variables.pm";
-
 # Packages used as classes
 require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonLogger.pm";
 require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonDB.pm";
@@ -59,6 +56,7 @@ require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonServiceStateEvents.pm"
 require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonHostStateEvents.pm";
 require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonProcessStateEvents.pm";
 require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonDownTime.pm";
+require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonAck.pm";
 
 # Variables
 my $pid= getpgrp(0);
@@ -157,8 +155,9 @@ sub initVars {
 	$service = CentreonService->new($logger, $centreon);
 	$nagiosLog = CentreonLog->new($logger, $centstorage, $dbLayer);
 	my $centreonDownTime = CentreonDownTime->new($logger, $centstatus, $dbLayer);
-	$serviceEvents = CentreonServiceStateEvents->new($logger, $centstorage, $centreonDownTime);
-	$hostEvents = CentreonHostStateEvents->new($logger, $centstorage, $centreonDownTime);
+	my $centreonAck = CentreonAck->new($logger, $centstatus, $dbLayer);
+	$serviceEvents = CentreonServiceStateEvents->new($logger, $centstorage, $centreonAck, $centreonDownTime);
+	$hostEvents = CentreonHostStateEvents->new($logger, $centstorage, $centreonAck, $centreonDownTime);
 	
 	# Class that builds events
 	$processEvents = CentreonProcessStateEvents->new($logger, $host, $service, $nagiosLog, $hostEvents, $serviceEvents, $centreonDownTime, $dbLayer);
@@ -235,6 +234,7 @@ sub main {
     
     $logger->writeLog("INFO", "Starting program...(pid=$pid)");
     
+    $options{'rebuild'} = 1;
     if (defined($options{'rebuild'})) {
 		rebuildIncidents();
     }else {
