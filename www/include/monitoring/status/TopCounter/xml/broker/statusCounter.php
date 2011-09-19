@@ -307,7 +307,7 @@
 	$obj->XML->writeElement("up", $host_stat["0"]);
 	$obj->XML->writeElement("d", $host_stat["1"]);
 	$obj->XML->writeElement("un2", $host_stat["2"]);
-	$obj->XML->writeElement("p2", $host_stat["3"]);
+	$obj->XML->writeElement("p2", $host_stat["4"]);
 	$obj->XML->endElement();
 	$obj->XML->startElement("m");
 	$obj->XML->writeElement("pstt", $status);
