@@ -411,7 +411,7 @@
 	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '0');
 	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '1');
 	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
-	$form->setDefaults(array('contact_register' => '0'));
+	$form->setDefaults(array('contact_register' => '1'));
 
 	$form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
 
