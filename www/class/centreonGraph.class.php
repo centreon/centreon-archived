@@ -1148,11 +1148,11 @@ class CentreonGraph	{
 				$this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
 		}
 		if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000
-		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 ) {
-			if($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000 - (86400*7))
+		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000) {
+			if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 10368000 - (86400*7))
 				$this->setRRDOption("x-grid", "DAY:1:DAY:7:DAY:7:0:%d/%m");
 			else
-				$this->setRRDOption("x-grid", "DAY:1:DAY:7:DAY:14:0:%d/%m");
+				$this->setRRDOption("x-grid", "DAY:7:DAY:7:DAY:14:0:%d/%m");
 		}
 
 		foreach ($this->_RRDoptions as $key => $value) {
