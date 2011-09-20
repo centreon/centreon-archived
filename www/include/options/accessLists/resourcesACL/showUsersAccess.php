@@ -42,7 +42,12 @@
 	/*
 	 * Connect to Database
 	 */
-	$pearDBNdo = new CentreonDB("ndo");
+	$broker = $oreon->broker->getBroker();
+	if ($broker == "broker") {
+	    $pearDBNdo = new CentreonDB("centstorage");
+	} elseif ($broker == "ndo") {
+        $pearDBNdo = new CentreonDB("ndo");
+	}
 
 	/**
 	 * Get host icones
