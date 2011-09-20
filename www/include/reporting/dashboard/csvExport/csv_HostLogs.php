@@ -51,7 +51,6 @@
 	 * DB connexion
 	 */
 	$pearDB 	= new CentreonDB();
-	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
 
 	/*

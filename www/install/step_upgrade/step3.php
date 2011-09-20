@@ -40,7 +40,6 @@
 
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
-	$pearDBndo 	= new CentreonDB("ndo");
 
 	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 	$version = $DBRESULT->fetchRow();
@@ -157,17 +156,6 @@ aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
 				echo '<b><span class="go">OK</font></b>';
 			} else {
 				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';
-			    $return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-		<td><b>MySQL access</b></td>
-    	<td align="right"><?php
-    		if ($pearDBndo->hasGrants("ALTER")){
-				echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Critical: User for NDO must have Alter permissions on NDO table</font></b>';
 			    $return_false = 1;
 			}?>
 		</td>

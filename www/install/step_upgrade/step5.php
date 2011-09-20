@@ -45,7 +45,6 @@
 
 	global $pearDB0;
 	$pearDBO = new CentreonDB("centstorage");
-	$pearDBndo 	= new CentreonDB("ndo");
 
 	if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back"))
 		$_SESSION["script"] = $_POST["script"];
@@ -102,7 +101,8 @@
 		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
         $request = "";
         if (count($file_sql)) {
-	        $str = "";
+	        $pearDBndo 	= new CentreonDB("ndo");
+            $str = "";
 	        foreach ($file_sql as $line)
 	        	if ($line[0] != "#" && $line[0] != "-") {
 	        		$pos = strrpos($line, ";");
@@ -169,7 +169,7 @@
 	} else {
 		echo '<td align="right"><b><span class="go">PASS</span></b></td></tr>';
 	}
-	
+
 	/*
 	 * Post Update in PHP
 	 */
