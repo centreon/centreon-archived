@@ -289,6 +289,7 @@ CREATE TABLE IF NOT EXISTS `acl_topology` (
   `acl_topo_id` int(11) NOT NULL auto_increment,
   `acl_topo_name` varchar(255) default NULL,
   `acl_topo_alias` varchar(255) default NULL,
+  `acl_comments` text DEFAULT NULL,
   `acl_topo_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`acl_topo_id`), 
   KEY `acl_topo_id` (`acl_topo_id`,`acl_topo_activate`)
