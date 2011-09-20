@@ -754,6 +754,38 @@ sub signalstopprogram() {
     }
 }
 
+# Check if Centstorage have to start
+sub checkProgramStatus() {
+    # Init Var
+    use vars qw($con_oreon $con_ods);
+
+    # Connect MySQL DB
+    CheckMySQLConnexion();				
+
+	my $sth = $con_oreon->prepare("SELECT * FROM options WHERE `key` = 'centstorage'");
+	if (!$sth->execute()) {
+		writeLogFile("Error when getting status of centstorage program : " . $sth->errstr . "");
+	}
+	my $status = 0;
+	while (my $option = $sth->fetchrow_hashref()) {
+		if ($option->{'value'} == 1) {
+			$status = 1;
+		}
+	}
+	
+	if ($status == 0) {
+		writeLogFile("Centstorage is not enable into Centreon Config Panel");
+		writeLogFile("Program cannot start");
+		exit(2);
+	}
+
+	$con_oreon->disconnect();
+	$con_ods->disconnect();
+}
+
+# Check Program State
+checkProgramStatus();
+
 # here make statistics
 my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
 $lastlineRead = 0;

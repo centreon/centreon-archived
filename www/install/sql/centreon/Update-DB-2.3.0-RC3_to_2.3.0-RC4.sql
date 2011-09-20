@@ -4,4 +4,6 @@ DELETE FROM topology WHERE topology_url LIKE './include/monitoring/mysql_log/vie
 DELETE FROM topology WHERE topology_page = '20313' OR topology_parent = '20313';
 DELETE FROM topology WHERE topology_page = '20312' OR topology_parent = '20312';
 
+INSERT INTO options (`key`, `value`) VALUES ('centstorage', '1');
+
 UPDATE `informations` SET `value` = '2.3.0-RC4' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-RC3' LIMIT 1;

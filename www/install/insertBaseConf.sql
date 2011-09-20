@@ -219,6 +219,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('monitoring_ack_sticky', '1'),
 ('monitoring_dwt_fixed', '1'),
 ('monitoring_dwt_svc', '1'),
+('centstorage', '1'),
 ('tactical_host_limit', '100'),
 ('tactical_service_limit', '100'),
 ('tactical_refresh_interval', '20');

@@ -3,14 +3,17 @@
 <form {$form.attributes}>
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_ODS_config}</td></tr>
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.enable}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.enable_centstorage.label}</td><td class="FormRowValue">{$form.enable_centstorage.html}</td></tr>
+ 	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.folder}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.RRDdatabase_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_path.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.RRDdatabase_status_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_status_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.RRDdatabase_status_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_status_path.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.RRDdatabase_nagios_stats_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_nagios_stats_path.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$form.header.retention}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.len_storage_rrd.label}</td><td class="FormRowValue">{$form.len_storage_rrd.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.len_storage_mysql.label}</td><td class="FormRowValue">{$form.len_storage_mysql.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.len_storage_mysql.label}</td><td class="FormRowValue">{$form.len_storage_mysql.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/garbage_empty.gif'>&nbsp;&nbsp;{$form.header.Purge}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>

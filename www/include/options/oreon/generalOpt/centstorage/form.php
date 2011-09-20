@@ -36,19 +36,29 @@
  * 
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 	
-	if (isset($_POST["o"]) && $_POST["o"])
+	if (isset($_POST["o"]) && $_POST["o"]) {
 		$o = $_POST["o"];
+	}
 
-	$DBRESULT = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
-	
-			
 	/*
-	 * Set base value
+	 * Get data into config table of centstorage
 	 */
+	$DBRESULT = $pearDBO->query("SELECT * FROM `config` LIMIT 1");
 	$gopt = array_map("myDecode", $DBRESULT->fetchRow());
+	
+	/*
+	 * Get centstorage state
+	 */
+	$DBRESULT2 = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'centstorage'");
+	while ($data = $DBRESULT2->fetchRow()) {
+		if (isset($data['value']) && $data['key'] == "centstorage") {
+			$gopt["enable_centstorage"] = $data['value'];
+		}
+	}
 
 	/*
 	 * Format of text input
@@ -72,6 +82,7 @@
 	/*
 	 * Header information
 	 */
+	$form->addElement('header', 'enable', _("Engine Status"));
 	$form->addElement('header', 'folder', _("Storage folders"));
 	$form->addElement('header', 'retention', _("Retention durations"));
 	$form->addElement('header', 'Purge', _("Purge options"));
@@ -83,6 +94,7 @@
 	/*
 	 * inputs declaration
 	 */
+	$form->addElement('checkbox', 'enable_centstorage', _("Enable Centstorage Engine (require restart of centstorage)"));
 	$form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 	$form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
 	$form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Nagios Statistics"), $attrsText);
