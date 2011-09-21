@@ -60,6 +60,9 @@
 		if ($actions == true || $is_admin) {
 			$host_poller = GetMyHostPoller($pearDB, $host_name);
 			$flg = write_command(" ACKNOWLEDGE_HOST_PROBLEM;".$host_name.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
+		    if ($force_check == 1) {
+			    write_command(" SCHEDULE_FORCED_HOST_CHECK;".$host_name.";".time(), $host_poller);
+            }
 		}
 
 		$actions = $oreon->user->access->checkAction("service_acknowledgement");
@@ -71,8 +74,9 @@
 			if (count($svc_tab)) {
 				foreach ($svc_tab as $key2 => $value) {
 					write_command(" ACKNOWLEDGE_SVC_PROBLEM;".$host_name.";".$value.";".$sticky.";".$notify.";".$persistent.";".$_GET["author"].";".$_GET["comment"], $host_poller);
-					if ($force_check == 1 && $oreon->user->access->checkAction("service_schedule_forced_check") == true)
-				 		write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".time(), $host_poller);
+					if ($force_check == 1 && $oreon->user->access->checkAction("service_schedule_forced_check") == true) {
+				 		write_command(" SCHEDULE_FORCED_SVC_CHECK;".$host_name.";".$value.";".time(), $host_poller);
+					}
 				}
 			}
 		}
