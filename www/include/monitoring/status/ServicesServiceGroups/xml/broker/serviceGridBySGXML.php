@@ -181,6 +181,9 @@
 			   $hostList .= ",";
 			$hostList .= "'".$host_name."'";
 		}
+		if ($hostList == "") {
+		    $hostList = "''";
+		}
 
 		/** *****************************************
 		 * Prepare Finale Request

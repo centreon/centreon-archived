@@ -224,6 +224,9 @@
 			}
 			$hostList .= "'".$host_name."'";
 		}
+        if ($hostList == "") {
+            $hostList = "''";
+        }
 
 		/** **************************************************
 		 * Display all services
