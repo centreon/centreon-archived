@@ -36,6 +36,7 @@
  *
  */
 
+ini_set("display_errors", "Off");
 require_once "@CENTREON_ETC@/centreon.conf.php";
 
 if (!isset($_POST['poller']) || !isset($_POST['mode']) || !isset($_POST['sid'])) {
