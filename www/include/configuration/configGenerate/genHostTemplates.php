@@ -189,14 +189,15 @@
 			$strTemp = "";
 			if (isset($hgCache[$host["host_id"]])) {
 				foreach ($hgCache[$host["host_id"]] as $hgs) {
-					if ($strTmp != "") {
-						$strTmp .= ",";
+					if ($strTemp != "") {
+						$strTemp .= ",";
 					}
-					$strTmp .= $hgs;
+					$strTemp .= $hgs;
 				}
 			}
-			if ($strTemp)
+			if ($strTemp) {
 				$str .= print_line("hostgroups", $strTemp);
+			}
 			unset($strTemp);
 
 			/*

@@ -66,7 +66,7 @@
                     $cache["svc"][$data["service_id"]] = NULL;
                 }
             } else {
-              $cache["tpl"][$data["service_id"]] = array('arg' => $data["command_command_id_arg"], 'cmd' => $commands[$data["command_command_id"]], 'tpl' => $data["service_template_model_stm_id"]);
+            	$cache["tpl"][$data["service_id"]] = array('arg' => $data["command_command_id_arg"], 'cmd' => $data["command_command_id"] != NULL ? $commands[$data["command_command_id"]] : NULL, 'tpl' => $data["service_template_model_stm_id"]);
             }
             $i++;
         }
