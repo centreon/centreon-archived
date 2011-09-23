@@ -171,8 +171,7 @@ CREATE TABLE IF NOT EXISTS hosts (
   state_type smallint default NULL,
   statusmap_image varchar(255) default NULL,
 
-  UNIQUE (host_id),
-  UNIQUE (instance_id, name),
+  UNIQUE (host_id),  
   FOREIGN KEY (instance_id) REFERENCES instances (instance_id)
     ON DELETE CASCADE
 ) ENGINE=InnoDB;
