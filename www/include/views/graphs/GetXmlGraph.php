@@ -585,7 +585,7 @@
 			while ($metrics_ret = $DBRESULT2->fetchRow()){
 				/* Find legend if exist */
 				/* And use it instead of the metric name */
-				$dbds = $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$metrics_ret["metric_name"]."' ORDER BY host_id DESC");
+				$dbds = $pearDB->query("SELECT ds_legend, ds_order FROM giv_components_template WHERE ( host_id = '".$indd["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$indd["service_id"]."' OR service_id IS NULL ) AND `ds_name` = '".$pearDB->escape($metrics_ret["metric_name"])."' ORDER BY host_id DESC");
 				$ds_data = $dbds->fetchRow();
 				$dbds->free();
 				if ( strlen($ds_data["ds_legend"]) > 0)

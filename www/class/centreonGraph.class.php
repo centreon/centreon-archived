@@ -494,7 +494,7 @@ class CentreonGraph	{
 					/** **********************************
 					 * Copy Template values
 					 */
-					$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE ( host_id = '".$metric["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$metric["service_id"]."' OR service_id IS NULL ) AND ds_name  = '".$metric["metric_name"]."' ORDER BY host_id DESC");
+					$DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE ( host_id = '".$metric["host_id"]."' OR host_id IS NULL ) AND ( service_id = '".$metric["service_id"]."' OR service_id IS NULL ) AND ds_name  = '".$this->DB->escape($metric["metric_name"])."' ORDER BY host_id DESC");
 					$ds_data = $DBRESULT2->fetchRow();
 					$DBRESULT2->free();
 
@@ -507,7 +507,7 @@ class CentreonGraph	{
 						$DBRESULT3 = $this->DB->query("SELECT * FROM giv_components_template");
 						if ($DBRESULT3->numRows()) {
 							while ($data = $DBRESULT3->fetchRow()) {
-								$DBRESULT4 = $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$metric["metric_name"]."' AND metric_name LIKE '".$data["ds_name"]."'");
+								$DBRESULT4 = $this->DBC->query("SELECT * from metrics WHERE index_id = '".$metric["metric_id"]."' AND metric_name = '".$this->DBC->escape($metric["metric_name"])."' AND metric_name LIKE '".$this->DBC->escape($data["ds_name"])."'");
 								if ($DBRESULT4->numRows()) {
 									$ds_data = $data;
 									$DBRESULT4->free();

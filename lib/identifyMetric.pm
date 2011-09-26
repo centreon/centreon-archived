@@ -62,7 +62,7 @@ sub insertMetrics($$$$$$$){
 
     CreateConnexionForCentstorage();
     
-    my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$index_id."', '".$name."', '".$unit."', '".$warn."', '".$crit."', '".$min."', '".$max."')");
+    my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`) VALUES ('".$index_id."', ".$con_ods->quote($name).", '".$unit."', '".$warn."', '".$crit."', '".$min."', '".$max."')");
     if (!$sth2->execute()) { 
     	writeLogFile("Error:" . $sth2->errstr . "\n");
     }
@@ -149,7 +149,7 @@ sub identify_metric($$$$$$$$){
 		    # Check if metric is known...
 		    $data[0] = removeSpecialCharInMetric($data[0]);
 	
-		    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+		    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
 		    if (!$sth1->execute()) {
 				writeLogFile("Error:" . $sth1->errstr . "\n");
 		    } else {
@@ -158,7 +158,7 @@ sub identify_metric($$$$$$$$){
 				    insertMetrics($_[1], $data[0], $data[2], $data[3], $data[4], $data[5], $data[6]);
 		
 				    # Get ID
-				    $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+				    $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
 				    if (!$sth1->execute()) {
 						writeLogFile("Error:" . $sth1->errstr . "\n");
 				    }
@@ -237,7 +237,7 @@ sub identify_hidden_metric($$$$$$$$){ # perfdata index status time type counter 
 	    #$data[0] =~ s/\//#S#/g;
 	    #$data[0] =~ s/\\/#BS#/g;
 	    #$data[0] =~ s/\%/#P#/g;
-	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
 	    if (!$sth1->execute) {writeLogFile("Error:" . $sth1->errstr . "\n");}
 
 	    if ($sth1->rows() eq 0) {
@@ -245,13 +245,13 @@ sub identify_hidden_metric($$$$$$$$){ # perfdata index status time type counter 
 		undef($sth1);
 
 		# Si pas connue -> insert
-		my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', '".$data[0]."', '".$data[2]."')");
+		my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', ".$con_ods->quote($data[0]).", '".$data[2]."')");
 		if (!$sth2->execute){
 		    writeLogFile("Error:" . $sth2->errstr . "\n");
 		}
 		undef($sth2);
 		# Get ID
-		$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = '".$data[0]."'");
+		$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
 		if (!$sth1->execute) {
 		    writeLogFile("Error:" . $sth1->errstr . "\n");
 		}
