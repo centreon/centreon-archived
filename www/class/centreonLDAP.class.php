@@ -227,6 +227,9 @@ class CentreonLDAP {
 	 */
 	public function findUserDn($username)
 	{
+	    if (trim($this->_userSearchInfo['filter']) == '' || trim($this->_userSearchInfo['base_search']) == '') {
+	        return false;
+	    }
 		$filter = preg_replace('/%s/', $username, $this->_userSearchInfo['filter']);
 		$result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
 		$entries = ldap_get_entries($this->_ds, $result);
@@ -244,6 +247,9 @@ class CentreonLDAP {
 	 */
 	public function findGroupDn($group)
 	{
+	    if (trim($this->_groupSearchInfo['filter']) == '' || trim($this->_groupSearchInfo['base_search']) == '') {
+	        return false;
+	    }
 		$filter = preg_replace('/%s/', $group, $this->_groupSearchInfo['filter']);
 		$result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 		$entries = ldap_get_entries($this->_ds, $result);
@@ -261,6 +267,9 @@ class CentreonLDAP {
 	 */
 	public function listOfGroups($pattern = '*')
 	{
+	    if (trim($this->_groupSearchInfo['base_search']) == '' || trim($this->_groupSearchInfo['filter']) == '') {
+	        return array();
+	    }
 	    $filter = preg_replace('/%s/', $pattern, $this->_groupSearchInfo['filter']);
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 	    if (false === $result) {
@@ -284,6 +293,9 @@ class CentreonLDAP {
 	 */
 	public function listOfUsers($pattern = '*')
 	{
+	    if (trim($this->_userSearchInfo['base_search']) == '' || trim($this->_userSearchInfo['filter']) == '') {
+	        return array();
+	    }
 	    $filter = preg_replace('/%s/', $pattern, $this->_userSearchInfo['filter']);
 	    $result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
 	    $entries = ldap_get_entries($this->_ds, $result);
@@ -337,6 +349,9 @@ class CentreonLDAP {
 	 */
 	public function listGroupsForUser($userdn)
 	{
+	    if (trim($this->_groupSearchInfo['filter']) == '' || trim($this->_groupSearchInfo['base_search']) == '') {
+	        return array();
+	    }
 	    $userdn = str_replace('\\', '\\\\', $userdn);
 	    $filter =  '(&' . preg_replace('/%s/', '*', $this->_groupSearchInfo['filter']) . '(' . $this->_groupSearchInfo['member'] . '=' . $userdn . '))';
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
@@ -361,6 +376,9 @@ class CentreonLDAP {
 	 */
 	public function listUserForGroup($groupdn)
 	{
+	    if (trim($this->_groupSearchInfo['member']) == '') {
+	        return array();
+	    }
 	    $groupdn = str_replace('\\', '\\\\', $groupdn);
 	    $group = $this->getEntry($groupdn, $this->_groupSearchInfo['member']);
 	    $list = array();
