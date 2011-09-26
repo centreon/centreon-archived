@@ -42,7 +42,7 @@
 
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-
+ 	
 	$cct = array();
 	if (($o == "c" || $o == "w") && $contact_id) {
 		/**
@@ -408,8 +408,8 @@
 	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
 
-	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '0');
-	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '1');
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '0', array('onclick' => 'switchTemplate(true);'));
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '1', array('onclick' => 'switchTemplate(false);'));
 	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
 	$form->setDefaults(array('contact_register' => '1'));
 
@@ -670,4 +670,29 @@ function resetPwdType(elem)
 {
 	elem.setAttribute('type', 'password');
 }
+
+function switchTemplate(template)
+{
+	if (template) {
+		aclSelected = document.getElementById('contact_acl_groups-t');
+		for (var i = 0; i < aclSelected.options.length; i++) {
+			aclSelected.options[i].selected = true;
+		}
+		QFAMS.moveSelection('contact_acl_groups',
+				document.getElementById('contact_acl_groups-f'),
+				aclSelected,
+				document.getElementsByName('contact_acl_groups[]')[0],
+				'remove',
+				'asc');
+		aclSelected.disabled = true;
+		document.getElementById('contact_acl_groups-f').disabled = true;
+	} else {
+		document.getElementById('contact_acl_groups-t').disabled = false;
+		document.getElementById('contact_acl_groups-f').disabled = false;
+	}
+}
+
+Event.observe(window, 'load', function() {
+	switchTemplate(document.getElementsByName('contact_register[contact_register]')[0].checked);
+});
 </script>
