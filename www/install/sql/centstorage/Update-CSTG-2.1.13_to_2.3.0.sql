@@ -739,10 +739,6 @@ CREATE TABLE IF NOT EXISTS servicestateevents (
     ON DELETE CASCADE
 ) ENGINE=InnoDB;
 
-
-ALTER TABLE `log` ADD COLUMN `instance` int(11) NOT NULL default '1' AFTER `msg_type`;
-ALTER TABLE `log` ADD INDEX(`instance`);
-
 ALTER TABLE `hoststateevents` ADD `ack_time` INT NULL DEFAULT NULL;
 ALTER TABLE `servicestateevents` ADD `ack_time` INT NULL DEFAULT NULL;
 ALTER TABLE `logs` CHANGE  `status`  `status` TINYINT( 4 );
