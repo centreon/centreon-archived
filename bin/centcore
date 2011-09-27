@@ -589,7 +589,7 @@ sub syncTraps($) {
             $port = $ns_server->{'ssh_port'};
         }
 
-        if ($id == 0) {
+        if ($id != 0) {
             `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
             writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
 
