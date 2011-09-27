@@ -185,6 +185,9 @@ if [ "$RC" -eq "0" ] ; then
 		echo_passed "$(gettext "CentStorage run level not installed")" "$passed"
 		log "INFO" "$(gettext "CentStorage run level not installed")"
 	fi
+	log "INFO" "$(gettext "CentStorage stop")"
+	/etc/init.d/centstorage stop
+	check_result $? "$(gettext "CentStorage stop")"
 else
 	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centstorage.init.d" "$passed"
 	log "INFO" "$(gettext "CentStorage init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centstorage.init.d"
