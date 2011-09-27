@@ -317,9 +317,6 @@ UPDATE topology set topology_url = './include/monitoring/comments/commentHost.ph
 -- Delete the Directories page for Media
 DELETE FROM `topology` WHERE `topology_page` = 5010202;
 
-ALTER TABLE `metrics` CHANGE `min` `min` FLOAT NULL DEFAULT NULL;
-ALTER TABLE `metrics` CHANGE `max` `max` FLOAT NULL DEFAULT NULL;
-
 ALTER TABLE `acl_topology` ADD `acl_comments` text DEFAULT NULL AFTER acl_topo_alias ;
 
 alter table contact add contact_enable_notifications enum('0','1') default '0' after contact_oreon;
@@ -1108,8 +1105,6 @@ DELETE FROM topology WHERE topology_page = '20313' OR topology_parent = '20313';
 DELETE FROM topology WHERE topology_page = '20312' OR topology_parent = '20312';
 
 INSERT INTO options (`key`, `value`) VALUES ('centstorage', '1');
-
-ALTER TABLE `acl_topology` ADD `acl_comments` text DEFAULT NULL AFTER acl_topo_alias ;
 
 
 UPDATE `informations` SET `value` = '2.3.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.1.13' LIMIT 1;
