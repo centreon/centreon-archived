@@ -51,7 +51,10 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 6);	?>
 
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
   <tr>
-	<td colspan="2" ><b>End of Update</b></td>
+	<td colspan="2"><b>End of Update</b></td>
+  </tr>
+  <tr>
+	<td colspan="2">&nbsp;</td>
   </tr>
   <tr>
   	<td colspan="2" style="color:red;">Make sure to start CentStorage : /etc/init.d/centstorage start</td>
