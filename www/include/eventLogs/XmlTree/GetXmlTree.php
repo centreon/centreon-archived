@@ -674,9 +674,9 @@
 						/** ***********************************
 						 * Services
 						 */
+			    		$count = 0;
 						if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
 							$services = $access->getHostServices($pearDBndo, $host_id);
-							$count = 0;
 							foreach ($services as $svc_id => $svc_name)	{
 					           	if (!$count) {
 					           		$buffer->startElement("item");
@@ -707,7 +707,9 @@
 					        	$buffer->endElement();
 							}
 						}
-						$buffer->endElement();
+						if ($count) {
+						    $buffer->endElement();
+						}
 					}
 				}
 				$buffer->endElement();
