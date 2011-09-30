@@ -110,7 +110,7 @@
 					"AND obj.object_id = cmt.object_id " .
 					"AND cmt.expires = 0 ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 		} else {
-			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 as host_name, obj.name2 as service_description " .
 					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj, centreon_acl " .
 					"WHERE obj.name1 IS NOT NULL " .
 					"AND obj.name2 IS NOT NULL " .
@@ -134,17 +134,18 @@
 	} else {
 		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
 				"FROM comments c, hosts h, services s ";
-		if ($is_admin) {
+		if (!$is_admin) {
 			$rq2 .=	", centreon_acl acl ";
 		}
 		$rq2 .=	"WHERE s.description <> '' AND c.host_id = h.host_id AND c.service_id = s.service_id AND c.host_id = s.host_id  " .
 			(isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
 			(isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
 			(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
-		if ($is_admin) {
-			$rq2 .=	" AND h.name = acl.host_name AND s.description = acl.service_description " .
-					"AND c.expires = '0' ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		if (!$is_admin) {
+			$rq2 .=	" AND h.name = acl.host_name AND s.description = acl.service_description ";
 		}
+		$rq2 .= " AND c.expires = '0' ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+
 		$DBRESULT = $pearDBO->query($rq2);
 		$rows = $pearDBO->numberRows();
 		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
