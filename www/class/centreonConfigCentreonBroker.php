@@ -281,9 +281,12 @@ class CentreonConfigCentreonBroker
              * Defaults values
              */
             if (!is_null($field['value']) && $field['value'] === false) {
-                $qf->setDefaults(array($elementName => $field['value']));
-            }
-            if (!is_null($default)) {
+                if ($field['fieldtype'] != 'radio') {
+                    $qf->setDefaults(array($elementName => $field['value']));
+                } else {
+                    $qf->setDefaults(array($elementName . '[' . $field['fieldname'] . ']' => $field['value']));
+                }
+            } elseif (!is_null($default)) {
                 if ($field['fieldtype'] != 'radio') {
                     $qf->setDefaults(array($elementName => $default));
                 } else {
@@ -466,8 +469,9 @@ class CentreonConfigCentreonBroker
         }
         $formsInfos = array();
         while ($row = $res->fetchRow()) {
-            $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $row['config_key'] . ']';  
+            $fieldname = $tag . '[' . $row['config_group_id'] . '][' . $row['config_key'] . ']';
             $formsInfos[$row['config_group_id']]['defaults'][$fieldname] = $row['config_value'];
+            $formsInfos[$row['config_group_id']]['defaults'][$fieldname . '[' . $row['config_key'] . ']'] = $row['config_value']; // Radio button
             if ($row['config_key'] == 'blockId') {
                 $formsInfos[$row['config_group_id']]['blockId'] = $row['config_value'];
             }
@@ -652,6 +656,6 @@ class CentreonConfigCentreonBroker
             return $infos[0];
         }
         return $infos;
-    }    
+    }
 }
 ?>
