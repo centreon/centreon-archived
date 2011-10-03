@@ -28,7 +28,7 @@ function getXhrM(){
             } catch (e) {
                 var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
             }
-	} else { // XMLHttpRequest non supporté par le navigateur
+	} else { // XMLHttpRequest non supportï¿½ par le navigateur
 		alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 		var xhrM = false;
 	}
@@ -37,10 +37,10 @@ function getXhrM(){
 
 function LdapSearch(){
 
-	_ldap_search_filter=escape(document.getElementsByName('ldap_search_filter')[0].value);
-	_ldap_base_dn=escape(document.getElementsByName('ldap_base_dn')[0].value);
-	_ldap_search_timeout=escape(document.getElementsByName('ldap_search_timeout')[0].value);
-	_ldap_search_limit=escape(document.getElementsByName('ldap_search_limit')[0].value);
+	_ldap_search_filter=encodeURIComponent(document.getElementsByName('ldap_search_filter')[0].value);
+	_ldap_base_dn=encodeURIComponent(document.getElementsByName('ldap_base_dn')[0].value);
+	_ldap_search_timeout=encodeURIComponent(document.getElementsByName('ldap_search_timeout')[0].value);
+	_ldap_search_limit=encodeURIComponent(document.getElementsByName('ldap_search_limit')[0].value);
 
 	var xhrM = getXhrM();
 
