@@ -611,6 +611,15 @@
 		 * Remove lock
 		 */
 		$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '0', last_execution_time = '".(time() - $beginTime)."' WHERE id = '$appID'");
+		
+		/*
+		 * Close connection to databases
+		 */
+		$pearDB->disconnect();
+		$pearDBO->disconnect();
+		if ($dbLayer == 'ndo') {
+		    $pearDBndo->disconnect();
+		}
 	} catch (Exception $e) {
 		programExit($e->getMessage());
 	}
