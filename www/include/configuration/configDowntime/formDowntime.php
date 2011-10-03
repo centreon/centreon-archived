@@ -278,7 +278,6 @@
 					$downtime->addRelations($id, $values['hostgroup_relation'], 'hostgrp');
 				}
 			    if (isset($values['svc_relation'])) {
-				    file_put_contents('/tmp/query', "Services \n", FILE_APPEND);
 				    $downtime->addRelations($id, $values['svc_relation'], 'svc');
 				}
 				if (isset($values['svcgroup_relation'])) {
