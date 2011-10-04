@@ -174,16 +174,9 @@
 	unset($tmpOptions);
 
 	$form->setDefaults($gopt);
-	
-	/*
-	 * Required field
-	 */
-	$form->addRule('ldap_user_basedn', _('Please enter a user base dn'), 'required');
-	
 
 	$subC = $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
-
 
     $valid = false;
 	if ($form->validate())	{

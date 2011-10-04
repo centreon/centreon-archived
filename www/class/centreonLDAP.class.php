@@ -227,7 +227,7 @@ class CentreonLDAP {
 	 */
 	public function findUserDn($username)
 	{
-	    if (trim($this->_userSearchInfo['filter']) == '' || trim($this->_userSearchInfo['base_search']) == '') {
+	    if (trim($this->_userSearchInfo['filter']) == '') {
 	        return false;
 	    }
 		$filter = preg_replace('/%s/', $username, $this->_userSearchInfo['filter']);
@@ -247,7 +247,7 @@ class CentreonLDAP {
 	 */
 	public function findGroupDn($group)
 	{
-	    if (trim($this->_groupSearchInfo['filter']) == '' || trim($this->_groupSearchInfo['base_search']) == '') {
+	    if (trim($this->_groupSearchInfo['filter']) == '') {
 	        return false;
 	    }
 		$filter = preg_replace('/%s/', $group, $this->_groupSearchInfo['filter']);
@@ -267,7 +267,7 @@ class CentreonLDAP {
 	 */
 	public function listOfGroups($pattern = '*')
 	{
-	    if (trim($this->_groupSearchInfo['base_search']) == '' || trim($this->_groupSearchInfo['filter']) == '') {
+	    if (trim($this->_groupSearchInfo['filter']) == '') {
 	        return array();
 	    }
 	    $filter = preg_replace('/%s/', $pattern, $this->_groupSearchInfo['filter']);
@@ -293,7 +293,7 @@ class CentreonLDAP {
 	 */
 	public function listOfUsers($pattern = '*')
 	{
-	    if (trim($this->_userSearchInfo['base_search']) == '' || trim($this->_userSearchInfo['filter']) == '') {
+	    if (trim($this->_userSearchInfo['filter']) == '') {
 	        return array();
 	    }
 	    $filter = preg_replace('/%s/', $pattern, $this->_userSearchInfo['filter']);
@@ -349,7 +349,7 @@ class CentreonLDAP {
 	 */
 	public function listGroupsForUser($userdn)
 	{
-	    if (trim($this->_groupSearchInfo['filter']) == '' || trim($this->_groupSearchInfo['base_search']) == '') {
+	    if (trim($this->_groupSearchInfo['filter']) == '') {
 	        return array();
 	    }
 	    $userdn = str_replace('\\', '\\\\', $userdn);
@@ -503,6 +503,12 @@ class CentreonLDAP {
 					break;
 				case 'user_base_search':
 					$user['base_search'] = $row['ari_value'];
+					/*
+					 * Fix for domino
+					 */
+					if (trim($user['base_search']) == '') {
+					    $user['base_search'] = '';
+					}
 					break;
 				case 'alias':
 				    $user['alias'] = $row['ari_value'];
@@ -530,6 +536,12 @@ class CentreonLDAP {
 					break;
 				case 'group_base_search':
 					$group['base_search'] = $row['ari_value'];
+					/*
+					 * Fix for domino
+					 */
+					if (trim($group['base_search']) == '') {
+					    $group['base_search'] = ' ';
+					}
 					break;
 				case 'group_name':
 					$group['group_name'] = $row['ari_value'];
