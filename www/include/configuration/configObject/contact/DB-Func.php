@@ -883,16 +883,21 @@
             $row = $res->fetchRow();
             $contact_id = $row['contact_id'];
             $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
-            $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join(",'", $listGroup) . "')";
-            $res = $pearDB->query($query);
-            /*
-             * Insert the relation between contact and contact group
-             */
-            while ($row = $res->fetchRow()) {
-                $query = "INSERT INTO contactgroup_contact_relation
-            						(contactgroup_cg_id, contact_contact_id)
-            					VALUES (" . $row['cg_id'] . ", " . $contact_id . ")";
-                $pearDB->query($query);
+            if (count($listGroup) > 0) {
+                $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join(",'", $listGroup) . "')";
+                $res = $pearDB->query($query);
+                if (PEAR::isError($res)) {
+                    return false;
+                }
+                /*
+                 * Insert the relation between contact and contact group
+                 */
+                while ($row = $res->fetchRow()) {
+                    $query = "INSERT INTO contactgroup_contact_relation
+                						(contactgroup_cg_id, contact_contact_id)
+                					VALUES (" . $row['cg_id'] . ", " . $contact_id . ")";
+                    $pearDB->query($query);
+                }
             }
 		}
 		return true;
