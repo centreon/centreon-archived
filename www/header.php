@@ -104,8 +104,10 @@
 	/*
 	 * Define Oreon var alias
 	 */
-	$centreon = $_SESSION["centreon"];
-	$oreon = $centreon;
+	if (isset($_SESSION["centreon"])) {
+		$centreon = $_SESSION["centreon"];
+		$oreon = $centreon;
+	}
 	if (!is_object($centreon)) {
 		exit();
 	}
