@@ -299,34 +299,44 @@ class CentreonGraph	{
 			$this->setRRDOption("vertical-label", $this->templateInformations["vertical_label"]);
 		}
 
-		if ($this->general_opt["rrdtool_version"] != "1.0")
+		if ($this->general_opt["rrdtool_version"] != "1.0") {
 			$this->setRRDOption("slope-mode");
+		}
 
 		if ($this->general_opt["rrdtool_version"] == "1.3") {
-	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
-	          $this->setFont("TITLE:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
-	       if (isset($this->general_opt["rrdtool_unit_font"]) && isset($this->general_opt["rrdtool_unit_fontsize"]))
-	          $this->setFont("UNIT:", $this->general_opt["rrdtool_unit_fontsize"].":".$this->general_opt["rrdtool_unit_font"]);
-	       if (isset($this->general_opt["rrdtool_axis_font"]) && isset($this->general_opt["rrdtool_axis_fontsize"]))
-	          $this->setFont("AXIS:", $this->general_opt["rrdtool_axis_fontsize"].":".$this->general_opt["rrdtool_axis_font"]);
-	       if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"]))
-	          $this->setFont("WATERMARK:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
-	       if (isset($this->general_opt["rrdtool_legend_title"]) && isset($this->general_opt["rrdtool_legend_fontsize"]))
-	          $this->setFont("LEGEND:", $this->general_opt["rrdtool_legend_fontsize"].":".$this->general_opt["rrdtool_legend_title"]);
+	       	if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"])) {
+	       		$this->setFont("TITLE:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
+	       	}
+	       	if (isset($this->general_opt["rrdtool_unit_font"]) && isset($this->general_opt["rrdtool_unit_fontsize"])) {
+	          	$this->setFont("UNIT:", $this->general_opt["rrdtool_unit_fontsize"].":".$this->general_opt["rrdtool_unit_font"]);
+	       	}
+	       	if (isset($this->general_opt["rrdtool_axis_font"]) && isset($this->general_opt["rrdtool_axis_fontsize"])) {
+	          	$this->setFont("AXIS:", $this->general_opt["rrdtool_axis_fontsize"].":".$this->general_opt["rrdtool_axis_font"]);
+	       	}
+	       	if (isset($this->general_opt["rrdtool_title_font"]) && isset($this->general_opt["rrdtool_title_fontsize"])) {
+	          	$this->setFont("WATERMARK:", $this->general_opt["rrdtool_title_fontsize"].":".$this->general_opt["rrdtool_title_font"]);
+	       	}
+	       	if (isset($this->general_opt["rrdtool_legend_title"]) && isset($this->general_opt["rrdtool_legend_fontsize"])) {
+	          	$this->setFont("LEGEND:", $this->general_opt["rrdtool_legend_fontsize"].":".$this->general_opt["rrdtool_legend_title"]);
+	       	}
 	    }
 
-		if (isset($this->templateInformations["base"]) && $this->templateInformations["base"])
+		if (isset($this->templateInformations["base"]) && $this->templateInformations["base"]) {
 			$this->setRRDOption("base", $this->templateInformations["base"]);
-		if (isset($this->templateInformations["width"]) && $this->templateInformations["width"])
+		}
+		if (isset($this->templateInformations["width"]) && $this->templateInformations["width"]) {
 			$this->setRRDOption("width", $this->templateInformations["width"]);
-		if (isset($this->templateInformations["height"]) && $this->templateInformations["height"])
+		}
+		if (isset($this->templateInformations["height"]) && $this->templateInformations["height"]) {
 			$this->setRRDOption("height", $this->templateInformations["height"]);
+		}
 
 		/*
 		 * Init Graph Template Value
 		 */
-		if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"])
+		if (isset($this->templateInformations["bg_grid_color"]) && $this->templateInformations["bg_grid_color"]) {
 			$this->setColor("CANVAS", $this->templateInformations["bg_grid_color"]);
+		}
 
 		if (isset($this->templateInformations["bg_color"]) && $this->templateInformations["bg_color"]) {
 			$this->setColor("BACK", $this->templateInformations["bg_color"]);
@@ -367,7 +377,7 @@ class CentreonGraph	{
 		}
 
 		$this->gprintScaleOption = "%s";
-		if (isset($this->templateInformations["scaled"]) && $this->templateInformations["scaled"] == "0"){
+		if (isset($this->templateInformations["scaled"]) && $this->templateInformations["scaled"] == "0") {
 			# Disable y-axis scaling
 			$this->setRRDOption("units-exponent", 0);
 			# Suppress Scaling in Text Output
@@ -1044,8 +1054,9 @@ class CentreonGraph	{
 	 */
 	public function setRRDOption($name, $value = null)
 	{
-		if (strpos($value, " ")!==false)
+		if (strpos($value, " ")!==false) {
 			$value = "'".$value."'";
+		}
 		$this->_RRDoptions[$name] = $value;
 	}
 
@@ -1157,8 +1168,9 @@ class CentreonGraph	{
 
 		foreach ($this->_RRDoptions as $key => $value) {
 			$commandLine .= "--".$key;
-			if (isset($value))
+			if (isset($value)) {
 				$commandLine .= "=".$value;
+			}
 			$commandLine .= " ";
 		}
 		foreach ($this->_colors as $key => $value) {
