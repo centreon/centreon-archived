@@ -56,7 +56,7 @@ class CentreonAuth {
 	 */
 	public  $passwdOk;
 	private $authType;
-	
+
 	private $ldap_auto_import = false;
 
 	/*
@@ -83,7 +83,7 @@ class CentreonAuth {
     	$this->autologin = $autologin;
     	$this->cryptEngine = $encryptType;
     	$this->debug = $this->getLogFlag();
-    	
+
     	$queryLdapAutoImport = "SELECT `value` FROM options WHERE `key` = 'ldap_auto_import'";
     	$res = $pearDB->query($queryLdapAutoImport);
     	if (false === PEAR::isError($res) && $res->numRows() == 1) {
@@ -137,18 +137,18 @@ class CentreonAuth {
 			if ($this->passwdOk == -1) {
 				if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
 					$this->passwdOk = 1;
-					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1");
+					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
 				} else if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
 					$this->passwdOk = 1;
-					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1");
+					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
 				} else {
 					$this->passwdOk = 0;
 				}
 			} elseif ($this->passwdOk == 1) {
 			    if (!isset($this->userInfos["contact_passwd"])) {
-			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1");
+			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
 			    } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
-			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' LIMIT 1");
+			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
 			    }
 			}
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
@@ -171,9 +171,9 @@ class CentreonAuth {
 
     private function checkUser($username, $password) {
     	if ($this->autologin == 0) {
-	    	$DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
+	    	$DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
     	} else {
-    		$DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
+    		$DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
     	}
     	if ($DBRESULT->numRows()) {
     		$this->userInfos = $DBRESULT->fetchRow();
@@ -208,7 +208,7 @@ class CentreonAuth {
     	    /*
     	     * Reset userInfos with imported informations
     	     */
-    	    $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' LIMIT 1");
+    	    $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '".htmlentities($username, ENT_QUOTES, "UTF-8")."' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
     	    if ($DBRESULT->numRows()) {
     	        $this->userInfos = $DBRESULT->fetchRow();
     	    }
