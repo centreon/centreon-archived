@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($centreon))
+	if (!isset($centreon)) {
 		exit();
+	}
 
 	print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
@@ -131,14 +132,6 @@
 
 	?>
 <script type='text/javascript'>
-	function favoris(autologin) {
-		if (navigator.appName != 'Microsoft Internet Explorer'){
-			window.sidebar.addPanel("Centreon - IT & Network Monitoring", autologin, "");
-		} else {
-			window.external.AddFavorite(autologin, "Centreon - IT & Network Monitoring");
-		}
-	}
-
 	<?php
 		require_once ("./include/common/javascript/autologout.php");
 	?>

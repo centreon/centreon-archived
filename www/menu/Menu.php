@@ -174,8 +174,7 @@
 	 */
 	if (isset($oreon->optGen["display_autologin_shortcut"])) {
 		$userCrypted = $oreon->user->userCrypted;
-		$passwdCrypted = $oreon->user->get_passwd();
-		$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=$passwdCrypted";
+		$autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userCrypted&password=".$centreon->user->passwd;
 		if ($oreon->optGen["enable_autologin"] && $oreon->optGen["display_autologin_shortcut"]) {
 			$tpl->assign("autoLoginEnable", 1);
 		} else {
@@ -193,7 +192,7 @@
 		$prefix .= "?";
 
 		$tpl->assign("autoLoginUrl", $prefix.$autoLoginUrl);
-		$tpl->assign("CentreonAutologin", _("Centreon Autologin URL"));
+		$tpl->assign("CentreonAutologin", _("Right Click here to add an autologin link directly to your bookmarks"));
 	}
 
 	/*
