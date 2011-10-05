@@ -22,5 +22,11 @@ UPDATE `centreon`.`cb_type_field_relation` SET `order_display` = '4' WHERE `cb_t
 UPDATE `centreon`.`cb_type_field_relation` SET `order_display` = '5' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =9;
 UPDATE `centreon`.`cb_type_field_relation` SET `order_display` = '6' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =10;
 
+-- 
+-- Insert new field for Centreon Broker correlation
+--
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
+(30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);
+INSERT INTO  `centreon`.`cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (22, 30, 1, 2);
 
 UPDATE `informations` SET `value` = '2.3.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.0-RC3' LIMIT 1;

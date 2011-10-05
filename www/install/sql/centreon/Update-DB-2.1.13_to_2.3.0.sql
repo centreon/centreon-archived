@@ -920,7 +920,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (26, 'compression_level', 'Compression level', 'Ranges from 1 (no compression) to 9 (best compression). -1 is the default', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover Name', 'Name of the input or output object that will act as failover.', 'text', NULL),
-(29, 'file', 'Correlation File', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL);
+(29, 'file', 'Correlation File', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL),
+(30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -1065,7 +1066,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (20, 26, 0, 102),
 (20, 27, 0, 103),
 (21, 28, 0, 2),
-(22, 29, 1, 1);
+(22, 29, 1, 1),
+(22, 30, 1, 2);
 
 
 INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LONGSERVICEOUTPUT$');
