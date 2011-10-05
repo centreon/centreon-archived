@@ -817,7 +817,7 @@ UPDATE `cb_type_field_relation` SET `order_display` = '6' WHERE `cb_type_field_r
 INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (22, 30, 1, 2);
 
-ALTER TABLE `giv_graphs_template` ADD `unit_exponent` tinyint(6) NULL default '1' AFTER scaled ;
+-- ALTER TABLE `giv_graphs_template` ADD `unit_exponent` tinyint(6) NULL AFTER scaled ;
 
 UPDATE `informations` SET `value` = '2.3.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.2.2' LIMIT 1;
  
