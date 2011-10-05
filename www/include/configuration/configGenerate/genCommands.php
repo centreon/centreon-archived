@@ -55,15 +55,17 @@
 	$str2 = NULL;
 	while ($command = $DBRESULT->fetchRow())	{
 
-		$slashesOri = array('#BR#','#T#','#R#','#S#','#BS#','#P#');
-		$slashesRep = array("\\n" ,"\\t","\\r","/"  , "\\" ,"|"  );
-		
-		$command["command_line"] = trim(preg_replace($slashesOri,$slashesRep,$command["command_line"]));
-		
+		$command["command_line"] = str_replace('#BR#', "\\n", $command["command_line"]);
+		$command["command_line"] = str_replace('#T#', "\\t", $command["command_line"]);
+		$command["command_line"] = str_replace('#R#', "\\r", $command["command_line"]);
+		$command["command_line"] = str_replace('#S#', "/", $command["command_line"]);
+		$command["command_line"] = str_replace('#BS#', "\\", $command["command_line"]);
+		$command["command_line"] = str_replace('#P#', "|", $command["command_line"]);
+
 		if ($command["command_comment"] != NULL) {
 			$command["command_comment"] = trim(preg_replace($slashesOri,$slashesRep,$command["command_comment"]));
 		}
-		
+
 		if ($command["command_type"] == 1 || $command["command_type"] == 3)	{
 			/*
 			 * Notification Command case -> command_type == 1
@@ -74,7 +76,7 @@
 					$str1 .= "### ". $command["command_comment"] ." ###\n";
 				}
 			}
-			
+
 			$str1 .= "define command{\n";
 			if ($command["command_name"]) {
 				$str1 .= print_line("command_name", $command["command_name"]);
@@ -102,14 +104,14 @@
 			/*
 			 * Check Command case -> command_type == 2
 			 */
-			
+
 			if ($ret["comment"]) {
 				$str1 .= "; '" . $command["command_name"] . "' command definition " . $i1 . "\n";
 				if ($command["command_comment"] != "") {
 					$str1 .= "### ". $command["command_comment"] ." ###\n";
 				}
 			}
-			
+
 			$str2 .= "define command{\n";
 			if ($command["command_name"]) {
 				$str2 .= print_line("command_name", $command["command_name"]);
