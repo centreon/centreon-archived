@@ -179,10 +179,12 @@ ul.x-tab-strip li.x-tab-strip-active {
 
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close {
 	background-image:url(../images/default/tabs/tab-close.gif);
+	z-index: 10;
 }
 
 .x-tab-strip .x-tab-strip-closable a.x-tab-strip-close:hover{
 	background-image:url(../images/default/tabs/tab-close.gif);
+	z-index: 10;
 }
 
 .x-tab-panel-body {
