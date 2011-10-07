@@ -107,7 +107,11 @@ $xml->endElement();
  * Retrieve info
  */
 if ($objectId) {
-    $query = "SELECT author_name, entry_time, comment_data, sticky, persistent_comment
+    $query = "SELECT author_name,
+    				 UNIX_TIMESTAMP(entry_time) as entry_time,
+    				 comment_data,
+    				 is_sticky as sticky,
+    				 persistent_comment
     		  FROM ".$prefix."acknowledgements
     		  WHERE object_id = " . CentreonDB::escape($objectId) . "
     		  ORDER BY entry_time DESC
@@ -116,6 +120,7 @@ if ($objectId) {
 $res = $dbb->query($query);
 $rowClass = "list_one";
 while ($row = $res->fetchRow()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('ack');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author_name']);

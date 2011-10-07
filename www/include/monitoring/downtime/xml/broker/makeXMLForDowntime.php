@@ -112,6 +112,7 @@ if (!$service_id) {
 $res = $dbb->query($query);
 $rowClass = "list_one";
 while ($row = $res->fetchRow()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);

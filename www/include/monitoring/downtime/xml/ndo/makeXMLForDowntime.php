@@ -107,7 +107,12 @@ $xml->endElement();
  * Retrieve info
  */
 if ($objectId) {
-    $query = "SELECT author_name, scheduled_start_time, scheduled_end_time, comment_data, duration, is_fixed
+    $query = "SELECT author_name,
+    				 UNIX_TIMESTAMP(scheduled_start_time) as start_time,
+    				 UNIX_TIMESTAMP(scheduled_end_time) as end_time,
+    				 comment_data,
+    				 duration,
+    				 is_fixed
     		  FROM ".$prefix."downtimehistory
     		  WHERE object_id = " . CentreonDB::escape($objectId) . "
     		  AND was_cancelled = 0
@@ -117,11 +122,12 @@ if ($objectId) {
 $res = $dbb->query($query);
 $rowClass = "list_one";
 while ($row = $res->fetchRow()) {
+    $row['comment_data'] = strip_tags($row['comment_data']);
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author_name']);
-    $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['scheduled_start_time']));
-    $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['scheduled_end_time']));
+    $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['start_time']));
+    $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['end_time']));
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
     $xml->writeElement('fixed', $row['is_fixed'] ? _('Yes') : _('No'));
