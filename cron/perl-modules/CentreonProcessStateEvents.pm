@@ -70,7 +70,7 @@ sub parseServiceLog {
 	my $self = shift;
 	# parameters:
     my ($start ,$end) = (shift,shift);
-    my %serviceStates = ("OK" => 0, "WARNING" => 1, "CRITICAL" => 2, "UNKNOWN" => 3);
+    my %serviceStates = ("OK" => 0, "WARNING" => 1, "CRITICAL" => 2, "UNKNOWN" => 3, "PENDING" => 4);
 	my $service = $self->{"service"};
 	my $nagiosLog = $self->{"nagiosLog"};
 	my $events = $self->{"serviceEvents"};
@@ -126,7 +126,7 @@ sub parseHostLog {
 	my $self = shift;
 	# parameters:
     my ($start ,$end) = (shift,shift);
-    my %hostStates = ("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2, "PENDING" => 4);
+    my %hostStates = ("UP" => 0, "DOWN" => 1, "UNREACHABLE" => 2, "UNKNOWN" => 3, "PENDING" => 4);
     my $host = $self->{"host"};
 	my $nagiosLog = $self->{"nagiosLog"};
 	my $events = $self->{"hostEvents"};
