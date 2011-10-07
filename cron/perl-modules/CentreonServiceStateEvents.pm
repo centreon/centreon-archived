@@ -70,7 +70,8 @@ sub getStateEventDurations {
     my $query = "SELECT `host_id`, `service_id`, `state`,  `start_time`, `end_time`, `in_downtime`".
     			" FROM `servicestateevents`".
     			" WHERE `start_time` < ".$end.
-    				" AND `end_time` > ".$start;
+    				" AND `end_time` > ".$start.
+    				" AND `state` < 4"; # NOT HANDLING PENDING STATE
     my $sth = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
     	if ($row->{"start_time"} < $start) {
