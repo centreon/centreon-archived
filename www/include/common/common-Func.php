@@ -902,41 +902,27 @@
 
 	function getMyServiceGroupActivateServices($sg_id = NULL)	{
 		global $pearDB;
-		if (!$sg_id)
+
+		if (!$sg_id) {
 			return;
-		/*
-		 * ServiceGroups by host
-		 */
-		$svs = array();
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
-									"FROM servicegroup_relation, service, host " .
-									"WHERE servicegroup_sg_id = '".$sg_id."' " .
-									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-									"AND service.service_id = servicegroup_relation.service_service_id " .
-									"AND servicegroup_relation.host_host_id = host.host_id " .
-									"AND servicegroup_relation.host_host_id IS NOT NULL " .
-									"AND service.service_activate = '1'");
-		while ($elem = $DBRESULT->fetchRow())	{
-			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $elem["host_name"];
 		}
 
-		/*
-		 * ServiceGroups by hostGroups
-		 */
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
-									"FROM servicegroup_relation, service, hostgroup " .
-									"WHERE servicegroup_sg_id = '".$sg_id."' " .
-									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-									"AND service.service_id = servicegroup_relation.service_service_id " .
-									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
-									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
-									"AND service.service_activate = '1'");
-		while ($elem = $DBRESULT->fetchRow())	{
-			$hosts = getMyHostGroupHosts($elem["hostgroup_hg_id"]);
-			foreach ($hosts as $key => $value)
-				$svs[$key."_".$elem["service_id"]] = db2str($elem["service_description"]) . ":::" . $value;
-		}
-		$DBRESULT->free();
+		$svs = array();
+        $res = $pearDB->query("(SELECT service_description, service_id, host_host_id, host_name " .
+							  "FROM servicegroup_relation, service, host " .
+							  "WHERE servicegroup_sg_id = '".$sg_id."' " .
+                              "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
+                              "AND service.service_id = servicegroup_relation.service_service_id " .
+                              "AND servicegroup_relation.host_host_id = host.host_id " .
+                              "AND servicegroup_relation.host_host_id IS NOT NULL " .
+                              "AND service.service_activate = '1')" .
+                              " UNION " .
+                              "(" .
+							  "SELECT service_description, service_id, h.host_id as host_host_id, host_name FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h WHERE servicegroup_sg_id = '" . $sg_id . "' AND service.service_id = servicegroup_relation.service_service_id AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id AND servicegroup_relation.hostgroup_hg_id IS NOT NULL AND service.service_activate = '1' AND hgr.hostgroup_hg_id = hostgroup.hg_id AND hgr.host_host_id = h.host_id"  .
+                              ") ORDER BY host_name, service_description");
+        while ($row = $res->fetchRow()) {
+            $svs[$row['host_host_id'] . '_' . $row['service_id']] = $row['service_description'] . ':::' . $row['host_name'];
+        }
 		return $svs;
 	}
 
