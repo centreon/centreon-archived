@@ -2,7 +2,6 @@
 <script type="text/javascript" src="./include/common/javascript/extjs/ext-prototype-adapter.js"></script>
 <script type="text/javascript" src="./include/common/javascript/extjs/ext-all.js"></script>
 <script type="text/javascript" src="./include/common/javascript/extjs/ext.ux.mask.js"></script>
-<script type="text/javascript" src="./include/common/javascript/extjs/ext.ux.TabCloseMenu.js"></script>
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/extjs/resources/css/ext-all.css" />
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/extjs/resources/css/centreon.css" />  
 {literal}
@@ -16,8 +15,7 @@ Ext.onReady(function(){
 	tabsPeriods = new Ext.TabPanel({
 		renderTo: 'tabs_periods',
 		width:600,
-        height:300,
-        plugins: new Ext.ux.TabCloseMenu()
+        height:300
 	});
 
 	if ($$('input[name="dt_id"]').length != 0) {

@@ -5830,7 +5830,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   function pollDoScroll() {
     try { document.documentElement.doScroll('left'); }
     catch(e) {
-      timer = pollDoScroll.defer();
+      timer = pollDoScroll.defer(0.1);
       return;
     }
     fireContentLoadedEvent();
@@ -5841,7 +5841,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   } else {
     document.observe('readystatechange', checkReadyState);
     if (window == top)
-      timer = pollDoScroll.defer();
+      timer = pollDoScroll.defer(0.1);
   }
 
   Event.observe(window, 'load', fireContentLoadedEvent);
