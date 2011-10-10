@@ -248,7 +248,7 @@
 						}
 					}*/
 					break;
-				case 'srv':
+				case 'svc':
 					$hostClass = new CentreonHost($pearDB);
 					$hid = $hostClass->getHostId($period['host_name']);
 					if ($gmt->used()) {
