@@ -223,6 +223,7 @@
 					</xsl:element>
 					<xsl:element name="span">
 							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+							<xsl:text> </xsl:text>
 					</xsl:element>
 				</xsl:element>
 			</xsl:if>
