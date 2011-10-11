@@ -1,4 +1,6 @@
 
+ALTER TABLE `cfg_nagios` DROP `broker_module`;
+
 DELETE FROM topology WHERE topology_url LIKE './include/monitoring/mysql_log/viewLog.php' AND topology_name LIKE 'All Logs' AND topology_show = '0';
 DELETE FROM topology WHERE topology_url LIKE './include/monitoring/mysql_log/viewErrors.php' AND topology_name LIKE 'Warnings' AND topology_show = '0';
 DELETE FROM topology WHERE topology_page = '20313' OR topology_parent = '20313';

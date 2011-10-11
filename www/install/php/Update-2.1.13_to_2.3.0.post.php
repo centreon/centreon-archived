@@ -139,6 +139,8 @@ if (isset($pearDB)) {
         $query2 = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$rows['cfg_nagios_id']."', '".$rows['broker_module']."')";
         $pearDB->query($query2);
     }
+
+    $pearDB->query("ALTER TABLE `cfg_nagios` DROP `broker_module`");
 }
 
 /**

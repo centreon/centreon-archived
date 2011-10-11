@@ -1,3 +1,6 @@
+
+ALTER TABLE `cfg_nagios` DROP `broker_module`;
+
 alter table contact add contact_enable_notifications enum('0','1') default '0' after contact_oreon;
 alter table contact add contact_template_id int(11) default null after contact_enable_notifications;
 
