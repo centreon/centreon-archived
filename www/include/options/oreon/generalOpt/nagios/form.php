@@ -66,6 +66,11 @@
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("ndo" => "NDOutils", "broker" => "Centreon Broker"));
 
+	/**
+	 * Correlation engine
+	 */
+	$form->addElement('text', 'broker_correlator_script', _("Start script for Correlator Engine"), $attrsText);
+
 	/*
 	 * Tactical Overview form
 	 */
@@ -170,6 +175,7 @@
 	$tpl->assign('o', $o);
 	$tpl->assign("genOpt_nagios_version", _("Monitoring Engine"));
 	$tpl->assign("genOpt_dbLayer", _("Monitoring database layer"));
+	$tpl->assign("genOpt_Correlation_script", _("Correlation Engine"));
 	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 	$tpl->assign("tacticalOverviewOptions", _("Tactical Overview"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));

@@ -97,7 +97,21 @@ try {
     }
 
     foreach ($tab_server as $host) {
-        if ($ret["restart_mode"] == 1) {
+        /*
+         * Get broker init script
+         */
+        $BRESULTN = $pearDB->query("SELECT * FROM options WHERE `key` LIKE 'broker_correlator_script'");
+        $data = $DBRESULTN->fetchRow();
+        if (isset($data['value'])) {
+          	/*
+             * Restart
+             */
+            shell_exec("sudo " . $data['value'] . " restart");
+        }
+        $DBRESULTN->free();
+        free($data);
+
+    	if ($ret["restart_mode"] == 1) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 $msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
             } else {

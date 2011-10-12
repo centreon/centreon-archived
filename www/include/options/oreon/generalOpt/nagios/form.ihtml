@@ -9,6 +9,10 @@
 		<tr class="list_one"><td class="FormRowField">{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$genOpt_dbLayer}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.broker.label}</td><td class="FormRowValue">{$form.broker.html}</td></tr>
+		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_Correlation_script}</td></tr>		
+		<tr class="list_one"><td class="FormRowField">{$form.broker_correlator_script.label}</td><td class="FormRowValue">{$form.broker_correlator_script.html}</td></tr>
+		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>		
 		<tr class="list_one"><td class="FormRowField">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$tacticalOverviewOptions}</td></tr>
