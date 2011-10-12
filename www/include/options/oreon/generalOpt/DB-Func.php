@@ -114,6 +114,11 @@
 		    $oreon->broker = new CentreonBroker($pearDB);
             $pearDB->query("UPDATE acl_resources SET changed = 1");
 		}
+		
+		/*
+		 * Correlation engine
+		 */
+		updateOption($pearDB, 'broker_correlator_script', $ret['broker_correlator_script']);
 
 		/*
 		 * Tactical Overview part

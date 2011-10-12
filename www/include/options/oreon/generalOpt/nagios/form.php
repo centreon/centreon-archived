@@ -66,7 +66,7 @@
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("ndo" => "NDOutils", "broker" => "Centreon Broker"));
 
-	/**
+	/*
 	 * Correlation engine
 	 */
 	$form->addElement('text', 'broker_correlator_script', _("Start script for Correlator Engine"), $attrsText);

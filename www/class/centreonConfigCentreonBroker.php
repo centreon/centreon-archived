@@ -490,6 +490,24 @@ class CentreonConfigCentreonBroker
     }
     
     /**
+     * Get the correlation file
+     * 
+     * @return mixed false in error or does not set, or string the path file
+     */
+    public function getCorrelationFile()
+    {
+        $query = "SELECT config_value
+        	FROM cfg_centreonbroker_info
+        	WHERE config_key = 'file' AND config_group = 'correlation'";
+        $res = $this->db->query($query);
+        if (PEAR::isError($res) || $res->numRows() == 0) {
+            return false;
+        }
+        $row = $res->fetchRow();
+        return $row['config_value'];
+    }
+    
+    /**
      * Sort the fields by order display
      * 
      * @param array $field1 The first field to sort

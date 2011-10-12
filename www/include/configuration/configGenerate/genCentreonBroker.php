@@ -39,8 +39,6 @@
 		exit();
 
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
-	require_once $centreon_path . "/www/class/centreonConfigCentreonBroker.php";
-	require_once $centreon_path . '/www/include/configuration/configGenerate/genCentreonBrokerCorrelation.php';
 
 	$dir_conf = $centreonBrokerPath . '/' . $tab['id'];
 
@@ -106,10 +104,10 @@
         	                if (trim($value) != '' && $key != 'blockId') {
         	                    $fileXml->writeElement($key, $value);
         	                }
-            	            if (CentreonConfigCentreonBroker::CORRELATION_STRING == $group . '_' . $key) {
+            	            /*if (CentreonConfigCentreonBroker::CORRELATION_STRING == $group . '_' . $key) {
             	                $filenameCorrelation = $value;
             	                generateCentreonBrokerCorrelation($cbObj, $filenameCorrelation, $pearDB);
-            	            }
+            	            }*/
         	            }
         	            $fileXml->endElement();
         	        }

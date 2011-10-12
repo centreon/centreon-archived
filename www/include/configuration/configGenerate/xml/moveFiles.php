@@ -57,6 +57,7 @@ try {
     require_once $centreon_path . "www/class/centreonSession.class.php";
     require_once $centreon_path . "www/class/centreon.class.php";
     require_once $centreon_path . "www/class/centreonXML.class.php";
+    require_once $centreon_path . "/www/class/centreonConfigCentreonBroker.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -86,6 +87,18 @@ try {
         }
     }
     $msg_copy = array();
+    
+    /*
+     * Copy correlation file
+     */
+    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
+    $correlationPath = $brokerObj->getCorrelationFile();
+    $localId = getLocalhostId();
+    if (false !== $correlationPath || false !== $localId) {
+        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
+        @copy($tmpFilename, $correlationPath);
+    }
+    
 
     $tab_server = array();
     $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");

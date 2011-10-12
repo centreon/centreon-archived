@@ -699,4 +699,21 @@ Modified for Oreon by Christophe Coraboeuf
 	    }
 	    return null;
 	}
+	
+	/**
+	 * Return the local poller
+	 * 
+	 * @return mixed false if error, int the poller id
+	 */
+	function getLocalhostId()
+	{
+	    global $pearDB;
+	    $query = "SELECT id FROM nagios_server WHERE localhost = '1'";
+	    $res = $pearDB->query($query);
+	    if (PEAR::isError($res) || $res->numRows() == 0) {
+	        return false;
+	    }
+	    $row = $res->fetchRow();
+	    return $row['id'];
+	}
 ?>

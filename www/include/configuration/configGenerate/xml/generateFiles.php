@@ -136,6 +136,8 @@ require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $centreon_path . "www/class/centreonSession.class.php";
 require_once $centreon_path . "www/class/centreon.class.php";
 require_once $centreon_path . "www/class/centreonXML.class.php";
+require_once $centreon_path . "/www/class/centreonConfigCentreonBroker.php";
+require_once $centreon_path . '/www/include/configuration/configGenerate/genCentreonBrokerCorrelation.php';
 
 session_start();
 if ($_POST['sid'] != session_id()) {
@@ -223,6 +225,18 @@ try {
             unset($generatedS);
         }
     }
+    /*
+     * Generate correlation file
+     */
+    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
+    $correlationPath = $brokerObj->getCorrelationFile();
+    $localId = getLocalhostId();
+    if (false !== $correlationPath || false !== $localId) {
+        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
+        generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $pearDB);
+    }
+    
+    
     $statusMsg = $okMsg;
     $statusCode = 0;
     if ($debug) {
