@@ -208,7 +208,7 @@
 		/*
 		 * Add a service information
 		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$subA = $form->addElement('button', 'submitA', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
