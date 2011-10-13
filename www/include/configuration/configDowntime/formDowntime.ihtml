@@ -9,6 +9,7 @@
 var tabsPeriods;
 var periods = 0;
 var listPeriod = 'undefined';
+var msg_err_norelation = '{/literal}{$msg_err_norelation}{literal}';
 
 Ext.onReady(function(){
 {/literal}{if $o != 'w'}{literal}
@@ -100,8 +101,25 @@ function getServices(host_id) {
 		}
 	};
 }
+
+function validForm() {
+	$('msg_err').hide();
+	$('msg_err').innerHTML = '';
+	nbRel = $$('select[name="host_relation[]"] > option:selected').length;
+	nbRel = nbRel + $$('select[name="hostgroup_relation[]"] > option:selected').length;
+	nbRel = nbRel + $$('select[name="svc_relation[]"] > option:selected').length;
+	nbRel = nbRel + $$('select[name="svcgroup_relation[]"] > option:selected').length;
+	if (nbRel == 0) {
+		$('msg_err').innerHTML = msg_err_norelation;
+		$('msg_err').show();
+		return false;
+	}
+	$('form_dt').submit();
+	return true;
+}
 </script>
 {/literal}
+<div id="msg_err" style="color: red; text-align: center; font-weight: bold; margin: 4px; {if !$msg_err }display: none;{/if}">{$msg_err}</div>
 <form {$form.attributes}>
 <div>
 	<ul id="mainnav">

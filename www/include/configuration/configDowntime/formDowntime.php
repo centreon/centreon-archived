@@ -61,7 +61,7 @@
 	/*
 	 * Init QuickFrom
 	 */
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	$form = new HTML_QuickForm('form_dt', 'post', "?p=".$p);
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add a downtime"));
 	} elseif ($o == "c") {
@@ -201,7 +201,7 @@
 		/*
 		 * Modify a service information
 		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
+		$subC = $form->addElement('button', 'submitC', _("Save"), array("onClick" => "validForm();"));
 		$res = $form->addElement('button', 'reset', _("Reset"), array("onClick" => "history.go(0);"));
 	    $form->setDefaults($default_dt);
 	} elseif ($o == "a") {
@@ -236,6 +236,13 @@
 				$valid = false;
 				$tpl->assign('period_err', _("The end time must be greater than the start time."));
 			}
+		}
+		if ((!isset($values['host_relation']) || count($values['host_relation']) == 0)
+		    && (!isset($values['hostgroup_relation']) || count($values['hostgroup_relation']) == 0)
+		    && (!isset($values['svc_relation']) || count($values['svc_relation']) == 0)
+		    && (!isset($values['svcgroup_relation']) || count($values['svcgroup_relation']) == 0)) {
+		    $valid = false;
+		    $tpl->assign('msg_err', _('No relation set for this downtime'));
 		}
 		if ($valid) {
 			if ($form->getSubmitValue("submitA")) {
@@ -293,7 +300,12 @@
 		if ($valid) {
 			require_once($path."listDowntime.php");
 		}
-	} else {
+		
+		if (!$valid) {
+		    $form->setDefaults($values);
+		}
+	} 
+	if (!$valid) {
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -318,6 +330,8 @@
 			));
 		    $tpl->assign('periods_tab', $downtime->getPeriods($id));
 		}
+		
+		$tpl->assign('msg_err_norelation', _('No relation set for this downtime'));
 
 		$form->accept($renderer);
 		$tpl->assign('o', $o);
