@@ -245,7 +245,7 @@
 		    $tpl->assign('msg_err', _('No relation set for this downtime'));
 		}
 		if ($valid) {
-			if ($form->getSubmitValue("submitA")) {
+			if ($values['o'] == 'a') {
 				$activate = $values['downtime_activate']['downtime_activate'];
 				$id = $downtime->add($values['downtime_name'], $values['downtime_description'], $activate);
 				if (false !== $id) {
@@ -269,7 +269,7 @@
 					$form->freeze();
 					$valid = true;
 				}
-			} elseif ($form->getSubmitValue("submitC")) {
+			} elseif ($values['o'] == 'c') {
 				$id = $values['dt_id'];
 				$activate = $values['downtime_activate']['downtime_activate'];
 				$downtime->modify($id, $values['downtime_name'], $values['downtime_description'], $activate);
