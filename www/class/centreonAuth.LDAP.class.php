@@ -3,47 +3,47 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
 
 require_once $centreon_path . 'www/class/centreonLDAP.class.php';
- 
+
 
 /**
  * Class for Ldap authentication
  */
 class CentreonAuthLDAP {
-	
+
 	var $pearDB;
 	var $ldap;
 	var $CentreonLog;
@@ -51,11 +51,11 @@ class CentreonAuthLDAP {
 	var $typePassword;
 	var $debug;
 	var $firstCheck = true;
-	
-	
+
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param CentreonDB $pearDB Connection to centreon database
 	 * @param CentreonLog $CentreonLog Log event
 	 * @param string $login The username
@@ -63,31 +63,31 @@ class CentreonAuthLDAP {
 	 * @param string $contactInfos
 	 */
 	function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos) {
-		
+
 		$this->pearDB = $pearDB;
-		
+
 		$this->CentreonLog = $CentreonLog;
-		
+
 		$this->ldap = new CentreonLDAP($pearDB, $CentreonLog);
 		$this->ldap->connect();
 		$this->ds = $this->ldap->getDs();
-		
+
 		/*
 		 * Set contact Informations
 		 */
 		$this->contactInfos = $contactInfos;
-		
+
 		/*
 		 * Keep password
 		 */
 		$this->typePassword = $password;
-		
+
 		$this->debug = $this->getLogFlag();
 	}
-	
+
 	/**
 	 * Is loging enable ?
-	 * 
+	 *
 	 * @return int 1 enable 0 disable
 	 */
 	private function getLogFlag() {
@@ -99,13 +99,13 @@ class CentreonAuthLDAP {
 		} else
 			return 0;
 	}
-	
+
 	/**
 	 * Check the user pass
-	 * 
+	 *
 	 */
 	function checkPassword() {
-	    
+
 	    /*
 	     * Check if it's a new user
 	     */
@@ -116,7 +116,7 @@ class CentreonAuthLDAP {
 	    } else {
 	        $this->contactInfos['contact_ldap_dn'] = html_entity_decode($this->contactInfos['contact_ldap_dn'], ENT_QUOTES, 'UTF-8');
 	    }
-		
+
 		/*
 		 * LDAP BIND
 		 */
@@ -133,7 +133,7 @@ class CentreonAuthLDAP {
 		 * 51 : Server is busy => Fallback
 		 * 52 : Server is unavailable => Fallback
 		 * 81 : Can't contact LDAP server (php5) => Fallback
-		 */	
+		 */
 		if (isset($this->ds) && $this->ds) {
 			switch (ldap_errno($this->ds)) {
 				case 0:
@@ -170,7 +170,7 @@ class CentreonAuthLDAP {
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : LDAP don't like you, sorry");
 					if ($this->firstCheck && $this->updateUserDn()) {
 						$this->firstCheck = false;
-						return $this->checkPassword();				
+						return $this->checkPassword();
 					}
 				   	return 0;
 				   	break;
@@ -181,25 +181,25 @@ class CentreonAuthLDAP {
 			return 0; /* 2 ?? */
 		}
 	}
-	
+
 	/**
 	 * Search and update the user dn
-	 * 
+	 *
 	 * @return bool If the DN is modified
 	 */
 	function updateUserDn() {
 		if ($this->ldap->rebind()) {
-		    
+
 		    $userDn = $this->ldap->findUserDn($this->contactInfos['contact_alias']);
-		    
+
 		    if (false === $userDn) {
 		        $this->CentreonLog->insertLog(3, "LDAP AUTH : No DN for user " . $this->contactInfos['contact_alias']);
 		        return false;
 		    }
-		    
+
 		    if (isset($this->contactInfos['contact_id'])) {
 		        /*
-		         * Update the user dn 
+		         * Update the user dn
 		         */
 		        $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
 				$query = "UPDATE contact SET contact_ldap_dn = '" .  $userDn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
@@ -207,8 +207,8 @@ class CentreonAuthLDAP {
 				$this->contactInfos['contact_ldap_dn'] = $userDn;
 				return true;
 		    } else {
-		        /* 
-		         * Find the template ID 
+		        /*
+		         * Find the template ID
 		         */
 		        $query = "SELECT `value` FROM `options` WHERE `key` = 'ldap_contact_tmpl'";
 		        $res = $this->pearDB->query($query);
@@ -227,7 +227,7 @@ class CentreonAuthLDAP {
 		         */
 		        $userInfos =  $this->ldap->getEntry($userDn);
 		        $userDisplay = $userInfos[$this->ldap->getAttrName('user', 'name')];
-		        /* 
+		        /*
 		         * Get the first if there are multiple entries
 		         */
 		        if (is_array($userDisplay)) {
@@ -240,7 +240,7 @@ class CentreonAuthLDAP {
 		        $userEmail = "NULL";
 		        if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
 		            if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
-		                /* 
+		                /*
         		         * Get the first if there are multiple entries
         		         */
 		                $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')][0] . "'";
@@ -251,7 +251,7 @@ class CentreonAuthLDAP {
 		        $userPager = "NULL";
 		        if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
 		            if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
-		                /* 
+		                /*
         		         * Get the first if there are multiple entries
         		         */
 		                $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')][0] . "'";
@@ -270,7 +270,17 @@ class CentreonAuthLDAP {
 		            $row = $res->fetchRow();
 		            $contact_id = $row['contact_id'];
 		            $listGroup = $this->ldap->listGroupsForUser($userDn);
-		            $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join(",'", $listGroup) . "')";
+		            $listGroupStr = "";
+		            foreach ($listGroup as $gName) {
+		                if ($listGroupStr != "") {
+		                    $listGroupStr .= ",";
+		                }
+		                $listGroupStr .= "'".$gName."'";
+		            }
+		            if ($listGroupStr == "") {
+		                $listGroupStr = "''";
+		            }
+		            $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN (".$listGroupStr.")";
 		            $res = $this->pearDB->query($query);
 		            /*
 		             * Insert the relation between contact and contact group
@@ -286,7 +296,7 @@ class CentreonAuthLDAP {
 		    }
 		}
 		return false;
-	}	
+	}
 }
 
 ?>
