@@ -236,10 +236,10 @@
 	    $class = null;
         if ($ndo["scheduled_downtime_depth"] > 0) {
             $class = "line_downtime";
-        } else if ($ndo["current_state"] == 1) {
-            $ndo["problem_has_been_acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
+        } else if ($ndo["state"] == 1) {
+            $ndo["acknowledged"] == 1 ? $class = "line_ack" : $class = "list_down";
         } else {
-            if ($ndo["problem_has_been_acknowledged"] == 1)
+            if ($ndo["acknowledged"] == 1)
                 $class = "line_ack";
         }
 
