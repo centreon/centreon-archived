@@ -95,13 +95,13 @@ try {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
     }
-    
+
     /*
      * Get broker init script
      */
     $DBRESULTN = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'broker_correlator_script'");
     $data = $DBRESULTN->fetchRow();
-    if (isset($data['value'])) {
+    if (isset($data['value']) && trim($data['value']) != '') {
       	/*
          * Restart
          */
