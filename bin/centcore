@@ -793,7 +793,7 @@ if ($pid ne fork()) {
 			    foreach $poller (keys(%commandBuffer)) {
 				if (length($commandBuffer{$poller}) != 0) {
 				    sendExternalCommand($poller, $commandBuffer{$poller});
-				    $commandBuffer{$poller};
+				    $commandBuffer{$poller} = "";
 				}
 			    }
 			    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
