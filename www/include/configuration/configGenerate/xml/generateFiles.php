@@ -231,12 +231,12 @@ try {
     $brokerObj = new CentreonConfigCentreonBroker($pearDB);
     $correlationPath = $brokerObj->getCorrelationFile();
     $localId = getLocalhostId();
-    if (false !== $correlationPath || false !== $localId) {
+    if (false !== $correlationPath && false !== $localId) {
         $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
         generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $pearDB);
     }
-    
-    
+
+
     $statusMsg = $okMsg;
     $statusCode = 0;
     if ($debug) {
