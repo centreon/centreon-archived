@@ -90,7 +90,7 @@
 	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hosts.name, hosts.state, hosts.icon_image, hosts.host_id " .
 				" FROM hosts ";
 	if ($hostgroups) {
-		$rq1 .= ", host_hostgroups hg ";
+		$rq1 .= ", hosts_hostgroups hg ";
 	}
 	if (!$obj->is_admin) {
 		$rq1 	.= ", centreon_acl ";
