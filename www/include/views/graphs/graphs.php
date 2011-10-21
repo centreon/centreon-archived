@@ -39,6 +39,16 @@
 	if (!isset($oreon))
 		exit();
 
+	$gmtObj = new CentreonGMT($pearDB);
+	$currentServerMicroTime = time() * 1000;
+	$userGmt = 0;
+	$useGmt = 0;
+	if ($gmtObj->checkGMTStatus($pearDB)) {
+        $useGmt = 1;
+	    $userGmt = $oreon->user->getMyGMT();
+	    $currentServerMicroTime += $userGmt * 60 * 60 * 1000;
+	}
+
 	/*
 	 * Path to the configuration dir
 	 */
@@ -168,7 +178,9 @@
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
-
+    var gmt = <?php echo $userGmt;?>;
+    var useGmt = <?php echo $useGmt;?>;
+    var currentMicroTime = <?php echo $currentServerMicroTime;?>;
 	var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
     var headID 		= document.getElementsByTagName("head")[0];
     var cssNode 	= document.createElement('link');
@@ -290,7 +302,7 @@ function prevPeriod() {
         var end;
         var period;
         if (document.FormPeriod.period.value) {
-                var now = new Date().getTime();
+                var now = currentMicroTime;
                 period = document.FormPeriod.period.value * 1000;
                 start = now - period;
         } else {
@@ -318,7 +330,7 @@ function nextPeriod() {
         var end;
         var period;
         if (document.FormPeriod.period.value) {
-                var now = new Date().getTime();
+                var now = currentMicroTime;
                 period = document.FormPeriod.period.value * 1000;
                 end = now + period;
         } else {
@@ -339,7 +351,7 @@ function nextPeriod() {
 }
 
 	// Period
-	var currentTime = new Date().getTime();
+	var currentTime = currentMicroTime;
 	var period ='';
 
 	var _zero_hour = '';
@@ -538,6 +550,12 @@ function nextPeriod() {
         }
         var start = parseInt((img_url.start * 1000) + ((coords.x1 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
         var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
+
+        if (useGmt) {
+        	start += gmt * 60 * 60 * 1000;
+        	end += gmt * 60 * 60 * 1000;
+        }
+
         var id = img_name.split('__')[0];
         id = id.replace('HS_', 'SS_');
 
