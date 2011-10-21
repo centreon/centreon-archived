@@ -447,9 +447,9 @@ sub GetLogFile($){
 		
 		# Check update 
 		my $check_cmd = "$ssh  -p $port -q $distantconnexion 'stat  -c \'%Y\' $distantlogfile'";
-		writeLogFile("Get Log Files - stat: $check_cmd");
+		writeLogFile("Get Log Files - stat: $check_cmd") if ($debug);
 		$last_access = `$check_cmd`;
-		writeLogFile("Get Log File - stat: Finished");
+		writeLogFile("Get Log File - stat: Finished") if ($debug);
 		$last_access =~ s/\n//g;
 
 		# Check buffer
