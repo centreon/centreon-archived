@@ -332,7 +332,7 @@
 					} elseif ($key2 == "service_description") {
 						$service_description = null;
 					}
-					$val ? $val .= ($value2 != null ? (", '".$value2."'") : ", NULL") : $val .= ($value2 !=NULL ? ("'".$value2."'") : "NULL");
+					$val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'") : ", NULL") : $val .= ($value2 !=NULL ? ("'".$pearDB->escape($value2)."'") : "NULL");
 					if ($key2 != "service_id") {
 						$fields[$key2] = $value2;
 					}
@@ -445,7 +445,7 @@
 								$esi["service_service_id"] = $maxId["MAX(service_id)"];
 								$esi["esi_id"] = null;
 								foreach ($esi as $key2=>$value2)
-									$val ? $val .= ($value2 != null ? (", '".$value2."'"):", NULL") : $val .= ($value2 != null ? ("'".$value2."'"):"NULL");
+									$val ? $val .= ($value2 != null ? (", '".$pearDB->escape($value2)."'"):", NULL") : $val .= ($value2 != null ? ("'".$pearDB->escape($value2)."'"):"NULL");
 								$val ? $rq = "INSERT INTO extended_service_information VALUES (".$val.")" : $rq = null;
 								$DBRESULT2 = $pearDB->query($rq);
 								if ($key2 != "esi_id") {
@@ -461,7 +461,7 @@
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
 							    $macVal = $sv['svc_macro_value'];
 								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
-											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $macVal ."')";
+											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $pearDB->escape($macVal) ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
 							}
@@ -530,15 +530,15 @@
 		# 2 - MC with addition of new options (incremental)
 		# 3 - Normal update
 		if (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && $ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
-				updateServiceNotifs($service_id);		
+				updateServiceNotifs($service_id);
 		} 	elseif (isset($ret["mc_mod_notifopts"]["mc_mod_notifopts"]) && !$ret["mc_mod_notifopts"]["mc_mod_notifopts"]) {
-				updateServiceNotifs_MC($service_id);	
+				updateServiceNotifs_MC($service_id);
 		} else {
 			updateServiceNotifs($service_id);
-		}	
+		}
 
 		# Function for updating notification interval options
-		# 1 - MC with deletion of existing options (Replacement) 
+		# 1 - MC with deletion of existing options (Replacement)
 		# 2 - MC with addition of new options (incremental)
 		# 3 - Normal update
 		if (isset($ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) && $ret["mc_mod_notifopt_notification_interval"]["mc_mod_notifopt_notification_interval"]) {
@@ -560,7 +560,7 @@
 		} else {
 			updateServiceNotifOptionFirstNotificationDelay($service_id);
 		}
- 	
+
 
 		# Function for updating notification timeperiod options
 		# 1 - MC with deletion of existing options (Replacement)
@@ -573,8 +573,8 @@
 		} else {
 			updateServiceNotifOptionTimeperiod($service_id);
 		}
-		
-		
+
+
 		# Function for updating host/hg parent
 		# 1 - MC with deletion of existing host/hg parent
 		# 2 - MC with addition of new host/hg parent
@@ -637,7 +637,7 @@
 		$service_id = $tmp_fields['service_id'];
 		updateServiceContactGroup($service_id, $ret);
 		updateServiceContact($service_id, $ret);
-		updateServiceNotifs($service_id, $ret);		
+		updateServiceNotifs($service_id, $ret);
 		updateServiceNotifOptionInterval($service_id, $ret);
 		updateServiceNotifOptionTimeperiod($service_id, $ret);
 		updateServiceNotifOptionFirstNotificationDelay($service_id, $ret);
@@ -1421,56 +1421,56 @@
 		}
 	}
 
-	
+
 	function updateServiceNotifs($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["service_notifOpts"]))
 			$ret = $ret["service_notifOpts"];
 		else
 			$ret = $form->getSubmitValue("service_notifOpts");
-		
+
 		$rq = "UPDATE service SET " ;
 		$rq .= "service_notification_options = ";
 		isset($ret) && $ret != NULL ? $rq .= "'".implode(",", array_keys($ret))."' " : $rq .= "NULL ";
 		$rq .= "WHERE service_id = '".$service_id."'";
-		$DBRESULT =& $pearDB->query($rq);			
-					
+		$DBRESULT =& $pearDB->query($rq);
+
 	}
-	
+
 	# For massive change. incremental mode
 	function updateServiceNotifs_MC($service_id = null)	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$rq = "SELECT * FROM service ";
 		$rq .= "WHERE service_id = '".$service_id."' LIMIT 1";
 		$DBRESULT =& $pearDB->query($rq);
 		$service = array();
-		$service = array_map("myDecodeService", $DBRESULT->fetchRow());				
-		
+		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
+
 		$ret = $form->getSubmitValue("service_notifOpts");
-		
+
 		isset($service["service_notification_options"]) && $service["service_notification_options"] != NULL ? $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
-		
+
 		if (isset($temp) && $temp != NULL) {
 		    $rq = "UPDATE service SET " ;
 			$rq .= "service_notification_options = '". trim ($temp ,',')."' ";
 			$rq .= "WHERE service_id = '".$service_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}		
-			
-	}	
-	
-	
+		}
+
+	}
+
+
 	function updateServiceNotifOptionInterval($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["service_notification_interval"]))
 			$ret = $ret["service_notification_interval"];
 		else
@@ -1482,29 +1482,29 @@
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	# For massive change. incremental mode
 	function updateServiceNotifOptionInterval_MC($service_id = null)	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$ret = $form->getSubmitValue("service_notification_interval");
-		
+
 		if (isset($ret) && $ret != NULL) {
 		    $rq = "UPDATE service SET " ;
 			$rq .= "service_notification_interval = '".$ret."' ";
 			$rq .= "WHERE service_id = '".$service_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}			
-		
-	}	
-	
+		}
+
+	}
+
 	function updateServiceNotifOptionTimeperiod($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["timeperiod_tp_id2"]))
 			$ret = $ret["timeperiod_tp_id2"];
 		else
@@ -1516,29 +1516,29 @@
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	# For massive change. incremental mode
 	function updateServiceNotifOptionTimeperiod_MC($service_id = null)	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$ret = $form->getSubmitValue("timeperiod_tp_id2");
-		
+
 		if (isset($ret) && $ret != NULL) {
 		    $rq = "UPDATE service SET " ;
 			$rq .= "timeperiod_tp_id2 = '".$ret."' ";
 			$rq .= "WHERE service_id = '".$service_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}			
-		
-	}	
+		}
+
+	}
 
 	function updateServiceNotifOptionFirstNotificationDelay($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		if (isset($ret["service_first_notification_delay"]))
 			$ret = $ret["service_first_notification_delay"];
 		else
@@ -1550,25 +1550,25 @@
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
 	}
-	
+
 	# For massive change. incremental mode
 	function updateServiceNotifOptionFirstNotificationDelay_MC($service_id = null)	{
 		if (!$service_id) return;
 		global $form;
 		global $pearDB;
-		
+
 		$ret = $form->getSubmitValue("service_first_notification_delay");
-		
+
 		if (isset($ret) && $ret != NULL) {
 		    $rq = "UPDATE service SET " ;
 			$rq .= "service_first_notification_delay = '".$ret."' ";
 			$rq .= "WHERE service_id = '".$service_id."'";
 			$DBRESULT =& $pearDB->query($rq);
-		}			
-		
-	}		
-	
-	
+		}
+
+	}
+
+
 	# For massive change. We just add the new list if the elem doesn't exist yet
 	function updateServiceContactGroup_MC($service_id = null)	{
 		if (!$service_id) return;
