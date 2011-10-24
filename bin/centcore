@@ -307,10 +307,16 @@ sub sendExternalCommand($$){
 
 	$cmd =~ s/\\/\\\\/g;
 
-	writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
-	my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
-	my $stdout = `$cmd`;
-
+	if ($server_info->{'localost'} == 1) {
+		writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
+		my $cmd = "echo \"".$cmd."\" >> ".$command_file."\n";
+		my $stdout = `$cmd`;		
+	} else {
+		writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
+		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
+		my $stdout = `$cmd`;
+	}
+	
 	if (defined($stdout) && $stdout){
 	    writeLogFile("Result : $stdout\n");
 	}
