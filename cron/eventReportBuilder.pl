@@ -234,7 +234,6 @@ sub main {
     
     $logger->writeLog("INFO", "Starting program...(pid=$pid)");
     
-    $options{'rebuild'} = 1;
     if (defined($options{'rebuild'})) {
 		rebuildIncidents();
     }else {
@@ -246,7 +245,7 @@ sub main {
 		$processEvents->parseHostLog($start, $end);
 		$processEvents->parseServiceLog($start, $end);
     }
-    
+
 	exit_pgr;
 }
 
