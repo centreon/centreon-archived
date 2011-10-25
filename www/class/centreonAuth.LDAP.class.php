@@ -120,6 +120,9 @@ class CentreonAuthLDAP {
 		/*
 		 * LDAP BIND
 		 */
+	    if (!isset($this->contactInfos['contact_ldap_dn']) || trim($this->contactInfos['contact_ldap_dn']) == '') {
+	        return 2;
+	    }
 		@ldap_bind($this->ds, $this->contactInfos['contact_ldap_dn'], $this->typePassword);
 		if ($this->debug) {
 			$this->CentreonLog->insertLog(3, "Connexion = ".$this->contactInfos['contact_ldap_dn']." :: ".ldap_error($this->ds));
