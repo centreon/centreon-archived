@@ -864,7 +864,7 @@ CREATE TABLE IF NOT EXISTS `contact` (
   `contact_type_msg` enum('txt','html','pdf') default 'txt',
   `contact_activate` enum('0','1') default NULL,
   `contact_auth_type` varchar(255) default '',
-  `contact_ldap_dn` varchar(255) default NULL,
+  `contact_ldap_dn` text,
   `contact_acl_group_list` varchar(255) default NULL,
   `contact_autologin_key` varchar(255) default NULL,
   `contact_charset` varchar(255) default NULL,
