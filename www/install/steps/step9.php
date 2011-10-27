@@ -76,14 +76,7 @@ If you want to enable LDAP authentication, please complete the following fields.
 		  </tr>
 		  <tr>
 		    <td style="padding-left:50px ">LDAP Login Attribut</td>
-			<td><input name="ldap_login_attrib" type="text" value="<?php echo (isset($_SESSION["ldap_login_attrib"]) ?  $_SESSION["ldap_login_attrib"]  : "uid" );?>"></td>
-		  </tr>
-		  <td style="padding-left:50px ">LDAP use SSL ?</td>
-			<td>
-				<input type="radio" name="ldap_ssl" value="0" <?php if (isset($_SESSION["ldap_ssl"]) && $_SESSION["ldap_ssl"] == "0") print "checked"; else if (!isset($_SESSION["ldap_ssl"])) print "checked"; ?>>No
-		    	<input type="radio" name="ldap_ssl" value="1" <?php if (isset($_SESSION["ldap_ssl"]) && $_SESSION["ldap_ssl"] == "1") print "checked"; ?>>Yes
-
-			</td>
+			<td><input name="ldap_login_attrib" type="text" value="<?php echo (isset($_SESSION["ldap_login_attrib"]) ?  $_SESSION["ldap_login_attrib"]  : "uid" );?>"><input type="hidden" name="ldap_ssl" value="0" ></td>
 		  </tr>
 		 </table>
 	</div>
