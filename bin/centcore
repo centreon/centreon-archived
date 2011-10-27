@@ -308,9 +308,14 @@ sub sendExternalCommand($$){
 	$cmd =~ s/\\/\\\\/g;
 
 	if ($server_info->{'localost'} == 1) {
-		writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
-		my $cmd = "echo \"".$cmd."\" >> ".$command_file."\n";
-		my $stdout = `$cmd`;		
+		my $result = waitPipe($command_file);
+		if ($result) {
+			writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
+			my $cmd = "echo \"".$cmd."\" >> ".$command_file."\n";
+			my $stdout = `$cmd`;		
+		} else {
+			writeLogFile("Cannot write external command on central server : \"".$cmd."\"");
+		}
 	} else {
 		writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
 		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
@@ -333,6 +338,21 @@ sub sendExternalCommand($$){
     undef($server_info);
     undef($command_file);
 }
+
+#######################################
+# Wait Nagios Pipe availability
+sub waitPipe($) {
+	my $i = 0;
+	while (! -p $_[0]) {
+		sleep(1);
+		$i++;
+		if ($i >= 30) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
 
 #
 # Get PerfdataFile
