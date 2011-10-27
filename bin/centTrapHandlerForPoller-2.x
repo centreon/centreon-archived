@@ -282,7 +282,8 @@ sub getTrapsInfos($$$$$){
 	    	
 	    	#####################################################################
 		    # Submit value to passiv service
-	    	if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1){ 
+	    	if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) {
+	    		waitPipe($conf[0]); 
 				my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
 			}
 			
@@ -290,6 +291,7 @@ sub getTrapsInfos($$$$$){
 		    # Force service execution with external command
 			if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1){
 				my $time_now = time();
+				waitPipe($conf[0]);
 			    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
 				undef($time_now);
 			}
@@ -328,6 +330,20 @@ sub getTrapsInfos($$$$$){
     }
     $dbh->disconnect();
     exit;
+}
+
+#######################################
+# Wait Nagios Pipe availability
+#
+sub waitPipe($) {
+	my $i = 0;
+	while (! -p $_[0]) {
+		sleep(1);
+		$i++;
+		if ($i >= 30) {
+			exit(1);
+		}
+	}
 }
 
 ##########################
