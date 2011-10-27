@@ -333,31 +333,22 @@ sub getTrapsInfos($$$$$) {
 	    # Submit value to passiv service
 	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
 		  # No matching rules
-		  if ($location != 0){
-		      my $submit = "/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $conf[0]";
-		      send_command($submit);
-		  } else {
-		      my $id = get_hostNagiosServerID($dbh, $this_host);
-		      if (defined($id) && $id != 0) {
-		          my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile";
-		          send_command($submit);
-		          undef($id);
-		      }
-		  }
-	    }
+		  my $id = get_hostNagiosServerID($dbh, $this_host);
+	      if (defined($id) && $id != 0) {
+	          my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile";
+	          send_command($submit);
+	          undef($id);
+	      }
+		}
 
 	    ######################################################################
 	    # Force service execution with external command
 	    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
-		if ($location != 0){
-		    my $submit = "/bin/echo \"[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $conf[0]";
-		    send_command($submit);
-		} else {
 		    my $id = get_hostNagiosServerID($dbh, $this_host);
 		    if (defined($id) && $id != 0) {
-			my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
-			send_command($submit);
-			undef($id);
+				my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
+				send_command($submit);
+				undef($id);
 		    }
 		}
 		undef($location);
