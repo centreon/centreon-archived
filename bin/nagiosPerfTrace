@@ -383,6 +383,7 @@ sub get_poller()	{
     my $nagiostats;
     my $tmp;
     my $must_update_ds;
+	my $dataDir = "$global_prefix/../log/";
 
     my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
     if (defined($dbh)){
