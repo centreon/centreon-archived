@@ -3,45 +3,45 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 
 /**
  * The utils class for LDAP
  */
 class CentreonLDAP {
-	
+
 	public $CentreonLog;
 	private $_ds;
 	private $_db = null;
@@ -53,10 +53,10 @@ class CentreonLDAP {
 	private $_groupSearchInfo = null;
 	private $_debugImport = false;
 	private $_debugPath = "";
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param DB $pearDB The database connection
 	 * @param CentreonLog $CentreonLog The logging object
 	 */
@@ -64,7 +64,7 @@ class CentreonLDAP {
 	{
 		$this->CentreonLog = $CentreonLog;
 		$this->_db = $pearDB;
-		
+
 		/* Check if use service form DNS */
 		$use_dns_srv = 0;
 		$dbresult = $this->_db->query("SELECT `value` FROM options WHERE `key` = 'ldap_srv_dns'");
@@ -73,7 +73,7 @@ class CentreonLDAP {
 		if ($row) {
 			$use_dns_srv = $row['value'];
 		}
-		
+
 		/* Get the ldap template */
 	    $dbresult = $this->_db->query("SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
 		$row = $dbresult->fetchRow();
@@ -83,7 +83,7 @@ class CentreonLDAP {
 		} else {
 			throw new Exception('Not ldap template has defined');
 		}
-		
+
 		/* Debug options */
 		$dbresult = $this->_db->query("SELECT `key`, `value` FROM `options` WHERE `key` IN ('debug_ldap_import', 'debug_path')");
 		while ($row = $dbresult->fetchRow()) {
@@ -99,8 +99,8 @@ class CentreonLDAP {
 		if ($this->_debugPath == '') {
 		    $this->_debugImport = false;
 		}
-		
-		
+
+
 		/* Get the list of server ldap */
 		if ($use_dns_srv != "0") {
 			$dns_query = '_ldap._tcp';
@@ -112,7 +112,7 @@ class CentreonLDAP {
 			}
 			$list = dns_get_record($dns_query, DNS_SRV);
 			foreach ($list as $entry) {
-				$ldap = array();	
+				$ldap = array();
 				$ldap['host'] = $entry['host'];
 				$ldap['id'] = 0;
 				$ldap['info'] = $this->_getInfoUseDnsConnect();
@@ -122,8 +122,8 @@ class CentreonLDAP {
 			}
 			$this->_ldapHosts[] = $ldap;
 		} else {
-			$dbresult = $this->_db->query("SELECT ar.ar_id, ari.ari_value 
-				FROM auth_ressource as ar, auth_ressource_info as ari  
+			$dbresult = $this->_db->query("SELECT ar.ar_id, ari.ari_value
+				FROM auth_ressource as ar, auth_ressource_info as ari
 				WHERE ar.ar_type = 'ldap' AND ar.ar_enable = '1' AND ar.ar_id = ari.ar_id AND ari.ari_name = 'host'
 				ORDER BY ar_order");
 			while ($row = $dbresult->fetchRow()) {
@@ -138,12 +138,12 @@ class CentreonLDAP {
 			$dbresult->free();
 		}
 	}
-	
+
 	/**
 	 * Connect to the first LDAP server
 	 *
 	 * @return bool
-	 */	
+	 */
 	public function connect()
 	{
 		foreach ($this->_ldapHosts as $ldap) {
@@ -176,17 +176,17 @@ class CentreonLDAP {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Close LDAP Connexion
 	 */
 	public function close() {
 		ldap_close($this->_ds);
 	}
-	
+
 	/**
 	 * Rebind with the default bind_dn
-	 * 
+	 *
 	 * @return If the connection is good
 	 */
 	public function rebind() {
@@ -206,22 +206,22 @@ class CentreonLDAP {
 			}
 		}
 		$this->_debug("LDAP Connect : Bind : " . ldap_error($this->_ds));
-		return false;  
+		return false;
 	}
-	
+
 	/**
 	 * Retourne the ldap ressource
-	 * 
+	 *
 	 * @return ldap_ressource
 	 */
 	public function getDs()
 	{
 	    return $this->_ds;
 	}
-	
+
 	/**
 	 * Get the dn for a user
-	 * 
+	 *
 	 * @param string $username The username
 	 * @return string|bool The dn string or false if not found
 	 */
@@ -238,10 +238,10 @@ class CentreonLDAP {
 		}
 		return $entries[0]['dn'];
 	}
-	
+
 	/**
 	 * Get the dn for a group
-	 * 
+	 *
 	 * @param string $group The group
 	 * @return string|bool The dn string or false if not found
 	 */
@@ -258,7 +258,7 @@ class CentreonLDAP {
 		}
 		return $entries[0]['dn'];
 	}
-	
+
 	/**
 	 * Return the list of groups
 	 *
@@ -284,11 +284,11 @@ class CentreonLDAP {
 		}
 		return $list;
 	}
-	
+
 	/**
 	 * Return the list of users
 	 *
-	 * @param string $pattern The pattern for search 
+	 * @param string $pattern The pattern for search
 	 * @return array The list of users
 	 */
 	public function listOfUsers($pattern = '*')
@@ -306,10 +306,10 @@ class CentreonLDAP {
 		}
 		return $list;
 	}
-	
+
 	/**
 	 * Get a LDAP entry
-	 * 
+	 *
 	 * @param string $dn The DN
 	 * @param array $attr The list of attribute
 	 * @return array|bool The list of information, or false in error
@@ -343,7 +343,7 @@ class CentreonLDAP {
 
 	/**
 	 * Get the list of groups for a user
-	 * 
+	 *
 	 * @param string $userdn The user dn
 	 * @return array
 	 */
@@ -367,10 +367,10 @@ class CentreonLDAP {
 		}
 		return $list;
 	}
-	
+
 	/**
 	 * Return the list of member of a group
-	 * 
+	 *
 	 * @param string $groupdn The group dn
 	 * @return array The listt of member
 	 */
@@ -390,10 +390,10 @@ class CentreonLDAP {
 	        return array($group[$this->_groupSearchInfo['member']]);
 	    }
 	}
-	
+
 	/**
 	 * Return the attribute name for ldap
-	 * 
+	 *
 	 * @param string $type user or group
 	 * @param string $info The information to get the attribute name
 	 * @return string The attribute name or null if not found
@@ -416,11 +416,11 @@ class CentreonLDAP {
 	    }
 	    return null;
 	}
-	
+
 	/**
 	 * Search function
-	 * 
-	 * @param string $filter The filter string, null for use default 
+	 *
+	 * @param string $filter The filter string, null for use default
 	 * @param string $basedn The basedn, null for use default
 	 * @param int $searchLimit The search limit, null for all
 	 * @param int $searchTimeout The search timeout, null for default
@@ -465,7 +465,7 @@ class CentreonLDAP {
 		$info = ldap_get_entries($this->_ds, $sr);
 		$this->_debug("LDAP Search : ". $info["count"]);
 		ldap_free_result($sr);
-		
+
 		/* Format the result */
 		$results = array();
 		for ($i = 0; $i < $info['count']; $i++) {
@@ -481,7 +481,7 @@ class CentreonLDAP {
 		}
 		return $results;
 	}
-	
+
 	/**
 	 * Load the search informations
 	 */
@@ -558,10 +558,10 @@ class CentreonLDAP {
 			$this->_groupSearchInfo = $group;
 		}
 	}
-	
+
 	/**
 	 * Get the information from the database for a ldap connection
-	 * 
+	 *
 	 * @param int $id The identifiant of ldap connection
 	 * @return array
 	 */
@@ -577,10 +577,10 @@ class CentreonLDAP {
 		$dbresult->free();
 		return $infos;
 	}
-	
+
 	/**
 	 * Get the information from the database for a ldap connection
-	 * 
+	 *
 	 * @return array
 	 */
 	private function _getInfoUseDnsConnect()
@@ -597,10 +597,10 @@ class CentreonLDAP {
 		}
 		$dbresult->free();
 	}
-	
+
 	/**
 	 * Get bind information for connection
-	 * 
+	 *
 	 * @param int $id The auth resource id
 	 * @return array
 	 */
@@ -619,10 +619,10 @@ class CentreonLDAP {
 		$this->_constuctCache[$id] = $infos;
 		return $infos;
 	}
-	
+
 	/**
 	 * Debug for ldap
-	 * 
+	 *
 	 * @param string $msg
 	 */
 	private function _debug($msg)
@@ -635,28 +635,28 @@ class CentreonLDAP {
 
 
 /**
- * Ldap Administration class 
+ * Ldap Administration class
  */
 class CentreonLdapAdmin
 {
 	private $_db;
-	
+
 	/**
 	 * Constructor
-	 * 
+	 *
 	 * @param CentreonDB $pearDB The database connection
 	 */
 	public function __construct($pearDB)
 	{
 		$this->_db = $pearDB;
 	}
-	
+
 	/**
 	 * Set the general ldap options
-	 * 
+	 *
 	 * 'ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns'
 	 * and 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain' if ldap_srv_dns = 1
-	 * 
+	 *
 	 * @param array $options The list of options
 	 */
 	public function setGeneralOptions($options)
@@ -674,10 +674,10 @@ class CentreonLdapAdmin
 	        }
 	    }
 	}
-	
+
 	/**
 	 * Add a Ldap server
-	 * 
+	 *
 	 * @param string $host The host
 	 * @param int $port The port (389)
 	 * @param int $use_ssl If use ssl connection 1 - true, 0 - false
@@ -714,10 +714,10 @@ class CentreonLdapAdmin
 		}
 		return $id;
 	}
-	
+
 	/**
 	 * Modify a Ldap server
-	 * 
+	 *
 	 * @param string $host The host
 	 * @param int $port The port (389)
 	 * @param int $use_ssl If use ssl connection 1 - true, 0 - false
@@ -727,7 +727,7 @@ class CentreonLdapAdmin
 	 */
     public function modifyServer($id, $host, $port, $use_ssl, $use_tls, $order)
 	{
-		if (PEAR::isError($this->_db->query("UPDATE auth_ressource 
+		if (PEAR::isError($this->_db->query("UPDATE auth_ressource
 			SET ar_type = 'ldap', ar_order = " . $order . " WHERE ar_id = " . $id))) {
 			return false;
 		}
@@ -749,10 +749,10 @@ class CentreonLdapAdmin
 		}
 		return $id;
 	}
-	
+
 	/**
 	 * Add a template
-	 * 
+	 *
 	 * @param array $options A hash table with options for connections and search in ldap
 	 * @return int|bool The id of connection, false on error
 	 */
@@ -771,33 +771,42 @@ class CentreonLdapAdmin
 			$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", '" . $key . "', '" . $value . "')");
 			if (PEAR::isError($sth)) {
 				return false;
-			}	
+			}
 		}
 		return $id;
 	}
-	
+
 	/**
 	 * Modify a template
-	 * 
+	 *
 	 * @param int The id of the template
 	 * @param array $options A hash table with options for connections and search in ldap
 	 * @return bool
 	 */
-	public function modifyTemplate($id, $options = array())
+    public function modifyTemplate($id, $options = array())
 	{
+	    /*
+	     * Load configuration
+	     */
+	    $config = $this->getTemplate($id);
+
 		foreach ($options as $key => $value) {
-			$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $value . "' WHERE ar_id = " . $id . " AND ari_name = '" . $key . "'");
+		    if (isset($config[$key])) {
+		        $sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $value . "' WHERE ar_id = " . $id . " AND ari_name = '" . $key . "'");
+		    } else {
+                $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", '" . $key . "', '" . $value . "')");
+		    }
 			if (PEAR::isError($sth)) {
 				return false;
-			}	
+			}
 		}
 		return true;
 	}
-	
-	
+
+
 	/**
 	 * Get the template information
-	 * 
+	 *
 	 * @param int $id The template id, if 0 get the template
 	 */
     public function getTemplate($id = 0)
@@ -821,10 +830,10 @@ class CentreonLdapAdmin
         }
         return $list;
     }
-	
+
 	/**
 	 * Get the default template for Active Directory
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getTemplateAd()
@@ -832,7 +841,7 @@ class CentreonLdapAdmin
 		$infos = array();
 		$infos['user_filter'] = "(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368))";
 		$attr = array();
-		$attr['alias'] = 'samaccountname'; 
+		$attr['alias'] = 'samaccountname';
 		$attr['email'] = 'mail';
 		$attr['name'] = 'name';
 		$attr['pager'] = 'mobile';
@@ -847,10 +856,10 @@ class CentreonLdapAdmin
 		$infos['group_attr'] = $attr;
 		return $infos;
 	}
-	
+
 	/**
 	 * Get the default template for ldap
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getTemplateLdap()
