@@ -398,11 +398,21 @@ sub get_poller()	{
 		    if ($is_localhost){
 				$nagiostats = `$nagiostats_bin -c $cfg_dir->{'cfg_dir'}nagios.cfg`;
 		    } else {
-				$tmp = $cfg_dir->{'cfg_dir'};
-				if (!defined($ssh_port) || !$ssh_port) {
-					$ssh_port = "22";
-				} 
-				$nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
+				if (-e $dataDir."/$id/nagiostats.trace.txt") {
+                    $nagiostats = '';
+                    open(FILE, $dataDir."$id/nagiostats.trace.txt") or writeLogFile("Error when reading nagiostats.trace.txt : ".$!);
+                    while (<FILE>) {
+                        $nagiostats .= $_."\n";
+                    }
+                    close(FILE);
+                    unlink($dataDir."$id/nagiostats.trace.txt");
+                } else {
+                    $tmp = $cfg_dir->{'cfg_dir'};
+                    if (!defined($ssh_port) || !$ssh_port) {
+                        $ssh_port = "22";
+                    }
+                    $nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
+                }
 		    }
 			if ($nagiostats =~ m/Error reading status file/ ) {
 				next;
