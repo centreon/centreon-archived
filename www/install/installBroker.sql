@@ -675,40 +675,38 @@ CREATE TABLE IF NOT EXISTS notifications (
 --
 --  Host states.
 --
-CREATE TABLE IF NOT EXISTS hoststateevents (
-  hoststateevent_id int NOT NULL auto_increment,
-  host_id int NOT NULL,
-  start_time int NOT NULL,
-
-  end_time int default NULL,
-  in_downtime boolean default NULL,
-  last_update int default NULL,
-  state int default NULL,
-
-  PRIMARY KEY (hoststateevent_id),
+CREATE TABLE IF NOT EXISTS `hoststateevents` (
+  `hoststateevent_id` int(11) NOT NULL auto_increment,
+  `end_time` int(11) default NULL,
+  `host_id` int(11) NOT NULL,
+  `start_time` int(11) NOT NULL,
+  `state` tinyint(11) NOT NULL,
+  `last_update` tinyint(4) NOT NULL default '0',
+  `in_downtime` tinyint(4) NOT NULL,
+  `ack_time` int(11) DEFAULT NULL,
+  PRIMARY KEY  (`hoststateevent_id`),
   UNIQUE (host_id, start_time),
-  FOREIGN KEY (host_id) REFERENCES hosts (host_id)
-    ON DELETE CASCADE
-) ENGINE=InnoDB;
+    KEY `start_time` (`start_time`), 
+    KEY `end_time` (`end_time`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
 --
---  Service states.
+--  Service state events.
 --
-CREATE TABLE IF NOT EXISTS servicestateevents (
-  servicestateevent_id int NOT NULL auto_increment,
-  host_id int NOT NULL,
-  service_id int NOT NULL,
-  start_time int NOT NULL,
-
-  end_time int default NULL,
-  in_downtime boolean default NULL,
-  last_update int default NULL,
-  state int default NULL,
-
-  PRIMARY KEY (servicestateevent_id),
+CREATE TABLE IF NOT EXISTS `servicestateevents` (
+  `servicestateevent_id` int(11) NOT NULL auto_increment,
+  `end_time` int(11) default NULL,
+  `host_id` int(11) NOT NULL,
+  `service_id` int(11) default NULL,
+  `start_time` int(11) NOT NULL,
+  `state` tinyint(11) NOT NULL,
+  `last_update` tinyint(4) NOT NULL default '0',
+  `in_downtime` tinyint(4) NOT NULL,
+  `ack_time` int(11) DEFAULT NULL,
+  PRIMARY KEY  (`servicestateevent_id`),
   UNIQUE (host_id, service_id, start_time),
-  FOREIGN KEY (host_id, service_id) REFERENCES services (host_id, service_id)
-    ON DELETE CASCADE
-) ENGINE=InnoDB;
+    KEY `start_time` (`start_time`), 
+    KEY `end_time` (`end_time`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
