@@ -291,6 +291,7 @@ sub sendExternalCommand($$){
     my $id = $_[0];
     my $cmd = $_[1];
     my $port = 22;
+    my $stdout = '';
 
     # Get command file 
     my $command_file = getNagiosConfigurationField($id, "command_file");
@@ -312,14 +313,14 @@ sub sendExternalCommand($$){
 		if ($result) {
 			writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
 			my $cmd = "echo \"".$cmd."\" >> ".$command_file."\n";
-			my $stdout = `$cmd`;		
+			$stdout = `$cmd`;		
 		} else {
 			writeLogFile("Cannot write external command on central server : \"".$cmd."\"");
 		}
 	} else {
 		writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
 		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
-		my $stdout = `$cmd`;
+		$stdout = `$cmd`;
 	}
 	
 	if (defined($stdout) && $stdout){
