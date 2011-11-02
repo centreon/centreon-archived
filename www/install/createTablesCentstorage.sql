@@ -391,8 +391,12 @@ CREATE TABLE IF NOT EXISTS `hoststateevents` (
   `last_update` tinyint(4) NOT NULL default '0',
   `in_downtime` tinyint(4) NOT NULL,
   `ack_time` int(11) DEFAULT NULL,
-  PRIMARY KEY  (`hoststateevent_id`)
+  PRIMARY KEY  (`hoststateevent_id`),
+  UNIQUE (host_id, start_time),
+    KEY `start_time` (`start_time`), 
+    KEY `end_time` (`end_time`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 
 
 -- --------------------------------------------------------
@@ -425,7 +429,10 @@ CREATE TABLE IF NOT EXISTS `servicestateevents` (
   `last_update` tinyint(4) NOT NULL default '0',
   `in_downtime` tinyint(4) NOT NULL,
   `ack_time` int(11) DEFAULT NULL,
-  PRIMARY KEY  (`servicestateevent_id`)
+  PRIMARY KEY  (`servicestateevent_id`),
+  UNIQUE (host_id, service_id, start_time),
+    KEY `start_time` (`start_time`), 
+    KEY `end_time` (`end_time`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 
