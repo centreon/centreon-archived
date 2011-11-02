@@ -308,7 +308,7 @@ sub sendExternalCommand($$){
 
 	$cmd =~ s/\\/\\\\/g;
 
-	if ($server_info->{'localost'} == 1) {
+	if ($server_info->{'localhost'} == 1) {
 		my $result = waitPipe($command_file);
 		if ($result) {
 			writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
