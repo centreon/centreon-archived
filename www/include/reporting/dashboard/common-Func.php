@@ -164,7 +164,8 @@
 		$day_duration =  mktime($reportTimePeriod["report_hour_end"], $reportTimePeriod["report_minute_end"], 0, 0, 0, 0)
 						- mktime($reportTimePeriod["report_hour_start"], $reportTimePeriod["report_minute_start"], 0, 0, 0, 0);
 		while ($start < $end) {
-
+			 if ($day_duration > $end - $start)
+                $day_duration  = $end - $start;
 			if (isset($reportTimePeriod["report_".date("l", $start)])
 				&& $reportTimePeriod["report_".date("l", $start)])
 					$reportTime += $day_duration;# if the day is selected in the timeperiod
