@@ -282,16 +282,16 @@ function form2ctime(dpart, tpart) {
 
 function ctime2date(ctime) {
         var date = new Date(ctime);
-        return date.getUTCMonth()+1 + "/" + date.getUTCDate() + "/" + date.getUTCFullYear();
+        return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
 }
 
 function ctime2time(ctime) {
 	var _zero_hour = '';
 	var _zero_min = '';
         var date = new Date(ctime);
-	if (date.getUTCHours() <= 9) { _zero_hour = '0'; }
-	if (date.getUTCMinutes() <= 9) { _zero_min = '0'; }
-        return _zero_hour + date.getUTCHours() + ":" + _zero_min + date.getUTCMinutes();
+	if (date.getHours() <= 9) { _zero_hour = '0'; }
+	if (date.getMinutes() <= 9) { _zero_min = '0'; }
+        return _zero_hour + date.getHours() + ":" + _zero_min + date.getMinutes();
 }
 
 function prevPeriod() {
