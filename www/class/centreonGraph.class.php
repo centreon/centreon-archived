@@ -267,7 +267,9 @@ class CentreonGraph	{
         if ($res->numRows()) {
             $row = $res->fetchRow();
             $maxlimit = $row['maxlimit'];
-            $maxlimit = $maxlimit + ((self::OVER_MAX_LIMIT_PCT / $maxlimit) * 100);
+            if ($maxlimit != 0) {
+                $maxlimit = $maxlimit + ((self::OVER_MAX_LIMIT_PCT / $maxlimit) * 100);
+            }
             return $maxlimit;
         }
         return 0;
@@ -369,7 +371,9 @@ class CentreonGraph	{
 		    } else {
 		        $upperLimit = $this->getMaxLimit();
 		    }
-		    $this->setRRDOption("upper-limit", $upperLimit);
+		    if ($upperLimit != 0) {
+		        $this->setRRDOption("upper-limit", $upperLimit);
+		    }
 		}
 		if ((isset($this->templateInformations["lower_limit"]) && $this->templateInformations["lower_limit"] != NULL) || (isset($this->templateInformations["upper_limit"]) && $this->templateInformations["upper_limit"] != NULL)) {
 			$this->setRRDOption("rigid");
