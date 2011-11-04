@@ -42,7 +42,7 @@
  class CentreonHost
  {
  	protected $db;
- 	
+
  	/**
  	 * Constructor
  	 *
@@ -53,12 +53,12 @@
  	{
  		$this->db = $db;
  	}
- 	
+
  	/**
  	 * Get the list of all host
  	 *
  	 * @param bool $enable If get only host enable
- 	 * @return array 
+ 	 * @return array
  	 */
  	public function getList($enable = False)
  	{
@@ -78,10 +78,10 @@
  	    }
  	    return $listHost;
  	}
- 	
+
  	/**
  	 * Get the list of host children for a host
- 	 * 
+ 	 *
  	 * @param int $hostId The parent host id
  	 * @param bool $withHg If use hostgroup relation (not use yet)
  	 * @return array
@@ -107,10 +107,10 @@
  	    }
  	    return $listHostChildren;
  	}
- 	
+
  	/**
  	 * Get the relation tree
- 	 * 
+ 	 *
  	 * @param bool $withHg If use hostgroup relation (not use yet)
  	 * @return array
  	 */
@@ -134,10 +134,10 @@
  	    }
  	    return $listHostRelactionTree;
  	}
- 	
+
  	/**
  	 * Get list of services for a host
- 	 * 
+ 	 *
  	 * @param int $hostId The host id
  	 * @param bool $withHg If use hostgroup relation
  	 * @return array
@@ -190,10 +190,10 @@
  	    }
  	    return $listServices;
  	}
- 	
+
  	/**
  	 * Get the relation tree for host / service
- 	 * 
+ 	 *
  	 * @param bool $withHg With Hostgroup
  	 * @return array
  	 */
@@ -203,13 +203,25 @@
  	     * Get service for a host
  	     */
  	    $queryGetServices = 'SELECT hsr.host_host_id, s.service_id, s.service_description
- 	    	FROM service s, host_service_relation hsr, host h
- 	    	WHERE s.service_id = hsr.service_service_id
- 	    		AND s.service_register = "1"
- 	    		AND s.service_activate = "1"
- 	    		AND h.host_id = hsr.host_host_id
- 	    		AND h.host_register = "1"
- 	    		AND h.host_activate = "1"';
+                 	    	 FROM service s, host_service_relation hsr, host h
+                 	    	 WHERE s.service_id = hsr.service_service_id
+                			 AND s.service_register = "1"
+                			 AND s.service_activate = "1"
+                			 AND h.host_id = hsr.host_host_id
+                			 AND h.host_register = "1"
+                			 AND h.host_activate = "1" ';
+ 	    if ($withHg == true) {
+    	    $queryGetServices .= ' UNION
+								   SELECT hgr.host_host_id, s.service_id, s.service_description
+								   FROM service s, host_service_relation hsr, host h, hostgroup_relation hgr
+							       WHERE s.service_id = hsr.service_service_id
+							  	   AND s.service_register =  "1"
+							  	   AND s.service_activate =  "1"
+							 	   AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+							 	   AND hgr.host_host_id = h.host_id
+							 	   AND h.host_register =  "1"
+							 	   AND h.host_activate =  "1"';
+ 	    }
  	    $res = $this->db->query($queryGetServices);
  	    if (PEAR::isError($res)) {
  	        return array();
@@ -221,35 +233,9 @@
  	        }
  	        $listServices[$row['host_host_id']][$row['service_id']] = $row['service_description'];
  	    }
- 	    /*
- 	     * With hostgroup
- 	     */
- 	    if ($withHg) {
-     	    $queryGetServicesWithHg = 'SELECT hgr.host_host_id, s.service_id, s.service_description
-     	    	FROM service s, host_service_relation hsr, hostgroup_relation hgr, host h, hostgroup hg
-     	    	WHERE s.service_id = hsr.service_service_id
-     	    		AND s.service_register = "1"
-     	    		AND s.service_activate = "1"
-     	    		AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
-     	    		AND h.host_id = hgr.host_host_id
-     	    		AND h.host_register = "1"
-     	    		AND h.host_activate = "1"
-     	    		AND hg.hg_id = hgr.hostgroup_hg_id
-     	    		AND hg.hg_activate = "1"';
-     	    $res = $this->db->query($queryGetServices);
-     	    if (PEAR::isError($res)) {
-     	        return array();
-     	    }
-     	    while ($row = $res->fetchRow()) {
-     	        if (!isset($listServices[$row['host_host_id']])) {
-     	            $listServices[$row['host_host_id']] = array();
-     	        }
-     	        $listServices[$row['host_host_id']][$row['service_id']] = $row['service_description'];
-     	    }
- 	    }
  	    return $listServices;
  	}
- 	
+
 	/**
 	 * Method that returns a hostname from host_id
 	 *
