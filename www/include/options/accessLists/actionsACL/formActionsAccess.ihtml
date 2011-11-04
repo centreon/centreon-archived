@@ -65,6 +65,7 @@
 		<tr class="list_one"><td class="FormRowField">{$form.host_flap_detection.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_flap_detection.html}</p></td></tr>	
 		<tr class="list_two"><td class="FormRowField">{$form.host_checks_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_checks_for_services.html}</p></td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.host_notifications_for_services.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_notifications_for_services.html}</p></td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.host_submit_result.label}</td><td class="FormRowValue"><p class="oreonbutton">{$form.host_submit_result.html}</p></td></tr>
 										 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.acl_action_activate.label}</td><td class="FormRowValue">{$form.acl_action_activate.html}</td></tr>

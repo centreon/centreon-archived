@@ -130,7 +130,7 @@
 	$form->addElement('checkbox', 'host_flap_detection', _("Enable/Disable Flap Detection for a host"));
 	$form->addElement('checkbox', 'host_notifications_for_services', _("Enable/Disable Notifications services of a host"));
 	$form->addElement('checkbox', 'host_checks_for_services', _("Enable/Disable Checks services of a host"));
-
+	$form->addElement('checkbox', 'host_submit_result', _("Submit result for a host"));
 
 	# Global Nagios External Commands
 	$form->addElement('checkbox', 'global_shutdown', _("Shutdown Nagios"));

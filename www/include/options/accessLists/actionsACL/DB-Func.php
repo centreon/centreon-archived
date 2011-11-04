@@ -301,7 +301,6 @@
 		$actions[] = "host_notifications_for_services";
 		$actions[] = "host_submit_result";
 
-
 		# Global Nagios External Commands
 		$actions[] = "global_shutdown";
 		$actions[] = "global_restart";
