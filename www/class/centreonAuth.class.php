@@ -137,18 +137,18 @@ class CentreonAuth {
 			if ($this->passwdOk == -1) {
 				if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
 					$this->passwdOk = 1;
-					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
+					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
 				} else if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
 					$this->passwdOk = 1;
-					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
+					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
 				} else {
 					$this->passwdOk = 0;
 				}
 			} elseif ($this->passwdOk == 1) {
 			    if (!isset($this->userInfos["contact_passwd"])) {
-			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
+			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
 			    } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
-			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1' LIMIT 1");
+			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
 			    }
 			}
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {

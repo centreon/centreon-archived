@@ -90,7 +90,7 @@
 		$rq = "SELECT DISTINCT graph_id FROM giv_graphs_template WHERE default_tpl1 = '1'";
 		$res = $pearDB->query($rq);
 		if (!$res->numRows())	{
-			$rq = "UPDATE giv_graphs_template SET default_tpl1 = '1' LIMIT 1";
+			$rq = "UPDATE giv_graphs_template SET default_tpl1 = '1' WHERE graph_id = (SELECT MIN(graph_id) FROM giv_graphs_template)";
 			$pearDB->query($rq);
 		}
 	}

@@ -426,7 +426,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8");
 		} else {
-			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."' LIMIT 1 ;";
+			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."';";
 			if ($DEBUG)
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
