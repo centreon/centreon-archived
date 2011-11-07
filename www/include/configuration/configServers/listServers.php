@@ -103,13 +103,13 @@
 		$pollerNumber = 1;
 	}
 	if ($centreon->broker->getBroker() == "broker") {
-		$DBRESULT = $pearDBO->query("SELECT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances LIMIT $pollerNumber");
+		$DBRESULT = $pearDBO->query("SELECT DISTINCT instance_id, version AS program_version, engine AS program_name, name AS instance_name FROM instances LIMIT $pollerNumber");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
 		}
 		$DBRESULT->free();
 	} else {
-		$DBRESULT = $pearDBNdo->query("SELECT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
+		$DBRESULT = $pearDBNdo->query("SELECT DISTINCT p.instance_id, program_version, program_name, instance_name FROM `".$ndoPrefix."processevents` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id ORDER BY processevent_id DESC LIMIT $pollerNumber");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]]["version"] = $info["program_name"] . " " . $info["program_version"];
 		}
