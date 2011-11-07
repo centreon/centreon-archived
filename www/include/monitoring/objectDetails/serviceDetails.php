@@ -89,7 +89,7 @@
 	$lcaHost["LcaHost"] = $oreon->user->access->getHostServicesName((($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO));
 
 	if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
-		include_once("../errors/alt_error.php");
+		include_once("alt_error.php");
 	} else {
 
 		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '".$host_id."' " .
@@ -197,7 +197,7 @@
 					" s.execution_time as check_execution_time," .
 					" s.flap_detection AS flap_detection_enabled," .
 					" s.last_notification as last_notification," .
-					" h.name AS host_naùe," .
+					" h.name AS host_naï¿½e," .
 					" s.description as service_description, " .
 					" s.notes_url, " .
 					" s.notes, " .
