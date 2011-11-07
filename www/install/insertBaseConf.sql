@@ -816,9 +816,9 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (3, 'PostgreSQL', 'postgresql'),
 (3, 'SQLite', 'sqlite'),
 (3, 'Sysbase', 'tds'),
-(4, 'Base', 'high'),
+(4, 'Base', 'low'),
 (4, 'Detailed', 'medium'),
-(4, 'Very detailed', 'low');
+(4, 'Very detailed', 'high');
 
 --
 -- Contenu de la table `cb_module_relation`
