@@ -36,8 +36,9 @@
  *
  */
 
- 	if (!isset($oreon))
+ 	if (!isset($oreon)) {
  		exit();
+ 	}
 
 	if (isset($_GET["command_id"]))
 		$command_id = $_GET["command_id"];
@@ -86,18 +87,31 @@
 		}
 	} else {
 		$command = $oreon->optGen["nagios_path_plugins"] . $command_name;
-
-		print $command;
-
 	}
 
 	$command = str_replace("#S#", "/", $command);
-	$stdout = shell_exec($command." --help");
-	$msg = str_replace ("\n", "<br />", $stdout);
+	$command = str_replace("#BS#", "\\", $command);
 
-	$attrsText 	= array("size"=>"25");
+	if (!strncmp($command, "/usr/lib/nagios/", strlen("/usr/lib/nagios/"))) {
+	    if (is_dir("/usr/lib64/nagios/")) {
+	        $command = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $command);
+	        $oreon->optGen["nagios_path_plugins"] = str_replace("/usr/lib/nagios/plugins/", "/usr/lib64/nagios/plugins/", $oreon->optGen["nagios_path_plugins"]);
+	    }
+	}
+
+	$tab = split(' ', $command);
+	if (strncmp(realpath($tab[0]), $oreon->optGen["nagios_path_plugins"], strlen($oreon->optGen["nagios_path_plugins"]))) {
+        $msg = _('Error: Cannot Execute this command due to an path security problem.');
+        $command = realpath($tab[0]);
+   	} else {
+   	    $command = realpath($tab[0]);
+    	$stdout = shell_exec(realpath($tab[0])." --help");
+    	$msg = str_replace ("\n", "<br />", $stdout);
+	}
+
+	$attrsText 	= array("size" => "25");
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title',_("Plugin Help"));
+	$form->addElement('header', 'title', _("Plugin Help"));
 
 	/*
 	 * Command information
@@ -120,8 +134,9 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign('command_line', $command." --help");
-	if (isset($msg) && $msg)
+	if (isset($msg) && $msg) {
 		$tpl->assign('msg', $msg);
+	}
 
 	$tpl->display("minHelpCommand.ihtml");
 ?>
