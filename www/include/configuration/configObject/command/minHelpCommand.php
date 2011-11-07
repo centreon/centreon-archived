@@ -86,6 +86,9 @@
 		}
 	} else {
 		$command = $oreon->optGen["nagios_path_plugins"] . $command_name;
+
+		print $command;
+
 	}
 
 	$command = str_replace("#S#", "/", $command);
