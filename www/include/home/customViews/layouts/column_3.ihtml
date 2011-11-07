@@ -1,0 +1,41 @@
+<div class='viewBody'>
+	<div class="widgetBody column_3">		
+		{foreach name=widgetId item=widget from=$widgets}
+			{if $widget.column == 0 || $widget.column > 2}
+			<div class="portlet" name="portlet_{$widget.widget_id}">
+				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
+				<div class="portlet-content" style="overflow: auto;">
+					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%"></iframe>
+				</div>
+			</div>
+			{/if}
+		{/foreach}
+		<div class='portlet invisible-portlet'></div>
+	</div>
+	<div class="widgetBody column_3">
+		{foreach name=widgetId item=widget from=$widgets}
+			{if $widget.column == 1}
+			<div class="portlet" name="portlet_{$widget.widget_id}">
+				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
+				<div class="portlet-content" style="overflow: auto;">
+					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%"></iframe>
+				</div>
+			</div>
+			{/if}
+		{/foreach}
+		<div class='portlet invisible-portlet'></div>
+	</div>
+	<div class="widgetBody column_3">	
+		{foreach name=widgetId item=widget from=$widgets}		
+			{if $widget.column == 2}
+			<div class="portlet" name="portlet_{$widget.widget_id}">
+				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
+				<div class="portlet-content" style="overflow: auto;">
+					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%"></iframe>
+				</div>
+			</div>
+			{/if}
+		{/foreach}
+		<div class='portlet invisible-portlet'></div>
+	</div>
+</div>

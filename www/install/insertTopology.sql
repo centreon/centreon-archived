@@ -226,6 +226,17 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(NULL, 'Configuration', './img/icones/16x16/text_code_colored.gif', 609, 60909, 40, 11, './include/configuration/configCentreonBroker/centreon-broker.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 
 
+INSERT INTO `topology` (topology_name, topology_icone,topology_parent, topology_page, topology_order, topology_group, topology_url, topology_show) VALUES
+('Custom Views', NULL, '1', '103', '1', '1', './include/home/customViews/index.php', '1'),
+('Edit', NULL, '103', '10301', NULL, NULL, './include/home/customViews/form.php', '0'),
+('Share', NULL, '103', '10302', NULL, NULL, './include/home/customViews/shareView.php', '0'),
+('Parameters', NULL, '103', '10303', NULL, NULL, './include/home/customViews/widgetParam.php', '0'),
+('Add Widget', NULL, '103', '10304', NULL, NULL, './include/home/customViews/addWidget.php', '0'),
+('Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
+('Widgets', NULL, '507', NULL, '2', '30', NULL, '1'),
+('Setup', './img/icones/16x16/press.gif', '507', '50702', '30', '30', './include/options/oreon/widgets/widgets.php', '1');
+
+
 -- Update pour les options pouvant etre en readonly
 UPDATE `topology` SET `readonly` = '0' WHERE `topology_page` IN (60101, 60102, 60103, 60201, 60202, 60203, 60206, 60209, 60207, 60205, 60204, 602080, 60301, 60302, 60304, 60305, 60708, 60707, 60703, 60401, 60402, 60403, 60404, 60405, 60406, 60407, 60408, 60409, 60410, 60411);
 

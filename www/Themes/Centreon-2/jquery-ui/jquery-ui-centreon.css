@@ -1,0 +1,26 @@
+/*
+** Jquery portlet style
+*/
+.column_1 { width: 100%; float: left; padding-bottom: 0px; }
+.column_2 { width: 50%; float: left; padding-bottom: 0px; }
+.column_3 { width: 33%; float: left; padding-bottom: 0px; }
+.portlet { margin: 0 1em 1em 0; overflow: hidden; }
+.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor: move ; }
+.portlet-header .ui-icon { float: right; cursor: pointer}
+.ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
+.ui-sortable-placeholder { visibility: hidden; }
+.portlet-content { 
+	padding: 0.4em;
+	width: 100%;
+	border: none;
+}
+.invisible-portlet { margin: 0; padding: 0; width: 0; height: 0; }
+
+.styleTable { border-collapse: separate; width: 100%; }
+.styleTable TD { font-weight: normal !important; padding: .2em; border-width: 0px !important; white-space: nowrap; }
+.styleTable TH { text-align: center; font-size: 12px;}
+.styleTable TD.first, .styleTable TH.first { border-left-width: 0px !important; }
+
+.ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 0.4em; background: none; }
+
+.ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: .1em 1em .1em 2.1em; }

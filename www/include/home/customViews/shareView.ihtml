@@ -1,0 +1,63 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.title}</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2">{$viewerLabel}</td>
+	 	</tr>
+	 	<tr class='list_one'>
+	 		<td class="FormRowValue" colspan="2">
+	 		{foreach name=viewerId item=viewer from=$viewers}
+	 			<div id='viewer_{$viewer.user_id}'>
+	 				{if $viewer.locked == 1}
+	 					{assign var='contactColor' value='red'}
+	 				{else}
+	 					{assign var='contactColor' value='green'}
+	 				{/if}
+		 			<span style='float:left;'><font color='{$contactColor}'>{$viewer.contact_name}</font></span>
+		 			<span style='float:left;' class='removeUser ui-icon ui-icon-close' id='rmUser_{$viewer.user_id}'></span>
+	 			</div>
+	 		{/foreach}
+	 		</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2">{$viewergroupLabel}</td>
+	 	</tr>
+	 	<tr class='list_one'>
+	 		<td class="FormRowValue" colspan="2">
+	 		{foreach name=viewergroupId item=viewergroup from=$viewerGroups}
+	 			<div id='viewergroup_{$viewergroup.usergroup_id}'>
+	 				{if $viewergroup.locked == 1}
+	 					{assign var='contactColor' value='red'}
+	 				{else}
+	 					{assign var='contactColor' value='green'}
+	 				{/if}
+		 			<span style='float:left;'><font color='{$contactColor}'>{$viewergroup.cg_name}</font></span>
+		 			<span style='float:left;' class='removeUsergroup ui-icon ui-icon-close' id='rmUsergroup_{$viewergroup.usergroup_id}'></span>
+	 			</div>
+	 		{/foreach}
+	 		</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
+	 	</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.locked.label}</td>
+			<td class="FormRowValue">{$form.locked.html}</td>
+		</tr>
+		<tr class="list_two">
+			<td class="FormRowField">{$form.user_id.label}</td>
+			<td class="FormRowValue">{$form.user_id.html}</td>
+		</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.usergroup_id.label}</td>
+			<td class="FormRowValue">{$form.usergroup_id.html}</td>
+		</tr>
+	</table>
+	{$form.hidden}
+	<div id="validForm">
+		<p class="oreonbutton">{$form.submit.html}&nbsp;{$form.reset.html}</p>
+	</div>
+</form>

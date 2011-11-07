@@ -1,0 +1,6 @@
+<center>
+	<div id='rotation_timer' style="width: 300px;"></div>
+	<div id='timer_value'></div>
+	<br/>
+	<input type='button' value='Apply' onClick='submitData();'/>
+</center>

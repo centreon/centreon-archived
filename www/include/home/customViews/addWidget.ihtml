@@ -1,0 +1,45 @@
+{$form.javascript}
+<form {$form.attributes}>
+	 <table class="ListTable">
+	 	<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.title}</td>
+	 	</tr>
+	 	<tr class="list_lvl_1">
+	 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
+	 	</tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.widget_title.label}</td>
+			<td class="FormRowValue">{$form.widget_title.html}</td>
+		</tr>
+	</table>
+	<br/>
+	<table class="ListTable">
+		<tr class="ListHeader">
+			<td class="ListColHeaderPicker"></td>
+			<td class="ListColHeaderLeft"></td>
+			<td class="ListColHeaderLeft">Title</td>
+			<td class="ListColHeaderLeft">Version</td>
+			<td class="ListColHeaderLeft">Description</td>			
+			<td class="ListColHeaderLeft">Author</td>
+		</tr>
+		{foreach item=elem from=$widgetModels}
+		{cycle values='list_one,list_two' assign=rowStyle}		
+		<tr class={$rowStyle}>
+			<td class="ListColPicker"><input type='radio' name='widget_model_id' value='{$elem.widget_model_id}'/></td>
+			<td clss="ListColLeft">
+				{if $elem.thumbnail}
+					<img src='{$elem.thumbnail}'/>
+				{/if}
+			</td>
+			<td class="ListColLeft">{$elem.title}</td>
+			<td class="ListColLeft">{$elem.version}</td>
+			<td class="ListColLeft">{$elem.description}</td>			
+			<td class="ListColLeft">{$elem.author}</td>			
+		</tr>		
+		{/foreach}
+	</table>
+	{$form.hidden}
+	<div id="validForm">
+		<p class="oreonbutton">{$form.submit.html}&nbsp;{$form.reset.html}</p>
+	</div>
+</form>

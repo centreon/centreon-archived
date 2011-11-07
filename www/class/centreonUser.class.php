@@ -206,5 +206,52 @@ class CentreonUser	{
   function getMyGMT(){
   	return $this->gmt;
   }
+
+  /**
+   * Get User List
+   *
+   * @return array
+   */
+  public function getUserList()
+  {
+      static $userList;
+
+      if (!isset($userList)) {
+        $userList = array();
+        $res = $this->db->query("SELECT contact_id, contact_name
+        				  FROM contact
+        				  WHERE contact_register = '1'
+        				  AND contact_activate = '1'
+        				  ORDER BY contact_name");
+        while ($row = $res->fetchRow()) {
+            $userList[$row['contact_id']] = $row['contact_name'];
+        }
+      }
+      return $userList;
+  }
+
+  /**
+   * Get Contact Name
+   *
+   * @param int $userId
+   * @param CentreonDB $db
+   * @return string
+   */
+  public function getContactName($db, $userId)
+  {
+      static $userNames;
+
+      if (!isset($userNames)) {
+          $userNames = array();
+          $res = $db->query("SELECT contact_name, contact_id FROM contact");
+          while ($row = $res->fetchRow()) {
+            $userNames[$row['contact_id']] = $row['contact_name'];
+          }
+      }
+      if (isset($userNames[$userId])) {
+        return $userNames[$userId];
+      }
+      return null;
+  }
 } /* end class User */
 ?>

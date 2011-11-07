@@ -1,0 +1,13 @@
+<div class='viewBody'>
+	<div class="widgetBody column_1">
+		{foreach name=widgetId item=widget from=$widgets}		
+			<div class="portlet" name="portlet_{$widget.widget_id}">
+				<div class="portlet-header"><span class='widgetTitle' id='title_{$widget.widget_id}'>{$widget.title}</span></div>					
+				<div class="portlet-content" style="overflow: auto;">
+					<iframe class="portlet-frame" name="widget_{$view_id}_{$widget.widget_id}" frameBorder="0" width="100%"></iframe>
+				</div>
+			</div>		
+		{/foreach}
+		<div class='portlet invisible-portlet'></div>		
+	</div>	
+<div class='viewBody'>
