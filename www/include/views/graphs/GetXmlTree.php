@@ -363,18 +363,16 @@
 					   				(SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL)
 					   	    	OR hg_id IN
 					   	    		(SELECT hostgroup_hg_id FROM hostgroup_relation, host WHERE hostgroup_relation.host_host_id = host.host_id AND
-					   	    		(host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%') ".
-				                $access->queryBuilder("AND", "host_host_id", $hoststr).")
-				           ) ORDER BY `hg_name`";
+					   	    		(host.host_name LIKE '%$search%' OR `host_alias` LIKE '%$search%')))
+					   ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString())."
+					   ORDER BY `hg_name`";
 			} else {
 				$rq = "SELECT hg_id, hg_name
 					   FROM hostgroup
 					   WHERE hg_id NOT IN
-					   		(SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation)
-					   AND (hg_id IN
-					   				(SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_child_id IS NOT NULL)
-					   			OR hg_id IN
-					   				(SELECT hostgroup_hg_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "host_host_id", $hoststr)."))  ORDER BY `hg_name`";
+					   (SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation)
+					   ".$access->queryBuilder("AND", "hg_id", $access->getHostGroupsString())."
+					   ORDER BY `hg_name`";
 			}
 			$DBRESULT = $pearDB->query($rq);
 			while ($HG = $DBRESULT->fetchRow()) {
@@ -406,11 +404,12 @@
 			if ($search != "")
 				$searchSTR = " AND (`host_name` LIKE '%$search%' OR `host_alias` LIKE '%$search%') ";
 			$query = "SELECT DISTINCT * " .
-					"FROM host " .
-					"WHERE host_id NOT IN (SELECT host_host_id FROM hostgroup_relation) " .
-					"AND host_register = '1' $searchSTR " .
-					$access->queryBuilder("AND", "host_id", $hoststr).
-					"ORDER BY host_name";
+					 "FROM host " .
+					 "WHERE (host_id NOT IN (SELECT host_host_id FROM hostgroup_relation ".$access->queryBuilder("WHERE", "hostgroup_hg_id", $access->getHostGroupsString()).")
+					 ) " .
+					 "AND host_register = '1' $searchSTR " .
+					 $access->queryBuilder("AND", "host_id", $hoststr).
+					 "ORDER BY host_name";
 
 			$DBRESULT2 = $pearDB->query($query);
 			while ($host = $DBRESULT2->fetchRow()){
