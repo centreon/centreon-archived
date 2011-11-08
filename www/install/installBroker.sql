@@ -604,7 +604,6 @@ CREATE TABLE IF NOT EXISTS issues_issues_parents (
 --
 CREATE TABLE IF NOT EXISTS logs (
   log_id int NOT NULL auto_increment,
-
   ctime int default NULL,
   host_id int default NULL,
   host_name varchar(255) default NULL,
@@ -619,8 +618,12 @@ CREATE TABLE IF NOT EXISTS logs (
   service_id int default NULL,
   status tinyint(4) default NULL,
   type smallint default NULL,
-
   PRIMARY KEY (log_id),
+  KEY `host_name` (`host_name`(64)),
+  KEY `service_description` (`service_description`(64)),
+  KEY `status` (`status`),
+  KEY `instance` (`instance`),
+  KEY `ctime` (`ctime`),
   FOREIGN KEY (host_id) REFERENCES hosts (host_id)
     ON DELETE SET NULL
 ) ENGINE=MyISAM;
