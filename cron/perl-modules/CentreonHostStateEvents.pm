@@ -159,7 +159,7 @@ sub updateEventEndTime {
 					" WHERE `hoststateevent_id` = ".$eventId;
 			$centstorage->query($query);
 		}
-		$self->insertEventTable($hostId, $state, $lastUpdate, $events);
+		$self->insertEventTable($id, $hostId, $state, $lastUpdate, $events);
 	}
 }
 
