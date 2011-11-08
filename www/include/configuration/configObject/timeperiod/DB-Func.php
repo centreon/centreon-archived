@@ -218,7 +218,8 @@
 	 			$exInput = "exceptionInput_" . $i;
 	 			$exValue = "exceptionTimerange_" . $i;
 	 			if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) && $my_tab[$exInput]) {
-		 			$rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) VALUES ('". $tp_id ."', '". htmlentities($my_tab[$exInput], ENT_QUOTES, "UTF-8") ."', '". htmlentities($my_tab[$exValue], ENT_QUOTES, "UTF-8") ."')";
+		 			$rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`)
+		 				   VALUES ('". $tp_id ."', LOWER('". $pearDB->escape($my_tab[$exInput]) ."'), '". $pearDB->escape($my_tab[$exValue]) ."')";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields[$my_tab[$exInput]] = $my_tab[$exValue];
 					$already_stored[strtolower($my_tab[$exInput])] = 1;
@@ -291,7 +292,8 @@
 	 			$exInput = "exceptionInput_" . $i;
 	 			$exValue = "exceptionTimerange_" . $i;
 	 			if (isset($my_tab[$exInput]) && !isset($already_stored[strtolower($my_tab[$exInput])]) && $my_tab[$exInput]) {
-		 			$rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`) VALUES ('". $tp_id['MAX(tp_id)'] ."', '". htmlentities($my_tab[$exInput], ENT_QUOTES, "UTF-8") ."', '". htmlentities($my_tab[$exValue], ENT_QUOTES, "UTF-8") ."')";
+		 			$rq = "INSERT INTO timeperiod_exceptions (`timeperiod_id`, `days`, `timerange`)
+		 				   VALUES ('". $tp_id['MAX(tp_id)'] ."', LOWER('". $pearDB->escape($my_tab[$exInput]) ."'), '". $pearDB->escape($my_tab[$exValue]) ."')";
 			 		$DBRESULT = $pearDB->query($rq);
 					$fields[$my_tab[$exInput]] = $my_tab[$exValue];
 					$already_stored[strtolower($my_tab[$exInput])] = 1;
