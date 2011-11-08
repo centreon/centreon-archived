@@ -622,7 +622,7 @@ CREATE TABLE IF NOT EXISTS logs (
   KEY `host_name` (`host_name`(64)),
   KEY `service_description` (`service_description`(64)),
   KEY `status` (`status`),
-  KEY `instance` (`instance`),
+  KEY `instance_name` (`instance_name`),
   KEY `ctime` (`ctime`),
   FOREIGN KEY (host_id) REFERENCES hosts (host_id)
     ON DELETE SET NULL
