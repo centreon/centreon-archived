@@ -41,6 +41,34 @@
 	}
 
 	/**
+	 * For ACL
+	 *
+	 * @param CentreonDB $db
+	 * @param int $hostId
+	 * @return null
+	 */
+	function setHostChangeFlag($db, $hostId = null, $hostgroupId = null)
+	{
+        if (isset($hostId)) {
+            $table = "acl_resources_host_relations";
+            $field = "host_host_id";
+            $val = $hostId;
+        } elseif (isset($hostgroupId)) {
+            $table = "acl_resources_hg_relations";
+            $field = "hg_hg_id";
+            $val = $hostgroupId;
+        } else {
+            return null;
+        }
+	    $query = "UPDATE acl_resources SET changed = 1
+        		  WHERE acl_res_id IN (SELECT acl_res_id
+        							   FROM $table
+        							   WHERE $field = ".$db->escape($val).")";
+        $db->query($query);
+        return null;
+	}
+
+	/**
 	 * This is a quickform rule for checking if all the argument fields are filled
 	 *
 	 * @return bool
@@ -278,6 +306,7 @@
 								$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host_id."' AND service_id = '".$key."'");
 							} else {
 								$DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation (host_host_id, service_service_id) VALUES ('$host_id', '".$key."')");
+								setHostChangeFlag($pearDB, $host_id, null);
 							}
 							$lap++;
 						}
@@ -359,8 +388,10 @@
 							# Host duplication case -> Duplicate the Service for the Host we create
 							if ($host) {
 								$pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$host."', NULL, '".$maxId["MAX(service_id)"]."')");
+								setHostChangeFlag($pearDB, $host, null);
 							} elseif ($hostgroup) {
 								$pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$hostgroup."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
+								setHostChangeFlag($pearDB, null, $hostgroup);
 							} else {
 								# Service duplication case -> Duplicate the Service for each relation the base Service have
 								$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id, hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$key."'");
@@ -369,9 +400,11 @@
 								while($service = $DBRESULT->fetchRow()) {
 									if ($service["host_host_id"]) {
 										$DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', NULL, '".$service["host_host_id"]."', NULL, '".$maxId["MAX(service_id)"]."')");
+										setHostChangeFlag($pearDB, $service['host_host_id'], null);
 										$fields["service_hPars"] .= $service["host_host_id"] . ",";
 									} elseif ($service["hostgroup_hg_id"]) {
 										$DBRESULT2 = $pearDB->query("INSERT INTO host_service_relation VALUES ('', '".$service["hostgroup_hg_id"]."', NULL, NULL, '".$maxId["MAX(service_id)"]."')");
+										setHostChangeFlag($pearDB, null, $service["hostgroup_hg_id"]);
 										$fields["service_hgPars"] .= $service["hostgroup_hg_id"] . ",";
 									}
 								}
@@ -1821,6 +1854,7 @@
 				$rq .= "VALUES ";
 				$rq .= "('".$ret2[$i]."', NULL, NULL, '".$service_id."')";
 				$DBRESULT = $pearDB->query($rq);
+				setHostChangeFlag($pearDB, null, $ret2[$i]);
 			}
 		} else if (count($ret1)) {
 			for ($i = 0; $i < count($ret1); $i++)	{
@@ -1829,6 +1863,7 @@
 				$rq .= "VALUES ";
 				$rq .= "(NULL, '".$ret1[$i]."', NULL, '".$service_id."')";
 				$DBRESULT = $pearDB->query($rq);
+				setHostChangeFlag($pearDB, $ret1[$i], null);
 			}
 		}
 	}
@@ -1863,6 +1898,7 @@
 					$rq .= "VALUES ";
 					$rq .= "('".$ret2[$i]."', NULL, NULL, '".$service_id."')";
 					$DBRESULT = $pearDB->query($rq);
+					setHostChangeFlag($pearDB, null, $ret2[$i]);
 				}
 			}
 		else if (count($ret1))
@@ -1876,6 +1912,7 @@
 					$rq .= "VALUES ";
 					$rq .= "(NULL, '".$ret1[$i]."', NULL, '".$service_id."')";
 					$DBRESULT = $pearDB->query($rq);
+					setHostChangeFlag($pearDB, $ret1[$i], null);
 				}
 			}
 	}
