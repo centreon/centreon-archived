@@ -727,6 +727,12 @@
 			$from_list_menu = true;
 		}
 	}
+
+	$argChecker = $form->addElement("hidden", "argChecker");
+    $argChecker->setValue(1);
+    $form->registerRule("argHandler", "callback", "argHandler");
+    $form->addRule("argChecker", _("You must either fill all the arguments or leave them all empty"), "argHandler");
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	#
@@ -802,6 +808,8 @@
 		}
 		$form->freeze();
 		$valid = true;
+	} elseif ($form->isSubmitted()) {
+	    $tpl->assign("argChecker", "<font color='red'>". $form->getElementError("argChecker") . "</font>");
 	}
 
 	$action = $form->getSubmitValue("action");
