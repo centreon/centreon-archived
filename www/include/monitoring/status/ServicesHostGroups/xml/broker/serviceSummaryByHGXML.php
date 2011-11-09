@@ -81,7 +81,7 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias,hg.name, hgm.hostgroup_id, h.host_id, h.state, h.icon_image ".
+	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name as host_name, hg.alias, hg.name as hgname, hgm.hostgroup_id, h.host_id, h.state, h.icon_image ".
 			" FROM hostgroups hg, hosts_hostgroups hgm, hosts h ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
@@ -149,13 +149,13 @@
 		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0") {
 			$tab_final[$ndo["alias"]][$ndo["host_name"]][0] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
 		}
-		$tab_final[$ndo["alias"]][$ndo["host_name"]][1] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 1, $obj);
-		$tab_final[$ndo["alias"]][$ndo["host_name"]][2] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2, $obj);
-		$tab_final[$ndo["alias"]][$ndo["host_name"]][3] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3, $obj);
-		$tab_final[$ndo["alias"]][$ndo["host_name"]][4] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
-		$tab_final[$ndo["alias"]][$ndo["host_name"]]["cs"] = $ndo["state"];
-		$tab_final[$ndo["alias"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
-		$tab_final[$ndo["alias"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]][1] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 1, $obj);
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]][2] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2, $obj);
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]][3] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 3, $obj);
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]][4] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 4, $obj);
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["cs"] = $ndo["state"];
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["hid"] = $ndo["host_id"];
+		$tab_final[$ndo["hgname"]][$ndo["host_name"]]["icon"] = $ndo["icon_image"];
 	}
 	$DBRESULT->free();
 

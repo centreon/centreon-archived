@@ -92,12 +92,17 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT hg.alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs ".
-			" FROM " .$obj->ndoPrefix."hostgroups hg," .$obj->ndoPrefix."hostgroup_members hgm, " .$obj->ndoPrefix."hoststatus hs, " .$obj->ndoPrefix."objects no";
+	$rq1 =	" SELECT SQL_CALC_FOUND_ROWS DISTINCT noo.name1 as alias, no.object_id id, no.name1 as host_name, hgm.hostgroup_id, hgm.host_object_id, hs.current_state hs ".
+			" FROM " .$obj->ndoPrefix."hostgroups hg, ";
 	if (!$obj->is_admin) {
-		$rq1 .= ", centreon_acl ";
+		$rq1 .= " centreon_acl, ";
 	}
+    $rq1 .=    $obj->ndoPrefix."hoststatus hs,
+			" .$obj->ndoPrefix."objects noo,
+			" .$obj->ndoPrefix."hostgroup_members hgm ";
+    $rq1 .= " INNER JOIN " . $obj->ndoPrefix. "objects no ON no.object_id = hgm.host_object_id ";
 	$rq1 .= " WHERE hs.host_object_id = hgm.host_object_id".
+			" AND noo.object_id = hg.hostgroup_object_id " .
 			" AND no.object_id = hgm.host_object_id" .
 			" AND hgm.hostgroup_id = hg.hostgroup_id".
 			" AND no.name1 not like '_Module_%'";
@@ -154,7 +159,8 @@
 	 *
 	 */
 	$rq1 = 	" SELECT DISTINCT no.object_id id, no.name1 as host_name, no.name2 svc_name, nss.current_state svcs " .
-		 	" FROM ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."servicestatus nss ";
+		 	" FROM ".$obj->ndoPrefix."objects no,
+		 	".$obj->ndoPrefix."servicestatus nss ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}

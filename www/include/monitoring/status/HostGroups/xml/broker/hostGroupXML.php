@@ -104,20 +104,20 @@
 	 * Host state
 	 */
 	if ($obj->is_admin) {
-		$rq1 = 	"SELECT hg.alias, h.state, count(h.host_id) AS nb " .
+		$rq1 = 	"SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
 				$searchStr .
-				"GROUP BY hg.alias, h.state";
+				"GROUP BY hg.name, h.state";
 	} else {
-		$rq1 = 	"SELECT hg.alias, h.state, count(h.host_id) AS nb " .
+		$rq1 = 	"SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
 				$searchStr .
 				"AND h.host_id IN (SELECT host_id FROM centreon_acl WHERE group_id IN (".$groupStr.")) " .
-				"GROUP BY hg.alias, h.state";
+				"GROUP BY hg.name, h.state";
 	}
 	$DBRESULT = $obj->DBC->query($rq1);
 	while ($ndo = $DBRESULT->fetchRow()) {
@@ -131,7 +131,7 @@
 	 * Get Services request
 	 */
 	if ($obj->is_admin) {
-			$rq2 = 	"SELECT hg.alias, s.state, count( s.service_id ) AS nb " .
+			$rq2 = 	"SELECT hg.name as alias, s.state, count( s.service_id ) AS nb " .
 					"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
 					"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
 					"AND hhg.host_id = h.host_id " .
@@ -141,7 +141,7 @@
 	} else {
 		$hostStr = $obj->access->getHostsString("ID", $obj->DBC);
 		$svcStr = $obj->access->getServicesString("ID", $obj->DBC);
-		$rq2 = 	"SELECT hg.alias, s.state, count( s.service_id ) AS nb " .
+		$rq2 = 	"SELECT hg.name as alias, s.state, count( s.service_id ) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
 				"AND hhg.host_id = h.host_id " .
