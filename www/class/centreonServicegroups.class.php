@@ -67,8 +67,16 @@
 
 		$services = array();
 		$query = "SELECT host_host_id, service_service_id
-			FROM servicegroup_relation
-			WHERE servicegroup_sg_id = " . $sg_id;
+				  FROM servicegroup_relation
+				  WHERE servicegroup_sg_id = " . $sg_id . "
+				  AND host_host_id IS NOT NULL
+				  UNION
+				  SELECT hgr.host_host_id, hsr.service_service_id
+				  FROM servicegroup_relation sgr, host_service_relation hsr, hostgroup_relation hgr
+				  WHERE sgr.servicegroup_sg_id = " . $sg_id . "
+				  AND sgr.hostgroup_hg_id = hsr.hostgroup_hg_id
+				  AND hsr.service_service_id = sgr.service_service_id
+				  AND sgr.hostgroup_hg_id = hgr.hostgroup_hg_id";
 		$res = $this->DB->query($query);
 		while ($row = $res->fetchRow()) {
 			$services[] = array($row['host_host_id'], $row['service_service_id']);
