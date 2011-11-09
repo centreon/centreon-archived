@@ -155,7 +155,7 @@
 		if ($search != ""){
 			$rq1 .= " AND h.name like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+		$rq1 .= " ORDER BY sg.name, host_name " . $order;
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 		$DBRESULT_PAGINATION = $obj->DBC->query($rq1);

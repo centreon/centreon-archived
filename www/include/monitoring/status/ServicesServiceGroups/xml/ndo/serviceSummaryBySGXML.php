@@ -98,10 +98,14 @@
 	/** **************************************************
 	 * Get Host status
 	 */
-	$rq1 = "SELECT DISTINCT no.name1 as host_name, sg.alias".
-			" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
-			" WHERE ss.service_object_id = sgm.service_object_id".
-			" AND no.object_id = sgm.service_object_id" .
+	$rq1 = "SELECT DISTINCT no.name1 as host_name, sg.alias, noo.name1 as sg_name ".
+			" FROM " .$obj->ndoPrefix."servicegroups sg,
+			" .$obj->ndoPrefix."servicestatus ss,
+			" .$obj->ndoPrefix."objects noo,
+			" .$obj->ndoPrefix."servicegroup_members sgm".
+	        " INNER JOIN " .$obj->ndoPrefix."objects no ON no.object_id = sgm.service_object_id " .
+			" WHERE noo.object_id = sg.servicegroup_object_id".
+	        " AND ss.service_object_id = sgm.service_object_id".
 			" AND sgm.servicegroup_id = sg.servicegroup_id".
 			" AND no.is_active = 1 ";
 
@@ -167,14 +171,18 @@
 		/**  **************************************************
 		 * Host List
 		 */
-		$rq1 = "SELECT DISTINCT sg.alias, no.name1 as host_name".
-				" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
-				" WHERE ss.service_object_id = sgm.service_object_id";
+		$rq1 = "SELECT DISTINCT sg.alias, noo.name1 as sg_name, no.name1 as host_name".
+				" FROM " .$obj->ndoPrefix."servicegroups sg,
+				" .$obj->ndoPrefix."servicestatus ss,
+				" .$obj->ndoPrefix."objects noo,
+				" .$obj->ndoPrefix."servicegroup_members sgm ".
+		        " INNER JOIN ".$obj->ndoPrefix."objects no ON no.object_id = sgm.service_object_id " .
+				" WHERE noo.object_id = sg.servicegroup_object_id " .
+		        " AND ss.service_object_id = sgm.service_object_id ";
 		if ($custom_ndo == 0) {
 			$rq1 .= " AND sg.config_type = 1";
 		}
-		$rq1 .= " AND no.object_id = sgm.service_object_id" .
-				" AND sgm.servicegroup_id = sg.servicegroup_id".
+		$rq1 .= " AND sgm.servicegroup_id = sg.servicegroup_id".
 				" AND no.is_active = 1 ";
 		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0") {
@@ -200,7 +208,7 @@
 		 */
 		if ($search != "")
 			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-		$rq1 .= " ORDER BY sg.alias ASC, no.name1 ".$order." ";
+		$rq1 .= " ORDER BY noo.name1 ASC, no.name1 ".$order." ";
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 		$DBRESULT = $obj->DBNdo->query($rq1);
@@ -208,9 +216,9 @@
 		$sg_table = array();
 		while ($row = $DBRESULT->fetchRow()) {
 		    $host_table[$row["host_name"]] = $row["host_name"];
-			if (!isset($sg_table[$row["alias"]]))
-            	$sg_table[$row["alias"]] = array();
-        	$sg_table[$row["alias"]][$row["host_name"]] = $row["host_name"];
+			if (!isset($sg_table[$row["sg_name"]]))
+            	$sg_table[$row["sg_name"]] = array();
+        	$sg_table[$row["sg_name"]][$row["host_name"]] = $row["host_name"];
 		}
 		$DBRESULT->free();
 
@@ -231,14 +239,18 @@
 		/** **************************************************
 		 * Display all services
 		 */
-		$rq1 = "SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
-				" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
-				" WHERE ss.service_object_id = sgm.service_object_id";
+		$rq1 = "SELECT noo.name1 as sg_name, sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state".
+				" FROM " .$obj->ndoPrefix."servicegroups sg,
+				" .$obj->ndoPrefix."servicestatus ss,
+				" .$obj->ndoPrefix."objects noo,
+				" .$obj->ndoPrefix."servicegroup_members sgm " .
+				" INNER JOIN " . $obj->ndoPrefix . "objects no ON no.object_id = sgm.service_object_id " .
+				" WHERE noo.object_id = sg.servicegroup_object_id";
 		if ($custom_ndo == 0)
 			$rq1 .= " AND sg.config_type = 1";
 
-		$rq1 .= " AND no.object_id = sgm.service_object_id" .
-				" AND sgm.servicegroup_id = sg.servicegroup_id".
+		$rq1 .= " AND sgm.servicegroup_id = sg.servicegroup_id".
+		        " AND sgm.service_object_id = ss.service_object_id".
 				" AND no.name1 IN ($hostList)" .
 				" AND no.is_active = 1 ";
 		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
@@ -266,7 +278,7 @@
 		if ($search != "") {
 			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+		$rq1 .= " ORDER BY noo.name1, host_name " . $order;
 	}
 
 	$obj->XML = new CentreonXML();
@@ -296,8 +308,8 @@
 	$count = 0;
 	$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 	while ($numRows && $tab = $DBRESULT_NDO1->fetchRow()){
-		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
-			if (($h != "" && $h != $tab["host_name"]) || ($sg != $tab["alias"] && $sg != "")) {
+		if (isset($sg_table[$tab["sg_name"]]) && isset($sg_table[$tab["sg_name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
+			if (($h != "" && $h != $tab["host_name"]) || ($sg != $tab["sg_name"] && $sg != "")) {
 				$obj->XML->startElement("h");
 				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 				$obj->XML->writeElement("hn", $h, false);
@@ -319,13 +331,13 @@
 				$obj->XML->endElement();
 				$count++;
 			}
-			if ($sg != $tab["alias"]){
+			if ($sg != $tab["sg_name"]){
 				$nb_service = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 				if ($flag)
 					$obj->XML->endElement();
-				$sg = $tab["alias"];
+				$sg = $tab["sg_name"];
 				$obj->XML->startElement("sg");
-				$obj->XML->writeElement("sgn", $tab["alias"]);
+				$obj->XML->writeElement("sgn", $tab["sg_name"]);
 				$obj->XML->writeElement("o", $ct);
 				$flag = 1;
 			}
@@ -338,7 +350,7 @@
 			}
 
 			$nb_service[$tab["current_state"]]++;
-			$sg = $tab["alias"];
+			$sg = $tab["sg_name"];
 		}
 	}
 	if (isset($hs)) {

@@ -95,10 +95,14 @@
 	/** **********************************************
 	 * Prepare pagination
 	 */
-	$rq1 = "SELECT DISTINCT no.name1 as host_name, sg.alias".
-		" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
-		" WHERE ss.service_object_id = sgm.service_object_id".
-		" AND no.object_id = sgm.service_object_id" .
+	$rq1 = "SELECT DISTINCT no.name1 as host_name, sg.alias, noo.name1 as sg_name ".
+		" FROM " .$obj->ndoPrefix."servicegroups sg,
+		" .$obj->ndoPrefix."servicestatus ss,
+		" .$obj->ndoPrefix."objects noo,
+		" .$obj->ndoPrefix."servicegroup_members sgm".
+		" INNER JOIN " .$obj->ndoPrefix."objects no ON no.object_id = sgm.service_object_id " .
+		" WHERE noo.object_id = sg.servicegroup_object_id".
+		" AND ss.service_object_id = sgm.service_object_id".
 		" AND sgm.servicegroup_id = sg.servicegroup_id" .
 		" AND no.is_active = 1 AND no.objecttype_id = 2";
 
@@ -181,15 +185,19 @@
 		/** ******************************************
 		 * Get all informations
 		 */
-		$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, no.name1 as host_name".
-		" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
-		" WHERE ss.service_object_id = sgm.service_object_id";
+		$rq1 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, no.name1 as host_name, noo.name1 as sg_name ".
+			   " FROM " .$obj->ndoPrefix."servicegroups sg,
+			   " .$obj->ndoPrefix."servicestatus ss,
+			   " .$obj->ndoPrefix."objects noo,
+			   " .$obj->ndoPrefix."servicegroup_members sgm ".
+		       " INNER JOIN ".$obj->ndoPrefix."objects no ON no.object_id = sgm.service_object_id " .
+			   " WHERE noo.object_id = sg.servicegroup_object_id".
+			   " AND ss.service_object_id = sgm.service_object_id".
+			   " AND sgm.servicegroup_id = sg.servicegroup_id ";
 		if ($custom_ndo == 0)
 			$rq1 .= " AND sg.config_type = 1";
 
-		$rq1 .= " AND no.object_id = sgm.service_object_id" .
-		" AND sgm.servicegroup_id = sg.servicegroup_id" .
-		" AND no.is_active = 1 AND no.objecttype_id = 2";
+		$rq1 .= " AND no.is_active = 1 AND no.objecttype_id = 2";
 
 		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 
@@ -211,7 +219,7 @@
 		if ($search != ""){
 			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+		$rq1 .= " ORDER BY noo.name1, host_name " . $order;
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 		$DBRESULT_PAGINATION = $obj->DBNdo->query($rq1);
@@ -219,9 +227,9 @@
 		$sg_table = array();
 		while ($row = $DBRESULT_PAGINATION->fetchRow()) {
 		    $host_table[$row["host_name"]] = $row["host_name"];
-			if (!isset($sg_table[$row["alias"]]))
-            	$sg_table[$row["alias"]] = array();
-        	$sg_table[$row["alias"]][$row["host_name"]] = $row["host_name"];
+			if (!isset($sg_table[$row["sg_name"]]))
+            	$sg_table[$row["sg_name"]] = array();
+        	$sg_table[$row["sg_name"]][$row["host_name"]] = $row["host_name"];
 		}
 		$DBRESULT_PAGINATION->free();
 
@@ -241,16 +249,20 @@
 		/** *****************************************
 		 * Prepare Finale Request
 		 */
-		$rq1 =	"SELECT sg.alias, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state, ss.service_object_id ".
-			" FROM " .$obj->ndoPrefix."servicegroups sg," .$obj->ndoPrefix."servicegroup_members sgm, " .$obj->ndoPrefix."servicestatus ss, " .$obj->ndoPrefix."objects no".
-			" WHERE ss.service_object_id = sgm.service_object_id";
-			if ($custom_ndo == 0) {
-				$rq1 .= " AND sg.config_type = 1";
-			}
-			$rq1 .= " AND no.object_id = sgm.service_object_id" .
-			" AND sgm.servicegroup_id = sg.servicegroup_id" .
-			" AND no.name1 IN ($hostList)" .
-			" AND no.is_active = 1 AND no.objecttype_id = 2";
+		$rq1 =	"SELECT sg.alias, noo.name1 as sg_name, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state, ss.service_object_id ".
+				" FROM " .$obj->ndoPrefix."servicegroups sg,
+				" .$obj->ndoPrefix."servicestatus ss,
+				" .$obj->ndoPrefix."objects noo,
+				" .$obj->ndoPrefix."servicegroup_members sgm ".
+		 		" INNER JOIN ".$obj->ndoPrefix."objects no ON no.object_id = sgm.service_object_id " .
+				" WHERE noo.object_id = sg.servicegroup_object_id ".
+			   	" AND ss.service_object_id = sgm.service_object_id ".
+			   	" AND sgm.servicegroup_id = sg.servicegroup_id ";
+        if ($custom_ndo == 0) {
+            $rq1 .= " AND sg.config_type = 1 ";
+        }
+        $rq1 .= " AND no.name1 IN ($hostList)" .
+				" AND no.is_active = 1 AND no.objecttype_id = 2";
 
 		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
 
@@ -272,7 +284,7 @@
 		if ($search != "") {
 			$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name, service_description " . $order;
+		$rq1 .= " ORDER BY noo.name1, host_name, service_description " . $order;
 	}
 
 	/** ***************************************************
@@ -299,17 +311,17 @@
 	$count = 0;
 	$DBRESULT_NDO1 = $obj->DBNdo->query($rq1);
 	while ($tab = &$DBRESULT_NDO1->fetchRow() && $numRows) {
-		if (isset($sg_table[$tab["alias"]]) && isset($sg_table[$tab["alias"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
-			if ($sg != $tab["alias"]) {
+		if (isset($sg_table[$tab["sg_name"]]) && isset($sg_table[$tab["sg_name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
+			if ($sg != $tab["sg_name"]) {
 				$flag = 0;
 				if ($sg != "") {
 					$obj->XML->endElement();
 					$obj->XML->endElement();
 				}
-				$sg = $tab["alias"];
+				$sg = $tab["sg_name"];
 				$h = "";
 				$obj->XML->startElement("sg");
-				$obj->XML->writeElement("sgn", $tab["alias"]);
+				$obj->XML->writeElement("sgn", $tab["sg_name"]);
 				$obj->XML->writeElement("o", $ct);
 			}
 			$ct++;

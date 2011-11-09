@@ -130,7 +130,7 @@
 		/** ******************************************
 		 * Get all informations
 		 */
-		$rq1 = 	"SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, sg.name as name, h.name as host_name".
+		$rq1 = 	"SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, sg.name as sg_name, h.name as host_name".
 				" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ".
 				" WHERE s.service_id = sgm.service_id" .
 				" AND h.host_id = s.host_id" .
@@ -157,7 +157,7 @@
 		if ($search != ""){
 			$rq1 .= " AND h.name like '%" . $search . "%' ";
 		}
-		$rq1 .= " ORDER BY sg.alias, host_name " . $order;
+		$rq1 .= " ORDER BY sg.name, host_name " . $order;
 		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 		$DBRESULT_PAGINATION = $obj->DBC->query($rq1);
@@ -165,10 +165,10 @@
 		$sg_table = array();
 		while ($row = $DBRESULT_PAGINATION->fetchRow()) {
 		    $host_table[$row["host_name"]] = $row["host_name"];
-			if (!isset($sg_table[$row["name"]])) {
-            	$sg_table[$row["name"]] = array();
+			if (!isset($sg_table[$row["sg_name"]])) {
+            	$sg_table[$row["sg_name"]] = array();
 			}
-        	$sg_table[$row["name"]][$row["host_name"]] = $row["host_name"];
+        	$sg_table[$row["sg_name"]][$row["host_name"]] = $row["host_name"];
 		}
 		$DBRESULT_PAGINATION->free();
 
@@ -188,7 +188,7 @@
 		/** *****************************************
 		 * Prepare Finale Request
 		 */
-		$rq1 =	"SELECT sg.alias, sg.name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, " .
+		$rq1 =	"SELECT sg.alias, sg.name as sg_name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, " .
 				"s.state, h.icon_image, h.host_id, h.state AS host_state ".
 				" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h".
 				" WHERE sgm.servicegroup_id = sg.servicegroup_id " .
@@ -247,7 +247,7 @@
 	$count = 0;
 	$DBRESULT = $obj->DBC->query($rq1);
 	while ($tab = $DBRESULT->fetchRow()) {
-		if (isset($sg_table[$tab["name"]]) && isset($sg_table[$tab["name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
+		if (isset($sg_table[$tab["sg_name"]]) && isset($sg_table[$tab["sg_name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
 			if ($sg != $tab["name"]) {
 				$flag = 0;
 				if ($sg != "") {
@@ -257,7 +257,7 @@
 				$sg = $tab["name"];
 				$h = "";
 				$obj->XML->startElement("sg");
-				$obj->XML->writeElement("sgn", $tab["name"]);
+				$obj->XML->writeElement("sgn", $tab["sg_name"]);
 				$obj->XML->writeElement("o", $ct);
 			}
 			$ct++;
