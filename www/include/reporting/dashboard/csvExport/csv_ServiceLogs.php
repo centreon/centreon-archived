@@ -46,6 +46,7 @@
 	require_once $centreon_path . "www/class/centreonDuration.class.php";
 	include_once $centreon_path . "www/include/reporting/dashboard/DB-Func.php";
 
+	session_start();
 	/*
 	 * DB connexion
 	 */
