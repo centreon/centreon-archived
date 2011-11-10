@@ -197,7 +197,7 @@
 					" s.execution_time as check_execution_time," .
 					" s.flap_detection AS flap_detection_enabled," .
 					" s.last_notification as last_notification," .
-					" h.name AS host_na�e," .
+					" h.name AS host_name," .
 					" s.description as service_description, " .
 					" s.notes_url, " .
 					" s.notes, " .
