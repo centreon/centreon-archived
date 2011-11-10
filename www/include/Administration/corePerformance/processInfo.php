@@ -142,7 +142,7 @@
 					"active_host_checks_enabled, passive_host_checks_enabled, event_handlers_enabled, flap_detection_enabled, " .
 					"failure_prediction_enabled, process_performance_data, obsess_over_hosts, obsess_over_services, " .
 					"modified_host_attributes, modified_service_attributes, global_host_event_handler, global_service_event_handler " .
-					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' ORDER BY program_date DESC LIMIT 1";
+					"FROM `". $ndo_base_prefix . "programstatus` ps, `". $ndo_base_prefix . "processevents` pp WHERE ps.instance_id = '".$instance_id."' AND pp.instance_id = '".$instance_id."' ORDER BY event_time DESC LIMIT 1";
 				$DBRESULT3 = $pearDBndo->query($query);
 				$data = $DBRESULT3->fetchRow();
 
