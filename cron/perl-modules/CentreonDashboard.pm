@@ -40,6 +40,10 @@ use warnings;
 
 package CentreonDashboard;
 
+use POSIX;
+use Getopt::Long;
+use Time::Local;
+
 # Constructor
 # parameters:
 # $logger: instance of class CentreonLogger
@@ -146,4 +150,27 @@ sub truncateHostStats {
 	$centstorage->query($query);
 }
 
+# Delete service dashboard stats for a given period
+sub deleteServiceStats {
+	my $self = shift;
+	my $centstorage = $self->{"centstorage"};
+	
+	my ($start, $end) = (shift, shift);
+	my ($day, $month, $year) = (localtime($end))[3,4,5];
+	$end = mktime(0, 0, 0, $day + 1, $month, $year);
+	my $query = "DELETE FROM `log_archive_service` WHERE `date_start`>= ".$start." AND `date_end` <= ".$end;
+	$centstorage->query($query);
+}
+
+# Delete host dashboard stats for a given period
+sub deleteHostStats {
+	my $self = shift;
+	my $centstorage = $self->{"centstorage"};
+	
+	my ($start, $end) = (shift, shift);
+	my ($day, $month, $year) = (localtime($end))[3,4,5];
+	$end = mktime(0, 0, 0, $day + 1, $month, $year);
+	my $query = "DELETE FROM `log_archive_host` WHERE `date_start`>= ".$start." AND `date_end` <= ".$end;
+	$centstorage->query($query);
+}
 1;
