@@ -41,7 +41,7 @@
 
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
- 		
+
 	/*
 	 * Retreive information
 	 */
@@ -100,15 +100,27 @@
 	 */
 	# Contacts comes from DB -> Store in $contacts Array
 	$contacts = array();
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' AND contact_register = 1 ORDER BY contact_name");
+	if ($acl_group_id) {
+        $query = "SELECT contact_id, contact_name
+        		  FROM contact
+        		  WHERE (contact_admin = '0'
+				  OR contact_id IN (SELECT contact_contact_id
+        		  					FROM acl_group_contacts_relations
+        		  					WHERE acl_group_id = ".$pearDB->escape($acl_group_id)."))
+        		  AND contact_register = 1
+        		  ORDER BY contact_name";
+	} else {
+	    $query = "SELECT contact_id, contact_name FROM contact WHERE contact_admin = '0' AND contact_register = 1 ORDER BY contact_name";
+	}
+	$DBRESULT = $pearDB->query($query);
 	while ($contact = $DBRESULT->fetchRow())
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 	unset($contact);
 	$DBRESULT->free();
-	
+
 	$cg = new CentreonContactgroup($pearDB);
 	$contactGroups = $cg->getListContactgroup(true);
-	
+
 	# topology comes from DB -> Store in $contacts Array
 	$menus = array();
 	$DBRESULT = $pearDB->query("SELECT acl_topo_id, acl_topo_name FROM acl_topology ORDER BY acl_topo_name");
