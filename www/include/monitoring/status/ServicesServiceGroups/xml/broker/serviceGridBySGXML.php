@@ -248,13 +248,13 @@
 	$DBRESULT = $obj->DBC->query($rq1);
 	while ($tab = $DBRESULT->fetchRow()) {
 		if (isset($sg_table[$tab["sg_name"]]) && isset($sg_table[$tab["sg_name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
-			if ($sg != $tab["name"]) {
+			if ($sg != $tab["sg_name"]) {
 				$flag = 0;
 				if ($sg != "") {
 					$obj->XML->endElement();
 					$obj->XML->endElement();
 				}
-				$sg = $tab["name"];
+				$sg = $tab["sg_name"];
 				$h = "";
 				$obj->XML->startElement("sg");
 				$obj->XML->writeElement("sgn", $tab["sg_name"]);
