@@ -44,7 +44,7 @@ use Time::Local;
 
 # variables from external packages
 use vars qw ($mysql_database_oreon $mysql_database_ods $mysql_database_status $mysql_host $mysql_user $mysql_passwd);
-require "/etc/centreon/conf.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 # Packages used as classes
 require "@INSTALL_DIR_CENTREON@/cron/perl-modules/CentreonLogger.pm";
