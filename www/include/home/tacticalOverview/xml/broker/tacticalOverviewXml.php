@@ -104,6 +104,7 @@
 			" AND state <> 0" .
 			" AND acknowledged = 0" .
 			" AND scheduled_downtime_depth = 0" .
+			" AND name NOT LIKE '_Module_%' " .
 			" ORDER by state LIMIT ". $hostLimit;
 	$resNdoHosts = $dbb->query($rq1);
 
@@ -171,6 +172,7 @@
 	        " scheduled_downtime_depth " .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
+	        " AND name NOT LIKE '_Module_%' " .
 			" AND (acknowledged = 1 OR " .
 	        " scheduled_downtime_depth > 0) ".
 			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
