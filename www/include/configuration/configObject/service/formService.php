@@ -732,8 +732,8 @@
 			$form->addRule('service_normal_check_interval', _("Required Field"), 'required');
 			$form->addRule('service_retry_check_interval', _("Required Field"), 'required');
 			$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-			$form->addRule('service_notification_interval', _("Required Field"), 'required');
-			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
+			//$form->addRule('service_notification_interval', _("Required Field"), 'required');
+			//$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
 			$form->addRule('service_notifOpts', _("Compulsory Option"), 'required');
 			if (!$form->getSubmitValue("service_hPars")) {
 				$form->addRule('service_hgPars', _("HostGroup or Host Required"), 'required');
