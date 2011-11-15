@@ -156,6 +156,36 @@
 	{
 		$request = "INSERT INTO acl_res_group_relations (acl_res_id, acl_group_id) SELECT '$acl_id' AS acl_res_id, acl_group_id FROM acl_res_group_relations WHERE acl_res_id = '$idTD'";
 		$DBRESULT = $pearDB->query($request);
+		//host categories
+		$pearDB->query("INSERT INTO acl_resources_hc_relations (acl_res_id, hc_id)
+						(SELECT $acl_id, hc_id FROM acl_resources_hc_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+		//hostgroups
+		$pearDB->query("INSERT INTO acl_resources_hg_relations (acl_res_id, hg_hg_id)
+						(SELECT $acl_id, hg_hg_id FROM acl_resources_hg_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+
+		//host exceptions
+		$pearDB->query("INSERT INTO acl_resources_hostex_relations (acl_res_id, host_host_id)
+						(SELECT $acl_id, host_host_id FROM acl_resources_hostex_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+
+		//hosts
+		$pearDB->query("INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id)
+						(SELECT $acl_id, host_host_id FROM acl_resources_host_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+
+		//meta
+		$pearDB->query("INSERT INTO acl_resources_meta_relations (acl_res_id, meta_id)
+						(SELECT $acl_id, meta_id FROM acl_resources_meta_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+
+		//poller
+		$pearDB->query("INSERT INTO acl_resources_poller_relations (acl_res_id, poller_id)
+						(SELECT $acl_id, poller_id FROM acl_resources_poller_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+
+		//service categories
+		$pearDB->query("INSERT INTO acl_resources_sc_relations (acl_res_id, sc_id)
+						(SELECT $acl_id, sc_id FROM acl_resources_sc_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
+
+		//service groups
+		$pearDB->query("INSERT INTO acl_resources_sg_relations (acl_res_id, sg_id)
+						(SELECT $acl_id, sg_id FROM acl_resources_sg_relations WHERE acl_res_id = ".$pearDB->escape($idTD).")");
 	}
 
 	/**

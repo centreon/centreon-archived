@@ -97,12 +97,12 @@
 					$DBRESULT = $pearDB->query("SELECT MAX(acl_topo_id) FROM acl_topology");
 					$maxId = $DBRESULT->fetchRow();
 					$DBRESULT->free();
-					if (isset($maxId["MAX(lca_id)"]))	{
-						$DBRESULT = $pearDB->query("SELECT DISTINCT topology_topology_id FROM acl_topology_relations WHERE acl_topo_id = '".$key."'");
-						while ($sg = $DBRESULT->fetchRow())	{
-							$DBRESULT2 = $pearDB->query("INSERT INTO acl_topology_relations VALUES ('', '".$maxId["MAX(acl_topo_id)"]."', '".$sg["topology_topology_id"]."')");
-						}
-						$DBRESULT->free();
+				    if (isset($maxId["MAX(acl_topo_id)"]))	{
+						$maxTopoId = $maxId['MAX(acl_topo_id)'];
+						$pearDB->query("INSERT INTO acl_topology_relations (acl_topo_id, topology_topology_id, access_right)
+										(SELECT $maxTopoId, topology_topology_id, access_right FROM acl_topology_relations WHERE acl_topo_id = ".$pearDB->escape($key).")");
+                        $pearDB->query("INSERT INTO acl_group_topology_relations (acl_topology_id, acl_group_id)
+										(SELECT $maxTopoId, acl_group_id FROM acl_group_topology_relations WHERE acl_topology_id = ".$pearDB->escape($key).")");
 					}
 				}
 			}
