@@ -123,6 +123,7 @@
 				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 " .
 					"AND noo.name1 IN (SELECT host_name FROM centreon_acl WHERE group_id IN (" . $groupStr . ")) " .
 					"AND noo.name2 IS NULL $searchStr" .
+		        $obj->access->queryBuilder("AND", "hgo.name1", $obj->access->getHostGroupsString("NAME")).
 				"AND nhg.hostgroup_object_id = hgo.object_id " .
 				"GROUP BY hgo.name1, nhs.current_state";
 	}
@@ -158,6 +159,7 @@
 				"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
 				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2
 				AND no.name1 IN (".$hostStr.") AND no.name2 IN (".$svcStr. ") ". $searchStr .
+		        $obj->access->queryBuilder("AND", "hgo.name1", $obj->access->getHostGroupsString("NAME")).
 				"AND nhg.hostgroup_object_id = hgo.object_id " .
 				"GROUP BY hgo.name1, nss.current_state";
 	}

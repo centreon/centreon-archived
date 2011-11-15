@@ -116,6 +116,7 @@
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
 				$searchStr .
+				$obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
 				"AND h.host_id IN (SELECT host_id FROM centreon_acl WHERE group_id IN (".$groupStr.")) " .
 				"GROUP BY hg.name, h.state";
 	}
@@ -147,6 +148,7 @@
 				"AND hhg.host_id = h.host_id " .
 				"AND h.host_id = s.host_id " .
 			    $searchStr .
+			    $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
 			    "AND h.host_id IN ($hostStr) AND s.service_id IN ($svcStr) " .
 				"GROUP BY hg.alias, s.state";
 	}
