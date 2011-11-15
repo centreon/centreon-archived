@@ -140,6 +140,7 @@ CREATE TABLE IF NOT EXISTS `index_data` (
   `must_be_rebuild` enum('0','1','2') default '0',
   `storage_type` enum('0','1','2') default '2',
   PRIMARY KEY  (`id`),
+  UNIQUE (`host_id`, `service_id`),
   KEY `host_name` (`host_name`),
   KEY `service_description` (`service_description`),
   KEY `host_id` (`host_id`),
@@ -309,6 +310,7 @@ CREATE TABLE IF NOT EXISTS `metrics` (
   `max` float default NULL,
   `locked` enum('0','1') default NULL,
   PRIMARY KEY  (`metric_id`),
+  UNIQUE (`index_id`, `metric_name`),
   KEY `index` (`index_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
