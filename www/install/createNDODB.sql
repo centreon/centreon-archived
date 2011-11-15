@@ -5,13 +5,11 @@
 --
 
 CREATE TABLE IF NOT EXISTS `centreon_acl` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
   `host_id` int(11) DEFAULT NULL,
   `host_name` varchar(255) character set latin1 collate latin1_swedish_ci default NULL,
   `service_id` int(11) DEFAULT NULL,
   `service_description` varchar(255) character set latin1 collate latin1_swedish_ci default NULL,
   `group_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
   KEY `host_name` (`host_name`),
   KEY `service_description` (`service_description`),
   KEY `group_id_by_name` (`group_id`,`host_name`(70),`service_description`(120)),
