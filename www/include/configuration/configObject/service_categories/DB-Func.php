@@ -3,39 +3,39 @@
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
- 
+
 	if (!isset ($oreon))
 		exit ();
 
@@ -70,8 +70,10 @@
 				if (testServiceCategorieExistence($sc_name))	{
 					$val ? $rq = "INSERT INTO `service_categories` VALUES (".$val.")" : $rq = null;
 					$DBRESULT = $pearDB->query($rq);
-					$DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories`");
+					$DBRESULT = $pearDB->query("SELECT MAX(sc_id) as maxid FROM `service_categories`");
 					$maxId = $DBRESULT->fetchRow();
+					$query = "INSERT INTO service_categories_relation (service_service_id, sc_id) (SELECT service_service_id, ".$maxId['maxid']." FROM service_categories_relation WHERE sc_id = ".$pearDB->escape($key).")";
+					$pearDB->query($query);
 				}
 			}
 		}
@@ -96,7 +98,7 @@
 			$DBRESULT = $pearDB->query("UPDATE service_categories SET sc_activate = '0' WHERE sc_id = '".$key."'");
 		}
 	}
-	
+
 	function insertServiceCategorieInDB(){
 		global $pearDB;
 		if (testServiceCategorieExistence($_POST["sc_name"])){
@@ -106,13 +108,13 @@
         }
         updateServiceCategoriesServices($data["MAX(sc_id)"]);
 	}
-	
+
 	function updateServiceCategorieInDB(){
 		global $pearDB;
 		$DBRESULT = $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
 		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES, "UTF-8"));
 	}
-	
+
 	function deleteServiceCategorieInDB($sc_id = NULL){
 		global $pearDB;
 		$select = $_POST["select"];
@@ -120,11 +122,11 @@
 			$DBRESULT = $pearDB->query("DELETE FROM `service_categories` WHERE `sc_id` = '".$key."'");
 		}
 	}
-	
+
 	function updateServiceCategoriesServices($sc_id)	{
 		global $pearDB, $form;
 
-		if (!$sc_id) 
+		if (!$sc_id)
 			return;
 
 		$DBRESULT = $pearDB->query("DELETE FROM service_categories_relation WHERE sc_id = '".$sc_id."' AND service_service_id IN (SELECT service_id FROM service WHERE service_register = '0')");
