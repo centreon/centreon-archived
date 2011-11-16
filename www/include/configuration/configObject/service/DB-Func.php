@@ -172,15 +172,27 @@
 		if (isset($form)) {
 			$id = $form->getSubmitValue('service_id');
 		}
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id FROM service WHERE service_register = '0' AND service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
+		$DBRESULT = $pearDB->query("SELECT service_description, service_id
+									FROM service
+									WHERE service_register = '0'
+									AND service_description = '".CentreonDB::escape($centreon->checkIllegalChar($name))."'");
 		$service = $DBRESULT->fetchRow();
-		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $service["service_id"] == $id) {
-			return true;
-		} elseif ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) { #Duplicate entry
-			return false;
+	    $nbRows = $DBRESULT->numRows();
+		//Modif case
+		if (isset($id)) {
+    		if ($nbRows >= 1 && $service["service_id"] == $id) {
+    			return true;
+    		} elseif ($nbRows >= 1 && $service["service_id"] != $id) { //Duplicate entry
+    			return false;
+    		} else {
+    			return true;
+    		}
 		} else {
-			return true;
+		    if ($nbRows >= 1) {
+		        return true;
+		    } else {
+		        return false;
+		    }
 		}
 	}
 
