@@ -625,10 +625,7 @@ sub syncTraps($) {
 
             if ($ls > 1) {
                 `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-                writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);
-                my $cmd = "$ssh -q ".$ns_server->{'ns_ip_address'}." -p $port 'sed -i s/centTrapHandler-2\.x/centTrapHandlerForPoller-2\.x/ /etc/snmp/centreon_traps/*.conf'";
-                `$cmd`;
-                writeLogFile($cmd) if ($debug);
+                writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);                
             }
         }
     } else {
@@ -655,10 +652,7 @@ sub syncTraps($) {
 
                     if ($ls > 1) {
                         `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-                        writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);
-                        my $cmd = "$ssh -q ".$ns_server->{'ns_ip_address'}." -p $port 'sed -i s/centTrapHandler-2\.x/centTrapHandlerForPoller-2\.x/ /etc/snmp/centreon_traps/*.conf'";
-                        `$cmd`;
-                        writeLogFile($cmd) if ($debug);
+                        writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);                        
                     }
                 }
 
