@@ -109,7 +109,7 @@ function printDebug($xml)
         $str .= "<a href='#' onClick=\"toggleDebug('".$pollerId."'); return false;\"/>";
         $str .= $toggler . "</a> ";
         $str .= "<b><font color='$pollerNameColor'>".$tab_server[$pollerId]['name'] . "</font></b><br/>";
-        $str .= "<div style='display: $show;' id='debug_".$pollerId."'>".$message . "</div><br/>";
+        $str .= "<div style='display: $show;' id='debug_".$pollerId."'>".htmlentities($message) . "</div><br/>";
     }
     $xml->text($str);
     $xml->endElement();
