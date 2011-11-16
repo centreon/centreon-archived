@@ -143,7 +143,7 @@
 	$tabOrder["service_description"]= " ORDER BY service_description ". $order.", host_name";
 	$tabOrder["current_state"] 		= " ORDER BY nss.current_state ". $order.", host_name, service_description";
 	$tabOrder["last_state_change"] 	= " ORDER BY nss.last_state_change ". $order.", host_name, service_description";
-	$tabOrder["last_hard_state_change"] = " ORDER by nss.last_hard_state_change ". $order.",no.name1,no.name2";
+	$tabOrder["last_hard_state_change"] = " ORDER by nss.last_hard_state_change ". $order.", host_name, service_description";
 	$tabOrder["last_check"] 		= " ORDER BY nss.last_check ". $order.", host_name, service_description";
 	$tabOrder["current_attempt"] 	= " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description";
 	$tabOrder["default"] 			= " ORDER BY host_name ". $order ;
