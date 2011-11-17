@@ -2047,7 +2047,7 @@
 			require_once $path."../configObject/service/DB-Func.php";
 		}
 
-		$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2);
+		$DBRESULT = $pearDB->query("SELECT host_tpl_id FROM `host_template_relation` WHERE host_host_id = " . $hID2 . " ORDER BY `order`");
 		while ($hTpl = $DBRESULT->fetchRow()) {
 			$rq2 = "SELECT service_service_id, service_register FROM `host_service_relation`, service WHERE service_service_id = service_id AND host_host_id = '" . $hTpl['host_tpl_id']."'";
 			$DBRESULT2 = $pearDB->query($rq2);
