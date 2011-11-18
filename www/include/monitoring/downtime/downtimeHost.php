@@ -71,11 +71,18 @@
 			require_once($path."AddHostDowntime.php");
 			break;
 		case "dh" :
+		    if (isset($_POST["select"])) {
+		        $ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
+		        deleteDowntimeFromDb($oreon, $_POST['select']);
+		    }
+			require_once($path."viewHostDowntime.php");
+			break;
+		case "ch" :
 			$ecObj->DeleteDowntime("HOST", isset($_POST["select"]) ? $_POST["select"] : array());
 			require_once($path."viewHostDowntime.php");
 			break;
 		case "vh" :
-			require_once($path."viewHostDowntime.php");
+		    require_once($path."viewHostDowntime.php");
 			break;
 		default :
 			require_once($path."viewHostDowntime.php");

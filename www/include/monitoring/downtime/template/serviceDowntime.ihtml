@@ -39,6 +39,10 @@
 		<td class="ListColHeaderCenter">{$dtm_comment}</td>
 		<td class="ListColHeaderCenter">{$dtm_started}</td>
 		<td class="ListColHeaderCenter">{$dtm_fixed}</td>
+		{if $view_all == '1'}
+			<td class="ListColHeaderCenter">{$dtm_service_cancelled}</td>
+			<td class="ListColHeaderCenter">{$dtm_service_actual_end}</td>
+		{/if}
 	</tr>
 	{foreach item=tds from=$tab_downtime_svc}
 	<tr class={cycle values="list_two, list_one"}>
@@ -52,11 +56,25 @@
 		<td class="ListColLeft">{$tds.comment_data}</td>
 		<td class="ListColCenter" width="50">{$tds.was_started}</td>
 		<td class="ListColCenter" width="50">{$tds.is_fixed}</td>
+		{if $view_all == '1'}
+			<td class="ListColCenter" width="50">{$tds.was_cancelled}</td>
+			<td class="ListColRight" width="50">{$tds.actual_end_time}</td>
+		{/if}
 	</tr>
 	{/foreach}
 	<tr>
-		<td class="ListColFooterLeft" align="left" colspan="2">&nbsp;<input type="hidden" name="o" value="ds"><input type="submit" name="{$delete}" value="{$delete}" style="margin-left: 20px;" onclick="return confirm('{$msgs.delConfirm}')"></td>
-		<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
+		<td class="ListColFooterLeft" align="left" colspan="2">
+			<select name="o" onChange="javascript: doAction(this, this.value); return true;">
+				<option value=0></option>
+				<option value="cs">{$cancel}</option>
+				<option value="ds">{$delete}</option>
+			</select>
+		</td>
+		{if $view_all == '1'}
+			<td class="ListColFooterCenter" colspan="9">&nbsp;</td>
+		{else}		
+			<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
+		{/if}
 		<td class="ListColFooterRight" align="right">&nbsp;</td>
 	</tr>	
 </table>	

@@ -109,19 +109,22 @@
 	 */
 	if ($view_all == 1) {
 		$downtimeTable = "downtimehistory";
+		if ($oreon->broker->getBroker() == "ndo") {
+		    $extrafields = ", UNIX_TIMESTAMP(dtm.actual_end_time) as actual_end_time, was_cancelled ";
+		} else {
+		    $extrafields = ", end_time as actual_end_time, cancelled as was_cancelled ";
+		}
 	} else {
 		$downtimeTable = "scheduleddowntime";
+		$extrafields = "";
 	}
 	if ($oreon->broker->getBroker() == "ndo") {
 		if ($is_admin) {
-			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
+			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " . $extrafields .
 					"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
 					"WHERE obj.name1 IS NOT NULL " .
 					"AND obj.name2 IS NOT NULL " .
 					"AND obj.object_id = dtm.object_id ";
-			if ($view_all == 1) {
-			    $request .= "AND dtm.was_cancelled = 0 ";
-			}
 			$request .= (isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
@@ -129,15 +132,12 @@
 					"ORDER BY dtm.actual_start_time DESC " .
 					"LIMIT ".$num * $limit.", ".$limit;
 		} else {
-			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " .
+			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, obj.name2 service_description, was_started " . $extrafields .
 					"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj, centreon_acl " .
 					"WHERE obj.name1 IS NOT NULL " .
 					"AND obj.name2 IS NOT NULL " .
 					"AND obj.object_id = dtm.object_id " .
 					"AND obj.name1 = centreon_acl.host_name ";
-			if ($view_all == 1) {
-			    $request .= "AND dtm.was_cancelled = 0 ";
-			}
 			$request .= (isset($search_service) && $search_service != "" ? "AND obj.name2 LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND obj.name1 LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND dtm.comment_data LIKE '%$search_output%' " : "") .
@@ -160,12 +160,14 @@
 			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id,
 						d.entry_time, duration, d.author as author_name, d.comment_data,
 						d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time,
-						d.started as was_started, h.name as host_name, s.description as service_description " .
+						d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
 					"FROM downtimes d, services s, hosts h " .
 					"WHERE d.service_id  = s.service_id " .
-					"AND s.host_id = h.host_id " .
-					"AND d.cancelled = 0 " .
-					(isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
+					"AND s.host_id = h.host_id ";
+            if (!$view_all) {
+                $request .= "AND d.cancelled = 0 ";
+            }
+            $request .= (isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
 					(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
@@ -175,14 +177,16 @@
 			$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id,
 						d.entry_time, duration, d.author as author_name, d.comment_data,
 						d.fixed as is_fixed, d.start_time as scheduled_start_time, d.end_time as scheduled_end_time,
-						d.started as was_started, h.name as host_name, s.description as service_description " .
+						d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
 					"FROM downtimes d, services s, hosts h, centreon_acl a " .
 					"WHERE d.service_id  = s.service_id " .
 					"AND s.host_id = h.host_id " .
 			        "AND h.host_id = a.host_id " .
-			        "AND a.service_id = s.service_id " .
-					"AND d.cancelled = 0 " .
-					(isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
+			        "AND a.service_id = s.service_id ";
+		    if (!$view_all) {
+                $request .= "AND d.cancelled = 0 ";
+            }
+            $request .= (isset($search_service) && $search_service != "" ? "AND s.description LIKE '%$search_service%' " : "") .
 					(isset($host_name) && $host_name != "" ? "AND h.name LIKE '%$host_name%' " : "") .
 					(isset($search_output) && $search_output != "" ? "AND d.comment_data LIKE '%$search_output%' " : "") .
 					"AND a.group_id IN (".$oreon->user->access->getAccessGroupsString().") " .
@@ -210,6 +214,18 @@
 	foreach ($tab_downtime_svc as $key => $value) {
 		$tab_downtime_svc[$key]["is_fixed"] = $en[$tab_downtime_svc[$key]["is_fixed"]];
 		$tab_downtime_svc[$key]["was_started"] = $en[$tab_downtime_svc[$key]["was_started"]];
+		if ($view_all == 1) {
+		    if (!isset($tab_downtime_svc[$key]["actual_end_time"]) || !$tab_downtime_svc[$key]["actual_end_time"]) {
+		        if ($tab_downtime_svc[$key]["was_cancelled"] == 0) {
+		            $tab_downtime_svc[$key]["actual_end_time"] = _("N/A");
+		        } else {
+		            $tab_downtime_svc[$key]["actual_end_time"] = _("Never Started");
+		        }
+		    } else {
+		        $tab_downtime_svc[$key]["actual_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_svc[$key]["actual_end_time"])." ";
+		    }
+		    $tab_downtime_svc[$key]["was_cancelled"] = $en[$tab_downtime_svc[$key]["was_cancelled"]];
+		}
 	}
 	/*
 	 * Element we need when we reload the page
@@ -238,12 +254,15 @@
 	$tpl->assign("dtm_duration", _("Duration"));
 	$tpl->assign("dtm_started", _("Started"));
 	$tpl->assign("dtm_service_downtime", _("Services Downtimes"));
+	$tpl->assign("dtm_service_cancelled", _("Cancelled"));
+	$tpl->assign("dtm_service_actual_end", _("Actual End"));
 
 	$tpl->assign("secondes", _("s"));
 
 	$tpl->assign("no_svc_dtm", _("No downtime scheduled for services"));
 	$tpl->assign("view_host_dtm", _("View downtimes of hosts"));
 	$tpl->assign("host_dtm_link", "./main.php?p=".$p."&o=vh");
+	$tpl->assign("cancel", _("Cancel"));
 	$tpl->assign("delete", _("Delete"));
 	$tpl->assign("limit", $limit);
 
@@ -264,3 +283,16 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("serviceDowntime.ihtml");
 ?>
+<script type='text/javascript'>
+var msgArr = new Array();
+msgArr['cs'] = '<?php echo addslashes(_("Do you confirm the cancellation ?")); ?>';
+msgArr['ds'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
+
+function doAction(slt, act) {
+	if (confirm(msgArr[act])) {
+		this.form.submit();
+	} else {
+		slt.value = 0;
+	}
+}
+</script>

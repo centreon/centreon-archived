@@ -111,21 +111,24 @@
 
 	if ($view_all == 1) {
 		$downtimeTable = "downtimehistory";
+		if ($oreon->broker->getBroker() == "ndo") {
+		    $extrafields = ", UNIX_TIMESTAMP(dtm.actual_end_time) as actual_end_time, was_cancelled ";
+		} else {
+		    $extrafields = ", end_time as actual_end_time, cancelled as was_cancelled ";
+		}
 	} else {
 		$downtimeTable = "scheduleddowntime";
+		$extrafields = "";
 	}
 
 	if ($oreon->broker->getBroker() == "ndo") {
 		$request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT dtm.internal_downtime_id, unix_timestamp(dtm.entry_time), " .
 				"dtm.duration, dtm.author_name, dtm.comment_data, dtm.is_fixed, unix_timestamp(dtm.scheduled_start_time) AS scheduled_start_time, ".
-				"unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, was_started " .
+				"unix_timestamp(dtm.scheduled_end_time) AS scheduled_end_time, obj.name1 host_name, was_started " . $extrafields .
 				"FROM ".$ndo_base_prefix.$downtimeTable." dtm, ".$ndo_base_prefix."objects obj " .
 				(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
 				"WHERE obj.name1 IS NOT NULL " .
 				"AND obj.name2 IS NULL ";
-	    if ($view_all == 1) {
-		    $request .= "AND dtm.was_cancelled = 0 ";
-        }
 		$request .= (isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND dtm.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
@@ -146,15 +149,15 @@
 	} else {
         $request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, " .
 				"d.duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time AS scheduled_start_time, ".
-				"d.end_time as scheduled_end_time, h.name as host_name, d.started as was_started " .
+				"d.end_time as scheduled_end_time, h.name as host_name, d.started as was_started " . $extrafields .
 				"FROM downtimes d, hosts h " .
 				(isset($hostgroup) && $hostgroup != 0 ? ", ".$ndo_base_prefix."hostgroup_members mb " : "") .
 				"WHERE d.type = 2 " .
+				(isset($view_all) && !$view_all ? "AND d.cancelled = 0 " : "") .
 				(isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND d.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
-				"AND d.cancelled = 0 " .
 				$centreon->user->access->queryBuilder("AND", "h.name", $hostStr) .
 				(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
 				"ORDER BY d.start_time DESC " .
@@ -176,6 +179,18 @@
 	foreach ($tab_downtime_host as $key => $value) {
 		$tab_downtime_host[$key]["is_fixed"] = $en[$tab_downtime_host[$key]["is_fixed"]];
 		$tab_downtime_host[$key]["was_started"] = $en[$tab_downtime_host[$key]["was_started"]];
+	    if ($view_all == 1) {
+            if (!isset($tab_downtime_host[$key]["actual_end_time"]) || !$tab_downtime_host[$key]["actual_end_time"]) {
+                if ($tab_downtime_host[$key]["was_cancelled"] == 0) {
+                    $tab_downtime_host[$key]["actual_end_time"] = _("N/A");
+                } else {
+                    $tab_downtime_host[$key]["actual_end_time"] = _("Never Started");
+                }
+            } else {
+                $tab_downtime_host[$key]["actual_end_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_downtime_host[$key]["actual_end_time"]);
+            }
+            $tab_downtime_host[$key]["was_cancelled"] = $en[$tab_downtime_host[$key]["was_cancelled"]];
+	    }
 	}
 
 	/*
@@ -186,7 +201,10 @@
 	$form->setDefaults($tab);
 
 	if ($centreon->user->access->checkAction("host_schedule_downtime")) {
-		$tpl->assign('msgh', array ("addL"=>"?p=".$p."&o=ah", "addT"=>_("Add a downtime"), "delConfirm"=>_("Do you confirm the deletion ?")));
+		$tpl->assign('msgh', array ("addL"            => "?p=".$p."&o=ah",
+									"addT"            => _("Add a downtime"),
+									"delConfirm"      => _("Do you confirm the deletion ?"),
+		                            "cancelConfirm"   => _("Do you confirm the cancelation?")));
 	}
 
 	$tpl->assign("p", $p);
@@ -203,6 +221,8 @@
 	$tpl->assign("dtm_duration", _("Duration"));
 	$tpl->assign("dtm_started", _("Started"));
 	$tpl->assign("dtm_host_downtime", _("Hosts Downtimes"));
+	$tpl->assign("dtm_host_cancelled", _("Cancelled"));
+	$tpl->assign("dtm_host_actual_end", _("Actual End"));
 
 	$tpl->assign("secondes", _("s"));
 
@@ -210,6 +230,7 @@
 	$tpl->assign("view_svc_dtm", _("View downtimes of services"));
 	$tpl->assign("svc_dtm_link", "./main.php?p=".$p."&o=vs");
 	$tpl->assign("limit", $limit);
+	$tpl->assign("cancel", _("Cancel"));
 	$tpl->assign("delete", _("Delete"));
 
 	$tpl->assign("Host", _("Host Name"));
@@ -249,3 +270,16 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("hostDowntime.ihtml");
 ?>
+<script type='text/javascript'>
+var msgArr = new Array();
+msgArr['ch'] = '<?php echo addslashes(_("Do you confirm the cancellation ?")); ?>';
+msgArr['dh'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
+
+function doAction(slt, act) {
+	if (confirm(msgArr[act])) {
+		this.form.submit();
+	} else {
+		slt.value = 0;
+	}
+}
+</script>

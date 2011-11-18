@@ -71,6 +71,13 @@
 			require_once($path."AddSvcDowntime.php");
 			break;
 		case "ds" :
+		    if (isset($_POST["select"])) {
+		        $ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
+                deleteDowntimeFromDb($oreon, $_POST['select']);
+		    }
+		    require_once($path."viewServiceDowntime.php");
+		    break;
+		case "cs" :
 			$ecObj->DeleteDowntime("SVC", isset($_POST["select"]) ? $_POST["select"] : array());
 			require_once($path."viewServiceDowntime.php");
 			break;
