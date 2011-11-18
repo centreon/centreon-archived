@@ -119,7 +119,7 @@
         $res3 = $db->query($query3);
         if ($res3->numRows()) {
             $row3 = $res3->fetchRow();
-            $valueTab = preg_split('/\!/', $row3['command_command_id_arg']);
+            $valueTab = preg_split('/(?<!\\\)\!/', $row3['command_command_id_arg']);
             if (is_array($valueTab)) {
                 foreach($valueTab as $key => $value) {
                     $nbTmp = $key;
