@@ -45,7 +45,7 @@
 	}
 
 	if (!isset($gopt["batch_cache_path"]) || isset($gopt["batch_cache_path"]) && $gopt["batch_cache_path"] = "NULL") {
-		//$gopt["batch_cache_path"] = "";
+		$gopt["batch_cache_path"] = "";
 	}
 
 	/*
