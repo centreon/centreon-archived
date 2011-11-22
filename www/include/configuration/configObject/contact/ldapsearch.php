@@ -109,7 +109,7 @@
 	$buffer = new CentreonXML();
 	
 	if ($connect) {
-	    $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_timeout, $ldap_search_limit);
+	    $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
 	    $number_returned = count($searchResult);
 		if ($number_returned) {
 			$buffer->startElement("reponse");
