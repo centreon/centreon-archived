@@ -234,7 +234,7 @@ INSERT INTO `topology` (topology_name, topology_icone,topology_parent, topology_
 ('Add Widget', NULL, '103', '10304', NULL, NULL, './include/home/customViews/addWidget.php', '0'),
 ('Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
 ('Widgets', NULL, '507', NULL, '2', '30', NULL, '1'),
-('Setup', './img/icones/16x16/press.gif', '507', '50702', '30', '30', './include/options/oreon/widgets/widgets.php', '1');
+('Setup', './img/icones/16x16/press.gif', '507', '50703', '30', '30', './include/options/oreon/widgets/widgets.php', '1');
 
 
 -- Update pour les options pouvant etre en readonly
