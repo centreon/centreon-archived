@@ -859,6 +859,7 @@
 				$tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
 				$tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
 				$tmpConf["contact_email"] = $tmpContacts["contact_email"][$select_key];
+				$tmpConf["contact_pager"] = $tmpContacts["contact_pager"][$select_key];
 				$tmpConf["contact_oreon"]["contact_oreon"] = "0";
 				$tmpConf["contact_admin"]["contact_admin"] = "0";
 				$tmpConf["contact_type_msg"] = "txt";

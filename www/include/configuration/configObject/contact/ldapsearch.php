@@ -52,10 +52,10 @@
 	} else {
 		$oreon = $_SESSION["centreon"];
 	}
-	
+
 	global $buffer;
 	$pearDB = new CentreonDB();
-	
+
 	/* Debug options */
 	$debug_ldap_import = false;
 	$dbresult = $pearDB->query("SELECT `key`, `value` FROM `options` WHERE `key` IN ('debug_ldap_import', 'debug_path')");
@@ -79,7 +79,7 @@
 	$ldap_base_dn = null;
 	$ldap_search_timeout = null;
 	$ldap_search_limit = null;
-	
+
 	if (isset($_GET["ldap_search_filter"]) && ($_GET["ldap_search_filter"] != "undefined") )
 		$ldap_search_filter = $_GET["ldap_search_filter"];
 	else if (isset($_POST["ldap_search_filter"])  && ($_POST["ldap_search_filter"]!= "undefined"))
@@ -107,7 +107,7 @@
 	}
 
 	$buffer = new CentreonXML();
-	
+
 	if ($connect) {
 	    $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
 	    $number_returned = count($searchResult);
@@ -119,12 +119,12 @@
 					$isvalid = "0";
 					if ($searchResult[$i]["alias"] != "") {
 					    $isvalid = "1";
-					} 
+					}
 
 					$searchResult[$i]["firstname"] = str_replace("'", "", $searchResult[$i]["firstname"]);
 					$searchResult[$i]["firstname"] = str_replace("\"", "", $searchResult[$i]["firstname"]);
 					$searchResult[$i]["firstname"] = str_replace("\'", "\\\'", $searchResult[$i]["firstname"]);
-					
+
 					$searchResult[$i]["lastname"] = str_replace("'", "", $searchResult[$i]["lastname"]);
 					$searchResult[$i]["lastname"] = str_replace("\"", "", $searchResult[$i]["lastname"]);
 					$searchResult[$i]["lastname"] = str_replace("\'", "\\\'", $searchResult[$i]["lastname"]);
@@ -150,6 +150,10 @@
 					$buffer->startElement("mail");
 					$buffer->writeAttribute("isvalid", (($searchResult[$i]['email'] != "") ? "1" : "0" ));
 					$buffer->text($searchResult[$i]['email'], 1, 0);
+					$buffer->endElement();
+					$buffer->startElement('pager');
+					$buffer->writeAttribute("isvalid", (($searchResult[$i]['pager'] != "") ? "1" : "0" ));
+					$buffer->text($searchResult[$i]['pager'], 1, 0);
 					$buffer->endElement();
 					$buffer->startElement("cn");
 					$buffer->writeAttribute("isvalid", (($searchResult[$i]['name'] != '') ? "1" : "0" ));

@@ -28,7 +28,7 @@ function getXhrM(){
             } catch (e) {
                 var xhrM = new ActiveXObject("Microsoft.XMLHTTP");
             }
-	} else { // XMLHttpRequest non support� par le navigateur
+	} else { // XMLHttpRequest non supporté par le navigateur
 		alert("Votre navigateur ne supporte pas les objets XMLHTTPRequest...");
 		var xhrM = false;
 	}
@@ -74,6 +74,7 @@ function LdapSearch(){
 			var _td4 = null;
 			var _td5 = null;
 			var _td6 = null;
+			var _td7 = null;
 			var _dntext = null;
 			var _tr = null;
 
@@ -86,6 +87,7 @@ function LdapSearch(){
     	_td4 = document.createElement('td');
     	_td5 = document.createElement('td');
     	_td6 = document.createElement('td');
+    	_td7 = document.createElement('td');
 
    		_td0.className = "ListColHeaderPicker";
     	_td1.className = "ListColHeaderCenter";
@@ -94,6 +96,7 @@ function LdapSearch(){
     	_td4.className = "ListColHeaderCenter";
     	_td5.className = "ListColHeaderCenter";
     	_td6.className = "ListColHeaderCenter";
+    	_td7.className = "ListColHeaderCenter";
 
 		var cbx = document.createElement("input");
 		cbx.type = "checkbox";
@@ -110,6 +113,7 @@ function LdapSearch(){
 		_td4.appendChild(document.createTextNode('SN'));
 		_td5.appendChild(document.createTextNode('CN'));
 		_td6.appendChild(document.createTextNode('Email'));
+		_td7.appendChild(document.createTextNode('Pager'));
 
     	_tr.appendChild(_td0);
 		_tr.appendChild(_td1);
@@ -118,6 +122,7 @@ function LdapSearch(){
 		_tr.appendChild(_td4);
 		_tr.appendChild(_td5);
 		_tr.appendChild(_td6);
+		_tr.appendChild(_td7);
 		_tbody.appendChild(_tr);
 
 		var infos = reponse.getElementsByTagName("user");
@@ -140,6 +145,11 @@ function LdapSearch(){
 						var _mail = info.getElementsByTagName("mail")[0].firstChild.nodeValue;
 					else
 						var _mail = "-";
+					
+					if 	(info.getElementsByTagName("pager")[0].getAttribute('isvalid') == 1)
+						var _pager = info.getElementsByTagName("pager")[0].firstChild.nodeValue;
+					else
+						var _pager = "-";
 
 					if (info.getElementsByTagName("uid")[0].getAttribute('isvalid') == 1)
 						var _uid = info.getElementsByTagName("uid")[0].firstChild.nodeValue;
@@ -171,6 +181,7 @@ function LdapSearch(){
 	    			_td4 = document.createElement('td');
 	    			_td5 = document.createElement('td');
 	    			_td6 = document.createElement('td');
+	    			_td7 = document.createElement('td');
 	    			_td0.className = "ListColHeaderPicker";
 	    			_td1.className = "ListColHeaderCenter";
 	    			_td2.className = "ListColHeaderCenter";
@@ -178,6 +189,7 @@ function LdapSearch(){
 	    			_td4.className = "ListColHeaderCenter";
 	    			_td5.className = "ListColHeaderCenter";
 	    			_td6.className = "ListColHeaderCenter";
+	    			_td7.className = "ListColHeaderCenter";
 
 					var cbx = document.createElement("input");
 	  				cbx.type = "checkbox";
@@ -223,6 +235,12 @@ function LdapSearch(){
 	  				h_mail.id = "contact_email"+i;
 	  				h_mail.name = "contact_select[contact_email]["+i+"]";
 	  				h_mail.value = _mail;
+	  				
+	  				var h_pager = document.createElement("input");
+	  				h_pager.type = "hidden";
+	  				h_pager.id = "contact_pager"+i;
+	  				h_pager.name = "contact_select[contact_pager]["+i+"]";
+	  				h_pager.value = _pager;
 
 
 					_td0.appendChild(cbx);
@@ -238,6 +256,8 @@ function LdapSearch(){
 					_td5.appendChild(h_cn);
 					_td6.appendChild(document.createTextNode(_mail));
 					_td6.appendChild(h_mail);
+					_td7.appendChild(document.createTextNode(_pager));
+					_td7.appendChild(h_pager);
 
 					_tr.appendChild(_td0);
 					_tr.appendChild(_td1);
@@ -246,6 +266,7 @@ function LdapSearch(){
 					_tr.appendChild(_td4);
 					_tr.appendChild(_td5);
 					_tr.appendChild(_td6);
+					_tr.appendChild(_td7);
 					_tbody.appendChild(_tr);
 
 				//	document.getElementById('ldap_search_result_output').innerHTML = _dn;
