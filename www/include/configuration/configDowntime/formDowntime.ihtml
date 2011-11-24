@@ -10,6 +10,7 @@ var tabsPeriods;
 var periods = 0;
 var listPeriod = 'undefined';
 var msg_err_norelation = '{/literal}{$msg_err_norelation}{literal}';
+var msgErr = new Array();
 
 Ext.onReady(function(){
 {/literal}{if $o != 'w'}{literal}
@@ -102,9 +103,27 @@ function getServices(host_id) {
 	};
 }
 
+/*
+ * Validate form
+ */
 function validForm() {
 	$('msg_err').hide();
 	$('msg_err').innerHTML = '';
+	
+	/*
+	 * Validate period
+	 */ 
+	if (false == validPeriods()) {
+		msgErr.each(function (err) {
+			$('msg_err').innerHTML += '<br/>' + err;
+		});
+		$('msg_err').show();
+		return false;
+	}
+	
+	/*
+	 * Validate relation
+	 */
 	nbRel = $$('select[name="host_relation[]"] > option:selected').length;
 	nbRel = nbRel + $$('select[name="hostgroup_relation[]"] > option:selected').length;
 	nbRel = nbRel + $$('select[name="svc_relation[]"] > option:selected').length;
@@ -114,8 +133,96 @@ function validForm() {
 		$('msg_err').show();
 		return false;
 	}
+	
 	$('form_dt').submit();
 	return true;
+}
+
+/**
+ * Validate period
+ *
+ * @return bool
+ */
+function validPeriods()
+{
+	var valid = true;
+	var periodTypeArray;
+	var periodType;
+	var periodStart;
+	var periodEnd;
+	
+	msgErr = new Array();
+	
+	for (var i = 0; i <= periods; i++) {
+		periodTypeArray = $$('input[name="periods[' + i + '][period_type]"]');
+		periodType = 'undefined';
+		if (periodTypeArray.length > 0) {
+			for (var j = 0; j < periodTypeArray.length; j++) {
+				if (periodTypeArray[j].checked == true) {
+					periodType = periodTypeArray[j].value;
+				}
+			}
+			switch (periodType) {
+				case 'weekly_basis':
+				case 'monthly_basis':
+				case 'specific_date':
+					/*
+					 * Check days
+					 */
+					var nbDays = 0;
+					$$('input[name="periods[' + i +'][days][]"]').each(function(day){
+						if (day.checked == true) {
+							nbDays++;
+						}
+					});
+					if (nbDays == 0 && periodType != 'specific_date') {
+						valid = false;
+						msgErr.push('Error add days ' + i);
+					}
+					/*
+					 * Get period times
+					 */
+					periodStart = $$('input[name="periods[' + i + '][start_period]"]')[0].value.split(':');
+					periodEnd = $$('input[name="periods[' + i + '][end_period]"]')[0].value.split(':');
+					if (periodStart.length != 2 || periodEnd.length != 2) {
+						console.log(periodStart);
+						msgErr.push('Error bad time format ' + i);
+						valid = false;
+					} else if (parseInt(periodStart[0]) != periodStart[0] ||
+							   parseInt(periodStart[1]) != periodStart[1] ||
+							   parseInt(periodEnd[0]) != periodEnd[0] ||
+							   parseInt(periodEnd[1]) != periodEnd[1]) {
+						console.log(periodStart);
+						msgErr.push('Error bad time format ' + i);
+						valid = false;
+					} else if (periodStart[0] < 0 ||
+							   periodStart[0] > 24 ||
+							   periodStart[1] < 0 ||
+							   periodStart[1] > 59 ||
+							   periodEnd[0] < 0 ||
+							   periodEnd[0] > 24 ||
+							   periodEnd[1] < 0 ||
+							   periodEnd[1] > 59) {
+						console.log(periodStart);
+						msgErr.push('Error valid date ' + i);
+						valid = false;
+					} else {
+						if (periodStart[0] > periodEnd[0]) {
+							msgErr.push('Error period ' + i);
+							valid = false;
+						} else if (periodStart[0] == periodEnd[0] && periodStart[1] > periodEnd[1]) {
+							msgErr.push('Error period ' + i);
+							valid = false;
+						}
+					}
+					break;
+				default:
+					valid = false;
+					break;
+			}
+		}
+	}
+	return valid;
 }
 </script>
 {/literal}

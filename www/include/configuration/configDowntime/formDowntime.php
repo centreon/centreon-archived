@@ -232,7 +232,11 @@
 		$values = $form->getSubmitValues();
 		$valid = true;
 		foreach ($values['periods'] as $periods) {
-			if (strtotime($periods['start_period']) > strtotime($periods['end_period'])) {
+		    $time_end_period = strtotime($periods['end_period']);
+		    if ($periods['end_period'] == '24:00') {
+                $time_end_period = strtotime('00:00') + 3600 * 24; // Fix with 00:00 and 24 h for with before 5.3
+		    }
+			if (strtotime($periods['start_period']) > $time_end_period) {
 				$valid = false;
 				$tpl->assign('period_err', _("The end time must be greater than the start time."));
 			}
@@ -300,11 +304,11 @@
 		if ($valid) {
 			require_once($path."listDowntime.php");
 		}
-		
+
 		if (!$valid) {
 		    $form->setDefaults($values);
 		}
-	} 
+	}
 	if (!$valid) {
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -330,7 +334,7 @@
 			));
 		    $tpl->assign('periods_tab', $downtime->getPeriods($id));
 		}
-		
+
 		$tpl->assign('msg_err_norelation', _('No relation set for this downtime'));
 
 		$form->accept($renderer);

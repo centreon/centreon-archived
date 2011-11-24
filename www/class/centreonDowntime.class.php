@@ -682,7 +682,11 @@ class CentreonDowntime
 			if ($add) {
 				$timestamp_start = strtotime($period['start_time']);
 				if ($time < $timestamp_start && ($time + $delay) > $timestamp_start) {
-					$timestamp_stop = strtotime($period['end_time']);
+				    if ($period['end_time'] == '24:00') {
+				        $timestamp_stop = strtotime('00:00') + 3600 * 24;
+				    } else {
+					    $timestamp_stop = strtotime($period['end_time']);
+				    }
 					$listSchedule[] = array($timestamp_start, $timestamp_stop);
 				}
 			}
