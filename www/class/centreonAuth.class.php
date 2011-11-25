@@ -160,12 +160,13 @@ class CentreonAuth {
 				$this->passwdOk = 0;
 		}
 		if ($this->passwdOk == 2) {
-			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
+			if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
 				$this->passwdOk = 1;
-			else if ($this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0)
+			} else if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
 				$this->passwdOk = 1;
-			else
+			} else {
 				$this->passwdOk = 0;
+			}
 		}
 	}
 
