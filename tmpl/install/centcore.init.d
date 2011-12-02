@@ -139,6 +139,22 @@ case "$1" in
 	    rundir_exist
 	    echo "Starting Centcore"
 	    (su - @NAGIOS_USER@ -c "nice -n $NICE $Bin >> $DemLog 2>&1") &
+	    for i in `seq 20` ; do
+            if status_centcore > /dev/null; then
+                break
+            else
+                echo -n '.'
+                sleep 1
+            fi
+        done
+        if status_centcore > /dev/null; then
+                echo ' done.'
+                exit 0
+        else
+                echo ''
+                echo 'Warning - centcore did not start in time'
+                exit 1
+        fi
 	    if [ -d $LockDir ]; then 
 	    	touch $LockDir/$LockFile; 
 	    fi
