@@ -203,11 +203,14 @@
 	    /* ***********************************************
     	 * Remove data from old groups (deleted groups)
     	 */
-    	$aclGroupToDelete = "SELECT DISTINCT acl_group_id FROM $centreonDbName.acl_groups WHERE acl_group_activate = '1'";
+	    $aclGroupToDelete = "SELECT DISTINCT acl_group_id FROM $centreonDbName.acl_groups WHERE acl_group_activate = '1'";
+    	$aclGroupToDelete2 = "SELECT DISTINCT acl_group_id FROM $centreonDbName.acl_res_group_relations";
     	if ($dbLayer != 'broker') {
     		$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
+    		$pearDBndo->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete2)");
     	} else {
     		$pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete)");
+    		$pearDBO->query("DELETE FROM centreon_acl WHERE group_id NOT IN ($aclGroupToDelete2)");
     	}
 
     	/* ************************************************
