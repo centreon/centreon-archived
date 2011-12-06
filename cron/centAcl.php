@@ -608,6 +608,7 @@
     			}
     		}
     		$cpt++;
+    		$pearDB->query("UPDATE acl_groups SET acl_group_changed = '0' WHERE acl_group_id = " . $pearDB->escape($acl_group_id));
     	}
 
 		/*

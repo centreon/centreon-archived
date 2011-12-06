@@ -44,6 +44,13 @@
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
  	/**
+ 	 * Set the Acl group changed flag to 1
+ 	 */
+ 	function setAclGroupChanged($db, $aclGroupId) {
+        $db->query("UPDATE acl_groups SET acl_group_changed = '1' WHERE acl_group_id = " . $db->escape($aclGroupId));
+ 	}
+
+ 	/**
  	 *
  	 * Test if group exists
  	 * @param $name
@@ -225,6 +232,7 @@
 				"acl_group_activate = '".htmlentities($ret["acl_group_activate"]["acl_group_activate"], ENT_QUOTES, "UTF-8")."' " .
 				"WHERE acl_group_id = '".$acl_group_id."'";
 		$DBRESULT = $pearDB->query($rq);
+		setAclGroupChanged($pearDB, $acl_group_id);
 	}
 
 	/**
