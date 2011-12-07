@@ -140,8 +140,8 @@
 	if ($search != "") {
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	if ($hg != "") {
-		$rq1 .= " AND hg.alias = '" . $hg . "'";
+	if ($hostgroups != "") {
+		$rq1 .= " AND hg.alias = '" . $obj->DBNdo->escape($hostgroups) . "'";
 	}
 	$rq1 .= " ORDER BY $sort_type, host_name $order ";
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
