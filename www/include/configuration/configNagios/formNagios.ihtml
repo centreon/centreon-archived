@@ -138,7 +138,7 @@
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$StatesRetention}</td></tr>	
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retain_state_information">&nbsp;{$form.retain_state_information.label}</td><td class="FormRowValue">{$form.retain_state_information.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="state_retention_file">&nbsp;{$form.state_retention_file.label}</td><td class="FormRowValue">{$form.state_retention_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retention_update_interval">&nbsp;{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Seconds}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retention_update_interval">&nbsp;{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Minutes}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_retained_program_state">&nbsp;{$form.use_retained_program_state.label}</td><td class="FormRowValue">{$form.use_retained_program_state.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_retained_scheduling_info">&nbsp;{$form.use_retained_scheduling_info.label}</td><td class="FormRowValue">{$form.use_retained_scheduling_info.html}</td></tr>
 	
