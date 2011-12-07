@@ -47,6 +47,7 @@
     require_once $centreon_path . 'www/class/centreonACL.class.php';
     require_once $centreon_path . 'www/class/centreonUser.class.php';
     require_once $centreon_path . 'www/class/centreonDuration.class.php';
+    require_once $centreon_path . 'www/class/centreonLang.class.php';
 
 	session_start();
 
@@ -58,6 +59,9 @@
 	$pearDB = $db;
 	$dbb 	= new CentreonDB("centstorage");
     $centreon = $_SESSION['centreon'];
+
+    $centreonLang = new CentreonLang($centreon_path, $centreon);
+	$centreonLang->bindLang();
 
     /**
      * Options
