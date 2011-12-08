@@ -274,4 +274,56 @@
 		$query = "INSERT INTO `command_arg_description` (cmd_id, macro_name, macro_description) SELECT '$new_cmd_id', macro_name, macro_description FROM command_arg_description WHERE cmd_id = '$cmd_id'";
 		$pearDB->query($query);
 	}
+
+	/**
+	 * Return the number of time a command is used as a host command check
+	 * @param $command_id
+	 * @return unknown_type
+	 */
+	function getHostNumberUse($command_id) {
+		global $pearDB;
+		
+		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '$command_id' AND host_register = '1'");
+		$data = $DBRESULT->fetchRow();
+		return $data['number'];
+	}
+	
+	/**
+	 * Return the number of time a command is used as a service command check
+	 * @param $command_id
+	 * @return unknown_type
+	 */
+	function getServiceNumberUse($command_id) {
+		global $pearDB;
+		
+		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '$command_id' AND service_register = '1'");
+		$data = $DBRESULT->fetchRow();
+		return $data['number'];
+	}
+	
+		/**
+	 * Return the number of time a command is used as a host command check
+	 * @param $command_id
+	 * @return unknown_type
+	 */
+	function getHostTPLNumberUse($command_id) {
+		global $pearDB;
+		
+		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '$command_id' AND host_register = '0'");
+		$data = $DBRESULT->fetchRow();
+		return $data['number'];
+	}
+	
+	/**
+	 * Return the number of time a command is used as a service command check
+	 * @param $command_id
+	 * @return unknown_type
+	 */
+	function getServiceTPLNumberUse($command_id) {
+		global $pearDB;
+		
+		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '$command_id' AND service_register = '0'");
+		$data = $DBRESULT->fetchRow();
+		return $data['number'];
+	}
 ?>

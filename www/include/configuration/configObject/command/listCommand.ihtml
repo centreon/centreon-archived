@@ -21,6 +21,10 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_type}</td>
+			{if $type == 2}
+			<td class="ListColHeaderCenter">{$headerMenu_huse}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_suse}</td>
+			{/if}
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
 		{assign var=pattern_mode value=0}
@@ -45,6 +49,10 @@
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
+				{if $type == 2}
+				<td class="ListColCenter">{$elemArr[elem].RowMenu_huse}</td>
+				<td class="ListColCenter">{$elemArr[elem].RowMenu_suse}</td>
+				{/if}
 				<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 			</tr>
 		{/section}

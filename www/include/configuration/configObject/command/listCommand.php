@@ -35,8 +35,9 @@
  * SVN : $Id$
  * 
  */
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 	
 	include_once "./include/common/autoNumLimit.php";
 
@@ -46,17 +47,19 @@
 	$advanced_search = 0;
 	include_once "./include/common/quickSearch.php";
 	
-	if ($type)
+	if ($type) {
 		$type_str = " `command_type` = '".$type."'";
-	else
+	} else {
 		$type_str = "";
-
+	}
+	
 	if (isset($search) && $search){
 		$search = str_replace('#S#', "/", $search);
 		$search = str_replace('#BS#', "\\", $search);		
 
-		if ($type_str)
+		if ($type_str) {
 			$type_str = " AND " . $type_str;
+		}
 		$req = "SELECT COUNT(*) FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' $type_str";
 	} else if ($type) {
 		$req = "SELECT COUNT(*) FROM `command` WHERE $type_str";
@@ -91,18 +94,21 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Command Line"));
 	$tpl->assign("headerMenu_type", _("Type"));
+	$tpl->assign("headerMenu_huse", _("Host Uses"));
+	$tpl->assign("headerMenu_suse", _("Services Uses"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
 	/*
 	 * List of elements - Depends on different criteria
 	 */
-	if (isset($search) && $search)
+	if (isset($search) && $search) {
 		$rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type` FROM `command` WHERE `command_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' $type_str ORDER BY `command_name` LIMIT ".$num * $limit.", ".$limit;
-	else if ($type)
+	} else if ($type) {
 		$rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type` FROM `command` WHERE `command_type` = '".$type."' ORDER BY command_name LIMIT ".$num * $limit.", ".$limit;
-	else
+	} else {
 		$rq = "SELECT `command_id`, `command_name`, `command_line`, `command_type` FROM `command` ORDER BY `command_name` LIMIT ".$num * $limit.", ".$limit;
-
+	}
+	
 	$search = tidySearchKey($search, $advanced_search);
 
 	$DBRESULT = $pearDB->query($rq);
@@ -125,7 +131,6 @@
 	 */
 	$elemArr = array();
 	for ($i = 0; $cmd = $DBRESULT->fetchRow(); $i++) {
-
 		$selectedElements = $form->addElement('checkbox', "select[".$cmd['command_id']."]");	
 		$moptions = "&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$cmd['command_id']."]'></input>";
 		
@@ -135,6 +140,8 @@
 							"RowMenu_link" => "?p=".$p."&o=c&command_id=".$cmd['command_id']."&type=".$cmd['command_type'],
 							"RowMenu_desc" => substr(myDecodeCommand($cmd["command_line"]), 0, 50)."...",
 							"RowMenu_type" => $commandType[$cmd["command_type"]],
+							"RowMenu_huse" => "<a name='#' title='"._("Host links (host template links)")."'>".getHostNumberUse($cmd['command_id']) . " (".getHostTPLNumberUse($cmd['command_id']).")</a>",
+							"RowMenu_suse" => "<a name='#' title='"._("Service links (service template links)")."'>".getServiceNumberUse($cmd['command_id']) . " (".getServiceTPLNumberUse($cmd['command_id']).")</a>",
 							"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
@@ -188,10 +195,12 @@
 	/*
 	 * Different messages we put in the template
 	 */
-	if (isset($_GET['type']) && $_GET['type'] != "")
+	if (isset($_GET['type']) && $_GET['type'] != "") {
 		$type = htmlentities($_GET['type'], ENT_QUOTES, "UTF-8");
-	else if (!isset($_GET['type']))
+	} else if (!isset($_GET['type'])) {
 		$type = 2;
+	}
+	
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a&type=".$type, "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
 
 	$redirectType = $form->addElement('hidden', 'type');
@@ -249,6 +258,7 @@
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('limit', $limit);
-
+	$tpl->assign('type', $type);
+	
 	$tpl->display("listCommand.ihtml");
 ?>
