@@ -91,7 +91,7 @@ class CentreonContactgroup
     	    /* Merge contactgroup from ldap and from db */
         	foreach ($cg_ldap as $cg_name) {
         	    if (false === array_search($cg_name, $contactgroups)) {
-        	        $contactgroups[$cg_name] = $cg_name;
+        	        $contactgroups[$cg_name] = $cg_name . " (LDAP)";
         	    }
         	}
     	}
