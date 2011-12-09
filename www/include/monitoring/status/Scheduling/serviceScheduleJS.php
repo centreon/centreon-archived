@@ -118,8 +118,14 @@ function goM(_time_reload, _sid, _o) {
 
 	_lock = 1;
 	var proc = new Transformation();
+
+	if (_counter == 0) {
+		document.getElementById("input_search").value = _search;
+		document.getElementById("host_search").value = _host_search;
+		_counter++;
+	}
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name?>'+'&instance='+_instance+'&nc='+_nc+'&enable=<?php echo urlencode(_("Enabled"))?>'+'&disable=<?php echo urlencode(_("Disabled"))?>'+'&time=<?php print time(); ?>');
+	proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search_host='+_host_search+'&search='+_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name?>'+'&instance='+_instance+'&nc='+_nc+'&enable=<?php echo urlencode(_("Enabled"))?>'+'&disable=<?php echo urlencode(_("Disabled"))?>'+'&time=<?php print time(); ?>');
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 	_lock = 0;

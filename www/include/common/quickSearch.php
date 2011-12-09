@@ -79,7 +79,7 @@
 		else
 			$attrsText = array("size"=>"15", "id"=>"input_search", "class"=>"search_input", "style" => "padding-top:1px;padding-bottom:1px;");
 	}
-	
+
 	if (isset($search_service) && $search_service) {
 		$attrsText2 = array("size"=>"15", "id"=>"input_service", "class"=>"search_input_active_service", "style" => "padding-top:1px;padding-bottom:1px;", "title" => _("Service Description Search Key"));
 	} else {
@@ -109,7 +109,7 @@
 	$form_search->addElement('hidden', 'limit');
 	$form_search->addElement('hidden', 'list');
 	//$form_search->addElement('hidden', 'o', $o);
-	
+
 	/*
 	 * Add specific options for search in commands
 	 */
@@ -121,12 +121,12 @@
 	    }
 	}
 
-	$tabQuickSearch = array(602 => 1, 60201 => 1, 20207 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
+	$tabQuickSearch = array(602 => 1, 60201 => 1, 2020201 => 1, 2020202 => 1, 2020203 => 1, 202 => 1,
 							2 => 1, 2020101 => 1, 20203 => 1, 2020301 => 1, 2020302 => 1, 2020303 => 1, 20208 => 1,
 							2020801 => 1, 2020802 => 1, 2020803 => 1, 20211 => 1,
 							2021101 => 1, 2021102 => 1, 2021103 => 1);
 
-							
+
 	if (isset($tabQuickSearch[$p])) {
 		$form_search->addElement('advcheckbox', 'search_type_host', 	_("host"), 	'', 'class=mini_checkbox');
 		$form_search->addElement('advcheckbox', 'search_type_service', 	_("service"), 	'', 'class=mini_checkbox');

@@ -79,15 +79,11 @@
 	$num 		= $obj->checkArgument("num", $_GET, 0);
 	$limit 		= $obj->checkArgument("limit", $_GET, 20);
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
-	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$search_host	= $obj->checkArgument("search_host", $_GET, "");
-	$search_output 	= $obj->checkArgument("search_output", $_GET, "");
 	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
-	$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
 
 	/** **************************************************
 	 * Backup poller selection
@@ -118,11 +114,6 @@
 		$searchService .= " AND s.description LIKE '%$search%' ";
 	}
 
-	$searchOutput = "";
-	if ($search_output) {
-		$searchOutput .= " AND s.output LIKE '%$search_output%' ";
-	}
-
 	$tabOrder = array();
 	$tabOrder["host_name"] 			= " ORDER BY h.name ". $order.", s.description ";
 	$tabOrder["service_description"]= " ORDER BY s.description ". $order.", h.name";
@@ -143,61 +134,22 @@
 				h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
 				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks ";
 	$request .= " FROM hosts h, services s ";
-	if (isset($hostgroups) && $hostgroups != 0) {
-		$request .= ", hosts_hostgroups hg ";
-	}
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
-	$request .= " WHERE h.host_id = s.host_id AND s.service_id IS NOT NULL AND s.service_id != 0 AND h.enabled = 1 AND s.enabled = 1 ";
+	$request .= " WHERE h.host_id = s.host_id
+				  AND s.service_id IS NOT NULL
+				  AND s.service_id != 0
+				  AND h.enabled = 1
+				  AND s.enabled = 1
+				  AND h.name NOT LIKE '_Module_%' ";
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
 	if ($searchService) {
 		$request .= $searchService;
 	}
-	if ($searchOutput) {
-		$request .= $searchOutput;
-	}
 	$request .= $instance_filter;
-
-	if (preg_match("/^svc_unhandled/", $o)) {
-		if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $o, $matches)) {
-			if (isset($matches[1]) && $matches[1] == 'warning') {
-				$request .= " AND s.state = '1' ";
-			}
-			if (isset($matches[1]) && $matches[1] == "critical") {
-				$request .= " AND s.state = '2' ";
-			} elseif (isset($matches[1]) && $matches[1] == "unknown") {
-				$request .= " AND s.state = '3' ";
-			} else {
-				$request .= " AND s.state != '0' ";
-			}
-		} else {
-			$request .= " AND s.state != '0'";
-		}
-		$request .= " AND s.state_type = 1";
-		$request .= " AND s.acknowledged = 0";
-		$request .= " AND s.scheduled_downtime_depth = 0";
-		$request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
-	} else if ($o == "svcpb") {
-		$request .= " AND s.state != 0";
-	} else if ($o == "svc_ok") {
-		$request .= " AND s.state = 0";
-	} else if ($o == "svc_warning") {
-		$request .= " AND s.state = 1";
-	} else if ($o == "svc_critical") {
-		$request .= " AND s.state = 2";
-	} else if ($o == "svc_unknown") {
-		$request .= " AND s.state = 3";
-	}
-
-	/**
-	 * HostGroup Filter
-	 */
-	if (isset($hostgroups) && $hostgroups != 0) {
-		$request .= " AND hg.host_id = h.host_id AND hg.hostgroup_id = ".(int)$hostgroups. " ";
-	}
 
 	/**
 	 * ACL activation
@@ -328,7 +280,7 @@
 		$obj->XML->writeElement("ne", 	$data["notify"]);
 		$obj->XML->writeElement("pa", 	$data["acknowledged"]);
 		$obj->XML->writeElement("pc", 	$data["passive_checks"]);
-		$obj->XML->writeElement("ac", 	$data["active_checks"]);
+		$obj->XML->writeElement("ac", 	$data["active_checks"] ? _("Enabled") : _("Disabled"));
 		$obj->XML->writeElement("eh", 	$data["event_handler_enabled"]);
 		$obj->XML->writeElement("is", 	$data["flapping"]);
 		$obj->XML->writeElement("dtm",	$data["scheduled_downtime_depth"]);

@@ -2,6 +2,20 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svcSch" type="hidden">
+<table class="ajaxOption">
+	<tr>
+		<td>{$hostStr}:</td>
+		<td><input type='text' name='host_search' id='host_search'></td>
+	    <td>{$serviceStr}:</td>
+		<td><input type='text' name='search' id='input_search'></td>
+	    {if $poller_listing}
+		    <td>{$pollerStr}:</td>
+		    <td><span id="instance_selected"></span></td>
+	    {/if}
+	    <div id='output_search'></div>
+	</tr>
+</table>
+<br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="550">
@@ -9,8 +23,7 @@
 			<span class="consol_button"><a id="JS_monitoring_play" class="cachediv" href="#" onclick="javascript:monitoring_play('');"><img src='./img/icones/16x16/media_play.gif' alt='Play' title='Play'></a></span>
 			<span class="consol_button"><img id="JS_monitoring_play_gray"  src='./img/icones/16x16/media_play_gray.gif' alt='Play' title='Play'></span>
 			<span class="consol_button"><a class="" id="JS_monitoring_pause" href="#" onclick="javascript:monitoring_pause('');"><img src='./img/icones/16x16/media_pause.gif' alt='Pause' title='Pause'></a></span>
-			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>
-			<span class="consol_button" id="instance_selected"></span>
+			<span class="consol_button"><img id="JS_monitoring_pause_gray" class="cachediv" src='./img/icones/16x16/media_pause_gray.gif' alt='Pause' title='Pause'></span>			
 			<span class="consol_button">{$form.o1.html}</span>
 			<input name="p" value="{$p}" type="hidden">
 		</td>
