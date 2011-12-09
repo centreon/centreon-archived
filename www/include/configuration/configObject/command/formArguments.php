@@ -35,14 +35,18 @@
 
     require_once("@CENTREON_ETC@/centreon.conf.php");
 
-    require_once($centreon_path . "/www/class/centreonSession.class.php");
-	require_once($centreon_path . "/www/class/centreon.class.php");
+    require_once $centreon_path . "/www/class/centreonSession.class.php";
+	require_once $centreon_path . "/www/class/centreon.class.php";
+	require_once $centreon_path . 'www/class/centreonLang.class.php';
 
 	session_start();
 
 	$centreon = $_SESSION['centreon'];
 	if (!isset($centreon))
 		exit();
+
+    $centreonLang = new CentreonLang($centreon_path, $centreon);
+	$centreonLang->bindLang();
 
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
