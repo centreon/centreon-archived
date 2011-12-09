@@ -39,17 +39,17 @@
  	if (!isset($centreon))
  		exit();
 
-	#
-	## Database retrieve information for Modify a present "Action Access"
-	#
+	/*
+	** Database retrieve information for Modify a present "Action Access"
+	*/
 	if (($o == "c") && $acl_action_id)	{
 
-		# 1. Get "Actions Rule" id selected by user
+		// 1. Get "Actions Rule" id selected by user
 		$DBRESULT = $pearDB->query("SELECT * FROM acl_actions WHERE acl_action_id = '".$acl_action_id."' LIMIT 1");
 		$action_infos = array();
 		$action_infos = array_map("myDecode", $DBRESULT->fetchRow());
 
-		# 2. Get "Groups" id linked with the selected Rule in order to initialize the form
+		// 2. Get "Groups" id linked with the selected Rule in order to initialize the form
 		$DBRESULT = $pearDB->query("SELECT DISTINCT acl_group_id FROM acl_group_actions_relations WHERE acl_action_id = '".$acl_action_id."'");
 
 		$selected = array();
@@ -58,7 +58,7 @@
 		}
 		$action_infos["acl_groups"] = $selected;
 
-		# 3. Range in a table variable, all Groups used in this "Actions Access"
+		// 3. Range in a table variable, all Groups used in this "Actions Access"
 		$DBRESULT = $pearDB->query("SELECT acl_action_name FROM `acl_actions_rules` WHERE `acl_action_rule_id` = $acl_action_id");
 
 		$selected_actions = array();
@@ -69,10 +69,8 @@
 		$DBRESULT->free();
 	}
 
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# Groups list comes from Database and stores in $groups Array
+	// Database retrieve information for differents elements list we need on the page
+	// Groups list comes from Database and stores in $groups Array
 	$groups = array();
 	$DBRESULT = $pearDB->query("SELECT acl_group_id,acl_group_name FROM acl_groups ORDER BY acl_group_name");
 
@@ -81,17 +79,13 @@
 	}
 	$DBRESULT->free();
 
-	##########################################################
-	# Var information to format the element
-	#
+	// Var information to format the element
 	$attrsText 		= array("size"=>"30");
 	$attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
 	$attrsTextarea 	= array("rows"=>"5", "cols"=>"60");
 	$eTemplate 		= "<table style='border:0px;'><tr><td>{unselected}</td><td align='center'>{add}<br /><br /><br />{remove}</td><td>{selected}</td></tr></table>";
 
-	#
-	## Form begin
-	#
+	// Form begin
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add an Action"));
@@ -100,12 +94,12 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title', _("View an Action"));
 
-	# Basic information
+	// Basic information
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'acl_action_name', _("Action Name"), $attrsText);
 	$form->addElement('text', 'acl_action_description', _("Description"), $attrsText);
 
-	# Services
+	// Services
 	$form->addElement('checkbox', 'service_checks', _("Enable/Disable Checks for a service"));
 	$form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
 	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge/Disacknowledge a service"));
@@ -118,7 +112,7 @@
 	$form->addElement('checkbox', 'service_passive_checks', _("Enable/Disable passive checks of a service"));
 	$form->addElement('checkbox', 'service_submit_result', _("Submit result for a service"));
 
-	# Hosts
+	// Hosts
 	$form->addElement('checkbox', 'host_checks', _("Enable/Disable Checks for a host"));
 	$form->addElement('checkbox', 'host_notifications', _("Enable/Disable Notifications for a host"));
 	$form->addElement('checkbox', 'host_acknowledgement', _("Acknowledge/Disaknowledge a host"));
@@ -132,7 +126,7 @@
 	$form->addElement('checkbox', 'host_checks_for_services', _("Enable/Disable Checks services of a host"));
 	$form->addElement('checkbox', 'host_submit_result', _("Submit result for a host"));
 
-	# Global Nagios External Commands
+	// Global Nagios External Commands
 	$form->addElement('checkbox', 'global_shutdown', _("Shutdown Nagios"));
 	$form->addElement('checkbox', 'global_restart', _("Restart Nagios"));
 	$form->addElement('checkbox', 'global_notifications', _("Enable/Disable notifications"));
@@ -146,7 +140,7 @@
 	$form->addElement('checkbox', 'global_host_obsess', _("Enable/Disable Obsessive host checks"));
 	$form->addElement('checkbox', 'global_perf_data', _("Enable/Disable Performance Data"));
 
-	# Global Functionnalities
+	// Global Functionnalities
 	$form->addElement('checkbox', 'top_counter', _("Display Top Counter"));
 	$form->addElement('checkbox', 'poller_stats', _("Display Top Counter pollers statistics"));
 	$form->addElement('checkbox', 'poller_listing', _("Display Poller Listing"));
@@ -154,7 +148,7 @@
 
 	$form->setDefaults(array("hostComment" => 1 ));
 
-	# Contacts Selection
+	// Contacts Selection
 	$form->addElement('header', 'notification', _("Relations"));
 	$form->addElement('header', 'service_actions', _("Services Actions Access"));
 	$form->addElement('header', 'host_actions', _("Hosts Actions Access"));
@@ -167,7 +161,7 @@
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
-	# Further informations
+	// Further informations
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Enabled"), '1');
 	$groupActivation[] = HTML_QuickForm::createElement('radio', 'acl_action_activate', null, _("Disabled"), '0');
@@ -184,14 +178,14 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
-	# Form Rules
+	// Form Rules
 	function myReplace()	{
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["acl_action_name"]));
 	}
 
-	# Controls
+	// Controls
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->applyFilter('acl_group_name', 'myReplace');
 	$form->addRule('acl_action_name', _("Compulsory Name"), 'required');
@@ -201,22 +195,23 @@
 	$form->addRule('acl_action_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	# End of form definition
+	// End of form definition
 
-	# Smarty template Init
+	// Smarty template Init
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
-	# Modify an Action Group
+	// Modify an Action Group
 	if ($o == "c" && isset($selected_actions) && isset($action_infos))	{
 		$form->setDefaults($selected_actions);
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
 	    $form->setDefaults($action_infos);
 	}
-	# Add an Action Group
-	else if ($o == "a")	{
+	// Add an Action Group
+	if ($o == "a") {
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
+		$res = $form->addElement('reset', 'reset', _("Reset"));
+	} else {
+	    $subC = $form->addElement('submit', 'submitC', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
@@ -238,7 +233,7 @@
 	if ($valid && $action["action"]["action"]) {
 		require_once($path."listsActionsAccess.php");
 	} else {
-		#Apply a template definition
+		// Apply a template definition
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
