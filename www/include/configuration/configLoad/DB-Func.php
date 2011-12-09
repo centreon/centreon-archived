@@ -243,7 +243,12 @@
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
-				insertContactCFG($tmpConf);
+			    if (isset($tmpConf['alias']) && isset($tmpConf['contact_name'])) {
+                    $swap = $tmpConf['alias'];
+                    $tmpConf['alias'] = $tmpConf['contact_name'];
+                    $tmpConf['contact_name'] = $swap;
+				}
+			    insertContactCFG($tmpConf);
 				$get = false;
 				$tmpConf = array();
 			}
