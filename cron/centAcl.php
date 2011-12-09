@@ -525,10 +525,10 @@
     			 */
     			$authorizedCategories = getAuthorizedCategories($acl_group_id, $res2["acl_res_id"]);
 
-    			$Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
-    			$Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);
-
-    			foreach ($Host as $key => $value) {
+    			/*
+    			 * Initialize and first filter
+    			 */
+    		    foreach ($Host as $key => $value) {
     				$tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
     				foreach ($tab as $desc => $id){
     					if (!isset($tabElem[$value]))
@@ -567,6 +567,47 @@
     		  		}
     			}
     			$DBRESULT3->free();
+
+    			/*
+    			 * Filter Categories and Pollers
+    			 */
+    			if (hasHostCategoryFilter($res2['acl_res_id'])) {
+    			    $Host = getFilteredHostCategories($Host, $acl_group_id, $res2["acl_res_id"]);
+    			}
+    			if (hasPollerFilter($res2["acl_res_id"])) {
+    			    $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);
+    			}
+
+    			$tmpTabElem = $tabElem;
+    			$tabElem = array();
+    			foreach ($tmpTabElem as $hostname => $serviceDesc) {
+    			    if (in_array($hostname, $Host)) {
+    			        $tabElem[$hostname] = $serviceDesc;
+    			    }
+    			}
+    			unset($tmpTabElem);
+
+    			/*
+    			 * Filter services categories
+    			 */
+    			if (hasServiceCategoryFilter($res2['acl_res_id'])) {
+                    $tmpTabElem = $tabElem;
+        			$tabElem = array();
+        		    foreach ($Host as $key => $value) {
+        				$tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
+        				foreach ($tab as $desc => $id){
+        				    if (isset($tmpTabElem[$value]) && isset($tmpTabElem[$value][$desc])) {
+        				        if (!isset($tabElem[$value])) {
+        				            $tabElem[$value] = array();
+        				        }
+        				        $tabElem[$value][$desc] = $tmpTabElem[$value][$desc];
+        				    }
+        				}
+        				unset($tab);
+        			}
+        			unset($tmpTabElem);
+    			}
+
     			unset($Host);
 
     			/* ------------------------------------------------------------------

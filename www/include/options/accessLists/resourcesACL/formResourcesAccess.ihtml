@@ -7,6 +7,7 @@
 	<li class="b" id='c2'><a href="#" onclick="javascript:montre('2');">{$sort2}</a></li>
 	<li class="b" id='c3'><a href="#" onclick="javascript:montre('3');">{$sort3}</a></li>
 	<li class="b" id='c4'><a href="#" onclick="javascript:montre('4');">{$sort4}</a></li>
+	<li class="b" id='c5'><a href="#" onclick="javascript:montre('5');">{$sort5}</a></li>
 </ul>
 </div>
 <div id="validFormTop">
@@ -38,10 +39,6 @@
 	 	<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/server_network.gif'>&nbsp;{$form.acl_hosts.label}</td><td class="FormRowValue">{$form.all_hosts.label}&nbsp;{$form.all_hosts.html}<br/>{$form.acl_hosts.html}</td></tr>	 	
 	 	<tr class="list_one"><td class="FormRowField"><img src='./img/icones/16x16/clients.gif'>&nbsp;{$form.acl_hostgroup.label}</td><td class="FormRowValue">{$form.all_hostgroups.label}&nbsp;{$form.all_hostgroups.html}<br/>{$form.acl_hostgroup.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/warning.gif'>&nbsp;{$form.acl_hostexclude.label}</td><td class="FormRowValue">{$form.acl_hostexclude.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img src='./img/icones/16x16/server_network.gif'>&nbsp;{$form.acl_pollers.label}</td><td class="FormRowValue">{$form.acl_pollers.html}</td></tr>	 	
-		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/cube_green.gif">&nbsp;{$form.acl_hc.label}</td><td class="FormRowValue">{$form.acl_hc.html}</td></tr>	
-		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/cube_green.gif">&nbsp;{$form.acl_sc.label}</td><td class="FormRowValue">{$form.acl_sc.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/help.gif'>&nbsp;&nbsp;{$form.header.help}</td></tr>
 		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.HSharedExplain}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
@@ -64,6 +61,18 @@
 		<tr class="list_one"><td class="FormRowField">{$form.acl_meta.label}</td><td class="FormRowValue">{$form.acl_meta.html}</td></tr>	
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/help.gif'>&nbsp;&nbsp;{$form.header.help}</td></tr>
 		<tr class="list_one"><td class="FormRowValue" colspan="2">{$form.header.MSSharedExplain}</td></tr>
+		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+	</table>
+</div>
+<div id='tab5' class="tab">
+	<table class="ListTable">
+	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/lock_new.gif'>&nbsp;{$form.header.title}</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.services}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img src='./img/icones/16x16/server_network.gif'>&nbsp;{$form.acl_pollers.label}</td><td class="FormRowValue">{$form.acl_pollers.html}</td></tr>	 	
+		<tr class="list_two"><td class="FormRowField"><img src="./img/icones/16x16/cube_green.gif">&nbsp;{$form.acl_hc.label}</td><td class="FormRowValue">{$form.acl_hc.html}</td></tr>	
+		<tr class="list_one"><td class="FormRowField"><img src="./img/icones/16x16/cube_green.gif">&nbsp;{$form.acl_sc.label}</td><td class="FormRowValue">{$form.acl_sc.html}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/help.gif'>&nbsp;&nbsp;{$form.header.help}</td></tr>
+		<tr class="list_two"><td class="FormRowValue" colspan="2">{$form.header.FSharedExplain}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 </div>

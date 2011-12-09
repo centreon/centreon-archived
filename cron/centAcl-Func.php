@@ -219,6 +219,84 @@
 		return $svc;
 	}
 
+	/**
+	 * If the ressource ACL has poller filter
+	 *
+	 * @param int $res_id The ACL ressource id
+	 * @return bool
+	 */
+	function hasPollerFilter($res_id)
+	{
+	    global $pearDB;
+
+	    if (!is_numeric($res_id)) {
+	        return false;
+	    }
+
+	    $query = 'SELECT COUNT(*) as c FROM acl_resources_poller_relations WHERE acl_res_id = ' . $res_id;
+	    $res = $pearDB->query($query);
+	    if (PEAR::isError($res)) {
+	        return false;
+	    }
+	    $row = $res->fetchRow();
+	    if ($row['c'] > 0) {
+	        return true;
+	    }
+	    return false;
+	}
+
+	/**
+	 * If the ressource ACL has host category filter
+	 *
+	 * @param int $res_id The ACL ressource id
+	 * @return bool
+	 */
+	function hasHostCategoryFilter($res_id)
+	{
+	    global $pearDB;
+
+	    if (!is_numeric($res_id)) {
+	        return false;
+	    }
+
+	    $query = 'SELECT COUNT(*) as c FROM acl_resources_hc_relations WHERE acl_res_id = ' . $res_id;
+	    $res = $pearDB->query($query);
+	    if (PEAR::isError($res)) {
+	        return false;
+	    }
+	    $row = $res->fetchRow();
+	    if ($row['c'] > 0) {
+	        return true;
+	    }
+	    return false;
+	}
+
+	/**
+	 * If the ressource ACL has service category filter
+	 *
+	 * @param int $res_id The ACL ressource id
+	 * @return bool
+	 */
+	function hasServiceCategoryFilter($res_id)
+	{
+	    global $pearDB;
+
+	    if (!is_numeric($res_id)) {
+	        return false;
+	    }
+
+	    $query = 'SELECT COUNT(*) as c FROM acl_resources_sc_relations WHERE acl_res_id = ' . $res_id;
+	    $res = $pearDB->query($query);
+	    if (PEAR::isError($res)) {
+	        return false;
+	    }
+	    $row = $res->fetchRow();
+	    if ($row['c'] > 0) {
+	        return true;
+	    }
+	    return false;
+	}
+
 	function getAuthorizedServicesHost($host_id, $groupstr, $res_id, $authorizedCategories){
 		global $pearDB, $svcCache, $hostCache;
 

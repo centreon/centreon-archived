@@ -401,6 +401,7 @@
 			$tpl->assign("sort2", _("Hosts Resources"));
 			$tpl->assign("sort3", _("Services Resources"));
 			$tpl->assign("sort4", _("Meta Services"));
+			$tpl->assign("sort5", _("Filters"));
 			$tpl->display("formResourcesAccess.ihtml");
 		}
 	}
