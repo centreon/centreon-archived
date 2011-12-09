@@ -680,12 +680,24 @@ class CentreonDowntime
 				}
 			}
 			if ($add) {
-				$timestamp_start = strtotime($period['start_time']);
+			    /*
+			     * If start time is 00:00 the time is for tomorrow
+			     */
+			    $tomorrow = false;
+			    if ($period['start_time'] == '00:00') {
+				    $timestamp_start = strtotime($period['start_time']) + 3600 * 24;
+				    $tomorrow = true;
+			    } else {
+				    $timestamp_start = strtotime($period['start_time']);
+			    }
 				if ($time < $timestamp_start && ($time + $delay) > $timestamp_start) {
 				    if ($period['end_time'] == '24:00') {
 				        $timestamp_stop = strtotime('00:00') + 3600 * 24;
 				    } else {
 					    $timestamp_stop = strtotime($period['end_time']);
+				    }
+				    if ($tomorrow) {
+				        $timestamp_stop = $timestamp_stop + 3600 * 24;
 				    }
 					$listSchedule[] = array($timestamp_start, $timestamp_stop);
 				}
