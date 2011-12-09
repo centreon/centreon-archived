@@ -77,7 +77,8 @@
 		if (!$filename)
 			return false;
 		$imginfo = getimagesize($filename);
-		if ($imginfo) {
+
+		if (isset($imginfo)) {
 			return true;
 		} else {
 			return is_gd2($filename);
