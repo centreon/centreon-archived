@@ -95,7 +95,7 @@ class CentreonContactgroup
         	    }
         	}
     	}
-
+    	asort($contactgroups);
     	return $contactgroups;
     }
 
