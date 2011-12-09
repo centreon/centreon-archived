@@ -298,7 +298,7 @@
 							</td>
 						</tr>
 					{/if}
-					{if $aclAct.host_submit_result || $admin == true}
+					{if ($aclAct.host_submit_result || $admin == true) && $host_data.passive_checks_enabled}
 							<tr class='list_two'>
 								<td class="ListColLeft">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=hpc&cmd=16&host_name={$h.host_name}'>{$m_mon_submit_passive}</a>

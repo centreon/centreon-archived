@@ -216,21 +216,21 @@
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft"><img src="./img/icones/16x16/gear.gif">&nbsp;{$m_mon_service_command}</td>
 					</tr>
-						{if $aclAct.service_schedule_check || $admin == true}
+						{if ($aclAct.service_schedule_check || $admin == true) && $service_data.active_checks_enabled}
 							<tr class='list_two'>
 								<td class="ListColLeft" id="service_schedule_check">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', '0');">{$m_mon_schedule}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_schedule_forced_check || $admin == true}
+						{if ($aclAct.service_schedule_forced_check || $admin == true) && $service_data.active_checks_enabled}
 							<tr class='list_one'>
 								<td class="ListColLeft" id="service_schedule_check_forced">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href="#" onClick="send_command('service_schedule_check', '1', '{$m_mon_schedule_force}');">{$m_mon_schedule_force}</a>
 								</td>
 							</tr>
 						{/if}
-						{if $aclAct.service_submit_result || $admin == true}
+						{if ($aclAct.service_submit_result || $admin == true) && $service_data.passive_checks_enabled}
 							<tr class='list_two'>
 								<td class="ListColLeft">
 									<img src='./img/icones/16x16/undo.gif' border='1'>&nbsp;<a href='./main.php?p={$p}&o=svcpc&cmd=16&host_name={$h.host_name}&service_description={$svc_description}'>{$m_mon_submit_passive}</a>
