@@ -41,9 +41,19 @@
 	$debug = 0;
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 
+	require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
+    require_once $centreon_path . 'www/class/centreonLang.class.php';
 	include_once $centreon_path . "www/include/common/common-Func.php";
+
+	session_start();
+    if (!isset($_SESSION['centreon'])) {
+		exit();
+	}
+    $centreon = $_SESSION['centreon'];
+
+	$centreonLang = new CentreonLang($centreon_path, $centreon);
+	$centreonLang->bindLang();
 
 	/*
 	 * Create XML Request Objects
