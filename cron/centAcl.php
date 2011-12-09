@@ -56,8 +56,8 @@
 	    exit;
 	}
 
-	$nbProc = exec("ps -edf | grep -c [c]entAcl.php");
-	if ((int)$nbProc > 2) {
+	$nbProc = exec("ps -edf | grep -c \"[c]entAcl.php\"");
+	if ((int)$nbProc > 1) {
 		programExit("More than one centAcl.php process currently running. Going to exit...");
 	}
 
@@ -121,7 +121,14 @@
 	    if ($is_running == 0) {
 	       	$DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
 	    } else {
-	      	programExit("centAcl marked as running. Exiting...");
+	      	if ($nbProc <= 1) {
+	            $errorMessage = "According to DB another instance of centAcl.php is already running and I found ".$nbProc." process...\n";
+				$errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  '$appID'";
+		        $pearDB->query("UPDATE cron_operation SET running = '0' WHERE id = '$appID'");
+	      	} else {
+	      	    $errorMessage = "centAcl marked as running. Exiting...";
+	      	}
+	        programExit($errorMessage);
 	    }
 
 	    /* ***********************************************
