@@ -355,7 +355,7 @@
 					{/if}
 					{if $host_data.notes_url}
 					<tr class='list_two'>
-						<td class="ListColLeft"><a href="{$host_data.notes_url}" target="_blank">&#9679;&nbsp;URL Notes</a></td>
+						<td class="ListColLeft">&#9679;&nbsp;<a href="{$host_data.notes_url}" target="_blank">URL Notes</a></td>
 					</tr>
 					{/if}
 					{section name=tool loop=$tools}
