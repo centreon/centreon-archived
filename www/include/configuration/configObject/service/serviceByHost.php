@@ -39,6 +39,8 @@
 	if (!isset ($oreon))
 		exit ();
 
+    define("FORM_SERVICE_TYPE", "BYHOST");
+
 	isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = NULL;
 	isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
 	$sG ? $service_id = CentreonDB::escape($sG) : $service_id = CentreonDB::escape($sP);

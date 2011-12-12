@@ -134,8 +134,12 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_Pars.label}</td><td class="FormRowValue">{$form.mc_mod_Pars.html}</td></tr>
 		{/if}
 		{if !$msg.tpl}
+			{if $service_type == "BYHOST"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
+			{/if}
+			{if $service_type == "BYHOSTGROUP"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hostgroup_name"> {$form.service_hgPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hgPars.html}</p></td></tr>
+			{/if}
 			{if $o == "mc"}
 				<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_sgs.label}</td><td class="FormRowValue">{$form.mc_mod_sgs.html}</td></tr>
 			{/if}

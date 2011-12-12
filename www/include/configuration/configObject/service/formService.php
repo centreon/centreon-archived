@@ -498,17 +498,22 @@
 		$form->addGroup($mc_mod_Pars, 'mc_mod_Pars', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
-	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($eTemplate);
-	echo $ams3->getElementJs(false);
 
-	$ams3 = $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams3->setElementTemplate($eTemplate);
-	echo $ams3->getElementJs(false);
+	if (FORM_SERVICE_TYPE == "BYHOST") {
+    	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
+    	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+    	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+    	$ams3->setElementTemplate($eTemplate);
+    	echo $ams3->getElementJs(false);
+	}
+
+	if (FORM_SERVICE_TYPE == "BYHOSTGROUP") {
+    	$ams3 = $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
+    	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+    	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+    	$ams3->setElementTemplate($eTemplate);
+    	echo $ams3->getElementJs(false);
+	}
 
 	# Service relations
 	$form->addElement('header', 'links', _("Relations"));
@@ -828,10 +833,6 @@
 					updateServiceInDB($value, true);
 				}
 			}
-		}
-		if (count($form->getSubmitValue("service_hgPars")))	{
-			$hPars = $form->getElement('service_hPars');
-			$hPars->setValue(array());
 		}
 		$o = "w";
 		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$serviceObj->getValue()."'"));
