@@ -41,12 +41,16 @@
 	require_once $centreon_path . "www/class/centreonSession.class.php";
 	require_once $centreon_path . "www/class/centreon.class.php";
 	require_once $centreon_path . "www/class/centreonDB.class.php";
+	require_once $centreon_path . "www/class/centreonLang.class.php";
 	require_once $centreon_path . "www/include/common/common-Func.php";
 
 	$pearDB = new CentreonDB();
 
 	session_start();
 	$oreon = $_SESSION['centreon'];
+
+	$centreonLang = new CentreonLang($centreon_path, $oreon);
+	$centreonLang->bindLang();
 
 	if (!isset($oreon) || !isset($_GET['o']) || !isset($_GET['cmd']) || !isset($_GET['p'])) {
 		exit;
