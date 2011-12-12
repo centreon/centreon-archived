@@ -86,7 +86,12 @@
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
 							<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
-							<xsl:attribute name="title">HTTP Link <xsl:value-of select="hnu"/></xsl:attribute>
+							<xsl:if test="hnn = 'none'">
+								<xsl:attribute name="title">HTTP Link <xsl:value-of select="hnu"/></xsl:attribute>
+							</xsl:if>
+							<xsl:if test="hnn != 'none'">
+								<xsl:attribute name="title"><xsl:value-of select="hnn"/></xsl:attribute>
+							</xsl:if>
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>

@@ -89,7 +89,13 @@
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
-						  		<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/></xsl:attribute>
+						  		<xsl:if test="hnn = ''">
+						  			<xsl:value-of select="//i/http_link"/>&#160;:&#160;<xsl:value-of select="hnu"/>
+						  		</xsl:if>
+						  		<xsl:if test="hnn != ''">
+						  			<xsl:value-of select="hnn"/>
+						  		</xsl:if>
+						  	</xsl:attribute>
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
