@@ -358,35 +358,6 @@
 		}
 
 		/*
-		 * Turn 7 -> Service Groups
-		 */
-		if ($debug_nagios_import == 1)
-			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCFG : Turn 7 -> Service Groups\n", 3, $debug_path."cfgimport.log");
-		reset($buf);
-
-		foreach ($buf as $str)	{
-			$regs = array();
-			if (preg_match("/}/", $str) && $get)	{
-				switch ($typeDef)	{
-					case "servicegroup": insertServiceGroupCFG($tmpConf);  break;
-					default :; break;
-				}
-				$get = false;
-				$tmpConf = array();
-				$typeDef = NULL;
-			}
-			if (preg_match("/^[ \t]*define (servicegroup)[ \t]*{/", $str, $def))	{
-				$typeDef = $def[1];
-				$get = true;
-			}
-			else if ($get)	{
-				if (preg_match($regexp, $str, $regs))
-					$tmpConf[$regs[1]] = trim($regs[2]);
-			}
-			unset($regs);
-		}
-
-		/*
 		 * Turn 6 -> Services
 		 */
 		if ($debug_nagios_import == 1)
@@ -1292,31 +1263,41 @@
 		global $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
+		global $pearDB;
+
 		require_once("./include/configuration/configObject/servicegroup/DB-Func.php");
-		if (isset($tmpConf["servicegroup_name"]) && testServiceGroupExistence($tmpConf["servicegroup_name"]))	{
-			foreach ($tmpConf as $key=>$value)
-				switch($key)	{
-					case "servicegroup_name" : $tmpConf["sg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "alias" : $tmpConf["sg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "members" :
-						$sg_servicesTMP = explode(",", $tmpConf[$key]);
-						for ($i = 0, $j = 0; $i < count($sg_servicesTMP); $i += 2)	{
-							$tmpConf["sg_hServices"][$j] = getMyHostID(trim($sg_servicesTMP[$i]))."-".getMyServiceID(trim($sg_servicesTMP[$i+1]), getMyHostID(trim($sg_servicesTMP[$i])));
-							$j++;
-						}
-						unset ($tmpConf[$key]);
-						break;
-				}
-			$tmpConf["sg_activate"]["sg_activate"] = "1";
-			$tmpConf["sg_comment"] = date("d/m/Y - H:i:s", time());
-			if ($debug_nagios_import == 1)
-					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
-			insertServiceGroupInDB($tmpConf);
-			$nbr["sg"] += 1;
-			return true;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["servicegroup_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
+		if (isset($tmpConf["servicegroup_name"])) {
+		    foreach ($tmpConf as $key=>$value) {
+                switch($key) {
+                    case "servicegroup_name" : $tmpConf["sg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                    case "alias" : $tmpConf["sg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                    case "members" :
+                        $sg_servicesTMP = explode(",", $tmpConf[$key]);
+                        for ($i = 0, $j = 0; $i < count($sg_servicesTMP); $i += 2)	{
+                            $tmpConf["sg_hServices"][$j] = getMyHostID(trim($sg_servicesTMP[$i]))."-".getMyServiceID(trim($sg_servicesTMP[$i+1]), getMyHostID(trim($sg_servicesTMP[$i])));
+                            $j++;
+                        }
+    					unset ($tmpConf[$key]);
+    					break;
+                }
+            }
+            $tmpConf["sg_activate"]["sg_activate"] = "1";
+            $tmpConf["sg_comment"] = date("d/m/Y - H:i:s", time());
+            $res = $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".$pearDB->escape($tmpConf["sg_name"])."'");
+		    if (!$res->numRows())	{
+    			if ($debug_nagios_import == 1) {
+                    error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
+    			}
+    			insertServiceGroupInDB($tmpConf);
+            } else {
+                if ($debug_nagios_import == 1) {
+                    error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
+    			}
+                $row = $res->fetchRow();
+                updateServiceGroupInDB($row['sg_id'], $tmpConf);
+            }
+            $nbr["sg"] += 1;
+            return true;
 		}
 		return false;
 	}

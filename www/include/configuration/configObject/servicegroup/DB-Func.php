@@ -139,10 +139,10 @@
 		return $sg_id;
 	}
 
-	function updateServiceGroupInDB ($sg_id = NULL)	{
+	function updateServiceGroupInDB ($sg_id = NULL, $ret = array())	{
 		if (!$sg_id) return;
-		updateServiceGroup($sg_id);
-		updateServiceGroupServices($sg_id);
+		updateServiceGroup($sg_id, $ret);
+		updateServiceGroupServices($sg_id, $ret);
 	}
 
 	function insertServiceGroup($ret = array())	{
@@ -175,15 +175,16 @@
 		return ($sg_id["MAX(sg_id)"]);
 	}
 
-	function updateServiceGroup($sg_id)	{
+	function updateServiceGroup($sg_id, $ret = array())	{
 		global $form, $pearDB, $oreon;
 
 		if (!$sg_id) {
 			return;
 		}
 
-		$ret = array();
-		$ret = $form->getSubmitValues();
+	    if (!count($ret)) {
+		    $ret = $form->getSubmitValues();
+		}
 
 		$ret["sg_name"] = $oreon->checkIllegalChar($ret["sg_name"]);
 
