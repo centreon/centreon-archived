@@ -77,7 +77,7 @@
 	<tr class="list_two"><td class="FormRowField">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
 	<!--<tr class="list_two"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
-	<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required.note}</td></tr>
 	{/if}
