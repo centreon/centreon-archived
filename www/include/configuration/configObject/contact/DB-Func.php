@@ -620,6 +620,10 @@
 			$rq .= "contact_lang = '".htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8")."', ";
 			$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
 		}
+	    if (isset($ret['contact_enable_notifications']['contact_enable_notifications']) && $ret['contact_enable_notifications']['contact_enable_notifications'] != null) {
+            $rq .= "contact_enable_notifications = '".$pearDB->escape($ret['contact_enable_notifications']['contact_enable_notifications'])."', ";
+            $fields["contact_enable_notifications"] = "'".$pearDB->escape($ret['contact_enable_notifications']['contact_enable_notifications'])."'";
+		}
 		if (isset($ret["contact_hostNotifOpts"]) && $ret["contact_hostNotifOpts"] != NULL) {
 			$rq .= "contact_host_notification_options = '".implode(",", array_keys($ret["contact_hostNotifOpts"]))."', ";
 			$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));

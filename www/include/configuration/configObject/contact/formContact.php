@@ -42,7 +42,7 @@
 
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
- 	
+
 	$cct = array();
 	if (($o == "c" || $o == "w") && $contact_id) {
 		/**
@@ -343,7 +343,9 @@
 	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
 	$form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
-	$form->setDefaults(array('contact_enable_notifications' => '0'));
+	if ($o != "mc") {
+	    $form->setDefaults(array('contact_enable_notifications' => '0'));
+	}
 
 	/** ******************************
 	 * Host notifications
