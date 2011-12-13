@@ -319,7 +319,7 @@
 	$DBRESULT = $pearDB->query("SELECT id FROM nagios_server WHERE is_default = '1'");
 	$defaultServer = $DBRESULT->fetchRow();
 	$DBRESULT->free();
-	if (isset($defaultServer) && $defaultServer) {
+	if (isset($defaultServer) && $defaultServer && $o != "mc") {
 		$form->setDefaults(array('nagios_server_id' => $defaultServer["id"]));
 	}
 
