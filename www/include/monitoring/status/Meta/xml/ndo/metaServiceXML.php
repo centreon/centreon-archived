@@ -83,10 +83,8 @@
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
-	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
+	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = CentreonDB::escape($_GET["search"]) : $search = "";
 	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "service_description";
-	(isset($_GET["search_type_host"]) 		&& !check_injection($_GET["search_type_host"])) ? $search_type_host = htmlentities($_GET["search_type_host"]) : $search_type_host = 1;
-	(isset($_GET["search_type_service"])	&& !check_injection($_GET["search_type_service"])) ? $search_type_service = htmlentities($_GET["search_type_service"]) : $search_type_service = 1;
 	(isset($_GET["order"]) 		&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 			&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
@@ -128,7 +126,8 @@
 				" nss.is_flapping," .
 				" nss.flap_detection_enabled," .
 				" no.object_id," .
-				" no.name2 as service_description" .
+				" no.name2 as service_description, " .
+				" ss.display_name " .
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
 
 	$rq .= 	" WHERE no.object_id = nss.service_object_id".
@@ -147,39 +146,19 @@
 			$ACLString = "''";
 		$rq .= " AND no.name2 IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
 	}
-	if ($search_type_host && $search_type_service && $search){
-		$rq .= " AND ( no.name1 like '%" . $search . "%' OR no.name2 like '%" . $search . "%' OR nss.output like '%" . $search . "%') ";
-	} else if (!$search_type_service && $search_type_host && $search){
-		$rq .= " AND no.name1 like '%" . $search . "%'";
-	} else if ($search_type_service && !$search_type_host && $search){
-		$rq .= " AND no.name2 like '%" . $search . "%'";
-	}
-
-	if ($o == "svcpb")
-		$rq .= " AND nss.current_state != 0";
-	if ($o == "svc_ok")
-		$rq .= " AND nss.current_state = 0 ";
-	if ($o == "svc_warning")
-		$rq .= " AND nss.current_state = 1 ";
-	if ($o == "svc_critical")
-		$rq .= " AND nss.current_state = 2 ";
-	if ($o == "svc_unknown")
-		$rq .= " AND nss.current_state = 3 ";
-	if ($o == "svc_unhandled") {
-		$rq .= " AND nss.current_state != 0";
-		$rq .= " AND nss.problem_has_been_acknowledged = 0";
-		$rq .= " AND nss.scheduled_downtime_depth = 0";
+	if ($search){
+		$rq .= " AND ss.display_name LIKE '%" . $search . "%' ";
 	}
 
 	$rq_pagination = $rq;
 
-	switch ($sort_type){
-		case 'host_name' : $rq .= " order by no.name1 ". $order.",no.name2 "; break;
-		case 'service_description' : $rq .= " order by no.name2 ". $order.",no.name1 "; break;
-		case 'current_state' : $rq .= " order by nss.current_state ". $order.",no.name1,no.name2 "; break;
-		case 'last_state_change' : $rq .= " order by nss.last_state_change ". $order.",no.name1,no.name2 "; break;
-		case 'last_check' : $rq .= " order by nss.last_check ". $order.",no.name1,no.name2 "; break;
-		case 'current_attempt' : $rq .= " order by nss.current_check_attempt ". $order.",no.name1,no.name2 "; break;
+	switch ($sort_type) {
+		case 'host_name' : $rq .= " order by no.name1 ". $order.", ss.display_name "; break;
+		case 'service_description' : $rq .= " order by ss.display_name ". $order.",no.name1 "; break;
+		case 'current_state' : $rq .= " order by nss.current_state ". $order.",no.name1, ss.display_name "; break;
+		case 'last_state_change' : $rq .= " order by nss.last_state_change ". $order.",no.name1, ss.display_name "; break;
+		case 'last_check' : $rq .= " order by nss.last_check ". $order.",no.name1, ss.display_name "; break;
+		case 'current_attempt' : $rq .= " order by nss.current_check_attempt ". $order.",no.name1, ss.display_name "; break;
 		default : $rq .= " order by no.name1 ". $order; break;
 	}
 
@@ -249,11 +228,8 @@
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
-		$buffer->writeElement("sd", $dataMeta['meta_name'], false);
+		$buffer->writeElement("sd", $ndo['display_name'], false);
 		$buffer->writeElement("svc_id", $ndo["object_id"]);
-
-		$ndo["service_description"] = str_replace("/", "#S#", $ndo["service_description"]);
-		$ndo["service_description"] = str_replace("\\", "#BS#", $ndo["service_description"]);
 
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);

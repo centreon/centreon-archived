@@ -43,15 +43,8 @@
 
 	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
-	!isset($_GET["search_type_host"]) ? $search_type_host = 1 : $search_type_host = $_GET["search_type_host"];
-	!isset($_GET["search_type_service"]) ? $search_type_service = 1 : $search_type_service = $_GET["search_type_service"];
 	!isset($_GET["sort_type"]) ? $sort_type = "service_description" : $sort_type = $_GET["sort_type"];
 	!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
-
-	/*
-	 * start quickSearch form
-	 */
-	include_once("./include/common/quickSearch.php");
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 
@@ -136,7 +129,7 @@
 	$o2->setValue(NULL);
 	$o2->setSelected(NULL);
 	$tpl->assign('limit', $limit);
-
+    $tpl->assign('serviceStr', _('Service'));
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 

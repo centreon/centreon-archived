@@ -82,10 +82,8 @@
 	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
 	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
 	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
-	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
+	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = CentreonDB::escape($_GET["search"]) : $search = "";
 	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "service_description";
-	(isset($_GET["search_type_host"]) 		&& !check_injection($_GET["search_type_host"])) ? $search_type_host = htmlentities($_GET["search_type_host"]) : $search_type_host = 1;
-	(isset($_GET["search_type_service"])	&& !check_injection($_GET["search_type_service"])) ? $search_type_service = htmlentities($_GET["search_type_service"]) : $search_type_service = 1;
 	(isset($_GET["order"]) 		&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
 	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 	(isset($_GET["o"]) 			&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
@@ -128,6 +126,7 @@
 				" s.flap_detection," .
 				" s.service_id," .
 				" s.description as service_description," .
+				" s.display_name," .
 				" s.host_id " .
 				" FROM services s, hosts h";
 	$rq .= 	" WHERE s.host_id = h.host_id ".
@@ -146,37 +145,19 @@
 		}
 		$rq .= " AND s.description IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
 	}
-
-	if ($o == "svcpb") {
-		$rq .= " AND s.state != 0";
-	}
-	if ($o == "svc_ok") {
-		$rq .= " AND s.state = 0 ";
-	}
-	if ($o == "svc_warning") {
-		$rq .= " AND s.state = 1 ";
-	}
-	if ($o == "svc_critical") {
-		$rq .= " AND s.state = 2 ";
-	}
-	if ($o == "svc_unknown") {
-		$rq .= " AND s.state = 3 ";
-	}
-	if ($o == "svc_unhandled") {
-		$rq .= " AND s.state != 0 ";
-		$rq .= " AND s.acknowledged = 0 ";
-		$rq .= " AND s.scheduled_downtime_depth = 0 ";
+    if ($search){
+		$rq .= " AND s.display_name LIKE '%" . $search . "%' ";
 	}
 
 	$rq_pagination = $rq;
 
 	switch ($sort_type){
-		case 'service_description' : $rq .= " ORDER BY s.description ". $order; break;
-		case 'current_state' : $rq .= " ORDER BY s.state ". $order.", s.description "; break;
-		case 'last_state_change' : $rq .= " ORDER BY s.last_state_change ". $order.", s.description "; break;
-		case 'last_check' : $rq .= " ORDER BY s.last_check ". $order.",s.description "; break;
-		case 'current_attempt' : $rq .= " ORDER BY s.check_attempt ". $order.", s.description "; break;
-		default : $rq .= " ORDER BY s.description ". $order; break;
+		case 'service_description' : $rq .= " ORDER BY s.display_name ". $order; break;
+		case 'current_state' : $rq .= " ORDER BY s.state ". $order.", s.display_name "; break;
+		case 'last_state_change' : $rq .= " ORDER BY s.last_state_change ". $order.", s.display_name "; break;
+		case 'last_check' : $rq .= " ORDER BY s.last_check ". $order.",s.display_name "; break;
+		case 'current_attempt' : $rq .= " ORDER BY s.check_attempt ". $order.", s.display_name "; break;
+		default : $rq .= " ORDER BY s.display_name ". $order; break;
 	}
 
 	$rq .= " LIMIT ".($num * $limit).",".$limit;
@@ -246,7 +227,7 @@
 		$buffer->writeElement("o", $ct++);
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_perfdata"]);
-		$buffer->writeElement("sd", $dataMeta['meta_name']);
+		$buffer->writeElement("sd", $ndo['display_name']);
 		$buffer->writeElement("svc_id", $ndo["service_id"]);
         $buffer->writeElement("hid", $ndo["host_id"]);
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $pearDBO));

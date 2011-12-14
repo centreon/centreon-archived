@@ -52,80 +52,9 @@
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
 	var _debug = 0;
-
-	var _search = '<?php echo $search; ?>';
-	var _sid='<?php echo $sid ?>';
-	var _search_type_host='<?php echo $search_type_host ?>';
-	var _search_type_service='<?php echo $search_type_service ?>';
-	var _num='<?php echo $num ?>';
-	var _limit='<?php echo $limit ?>';
-	var _sort_type='<?php echo $sort_type ?>';
-	var _order='<?php echo $order ?>';
-	var _date_time_format_status='<?php echo _("d/m/Y H:i:s") ?>';
-	var _o='<?php echo $o ?>';
-	var _p='<?php echo $p ?>';
-
 	var _addrXSL = "./include/monitoring/status/Meta/xsl/metaService.xsl";
-	var _timeoutID = 0;
-	var _on = 1;
-	var _time_reload = <?php echo $tM?>;
-	var _time_live = <?php echo $tFM?>;
-	var _nb = 0;
-	var _oldInputFieldValue = '<?php echo $search?>';
-	var _oldInputHostFieldValue = '';
-	var _oldInputOutputFieldValue = '';
-	var _currentInputFieldValue=""; // valeur actuelle du champ texte
-	var _resultCache=new Object();
-	var _first = 1;
-	var _lock = 0;
-	var _instance = 'ALL';
-	var _default_instance = '<?php echo $default_poller?>';
-	var _nc = 0;
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
-
-// linkBar to log/reporting/graph/ID_card
-
-	function getCheckedList(_input_name){
-		var mesinputs = document.getElementsByTagName("input" );
-		var tab = new Array();
-		var nb = 0;
-
-		for (var i = 0; i < mesinputs.length; i++) {
-	  		if (mesinputs[i].type.toLowerCase() == 'checkbox' && mesinputs[i].checked && mesinputs[i].name.substr(0,6) == _input_name) {
-				var name = mesinputs[i].name;
-				var l = name.length;
-				tab[nb] = name.substr(7,l-8);
-				nb++;
-	  		}
-		}
-		return tab;
-	}
-
-	if (document.getElementById('linkBar'))	{
-		var _linkBar = document.getElementById('linkBar')
-		var _divBar = document.createElement("div");
-
-		_divBar.appendChild(create_graph_link('select','svc_id'));
-		_divBar.appendChild(create_log_link('select','svc_id'));
-		_divBar.setAttribute('style','float:right; margin-right:10px;' );
-		_linkBar.appendChild(_divBar);
-	}
-//end for linkBar
-
-
-
-var tempX = 0;
-var tempY = 0;
-
-function position(e){
-	tempX = (navigator.appName.substring(0,3) == "Net") ? e.pageX : event.x+document.body.scrollLeft;
-	tempY = (navigator.appName.substring(0,3) == "Net") ? e.pageY : event.y+document.body.scrollTop;
-}
-
-if (navigator.appName.substring(0,3) == "Net")
-	document.captureEvents(Event.MOUSEMOVE);
-document.onmousemove = position;
 
 function set_header_title(){
 
@@ -190,64 +119,16 @@ function set_header_title(){
 	}
 }
 
-function monitoring_refresh()	{
-	_tmp_on = _on;
-	_time_live = _time_reload;
-	_on = 1;
-	window.clearTimeout(_timeoutID);
-
-	initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o; ?>");
-	_on = _tmp_on;
-
-	viewDebugInfo('refresh');
-}
-
-function monitoring_play()	{
-	document.getElementById('JS_monitoring_play').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display = 'block';
-	document.getElementById('JS_monitoring_pause_gray').style.display = 'none';
-	document.getElementById('JS_monitoring_play_gray').style.display = 'block';
-	_on = 1;
-	initM(<?php echo $tM; ?>,"<?php echo $sid; ?>","<?php echo $o; ?>");
-}
-
-function monitoring_pause()	{
-	document.getElementById('JS_monitoring_play').style.display = 'block';
-	document.getElementById('JS_monitoring_pause_gray').style.display = 'block';
-	document.getElementById('JS_monitoring_play_gray').style.display = 'none';
-	document.getElementById('JS_monitoring_pause').style.display='none';
-	_on = 0;
-	window.clearTimeout(_timeoutID);
-}
-
-function initM(_time_reload,_sid,_o){
-	construct_selecteList_ndo_instance('instance_selected');
-	if (!document.getElementById('debug')){
-		var _divdebug = document.createElement("div");
-		_divdebug.id = 'debug';
-		var _debugtable = document.createElement("table");
-		_debugtable.id = 'debugtable';
-		var _debugtr = document.createElement("tr");
-		_debugtable.appendChild(_debugtr);
-		_divdebug.appendChild(_debugtable);
-		_header = document.getElementById('header');
-		_header.appendChild(_divdebug);
-	}
-
-	if (_first){
-		viewDebugInfo('--loop--');
-		mainLoop();
-		_first = 0;
-	}
-	_time=<?php echo $time; ?>;
-	if (_on)
-		goM(_time_reload,_sid,_o);
-}
-
 function goM(_time_reload,_sid,_o){
 
 	_lock = 1;
 	var proc = new Transformation();
+
+	if (_counter == 0) {
+		document.getElementById("input_search").value = _search;
+		_counter++;
+	}
+
 	var _addrXML = "./include/monitoring/status/Meta/xml/<?php print $centreon->broker->getBroker(); ?>/metaServiceXML.php?"+'&sid='+_sid+'&search='+_search+'&search_type_host='+_search_type_host+'&search_type_service='+_search_type_service+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&instance='+_instance+'&nc='+_nc;
 	proc.setCallback(monitoringCallBack);
 	proc.setXml(_addrXML);

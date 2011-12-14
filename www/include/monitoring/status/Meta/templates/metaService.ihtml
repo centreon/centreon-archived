@@ -2,6 +2,15 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
+<table class="ajaxOption">
+	<tr>		
+	    <td>{$serviceStr}:</td>
+		<td><input type='text' name='search' id='input_search'></td>	    
+	    <div id='host_search'></div>
+	    <div id='output_search'></div>
+	</tr>
+</table>
+<br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="330">
