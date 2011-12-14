@@ -133,7 +133,7 @@ aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 			$file_pm = array();
 			$file_pm[] = "\$mysql_host = \"". $_SESSION["dbLocation"] ."\";\n";
 			$file_pm[] = "\$mysql_user = \"". $_SESSION["nameOreonDB"] . "\";\n";
-			$file_pm[] = "\$mysql_passwd = \"". $_SESSION["pwdOreonDB"] . "\";\n";
+			$file_pm[] = "\$mysql_passwd = '". $_SESSION["pwdOreonDB"] . "';\n";
 			$file_pm[] = "\$mysql_database_oreon = \"". $_SESSION["nameOreonDB"] . "\";\n";
 			$file_pm[] = "\$mysql_database_ods = \"". $_SESSION["nameOdsDB"] . "\";\n";
 			$file_pm[] = "1;\n";
