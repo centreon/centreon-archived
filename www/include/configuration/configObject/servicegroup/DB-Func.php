@@ -139,10 +139,10 @@
 		return $sg_id;
 	}
 
-	function updateServiceGroupInDB ($sg_id = NULL, $ret = array())	{
+	function updateServiceGroupInDB ($sg_id = NULL, $ret = array(), $increment = false)	{
 		if (!$sg_id) return;
 		updateServiceGroup($sg_id, $ret);
-		updateServiceGroupServices($sg_id, $ret);
+		updateServiceGroupServices($sg_id, $ret, $increment);
 	}
 
 	function insertServiceGroup($ret = array())	{
@@ -205,26 +205,35 @@
 		$oreon->CentreonLogAction->insertLog("servicegroup", $sg_id, htmlentities($ret["sg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 
-	function updateServiceGroupServices($sg_id, $ret = array())	{
+	function updateServiceGroupServices($sg_id, $ret = array(), $increment = false)	{
 		if (!$sg_id)
 			return;
 		global $pearDB, $form;
-		$rq  = 	"DELETE FROM servicegroup_relation ";
-		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
-		$DBRESULT = $pearDB->query($rq);
+
+		if ($increment == false) {
+    		$rq  = 	"DELETE FROM servicegroup_relation ";
+    		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
+    		$DBRESULT = $pearDB->query($rq);
+		}
 		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
 				$t = preg_split("/\-/", $ret[$i]);
-				$rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
-				$DBRESULT = $pearDB->query($rq);
+				$resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE host_host_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
+				if (!$resTest->numRows()) {
+				    $rq = "INSERT INTO servicegroup_relation (host_host_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
+				    $DBRESULT = $pearDB->query($rq);
+				}
 			}
 		}
 		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
 		for ($i = 0; $i < count($ret); $i++)	{
 			$t = preg_split("/\-/", $ret[$i]);
-			$rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
-			$DBRESULT = $pearDB->query($rq);
+			$resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE hostgroup_hg_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);
+			if (!$resTest->numRows()) {
+			    $rq = "INSERT INTO servicegroup_relation (hostgroup_hg_id, service_service_id, servicegroup_sg_id) VALUES ('".$t[0]."', '".$t[1]."', '".$sg_id."')";
+			    $DBRESULT = $pearDB->query($rq);
+			}
 		}
 	}
 ?>

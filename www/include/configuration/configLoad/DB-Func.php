@@ -409,7 +409,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "servicegroup": insertServiceGroupCFG($tmpConf);  break;
+					case "servicegroup": insertServiceGroupCFG($tmpConf, $ret);  break;
 					default :; break;
 				}
 				$get = false;
@@ -1258,7 +1258,7 @@
 		return $useTpl;
 	}
 
-	function insertServiceGroupCFG($tmpConf = array())	{
+	function insertServiceGroupCFG($tmpConf = array(), $opt)	{
 		global $nbr;
 		global $oreon;
 		global $debug_nagios_import;
@@ -1294,7 +1294,11 @@
                     error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
     			}
                 $row = $res->fetchRow();
-                updateServiceGroupInDB($row['sg_id'], $tmpConf);
+                $increment = false;
+                if (isset($opt['group_update_behavior']['group_update_behavior']) && $opt['group_update_behavior']['group_update_behavior']) {
+                    $increment = true;
+                }
+                updateServiceGroupInDB($row['sg_id'], $tmpConf, $increment);
             }
             $nbr["sg"] += 1;
             return true;
