@@ -101,6 +101,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	 * @param int $start_time The timestamp for starting downtime
 	 * @param int $dt_id The downtime id
 	 * @param string $oname2 The second object name (service_name), is null if search a host
+	 * @return int
 	 */
 	public function getDowntimeInternalId($oname1, $start_time, $dt_id, $oname2 = null)
 	{
@@ -128,9 +129,18 @@ class CentreonDowntimeBroker extends CentreonDowntime
 	/**
 	 * Check if the downtime is scheduled
 	 *
+	 * Return array
+	 *   array(
+	 *   	0 => array(
+	 *          internal_id => 1,
+	 *          downtime_type => 1
+	 *      )
+	 * 	)
+	 *
 	 * @param int $dt_id The downtime id
 	 * @param string $oname1 The first object name (host_name)
 	 * @param string $oname2 The second object name (service_name), is null if search a host
+	 * @return array
 	 */
 	public function isScheduled($dt_id, $oname1, $oname2 = null)
 	{
@@ -140,6 +150,7 @@ class CentreonDowntimeBroker extends CentreonDowntime
             $query .= ", services s ";
         }
         $query .= "WHERE d.host_id = h.host_id
+                  AND d.start_time > UNIX_TIMESTAMP()
         		  AND d.comment_data = '[Downtime cycle #".$dt_id."]'
         		  AND h.name = '".$this->dbb->escape($oname1)."' ";
         if (isset($oname2) && $oname2 != "") {

@@ -134,7 +134,9 @@ class CentreonDowntimeNdo extends CentreonDowntime
 	{
 		$query = "SELECT dth.internal_downtime_id, dth.downtime_type
 			FROM " . $this->ndoPrefix . "objects o, " . $this->ndoPrefix . "downtimehistory dth
-			WHERE dth.object_id = o.object_id AND dth.scheduled_start_time > NOW() AND dth.comment_data = '[Downtime cycle #" . $dt_id . "]'
+			WHERE dth.object_id = o.object_id
+			    AND dth.scheduled_start_time > NOW()
+			    AND dth.comment_data = '[Downtime cycle #" . $dt_id . "]'
 				AND o.name1 = '" . $oname1 . "'";
 		if (!is_null($oname2)) {
 			$query .= " AND o.name2 = '" . $oname2 . "'";
