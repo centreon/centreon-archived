@@ -94,17 +94,16 @@
 	/*
 	 * Get Poller List
 	 */
-		$tab_nagios_server = array();
-	$DBRESULT = $pearDB->query("SELECT n.id, ndomod.instance_name, n.name " .
-								"FROM `cfg_ndomod` ndomod, `nagios_server` n " .
-								"WHERE ndomod.activate = '1' " .
-								"AND ndomod.ns_nagios_server = n.id AND n.id = '".$pearDB->escape($selectedPoller)."' " .
+    $tab_nagios_server = array();
+	$DBRESULT = $pearDB->query("SELECT n.id, n.name " .
+								"FROM `nagios_server` n " .
+								"WHERE n.id = '".$pearDB->escape($selectedPoller)."' " .
 								"ORDER BY n.localhost DESC");
 	while ($nagios = $DBRESULT->fetchRow()) {
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
 
 		if ($centreon->broker->getBroker() == "broker") {
-			$query = "SELECT last_log_rotation, start_time, end_time, " .
+			$query = "SELECT version as program_version, last_log_rotation, start_time, end_time, " .
 						"last_command_check, last_alive AS status_update_time, running AS is_currently_running, ".
 						"pid AS process_id, daemon_mode, " .
 						"notifications AS notifications_enabled, active_service_checks AS active_service_checks_enabled, passive_service_checks AS passive_service_checks_enabled, " .
