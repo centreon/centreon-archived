@@ -90,17 +90,19 @@
 				" FROM `hosts` " .
 				" WHERE enabled = 1 " .
 		        $oreon->user->access->queryBuilder("AND", "name", $oreon->user->access->getHostsString("NAME", $pearDBO)) .
+		        " AND name NOT LIKE '_Module_%' " .
 				" GROUP BY state " .
-				" ORDER by state";
+				" ORDER BY state";
 		$DBRESULT = $pearDBO->query($rq1);
 	} else {
-		$rq1 = 	" SELECT count(DISTINCT ".$ndo_base_prefix."objects.name1) cnt, ".$ndo_base_prefix."hoststatus.current_state state" .
-				" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects " .
-				" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id " .
-				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
-				$oreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
-				" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
-				" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
+		$rq1 = 	" SELECT count(DISTINCT o.name1) cnt, hs.current_state state" .
+				" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects o " .
+				" WHERE o.object_id = hs.host_object_id " .
+				" AND o.is_active = 1 " .
+				" AND o.name1 NOT LIKE '_Module_%' " .
+				$oreon->user->access->queryBuilder("AND", "o.name1", $oreon->user->access->getHostsString("NAME", $pearDBndo)) .
+				" GROUP BY hs.current_state " .
+				" ORDER BY hs.current_state";
 		$DBRESULT = $pearDBndo->query($rq1);
 	}
 	$data = array();
