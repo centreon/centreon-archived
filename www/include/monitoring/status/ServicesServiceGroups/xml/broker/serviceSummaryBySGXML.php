@@ -93,7 +93,8 @@
 		" AND sgm.servicegroup_id = sg.servicegroup_id" .
 		" AND s.enabled = 1 ";
 
-	$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+	$rq1 .= $obj->access->queryBuilder("AND", "sg.name", $obj->access->getServiceGroupsString("NAME"));
+	$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
 
 	if ($instance != -1) {
 		$rq1 .= " AND h.instance_id = ".$instance;
@@ -135,7 +136,10 @@
 				" AND sgm.host_id = s.host_id" .
 				" AND sgm.servicegroup_id = sg.servicegroup_id" .
 				" AND s.enabled = '1' ";
-		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+
+		$rq1 .= $obj->access->queryBuilder("AND", "sg.name", $obj->access->getServiceGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+		$rq1 .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
 
 		if ($instance != -1) {
 			$rq1 .= " AND h.instance_id = ".$instance;
@@ -193,8 +197,12 @@
 			" AND s.host_id = sgm.host_id" .
 			" AND s.host_id = h.host_id" .
 			" AND h.name IN ($hostList)" .
-			" AND s.enabled = '1'" .
-			$obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+			" AND s.enabled = '1' ";
+
+		$rq1 .= $obj->access->queryBuilder("AND", "sg.name", $obj->access->getServiceGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+        $rq1 .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
+
 		if ($instance != -1) {
 			$rq1 .= " AND h.instance_id = ".$instance;
 		}

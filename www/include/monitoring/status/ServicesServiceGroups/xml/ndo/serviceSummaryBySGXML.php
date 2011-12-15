@@ -109,7 +109,9 @@
 			" AND sgm.servicegroup_id = sg.servicegroup_id".
 			" AND no.is_active = 1 ";
 
-	$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+	$rq1 .= $obj->access->queryBuilder("AND", "noo.name1", $obj->access->getServiceGroupsString("NAME"));
+	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", $obj->access->getHostsString("NAME", $obj->DBNdo));
+
 	if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0") {
 		$rq1 .= " AND ss.current_state != 0 AND no.name1 IN (" .
 			" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
@@ -184,7 +186,10 @@
 		}
 		$rq1 .= " AND sgm.servicegroup_id = sg.servicegroup_id".
 				" AND no.is_active = 1 ";
-		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+
+		$rq1 .= $obj->access->queryBuilder("AND", "noo.name1", $obj->access->getServiceGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", $obj->access->getHostsString("NAME", $obj->DBNdo));
+
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0") {
 			$rq1 .= " AND ss.current_state != 0 AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
@@ -253,7 +258,11 @@
 		        " AND sgm.service_object_id = ss.service_object_id".
 				" AND no.name1 IN ($hostList)" .
 				" AND no.is_active = 1 ";
-		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+
+		$rq1 .= $obj->access->queryBuilder("AND", "noo.name1", $obj->access->getServiceGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", $obj->access->getHostsString("NAME", $obj->DBNdo));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name2", $obj->access->getServicesString("NAME", $obj->DBNdo));
+
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb" || $o == "svcSumSG_pb" || $o == "svcSumSG_ack_0") {
 			$rq1 .= " AND ss.current_state != 0 AND no.name1 IN (" .
 				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .

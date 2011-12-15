@@ -106,7 +106,8 @@
 		" AND sgm.servicegroup_id = sg.servicegroup_id" .
 		" AND no.is_active = 1 AND no.objecttype_id = 2";
 
-	$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+	$rq1 .= $obj->access->queryBuilder("AND", "noo.name1", $obj->access->getServiceGroupsString("NAME"));
+	$rq1 .= $obj->access->queryBuilder("AND", "no.name1", $obj->access->getHostsString("NAME", $obj->DBNdo));
 
 	if ($instance != -1)
 		$rq1 .= " AND no.instance_id = ".$instance;
@@ -169,8 +170,8 @@
 		 * Create Buffer for host status
 		 */
 		$rq = "SELECT nhs.current_state, nh.display_name, nh.host_object_id FROM `" .$obj->ndoPrefix."hoststatus` nhs, `" .$obj->ndoPrefix."hosts` nh " .
- 	            "WHERE nh.display_name IN ($tabString) " .
- 	            "AND nh.host_object_id = nhs.host_object_id" ;
+ 	          "WHERE nh.display_name IN ($tabString) " .
+ 	          "AND nh.host_object_id = nhs.host_object_id" ;
 		$DBRESULT = $obj->DBNdo->query($rq);
 		$tabHostStatus = array();
 		$tabHost = array();
@@ -199,7 +200,9 @@
 
 		$rq1 .= " AND no.is_active = 1 AND no.objecttype_id = 2";
 
-		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+		$rq1 .= $obj->access->queryBuilder("AND", "noo.name1", $obj->access->getServiceGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", $obj->access->getHostsString("NAME", $obj->DBNdo));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name2", $obj->access->getServicesString("NAME", $obj->DBNdo));
 
 		if ($instance != -1) {
 			$rq1 .= " AND no.instance_id = ".$instance;
@@ -249,7 +252,7 @@
 		/** *****************************************
 		 * Prepare Finale Request
 		 */
-		$rq1 =	"SELECT sg.alias, noo.name1 as sg_name, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state, ss.service_object_id ".
+		$rq1 =	"SELECT noo.name1 as sg_name, no.name1 as host_name, no.name2 as service_description, sgm.servicegroup_id, sgm.service_object_id, ss.current_state, ss.service_object_id ".
 				" FROM " .$obj->ndoPrefix."servicegroups sg,
 				" .$obj->ndoPrefix."servicestatus ss,
 				" .$obj->ndoPrefix."objects noo,
@@ -264,7 +267,9 @@
         $rq1 .= " AND no.name1 IN ($hostList)" .
 				" AND no.is_active = 1 AND no.objecttype_id = 2";
 
-		$rq1 .= $obj->access->queryBuilder("AND", "sg.alias", $obj->access->getServiceGroupsString("ALIAS"));
+		$rq1 .= $obj->access->queryBuilder("AND", "noo.name1", $obj->access->getServiceGroupsString("NAME"));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", $obj->access->getHostsString("NAME", $obj->DBNdo));
+		$rq1 .= $obj->access->queryBuilder("AND", "no.name2", $obj->access->getServicesString("NAME", $obj->DBNdo));
 
 		if ($instance != -1) {
 			$rq1 .= " AND no.instance_id = ".$instance;

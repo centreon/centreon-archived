@@ -2,17 +2,17 @@
 <form name='form'>
 <input name="p" value="{$p}" type="hidden">
 <input name="o" value="svc" type="hidden">
-{if $poller_listing}
 <table class="ajaxOption">
 	<tr>		
 		<td>{$search}</td>
 		<td><input size="15" id="host_search" class="search_input" style="padding-top:1px;padding-bottom:1px;" name="host_search" type="text" /></td>
-		<td>{$pollerStr}:</td>
-		<td><span id="instance_selected"></span></td>		
+		{if $poller_listing}
+			<td>{$pollerStr}:</td>
+			<td><span id="instance_selected"></span></td>
+		{/if}		
 	</tr>
 </table>
 <br/>
-{/if}
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
 		<td class="Toolbar_TDSelectAction_Top" width="300">
