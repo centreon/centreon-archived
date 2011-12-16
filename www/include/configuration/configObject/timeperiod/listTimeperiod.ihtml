@@ -28,7 +28,10 @@
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+			<td class="ListColLeft">
+				<span><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></span>
+				<span style='float: right;'><a href='{$elemArr[elem].resultingLink}'><img src='./img/icones/16x16/table_view.gif'</a></span>
+			</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColRight" align="right">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>
