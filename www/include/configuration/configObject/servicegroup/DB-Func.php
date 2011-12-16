@@ -80,13 +80,15 @@
 	}
 
 	function deleteServiceGroupInDB ($serviceGroups = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
+
 		foreach($serviceGroups as $key=>$value) {
 			$DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 			$DBRESULT = $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
 			$oreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
 		}
+		$centreon->user->access->updateACL();
 	}
 
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
@@ -136,6 +138,7 @@
 	function insertServiceGroupInDB ($ret = array())	{
 		$sg_id = insertServiceGroup($ret);
 		updateServiceGroupServices($sg_id, $ret);
+		$centreon->user->access->updateACL();
 		return $sg_id;
 	}
 
@@ -143,6 +146,7 @@
 		if (!$sg_id) return;
 		updateServiceGroup($sg_id, $ret);
 		updateServiceGroupServices($sg_id, $ret, $increment);
+		$centreon->user->access->updateACL();
 	}
 
 	function insertServiceGroup($ret = array())	{

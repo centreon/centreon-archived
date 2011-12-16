@@ -102,7 +102,7 @@
 	}
 
 	function deleteHostGroupInDB ($hostGroups = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 
 		foreach ($hostGroups as $key=>$value)	{
 			$rq = "SELECT @nbr := (SELECT COUNT( * ) FROM host_service_relation WHERE service_service_id = hsr.service_service_id GROUP BY service_service_id ) AS nbr, hsr.service_service_id FROM host_service_relation hsr WHERE hsr.hostgroup_hg_id = '".$key."'";
@@ -117,12 +117,14 @@
 			$row = $DBRESULT3->fetchRow();
 
 			$DBRESULT = $pearDB->query("DELETE FROM hostgroup WHERE hg_id = '".$key."'");
-			$oreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "d");
+			$centreon->CentreonLogAction->insertLog("hostgroup", $key, $row['hg_name'], "d");
 		}
+		$centreon->user->access->updateACL();
 	}
 
 	function multipleHostGroupInDB ($hostGroups = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
+
 		foreach($hostGroups as $key=>$value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();

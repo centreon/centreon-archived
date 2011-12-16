@@ -288,6 +288,7 @@
 			$DBRESULT = $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
 			$DBRESULT = $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
 		}
+		$centreon->user->access->updateACL();
 	}
 
 	function divideGroupedServiceInDB ($service_id = null, $service_arr = array(), $toHost = null)

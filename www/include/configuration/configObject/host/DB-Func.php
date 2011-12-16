@@ -197,7 +197,7 @@
 					$centreon->CentreonLogAction->insertLog("service", $row["service_service_id"], $hostname['host_name']."/".$svcname["service_description"], "d");
 				}
 			}
-
+            $centreon->user->access->updateACL();
 			$DBRESULT = $pearDB->query("DELETE FROM host WHERE host_id = '".$key."'");
 			$DBRESULT = $pearDB->query("DELETE FROM host_template_relation WHERE host_host_id = '".$key."'");
 			$DBRESULT = $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".$key."'");

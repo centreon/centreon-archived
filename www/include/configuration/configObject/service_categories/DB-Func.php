@@ -100,27 +100,30 @@
 	}
 
 	function insertServiceCategorieInDB(){
-		global $pearDB;
+		global $pearDB, $centreon;
 		if (testServiceCategorieExistence($_POST["sc_name"])){
                 $DBRESULT = $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
                 $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$_POST["sc_name"]."'");
                 $data = $DBRESULT->fetchRow();
         }
         updateServiceCategoriesServices($data["MAX(sc_id)"]);
+        $centreon->user->access->updateACL();
 	}
 
 	function updateServiceCategorieInDB(){
-		global $pearDB;
+		global $pearDB, $centreon;
 		$DBRESULT = $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
 		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES, "UTF-8"));
+		$centreon->user->access->updateACL();
 	}
 
 	function deleteServiceCategorieInDB($sc_id = NULL){
-		global $pearDB;
+		global $pearDB, $centreon;
 		$select = $_POST["select"];
 		foreach ($select as $key => $value){
 			$DBRESULT = $pearDB->query("DELETE FROM `service_categories` WHERE `sc_id` = '".$key."'");
 		}
+		$centreon->user->access->updateACL();
 	}
 
 	function updateServiceCategoriesServices($sc_id)	{

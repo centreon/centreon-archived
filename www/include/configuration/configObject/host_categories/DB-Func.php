@@ -87,14 +87,15 @@
 	}
 
 	function deleteHostCategoriesInDB ($hostcategoriess = array())	{
-		global $pearDB, $oreon;
+		global $pearDB, $centreon;
 
 		foreach ($hostcategoriess as $key=>$value)	{
 			$DBRESULT3 = $pearDB->query("SELECT hc_name FROM `hostcategories` WHERE `hc_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT3->fetchRow();
 			$DBRESULT = $pearDB->query("DELETE FROM hostcategories WHERE hc_id = '".$key."'");
-			$oreon->CentreonLogAction->insertLog("hostcategories", $key, $row['hc_name'], "d");
+			$centreon->CentreonLogAction->insertLog("hostcategories", $key, $row['hc_name'], "d");
 		}
+		$centreon->user->access->updateACL();
 	}
 
 	function multipleHostCategoriesInDB ($hostcategories = array(), $nbrDup = array())	{
