@@ -86,7 +86,7 @@
 			$DBRESULT2 = $pearDB->query("SELECT sg_name FROM `servicegroup` WHERE `sg_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
 			$DBRESULT = $pearDB->query("DELETE FROM servicegroup WHERE sg_id = '".$key."'");
-			$oreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
+			$centreon->CentreonLogAction->insertLog("servicegroup", $key, $row['sg_name'], "d");
 		}
 		$centreon->user->access->updateACL();
 	}
