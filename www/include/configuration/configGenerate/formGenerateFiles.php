@@ -670,7 +670,7 @@ function updateProgress(val)
 function toggleDebug(pollerId)
 {
 	if (pollerId) {
-		Effect.toggle('debug_' + pollerId, 'blind');
+		Effect.toggle('debug_' + pollerId, 'blind', { duration: 0.1 });
 	}
 	$('togglerp_' + pollerId, 'togglerm_' + pollerId).invoke('toggle');
 }
