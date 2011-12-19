@@ -335,7 +335,7 @@
 		    $tpl->assign('periods_tab', $downtime->getPeriods($id));
 		}
 
-		$tpl->assign('msg_err_norelation', _('No relation set for this downtime'));
+		$tpl->assign('msg_err_norelation', addslashes(_('No relation set for this downtime')));
 
 		$form->accept($renderer);
 		$tpl->assign('o', $o);
