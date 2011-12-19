@@ -156,55 +156,59 @@
     	     * Connect to LDAP Server
     	     */
 	    	$ldapConn = new CentreonLDAP($pearDB, null);
-    	    $ldapConn->connect();
-    	    $listGroup = array();
-    	    $res = $pearDB->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
-    	    while ($row = $res->fetchRow()) {
-    	        /*
-    	         * Test is the group a not move or delete in ldap
-    	         */
-    	        if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
-    	            $dn = $ldapConn->findGroupDn($row['cg_name']);
-    	            if (false === $dn) {
-    	                /*
-    	                 * Delete the ldap group in contactgroup
-    	                 */
-    	                $queryDelete = "DELETE FROM contactgroup WHERE cg_id = " . $row['cg_id'];
-    	                if (PEAR::isError($pearDB->query($queryDelete))) {
-    	                    print "Error in delete contactgroup for ldap group : " . $row['cg_name'] . "\n";
-    	                }
-    	                continue;
-    	            } else {
-    	                /*
-    	                 * Update the ldap group in contactgroup
-    	                 */
-    	                $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $row['cg_ldap_dn'] . "' WHERE cg_id = " . $row['cg_id'];
-    	                if (PEAR::isError($pearDB->query($queryUpdateDn))) {
-    	                    print "Error in update contactgroup for ldap group : " . $row['cg_name'] . "\n";
-    	                    continue;
-    	                } else {
-    	                    $row['cg_ldap_dn'] = $dn;
-    	                }
-    	            }
-    	        }
-    	        $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
+    	    $connectionResult = $ldapConn->connect();
+    	    if (false != $connectionResult) {
+        	    $listGroup = array();
+        	    $res = $pearDB->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
+        	    while ($row = $res->fetchRow()) {
+        	        /*
+        	         * Test is the group a not move or delete in ldap
+        	         */
+        	        if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
+        	            $dn = $ldapConn->findGroupDn($row['cg_name']);
+        	            if (false === $dn) {
+        	                /*
+        	                 * Delete the ldap group in contactgroup
+        	                 */
+        	                $queryDelete = "DELETE FROM contactgroup WHERE cg_id = " . $row['cg_id'];
+        	                if (PEAR::isError($pearDB->query($queryDelete))) {
+        	                    print "Error in delete contactgroup for ldap group : " . $row['cg_name'] . "\n";
+        	                }
+        	                continue;
+        	            } else {
+        	                /*
+        	                 * Update the ldap group in contactgroup
+        	                 */
+        	                $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $row['cg_ldap_dn'] . "' WHERE cg_id = " . $row['cg_id'];
+        	                if (PEAR::isError($pearDB->query($queryUpdateDn))) {
+        	                    print "Error in update contactgroup for ldap group : " . $row['cg_name'] . "\n";
+        	                    continue;
+        	                } else {
+        	                    $row['cg_ldap_dn'] = $dn;
+        	                }
+        	            }
+        	        }
+        	        $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
 
-    	        /*
-    	         * Refresh Users Groups.
-    	         */
-    	        $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation WHERE contactgroup_cg_id = " . $row['cg_id'];
-    	        $pearDB->query($queryDeleteRelation);
-    	        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN ('" . join("', '", $members) . "')";
-    	        $resContact = $pearDB->query($queryContact);
-    	        while ($rowContact = $resContact->fetchRow()) {
-    	            $queryAddRelation = "INSERT INTO contactgroup_contact_relation
-    	            						(contactgroup_cg_id, contact_contact_id)
-    	            					VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
-    	            $pearDB->query($queryAddRelation);
-    	        }
+        	        /*
+        	         * Refresh Users Groups.
+        	         */
+        	        $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation WHERE contactgroup_cg_id = " . $row['cg_id'];
+        	        $pearDB->query($queryDeleteRelation);
+        	        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN ('" . join("', '", $members) . "')";
+        	        $resContact = $pearDB->query($queryContact);
+        	        while ($rowContact = $resContact->fetchRow()) {
+        	            $queryAddRelation = "INSERT INTO contactgroup_contact_relation
+        	            						(contactgroup_cg_id, contact_contact_id)
+        	            					VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+        	            $pearDB->query($queryAddRelation);
+        	        }
+        	    }
+        	    $queryUpdateTime = "UPDATE `options` SET `value` = '" . time() . "' WHERE `key` = 'ldap_last_acl_update'";
+        	    $pearDB->query($queryUpdateTime);
+    	    } else {
+    	        echo "[".date("Y-m-d H:i:s")."] Unable to connect to LDAP server. I keep building ACL ...\n";
     	    }
-    	    $queryUpdateTime = "UPDATE `options` SET `value` = '" . time() . "' WHERE `key` = 'ldap_last_acl_update'";
-    	    $pearDB->query($queryUpdateTime);
 	    }
 
 	    /* ***********************************************
