@@ -97,9 +97,15 @@ function toggleParams(checkValue) {
         Effect.Appear('dynamicDiv', { duration : 0 });
     } else {
         Effect.Fade('dynamicDiv', { duration : 0 });
-        Effect.Appear('ldap_dns_use_ssl', { duration : 0 });
-        Effect.Appear('ldap_dns_use_tls', { duration : 0 });
-        Effect.Appear('ldap_dns_use_domain', { duration : 0 });
+        if (document.getElementById('ldap_dns_use_ssl')) {
+        	Effect.Appear('ldap_dns_use_ssl', { duration : 0 });
+		}
+		if (document.getElementById('ldap_dns_use_tls')) {
+        	Effect.Appear('ldap_dns_use_tls', { duration : 0 });
+		}
+		if (document.getElementById('ldap_dns_use_domain')) {
+        	Effect.Appear('ldap_dns_use_domain', { duration : 0 });
+		}
     }
 }
 
@@ -107,6 +113,9 @@ function toggleParams(checkValue) {
  * Display or hide custom options
  */
 function toggleCustom(select) {
+	if (typeof(select) == 'undefined' || typeof(select.selectedIndex) == 'undefined') {
+		return null;
+	}
 	value = select.options[select.selectedIndex].value;
 	if (value == 0) {
 		Effect.Appear('ldap_user_filter', { duration : 0 });

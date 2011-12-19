@@ -75,7 +75,7 @@
 	$form->addGroup($ldapDnsUseTls, 'ldap_dns_use_tls', _("Use TLS connection"), '&nbsp;');
 	$form->addElement('text', 'ldap_dns_use_domain', _("Alternative domain for ldap"), $attrsText);
 
-	$form->addElement('text', 'ldap_search_limit', _('LDAP search timeout'), $attrsText2);
+	$form->addElement('text', 'ldap_search_limit', _('LDAP search size limit'), $attrsText2);
 	$form->addElement('text', 'ldap_search_timeout', _('LDAP search timeout'), $attrsText2);
 
 	$query = "SELECT contact_id, contact_name FROM contact WHERE contact_register = '0'";
@@ -295,8 +295,13 @@
 
 		$o = "w";
    		$valid = true;
-		$form->freeze();
 
+	    if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
+   		    $tpl->assign("hideDnsOptions", 1);
+   		} else {
+   		    $tpl->assign("hideDnsOptions", 0);
+   		}
+		$form->freeze();
 	}
 
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{

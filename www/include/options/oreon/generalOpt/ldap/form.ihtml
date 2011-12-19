@@ -13,8 +13,10 @@
 		&nbsp;<img src="img/icones/16x16/gear_new.gif" style="cursor: pointer;" onclick="window.open('main.php?p=60301&min=1&o=c&contact_id=' + getElementById('ldap_contact_tmpl').options[getElementById('ldap_contact_tmpl').selectedIndex].value, '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=800, height=600')"/>{/if}
 	</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_srv_dns" /><span>{$form.ldap_srv_dns.label}</span></td><td class="FormRowValue">{$form.ldap_srv_dns.html}</td></tr>
+	{if $hideDnsOptions != 1} 
 	<tr class="list_one" id="ldap_dns_use_ssl"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_ssl" /><span>{$form.ldap_dns_use_ssl.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_ssl.html}</td></tr>
 	<tr class="list_two" id="ldap_dns_use_tls"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_tls" /><span>{$form.ldap_dns_use_tls.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_tls.html}</td></tr>
+	{/if} 
 	<tr class="list_one" id="ldap_dns_use_domain"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_domain" /><span>{$form.ldap_dns_use_domain.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$host_label}</td><td>
 	<div id="dynamicDiv"></div>
