@@ -105,7 +105,7 @@
 						"RowMenu_select" 	=> $selectedElements->toHtml(),
 						"RowMenu_name" 		=> $dt["dt_name"],
 						"RowMenu_link" 		=> "?p=".$p."&o=c&dt_id=".$dt['dt_id'],
-						"RowMenu_desc" 		=> substr($dt["dt_description"], 0, 40),
+						"RowMenu_desc" 		=> $dt["dt_description"],
 						"RowMenu_status" 	=> $dt["dt_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options" 	=> $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
