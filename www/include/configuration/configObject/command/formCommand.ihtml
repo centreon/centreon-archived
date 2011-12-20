@@ -48,7 +48,7 @@
 		<tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="arg_description"> {$arg_desc_label}</td>
 			<td class="FormRowValue">
-				{$form.desc_arg.html}
+				{$form.desc_arg.html}&nbsp;{$form.clear_arg.html}
 				 <div id="listOfArgDiv">
 					<br/>{$form.listOfArg.html}
 				 </div>

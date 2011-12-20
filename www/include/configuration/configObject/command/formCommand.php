@@ -59,10 +59,10 @@
 
 	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
 	$cmd = array();
-	
+
 	$nbRow = "10";
 	$strArgDesc = "";
-	
+
 	if (($o == "c" || $o == "w") && $command_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
 
@@ -161,6 +161,7 @@
 	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
 
 	$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
+    $form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick"=>"clearArgs();"));
 
 	$form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
 
