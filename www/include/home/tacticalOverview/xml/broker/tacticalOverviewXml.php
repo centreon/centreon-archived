@@ -101,7 +101,7 @@
 	$resNdo1->free();
 
 	// Get Hosts Problems
-	$rq1 = 	" SELECT DISTINCT host_id, name, notes_url, state, last_check, output, icon_image, address, last_state_change AS lsc" .
+	$rq1 = 	" SELECT DISTINCT host_id, name, notes, notes_url, action_url, state, last_check, output, icon_image, address, last_state_change AS lsc" .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
 			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
@@ -126,6 +126,8 @@
     $tab_hostprobname[$nbhostpb] = "";
     $tab_hostprobstate[$nbhostpb] = "";
     $tab_hostnotesurl[$nbhostpb] = "";
+    $tab_hostnotes[$nbhostpb] = "";
+    $tab_hostactionurl[$nbhostpb] = "";
     $tab_hostproblast[$nbhostpb] = "";
     $tab_hostprobduration[$nbhostpb] = "";
     $tab_hostproboutput[$nbhostpb] = "";
@@ -137,6 +139,8 @@
 	    $tab_hostprobname[$nbhostpb] = $ndo["name"];
         $tab_hostprobstate[$nbhostpb] = $ndo["state"];
         $tab_hostnotesurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
+        $tab_hostnotes[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes"]);
+        $tab_hostactionurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["action_url"]);
         $tab_hostproblast[$nbhostpb] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
         $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
         $tab_hostproboutput[$nbhostpb] = $ndo["output"];
@@ -371,7 +375,7 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h, centreon_acl " .
 				" WHERE h.host_id = s.host_id " .
 				" AND s.state > 0" .
@@ -385,7 +389,7 @@
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	} else {
-		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image" .
 				" FROM services s, hosts h" .
 				" WHERE h.host_id = s.host_id " .
 				" AND s.state > 0" .
@@ -402,6 +406,8 @@
 	$tab_svcname[$j] = "";
 	$tab_state[$j] = "";
 	$tab_notes_url[$j] = "";
+	$tab_notes[$j] = "";
+	$tab_action_url[$j] = "";
 	$tab_last[$j] = "";
 	$tab_duration[$j] = "";
 	$tab_output[$j] = "";
@@ -435,6 +441,8 @@
 			$tab_svcname[$j] = $ndo["description"];
 			$tab_state[$j] = $ndo["state"];
 			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
+			$tab_notes[$j] = preg_replace($tab_macros,$ndo,$ndo["notes"]);
+			$tab_action_url[$j] = preg_replace($tab_macros,$ndo,$ndo["action_url"]);
 			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
 			$tab_ip[$j] = $ndo["address"];
 			$tab_duration[$j] = " - ";
@@ -524,6 +532,8 @@
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
+	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
+	    $xml->writeElement('host_actionurl',$tab_hostactionurl[$key]);
 	    $xml->writeElement('ip', $tab_hostprobip[$key]);
 	    $xml->writeElement('duration', $tab_hostprobduration[$key]);
 	    $xml->writeElement('last', $tab_hostproblast[$key]);
@@ -552,6 +562,8 @@
         $xml->startElement('unhandledServices');
 	    $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
+	    $xml->writeElement('notes',$tab_notes[$key]);
+	    $xml->writeElement('action_url',$tab_action_url[$key]);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
 	    $xml->writeElement('ip', $tab_ip[$key]);
 	    $xml->writeElement('duration', $tab_duration[$key]);

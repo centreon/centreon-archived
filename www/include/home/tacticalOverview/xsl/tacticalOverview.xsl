@@ -278,10 +278,14 @@
 									<xsl:attribute name="id">span_<xsl:value-of select="domId"/></xsl:attribute>
 								</xsl:element>
 							</xsl:element>
+							<span style='float: right;'>
 							<xsl:if test='host_notesurl != ""'>
 								<xsl:element name='a'>
 									<xsl:attribute name='href'>
 										<xsl:value-of select='host_notesurl'/>
+									</xsl:attribute>
+									<xsl:attribute name='title'>
+										<xsl:value-of select='host_notes'/>
 									</xsl:attribute>
 									<xsl:attribute name='target'>_new</xsl:attribute>
 									<xsl:element name='img'>
@@ -289,6 +293,18 @@
 									</xsl:element>
 								</xsl:element>	
 							</xsl:if>
+							<xsl:if test='host_actionurl != ""'>
+								<xsl:element name='a'>
+									<xsl:attribute name='href'>
+										<xsl:value-of select='host_actionurl'/>
+									</xsl:attribute>									
+									<xsl:attribute name='target'>_new</xsl:attribute>
+									<xsl:element name='img'>
+										<xsl:attribute name='src'>./img/icones/16x16/star_yellow.gif</xsl:attribute>
+									</xsl:element>
+								</xsl:element>	
+							</xsl:if>
+							</span>
 						</xsl:element>						
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColCenter</xsl:attribute>
@@ -710,10 +726,14 @@
 											<xsl:attribute name='id'>span_<xsl:value-of select='sid'/></xsl:attribute>
 										</xsl:element>
 									</xsl:element>
+									<span style='float: right;'>
 									<xsl:if test='notes_url != ""'>
 										<xsl:element name='a'>
 											<xsl:attribute name='href'>
 												<xsl:value-of select='notes_url'/>
+											</xsl:attribute>
+											<xsl:attribute name='title'>
+												<xsl:value-of select='notes'/>
 											</xsl:attribute>
 											<xsl:attribute name='target'>_new</xsl:attribute>											
 											<xsl:element name='img'>
@@ -721,6 +741,18 @@
 											</xsl:element>
 										</xsl:element>	
 									</xsl:if>
+									<xsl:if test='action_url != ""'>
+										<xsl:element name='a'>
+											<xsl:attribute name='href'>
+												<xsl:value-of select='action_url'/>
+											</xsl:attribute>											
+											<xsl:attribute name='target'>_new</xsl:attribute>											
+											<xsl:element name='img'>
+												<xsl:attribute name='src'>./img/icones/16x16/star_yellow.gif</xsl:attribute>
+											</xsl:element>
+										</xsl:element>	
+									</xsl:if>
+									</span>
 								</xsl:element>
 								<xsl:element name='td'>
 									<xsl:attribute name='class'>ListColCenter</xsl:attribute>
