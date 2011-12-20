@@ -95,6 +95,15 @@
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
+			<xsl:if test="hau != 'none'">
+				<xsl:element name="a">
+					<xsl:attribute name="href"><xsl:value-of select="hau"/></xsl:attribute>
+						<xsl:attribute name="target">_blank</xsl:attribute>
+						<xsl:element name="img">
+							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>							
+						</xsl:element>
+				</xsl:element>
+			</xsl:if>
 			<xsl:if test="isf != 0">
 				<xsl:element name="img">
 				  	<xsl:attribute name="src">./img/icones/16x16/flapping.gif</xsl:attribute>

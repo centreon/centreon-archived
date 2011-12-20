@@ -302,6 +302,13 @@
 		} else {
 			$obj->XML->writeElement("hnu", "none");
 		}
+
+	    if ($ndo["action_url"] != "") {
+			$obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["action_url"]))));
+		} else {
+			$obj->XML->writeElement("hau", "none");
+		}
+
 		$obj->XML->endElement();
 	}
 	$DBRESULT->free();
