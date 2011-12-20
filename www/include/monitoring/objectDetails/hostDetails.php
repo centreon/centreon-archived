@@ -197,6 +197,7 @@
 				" nh.address," .
 				" no.name1 as host_name, " .
 				" nh.notes_url, " .
+				" nh.notes, " .
 			    " nh.alias, " .
 				" nh.action_url " .
 				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
@@ -231,6 +232,7 @@
 				" address," .
 				" name AS host_name, " .
 				" notes_url, " .
+				" notes, " .
 			    " alias, " .
 				" action_url " .
 				" FROM hosts " .
@@ -245,6 +247,11 @@
 		    $host_status[$host_name]["notes_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes_url"]);
 		    $host_status[$host_name]["notes_url"] = str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes_url"]);
 		    $host_status[$host_name]["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
+		}
+	    if (isset($host_status[$host_name]["notes"]) && $host_status[$host_name]["notes"]) {
+		    $host_status[$host_name]["notes"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["notes"]);
+		    $host_status[$host_name]["notes"] = str_replace("\$HOSTADDRESS\$", $data["address"], $data["notes"]);
+		    $host_status[$host_name]["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
 		}
 		if (isset($host_status[$host_name]["action_url"]) && $host_status[$host_name]["action_url"]) {
     		$host_status[$host_name]["action_url"] = str_replace("\$HOSTNAME\$", $data["host_name"], $data["action_url"]);

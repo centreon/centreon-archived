@@ -4,8 +4,17 @@
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3">
 				<img src='./img/icones/16x16/server_network.gif' {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}>
-				&nbsp;&nbsp;{$m_mon_host} : {$host_data.host_name} [{$h.host_alias}] - {$h.host_address}
-				{if $host_data.notes_url}<a href="{$host_data.notes_url}" target="_blank"><img src='./img/icones/15x7/weblink.gif' title'URL Notes'></a>{/if}
+				&nbsp;&nbsp;{$m_mon_host} : {$host_data.host_name} [{$h.host_address} | {$h.host_alias}] 
+				{if $host_data.notes_url}					
+					&nbsp;&nbsp;
+					<a href="{$host_data.notes_url}" target="_blank">
+					{if $host_data.notes}
+					({$host_data.notes})
+					{else}
+					({$host_data.notes_url})
+					{/if}
+					</a>
+				{/if}
 			</td>
 		</tr>
 	</table>
