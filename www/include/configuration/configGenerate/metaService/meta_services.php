@@ -104,8 +104,9 @@
 		$DBRESULT2->free();
 
 		$strEval .= print_line("notification_options", $meta["notification_options"]);
-		if ($meta["notifications_enabled"] != 2)
-			print_line("notifications_enabled", $meta["notifications_enabled"] == 1 ? "1": "0");
+		if ($meta["notifications_enabled"] != 2) {
+			$strEval .= print_line("notifications_enabled", $meta["notifications_enabled"] == 1 ? "1": "0");
+		}
 
 		$contactGroup = array();
 		$strTemp = NULL;

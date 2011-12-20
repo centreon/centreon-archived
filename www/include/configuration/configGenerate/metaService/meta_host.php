@@ -76,11 +76,11 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_host.cfg", $oreon->user->get_name());
 	$str = NULL;
 
-	# Init
+	// Init
 
 	$nb = 0;
 
-	# Host Creation
+	// Host Creation
 	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
 	$nb = $DBRESULT->numRows();
 
@@ -104,6 +104,13 @@
 		$str .= print_line("_HOST_ID", getMetaHostId($pearDB));
 		$str .= print_line("register", "1");
 		$str .= "\t}\n\n";
+		$pearDB->query("DELETE FROM ns_host_relation WHERE host_host_id = " . $pearDB->escape($hostId));
+		$pearDB->query("INSERT INTO ns_host_relation (host_host_id, nagios_server_id)
+						(SELECT $hostId, id
+						 FROM nagios_server
+						 WHERE ns_activate ='1'
+						 AND localhost = '1'
+						 LIMIT 1)");
 	}
 	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_hosts.cfg");
 	fclose($handle);

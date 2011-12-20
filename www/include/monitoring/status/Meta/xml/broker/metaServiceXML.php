@@ -228,6 +228,8 @@
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_perfdata"]);
 		$buffer->writeElement("sd", $ndo['display_name']);
+		$buffer->writeElement("hn", $ndo['host_name']);
+		$buffer->writeElement("rsd", $ndo['service_description']);
 		$buffer->writeElement("svc_id", $ndo["service_id"]);
         $buffer->writeElement("hid", $ndo["host_id"]);
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $pearDBO));

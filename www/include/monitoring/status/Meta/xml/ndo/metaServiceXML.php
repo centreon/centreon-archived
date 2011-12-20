@@ -229,12 +229,14 @@
 		$buffer->writeElement("f", $flag);
 		$buffer->writeElement("ppd", $ndo["process_performance_data"]);
 		$buffer->writeElement("sd", $ndo['display_name'], false);
+		$buffer->writeElement("hn", $ndo['host_name'], false);
+		$buffer->writeElement("rsd", $ndo['service_description'], false);
 		$buffer->writeElement("svc_id", $ndo["object_id"]);
 
 		$buffer->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"],$ndo["service_description"], $pearDBO));
 		$buffer->writeElement("sc", $color_service);
 		$buffer->writeElement("cs", _($tab_status_svc[$ndo["current_state"]]));
-		$buffer->writeElement("po", $ndo["plugin_output"], false);
+		$buffer->writeElement("po", $ndo["plugin_output"]);
 		$buffer->writeElement("ca", $ndo["current_attempt"]);
 		$buffer->writeElement("ne", $ndo["notifications_enabled"]);
 		$buffer->writeElement("pa", $ndo["problem_has_been_acknowledged"]);
