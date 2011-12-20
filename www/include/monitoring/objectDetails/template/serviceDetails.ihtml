@@ -4,15 +4,10 @@
 		<tr class='ListHeader'>
 			<td class="ListColHeaderLeft" colspan="3">
 				<img src='./img/icones/16x16/gear.gif'{if $sv_ext_icon_image_alt} alt='{$sv_ext_icon_image_alt}'{/if}>&nbsp;{$m_mon_services} {$svc_description} {$m_mon_on_host} {$h.host_name} [{$h.host_address} | {$h.host_alias}]
-				{if $sv_ext_notes}
-					&nbsp;&nbsp;
-					{if $sv_ext_notes_url}
-						<a href="{$sv_ext_notes_url}" target="_blank">
-					{/if}
-					({$sv_ext_notes})
-					{if $sv_ext_notes_url}
-						</a>
-					{/if}
+				{if $sv_ext_notes_url}
+					<a href="{$sv_ext_notes_url}" target="_blank">
+					<img src='./img/icones/15x7/weblink.gif' title="{if $sv_ext_notes}{$sv_ext_notes}{else}{$sv_ext_notes_url}{/if}">
+					</a>					
 				{/if}
 			</td>
 		</tr>
