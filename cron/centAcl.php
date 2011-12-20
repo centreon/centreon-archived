@@ -57,7 +57,7 @@
 	}
 
 	$nbProc = exec("ps -edf | grep -c \"[c]entAcl.php\"");
-	if ((int)$nbProc > 1) {
+	if ((int)$nbProc > 2) {
 		programExit("More than one centAcl.php process currently running. Going to exit...");
 	}
 
