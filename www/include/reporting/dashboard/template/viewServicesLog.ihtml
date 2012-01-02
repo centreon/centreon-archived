@@ -103,14 +103,14 @@
 							<td class='ListColRight'>{$summary.UNKNOWN_MP}%</td>
 							<td class='ListColRight'>{$summary.UNKNOWN_A}</td>
 						</tr>
-						<tr class="list_two">
+						<tr class="list_one">
 							<td {$style.MAINTENANCE}>{$MaintenanceTitle}</td>
 							<td class='ListColCenter'>{$summary.MAINTENANCE_TF}</td>
 							<td class='ListColRight'>{$summary.MAINTENANCE_TP}%</td>
 							<td class='ListColRight'></td>
 							<td class='ListColRight'></td>
 						</tr>
-						<tr class="list_one">
+						<tr class="list_two">
 							<td {$style_pending}>{$PendingTitle}</td>
 							<td class='ListColCenter'>{$summary.UNDETERMINED_TF}</td>
 							<td class='ListColRight'>{$summary.UNDETERMINED_TP}%</td>
