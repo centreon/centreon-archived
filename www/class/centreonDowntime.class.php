@@ -663,12 +663,18 @@ class CentreonDowntime
 					$add = true;
 				}
 			} elseif ($period['month_cycle'] == 'all') {
-				$dateOfMonth = date('N', $time);
+				$dateOfMonth = date('w', $time);
+				if ($dateOfMonth == 0) {
+				    $dateOfMonth = 7;
+				}
 				if (in_array($dateOfMonth, $period['day_of_week'])) {
 					$add = true;
 				}
 			} else {
-				$dateOfMonth = date('N', $time);
+				$dateOfMonth = date('w', $time);
+			    if ($dateOfMonth == 0) {
+				    $dateOfMonth = 7;
+				}
 				if ($dateOfMonth == $period['day_of_week']) {
 					$monthName = date('F', $time);
 					$year = date('Y', $time);
