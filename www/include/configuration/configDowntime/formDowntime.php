@@ -88,6 +88,7 @@
 	$page->setValue($p);
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+    $form->addElement('hidden', 'dt_id');
 
 	/*
 	 * Tab 2
@@ -190,14 +191,12 @@
 		/*
 		 * Just watch a host information
 		 */
-		$form->addElement('hidden', 'dt_id');
 		if (!$min && $centreon->user->access->page($p) != 2) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&dt_id=".$id."'"));
 		}
 	    $form->setDefaults($default_dt);
 		$form->freeze();
 	} elseif ($o == "c") {
-		$form->addElement('hidden', 'dt_id');
 		/*
 		 * Modify a service information
 		 */
