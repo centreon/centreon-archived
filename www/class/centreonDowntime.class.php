@@ -417,7 +417,7 @@ class CentreonDowntime
 		}
 		$query = "SELECT dt_id FROM downtime WHERE dt_name = '" . CentreonDB::escape($name) . "'";
 		$res = $this->db->query($query);
-		if (PEAR::isError($res)) {
+		if (PEAR::isError($res) || $res->numRows() == 0) {
 			return false;
 		}
 		$row = $res->fetchRow();
