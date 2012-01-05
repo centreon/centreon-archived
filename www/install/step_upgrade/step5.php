@@ -93,6 +93,7 @@
 	$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
 	if (PEAR::isError($DBRESULT))
 		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+    $isNdo = $DBRESULT->numRows();
 	$confNDO = $DBRESULT->fetchRow();
 	unset($DBRESULT);
 
@@ -100,7 +101,7 @@
 	if (file_exists("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql")) {
 		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
         $request = "";
-        if (count($file_sql)) {
+        if (count($file_sql) && $isNdo) {
 	        $pearDBndo 	= new CentreonDB("ndo");
             $str = "";
 	        foreach ($file_sql as $line)
