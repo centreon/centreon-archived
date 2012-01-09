@@ -79,14 +79,14 @@ class Centreon_Traps {
             $matchingTab = array();
             $i = 0;
             foreach ($tab as $key => $value) {
-                if (preg_match('/^regularRegexp_(\d)/', $key, $matches)) {
+                if (preg_match('/^regularRegexp_(\d+)/', $key, $matches)) {
                     $index = $matches[1];
                     $matchingTab['order'][$i] = $this->_db->escape($tab['regularOrder_'.$index]);
                     $matchingTab['regexp'][$i] = $this->_db->escape($tab['regularRegexp_'.$index]);
                     $matchingTab['status'][$i] = $this->_db->escape($tab['regularStatus_'.$index]);
                     $matchingTab['var'][$i] = $this->_db->escape($tab['regularVar_'.$index]);
                     $i++;
-                } else if (preg_match('/^additionalRegexp_(\d)/', $key, $matches)) {
+                } else if (preg_match('/^additionalRegexp_(\d+)/', $key, $matches)) {
                     $index = $matches[1];
                     $matchingTab['order'][$i] = $this->_db->escape($tab['additionalOrder_'.$index]);
                     $matchingTab['regexp'][$i] = $this->_db->escape($tab['additionalRegexp_'.$index]);
