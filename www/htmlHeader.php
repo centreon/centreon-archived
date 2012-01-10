@@ -174,7 +174,9 @@
 			    print "\tsetTimeout('initM($tM, \"$sid\", \"$obis\")', 0);";
 			}
 		} else if ($topology_js['init']){
-			echo $topology_js['init'] ."();";
+			echo "if (typeof ".$topology_js['init']." == 'function') {";
+		    echo $topology_js['init'] ."();";
+		    echo "}";
 		}
 	}
 	print "check_session();";
