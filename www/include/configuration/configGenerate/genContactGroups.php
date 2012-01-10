@@ -71,10 +71,10 @@
 
 			$contact = array();
 			$strTemp = NULL;
-			$DBRESULT2 = $pearDB->query("SELECT cct.contact_id, cct.contact_name FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id AND cct.contact_register = 1 ORDER BY `contact_name`");
+			$DBRESULT2 = $pearDB->query("SELECT cct.contact_id, cct.contact_alias FROM contactgroup_contact_relation ccr, contact cct WHERE ccr.contactgroup_cg_id = '".$contactGroup["cg_id"]."' AND ccr.contact_contact_id = cct.contact_id AND cct.contact_register = 1 ORDER BY `contact_name`");
 			while ($contact = $DBRESULT2->fetchRow())	{
 				if (isset($gbArr[0][$contact["contact_id"]])) {
-					$strTemp != NULL ? $strTemp .= ", ".$contact["contact_name"] : $strTemp = $contact["contact_name"];
+					$strTemp != NULL ? $strTemp .= ", ".$contact["contact_alias"] : $strTemp = $contact["contact_alias"];
 				}
 			}
 			$DBRESULT2->free();
