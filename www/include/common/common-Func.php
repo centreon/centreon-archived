@@ -1414,10 +1414,16 @@
 		return NULL;
 	}
 
+	/**
+	 * Called by configLoad
+	 *
+	 * @param string $contact_name
+	 * @return int
+	 */
 	function getMyContactID($contact_name = NULL)	{
 		if (!$contact_name) return;
 		global $pearDB;
-		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".htmlentities($contact_name, ENT_QUOTES, "UTF-8")."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_alias = '".$pearDB->escape($contact_name)."' LIMIT 1");
 		if ($DBRESULT->numRows())	{
 			$row = $DBRESULT->fetchRow();
 			return $row["contact_id"];
