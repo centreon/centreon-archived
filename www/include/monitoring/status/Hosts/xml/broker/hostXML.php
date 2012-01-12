@@ -156,7 +156,7 @@
 	}
 
 	if ($hostgroups) {
-		$rq1 .= " AND h.host_id = hhg.host_id AND hostgroup_id = '$hostgroups' ";
+		$rq1 .= " AND h.host_id = hhg.host_id AND hostgroup_id IN ($hostgroups) ";
 	}
 
 	if ($instance != -1) {

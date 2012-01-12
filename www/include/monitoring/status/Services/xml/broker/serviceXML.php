@@ -197,7 +197,7 @@
 	 * HostGroup Filter
 	 */
 	if (isset($hostgroups) && $hostgroups != 0) {
-		$request .= " AND hg.host_id = h.host_id AND hg.hostgroup_id = ".(int)$hostgroups. " ";
+		$request .= " AND hg.host_id = h.host_id AND hg.hostgroup_id IN (".(int)$hostgroups. ") ";
 	}
 
 	/**

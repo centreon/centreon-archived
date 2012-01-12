@@ -118,7 +118,7 @@
 	}
 	if ($hostgroups) {
 	    $rq1 .= " AND hosts.host_id = hg.host_id ";
-	    $rq1 .= " AND hg.hostgroup_id = '".$hostgroups."' ";
+	    $rq1 .= " AND hg.hostgroup_id IN (".$hostgroups.") ";
 	}
 	$rq1 .= " AND hosts.enabled = 1 ";
 

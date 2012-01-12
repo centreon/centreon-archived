@@ -117,7 +117,7 @@
 		$rq1 .= " AND h.name like '%" . $search . "%' ";
 	}
 	if ($hostgroups) {
-		$rq1 .= " AND hg.hostgroup_id = '" . $hostgroups . "'";
+		$rq1 .= " AND hg.hostgroup_id IN (" . $hostgroups . ")";
 	}
 	$rq1 .= " AND h.enabled = 1 ";
 	$rq1 .= " ORDER BY $sort_type, host_name $order ";

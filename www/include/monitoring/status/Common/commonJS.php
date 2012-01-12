@@ -295,17 +295,19 @@ function construct_HostGroupSelectList(id) {
 			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}
 		while ($hostgroups = $DBRESULT->fetchRow()) {
+		while ($hostgroups = $DBRESULT->fetchRow()) {
 			if ($broker == 'broker') {
-				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) { ?>
-					var m = document.createElement('option');
-					m.value= "<?php echo $hostgroups["hostgroup_id"]; ?>";
-					_select.appendChild(m);
-					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
-					m.appendChild(n);
-					_select.appendChild(m);
-					select_index["<?php echo $hostgroups["hostgroup_id"]; ?>"] = i;
-					i++;
-	<?php 		}
+				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
+				    if (!isset($tabHG)) {
+				        $tabHG = array();
+				    }
+				    if (!isset($tabHG[$hostgroups["name"]])) {
+				        $tabHG[$hostgroups["name"]] = "";
+				    } else {
+				        $tabHG[$hostgroups["name"]] .= ",";
+				    }
+                    $tabHG[$hostgroups["name"]] = "'".$hostgroups["hostgroup_id"]."'";
+	 		    }
 			} else {
 				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
 					var m = document.createElement('option');
@@ -318,6 +320,21 @@ function construct_HostGroupSelectList(id) {
 					i++;
 	<?php 		}
 			}
+		}
+
+		if ($broker == 'broker') {
+		    foreach ($tabHG as $name => $id) {
+                ?>
+                var m = document.createElement('option');
+					m.value= "<?php echo $id; ?>";
+					_select.appendChild(m);
+					var n = document.createTextNode("<?php echo $name; ?>   ");
+					m.appendChild(n);
+					_select.appendChild(m);
+					select_index["<?php echo $id; ?>"] = i;
+					i++;
+				<?php
+            }
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
