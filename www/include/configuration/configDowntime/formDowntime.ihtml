@@ -185,14 +185,12 @@ function validPeriods()
 					periodStart = $$('input[name="periods[' + i + '][start_period]"]')[0].value.split(':');
 					periodEnd = $$('input[name="periods[' + i + '][end_period]"]')[0].value.split(':');
 					if (periodStart.length != 2 || periodEnd.length != 2) {
-						console.log(periodStart);
 						msgErr.push('Error bad time format ' + i);
 						valid = false;
-					} else if (parseInt(periodStart[0]) != periodStart[0] ||
-							   parseInt(periodStart[1]) != periodStart[1] ||
-							   parseInt(periodEnd[0]) != periodEnd[0] ||
-							   parseInt(periodEnd[1]) != periodEnd[1]) {
-						console.log(periodStart);
+					} else if (!periodStart[0].match(/^\d{2}$/) ||
+							   !periodStart[1].match(/^\d{2}$/) ||
+							   !periodEnd[0].match(/^\d{2}$/) ||
+							   !periodEnd[1].match(/^\d{2}$/)) {
 						msgErr.push('Error bad time format ' + i);
 						valid = false;
 					} else if (periodStart[0] < 0 ||
@@ -203,7 +201,6 @@ function validPeriods()
 							   periodEnd[0] > 24 ||
 							   periodEnd[1] < 0 ||
 							   periodEnd[1] > 59) {
-						console.log(periodStart);
 						msgErr.push('Error valid date ' + i);
 						valid = false;
 					} else {
