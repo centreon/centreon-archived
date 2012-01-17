@@ -5,8 +5,8 @@
 			<td class="ListColHeaderLeft" colspan="3">
 				<img src='./img/icones/16x16/server_network.gif' {if $h_ext_icon_image_alt} alt='{$h_ext_icon_image_alt}'{/if}>
 				&nbsp;&nbsp;{$m_mon_host} : {$host_data.host_name} [{$h.host_address} | {$h.host_alias}] 
-				{if $host_data.notes_url}					
-					<a href="{$host_data.notes_url}" target="_blank">
+				{if $h_ext_notes_url}					
+					<a href="{$h_ext_notes_url}" target="_blank">
 					<img src='./img/icones/15x7/weblink.gif' title="{if $host_data.notes}{$host_data.notes}{else}{$host_data.notes_url}{/if}">
 					</a>
 				{/if}
@@ -359,7 +359,7 @@
 					{/if}
 					{if $host_data.notes_url}
 					<tr class='list_two'>
-						<td class="ListColLeft">&#9679;&nbsp;<a href="{$host_data.notes_url}" target="_blank">URL Notes</a></td>
+						<td class="ListColLeft">&#9679;&nbsp;<a href="{$h_ext_notes_url}" target="_blank">{$h_ext_notes_url_lang}</a></td>
 					</tr>
 					{/if}
 					{section name=tool loop=$tools}

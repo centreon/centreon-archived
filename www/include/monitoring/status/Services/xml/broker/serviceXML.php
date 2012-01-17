@@ -141,15 +141,20 @@
 				s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
 				s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
 				h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
-				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks ";
-	$request .= " FROM hosts h, services s ";
+				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name ";
+	$request .= " FROM hosts h, services s, instances i ";
 	if (isset($hostgroups) && $hostgroups != 0) {
 		$request .= ", hosts_hostgroups hg ";
 	}
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
-	$request .= " WHERE h.host_id = s.host_id AND s.service_id IS NOT NULL AND s.service_id != 0 AND s.enabled = 1 AND h.enabled = 1 ";
+	$request .= " WHERE h.host_id = s.host_id
+				  AND s.service_id IS NOT NULL
+				  AND s.service_id != 0
+				  AND s.enabled = 1
+				  AND h.enabled = 1
+				  AND h.instance_id = i.instance_id ";
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
@@ -306,6 +311,7 @@
 			if ($data["h_notes_url"]) {
 				$hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
 				$hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
+				$hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
 			}
 			$obj->XML->writeElement("hnu", $hostNotesUrl);
 
@@ -313,6 +319,7 @@
 		    if ($data["h_action_url"]) {
 				$hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
 				$hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
+				$hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
 			}
 			$obj->XML->writeElement("hau", $hostActionUrl);
 
@@ -363,7 +370,10 @@
 			    $data["notes_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes_url"]);
 			}
 			if (isset($data['address']) && $data['address']) {
-                    $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes_url"]);
+                $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes_url"]);
+			}
+			if (isset($data['instance_name']) && $data['instance_name']) {
+                $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
 			}
 			$obj->XML->writeElement("snu", $data["notes_url"]);
 		} else {
@@ -377,7 +387,10 @@
 			    $data["action_url"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["action_url"]);
 			}
 			if (isset($data['address']) && $data['address']) {
-                    $data["notes_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["action_url"]);
+                    $data["action_url"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["action_url"]);
+			}
+	        if (isset($data['instance_name']) && $data['instance_name']) {
+                $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
 			}
 			$obj->XML->writeElement("sau", $data["action_url"]);
 		} else {

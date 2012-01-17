@@ -166,9 +166,10 @@
 					" no.name2 as service_description, " .
 					" ns.notes_url, " .
 					" ns.notes, " .
-					" ns.action_url " .
-					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
-					" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."' AND no.object_id = ns.service_object_id";
+					" ns.action_url, " .
+					" i.instance_name " .
+					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns, ".$ndo_base_prefix."instances i " .
+					" WHERE no.object_id = nss.service_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."' AND no.object_id = ns.service_object_id AND no.instance_id = i.instance_id ";
 			$DBRESULT = $pearDBndo->query($rq);
 		} else {
 			$rq =	"SELECT " .
@@ -201,9 +202,10 @@
 					" s.description as service_description, " .
 					" s.notes_url, " .
 					" s.notes, " .
-					" s.action_url " .
-					" FROM services s, hosts h " .
-					" WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."'";
+					" s.action_url, " .
+			        " i.name as instance_name " .
+					" FROM services s, hosts h, instances i " .
+					" WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id ";
 			$DBRESULT = $pearDBO->query($rq);
 		}
 
@@ -547,9 +549,16 @@
 		$notesurl = getMyServiceExtendedInfoField($service_id, "esi_notes_url");
 		$notesurl = $hostObj->replaceMacroInString($host_id, $notesurl);
 		$notesurl =  $svcObj->replaceMacroInString($service_id, $notesurl);
+	    if (isset($service_status[$host_name."_".$svc_description]["instance_name"])) {
+		    $notesurl = str_replace("\$INSTANCENAME\$", $service_status[$host_name."_".$svc_description]["instance_name"], $notesurl);
+		}
+
 		$actionurl = getMyServiceExtendedInfoField($service_id, "esi_action_url");
 		$actionurl = $hostObj->replaceMacroInString($host_id, $actionurl);
 		$actionurl =  $svcObj->replaceMacroInString($service_id, $actionurl);
+	    if (isset($service_status[$host_name."_".$svc_description]["instance_name"])) {
+		    $actionurl = str_replace("\$INSTANCENAME\$", $service_status[$host_name."_".$svc_description]["instance_name"], $actionurl);
+		}
 
 		$tpl->assign("sv_ext_notes", getMyServiceExtendedInfoField($service_id, "esi_notes"));
 		$tpl->assign("sv_ext_notes_url", $notesurl);

@@ -108,8 +108,9 @@
 			" nhs.scheduled_downtime_depth, " .
 			" nh.host_object_id, " .
 			" nhs.is_flapping, " .
-	        " hph.host_parenthost_id as is_parent ".
-			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no ";
+	        " hph.host_parenthost_id as is_parent, ".
+	        " i.instance_name " .
+			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."instances i ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
@@ -124,7 +125,8 @@
 
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
-			" AND no.name1 NOT LIKE '_Module_%'";
+			" AND no.name1 NOT LIKE '_Module_%' " .
+	        " AND i.instance_id = no.instance_id ";
 
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
@@ -302,13 +304,23 @@
 		}
 
 		if ($ndo["notes_url"] != "") {
-			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_name"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], str_replace("\$HOSTNOTES\$", $ndo["notes"], $ndo["notes_url"])))));
+			$str = $ndo['notes_url'];
+			$str = str_replace("\$HOSTNAME\$", $ndo['host_name'], $str);
+			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
+			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
+			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+		    $obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["host_name"], $str));
 		} else {
 			$obj->XML->writeElement("hnu", "none");
 		}
 
 	    if ($ndo["action_url"] != "") {
-			$obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["host_name"], str_replace("\$HOSTNAME\$", $ndo["host_name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo['action_url']))));
+			$str = $ndo['action_url'];
+			$str = str_replace("\$HOSTNAME\$", $ndo['host_name'], $str);
+			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
+			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
+			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+	        $obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["host_name"], $str));
 		} else {
 			$obj->XML->writeElement("hau", "none");
 		}

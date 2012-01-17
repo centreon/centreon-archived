@@ -199,9 +199,10 @@
 				" nh.notes_url, " .
 				" nh.notes, " .
 			    " nh.alias, " .
-				" nh.action_url " .
-				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh " .
-				" WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 LIKE '".$host_name."'";
+				" nh.action_url, " .
+			    " i.instance_name " .
+				" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."hosts nh, ".$ndo_base_prefix."instances i " .
+				" WHERE no.object_id = nhs.host_object_id AND no.object_id = nh.host_object_id AND no.name1 LIKE '".$host_name."' AND no.instance_id = i.instance_id ";
 			$DBRESULT = $pearDBndo->query($rq2);
 		} else {
 			$rq2 = "SELECT state AS current_state," .
@@ -218,7 +219,7 @@
 				" last_notification," .
 				" next_host_notification AS next_notification," .
 				" flapping AS is_flapping," .
-				" flap_detection AS flap_detection_enabled," .
+				" h.flap_detection AS flap_detection_enabled," .
 				" event_handler_enabled," .
 				" obsess_over_host,".
 				" notification_number AS current_notification_number," .
@@ -229,14 +230,15 @@
 				" last_check," .
 				" last_notification," .
 				" next_check," .
-				" address," .
-				" name AS host_name, " .
+				" h.address," .
+				" h.name AS host_name, " .
 				" notes_url, " .
 				" notes, " .
 			    " alias, " .
-				" action_url " .
-				" FROM hosts " .
-				" WHERE name LIKE '".$host_name."'";
+				" action_url, " .
+                " i.name as instance_name " .
+				" FROM hosts h, instances i " .
+				" WHERE h.name LIKE '".$host_name."' AND h.instance_id = i.instance_id ";
 			$DBRESULT = $pearDBO->query($rq2);
 		}
 		$data = $DBRESULT->fetchRow();
@@ -494,12 +496,19 @@
 		 */
 		$notesurl = getMyHostExtendedInfoField($host_id, "ehi_notes_url");
 		$notesurl = $hostObj->replaceMacroInString($host_id, $notesurl);
+		if (isset($host_status[$host_name]['instance_name'])) {
+		    $notesurl = str_replace("\$INSTANCENAME\$", $host_status[$host_name]['instance_name'], $notesurl);
+		}
 		$tpl->assign("h_ext_notes", getMyHostExtendedInfoField($host_id, "ehi_notes"));
 		$tpl->assign("h_ext_notes_url", $notesurl);
+		$tpl->assign("h_ext_notes_url_lang", _("URL Notes"));
 		$tpl->assign("h_ext_action_url_lang", _("Action URL"));
 
 		$actionurl = getMyHostExtendedInfoField($host_id, "ehi_action_url");
 		$actionurl = $hostObj->replaceMacroInString($host_id, $actionurl);
+	    if (isset($host_status[$host_name]['instance_name'])) {
+		    $actionurl = str_replace("\$INSTANCENAME\$", $host_status[$host_name]['instance_name'], $actionurl);
+		}
 		$tpl->assign("h_ext_action_url", $actionurl);
 		$tpl->assign("h_ext_icon_image", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image"));
 		$tpl->assign("h_ext_icon_image_alt", getMyHostExtendedInfoField($hostDB["host_id"], "ehi_icon_image_alt"));

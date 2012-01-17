@@ -181,16 +181,11 @@
 					</tr>
 				</table>
 				<br />
-				{if $sv_ext_action_url or $tools}		
+				{if $tools}		
 				<table class="ListTable">
 					<tr class='ListHeader'>
 						<td class="ListColHeaderLeft">{$m_mon_tools}</td>
-					</tr>
-					{if $sv_ext_action_url}		
-					<tr class='list_one'>
-						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">{$sv_ext_action_url_lang}</a></td>
-					</tr>
-					{/if}
+					</tr>					
 					{if $tools}		
 					{section name=tool loop=$tools}
 					<tr class='list_one'>
@@ -364,12 +359,12 @@
 					</tr>
 					{if $service_data.notes_url}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="{$service_data.notes_url}" target="_blank">URL notes</a></td>
+						<td class="ListColLeft"><a href="{$sv_ext_notes_url}" target="_blank">URL notes</a></td>
 					</tr>
 					{/if}
 					{if $service_data.action_url}
 					<tr class='list_one'>
-						<td class="ListColLeft"><a href="{$service_data.action_url}" target="_blank">URL Action</a></td>
+						<td class="ListColLeft"><a href="{$sv_ext_action_url}" target="_blank">URL Action</a></td>
 					</tr>
 					{/if}
 				</table>

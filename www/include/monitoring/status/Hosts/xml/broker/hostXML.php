@@ -111,8 +111,9 @@
 			" h.scheduled_downtime_depth, " .
 			" h.host_id, " .
 			" h.flapping, " .
-			" hph.parent_id as is_parent ";
-	$rq1 .= " FROM ";
+			" hph.parent_id as is_parent, " .
+	        " i.name as instance_name ";
+	$rq1 .= " FROM instances i, ";
 	if (!$obj->is_admin) {
 		$rq1 .= " centreon_acl, ";
 	}
@@ -124,6 +125,7 @@
     $rq1 .= " ON hph.parent_id = h.host_id ";
 
 	$rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
+    $rq1 .= " AND h.instance_id = i.instance_id ";
 
 	if (!$obj->is_admin) {
 		$rq1 .= " AND h.host_id = centreon_acl.host_id " . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
@@ -298,13 +300,23 @@
 		}
 
 		if ($ndo["notes_url"] != "") {
-			$obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], str_replace("\$HOSTNOTES\$", $ndo["notes"], $ndo["notes_url"])))));
+			$str = $ndo['notes_url'];
+			$str = str_replace("\$HOSTNAME\$", $ndo['name'], $str);
+			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
+			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
+			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+		    $obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name"], $str));
 		} else {
 			$obj->XML->writeElement("hnu", "none");
 		}
 
 	    if ($ndo["action_url"] != "") {
-			$obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["name"], str_replace("\$HOSTNAME\$", $ndo["name"], str_replace("\$HOSTADDRESS\$", $ndo["address"], $ndo["action_url"]))));
+			$str = $ndo['action_url'];
+			$str = str_replace("\$HOSTNAME\$", $ndo['name'], $str);
+			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
+			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
+			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+	        $obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["name"], $str));
 		} else {
 			$obj->XML->writeElement("hau", "none");
 		}
