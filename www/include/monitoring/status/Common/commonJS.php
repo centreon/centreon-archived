@@ -306,7 +306,7 @@ function construct_HostGroupSelectList(id) {
 				    } else {
 				        $tabHG[$hostgroups["name"]] .= ",";
 				    }
-                    $tabHG[$hostgroups["name"]] = "'".$hostgroups["hostgroup_id"]."'";
+                    $tabHG[$hostgroups["name"]] = $hostgroups["hostgroup_id"];
 	 		    }
 			} else {
 				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
