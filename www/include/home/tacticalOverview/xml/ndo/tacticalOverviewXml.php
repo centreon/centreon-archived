@@ -102,9 +102,10 @@
 	$resNdo1->free();
 
 	// Get Hosts Problems
-	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , h.notes, h.notes_url, h.action_url, hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc" .
-			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h " .
+	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , h.notes, h.notes_url, h.action_url, hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc, i.instance_name " .
+			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h, " . $ndo_base_prefix."instances i " .
 			" WHERE obj.object_id = hs.host_object_id".
+	        " AND obj.instance_id = i.instance_id " .
 			" AND obj.object_id = h.host_object_id" .
 			" AND obj.is_active = 1 " .
 			$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_name_list) .
@@ -129,13 +130,16 @@
 
     $tab_macros = array('/\$hostid\$/i',
     					'/\$hostname\$/i',
+    					'/\$HOSTNOTES\$/i',
                         '/\$HOSTNOTESURL\$/i',
+    					'/\$HOSTACTIONURL\$/i',
                         '/\$hoststate\$/i',
                         '/\$LASTHOSTCHECK\$/i',
                         '/\$hostoutput\$/i',
                         '/\$hosticon\$/i',
                         '/\$hostaddress\$/i',
-                        '/\$LASTHOSTSTATECHANGE\$/i');
+                        '/\$LASTHOSTSTATECHANGE\$/i',
+                        '/\$INSTANCENAME\$/i');
 
 
     while ($ndo = $resNdoHosts->fetchRow()) {
@@ -381,9 +385,10 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht" .
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, ht.address, ht.icon_image, i.instance_name " .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht, " .$ndo_base_prefix."instances i " .
 				" WHERE obj.object_id = stat.service_object_id" .
+		        " AND obj.instance_id = i.instance_id " .
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
@@ -396,9 +401,10 @@
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	} else {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image" .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht" .
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, ht.address, ht.icon_image, i.instance_name " .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix . "instances i ".
 				" WHERE obj.object_id = stat.service_object_id" .
+		        " AND obj.instance_id = i.instance_id " .
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
@@ -429,14 +435,16 @@
 			    		'/\$hostid\$/i',
 			    		'/\$serviceid$/i',
 			    		'/\$servicedesc\$/i',
+						'/\$SERVICENOTES\$/i',
 		    			'/\$SERVICENOTESURL\$/i',
+						'/\$SERVICEACTIONURL\$/i',
 						'/\$servicestate\$/i',
 						'/\$LASTSERVICECHECK\$/i',
 						'/\$serviceoutput\$/i',
 						'/\$LASTSERVICESTATECHANGE\$/i',
-						'/\$svchostid\$/i',
 						'/\$hostaddress\$/i',
-						'/\$hosticon\$/i');
+						'/\$hosticon\$/i',
+	                    '/\$INSTANCENAME$\/i');
 
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;
