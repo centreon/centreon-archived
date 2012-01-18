@@ -58,13 +58,13 @@
 			$centreon->historyPage[$_POST["url"]] = $_POST["page"];
 
 		if (isset($_POST["search"]) && isset($_POST["url"]))
-			$centreon->historySearchService[$_POST["url"]] = $_POST["search"];
+			$centreon->historySearchService[$_POST["url"]] = addslashes($_POST["search"]);
 
 		if (isset($_POST["search_host"]) && isset($_POST["url"]))
-			$centreon->historySearch[$_POST["url"]] = $_POST["search_host"];
+			$centreon->historySearch[$_POST["url"]] = addslashes($_POST["search_host"]);
 
 		if (isset($_POST["search_output"]) && isset($_POST["url"]))
-			$centreon->historySearchOutput[$_POST["url"]] = $_POST["search_output"];
+			$centreon->historySearchOutput[$_POST["url"]] = addslashes($_POST["search_output"]);
 	} else {
 		echo "Can't find SID !";
 	}
