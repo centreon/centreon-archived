@@ -60,9 +60,15 @@
 	$ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("Yes"), '1');
 	$ldapEnable[] = HTML_QuickForm::createElement('radio', 'ldap_auth_enable', null, _("No"), '0');
 	$form->addGroup($ldapEnable, 'ldap_auth_enable', _("Enable LDAP authentification"), '&nbsp;');
+
+	$ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("Yes"), '1');
+	$ldapStorePassword[] = HTML_QuickForm::createElement('radio', 'ldap_store_password', null, _("No"), '0');
+	$form->addGroup($ldapStorePassword, 'ldap_store_password', _("Store LDAP password"), '&nbsp;');
+
 	$ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', null, _("Yes"), '1');
 	$ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', null, _("No"), '0');
 	$form->addGroup($ldapAutoImport, 'ldap_auto_import', _("Auto import users"), '&nbsp;');
+
 	$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("Yes"), '1', array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);"));
 	$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("No"), '0', array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);"));
 	$form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
@@ -131,6 +137,7 @@
 	$ldapAdmin = new CentreonLdapAdmin($pearDB);
 
 	$defaultOpt = array('ldap_auth_enable' => '0',
+		'ldap_store_password' => '1',
 		'ldap_auto_import' => '0',
 		'ldap_srv_dns' => '0',
 		'ldap_template' => '1',
@@ -142,7 +149,7 @@
 	    'ldap_search_timeout' => '60');
 
 	$query = "SELECT `key`, `value` FROM `options`
-		WHERE `key` IN ('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain', 'ldap_contact_tmpl', 'ldap_search_limit', 'ldap_search_timeout')";
+		WHERE `key` IN ('ldap_auth_enable', 'ldap_store_password', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain', 'ldap_contact_tmpl', 'ldap_search_limit', 'ldap_search_timeout')";
 	$res = $pearDB->query($query);
 	while ($row = $res->fetchRow()) {
 	    $gopt[$row['key']] = $row['value'];
@@ -194,6 +201,7 @@
 
 	    /* Set the general options for ldap */
 	    $options = array('ldap_auth_enable' => $values['ldap_auth_enable']['ldap_auth_enable'],
+	    	'ldap_store_password' => $values['ldap_store_password']['ldap_store_password'],
 	        'ldap_auto_import' => $values['ldap_auto_import']['ldap_auto_import'],
 	    	'ldap_srv_dns' => $values['ldap_srv_dns']['ldap_srv_dns'],
 	        'ldap_dns_use_ssl' => $values['ldap_dns_use_ssl']['ldap_dns_use_ssl'],

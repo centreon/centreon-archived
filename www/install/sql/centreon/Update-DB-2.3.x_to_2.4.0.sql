@@ -227,5 +227,9 @@ CREATE TABLE `widget_parameters_range` (
     ON DELETE CASCADE
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
+-- 
+-- For LDAP store password option default value
+--
+INSERT INTO `options` (`key`, `value`) VALUES ('ldap_store_password', '1');
 
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;

@@ -84,12 +84,15 @@ class CentreonAuth {
     	$this->cryptEngine = $encryptType;
     	$this->debug = $this->getLogFlag();
 
-    	$queryLdapAutoImport = "SELECT `value` FROM options WHERE `key` = 'ldap_auto_import'";
-    	$res = $pearDB->query($queryLdapAutoImport);
-    	if (false === PEAR::isError($res) && $res->numRows() == 1) {
-    	    $row = $res->fetchRow();
-    	    if ($row['value'] == 1) {
-    	        $this->ldap_auto_import = true;
+    	$query = "SELECT `value`, `key` FROM options WHERE `key` IN ('ldap_auto_import', 'ldap_store_password')";
+    	$res = $pearDB->query($query);
+    	if (false === PEAR::isError($res) && $res->numRows()) {
+    	    while ($row = $res->fetchRow()) {
+        	    if ($row['key'] == 'ldap_auto_import' && $row['value'] == 1) {
+        	        $this->ldap_auto_import = true;
+        	    } elseif ($row['key'] == 'ldap_store_password' && $row['value'] == 1) {
+                    $this->ldap_store_password = true;
+        	    }
     	    }
     	}
 
@@ -137,18 +140,24 @@ class CentreonAuth {
 			if ($this->passwdOk == -1) {
 				if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
 					$this->passwdOk = 1;
-					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+					if (isset($this->ldap_store_password)) {
+					    $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+					}
 				} else if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
 					$this->passwdOk = 1;
-					$this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+					if (isset($this->ldap_store_password)) {
+					    $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+					}
 				} else {
 					$this->passwdOk = 0;
 				}
 			} elseif ($this->passwdOk == 1) {
-			    if (!isset($this->userInfos["contact_passwd"])) {
-			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
-			    } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
-			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+			    if (isset($this->ldap_store_password)) {
+    			    if (!isset($this->userInfos["contact_passwd"])) {
+    			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+    			    } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
+    			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+    			    }
 			    }
 			}
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {

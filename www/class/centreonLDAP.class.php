@@ -663,7 +663,7 @@ class CentreonLdapAdmin
 	{
 	    $gopt = $this->getGeneralOptions();
 
-	    $keyOptions = array('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_contact_tmpl', 'ldap_search_limit', 'ldap_search_timeout');
+	    $keyOptions = array('ldap_auth_enable', 'ldap_store_password', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_contact_tmpl', 'ldap_search_limit', 'ldap_search_timeout');
 	    if ($options['ldap_srv_dns'] == "1") {
 	        $keyOptions[] = 'ldap_dns_use_ssl';
 	        $keyOptions[] = 'ldap_dns_use_tls';
@@ -690,7 +690,7 @@ class CentreonLdapAdmin
 	{
 	    $gopt = array();
 	    $query = "SELECT `key`, `value` FROM `options`
-			WHERE `key` IN ('ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns',
+			WHERE `key` IN ('ldap_auth_enable', 'ldap_store_password','ldap_auto_import', 'ldap_srv_dns',
 				'ldap_dns_use_ssl', 'ldap_dns_use_tls', 'ldap_dns_use_domain', 'ldap_contact_tmpl',
 				'ldap_search_limit', 'ldap_search_timeout')";
     	$res = $this->_db->query($query);

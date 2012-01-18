@@ -5,6 +5,7 @@ $help = array();
  * LDAP Informations
  */
 $help['ldap_auth_enable'] = dgettext('help', 'Enable LDAP authentification');
+$help['ldap_store_password'] = dgettext('help', 'Whether or not the password should be stored in database');
 $help['ldap_auto_import'] = dgettext('help', 'Can connect with LDAP without import');
 $help['ldap_contact_tmpl'] = dgettext('help', 'The contact template for auto imported user.<br/>This template is applied for Nagios contact configuration');
 $help['ldap_srv_dns'] = dgettext('help', 'Use the DNS service for get LDAP host');
