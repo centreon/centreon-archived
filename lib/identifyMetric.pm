@@ -115,7 +115,7 @@ sub identify_metric($$$$$$$$){
     my $metric = removeBackSpace($_[0]);
 
 #       while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ \\\%]+)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
-	while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ \\]+)\s*\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)[\;]*([0-9\.\,\-]*)\s?/g) {
+	while ($metric =~ m/\'?([a-zA-Z0-9\_\-\/\.\:\ \\]+)\s*\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)\s?/g) {
 	
 		my $metric_name = $1;
 		$metric_name =~ s/^\s+//;
@@ -182,7 +182,7 @@ sub identify_metric($$$$$$$$){
 				if (defined($data[1])) {
 				    # manage 'data_source_type' default value : NULL = '0'
 		            $metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
-				    if (defined($_[4]) && $_[4] eq 0 && $_[6] eq 0){
+				    if (defined($_[4]) && $_[4] eq 0){
 						updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
 				    } elsif (defined($_[4]) && $_[4] eq 2) { 
 						updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
