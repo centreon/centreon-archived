@@ -37,6 +37,7 @@
  */
 
 	include_once $centreon_path . "/www/class/centreonDB.class.php";
+	include_once $centreon_path . "/www/class/centreonBroker.class.php";
 
 	$pearDB = new CentreonDB();
 
@@ -90,40 +91,44 @@
 	/*
 	 * Update NDO
 	 */
-	$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
-	if (PEAR::isError($DBRESULT))
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-    $isNdo = $DBRESULT->numRows();
-	$confNDO = $DBRESULT->fetchRow();
-	unset($DBRESULT);
+	$objBroker = new CentreonBroker($pearDB);
 
-	print "<tr><td><b>Database &#146;".$confNDO['db_name']."&#146; : Upgrade</b></td>";
-	if (file_exists("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql")) {
-		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
-        $request = "";
-        if (count($file_sql) && $isNdo) {
-	        $pearDBndo 	= new CentreonDB("ndo");
-            $str = "";
-	        foreach ($file_sql as $line)
-	        	if ($line[0] != "#" && $line[0] != "-") {
-	        		$pos = strrpos($line, ";");
-                	if ($pos != false) {
-                    	$str .= $line;
-                    	$str = rtrim($str);
-                   	$DBRES = $pearDBndo->query($str);
-                    $str = NULL;
-                	} else
-                		$str .= $line;
-	        	}
-			if (isset($DBRES) && !PEAR::isError($DBRES))
-				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
-    		else
-    			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
-        } else {
-        	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
-        }
-	} else {
-		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+	if ($objBroker->getBroker() == "ndo") {
+    	$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1;");
+    	if (PEAR::isError($DBRESULT))
+    		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
+        $isNdo = $DBRESULT->numRows();
+    	$confNDO = $DBRESULT->fetchRow();
+    	unset($DBRESULT);
+
+    	print "<tr><td><b>Database &#146;".$confNDO['db_name']."&#146; : Upgrade</b></td>";
+    	if (file_exists("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql")) {
+    		$file_sql = file("./sql/brocker/Update-NDO-".$_SESSION["script"].".sql");
+            $request = "";
+            if (count($file_sql) && $isNdo) {
+    	        $pearDBndo 	= new CentreonDB("ndo");
+                $str = "";
+    	        foreach ($file_sql as $line)
+    	        	if ($line[0] != "#" && $line[0] != "-") {
+    	        		$pos = strrpos($line, ";");
+                    	if ($pos != false) {
+                        	$str .= $line;
+                        	$str = rtrim($str);
+                       	$DBRES = $pearDBndo->query($str);
+                        $str = NULL;
+                    	} else
+                    		$str .= $line;
+    	        	}
+    			if (isset($DBRES) && !PEAR::isError($DBRES))
+    				echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+        		else
+        			echo '<td align="right"><b><span class="critical">CRITICAL</span></b></td></tr>';
+            } else {
+            	echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+            }
+    	} else {
+    		echo '<td align="right"><b><span class="warning">PASS</span></b></td></tr>';
+    	}
 	}
 
 	/*
@@ -174,6 +179,7 @@
 	/*
 	 * Post Update in PHP
 	 */
+
 	print "<tr><td><b>PHP Script : Post Upgrade</b></td>";
 	if (file_exists("./php/Update-".$_SESSION["script"].".post.php")) {
 		if (include_once("./php/Update-".$_SESSION["script"].".post.php"))
