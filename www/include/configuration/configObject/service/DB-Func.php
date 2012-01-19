@@ -189,9 +189,9 @@
     		}
 		} else {
 		    if ($nbRows >= 1) {
-		        return true;
-		    } else {
 		        return false;
+		    } else {
+		        return true;
 		    }
 		}
 	}
