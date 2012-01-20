@@ -142,12 +142,18 @@ class CentreonLDAP {
 	/**
 	 * Connect to the first LDAP server
 	 *
+	 * @param int $connectionNumber
 	 * @return bool
 	 */
-	public function connect()
+	public function connect($connectionNumber = null)
 	{
-		foreach ($this->_ldapHosts as $ldap) {
-			$port = "";
+		$cnt = 0;
+	    foreach ($this->_ldapHosts as $ldap) {
+			if (isset($connectionNumber) && ($cnt != $connectionNumber)) {
+			    $cnt++;
+			    continue;
+			}
+	        $port = "";
 			if (isset($ldap['info']['port'])) {
 				$port = ":" . $ldap['info']['port'];
 			}
@@ -156,6 +162,7 @@ class CentreonLDAP {
 			} else {
 			    $url = 'ldap://' . $ldap['host'] . $port . '/';
 			}
+			passthru("echo ".$cnt ." " . $url." >> /tmp/counter");
 			$this->_debug("LDAP Connect : trying url : " . $url);
 			$this->_ds = ldap_connect($url);
 			ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
@@ -169,10 +176,9 @@ class CentreonLDAP {
 			    ldap_start_tls($this->_ds);
 			}
 			$this->_ldap = $ldap;
-			if ($this->rebind()) {
-			    return true;
-			}
+			$this->rebind();
 			$this->_debug("LDAP Connect : connection error");
+			$cnt++;
 		}
 		return false;
 	}

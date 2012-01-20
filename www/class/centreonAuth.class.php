@@ -133,33 +133,45 @@ class CentreonAuth {
 			include_once ($centreon_path."/www/class/centreonAuth.LDAP.class.php");
 
 			/*
+			 * For multi ldap servers
+			 */
+			$query = "SELECT COUNT(*) cnt FROM auth_ressource WHERE ar_enable = '1'";
+			$res = $this->pearDB->query($query);
+			$row = $res->fetchRow();
+            $cntMax = $row['cnt'];
+
+			/*
 			 * Create Class
 			 */
-			$authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos);
-			$this->passwdOk = $authLDAP->checkPassword();
-			if ($this->passwdOk == -1) {
-				if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
-					$this->passwdOk = 1;
-					if (isset($this->ldap_store_password)) {
-					    $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
-					}
-				} else if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
-					$this->passwdOk = 1;
-					if (isset($this->ldap_store_password)) {
-					    $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
-					}
-				} else {
-					$this->passwdOk = 0;
-				}
-			} elseif ($this->passwdOk == 1) {
-			    if (isset($this->ldap_store_password)) {
-    			    if (!isset($this->userInfos["contact_passwd"])) {
-    			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
-    			    } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
-    			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+            $cnt = 0;
+            while (($cnt < $cntMax) && $this->passwdOk != 1) {
+                $authLDAP = new CentreonAuthLDAP($this->pearDB, $this->CentreonLog, $this->login, $this->password, $this->userInfos, $cnt);
+    			$this->passwdOk = $authLDAP->checkPassword();
+    			if ($this->passwdOk == -1) {
+    				if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $password && $this->autologin) {
+    					$this->passwdOk = 1;
+    					if (isset($this->ldap_store_password)) {
+    					    $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+    					}
+    				} else if (isset($this->userInfos["contact_passwd"]) && $this->userInfos["contact_passwd"] == $this->myCrypt($password) && $this->autologin == 0) {
+    					$this->passwdOk = 1;
+    					if (isset($this->ldap_store_password)) {
+    					    $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+    					}
+    				} else {
+    					$this->passwdOk = 0;
+    				}
+    			} elseif ($this->passwdOk == 1) {
+    			    if (isset($this->ldap_store_password)) {
+        			    if (!isset($this->userInfos["contact_passwd"])) {
+        			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+        			    } elseif ($this->userInfos["contact_passwd"] != $this->myCrypt($this->password)) {
+        			        $this->pearDB->query("UPDATE `contact` SET `contact_passwd` = '".$this->myCrypt($this->password)."' WHERE `contact_alias` = '".$this->login."' AND `contact_register` = '1'");
+        			    }
     			    }
-			    }
-			}
+    			}
+    			$cnt++;
+            }
 		} else if ($this->userInfos["contact_auth_type"] == "" || $this->userInfos["contact_auth_type"] == "local" || $this->autologin) {
 			if ($this->userInfos["contact_passwd"] == $password && $this->autologin)
 				$this->passwdOk = 1;

@@ -62,14 +62,14 @@ class CentreonAuthLDAP {
 	 * @param string $password The user password
 	 * @param string $contactInfos
 	 */
-	function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos) {
+	function CentreonAuthLDAP($pearDB, $CentreonLog, $login, $password, $contactInfos, $connectionNumber = null) {
 
 		$this->pearDB = $pearDB;
 
 		$this->CentreonLog = $CentreonLog;
 
 		$this->ldap = new CentreonLDAP($pearDB, $CentreonLog);
-		$this->ldap->connect();
+		$this->ldap->connect($connectionNumber);
 		$this->ds = $this->ldap->getDs();
 
 		/*
