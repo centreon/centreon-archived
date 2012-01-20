@@ -119,8 +119,8 @@ class CentreonLDAP {
 				$ldap['tmpl'] = $tmpl_id;
 				$ldap['info']['port'] = $entry['port'];
 				$ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($tmpl_id));
+				$this->_ldapHosts[] = $ldap;
 			}
-			$this->_ldapHosts[] = $ldap;
 		} else {
 			$dbresult = $this->_db->query("SELECT ar.ar_id, ari.ari_value
 				FROM auth_ressource as ar, auth_ressource_info as ari
@@ -132,9 +132,9 @@ class CentreonLDAP {
 				$ldap['id'] = $row['ar_id'];
 				$ldap['info'] = $this->_getInfoConnect($row['ar_id']);
 				$ldap['tmpl'] = $tmpl_id;
-				$ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($tmpl_id));
+				$ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($row['ar_id']));
+				$this->_ldapHosts[] = $ldap;
 			}
-			$this->_ldapHosts[] = $ldap;
 			$dbresult->free();
 		}
 	}
@@ -190,18 +190,21 @@ class CentreonLDAP {
 	 * @return If the connection is good
 	 */
 	public function rebind() {
-	    if (isset($this->_ldap['info']['bind_dn']) && isset($this->_ldap['info']['bind_pass'])) {
+	    if (isset($this->_ldap['info']['bind_dn']) &&
+	        $this->_ldap['info']['bind_dn'] != "" &&
+	        isset($this->_ldap['info']['bind_pass']) &&
+	        $this->_ldap['info']['bind_pass'] != "") {
 	        $this->_debug("LDAP Connect : Credentials : " . $this->_ldap['info']['bind_dn'] . " :: " . $this->_ldap['info']['bind_pass']);
 			if (@ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
 				$this->_linkId = $this->_ldap['id'];
-				$this->_loadSearchInfo($this->_ldap['tmpl']);
+				$this->_loadSearchInfo($this->_ldap['id']);
 				return true;
 			}
 		} else {
 		    $this->_debug("LDAP Connect : Credentials : anonymous");
 			if (ldap_bind($this->_ds)) {
 				$this->_linkId = $this->_ldap['id'];
-				$this->_loadSearchInfo($this->_ldap['tmpl']);
+				$this->_loadSearchInfo($this->_ldap['id']);
 				return true;
 			}
 		}
@@ -701,18 +704,83 @@ class CentreonLdapAdmin
 	}
 
 	/**
+	 * Convert "form label" to "db label"
+	 *
+	 * @param string $key
+	 * @return string
+	 */
+	private function getLabelUsedInDb($key)
+	{
+        switch ($key) {
+            case "hostname":
+                $key = "host";
+                break;
+            case "bind_user":
+                $key = "bind_dn";
+                break;
+            case "ldap_bindpass":
+                $key = "bind_pass";
+                break;
+            case "ldap_version_protocol":
+                $key = "protocol_version";
+                break;
+            case "ldap_user_basedn":
+                $key = "user_base_search";
+                break;
+            case "ldap_group_basedn":
+                $key = "group_base_search";
+                break;
+            case "ldap_user_filter":
+                $key = "user_filter";
+                break;
+            case "ldap_user_uid_attr":
+                $key = "alias";
+                break;
+            case "ldap_user_group":
+                $key = "user_group";
+                break;
+            case "ldap_user_name":
+                $key = "user_name";
+                break;
+            case "ldap_user_firstname":
+                $key = "user_firstname";
+                break;
+            case "ldap_user_lastname":
+                $key = "user_lastname";
+                break;
+            case "ldap_user_email":
+                $key = "user_email";
+                break;
+            case "ldap_user_pager":
+                $key = "user_pager";
+                break;
+            case "ldap_group_filter":
+                $key = "group_filter";
+                break;
+            case "ldap_group_gid_attr":
+                $key = "group_name";
+                break;
+            case "ldap_group_member":
+                $key = "group_member";
+                break;
+            default :
+                break;
+        }
+        return $key;
+	}
+
+	/**
 	 * Add a Ldap server
 	 *
-	 * @param string $host The host
-	 * @param int $port The port (389)
-	 * @param int $use_ssl If use ssl connection 1 - true, 0 - false
-	 * @param int $use_tls If use tls connection 1 - true, 0 - false
-	 * @param int $order Order for connection
+	 * @param array $params
 	 * @return int|bool The id of connection, false on error
 	 */
-	public function addServer($host, $port, $use_ssl, $use_tls, $order)
+	public function addServer($params = array())
 	{
-		if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable, ar_order) VALUES ('ldap', '1', " . $order . ")"))) {
+	    if (!isset($params['order'])) {
+		    return false;
+		}
+	    if (PEAR::isError($this->_db->query("INSERT INTO auth_ressource (ar_type, ar_enable, ar_order) VALUES ('ldap', '1', " . $params['order'] . ")"))) {
 			return false;
 		}
 		$dbresult = $this->_db->query("SELECT MAX(ar_id) as id FROM auth_ressource WHERE ar_type = 'ldap'");
@@ -721,56 +789,42 @@ class CentreonLdapAdmin
 			return false;
 		}
 		$id = $row['id'];
-		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'host', '" . $host . "')");
-		if (PEAR::isError($sth)) {
-			return false;
-		}
-		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'port', '" . $port . "')");
-		if (PEAR::isError($sth)) {
-			return false;
-		}
-		$sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'use_ssl', '" . $use_ssl . "')");
-		if (PEAR::isError($sth)) {
-			return false;
-		}
-	    $sth = $this->_db->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (" . $id . ", 'use_tls', '" . $use_tls . "')");
-		if (PEAR::isError($sth)) {
-			return false;
-		}
+        foreach ($params as $key => $value) {
+            if ($key == "order") {
+                continue;
+            }
+            $key = $this->getLabelUsedInDb($key);
+            $query = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value)
+            		  VALUES (".$id.", '".$this->_db->escape($key)."', '".$this->_db->escape($value)."')";
+            $this->_db->query($query);
+        }
 		return $id;
 	}
 
 	/**
 	 * Modify a Ldap server
 	 *
-	 * @param string $host The host
-	 * @param int $port The port (389)
-	 * @param int $use_ssl If use ssl connection 1 - true, 0 - false
-	 * @param int $use_tls If use tls connection 1 - true, 0 - false
-	 * @param int $order Order for connection
+	 * @param array $params
 	 * @return int|bool The id of connection, false on error
 	 */
-    public function modifyServer($id, $host, $port, $use_ssl, $use_tls, $order)
+    public function modifyServer($params = array())
 	{
-		if (PEAR::isError($this->_db->query("UPDATE auth_ressource
-			SET ar_type = 'ldap', ar_order = " . $order . " WHERE ar_id = " . $id))) {
+	    if (!isset($params['order'])) {
+	        return false;
+	    }
+	    if (PEAR::isError($this->_db->query("UPDATE auth_ressource
+			SET ar_type = 'ldap', ar_order = " . $params['order'] . " WHERE ar_id = " . $params['id']))) {
 			return false;
 		}
-		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $host . "' WHERE ari_name = 'host' AND ar_id = " .$id);
-		if (PEAR::isError($sth)) {
-			return false;
-		}
-		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $port . "' WHERE ari_name = 'port' AND ar_id = " .$id);
-		if (PEAR::isError($sth)) {
-			return false;
-		}
-		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $use_ssl . "' WHERE ari_name = 'use_ssl' AND ar_id = " .$id);
-		if (PEAR::isError($sth)) {
-			return false;
-		}
-		$sth = $this->_db->query("UPDATE auth_ressource_info SET ari_value = '" . $use_tls . "' WHERE ari_name = 'use_tls' AND ar_id = " .$id);
-		if (PEAR::isError($sth)) {
-			return false;
+		foreach ($params as $key => $value) {
+		    if ($key == "id" || $key == "order") {
+		        continue;
+		    }
+		    $query = "DELETE FROM auth_ressource_info WHERE ari_name = '".$this->_db->escape($this->getLabelUsedInDb($key))."' AND ar_id = " . $params['id'];
+		    $this->_db->query($query);
+		    $query = "INSERT INTO auth_ressource_info (ari_value, ari_name, ar_id)
+		    		  VALUES ('".$this->_db->escape($value)."', '".$this->_db->escape($this->getLabelUsedInDb($key))."', " . $params['id'].")";
+		    $this->_db->query($query);
 		}
 		return $id;
 	}

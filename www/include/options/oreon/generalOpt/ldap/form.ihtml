@@ -19,9 +19,22 @@
 	<tr class="list_one" id="ldap_dns_use_tls"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_tls" /><span>{$form.ldap_dns_use_tls.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_tls.html}</td></tr>
 	{/if} 
 	<tr class="list_two" id="ldap_dns_use_domain"><td class="FormRowField"><img class="helpTooltip" name="ldap_dns_use_domain" /><span>{$form.ldap_dns_use_domain.label}</span></td><td class="FormRowValue">{$form.ldap_dns_use_domain.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$host_label}</td><td>
-	<div id="dynamicDiv"></div>
+	<tr class="list_one"><td class="FormRowField">{$host_label}</td><td>	
 	</td></tr>
+	{if $o != 'w'}
+	<tr class='list_two'>
+		<td colspan='2' class='FormRowField'>
+			<img class="helpTooltip" name="ldapConf" />
+			<span>
+				<a id='addBtn' style='cursor: pointer;' name='additionalHost' onClick='addNewHost();'>
+					{$addNewHostLabel} <img src='./img/icones/16x16/navigate_plus.gif'/>
+				</a>
+			</span>
+		</td>
+	</tr>
+	{/if}	
+	<tr class="list_two"><td class="FormRowField" colspan="2" id="dynamicDiv" style="padding:0;"></td></tr>
+<!--
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'/>&nbsp;&nbsp;{$form.header.ldapinfo}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_binduser" /><span>{$form.ldap_binduser.label}</span></td><td class="FormRowValue">{$form.ldap_binduser.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_bindpass" /><span>{$form.ldap_bindpass.label}</span></td><td class="FormRowValue">{$form.ldap_bindpass.html}</td></tr>
@@ -40,6 +53,7 @@
 	<tr class="list_one" id="ldap_group_filter"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_filter" /><span>{$form.ldap_group_filter.label}</span></td><td class="FormRowValue">{$form.ldap_group_filter.html}</td></tr>
 	<tr class="list_two" id="ldap_group_gid_attr"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_gid_attr" /><span>{$form.ldap_group_gid_attr.label}</span></td><td class="FormRowValue">{$form.ldap_group_gid_attr.html}</td></tr>
 	<tr class="list_one" id="ldap_group_member"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_member" />{$form.ldap_group_member.label}</span></td><td class="FormRowValue">{$form.ldap_group_member.html}</td></tr>
+--!>
 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}

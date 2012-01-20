@@ -190,6 +190,21 @@
 	$subC = $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
 
+	$query = "SELECT count(*) as nb FROM auth_ressource WHERE ar_enable = '1'";
+	$res = $pearDB->query($query);
+	$row = $res->fetchRow();
+	$nbOfInitialRows = $row['nb'];
+
+	$query = "SELECT MAX(ar_id) as cnt FROM auth_ressource WHERE ar_enable = '1'";
+	$res = $pearDB->query($query);
+	$maxArId = 1;
+	if ($res->numRows()) {
+    	$row = $res->fetchRow();
+    	$maxArId = $row['cnt'];
+	}
+
+	require_once $path.'ldap/javascript/ldapJs.php';
+
     $valid = false;
 	if ($form->validate())	{
 
@@ -214,11 +229,13 @@
 	    $ldapAdmin->setGeneralOptions($options);
 
 	    /* Get the template ID */
+	    /*
 	    $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
 	    $res = $pearDB->query($queryTemplate);
+	    */
 
 	    /* Prepare options */
-	    $options = array();
+	    /*$options = array();
 	    $options['tmpl'] = $values['ldap_template'];
 	    $options['protocol_version'] = $values['ldap_version_protocol'];
 	    $options['bind_dn'] = $values['ldap_binduser'];
@@ -263,8 +280,9 @@
 	        $options['group_filter'] = $tmplOptions['group_filter'];
 	        $options['group_name'] = $tmplOptions['group_attr']['group_name'];
 	        $options['group_member'] = $tmplOptions['group_attr']['member'];
-	    }
+	    }*/
 
+	    /*
 	    if (false === PEAR::isError($res) && $res->numRows() == 1) {
 	        $row = $res->fetchRow();
 	        $idTmpl = $row['ar_id'];
@@ -272,29 +290,45 @@
 	    } else {
 	        $ldapAdmin->addTemplate($options);
 	    }
+		*/
 
 	    $hostOld = array();
 	    if (isset($_POST['ldapHosts'])) {
-    	    foreach ($_POST['ldapHosts'] as $ldapHost) {
+	        $sortArray = array();
+	        foreach ($_POST['ldapHosts'] as $ldapHost) {
     	        if (isset($ldapHost['id'])) {
     	            $hostOld[] = $ldapHost['id'];
+    	        }
+    	        foreach ($ldapHost as $k => $v) {
+    	            if (!isset($sortArray[$k])) {
+    	                $sortArray[$k] = array();
+    	            }
+    	            $sortArray[$k][] = $v;
     	        }
     	    }
     	    $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap' AND ar_id NOT IN (" . join(', ', $hostOld) . ")";
     	    $pearDB->query($query);
 
+    	    array_multisort($sortArray['order'], SORT_ASC, $_POST['ldapHosts']);
+    	    $counter = 1;
     	    foreach ($_POST['ldapHosts'] as $ldapHost) {
+    	        $ldapHost['order'] = $counter;
     	        if (!isset($ldapHost['use_ssl'])) {
     	            $ldapHost['use_ssl'] = '0';
+    	        } else {
+    	            $ldapHost['use_ssl'] = '1';
     	        }
     	        if (!isset($ldapHost['use_tls'])) {
     	            $ldapHost['use_tls'] = '0';
+    	        } else {
+    	            $ldapHost['use_tls'] = '1';
     	        }
     	        if (isset($ldapHost['id'])) {
-    	            $ldapAdmin->modifyServer($ldapHost['id'], $ldapHost['hostname'], $ldapHost['port'], $ldapHost['use_ssl'], $ldapHost['use_tls'], $ldapHost['order']);
+    	            $ldapAdmin->modifyServer($ldapHost);
     	        } else {
-    	            $ldapAdmin->addServer($ldapHost['hostname'], $ldapHost['port'], $ldapHost['use_ssl'], $ldapHost['use_tls'], $ldapHost['order']);
+    	            $ldapAdmin->addServer($ldapHost);
     	        }
+    	        $counter++;
     	    }
 	    } else {
 	        $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap'";
@@ -338,10 +372,7 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
+	$tpl->assign('addNewHostLabel', _('Add a LDAP server'));
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");
-
-	$nbOfInitialRows = 0;
-
-	require_once $path.'ldap/javascript/ldapJs.php';
 ?>
