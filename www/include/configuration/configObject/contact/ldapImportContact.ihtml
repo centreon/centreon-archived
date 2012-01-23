@@ -5,14 +5,20 @@
  	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_view.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
+		<!--
 		<tr class="list_one"><td class="FormRowField" >{$form.ldap_search_filter.label}</td><td class="FormRowValue">{$form.ldap_search_filter.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField" >{$ldap_search_filter_help_title}</td><td class="FormRowValue">{$ldap_search_filter_help}</td></tr>
 		<tr class="list_one"><td class="FormRowField" >{$form.ldap_base_dn.label}</td><td class="FormRowValue">{$form.ldap_base_dn.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.ldap_search_timeout.label}</td><td class="FormRowValue">{$form.ldap_search_timeout.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.ldap_search_limit.label}</td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.ldap_search_limit.label}</td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>		
+		-->
+		<tr class='list_one'>
+			<td class='FormRowField'>{$ldapServers}</td>
+			<td class='FormRowValue'>{$ldapServerList}</td>
+		</tr>
 		<tr class="list_two" style="text-align: center;"><td class="FormRowField" colspan="4" style="text-align: center;" >{$form.ldap_search_button.html}</td></tr>
-	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/view.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2" style="text-align: center;" id='ldap_search_result_output' ></td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/view.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
+		<tr class="list_one"><td class="ListColLvl1_name" colspan="2" style="text-align: center;" id='ldap_search_result_output' ></td></tr>
 	</table>
 	<input type='hidden' name='o' value='{$o}'>
 	<div id="validForm">

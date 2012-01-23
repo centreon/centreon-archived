@@ -36,18 +36,31 @@ function getXhrM(){
 }
 
 function LdapSearch(){
-
+/*
 	_ldap_search_filter=encodeURIComponent(document.getElementsByName('ldap_search_filter')[0].value);
 	_ldap_base_dn=encodeURIComponent(document.getElementsByName('ldap_base_dn')[0].value);
 	_ldap_search_timeout=encodeURIComponent(document.getElementsByName('ldap_search_timeout')[0].value);
 	_ldap_search_limit=encodeURIComponent(document.getElementsByName('ldap_search_limit')[0].value);
-
+*/
+	var serverList = '';
+	$$('input[name^=ldapServer]').each(function(el) {
+		if (el.checked) {
+			key = el.getAttribute('name');
+			key.sub(/ldapServer\[(\d+)\]/, function(match) {
+				if (serverList != '') {
+					serverList += ',';
+				}
+				serverList += match[1];
+			});
+		}
+	});	
 	var xhrM = getXhrM();
 
 	xhrM.open("POST",_addrSearchM ,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrM.send("ldap_search_filter="+_ldap_search_filter+"&ldap_base_dn="+_ldap_base_dn+"&ldap_search_timeout="+_ldap_search_timeout +"&ldap_search_limit="+_ldap_search_limit);
-
+	//xhrM.send("ldap_search_filter="+_ldap_search_filter+"&ldap_base_dn="+_ldap_base_dn+"&ldap_search_timeout="+_ldap_search_timeout +"&ldap_search_limit="+_ldap_search_limit);
+	xhrM.send("serverList="+serverList);	
+	
 	document.getElementById('ldap_search_result_output').innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>" ;
 
 	// On defini ce qu'on va faire quand on aura la reponse
@@ -126,10 +139,21 @@ function LdapSearch(){
 		_tbody.appendChild(_tr);
 
 		var infos = reponse.getElementsByTagName("user");
-
+		var serverName = '';
+		
 			for (var i = 0 ; i < infos.length ; i++) {
 
 				var info = infos[i];
+				if (info.getAttribute('server') != serverName) {
+					var htr = document.createElement('tr');
+					htr.setAttribute('class', 'list_lvl_1');
+					var htd = document.createElement('td');					
+					htd.appendChild(document.createTextNode(info.getAttribute('server')));
+					htd.setAttribute('colspan', '8')
+					htr.appendChild(htd);
+					_tbody.appendChild(htr);
+					serverName = info.getAttribute('server');					
+				}
 			//	if (info.getAttribute('isvalid') == 1) {
 					if (info.getElementsByTagName("dn")[0].getAttribute('isvalid') == 1)
 						var _dn = info.getElementsByTagName("dn")[0].firstChild.nodeValue;

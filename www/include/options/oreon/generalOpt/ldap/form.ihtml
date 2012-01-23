@@ -6,7 +6,14 @@
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/users_family.gif'/>&nbsp;&nbsp;{$form.header.ldap}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_auth_enable" /><span>{$form.ldap_auth_enable.label}</span></td><td class="FormRowValue">{$form.ldap_auth_enable.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_store_password" /><span>{$form.ldap_store_password.label}</span></td><td class="FormRowValue">{$form.ldap_store_password.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_auto_import" /><span>{$form.ldap_auto_import.label}</span></td><td class="FormRowValue">{$form.ldap_auto_import.html}</td></tr>
+	<tr class="list_one">
+		<td class="FormRowField">
+			<img class="helpTooltip" name="ldap_auto_import" /><span>{$form.ldap_auto_import.label}</span>
+		</td>
+		<td class="FormRowValue">
+			{$form.ldap_auto_import.html}&nbsp;&nbsp;<input type="button" onClick="javascript:location.href='./main.php?p=60301&o=li'" value='{$manualImport}'></input>
+		</td>
+	</tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_search_limit" /><span>{$form.ldap_search_limit.label}</span></td><td class="FormRowValue">{$form.ldap_search_limit.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_search_timeout" /><span>{$form.ldap_search_timeout.label}</span></td><td class="FormRowValue">{$form.ldap_search_timeout.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_contact_tmpl" /><span>{$form.ldap_contact_tmpl.label}</span></td><td class="FormRowValue">{$form.ldap_contact_tmpl.html}{if $o != 'w'}&nbsp;

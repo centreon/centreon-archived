@@ -36,22 +36,28 @@
  *
  */
 
+ 	//require_once("/etc/centreon/centreon.conf.php");
  	require_once("@CENTREON_ETC@/centreon.conf.php");
-	require_once("../../../../include/common/common-Func.php");
- 	require_once("../../../../$classdir/centreonSession.class.php");
- 	require_once("../../../../$classdir/centreon.class.php");
- 	require_once("../../../../$classdir/centreonXML.class.php");
- 	require_once("../../../../$classdir/centreonDB.class.php");
- 	require_once("../../../../$classdir/centreonLDAP.class.php");
+	require_once($centreon_path . "www/include/common/common-Func.php");
+ 	require_once($centreon_path . "www/class/centreonSession.class.php");
+ 	require_once($centreon_path . "www/class/centreon.class.php");
+ 	require_once($centreon_path . "www/class/centreonXML.class.php");
+ 	require_once($centreon_path . "www/class/centreonDB.class.php");
+ 	require_once($centreon_path . "www/class/centreonLDAP.class.php");
 
  	CentreonSession::start();
 
 	if (!isset($_SESSION["centreon"])) {
-		header("Location: ../../../../index.php");
 		exit();
 	} else {
 		$oreon = $_SESSION["centreon"];
 	}
+
+	if (!isset($_POST['serverList']) || !strlen($_POST['serverList'])) {
+	    exit();
+	}
+
+	$serverList = $_POST['serverList'];
 
 	global $buffer;
 	$pearDB = new CentreonDB();
@@ -73,8 +79,7 @@
 	    $debug_ldap_import = false;
 	}
 
-	$ldap = new CentreonLDAP($pearDB, null);
-
+/*
 	$ldap_search_filter = null;
 	$ldap_base_dn = null;
 	$ldap_search_timeout = null;
@@ -99,92 +104,128 @@
 		$ldap_search_limit = $_GET["ldap_search_limit"];
 	else if (isset($_POST["ldap_search_limit"])  && ($_POST["ldap_search_limit"]!= "undefined"))
 		$ldap_search_limit = $_POST["ldap_search_limit"];
-
-	$connect = false;
-
-	if ($ldap->connect()) {
-	    $connect = true;
-	}
+*/
 
 	$buffer = new CentreonXML();
+    $buffer->startElement("reponse");
 
-	if ($connect) {
-	    $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
-	    $number_returned = count($searchResult);
-		if ($number_returned) {
-			$buffer->startElement("reponse");
-			$buffer->writeElement("entries", $number_returned);
-			for ($i = 0 ; $i < $number_returned ; $i++) {
-				if (isset($searchResult[$i]["dn"])){
-					$isvalid = "0";
-					if ($searchResult[$i]["alias"] != "") {
-					    $isvalid = "1";
-					}
+    $ldap = new CentreonLDAP($pearDB, null);
+    $ids = explode(",", $serverList);
+    foreach ($ids as $id) {
+        $connect = false;
+    	if ($ldap->connect(null, $id)) {
+    	    $connect = true;
+    	}
+    	if ($connect) {
+    	    $ldap_search_filter = "";
+    	    $ldap_base_dn = "";
+    	    $ldap_search_limit = 0;
+    	    $ldap_search_timeout = 0;
 
-					$searchResult[$i]["firstname"] = str_replace("'", "", $searchResult[$i]["firstname"]);
-					$searchResult[$i]["firstname"] = str_replace("\"", "", $searchResult[$i]["firstname"]);
-					$searchResult[$i]["firstname"] = str_replace("\'", "\\\'", $searchResult[$i]["firstname"]);
+    	    $query = "SELECT ari_name, ari_value
+    	    		  FROM auth_ressource_info
+    	    		  WHERE ar_id = " . $pearDB->escape($id);
+    	    $res = $pearDB->query($query);
+    	    while ($row = $res->fetchRow()) {
+    	        switch ($row['ari_name']) {
+    	            case "user_filter":
+    	                $ldap_search_filter = $row['ari_value'];
+    	                break;
+    	            case "user_base_search":
+    	                $ldap_base_dn = $row['ari_value'];
+    	                break;
+    	            default:
+    	                break;
+    	        }
+    	    }
 
-					$searchResult[$i]["lastname"] = str_replace("'", "", $searchResult[$i]["lastname"]);
-					$searchResult[$i]["lastname"] = str_replace("\"", "", $searchResult[$i]["lastname"]);
-					$searchResult[$i]["lastname"] = str_replace("\'", "\\\'", $searchResult[$i]["lastname"]);
+    	    $query = "SELECT `key`, `value` FROM options WHERE `key` IN ('ldap_search_limit', 'ldap_search_timeout')";
+    	    $res = $pearDB->query($query);
+    	    while ($row = $res->fetchRow()) {
+    	        switch ($row['key']) {
+    	            case "ldap_search_timeout":
+                        $ldap_search_timeout = $row['value'];
+    	                break;
+    	            case "ldap_search_limit":
+    	                $ldap_search_limit = $row['value'];
+    	                break;
+    	            default :
+    	                break;
+    	        }
+    	    }
+    	    $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
+    	    $number_returned = count($searchResult);
+    		if ($number_returned) {
+    			$buffer->writeElement("entries", $number_returned);
+    			for ($i = 0 ; $i < $number_returned ; $i++) {
+    				if (isset($searchResult[$i]["dn"])){
+    					$isvalid = "0";
+    					if ($searchResult[$i]["alias"] != "") {
+    					    $isvalid = "1";
+    					}
 
-					$searchResult[$i]["name"] = str_replace("'", "", $searchResult[$i]["name"]);
-					$searchResult[$i]["name"] = str_replace("\"", "", $searchResult[$i]["name"]);
-					$searchResult[$i]["name"] = str_replace("\'", "\\\'", $searchResult[$i]["name"]);
+    					$searchResult[$i]["firstname"] = str_replace("'", "", $searchResult[$i]["firstname"]);
+    					$searchResult[$i]["firstname"] = str_replace("\"", "", $searchResult[$i]["firstname"]);
+    					$searchResult[$i]["firstname"] = str_replace("\'", "\\\'", $searchResult[$i]["firstname"]);
 
-					$buffer->startElement("user");
-					$buffer->writeAttribute("isvalid", $isvalid);
-					$buffer->startElement("dn");
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['dn'] != "") ? "1" : "0" ));
-					$buffer->text($searchResult[$i]['dn'], 1, 0);
-					$buffer->endElement();
-					$buffer->startElement("sn");
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['lastname'] != "") ? "1" : "0" ));
-					$buffer->text($searchResult[$i]['lastname'], 1, 0);
-					$buffer->endElement();
-					$buffer->startElement("givenname");
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['firstname'] != "") ? "1" : "0" ));
-					$buffer->text($searchResult[$i]['firstname'], 1, 0);
-					$buffer->endElement();
-					$buffer->startElement("mail");
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['email'] != "") ? "1" : "0" ));
-					$buffer->text($searchResult[$i]['email'], 1, 0);
-					$buffer->endElement();
-					$buffer->startElement('pager');
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['pager'] != "") ? "1" : "0" ));
-					$buffer->text($searchResult[$i]['pager'], 1, 0);
-					$buffer->endElement();
-					$buffer->startElement("cn");
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['name'] != '') ? "1" : "0" ));
-					$buffer->text($searchResult[$i]['name'], 1, 0);
-					$buffer->endElement();
-					$buffer->startElement("uid");
-					$buffer->writeAttribute("isvalid", (($searchResult[$i]['alias'] != '') ? "1" : "0" ), 1, 0);
-					$buffer->text($searchResult[$i]['alias'], 1, 0);
-					$buffer->endElement();
-					$buffer->endElement();
-				}
-		   	}
-		   	$buffer->endElement();
-		} else {
-			$buffer->startElement("reponse");
-			$buffer->writeElement("entries", "0");
-			$buffer->writeElement("error", ldap_err2str($ldap->getDs()));
-			$buffer->endElement();
-		}
-	}
+    					$searchResult[$i]["lastname"] = str_replace("'", "", $searchResult[$i]["lastname"]);
+    					$searchResult[$i]["lastname"] = str_replace("\"", "", $searchResult[$i]["lastname"]);
+    					$searchResult[$i]["lastname"] = str_replace("\'", "\\\'", $searchResult[$i]["lastname"]);
 
+    					$searchResult[$i]["name"] = str_replace("'", "", $searchResult[$i]["name"]);
+    					$searchResult[$i]["name"] = str_replace("\"", "", $searchResult[$i]["name"]);
+    					$searchResult[$i]["name"] = str_replace("\'", "\\\'", $searchResult[$i]["name"]);
+
+    					$buffer->startElement("user");
+    					$query = "SELECT `ari_value` FROM auth_ressource_info WHERE ar_id = " .$pearDB->escape($id) . " AND ari_name = 'host'";
+    					$resServer = $pearDB->query($query);
+    					$row = $resServer->fetchRow();
+    					$buffer->writeAttribute("server", $row['ari_value']);
+    					$buffer->writeAttribute("isvalid", $isvalid);
+    					$buffer->startElement("dn");
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['dn'] != "") ? "1" : "0" ));
+    					$buffer->text($searchResult[$i]['dn'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement("sn");
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['lastname'] != "") ? "1" : "0" ));
+    					$buffer->text($searchResult[$i]['lastname'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement("givenname");
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['firstname'] != "") ? "1" : "0" ));
+    					$buffer->text($searchResult[$i]['firstname'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement("mail");
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['email'] != "") ? "1" : "0" ));
+    					$buffer->text($searchResult[$i]['email'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement('pager');
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['pager'] != "") ? "1" : "0" ));
+    					$buffer->text($searchResult[$i]['pager'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement("cn");
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['name'] != '') ? "1" : "0" ));
+    					$buffer->text($searchResult[$i]['name'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement("uid");
+    					$buffer->writeAttribute("isvalid", (($searchResult[$i]['alias'] != '') ? "1" : "0" ), 1, 0);
+    					$buffer->text($searchResult[$i]['alias'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->endElement();
+    				}
+    		   	}
+    		} else {
+    			$buffer->writeElement("entries", "0");
+    			$buffer->writeElement("error", ldap_err2str($ldap->getDs()));
+    		}
+    	}
+    }
 	if (isset($error)){
-		$buffer->startElement("reponse");
 		$buffer->writeElement("error", $error);
-		$buffer->endElement();
 	}
+	$buffer->endElement();
 
 	header('Content-Type: text/xml');
-
 	$buffer->output();
-
 	if (isset($debug_ldap_import) && $debug_ldap_import) {
 		error_log("[" . date("d/m/Y H:s") ."] LDAP Search : XML Output : ".$buffer->output()."\n", 3, $debug_path."ldapsearch.log");
 	}

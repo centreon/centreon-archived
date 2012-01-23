@@ -149,7 +149,7 @@
 	 * Different messages we put in the template
 	 */
 	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"),"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>_("LDAP Import")));
-	if ($centreon->optGen['ldap_auth_enable'] && $centreon->optGen['ldap_auto_import'] != 1) {
+	if ($centreon->optGen['ldap_auth_enable']) {
 		$tpl->assign('ldap', $centreon->optGen['ldap_auth_enable'] );
 	}
 

@@ -143,14 +143,17 @@ class CentreonLDAP {
 	 * Connect to the first LDAP server
 	 *
 	 * @param int $connectionNumber
+	 * @param int $connectionId
 	 * @return bool
 	 */
-	public function connect($connectionNumber = null)
+	public function connect($connectionNumber = null, $connectionId = null)
 	{
 		$cnt = 0;
 	    foreach ($this->_ldapHosts as $ldap) {
 			if (isset($connectionNumber) && ($cnt != $connectionNumber)) {
 			    $cnt++;
+			    continue;
+			} elseif (isset($connectionId) && $connectionId != $ldap['id']) {
 			    continue;
 			}
 	        $port = "";
@@ -162,7 +165,6 @@ class CentreonLDAP {
 			} else {
 			    $url = 'ldap://' . $ldap['host'] . $port . '/';
 			}
-			passthru("echo ".$cnt ." " . $url." >> /tmp/counter");
 			$this->_debug("LDAP Connect : trying url : " . $url);
 			$this->_ds = ldap_connect($url);
 			ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
@@ -176,7 +178,10 @@ class CentreonLDAP {
 			    ldap_start_tls($this->_ds);
 			}
 			$this->_ldap = $ldap;
-			$this->rebind();
+			$bindResult = $this->rebind();
+			if (isset($connectionId) && $bindResult) {
+			    return true;
+			}
 			$this->_debug("LDAP Connect : connection error");
 			$cnt++;
 		}
@@ -464,6 +469,7 @@ class CentreonLDAP {
 	    $this->_debug('LDAP Search : Size Limit : ' . $searchLimit);
 	    $this->_debug('LDAP Search : Timeout : ' . $searchTimeout);
 	    /* Search */
+	    $filter = preg_replace('/%s/', '*', $filter);
 	    $sr = ldap_search($this->_ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
 	    $this->_debug("LDAP Search : Error : ". ldap_err2str($this->_ds));
 	    /* Sort */

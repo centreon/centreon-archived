@@ -373,6 +373,7 @@
 	$tpl->assign('o', $o);
 	$tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
 	$tpl->assign('addNewHostLabel', _('Add a LDAP server'));
+	$tpl->assign('manualImport', _('Import users manually'));
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");
 ?>
