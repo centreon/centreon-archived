@@ -108,6 +108,11 @@
 		$sort_type = $_GET["sort_types"];
 	}
 
+	/* Fix for downtime */
+	if (isset($_REQUEST['view_all'])) {
+	    $url_var .= "&view_all=" . $_REQUEST['view_all'];
+	}
+
 	/*
 	 * Smarty template Init
 	 */
