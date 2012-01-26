@@ -78,11 +78,13 @@ class CentreonLDAP {
 	    $dbresult = $this->_db->query("SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'");
 		$row = $dbresult->fetchRow();
 		$dbresult->free();
+		$tmpl_id = 0;
 		if ($row) {
 			$tmpl_id = $row['ar_id'];
-		} else {
-			throw new Exception('Not ldap template has defined');
 		}
+		/* else {
+			throw new Exception('Not ldap template has defined');
+		}*/
 
 		/* Debug options */
 		$dbresult = $this->_db->query("SELECT `key`, `value` FROM `options` WHERE `key` IN ('debug_ldap_import', 'debug_path')");
@@ -131,7 +133,7 @@ class CentreonLDAP {
 				$ldap['host'] = $row['ari_value'];
 				$ldap['id'] = $row['ar_id'];
 				$ldap['info'] = $this->_getInfoConnect($row['ar_id']);
-				$ldap['tmpl'] = $tmpl_id;
+				//$ldap['tmpl'] = $tmpl_id;
 				$ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($row['ar_id']));
 				$this->_ldapHosts[] = $ldap;
 			}
