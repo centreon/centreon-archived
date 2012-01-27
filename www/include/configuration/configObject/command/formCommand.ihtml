@@ -14,7 +14,7 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_name"> {$form.command_name.label}</td><td class="FormRowValue">{$form.command_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_type"> {$form.command_type.label}</td><td class="FormRowValue">{$form.command_type.html}</td></tr>
 		<tr class="list_one">
-			<td class="FormRowField"><img class="helpTooltip" name="command_line"> {$form.command_line.label}</td>
+			<td class="FormRowField"><img class="helpTooltip" name="command_line_help"> {$form.command_line.label}</td>
 			<td>
 				<table border="0">
 				<tr>
