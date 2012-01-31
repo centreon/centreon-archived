@@ -453,7 +453,7 @@
 						'/\$LASTSERVICESTATECHANGE\$/i',
 						'/\$hostaddress\$/i',
 						'/\$hosticon\$/i',
-	                    '/\$INSTANCENAME$\/i');
+	                    '/\$INSTANCENAME\$/i');
 
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;

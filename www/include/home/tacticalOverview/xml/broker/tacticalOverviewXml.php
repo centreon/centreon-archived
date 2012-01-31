@@ -127,7 +127,7 @@
                         '/\$hosticon\$/i',
 	                    '/\$hostaddress\$/i',
         	            '/\$LASTHOSTSTATECHANGE\$/i',
-                        '/\$INSTANCENAME$\/i');
+                        '/\$INSTANCENAME\$/i');
 
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
