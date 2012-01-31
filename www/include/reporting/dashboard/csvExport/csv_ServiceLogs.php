@@ -51,6 +51,7 @@
 	 * DB connexion
 	 */
 	$pearDB 	= new CentreonDB();
+	$pearDBndo 	= new CentreonDB("ndo");
 	$pearDBO 	= new CentreonDB("centstorage");
 
 	if (isset($_GET["sid"]) && isset($_SESSION['centreon']) && !check_injection($_GET["sid"])){
