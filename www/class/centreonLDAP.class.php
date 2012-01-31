@@ -645,7 +645,7 @@ class CentreonLDAP {
 	private function _debug($msg)
 	{
 	    if ($this->_debugImport) {
-		    error_log("[" . date("d/m/Y H:s") ."]" . $msg . "\n", 3, $this->_debugPath."ldapsearch.log");
+		    error_log("[" . date("d/m/Y H:i") ."]" . $msg . "\n", 3, $this->_debugPath."ldapsearch.log");
 	    }
 	}
 }
