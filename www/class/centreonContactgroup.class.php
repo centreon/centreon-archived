@@ -83,16 +83,21 @@ class CentreonContactgroup
     	}
 
     	if ($withLdap && $ldapEnable) {
+        	$query = "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'";
+			$ldapres = $this->db->query($query);
+
         	/* ContactGroup from LDAP */
         	$ldap = new CentreonLDAP($this->db, null);
-        	$ldap->connect();
-        	$cg_ldap = $ldap->listOfGroups();
+        	while ($ldaprow = $ldapres->fetchRow()) {
+            	$ldap->connect(null, $ldaprow['ar_id']);
+            	$cg_ldap = $ldap->listOfGroups();
 
-    	    /* Merge contactgroup from ldap and from db */
-        	foreach ($cg_ldap as $cg_name) {
-        	    if (false === array_search($cg_name, $contactgroups)) {
-        	        $contactgroups[$cg_name] = $cg_name . " (LDAP)";
-        	    }
+        	    /* Merge contactgroup from ldap and from db */
+            	foreach ($cg_ldap as $cg_name) {
+            	    if (false === array_search($cg_name, $contactgroups)) {
+            	        $contactgroups[$cg_name] = $cg_name . " (LDAP)";
+            	    }
+            	}
         	}
     	}
     	asort($contactgroups);
