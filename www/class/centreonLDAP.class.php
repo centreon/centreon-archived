@@ -473,7 +473,7 @@ class CentreonLDAP {
 	    /* Search */
 	    $filter = preg_replace('/%s/', '*', $filter);
 	    $sr = ldap_search($this->_ds, $basedn, $filter, $attr, 0, $searchLimit, $searchTimeout);
-	    $this->_debug("LDAP Search : Error : ". ldap_err2str($this->_ds));
+	    $this->_debug("LDAP Search : Error : ". ldap_error($this->_ds));
 	    /* Sort */
 	    ldap_sort($this->_ds, $sr, "dn");
 	    $number_returned = ldap_count_entries($this->_ds,$sr);
