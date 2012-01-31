@@ -99,10 +99,10 @@
 	/*
 	 * Services group services stats
 	 */
-	echo _("Host").";"._("Service").";"._("OK Time").";"._("OK Mean Time").";"._("OK Alerts").
-										_("WARNING Time").";"._("WARNING Mean Time").";"._("WARNING Alerts").
-										_("CRITICAL Time").";"._("CRITICAL Mean Time").";"._("CRITICAL Alerts").
-										_("UNKNOWN Time").";"._("UNKNOWN Mean Time").";"._("UNKNOWN Alerts").
+	echo _("Host").";"._("Service").";"._("OK Time").";"._("OK Mean Time").";"._("OK Alerts"). ";".
+										_("WARNING Time").";"._("WARNING Mean Time").";"._("WARNING Alerts"). ";".
+										_("CRITICAL Time").";"._("CRITICAL Mean Time").";"._("CRITICAL Alerts"). ";".
+										_("UNKNOWN Time").";"._("UNKNOWN Mean Time").";"._("UNKNOWN Alerts"). ";".
 										_("UNDETERMINED Time").";"._("UNDETERMINED Mean Time").";"._("UNDETERMINED Alerts")."\n";
 	foreach ($stats as $key => $tab) {
 		if ($key != "average") {
@@ -119,7 +119,7 @@
 	 * Services group stats evolution
 	 */
 	echo _("Day").";"._("Duration").";"
-				   ._("OK Mean Time")."; ".";"._("OK Alert").";"
+				   ._("OK Mean Time").";"._("OK Alert").";"
 				   ._("Warning Mean Time").";"._("Warning Alert").";"
 				   ._("Unknown Mean Time").";"._("Unknown Alert").";"
 				   ._("Critical Mean Time").";"._("Critical Alert")."\n";
