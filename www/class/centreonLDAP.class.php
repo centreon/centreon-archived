@@ -207,7 +207,7 @@ class CentreonLDAP {
 	        $this->_ldap['info']['bind_dn'] != "" &&
 	        isset($this->_ldap['info']['bind_pass']) &&
 	        $this->_ldap['info']['bind_pass'] != "") {
-	        $this->_debug("LDAP Connect : Credentials : " . $this->_ldap['info']['bind_dn'] . " :: " . $this->_ldap['info']['bind_pass']);
+	        $this->_debug("LDAP Connect : Credentials : " . $this->_ldap['info']['bind_dn']);
 			if (@ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
 				$this->_linkId = $this->_ldap['id'];
 				$this->_loadSearchInfo($this->_ldap['id']);
