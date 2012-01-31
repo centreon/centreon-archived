@@ -64,6 +64,7 @@
 			else if ($key == "obsess_over_services" && $value == 2);
 			else if ($key == "obsess_over_hosts" && $value == 2);
 			else if ($key == "process_performance_data" && $value == 2);
+			else if ($key == "check_for_orphaned_hosts" && $value == 2);
 			else if ($key == "check_for_orphaned_services" && $value == 2);
 			else if ($key == "check_service_freshness" && $value == 2);
 			else if ($key == "check_host_freshness" && $value == 2);
