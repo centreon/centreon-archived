@@ -39,6 +39,7 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
+    include_once $centreon_path . "www/class/centreonInstance.class.php";
 
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
@@ -48,6 +49,8 @@
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
+
+	$instanceObj = new CentreonInstance($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -412,6 +415,9 @@
 					$hostNotesUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["notes_url"]);
 					$hostNotesUrl = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]["address"], $hostNotesUrl);
 					$hostNotesUrl = str_replace("\$INSTANCENAME\$", $host_status[$ndo["host_name"]]["instance_name"], $hostNotesUrl);
+					$hostNotesUrl = str_replace("\$INSTANCEADDRESS\$",
+					                             $instanceObj->getParam($host_status[$ndo["host_name"]]["instance_name"], "ns_ip_address"),
+					                             $hostNotesUrl);
 				}
                 $obj->XML->writeElement("hnu", $hostNotesUrl);
 
@@ -420,6 +426,9 @@
 					$hostActionUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], $host_status[$ndo["host_name"]]["action_url"]);
 					$hostActionUrl = str_replace("\$HOSTADDRESS\$", $host_status[$ndo["host_name"]]["address"], $hostActionUrl);
 					$hostActionUrl = str_replace("\$INSTANCENAME\$", $host_status[$ndo["host_name"]]["instance_name"], $hostActionUrl);
+					$hostActionUrl = str_replace("\$INSTANCEADDRESS\$",
+					                             $instanceObj->getParam($host_status[$ndo["host_name"]]["instance_name"], "ns_ip_address"),
+					                             $hostActionUrl);
 				}
 				$obj->XML->writeElement("hau", $hostActionUrl);
 
@@ -475,6 +484,9 @@
 				}
 			    if (isset($host_status[$ndo["host_name"]]['instance_name']) && $host_status[$ndo["host_name"]]['instance_name']) {
                     $ndo["notes_url"] = str_replace("\$INSTANCENAME\$", $host_status[$ndo["host_name"]]['instance_name'], $ndo["notes_url"]);
+                    $ndo["notes_url"] = str_replace("\$INSTANCEADDRESS\$",
+                                                    $instanceObj->getParam($host_status[$ndo["host_name"]]['instance_name'], 'ns_ip_address'),
+                                                    $ndo["notes_url"]);
 				}
 				$obj->XML->writeElement("snu", $ndo["notes_url"]);
 			} else {
@@ -492,6 +504,9 @@
 				}
 		        if (isset($host_status[$ndo["host_name"]]['instance_name']) && $host_status[$ndo["host_name"]]['instance_name']) {
                     $ndo["action_url"] = str_replace("\$INSTANCENAME\$", $host_status[$ndo["host_name"]]['instance_name'], $ndo["action_url"]);
+                    $ndo["action_url"] = str_replace("\$INSTANCEADDRESS\$",
+                                                     $instanceObj->getParam($host_status[$ndo["host_name"]]['instance_name'], 'ns_ip_address'),
+                                                     $ndo["action_url"]);
 				}
 				$obj->XML->writeElement("sau", $ndo["action_url"]);
 			} else {

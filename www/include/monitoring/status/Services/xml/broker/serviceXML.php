@@ -45,6 +45,7 @@
 	 * Require Sepecific XML / Ajax Class
 	 */
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
+	include_once $centreon_path . "www/class/centreonInstance.class.php";
 
 	/**
 	 * Require commonu Files.
@@ -57,6 +58,8 @@
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
+
+	$instanceObj = new CentreonInstance($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -312,6 +315,9 @@
 				$hostNotesUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_notes_url"]);
 				$hostNotesUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostNotesUrl);
 				$hostNotesUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostNotesUrl);
+				$hostNotesUrl = str_replace("\$INSTANCEADDRESS\$",
+				                            $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
+				                            $hostNotesUrl);
 			}
 			$obj->XML->writeElement("hnu", $hostNotesUrl);
 
@@ -320,6 +326,9 @@
 				$hostActionUrl = str_replace("\$HOSTNAME\$", $data["name"], $data["h_action_url"]);
 				$hostActionUrl = str_replace("\$HOSTADDRESS\$", $data["address"], $hostActionUrl);
 				$hostActionUrl = str_replace("\$INSTANCENAME\$", $data["instance_name"], $hostActionUrl);
+				$hostActionUrl = str_replace("\$INSTANCEADDRESS\$",
+				                            $instanceObj->getParam($data["instance_name"], "ns_ip_address"),
+				                            $hostActionUrl);
 			}
 			$obj->XML->writeElement("hau", $hostActionUrl);
 
@@ -374,6 +383,9 @@
 			}
 			if (isset($data['instance_name']) && $data['instance_name']) {
                 $data["notes_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes_url']);
+                $data["notes_url"] = str_replace("\$INSTANCEADDRESS\$",
+                                                 $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+                                                 $data["notes_url"]);
 			}
 			$obj->XML->writeElement("snu", $data["notes_url"]);
 		} else {
@@ -391,6 +403,9 @@
 			}
 	        if (isset($data['instance_name']) && $data['instance_name']) {
                 $data["action_url"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['action_url']);
+                $data["action_url"] = str_replace("\$INSTANCEADDRESS\$",
+                                                 $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+                                                 $data["action_url"]);
 			}
 			$obj->XML->writeElement("sau", $data["action_url"]);
 		} else {

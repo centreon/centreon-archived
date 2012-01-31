@@ -38,6 +38,7 @@
 
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
+	include_once $centreon_path . "www/class/centreonInstance.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*
@@ -45,6 +46,8 @@
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
+
+	$instanceObj = new CentreonInstance($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -305,6 +308,7 @@
 			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
 			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
 			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+			$str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
 		    $obj->XML->writeElement("hnu", $hostObj->replaceMacroInString($ndo["name"], $str));
 		} else {
 			$obj->XML->writeElement("hnu", "none");
@@ -316,6 +320,7 @@
 			$str = str_replace("\$HOSTADDRESS\$", $ndo['address'], $str);
 			$str = str_replace("\$HOSTNOTES\$", $ndo['notes'], $str);
 			$str = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $str);
+			$str = str_replace("\$INSTANCEADDRESS\$", $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'), $str);
 	        $obj->XML->writeElement("hau", $hostObj->replaceMacroInString($ndo["name"], $str));
 		} else {
 			$obj->XML->writeElement("hau", "none");
