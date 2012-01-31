@@ -48,6 +48,7 @@
     require_once $centreon_path . 'www/class/centreonUser.class.php';
     require_once $centreon_path . 'www/class/centreonDuration.class.php';
     require_once $centreon_path . 'www/class/centreonLang.class.php';
+    require_once $centreon_path . 'www/class/centreonInstance.class.php';
 
 	session_start();
 
@@ -59,6 +60,8 @@
 	$pearDB = $db;
 	$dbb 	= new CentreonDB("centstorage");
     $centreon = $_SESSION['centreon'];
+
+    $instanceObj = new CentreonInstance($db);
 
     $centreonLang = new CentreonLang($centreon_path, $centreon);
 	$centreonLang->bindLang();
@@ -143,8 +146,14 @@
 	    $tab_hostprobname[$nbhostpb] = $ndo["name"];
         $tab_hostprobstate[$nbhostpb] = $ndo["state"];
         $tab_hostnotesurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
+        $tab_hostnotesurl[$nbhostpb] = str_replace("\$INSTANCEADDRESS\$",
+			                                       $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
+			                                       $tab_hostnotesurl[$nbhostpb]);
         $tab_hostnotes[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes"]);
         $tab_hostactionurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["action_url"]);
+        $tab_hostactionurl[$nbhostpb] = str_replace("\$INSTANCEADDRESS\$",
+			                                       $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
+			                                       $tab_hostactionurl[$nbhostpb]);
         $tab_hostproblast[$nbhostpb] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
         $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
         $tab_hostproboutput[$nbhostpb] = $ndo["output"];
@@ -450,8 +459,14 @@
 			$tab_svcname[$j] = $ndo["description"];
 			$tab_state[$j] = $ndo["state"];
 			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
+			$tab_notes_url[$j] = str_replace("\$INSTANCEADDRESS\$",
+			                                 $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
+			                                 $tab_notes_url[$j]);
 			$tab_notes[$j] = preg_replace($tab_macros,$ndo,$ndo["notes"]);
 			$tab_action_url[$j] = preg_replace($tab_macros,$ndo,$ndo["action_url"]);
+			$tab_action_url[$j] = str_replace("\$INSTANCEADDRESS\$",
+			                                 $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
+			                                 $tab_action_url[$j]);
 			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
 			$tab_ip[$j] = $ndo["address"];
 			$tab_duration[$j] = " - ";
