@@ -205,7 +205,9 @@
 					" s.action_url, " .
 			        " i.name as instance_name " .
 					" FROM services s, hosts h, instances i " .
-					" WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id ";
+					" WHERE h.host_id = s.host_id AND h.name LIKE '".$pearDB->escape($host_name)."' AND s.description LIKE '".$pearDB->escape($svc_description)."' AND h.instance_id = i.instance_id " .
+			        " AND h.enabled = 1 " .
+			        " AND s.enabled = 1 ";
 			$DBRESULT = $pearDBO->query($rq);
 		}
 

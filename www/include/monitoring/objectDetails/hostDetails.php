@@ -154,7 +154,9 @@
 						" h.name AS host_name," .
 						" s.description as service_description" .
 						" FROM services s, hosts h" .
-						" WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' ";
+						" WHERE s.host_id = h.host_id AND h.name LIKE '".$host_name."' " .
+			            " AND h.enabled = 1 " .
+			            " AND s.enabled = 1 ";
 			$DBRESULT = $pearDBO->query($rq);
 		}
 		while ($ndo = $DBRESULT->fetchRow())	{
@@ -238,7 +240,8 @@
 				" action_url, " .
                 " i.name as instance_name " .
 				" FROM hosts h, instances i " .
-				" WHERE h.name LIKE '".$host_name."' AND h.instance_id = i.instance_id ";
+				" WHERE h.name LIKE '".$host_name."' AND h.instance_id = i.instance_id " .
+			    " AND h.enabled = 1 ";
 			$DBRESULT = $pearDBO->query($rq2);
 		}
 		$data = $DBRESULT->fetchRow();
