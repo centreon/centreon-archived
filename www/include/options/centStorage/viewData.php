@@ -202,7 +202,18 @@
 		$index_data["metrics_name"] = str_replace("#BS#", "\\", $index_data["metrics_name"]);
 
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
-		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+	    if (!isset($instance) || ($instance == 0 && $instance == "")) {
+		    $index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+		} else {
+		    $query = "SELECT * FROM rebuild WHERE centreon_instance = '$instance' AND index_id = '".$index_data["id"]."' LIMIT 1";
+		    $DBRESULT_Status = $pearDBO->query($query);
+		    $statusdata = $DBRESULT_Status->fetchRow();
+		    if (isset($data["status"])) {
+		        $index_data["must_be_rebuild"] = $yesOrNo[$statusdata["status"]];
+		    } else {
+		        $index_data["must_be_rebuild"] = $yesOrNo[0];
+		    }
+		}
 		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
 		$index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
 
