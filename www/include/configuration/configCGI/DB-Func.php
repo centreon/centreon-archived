@@ -1,41 +1,65 @@
 <?php
 /*
  * Copyright 2005-2011 MERETHIS
+ *
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
- * 
- * This program is free software; you can redistribute it and/or modify it under 
- * the terms of the GNU General Public License as published by the Free Software 
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
  * Foundation ; either version 2 of the License.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
  * PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along with 
+ *
+ * You should have received a copy of the GNU General Public License along with
  * this program; if not, see <http://www.gnu.org/licenses>.
- * 
- * Linking this program statically or dynamically with other modules is making a 
- * combined work based on this program. Thus, the terms and conditions of the GNU 
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
  * General Public License cover the whole combination.
- * 
- * As a special exception, the copyright holders of this program give MERETHIS 
- * permission to link this program with independent modules to produce an executable, 
- * regardless of the license terms of these independent modules, and to copy and 
- * distribute the resulting executable under terms of MERETHIS choice, provided that 
- * MERETHIS also meet, for each linked independent module, the terms  and conditions 
- * of the license of that module. An independent module is a module which is not 
- * derived from this program. If you modify this program, you may extend this 
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
- * 
+ *
  * For more information : contact@centreon.com
- * 
+ *
  * SVN : $URL$
  * SVN : $Id$
- * 
+ *
  */
-	function testCgiExistence ($name = NULL)	{
+
+    function testInstanceRelation($instanceId) {
+        global $pearDB, $form;
+
+        $cgiId = 0;
+        if (isset($form)) {
+            if (!$cgiId = $form->getSubmitValue('cgi_id')) {
+                $cgiId = 0;
+            }
+        }
+        $query = "SELECT COUNT(*) as nb
+        		  FROM cfg_cgi
+        		  WHERE instance_id = " . $instanceId . "
+        		  AND cgi_id != " . $cgiId . "
+        		  AND cgi_activate = '1'";
+        $res = $pearDB->query($query);
+        $row = $res->fetchRow();
+        if ($row['nb']) {
+            return false;
+        }
+        return true;
+    }
+
+    function testCgiExistence ($name = NULL)	{
 		global $pearDB;
 		global $form;
 		$id = NULL;
@@ -44,23 +68,22 @@
 		$DBRESULT = $pearDB->query("SELECT cgi_name, cgi_id FROM cfg_cgi WHERE cgi_name = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$cgi = $DBRESULT->fetchRow();
 		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $cgi["cgi_id"] == $id)	
+		if ($DBRESULT->numRows() >= 1 && $cgi["cgi_id"] == $id)
 			return true;
 		#Duplicate entry
 		else if ($DBRESULT->numRows() >= 1 && $cgi["cgi_id"] != $id)
 			return false;
 		else
 			return true;
-	}	
-	
+	}
+
 	function enableCGIInDB ($cgi_id = null)	{
 		if (!$cgi_id) return;
 		global $pearDB;
 		global $oreon;
-		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '0'");
-		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");		
+		$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id."'");
 	}
-	
+
 	function disableCGIInDB ($cgi_id = null)	{
 		if (!$cgi_id) return;
 		global $pearDB;
@@ -72,19 +95,19 @@
 			$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$maxId["MAX(cgi_id)"]."'");
 		}
 	}
-	
+
 	function deleteCGIInDB ($cgi = array())	{
 		global $pearDB;
 		foreach($cgi as $key=>$value)
 			$DBRESULT = $pearDB->query("DELETE FROM cfg_cgi WHERE cgi_id = '".$key."'");
-		$DBRESULT = $pearDB->query("SELECT cgi_id FROM cfg_cgi WHERE cgi_activate = '1'");		  
+		$DBRESULT = $pearDB->query("SELECT cgi_id FROM cfg_cgi WHERE cgi_activate = '1'");
 		if (!$DBRESULT->numRows())	{
 			$DBRESULT = $pearDB->query("SELECT MAX(cgi_id) FROM cfg_cgi");
 			$cgi_id = $DBRESULT->fetchRow();
 			$DBRESULT = $pearDB->query("UPDATE cfg_cgi SET cgi_activate = '1' WHERE cgi_id = '".$cgi_id["MAX(cgi_id)"]."'");
 		}
 	}
-	
+
 	function multipleCGIInDB ($cgi = array(), $nbrDup = array())	{
 		foreach($cgi as $key=>$value)	{
 			global $pearDB;
@@ -92,10 +115,11 @@
 			$row = $DBRESULT->fetchRow();
 			$row["cgi_id"] = '';
 			$row["cgi_activate"] = '0';
+			$row['instance_id'] = null;
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
 				foreach ($row as $key2=>$value2)	{
-					$key2 == "cgi_name" ? ($cgi_name = $value2 = $value2."_".$i) : null;
+				    $key2 == "cgi_name" ? ($cgi_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 				}
 				if (testCgiExistence($cgi_name))	{
@@ -105,24 +129,24 @@
 			}
 		}
 	}
-	
+
 	function updateCGIInDB ($cgi_id = NULL)	{
 		if (!$cgi_id) return;
 		updateCGI($cgi_id);
-	}	
-	
+	}
+
 	function insertCGIInDB ($ret = array())	{
 		$cgi_id = insertCGI($ret);
 		return ($cgi_id);
 	}
-	
+
 	function insertCGI($ret = array())	{
 		global $form;
 		global $pearDB;
 		global $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO `cfg_cgi` ( `cgi_id` , `cgi_name` , `main_config_file` , `physical_html_path` , `url_html_path` , " .
+		$rq = "INSERT INTO `cfg_cgi` ( `cgi_id` , `cgi_name` , `instance_id`, `main_config_file` , `physical_html_path` , `url_html_path` , " .
 				"`nagios_check_command` , `use_authentication` , `default_user_name` , `authorized_for_system_information` , " .
 				"`authorized_for_system_commands` , `authorized_for_configuration_information` , `authorized_for_all_hosts` , " .
 				"`authorized_for_all_host_commands` , `authorized_for_all_services` , `authorized_for_all_service_commands` , " .
@@ -132,6 +156,7 @@
 				" VALUES (";
 		$rq .= "NULL, ";
         isset($ret["cgi_name"]) && $ret["cgi_name"] != NULL ? $rq .= "'".htmlentities($ret["cgi_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["instance_id"]) && $ret["instance_id"] != NULL ? $rq .= "'".htmlentities($ret["instance_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["main_config_file"]) && $ret["main_config_file"] != NULL ? $rq .= "'".htmlentities($ret["main_config_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["physical_html_path"]) && $ret["physical_html_path"] != NULL ? $rq .= "'".htmlentities($ret["physical_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["url_html_path"]) && $ret["url_html_path"] != NULL ? $rq .= "'".htmlentities($ret["url_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -169,7 +194,7 @@
 		}
 		return ($cgi_id["MAX(cgi_id)"]);
 	}
-	
+
 	function updateCGI($cgi_id = null)	{
 		if (!$cgi_id) return;
 		global $form;
@@ -178,6 +203,7 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_cgi SET ";
         isset($ret["cgi_name"]) && $ret["cgi_name"] != NULL ? $rq .= "cgi_name = '".htmlentities($ret["cgi_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "cgi_name = NULL, ";
+        isset($ret["instance_id"]) && $ret["instance_id"] != NULL ? $rq .= "instance_id = '".htmlentities($ret["instance_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "instance_id = NULL, ";
         isset($ret["main_config_file"]) && $ret["main_config_file"] != NULL ? $rq .= "main_config_file = '".htmlentities($ret["main_config_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "main_config_file = NULL, ";
         isset($ret["physical_html_path"]) && $ret["physical_html_path"] != NULL ? $rq .= "physical_html_path = '".htmlentities($ret["physical_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "physical_html_path = NULL, ";
         isset($ret["url_html_path"]) && $ret["url_html_path"] != NULL ? $rq .= "url_html_path = '".htmlentities($ret["url_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "url_html_path = NULL, ";

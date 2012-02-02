@@ -13,8 +13,9 @@
 	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.cgi_name.label}</td><td class="FormRowValue">{$form.cgi_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.cgi_comment.label}</td><td class="FormRowValue">{$form.cgi_comment.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.cgi_activate.label}</td><td class="FormRowValue">{$form.cgi_activate.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.instance_id.label}</td><td class="FormRowValue">{$form.instance_id.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.cgi_comment.label}</td><td class="FormRowValue">{$form.cgi_comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.cgi_activate.label}</td><td class="FormRowValue">{$form.cgi_activate.html}</td></tr>
 		
 		<!-- Part 1 -->
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;&nbsp;</td></tr>

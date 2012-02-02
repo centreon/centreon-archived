@@ -39,21 +39,31 @@
 	if (!isset($oreon))
 		exit();
 
-	function testExistence ($name = NULL)	{
+	function testExistence ($name = null)	{
 		global $pearDB, $form;
-		$id = NULL;
-		if (isset($form))
+
+		$id = 0;
+		$instances = array();
+		if (isset($form)) {
 			$id = $form->getSubmitValue('resource_id');
-		$DBRESULT = $pearDB->query("SELECT resource_name, resource_id FROM cfg_resource WHERE resource_name = '".$pearDB->escape($name)."'");
+			$instances = $form->getSubmitValue('instance_id');
+		}
+		if (!count($instances)) {
+		    return true;
+		}
+		$DBRESULT = $pearDB->query("SELECT cr.resource_name, crir.resource_id, crir.instance_id
+									FROM cfg_resource cr, cfg_resource_instance_relations crir
+									WHERE cr.resource_id = crir.resource_id
+									AND crir.instance_id IN (".implode(",", $instances).")
+									AND cr.resource_name = '".$pearDB->escape($name)."'");
 		$res = $DBRESULT->fetchRow();
-		#Modif case
-		if ($DBRESULT->numRows() >= 1 && $res["resource_id"] == $id)
+		if ($DBRESULT->numRows() >= 1 && $res["resource_id"] == $id) {
 			return true;
-		#Duplicate entry
-		else if ($DBRESULT->numRows() >= 1 && $res["resource_id"] != $id)
+		} elseif ($DBRESULT->numRows() >= 1 && $res["resource_id"] != $id) {
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 
 	function deleteResourceInDB ($DBRESULT = array())	{
@@ -97,6 +107,7 @@
 	function updateResourceInDB ($resource_id = NULL)	{
 		if (!$resource_id) return;
 		updateResource($resource_id);
+		insertInstanceRelations($resource_id);
 	}
 
 	function updateResource($resource_id)	{
@@ -115,6 +126,7 @@
 
 	function insertResourceInDB ()	{
 		$resource_id = insertResource();
+		insertInstanceRelations($resource_id);
 		return ($resource_id);
 	}
 
@@ -134,5 +146,23 @@
 		$DBRESULT = $pearDB->query("SELECT MAX(resource_id) FROM cfg_resource");
 		$resource_id = $DBRESULT->fetchRow();
 		return ($resource_id["MAX(resource_id)"]);
+	}
+
+	function insertInstanceRelations($resourceId) {
+        global $form, $pearDB;
+
+        $pearDB->query("DELETE FROM cfg_resource_instance_relations WHERE resource_id = " . $pearDB->escape($resourceId));
+        $query = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ";
+        $instances = $form->getSubmitValue('instance_id');
+        $query2 = "";
+        foreach ($instances as $instanceId) {
+            if ($query2 != "") {
+                $query2 .= ", ";
+            }
+            $query2 .= "(" . $pearDB->escape($resourceId) .", ".$pearDB->escape($instanceId).")";
+        }
+        if ($query2) {
+            $pearDB->query($query . $query2);
+        }
 	}
 ?>

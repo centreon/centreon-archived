@@ -5,6 +5,7 @@
 class CentreonInstance {
     protected $db;
     protected $params;
+    protected $instances;
 
     /**
      * Constructor
@@ -15,6 +16,7 @@ class CentreonInstance {
     public function __construct($db)
     {
         $this->db = $db;
+        $this->instances = array();
         $this->initParams();
     }
 
@@ -33,6 +35,7 @@ class CentreonInstance {
         while ($row = $res->fetchRow()) {
             $instanceId = $row['id'];
             $instanceName = $row['name'];
+            $this->instances[$instanceId] = $instanceName;
             $this->params[$instanceId] = array();
             $this->paramsByName[$instanceName] = array();
             foreach ($row as $key => $value) {
@@ -61,5 +64,15 @@ class CentreonInstance {
             }
         }
         return null;
+    }
+
+    /**
+     * Get Instances
+     *
+     * @return array
+     */
+    public function getInstances()
+    {
+        return $this->instances;
     }
 }

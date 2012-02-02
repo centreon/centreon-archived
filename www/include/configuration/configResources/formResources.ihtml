@@ -22,6 +22,10 @@
 				<td class="FormRowField">{$form.resource_line.label}</td>
 				<td class="FormRowValue">{$form.resource_line.html}</td>
 			</tr>
+			<tr class="list_one">
+				<td class="FormRowField">{$form.instance_id.label}</td>
+				<td class="FormRowValue">{$form.instance_id.html}</td>
+			</tr>
 			<tr class="list_lvl_1">
 				<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.information}</td>
 			</tr>
