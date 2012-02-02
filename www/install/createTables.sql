@@ -512,6 +512,7 @@ CREATE TABLE cfg_centreonbroker_info (
 CREATE TABLE IF NOT EXISTS `cfg_cgi` (
   `cgi_id` int(11) NOT NULL auto_increment,
   `cgi_name` varchar(255) default NULL,
+  `instance_id` int(11) NULL,
   `main_config_file` varchar(255) default NULL,
   `physical_html_path` varchar(255) default NULL,
   `url_html_path` varchar(255) default NULL,
@@ -538,7 +539,10 @@ CREATE TABLE IF NOT EXISTS `cfg_cgi` (
   `ping_syntax` text,
   `cgi_comment` text,
   `cgi_activate` enum('0','1') default NULL,
-  PRIMARY KEY  (`cgi_id`)
+  PRIMARY KEY  (`cgi_id`),
+  CONSTRAINT `fk_cgi_instance_id` 
+  FOREIGN KEY (`instance_id`) 
+  REFERENCES `nagios_server` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
@@ -773,6 +777,25 @@ CREATE TABLE IF NOT EXISTS `cfg_resource` (
   `resource_activate` enum('0','1') default NULL,
   PRIMARY KEY  (`resource_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cfg_resource_instance_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
+  `resource_id` int(11) NOT NULL,
+  `instance_id` int(11) NOT NULL,
+  CONSTRAINT `fk_crir_res_id` 
+  FOREIGN KEY (`resource_id`)
+  REFERENCES `cfg_resource` (`resource_id`)
+  ON DELETE CASCADE,
+  CONSTRAINT `fk_crir_ins_id` 
+  FOREIGN KEY (`instance_id`)
+  REFERENCES `nagios_server` (`id`)
+  ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 

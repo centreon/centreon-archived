@@ -232,4 +232,24 @@ CREATE TABLE `widget_parameters_range` (
 --
 INSERT INTO `options` (`key`, `value`) VALUES ('ldap_store_password', '1');
 
+--
+-- Table structure for table `cfg_resource_instance_relations`
+--
+
+CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
+  `resource_id` int(11) NOT NULL,
+  `instance_id` int(11) NOT NULL,
+  CONSTRAINT `fk_crir_res_id` 
+  FOREIGN KEY (`resource_id`)
+  REFERENCES `cfg_resource` (`resource_id`)
+  ON DELETE CASCADE,
+  CONSTRAINT `fk_crir_ins_id` 
+  FOREIGN KEY (`instance_id`)
+  REFERENCES `nagios_server` (`id`)
+  ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE  `cfg_cgi` ADD  `instance_id` INT( 11 ) NULL AFTER  `cgi_name`;
+ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL;
+
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;

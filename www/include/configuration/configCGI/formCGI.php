@@ -77,7 +77,8 @@
 
     $instanceObj = new CentreonInstance($pearDB);
     $instances = $instanceObj->getInstances();
-    $instances = array_merge(array(null=>null), $instances);
+    $instances[0] = null;
+    asort($instances);
 	$form->addElement('select', 'instance_id', 'Instance', $instances);
 	$form->addElement('textarea', 'cgi_comment', _("Comments"), $attrsTextarea);
 	$nagTab = array();
@@ -162,7 +163,6 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 	$form->addRule('cgi_name', _("Compulsory Name"), 'required');
 	$form->addRule('cgi_comment', _("Required Field"), 'required');
-	$form->addRule('instance_id', _("Required Instance"), 'required');
 	$form->registerRule('instanceRelation', 'callback', 'testInstanceRelation');
 	$form->registerRule('exist', 'callback', 'testCgiExistence');
 	$form->addRule('cgi_name', _("Name is already in use"), 'exist');
