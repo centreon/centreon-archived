@@ -748,11 +748,12 @@
 			 * Color initialisation for services and hosts status
 			 */
 			$color = '';
-            if (isset($log["status"])) {
-               if (isset($tab_color_service[$log["status"]]))
-                  $color = $tab_color_service[$log["status"]];
-               else if (isset($tab_color_host[$log["status"]]))
-                  $color = $tab_color_host[$log["status"]];
+		    if (isset($log["status"])) {
+                if (isset($tab_color_service[$log["status"]]) && isset($log["service_description"]) && $log["service_description"] != "") {
+                    $color = $tab_color_service[$log["status"]];
+                } else if (isset($tab_color_host[$log["status"]])) {
+                    $color = $tab_color_host[$log["status"]];
+                }
             }
 
 			/*
