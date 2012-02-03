@@ -41,7 +41,7 @@ sub getLastRestart(){
 
 	CheckMySQLConnexion();
 	
-    my $sth1_oreon = $con_oreon->prepare("SELECT `last_restart` FROM `nagios_server`");
+    my $sth1_oreon = $con_oreon->prepare("SELECT `last_restart` FROM `nagios_server` ORDER BY last_restart DESC");
 	if (!$sth1_oreon->execute()) {
 	    writeLogFile("Error - getLastRestart : " . $sth1_oreon->errstr);
 	}
