@@ -64,10 +64,10 @@
 	 */
 	$convertTable = array();
     $convertID = array();
-    $DBRESULT = $pearDB->query("SELECT hg_id, hg_alias, hg_name FROM hostgroup");
+    $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups");
     while ($hg = $DBRESULT->fetchRow()) {
-		$convertTable[$hg["hg_name"]] = $hg["hg_alias"];
-	    $convertID[$hg["hg_alias"]] = $hg["hg_id"];
+		$convertTable[$hg["name"]] = $hg["alias"];
+	    $convertID[$hg["name"]] = $hg["hostgroup_id"];
     }
     $DBRESULT->free();
 

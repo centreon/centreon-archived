@@ -195,7 +195,7 @@
 	$i = 0;
 	$ct = 0;
 	foreach ($stats as $name => $stat) {
-		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertID[$name]) && isset($acl[$convertID[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
 			$class = $obj->getNextLineClass();
 			if (isset($stat["h"]) && count($stat["h"])) {
 				$obj->XML->startElement("l");
@@ -218,7 +218,7 @@
 				$obj->XML->writeElement("suc", $obj->colorService[3]);
 				$obj->XML->writeElement("sp", $stat["s"][4]);
 				$obj->XML->writeElement("spc", $obj->colorService[4]);
-				$obj->XML->writeElement("hgurl", "main.php?p=20201&o=svc&hg=".$name);
+				$obj->XML->writeElement("hgurl", "main.php?p=20201&o=svc&hg=".$convertTable[$name]);
 				$obj->XML->endElement();
 			}
 		}
