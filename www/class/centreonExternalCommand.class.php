@@ -254,7 +254,7 @@ class CentreonExternalCommand {
  	 * @param $pearDB
  	 * @param $host_name
  	 */
-	public function getPollerID($host = nulle)
+	public function getPollerID($host = null)
 	{
 		if (!isset($host)) {
 			return 0;
