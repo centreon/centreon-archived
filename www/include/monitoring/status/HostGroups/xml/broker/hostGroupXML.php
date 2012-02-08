@@ -67,7 +67,11 @@
     $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups");
     while ($hg = $DBRESULT->fetchRow()) {
 		$convertTable[$hg["name"]] = $hg["alias"];
-	    $convertID[$hg["name"]] = $hg["hostgroup_id"];
+        if (isset($convertID[$hg["name"]])) {
+		    $convertID[$hg["name"]] .= "," . $hg["hostgroup_id"];
+		} else {
+	        $convertID[$hg["name"]] = $hg["hostgroup_id"];
+		}
     }
     $DBRESULT->free();
 
