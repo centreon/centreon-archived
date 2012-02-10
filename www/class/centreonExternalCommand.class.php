@@ -125,6 +125,7 @@ class CentreonExternalCommand {
  			passthru($str_remote, $return_remote);
  		}
  		$this->cmd_tab = array();
+ 		$this->poller_tab = array();
  		return ($return_local + $return_remote);
  	}
 
