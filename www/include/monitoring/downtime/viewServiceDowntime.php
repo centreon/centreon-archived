@@ -290,7 +290,7 @@ msgArr['ds'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
 
 function doAction(slt, act) {
 	if (confirm(msgArr[act])) {
-		this.form.submit();
+		document.form.submit();
 	} else {
 		slt.value = 0;
 	}
