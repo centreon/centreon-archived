@@ -675,8 +675,8 @@
 						 * Services
 						 */
 			    		$count = 0;
-						if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
-							$services = $access->getHostServices($pearDBndo, $host_id);
+						//if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
+							$services = $access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host_id);
 							foreach ($services as $svc_id => $svc_name)	{
 					           	if (!$count) {
 					           		$buffer->startElement("item");
@@ -706,7 +706,7 @@
 					    		$buffer->writeAttribute("im2", "../16x16/gear.gif");
 					        	$buffer->endElement();
 							}
-						}
+						//}
 						if ($count) {
 						    $buffer->endElement();
 						}
@@ -756,7 +756,7 @@
 			 * Services
 			 */
 			if ((isset($hosts_open[$host["host_id"]]) && $hosts_open[$host["host_id"]]) || (isset($hosts_selected[$host["host_id"]]) && $hosts_selected[$host["host_id"]]) ) {
-				$services = $access->getHostServices($pearDBndo, $host["host_id"]);
+				$services = $access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), $host["host_id"]);
 				foreach ($services as $svc_id => $svc_name)	{
 		           	$buffer->startElement("item");
 		    		if (isset($svcs_selected[$svc_id])) {
