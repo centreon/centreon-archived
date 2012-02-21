@@ -113,6 +113,11 @@
 	$gmt = new CentreonGMT($pearDB);
 
 	/*
+	 * Delete empty Downtimes
+	 */
+	$pearDB->query("DELETE FROM `downtime` WHERE `dt_id` NOT IN (SELECT dt_id FROM downtime_host_relation)  AND `dt_id` NOT IN (SELECT dt_id FROM downtime_hostgroup_relation) AND `dt_id` NOT IN (SELECT dt_id FROM downtime_service_relation) AND `dt_id` NOT IN (SELECT dt_id FROM downtime_servicegroup_relation)");
+
+	/*
 	 * Get broker
 	 */
 	$res = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'broker'");
