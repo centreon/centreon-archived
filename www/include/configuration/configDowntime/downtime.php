@@ -52,6 +52,10 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
+	isset($_GET["type"]) ? $typeG = $_GET["type"] : $typeG = NULL;
+	isset($_POST["type"]) ? $typeP = $_POST["type"] : $typeP = NULL;
+	$typeG ? $type = $typeG : $type = $typeP;
+
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';

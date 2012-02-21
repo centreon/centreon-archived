@@ -78,9 +78,9 @@
 
 	include("./include/common/checkPagination.php");
 
-	$listDowntime = $downtime->getList($num, $limit, $o);
+	$listDowntime = $downtime->getList($num, $limit, $type);
 
-	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
+	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&type=$type");
 
 	/*
 	 * Different style between each lines
