@@ -1,0 +1,45 @@
+# -*-Shell-script-*-
+# 
+# 
+#
+# This file contain reconfigured variables used in install scripts
+# By default, when you use ./install.sh -f engine.tmpl, you'll accept GPL licence.
+
+
+#####################################################################
+## Begin: Nagios preferences
+#####################################################################
+## Install directory
+INSTALL_DIR_NAGIOS="/usr/local/centreon-engine"
+## Configuration directory
+NAGIOS_ETC="/usr/local/centreon-engine/etc"
+## Plugins directory
+NAGIOS_PLUGIN="/usr/local/centreon-engine/libexec"
+## Images (logos) directory
+NAGIOS_IMG="/usr/local/centreon-engine/share/images/logos"
+## The nagios binary (optional)
+NAGIOS_BINARY="/usr/local/centreon-engine/bin/centengine"
+## The nagiostats binary (optional)
+NAGIOSTATS_BINARY="/usr/local/centreon-engine/bin/centenginestats"
+## Logging directory
+NAGIOS_VAR="/usr/local/centreon-engine/var"
+## Nagios user (optional)
+NAGIOS_USER="centreon"
+## If you want to force NAGIOS_USER, set FORCE_NAGIOS_USER to 1 (optional)
+FORCE_NAGIOS_USER=1
+## Nagios group (optional)
+NAGIOS_GROUP="centreon"
+## If you want to force NAGIOS_GROUP, set FORCE_NAGIOS_GROUP to 1 (optional)
+FORCE_NAGIOS_GROUP=1
+## Nagios p1.pl file (perl embedded)
+#NAGIOS_P1_FILE="/usr/lib/nagios2/p1.pl"
+## If you want to not use NDO (not recommended)
+#FORCE_NOT_USE_NDO=1
+## Nagios NDO module
+NDOMOD_BINARY="/usr/local/centreon-broker/bin/cbd"
+NDO2DB_BINARY="/usr/local/centreon-broker/bin/cbd"
+## Nagios init script (optional)
+NAGIOS_INIT_SCRIPT="/etc/init.d/centengine.sh"
+#####################################################################
+## End: Nagios preferences
+#####################################################################
