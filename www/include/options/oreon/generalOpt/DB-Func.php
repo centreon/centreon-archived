@@ -105,6 +105,7 @@
 		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? $pearDB->escape($ret["nagios_path_plugins"]) : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL");
+		updateOption($pearDB, "broker_correlator_script", isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != NULL ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL");
 		$brokerOpt = "ndo";
 		if (isset($ret['broker']) && $ret['broker']) {
 		    $brokerOpt = $pearDB->escape($ret['broker']);
@@ -114,7 +115,7 @@
 		    $oreon->broker = new CentreonBroker($pearDB);
             $pearDB->query("UPDATE acl_resources SET changed = 1");
 		}
-		
+
 		/*
 		 * Correlation engine
 		 */
@@ -311,12 +312,11 @@
 				`auto_drop` = '".$ret["auto_drop"]."',
 				`drop_file` = '".$ret["drop_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
-				`nagios_log_file` = '".$ret["nagios_log_file"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT = $pearDBO->query($rq);
-		
-		updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");	
+
+		updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
 	}
 
 	function updateCASConfigData($gopt_id = null)	{
