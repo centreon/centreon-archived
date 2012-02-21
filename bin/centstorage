@@ -189,11 +189,14 @@ sub getPerfDataFile() {
 
 sub movePerfDataFile($){
     my $PERFDATA = $_[0];
+    my $flag_bckp = $_[1];
 
     # Copy file before reading
-    if (copy($PERFDATA, $PERFDATA."_read")){
+    if (move($PERFDATA, $PERFDATA."_read")){
 		# Erase old perfdata file.
-		`echo "# New File " > $PERFDATA`;
+		if ($flag_bckp == 0) {
+			`echo "# New File " > $PERFDATA`;
+		}
 		undef($PERFDATA);
 		return(1);
     } else {
@@ -246,11 +249,12 @@ sub getGeneralConfig(){
 
 sub GetPerfData() {
     # Init Var
-    my ($line_tab, $sth2, $data, $flag_drop, $sleeptime, $configOptions, $now);
+    my ($line_tab, $sth2, $data, $flag_drop, $sleeptime, $configOptions, $now, $flag_bckp);
     use vars qw($con_oreon $con_ods %host %service $dataBinInfo $counterData);
 
     # Init Buffer var
     $counterData = 0;
+    $flag_bckp = 0;
     $dataBinInfo = "";
     $now = time() + 86400;
 
@@ -266,11 +270,12 @@ sub GetPerfData() {
     if ((defined($PFDT)) && (-r $PFDT || -r $PFDT.".bckp")) {
 	# Check backup perfdata file 
 	if (-r $PFDT.".bckp") {
+		$flag_bckp = 1;
 	    $PFDT = $PFDT.".bckp";
 	}
 
 	# Move perfdata File befor reading		
-	if (movePerfDataFile($PFDT) && open(PFDT, "< $PFDT"."_read")){
+	if (movePerfDataFile($PFDT, $flag_bckp) && open(PFDT, "< $PFDT"."_read")) {
 	    # Get Properties
 	    $configOptions = getGeneralConfig();
 
