@@ -50,7 +50,7 @@ require "@CENTREON_ETC@/conf.pm";
 $VarLib = "@CENTREON_VARLIB@/";
 
 # SSH options
-my $sshOptions = "-o ConnectTimeout=5";
+my $sshOptions = "-o ConnectTimeout=5 -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey ";
 
 # MySQL Connecion 
 my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
@@ -384,15 +384,10 @@ sub get_poller()	{
                     close(FILE);
                     unlink($dataDir."$id/nagiostats.trace.txt");
                 } else {
-                    $tmp = $cfg_dir->{'cfg_dir'};
-		    if (!defined($tmp) || $tmp =~ //) {
-			print("Engine configuration file is empty for poller $id. Please check nagios.cfg file.");
-		    } else {
-			if (!defined($ssh_port) || !$ssh_port) {
-			    $ssh_port = "22";
-			}
-			print "ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c ${tmp}nagios.cfg";
-			$nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c ${tmp}nagios.cfg`;
+                    if (!defined($ssh_port) || !$ssh_port) {
+                        $ssh_port = "22";
+                    }
+                    $nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c $cfg_dir->{'cfg_dir'}/nagios.cfg`;
 		    }
 		}
 	    }
