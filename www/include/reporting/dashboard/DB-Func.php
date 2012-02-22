@@ -263,6 +263,7 @@
 		 * Getting authorized services
 		 */
 		$services_ids = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo), $host_id);
+		asort($services_ids);
 		$svcStr = "";
 		if (count($services_ids)) {
 				foreach ($services_ids as $id => $description){
