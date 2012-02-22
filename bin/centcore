@@ -80,9 +80,9 @@ $sudo = "sudo";
 
 #######################################
 # Binaries Options
-$ssh	.= " -o ConnectTimeout=$timeout ";
+$ssh	.= " -o ConnectTimeout=$timeout -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
 $rsync	.= " --timeout=$timeout ";
-$scp	.= " -o ConnectTimeout=$timeout ";
+$scp	.= " -o ConnectTimeout=$timeout -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
 
 #######################################
 # Initiate Flag : 
@@ -316,7 +316,7 @@ sub sendExternalCommand($$){
 		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
 		$stdout = `$cmd`;
 	}
-	
+
 	if (defined($stdout) && $stdout){
 	    writeLogFile("Result : $stdout\n");
 	}
@@ -347,6 +347,7 @@ sub waitPipe($) {
 	}
 	return 0;
 }
+
 
 
 #
@@ -400,13 +401,22 @@ sub GetPerfData($){
 	writeLogFile("Cannot get perfdata file. Unkown perfdata file on poller $id");
     } else {
 	# Rename perfdata file
-	my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port '".$move_cmd."'";
+	my $cmd = "$ssh ".$server_info->{'ns_ip_address'}." -p $port '".$move_cmd."'";
 	writeLogFile($cmd) if ($debug);
-	`$cmd`;
+	my $stdout = `$cmd`;
+	if (defined($stdout) && $stdout){
+        writeLogFile("Result : $stdout\n");
+    }
+    undef($stdout);
+
 	
 	# Get Perfdata File
 	writeLogFile("$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile") if ($debug);
-	`$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null`;
+	my $stdout = `$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null`;
+	if (defined($stdout) && $stdout){
+        writeLogFile("Result : $stdout\n");
+    }
+    undef($stdout);
 	
 	# Write data from distant poller on local file for centstorage
 	if (-f $localtmpperffile){
@@ -467,11 +477,12 @@ sub GetLogFile($){
 		undef($cmd);
 		
 		# Check update 
-		my $check_cmd = "$ssh  -p $port -q $distantconnexion 'stat  -c \'%Y\' $distantlogfile'";
+		my $check_cmd = "$ssh -p $port -q $distantconnexion 'stat  -c \'STAT_RESULT=%Y\' $distantlogfile'";
 		writeLogFile("Get Log Files - stat: $check_cmd") if ($debug);
 		$last_access = `$check_cmd`;
-		writeLogFile("Get Log File - stat: Finished") if ($debug);
-		$last_access =~ s/\n//g;
+        $last_access =~ /STAT_RESULT=(\d+)/;
+        $last_access = $1;
+        writeLogFile("Get Log File - stat: Finished") if ($debug);
 
 		# Check buffer
 		if ($value !~ $last_access) {
@@ -486,7 +497,7 @@ sub GetLogFile($){
 	    
 	    if ($flag == 1) {
 		# Get file with rsync
-		my $cmd = "$scp -P $port $distantconnexion:$distantlogfile $locallogfile 2>> /dev/null";
+		my $cmd = "$scp -P $port $distantconnexion:$distantlogfile $locallogfile > /dev/null";
 		`$cmd`;
 		writeLogFile($cmd) if ($debug);
 		if ($? ne 0) {
@@ -529,16 +540,19 @@ sub sendConfigFile($){
     my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
     my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
     
-    # Send data with rsync
-    my $cmd = "$scp -P $port $origin $dest";
+    # Send data with SCP
     writeLogFile("Start: Send config files on poller $id");
-    `$cmd`;
+    my $cmd = "$scp -P $port $origin $dest > /dev/null";
+    my $stdout = `$cmd`;
+    if (defined($stdout) && $stdout){
+        writeLogFile("Result : $stdout\n");
+    }
+    undef($stdout);
     undef($cmd);
     writeLogFile("End: Send config files on poller $id");
     
     # Send configuration for Centreon Broker
-    if (-e $installedPath."/filesGeneration/broker/".$id) {
-	    
+    if ( -e $installedPath."/filesGeneration/broker/".$id) {
 	    # Check availability of broker files.
         my $count = 0;
         opendir(my $dh, $installedPath."/filesGeneration/broker/".$id);
@@ -549,12 +563,18 @@ sub sendConfigFile($){
         undef($dh);
 
         if ($count > 2) {
+        
+		    writeLogFile("Start: Send Centreon Broker config files on poller $id");
+		
 		    $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
 		    $origin = $installedPath."/filesGeneration/broker/".$id."/*.xml";
 		    $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
-		    my $cmd = "$scp -P $port $origin $dest";
-		    writeLogFile("Start: Send Centreon Broker config files on poller $id");
-		    `$cmd`;
+		    my $cmd = "$scp -P $port $origin $dest 2>&1";
+		    my $stdout = `$cmd`;
+		    if (defined($stdout) && $stdout) {
+                  writeLogFile("Result : $stdout\n");
+            }
+            undef($stdout);
 		    undef($cmd);
 		    writeLogFile("End: Send Centreon Broker config files on poller $id");
 		}
@@ -628,15 +648,22 @@ sub syncTraps($) {
         }
 
         if ($id != 0) {
-            `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
             writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
+            my $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+			if (defined($stdout) && $stdout){
+     			writeLogFile("Result : $stdout\n");
+    		}
+    		undef($stdout);
 
-            my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
             writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
-
+            my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
             if ($ls > 1) {
-                `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
                 writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);                
+                `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+            	if (defined($stdout) && $stdout){
+	     			writeLogFile("Result : $stdout\n");
+	    		}
+	    		undef($stdout);
             }
         }
     } else {
@@ -655,15 +682,22 @@ sub syncTraps($) {
                 }
 
                 if ($id == 0) {
-                    `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
                     writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
+                    my $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+                    if (defined($stdout) && $stdout){
+             			writeLogFile("Result : $stdout\n");
+            		}
+            		undef($stdout);
 
-                    my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
                     writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
-
-                    if ($ls > 1) {
-                        `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-                        writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);                        
+                    my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
+					if ($ls > 1) {
+                        writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
+                        my $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+						if (defined($stdout) && $stdout){
+             				writeLogFile("Result : $stdout\n");
+            			}
+            			undef($stdout);
                     }
                 }
 
