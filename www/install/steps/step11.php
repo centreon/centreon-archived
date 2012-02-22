@@ -426,7 +426,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8");
 		} else {
-			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."';";
+			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."' ;";
 			if ($DEBUG)
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
@@ -487,11 +487,11 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		}
 	}
 	if (!$return_false){
-		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Broker password</b></td>';
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Broker Database host</b></td>';
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
-		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["dbLocation"]."' WHERE config_key = 'host' AND config_group_id = 'output';";
+		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["dbLocation"]."' WHERE config_key = 'db_host' AND config_group_id = 'output';";
 		if ($DEBUG)
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);
@@ -507,7 +507,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
-		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["pwdOreonDB"]."' WHERE config_key = 'password' AND config_group_id = 'output';";
+		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["pwdOreonDB"]."' WHERE config_key = 'db_password' AND config_group_id = 'output';";
 		if ($DEBUG)
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);
@@ -523,7 +523,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
-		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["nameOdsDB"]."' WHERE config_key = 'db' AND config_group_id = 'output';";
+		$requete = "UPDATE `cfg_centreonbroker_info` SET `config_value` = '".$_SESSION["nameOdsDB"]."' WHERE config_key = 'db_name' AND config_group_id = 'output';";
 		if ($DEBUG)
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);
