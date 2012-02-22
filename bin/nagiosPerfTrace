@@ -50,7 +50,7 @@ require "@CENTREON_ETC@/conf.pm";
 $VarLib = "@CENTREON_VARLIB@/";
 
 # SSH options
-my $sshOptions = "-o ConnectTimeout=5 -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey ";
+my $sshOptions = "-o ConnectTimeout=5 -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
 
 # MySQL Connecion 
 my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
