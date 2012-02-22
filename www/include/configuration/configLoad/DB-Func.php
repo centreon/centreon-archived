@@ -338,7 +338,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "hostgroup": insertHostGroupCFG($tmpConf); break;
+					case "hostgroup": insertHostGroupCFG($tmpConf, $ret); break;
 					case "hostextinfo": insertHostExtInfoCFG($tmpConf); break;
 					default :; break;
 				}
@@ -821,7 +821,7 @@
 	}
 
 
-	function insertHostGroupCFG($tmpConf = array())	{
+	function insertHostGroupCFG($tmpConf = array(), $opt)	{
 		global $nbr, $oreon, $debug_nagios_import, $debug_path;
 
 		/*
@@ -829,11 +829,11 @@
 		 */
 		require_once("./include/configuration/configObject/hostgroup/DB-Func.php");
 
-		if (isset($tmpConf["hostgroup_name"]) && testHostGroupExistence($tmpConf["hostgroup_name"])) {
+		if (isset($tmpConf["hostgroup_name"])) {
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ."  \n", 3, $debug_path."cfgimport.log");
-			foreach ($tmpConf as $key => $value)
-				switch($key)	{
+			foreach ($tmpConf as $key => $value) {
+				switch($key) {
 					case "hostgroup_name" : $tmpConf["hg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "alias" : $tmpConf["hg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "members" :
@@ -855,9 +855,21 @@
 						unset ($tmpConf[$key]);
 						break;
 				}
+			}
 			$tmpConf["hg_activate"]["hg_activate"] = "1";
 			$tmpConf["hg_comment"] = date("d/m/Y - H:i:s", time());
-			insertHostGroupInDB($tmpConf);
+
+			$res = $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".$pearDB->escape($tmpConf["hg_name"])."'");
+		    if (!$res->numRows())	{
+		        insertHostGroupInDB($tmpConf);
+            } else {
+                $row = $res->fetchRow();
+                $increment = false;
+                if (isset($opt['group_update_behavior']['group_update_behavior']) && $opt['group_update_behavior']['group_update_behavior']) {
+                    $increment = true;
+                }
+                updateHostGroupInDB($row['hg_id'], $tmpConf, $increment);
+            }
 			$nbr["hg"] += 1;
 			return true;
 		} else {

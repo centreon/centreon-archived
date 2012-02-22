@@ -182,12 +182,12 @@
 		return $hg_id;
 	}
 
-	function updateHostGroupInDB ($hg_id = NULL)	{
+	function updateHostGroupInDB ($hg_id = NULL, $ret = array(), $increment = false) {
 		global $oreon;
 		if (!$hg_id)
 			return;
-		updateHostGroup($hg_id);
-		updateHostGroupHosts($hg_id);
+		updateHostGroup($hg_id, $ret);
+		updateHostGroupHosts($hg_id, $ret, $increment);
 		$oreon->user->access->updateACL();
 	}
 
@@ -251,14 +251,15 @@
 		return ($hg_id["MAX(hg_id)"]);
 	}
 
-	function updateHostGroup($hg_id)	{
+	function updateHostGroup($hg_id, $ret = array()) {
 		global $form, $pearDB, $oreon;
 
 		if (!$hg_id)
 			return;
 
-		$ret = array();
-		$ret = $form->getSubmitValues();
+	    if (!count($ret)) {
+		    $ret = $form->getSubmitValues();
+		}
 
 		$ret["hg_name"] = $oreon->checkIllegalChar($ret["hg_name"]);
 
@@ -309,7 +310,7 @@
 		$oreon->CentreonLogAction->insertLog("hostgroup", $hg_id, CentreonDB::escape($ret["hg_name"]), "c", $fields);
 	}
 
-	function updateHostGroupHosts($hg_id, $ret = array())	{
+	function updateHostGroupHosts($hg_id, $ret = array(), $increment = false)	{
 		global $form, $pearDB;
 
 		if (!$hg_id)
@@ -340,50 +341,65 @@
 		/*
 		 * Update Host HG relations
 		 */
-		$DBRESULT = $pearDB->query("DELETE FROM hostgroup_relation WHERE hostgroup_hg_id = '".$hg_id."'");
+	    if ($increment == false) {
+    		$rq  = 	"DELETE FROM hostgroup_relation ";
+    		$rq .= 	"WHERE hostgroup_hg_id = '".$hg_id."'";
+    		$pearDB->query($rq);
+		}
 		isset($ret["hg_hosts"]) ? $ret = $ret["hg_hosts"] : $ret = $form->getSubmitValue("hg_hosts");
 		$hgNEW = array();
 
 		$rq = "INSERT INTO hostgroup_relation (hostgroup_hg_id, host_host_id) VALUES ";
 		for ($i = 0; $i < count($ret); $i++)	{
-			if ($i != 0)
-				$rq .= ", ";
-			$rq .= " ('".$hg_id."', '".$ret[$i]."')";
-
-			$hostsNEW[$ret[$i]] = $ret[$i];
+			$resTest = $pearDB->query("SELECT hostgroup_hg_id FROM hostgroup_relation WHERE hostgroup_hg_id = ".$hg_id." AND host_host_id = ".$ret[$i]);
+			if (!$resTest->numRows()) {
+    		    if ($i != 0) {
+    				$rq .= ", ";
+    		    }
+    			$rq .= " ('".$hg_id."', '".$ret[$i]."')";
+    			$hostsNEW[$ret[$i]] = $ret[$i];
+			}
 		}
-		if ($i != 0)
-			$DBRESULT = $pearDB->query($rq);
+
+		if ($i != 0) {
+            $DBRESULT = $pearDB->query($rq);
+		}
 
 		/*
 		 * Update HG HG relations
 		 */
-		$DBRESULT = $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '".$hg_id."'");
+		if ($increment == false) {
+		    $pearDB->query("DELETE FROM hostgroup_hg_relation WHERE hg_parent_id = '".$hg_id."'");
+		}
 		isset($ret["hg_hg"]) ? $ret = $ret["hg_hg"] : $ret = $form->getSubmitValue("hg_hg");
 		$hgNEW = array();
 
 		$rq = "INSERT INTO hostgroup_hg_relation (hg_parent_id, hg_child_id) VALUES ";
 		for ($i = 0; $i < count($ret); $i++)	{
-			if ($i != 0)
-				$rq .= ", ";
-			$rq .= " ('".$hg_id."', '".$ret[$i]."')";
-
-			$hostsNEW[$ret[$i]] = $ret[$i];
+			$resTest = $pearDB->query("SELECT hg_parent_id FROM hostgroup_hg_relation WHERE hg_parent_id = ".$hg_id." AND hg_child_id = ".$ret[$i]);
+			if (!$resTest->numRows()) {
+    		    if ($i != 0) {
+    				$rq .= ", ";
+    		    }
+    			$rq .= " ('".$hg_id."', '".$ret[$i]."')";
+    			$hostsNEW[$ret[$i]] = $ret[$i];
+			}
 		}
-		if ($i != 0)
+		if ($i != 0) {
 			$DBRESULT = $pearDB->query($rq);
+		}
 
 
-		# Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
-		if (count($hgSVS))
-			foreach ($hostsOLD as $host)
-				if (!isset($hostsNEW[$host]))	{
+		// Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
+		if (count($hgSVS)) {
+			foreach ($hostsOLD as $host) {
+				if (!isset($hostsNEW[$host])) {
 					foreach ($hgSVS as $sv)	{
-						# Delete in escalation
+						// Delete in escalation
 						$rq = "DELETE FROM escalation_service_relation ";
 						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
 						$DBRESULT = $pearDB->query($rq);
-						# Delete in dependencies
+						// Delete in dependencies
 						$rq = "DELETE FROM dependency_serviceChild_relation ";
 						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
 						$DBRESULT = $pearDB->query($rq);
@@ -392,7 +408,8 @@
 						$DBRESULT = $pearDB->query($rq);
 					}
 				}
-		#
+			}
+		}
 	}
 
 ?>
