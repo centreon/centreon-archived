@@ -102,12 +102,34 @@
 	 else
 	   $template = 0;
 
+	if (isset($_POST["status"])) {
+		$status = $_POST["status"];
+	} else if (isset($_GET["status"])) {
+		$status = $_GET["status"];
+	} else {
+		$status = -1;
+	}
+
 	/*
 	 * set object history
 	 */
 	$oreon->poller = $poller;
 	$oreon->hostgroup = $hostgroup;
 	$oreon->template = $template;
+
+	/*
+	 * Status Filter
+	 */
+	$statusFilter = "<option value=''".(($status == -1) ? " selected" : "")."> </option>";;
+	$statusFilter .= "<option value='1'".(($status == 1) ? " selected" : "").">"._("Enable")."</option>";
+	$statusFilter .= "<option value='0'".(($status == 0 && $status != '') ? " selected" : "").">"._("Disable")."</option>";
+
+	$sqlFilterCase = "";
+	if ($status == 1) {
+		$sqlFilterCase = " AND host_activate = '1' ";
+	} else if ($status == 0 && $status != "") {
+		$sqlFilterCase = " AND host_activate = '0' ";
+	}
 
 	/*
 	 * Search active
@@ -190,14 +212,14 @@
 	 */
 	if ($hostgroup) {
 	  if ($poller)
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	  else
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	 } else {
 	  if ($poller)
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	  else
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
 	}
 
 	$rows = $pearDB->numberRows();
@@ -397,5 +419,8 @@
 	$tpl->assign('HelpServices', _("Display all Services fo this host"));
 	$tpl->assign('Template', _("Template"));
 	$tpl->assign('Search', _("Search"));
+
+	$tpl->assign("StatusFilter", $statusFilter);
+
 	$tpl->display("listHost.ihtml");
 ?>
