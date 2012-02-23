@@ -414,6 +414,7 @@ CREATE TABLE IF NOT EXISTS acknowledgements (
 
   author varchar(64) default NULL,
   comment_data varchar(255) default NULL,
+  deletion_time int default NULL,
   instance_id int default NULL,
   notify_contacts boolean default NULL,
   persistent_comment boolean default NULL,
@@ -492,6 +493,7 @@ CREATE TABLE IF NOT EXISTS downtimes (
   author varchar(64) default NULL,
   cancelled boolean default NULL,
   comment_data text default NULL,
+  deletion_time int default NULL,
   duration int default NULL,
   end_time int default NULL,
   fixed boolean default NULL,
@@ -604,6 +606,7 @@ CREATE TABLE IF NOT EXISTS issues_issues_parents (
 --
 CREATE TABLE IF NOT EXISTS logs (
   log_id int NOT NULL auto_increment,
+
   ctime int default NULL,
   host_id int default NULL,
   host_name varchar(255) default NULL,
@@ -618,6 +621,7 @@ CREATE TABLE IF NOT EXISTS logs (
   service_id int default NULL,
   status tinyint(4) default NULL,
   type smallint default NULL,
+
   PRIMARY KEY (log_id),
   KEY `host_name` (`host_name`(64)),
   KEY `service_description` (`service_description`(64)),
@@ -676,7 +680,7 @@ CREATE TABLE IF NOT EXISTS notifications (
 
 
 --
---  Host states.
+--  Host state events
 --
 CREATE TABLE IF NOT EXISTS `hoststateevents` (
   `hoststateevent_id` int(11) NOT NULL auto_increment,
@@ -712,4 +716,5 @@ CREATE TABLE IF NOT EXISTS `servicestateevents` (
     KEY `start_time` (`start_time`), 
     KEY `end_time` (`end_time`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
 
