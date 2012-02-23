@@ -30,6 +30,7 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir">&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
 	
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Files}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_file">&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file">&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file">&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="temp_path">&nbsp;{$form.temp_path.label}</td><td class="FormRowValue">{$form.temp_path.html}</td></tr>

@@ -124,6 +124,7 @@
 	/* *****************************************************
 	 * Part 1
 	 */
+	$form->addElement('text', 'status_file', _("Status file"), $attrsText2);
 	$form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 	$form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
 	$form->addElement('text', 'object_cache_file', _("Object Cache File"), $attrsText2);
