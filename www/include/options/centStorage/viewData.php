@@ -208,7 +208,7 @@
 		    $query = "SELECT * FROM rebuild WHERE centreon_instance = '$instance' AND index_id = '".$index_data["id"]."' LIMIT 1";
 		    $DBRESULT_Status = $pearDBO->query($query);
 		    $statusdata = $DBRESULT_Status->fetchRow();
-		    if (isset($data["status"])) {
+		    if (isset($statusdata["status"])) {
 		        $index_data["must_be_rebuild"] = $yesOrNo[$statusdata["status"]];
 		    } else {
 		        $index_data["must_be_rebuild"] = $yesOrNo[0];
