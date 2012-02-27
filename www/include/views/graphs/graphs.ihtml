@@ -16,6 +16,9 @@
 				{$to}&nbsp;{$form.EndDate.html}&nbsp;{$form.EndTime.html}&nbsp;
 			</td>
 			<td style='white-space:nowrap;'>{$form.graph.html}</td>
+			{if $focusUrl != ''}
+				&nbsp;<td style='white-space:nowrap;'><input type='button' onClick="location.href='main.php{$focusUrl}'" value='{$treeFocus}'></td>
+			{/if}
 		</tr>
 		</table>
 	</form>

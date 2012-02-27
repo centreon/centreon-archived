@@ -177,11 +177,14 @@
 	}
 
 	$id_log = "'RR_0'";
-	$multi =0;
+	$multi = 0;
+	$lockTree = 0;
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 		$mode = 0;
+		$lockTree = 1;
 		$id_log = "'".$id."'";
 		$multi =1;
+		$focusUrl = "?p=$p&id=$id&mode=0&lock_tree=0";
 	} else {
 		$mode = 1;
 		$id = 1;
@@ -225,6 +228,8 @@
 	$tpl->assign('From', _("From"));
 	$tpl->assign('To', _("To"));
 	$tpl->assign('periodORlabel', _("or"));
+	$tpl->assign('focusUrl', $focusUrl);
+	$tpl->assign('treeFocus', _('Tree Focus'));
 	$tpl->display("viewLog.ihtml");
 
 ?><link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
@@ -250,7 +255,7 @@
     tree.setXMLAutoLoading("./include/eventLogs/XmlTree/GetXmlTree.php");
 
     //load first level of tree
-    tree.loadXML("./include/eventLogs/XmlTree/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?>search_host=<?php print $search; ?><?php if (isset($search_service) && $search_service) print "&search_service=$search_service"; ?>&sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>");
+    tree.loadXML("./include/eventLogs/XmlTree/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?>search_host=<?php print $search; ?><?php if (isset($search_service) && $search_service) print "&search_service=$search_service"; ?>&sid=<?php print session_id(); ?>&id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&lock_tree=<?php echo $lockTree;?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select

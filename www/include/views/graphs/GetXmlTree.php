@@ -117,6 +117,7 @@
 	(isset($_GET["search"])) ? $search = htmlentities($_GET["search"], ENT_QUOTES, "UTF-8") : $search = 0;
 	(isset($_GET["search_host"])) ? $search = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search = 0;
 	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = 0;
+	(isset($_GET["lock_tree"])) ? $lockTree = $_GET['lock_tree'] : $lockTree = 0;
 
 	/**
 	 * Create hostCahe
@@ -517,7 +518,10 @@
 		$buffer->startElement("tree");
 		$buffer->writeAttribute("id", "1");
 
-		$tab_id = preg_split("/\,/",$url_var);
+	    $tab_id = array();
+        if ($lockTree == 0) {
+            $tab_id = preg_split("/\,/",$url_var);
+        }
 		foreach ($tab_id as $openid) {
 			$type = substr($openid, 0, 2);
 			$id = substr($openid, 3, strlen($openid));

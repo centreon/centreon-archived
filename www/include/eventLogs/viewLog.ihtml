@@ -10,7 +10,10 @@
 				&nbsp;{$From}&nbsp;{$form.StartDate.html}&nbsp;{$form.StartTime.html} 
 				&nbsp;{$To}&nbsp;{$form.EndDate.html}&nbsp;{$form.EndTime.html}&nbsp;
 			</td>			
-			<td style='white-space:nowrap;'>{$form.graph.html}</td> 
+			<td style='white-space:nowrap;'>{$form.graph.html}</td>
+			{if $focusUrl != ''}
+				&nbsp;<td style='white-space:nowrap;'><input type='button' onClick="location.href='main.php{$focusUrl}'" value='{$treeFocus}'></td>
+			{/if}  
 			<td>
 				&nbsp;&nbsp;<a href="javascript:log_4_host(this, '', 'CSV')"><img src="./img/icones/16x16/text_binary_csv.gif" alt="export CSV"/></a>
 				&nbsp;<a href="javascript:log_4_host(this, '', 'Xml')"><img src="./img/icones/16x16/text_binary_xml.gif" alt="export XML" target="_blank"/></a>

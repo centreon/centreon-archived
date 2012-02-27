@@ -125,13 +125,20 @@
 
 	$id_log = "'RR_0'";
 	$multi = 0;
+	$lockTree = 0;
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 		$mode = 0;
+		$lockTree = 1;
 		$id_log = "'".$id."'";
 		$multi = 1;
+		$focusUrl = "?p=$p&id=$id&id_svc=$id_svc&meta=$meta&mode=0&lock_tree=0";
 	} else {
 		$mode = 1;
 		$id = 1;
+	}
+
+	if (isset($_GET['lock_tree'])) {
+	    $lockTree = $_GET['lock_tree'];
 	}
 
 	/*
@@ -173,7 +180,8 @@
 	$tpl->assign('from', _("From"));
 	$tpl->assign('to', _("to"));
 	$tpl->assign('Apply', _("Apply"));
-
+    $tpl->assign('focusUrl', $focusUrl);
+    $tpl->assign('treeFocus', _('Tree Focus'));
 	$tpl->display("graphs.ihtml");
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
@@ -201,7 +209,7 @@
     tree.setXMLAutoLoading("./include/views/graphs/GetXmlTree.php");
 
     //load first level of tree
-    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?><?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>");
+    tree.loadXML("./include/views/graphs/GetXmlTree.php?<?php if (isset($meta) && $meta) print "meta=$meta"."&"; ?><?php if (isset($search) && $search) print "search=$search"."&"; ?><?php if (isset($search_service) && $search_service) print "search_service=$search_service"."&"; ?>id=<?php echo $id; ?>&mode=<?php echo $mode; ?>&sid=<?php echo session_id(); ?>&lock_tree=<?php echo $lockTree;?>");
 
 	// system to reload page after link with new url
 	//set function object to call on node select
