@@ -390,7 +390,6 @@ sub get_poller()	{
                     $nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c $cfg_dir->{'cfg_dir'}/nagios.cfg`;
 		    }
 		}
-	    }
 	    if ($nagiostats =~ m/Error reading status file/ ) {
 		next;
 	    }
