@@ -133,6 +133,9 @@
 	(isset($_GET["id"])) ? 			$openid = htmlentities($_GET["id"]) : $openid = "-1";
 	(isset($_GET["period"]) 		&& !check_injection($_GET["period"])) ? $auto_period = htmlentities($_GET["period"], ENT_QUOTES, "UTF-8") : $auto_period = "-1";
 	(isset($_GET["search_service"]) 		&& !check_injection($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
+    (isset($_GET["focusUrl"]))      && !check_injection($_GET["focusUrl"]) ? $focusUrl = urldecode($_GET['focusUrl']) : $focusUrl = "";
+
+    $buffer->writeElement('focusUrl', $focusUrl);
 
 	/*
  	 * Get GMT for current user
@@ -756,6 +759,7 @@
 	$buffer->writeElement("status", _("Display Status"), 0);
 	$buffer->writeElement("warning", _("Warning"), 0);
 	$buffer->writeElement("critical", _("Critical"), 0);
+	$buffer->writeElement('treeFocus', _('Tree Focus'), 0);
 	$buffer->endElement();
 
 	/*

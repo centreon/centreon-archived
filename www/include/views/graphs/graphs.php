@@ -180,8 +180,6 @@
 	$tpl->assign('from', _("From"));
 	$tpl->assign('to', _("to"));
 	$tpl->assign('Apply', _("Apply"));
-    $tpl->assign('focusUrl', $focusUrl);
-    $tpl->assign('treeFocus', _('Tree Focus'));
 	$tpl->display("graphs.ihtml");
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
@@ -465,7 +463,7 @@ function nextPeriod() {
 		tree.selectItem(id);
 		var proc = new Transformation();
 		var _addrXSL = "./include/views/graphs/graph.xsl";
-		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; ?>';
+		var _addrXML = './include/views/graphs/GetXmlGraph.php?multi='+multi+'&split='+_split+'&status='+_status+'&warning='+_warning+'&critical='+_critical+_metrics+'&template_id='+_tpl_id +'&period='+period+'&StartDate='+StartDate+'&EndDate='+EndDate+'&StartTime='+StartTime+'&EndTime='+EndTime+'&id='+id+'&sid=<?php echo $sid;?><?php if (isset($search_service) && $search_service) print "&search_service=".$search_service; if ($focusUrl) print "&focusUrl=".urlencode($focusUrl);?>';
 
 		proc.setXml(_addrXML);
 		proc.setXslt(_addrXSL);

@@ -308,6 +308,15 @@
 						</xsl:element>
 						<xsl:value-of select="//lang/status"/>
 	           		</td>
+	           		<xsl:if test="//focusUrl != ''">
+	           		<td>
+	           			<xsl:element name='input'>
+	           				<xsl:attribute name='type'>button</xsl:attribute>
+	           				<xsl:attribute name='onClick'>location.href='main.php<xsl:value-of select="//focusUrl"/>'</xsl:attribute>
+	           				<xsl:attribute name='value'><xsl:value-of select="//lang/treeFocus"/></xsl:attribute>
+	           			</xsl:element>	           			
+	           		</td>
+	           		</xsl:if>
 				</tr>
         	</table>
 		</form>
