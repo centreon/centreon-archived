@@ -82,7 +82,7 @@
 	$form->addElement('header', 'SSH_Informations', _("SSH Information"));
 	$form->addElement('header', 'Nagios_Informations', _("Scheduler Information"));
 	$form->addElement('header', 'Misc', _("Miscelleneous"));
-	$form->addElement('select', 'monitoring_engine', _("Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
+	$form->addElement('select', 'monitoring_engine', _("Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 
 	/*
 	 * Nagios Configuration basic information
