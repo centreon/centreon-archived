@@ -44,30 +44,71 @@
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 
 	CentreonSession::start();
-	if (!isset($_SESSION["centreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"]))
-		exit();
 
+	if (!isset($_SESSION["centreon"]) || !isset($_GET["poller"]) || !isset($_GET["cmd"]) || !isset($_GET["sid"]) || !isset($_GET["type"])) {
+		exit();
+	}
+
+	/*
+	 * Centcore pipe path
+	 */
+	$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
+	if ($centcore_pipe == "/centcore.cmd") {
+		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
+	}
+
+	/*
+	 * Get Session informations
+	 */
 	$oreon = $_SESSION["centreon"];
 
-	$poller = $_GET["poller"];
-	$cmd = $_GET["cmd"];
-	$sid = htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
-	$type = $_GET["type"];
+	$poller =  htmlentities($_GET["poller"], ENT_QUOTES, "UTF-8");
+	$cmd =     htmlentities($_GET["cmd"], ENT_QUOTES, "UTF-8");
+	$sid =     htmlentities($_GET["sid"], ENT_QUOTES, "UTF-8");
+	$type =    htmlentities($_GET["type"], ENT_QUOTES, "UTF-8");
 
 	$pearDB = new CentreonDB();
 	$DBRESULT = $pearDB->query("SELECT session_id FROM session WHERE session.session_id = '".$sid."'");
-	if (!$DBRESULT->numRows())
+	if (!$DBRESULT->numRows()) {
 		exit();
+	}
 
-	if (!$oreon->user->access->checkAction($cmd))
+	if (!$oreon->user->access->checkAction($cmd)) {
 		exit();
+	}
 
+	/*
+     * Get Init Script
+     */
+    $DBRESULT = $pearDB->query("SELECT id, init_script FROM nagios_server WHERE localhost = '1' AND ns_activate = '1'");
+    $serveurs = $DBRESULT->fetchrow();
+    unset($DBRESULT);
+    (isset($serveurs["init_script"])) ? $nagios_init_script = $serveurs["init_script"] : $nagios_init_script = "/etc/init.d/nagios";
+    unset($serveurs);
 
-	$command = new CentreonExternalCommand($oreon);
-	$cmd_tab = $command->getExternalCommandList();
-	$command->set_process_command($cmd_tab[$cmd][$type], $poller);
-	$result = $command->write();
+	/*
+	 * Init Command Object
+	 */
+    $command = new CentreonExternalCommand($oreon);
 
+	/*
+	 * Check if command is start or not
+	 */
+	if ($cmd == "global_start") {
+	    if (isset($command->localhost_tab[$poller])) {
+            shell_exec("sudo " . $nagios_init_script . " start");
+		} else {
+			shell_exec("echo 'START:".$poller."' >> $centcore_pipe", $return);
+		}
+	} else {
+    	$cmd_tab = $command->getExternalCommandList();
+    	$command->set_process_command($cmd_tab[$cmd][$type], $poller);
+    	$result = $command->write();
+	}
+
+	/*
+	 * Start XML
+	 */
 	$buffer = new CentreonXML();
 	$buffer->startElement("root");
 	$buffer->writeElement("result", $result);
@@ -77,7 +118,12 @@
 	$buffer->writeElement("actiontype", $type);
 
 	$buffer->endElement();
+
+	/*
+	 * Send headers
+	 */
 	header('Content-type: text/xml; charset=utf-8');
 	header('Cache-Control: no-cache, must-revalidate');
+
 	$buffer->output();
 ?>
