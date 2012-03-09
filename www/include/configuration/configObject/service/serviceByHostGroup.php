@@ -36,10 +36,12 @@
  *
  */
 
-	if (!isset ($oreon))
+	if (!isset($oreon)) {
 		exit ();
+	}
 
-    define("FORM_SERVICE_TYPE", "BYHOSTGROUP");
+	global $form_service_type;
+    $form_service_type = "BYHOSTGROUP";
 
 	isset($_GET["service_id"]) ? $sG = $_GET["service_id"] : $sG = NULL;
 	isset($_POST["service_id"]) ? $sP = $_POST["service_id"] : $sP = NULL;
@@ -53,15 +55,21 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/service/";
 
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once("./class/centreonDB.class.php");
 
 	$pearDBO = new CentreonDB("centstorage");
@@ -70,15 +78,18 @@
 	require_once "./include/common/common-Func.php";
 
 	if (isset($_POST["o1"]) && isset($_POST["o2"])){
-		if ($_POST["o1"] != "")
+		if ($_POST["o1"] != "") {
 			$o = $_POST["o1"];
-		if ($_POST["o2"] != "")
+		}
+		if ($_POST["o2"] != "") {
 			$o = $_POST["o2"];
+		}
 	}
 
 	/* Set the real page */
-	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 		$p = $ret['topology_page'];
+	}
 
 	switch ($o)	{
 		case "a" : require_once($path."formService.php"); break; #Add a service

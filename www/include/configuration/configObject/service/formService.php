@@ -40,6 +40,8 @@
 		exit();
 	}
 
+	global $form_service_type;
+
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
@@ -499,7 +501,7 @@
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
 
-	if (FORM_SERVICE_TYPE == "BYHOST") {
+	if ($form_service_type == "BYHOST") {
     	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
     	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
     	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
@@ -507,13 +509,13 @@
     	echo $ams3->getElementJs(false);
 	}
 
-	if (FORM_SERVICE_TYPE == "BYHOSTGROUP") {
+	if ($form_service_type == "BYHOSTGROUP") {
     	$ams3 = $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
     	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
     	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
     	$ams3->setElementTemplate($eTemplate);
     	echo $ams3->getElementJs(false);
-	}
+    }
 
 	# Service relations
 	$form->addElement('header', 'links', _("Relations"));
@@ -869,6 +871,7 @@
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("seconds", _("seconds"));
+        $tpl->assign("service_type", $form_service_type);
 
 		$tpl->assign('v', $oreon->user->get_version());
 		$tpl->display("formService.ihtml");
