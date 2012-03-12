@@ -909,13 +909,14 @@ class CentreonGraph	{
 				/*
 				 * Graph is based on a module check point
 				 */
-				$tab = preg_split("/\_/", $this->indexData["service_description"]);
-				$DBRESULT = $this->DB->query("SELECT graph_id FROM meta_service WHERE meta_id = '".$tab[1]."'");
-				$tempRes = $DBRESULT->fetchRow();
-				$DBRESULT->free();
-				$this->template_id = $tempRes["graph_id"];
-				unset($tempRes);
-				unset($tab);
+			    if (preg_match("/meta_([0-9]*)/", $this->indexData["service_description"], $matches)){
+    				$DBRESULT_meta = $this->DB->query("SELECT graph_id FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
+    				$meta = $DBRESULT_meta->fetchRow();
+    				$this->template_id = $meta["graph_id"];
+    				unset($meta);
+    				$DBRESULT_meta->free();
+    			}
+    			unset($matches);
 			}
 		} else {
 			$this->template_id = htmlentities($_GET["template_id"], ENT_QUOTES, "UTF-8");
@@ -981,8 +982,6 @@ class CentreonGraph	{
 				unset($meta);
 				$DBRESULT_meta->free();
 			}
-			$this->indexData["host_name"] = $this->indexData["host_name"];
-			$this->indexData["service_description"] = $this->indexData["service_description"];
 		}
 		$DBRESULT->free();
 
