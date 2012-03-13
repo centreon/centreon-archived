@@ -47,9 +47,9 @@
 	}
 
 	$ns_id = $tab['id'];
-	
+
 	$files = array();
-	
+
 	/*
 	 * Get the module path for the nagios_server
 	 */
@@ -62,10 +62,10 @@
 	        $centreonBrokerModulePath = trim($row['centreonbroker_module_path']);
 	    }
 	}
-	
+
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
-	
-	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name 
+
+	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name
 		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
 		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
 
@@ -84,18 +84,25 @@
 	        }
 	        $files[$filename][$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
 	    }
-	    
+
+    	/*
+	     * Delete all old files.
+	     */
+	    foreach (glob("$dir_conf/*") as $filename) {
+	        unlink($filename);
+	    }
+
 	    foreach ($files as $filename => $groups) {
     	    $fileXml = new CentreonXML(true);
     	    $fileXml->startElement('centreonBroker');
-    	    
+
     	    $fileXml->writeElement('instance', $ns_id);
     	    $fileXml->writeElement('instance_name', $ns_name);
-    	    
+
     	    if (!is_null($centreonBrokerModulePath)) {
     	        $fileXml->writeElement('module_directory', $centreonBrokerModulePath);
     	    }
-    	    
+
     	    foreach ($groups as $group => $listInfos) {
     	        if (count($listInfos) > 0) {
         	        foreach ($listInfos as $infos) {
@@ -114,7 +121,7 @@
     	        }
     	    }
     	    $fileXml->endElement();
-    
+
     	    ob_start();
             $fileXml->output();
             file_put_contents($dir_conf . '/' . $filename, ob_get_contents());
