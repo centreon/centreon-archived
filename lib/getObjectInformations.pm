@@ -221,7 +221,7 @@ sub getServiceCheckIntervalWithSVCid($) { # metric_id
     my $return = getMyServiceField($data_hst_svc->{'service_id'}, "service_normal_check_interval");
     undef($data_hst_svc);
 
-	if (!defined($return) || $return == "") {
+	if (!defined($return) || $return eq "") {
 		$return = 5;
     }
     
