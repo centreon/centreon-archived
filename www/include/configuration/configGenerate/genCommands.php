@@ -47,6 +47,22 @@
 	$handle1 = create_file($nagiosCFGPath.$tab['id']."/misccommands.cfg", $oreon->user->get_name());
 	$handle2 = create_file($nagiosCFGPath.$tab['id']."/checkcommands.cfg", $oreon->user->get_name());
 
+	/*
+	 * Define preg arguments
+	 */
+    $slashesOri = array('/#BR#/',
+				    	'/#T#/',
+    				    '/#R#/',
+    				    '/#S#/',
+    				    '/#BS#/',
+    				    '/#P#/');
+	$slashesRep = array("\\n",
+    				    "\\t",
+                        "\\r",
+                        "/",
+                        "\\",
+                        "|");
+
 	$DBRESULT = $pearDB->query('SELECT * FROM `command` ORDER BY `command_type`,`command_name`');
 	$command = array();
 	$i1 = 1;
@@ -54,13 +70,6 @@
 	$str1 = NULL;
 	$str2 = NULL;
 	while ($command = $DBRESULT->fetchRow())	{
-
-		$command["command_line"] = str_replace('#BR#', "\\n", $command["command_line"]);
-		$command["command_line"] = str_replace('#T#', "\\t", $command["command_line"]);
-		$command["command_line"] = str_replace('#R#', "\\r", $command["command_line"]);
-		$command["command_line"] = str_replace('#S#', "/", $command["command_line"]);
-		$command["command_line"] = str_replace('#BS#', "\\", $command["command_line"]);
-		$command["command_line"] = str_replace('#P#', "|", $command["command_line"]);
 
 		if ($command["command_comment"] != NULL) {
 			$command["command_comment"] = trim(preg_replace($slashesOri,$slashesRep,$command["command_comment"]));
