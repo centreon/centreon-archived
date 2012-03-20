@@ -158,9 +158,16 @@ sub initVars {
 	$logger = CentreonLogger->new();
 	$logger->stderr(1);
 	
+	my $db_port = 3306;
+	my $tab = split(/:/, $mysql_host);
+	if (defined($tab[1])) {
+		$db_port = $tab[1];
+	}
+	undef($tab);
+	
 	# database connectors
-	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd, 3306);
-	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd, 3306);
+	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd, $db_port);
+	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd, $db_port);
 	
 	# classes to query database tables 
 	$host = CentreonHost->new($logger, $centreon);
