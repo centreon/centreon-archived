@@ -561,6 +561,16 @@
 		if ($debug_nagios_import == 1)
 			error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostCFG : ". $tmpConf["host_name"] ."\n", 3, $debug_path."cfgimport.log");
 		$counter = 0;
+		$tmpConf["ehi_notes"] = NULL;
+		$tmpConf["ehi_notes_url"] = NULL;
+		$tmpConf["ehi_action_url"] = NULL;
+		$tmpConf["ehi_icon_image"] = NULL;
+		$tmpConf["ehi_icon_image_alt"] = NULL;
+		$tmpConf["ehi_vrml_image"] = NULL;
+		$tmpConf["ehi_statusmap_image"] = NULL;
+		$tmpConf["ehi_2d_coords"] = NULL;
+		$tmpConf["ehi_3d_coords"] = NULL;
+		$extendedInfo = array();
 		foreach ($tmpConf as $key => $value)	{
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]);
@@ -662,6 +672,33 @@
 				case "_SNMPVERSION" :
 					$tmpConf["host_snmp_version"] = $tmpConf[$key];
 					break;
+                case "notes":
+				    $extendedInfo["notes"] = $tmpConf[$key];
+				    break;
+				case "notes_url":
+                    $extendedInfo["notes_url"] = $tmpConf[$key];
+				    break;
+				case "action_url":
+				    $extendedInfo["action_url"] = $tmpConf[$key];
+				    break;
+				case "icon_image":
+				    $extendedInfo["icon_image"] = $tmpConf[$key];
+				    break;
+				case "icon_image_alt":
+				    $extendedInfo["icon_image_alt"] = $tmpConf[$key];
+				    break;
+				case "vrml_image":
+				    $extendedInfo["vrml_image"] = $tmpConf[$key];
+				    break;
+				case "statusmap_image":
+				    $extendedInfo["statusmap_image"] = $tmpConf[$key];
+				    break;
+				case "2d_coords":
+				    $extendedInfo["2d_coords"] = $tmpConf[$key];
+				    break;
+				case "3d_coords":
+				    $extendedInfo["3d_coords"] = $tmpConf[$key];
+				    break;
 				default :
 					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
 						$macro_on_demand["macroInput_".$counter] = $def[1];
@@ -681,15 +718,6 @@
 
 		$tmpConf["host_activate"]["host_activate"] = "1";
 		$tmpConf["host_comment"] = date("d/m/Y - H:i:s", time());
-		$tmpConf["ehi_notes"] = NULL;
-		$tmpConf["ehi_notes_url"] = NULL;
-		$tmpConf["ehi_action_url"] = NULL;
-		$tmpConf["ehi_icon_image"] = NULL;
-		$tmpConf["ehi_icon_image_alt"] = NULL;
-		$tmpConf["ehi_vrml_image"] = NULL;
-		$tmpConf["ehi_statusmap_image"] = NULL;
-		$tmpConf["ehi_2d_coords"] = NULL;
-		$tmpConf["ehi_3d_coords"] = NULL;
 
 		/*
 		 * Auto deploy Service attached to host templates
@@ -709,6 +737,12 @@
 				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
 			}
 		}
+
+	    if (isset($tmpConf['host_name']) && count($extendedInfo)) {
+		    $extendedInfo['host_name'] = $tmpConf['host_name'];
+		    insertHostExtInfoCFG($extendedInfo);
+		}
+
 		/*
 		 * Create all sevices
 		 */
