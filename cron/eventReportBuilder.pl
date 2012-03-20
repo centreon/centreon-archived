@@ -132,8 +132,8 @@ sub initVars {
 	$logger->stderr(1);
 	
 	# database connectors
-	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd);
-	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd);
+	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd, 3306);
+	$centstorage = CentreonDB->new($logger, $mysql_database_ods, $mysql_host, $mysql_user, $mysql_passwd, 3306);
 	
 	# Getting centstatus database name
 	$dbLayer = getDbLayer();
@@ -141,7 +141,7 @@ sub initVars {
 		my $sth = $centreon->query("SELECT db_name, db_host, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
 		if (my $row = $sth->fetchrow_hashref()) {
 			#connecting to censtatus
-			$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $row->{'db_host'}, $row->{'db_user'}, $row->{'db_pass'});
+			$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $row->{'db_host'}, $row->{'db_user'}, $row->{'db_pass'}, $row->{'db_port'});
 		}
 	} elsif ($dbLayer eq "broker") {
 		$centstatus = $centstorage;

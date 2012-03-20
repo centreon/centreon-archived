@@ -56,7 +56,7 @@ sub new {
 	$self->{"host"}     = shift;
 	$self->{"user"}     = shift;
 	$self->{"password"} = shift;
-	$self->{"port"}     = 3306;
+	$self->{"port"}     = shift;
 	$self->{"type"}     = "mysql";
 	bless $self, $class;
 	$self->connect();
