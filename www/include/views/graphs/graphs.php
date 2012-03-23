@@ -110,7 +110,8 @@
 			$tmp = explode(";", $svc);
 			if (!isset($tmp[1])) {
 				$id .= "HH_" . getMyHostID($tmp[0]).",";
-			} if (isset($tmp[0]) && $tmp[0] == "") {
+			}
+			if ((isset($tmp[0]) && $tmp[0] == "") || $meta == 1) {
 				$DBRESULT = $pearDB->query("SELECT `meta_id` FROM meta_service WHERE meta_name = '".$tmp[1]."'");
 				$res = $DBRESULT->fetchRow();
 				$DBRESULT->free();
