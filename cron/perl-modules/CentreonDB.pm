@@ -105,8 +105,9 @@ sub connect {
 	my $logger = $self->{"logger"};
 	$self->{"instance"} = DBI->connect(
 		"DBI:".$self->{"type"} 
-			.":database=".$self->{"db"}
-			.";host=".$self->{"host"},
+			.":".$self->{"db"}
+			.":".$self->{"host"}
+			.":".$self->{"port"},
 		$self->{"user"},
 		$self->{"password"},
 		{ "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
