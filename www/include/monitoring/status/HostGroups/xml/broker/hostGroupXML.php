@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/HostGroups/xml/hostGroupXML.php $
- * SVN : $Id: hostGroupXML.php 11683 2011-02-14 16:10:44Z jmathis $
+ * SVN : $URL: http://svn.centreon.com/branches/centreon-2.3.x/www/include/monitoring/status/HostGroups/xml/ndo/hostGroupXML.php $
+ * SVN : $Id: hostGroupXML.php 12887 2012-02-08 13:27:53Z shotamchay $
  *
  */
 
@@ -65,13 +65,9 @@
 	$convertTable = array();
     $convertID = array();
     $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups");
-    while ($hg = $DBRESULT->fetchRow()) {
+    while ($hg = $DBRESULT->fetchRow()){
 		$convertTable[$hg["name"]] = $hg["alias"];
-        if (isset($convertID[$hg["name"]])) {
-		    $convertID[$hg["name"]] .= "," . $hg["hostgroup_id"];
-		} else {
-	        $convertID[$hg["name"]] = $hg["hostgroup_id"];
-		}
+	    $convertID[$hg["alias"]] = $hg["hostgroup_id"];
     }
     $DBRESULT->free();
 
@@ -101,34 +97,41 @@
 	 */
 	$searchStr = "";
 	if ($search != "") {
-		$searchStr = " AND hg.alias LIKE '%$search%' ";
+		$searchStr = " AND nhg.alias LIKE '%$search%' ";
 	}
 
 	/*
 	 * Host state
 	 */
 	if ($obj->is_admin) {
-		$rq1 = 	"SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
-				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
-				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-                "AND hhg.host_id = h.host_id " .
-				$searchStr .
-				"GROUP BY hg.name, h.state";
+		$rq1 = 	"SELECT hgo.name1 as alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
+				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
+						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
+						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
+						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 $searchStr" .
+		        "AND nhg.hostgroup_object_id = hgo.object_id " .
+				"GROUP BY hgo.name1, nhs.current_state";
 	} else {
-		$rq1 = 	"SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
-				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
-				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-                "AND hhg.host_id = h.host_id " .
-				$searchStr .
-				$obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
-				"AND h.host_id IN (SELECT host_id FROM centreon_acl WHERE group_id IN (".$groupStr.")) " .
-				"GROUP BY hg.name, h.state";
+		$rq1 = 	"SELECT hgo.name1 as alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
+				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
+						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
+						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
+						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 " .
+					"AND noo.name1 IN (SELECT host_name FROM centreon_acl WHERE group_id IN (" . $groupStr . ")) " .
+					"AND noo.name2 IS NULL $searchStr" .
+		        $obj->access->queryBuilder("AND", "hgo.name1", $obj->access->getHostGroupsString("NAME")).
+				"AND nhg.hostgroup_object_id = hgo.object_id " .
+				"GROUP BY hgo.name1, nhs.current_state";
 	}
-	$DBRESULT = $obj->DBC->query($rq1);
+	$DBRESULT = $obj->DBNdo->query($rq1);
 	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!isset($stats[$ndo["alias"]]))
 			$stats[$ndo["alias"]] = array("h" => array(0=>0,1=>0,2=>0,3=>0), "s" => array(0=>0,1=>0,2=>0,3=>0,3=>0,4=>0));
-		$stats[$ndo["alias"]]["h"][$ndo["state"]] = $ndo["nb"];
+		$stats[$ndo["alias"]]["h"][$ndo["current_state"]] = $ndo["nb"];
 	}
 	$DBRESULT->free();
 
@@ -136,33 +139,37 @@
 	 * Get Services request
 	 */
 	if ($obj->is_admin) {
-			$rq2 = 	"SELECT hg.name as alias, s.state, count( s.service_id ) AS nb " .
-					"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
-					"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-					"AND hhg.host_id = h.host_id " .
-					"AND h.host_id = s.host_id " .
-			        $searchStr .
-					"GROUP BY hg.alias, s.state";
+			$rq2 = 	"SELECT hgo.name1 as alias, nss.current_state, count( nss.service_object_id ) AS nb " .
+			"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
+				"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
+				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+				"INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
+				"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
+			"AND nhg.hostgroup_object_id = hgo.object_id " .
+			"GROUP BY hgo.name1, nss.current_state";
 	} else {
-		$hostStr = $obj->access->getHostsString("ID", $obj->DBC);
-		$svcStr = $obj->access->getServicesString("ID", $obj->DBC);
-		$rq2 = 	"SELECT hg.name as alias, s.state, count( s.service_id ) AS nb " .
-				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
-				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-				"AND hhg.host_id = h.host_id " .
-				"AND h.host_id = s.host_id " .
-			    $searchStr .
-			    $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
-			    "AND h.host_id IN ($hostStr) AND s.service_id IN ($svcStr) " .
-				"GROUP BY hg.alias, s.state";
+		$hostStr = $obj->access->getHostsString("NAME", $obj->DBNdo);
+		$svcStr = $obj->access->getServicesString("NAME", $obj->DBNdo);
+		$rq2 = 	"SELECT hgo.name1 as alias, nss.current_state, count( nss.service_object_id ) AS nb " .
+				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
+				"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
+				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
+				"INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
+				"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2
+				AND no.name1 IN (".$hostStr.") AND no.name2 IN (".$svcStr. ") ". $searchStr .
+		        $obj->access->queryBuilder("AND", "hgo.name1", $obj->access->getHostGroupsString("NAME")).
+				"AND nhg.hostgroup_object_id = hgo.object_id " .
+				"GROUP BY hgo.name1, nss.current_state";
 	}
-	$DBRESULT = $obj->DBC->query($rq2);
+	$DBRESULT = $obj->DBNdo->query($rq2);
 	while ($ndo = $DBRESULT->fetchRow()) {
 		if (!isset($stats[$ndo["alias"]])) {
 			$stats[$ndo["alias"]] = array("h" => array(0=>0,1=>0,2=>0,3=>0), "s" => array(0=>0,1=>0,2=>0,3=>0,3=>0,4=>0));
 		}
 		if ($stats[$ndo["alias"]]) {
-			$stats[$ndo["alias"]]["s"][$ndo["state"]] = $ndo["nb"];
+			$stats[$ndo["alias"]]["s"][$ndo["current_state"]] = $ndo["nb"];
 		}
 	}
 
@@ -188,7 +195,7 @@
 	$i = 0;
 	$ct = 0;
 	foreach ($stats as $name => $stat) {
-		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertID[$name]) && isset($acl[$convertID[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
 			$class = $obj->getNextLineClass();
 			if (isset($stat["h"]) && count($stat["h"])) {
 				$obj->XML->startElement("l");
