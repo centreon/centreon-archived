@@ -159,11 +159,11 @@ sub initVars {
 	$logger->stderr(1);
 	
 	my $db_port = 3306;
-	my $tab = split(/:/, $mysql_host);
+	my @tab = split(/:/, $mysql_host);
 	if (defined($tab[1])) {
 		$db_port = $tab[1];
 	}
-	undef($tab);
+	undef(@tab);
 	
 	# database connectors
 	$centreon = CentreonDB->new($logger, $mysql_database_oreon, $mysql_host, $mysql_user, $mysql_passwd, $db_port);
