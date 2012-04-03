@@ -70,6 +70,9 @@
 	$str1 = NULL;
 	$str2 = NULL;
 	while ($command = $DBRESULT->fetchRow())	{
+	    if (isset($command['command_line'])) {
+	        $command['command_line'] = trim(preg_replace($slashesOri, $slashesRep, $command['command_line']));
+	    }
 
 		if ($command["command_comment"] != NULL) {
 			$command["command_comment"] = trim(preg_replace($slashesOri,$slashesRep,$command["command_comment"]));
@@ -91,7 +94,7 @@
 				$str1 .= print_line("command_name", $command["command_name"]);
 			}
 			if ($command["command_line"]) {
-				$str1 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
+			    $str1 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
 			}
 			if ($command["command_example"]) {
 				$str1 .= print_line(";command_example", $command["command_example"]);
