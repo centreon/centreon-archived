@@ -106,6 +106,7 @@ try {
             $param['widget_id'] = $widgetId;
             $currentParam->init($param);
             $currentParam->setValue($param);
+            $params[$paramId]['trigger'] = $currentParam->getTrigger();
             $element = $currentParam->getElement();
         } else {
             throw new Exception ('No class name found');
@@ -179,5 +180,30 @@ function setDatePicker()
 							defaultDate:	"+1w",
 							changeMonth:	true
 						   });
+}
+
+/**
+ * Load target select box with values that will be retrieved by trigger source
+ *
+ * @param string triggerSource
+ * @param string targetId
+ * @param string triggerValue
+ * @return void
+ */
+function loadFromTrigger(triggerSource, targetId, triggerValue)
+{
+	jQuery.ajax({
+		type	:	"POST",
+		dataType:	"xml",
+		url 	:	triggerSource,
+		data	:   { data: triggerValue } ,
+		success :	function(response) {
+							jQuery("[name=param_"+targetId+"]").find('option').remove().end();
+							jQuery(response).find('option').each(function() {
+								jQuery("[name=param_"+targetId+"]").append(new Option(jQuery(this).find('label').text(),
+																					  triggerValue + '-' + jQuery(this).find('id').text(), true, true));
+							});
+					}
+});
 }
 </script>

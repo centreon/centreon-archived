@@ -44,6 +44,7 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
     protected $quickform;
     protected $params;
     protected $userGroups;
+    protected $trigger;
 
 
     /**
@@ -56,6 +57,7 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
      */
     public function __construct($db, $quickform, $userId)
     {
+        $this->trigger = false;
         $this->db = $db;
         $this->quickform = $quickform;
         $this->userId = $userId;
@@ -170,5 +172,10 @@ abstract class CentreonWidgetParams implements CentreonWidgetParamsInterface
             $tab[$row['option_value']] = $row['option_name'];
         }
         return $tab;
+    }
+
+    public function getTrigger()
+    {
+        return $this->trigger;
     }
 }
