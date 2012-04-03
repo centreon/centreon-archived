@@ -87,7 +87,7 @@
 	 * Backup poller selection
 	 */
 	$obj->setInstanceHistory($instance);
-	
+
 	$selected = "no_s.name1 as host_name, nagios_instances.instance_name as instance_name, no_h.object_id as host_object_id, nhs.scheduled_downtime_depth as host_scheduled_downtime_depth, nhs.current_state as host_current_state, nh.notes_url as host_notes_url, nh.address as host_address, nh.action_url as host_action_url, nh.notes as host_notes, nh.icon_image as host_icon_image, nh.alias as host_alias, nhs.problem_has_been_acknowledged as host_problem_has_been_acknowledged, nhs.passive_checks_enabled as host_passive_checks_enabled, nhs.active_checks_enabled as host_active_checks_enabled";
 	$selected .= ", no_s.name2 as service_description, no_s.object_id as service_object_id, ns.notes as service_notes, ns.notes_url as service_notes_url, ns.action_url as service_action_url, ns.max_check_attempts as service_max_check_attempts, ns.icon_image as service_icon_image, ns.display_name as service_display_name, nss.process_performance_data as service_process_performance_data, nss.current_state as service_current_state, nss.output as service_output, nss.state_type as service_state_type, nss.current_check_attempt as service_current_check_attempt, nss.status_update_time as service_status_update_time, unix_timestamp(nss.last_state_change) as service_last_state_change, unix_timestamp(nss.last_hard_state_change) as service_last_hard_state_change, unix_timestamp(nss.last_check) as service_last_check, unix_timestamp(nss.next_check) as service_next_check, nss.notifications_enabled as service_notifications_enabled, nss.problem_has_been_acknowledged as service_problem_has_been_acknowledged, nss.passive_checks_enabled as service_passive_checks_enabled, nss.active_checks_enabled as service_active_checks_enabled, nss.event_handler_enabled as service_event_handler_enabled, nss.is_flapping as service_is_flapping, nss.scheduled_downtime_depth as service_scheduled_downtime_depth, nss.flap_detection_enabled as service_flap_detection_enabled";
 	$from = $obj->ndoPrefix . "objects as no_h, " . $obj->ndoPrefix . "objects as no_s, " . $obj->ndoPrefix . "hoststatus as nhs, " . $obj->ndoPrefix . "hosts as nh, " . $obj->ndoPrefix . "servicestatus as nss, " . $obj->ndoPrefix . "services as ns, " . $obj->ndoPrefix . "instances";
@@ -109,13 +109,13 @@
 		$where_host_meta = "no_h.name1 = '_Module_Meta' AND ";
 	} else {
 		$where_host_meta = "no_h.name1 != '_Module_Meta' AND ";
-	}	
-	
+	}
+
     $where_host_poller = "";
 	if ($instance != -1) {
 		$where_host_poller = "no_h.instance_id = " . $instance .  " AND ";
 	}
-	
+
 	$where_host_host_filter = "";
 	if ($search_host) {
 		$where_host_host_filter = "no_h.name1 LIKE '%$search_host%' AND ";
@@ -129,9 +129,9 @@
 		$where_acl = "no_s.name1 = centreon_acl.host_name AND no_s.name2 = centreon_acl.service_description AND group_id IN (" . $obj->grouplistStr . ")";
 		$where_acl_append = " AND ";
 	}
-	
+
 	/* Les etats. On touche pas vraiment */
-	
+
 	$rq_state = "";
 	if ($o == "svcpb")
 		$rq_state = " AND nss.current_state != 0";
@@ -163,7 +163,7 @@
 		$rq_state .= " AND nss.problem_has_been_acknowledged = 0";
 		$rq_state .= " AND nss.scheduled_downtime_depth = 0";
 	}
-	
+
 	/* filter services */
 
 	$where_service_service = "";
@@ -181,13 +181,13 @@
 	}
 
 	/************************/
-	
+
 	$where = " no_h.object_id = nhs.host_object_id AND no_h.objecttype_id = 1 AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "nh.host_object_id = no_h.object_id AND ns.host_object_id = no_h.object_id AND ns.service_object_id = no_s.object_id AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
-	
+
 	/* LIMIT, ORDER */
-	
+
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
-	
+
 	$tabOrder = array();
 	$tabOrder["host_name"] 			= " ORDER BY host_name ". $order.", service_description";
 	$tabOrder["service_description"]= " ORDER BY service_description ". $order.", host_name";
@@ -202,10 +202,10 @@
 	} else {
 		$rq_sorte = $tabOrder["default"];
 	}
-	
+
 	/**************************/
 
-	$finalRequest = "SELECT " . $selected . " FROM " . $from . " WHERE " . $where . $rq_sorte . $rq_limit;
+	$finalRequest = "SELECT DISTINCT " . $selected . " FROM " . $from . " WHERE " . $where . $rq_sorte . $rq_limit;
 	$finalRequestCount = "SELECT COUNT(*) as total FROM " . $from . " WHERE " . $where;
 
 	$DBRESULT2 = $obj->DBNdo->query($finalRequestCount);
@@ -213,7 +213,7 @@
 	$numRows = $data['total'];
 
 	$DBRESULT = $obj->DBNdo->query($finalRequest);
-	
+
 	/* ***************************************************
 	 * Create Buffer
 	 */
