@@ -148,7 +148,7 @@
 	/*
 	 * Different messages we put in the template
 	 */
-	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"),"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>_("LDAP Import")));
+	$tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"),"ldap_importL"=>"?p=".$p."&o=li", "ldap_importT"=>_("LDAP Import"), "view_notif" => _("View contact notifications")));
 	if ($centreon->optGen['ldap_auth_enable']) {
 		$tpl->assign('ldap', $centreon->optGen['ldap_auth_enable'] );
 	}

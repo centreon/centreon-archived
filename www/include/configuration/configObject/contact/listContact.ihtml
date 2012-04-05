@@ -8,6 +8,7 @@
 				&nbsp;&nbsp;&nbsp;
 				{if $ldap == "1" }<a href="{$msg.ldap_importL}">{$msg.ldap_importT}</a>&nbsp;-&nbsp;{/if}
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				&nbsp;|&nbsp;<a href='#' onclick="window.open('?p=60301&o=dn&min=1', '', 'toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=500, height=700');">{$msg.view_notif}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
