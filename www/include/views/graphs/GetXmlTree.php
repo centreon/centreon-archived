@@ -654,7 +654,7 @@
 						 * Services
 						 */
 						if ((isset($hosts_open[$host_id]) && $hosts_open[$host_id]) || (isset($hosts_selected[$host_id]) && $hosts_selected[$host_id]) ) {
-							$services = getMyHostActiveServices($host_id);
+							$services = getMyHostGraphs($host_id);
 							foreach($services as $svc_id => $svc_name)	{
 					           	$buffer->startElement("item");
 					    		if (isset($svcs_selected[$svc_id]))

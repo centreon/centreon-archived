@@ -54,9 +54,9 @@
 			return NULL;
 		$tab_svc = array();
 
-		$DBRESULT = $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
+		$DBRESULT = $pearDBO->query("SELECT `service_id`, `service_description` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
 		while ($row = $DBRESULT->fetchRow())
-			$tab_svc[$row["service_id"]] = 1;
+			$tab_svc[$row["service_id"]] = $row['service_description'];
 		return $tab_svc;
 	}
 
