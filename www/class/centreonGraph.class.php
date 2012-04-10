@@ -252,6 +252,24 @@ class CentreonGraph	{
 	}
 
 	/**
+	 * Clean up ds name
+	 *
+	 * @param string $dsname
+	 * @param bool $reverse set to true if we want to retrieve the original string to display
+	 * @return string
+	 */
+	protected function cleanupDsName($dsname, $reverse = false)
+	{
+	    if ($reverse === true) {
+	        $newDsName = str_replace(array("slash_", "bslash_", "pct_"), array("/","\\", "%"), $dsname);
+	    } else {
+	        $newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
+	    }
+	    $newDsName = preg_replace("/[^a-zA-Z0-9-_]/", "-", $newDsName);
+        return $newDsName;
+	}
+
+	/**
 	 * Get Maximum Size of metric from index_id
 	 *
 	 * @param int $metricId
@@ -493,8 +511,7 @@ class CentreonGraph	{
 					$this->metrics[$metric["metric_id"]]["virtual"] = $metric["virtual"];
 				}
 				$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
-	#			$this->metrics[$metric["metric_id"]]["index_id"] = $metric["index_id"];
-				$this->metrics[$metric["metric_id"]]["metric"] = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $metric["metric_name"]);
+				$this->metrics[$metric["metric_id"]]["metric"] = $this->cleanupDsName($metric["metric_name"]);
 				$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 
 				if (!isset($metric["need"]) || $metric["need"] != 1) {
@@ -566,7 +583,7 @@ class CentreonGraph	{
 						$this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_legend"];
 					} else {
 						if (!isset($ds_data["ds_name"]) || !preg_match('/DS/', $ds_data["ds_name"], $matches)){
-							$this->metrics[$metric["metric_id"]]["legend"] = str_replace(array("slash_", "bslash_", "pct_"), array("/", "\\", "%"), $metric["metric_name"]);
+							$this->metrics[$metric["metric_id"]]["legend"] = $this->cleanupDsName($metric["metric_name"], true);
 						} else {
 							$this->metrics[$metric["metric_id"]]["legend"] = (isset($ds_data["ds_name"]) ? $ds_data["ds_name"] : "");
 						}
