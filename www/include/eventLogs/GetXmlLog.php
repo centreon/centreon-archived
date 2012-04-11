@@ -347,58 +347,94 @@
 	$msg_req = '';
 	$suffix_order = " ORDER BY ctime DESC, host_name ASC, service_description ASC ";
 
-	$msg_status_set = array();
-
-	if ($error == 'true')
-		array_push($msg_status_set, "'NULL'");
+	$host_msg_status_set = array();
 	if ($up == 'true')
-		array_push($msg_status_set, "'".STATUS_UP."'");
+		array_push($host_msg_status_set, "'".STATUS_UP."'");
 	if ($down == 'true' )
-		array_push($msg_status_set, "'".STATUS_DOWN."'");
+		array_push($host_msg_status_set, "'".STATUS_DOWN."'");
 	if ($unreachable == 'true' )
-		array_push($msg_status_set, "'".STATUS_UNREACHABLE."'");
+		array_push($host_msg_status_set, "'".STATUS_UNREACHABLE."'");
 
+    $svc_msg_status_set = array();
 	if ($ok == 'true')
-		array_push($msg_status_set, "'".STATUS_OK."'");
+		array_push($svc_msg_status_set, "'".STATUS_OK."'");
 	if ($warning == 'true')
-		array_push($msg_status_set, "'".STATUS_WARNING."'");
+		array_push($svc_msg_status_set, "'".STATUS_WARNING."'");
 	if ($critical == 'true')
-		array_push($msg_status_set, "'".STATUS_CRITICAL."'");
+		array_push($svc_msg_status_set, "'".STATUS_CRITICAL."'");
 	if ($unknown == 'true')
-		array_push($msg_status_set, "'".STATUS_UNKNOWN."'");
+		array_push($svc_msg_status_set, "'".STATUS_UNKNOWN."'");
 
 	$flag_begin = 0;
 	if ($notification == 'true') {
-		$msg_req .= "AND (";
-		$flag_begin = 1;
-		$msg_req .= " (`msg_type` IN ('2', '3') ";
-		if (count($msg_status_set) > 0)
-			$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set).")";
-	 	$msg_req .= ") ";
+	    if (count($host_msg_status_set)) {
+		    $msg_req .= "(";
+		    $flag_begin = 1;
+		    $msg_req .= " (`msg_type` = '3' ";
+			$msg_req .= " AND `status` IN (" . implode(',', $host_msg_status_set)."))";
+			$msg_req .= ") ";
+		}
+		if (count($svc_msg_status_set)) {
+            if ($flag_begin == 0) {
+                $msg_req .= "(";
+            } else {
+                $msg_req .= " OR ";
+            }
+            $msg_req .= " (`msg_type` = '2' ";
+			$msg_req .= " AND `status` IN (" . implode(',', $svc_msg_status_set)."))";
+			if ($flag_begin == 0) {
+			    $msg_req .= ") ";
+			}
+			$flag_begin = 1;
+		}
 	}
 	if ($alert == 'true') {
-		if ($flag_begin == 0) {
-			$msg_req .= "AND (";
+	    if (count($host_msg_status_set)) {
+	        if ($flag_begin) {
+                $msg_req .= " OR ";
+            }
+	        if ($oh == true) {
+                $msg_req .= " ( ";
+                $flag_oh = true;
+            }
+		    $flag_begin = 1;
+		    $msg_req .= " ((`msg_type` IN ('1', '10', '11') ";
+			$msg_req .= " AND `status` IN (" . implode(',', $host_msg_status_set).")) ";
+			$msg_req .= ") ";
+		}
+		if (count($svc_msg_status_set)) {
+            if ($flag_begin) {
+                $msg_req .= " OR ";
+            }
+            if ($oh == true && !isset($flag_oh)) {
+                $msg_req .= " ( ";
+            }
+            $flag_begin = 1;
+            $msg_req .= " ((`msg_type` IN ('0', '10', '11') ";
+			$msg_req .= " AND `status` IN (" . implode(',', $svc_msg_status_set).")) ";
+			$msg_req .= ") ";
+		}
+		if ($flag_begin) {
+		    $msg_req .= ")";
+		}
+		if ((count($host_msg_status_set) || count($svc_msg_status_set)) && $oh == 'true') {
+		    $msg_req .= " AND ";
+		}
+		if ($oh == 'true') {
 			$flag_begin = 1;
-		} else
-			$msg_req .= " OR ";
-		$msg_req .= " (`msg_type` IN ('0', '1', '10', '11') ";
-		if (count($msg_status_set) > 0)
-		 	$msg_req .= " AND `status` IN (" . implode(',', $msg_status_set) . ") ";
-		if ($oh == 'true')
-			$msg_req .= " AND `type` = '".TYPE_HARD."' ";
-		$msg_req .=	") ";
+		    $msg_req .= " `type` = '".TYPE_HARD."' ";
+		}
 	}
 	if ($error == 'true') {
-		if ($flag_begin == 0) {
-			$msg_req .= "AND (";
-			$flag_begin = 1;
+	    if ($flag_begin == 0) {
+			$msg_req .= "AND ";
 		} else
 			$msg_req .= " OR ";
-		$msg_req .= " (`msg_type` IN ('4', '5', '6', '7', '8', '9') AND `status` IS NULL) ";
+		$msg_req .= " (`msg_type` IN ('4') AND `status` IS NULL) ";
 	}
-	if ($flag_begin)
-		$msg_req .= ")";
+	if ($flag_begin) {
+        $msg_req = " AND (".$msg_req.") ";
+	}
 
 
 	$multi = 1;

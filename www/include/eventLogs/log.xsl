@@ -13,8 +13,14 @@
 			               	<tr>
 			               		<td>
 	               					<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+											if (!this.checked) {
+												document.getElementById('ohId').checked = false;
+											}
+											log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;
+										</xsl:attribute>
 										<xsl:attribute name="name">alert</xsl:attribute>
+										<xsl:attribute name="id">alertId</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/alert = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -24,8 +30,14 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+											if (this.checked) {
+												document.getElementById('alertId').checked = true;
+											}
+											log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;
+										</xsl:attribute>
 										<xsl:attribute name="name">oh</xsl:attribute>
+										<xsl:attribute name="id">ohId</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/oh = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
