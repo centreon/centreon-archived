@@ -116,7 +116,7 @@ if ($objectId) {
     		  FROM ".$prefix."downtimehistory
     		  WHERE object_id = " . CentreonDB::escape($objectId) . "
     		  AND was_cancelled = 0
-    		  AND scheduled_end_time > UNIX_TIMESTAMP(NOW())
+    		  AND UNIX_TIMESTAMP(scheduled_end_time) > UNIX_TIMESTAMP(NOW())
     		  ORDER BY scheduled_start_time";
 }
 $res = $dbb->query($query);
