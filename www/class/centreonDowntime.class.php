@@ -678,13 +678,20 @@ class CentreonDowntime
 		        continue;
 		    }
 			$add = false;
+			/*
+			 * If start time is 00:00 check with tomorrow
+			 */
+			$timeTest = $time;
+			if ($period['start_time'] == '00:00' && ($time + $delay) > (strtotime('00:00') + 3600 + 24)) {
+			    $timeTest = $time + $delay;
+			}
 			if ($period['month_cycle'] == 'none') {
-				$dateOfMonth = date('j', $time);
+				$dateOfMonth = date('j', $timeTest);
 				if (in_array($dateOfMonth, $period['day_of_month'])) {
 					$add = true;
 				}
 			} elseif ($period['month_cycle'] == 'all') {
-				$dateOfMonth = date('w', $time);
+				$dateOfMonth = date('w', $timeTest);
 				if ($dateOfMonth == 0) {
 				    $dateOfMonth = 7;
 				}
@@ -692,16 +699,16 @@ class CentreonDowntime
 					$add = true;
 				}
 			} else {
-				$dateOfMonth = date('w', $time);
+				$dateOfMonth = date('w', $timeTest);
 			    if ($dateOfMonth == 0) {
 				    $dateOfMonth = 7;
 				}
 				if ($dateOfMonth == $period['day_of_week']) {
-					$monthName = date('F', $time);
-					$year = date('Y', $time);
-					$dayShortName = date('D', $time);
+					$monthName = date('F', $timeTest);
+					$year = date('Y', $timeTest);
+					$dayShortName = date('D', $timeTest);
 					$dayInMonth = date('d', strtotime($period['month_cycle'] . ' ' . $dayShortName . ' ' . $monthName . ' ' . $year));
-					if ($dayInMonth == date('d', $time)) {
+					if ($dayInMonth == date('d', $timeTest)) {
 						$add = true;
 					}
 				}
