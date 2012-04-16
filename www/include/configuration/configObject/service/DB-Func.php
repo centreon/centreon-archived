@@ -73,7 +73,7 @@
  	 *
  	 * @return bool
  	 */
-	function macHandler() {
+	function serviceMacHandler() {
  	    global $pearDB;
 
  	    $macArray = $_POST;

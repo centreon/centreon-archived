@@ -764,7 +764,7 @@
 
 	$macChecker = $form->addElement("hidden", "macChecker");
     $macChecker->setValue(1);
-    $form->registerRule("macHandler", "callback", "macHandler");
+    $form->registerRule("macHandler", "callback", "hostMacHandler");
     $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
 
 	/*

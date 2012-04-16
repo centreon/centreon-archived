@@ -765,7 +765,7 @@
 
 	    $macChecker = $form->addElement("hidden", "macChecker");
         $macChecker->setValue(1);
-        $form->registerRule("macHandler", "callback", "macHandler");
+        $form->registerRule("macHandler", "callback", "serviceMacHandler");
         $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
 
 		$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
