@@ -384,7 +384,10 @@
 				 * On-demand macros
 				 */
 
-				$rq = "SELECT `host_macro_name`, `host_macro_value` FROM `on_demand_macro_host` WHERE `host_host_id` = '" . $host['host_id']."'";
+				$rq = "SELECT `host_macro_name`, `host_macro_value`
+					   FROM `on_demand_macro_host`
+					   WHERE `host_host_id` = '" . $host['host_id']."'
+					   AND host_macro_name NOT IN (SELECT macro_name FROM nagios_macro)";
 				$DBRESULT3 = $pearDB->query($rq);
 				while ($od_macro = $DBRESULT3->fetchRow()) {
 					$mac_name = str_replace("\$_HOST", "_", $od_macro['host_macro_name']);

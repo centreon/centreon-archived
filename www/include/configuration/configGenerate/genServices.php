@@ -90,7 +90,9 @@
 	 * Build cache for Macro
 	 */
 	$macroCache = array();
-	$DBRESULT3 = $pearDB->query("SELECT svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service");
+	$DBRESULT3 = $pearDB->query("SELECT svc_macro_name, svc_macro_value, svc_svc_id
+								 FROM on_demand_macro_service
+								 WHERE svc_macro_name NOT IN (SELECT macro_name FROM nagios_macro)");
 	while ($od_macro = $DBRESULT3->fetchRow()) {
 		if (!isset($macroCache[$od_macro["svc_svc_id"]]))
 			$macroCache[$od_macro["svc_svc_id"]] = array();
