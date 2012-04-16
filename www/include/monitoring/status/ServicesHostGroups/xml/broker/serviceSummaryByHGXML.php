@@ -140,14 +140,14 @@
 	$obj->XML->endElement();
 
 	while ($ndo = $DBRESULT->fetchRow()) {
-		if (!isset($tab_final[$ndo["alias"]])) {
-			$tab_final[$ndo["alias"]] = array();
+		if (!isset($tab_final[$ndo["hgname"]])) {
+			$tab_final[$ndo["hgname"]] = array();
 		}
-		if (!isset($tab_final[$ndo["alias"]][$ndo["host_name"]])) {
-			$tab_final[$ndo["alias"]][$ndo["host_name"]] = array("0"=>0,"1"=>0,"2"=>0,"3"=>0,"4"=>0);
+		if (!isset($tab_final[$ndo["hgname"]][$ndo["host_name"]])) {
+			$tab_final[$ndo["hgname"]][$ndo["host_name"]] = array("0"=>0,"1"=>0,"2"=>0,"3"=>0,"4"=>0);
 		}
 		if ($o != "svcSum_pb" && $o != "svcSum_ack_1"  && $o !=  "svcSum_ack_0") {
-			$tab_final[$ndo["alias"]][$ndo["host_name"]][0] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
+			$tab_final[$ndo["hgname"]][$ndo["host_name"]][0] = $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 0, $obj);
 		}
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]][1] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 1, $obj);
 		$tab_final[$ndo["hgname"]][$ndo["host_name"]][2] = 0 + $obj->monObj->getServiceStatusCount($ndo["host_name"], $obj, $o, 2, $obj);
