@@ -762,6 +762,11 @@
 
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
+	$macChecker = $form->addElement("hidden", "macChecker");
+    $macChecker->setValue(1);
+    $form->registerRule("macHandler", "callback", "macHandler");
+    $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
+
 	/*
 	 * Smarty template Init
 	 */
@@ -843,6 +848,8 @@
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&host_id=".$hostObj->getValue()."'"));
 		$form->freeze();
 		$valid = true;
+	} elseif ($form->isSubmitted()) {
+	    $tpl->assign("macChecker", "<font color='red'>". $form->getElementError("macChecker") . "</font>");
 	}
 	$action = $form->getSubmitValue("action");
 

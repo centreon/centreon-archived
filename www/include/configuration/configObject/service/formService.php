@@ -763,6 +763,11 @@
         $form->registerRule("argHandler", "callback", "argHandler");
 	    $form->addRule("argChecker", _("You must either fill all the arguments or leave them all empty"), "argHandler");
 
+	    $macChecker = $form->addElement("hidden", "macChecker");
+        $macChecker->setValue(1);
+        $form->registerRule("macHandler", "callback", "macHandler");
+        $form->addRule("macChecker", _("You cannot override reserved macros"), "macHandler");
+
 		$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 	} elseif ($o == "mc") {
 		if ($form->getSubmitValue("submitMC")) {
@@ -842,6 +847,7 @@
 		$valid = true;
 	} elseif ($form->isSubmitted()) {
 	    $tpl->assign("argChecker", "<font color='red'>". $form->getElementError("argChecker") . "</font>");
+	    $tpl->assign("macChecker", "<font color='red'>". $form->getElementError("macChecker") . "</font>");
 	}
 
 	require_once $path.'javascript/argumentJs.php';

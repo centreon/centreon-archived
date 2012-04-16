@@ -83,7 +83,8 @@
 			<td class="FormRowField">
 				<img class="helpTooltip" name="macro"> {$custom_macro_label}
 			</td>
-			<td>			
+			<td>
+				{$macChecker}
 				<table id="macroTable" class="ListTableSmall">
 					<tr class="ListHeader">
 						<td class="ListColLeft">{$form.macroName.label}</td>

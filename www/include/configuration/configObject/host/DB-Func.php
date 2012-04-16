@@ -44,6 +44,34 @@
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
+
+ 	/**
+ 	 * Quickform rule that checks whether or not reserved macro are used
+ 	 *
+ 	 * @return bool
+ 	 */
+ 	function macHandler() {
+ 	    global $pearDB;
+
+ 	    $macArray = $_POST;
+	    $macTab = array();
+		foreach ($macArray as $key => $value) {
+		    if (preg_match('/^macroInput/', $key, $matches)) {
+			    $macTab[] = "'\$_HOST".strtoupper($value)."\$'";
+			}
+        }
+        if (count($macTab)) {
+            $sql = "SELECT count(*) as nb FROM nagios_macro WHERE macro_name IN (".implode(',',$macTab).")";
+            $res = $pearDB->query($sql);
+            $row = $res->fetchRow();
+            if (isset($row['nb']) && $row['nb']) {
+                return false;
+            }
+        }
+        return true;
+ 	}
+
+
 	function hostExists($name = NULL){
 		global $pearDB, $oreon;
 
