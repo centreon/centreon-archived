@@ -317,6 +317,8 @@ sub getTrapsInfos($$$$$) {
 		    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 		    $tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
 		    $tmoString =~ s/\@TIME\@/$datetime/g;
+		    $tmoString =~ s/\@TRAPNAME\@/$this_service/g;
+		    
 		    
 		    if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
 			$status = $tmoStatus;
