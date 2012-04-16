@@ -36,6 +36,34 @@
  *
  */
 
+
+    /**
+     * Checks whether or not a reserved macro is used
+     *
+     * @param int $macroType 0 = host, 1 = service
+     * @param string $macroName
+     * @return bool returns true if it's not a reserved macro, false otherwise
+     */
+    function checkReservedMacro($macroType, $macroName) {
+        global $pearDB;
+
+        $macroName = strtoupper($macroName);
+        if ($macroType == 0) {
+            $macroName = "\$_HOST".$macroName."\$";
+        } else {
+            $macroName = "\$_SERVICE".$macroName."\$";
+        }
+        $sql = "SELECT count(*) as nb FROM nagios_macro WHERE macro_name = '".$pearDB->escape($macroName)."'";
+        $res = $pearDB->query($sql);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            if ($row['nb']) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 	function deleteAllConfCFG()	{
 		global $pearDB;
 		global $oreon;
@@ -701,9 +729,11 @@
 				    break;
 				default :
 					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
-						$macro_on_demand["macroInput_".$counter] = $def[1];
-						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
-						$macro_on_demand["nbOfMacro"] = $counter++;
+						if (true === checkReservedMacro(0, $def[1])) {
+    					    $macro_on_demand["macroInput_".$counter] = $def[1];
+    						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
+    						$macro_on_demand["nbOfMacro"] = $counter++;
+						}
 					}
 					break;
 			}
@@ -1261,9 +1291,11 @@
 					break;
 				default :
 					if (preg_match("/^_([a-zA-Z0-9\_\-]+)/", $key, $def)) {
-						$macro_on_demand["macroInput_".$counter] = $def[1];
-						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
-						$macro_on_demand["nbOfMacro"] = $counter++;
+					    if (true === checkReservedMacro(1, $def[1])) {
+    					    $macro_on_demand["macroInput_".$counter] = $def[1];
+    						$macro_on_demand["macroValue_".$counter] = $tmpConf[$key];
+    						$macro_on_demand["nbOfMacro"] = $counter++;
+					    }
 					}
 					break;
 			}
