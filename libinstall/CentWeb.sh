@@ -161,9 +161,7 @@ ${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 	-e 's|@INIT_D@|'"$INIT_D"'|g' \
 	-e 's|@NDOMOD_BINARY@|'"$NDOMOD_BINARY"'|g' \
 	-e 's|@P1_PL@|'"$NAGIOS_P1_FILE"'|g' \
-	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \	
 	$TMP_DIR/src/www/install/insertBaseConf.sql > \
 	$TMP_DIR/work/www/install/insertBaseConf.sql
 check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
@@ -197,6 +195,27 @@ ${CAT} "$file_php_temp" | while read file ; do
 	cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
+
+find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.sql" "file_sql_temp"
+
+log "INFO" "$(gettext "Apply macros on SQL scripts")"
+
+flg_error=0
+${CAT} "$file_sql_temp" | while read file ; do
+	log "MACRO" "$(gettext "Change macro for") : $file"
+	[ ! -d $(dirname $TMP_DIR/work/$file) ] && \
+		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
+	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+		$TMP_DIR/src/$file > $TMP_DIR/work/$file
+		[ $? -ne 0 ] && flg_error=1
+	log "MACRO" "$(gettext "Copy in final dir") : $file"
+	cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
+done
+check_result $flg_error "$(gettext "Change macros on SQL scripts")"
 
 ### Step 3: Change right on nagios_etcdir
 log "INFO" "$(gettext "Change right on") $NAGIOS_ETC" 
