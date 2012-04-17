@@ -133,7 +133,7 @@ INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_buffer', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'ipv4', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '2_3', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '/usr/local/centreon-broker/log/central-broker.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
+INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-broker.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'error', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
@@ -200,7 +200,7 @@ INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_buffer', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'ipv4', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '2_3', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '/usr/local/centreon-broker/log/central-rrd.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
+INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-rrd.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'error', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
@@ -209,8 +209,8 @@ INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'file', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '3_17', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'RRD-File', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'metrics_path', '/var/lib/centreon/metrics', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'status_path', '/var/lib/centreon/status', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
+INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'metrics_path', '@CENTREON_VARLIB@/metrics', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
+INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'status_path', '@CENTREON_VARLIB@/status', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'path', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
@@ -222,7 +222,7 @@ INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config
 --
 
 INSERT INTO cfg_centreonbroker (config_name, config_filename, config_activate, ns_nagios_server) VALUES ('central-module', 'central-module.xml', '0', 1); 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '/usr/local/centreon-broker/log/central-module.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
+INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-module.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'error', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
@@ -517,7 +517,7 @@ INSERT INTO `extended_service_information` (`service_service_id`, `esi_notes`, `
 -- Contenu de la table `host_service_relation`
 --
 
-INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 10);
+INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 4, NULL, 11);
 INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 11);
 INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 16);
 INSERT INTO `host_service_relation` (`hostgroup_hg_id`, `host_host_id`, `servicegroup_sg_id`, `service_service_id`) VALUES(NULL, 5, NULL, 15);
