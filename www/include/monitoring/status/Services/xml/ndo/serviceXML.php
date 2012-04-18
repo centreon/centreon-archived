@@ -206,7 +206,7 @@
 	/**************************/
 
 	$finalRequest = "SELECT DISTINCT " . $selected . " FROM " . $from . " WHERE " . $where . $rq_sorte . $rq_limit;
-	$finalRequestCount = "SELECT COUNT(*) as total FROM " . $from . " WHERE " . $where;
+	$finalRequestCount = "SELECT COUNT(DISTINCT no_s.name1, nagios_instances.instance_name, no_s.name2) as total FROM " . $from . " WHERE " . $where;
 
 	$DBRESULT2 = $obj->DBNdo->query($finalRequestCount);
 	$data = $DBRESULT2->fetchRow();
