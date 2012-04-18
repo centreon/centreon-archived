@@ -317,6 +317,10 @@ sub GetPerfData() {
                             writeLogFile("Error Timestamp... Unknown format : " . $line_tab[0]);
                         } else {
                             if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "" && $line_tab[0] < $now)) {
+                                if ($#line_tab != 5) {
+                                    writeLogFile("Line not well formed: " . $_);
+                                    next;
+                                }
                                 checkAndUpdate(@line_tab, $configOptions);
                                 $counterData++;
                             }
