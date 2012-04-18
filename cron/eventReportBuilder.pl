@@ -247,7 +247,7 @@ sub main {
     	my $currentTime = time;
 		my ($day,$month,$year) = (localtime($currentTime))[3,4,5];
 		my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
-		my $start = $end - (60 * 60 * 24);
+		my $start = mktime(0,0,0,$day-1,$month,$year,0,0,-1);
 		$logger->writeLog("INFO", "Processing period: ".localtime($start)." => ".localtime($end));
 		$processEvents->parseHostLog($start, $end);
 		$processEvents->parseServiceLog($start, $end);
