@@ -190,9 +190,12 @@ sub getPerfDataFile() {
 sub movePerfDataFile($){
     my $PERFDATA = $_[0];
     my $flag_bckp = $_[1];
+    my $PERFDATA_src = $PERFDATA;
 
-    # Copy file before reading
-    if (move($PERFDATA, $PERFDATA."_read")){
+    if ($flag_bckp == 1) {
+        $PERFDATA_src = $PERFDATA . ".bckp";
+    }
+    if (move($PERFDATA_src, $PERFDATA."_read")){
 		# Erase old perfdata file.
 		if ($flag_bckp == 0) {
 			`echo "# New File " > $PERFDATA`;
@@ -259,113 +262,114 @@ sub GetPerfData() {
     $now = time() + 86400;
 
     # Connect MySQL DB
-    CheckMySQLConnexion();				
+    CheckMySQLConnexion();
 
     # Get path of perfdata file
     my $PFDT = getPerfDataFile();
 
     if (!defined($PFDT)) {
-	writeLogFile("Could not find perf data file!");
+        writeLogFile("Could not find perf data file!");
     } 
     if ((defined($PFDT)) && (-r $PFDT || -r $PFDT.".bckp")) {
-	# Check backup perfdata file 
-	if (-r $PFDT.".bckp") {
-		$flag_bckp = 1;
-	    $PFDT = $PFDT.".bckp";
-	}
+        # Check backup perfdata file 
+        if (-r $PFDT.".bckp") {
+            $flag_bckp = 1;
+        }
 
-	# Move perfdata File befor reading		
-	if (movePerfDataFile($PFDT, $flag_bckp) && open(PFDT, "< $PFDT"."_read")) {
-	    # Get Properties
-	    $configOptions = getGeneralConfig();
+        # Move perfdata File befor reading		
+        if (movePerfDataFile($PFDT, $flag_bckp) && open(PFDT, "< $PFDT"."_read")) {
+            # Get Properties
+            $configOptions = getGeneralConfig();
 
-	    $flag_drop = 1;
-	    if ($configOptions->{'auto_drop'} == 1 && defined($configOptions->{'drop_file'})){
-		if (!open(DROP, ">> ".$configOptions->{'drop_file'})){
-		    $flag_drop = 0;
-		    writeLogFile("can't write in ".$configOptions->{'drop_file'}." : $!");
-		}
-	    } else {
-		$flag_drop = 0;
-	    }
-	    undef($data);
+            $flag_drop = 1;
+            if ($configOptions->{'auto_drop'} == 1 && defined($configOptions->{'drop_file'})){
+                if (!open(DROP, ">> ".$configOptions->{'drop_file'})){
+                    $flag_drop = 0;
+                    writeLogFile("can't write in ".$configOptions->{'drop_file'}." : $!");
+                }
+            } else {
+                $flag_drop = 0;
+            }
+            undef($data);
 
-	    # Read File
-	    while (<PFDT>) {
-		if (!m/^\#.*/ && !m/^\[.*/) {
-		    if ($stop == 0) {
-			# TODO
-			if (!open(DROP, ">> ".$PFDT.".bckp")){
-			    writeLogFile("Save reading data into ".$configOptions->{'drop_file'}." : $!");
-			} else {
-			    writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");	
-			}
-			print DROP $_."\n";
-		    } else {
-			if ($flag_drop == 1) {
-			    print DROP $_  ;
-			}
+            # Read File
+            while (<PFDT>) {
+                if (!m/^\#.*/ && !m/^\[.*/) {
+                    if ($stop == 0) {
+                        if ($flag_drop != 2) {
+                                if (open(DROP, ">> ".$PFDT.".bckp")){
+                                    writeLogFile("Save reading data into ".$PFDT.".bckp");
+                                    $flag_drop = 2;
+                                } else {
+                                    writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");
+                                }
+                        }
+                        print DROP $_;
+                    } else {
+                        if ($flag_drop == 1) {
+                            print DROP $_  ;
+                        }
 
-			$_ =~ s/\n//g;
-			@line_tab = prepardPerfdataParsed($_);
+                        $_ =~ s/\n//g;
+                        @line_tab = prepardPerfdataParsed($_);
 
-			if ($line_tab[0] !~ m/^[0-9]*$/g || $line_tab[0] > $now) {
-			    writeLogFile("Error Timestamp... Unknown format : " . $line_tab[0]);
-			} else {
-			    if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "" && $line_tab[0] < $now)) {
-				checkAndUpdate(@line_tab, $configOptions);
-				$counterData++;
-			    }
-			    undef($line_tab);
-			}
+                        if ($line_tab[0] !~ m/^[0-9]*$/g || $line_tab[0] > $now) {
+                            writeLogFile("Error Timestamp... Unknown format : " . $line_tab[0]);
+                        } else {
+                            if (defined($line_tab[5]) && ($line_tab[5] ne '' && $line_tab[5] ne "" && $line_tab[0] < $now)) {
+                                checkAndUpdate(@line_tab, $configOptions);
+                                $counterData++;
+                            }
+                            undef($line_tab);
+                        }
 
-			# flush buffer
-			if ($counterData >= 400) {
-				if ($dataBinInfo ne "") {
-				    my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
-				    if (!$sth1->execute()) {
-					writeLogFile("Error:" . $sth1->errstr . "");
-				    }
-				    undef($sth1);
-				    $dataBinInfo = "";
-				    $counterData = 0;
-				}
-				}
-		    }
-		}
-	    }
+                        # flush buffer
+                        if ($counterData >= 400) {
+                            if ($dataBinInfo ne "") {
+                                my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
+                                if (!$sth1->execute()) {
+                                    writeLogFile("Error:" . $sth1->errstr . "");
+                                }
+                                undef($sth1);
+                                $dataBinInfo = "";
+                                $counterData = 0;
+                            }
+                        }
+                    }
+                }
+            }
 
-	    # Close read file
-	    if (!close(PFDT)) {
-		writeLogFile("Cannot close filehandle PFDT : ".$!);
-	    }
+            # Close read file
+            if (!close(PFDT)) {
+                writeLogFile("Cannot close filehandle PFDT : ".$!);
+            }
 
-	    # Insert last Data
-	    if ($dataBinInfo ne "") {
-		my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
-		if (!$sth1->execute) {
-		    writeLogFile("Error:" . $sth1->errstr . "");
-		}
-		undef($sth1);
-		$dataBinInfo = "";
-	    }
+            # Insert last Data
+            if ($dataBinInfo ne "") {
+                my $sth1 = $con_ods->prepare("INSERT INTO `data_bin` (`id_metric`, `ctime`, `value`, `status`) VALUES $dataBinInfo");
+                if (!$sth1->execute) {
+                    writeLogFile("Error:" . $sth1->errstr . "");
+                }
+                undef($sth1);
+                $dataBinInfo = "";
+            }
 
-	    # Remove Read File
-	    if (-r $PFDT."_read" && !unlink($PFDT."_read")) {
-		writeLogFile("Error When removing service-perfdata file : ".$!);
-	    }
+            # Remove Read File
+            if (-r $PFDT."_read" && !unlink($PFDT."_read")) {
+                writeLogFile("Error When removing service-perfdata file : ".$!);
+            }
 
-	    # Flush buffer
-	    if ($flag_drop == 1) {
-		if (!close(DROP)) {
-		    writeLogFile("Cannot close filehandle DROP : ".$!);
-		}
-	    }	
-	    undef($line_tab);
-	    undef($flag_drop);
-	} else {
-	    writeLogFile("Error When writing data in tmp read file : ".$!);
-	}
+            # Flush buffer
+            if ($flag_drop > 0) {
+                if (!close(DROP)) {
+                    writeLogFile("Cannot close filehandle DROP : ".$!);
+                }
+            }	
+            undef($line_tab);
+            undef($flag_drop);
+        } else {
+            writeLogFile("Error When writing data in tmp read file : ".$!);
+        }
     }
     undef($dataBinInfo);
     undef($counterData);
