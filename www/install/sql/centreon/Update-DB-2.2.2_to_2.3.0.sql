@@ -339,7 +339,7 @@ ALTER TABLE `ods_view_details` ADD `rnd_color` VARCHAR(7) NULL DEFAULT NULL AFTE
 UPDATE `options` SET `value` = 'ndo' WHERE `key` = 'broker' AND `value` = 'Ndo';
 
 
-------------------------------------------------------------------
+-- ----------------------------------------------------------------
 -- 2.3-RC1
 
 ALTER TABLE nagios_server ADD COLUMN centreonbroker_module_path VARCHAR(255) DEFAULT NULL AFTER centreonbroker_cfg_path;
@@ -759,7 +759,7 @@ INSERT INTO `nagios_macro` (`macro_id`, `macro_name`) VALUES ( NULL, '$LONGSERVI
 
 ALTER TABLE `session` CHANGE `session_id` `session_id` VARCHAR( 256 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
--------------------------------------------------------------------------------
+-- -----------------------------------------------------------------------------
 -- 2.3-RC2
 
 --
