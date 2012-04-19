@@ -661,7 +661,8 @@ class CentreonGraph	{
 					$l_CMP = ",GT,";
 					if (isset($tm["ds_invert"]) && $tm["ds_invert"]) {
 						/* Switching RRD options lower-limit & upper-limit */
-						if ($this->onecurve)
+						if ($this->onecurve && isset($this->_RRDoptions["lower-limit"]) && $this->_RRDoptions["lower-limit"] && isset($this->_RRDoptions["uppe\
+r-limit"]) && $this->_RRDoptions["upper-limit"])
 							$this->switchRRDLimitOption($this->_RRDoptions["lower-limit"],$this->_RRDoptions["upper-limit"]);
 						$this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
 						if (isset($tm["warn"]) && $tm["warn"] != 0)
