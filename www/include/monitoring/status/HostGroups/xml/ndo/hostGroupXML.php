@@ -107,8 +107,12 @@
 		$rq1 = 	"SELECT hgo.name1 as alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
 				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
 						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
-						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
+						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id ";
+		if (isset($instance) && $instance > 0) {
+		    $rq1 .= " AND nhg.instance_id = " .$obj->DBNdo->escape($instance);
+		}
+		$rq1 .= ") ";
+    	$rq1 .= "INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
 						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
 				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 $searchStr" .
 		        "AND nhg.hostgroup_object_id = hgo.object_id " .
@@ -117,8 +121,12 @@
 		$rq1 = 	"SELECT hgo.name1 as alias, nhs.current_state, count(nhs.host_object_id) AS nb " .
 				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
 						"INNER JOIN ".$obj->ndoPrefix."objects noo ON (noo.object_id = nhgm.host_object_id) " .
-						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-						"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
+						"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id ";
+		if (isset($instance) && $instance > 0) {
+		    $rq1 .= " AND nhg.instance_id = " .$obj->DBNdo->escape($instance);
+		}
+		$rq1 .= ") ";
+		$rq1 .=	"INNER JOIN ".$obj->ndoPrefix."objects no ON (noo.name1 = no.name1) " .
 						"INNER JOIN ".$obj->ndoPrefix."hoststatus nhs ON (nhs.host_object_id = no.object_id) " .
 				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 1 " .
 					"AND noo.name1 IN (SELECT host_name FROM centreon_acl WHERE group_id IN (" . $groupStr . ")) " .
@@ -140,22 +148,30 @@
 	 */
 	if ($obj->is_admin) {
 			$rq2 = 	"SELECT hgo.name1 as alias, nss.current_state, count( nss.service_object_id ) AS nb " .
-			"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
+				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
 				"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
-				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-				"INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
-				"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
-			"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
-			"AND nhg.hostgroup_object_id = hgo.object_id " .
-			"GROUP BY hgo.name1, nss.current_state";
+				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id ";
+	        if (isset($instance) && $instance > 0) {
+		        $rq2 .= " AND nhg.instance_id = " .$obj->DBNdo->escape($instance);
+		    }
+		    $rq2 .= ") ";
+			$rq2 .= "INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
+					"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
+					"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2 $searchStr " .
+					"AND nhg.hostgroup_object_id = hgo.object_id " .
+					"GROUP BY hgo.name1, nss.current_state";
 	} else {
 		$hostStr = $obj->access->getHostsString("NAME", $obj->DBNdo);
 		$svcStr = $obj->access->getServicesString("NAME", $obj->DBNdo);
 		$rq2 = 	"SELECT hgo.name1 as alias, nss.current_state, count( nss.service_object_id ) AS nb " .
 				"FROM ".$obj->ndoPrefix."objects hgo, ".$obj->ndoPrefix."hostgroup_members nhgm " .
 				"INNER JOIN ".$obj->ndoPrefix."objects noo ON ( noo.object_id = nhgm.host_object_id ) " .
-				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id) " .
-				"INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
+				"INNER JOIN ".$obj->ndoPrefix."hostgroups nhg ON (nhgm.hostgroup_id = nhg.hostgroup_id ";
+	    if (isset($instance) && $instance > 0) {
+            $rq2 .= " AND nhg.instance_id = " .$obj->DBNdo->escape($instance);
+		}
+		$rq2 .= ") ";
+		$rq2 .= "INNER JOIN ".$obj->ndoPrefix."objects no ON ( noo.name1 = no.name1 ) " .
 				"INNER JOIN ".$obj->ndoPrefix."servicestatus nss ON ( nss.service_object_id = no.object_id ) " .
 				"WHERE nhg.alias != '%-hostgroup' AND no.objecttype_id = 2
 				AND no.name1 IN (".$hostStr.") AND no.name2 IN (".$svcStr. ") ". $searchStr .
