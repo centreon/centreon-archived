@@ -711,8 +711,12 @@ class CentreonACL
  		$flag = strtoupper($flag);
  		$string = "";
  		$i = 0;
- 		foreach ($this->accessGroups as $key => $value) {
- 			$query = "SELECT host_name, host_id FROM centreon_acl WHERE group_id = '".$key."' GROUP BY host_name, host_id";
+ 		$groupIds = array_keys($this->accessGroups);
+ 		if (count($groupIds)) {
+ 		    $query = "SELECT DISTINCT host_name, host_id
+ 		    		  FROM centreon_acl
+ 		    		  WHERE group_id IN (".implode(',', $groupIds).")
+ 		    		  GROUP BY host_name, host_id";
  			$DBRES = $pearDBndo->query($query);
  			while ($row = $DBRES->fetchRow()) {
  				if ($i) {
@@ -756,8 +760,11 @@ class CentreonACL
  		$flag = strtoupper($flag);
  		$string = "";
  		$i = 0;
- 		foreach ($this->accessGroups as $key => $value) {
- 			$query = "SELECT service_id, service_description FROM centreon_acl WHERE group_id = '".$key."'";
+ 		$groupIds = array_keys($this->accessGroups);
+ 		if (count($groupIds)) {
+ 		    $query = "SELECT DISTINCT service_id, service_description
+ 		    		  FROM centreon_acl
+ 		    		  WHERE group_id = (".$groupIds.")";
  			$DBRES = $pearDBndo->query($query);
  			while ($row = $DBRES->fetchRow()) {
  				if ($i) {
