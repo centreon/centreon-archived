@@ -332,18 +332,20 @@ function construct_HostGroupSelectList(id) {
 		}
 
 		if ($broker == 'broker') {
-		    foreach ($tabHG as $name => $id) {
-                ?>
-                var m = document.createElement('option');
-					m.value= "<?php echo $id; ?>";
-					_select.appendChild(m);
-					var n = document.createTextNode("<?php echo $name; ?>   ");
-					m.appendChild(n);
-					_select.appendChild(m);
-					select_index["<?php echo $id; ?>"] = i;
-					i++;
-				<?php
-            }
+			if (isset($tabHG)) {
+				foreach ($tabHG as $name => $id) {
+	                ?>
+	                var m = document.createElement('option');
+						m.value= "<?php echo $id; ?>";
+						_select.appendChild(m);
+						var n = document.createTextNode("<?php echo $name; ?>   ");
+						m.appendChild(n);
+						_select.appendChild(m);
+						select_index["<?php echo $id; ?>"] = i;
+						i++;
+					<?php
+	            }
+			}
 		}
 ?>
 		if (typeof(_default_hg) != "undefined") {
