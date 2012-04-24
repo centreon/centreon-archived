@@ -100,7 +100,7 @@
 	 */
 	if ($oreon->broker->getBroker() == "broker") {
 		if (!$is_admin) {
-			$rq2 = 	" SELECT count(services.state) count, services.state state" .
+			$rq2 = 	" SELECT count(DISTINCT services.state, services.host_id, services.service_id) count, services.state state" .
 					" FROM services, hosts, centreon_acl " .
 					" WHERE services.host_id = hosts.host_id ".
 					" AND hosts.name NOT LIKE '_Module_%' ".
@@ -111,7 +111,7 @@
 					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
 					" GROUP BY services.state ORDER by services.state";
 		} else {
-			$rq2 = 	" SELECT count(services.state) count, services.state state" .
+			$rq2 = 	" SELECT count(DISTINCT services.state, services.host_id, services.service_id) count, services.state state" .
 					" FROM services, hosts " .
 					" WHERE services.host_id = hosts.host_id ".
 					" AND hosts.name NOT LIKE '_Module_%' ".
@@ -122,7 +122,7 @@
 		$DBRESULT = $pearDBO->query($rq2);
 	} else {
 		if (!$is_admin) {
-			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state state" .
+			$rq2 = 	" SELECT count(DISTINCT nss.current_state, no.name1, no.name2) count, nss.current_state state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 NOT LIKE '_Module_%' ".
@@ -131,7 +131,7 @@
 					" AND centreon_acl.group_id IN (".$grouplistStr.") ".
 					" AND no.is_active = 1 GROUP BY nss.current_state ORDER BY nss.current_state";
 		} else {
-			$rq2 = 	" SELECT count(nss.current_state) count, nss.current_state state" .
+			$rq2 = 	" SELECT count(DISTINCT nss.current_state, no.name1, no.name2) count, nss.current_state state" .
 					" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 					" WHERE no.object_id = nss.service_object_id".
 					" AND no.name1 NOT LIKE '_Module_%' ".
