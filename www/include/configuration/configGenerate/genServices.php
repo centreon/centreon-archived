@@ -125,6 +125,7 @@
 	 * Create file
 	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
+    $instanceId = $tab['id'];
 
 	/*
 	 * Get Service List
@@ -318,18 +319,23 @@
 				 * Extended Informations
 				 */
 
-				if (isset($esiCache[$service["service_id"]])) {
+			    if (isset($esiCache[$service["service_id"]])) {
 					$esi = $esiCache[$service["service_id"]];
-					if (isset($esi["notes"]) && $esi["notes"])
-						$strTMP .= print_line("notes", $esi["notes"]);
-					if (isset($esi["notes_url"]) && $esi["notes_url"])
-						$strTMP .= print_line("notes_url", $esi["notes_url"]);
-					if (isset($esi["action_url"]) && $esi["action_url"])
-						$strTMP .= print_line("action_url", $esi["action_url"]);
-					if (isset($esi["icon_image"]) && $esi["icon_image"])
-						$strTMP .= print_line("icon_image", $esi["icon_image"]);
-					if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
-						$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);
+					if (isset($esi["notes"]) && $esi["notes"]) {
+						$strTMP .= print_line("notes", $svcMethod->replaceMacroInString($service['service_id'], $esi["notes"], null, $instanceId));
+					}
+					if (isset($esi["notes_url"]) && $esi["notes_url"]) {
+						$strTMP .= print_line("notes_url", $svcMethod->replaceMacroInString($service['service_id'], $esi["notes_url"], null, $instanceId));
+					}
+					if (isset($esi["action_url"]) && $esi["action_url"]) {
+						$strTMP .= print_line("action_url", $svcMethod->replaceMacroInString($service['service_id'], $esi["action_url"], null, $instanceId));
+					}
+					if (isset($esi["icon_image"]) && $esi["icon_image"]) {
+						$strTMP .= print_line("icon_image", $svcMethod->replaceMacroInString($service['service_id'], $esi["icon_image"], null, $instanceId));
+					}
+					if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"]) {
+						$strTMP .= print_line("icon_image_alt", $svcMethod->replaceMacroInString($service['service_id'], $esi["icon_image_alt"], null, $instanceId));
+					}
 				}
 
 				$strTMP .= "}\n\n";
@@ -621,18 +627,23 @@
 				 * Extended Informations
 				 */
 
-				if (isset($esiCache[$service["service_id"]])) {
+			    if (isset($esiCache[$service["service_id"]])) {
 					$esi = $esiCache[$service["service_id"]];
-					if (isset($esi["notes"]) && $esi["notes"])
-						$strTMP .= print_line("notes", $esi["notes"]);
-					if (isset($esi["notes_url"]) && $esi["notes_url"])
-						$strTMP .= print_line("notes_url", $esi["notes_url"]);
-					if (isset($esi["action_url"]) && $esi["action_url"])
-						$strTMP .= print_line("action_url", $esi["action_url"]);
-					if (isset($esi["icon_image"]) && $esi["icon_image"])
-						$strTMP .= print_line("icon_image", $esi["icon_image"]);
-					if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"])
-						$strTMP .= print_line("icon_image_alt", $esi["icon_image_alt"]);
+					if (isset($esi["notes"]) && $esi["notes"]) {
+						$strTMP .= print_line("notes", $svcMethod->replaceMacroInString($service['service_id'], $esi["notes"], null, $instanceId));
+					}
+					if (isset($esi["notes_url"]) && $esi["notes_url"]) {
+						$strTMP .= print_line("notes_url", $svcMethod->replaceMacroInString($service['service_id'], $esi["notes_url"], null, $instanceId));
+					}
+					if (isset($esi["action_url"]) && $esi["action_url"]) {
+						$strTMP .= print_line("action_url", $svcMethod->replaceMacroInString($service['service_id'], $esi["action_url"], null, $instanceId));
+					}
+					if (isset($esi["icon_image"]) && $esi["icon_image"]) {
+						$strTMP .= print_line("icon_image", $svcMethod->replaceMacroInString($service['service_id'], $esi["icon_image"], null, $instanceId));
+					}
+					if (isset($esi["icon_image_alt"]) && $esi["icon_image_alt"]) {
+						$strTMP .= print_line("icon_image_alt", $svcMethod->replaceMacroInString($service['service_id'], $esi["icon_image_alt"], null, $instanceId));
+					}
 				}
 
 				$strTMP .= "}\n\n";

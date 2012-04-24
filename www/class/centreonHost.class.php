@@ -42,6 +42,7 @@
  class CentreonHost
  {
  	protected $db;
+ 	protected $instanceObj;
 
  	/**
  	 * Constructor
@@ -52,6 +53,7 @@
  	function __construct($db)
  	{
  		$this->db = $db;
+ 		$this->instanceObj = new CentreonInstance($db);
  	}
 
  	/**
@@ -433,6 +435,16 @@
 			if (strpos($string, "\$HOSTALIAS$")) {
 	 			$string = str_replace("\$HOSTALIAS\$", $this->getHostAlias($host_id), $string);
 			}
+            if (preg_match("\$INSTANCENAME\$", $string)) {
+                $string = str_replace("\$INSTANCENAME\$",
+                                      $this->instanceObj->getParam($this->getHostPollerId($host_id), 'name'),
+                                      $string);
+            }
+            if (preg_match("\$INSTANCEADDRESS\$", $string)) {
+			    $string = str_replace("\$INSTANCEADDRESS\$",
+                                      $this->instanceObj->getParam($this->getHostPollerId($host_id), 'ns_ip_address'),
+                                      $string);
+            }
         }
         unset($row);
 

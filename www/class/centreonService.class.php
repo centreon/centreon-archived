@@ -42,6 +42,7 @@
  class CentreonService
  {
  	protected $db;
+    protected $instanceObj;
 
  	/**
  	 *  Constructor
@@ -51,6 +52,7 @@
  	public function __construct($db)
  	{
  		$this->db = $db;
+ 		$this->instanceObj = new CentreonInstance($db);
  	}
 
  	/**
@@ -199,9 +201,10 @@
  	 *  @param int $svc_id
  	 *  @param string $string
  	 *  @param int $antiLoop
+ 	 *  @param int $instanceId
  	 *  @return string
  	 */
- 	public function replaceMacroInString($svc_id, $string, $antiLoop = null)
+ 	public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId)
  	{
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
         $DBRES = $this->db->query($rq);
@@ -216,6 +219,16 @@
 	 		if (preg_match('/\$SERVICEDESC\$/', $string)) {
 	 			$string = str_replace("\$SERVICEDESC\$", $this->getServiceDesc($svc_id), $string);
 	 		}
+            if (!is_null($instanceId) && preg_match("\$INSTANCENAME\$", $string)) {
+                $string = str_replace("\$INSTANCENAME\$",
+                                      $this->instanceObj->getParam($instanceId, 'name'),
+                                      $string);
+            }
+            if (!is_null($instanceId) && preg_match("\$INSTANCEADDRESS\$", $string)) {
+			    $string = str_replace("\$INSTANCEADDRESS\$",
+                                      $this->instanceObj->getParam($instanceId, 'ns_ip_address'),
+                                      $string);
+            }
         }
  		$matches = array();
  		$pattern = '|(\$_SERVICE[0-9a-zA-Z\_\-]+\$)|';
