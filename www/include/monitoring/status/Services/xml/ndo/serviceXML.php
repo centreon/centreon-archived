@@ -59,6 +59,33 @@
 		exit();
 	}
 
+	$ar_host_cache = array();
+	$ar_service_cache = array();
+
+	function get_service_config_type($object_id, $attribute_name) {
+		global $ar_service_cache;
+
+		if (isset($ar_service_cache[$object_id . ":0"])) {
+			return $ar_service_cache[$object_id . ":0"][$attribute_name];
+		}
+		if (isset($ar_service_cache[$object_id . ":1"])) {
+			return $ar_service_cache[$object_id . ":1"][$attribute_name];
+		}
+		return null;
+	}
+
+	function get_host_config_type($object_id, $attribute_name) {
+		global $ar_host_cache;
+
+		if (isset($ar_host_cache[$object_id . ":1"])) {
+			return $ar_host_cache[$object_id . ":1"][$attribute_name];
+		}
+		if (isset($ar_host_cache[$object_id . ":0"])) {
+			return $ar_host_cache[$object_id . ":0"][$attribute_name];
+		}
+		return null;
+	}
+
 	/*
 	 * Set Default Poller
 	 */
@@ -88,9 +115,10 @@
 	 */
 	$obj->setInstanceHistory($instance);
 
-	$selected = "no_s.name1 as host_name, nagios_instances.instance_name as instance_name, no_h.object_id as host_object_id, nhs.scheduled_downtime_depth as host_scheduled_downtime_depth, nhs.current_state as host_current_state, nh.notes_url as host_notes_url, nh.address as host_address, nh.action_url as host_action_url, nh.notes as host_notes, nh.icon_image as host_icon_image, nh.alias as host_alias, nhs.problem_has_been_acknowledged as host_problem_has_been_acknowledged, nhs.passive_checks_enabled as host_passive_checks_enabled, nhs.active_checks_enabled as host_active_checks_enabled";
-	$selected .= ", no_s.name2 as service_description, no_s.object_id as service_object_id, ns.notes as service_notes, ns.notes_url as service_notes_url, ns.action_url as service_action_url, ns.max_check_attempts as service_max_check_attempts, ns.icon_image as service_icon_image, ns.display_name as service_display_name, nss.process_performance_data as service_process_performance_data, nss.current_state as service_current_state, nss.output as service_output, nss.state_type as service_state_type, nss.current_check_attempt as service_current_check_attempt, nss.status_update_time as service_status_update_time, unix_timestamp(nss.last_state_change) as service_last_state_change, unix_timestamp(nss.last_hard_state_change) as service_last_hard_state_change, unix_timestamp(nss.last_check) as service_last_check, unix_timestamp(nss.next_check) as service_next_check, nss.notifications_enabled as service_notifications_enabled, nss.problem_has_been_acknowledged as service_problem_has_been_acknowledged, nss.passive_checks_enabled as service_passive_checks_enabled, nss.active_checks_enabled as service_active_checks_enabled, nss.event_handler_enabled as service_event_handler_enabled, nss.is_flapping as service_is_flapping, nss.scheduled_downtime_depth as service_scheduled_downtime_depth, nss.flap_detection_enabled as service_flap_detection_enabled";
-	$from = $obj->ndoPrefix . "objects as no_h, " . $obj->ndoPrefix . "objects as no_s, " . $obj->ndoPrefix . "hoststatus as nhs, " . $obj->ndoPrefix . "hosts as nh, " . $obj->ndoPrefix . "servicestatus as nss, " . $obj->ndoPrefix . "services as ns, " . $obj->ndoPrefix . "instances";
+        
+	$selected = "no_s.name1 as host_name, nagios_instances.instance_name as instance_name, no_h.object_id as host_object_id, nhs.scheduled_downtime_depth as host_scheduled_downtime_depth, nhs.current_state as host_current_state, nhs.problem_has_been_acknowledged as host_problem_has_been_acknowledged, nhs.passive_checks_enabled as host_passive_checks_enabled, nhs.active_checks_enabled as host_active_checks_enabled";
+	$selected .= ", no_s.name2 as service_description, no_s.object_id as service_object_id, nss.process_performance_data as service_process_performance_data, nss.current_state as service_current_state, nss.output as service_output, nss.state_type as service_state_type, nss.current_check_attempt as service_current_check_attempt, nss.status_update_time as service_status_update_time, unix_timestamp(nss.last_state_change) as service_last_state_change, unix_timestamp(nss.last_hard_state_change) as service_last_hard_state_change, unix_timestamp(nss.last_check) as service_last_check, unix_timestamp(nss.next_check) as service_next_check, nss.notifications_enabled as service_notifications_enabled, nss.problem_has_been_acknowledged as service_problem_has_been_acknowledged, nss.passive_checks_enabled as service_passive_checks_enabled, nss.active_checks_enabled as service_active_checks_enabled, nss.event_handler_enabled as service_event_handler_enabled, nss.is_flapping as service_is_flapping, nss.scheduled_downtime_depth as service_scheduled_downtime_depth, nss.flap_detection_enabled as service_flap_detection_enabled";
+	$from = $obj->ndoPrefix . "objects as no_h, " . $obj->ndoPrefix . "objects as no_s, " . $obj->ndoPrefix . "hoststatus as nhs, " . $obj->ndoPrefix . "servicestatus as nss, " . $obj->ndoPrefix . "instances";
 
     /* Il faut gerer les hostsgroup */
 	$where_hg = "";
@@ -182,7 +210,7 @@
 
 	/************************/
 
-	$where = " no_h.object_id = nhs.host_object_id AND no_h.objecttype_id = 1 AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "nh.host_object_id = no_h.object_id AND ns.host_object_id = no_h.object_id AND ns.service_object_id = no_s.object_id AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
+	$where = " no_h.objecttype_id = 1 AND no_h.object_id = nhs.host_object_id AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "no_h.name1 = no_s.name1 AND no_h.instance_id = no_s.instance_id AND no_s.objecttype_id = 2 AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
 
 	/* LIMIT, ORDER */
 
@@ -205,14 +233,43 @@
 
 	/**************************/
 
-	$finalRequest = "SELECT DISTINCT " . $selected . " FROM " . $from . " WHERE " . $where . $rq_sorte . $rq_limit;
-	$finalRequestCount = "SELECT COUNT(DISTINCT no_s.name1, nagios_instances.instance_name, no_s.name2) as total FROM " . $from . " WHERE " . $where;
+	$finalRequest = "SELECT " . $selected . " FROM " . $from . " WHERE " . $where . $rq_sorte . $rq_limit;
+	$finalRequestCount = "SELECT COUNT(*) as total FROM " . $from . " WHERE " . $where;
 
-	$DBRESULT2 = $obj->DBNdo->query($finalRequestCount);
-	$data = $DBRESULT2->fetchRow();
+	$DBRESULT = $obj->DBNdo->query($finalRequestCount);
+	$data = $DBRESULT->fetchRow();
 	$numRows = $data['total'];
+	$DBRESULT->free();
 
-	$DBRESULT = $obj->DBNdo->query($finalRequest);
+	#$DBRESULT = $obj->DBNdo->query($finalRequest);
+	$all_ndo = $obj->DBNdo->getAll($finalRequest);
+
+	$ar_host_object_id = array();
+	$ar_service_object_id = array();
+	foreach ($all_ndo as $ndo) {
+		$ar_host_object_id[$ndo['host_object_id']] = 1;
+		$ar_service_object_id[$ndo['service_object_id']] = 1;
+	}
+
+	/* to get from nagios_hosts */
+	/*  nh.notes_url as host_notes_url, nh.address as host_address, nh.action_url as host_action_url, nh.notes as host_notes, nh.icon_image as host_icon_image, nh.alias as host_alias */
+	if (count($ar_host_object_id)) {
+		$DBRESULT = $obj->DBNdo->query("SELECT nh.host_object_id as host_object_id, nh.notes_url as host_notes_url, nh.address as host_address, nh.action_url as host_action_url, nh.notes as host_notes, nh.icon_image as host_icon_image, nh.alias as host_alias, nh.config_type as config_type FROM " . $obj->ndoPrefix . "hosts as nh WHERE nh.host_object_id IN (" . implode(",", array_keys($ar_host_object_id)) . ")");
+		while ($host = $DBRESULT->fetchRow()) {
+			$ar_host_cache[$host['host_object_id'] . ":" . $host['config_type']] = $host;
+		}
+		$DBRESULT->free();
+	}
+
+	/* to get from nagios_services */
+        /*  ns.notes as service_notes, ns.notes_url as service_notes_url, ns.action_url as service_action_url, ns.max_check_attempts as service_max_check_attempts, ns.icon_image as service_icon_image, ns.display_name as service_display_name */
+	if (count($ar_service_object_id)) {
+		$DBRESULT = $obj->DBNdo->query("SELECT ns.service_object_id as service_object_id, ns.notes as service_notes, ns.notes_url as service_notes_url, ns.action_url as service_action_url, ns.max_check_attempts as service_max_check_attempts, ns.icon_image as service_icon_image, ns.display_name as service_display_name FROM " . $obj->ndoPrefix . "services as ns WHERE ns.service_object_id IN (" . implode(",", array_keys($ar_service_object_id)) . ")");
+		while ($service = $DBRESULT->fetchRow()) {
+			$ar_service_cache[$service['service_object_id'] . ":" . $service['config_type']] = $host;
+		}
+		$DBRESULT->free();
+	}
 
 	/* ***************************************************
 	 * Create Buffer
@@ -242,7 +299,7 @@
 	$host_prev = "";
 	$ct = 0;
 	$flag = 0;
-	while ($ndo = $DBRESULT->fetchRow()) {
+	foreach ($all_ndo as $ndo) {
 		$passive = 0;
 		$active = 1;
 		$last_check = " ";
@@ -300,9 +357,9 @@
 			$obj->XML->endElement();
 
 			$hostNotesUrl = "none";
-			if ($ndo["host_notes_url"]) {
-				$hostNotesUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["host_notes_url"]);
-				$hostNotesUrl = str_replace("\$HOSTADDRESS\$", $ndo["host_address"], $hostNotesUrl);
+			if (get_host_config_type($ndo['host_object_id'], "host_notes_url")) {
+				$hostNotesUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], get_host_config_type($ndo['host_object_id'], "host_notes_url"));
+				$hostNotesUrl = str_replace("\$HOSTADDRESS\$", get_host_config_type($ndo['host_object_id'], "host_address"), $hostNotesUrl);
 				$hostNotesUrl = str_replace("\$INSTANCENAME\$", $ndo["instance_name"], $hostNotesUrl);
 				$hostNotesUrl = str_replace("\$INSTANCEADDRESS\$",
 											 $instanceObj->getParam($ndo["instance_name"], "ns_ip_address"),
@@ -311,9 +368,9 @@
 			$obj->XML->writeElement("hnu", $hostNotesUrl);
 
 			$hostActionUrl = "none";
-			if ($ndo["host_action_url"]) {
-				$hostActionUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["host_action_url"]);
-				$hostActionUrl = str_replace("\$HOSTADDRESS\$", $ndo["host_address"], $hostActionUrl);
+			if (get_host_config_type($ndo['host_object_id'], "host_action_url")) {
+				$hostActionUrl = str_replace("\$HOSTNAME\$", $ndo["host_name"], get_host_config_type($ndo['host_object_id'], "host_action_url"));
+				$hostActionUrl = str_replace("\$HOSTADDRESS\$", get_host_config_type($ndo['host_object_id'], "host_address"), $hostActionUrl);
 				$hostActionUrl = str_replace("\$INSTANCENAME\$", $ndo["instance_name"], $hostActionUrl);
 				$hostActionUrl = str_replace("\$INSTANCEADDRESS\$",
 											 $instanceObj->getParam($ndo["instance_name"], "ns_ip_address"),
@@ -321,9 +378,9 @@
 			}
 			$obj->XML->writeElement("hau", $hostActionUrl);
 
-			$obj->XML->writeElement("hnn", $ndo["host_notes"]);
-			$obj->XML->writeElement("hico", $ndo["host_icon_image"]);
-			$obj->XML->writeElement("hip", $ndo["host_address"]);
+			$obj->XML->writeElement("hnn", get_host_config_type($ndo['host_object_id'], "host_notes"));
+			$obj->XML->writeElement("hico", get_host_config_type($ndo['host_object_id'], "host_icon_image"));
+			$obj->XML->writeElement("hip", get_host_config_type($ndo['host_object_id'], "host_address"));
 			$obj->XML->writeElement("hdtm", $ndo["host_scheduled_downtime_depth"]);
 			$obj->XML->writeElement("hdtmXml", "./include/monitoring/downtime/xml/ndo/makeXMLForDowntime.php?sid=".$obj->session_id."&hid=".$ndo["host_object_id"]);
 			$obj->XML->writeElement("hdtmXsl", "./include/monitoring/downtime/xsl/popupForDowntime.xsl");
@@ -338,18 +395,18 @@
 		/*
 		 * Add possibility to use display name
 		 */
-		if (isset($ndo["service_display_name"]) && $ndo["service_display_name"]) {
-			$obj->XML->writeElement("sd", $ndo["service_display_name"], false);
+		if (get_service_config_type($ndo['service_object_id'], "service_display_name")) {
+			$obj->XML->writeElement("sd", get_service_config_type($ndo['service_object_id'], "service_display_name"), false);
 		} else {
 			$obj->XML->writeElement("sd", $ndo["service_description"], false);
 		}
-		$obj->XML->writeElement("sico", $ndo["service_icon_image"]);
+		$obj->XML->writeElement("sico", get_service_config_type($ndo['service_object_id'], "service_icon_image"));
 		$obj->XML->writeElement("sdl", 	urlencode($ndo["service_description"]));
 		$obj->XML->writeElement("svc_id", $ndo["service_object_id"]);
 		$obj->XML->writeElement("sc", 	$obj->colorService[$ndo["service_current_state"]]);
 		$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["service_current_state"]]), false);
 		$obj->XML->writeElement("po", 	$ndo["service_output"]);
-		$obj->XML->writeElement("ca", 	$ndo["service_current_check_attempt"]."/".$ndo["service_max_check_attempts"]." (".$obj->stateType[$ndo["service_state_type"]].")");
+		$obj->XML->writeElement("ca", 	$ndo["service_current_check_attempt"]."/".get_service_config_type($ndo['service_object_id'], "service_max_check_attempts")." (".$obj->stateType[$ndo["service_state_type"]].")");
 		$obj->XML->writeElement("ne", 	$ndo["service_notifications_enabled"]);
 		$obj->XML->writeElement("pa", 	$ndo["service_problem_has_been_acknowledged"]);
 		$obj->XML->writeElement("pc", 	$ndo["service_passive_checks_enabled"]);
@@ -362,57 +419,60 @@
 		$obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/ndo/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$ndo["host_object_id"]."&svc_id=".$ndo["service_object_id"]);
 		$obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
-		if ($ndo["service_notes_url"] != "") {
-			$ndo["service_notes_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["service_notes_url"]);
-			$ndo["service_notes_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["service_notes_url"]);
-			if (isset($ndo['host_alias']) && $ndo['host_alias']) {
-				$ndo["service_notes_url"] = str_replace("\$HOSTALIAS\$", $ndo['host_alias'], $ndo["service_notes_url"]);
+		if (get_service_config_type($ndo['service_object_id'], "service_notes_url") != "") {
+			$service_notes_url = get_service_config_type($ndo['service_object_id'], "service_notes_url");
+			$service_notes_url = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $service_notes_url);
+			$service_notes_url = str_replace("\$HOSTNAME\$", $ndo["host_name"], $service_notes_url);
+			if (get_host_config_type($ndo['host_object_id'], "host_alias")) {
+				$service_notes_url = str_replace("\$HOSTALIAS\$", get_host_config_type($ndo['host_object_id'], "host_alias"), $service_notes_url);
 			}
-			if (isset($ndo['host_address']) && $ndo['host_address']) {
-				$ndo["service_notes_url"] = str_replace("\$HOSTADDRESS\$", $ndo['host_address'], $ndo["service_notes_url"]);
+			if (get_host_config_type($ndo['host_object_id'], "host_address")) {
+				$service_notes_url = str_replace("\$HOSTADDRESS\$", get_host_config_type($ndo['host_object_id'], "host_address"), $service_notes_url);
 			}
 			if (isset($ndo['instance_name']) && $ndo['instance_name']) {
-				$ndo["service_notes_url"] = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $ndo["service_notes_url"]);
-				$ndo["service_notes_url"] = str_replace("\$INSTANCEADDRESS\$",
+				$service_notes_url = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $service_notes_url);
+				$service_notes_url = str_replace("\$INSTANCEADDRESS\$",
 												$instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'),
-												$ndo["service_notes_url"]);
+												$service_notes_url);
 			}
-			$obj->XML->writeElement("snu", $ndo["service_notes_url"]);
+			$obj->XML->writeElement("snu", $service_notes_url);
 		} else {
 			$obj->XML->writeElement("snu", 'none');
 		}
 
-		if ($ndo["service_action_url"] != "") {
-			$ndo["service_action_url"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["service_action_url"]);
-			$ndo["service_action_url"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["service_action_url"]);
-			if (isset($ndo['host_alias']) && $ndo['host_alias']) {
-				$ndo["service_action_url"] = str_replace("\$HOSTALIAS\$", $ndo['host_alias'], $ndo["service_action_url"]);
+		if (get_service_config_type($ndo['service_object_id'], "service_action_url") != "") {
+			$service_action_url = get_service_config_type($ndo['service_object_id'], "service_action_url");
+			$service_action_url = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $service_action_url);
+			$service_action_url = str_replace("\$HOSTNAME\$", $ndo["host_name"], $service_action_url);
+			if (get_host_config_type($ndo['host_object_id'], "host_alias")) {
+				$service_action_url = str_replace("\$HOSTALIAS\$", get_host_config_type($ndo['host_object_id'], "host_alias"), $service_action_url);
 			}
-			if (isset($ndo['host_address']) && $ndo['host_address']) {
-				$ndo["service_action_url"] = str_replace("\$HOSTADDRESS\$", $ndo['host_address'], $ndo["service_action_url"]);
+			if (get_host_config_type($ndo['host_object_id'], "host_address")) {
+				$service_action_url = str_replace("\$HOSTADDRESS\$", get_host_config_type($ndo['host_object_id'], "host_address"), $service_action_url);
 			}
 			if (isset($ndo['instance_name']) && $ndo['instance_name']) {
-				$ndo["service_action_url"] = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $ndo["service_action_url"]);
-				$ndo["service_action_url"] = str_replace("\$INSTANCEADDRESS\$",
+				$service_action_url = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $service_action_url);
+				$service_action_url = str_replace("\$INSTANCEADDRESS\$",
 												 $instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'),
-												 $ndo["service_action_url"]);
+												 $service_action_url);
 			}
-			$obj->XML->writeElement("sau", $ndo["service_action_url"]);
+			$obj->XML->writeElement("sau", $service_action_url);
 		} else {
 			$obj->XML->writeElement("sau", 'none');
 		}
 
 
-		if ($ndo["service_notes"] != "") {
-			$ndo["service_notes"] = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $ndo["service_notes"]);
-			$ndo["service_notes"] = str_replace("\$HOSTNAME\$", $ndo["host_name"], $ndo["service_notes"]);
-			if (isset($ndo['host_alias']) && $ndo['host_alias']) {
-				$ndo["service_notes"] = str_replace("\$HOSTALIAS\$", $ndo['host_alias'], $ndo["service_notes"]);
+		if (get_service_config_type($ndo['service_object_id'], "service_notes") != "") {
+			$service_notes = get_service_config_type($ndo['service_object_id'], "service_notes");
+			$service_notes = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $service_notes);
+			$service_notes = str_replace("\$HOSTNAME\$", $ndo["host_name"], $service_notes);
+			if (get_host_config_type($ndo['host_object_id'], "host_alias")) {
+				$service_notes = str_replace("\$HOSTALIAS\$", get_host_config_type($ndo['host_object_id'], "host_alias"), $service_notes);
 			}
-			if (isset($ndo['host_address']) && $ndo['host_address']) {
-				$ndo["service_notes"] = str_replace("\$HOSTADDRESS\$", $ndo['host_address'], $ndo["service_notes"]);
+			if (get_host_config_type($ndo['host_object_id'], "host_address")) {
+				$service_notes = str_replace("\$HOSTADDRESS\$", get_host_config_type($ndo['host_object_id'], "host_address"), $service_notes);
 			}
-			$obj->XML->writeElement("sn", $ndo["service_notes"]);
+			$obj->XML->writeElement("sn", $service_notes);
 		} else {
 			$obj->XML->writeElement("sn", 'none');
 		}
@@ -432,8 +492,6 @@
 		$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $obj->DBC));
 		$obj->XML->endElement();
 	}
-	$DBRESULT->free();
-	unset($ndo);
 
 	if (!$ct) {
 		$obj->XML->writeElement("infos", "none");

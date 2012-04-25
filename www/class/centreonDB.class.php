@@ -294,6 +294,32 @@ class CentreonDB
     	}
     	return $DBRES;
     }
+    
+    /**
+     * launch a getAll
+     *
+     * @access public
+	 * @param	string	$query_string	query
+	 * @return	object	getAll result
+     */
+	public function getAll($query_string = null, $placeHolders = array())
+	{
+		$this->requestExecuted++;
+		if (count($placeHolders)) {
+            $DBRES = $this->db->getAll($query_string, $placeHolders);
+		} else {
+    	    $DBRES = $this->db->getAll($query_string);
+		}
+    	if (PEAR::isError($DBRES)) {
+    		if ($this->debug) {
+				$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+    		}
+    	} else {
+			$this->requestSuccessful++;
+    	}
+    	return $DBRES;
+    }
+    
 
     /**
      * Check NDO user grants
