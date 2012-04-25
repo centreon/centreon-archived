@@ -677,13 +677,17 @@
 			return rtrim($elem, "/")."/";
 	}
 
+	$form->registerRule('exist', 'callback', 'testExistence');
+
 	$form->applyFilter('cfg_dir', 'slash');
 	$form->applyFilter('log_archive_path', 'slash');
 	$form->applyFilter('__ALL__', 'myTrim');
+
 	$form->addRule('nagios_name', _("Compulsory Name"), 'required');
 	$form->addRule('nagios_comment', _("Required Field"), 'required');
-	$form->registerRule('exist', 'callback', 'testExistence');
+	$form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
+
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;"._("Required fields"));
 
 	/*
