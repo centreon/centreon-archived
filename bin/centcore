@@ -523,6 +523,7 @@ sub sendConfigFile($){
     # Init Values
     my $id = $_[0];
     my $port = 22;
+    my $debug = 0;
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = getServerConfig($id);
@@ -563,20 +564,29 @@ sub sendConfigFile($){
         undef($dh);
 
         if ($count > 2) {
-        
-		    writeLogFile("Start: Send Centreon Broker config files on poller $id");
+		    writeLogFile("Start: Send Centreon Broker config files on poller $id") if ($debug);
 		
-		    $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
-		    $origin = $installedPath."/filesGeneration/broker/".$id."/*.xml";
-		    $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
-		    my $cmd = "$scp -P $port $origin $dest 2>&1";
-		    my $stdout = `$cmd`;
-		    if (defined($stdout) && $stdout) {
-                  writeLogFile("Result : $stdout\n");
+		    if ($server_info->{'localhost'} == 0) {
+                $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
+                $origin = $installedPath."/filesGeneration/broker/".$id."/*.xml";
+                $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+                my $cmd = "$scp -P $port $origin $dest 2>&1";
+                my $stdout = `$cmd`;
+                if (defined($stdout) && $stdout) {
+                    writeLogFile("Result : $stdout\n");
+                }
+                undef($stdout);
+                undef($cmd);
+            } else {
+                my $cmd = "cp $origin $cfg_dir 2>&1";
+                my $stdout = `$cmd`;
+                if (defined($stdout) && $stdout) {
+                    writeLogFile("Result : $stdout\n");
+                }
+                undef($stdout);
+                undef($cmd);
             }
-            undef($stdout);
-		    undef($cmd);
-		    writeLogFile("End: Send Centreon Broker config files on poller $id");
+			writeLogFile("End: Send Centreon Broker config files on poller $id") if ($debug);
 		}
     }
 	
