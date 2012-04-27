@@ -764,7 +764,7 @@ class CentreonACL
  		if (count($groupIds)) {
  		    $query = "SELECT DISTINCT service_id, service_description
  		    		  FROM centreon_acl
- 		    		  WHERE group_id = (".implode(',', $groupIds).")";
+ 		    		  WHERE group_id IN (".implode(',', $groupIds).")";
  			$DBRES = $pearDBndo->query($query);
  			while ($row = $DBRES->fetchRow()) {
  				if ($i) {
