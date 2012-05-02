@@ -187,7 +187,7 @@ sub getPerfDataFile() {
 # Move perfdata file to tmp file 
 ########################################
 
-sub movePerfDataFile($){
+sub movePerfDataFile($$){
     my $PERFDATA = $_[0];
     my $flag_bckp = $_[1];
     my $PERFDATA_src = $PERFDATA;
