@@ -340,6 +340,10 @@
 						while($Hg = $DBRESULT->fetchRow()){
 							$DBRESULT1 = $pearDB->query("INSERT INTO hostgroup_relation VALUES ('', '".$Hg["hostgroup_hg_id"]."', '".$maxId["MAX(host_id)"]."')");
 						}
+
+						/*
+						 * Host Extended Informations
+						 */
 						$DBRESULT = $pearDB->query("SELECT * FROM extended_host_information WHERE host_host_id = '".$key."'");
 						while($ehi = $DBRESULT->fetchRow())	{
 							$val = null;
@@ -395,6 +399,13 @@
 					 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							$fields["_".strtoupper($macName)."_"] = $macVal;
 						}
+
+						/*
+						 * Host Categorie Duplication
+						 */
+                        $request = "INSERT INTO hostcategories_relation SELECT NULL, hostcategories_hc_id, '".$maxId["MAX(host_id)"]."' FROM hostcategories_relation WHERE host_host_id = '".$key."'";
+                        $DBRESULT3 = $pearDB->query($request);
+
 						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
 					}
 				}
