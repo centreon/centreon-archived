@@ -268,6 +268,23 @@ class CentreonGraph	{
 	    $newDsName = preg_replace("/[^a-zA-Z0-9-_]/", "-", $newDsName);
         return $newDsName;
 	}
+	
+	/**
+	* Clean up ds name in Legend
+	*
+	* @param string $dsname
+	* @param bool $reverse set to true if we want to retrieve the original string to display
+	* @return string
+	*/
+	protected function cleanupDsNameForLegend($dsname, $reverse = false)
+	{
+		if ($reverse === true) {
+			$newDsName = str_replace(array("slash_", "bslash_", "pct_"), array("/","\\", "%"), $dsname);
+		} else {
+			$newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
+		}
+		return $newDsName;
+	}
 
 	/**
 	 * Get Maximum Size of metric from index_id
@@ -512,6 +529,7 @@ class CentreonGraph	{
 				}
 				$this->metrics[$metric["metric_id"]]["metric_id"] = $metric["metric_id"];
 				$this->metrics[$metric["metric_id"]]["metric"] = $this->cleanupDsName($metric["metric_name"]);
+				$this->metrics[$metric["metric_id"]]["metric_legend"] = $this->cleanupDsNameForLegend($metric["metric_name"]);
 				$this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 
 				if (!isset($metric["need"]) || $metric["need"] != 1) {
@@ -762,7 +780,12 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 			}
 
 			if (!$this->checkcurve) {
-				$arg .= $tm["legend"];
+				if (isset($tm["legend"])) {
+					$arg .= $tm["legend"];
+				} else {
+					$arg .= $tm["metric_legend"];
+				}
+				
 				for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
 					$arg .= " ";
 				}
