@@ -60,9 +60,11 @@ function transformForm()
 
     nbOfInitialRows = '<?php echo $nbOfInitialRows; ?>';
 
+    var params = '?sid=' + sid;
+
 	if (o == 'w') {
     	proc = new Transformation();
-    	addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php';
+    	addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
     	addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
     	proc.setXml(addrXML);
     	proc.setXslt(addrXSL);
@@ -70,14 +72,14 @@ function transformForm()
         o = 0;
 	} else if (o == 'ldap') {
     	proc = new Transformation();
-    	addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php';
+    	addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
     	addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
     	proc.setXml(addrXML);
     	proc.setXslt(addrXSL);
     	proc.transform("dynamicDiv");
         o = 0;
     } else {
-    	params = '?id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
+    	params = params + '&id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
         proc = new Transformation();
     	addrXML = './include/options/oreon/generalOpt/ldap/xml/additionalRowXml.php' + params;
     	addrXSL = './include/options/oreon/generalOpt/ldap/xsl/additionalRow.xsl';

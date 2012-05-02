@@ -41,11 +41,34 @@
 
 	require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
+	require_once $centreon_path . "/www/class/centreonLang.class.php";
+    require_once $centreon_path . "/www/include/common/common-Func.php";
+
+	/*
+	 * Validate the session
+	 */
+	session_start();
+    $centreon = $_SESSION['centreon'];
+
+    $db = new CentreonDB();
+    $pearDB = $db;
+
+    $centreonlang = new CentreonLang($centreon_path, $centreon);
+    $centreonlang->bindLang();
+
+    if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+        $sid = $_GET["sid"];
+        $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
+        if (!$session = $res->fetchRow()) {
+            get_error('bad session id');
+        }
+    } else {
+        get_error('need session id !');
+    }
 
     /*
 	 * start init db
 	 */
-	$db = new CentreonDB();
 	$xml = new CentreonXML();
 
 	$xml->startElement('root');
@@ -403,5 +426,8 @@
 	$xml->endElement(); /* End root */
 
 	header('Content-Type: text/xml');
+    header('Pragma: no-cache');
+    header('Expires: 0');
+    header('Cache-Control: no-cache, must-revalidate');
 	$xml->output();
 ?>
