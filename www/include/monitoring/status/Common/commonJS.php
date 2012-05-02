@@ -201,10 +201,10 @@ function construct_selecteList_ndo_instance(id){
      */
     if ($broker == "broker") {
     	if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, name FROM `instances`";
+	        $instanceQuery = "SELECT instance_id, name FROM `instances` ORDER BY name";
 		} else {
 		    $instanceQuery = "SELECT instance_id, name  ".
-		    				 "FROM `instances` WHERE name IN (". $oreon->user->access->getPollerString('NAME') .")";
+		    				 "FROM `instances` WHERE name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY name";
 		}
 		$DBRESULT = $pearDBO->query($instanceQuery);
    		 while ($nagios_server = $DBRESULT->fetchRow())	{   ?>
@@ -223,10 +223,10 @@ function construct_selecteList_ndo_instance(id){
 		<?php
     } else {
 		if ($oreon->user->admin || !count($pollerArray)) {
-	        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances`";
+	        $instanceQuery = "SELECT instance_id, instance_name FROM `".getNDOPrefix()."instances` ORDER BY instance_name";
 		} else {
 		    $instanceQuery = "SELECT instance_id, instance_name  ".
-		    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .")";
+		    				 "FROM `".getNDOPrefix()."instances` WHERE instance_name IN (". $oreon->user->access->getPollerString('NAME') .") ORDER BY instance_name";
 		}
 		$DBRESULT = $pearDBndo->query($instanceQuery);
 		while ($nagios_server = $DBRESULT->fetchRow())	{
