@@ -155,7 +155,7 @@
 	 * ACL activation
 	 */
 	if (!$obj->is_admin) {
-		$request .= " AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND AND group_id IN (".$obj->grouplistStr.") ";
+		$request .= " AND h.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (".$obj->grouplistStr.") ";
 	}
 
 	(isset($tabOrder[$sort_type])) ? $request .= $tabOrder[$sort_type] : $request .= $tabOrder["default"];
