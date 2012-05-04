@@ -278,12 +278,8 @@ class CentreonGraph	{
 	*/
 	protected function cleanupDsNameForLegend($dsname, $reverse = false)
 	{
-		if ($reverse === true) {
-			$newDsName = str_replace(array("slash_", "bslash_", "pct_"), array("/","\\", "%"), $dsname);
-		} else {
-			$newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
-		}
-		return $newDsName;
+	    $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#"), array("/","\\", "%", "\:", "\#"), $dsname);   
+        return $newDsName;
 	}
 
 	/**
