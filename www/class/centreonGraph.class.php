@@ -776,10 +776,10 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 			}
 
 			if (!$this->checkcurve) {
-				if (isset($tm["legend"])) {
-					$arg .= $tm["legend"];
-				} else {
+				if (isset($tm["metric_legend"])) {
 					$arg .= $tm["metric_legend"];
+				} else {
+					$arg .= $tm["legend"];
 				}
 				
 				for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
