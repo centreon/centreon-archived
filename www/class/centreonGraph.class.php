@@ -278,7 +278,7 @@ class CentreonGraph	{
 	*/
 	protected function cleanupDsNameForLegend($dsname, $reverse = false)
 	{
-	    $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#"), array("/","\\", "%", "\:", "\#"), $dsname);   
+	    $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#", "\\"), array("/", "\\", "%", "\:", "#", "\\\\"), $dsname);   
         return $newDsName;
 	}
 
