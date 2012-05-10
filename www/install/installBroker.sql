@@ -628,6 +628,8 @@ CREATE TABLE IF NOT EXISTS logs (
   KEY `status` (`status`),
   KEY `instance_name` (`instance_name`),
   KEY `ctime` (`ctime`),
+  KEY `rq1` (`host_id`, `service_id`, `msg_type`, `status`, `ctime`),
+  KEY `rq2` (`host_id`, `msg_type`, `status`, `ctime`),
   FOREIGN KEY (host_id) REFERENCES hosts (host_id)
     ON DELETE SET NULL
 ) ENGINE=MyISAM;
