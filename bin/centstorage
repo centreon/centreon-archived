@@ -64,6 +64,8 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 
 $debug = 0;
 my $stop = 1;
+my $error_value;
+my $error_str;
 
 my $LOG = "@CENTREON_LOG@/centstorage.log";
 my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
@@ -162,14 +164,18 @@ sub CreateConnexionForOreon() {
     }
 }
 
+sub error_thrown($$) {
+	$error_value = shift;
+	$error_str = shift;
+	return undef;
+}
+
 ########################################
 # return perfdata file path
 ########################################
 
 sub getPerfDataFile() {
     my ($filename, $sth2, $data, $con);
-    
-    CreateConnexionForOreon();
     
     $sth2 = $con_oreon->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
     if (!$sth2->execute){
@@ -311,6 +317,7 @@ sub GetPerfData() {
                         }
 
                         $_ =~ s/\n//g;
+			my $save_line = $_;
                         @line_tab = prepardPerfdataParsed($_);
 
                         if ($line_tab[0] !~ m/^[0-9]*$/g || $line_tab[0] > $now) {
@@ -321,8 +328,22 @@ sub GetPerfData() {
                                     writeLogFile("Line not well formed: " . $_);
                                     next;
                                 }
-                                checkAndUpdate(@line_tab, $configOptions);
-                                $counterData++;
+                                if (!defined(checkAndUpdate(@line_tab, $configOptions))) {
+					if ($error_value == 1 || $error_value == 2) {
+						# Error in "identify_*_service" functions. We save data
+						# For 2, not succeed rrd or data_bin construct. We have to save
+                                		if (open(DROP, ">> ".$PFDT.".bckp")){
+                                		    writeLogFile("Save reading data into ".$PFDT.".bckp");
+						    print DROP $save_line; 
+						    close DROP;
+                                		} else {
+                                    		    writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");
+                                		}
+					}
+    					writeLogFile("error_value = " . $error_value . ": " . $error_str);
+				} else {
+                                	$counterData++;
+				}
                             }
                             undef($line_tab);
                         }
@@ -406,35 +427,36 @@ sub CheckRestart(){
 }
 
 sub checkAndUpdate($$){
-    my $data_service;
-    my $valueRecorded;
     my $config = $_[6];
 
     if ($_[5]) {
-	CheckMySQLConnexion();
 	if ($_[1] =~ /_Module_[a-zA-Z]*/){
 	    # Get Service infos
 	    @data_service = identify_hidden_service($_[1], $_[2]); # return index_id and storage
-	    
+	    return undef if (!@data_service);	    
+
 	    if (defined($data_service[0]) && $data_service[0] ne 0) {
 		# perfdata index status time type counter rebuild
-		$valueRecorded = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $config->{'storage_type'}, $valueRecorded, $data_service[2], $config); 
+		my $status = identify_hidden_metric($_[5], $data_service[0], $_[4], $_[0], $config->{'storage_type'}, $data_service[2], $config); 
+	        return undef if (!defined($status));
 	    }
 	} else {
 	    # Get Service infos
 	    # writeLogFile(" --> ".$_[1]." / ".$_[2]);
 	    @data_service = identify_service($_[1], $_[2]); # return index_id and storage
+	    return undef if (!@data_service);
 	    
 	    if (defined($data_service[0]) && $data_service[0] ne 0) {
 		# perfdata index status time type counter rebuild configuration
-		$valueRecorded = identify_metric($_[5], $data_service[0], $_[4], $_[0], $config->{'storage_type'}, $valueRecorded, $data_service[2], $config); 
+		my $status = identify_metric($_[5], $data_service[0], $_[4], $_[0], $config->{'storage_type'}, $data_service[2], $config); 
+	        return undef if (!defined($status));
 	    }
 	    
 	    # Update status 
 	    updateServiceState($line_tab[1], $line_tab[2], $line_tab[0], $data_service[0],  $line_tab[4], $config->{'RRDdatabase_status_path'});
 	}
     }
-    undef(@data_service);
+    return 0;
 }
 
 sub getModulesInterval($$){
@@ -794,11 +816,6 @@ sub checkProgramStatus() {
 
 # Check Program State
 checkProgramStatus();
-
-# here make statistics
-my ($lineReadpermin, $valueRecordedpermin, $lastlineRead, $lastvalueRecorded);
-$lastlineRead = 0;
-$lastvalueRecorded = 0;
 
 my $pid  = 0;
 my $timeParser = time();
