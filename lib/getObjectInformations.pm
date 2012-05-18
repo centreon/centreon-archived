@@ -40,13 +40,10 @@
 # need in paramter : host_name, DBcnx
 
 sub getHostID($$){
-
-    CreateConnexionForOreon();
-
     # Request
     my $sth2 = $con_oreon->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '".$_[0]."' AND `host_register` = '1'");
     if (!$sth2->execute) {
-		writeLogFile("Error:" . $sth2->errstr . "\n");
+	return error_thrown(1, "Error : " . $sth2->errstr);
     }
 
     my $data_host = $sth2->fetchrow_hashref();
@@ -65,8 +62,6 @@ sub getHostID($$){
 
 sub getHostName($){
     return 0 if (!$_[0]);
-
-    CreateConnexionForOreon();
 
     my $sth2 = $con_oreon->prepare("SELECT `host_name` FROM `host` WHERE `host_id` = '".$_[0]."' AND `host_register` = '1'");
     if (!$sth2->execute) {
@@ -87,14 +82,12 @@ sub getHostName($){
 sub getServiceID($$){
     $_[1] =~ s/\&/\&amp\;/g;
 
-    CreateConnexionForOreon();
-    
     my $sth2 = $con_oreon->prepare("SELECT service_id FROM service, host_service_relation hsr ".
 				"WHERE hsr.host_host_id = '".$_[0]."' AND hsr.service_service_id = service_id ".
 				"AND service_description = '".$_[1]."' AND `service_register` IN ('1', '3') LIMIT 1");
 
     if (!$sth2->execute) {
-		writeLogFile("Error when getting service id : " . $sth2->errstr . "\n");
+	return error_thrown(1, "Error : " . $sth2->errstr);
     }
     my $data = $sth2->fetchrow_hashref();
     $sth2->finish();
@@ -103,7 +96,7 @@ sub getServiceID($$){
 				" WHERE hgr.host_host_id = '".$_[0]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
 				" AND service_id = hsr.service_service_id AND service_description = '".$_[1]."' AND `service_register` IN ('1', '3')");
 		if (!$sth2->execute) {
-			writeLogFile("Error when getting service id 2 : " . $sth2->errstr . "\n");
+			return error_thrown(1, "Error : " . $sth2->errstr);
 		}
 		my $data2 = $sth2->fetchrow_hashref();
 		$service_id = $data2->{'service_id'};
@@ -127,9 +120,6 @@ sub getServiceID($$){
 
 sub getServiceName($){	
     if ($_[0]) {
-	
-		CreateConnexionForOreon();
-		
 		my $sth2 = $con_oreon->prepare("SELECT service_description FROM service WHERE service_id = '".$_[0]."' AND `service_register` IN ('1', '3')");
 		if (!$sth2->execute()) {
 		    writeLogFile("Error getting service name : " . $sth2->errstr . "\n");
@@ -156,10 +146,8 @@ sub getMyServiceField($$)	{
     my $service_id = $_[0];
     my $field = $_[1];
 
-    CreateConnexionForOreon();
-    
     while(1) {
-		my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
+	my $sth1 = $con_oreon->prepare("SELECT ".$field.", service_template_model_stm_id FROM service WHERE service_id = '".$service_id."' LIMIT 1");
     	if (!$sth1->execute) {
 	    	writeLogFile("Error When ods get service field : " . $sth1->errstr . "\n");
     	}
@@ -167,12 +155,12 @@ sub getMyServiceField($$)	{
     	if (defined($data->{$field}) && $data->{$field}){
 	    	undef($service_id);
 	    	$sth1->finish();
-	   		return $data->{$field};
+	   	return $data->{$field};
     	} elsif ($data->{'service_template_model_stm_id'}){
 	    	$service_id = $data->{'service_template_model_stm_id'};
     	} else {
-	   	 	last;
-		}
+	   	 last;
+	}
     }
 }
 
@@ -181,8 +169,6 @@ sub getMyServiceField($$)	{
 #  metric_id, dbcnx
 
 sub getServiceCheckInterval($){ # metric_id
-
-     CreateConnexionForCentstorage();
 
     # Get service id
     $sth1 = $con_ods->prepare("SELECT service_id FROM index_data, metrics WHERE metric_id = '".$_[0]."' AND metrics.index_id = index_data.id ");
@@ -206,9 +192,6 @@ sub getServiceCheckInterval($){ # metric_id
 }
 
 sub getServiceCheckIntervalWithSVCid($) { # metric_id
-    
-    CreateConnexionForCentstorage();
-
     $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
     if (!$sth1->execute()) {
     	writeLogFile("Error where getting service interval 2 : ".$sth1->errstr."\n");
@@ -229,8 +212,6 @@ sub getServiceCheckIntervalWithSVCid($) { # metric_id
 }
 
 sub getServiceCheckIntervalFromService($) { # service_id
-    CreateConnexionForCentstorage();
-
     $sth1 = $con_ods->prepare("SELECT service_id FROM index_data WHERE id = '".$_[0]."'");
     if (!$sth1->execute()) {
     	writeLogFile("Error where getting service interval 3 : ".$sth1->errstr."\n");

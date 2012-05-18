@@ -39,8 +39,6 @@ sub getPurgeInterval() {
 	my $data;
 	my $purge_interval;
 
-	CreateConnexionForOreon();
-	
 	my $sth2 = $con_ods->prepare("SELECT purge_interval FROM config");
 	if (!$sth2->execute) {writeLogFile("Error - getPurgeInterval : " . $sth2->errstr . "\n");}
 	$data = $sth2->fetchrow_hashref();
@@ -58,8 +56,6 @@ sub getRRDdatabase_path(){
 	my $data;
 	my $RRDdatabase_path;
 
-	CreateConnexionForOreon();
-	
 	my $sth2 = $con_ods->prepare("SELECT RRDdatabase_path FROM config");
 	if (!$sth2->execute()) {
 		writeLogFile("Error - RRDdatabase_path : " . $sth2->errstr . "\n");
@@ -74,8 +70,6 @@ sub getRRDdatabase_path(){
 sub getRRDdatabase_status_path(){
 	my $data;
 	my $RRDdatabase_status_path;
-	
-	CreateConnexionForOreon();
 	
 	my $sth2 = $con_ods->prepare("SELECT RRDdatabase_status_path FROM config");
 	if (!$sth2->execute()) {
@@ -92,8 +86,6 @@ sub getLenStorageDB(){
 	my $data;
 	my $len_storage_rrd;
 
-	CreateConnexionForOreon();
-	
 	my $sth2 = $con_ods->prepare("SELECT len_storage_rrd FROM config");
 	if (!$sth2->execute()) {
 		writeLogFile("Error - len_storage_rrd : " . $sth2->errstr . "\n");
@@ -113,8 +105,6 @@ sub getLenStorageDB(){
 sub getSleepTime(){
 	my $data;
 	my $sleep_time;
-
-	CreateConnexionForOreon();
 
 	my $sth2 = $con_ods->prepare("SELECT sleep_time FROM config");
 	if (!$sth2->execute()) {

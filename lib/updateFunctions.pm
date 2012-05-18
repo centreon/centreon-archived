@@ -37,8 +37,6 @@
 
 sub getIntervalLenght(){
 
-	CreateConnexionForOreon();
-	
     my $sth = $con_oreon->prepare("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
     if (!$sth->execute()) {
 		writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
@@ -130,8 +128,6 @@ sub updateMysqlDB($$$$) {
 sub getServiceDescFromIndex($$) {
     my $index = $_[0];
   
-	CreateConnexionForCentstorage();
-
     my $sth1 = $con_ods->prepare("SELECT service_description FROM `metrics` m, `index_data` i WHERE i.id = m.index_id AND m.metric_id = '".$index."'");
     if (!$sth1->execute()){
 		writeLogFile("Error with request to get service description (getServiceDescFromIndex) : ".$sth1->errstr);
@@ -163,8 +159,6 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 		if ($_[0] && $_[1] && $_[5]){
 		    my $begin = $_[4] - 200000;
 		    
-		    CheckMySQLConnexion();
-	
 		    $interval = getModulesInterval(getServiceDescFromIndex($_[1], $con_ods), $con_oreon);
 		    $interval_hb = $interval * 10;
 		    
