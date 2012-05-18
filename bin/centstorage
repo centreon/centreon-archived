@@ -561,6 +561,7 @@ sub replaceMetricSpecialChar($){
     $metric_name =~ s/\#S\#/slash\_/g;
     $metric_name =~ s/\#BS\#/bslash\_/g;
     $metric_name =~ s/\#P\#/pct\_/g;
+	$metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
     return $metric_name;
 }
 

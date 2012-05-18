@@ -50,8 +50,12 @@ sub putSpecialCharInMetric($){
 }
 
 sub removeSpecialCharInMetric($){
-    $_[0] =~ s/[^0-9a-zA-Z_\-]/\-/g;
-    return $_[0];
+    my $new_metric_name = $_[0];
+    $new_metric_name =~ s/\./\-/g;
+    $new_metric_name =~ s/\,/\-/g;
+    $new_metric_name =~ s/\:/\-/g;
+    $new_metric_name =~ s/\ /\-/g;
+    return $new_metric_name;
 }
 
 sub insertMetrics($$$$$$$){
@@ -107,7 +111,7 @@ sub identify_metric($$$$$$$){
 
     # Cut perfdata    	
     my $metric = removeBackSpace($_[0]);
-         while ($metric =~ m/\'?([^=]*?)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)\s?/g) {
+	while ($metric =~ m/\'?([^=]*?)\'?\=([0-9\.\,\-]+)([a-zA-Z0-9\_\-\/\\\%]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)[\;]?([0-9\.\,\-]*)\s?/g) {
 	
 		my $metric_name = $1;
 		$metric_name =~ s/^\s+//;
@@ -138,20 +142,24 @@ sub identify_metric($$$$$$$){
 		@data = ($metric_name, $value, $unit, $warn, $critical, $min, $max); 
 	
 		if (defined($metric_name) && $metric_name && defined($value)) {
-		    # Check if metric is known...
-		    $data[0] = removeSpecialCharInMetric($data[0]);
-	
-		    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
+		    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($metric_name));
 		    if (!$sth1->execute()) { return error_thrown(2, "Error : " . $sth1->errstr); }
 		    if ($sth1->rows() eq 0) {
-			$just_insert = 1;  
-			return undef if (!defined(insertMetrics($_[1], $data[0], $data[2], $data[3], $data[4], $data[5], $data[6])));
-		
-			# Get ID
-			$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
-			if (!$sth1->execute()) {
-				return error_thrown(2, "Error : " . $sth1->errstr);
-			}
+			 my $metric_name_mod = removeSpecialCharInMetric($metric_name);
+			 $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ". $con_ods->quote($metric_name_mod));
+			 if (!$sth1->execute()) { return error_thrown(2, "Error : " . $sth1->errstr); }
+			 if ($sth1->rows() eq 0) {
+				$just_insert = 1;
+				insertMetrics($_[1], $metric_name, $data[2], $data[3], $data[4], $data[5], $data[6]);
+
+				# Get ID
+				$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = " . $con_ods->quote($metric_name));
+				if (!$sth1->execute()) { return error_thrown(2, "Error : " . $sth1->errstr); }
+			 } else {
+				# Update with good metric name
+				my $sth2 = $con_ods->prepare("UPDATE `metrics` SET `metric_name` = " . $con_ods->quote($metric_name) . " WHERE `index_id` = '".$_[1]."' AND `metric_name` = " . $con_ods->quote($metric_name_mod));
+				if (!$sth2->execute()) { return error_thrown(2, "Error : " . $sth1->errstr); }
+			 }
 		    }
 		    my $metric = $sth1->fetchrow_hashref();
 		    $sth1->finish();
@@ -173,9 +181,9 @@ sub identify_metric($$$$$$$){
 			# manage 'data_source_type' default value : NULL = '0'
 		        $metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
 			if (defined($_[4]) && $_[4] eq 0){
-				updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
+				updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric_name, $metric->{'data_source_type'});
 			} elsif (defined($_[4]) && $_[4] eq 2) { 
-				updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric->{'metric_name'}, $metric->{'data_source_type'});
+				updateRRDDB($configuration->{'RRDdatabase_path'}, $metric->{'metric_id'}, $_[3], $data[1], ($_[3] - 200), $configuration->{'len_storage_rrd'}, $metric_name, $metric->{'data_source_type'});
 				updateMysqlDB($metric->{'metric_id'}, $_[3], $data[1], $status{$_[2]});
 			}
 		     }	    
