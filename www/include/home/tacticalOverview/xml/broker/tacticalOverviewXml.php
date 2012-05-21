@@ -218,7 +218,7 @@
 	 */
 	$rq1 = 	" SELECT count(state), state" .
 			" FROM hosts " .
-			" WHERE enabled = 0 " .
+			" WHERE enabled = 1 AND active_checks = 0 " .
 			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
 			" AND name NOT LIKE '_Module_%' " .
 			" GROUP BY state " .
@@ -359,14 +359,14 @@
 				" AND s.host_id = centreon_acl.host_id ".
 				" AND s.service_id = centreon_acl.service_id " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
-				" AND s.enabled = 0 GROUP BY s.state ORDER BY s.state";
+				" AND s.enabled = 1 AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
 	}
 	else {
 		$rq2 = 	" SELECT count(s.state), s.state" .
 				" FROM services s, hosts h" .
 				" WHERE h.host_id = s.host_id".
 				" AND h.name NOT LIKE '_Module_%' ".
-				" AND s.enabled = 0 GROUP BY s.state ORDER BY s.state";
+				" AND s.enabled = 1 AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 
