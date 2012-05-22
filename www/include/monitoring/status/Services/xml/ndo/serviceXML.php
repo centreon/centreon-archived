@@ -266,7 +266,7 @@
 	if (count($ar_service_object_id)) {
 		$DBRESULT = $obj->DBNdo->query("SELECT ns.service_object_id as service_object_id, ns.notes as service_notes, ns.notes_url as service_notes_url, ns.action_url as service_action_url, ns.max_check_attempts as service_max_check_attempts, ns.icon_image as service_icon_image, ns.display_name as service_display_name, ns.config_type as config_type FROM " . $obj->ndoPrefix . "services as ns WHERE ns.service_object_id IN (" . implode(",", array_keys($ar_service_object_id)) . ")");
 		while ($service = $DBRESULT->fetchRow()) {
-			$ar_service_cache[$service['service_object_id'] . ":" . $service['config_type']] = $host;
+			$ar_service_cache[$service['service_object_id'] . ":" . $service['config_type']] = $service;
 		}
 		$DBRESULT->free();
 	}
