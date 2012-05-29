@@ -612,6 +612,13 @@ sub initNagios($$){
     # Get configuration
     my $conf = getServerConfig($id);
 
+	if (!defined($conf)) {
+        writeLogFile("Poller $id doesn't exists...");
+        writeLogFile("Cannot manage undefined poller...");
+        return;
+    }
+
+
     # Check port configuration
     if (defined($conf->{'ssh_port'}) && $conf->{'ssh_port'}) {
         $port = $conf->{'ssh_port'};
@@ -628,10 +635,12 @@ sub initNagios($$){
     # Logs Actions
     writeLogFile("Init Script : '$sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)");
     my $line;
-    foreach $line (split(/\n/, $stdout)){
-	writeLogFile("NAGIOS : ".$line);
-    }
-
+    if (defined($stdout)) {
+	    foreach $line (split(/\n/, $stdout)){
+			writeLogFile("NAGIOS : ".$line);
+	    }
+	}
+	
     # Free
     undef($line);
     undef($conf);
@@ -889,20 +898,22 @@ if ($pid ne fork()) {
 		    if (-d $cmdDir) {
 		    	opendir(my $dh, $cmdDir);
 				while (my $file = readdir($dh)) {
-					if (moveCmdFile($cmdDir.$file) && open(FILE, "< ".$cmdDir.$file."_read") && $file != "." && $file != ".." && $file != "") {
-					    while (<FILE>){
-							parseRequest($_);
-					    }
-					    my $poller;
-					    foreach $poller (keys(%commandBuffer)) {
-							if (length($commandBuffer{$poller}) != 0) {
-							    sendExternalCommand($poller, $commandBuffer{$poller});
-							    $commandBuffer{$poller} = "";
-							}
-					    }
+					if ($file ne "." && $file ne ".." && $file ne "") {
+						if (moveCmdFile($cmdDir.$file) && open(FILE, "< ".$cmdDir.$file."_read")) {
+						    while (<FILE>){
+								parseRequest($_);
+						    }
+						    my $poller;
+						    foreach $poller (keys(%commandBuffer)) {
+								if (length($commandBuffer{$poller}) != 0) {
+								    sendExternalCommand($poller, $commandBuffer{$poller});
+								    $commandBuffer{$poller} = "";
+								}
+						    }
+							close(FILE);
+							writeLogFile("Error When removing ".$cmdDir.$file."_read file : $!") if (!unlink($cmdDir.$file."_read"));
+						}
 					}
-					close(FILE);
-					writeLogFile("Error When removing ".$cmdDir.$file."_read file : $!") if (!unlink($cmdDir.$file."_read"));
 				}
 				closedir $dh;
 		    }
