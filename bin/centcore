@@ -69,6 +69,7 @@ my $installedPath = "@CENTREON_DIR@";
 my $LOG = "@CENTREON_LOG@/centcore.log";
 my $PID = "@CENTREON_RUNDIR@/centcore.pid";
 my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+my $cmdDir = "@CENTREON_VARLIB@/centcore/";
 my $VARLIB = "@CENTREON_VARLIB@";
 
 $echo = "/bin/echo";
@@ -866,27 +867,53 @@ if ($pid ne fork()) {
 	
 		while ($stop) {  
 	
+		    # Read Centcore.cmd
 		    if (-e $cmdFile) {
-			if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")) {
-			    while (<FILE>){
-				parseRequest($_);
-			    }
-			    my $poller;
-			    foreach $poller (keys(%commandBuffer)) {
-				if (length($commandBuffer{$poller}) != 0) {
-				    sendExternalCommand($poller, $commandBuffer{$poller});
-				    $commandBuffer{$poller} = "";
+				if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")) {
+				    while (<FILE>){
+						parseRequest($_);
+				    }
+				    my $poller;
+				    foreach $poller (keys(%commandBuffer)) {
+						if (length($commandBuffer{$poller}) != 0) {
+						    sendExternalCommand($poller, $commandBuffer{$poller});
+						    $commandBuffer{$poller} = "";
+						}
+				    }
 				}
-			    }
-			    writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
-			}
-			close(FILE);
+				close(FILE);
+				writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
 		    }
+		    
+		    # Read Centcore Directory
+		    if (-d $cmdDir) {
+		    	opendir(my $dh, $cmdDir);
+				while (my $file = readdir($dh)) {
+					if (moveCmdFile($cmdDir.$file) && open(FILE, "< ".$cmdDir.$file."_read") && $file != "." && $file != ".." && $file != "") {
+					    while (<FILE>){
+							parseRequest($_);
+					    }
+					    my $poller;
+					    foreach $poller (keys(%commandBuffer)) {
+							if (length($commandBuffer{$poller}) != 0) {
+							    sendExternalCommand($poller, $commandBuffer{$poller});
+							    $commandBuffer{$poller} = "";
+							}
+					    }
+					}
+					close(FILE);
+					writeLogFile("Error When removing ".$cmdDir.$file."_read file : $!") if (!unlink($cmdDir.$file."_read"));
+				}
+				closedir $dh;
+		    }
+		    
 		    if (defined($timeSyncPerf) && $timeSyncPerf) {
-			$difTime = time() - $timeSyncPerf;
+				$difTime = time() - $timeSyncPerf;
 		    }
+		    
+		    # Get PerfData on Nagios Poller
 		    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
-				# Get PerfData on Nagios Poller
+				
 				GetAllNagiosServerPerfData();		
 				$timeSyncPerf = time();
 		    }
