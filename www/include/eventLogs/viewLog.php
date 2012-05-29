@@ -179,6 +179,7 @@
 	$id_log = "'RR_0'";
 	$multi = 0;
 	$lockTree = 0;
+        $focusUrl = "";
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 		$mode = 0;
 		$lockTree = 1;
