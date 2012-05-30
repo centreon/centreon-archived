@@ -204,7 +204,7 @@
  	 *  @param int $instanceId
  	 *  @return string
  	 */
- 	public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId)
+ 	public function replaceMacroInString($svc_id, $string, $antiLoop = null, $instanceId = null)
  	{
  		$rq = "SELECT service_register FROM service WHERE service_id = '".$svc_id."' LIMIT 1";
         $DBRES = $this->db->query($rq);
