@@ -153,8 +153,7 @@
 	$where_acl = "";
 	$where_acl_append = "";
 	if (!$obj->is_admin) {
-		$from .= ", centreon_acl ";
-		$where_acl = "no_s.name1 = centreon_acl.host_name AND no_s.name2 = centreon_acl.service_description AND group_id IN (" . $obj->grouplistStr . ")";
+		$where_acl = "EXISTS(SELECT 1 FROM centreon_acl WHERE no_s.name1 = centreon_acl.host_name AND no_s.name2 = centreon_acl.service_description AND group_id IN (" . $obj->grouplistStr . "))";
 		$where_acl_append = " AND ";
 	}
 
