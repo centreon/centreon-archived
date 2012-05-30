@@ -78,7 +78,7 @@ $pid = getpgrp(0);
 `echo $pid > $lock_file`;
 
 # Init MySQL Connexion
-my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
+my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
 
 # Get conf Data
 my $retention;
