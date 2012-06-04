@@ -90,6 +90,9 @@
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/contactgroups.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/contactgroups.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 	unset($i);

@@ -62,6 +62,9 @@
 	
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/ndomod.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/ndomod.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 ?>

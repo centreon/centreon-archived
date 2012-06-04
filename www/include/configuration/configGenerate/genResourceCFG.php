@@ -62,6 +62,9 @@
 	$str .= "\n";
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/resource.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/resource.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 ?>

@@ -284,6 +284,9 @@
 
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $path .$tab['id']."/dependencies.cfg");
 	fclose($handle);
+
+	setFileMod($nagiosCFGPath.$tab['id']."/dependencies.cfg");
+	
 	unset($str);
 	unset($i);
 ?>

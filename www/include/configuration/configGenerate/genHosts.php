@@ -433,6 +433,9 @@
 
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/hosts.cfg");
 	fclose($handle);
+
+	setFileMod($nagiosCFGPath.$tab['id']."/hosts.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 	unset($i);

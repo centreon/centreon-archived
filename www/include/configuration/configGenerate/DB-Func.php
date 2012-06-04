@@ -548,6 +548,15 @@
 			exit();
 		}
 	}
+	
+	/**
+	*
+	* Change file mod in order to allow nagios to change it.
+	* @param unknown_type $filename
+	*/
+	function setFileMod($filename) {
+		chmod($filename, 0660);
+	}
 
 	// Put text in good format
 	function print_line($data1, $data2)	{

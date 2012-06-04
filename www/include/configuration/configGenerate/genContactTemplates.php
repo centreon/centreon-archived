@@ -198,5 +198,8 @@
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath . $tab['id'] . "/contactTemplates.cfg");
     fclose($handle);
+    
+    setFileMod($nagiosCFGPath.$tab['id']."/contactTemplates.cfg");
+    
     unset($str);
 ?>

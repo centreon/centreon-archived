@@ -77,6 +77,9 @@
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/cgi.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/cgi.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 ?>

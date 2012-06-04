@@ -223,6 +223,9 @@
 	}
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/serviceextinfo.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/serviceextinfo.cfg");
+	
 	$DBRESULT->free();
 	unset($esi);
 	unset($str);

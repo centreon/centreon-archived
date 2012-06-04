@@ -662,6 +662,9 @@
 	unset($service);
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/services.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/services.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 	unset($i);

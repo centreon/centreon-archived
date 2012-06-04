@@ -131,6 +131,9 @@
 
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/nagios.cfg");
 	fclose($handle);
+	
+	setFileMod($nagiosCFGPath.$tab['id']."/nagios.cfg");
+	
 	$DBRESULT->free();
 	unset($str);
 ?>
