@@ -337,7 +337,7 @@ sub getTrapsInfos($$$$$) {
 		  # No matching rules
 		  my $id = get_hostNagiosServerID($dbh, $this_host);
 	      if (defined($id) && $id != 0) {
-	          my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile";
+	          my $submit = "su -l nagios -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile'";
 	          send_command($submit);
 	          undef($id);
 	      }
@@ -348,7 +348,7 @@ sub getTrapsInfos($$$$$) {
 	    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
 		    my $id = get_hostNagiosServerID($dbh, $this_host);
 		    if (defined($id) && $id != 0) {
-				my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
+				my $submit = "su -l nagios -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
 				send_command($submit);
 				undef($id);
 		    }
