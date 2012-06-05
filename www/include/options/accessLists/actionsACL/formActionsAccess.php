@@ -153,7 +153,7 @@
 	$form->addElement('header', 'service_actions', _("Services Actions Access"));
 	$form->addElement('header', 'host_actions', _("Hosts Actions Access"));
 	$form->addElement('header', 'global_actions', _("Global Nagios Actions (External Process Commands)"));
-	$form->addElement('header', 'global_access', _("Global Fonctionnalities Access"));
+	$form->addElement('header', 'global_access', _("Global Functionnalities Access"));
 
     $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
