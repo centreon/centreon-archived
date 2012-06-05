@@ -36,6 +36,20 @@
  *
  */
 
+/**
+ * Function for error exception in LDAP
+ *
+ * @param int $errno The error num
+ * @param string $errstr The error message
+ * @param string $errfile The error file
+ * @param int $errline The error ling
+ * @param array $errcontext
+ */
+function errorLdapHandler($errno, $errstr, $errfile, $errline, $errcontext)
+{
+    // @todo LOG
+    return false;
+}
 
 /**
  * The utils class for LDAP
@@ -168,6 +182,7 @@ class CentreonLDAP {
 			    $url = 'ldap://' . $ldap['host'] . $port . '/';
 			}
 			$this->_debug("LDAP Connect : trying url : " . $url);
+			$this->_setErrorHandler();
 			$this->_ds = ldap_connect($url);
 			ldap_set_option($this->_ds, LDAP_OPT_REFERRALS, 0);
 			$protocol_version = 3;
@@ -179,6 +194,7 @@ class CentreonLDAP {
 			    $this->_debug("LDAP Connect : use tls");
 			    ldap_start_tls($this->_ds);
 			}
+			restore_error_handler();
 			$this->_ldap = $ldap;
 			$bindResult = $this->rebind();
 			if (isset($connectionId) && $bindResult) {
@@ -194,7 +210,9 @@ class CentreonLDAP {
 	 * Close LDAP Connexion
 	 */
 	public function close() {
+	    $this->_setErrorHandler();
 		ldap_close($this->_ds);
+		restore_error_handler();
 	}
 
 	/**
@@ -203,6 +221,7 @@ class CentreonLDAP {
 	 * @return If the connection is good
 	 */
 	public function rebind() {
+	    $this->_setErrorHandler();
 	    if (isset($this->_ldap['info']['bind_dn']) &&
 	        $this->_ldap['info']['bind_dn'] != "" &&
 	        isset($this->_ldap['info']['bind_pass']) &&
@@ -211,6 +230,7 @@ class CentreonLDAP {
 			if (@ldap_bind($this->_ds, $this->_ldap['info']['bind_dn'], $this->_ldap['info']['bind_pass'])) {
 				$this->_linkId = $this->_ldap['id'];
 				$this->_loadSearchInfo($this->_ldap['id']);
+				restore_error_handler();
 				return true;
 			}
 		} else {
@@ -218,10 +238,12 @@ class CentreonLDAP {
 			if (ldap_bind($this->_ds)) {
 				$this->_linkId = $this->_ldap['id'];
 				$this->_loadSearchInfo($this->_ldap['id']);
+				restore_error_handler();
 				return true;
 			}
 		}
 		$this->_debug("LDAP Connect : Bind : " . ldap_error($this->_ds));
+		restore_error_handler();
 		return false;
 	}
 
@@ -246,9 +268,11 @@ class CentreonLDAP {
 	    if (trim($this->_userSearchInfo['filter']) == '') {
 	        return false;
 	    }
+	    $this->_setErrorHandler();
 		$filter = preg_replace('/%s/', $username, $this->_userSearchInfo['filter']);
 		$result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
 		$entries = ldap_get_entries($this->_ds, $result);
+		restore_error_handler();
 		if ($entries["count"] == 0) {
 			return false;
 		}
@@ -266,9 +290,11 @@ class CentreonLDAP {
 	    if (trim($this->_groupSearchInfo['filter']) == '') {
 	        return false;
 	    }
+	    $this->_setErrorHandler();
 		$filter = preg_replace('/%s/', $group, $this->_groupSearchInfo['filter']);
 		$result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 		$entries = ldap_get_entries($this->_ds, $result);
+		restore_error_handler();
 		if ($entries["count"] == 0) {
 			return false;
 		}
@@ -286,9 +312,11 @@ class CentreonLDAP {
 	    if (trim($this->_groupSearchInfo['filter']) == '') {
 	        return array();
 	    }
+	    $this->_setErrorHandler();
 	    $filter = preg_replace('/%s/', $pattern, $this->_groupSearchInfo['filter']);
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 	    if (false === $result) {
+	        restore_error_handler();
 	        //print ldap_error($this->_ds);
 	        return array();
 	    }
@@ -298,6 +326,7 @@ class CentreonLDAP {
 		for ($i = 0; $i < $nbEntries; $i++) {
 		    $list[] = $entries[$i][$this->_groupSearchInfo['group_name']][0];
 		}
+		restore_error_handler();
 		return $list;
 	}
 
@@ -312,6 +341,7 @@ class CentreonLDAP {
 	    if (trim($this->_userSearchInfo['filter']) == '') {
 	        return array();
 	    }
+	    $this->_setErrorHandler();
 	    $filter = preg_replace('/%s/', $pattern, $this->_userSearchInfo['filter']);
 	    $result = ldap_search($this->_ds, $this->_userSearchInfo['base_search'], $filter);
 	    $entries = ldap_get_entries($this->_ds, $result);
@@ -320,6 +350,7 @@ class CentreonLDAP {
 		for ($i = 0; $i < $nbEntries; $i++) {
 		    $list[] = $entries[$i][$this->_userSearchInfo['alias']][0];
 		}
+		restore_error_handler();
 		return $list;
 	}
 
@@ -332,15 +363,18 @@ class CentreonLDAP {
 	 */
 	public function getEntry($dn, $attr = array())
 	{
+	    $this->_setErrorHandler();
 	    if (!is_array($attr)) {
 	        $attr = array($attr);
 	    }
 		$result = ldap_read($this->_ds, $dn, '(objectClass=*)', $attr);
 		if ($result === false) {
+		    restore_error_handler();
 			return false;
 		}
 		$entry = ldap_get_entries($this->_ds, $result);
 		if ($entry['count'] == 0) {
+		    restore_error_handler();
 			return false;
 		}
 		$infos = array();
@@ -354,6 +388,7 @@ class CentreonLDAP {
 			    }
 			}
 		}
+		restore_error_handler();
 		return $infos;
 	}
 
@@ -365,7 +400,9 @@ class CentreonLDAP {
 	 */
 	public function listGroupsForUser($userdn)
 	{
+	    $this->_setErrorHandler();
 	    if (trim($this->_groupSearchInfo['filter']) == '') {
+	        restore_error_handler();
 	        return array();
 	    }
 	    $userdn = str_replace('\\', '\\\\', $userdn);
@@ -373,6 +410,7 @@ class CentreonLDAP {
 	    $result = ldap_search($this->_ds, $this->_groupSearchInfo['base_search'], $filter);
 	    if (false === $result) {
 	        //print ldap_error($this->_ds);
+	        restore_error_handler();
 	        return array();
 	    }
 	    $entries = ldap_get_entries($this->_ds, $result);
@@ -381,6 +419,7 @@ class CentreonLDAP {
 		for ($i = 0; $i < $nbEntries; $i++) {
 		    $list[] = $entries[$i][$this->_groupSearchInfo['group_name']][0];
 		}
+		restore_error_handler();
 		return $list;
 	}
 
@@ -444,6 +483,7 @@ class CentreonLDAP {
 	 */
 	public function search($filter, $basedn, $searchLimit, $searchTimeout)
 	{
+	    $this->_setErrorHandler();
 	    $attr = array(
 	        $this->_userSearchInfo['alias'],
 	        $this->_userSearchInfo['name'],
@@ -496,6 +536,7 @@ class CentreonLDAP {
 		    $result['lastname'] = (isset($info[$i][$this->_userSearchInfo['lastname']][0]) ? $info[$i][$this->_userSearchInfo['lastname']][0] : "");
 		    $results[] = $result;
 		}
+		restore_error_handler();
 		return $results;
 	}
 
@@ -647,6 +688,16 @@ class CentreonLDAP {
 	    if ($this->_debugImport) {
 		    error_log("[" . date("d/m/Y H:i") ."]" . $msg . "\n", 3, $this->_debugPath."ldapsearch.log");
 	    }
+	}
+
+	/**
+	 * Set the error hanlder for LDAP
+	 *
+	 * @see errorLdapHandler
+	 */
+	private function _setErrorHandler()
+	{
+	    set_error_handler('errorLdapHandler');
 	}
 }
 
