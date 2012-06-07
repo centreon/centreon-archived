@@ -113,6 +113,11 @@
 	    $url_var .= "&view_all=" . $_REQUEST['view_all'];
 	}
 
+	/* Fix for status in service configuration */
+	if (isset($_REQUEST['status'])) {
+	    $url_var .= '&status=' . $_REQUEST['status'];
+	}
+
 	/*
 	 * Smarty template Init
 	 */
