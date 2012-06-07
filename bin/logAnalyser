@@ -90,7 +90,7 @@ my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host="
 
 # ##############################
 # Lock in MySQL
-my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyzer'");
+my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyser'");
 if (!$sth->execute) {
     die "Error:" . $sth->errstr . "\n";
 }
@@ -125,7 +125,7 @@ if (defined($data->{'id'})) {
         exit(1);
     }
 } else {
-    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyzer', '1', '1')");
+    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyser', '1', '1')");
     if (!$sthbis->execute) {
         die "Error:" . $sthbis->errstr . "\n";
     }
