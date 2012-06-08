@@ -273,17 +273,8 @@ class CentreonXMLBGRequest
 	 */
 	public function header()
 	{
-		global $HTTP_ACCEPT_ENCODING;
-
-		if (headers_sent()){
-	        $encoding = false;
-	    } else if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false){
-	        $encoding = 'x-gzip';
-	    } else if (strpos($HTTP_ACCEPT_ENCODING,'gzip') !== false){
-	        $encoding = 'gzip';
-	    } else {
-	        $encoding = false;
-	    }
+        /* Force no encoding compress */
+	    $encoding = false;
 
 		header('Content-Type: text/xml');
 		header('Pragma: no-cache');

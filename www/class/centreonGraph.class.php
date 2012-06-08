@@ -1171,18 +1171,9 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 		/*
 		 * Send header
 		 */
-		global $HTTP_ACCEPT_ENCODING;
-		if (headers_sent()){
-			$encoding = false;
-		} else if (strpos($HTTP_ACCEPT_ENCODING, 'x-gzip') !== false){
-			$encoding = 'x-gzip';
-		} else if (strpos($HTTP_ACCEPT_ENCODING,'gzip') !== false){
-			$encoding = 'gzip';
-		} else {
-			$encoding = false;
-		}
 
-		$this->setHeaders($encoding);
+        /* Force no compress for image */
+		$this->setHeaders(false);
 
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
