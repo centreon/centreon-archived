@@ -85,7 +85,7 @@
             if (isset($cache['tpl'][$tpl][$info])) {
                 return $cache['tpl'][$tpl][$info];
             } elseif (isset($cache['tpl'][$tpl]["tpl"])) {
-                return getInfoInSvcTpl($cache['tpl'][$tpl]["tpl"], $info);
+                return getInfoInSvcTpl($cache['tpl'][$tpl]["tpl"], $info, $cache);
             } else {
                 return null;
             }
@@ -544,7 +544,7 @@
 	// write data into the file
 	function write_in_file($handle, $content, $filename)	{
 		if (strcmp($content, "") && !fwrite($handle, $content)) {
-			echo _("Can't access to needed file").$filename;
+			echo _("Can't access to needed file")." ".$filename;
 			exit();
 		}
 	}
