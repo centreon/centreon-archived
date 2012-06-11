@@ -47,7 +47,7 @@ function printDebug($xml)
 {
     global $pearDB, $ret, $nagiosCFGPath;
 
-    $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '1' LIMIT 1");
+    $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
     $nagios_bin = $DBRESULT_Servers->fetchRow();
     $DBRESULT_Servers->free();
     $msg_debug = array();
