@@ -61,6 +61,9 @@ $etc = "@CENTREON_ETC@";
 # Timeout for write in cmd in seconds
 $TIMEOUT = 10;
 
+# Debug Activation
+$debug = 0;
+
 ###############################
 # require config file
 require $etc."/conf.pm";
@@ -263,13 +266,16 @@ sub getTrapsInfos($$$$$) {
 	    }
 	}
 
+	my $datetime;
+	my $location;	
+
 	foreach (@servicename) {
 	    my $this_service = $_;
 
-	    my $datetime = `date +%s`;
+	    $datetime = `date +%s`;
 	    chomp($datetime);
 
-	    my $location = get_hostlocation($dbh, $this_host);
+	    $location = get_hostlocation($dbh, $this_host);
 
 	    ######################################################################
 	    # Advanced matching rules
@@ -297,10 +303,10 @@ sub getTrapsInfos($$$$$) {
 		    # REPLACE ARGS
 		    my $x = 1;
 		    foreach (@macros) {
-			if (defined($macros[$x])) {
-			    $tmoString =~ s/\$$x/$macros[$x]/g;
-			    $x++;
-			}
+				if (defined($macros[$x])) {
+				    $tmoString =~ s/\$$x/$macros[$x]/g;
+				    $x++;
+				}
 		    }
 		    
 		    ##########################
@@ -317,14 +323,12 @@ sub getTrapsInfos($$$$$) {
 		    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 		    $tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
 		    $tmoString =~ s/\@TIME\@/$datetime/g;
-		    $tmoString =~ s/\@TRAPNAME\@/$this_service/g;
-		    
 		    
 		    if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
-			$status = $tmoStatus;
-			print "Regexp: $tmoString => $regexp\n";
-			print "Status: $status ($tmoStatus)\n";
-			last;
+				$status = $tmoStatus;
+				print "Regexp: $tmoString => $regexp\n";
+				print "Status: $status ($tmoStatus)\n";
+				last;
 		    }
 		}
 
@@ -334,14 +338,14 @@ sub getTrapsInfos($$$$$) {
 	    #####################################################################
 	    # Submit value to passiv service
 	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-		  # No matching rules
-		  my $id = get_hostNagiosServerID($dbh, $this_host);
-	      if (defined($id) && $id != 0) {
-	          my $submit = "su -l nagios -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile'";
-	          send_command($submit);
-	          undef($id);
-	      }
-		}
+		  	# No matching rules
+		 	my $id = get_hostNagiosServerID($dbh, $this_host);
+	    	if (defined($id) && $id != 0) {
+	        	my $submit = "su -l nagios -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile'";
+	          	send_command($submit);
+	          	undef($id);
+	      	}
+	    }
 
 	    ######################################################################
 	    # Force service execution with external command
@@ -352,8 +356,7 @@ sub getTrapsInfos($$$$$) {
 				send_command($submit);
 				undef($id);
 		    }
-		}
-		undef($location);
+			undef($location);
 	    }
 	    
 	    ######################################################################
@@ -378,8 +381,8 @@ sub getTrapsInfos($$$$$) {
 			$traps_execution_command =~ s/\&#039\;/'/g;
 	    }
 		$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
-		$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
-		$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+		$traps_execution_command =~ s/\@HOSTADDRESS\@/$ip/g;
+		$traps_execution_command =~ s/\@HOSTADDRESS2\@/$hostname/g;
 		$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 		$traps_execution_command =~ s/\@OUTPUT\@/$arguments_line/g;
 		$traps_execution_command =~ s/\@STATUS\@/$status/g;
@@ -401,7 +404,6 @@ sub getTrapsInfos($$$$$) {
     $dbh->disconnect();
     exit;
 }
-
 
 #########################################################
 # PARSE TRAP INFORMATIONS
