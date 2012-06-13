@@ -84,7 +84,9 @@
 	/*
 	 * file type setting
 	 */
-	header("Content-Type: application/csv-tab-delimited-table");
+	header("Cache-Control: public");
+	header("Pragma: public");
+	header("Content-Type: application/octet-stream");
 	header("Content-disposition: filename=".$host_name.".csv");
 
 	echo _("Host").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";

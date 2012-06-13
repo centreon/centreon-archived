@@ -84,8 +84,11 @@
 	/*
 	 * file type setting
 	 */
-	header("Content-Type: application/csv-tab-delimited-table");
-	header("Content-disposition: filename=".$host_name. "_" .$service_description.".csv");
+	
+	header("Cache-Control: public");
+	header("Pragma: public");
+	header("Content-Type: application/octet-stream");
+	header("Content-disposition: attachment ; filename=".$host_name. "_" .$service_description.".csv");
 
 	echo _("Host").";"._("Service").";"._("Begin date")."; "._("End date")."; "._("Duration")."\n";
 	echo $host_name."; ".$service_description."; ".date(_("d/m/Y H:i:s"), $start_date)."; ".date(_("d/m/Y H:i:s"), $end_date)."; ".($end_date - $start_date)."s\n";

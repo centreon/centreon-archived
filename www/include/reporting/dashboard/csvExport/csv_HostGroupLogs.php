@@ -81,7 +81,9 @@
 	/*
 	 * file type setting
 	 */
-	header("Content-Type: application/csv-tab-delimited-table");
+	header("Cache-Control: public");
+	header("Pragma: public");
+	header("Content-Type: application/octet-stream");
 	header("Content-disposition: filename=".$hostgroup_name.".csv");
 
 
