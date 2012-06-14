@@ -92,8 +92,7 @@ sub getDownTime {
 		} elsif ($type == 2) {
 			$query .= "AND d.type = 1 "; # That can be confusing, but downtime_type 1 is for service
 		}
-		$query .= "AND d.type = " . $type . " " .
-				 "AND start_time < " . $end . " " .
+		$query .= "AND start_time < " . $end . " " .
 				 "AND (end_time > " . $start . " || end_time = 0) " .
 				 "ORDER BY name1 ASC, start_time ASC, end_time ASC";		
 	}
