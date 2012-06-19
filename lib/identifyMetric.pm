@@ -264,7 +264,7 @@ sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter r
 	    $begin = $_[3] - 200;
 
 	    if (defined($data[1]) && defined($_[4])){
-		if ($_[6] eq 0){
+		if ($_[5] eq 0){
 		    # no rebuild running
                     # manage 'data_source_type' default value : NULL = '0'
                     $metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
