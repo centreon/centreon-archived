@@ -116,6 +116,7 @@ function monitoringCallBack(t)
 	set_header_title();
     
     set_displayIMG();
+    set_displayPOPUP();
 }
 
 function resetSelectedCheckboxes()
@@ -814,7 +815,7 @@ var func_displayIMG = function(event) {
                 jQuery('.img_volante').animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, "slow");
                 jQuery('.img_volante img').fadeIn(1000);
         };
-        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ elements[2] +'&index='+ elements[0];
+        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
         if (NewImage.complete) {
                 jQuery('.img_volante').html('<img style="display: none" src="' + NewImage.src + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
                 jQuery('.img_volante').animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, "slow");
@@ -830,26 +831,47 @@ var func_hideIMG = function(event) {
 };
 
 // Poppin Function
-
-function displayPOPUP(type, span_id, id) {
-	var span = document.getElementById('span_'+span_id);
-	setSpanStyle(span, "-380", "150");
-
-	var proc_popup = new Transformation();
-	if (type == "host") {
-		proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id='+id);
-		proc_popup.setXslt(_addrXSLSpanhost);
-	} else {
-		proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id='+id);
-		proc_popup.setXslt(_addrXSLSpanSvc);
-	}
-	proc_popup.transform('span_'+span_id);
+function set_displayPOPUP() {
+        jQuery('.link_popup_volante').mouseenter(func_displayPOPUP);
+        jQuery('.link_popup_volante').mouseleave(func_hidePOPUP);
 }
 
-function hiddenPOPUP(span) {
-	var span = document.getElementById('span_'+span);
-	span.innerHTML = '';
-}
+var func_popupXsltCallback = function() {
+        jQuery('.popup_volante .container-load').empty();
+        jQuery('.popup_volante').animate({width: jQuery('#popup-container-display').width(), height: jQuery('#popup-container-display').height(),
+                             top: (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2)}, "slow");
+        jQuery('#popup-container-display').fadeIn(1000);
+};
+
+var func_displayPOPUP = function(event) {
+        var position = jQuery('#' + $(this).id).offset();
+
+        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
+        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+        jQuery('.popup_volante').show();
+
+        var elements = $(this).id.split('-');
+        var proc_popup = new Transformation();
+        proc_popup.setCallback(func_popupXsltCallback);
+        if (elements[0] == "host") {
+                proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id=' + elements[1]);
+                proc_popup.setXslt(_addrXSLSpanhost);
+        } else {
+                proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
+                proc_popup.setXslt(_addrXSLSpanSvc);
+        }
+        jQuery('#popup-container-display').hide();
+        proc_popup.transform('popup-container-display');
+};
+
+var func_hidePOPUP = function(event) {
+        jQuery('.popup_volante .container-load').empty();
+        jQuery('#popup-container-display').hide();
+        jQuery('.popup_volante').hide();
+        jQuery('.popup_volante').css('width', 'auto');
+        jQuery('.popup_volante').css('height', 'auto');
+};
 
 /**
  * Display Generic info

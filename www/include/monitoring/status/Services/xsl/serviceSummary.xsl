@@ -22,13 +22,9 @@
 			</xsl:if>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hnl"/></xsl:attribute>
-				<xsl:attribute name="class">infobulle</xsl:attribute>
-				<xsl:attribute name="onmouseover">displayPOPUP('host', '<xsl:value-of select="hid"/>', '<xsl:value-of select="hid"/>');</xsl:attribute>
-				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>');</xsl:attribute>
+				<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+				<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 				<xsl:value-of select="hn"/>
-				<xsl:element name="span">
-					<xsl:attribute name="id">span_<xsl:value-of select="hid"/></xsl:attribute>
-				</xsl:element>
 			</xsl:element>
 		</td>
 		<td class="ListColLeft" style="white-space:nowrap;width:37px;">
@@ -111,5 +107,6 @@
 	</tr>
 </xsl:for-each>
 </table>
+<div id="div_popup" class="popup_volante"><div class="container-load"></div><div id="popup-container-display"></div></div>
 </xsl:template>
 </xsl:stylesheet>

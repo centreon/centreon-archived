@@ -309,19 +309,6 @@ top:2px;
 width:310px;
 }
 
-/* le contenu de la balise span ne sera visible que pour l'etat a:hover */
-a.infobulle:hover span {
-background-color:#808080;
-border:1px gray;
-display:block;
-font-weight:normal;
-left:2em;
-padding:1px;
-position:absolute;
-text-align:justify;
-top:2em;
-}
-
 .ColPopup {
 white-space:nowrap;
 }
@@ -412,14 +399,29 @@ td,a.infobulle:hover td {padding:0px;}
 
 .Small,.pagination,.ListColPicker,.ListColFooterCenter,.ListColCenter,.ListCol1,#page a,#page {text-align:center;}
 
-a.infobulle span,.img_volante 		{
+.img_volante {
 background-color: #ffffff;
 display:none;
 position:fixed;
 z-index:500;
 -moz-box-shadow:  1px 1px 12px #555;
 -webkit-box-shadow:  1px 1px 12px #555;
-box-shadow: 1px 1px 12px #555;}
+box-shadow: 1px 1px 12px #555;
+}
+
+.popup_volante {
+display:none;
+position:fixed;
+z-index:500;
+-moz-box-shadow:  1px 1px 12px #555;
+-webkit-box-shadow:  1px 1px 12px #555;
+box-shadow: 1px 1px 12px #555;
+background-color:#808080;
+border:1px gray;
+font-weight:normal;
+padding:1px;
+text-align:justify;
+}
 
 #validForm label {padding:2px 4px;}
 

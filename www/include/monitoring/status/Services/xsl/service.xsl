@@ -68,13 +68,9 @@
 					</xsl:if>
 					<xsl:element name="a">
 					  	<xsl:attribute name="href">main.php?p=201&amp;o=hd&amp;host_name=<xsl:value-of select="hn" /></xsl:attribute>
-						<xsl:attribute name="class">infobulle</xsl:attribute>
-						<xsl:attribute name="onmouseover">displayPOPUP('host', '<xsl:value-of select="hid"/>_<xsl:value-of select="o"/>', '<xsl:value-of select="hid"/>');</xsl:attribute>
-						<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>_<xsl:value-of select="o"/>');</xsl:attribute>
+                        <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+						<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 						<xsl:value-of select="hn"/>
-						<xsl:element name="span">
-							<xsl:attribute name="id">span_<xsl:value-of select="hid"/>_<xsl:value-of select="o"/></xsl:attribute>
-						</xsl:element>
 					</xsl:element>
 				</xsl:element>
 			</xsl:if>
@@ -168,13 +164,9 @@
 			</xsl:if>
 			<xsl:element name="a">
 			  	<xsl:attribute name="href">main.php?p=202&amp;o=svcd&amp;host_name=<xsl:value-of select="hnl"/>&amp;service_description=<xsl:value-of select="sdl"/></xsl:attribute>
-				<xsl:attribute name="class">infobulle</xsl:attribute>
-				<xsl:attribute name="onmouseover">displayPOPUP('svc', '<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>', '<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>
-				<xsl:attribute name="onmouseout">hiddenPOPUP('<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>
+                <xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+				<xsl:attribute name="id">svc-<xsl:value-of select="hid"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
 				<xsl:value-of select="sd"/>
-				<xsl:element name="span">
-					<xsl:attribute name="id">span_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
-				</xsl:element>
 			</xsl:element>
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
@@ -272,7 +264,7 @@
 					<xsl:element name="a">
 				  		<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
 							<xsl:element name="img">
-					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/>-<xsl:value-of select="//sid"/></xsl:attribute>
+					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/></xsl:attribute>
                                 <xsl:attribute name="class">graph-volant</xsl:attribute>
                                 <xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>					
 							</xsl:element>					
@@ -312,5 +304,6 @@
 </xsl:for-each>
 </table>
 <div id="div_img" class="img_volante"></div>
+<div id="div_popup" class="popup_volante"><div class="container-load"></div><div id="popup-container-display"></div></div>
 </xsl:template>
 </xsl:stylesheet>
