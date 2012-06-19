@@ -412,7 +412,14 @@ td,a.infobulle:hover td {padding:0px;}
 
 .Small,.pagination,.ListColPicker,.ListColFooterCenter,.ListColCenter,.ListCol1,#page a,#page {text-align:center;}
 
-a.infobulle span,.img_volante 		{display:none;position:absolute;z-index:500;}
+a.infobulle span,.img_volante 		{
+background-color: #ffffff;
+display:none;
+position:fixed;
+z-index:500;
+-moz-box-shadow:  1px 1px 12px #555;
+-webkit-box-shadow:  1px 1px 12px #555;
+box-shadow: 1px 1px 12px #555;}
 
 #validForm label {padding:2px 4px;}
 

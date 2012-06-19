@@ -114,6 +114,8 @@ function monitoringCallBack(t)
 	resetSelectedCheckboxes();
 	mk_pagination(t.getXmlDocument());
 	set_header_title();
+    
+    set_displayIMG();
 }
 
 function resetSelectedCheckboxes()
@@ -792,59 +794,40 @@ function set_page(page)	{
 }
 
 // Popin images
-
-function displayIMG(index, s_id, id)	{
-	// Pour les navigateurs recents
-    if ( document.getElementById && document.getElementById( 'div_img' ) ){
-        Pdiv = document.getElementById( 'div_img' );
-        PcH = true;
-    } else if ( document.all && document.all[ 'div_img' ] ){
-	    // Pour les veilles versions
-        Pdiv = document.all[ 'div_img' ];
-        PcH = true;
-    } else if ( document.layers && document.layers[ 'div_img' ] ){
-    	// Pour les tres veilles versions
-        Pdiv = document.layers[ 'div_img' ];
-        PcH = true;
-    } else {
-        PcH = false;
-    }
-    if (PcH){
-		_img = mk_img('include/views/graphs/generateGraphs/generateImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
-		Pdiv.appendChild(_img);
-		var l = screen.availWidth; // calcul auto de la largeur de l'ecran client
-		var h = screen.availHeight; // calcul auto de la hauteur de l'ecran client
-		var posy = tempY + 10;
-		if (h - tempY < 420){
-			posy = tempY - 310;
-		}
-		Pdiv.style.display = "block";
-		Pdiv.style.left = tempX +'px';
-		Pdiv.style.top = posy +'px';
-    }
+function set_displayIMG() {
+        jQuery('a .graph-volant').mouseenter(func_displayIMG);
+        jQuery('a .graph-volant').mouseleave(func_hideIMG);
 }
 
-function hiddenIMG(id) {
-	// Pour les navigateurs recents
-	if ( document.getElementById && document.getElementById( 'div_img' ) ){
-		Pdiv = document.getElementById( 'div_img' );
-		PcH = true;
-	} else if ( document.all && document.all[ 'div_img' ] ){
-	// Pour les veilles versions
-		Pdiv = document.all[ 'div_img' ];
-	    PcH = true;
-	} else if ( document.layers && document.layers[ 'div_img' ] ){
-	// Pour les tres veilles versions
-		Pdiv = document.layers[ 'div_img' ];
-	    PcH = true;
-	} else{
-		PcH = false;
-	}
-	if (PcH) {
-		Pdiv.style.display = "none";
-		Pdiv.innerHTML = '';
-	}
-}
+var func_displayIMG = function(event) {
+        var NewImage = new Image();
+
+        jQuery('.img_volante').html('<img src="img/misc/ajax-loader.gif" />');
+        jQuery('.img_volante').css('left', event.pageX + 20);
+        jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+        jQuery('.img_volante').show();
+
+        var elements = $(this).id.split('-');
+        var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
+        NewImage.onload = function(){
+                jQuery('.img_volante').html('<img style="display: none" src="' + encodeURI(this.src) + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+                jQuery('.img_volante').animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, "slow");
+                jQuery('.img_volante img').fadeIn(1000);
+        };
+        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ elements[2] +'&index='+ elements[0];
+        if (NewImage.complete) {
+                jQuery('.img_volante').html('<img style="display: none" src="' + NewImage.src + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+                jQuery('.img_volante').animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, "slow");
+                jQuery('.img_volante img').fadeIn(1000);
+        }
+};
+
+var func_hideIMG = function(event) {
+        jQuery('.img_volante').hide();
+        jQuery('.img_volante').empty();
+        jQuery('.img_volante').css('width', 'auto');
+        jQuery('.img_volante').css('height', 'auto');
+};
 
 // Poppin Function
 

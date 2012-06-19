@@ -272,9 +272,9 @@
 					<xsl:element name="a">
 				  		<xsl:attribute name="href">main.php?p=4&amp;mode=0&amp;svc_id=<xsl:value-of select="hnl"/>;<xsl:value-of select="sdl"/></xsl:attribute>					
 							<xsl:element name="img">
-					  			<xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>					
-								<xsl:attribute name="onmouseover">displayIMG('<xsl:value-of select="svc_index"/>','<xsl:value-of select="//sid"/>','<xsl:value-of select="svc_id"/>');</xsl:attribute>
-								<xsl:attribute name="onmouseout">hiddenIMG('<xsl:value-of select="svc_id"/>');</xsl:attribute>					
+					  			<xsl:attribute name="id"><xsl:value-of select="svc_index"/>-<xsl:value-of select="svc_id"/>-<xsl:value-of select="//sid"/></xsl:attribute>
+                                <xsl:attribute name="class">graph-volant</xsl:attribute>
+                                <xsl:attribute name="src">./img/icones/16x16/column-chart.gif</xsl:attribute>					
 							</xsl:element>					
 					</xsl:element>
 				</xsl:if>
