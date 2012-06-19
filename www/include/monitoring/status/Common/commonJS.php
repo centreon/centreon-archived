@@ -899,19 +899,6 @@ var func_displayGenericInfo = function(event) {
         proc_popup.transform('popup-container-display');
 };
 
-function setSpanStyle(span, top, left) {
-	//calcul auto de la largeur de l'ecran client
-	var l = screen.availWidth;
-
-	//calcul auto de la hauteur de l'ecran client
-	var h = screen.availHeight;
-
-	if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
-    	span.style.top = top+'px';
-    }
-    span.style.left = left+'px';
-}
-
 // Monitoring Refresh management Options
 
 function monitoring_play()	{
