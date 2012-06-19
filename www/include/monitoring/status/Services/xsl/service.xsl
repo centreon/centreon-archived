@@ -112,12 +112,9 @@
 						<xsl:attribute name="class">infobulle</xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-						  	<xsl:attribute name="class">infobulle</xsl:attribute>
-							<xsl:attribute name="onmouseover">displayGenericInfo('dtmspan_<xsl:value-of select="hid"/>',  '<xsl:value-of select="hdtmXml"/>', '<xsl:value-of select="hdtmXsl"/>');</xsl:attribute>
-							<xsl:attribute name="onmouseout">hideGenericInfo('dtmspan_<xsl:value-of select="hid"/>');</xsl:attribute>						
-						</xsl:element>
-						<xsl:element name="span">
+						  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
 							<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/></xsl:attribute>
+							<xsl:attribute name="name"><xsl:value-of select="hdtmXml"/>|<xsl:value-of select="hdtmXsl"/></xsl:attribute>
 						</xsl:element>
 					</xsl:element>					
 				</xsl:if>
@@ -126,12 +123,9 @@
 						<xsl:attribute name="class">infobulle</xsl:attribute>
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-						  	<xsl:attribute name="class">infobulle</xsl:attribute>
-							<xsl:attribute name="onmouseover">displayGenericInfo('ackspan_<xsl:value-of select="hid"/>',  '<xsl:value-of select="hackXml"/>', '<xsl:value-of select="hackXsl"/>');</xsl:attribute>
-							<xsl:attribute name="onmouseout">hideGenericInfo('ackspan_<xsl:value-of select="hid"/>');</xsl:attribute>						
-						</xsl:element>
-						<xsl:element name="span">
+						  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
 							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/></xsl:attribute>
+							<xsl:attribute name="name"><xsl:value-of select="hackXml"/>|<xsl:value-of select="hackXsl"/></xsl:attribute>					
 						</xsl:element>
 					</xsl:element>
 				</xsl:if>
@@ -201,12 +195,9 @@
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/warning.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle</xsl:attribute>
-						<xsl:attribute name="onmouseover">displayGenericInfo('dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>',  '<xsl:value-of select="dtmXml"/>', '<xsl:value-of select="dtmXsl"/>');</xsl:attribute>
-						<xsl:attribute name="onmouseout">hideGenericInfo('dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>						
-					</xsl:element>
-					<xsl:element name="span">
-							<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+						<xsl:attribute name="id">dtmspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+						<xsl:attribute name="name"><xsl:value-of select="dtmXml"/>|<xsl:value-of select="dtmXsl"/></xsl:attribute>				
 					</xsl:element>
 				</xsl:element>
 			</xsl:if>
@@ -215,13 +206,9 @@
 					<xsl:attribute name="class">infobulle</xsl:attribute>
 					<xsl:element name="img">
 					  	<xsl:attribute name="src">./img/icones/16x16/worker.gif</xsl:attribute>
-					  	<xsl:attribute name="class">infobulle</xsl:attribute>
-						<xsl:attribute name="onmouseover">displayGenericInfo('ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>',  '<xsl:value-of select="ackXml"/>', '<xsl:value-of select="ackXsl"/>');</xsl:attribute>
-						<xsl:attribute name="onmouseout">hideGenericInfo('ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/>');</xsl:attribute>						
-					</xsl:element>
-					<xsl:element name="span">
-							<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
-							<xsl:text> </xsl:text>
+					  	<xsl:attribute name="class">infobulle link_generic_info_volante</xsl:attribute>
+						<xsl:attribute name="id">ackspan_<xsl:value-of select="hid"/>_<xsl:value-of select="svc_id"/></xsl:attribute>
+						<xsl:attribute name="name"><xsl:value-of select="ackXml"/>|<xsl:value-of select="ackXsl"/></xsl:attribute>
 					</xsl:element>
 				</xsl:element>
 			</xsl:if>

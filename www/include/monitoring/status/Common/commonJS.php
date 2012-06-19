@@ -117,6 +117,7 @@ function monitoringCallBack(t)
     
     set_displayIMG();
     set_displayPOPUP();
+    set_displayGenericInfo();
 }
 
 function resetSelectedCheckboxes()
@@ -873,34 +874,30 @@ var func_hidePOPUP = function(event) {
         jQuery('.popup_volante').css('height', 'auto');
 };
 
-/**
- * Display Generic info
- *
- * @param string span_index
- * @param string xmlResource
- * @param string xslResource
- */
-function displayGenericInfo(span_index, xmlResource, xslResource)
-{
-	var span = document.getElementById(span_index);
-	setSpanStyle(span, "-380", "150");
-
-	var proc_popup = new Transformation();
-	proc_popup.setXml(xmlResource);
-	proc_popup.setXslt(xslResource);
-	proc_popup.transform(span_index);
+function set_displayGenericInfo() {
+        jQuery('.link_generic_info_volante').mouseenter(func_displayGenericInfo);
+        // Same func. no need for a new one
+        jQuery('.link_generic_info_volante').mouseleave(func_hidePOPUP);
 }
 
-/**
- * Hide Generic info
- *
- * @param string span_index
- */
-function hideGenericInfo(span_index)
-{
-	var span = document.getElementById(span_index);
-	span.innerHTML = '';
-}
+/* Use 'id' attribute to get element */
+/* Use 'name' attribute to get xml/xsl infos */
+var func_displayGenericInfo = function(event) {
+        var position = jQuery('#' + $(this).id).offset();
+
+        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
+        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+        jQuery('.popup_volante').show();
+
+        var elements = $(this).name.split('|');
+        var proc_popup = new Transformation();
+        proc_popup.setCallback(func_popupXsltCallback);
+        proc_popup.setXml(elements[0]);
+        proc_popup.setXslt(elements[1]);
+        jQuery('#popup-container-display').hide();
+        proc_popup.transform('popup-container-display');
+};
 
 function setSpanStyle(span, top, left) {
 	//calcul auto de la largeur de l'ecran client
