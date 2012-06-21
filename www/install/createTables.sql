@@ -1626,6 +1626,7 @@ CREATE TABLE IF NOT EXISTS `host` (
   KEY `tp1_index` (`timeperiod_tp_id`),
   KEY `tp2_index` (`timeperiod_tp_id2`),
   KEY `name_index` (`host_name`),
+  KEY `host_id_register` (`host_id`, `host_register`),
   KEY `alias_index` (`host_alias`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
@@ -1744,7 +1745,8 @@ CREATE TABLE IF NOT EXISTS `host_service_relation` (
   KEY `hostgroup_index` (`hostgroup_hg_id`),
   KEY `host_index` (`host_host_id`),
   KEY `servicegroup_index` (`servicegroup_sg_id`),
-  KEY `service_index` (`service_service_id`)
+  KEY `service_index` (`service_service_id`),
+  KEY `host_service_index` (`host_host_id`, `service_service_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
