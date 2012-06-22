@@ -79,6 +79,7 @@ $pid = getpgrp(0);
 
 # Init MySQL Connexion
 my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
+my $dbh_centreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
 
 # Get conf Data
 my $retention;
@@ -89,25 +90,37 @@ if (!$sth_config->execute) {
 	my $data = $sth_config->fetchrow_hashref();
 	$retention = $data->{'archive_retention'};
 	$sth_config->finish();
-	undef($data);
+}
+
+#Get broker
+my $broker = "ndo";
+$sth_config = $dbh_centreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+if (!$sth_config->execute) {
+    writeLogFile("Error:" . $sth_config->errstr);
+} else {
+    my $data = $sth_config->fetchrow_hashref();
+    $broker = $data->{'value'};
+    $sth_config->finish();
 }
 
 if (defined($retention) && $retention ne 0){
     my $last_log = time() - ($retention * 24 * 60 * 60);
-  	
-	writeLogFile("Begin centstorage.log purge");
 
-  	# Pugre Log Database
-    my $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
-    if (!defined($res)) {
-    	writeLogFile("SQL UPDATE Error : DELETE FROM `log` WHERE `ctime` < '$last_log'");
+    writeLogFile("Begin centstorage.log purge");
+
+    # Purge Log Database
+    my $res;
+    if ($broker eq "ndo") {
+        $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
+    } else {
+        $res = $dbh->do("DELETE FROM `logs` WHERE `ctime` < '$last_log'");
     }
-    undef($res);
 
-	writeLogFile("End centstorage.log purge");
+    writeLogFile("End centstorage.log purge");
 }
 $dbh->disconnect();
+$dbh_centreon->disconnect();
 
 `rm -rf $lock_file`;
 
-exit;
+exit(0);
