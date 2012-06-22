@@ -419,7 +419,7 @@
 			    $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
 			}
 			if (isset($data['address']) && $data['address']) {
-                    $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
+                $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
 			}
 			$obj->XML->writeElement("sn", $data["notes"]);
 		} else {
@@ -442,8 +442,8 @@
 		/**
 		 * Get Service Graph index
 		 */
-		if (!isset($graphs[$data["host_id"]])) {
-			$request2 = "SELECT service_id, id FROM index_data WHERE host_id = '".$data["host_id"]."'";
+		if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
+			$request2 = "SELECT service_id, id FROM index_data WHERE host_id = '".$data["host_id"]."' AND service_id = '".$data["service_id"]."'";
 			$DBRESULT2 = $obj->DBC->query($request2);
 			while ($dataG = $DBRESULT2->fetchRow()) {
 				if (!isset($graphs[$data["host_id"]])) {
