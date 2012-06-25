@@ -90,6 +90,7 @@
 	$rq1 = 	" SELECT count(state), state" .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
+                        " AND state_type = 1 " .
 			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
 			" AND name NOT LIKE '_Module_%' " .
 			" GROUP BY state " .
@@ -107,7 +108,8 @@
 	$rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
 			" FROM hosts h, instances i " .
 			" WHERE h.enabled = 1 " .
-	        " AND h.instance_id = i.instance_id " .
+                        " AND h.state_type = 1 " .
+                        " AND h.instance_id = i.instance_id " .
 			$centreon->user->access->queryBuilder("AND", "h.host_id", $acl_host_id_list) .
 			" AND h.state <> 0" .
 			" AND h.acknowledged = 0" .
@@ -117,16 +119,16 @@
 	$resNdoHosts = $dbb->query($rq1);
 
     $tab_macros = array('/\$hostid\$/i',
- 						'/\$hostname\$/i',
-    					'/\$HOSTNOTES\$/i',
+                        '/\$hostname\$/i',
+    			'/\$HOSTNOTES\$/i',
                         '/\$HOSTNOTESURL\$/i',
-    					'/\$HOSTACTIONURL\$/i',
-	                    '/\$hoststate\$/i',
-        	            '/\$LASTHOSTCHECK\$/i',
-                	    '/\$hostoutput\$/i',
+    			'/\$HOSTACTIONURL\$/i',
+	                '/\$hoststate\$/i',
+        	        '/\$LASTHOSTCHECK\$/i',
+                	'/\$hostoutput\$/i',
                         '/\$hosticon\$/i',
-	                    '/\$hostaddress\$/i',
-        	            '/\$LASTHOSTSTATECHANGE\$/i',
+	                '/\$hostaddress\$/i',
+        	        '/\$LASTHOSTSTATECHANGE\$/i',
                         '/\$INSTANCENAME\$/i');
 
 	$nbhostpb = 0;
@@ -172,6 +174,7 @@
 			" FROM services s, hosts h " .
 			" WHERE s.host_id = h.host_id " .
 			" AND h.enabled = 1 " .
+                        " AND h.state_type = 1 " .
 			$centreon->user->access->queryBuilder("AND", "h.host_id", $acl_host_id_list) .
 			" AND h.name NOT LIKE '_Module_%' " .
 			" GROUP BY s.host_id";
@@ -191,13 +194,14 @@
 	$rq1 = 	" SELECT name, ".
 	        " state, acknowledged, ".
 	        " scheduled_downtime_depth " .
-			" FROM hosts " .
-			" WHERE enabled = 1 " .
+		" FROM hosts " .
+                " WHERE enabled = 1 " .
+                " AND state_type = 1 " .
 	        " AND name NOT LIKE '_Module_%' " .
-			" AND (acknowledged = 1 OR " .
+		" AND (acknowledged = 1 OR " .
 	        " scheduled_downtime_depth > 0) ".
-			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
-			" ORDER by state";
+		$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
+		" ORDER by state";
 
 	$hostAck = array(0=>0, 1=>0, 2=>0, 3=>0);
 	$hostDt = array(0=>0, 1=>0, 2=>0, 3=>0);
@@ -217,12 +221,14 @@
 	 * Get Host inactive objects
 	 */
 	$rq1 = 	" SELECT count(state), state" .
-			" FROM hosts " .
-			" WHERE enabled = 1 AND active_checks = 0 " .
-			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
-			" AND name NOT LIKE '_Module_%' " .
-			" GROUP BY state " .
-			" ORDER BY state";
+		" FROM hosts " .
+		" WHERE enabled = 1 ".
+                " AND state_type = 1 ".
+                " AND active_checks = 0 " .
+		$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
+		" AND name NOT LIKE '_Module_%' " .
+		" GROUP BY state " .
+		" ORDER BY state";
 
 	$resNdo1 = $dbb->query($rq1);
 	$hostInactive = array(0=>0, 1=>0, 2=>0, 3=>0);
@@ -241,22 +247,24 @@
 	 */
 	if (!$is_admin) {
 		$rq2 = 	" SELECT count(DISTINCT CONCAT(h.host_id,';',s.service_id)) AS count, s.state" .
-				" FROM services s, hosts h, centreon_acl" .
-				" WHERE h.host_id = s.host_id".
-				" AND h.name NOT LIKE '_Module_%' ".
-				" AND h.host_id = centreon_acl.host_id ".
-				" AND s.service_id = centreon_acl.service_id " .
+                        " FROM services s, hosts h, centreon_acl" .
+			" WHERE h.host_id = s.host_id".
+			" AND h.name NOT LIKE '_Module_%' ".
+			" AND h.host_id = centreon_acl.host_id ".
+			" AND s.service_id = centreon_acl.service_id " .
 		        " AND h.enabled = 1 " .
-				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
+                        " AND s.state_type = 1 " .
+			" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+			" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
 	else {
 		$rq2 = 	" SELECT count(s.state) AS count, s.state".
-				" FROM services s, hosts h " .
-				" WHERE h.host_id = s.host_id".
-				" AND h.name not like '_Module_%' ".
-				" AND h.enabled = 1 " .
-				" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
+			" FROM services s, hosts h " .
+			" WHERE h.host_id = s.host_id".
+			" AND h.name not like '_Module_%' ".
+			" AND h.enabled = 1 " .
+                        " AND s.state_type = 1 " .
+			" AND s.enabled = 1 GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 	$SvcStat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
@@ -271,23 +279,25 @@
 	 */
 	if (!$is_admin) {
 		$rq2 = 	" SELECT s.state, s.host_id".
-				" FROM services s, hosts h, centreon_acl " .
-				" WHERE h.host_id = s.host_id".
-				" AND h.name NOT LIKE '_Module_%' ".
-				" AND h.host_id = centreon_acl.host_id ".
-				" AND s.service_id = centreon_acl.service_id " .
-				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND s.enabled = 1" .
-				" AND s.acknowledged = 0" .
-				" AND s.state > 0 GROUP BY s.service_id";
+                        " FROM services s, hosts h, centreon_acl " .
+                        " WHERE h.host_id = s.host_id".
+			" AND h.name NOT LIKE '_Module_%' ".
+			" AND h.host_id = centreon_acl.host_id ".
+			" AND s.service_id = centreon_acl.service_id " .
+			" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+			" AND s.enabled = 1 " .
+                        " AND s.state_type = 1 ".
+			" AND s.acknowledged = 0" .
+			" AND s.state > 0 GROUP BY s.service_id";
 	} else {
 		$rq2 = 	" SELECT s.state, s.host_id".
-				" FROM services s, hosts h " .
-				" WHERE h.host_id = s.host_id".
-				" AND h.name NOT LIKE '_Module_%' ".
-				" AND s.enabled = 1" .
-				" AND s.acknowledged = 0" .
-				" AND s.state > 0 GROUP BY s.service_id";
+			" FROM services s, hosts h " .
+			" WHERE h.host_id = s.host_id".
+			" AND h.name NOT LIKE '_Module_%' ".
+			" AND s.enabled = 1 " .
+                        " AND s.state_type = 1 ".
+			" AND s.acknowledged = 0" .
+			" AND s.state > 0 GROUP BY s.service_id";
 	}
 	$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
@@ -311,25 +321,27 @@
 		$rq1 = 	" SELECT DISTINCT s.state, " .
 		        " s.acknowledged, " .
 		        " s.scheduled_downtime_depth " .
-				" FROM services s, centreon_acl, hosts h" .
-				" WHERE h.host_id = s.host_id " .
-				" AND (s.acknowledged = 1 OR " .
-				" s.scheduled_downtime_depth > 0) " .
-				" AND s.enabled = 1 " .
-				" AND s.host_id = centreon_acl.host_id ".
-				" AND s.service_id = centreon_acl.service_id " .
-				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" AND h.name NOT LIKE '_Module_%' ";
+			" FROM services s, centreon_acl, hosts h" .
+			" WHERE h.host_id = s.host_id " .
+			" AND (s.acknowledged = 1 OR " .
+			" s.scheduled_downtime_depth > 0) " .
+			" AND s.enabled = 1 " .
+                        " AND s.state_type = 1 ".
+			" AND s.host_id = centreon_acl.host_id ".
+			" AND s.service_id = centreon_acl.service_id " .
+			" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+			" AND h.name NOT LIKE '_Module_%' ";
 	} else {
 		$rq1 = 	" SELECT DISTINCT s.state, " .
 		        " s.acknowledged, " .
 		        " s.scheduled_downtime_depth " .
-				" FROM services s, hosts h" .
-				" WHERE h.host_id = s.host_id " .
-				" AND (s.acknowledged = 1 OR " .
-				" s.scheduled_downtime_depth > 0) " .
-				" AND s.enabled = 1 " .
-				" AND h.name NOT LIKE '_Module_%' ";
+                        " FROM services s, hosts h" .
+			" WHERE h.host_id = s.host_id " .
+			" AND (s.acknowledged = 1 OR " .
+			" s.scheduled_downtime_depth > 0) " .
+			" AND s.enabled = 1 " .
+                        " AND s.state_type = 1 ".
+			" AND h.name NOT LIKE '_Module_%' ";
 	}
 	$resNdo1 = $dbb->query($rq1);
 
@@ -353,20 +365,24 @@
 	 */
 	if (!$is_admin) {
 		$rq2 = 	" SELECT count(s.state), s.state" .
-				" FROM services s, hosts h, centreon_acl " .
-				" WHERE h.host_id = s.host_id".
-				" AND h.name NOT LIKE '_Module_%' ".
-				" AND s.host_id = centreon_acl.host_id ".
-				" AND s.service_id = centreon_acl.service_id " .
-				" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
-				" AND s.enabled = 1 AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
+			" FROM services s, hosts h, centreon_acl " .
+			" WHERE h.host_id = s.host_id".
+			" AND h.name NOT LIKE '_Module_%' ".
+			" AND s.host_id = centreon_acl.host_id ".
+			" AND s.service_id = centreon_acl.service_id " .
+			" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
+			" AND s.enabled = 1 ".
+                        " AND s.state_type = 1 ".
+                        " AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
 	}
 	else {
 		$rq2 = 	" SELECT count(s.state), s.state" .
-				" FROM services s, hosts h" .
-				" WHERE h.host_id = s.host_id".
-				" AND h.name NOT LIKE '_Module_%' ".
-				" AND s.enabled = 1 AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
+			" FROM services s, hosts h" .
+			" WHERE h.host_id = s.host_id".
+			" AND h.name NOT LIKE '_Module_%' ".
+			" AND s.enabled = 1 ".
+                        " AND s.state_type = 1 ".
+                        " AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 
@@ -389,31 +405,33 @@
 	 */
 	if (!$is_admin) {
 		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name " .
-				" FROM services s, hosts h, centreon_acl, instances i " .
-				" WHERE h.host_id = s.host_id " .
+                        " FROM services s, hosts h, centreon_acl, instances i " .
+			" WHERE h.host_id = s.host_id " .
 		        " AND h.instance_id = i.instance_id " .
-				" AND s.state > 0" .
-				" AND s.acknowledged = 0" .
-				" AND s.scheduled_downtime_depth = 0" .
-				" AND s.enabled = 1" .
-				" AND h.enabled = 1" .
-				" AND h.name NOT LIKE '_Module_%' " .
-				" AND s.host_id = centreon_acl.host_id ".
-				" AND s.service_id = centreon_acl.service_id " .
-				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
+			" AND s.state > 0" .
+			" AND s.acknowledged = 0" .
+			" AND s.scheduled_downtime_depth = 0" .
+			" AND s.enabled = 1" .
+                        " AND s.state_type = 1 " .
+			" AND h.enabled = 1" .
+			" AND h.name NOT LIKE '_Module_%' " .
+			" AND s.host_id = centreon_acl.host_id ".
+			" AND s.service_id = centreon_acl.service_id " .
+			" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+			" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	} else {
 		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name " .
-				" FROM services s, hosts h, instances i " .
-				" WHERE h.host_id = s.host_id " .
+                        " FROM services s, hosts h, instances i " .
+			" WHERE h.host_id = s.host_id " .
 		        " AND h.instance_id = i.instance_id " .
-				" AND s.state > 0" .
-				" AND s.acknowledged = 0" .
+			" AND s.state > 0" .
+			" AND s.acknowledged = 0" .
 		        " AND s.scheduled_downtime_depth = 0" .
-				" AND s.enabled = 1" .
-				" AND h.enabled = 1" .
-				" AND h.name NOT LIKE '_Module_%' " .
-				" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
+			" AND s.enabled = 1".
+                        " AND s.state_type = 1".
+			" AND h.enabled = 1" .
+			" AND h.name NOT LIKE '_Module_%' " .
+			" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	}
 
 	$j = 0;
@@ -435,16 +453,16 @@
                         '/\$hostid\$/i',
                         '/\$serviceid$/i',
                         '/\$servicedesc\$/i',
-						'/\$SERVICENOTES\$/i',
+                        '/\$SERVICENOTES\$/i',
                         '/\$SERVICENOTESURL\$/i',
-	                    '/\$SERVICEACTIONURL\$/i',
+                        '/\$SERVICEACTIONURL\$/i',
                         '/\$servicestate\$/i',
                         '/\$LASTSERVICECHECK\$/i',
                         '/\$serviceoutput\$/i',
                         '/\$LASTSERVICESTATECHANGE\$/i',
                         '/\$hostaddress\$/i',
                         '/\$hosticon\$/i',
-	                    '/\$INSTANCENAME\$/i');
+	                '/\$INSTANCENAME\$/i');
     $resNdo1 = $dbb->query($rq1);
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;

@@ -90,6 +90,7 @@
 	$rq1 = 	" SELECT count(".$ndo_base_prefix."hoststatus.current_state), ".$ndo_base_prefix."hoststatus.current_state" .
 			" FROM ".$ndo_base_prefix."hoststatus, ".$ndo_base_prefix."objects" .
 			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id".
+                        " AND ".$ndo_base_prefix."hoststatus.state_type = 1 " .
 			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
 			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
@@ -114,6 +115,7 @@
 			$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_name_list) .
 			" AND hs.current_state <> 0" .
 			" AND hs.problem_has_been_acknowledged = 0" .
+                        " AND hs.state_type = 1" .
 			" AND hs.scheduled_downtime_depth = 0" .
 			" ORDER by hs.current_state LIMIT " . $hostLimit;
 	$resNdoHosts = $dbb->query($rq1);
@@ -176,6 +178,7 @@
 			" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" .
 			" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
 			" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
+                        " AND ".$ndo_base_prefix."hoststatus.state_type = 1" .
 			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
 			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
@@ -201,6 +204,7 @@
 			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 			" AND (".$ndo_base_prefix."hoststatus.problem_has_been_acknowledged = 1 OR " .
 	        " " . $ndo_base_prefix."hoststatus.scheduled_downtime_depth > 0) ".
+                        " AND ".$ndo_base_prefix."hoststatus.state_type = 1 " .
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
 			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 
@@ -226,6 +230,7 @@
 			" WHERE ".$ndo_base_prefix."objects.object_id = ".$ndo_base_prefix."hoststatus.host_object_id AND ".$ndo_base_prefix."objects.is_active = 0 " .
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
 			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
+                        " AND ".$ndo_base_prefix."hoststatus.state_type = 1 " .
 			" GROUP BY ".$ndo_base_prefix."hoststatus.current_state " .
 			" ORDER by ".$ndo_base_prefix."hoststatus.current_state";
 
@@ -251,6 +256,7 @@
 				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.name1 = centreon_acl.host_name ".
 				" AND no.name2 = centreon_acl.service_description " .
+                                " AND nss.state_type = 1 " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 	}
@@ -259,6 +265,7 @@
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 not like '_Module_%' ".
+                                " AND nss.state_type = 1 " .
 				" AND no.is_active = 1 GROUP BY nss.current_state ORDER by nss.current_state";
 	}
 	$resNdo2 = $dbb->query($rq2);
@@ -283,6 +290,7 @@
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" AND no.is_active = 1" .
 				" AND nss.problem_has_been_acknowledged = 0" .
+                                " AND nss.state_type = 1" .
 				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
 	}
 	else {
@@ -293,6 +301,7 @@
 				" AND no.name1 NOT LIKE '_Module_%' ".
 				" AND no.is_active = 1" .
 				" AND nss.problem_has_been_acknowledged = 0" .
+                                " AND nss.state_type = 1".
 				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
 	}
 	$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
@@ -322,8 +331,9 @@
 				" AND (".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 OR " .
 				" " . $ndo_base_prefix."servicestatus.scheduled_downtime_depth > 0) " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+                                " AND ".$ndo_base_prefix."servicestatus.state_type = 1 " .
 				" AND ".$ndo_base_prefix."objects.name1 = centreon_acl.host_name ".
-				" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .
+				" AND ".$ndo_base_prefix."objects.name2 = centreon_acl.service_description " .                                
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
 				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
 	} else {
@@ -335,6 +345,7 @@
 				" AND (".$ndo_base_prefix."servicestatus.problem_has_been_acknowledged = 1 OR " .
 				" " . $ndo_base_prefix."servicestatus.scheduled_downtime_depth > 0) " .
 				" AND ".$ndo_base_prefix."objects.is_active = 1 " .
+                                " AND ".$ndo_base_prefix."servicestatus.state_type = 1 " .
 				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
 	}
 	$resNdo1 = $dbb->query($rq1);
@@ -362,6 +373,7 @@
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, centreon_acl " .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
+                                " AND nss.state_type = 1 ".
 				" AND no.name1 = centreon_acl.host_name ".
 				" AND no.name2 = centreon_acl.service_description " .
 				" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
@@ -372,6 +384,7 @@
 				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no" .
 				" WHERE no.object_id = nss.service_object_id".
 				" AND no.name1 NOT LIKE '_Module_%' ".
+                                " AND nss.state_type = 1 ".
 				" AND no.is_active = 0 GROUP BY nss.current_state ORDER by nss.current_state";
 	}
 	$resNdo2 = $dbb->query($rq2);
@@ -401,6 +414,7 @@
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
+                                " AND stat.state_type = 1" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 				" AND stat.scheduled_downtime_depth = 0" .
 				" AND obj.is_active = 1" .
@@ -417,6 +431,7 @@
 				" AND stat.service_object_id = svc.service_object_id" .
 				" AND obj.name1 = ht.display_name" .
 				" AND stat.current_state > 0" .
+                                " AND stat.state_type = 1" .
 				" AND stat.problem_has_been_acknowledged = 0" .
 		        " AND stat.scheduled_downtime_depth = 0" .
 				" AND obj.is_active = 1" .
