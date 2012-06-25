@@ -206,148 +206,168 @@
 	require_once $path.'ldap/javascript/ldapJs.php';
 
     $valid = false;
+    $filterValid = true;
 	if ($form->validate())	{
 
 	    $values = $form->getSubmitValues();
 
-	    if (!isset($values['ldap_contact_tmpl'])) {
-	    	$values['ldap_contact_tmpl'] = "";
-	    }
-
-	    /* Set the general options for ldap */
-	    $options = array('ldap_auth_enable' => $values['ldap_auth_enable']['ldap_auth_enable'],
-	    	'ldap_store_password' => $values['ldap_store_password']['ldap_store_password'],
-	        'ldap_auto_import' => $values['ldap_auto_import']['ldap_auto_import'],
-	    	'ldap_srv_dns' => $values['ldap_srv_dns']['ldap_srv_dns'],
-	        'ldap_dns_use_ssl' => $values['ldap_dns_use_ssl']['ldap_dns_use_ssl'],
-	    	'ldap_dns_use_tls' => $values['ldap_dns_use_tls']['ldap_dns_use_tls'],
-	    	'ldap_dns_use_domain' => $values['ldap_dns_use_domain'],
-	        'ldap_contact_tmpl' => $values['ldap_contact_tmpl'],
-	        'ldap_search_limit' => $values['ldap_search_limit'],
-	        'ldap_search_timeout' => $values['ldap_search_timeout']
-	        );
-	    $ldapAdmin->setGeneralOptions($options);
-
-	    /* Get the template ID */
-	    /*
-	    $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
-	    $res = $pearDB->query($queryTemplate);
-	    */
-
-	    /* Prepare options */
-	    /*$options = array();
-	    $options['tmpl'] = $values['ldap_template'];
-	    $options['protocol_version'] = $values['ldap_version_protocol'];
-	    $options['bind_dn'] = $values['ldap_binduser'];
-	    $options['bind_pass'] = $values['ldap_bindpass'];
-	    $options['user_base_search'] = $values['ldap_user_basedn'];
-	    $options['group_base_search'] = $values['ldap_group_basedn'];
-	    if ($options['tmpl'] == '0') {
-	        $options['user_filter'] = $values['ldap_user_filter'];
-	        $options['alias'] = $values['ldap_user_uid_attr'];
-	        $options['user_group'] = $values['ldap_user_group'];
-	        $options['user_name'] = $values['ldap_user_name'];
-	        $options['user_firstname'] = $values['ldap_user_firstname'];
-	        $options['user_lastname'] = $values['ldap_user_lastname'];
-	        $options['user_email'] = $values['ldap_user_email'];
-            $options['user_pager'] = $values['ldap_user_pager'];
-	        $options['group_filter'] = $values['ldap_group_filter'];
-	        $options['group_name'] = $values['ldap_group_gid_attr'];
-	        $options['group_member'] = $values['ldap_group_member'];
-	    } elseif ($options['tmpl'] == '1') {
-	        $tmplOptions = $ldapAdmin->getTemplateLdap();
-	        $options['user_filter'] = $tmplOptions['user_filter'];
-	        $options['alias'] = $tmplOptions['user_attr']['alias'];
-	        $options['user_group'] = $tmplOptions['user_attr']['group'];
-	        $options['user_name'] = $tmplOptions['user_attr']['name'];
-	        $options['user_firstname'] = $tmplOptions['user_attr']['firstname'];
-	        $options['user_lastname'] = $tmplOptions['user_attr']['lastname'];
-	        $options['user_email'] = $tmplOptions['user_attr']['email'];
-	        $options['user_pager'] = $tmplOptions['user_attr']['pager'];
-	        $options['group_filter'] = $tmplOptions['group_filter'];
-	        $options['group_name'] = $tmplOptions['group_attr']['group_name'];
-	        $options['group_member'] = $tmplOptions['group_attr']['member'];
-	    } elseif ($options['tmpl'] == '2') {
-	        $tmplOptions = $ldapAdmin->getTemplateAd();
-	        $options['user_filter'] = $tmplOptions['user_filter'];
-	        $options['alias'] = $tmplOptions['user_attr']['alias'];
-	        $options['user_group'] = $tmplOptions['user_attr']['group'];
-	        $options['user_name'] = $tmplOptions['user_attr']['name'];
-	        $options['user_firstname'] = $tmplOptions['user_attr']['firstname'];
-	        $options['user_lastname'] = $tmplOptions['user_attr']['lastname'];
-	        $options['user_email'] = $tmplOptions['user_attr']['email'];
-	        $options['user_pager'] = $tmplOptions['user_attr']['pager'];
-	        $options['group_filter'] = $tmplOptions['group_filter'];
-	        $options['group_name'] = $tmplOptions['group_attr']['group_name'];
-	        $options['group_member'] = $tmplOptions['group_attr']['member'];
-	    }*/
-
-	    /*
-	    if (false === PEAR::isError($res) && $res->numRows() == 1) {
-	        $row = $res->fetchRow();
-	        $idTmpl = $row['ar_id'];
-	        $ldapAdmin->modifyTemplate($idTmpl, $options);
-	    } else {
-	        $ldapAdmin->addTemplate($options);
-	    }
-		*/
-
-	    $hostOld = array();
+		/*
+         * Test is filter string is validate
+         */
 	    if (isset($_POST['ldapHosts'])) {
-	        $sortArray = array();
 	        foreach ($_POST['ldapHosts'] as $ldapHost) {
-    	        if (isset($ldapHost['id'])) {
-    	            $hostOld[] = $ldapHost['id'];
-    	        }
     	        foreach ($ldapHost as $k => $v) {
-    	            if (!isset($sortArray[$k])) {
-    	                $sortArray[$k] = array();
-    	            }
-    	            $sortArray[$k][] = $v;
+                    if ($k == 'ldap_user_filter' || $k == 'ldap_group_filter') {
+                        if (false === CentreonLDAP::validateFilterPattern($v)) {
+                            $filterValid = false;
+                        }
+                    }
     	        }
-    	    }
-    	    $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap' AND ar_id NOT IN (" . join(', ', $hostOld) . ")";
-    	    $pearDB->query($query);
-
-    	    array_multisort($sortArray['order'], SORT_ASC, $_POST['ldapHosts']);
-    	    $counter = 1;
-    	    foreach ($_POST['ldapHosts'] as $ldapHost) {
-    	        $ldapHost['order'] = $counter;
-    	        if (!isset($ldapHost['use_ssl'])) {
-    	            $ldapHost['use_ssl'] = '0';
-    	        } else {
-    	            $ldapHost['use_ssl'] = '1';
-    	        }
-    	        if (!isset($ldapHost['use_tls'])) {
-    	            $ldapHost['use_tls'] = '0';
-    	        } else {
-    	            $ldapHost['use_tls'] = '1';
-    	        }
-    	        if (isset($ldapHost['id'])) {
-    	            $ldapAdmin->modifyServer($ldapHost);
-    	        } else {
-    	            $ldapAdmin->addServer($ldapHost);
-    	        }
-    	        $counter++;
-    	    }
-	    } else {
-	        $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap'";
-	        $pearDB->query($query);
+	        }
 	    }
 
-		$o = "w";
-   		$valid = true;
+	    if ($filterValid) {
+            if (!isset($values['ldap_contact_tmpl'])) {
+            	$values['ldap_contact_tmpl'] = "";
+            }
 
-	    if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
-   		    $tpl->assign("hideDnsOptions", 1);
-   		} else {
-   		    $tpl->assign("hideDnsOptions", 0);
-   		}
-		$form->freeze();
+            /* Set the general options for ldap */
+            $options = array('ldap_auth_enable' => $values['ldap_auth_enable']['ldap_auth_enable'],
+            	'ldap_store_password' => $values['ldap_store_password']['ldap_store_password'],
+                'ldap_auto_import' => $values['ldap_auto_import']['ldap_auto_import'],
+            	'ldap_srv_dns' => $values['ldap_srv_dns']['ldap_srv_dns'],
+                'ldap_dns_use_ssl' => $values['ldap_dns_use_ssl']['ldap_dns_use_ssl'],
+            	'ldap_dns_use_tls' => $values['ldap_dns_use_tls']['ldap_dns_use_tls'],
+            	'ldap_dns_use_domain' => $values['ldap_dns_use_domain'],
+                'ldap_contact_tmpl' => $values['ldap_contact_tmpl'],
+                'ldap_search_limit' => $values['ldap_search_limit'],
+                'ldap_search_timeout' => $values['ldap_search_timeout']
+                );
+            $ldapAdmin->setGeneralOptions($options);
+
+            /* Get the template ID */
+            /*
+            $queryTemplate = "SELECT ar_id FROM auth_ressource WHERE ar_type = 'ldap_tmpl'";
+            $res = $pearDB->query($queryTemplate);
+            */
+
+            /* Prepare options */
+            /*$options = array();
+            $options['tmpl'] = $values['ldap_template'];
+            $options['protocol_version'] = $values['ldap_version_protocol'];
+            $options['bind_dn'] = $values['ldap_binduser'];
+            $options['bind_pass'] = $values['ldap_bindpass'];
+            $options['user_base_search'] = $values['ldap_user_basedn'];
+            $options['group_base_search'] = $values['ldap_group_basedn'];
+            if ($options['tmpl'] == '0') {
+                $options['user_filter'] = $values['ldap_user_filter'];
+                $options['alias'] = $values['ldap_user_uid_attr'];
+                $options['user_group'] = $values['ldap_user_group'];
+                $options['user_name'] = $values['ldap_user_name'];
+                $options['user_firstname'] = $values['ldap_user_firstname'];
+                $options['user_lastname'] = $values['ldap_user_lastname'];
+                $options['user_email'] = $values['ldap_user_email'];
+                $options['user_pager'] = $values['ldap_user_pager'];
+                $options['group_filter'] = $values['ldap_group_filter'];
+                $options['group_name'] = $values['ldap_group_gid_attr'];
+                $options['group_member'] = $values['ldap_group_member'];
+            } elseif ($options['tmpl'] == '1') {
+                $tmplOptions = $ldapAdmin->getTemplateLdap();
+                $options['user_filter'] = $tmplOptions['user_filter'];
+                $options['alias'] = $tmplOptions['user_attr']['alias'];
+                $options['user_group'] = $tmplOptions['user_attr']['group'];
+                $options['user_name'] = $tmplOptions['user_attr']['name'];
+                $options['user_firstname'] = $tmplOptions['user_attr']['firstname'];
+                $options['user_lastname'] = $tmplOptions['user_attr']['lastname'];
+                $options['user_email'] = $tmplOptions['user_attr']['email'];
+                $options['user_pager'] = $tmplOptions['user_attr']['pager'];
+                $options['group_filter'] = $tmplOptions['group_filter'];
+                $options['group_name'] = $tmplOptions['group_attr']['group_name'];
+                $options['group_member'] = $tmplOptions['group_attr']['member'];
+            } elseif ($options['tmpl'] == '2') {
+                $tmplOptions = $ldapAdmin->getTemplateAd();
+                $options['user_filter'] = $tmplOptions['user_filter'];
+                $options['alias'] = $tmplOptions['user_attr']['alias'];
+                $options['user_group'] = $tmplOptions['user_attr']['group'];
+                $options['user_name'] = $tmplOptions['user_attr']['name'];
+                $options['user_firstname'] = $tmplOptions['user_attr']['firstname'];
+                $options['user_lastname'] = $tmplOptions['user_attr']['lastname'];
+                $options['user_email'] = $tmplOptions['user_attr']['email'];
+                $options['user_pager'] = $tmplOptions['user_attr']['pager'];
+                $options['group_filter'] = $tmplOptions['group_filter'];
+                $options['group_name'] = $tmplOptions['group_attr']['group_name'];
+                $options['group_member'] = $tmplOptions['group_attr']['member'];
+            }*/
+
+            /*
+            if (false === PEAR::isError($res) && $res->numRows() == 1) {
+                $row = $res->fetchRow();
+                $idTmpl = $row['ar_id'];
+                $ldapAdmin->modifyTemplate($idTmpl, $options);
+            } else {
+                $ldapAdmin->addTemplate($options);
+            }
+        	*/
+
+            $hostOld = array();
+            if (isset($_POST['ldapHosts'])) {
+                $sortArray = array();
+                foreach ($_POST['ldapHosts'] as $ldapHost) {
+        	        if (isset($ldapHost['id'])) {
+        	            $hostOld[] = $ldapHost['id'];
+        	        }
+        	        foreach ($ldapHost as $k => $v) {
+        	            if (!isset($sortArray[$k])) {
+        	                $sortArray[$k] = array();
+        	            }
+        	            $sortArray[$k][] = $v;
+        	        }
+        	    }
+        	    $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap' AND ar_id NOT IN (" . join(', ', $hostOld) . ")";
+        	    $pearDB->query($query);
+
+        	    array_multisort($sortArray['order'], SORT_ASC, $_POST['ldapHosts']);
+        	    $counter = 1;
+        	    foreach ($_POST['ldapHosts'] as $ldapHost) {
+        	        $ldapHost['order'] = $counter;
+        	        if (!isset($ldapHost['use_ssl'])) {
+        	            $ldapHost['use_ssl'] = '0';
+        	        } else {
+        	            $ldapHost['use_ssl'] = '1';
+        	        }
+        	        if (!isset($ldapHost['use_tls'])) {
+        	            $ldapHost['use_tls'] = '0';
+        	        } else {
+        	            $ldapHost['use_tls'] = '1';
+        	        }
+        	        if (isset($ldapHost['id'])) {
+        	            $ldapAdmin->modifyServer($ldapHost);
+        	        } else {
+        	            $ldapAdmin->addServer($ldapHost);
+        	        }
+        	        $counter++;
+        	    }
+            } else {
+                $query = "DELETE FROM auth_ressource WHERE ar_type = 'ldap'";
+                $pearDB->query($query);
+            }
+
+        	$o = "w";
+        	$valid = true;
+
+            if (!isset($values['ldap_srv_dns']['ldap_srv_dns']) || !$values['ldap_srv_dns']['ldap_srv_dns']) {
+        	    $tpl->assign("hideDnsOptions", 1);
+        	} else {
+        	    $tpl->assign("hideDnsOptions", 0);
+        	}
+        	$form->freeze();
+	    }
 	}
 
 	if (!$form->validate() && isset($_POST["gopt_id"]))	{
 	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
+	} elseif (false === $filterValid) {
+	    print("<div class='msg' align='center'>"._("Bad ldap filter : missing %s pattern. Check user or group filter")."</div>");
 	}
 
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ldap'"));

@@ -541,6 +541,19 @@ class CentreonLDAP {
 	}
 
 	/**
+	 * Validate the filter string
+	 *
+	 * @param string $filter The filter string to validate
+	 * @return boolean
+	 */
+	static public function validateFilterPattern($filter) {
+	    if (strpos($filter, '%s') === false) {
+	        return false;
+	    }
+	    return true;
+	}
+
+	/**
 	 * Load the search informations
 	 */
 	private function _loadSearchInfo($id = null)
