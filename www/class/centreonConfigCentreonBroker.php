@@ -38,7 +38,7 @@
 
 /**
  * Class for Centreon Broker configuration
- * 
+ *
  * @author Maximilien Bersoult <mbersoult@merethis.com>
  */
 class CentreonConfigCentreonBroker
@@ -46,46 +46,47 @@ class CentreonConfigCentreonBroker
     private $db;
     private $attrText = array("size"=>"30");
     private $attrInt = array("size"=>"10");
-    
+
     private $tagsCache = null;
     private $typesCache = null;
+    private $typesNameCache = null;
     private $blockCache = array();
     private $fieldtypeCache = array();
     private $blockInfoCache = array();
     private $listValues = array();
     private $defaults = array();
-    
+
     const CORRELATION_STRING = 'correlation_file';
-    
+
     /**
      * Construtor
-     * 
+     *
      * @param CentreonDB $db The connection to centreon database
      */
     public function __construct($db)
     {
         $this->db = $db;
     }
-    
+
     public function __sleep()
     {
         $this->db = null;
         return array('attrText', 'attrInt', 'tagsCache', 'typesCache', 'blockCache', 'blockInfoCache', 'listValues', 'defaults', 'fieldtypeCache');
     }
-    
+
     /**
      * Set the database
-     * 
+     *
      * @param CentreonDB $db The connection to centreon database
      */
     public function setDb($db)
     {
         $this->db = $db;
     }
-    
+
     /**
      * Return the list of tags
-     * 
+     *
      * @return array
      */
     public function getTags()
@@ -106,10 +107,10 @@ class CentreonConfigCentreonBroker
         }
         return $this->tagsCache;
     }
-    
+
     /**
      * Get the tagname
-     * 
+     *
      * @param int $tagId The tag id
      * @return string|null null in error
      */
@@ -128,13 +129,13 @@ class CentreonConfigCentreonBroker
         $row = $res->fetchRow();
         if (is_null($row)) {
             return null;
-        }        
+        }
         return $row['tagname'];
     }
-    
+
     /**
      * Get the typename
-     * 
+     *
      * @param int $typeId The type id
      * @return string|null null in error
      */
@@ -153,17 +154,43 @@ class CentreonConfigCentreonBroker
         $row = $res->fetchRow();
         if (is_null($row)) {
             return null;
-        }        
+        }
         $this->typesCache[$typeId] = $row['type_shortname'];
         return $this->typesCache[$typeId];
     }
-    
+
+    /**
+     * Get the Centreon Broker type name
+     *
+     * @param int $typeId The type id
+     * @return string|null null in error
+     */
+    public function getTypeName($typeId)
+    {
+        if (!is_null($this->typesNameCache) && isset($this->typesNameCache[$typeId])) {
+            return $this->typesNameCache[$typeId];
+        }
+        $query = 'SELECT type_name
+        	FROM cb_type
+        	WHERE cb_type_id = %d';
+        $res = $this->db->query(sprintf($query, $typeId));
+        if (PEAR::isError($res)) {
+            return null;
+        }
+        $row = $res->fetchRow();
+        if (is_null($row)) {
+            return null;
+        }
+        $this->typesNameCache[$typeId] = $row['type_name'];
+        return $this->typesNameCache[$typeId];
+    }
+
     /**
      * Return the list of config block
-     * 
+     *
      * The id is 'tag_id'_'type_id'
      * The name is "module_name - type_name"
-     * 
+     *
      * @param int $tagId The tag id
      * @return array
      */
@@ -187,10 +214,10 @@ class CentreonConfigCentreonBroker
         }
         return $this->blockCache[$tagId];
     }
-    
+
     /**
      * Create the HTML_QuickForm object with element for a block
-     * 
+     *
      * @param int $blockId The block id ('tag_id'_'type_id')
      * @param int $page The centreon page id
      * @param int $formId The form post
@@ -201,19 +228,22 @@ class CentreonConfigCentreonBroker
         list($tagId, $typeId) = explode('_', $blockId);
         $fields = $this->getBlockInfos($typeId);
         $tag = $this->getTagName($tagId);
-        
+
         $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
-        
+
         $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), $this->attrText);
         $qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
-        
+
         $type = $this->getTypeShortname($typeId);
         $qf->addElement('hidden', $tag . '[' . $formId . '][type]');
         $qf->setDefaults(array($tag . '[' . $formId . '][type]' => $type));
-        
+
+        $typeName = $this->getTypeName($typeId);
+        $qf->addElement('header', 'typeName', $typeName);
+
         $qf->addElement('hidden', $tag . '[' . $formId . '][blockId]');
         $qf->setDefaults(array($tag . '[' . $formId . '][blockId]' => $blockId));
-        
+
         foreach ($fields as $field) {
             $elementName = $tag . '[' . $formId . '][' . $field['fieldname'] . ']';
             $elementType = null;
@@ -228,7 +258,7 @@ class CentreonConfigCentreonBroker
                    $elementType = 'select';
                    $elementAttr = $this->getListValues($field['id']);
                    $default = $this->getDefaults($field['id']);
-                   break; 
+                   break;
                case 'radio':
                    $tmpRadio = array();
                    foreach ($this->getListValues($field['id']) as $key => $value) {
@@ -247,7 +277,7 @@ class CentreonConfigCentreonBroker
                    $elementAttr = $this->attrText;
                    break;
             }
-            
+
             /*
              *  If get information for read-only in database
              */
@@ -262,21 +292,21 @@ class CentreonConfigCentreonBroker
                 }
                 $qf->freeze($roElementName);
             }
-            
+
             /*
              * Add elements
              */
             if (!is_null($elementType)) {
                 $qf->addElement($elementType, $elementName, _($field['displayname']), $elementAttr);
             }
-            
+
             /*
              * If required
              */
             if ($field['required'] && is_null($field['value'])) {
                 $qf->addRule($elementName, _($field['displayname']), 'required');
             }
-            
+
             /*
              * Defaults values
              */
@@ -296,10 +326,10 @@ class CentreonConfigCentreonBroker
         }
         return $qf;
     }
-    
+
     /**
      * Get informations for a block
-     * 
+     *
      * @param int $typeId The type id
      * @return array
      */
@@ -308,7 +338,7 @@ class CentreonConfigCentreonBroker
         if (isset($this->blockInfoCache[$typeId])) {
             return $this->blockInfoCache[$typeId];
         }
-        
+
         /*
          * Get the list of fields for a block
          */
@@ -346,10 +376,10 @@ class CentreonConfigCentreonBroker
         $this->blockInfoCache[$typeId] = $fields;
         return $this->blockInfoCache[$typeId];
     }
-    
+
     /**
      * Insert a configuration into the database
-     * 
+     *
      * @param array $values The post array
      * @return bool
      */
@@ -363,7 +393,7 @@ class CentreonConfigCentreonBroker
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
 	    }
-	    
+
 	    /*
 	     * Get the ID
 	     */
@@ -376,10 +406,10 @@ class CentreonConfigCentreonBroker
 	    $id = $row['config_id'];
 	    return $this->updateCentreonBrokerInfos($id, $values);
     }
-    
+
     /**
      * Update configuration
-     * 
+     *
      * @param int $id The configuration id
      * @param array $values The post array
      * @return bool
@@ -397,10 +427,10 @@ class CentreonConfigCentreonBroker
 	    }
 	    $this->updateCentreonBrokerInfos($id, $values);
     }
-    
+
     /**
      * Update the information for a configuration
-     * 
+     *
      * @param int $id The configuration id
      * @param array $values The post array
      * @return bool
@@ -412,7 +442,7 @@ class CentreonConfigCentreonBroker
 	     */
 	    $query = "DELETE FROM cfg_centreonbroker_info WHERE config_id = " . $id;
 	    $this->db->query($query);
-	    
+
 	    $groups_infos = array();
         foreach ($this->getTags() as $group) {
 	        /*
@@ -427,7 +457,7 @@ class CentreonConfigCentreonBroker
         	    }
 	        }
 	    }
-	    
+
 	    foreach ($groups_infos as $group => $groups) {
 	        foreach ($groups as $gid => $infos) {
 	            $gid = $gid + 1;
@@ -447,10 +477,10 @@ class CentreonConfigCentreonBroker
 	    }
 	    return true;
     }
-    
+
     /**
      * Get the list of forms for a config_id
-     * 
+     *
      * @param int $config_id The id of config
      * @param string $tag The tag name
      * @param int $page The page topology
@@ -488,10 +518,10 @@ class CentreonConfigCentreonBroker
         }
         return $forms;
     }
-    
+
     /**
      * Get the correlation file
-     * 
+     *
      * @return mixed false in error or does not set, or string the path file
      */
     public function getCorrelationFile()
@@ -506,10 +536,10 @@ class CentreonConfigCentreonBroker
         $row = $res->fetchRow();
         return $row['config_value'];
     }
-    
+
     /**
      * Sort the fields by order display
-     * 
+     *
      * @param array $field1 The first field to sort
      * @param array $field2 The second field to sort
      * @return int
@@ -524,10 +554,10 @@ class CentreonConfigCentreonBroker
             return 1;
         }
     }
-    
+
     /**
      * Generate fieldtype array
-     * 
+     *
      * @param int $typeId The type id
      * @return array
      */
@@ -544,10 +574,10 @@ class CentreonConfigCentreonBroker
         $this->fieldtypeCache[$typeId] = $fieldtypes;
         return $this->fieldtypeCache[$typeId];
     }
-    
+
     /**
      * Get the list of values for a select or radio
-     * 
+     *
      * @param int $fieldId The field ID
      * @return array
      */
@@ -570,10 +600,10 @@ class CentreonConfigCentreonBroker
         $this->listValues[$fieldId] = $ret;
         return $this->listValues[$fieldId];
     }
-    
+
     /**
      * Get the default value for a list
-     * 
+     *
      * @param int $fieldId The field ID
      * @return string|null
      */
@@ -590,7 +620,7 @@ class CentreonConfigCentreonBroker
             return null;
         }
         $row = $res->fetchRow();
-        
+
         $this->defaults[$fieldId] = null;
         if (!is_null($row)) {
             if (!is_null($row['default_value']) && $row['default_value'] != '') {
@@ -599,17 +629,17 @@ class CentreonConfigCentreonBroker
         }
         return $this->defaults[$fieldId];
     }
-    
+
     /**
      * Get static information from database
-     * 
+     *
      * @param string $string The string for get information
      * @return mixed Information
      */
     private function getInfoDb($string)
     {
         global $pearDBO;
-        
+
         /*
          * Default values
          */
@@ -642,16 +672,16 @@ class CentreonConfigCentreonBroker
             }
         }
         /*
-         * Construct query 
+         * Construct query
          */
         if (!isset($s_table) || !isset($s_column)) {
             return false;
-        }        
+        }
         $query = "SELECT " . $s_column . " FROM " . $s_table;
         if (isset($s_column_key) && isset($s_key)) {
             $query .= " WHERE " . $s_column_key . " = '" . $s_key . "'";
         }
-        
+
         /*
          * Execute the query
          */

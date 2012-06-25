@@ -39,11 +39,11 @@
     if (!isset($oreon)) {
 		exit();
 	}
-	
+
 	if (!isset($_GET['tag']) || !isset($_GET['pos']) || !isset($_GET['blockId'])) {
 	    exit();
 	}
-	
+
 	/*
 	 * Cast the block id in int
 	 */
@@ -54,26 +54,27 @@
 	} catch (Exception $e) {
 	    exit();
 	}
-	
+
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
-	
+
 	$form = $cbObj->quickFormById($id, $_GET['p'], $pos);
-	
+
 	$helps = array();
 	list($tagId, $typeId) = explode('_', $id);
+	$typeName = $cbObj->getTypeName($typeId);
 	$fields = $cbObj->getBlockInfos($typeId);
 	$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));;
 	$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));;
 	foreach ($fields as $field) {
 	    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
 	}
-	
+
 	/*
 	 * Smarty template Init
 	 */
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
-	
+
 	/*
 	 * Apply a template definition
 	 */
@@ -82,9 +83,10 @@
 	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 	$form->accept($renderer);
 	$tpl->assign('formBlock', $renderer->toArray());
+	$tpl->assign('typeName', $typeName);
 	$tpl->assign('tagBlock', $tag);
 	$tpl->assign('posBlock', $pos);
 	$tpl->assign('helps', $helps);
-	
+
 	$tpl->display("blockConfig.ihtml");
 ?>
