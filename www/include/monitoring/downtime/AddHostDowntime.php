@@ -71,7 +71,7 @@
 			/*
 			 * Database retrieve information for differents elements list we need on the page
 			 */
-			$hosts = array(""=>"");
+			$hosts = array();
 			$query = "SELECT host_id, host_name " .
 					"FROM `host` " .
 					"WHERE host_register = '1' " .
@@ -87,7 +87,7 @@
 			 * Get the list of hostgroup
 			 */
 			$hgStr = $oreon->user->access->getHostGroupsString("ID", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)	);
-			$hg = array(""=>"");
+			$hg = array();
 			$query = "SELECT hg_id, hg_name
 				FROM hostgroup
 				WHERE hg_activate = '1' " .
