@@ -88,7 +88,7 @@ var _default_hg = "<?php if (isset($default_hg)) { echo htmlentities($default_hg
 var _default_instance = "<?php echo $default_poller?>";
 var _nc = 0;
 var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
-var _popup_no_comment_msg = '<?php echo _("Please enter a comment"); ?>';
+var _popup_no_comment_msg = '<?php echo addslashes(_("Please enter a comment")); ?>';
 
 
 // Hosts WS For Poppin
