@@ -207,47 +207,50 @@ class CentreonGraph	{
 		$DBRESULT->free();
 		unset($opt);
 
-	    if (isset($index)) {
-			$DBRESULT = $this->DB->query("SELECT `metric_id`
-										  FROM `ods_view_details`
-										  WHERE `index_id` = '".$this->index."'
-										  AND `contact_id` = '".$this->user_id."'");
-			$metrics_cache = array();
-			if ($DBRESULT->numRows()) {
-				while ($tmp_metrics = $DBRESULT->fetchRow()) {
-					$metrics_cache[$tmp_metrics['metric_id']] = 1;
-				}
-
-			}
-			$DBRESULT->free();
-
-			$DBRESULT = $this->DBC->query("SELECT metric_id
-										   FROM metrics
-										   WHERE index_id = '".$this->index."'
-										   AND `hidden` = '0'
-										   ORDER BY `metric_name`");
-            while ($milist = $DBRESULT->fetchRow()) {
-                $odsm[$milist["metric_id"]] = 1;
-            }
-            $DBRESULT->free();
-
-            $DBRESULT = $this->DB->query("SELECT vmetric_id metric_id
-					    				  FROM virtual_metrics
-										  WHERE index_id = '".$this->index."'
-										  AND ( `hidden` = '0' OR `hidden` IS NULL )
-										  AND vmetric_activate = '1'
-										  ORDER BY 'metric_name'");
-            while ($milist = $DBRESULT->fetchRow()) {
-                $vmilist = "v".$milist["metric_id"];
-                $odsm[$vmilist] = 1;
-            }
-            $DBRESULT->free();
-
-            foreach ($odsm as $mid => $val) {
-                if (!isset($metrics_cache[$mid])) {
-                    $DBRESULT = $this->DB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$mid."', '".$this->user_id."', '0', '".$this->index."');");
-                }
-			}
+                if (isset($index)) {
+                    $DBRESULT = $this->DB->query("SELECT `metric_id`
+                                                  FROM `ods_view_details`
+						  WHERE `index_id` = '".$this->index."'
+                                                  AND `contact_id` = '".$this->user_id."'");
+                    $metrics_cache = array();
+                    if ($DBRESULT->numRows()) {
+                        while ($tmp_metrics = $DBRESULT->fetchRow()) {
+                            $metrics_cache[$tmp_metrics['metric_id']] = 1;
+                        }
+                    }
+                    $DBRESULT->free();
+                    $DBRESULT = $this->DBC->query("SELECT metric_id
+                                                   FROM metrics
+                                                   WHERE index_id = '".$this->index."'
+						   AND `hidden` = '0'
+						   ORDER BY `metric_name`");
+                    $count = 0;
+                    while ($milist = $DBRESULT->fetchRow()) {
+                        $odsm[$milist["metric_id"]] = 1;
+                        $count++;
+                    }
+                    // only one metric => warning/critical threshold curves can be displayed
+                    if ($count === 1) {
+                        $this->onecurve = true;
+                    }
+                    $DBRESULT->free();
+                    $DBRESULT = $this->DB->query("SELECT vmetric_id metric_id
+                                                  FROM virtual_metrics
+						  WHERE index_id = '".$this->index."'
+						  AND ( `hidden` = '0' OR `hidden` IS NULL )
+						  AND vmetric_activate = '1'
+						  ORDER BY 'metric_name'");
+                    while ($milist = $DBRESULT->fetchRow()) {
+                        $vmilist = "v".$milist["metric_id"];
+                        $odsm[$vmilist] = 1;
+                    }
+                    $DBRESULT->free();
+                    
+                    foreach ($odsm as $mid => $val) {
+                        if (!isset($metrics_cache[$mid])) {
+                            $DBRESULT = $this->DB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$mid."', '".$this->user_id."', '0', '".$this->index."');");
+                        }
+                    }
 		}
 	}
 
