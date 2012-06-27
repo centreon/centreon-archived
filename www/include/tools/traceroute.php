@@ -36,7 +36,7 @@
  * 
  */
  
- 	ini_set("Display_errors", "Off");
+ 	ini_set("display_errors", "Off");
 
 	 include("@CENTREON_ETC@/centreon.conf.php");
 	 require_once ("../../$classdir/centreonSession.class.php");
