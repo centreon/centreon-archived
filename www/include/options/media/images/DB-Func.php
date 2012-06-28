@@ -119,9 +119,8 @@
                         case "application/x-tar" :
                         case "application/x-gzip" :
                         case "application/x-bzip" :
-                        case "application/x-zip-compressed" :
-			    $arc = new CentreonEasyArchive();
-			    $filelist = $arc->extract($uploaddir.$fileinfo["name"]);
+                        case "application/x-zip-compressed" :			    
+			    $filelist = CentreonMedia::getFilesFromArchive($uploaddir.$fileinfo["name"]);
 			    if ($filelist!==false) {
 				foreach ($filelist as $file) {
 				    if (is_dir($uploaddir.$file))
