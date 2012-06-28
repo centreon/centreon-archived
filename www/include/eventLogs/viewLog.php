@@ -439,6 +439,38 @@
 		}
 	}
 
+        /**
+         * Javascript action depending on the status checkboxes 
+         *
+         * @param bool isChecked 
+         * @return void
+         */
+        function checkStatusCheckbox(isChecked) {
+                var alertCb = document.getElementById('alertId');
+
+                if (isChecked == true) {
+                        alertCb.checked = true;
+                }
+        }
+
+        /**
+         * Javascript action depending on the alert/notif checkboxes
+         *
+         * @return void
+         */
+        function checkAlertNotifCheckbox() {
+                if (document.getElementById('alertId').checked == false && 
+                    document.getElementById('notifId').checked == false) {
+                        document.getElementById('cb_up').checked = false;
+                        document.getElementById('cb_down').checked = false;
+                        document.getElementById('cb_unreachable').checked = false;
+                        document.getElementById('cb_ok').checked = false;
+                        document.getElementById('cb_warning').checked = false;
+                        document.getElementById('cb_critical').checked = false;
+                        document.getElementById('cb_unknown').checked = false;
+                }
+        }
+
 	var nowOnload = window.onload;
 	window.onload = function () {
     // Here is your precious function

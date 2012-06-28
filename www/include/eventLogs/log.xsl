@@ -17,6 +17,7 @@
 											if (!this.checked) {
 												document.getElementById('ohId').checked = false;
 											}
+                                                                                        checkAlertNotifCheckbox();
 											log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;
 										</xsl:attribute>
 										<xsl:attribute name="name">alert</xsl:attribute>
@@ -60,8 +61,13 @@
 			               		</td>
 								<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkAlertNotifCheckbox();
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">notification</xsl:attribute>
+                                                                                <xsl:attribute name="id">notifId</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/notification = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -78,8 +84,13 @@
 			               		<td><b><xsl:value-of select="//lang/h"/></b></td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">up</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_up</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/up = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -89,8 +100,13 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">down</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_down</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/down = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -100,8 +116,13 @@
 			               		</td>
 			               		<td colspan="2">
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">unreachable</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_unreachable</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/unreachable = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -114,8 +135,13 @@
 			               		<td><b><xsl:value-of select="//lang/sc"/></b></td>		               	
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">ok</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_ok</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/ok = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -125,8 +151,13 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">warning</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_warning</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/warning = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -136,8 +167,13 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">critical</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_critical</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/critical = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
@@ -147,8 +183,13 @@
 			               		</td>
 			               		<td>
 									<xsl:element name='input'>
-										<xsl:attribute name="onClick">log_4_host('<xsl:value-of select="//opid"/>', this.form, ''); return false;</xsl:attribute>
+										<xsl:attribute name="onClick">
+                                                                                    checkStatusCheckbox(this.checked);
+                                                                                    log_4_host('<xsl:value-of select="//opid"/>', this.form, '');
+                                                                                    return false;
+                                                                                </xsl:attribute>
 										<xsl:attribute name="name">unknown</xsl:attribute>
+                                                                                <xsl:attribute name="id">cb_unknown</xsl:attribute>
 										<xsl:attribute name="type">checkbox</xsl:attribute>
 										<xsl:if test="//infos/unknown = 'true'">
 											<xsl:attribute name="checked">checked</xsl:attribute>
