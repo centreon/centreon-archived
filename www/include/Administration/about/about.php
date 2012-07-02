@@ -93,6 +93,14 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
+				<td>Quentin Garnier</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>Dorian Guillois</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
 				<td>Sylvestre Ho</td>
 			</tr>
 			<tr>
@@ -118,6 +126,10 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>Guillaume Watteeux</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
+				<td>Remi Werquin</td>
 			</tr>
 		</table>
 		</div>
