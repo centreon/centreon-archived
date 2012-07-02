@@ -52,6 +52,15 @@ function echo_info() {
 }
 
 #----
+## Trim whitespaces and tabulations
+## @param	string to trim
+## @return	string
+#----
+function trim() {    
+    echo "$1" | sed 's/^[ \t]*\(.*\)[ \t]*$/\1/'
+}
+
+#----
 ## print success message
 ## add success message to log file
 ## @param	message
@@ -414,7 +423,7 @@ function locate_nagios_installdir() {
 		answer_with_testdir "$(gettext "Where is installed Nagios ?")" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
 		echo_success "$(gettext "Path") $INSTALL_DIR_NAGIOS" "$ok"
 	fi
-	INSTALL_DIR_NAGIOS=${INSTALL_DIR_NAGIOS%/}
+	INSTALL_DIR_NAGIOS=`trim ${INSTALL_DIR_NAGIOS%/}`
 	export INSTALL_DIR_NAGIOS
 	log "INFO" "INSTALL_DIR_NAGIOS: $INSTALL_DIR_NAGIOS"
 }
@@ -429,7 +438,7 @@ function locate_nagios_etcdir() {
 		answer_with_testdir "$(gettext "Where is your nagios config directory")" "$DEFAULT_NAGIOS_ETC" "NAGIOS_ETC"
 		echo_success "$(gettext "Path") $NAGIOS_ETC" "$ok"
 	fi
-	NAGIOS_ETC=${NAGIOS_ETC%/}
+	NAGIOS_ETC=`trim ${NAGIOS_ETC%/}`
 	export NAGIOS_ETC
 	log "INFO" "NAGIOS_ETC: $NAGIOS_ETC"
 }
@@ -444,7 +453,7 @@ function locate_nagios_vardir() {
 		answer_with_testdir "$(gettext "Where is your Nagios var directory ?")" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
 		echo_success "$(gettext "Path" ) $NAGIOS_VAR" "$ok"
 	fi
-	NAGIOS_VAR=${NAGIOS_VAR%/}
+	NAGIOS_VAR=`trim ${NAGIOS_VAR%/}`
 	export NAGIOS_VAR
 	log "INFO" "NAGIOS_VAR: $NAGIOS_VAR"
 }
@@ -460,7 +469,7 @@ function locate_nagios_plugindir() {
 		answer_with_testdir "$(gettext "Where is your Nagios plugins (libexec) directory ?")" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
 		echo_success "$(gettext "Path" ) $NAGIOS_PLUGIN" "$ok"
 	fi
-	NAGIOS_PLUGIN=${NAGIOS_PLUGIN%/}
+	NAGIOS_PLUGIN=`trim ${NAGIOS_PLUGIN%/}`
 	export NAGIOS_PLUGIN
 	log "INFO" "NAGIOS_PLUGIN: $NAGIOS_PLUGIN"
 }
@@ -486,7 +495,7 @@ function locate_nagios_binary() {
 		fi
 		echo_success "$NAGIOS_BINARY" "$ok"
 	fi
-	NAGIOS_BINARY=${NAGIOS_BINARY%/}
+	NAGIOS_BINARY=`trim ${NAGIOS_BINARY%/}`
 	export NAGIOS_BINARY
 	log "INFO" "NAGIOS_BINARY: $NAGIOS_BINARY"
 }
@@ -512,7 +521,7 @@ function locate_nagiostats_binary() {
 		fi
 		echo_success "$NAGIOSTATS_BINARY" "$ok"
 	fi
-	NAGIOSTATS_BINARY=${NAGIOSTATS_BINARY%/}
+	NAGIOSTATS_BINARY=`trim ${NAGIOSTATS_BINARY%/}`
 	export NAGIOSTATS_BINARY
 	log "INFO" "NAGIOSTATS_BINARY: $NAGIOSTATS_BINARY"
 }
@@ -543,7 +552,7 @@ function locate_nagios_p1_file() {
 			echo_success "p1_file : $NAGIOS_P1_FILE" "$ok"	
 		fi
 	fi
-	NAGIOS_P1_FILE=${NAGIOS_P1_FILE%/}
+	NAGIOS_P1_FILE=`trim ${NAGIOS_P1_FILE%/}`
 	export NAGIOS_P1_FILE
 	log "INFO" "NAGIOS_P1_FILE: $NAGIOS_P1_FILE"
 }
@@ -558,7 +567,7 @@ function locate_nagios_imgdir() {
 		answer_with_testdir "$(gettext "Where is your Nagios image directory ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
 		echo_success "$(gettext "Path" ) $NAGIOS_IMG" "$ok"
 	fi
-	NAGIOS_IMG=${NAGIOS_IMG%/}
+	NAGIOS_IMG=`trim ${NAGIOS_IMG%/}`
 	export NAGIOS_IMG
 	log "INFO" "NAGIOS_IMG: $NAGIOS_IMG"
 }
@@ -584,7 +593,7 @@ function locate_ndo2db_binary() {
 		fi
 		echo_success "$NDO2DB_BINARY" "$ok"
 	fi
-	NDO2DB_BINARY=${NDO2DB_BINARY%/}
+	NDO2DB_BINARY=`trim ${NDO2DB_BINARY%/}`
 	export NDO2DB_BINARY
 	log "INFO" "NDO2DB_BINARY: $NDO2DB_BINARY"
 }
@@ -610,7 +619,7 @@ function locate_ndomod_binary() {
 		fi
 		echo_success "$NDOMOD_BINARY" "$ok"
 	fi
-	NDOMOD_BINARY=${NDOMOD_BINARY%/}
+	NDOMOD_BINARY=`trim ${NDOMOD_BINARY%/}`
 	export NDOMOD_BINARY
 	log "INFO" "NDOMOD_BINARY: $NDOMOD_BINARY"
 }
@@ -636,7 +645,7 @@ function locate_init_d() {
 			echo_success "$(gettext "Path" ) $INIT_D" "$ok"
 		fi
 	fi
-	INIT_D=${INIT_D%/}
+	INIT_D=`trim ${INIT_D%/}`
 	export INIT_D
 	log "INFO" "INIT_D: $INIT_D"
 }
@@ -653,7 +662,7 @@ function locate_centreon_logdir() {
 		mkdir -p "$CENTREON_LOG"
 		log "INFO" "$(gettext "Create") $CENTREON_LOG"
 	fi
-	CENTREON_LOG=${CENTREON_LOG%/}
+	CENTREON_LOG=`trim ${CENTREON_LOG%/}`
 	export CENTREON_LOG
 	log "INFO" "CENTREON_LOG: $CENTREON_LOG"
 }
@@ -670,7 +679,7 @@ function locate_centreon_etcdir() {
 		mkdir -p "$CENTREON_ETC"
 		log "INFO" "$(gettext "Create") $CENTREON_ETC"
 	fi
-	CENTREON_ETC=${CENTREON_ETC%/}
+	CENTREON_ETC=`trim ${CENTREON_ETC%/}`
 	export CENTREON_ETC
 	log "INFO" "CENTREON_ETC: $CENTREON_ETC"
 }
@@ -687,7 +696,7 @@ function locate_centreon_installdir() {
 		mkdir -p "$INSTALL_DIR_CENTREON"
 		log "INFO" "$(gettext "Create") $INSTALL_DIR_CENTREON"
 	fi	
-	INSTALL_DIR_CENTREON=${INSTALL_DIR_CENTREON%/}
+	INSTALL_DIR_CENTREON=`trim ${INSTALL_DIR_CENTREON%/}`
 	export INSTALL_DIR_CENTREON
 	log "INFO" "INSTALL_DIR_CENTREON: $INSTALL_DIR_CENTREON"
 }
@@ -706,7 +715,7 @@ function locate_centreon_generationdir() {
 		mkdir -p "$CENTREON_GENDIR"
 		log "INFO" "$(gettext "Create") $CENTREON_GENDIR"
 	fi
-	CENTREON_GENDIR=${CENTREON_GENDIR%/}
+	CENTREON_GENDIR=`trim ${CENTREON_GENDIR%/}`
 	export CENTREON_GENDIR
 	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
 }
@@ -723,7 +732,7 @@ function locate_centreon_rundir() {
 		mkdir -p "$CENTREON_RUNDIR"
 		log "INFO" "$(gettext "Create") $CENTREON_RUNDIR"
 	fi
-	CENTREON_RUNDIR=${CENTREON_RUNDIR%/}
+	CENTREON_RUNDIR=`trim ${CENTREON_RUNDIR%/}`
 	export CENTREON_RUNDIR
 	log "INFO" "CENTREON_RUNDIR: $CENTREON_RUNDIR"
 }
@@ -740,7 +749,7 @@ function locate_centreon_varlib() {
 		mkdir -p "$CENTREON_VARLIB"
 		log "INFO" "$(gettext "Create") $CENTREON_VARLIB"
 	fi
-	CENTREON_VARLIB=${CENTREON_VARLIB%/}
+	CENTREON_VARLIB=`trim ${CENTREON_VARLIB%/}`
 	export CENTREON_VARLIB
 	log "INFO" "CENTREON_VARLIB: $CENTREON_VARLIB"
 }
@@ -757,7 +766,7 @@ function locate_centstorage_rrddir() {
 		mkdir -p "$CENTSTORAGE_RRD"
 		log "INFO" "$(gettext "Create") $CENTSTORAGE_RRD"
 	fi
-	CENTSTORAGE_RRD=${CENTSTORAGE_RRD%/}
+	CENTSTORAGE_RRD=`trim ${CENTSTORAGE_RRD%/}`
 	export CENTSTORAGE_RRD
 	log "INFO" "CENTSTORAGE_RRD: $CENTSTORAGE_RRD"
 }
@@ -774,7 +783,7 @@ function locate_centstorage_bindir() {
 		mkdir -p "$CENTSTORAGE_BINDIR"
 		log "INFO" "$(gettext "Create") $CENTSTORAGE_BINDIR"
 	fi
-	CENTSTORAGE_BINDIR=${CENTSTORAGE_BINDIR%/}
+	CENTSTORAGE_BINDIR=`trim ${CENTSTORAGE_BINDIR%/}`
 	export CENTSTORAGE_BINDIR
 	log "INFO" "CENTSTORAGE_BINDIR: $CENTSTORAGE_BINDIR"
 }
@@ -791,7 +800,7 @@ function locate_centstorage_libdir() {
 		mkdir -p "$CENTSTORAGE_LIBDIR"
 		log "INFO" "$(gettext "Create") $CENTSTORAGE_LIBDIR"
 	fi
-	CENTSTORAGE_LIBDIR=${CENTSTORAGE_LIBDIR%/}
+	CENTSTORAGE_LIBDIR=`trim ${CENTSTORAGE_LIBDIR%/}`
 	export CENTSTORAGE_LIBDIR
 	log "INFO" "CENTSTORAGE_LIBDIR: $CENTSTORAGE_LIBDIR"
 }
@@ -808,7 +817,7 @@ function locate_centcore_bindir() {
 		mkdir -p $CENTCORE_BINDIR
 		log "INFO" "$(gettext "Create") $CENTCORE_BINDIR"
 	fi
-	CENTCORE_BINDIR=${CENTCORE_BINDIR%/}
+	CENTCORE_BINDIR=`trim ${CENTCORE_BINDIR%/}`
 	export CENTCORE_BINDIR
 	log "INFO" "CENTCORE_BINDIR: $CENTCORE_BINDIR"
 }
@@ -825,7 +834,7 @@ function locate_centplugins_tmpdir() {
 		mkdir -p "$CENTPLUGINS_TMP"
 		log "INFO" "$(gettext "Create") $CENTPLUGINS_TMP"
 	fi
-	CENTPLUGINS_TMP=${CENTPLUGINS_TMP%/}
+	CENTPLUGINS_TMP=`trim ${CENTPLUGINS_TMP%/}`
 	export CENTPLUGINS_TMP
 	log "INFO" "CENTPLUGINS_TMP: $CENTPLUGINS_TMP"
 }
@@ -842,7 +851,7 @@ function locate_centpluginstraps_bindir() {
 		mkdir -p "$CENTPLUGINSTRAPS_BINDIR"
 		log "INFO" "$(gettext "Create") $CENTPLUGINSTRAPS_BINDIR"
 	fi
-	CENTPLUGINSTRAPS_BINDIR=${CENTPLUGINSTRAPS_BINDIR%/}
+	CENTPLUGINSTRAPS_BINDIR=`trim ${CENTPLUGINSTRAPS_BINDIR%/}`
 	export CENTPLUGINSTRAPS_BINDIR
 	log "INFO" "CENTPLUGINSTRAPS_BINDIR: $CENTPLUGINSTRAPS_BINDIR"
 }
@@ -871,7 +880,7 @@ function locate_snmptt_bindir() {
 		answer_with_createdir "$(gettext "Where is your SNMPTT binaries directory")" "$DEFAULT_SNMPTT_BINDIR" "SNMPTT_BINDIR"
 		echo_success "$SNMPTT_BINDIR" "$ok"
 	fi
-	SNMPTT_BINDIR=${SNMPTT_BINDIR%/}
+	SNMPTT_BINDIR=`trim ${SNMPTT_BINDIR%/}`
 	export SNMPTT_BINDIR
 	log "INFO" "SNMPTT_BINDIR: $SNMPTT_BINDIR"
 }
@@ -886,7 +895,7 @@ function locate_sudo() {
 		answer_with_testfile "$(gettext "Where is sudo configuration file")" "$DEFAULT_SUDO_FILE" "SUDO_FILE"
 		echo_success "$SUDO_FILE" "$ok"
 	fi
-	SUDO_FILE=${SUDO_FILE%/}
+	SUDO_FILE=`trim ${SUDO_FILE%/}`
 	export SUDO_FILE
 	log "INFO" "SUDO_FILE: $SUDO_FILE"
 }
@@ -902,7 +911,7 @@ function locate_rrd_perldir() {
 		RRD_PERL=$(dirname $RRD_PERL)
 		echo_success "$(gettext "Path" ) $RRD_PERL" "$ok"
 	fi
-	RRD_PERL=${RRD_PERL%/}
+	RRD_PERL=`trim ${RRD_PERL%/}`
 	export RRD_PERL
 	log "INFO" "RRD_PERL: $RRD_PERL"
 }
@@ -923,7 +932,7 @@ function locate_rrdtool() {
 		fi
 		echo_success "$BIN_RRDTOOL" "$ok"
 	fi
-	BIN_RRDTOOL=${BIN_RRDTOOL%/}
+	BIN_RRDTOOL=`trim ${BIN_RRDTOOL%/}`
 	export BIN_RRDTOOL
 	log "INFO" "BIN_RRDTOOL: $BIN_RRDTOOL"
 }
@@ -944,7 +953,7 @@ function locate_perl() {
 		fi
 		echo_success "$BIN_PERL" "$ok"
 	fi
-	BIN_PERL=${BIN_PERL%/}
+	BIN_PERL=`trim ${BIN_PERL%/}`
 	export BIN_PERL
 	log "INFO" "BIN_PERL: $BIN_PERL"
 }
@@ -965,7 +974,7 @@ function locate_mail() {
 		fi
 		echo_success "$BIN_MAIL" "$ok"
 	fi
-	BIN_MAIL=${BIN_MAIL%/}
+	BIN_MAIL=`trim ${BIN_MAIL%/}`
 	export BIN_MAIL
 	log "INFO" "BIN_MAIL: $BIN_MAIL"
 }
@@ -986,7 +995,7 @@ function locate_ssh() {
 		fi
 		echo_success "$BIN_SSH" "$ok"
 	fi
-	BIN_SSH=${BIN_SSH%/}
+	BIN_SSH=`trim ${BIN_SSH%/}`
 	export BIN_SSH
 	log "INFO" "BIN_SSH: $BIN_SSH"
 }
@@ -1007,7 +1016,7 @@ function locate_scp() {
 		fi
 		echo_success "$BIN_SCP" "$ok"
 	fi
-	BIN_SCP=${BIN_SCP%/}
+	BIN_SCP=`trim ${BIN_SCP%/}`
 	export BIN_SCP
 	log "INFO" "BIN_SCP: $BIN_SCP"
 }
@@ -1033,7 +1042,7 @@ function locate_php_bin() {
 		fi
 		echo_success "$PHP_BIN" "$ok"
 	fi
-	PHP_BIN=${PHP_BIN%/}
+	PHP_BIN=`trim ${PHP_BIN%/}`
 	export PHP_BIN
 	log "INFO" "PHP_BIN: $PHP_BIN"
 }
@@ -1049,7 +1058,7 @@ function locate_pear() {
 		PEAR_PATH=$(dirname $PEAR_PATH)
 		echo_success "$(gettext "Path" ) $PEAR_PATH" "$ok"
 	fi
-	PEAR_PATH=${PEAR_PATH%/}
+	PEAR_PATH=`trim ${PEAR_PATH%/}`
 	export PEAR_PATH
 	log "INFO" "PEAR_PATH: $PEAR_PATH"
 }
@@ -1069,7 +1078,7 @@ function locate_cron_d() {
 			echo_success "Path $CRON_D" "$ok"
 		fi
 	fi
-	CRON_D=${CRON_D%/}
+	CRON_D=`trim ${CRON_D%/}`
 	export CRON_D
 	log "INFO" "CRON_D: $CRON_D"
 }
@@ -2278,4 +2287,3 @@ function check_result() {
 	fi
 	return 0
 }
-
