@@ -80,7 +80,7 @@
 	 */
 	if ($centreon->broker->getBroker() == "broker") {
 		$nagiosInfo = array();
-		$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name FROM instances");
+		$DBRESULT = $pearDBO->query("SELECT start_time AS program_start_time, running AS is_currently_running, pid AS process_id, instance_id, name AS instance_name , last_alive FROM instances");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]] = $info;
 		}
@@ -88,7 +88,7 @@
 	} else {
 		$ndoPrefix = getNDOPrefix();
 		$nagiosInfo = array();
-		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time) as program_start_time, is_currently_running, process_id, p.instance_id, instance_name FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
+		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time) as program_start_time, is_currently_running, process_id, p.instance_id, instance_name, status_update_time AS last_alive FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]] = $info;
 		}
@@ -137,6 +137,7 @@
 	$tpl->assign("headerMenu_pid", _("PID"));
 	$tpl->assign("headerMenu_version", _("Version"));
 	$tpl->assign("headerMenu_startTime", _("Start time"));
+	$tpl->assign("headerMenu_lastUpdateTime", _("Last Update"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_default", _("Default"));
 	$tpl->assign("headerMenu_options", _("Options"));
@@ -182,6 +183,7 @@
 						"RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
 						"RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
 						"RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
+						"RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["name"]]["last_alive"]) && $nagiosInfo[$config["name"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["last_alive"]) : "-",
 						"RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
 						"RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_options" => $moptions);

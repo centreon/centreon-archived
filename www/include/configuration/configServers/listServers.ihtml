@@ -1,5 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
@@ -27,6 +26,7 @@
 			<td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_pid}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_startTime}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_lastUpdateTime}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_version}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_default}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
@@ -41,6 +41,7 @@
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_running}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
+			<td class="ListColCenter">{$elemArr[elem].RowMenu_lastUpdateTime}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>
@@ -48,7 +49,6 @@
 		</tr>
 		{/section}
 	</table>
-
 	<table class="ToolbarTable">
 		<tr>
 			{ if $mode_access == 'w' }
@@ -66,9 +66,7 @@
 			{/php}
 		</tr>
 	</table>
-
 <input type='hidden' name='o' id='o' value='42'>
-
 <input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
