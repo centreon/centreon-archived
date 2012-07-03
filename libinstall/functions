@@ -1691,6 +1691,10 @@ function find_group_nagios()
 function check_user_nagios()
 {
 	local RC="1"
+
+        # put nagios user into apache group
+        usermod -aG $WEB_GROUP $NAGIOS_USER
+
 	# check if you want to force nagios user
 	FORCE_NAGIOS_USER=${FORCE_NAGIOS_USER:-0}
 
