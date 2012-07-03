@@ -19,3 +19,4 @@ Validate::0.6.2::beta
 XML_RPC::1.4.5
 SOAP::0.10.1::beta
 Log::1.9.11
+Archive_Zip::0.1.2::beta
