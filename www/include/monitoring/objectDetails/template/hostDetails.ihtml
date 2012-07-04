@@ -227,7 +227,7 @@
 					<tr class='list_one'>
 						<td>
 						    {if $lcaTopo.6 || $admin == 1}
-							<a href='./main.php?p=6&host_id={$h.host_id}&o=c'>
+							<a href='./main.php?p=60101&host_id={$h.host_id}&o=c'>
 							<img src="./img/icones/16x16/wrench.gif" alt="{$lnk_host_config}" onmouseover="Tip('{$lnk_host_config}')" onmouseout="UnTip()">
 							</a>
 						    {/if}
