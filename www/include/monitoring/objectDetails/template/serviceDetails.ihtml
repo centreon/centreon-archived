@@ -271,9 +271,9 @@
 								alt="{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}"
 								onmouseover="Tip('{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}')"
 								onmouseout="UnTip()">
-								</img></a>
-							</td>
+								</img></a>							
 						{/if}
+                                                </td>
 					</tr>
 					<tr class='list_one'>
 						<td class="ListColLeft">{$m_mon_services_en_notification}</td>
