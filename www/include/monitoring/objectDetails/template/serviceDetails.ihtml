@@ -264,8 +264,8 @@
 					<tr class='list_two'>
 						<td class="ListColLeft">{$m_mon_services_en_check_passif}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.passive_checks_enabled]};'>&nbsp;{$en_disable[$service_data.passive_checks_enabled]}&nbsp;</font></td>
-						{if $aclAct.service_passive_checks || $admin == true}					
-							<td class="ListColLeft" id="service_passive_checks">
+                                                <td class="ListColLeft" id="service_passive_checks">						
+                                                {if $aclAct.service_passive_checks || $admin == true}												
 								<a href="#" onClick="send_command('service_passive_checks', '{$en_inv[$service_data.passive_checks_enabled]}');">
 								<img src={$img_en[$service_data.passive_checks_enabled]}
 								alt="{$en_inv_text[$service_data.passive_checks_enabled]} {$m_mon_accept_passive}"
