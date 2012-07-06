@@ -114,10 +114,6 @@ function monitoringCallBack(t)
 	resetSelectedCheckboxes();
 	mk_pagination(t.getXmlDocument());
 	set_header_title();
-    
-    set_displayIMG();
-    set_displayPOPUP();
-    set_displayGenericInfo();
 }
 
 function resetSelectedCheckboxes()
@@ -200,6 +196,7 @@ function construct_selecteList_ndo_instance(id){
 
 <?php
     $pollerArray = $oreon->user->access->getPollers();
+
     /** *************************************
      * Get instance listing
      */
@@ -304,22 +301,21 @@ function construct_HostGroupSelectList(id) {
 
 		if ($broker == 'broker') {
 			$DBRESULT = $pearDBO->query("SELECT DISTINCT `name`, hostgroups.hostgroup_id FROM `hostgroups`, `hosts_hostgroups` WHERE hostgroups.hostgroup_id = hosts_hostgroups.hostgroup_id AND name NOT LIKE 'meta_%' ORDER BY `name`");
-		} else {
-			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias , `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
+        } else {
+			$DBRESULT = $pearDB->query("SELECT DISTINCT `hg_name` as name, `hg_alias` as alias, `hg_id` as hostgroup_id FROM `hostgroup` ORDER BY `name`");
 		}
-		while ($hostgroups = $DBRESULT->fetchRow()) {
 		while ($hostgroups = $DBRESULT->fetchRow()) {
 			if ($broker == 'broker') {
 				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgBrk[$hostgroups["name"]]))) {
-				    if (!isset($tabHG)) {
-				        $tabHG = array();
-				    }
+        		    if (!isset($tabHG)) {
+        		        $tabHG = array();
+        		    }
 				    if (!isset($tabHG[$hostgroups["name"]])) {
 				        $tabHG[$hostgroups["name"]] = "";
 				    } else {
 				        $tabHG[$hostgroups["name"]] .= ",";
 				    }
-                    $tabHG[$hostgroups["name"]] = $hostgroups["hostgroup_id"];
+                    $tabHG[$hostgroups["name"]] .= $hostgroups["hostgroup_id"];
 	 		    }
 			} else {
 				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
@@ -337,9 +333,8 @@ function construct_HostGroupSelectList(id) {
 
 		if ($broker == 'broker') {
 			if (isset($tabHG)) {
-				foreach ($tabHG as $name => $id) {
-	                ?>
-	                var m = document.createElement('option');
+			    foreach ($tabHG as $name => $id) { ?>
+	                    var m = document.createElement('option');
 						m.value= "<?php echo $id; ?>";
 						_select.appendChild(m);
 						var n = document.createTextNode("<?php echo $name; ?>   ");
@@ -351,6 +346,7 @@ function construct_HostGroupSelectList(id) {
 	            }
 			}
 		}
+
 ?>
 		if (typeof(_default_hg) != "undefined") {
 			_select.selectedIndex = select_index[_default_hg];
@@ -796,108 +792,123 @@ function set_page(page)	{
 }
 
 // Popin images
-function set_displayIMG() {
-        jQuery('a .graph-volant').mouseenter(func_displayIMG);
-        jQuery('a .graph-volant').mouseleave(func_hideIMG);
+
+function displayIMG(index, s_id, id)	{
+	// Pour les navigateurs recents
+    if ( document.getElementById && document.getElementById( 'div_img' ) ){
+        Pdiv = document.getElementById( 'div_img' );
+        PcH = true;
+    } else if ( document.all && document.all[ 'div_img' ] ){
+	    // Pour les veilles versions
+        Pdiv = document.all[ 'div_img' ];
+        PcH = true;
+    } else if ( document.layers && document.layers[ 'div_img' ] ){
+    	// Pour les tres veilles versions
+        Pdiv = document.layers[ 'div_img' ];
+        PcH = true;
+    } else {
+        PcH = false;
+    }
+    if (PcH){
+		_img = mk_img('include/views/graphs/generateGraphs/generateImage.php?session_id='+s_id+'&index='+index, 'graph popup'+'&index='+index+'&time=<?php print time(); ?>');
+		Pdiv.appendChild(_img);
+		var l = screen.availWidth; // calcul auto de la largeur de l'ecran client
+		var h = screen.availHeight; // calcul auto de la hauteur de l'ecran client
+		var posy = tempY + 10;
+		if (h - tempY < 420){
+			posy = tempY - 310;
+		}
+		Pdiv.style.display = "block";
+		Pdiv.style.left = tempX +'px';
+		Pdiv.style.top = posy +'px';
+    }
 }
 
-var func_displayIMG = function(event) {
-        var NewImage = new Image();
-
-        jQuery('.img_volante').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.img_volante').css('left', event.pageX + 20);
-        jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.img_volante').show();
-
-        var elements = $(this).id.split('-');
-        var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
-        NewImage.onload = function(){
-                jQuery('.img_volante').html('<img style="display: none" src="' + encodeURI(this.src) + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
-                jQuery('.img_volante').animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, "slow");
-                jQuery('.img_volante img').fadeIn(1000);
-        };
-        NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
-        if (NewImage.complete) {
-                jQuery('.img_volante').html('<img style="display: none" src="' + NewImage.src + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
-                jQuery('.img_volante').animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, "slow");
-                jQuery('.img_volante img').fadeIn(1000);
-        }
-};
-
-var func_hideIMG = function(event) {
-        jQuery('.img_volante').hide();
-        jQuery('.img_volante').empty();
-        jQuery('.img_volante').css('width', 'auto');
-        jQuery('.img_volante').css('height', 'auto');
-};
+function hiddenIMG(id) {
+	// Pour les navigateurs recents
+	if ( document.getElementById && document.getElementById( 'div_img' ) ){
+		Pdiv = document.getElementById( 'div_img' );
+		PcH = true;
+	} else if ( document.all && document.all[ 'div_img' ] ){
+	// Pour les veilles versions
+		Pdiv = document.all[ 'div_img' ];
+	    PcH = true;
+	} else if ( document.layers && document.layers[ 'div_img' ] ){
+	// Pour les tres veilles versions
+		Pdiv = document.layers[ 'div_img' ];
+	    PcH = true;
+	} else{
+		PcH = false;
+	}
+	if (PcH) {
+		Pdiv.style.display = "none";
+		Pdiv.innerHTML = '';
+	}
+}
 
 // Poppin Function
-function set_displayPOPUP() {
-        jQuery('.link_popup_volante').mouseenter(func_displayPOPUP);
-        jQuery('.link_popup_volante').mouseleave(func_hidePOPUP);
+
+function displayPOPUP(type, span_id, id) {
+	var span = document.getElementById('span_'+span_id);
+	setSpanStyle(span, "-380", "150");
+
+	var proc_popup = new Transformation();
+	if (type == "host") {
+		proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id='+id);
+		proc_popup.setXslt(_addrXSLSpanhost);
+	} else {
+		proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id='+id);
+		proc_popup.setXslt(_addrXSLSpanSvc);
+	}
+	proc_popup.transform('span_'+span_id);
 }
 
-var func_popupXsltCallback = function() {
-        jQuery('.popup_volante .container-load').empty();
-        jQuery('.popup_volante').animate({width: jQuery('#popup-container-display').width(), height: jQuery('#popup-container-display').height(),
-                             top: (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2)}, "slow");
-        jQuery('#popup-container-display').fadeIn(1000);
-};
-
-var func_displayPOPUP = function(event) {
-        var position = jQuery('#' + $(this).id).offset();
-
-        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.popup_volante').show();
-
-        var elements = $(this).id.split('-');
-        var proc_popup = new Transformation();
-        proc_popup.setCallback(func_popupXsltCallback);
-        if (elements[0] == "host") {
-                proc_popup.setXml(_addrXMLSpanHost+"?"+'&sid='+_sid+'&host_id=' + elements[1]);
-                proc_popup.setXslt(_addrXSLSpanhost);
-        } else {
-                proc_popup.setXml(_addrXMLSpanSvc+"?"+'&sid='+_sid+'&svc_id=' + elements[1] + '_' + elements[2]);
-                proc_popup.setXslt(_addrXSLSpanSvc);
-        }
-        jQuery('#popup-container-display').hide();
-        proc_popup.transform('popup-container-display');
-};
-
-var func_hidePOPUP = function(event) {
-        jQuery('.popup_volante .container-load').empty();
-        jQuery('#popup-container-display').hide();
-        jQuery('.popup_volante').hide();
-        jQuery('.popup_volante').css('width', 'auto');
-        jQuery('.popup_volante').css('height', 'auto');
-};
-
-function set_displayGenericInfo() {
-        jQuery('.link_generic_info_volante').mouseenter(func_displayGenericInfo);
-        // Same func. no need for a new one
-        jQuery('.link_generic_info_volante').mouseleave(func_hidePOPUP);
+function hiddenPOPUP(span) {
+	var span = document.getElementById('span_'+span);
+	span.innerHTML = '';
 }
 
-/* Use 'id' attribute to get element */
-/* Use 'name' attribute to get xml/xsl infos */
-var func_displayGenericInfo = function(event) {
-        var position = jQuery('#' + $(this).id).offset();
+/**
+ * Display Generic info
+ *
+ * @param string span_index
+ * @param string xmlResource
+ * @param string xslResource
+ */
+function displayGenericInfo(span_index, xmlResource, xslResource)
+{
+	var span = document.getElementById(span_index);
+	setSpanStyle(span, "-380", "150");
 
-        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
-        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
-        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
-        jQuery('.popup_volante').show();
+	var proc_popup = new Transformation();
+	proc_popup.setXml(xmlResource);
+	proc_popup.setXslt(xslResource);
+	proc_popup.transform(span_index);
+}
 
-        var elements = $(this).name.split('|');
-        var proc_popup = new Transformation();
-        proc_popup.setCallback(func_popupXsltCallback);
-        proc_popup.setXml(elements[0]);
-        proc_popup.setXslt(elements[1]);
-        jQuery('#popup-container-display').hide();
-        proc_popup.transform('popup-container-display');
-};
+/**
+ * Hide Generic info
+ *
+ * @param string span_index
+ */
+function hideGenericInfo(span_index)
+{
+	var span = document.getElementById(span_index);
+	span.innerHTML = '';
+}
+
+function setSpanStyle(span, top, left) {
+	//calcul auto de la largeur de l'ecran client
+	var l = screen.availWidth;
+
+	//calcul auto de la hauteur de l'ecran client
+	var h = screen.availHeight;
+
+	if ((h - tempY < span.offsetHeight - window.pageYOffset) || (tempY + 510 - window.pageYOffset) > h) {
+    	span.style.top = top+'px';
+    }
+    span.style.left = left+'px';
+}
 
 // Monitoring Refresh management Options
 

@@ -305,7 +305,7 @@
 								</xsl:element>	
 							</xsl:if>
 							</span>
-						</xsl:element>						
+						</xsl:element>
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColCenter</xsl:attribute>
 							<xsl:attribute name='style'>background-color:<xsl:value-of select='bgcolor'/>;font-weight:bold;white-space:nowrap;</xsl:attribute>
