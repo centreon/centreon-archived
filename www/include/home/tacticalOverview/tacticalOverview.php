@@ -61,30 +61,55 @@
 ?>
 <script type='text/javascript' src='./class/centreonAjax.js'></script>
 <script type='text/javascript'>
+var $set_displayPOPUP = function() {
+        jQuery('.link_popup_volante').mouseenter(func_displayPOPUP);
+        jQuery('.link_popup_volante').mouseleave(func_hidePOPUP);
+};
+
 var refreshInterval = <?php echo $refreshInterval; ?>;
 var _sid = '<?php echo session_id();?>';
 var broker = '<?php  echo $oreon->broker->getBroker();?>';
 var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/' + broker +'/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
-var ajaxOverlay = new CentreonAjaxOverlay();
+ajax.setCallback($set_displayPOPUP);
 ajax.setTime(refreshInterval);
 document.onLoad = ajax.start();
 
-function showHostOverlay(id, domId) {
-	var span = document.getElementById('span_' + domId);
-	var xmlPage = "./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+id;
-	var xslPage = "./include/monitoring/status/Services/xsl/popupForHost.xsl";
-	ajaxOverlay.show(xmlPage, xslPage, 'span_' + domId);
-}
+// Poppin Function
+var func_popupXsltCallback = function() {
+        jQuery('.popup_volante .container-load').empty();
+        jQuery('.popup_volante').animate({width: jQuery('#popup-container-display').width(), height: jQuery('#popup-container-display').height(),
+                             top: (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2)}, "slow");
+        jQuery('#popup-container-display').fadeIn(1000);
+};
 
-function showServiceOverlay(id) {
-	var span = document.getElementById('span_'+id);
-	var xmlPage = "./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+id;
-	var xslPage = "./include/monitoring/status/Services/xsl/popupForService.xsl";
-	ajaxOverlay.show(xmlPage, xslPage, 'span_'+id);
-}
+var func_displayPOPUP = function(event) {
+        var position = jQuery('#' + $(this).id).offset();
 
-function hideOverlay(id) {
-   	ajaxOverlay.hide('span_'+id);
-}
+        jQuery('.popup_volante .container-load').html('<img src="img/misc/ajax-loader.gif" />');
+        jQuery('.popup_volante').css('left', position.left + jQuery('#' + $(this).id).width() + 10);
+        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('.img_volante').height() / 2));
+        jQuery('.popup_volante').show();
+
+        var elements = $(this).id.split('-');
+        var proc_popup = new Transformation();
+        proc_popup.setCallback(func_popupXsltCallback);
+        if (elements[0] == "host") {
+                proc_popup.setXml("./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneHost.php?"+'&sid='+_sid+'&host_id='+elements[1]);
+                proc_popup.setXslt("./include/monitoring/status/Services/xsl/popupForHost.xsl");
+        } else {
+                proc_popup.setXml("./include/monitoring/status/Services/xml/" + broker + "/makeXMLForOneService.php?"+'&sid='+_sid+'&svc_id='+ elements[1]);
+                proc_popup.setXslt("./include/monitoring/status/Services/xsl/popupForService.xsl");
+        }
+        jQuery('#popup-container-display').hide();
+        proc_popup.transform('popup-container-display');
+};
+
+var func_hidePOPUP = function(event) {
+        jQuery('.popup_volante .container-load').empty();
+        jQuery('#popup-container-display').hide();
+        jQuery('.popup_volante').hide();
+        jQuery('.popup_volante').css('width', 'auto');
+        jQuery('.popup_volante').css('height', 'auto');
+};
 
 </script>

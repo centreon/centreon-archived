@@ -270,13 +270,9 @@
 							</xsl:if>
 							<xsl:element name='a'>
 								<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
-								<xsl:attribute name="class">infobulle</xsl:attribute>
-								<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>', '<xsl:value-of select="domId"/>');</xsl:attribute>
-								<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="domId"/>');</xsl:attribute>
+								<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
+								<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 								<xsl:value-of select='hostname'/>
-								<xsl:element name="span">
-									<xsl:attribute name="id">span_<xsl:value-of select="domId"/></xsl:attribute>
-								</xsl:element>
 							</xsl:element>
 							<span style='float: right;'>
 							<xsl:if test='host_notesurl != ""'>
@@ -696,17 +692,13 @@
 										</xsl:element>
 									</xsl:if>						
 									<xsl:element name='a'>
-										<xsl:attribute name='onmouseover'>showHostOverlay('<xsl:value-of select="hid"/>', '<xsl:value-of select="domId"/>');</xsl:attribute>
-										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="domId"/>');</xsl:attribute>
-										<xsl:attribute name="class">infobulle</xsl:attribute>
+										<xsl:attribute name="id">host-'<xsl:value-of select="hid"/></xsl:attribute>
+										<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/>
 										</xsl:attribute>
 										<xsl:attribute name='href'><xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/></xsl:attribute>
 										<xsl:value-of select='hostname'/>
-										<xsl:element name='span'>
-											<xsl:attribute name='id'>span_<xsl:value-of select='domId'/></xsl:attribute>
-										</xsl:element>
 									</xsl:element>
 								</td>							
 								<xsl:element name='td'>
@@ -715,16 +707,12 @@
 										white-space: nowrap;
 									</xsl:attribute>									
 									<xsl:element name='a'>
-										<xsl:attribute name='onmouseover'>showServiceOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
-										<xsl:attribute name='onmouseout'>hideOverlay('<xsl:value-of select="sid"/>');</xsl:attribute>
-										<xsl:attribute name="class">infobulle</xsl:attribute>
+										<xsl:attribute name="id">service-<xsl:value-of select="sid"/></xsl:attribute>
+										<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_svcdetail'/><xsl:value-of select='hostname'/><xsl:value-of select='//main/url_svcdetail2'/><xsl:value-of select='servicename'/>
 										</xsl:attribute>
 										<xsl:value-of select='servicename'/>
-										<xsl:element name='span'>
-											<xsl:attribute name='id'>span_<xsl:value-of select='sid'/></xsl:attribute>
-										</xsl:element>
 									</xsl:element>
 									<span style='float: right;'>
 									<xsl:if test='notes_url != ""'>
@@ -785,5 +773,6 @@
 </div>
 </xsl:for-each>
 <div id="div_img" class="img_volante"></div>
+<div id="div_popup" class="popup_volante"><div class="container-load"></div><div id="popup-container-display"></div></div>
 </xsl:template>
 </xsl:stylesheet>
