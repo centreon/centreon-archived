@@ -364,7 +364,9 @@ class CentreonACL
 							}
 							$str_topo .= $topo_page["topology_topology_id"];
 					 		$count++;
-					 		$tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
+                                                        if (!isset($tmp_topo_page[$topo_page['topology_topology_id']]) || !$tmp_topo_page[$topo_page['topology_topology_id']]) {
+                                                            $tmp_topo_page[$topo_page["topology_topology_id"]] = $topo_page["access_right"];
+                                                        }
 						}
 						$DBRESULT2->free();
 					}
