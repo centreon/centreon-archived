@@ -301,7 +301,7 @@
 		} else {
 			$rq2 =	" SELECT DISTINCT cmt.entry_time as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
 					" FROM comments cmt, hosts h " .
-					" WHERE h.name = '".$host_name."' AND cmt.service_id = '' AND h.host_id = cmt.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
+					" WHERE h.name = '".$host_name."' AND cmt.service_id IS NULL AND h.host_id = cmt.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
 			$DBRESULT = $pearDBO->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 				$tabCommentServices[$i] = $data;
