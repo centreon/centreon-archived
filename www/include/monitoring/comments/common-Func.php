@@ -43,7 +43,7 @@
 
 		foreach ($hosts as $key => $value)	{
 			$res = preg_split("/\;/", $key);
-			write_command(" DEL_".$type."_COMMENT;".$res[1]."\n", GetMyHostPoller($pearDB, $res[0]));
+			write_command(" DEL_".$type."_COMMENT;".$res[1], GetMyHostPoller($pearDB, $res[0]));
 		}
 	}
 
@@ -52,7 +52,7 @@
 
 		if (!isset($persistant))
 			$persistant = 0;
-		write_command(" ADD_HOST_COMMENT;".getMyHostName($host).";".$persistant.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, getMyHostName($host)));
+		write_command(" ADD_HOST_COMMENT;".getMyHostName($host).";".$persistant.";".$oreon->user->get_alias().";".$comment, GetMyHostPoller($pearDB, getMyHostName($host)));
 	}
 
 	function AddSvcComment($host, $service, $comment, $persistant){
@@ -60,6 +60,6 @@
 
 		if (!isset($persistant))
 			$persistant = 0;
-		write_command(" ADD_SVC_COMMENT;".getMyHostName($host).";".getMyServiceName($service).";".$persistant.";".$oreon->user->get_alias().";".$comment."\n", GetMyHostPoller($pearDB, getMyHostName($host)));
+		write_command(" ADD_SVC_COMMENT;".getMyHostName($host).";".getMyServiceName($service).";".$persistant.";".$oreon->user->get_alias().";".$comment, GetMyHostPoller($pearDB, getMyHostName($host)));
 	}
 ?>
