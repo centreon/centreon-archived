@@ -144,7 +144,9 @@
 		if (!$is_admin) {
 			$rq2 .=	" AND h.name = acl.host_name AND s.description = acl.service_description ";
 		}
-		$rq2 .= " AND c.expires = '0' ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+		$rq2 .= " AND c.expires = '0' ";
+                $rq2 .= " AND c.internal_id NOT IN (SELECT internal_id FROM comments WHERE deletion_time <> 0) ";
+                $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 
 		$DBRESULT = $pearDBO->query($rq2);
 		$rows = $pearDBO->numberRows();
