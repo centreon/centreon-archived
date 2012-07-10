@@ -103,6 +103,13 @@
     	        $fileXml->writeElement('module_directory', $centreonBrokerModulePath);
     	    }
 
+    	    /*
+    	     * Write Broker Stats 
+    	     */
+    	    $fileXml->startElement('stats');
+    	    $fileXml->writeElement('fifo', "@CENTREON_VARLIB@/".$ns_name.".fifo");
+    	    $fileXml->endElement();
+    	    
     	    foreach ($groups as $group => $listInfos) {
     	        if (count($listInfos) > 0) {
         	        foreach ($listInfos as $infos) {
