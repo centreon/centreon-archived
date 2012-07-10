@@ -54,6 +54,18 @@ class CentreonXML {
         $this->buffer->startDocument('1.0', 'UTF-8');
     }
 
+    /**
+     * Clean string
+     * 
+     * @param string $str
+     * @return string
+     */
+    protected function cleanStr($str)
+    {
+        $str = preg_replace('/[\x00-\x09\x0B-\x0C\x0E-\x1F\x0D]/', "", $str);
+        return $str;
+    }
+    
     /*
      *  Starts an element that contains other elements
      */
@@ -72,6 +84,7 @@ class CentreonXML {
      *  Simply puts text
      */
     public function text($txt, $cdata = true, $encode = 0) {
+        $txt = $this->cleanStr($txt);
         $txt = html_entity_decode($txt);
         if ($encode || !$this->is_utf8($txt)) {
             $this->buffer->writeCData(utf8_encode($txt));
@@ -114,7 +127,7 @@ class CentreonXML {
      */
     public function writeElement($element_tag, $element_value, $encode = 0) {
         $this->startElement($element_tag);
-        //$element_value = preg_replace('/[\x00-\x19\x7F]/', "", $element_value);
+        $element_value = $this->cleanStr($element_value);
         $element_value = html_entity_decode($element_value);
         if ($encode || !$this->is_utf8($element_value)) {
             $this->buffer->writeCData(utf8_encode($element_value));
@@ -129,7 +142,7 @@ class CentreonXML {
      *  Writes attribute
      */
     public function writeAttribute($att_name, $att_value, $encode = false) {
-        $att_value = preg_replace('/[\x00-\x19\x7F]/', "", $att_value);
+        $att_value = $this->cleanStr($att_value);
         if ($encode) {
             $this->buffer->writeAttribute($att_name, utf8_encode(html_entity_decode($att_value)));
         } else {
