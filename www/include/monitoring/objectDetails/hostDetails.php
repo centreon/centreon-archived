@@ -290,7 +290,7 @@
 		if ($oreon->broker->getBroker() == 'ndo') {
 			$rq2 =	" SELECT cmt.comment_id, cmt.comment_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name" .
 					" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-					" WHERE obj.name1 = '".$host_name."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
+					" WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 IS NULL AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
 			$DBRESULT = $pearDBndo->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 				$tabCommentHosts[$i] = $data;
@@ -301,7 +301,7 @@
 		} else {
 			$rq2 =	" SELECT DISTINCT cmt.entry_time as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
 					" FROM comments cmt, hosts h " .
-					" WHERE h.name = '".$host_name."' AND cmt.service_id IS NULL AND h.host_id = cmt.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
+					" WHERE h.name = '".$pearDBO->escape($host_name)."' AND cmt.service_id IS NULL AND h.host_id = cmt.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
 			$DBRESULT = $pearDBO->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 				$tabCommentServices[$i] = $data;

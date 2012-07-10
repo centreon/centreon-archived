@@ -235,18 +235,18 @@
 		if ($oreon->broker->getBroker() == "ndo") {
 			$rq2 =	"SELECT nhs.current_state" .
 					" FROM ".$ndo_base_prefix."hoststatus nhs, ".$ndo_base_prefix."objects no" .
-					" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$host_name."'";
+					" WHERE no.object_id = nhs.host_object_id AND no.name1 like '".$pearDBndo->escape($host_name)."'";
 			$DBRESULT = $pearDBndo->query($rq2);
 		} else {
 			$rq2 =	"SELECT state AS current_state" .
 					" FROM hosts " .
-					" WHERE name LIKE '".$host_name."'";
+					" WHERE name LIKE '".$pearDBO->escape($host_name)."'";
 			$DBRESULT = $pearDBO->query($rq2);
 		}
 		$ndo2 = $DBRESULT->fetchRow();
 		$host_status[$host_name] = $tab_host_status[$ndo2["current_state"]];
 
-		$DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_name = '".$host_name."'");
+		$DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_name = '".$pearDB->escape($host_name)."'");
 		$host = $DBRESULT->fetchrow();
 		$DBRESULT->free();
 		$total_current_attempts = getMyServiceField($service_id, "service_max_check_attempts");
@@ -268,7 +268,7 @@
 		if ($oreon->broker->getBroker() == "ndo") {
 			$rq2 =	" SELECT DISTINCT cmt.comment_time as entry_time, cmt.comment_id, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
 					" FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
-					" WHERE obj.name1 = '".$host_name."' AND obj.name2 = '".$svc_description."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
+					" WHERE obj.name1 = '".$pearDBndo->escape($host_name)."' AND obj.name2 = '".$pearDBndo->escape($svc_description)."' AND obj.object_id = cmt.object_id AND cmt.expires = 0 ORDER BY cmt.comment_time";
 			$DBRESULT = $pearDBndo->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 				$tabCommentServices[$i] = $data;
@@ -279,7 +279,7 @@
 		} else {
 			$rq2 =	" SELECT DISTINCT cmt.entry_time as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name, s.description AS service_description " .
 					" FROM comments cmt, hosts h, services s " .
-					" WHERE h.name = '".$host_name."' AND s.description = '".$svc_description."' AND h.host_id = cmt.host_id AND s.service_id = cmt.service_id AND h.host_id = s.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
+					" WHERE h.name = '".$pearDBO->escape($host_name)."' AND s.description = '".$pearDBO->escape($svc_description)."' AND h.host_id = cmt.host_id AND s.service_id = cmt.service_id AND h.host_id = s.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
 			$DBRESULT = $pearDBO->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 				$tabCommentServices[$i] = $data;
