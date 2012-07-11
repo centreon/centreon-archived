@@ -300,12 +300,17 @@
 			unset($data);
 		} else {
 			$rq2 =	" SELECT DISTINCT cmt.entry_time as entry_time, cmt.comment_id, cmt.author AS author_name, cmt.data AS comment_data, cmt.persistent AS is_persistent, h.name AS host_name " .
-					" FROM comments cmt, hosts h " .
-					" WHERE h.name = '".$pearDBO->escape($host_name)."' AND cmt.service_id IS NULL AND h.host_id = cmt.host_id AND cmt.expires = 0 AND deletion_time = 0 ORDER BY cmt.entry_time";
+                                " FROM comments cmt, hosts h " .
+                                " WHERE h.name = '".$pearDBO->escape($host_name)."' 
+                                  AND cmt.service_id IS NULL 
+                                  AND h.host_id = cmt.host_id 
+                                  AND cmt.expires = 0 
+                                  AND (SELECT internal_id FROM comments cmt2 WHERE cmt.internal_id = cmt2.internal_id AND cmt2.deletion_time <> 0) IS NULL
+                                  ORDER BY cmt.entry_time";
 			$DBRESULT = $pearDBO->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
-				$tabCommentServices[$i] = $data;
-				$tabCommentServices[$i]["is_persistent"] = $en[$tabCommentServices[$i]["is_persistent"]];
+				$tabCommentHosts[$i] = $data;
+				$tabCommentHosts[$i]["is_persistent"] = $en[$tabCommentHosts[$i]["is_persistent"]];
 			}
 			$DBRESULT->free();
 			unset($data);
