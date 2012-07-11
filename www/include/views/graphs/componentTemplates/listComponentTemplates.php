@@ -70,7 +70,7 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Data Source Name"));
 	$tpl->assign("headerMenu_legend", _("Legend"));
-	$tpl->assign("headerMenu_stack", _("Stack"));
+	$tpl->assign("headerMenu_stack", _("Stacked"));
 	$tpl->assign("headerMenu_order", _("Order"));
 	$tpl->assign("headerMenu_Transp", _("Transparency"));
 	$tpl->assign("headerMenu_tickness", _("Thickness"));
@@ -97,7 +97,7 @@
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
-	$yesOrNo = array(NULL => "No", 0 => "No", 1 => "Yes");
+	$yesOrNo = array(NULL => _("No"), 0 => _("No"), 1 => _("Yes"));
 	$elemArr = array();
 	for ($i = 0; $compo = $DBRESULT->fetchRow(); $i++) {
 		$selectedElements = $form->addElement('checkbox', "select[".$compo['compo_id']."]");

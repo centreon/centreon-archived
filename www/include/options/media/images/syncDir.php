@@ -102,10 +102,10 @@
 		<div style='float:left;width:270px;text-align:left;'>
 		<p>
 		<?php
-			print "Bad picture alias detected : $fileRemoved<br>";
-			print "New directory added : $dirCreated<br>";
-			print "New images added : $regCounter<br>";
-			print "Convert gd2 -> png : $gdCounter<br><br><br>";
+			print _("Bad picture alias detected :") . " $fileRemoved<br>";
+			print _("New directory added :") . " $dirCreated<br>";
+			print _("New images added :") . " $regCounter<br>";
+			print _("Convert gd2 -> png :") . " $gdCounter<br><br><br>";
 		?>
 		</p>
 		<br><br><br>

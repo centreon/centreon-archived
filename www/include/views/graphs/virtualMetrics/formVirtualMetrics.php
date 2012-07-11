@@ -70,7 +70,7 @@
 	#
 	# Existing Data Index List comes from DBO -> Store in $indds Array
 	#
-	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
+	$indds = array(""=> sprintf("%s%s", _("Host list"), "&nbsp;&nbsp;&nbsp;"));
 	$mx_l = strlen($indds[""]);
 
 	$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data;");

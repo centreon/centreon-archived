@@ -214,7 +214,8 @@
 	$tpl->assign("sort1", _("Downtime Configuration"));
 	$tpl->assign("sort2", _("Relations"));
 	$tpl->assign("periods", _("Periods"));
-
+        $tpl->assign("period", _("Period"));
+        
 	/*
 	 * prepare help texts
 	 */

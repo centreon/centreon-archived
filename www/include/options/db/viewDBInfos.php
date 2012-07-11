@@ -108,7 +108,7 @@
 	}
 ?>
 <table class="ListTable">
- 	<tr class="ListHeader"><td class="FormHeader" colspan="<?php print $oreon->broker->getBroker() == "ndo" ? "4" : "3"; ?>"><img src='./img/icones/16x16/server_network.gif'>&nbsp;Centreon&nbsp;<?php print _("DataBase Statistics"); ?></td></tr>
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="<?php print $oreon->broker->getBroker() == "ndo" ? "4" : "3"; ?>"><img src='./img/icones/16x16/server_network.gif'>&nbsp;<?php print _("Centreon DataBase Statistics"); ?></td></tr>
 	<tr class="list_lvl_1">
 		<td class="ListColLvl1_name">&nbsp;</td>
 		<td class="ListColLvl1_name"><?php echo $conf_centreon["db"]; ?></td>

@@ -98,7 +98,7 @@
 	/*
 	 * Host list with perf data come from DBO -> Store in $indds Array
 	 */
-	$indds = array(""=>"Host list&nbsp;&nbsp;&nbsp;");
+	$indds = array(""=> sprintf("%s%s", _("Hosts list"), "&nbsp;&nbsp;&nbsp;"));
 	$mx_l = strlen($indds[""]);
 
 	$dbindd = $pearDBO->query("SELECT DISTINCT host_id, host_name FROM index_data ORDER BY host_name, service_description");

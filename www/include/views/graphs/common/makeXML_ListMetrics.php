@@ -52,11 +52,36 @@
 	$pearDB = new CentreonDB();
 	$pearDBO = new CentreonDB("centstorage");
 
+        /*
+	 * Get session
+	 */
+	require_once ($centreon_path . "www/class/centreonSession.class.php");
+	require_once ($centreon_path . "www/class/centreon.class.php");
+	if(!isset($_SESSION['centreon'])) {
+		CentreonSession::start();
+	}
+
+	if (isset($_SESSION['centreon'])) {
+            $oreon = $_SESSION['centreon']; 
+	} else {
+            exit;
+	}
+        
+	/*
+	 * Get language 
+	 */
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bind_textdomain_codeset("messages", "UTF-8"); 
+	textdomain("messages");
+        
 	#
 	# Existing Real Metric List comes from DBO -> Store in $rmetrics Array
 	#
 	$s_datas = array();
-	$o_datas = array(""=>"List of known metrics&nbsp;&nbsp;&nbsp;");
+	$o_datas = array(""=> sprintf("%s%s", _("List of known metrics"), "&nbsp;&nbsp;&nbsp;"));
 	$mx_l = strlen($o_datas[""]);
 	$where = "";
 	$def_type = array(0=>"CDEF",1=>"VDEF");

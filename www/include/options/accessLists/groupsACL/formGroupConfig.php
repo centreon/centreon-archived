@@ -251,8 +251,8 @@
 	/*
 	 * Define tab title
 	 */
-	$tpl->assign("sort1", "Group Information");
-	$tpl->assign("sort2", "Authorizations information");
+	$tpl->assign("sort1", _("Group Information"));
+	$tpl->assign("sort2", _("Authorizations information"));
 
 	/*
 	 * Just watch a Contact Group information

@@ -40,7 +40,7 @@ function addPeriods() {
 	periods++;
 	tabsPeriods.add({
 		id: 'p_' + periods,
-		title: 'Period ' + periods,
+		title: '{/literal}{$period}{literal} ' + periods,
 		autoLoad: {url: './main.php?p={/literal}{$p}{literal}&min=1&iframe=1&period=' + periods, scripts: true},
 		closable: true
 	}).show();

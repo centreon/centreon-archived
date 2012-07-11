@@ -43,7 +43,7 @@
 
 	#
 	# Existing services data comes from DBO -> Store in $s_datas Array
-	$s_datas = array(""=>"Services list&nbsp;&nbsp;&nbsp;");
+	$s_datas = array(""=> sprintf("%s%s", _("Service list"), "&nbsp;&nbsp;&nbsp;"));
 	$mx_l = strlen($s_datas[""]);
 
 	if (isset($_GET["host_id"]) && $_GET["host_id"] != 0) {
