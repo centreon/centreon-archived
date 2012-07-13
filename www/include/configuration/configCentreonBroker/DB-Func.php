@@ -123,6 +123,8 @@
 	    foreach ($ids as $id => $value)	{
 			global $pearDB;
 
+			$cbObj = new CentreonConfigCentreonBroker($pearDB);
+
 			$DBRESULT = $pearDB->query("SELECT config_name, config_filename, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id);
 			$row = $DBRESULT->fetchRow();
 			$DBRESULT->free();
@@ -144,6 +146,25 @@
     	        $values[$rowOpt['config_group']][$rowOpt['config_group_id']][$rowOpt['config_key']] = $rowOpt['config_value'];
     	    }
     	    $DBRESULT->free();
+    	    /*
+    	     * Convert values radio button
+    	     */
+    	    foreach ($values as $group => $groups) {
+    	        foreach ($groups as $gid => $infos) {
+    	            if (isset($infos['blockId'])) {
+        	            list($tagId, $typeId) = explode('_', $infos['blockId']);
+        	            $fieldtype = $cbObj->getFieldtypes($typeId);
+    	            } else {
+    	                $fieldtype = array();
+    	            }
+    	            foreach ($infos as $key => $value) {
+    	                if (isset($fieldtype[$key]) && $fieldtype[$key] == 'radio') {
+    	                    $values[$group][$gid][$key] = array($key => $value);
+    	                }
+    	            }
+    	        }
+    	    }
+
 
 			/*
 			 * Copy the configuration
@@ -167,7 +188,6 @@
 			    }
 			    $values['name'] = $newname;
 			    $values['filename'] = $newfilename;
-			    $cbObj = new CentreonConfigCentreonBroker($pearDB);
 			    $cbObj->insertConfig($values);
 			}
 		}

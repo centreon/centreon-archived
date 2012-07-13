@@ -561,7 +561,7 @@ class CentreonConfigCentreonBroker
      * @param int $typeId The type id
      * @return array
      */
-    private function getFieldtypes($typeId)
+    public function getFieldtypes($typeId)
     {
         if (isset($this->fieldtypeCache[$typeId])) {
             return $this->fieldtypeCache[$typeId];
