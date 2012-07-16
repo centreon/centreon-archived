@@ -143,7 +143,7 @@
 		if ($ACLString == "") {
 			$ACLString = "''";
 		}
-		$rq .= " AND s.description IN (".$ACLString.") AND no.name1 LIKE '_Module_Meta' ";
+		$rq .= " AND s.description IN (".$ACLString.")";
 	}
     if ($search){
 		$rq .= " AND s.display_name LIKE '%" . $search . "%' ";
