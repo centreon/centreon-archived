@@ -555,7 +555,7 @@
 	* @param unknown_type $filename
 	*/
 	function setFileMod($filename) {
-		chmod($filename, 0660);
+		chmod($filename, 0664);
 	}
 
 	// Put text in good format
