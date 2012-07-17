@@ -1705,6 +1705,13 @@ function check_user_nagios()
 		fi
 		if [ "$RC" -eq 0 ] ; then
 			echo_info "$(gettext "Finding Nagios user") :" "$NAGIOS_USER"
+                        # Testing if user nagios is in web group
+                        log "DEBUG" "$(gettext "Test user nagios in web group")"
+                        id "$NAGIOS_USER" | grep "($WEB_GROUP)" >> $LOG_FILE 2>&1
+                        if [ $? -ne 0 ]; then
+                            log "DEBUG" "$(gettext "Add user nagios to web group")"
+                            usermod -aG $WEB_GROUP $NAGIOS_USER >> $LOG_FILE 2>&1
+                        fi
 			return 0
 		fi
 	fi
@@ -1714,7 +1721,8 @@ function check_user_nagios()
 
 	if [ "$?" -eq 0 ] ; then 
             # put nagios user into apache group
-            usermod -aG $WEB_GROUP $NAGIOS_USER	
+            log "DEBUG" "$(gettext "Add user nagios to web group")"
+            usermod -aG $WEB_GROUP $NAGIOS_USER
             return 0
 	fi
 
