@@ -95,6 +95,7 @@
 	$tpl->assign("headerMenu_rname", 		_("Real name"));
 	$tpl->assign("headerMenu_release", 		_("Release"));
 	$tpl->assign("headerMenu_infos", 		_("Informations"));
+    $tpl->assign("headerMenu_moduleStatus", _("Status"));
 	$tpl->assign("headerMenu_author", 		_("Author"));
 	$tpl->assign("headerMenu_licenseExpire", _("Expiration date"));
 	$tpl->assign("headerMenu_isinstalled", 	_("Installed"));
@@ -139,6 +140,7 @@
 										"RowMenu_rname" => $moduleinfo["rname"],
 										"RowMenu_release" => $moduleinfo["mod_release"],
 										"RowMenu_infos" => $moduleinfo["infos"],
+                                        "RowMenu_moduleId" => $moduleinfo["id"],
 										"RowMenu_author" => $moduleinfo["author"],
 										"RowMenu_licenseExpire" => $license_expires,
 										"RowMenu_upgrade" => 0,

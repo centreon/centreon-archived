@@ -8,6 +8,7 @@
 		<td class="ListColHeaderCenter">{$headerMenu_author}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_licenseExpire}</td>
 		<td class="ListColHeaderCenter">{$headerMenu_isinstalled}</td>
+        <td class="ListColHeaderCenter">{$headerMenu_moduleStatus}</td>
 		<td class="ListColHeaderRight">{$headerMenu_action}</td>
 	</tr>
 	{section name=elem loop=$elemArr}
@@ -31,18 +32,151 @@
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_release}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_author}</td>
 		<td class="ListColCenter">{$elemArr[elem].RowMenu_licenseExpire}</td>
-		<td class="ListColCenter">{$elemArr[elem].RowMenu_isinstalled}</td>		
+		<td class="ListColCenter">{$elemArr[elem].RowMenu_isinstalled}</td>
+        <td id="{$elemArr[elem].RowMenu_name}" class="ListColCenter"></td>
 		<td class="ListColRight">
 			{if $elemArr[elem].RowMenu_link_install}
-				&nbsp;<a href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icones/16x16/gears_run.gif' title='{$action_install}' alt='{$action_install}'></a>&nbsp;
+				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_install}" style=""><img src='./img/icones/16x16/gears_run.gif' title='{$action_install}' alt='{$action_install}'></a>&nbsp;
 			{/if}
 			{if $elemArr[elem].RowMenu_link_delete}
-				&nbsp;<a href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{$confirm_removing}')"><img src='./img/icones/16x16/garbage_empty.gif' title='{$action_delete}' alt='{$action_delete}'></a>&nbsp;
+				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_delete}"  onclick="return confirm('{$confirm_removing}')"><img src='./img/icones/16x16/garbage_empty.gif' title='{$action_delete}' alt='{$action_delete}'></a>&nbsp;
 			{/if}
 			{if $elemArr[elem].RowMenu_link_upgrade && $elemArr[elem].RowMenu_upgrade == 1}
-				&nbsp;<a href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icones/16x16/gear_replace.gif' title='{$action_upgrade}' alt='{$action_upgrade}'></a>&nbsp;
+				&nbsp;<a id="action{$elemArr[elem].RowMenu_name}" href="{$elemArr[elem].RowMenu_link_upgrade}"><img src='./img/icones/16x16/gear_replace.gif' title='{$action_upgrade}' alt='{$action_upgrade}'></a>&nbsp;
 			{/if}
-		</td>		
+		</td>
 	</tr>
 	{/section}	
 </table>
+
+<link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+<link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/themes/blitzer/jquery-ui.css" />
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/xml2json/jquery.xml2json.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/jquery.ui.widget.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.iframe-transport.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.xdr-transport.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.postmessage-transport.js"></script>
+<script type="text/javascript">
+    {literal}
+    function CheckModule()
+    {
+        jQuery(document).ready(function()
+        {
+            jQuery.ajax(
+            {
+                type: 'POST',
+                url: 'include/options/oreon/modules/moduleDependenciesValidator.php',
+                data:
+                {
+                    mydata: 1,
+                    mydata2: 2
+                }, 
+                success: function(data, textStatus, jqXHR)
+                {
+                    var myResponse = jQuery.xml2json(data);
+                    displayResults(myResponse.module);
+                },
+                error: function(jqXHR, textStatus, errorThrown)
+                {
+                    alert('Erreur de connexion');
+                }
+            });
+        });
+    }
+    
+    function displayResults(moduleList)
+    {
+        for (var i = 0; i < moduleList.length; i++)
+        {
+            module = moduleList[i];
+            myModuleStatusSpan = jQuery('#'+module["name"]);
+            myModuleStatusSpan.empty();
+            
+            if (module["status"] == "critical")
+            {
+                modalBoxId = 'criticalBox_' + module["name"];
+                jQuery('#' + modalBoxId).remove();
+                var criticalModalBox = '<div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-draggable ui-resizable" ';
+                criticalModalBox += 'id="'+ modalBoxId +'"';
+                criticalModalBox += 'style="margin-right: auto; margin-left: auto;" title="Module Error">';
+                
+                
+                myModuleStatusSpan.append('<a href="#" onclick="jQuery(\'#'+modalBoxId+'\').dialog(\'open\');" ><img id="img_critical_'+ module["name"] +'" src="img/icones/16x16/rrdgraph_rpn_error.png" /></a>');
+                moduleMessages = module.children;
+                statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
+                
+                statusMessage = "";
+                solution = "";
+                if (module["message"] instanceof Array)
+                {
+                    for (var j = 0; j < module["message"].length; j++)
+                    {
+                        statusMessage += module["message"][j]['ErrorMessage'] + '<br />';
+                        solution += module["message"][j]['Solution']+ '<br />';
+                    }
+                }
+                else
+                {
+                    statusMessage = module["message"]['ErrorMessage'];
+                    solution = module["message"]['Solution']+ '<br /><br />';
+                }
+                
+                criticalModalBox += solution;
+                criticalModalBox += '</div>';
+                statusMessage += '<br />Click to check available actions to fix it.';
+                tooltipReferer = '#img_critical_'+ module["name"];
+                jQuery('#action'+ module["name"]).empty();
+                jQuery('body').append(criticalModalBox);
+                jQuery('#' + modalBoxId).dialog({ autoOpen: false });
+                jQuery('#' + modalBoxId).dialog( "option", "show", { effect: 'drop', direction: "up" } );
+                jQuery('#' + modalBoxId).dialog( "option", "hide", { effect: 'drop', direction: "down" } );
+                jQuery('#' + modalBoxId).dialog( "option", "modal", true );
+            }
+            else if (module["status"] == "warning")
+            {
+                myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="img/icones/16x16/rrdgraph_rpn_valid.png" />');
+                statusMessage = 'The module is fully functional';
+                statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
+                tooltipReferer = '#img_ok_'+ module["name"];
+            }
+            else if (module["status"] == "ok")
+            {
+                myModuleStatusSpan.append('<img id="img_ok_'+ module["name"] + '" src="img/icones/16x16/rrdgraph_rpn_valid.png" />');
+                statusStyle = 'ui-tooltip-green ui-tooltip-shadow';
+                statusMessage = 'The module is fully functional';
+                tooltipReferer = '#img_ok_'+ module["name"];
+            }
+            else
+            {
+                myModuleStatusSpan.append('<img id="img_warning_'+ module["name"] + '" src="img/icones/16x16/help_button.png" />');
+                statusStyle = 'ui-tooltip-red ui-tooltip-shadow';
+                statusMessage = "Can't check module dependencies";
+                tooltipReferer = '#img_warning_'+ module["name"];
+            }
+            
+            jQuery(tooltipReferer).qtip({
+                content: statusMessage,
+                style: {
+                    classes: statusStyle
+                },
+                show: {
+                    event: "mouseover"
+                },
+                hide: {
+                    event: "mouseout"
+                },
+                position: {
+                    at: "bottom left",
+                    my: "top right"
+                }
+            })
+            myModuleStatusSpan = null;
+        }
+    }
+    
+    CheckModule();
+    {/literal}
+</script>
