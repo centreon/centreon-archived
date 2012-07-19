@@ -286,6 +286,7 @@
 	/*
 	 * Send ACL Topology in template
 	 */
+    //echo '<pre>'; var_dump($oreon->user->access->topology); echo '</pre>';
 	$tpl->assign("topology", $oreon->user->access->topology);
 
 	/*
@@ -314,9 +315,21 @@
 	 */
 	if ($is_admin){
 		$tab_user = array();
-		$DBRESULT = $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id");
+        $tab_user_admin = array();
+        $tab_user_non_admin = array();
+		$DBRESULT = $pearDB->query("SELECT session.session_id, contact.contact_alias, contact.contact_admin, session.user_id, session.ip_address FROM session, contact WHERE contact.contact_id = session.user_id
+            ORDER BY contact.contact_alias");
 		while ($session = $DBRESULT->fetchRow())
-			$tab_user[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
+        {
+            if ($session["contact_admin"] == 1)
+                $tab_user_admin[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
+            else
+                $tab_user_non_admin[$session["user_id"]] = array("ip"=>$session["ip_address"], "id"=>$session["user_id"], "alias"=>$session["contact_alias"], "admin"=>$session["contact_admin"]);
+        }
+        
+        $tab_user = array_merge($tab_user_admin, $tab_user_non_admin);
+        unset($tab_user_admin);
+        unset($tab_user_non_admin);
 		$DBRESULT->free();
 		$tpl->assign("tab_user", $tab_user);
 	}
