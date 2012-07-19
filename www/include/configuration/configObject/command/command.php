@@ -84,6 +84,7 @@
 			$o = $_POST["o2"];
 	}
 	
+    //echo '<pre>'; var_dump($ret); echo '</pre>';
 	/* Set the real page */
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
