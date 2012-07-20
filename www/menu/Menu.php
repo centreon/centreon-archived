@@ -153,13 +153,17 @@
 	$rq = "SELECT * FROM topology WHERE topology_parent IS NULL $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 	$DBRESULT = $pearDB->query($rq);
 	for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++) {
-	    $elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
+        $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+        if (($pageAccess == "1") || ($pageAccess == "2"))
+        {
+            $elemArr[1][$i] = array("Menu1ClassImg" => $level1 == $elem["topology_page"] ? "menu1_bgimg" : "id_".$elem["topology_id"],
 								"Menu1Page" => $elem["topology_page"] ,
 								"Menu1Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu1UrlPopup" => $elem["topology_popup"],
 								"Menu1UrlPopupOpen" => $elem["topology_url"],
 								"Menu1Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 								"Menu1Popup" => $elem["topology_popup"] ? true : false);
+        }
 	}
 	$DBRESULT->free();
 
@@ -204,12 +208,17 @@
 	$sep = "&nbsp;";
 	for ($i = 0; $DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow()); $i++)	{
 		$firstP ? null : $firstP = $elem["topology_page"];
-	    $elemArr[2][$i] = array("Menu2Sep" => $sep,
+        
+        $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+        if (($pageAccess == "1") || ($pageAccess == "2"))
+        {
+            $elemArr[2][$i] = array("Menu2Sep" => $sep,
 								"Menu2Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 								"Menu2UrlPopup" => $elem["topology_popup"],
 								"Menu2UrlPopupOpen" => $elem["topology_url"].$auth,
 								"Menu2Name" =>  $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 								"Menu2Popup" => $elem["topology_popup"] ? true : false);
+        }
 		$sep = "&nbsp;|&nbsp;";
 	}
 
@@ -230,9 +239,12 @@
 			$title = _("Main Menu");
 		}
 
-		$Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
-		$elemArr[3][$elem["topology_group"]]["title"] = $title;
-	    $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
+        $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+        if (($pageAccess == "1") || ($pageAccess == "2"))
+        {
+            $Menu3Url = "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"];
+            $elemArr[3][$elem["topology_group"]]["title"] = $title;
+            $elemArr[3][$elem["topology_group"]]["tab"][$i] = array("Menu3Icone" => $elem["topology_icone"],
 								"Menu3Url" => $Menu3Url,
 								"Menu3ID" => $elem["topology_page"],
 								"MenuStyleClass" => $elem["topology_style_class"],
@@ -242,6 +254,7 @@
 								"Menu3UrlPopup" => $elem["topology_url"],
 								"Menu3Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 								"Menu3Popup" => $elem["topology_popup"] ? true : false);
+        }
 	}
 	unset($elem);
 
@@ -252,14 +265,18 @@
 		$request = "SELECT topology_icone, topology_page, topology_url_opt, topology_url, topology_OnClick, topology_name, topology_popup, topology_modules FROM topology WHERE topology_parent = '".$level1.$level2.$level3."' $lcaSTR AND topology_show = '1' ORDER BY topology_order";
 		$DBRESULT = $pearDB->query($request);
 		for ($i = 0; $elem = $DBRESULT->fetchRow();$i++) {
-		    $elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
+            $pageAccess = $oreon->user->access->page($elem["topology_page"]);
+            if (($pageAccess == "1") || ($pageAccess == "2"))
+            {
+                $elemArr[4][$level1.$level2.$level3][$i] = array(	"Menu4Icone" => $elem["topology_icone"],
 																"Menu4Url" => "main.php?p=".$elem["topology_page"].$elem["topology_url_opt"],
 																"Menu4UrlPopup" => $elem["topology_url"],
 																"MenuOnClick" => $elem["topology_OnClick"],
 																"MenuIsOnClick" => $elem["topology_OnClick"] ? true : false,
 																"Menu4Name" => $centreonMenu->translate($elem['topology_modules'], $elem['topology_url'], $elem["topology_name"]),
 																"Menu4Popup" => $elem["topology_popup"] ? true : false);
-			$centreonLang->bindLang();
+            }
+            $centreonLang->bindLang();
 		}
 	}
 
@@ -286,7 +303,6 @@
 	/*
 	 * Send ACL Topology in template
 	 */
-    //echo '<pre>'; var_dump($oreon->user->access->topology); echo '</pre>';
 	$tpl->assign("topology", $oreon->user->access->topology);
 
 	/*
