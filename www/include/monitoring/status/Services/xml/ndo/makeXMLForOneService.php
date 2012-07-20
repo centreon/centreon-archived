@@ -153,7 +153,8 @@
 			" nss.state_type," .
 			" nss.execution_time," .
 			" nss.event_handler_enabled, " .
-			" ns.icon_image " .
+			" ns.icon_image, " .
+	        " ns.display_name " .
 			" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ns " .
 			" WHERE no.object_id = " . $svc_id .
 			" AND no.object_id = nss.service_object_id AND ns.service_object_id = no.object_id " .
@@ -194,8 +195,16 @@
 		if ($ndo["next_notification"] > 0)
 			$next_notification = $ndo["next_notification"];
 
-		$buffer->writeElement("service_description", $ndo["service_description"], false);
-		$buffer->writeElement("hostname", $ndo["hostname"], false);
+
+		if ($ndo['hostname'] == '_Module_Meta') {
+		    $hostname = _('Meta service');
+		    $service_desc = $ndo['display_name'];
+		} else {
+		    $hostname = $ndo['hostname'];
+		    $service_desc = $ndo['service_description'];
+		}
+		$buffer->writeElement("service_description", $service_desc, false);
+		$buffer->writeElement("hostname", $hostname, false);
 		$buffer->startElement("current_state");
 		$buffer->writeAttribute("color", $tab_color_service[$ndo["current_state"]]);
 		$buffer->text(_($tab_status_svc[$ndo["current_state"]]), false);

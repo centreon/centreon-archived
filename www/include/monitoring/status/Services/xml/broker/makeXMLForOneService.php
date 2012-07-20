@@ -115,7 +115,8 @@
 			" s.state_type," .
 			" s.execution_time," .
 			" s.event_handler_enabled, " .
-			" s.icon_image " .
+			" s.icon_image, " .
+			" s.display_name " .
 			" FROM hosts h, services s " .
 			" WHERE s.host_id = h.host_id " .
 			" AND s.host_id = $host_id AND service_id = $service_id LIMIT 1";
@@ -157,6 +158,15 @@
 			$data["last_check"] = _("N/A");
 		}
 
+		if ($ndo['hostname'] == '_Module_Meta') {
+		    $hostname = _('Meta service');
+		    $service_desc = $data['display_name'];
+		} else {
+		    $hostname = $data['name'];
+		    $service_desc = $data['service_description'];
+		}
+		$buffer->writeElement("service_description", $service_desc, false);
+		$buffer->writeElement("hostname", $hostname, false);
 		$obj->XML->writeElement("service_description", $data["description"], false);
 		$obj->XML->writeElement("hostname", $data["name"], false);
 		$obj->XML->startElement("current_state");
