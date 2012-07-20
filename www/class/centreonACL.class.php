@@ -153,7 +153,8 @@ class CentreonACL
  				"FROM acl_groups acl, acl_group_contacts_relations agcr " .
  				"WHERE acl.acl_group_id = agcr.acl_group_id " .
  				"AND agcr.contact_contact_id = '".$this->userID."' " .
- 				"AND acl.acl_group_activate = '1'";
+ 				"AND acl.acl_group_activate = '1' " .
+                "ORDER BY acl.acl_group_name ASC";
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
@@ -165,7 +166,8 @@ class CentreonACL
  				"WHERE acl.acl_group_id = agcgr.acl_group_id " .
  				"AND cgcr.contactgroup_cg_id = agcgr.cg_cg_id " .
  				"AND cgcr.contact_contact_id = '".$this->userID."' " .
- 				"AND acl.acl_group_activate = '1'";
+ 				"AND acl.acl_group_activate = '1' " .
+                "ORDER BY acl.acl_group_name ASC";
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
@@ -184,7 +186,8 @@ class CentreonACL
  				"FROM acl_resources acl, acl_res_group_relations argr " .
  				"WHERE acl.acl_res_id = argr.acl_res_id " .
  				"AND argr.acl_group_id IN (".$this->getAccessGroupsString().") " .
- 				"AND acl.acl_res_activate = '1'";
+ 				"AND acl.acl_res_activate = '1' " .
+                "ORDER BY acl.acl_res_name ASC";
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->resourceGroups[$row['acl_res_id']] = $row['acl_res_name'];
@@ -204,7 +207,8 @@ class CentreonACL
  				"FROM hostgroup hg, acl_resources_hg_relations arhr " .
  				"WHERE hg.hg_id = arhr.hg_hg_id " .
  				"AND arhr.acl_res_id IN (".$this->getResourceGroupsString().") " .
- 				"AND hg.hg_activate = '1'";
+ 				"AND hg.hg_activate = '1' " .
+                "ORDER BY hg.hg_name ASC";
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->hostGroups[$row['hg_id']] = $row['hg_name'];
@@ -225,7 +229,8 @@ class CentreonACL
  				"FROM nagios_server ns, acl_resources_poller_relations arpr " .
  				"WHERE ns.id = arpr.poller_id " .
  				"AND arpr.acl_res_id IN (".$this->getResourceGroupsString().") " .
- 				"AND ns.ns_activate = '1'";
+ 				"AND ns.ns_activate = '1' ".
+                "ORDER BY ns.name ASC";
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->pollers[$row['id']] = $row['name'];
@@ -244,7 +249,8 @@ class CentreonACL
  				"FROM servicegroup sg, acl_resources_sg_relations arsr " .
  				"WHERE sg.sg_id = arsr.sg_id " .
  				"AND arsr.acl_res_id IN (".$this->getResourceGroupsString().") " .
- 				"AND sg.sg_activate = '1'";
+ 				"AND sg.sg_activate = '1' ".
+                "ORDER BY sg.sg_name ASC";
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->serviceGroups[$row['sg_id']] = $row['sg_name'];
@@ -265,7 +271,8 @@ class CentreonACL
  				"FROM service_categories sc, acl_resources_sc_relations arsr " .
  				"WHERE sc.sc_id = arsr.sc_id " .
  				"AND arsr.acl_res_id IN (".$this->getResourceGroupsString().") " .
- 				"AND sc.sc_activate = '1'";
+ 				"AND sc.sc_activate = '1' ".
+                "ORDER BY sc.sc_name ASC";
 
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
@@ -286,7 +293,8 @@ class CentreonACL
  		$query = "SELECT ms.meta_id, ms.meta_name, arsr.acl_res_id " .
  				"FROM meta_service ms, acl_resources_meta_relations arsr " .
  				"WHERE ms.meta_id = arsr.meta_id " .
- 				"AND arsr.acl_res_id IN (".$this->getResourceGroupsString().") ";
+ 				"AND arsr.acl_res_id IN (".$this->getResourceGroupsString().") ".
+                "ORDER BY ms.meta_name ASC";
  		$DBRESULT = $pearDB->query($query);
  		$this->metaServiceStr = "";
  		while ($row = $DBRESULT->fetchRow()) {
@@ -310,8 +318,8 @@ class CentreonACL
 				"WHERE a.acl_action_id = agar.acl_action_id " .
 				"AND agar.acl_action_id = ar.acl_action_rule_id " .
 				"AND a.acl_action_activate = '1'" .
-				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().")";
-		$DBRESULT = $pearDB->query($query);
+				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().") ".
+                "ORDER BY ar.acl_action_name ASC";
 		while ($row = $DBRESULT->fetchRow()) {
 			$this->actions[$row['acl_action_name']] = $row['acl_action_name'];
 		}
@@ -718,7 +726,8 @@ class CentreonACL
  		    $query = "SELECT DISTINCT host_name, host_id
  		    		  FROM centreon_acl
  		    		  WHERE group_id IN (".implode(',', $groupIds).")
- 		    		  GROUP BY host_name, host_id";
+ 		    		  GROUP BY host_name, host_id
+                      ORDER BY host_name ASC";
  			$DBRES = $pearDBndo->query($query);
  			while ($row = $DBRES->fetchRow()) {
  				if ($i) {
@@ -963,9 +972,9 @@ class CentreonACL
 		$tab = array();
 		if (!isset($host_name)) {
 			if ($this->admin) {
-				$query = "SELECT DISTINCT host_name, service_description FROM centreon_acl";
+				$query = "SELECT DISTINCT host_name, service_description FROM centreon_acl ORDER BY host_name";
 			} else {
-				$query = "SELECT host_name, service_description FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().")";
+				$query = "SELECT host_name, service_description FROM centreon_acl WHERE group_id IN (".$this->getAccessGroupsString().") ORDER BY host_name";
 			}
 			$DBRESULT = $pearDBndo->query($query);
 			while ($row = $DBRESULT->fetchRow()) {
@@ -1001,7 +1010,8 @@ class CentreonACL
 	 			"FROM hostgroup_relation hgr, host h " .
 	 			"WHERE hgr.hostgroup_hg_id = '".$hg_id."' " .
 	 			"AND hgr.host_host_id = h.host_id " .
-	 			$this->queryBuilder("AND", "h.host_id",  $this->getHostsString("ID", $pearDBndo));
+	 			$this->queryBuilder("AND", "h.host_id",  $this->getHostsString("ID", $pearDBndo)).
+                " ORDER BY h.host_name ";
 
 	 	$DBRESULT = $pearDB->query($query);
 	 	while ($row = $DBRESULT->fetchRow()) {
