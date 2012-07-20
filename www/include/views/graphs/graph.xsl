@@ -312,7 +312,7 @@
 	           		<td>
 	           			<xsl:element name='input'>
 	           				<xsl:attribute name='type'>button</xsl:attribute>
-	           				<xsl:attribute name='onClick'>location.href='main.php<xsl:value-of select="//focusUrl"/>'</xsl:attribute>
+	           				<xsl:attribute name='onClick'>location.href='main.php<xsl:value-of select="//focusUrl"/>&amp;start=<xsl:value-of select="start"/>&amp;end=<xsl:value-of select="end"/>'</xsl:attribute>
 	           				<xsl:attribute name='value'><xsl:value-of select="//lang/treeFocus"/></xsl:attribute>
 	           			</xsl:element>	           			
 	           		</td>

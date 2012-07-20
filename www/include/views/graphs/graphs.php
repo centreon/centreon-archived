@@ -127,6 +127,7 @@
 	$id_log = "'RR_0'";
 	$multi = 0;
 	$lockTree = 0;
+	$focusUrl = "";
 	if (isset($_GET["mode"]) && $_GET["mode"] == "0"){
 		$mode = 0;
 		$lockTree = 1;
@@ -140,6 +141,16 @@
 
 	if (isset($_GET['lock_tree'])) {
 	    $lockTree = $_GET['lock_tree'];
+	}
+
+	/* Get Period if is in url */
+	$period_start = 'undefined';
+	$period_end = 'undefined';
+	if (isset($_REQUEST['start']) && is_numeric($_REQUEST['start'])) {
+	    $period_start = $_REQUEST['start'];
+	}
+	if (isset($_REQUEST['end']) && is_numeric($_REQUEST['end'])) {
+	    $period_end = $_REQUEST['end'];
 	}
 
 	/*
@@ -196,6 +207,10 @@
     cssNode.href 	= css_file;
     cssNode.media 	= 'screen';
 
+    /* Period if in URL */
+    var period_start = <?php echo $period_start; ?>;
+    var period_end = <?php echo $period_end; ?>;
+
     headID.appendChild(cssNode);
 
 	var multi 	= <?php echo $multi; ?>;
@@ -232,7 +247,7 @@
 	}
 
 	if (document.getElementById('linkBar')){
-		var _menu_2 = document.getElementById('linkBar')
+		var _menu_2 = document.getElementById('linkBar');
 		var _divBar = document.createElement("div");
 
 		_divBar.appendChild(create_log_link(tree,'id'));
@@ -479,7 +494,11 @@ function nextPeriod() {
 	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
 
-		graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
+	    if (period_start != undefined && period_end != undefined) {
+	    	graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>, undefined, period_start, period_end);
+	    } else {
+			graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
+	    }
 
 	    // Now we call old function which was assigned to onLoad, thus playing nice
 	    if (nowOnload != null && typeof(nowOnload) == 'function') {
