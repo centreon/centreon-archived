@@ -3,6 +3,9 @@
 	<table class="ajaxOption">
 		<tr>
 			<td>{$Hosts} : <input type='text' name='searchH' value="{$searchH}" /></td>
+            {if (isset($hostgroupsFilter))}
+                <td>{$Hostgroups} : <select name='hostgroups' >{$hostgroupsFilter}</select></td>
+            {/if}
 			<td>&nbsp;&nbsp;{$Services} : <input type='text' name='searchS' value="{$searchS}" /></td>
 			<td>&nbsp;&nbsp;{$ServiceTemplates} : <select name='template' >{$templateFilter}</select></td>
 			<td>&nbsp;&nbsp;{$ServiceStatus} : <select name='status' >{$statusFilter}</select></td>
@@ -18,7 +21,7 @@
 			{ else }
 			<td>&nbsp;</td>
 			{ /if }
-			<input name="p" value="{$p}" type="hidden">
+			<input name="p" value="{$p}" type="hidden" />
 			{php}
 			   include('./include/common/pagination.php');
 			{/php}

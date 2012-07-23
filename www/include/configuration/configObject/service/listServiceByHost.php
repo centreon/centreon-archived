@@ -62,6 +62,14 @@
 	} else {
 		$template = NULL;
 	}
+    
+    if (isset($_POST["hostgroups"])) {
+		$hostgroups = $_POST["hostgroups"];
+	} else if (isset($_GET["hostgroups"])) {
+		$hostgroups = $_GET["hostgroups"];
+	} else {
+		$hostgroups = NULL;
+	}
 
 	if (isset($_POST["host_id"])) {
 		$host_id = $_POST["host_id"];
@@ -112,7 +120,23 @@
 	 */
 	$host_method = new CentreonHost($pearDB);
 	$service_method = new CentreonService($pearDB);
+    /*$hostGroup_handler = new CentreonHostgroups($pearDB);
+    echo '<pre>'; var_dump($hostGroup_handler->getHostgroupsList($pearDB)); echo '</pre>';*/
+    
+    /**
+     * Get  
+     */
+    $hostgroupsTab = array();
+	$hostgroupsFilter = "<option value='0'></option>";
+	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) AND hg_activate='1' ORDER BY hg_name");
+	while ($hgrp = $DBRESULT->fetchRow())
+    {
+		$hostgroupsTab[$hgrp["hg_id"]] = $hgrp["hg_name"];
+		$hostgroupsFilter .= "<option value='".$hgrp["hg_id"]."'".(($hgrp["hg_id"] == $hostgroups) ? " selected" : "").">".$hgrp["hg_name"]."</option>";
+	}
+	$DBRESULT->free();
 
+    
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
 		$oreon->svc_host_search = $searchH;
@@ -256,7 +280,9 @@
 		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 				"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 				"sv.service_retry_check_interval, sv.service_max_check_attempts " .
-				"FROM service sv, host, host_service_relation hsr " .
+				"FROM service sv, host".
+                ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
+                "host_service_relation hsr " .
 		        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
 				"WHERE $searchHostallone sv.service_id IN (".($tmp ? $tmp : 'NULL').") " .
 						($searchHostallone == "" ? "AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " : "") .
@@ -265,18 +291,22 @@
 						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
 						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+                        ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	} else {
 		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, " .
 				"host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, sv.service_retry_check_interval, " .
 				"sv.service_max_check_attempts " .
-				"FROM service sv, host, host_service_relation hsr " .
+				"FROM service sv, host".
+                ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
+                "host_service_relation hsr " .
 		        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id ".
 				"WHERE $searchHostallone sv.service_register = '1' $sqlFilterCase " .
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
 						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
+                        ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
 						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT = $pearDB->query($rq);
@@ -380,18 +410,18 @@
 			$svc_icon = "./img/icones/16x16/gear.gif";
 		}
 
-		$elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style),
-								"RowMenu_select"	=> $selectedElements->toHtml(),
-								"RowMenu_name"		=> $service["host_name"],
-								"RowMenu_icone"		=> $host_icone,
-		                        "RowMenu_sicon"     => $svc_icon,
-								"RowMenu_link"		=> "?p=60101&o=c&host_id=".$service['host_id'],
-								"RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
-								"RowMenu_parent"	=> $tplStr,
-								"RowMenu_retry"		=> "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
-								"RowMenu_desc"		=> $service["service_description"],
-								"RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
-								"RowMenu_options"	=> $moptions);
+        $elemArr[$i] = array(	"MenuClass"			=> "list_".($service["nbr"]>1 ? "three" : $style),
+                                "RowMenu_select"	=> $selectedElements->toHtml(),
+                                "RowMenu_name"		=> $service["host_name"],
+                                "RowMenu_icone"		=> $host_icone,
+                                "RowMenu_sicon"     => $svc_icon,
+                                "RowMenu_link"		=> "?p=60101&o=c&host_id=".$service['host_id'],
+                                "RowMenu_link2"		=> "?p=".$p."&o=c&service_id=".$service['service_id'],
+                                "RowMenu_parent"	=> $tplStr,
+                                "RowMenu_retry"		=> "$normal_check_interval $normal_units / $retry_check_interval $retry_units",
+                                "RowMenu_desc"		=> $service["service_description"],
+                                "RowMenu_status"	=> $service["service_activate"] ? _("Enabled") : _("Disabled"),
+                                "RowMenu_options"	=> $moptions);
 		$fgHost["print"] ? null : $elemArr[$i]["RowMenu_name"] = null;
 		$style != "two" ? $style = "two" : $style = "one";
 	}
@@ -465,6 +495,7 @@
 	}
 	$tpl->assign("searchH", $searchH);
 	$tpl->assign("searchS", $searchS);
+    $tpl->assign("hostgroupsFilter", $hostgroupsFilter);
 	$tpl->assign("templateFilter", $templateFilter);
 	$tpl->assign("statusFilter", $statusFilter);
 
@@ -472,6 +503,7 @@
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('Hosts', _("Hosts"));
+    $tpl->assign('Hostgroups', _("HostGroups"));
 	$tpl->assign('ServiceTemplates', _("Templates"));
 	$tpl->assign('ServiceStatus', _("Status"));
 	$tpl->assign('Services', _("Services"));
