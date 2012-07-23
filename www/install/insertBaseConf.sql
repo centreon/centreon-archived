@@ -296,7 +296,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('perl_library_path','/usr/local/lib'),
 ('rrdtool_path_bin','/usr/bin/rrdtool'),
 ('rrdtool_version','1.2'),
-('debug_path','@INSTALL_DIR_CENTREON@/log/'),
+('debug_path','@CENTREON_LOG@/'),
 ('debug_auth','0'),
 ('debug_nagios_import','0'),
 ('debug_rrdtool','0'),
