@@ -117,6 +117,11 @@
 	if (isset($_REQUEST['status'])) {
 	    $url_var .= '&status=' . $_REQUEST['status'];
 	}
+    
+    /* Fix for status in service configuration */
+	if (isset($_REQUEST['hostgroups'])) {
+	    $url_var .= '&hostgroups=' . $_REQUEST['hostgroups'];
+	}
 
 	/*
 	 * Smarty template Init
