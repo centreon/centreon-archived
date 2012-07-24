@@ -54,6 +54,7 @@
 					$DBRESULT = $pearDB->query($query);
 					while ($row = $DBRESULT->fetchRow()) {
 						$cache[$row['cp_key']] = $row['cp_value'];
+						$SESSION[$row['cp_key']] = $row['cp_value'];
 					}
 				}
 				if (isset($cache[$param])) {
