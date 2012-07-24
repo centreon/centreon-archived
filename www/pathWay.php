@@ -110,16 +110,16 @@
 				break;
 		}
 		
-	$tmp = array();
-	foreach ($tabPath as $k => $v){
-		$ok = 0;
-		foreach ($tmp as $key => $value)
-			if ($value["name"] == $v["name"])
-				$ok = 1;
-		if ($ok == 0)
-			$tmp[$k] = $v;
-	}
-	$tabPath = $tmp;
+	/**
+         * Not displaying two entries in a row having the same name
+         */
+	$tmpLastTabKeyAndName = null;
+        foreach ($tabPath as $pageNumber => $tabInPath) {
+            if($tmpLastTabKeyAndName && $tabInPath['name'] === $tmpLastTabKeyAndName['name']){
+                unset($tabPath[$tmpLastTabKeyAndName['key']]);
+            }
+            $tmpLastTabKeyAndName = array('key' => $pageNumber, 'name' => $tabInPath['name']);
+        }
 
 	if ($centreon->user->access->page($p)){	
 		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
