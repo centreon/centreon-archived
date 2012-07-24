@@ -16,7 +16,7 @@ ALTER TABLE `contact`
 CREATE TABLE IF NOT EXISTS `auth_ressource` (
   `ar_id` INT(11) NOT NULL AUTO_INCREMENT,
   `ar_type` VARCHAR(50) NOT NULL,
-  `ar_enable` ENUM('0', '1') DEFAULT 0,
+  `ar_enable` ENUM('0', '1') DEFAULT '0',
   `ar_order` INT(3) DEFAULT 0,
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
