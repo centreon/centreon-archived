@@ -142,9 +142,9 @@ class CentreonAuthLDAP {
 				case 0:
 					if ($this->debug)
 						$this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
-					if ($newUser) {
+					//if ($newUser) {
 					    $this->updateUserDn();
-					}
+					//}
 				   	return 1;
 				   	break;
 				case 2:
@@ -200,13 +200,61 @@ class CentreonAuthLDAP {
 		        return false;
 		    }
 
+		    /*
+		     * Get ldap user informations
+		     */
+		    $userInfos =  $this->ldap->getEntry($userDn);
+			$userDisplay = $userInfos[$this->ldap->getAttrName('user', 'name')];
+	        /*
+	         * Get the first if there are multiple entries
+	         */
+	        if (is_array($userDisplay)) {
+	            $userDisplay = $userDisplay[0];
+	        }
+	        /*
+	         * Replace space by underscore
+	         */
+			$userDisplay = str_replace(' ', '_', $userDisplay);
+	        $userEmail = "NULL";
+	        if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
+	            if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
+	                /*
+    		         * Get the first if there are multiple entries
+    		         */
+	                $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')][0] . "'";
+	            } else {
+	                $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')] . "'";
+	            }
+	        }
+	        $userPager = "NULL";
+	        if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
+	            if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
+	                /*
+    		         * Get the first if there are multiple entries
+    		         */
+	                $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')][0] . "'";
+	            } else {
+	                $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
+	            }
+	        }
+
 		    if (isset($this->contactInfos['contact_id'])) {
 		        /*
-		         * Update the user dn
+		         * Update the user dn and extended informations for user
 		         */
 		        $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . $this->contactInfos['contact_alias']);
-				$query = "UPDATE contact SET contact_ldap_dn = '" .  $userDn . "'  WHERE contact_id = " . $this->contactInfos['contact_id'];
-				$this->pearDB->query($query);
+				$queryUpdateExtInfos = "UPDATE contact SET
+					contact_ldap_dn = '" .  $userDn . "',
+					contact_name = '" . $userDisplay . "',
+					contact_email = " . $userEmail . ",
+					contact_pager = " . $userPager . "
+					WHERE contact_id = " . $this->contactInfos['contact_id'];
+
+				$ret = $this->pearDB->query($queryUpdateExtInfos);
+				if (PEAR::isError($ret)) {
+				    $this->CentreonLog->insertLog(3, 'Error in update ldap informations for user ' . $this->contactInfos['contact_alias']);
+				    return false;
+				}
 				$this->contactInfos['contact_ldap_dn'] = $userDn;
 				return true;
 		    } else {
@@ -228,40 +276,6 @@ class CentreonAuthLDAP {
 		        /*
 		         * Insert user in database
 		         */
-		        $userInfos =  $this->ldap->getEntry($userDn);
-		        $userDisplay = $userInfos[$this->ldap->getAttrName('user', 'name')];
-		        /*
-		         * Get the first if there are multiple entries
-		         */
-		        if (is_array($userDisplay)) {
-		            $userDisplay = $userDisplay[0];
-		        }
-		        /*
-		         * Replace space by underscore
-		         */
-		        $userDisplay = str_replace(' ', '_', $userDisplay);
-		        $userEmail = "NULL";
-		        if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
-		            if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
-		                /*
-        		         * Get the first if there are multiple entries
-        		         */
-		                $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')][0] . "'";
-		            } else {
-		                $userEmail = "'" . $userInfos[$this->ldap->getAttrName('user', 'email')] . "'";
-		            }
-		        }
-		        $userPager = "NULL";
-		        if (isset($userInfos[$this->ldap->getAttrName('user', 'pager')]) && trim($userInfos[$this->ldap->getAttrName('user', 'pager')]) != '') {
-		            if (is_array($userInfos[$this->ldap->getAttrName('user', 'pager')])) {
-		                /*
-        		         * Get the first if there are multiple entries
-        		         */
-		                $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')][0] . "'";
-		            } else {
-		                $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
-		            }
-		        }
 		        $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, contact_email, contact_pager, contact_oreon, contact_activate, contact_register)
 		        	VALUES (" . $tmplId . ", '" . $this->contactInfos['contact_alias'] . "', '" . $userDisplay . "', 'ldap', '" . $userDn . "', " . $userEmail . ", " . $userPager . ", '1', '1', 1)";
 		        if (false === PEAR::isError($this->pearDB->query($query))) {
