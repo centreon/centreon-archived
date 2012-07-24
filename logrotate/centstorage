@@ -1,0 +1,8 @@
+@CENTREON_LOG@/centstorage.log @CENTREON_LOG@/centreon-purge.log @CENTREON_LOG@/logAnalyser.log {
+    copytruncate
+    weekly
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+}

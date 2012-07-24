@@ -1084,6 +1084,26 @@ function locate_cron_d() {
 }
 
 #----
+## Define where is your logrotate.d directory
+## @Globals	LOGROTATE_D, DEFAULT_LOGROTATE_D
+#----
+function locate_logrotate_d() {
+	testdir_clean "$LOGROTATE_D" "LOGROTATE_D"
+	if [ -z "$LOGROTATE_D" ] ; then
+		if [ -d "/etc/logrotate.d" ] ; then
+			LOGROTATE_D="/etc/logrotate.d"
+		# Add most of init.d 
+		else 
+			answer_with_testdir "$(gettext "Where is your logrotate.d directory ?")" "$DEFAULT_LOGROTATE_D" "LOGROTATE_D"
+			echo_success "Path $LOGROTATE_D" "$ok"
+		fi
+	fi
+	LOGROTATE_D=`trim ${LOGROTATE_D%/}`
+	export LOGROTATE_D
+	log "INFO" "LOGROTATE_D: $LOGROTATE_D"
+}
+
+#----
 ## Check if variable do not have most possibility
 ## @param	variable to check
 ## @return 0	True
@@ -1981,7 +2001,7 @@ function check_group_apache()
 #----
 function copyInTempFile()
 {
-	local srclistcp="bin cron doc GPL_LIB lib snmptrapd snmptt www plugins libinstall"
+	local srclistcp="bin cron logrotate doc GPL_LIB lib snmptrapd snmptt www plugins libinstall"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then

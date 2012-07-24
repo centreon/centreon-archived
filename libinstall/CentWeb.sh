@@ -51,6 +51,7 @@ locate_nagiostats_binary
 locate_nagios_plugindir
 locate_nagios_p1_file $NAGIOS_ETC
 locate_cron_d
+locate_logrotate_d
 locate_init_d
 locate_php_bin
 locate_perl
@@ -348,6 +349,18 @@ log "INFO" "$(gettext "Change right for dashboardBuilder.pl")"
 ${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder.pl >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right for dashboardBuilder.pl")"
 
+## Logrotate
+log "INFO" "$(gettext "Change macros for centreon.logrotate")"
+${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	$TMP_DIR/src/logrotate/centreon > $TMP_DIR/work/centreon.logrotate
+check_result $? "$(gettext "Change macros for centreon.logrotate")"
+cp $TMP_DIR/work/centreon.logrotate $TMP_DIR/final/centreon.logrotate >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Install centreon.logrotate")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 644 \
+	$TMP_DIR/final/centreon.logrotate $LOGROTATE_D/centreon >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Install Centreon logrotate.d file")"
 
 ## Prepare to install all pear modules needed.
 # use check_pear.php script

@@ -309,6 +309,19 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 	$CRON_D/centstorage >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install CentStorage cron")"
 
+## Install Logrotate
+log "INFO" "$(gettext "Change macros for centstorage.logrotate")"
+${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+        $TMP_DIR/src/logrotate/centstorage > $TMP_DIR/work/centstorage.logrotate
+check_result $? "$(gettext "Change macros for centstorage.logrotate")"
+cp $TMP_DIR/work/centstorage.logrotate $TMP_DIR/final/centstorage.logrotate >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Install centstorage.logrotate")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+        -m 644 \
+        $TMP_DIR/final/centstorage.logrotate $LOGROTATE_D/centstorage >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Install Centreon Storage logrotate.d file")"
+
 ###### Post Install
 #################################
 createCentStorageInstallConf

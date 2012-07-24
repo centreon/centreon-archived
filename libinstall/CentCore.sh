@@ -118,6 +118,19 @@ $INSTALL_DIR/cinstall $cinstall_opts -g "$NAGIOS_USER" -d 775 \
 	$CENTREON_VARLIB >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Change right") : $CENTREON_VARLIB"
 
+## Add logrotate
+log "INFO" "$(gettext "Change macros for centcore.logrotate")"
+${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+        $TMP_DIR/src/logrotate/centcore > $TMP_DIR/work/centcore.logrotate
+check_result $? "$(gettext "Change macros for centcore.logrotate")"
+cp $TMP_DIR/work/centcore.logrotate $TMP_DIR/final/centcore.logrotate >> "$LOG_FILE" 2>&1
+
+log "INFO" "$(gettext "Install centcore.logrotate")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+        -m 644 \
+        $TMP_DIR/final/centcore.logrotate $LOGROTATE_D/centcore >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Install Centreon Core logrotate.d file")"
+
 ###### CentCore init
 #################################
 ## Change macros in CentCore init script

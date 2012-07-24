@@ -1,0 +1,8 @@
+@CENTREON_LOG@/centcore.log {
+    copytruncate
+    weekly
+    rotate 52
+    compress
+    delaycompress
+    notifempty
+}
