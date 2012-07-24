@@ -47,7 +47,7 @@ CREATE TABLE `custom_view_user_relation` (
     ON DELETE CASCADE
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-ALTER TABLE  custom_view_user_relation` ADD UNIQUE  `view_user_unique_index` ( `custom_view_id` , `user_id`, `usergroup_id` );
+ALTER TABLE  `custom_view_user_relation` ADD UNIQUE  `view_user_unique_index` ( `custom_view_id` , `user_id`, `usergroup_id` );
 
 
 -- --------------------------------------------------------
@@ -252,4 +252,5 @@ CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
 ALTER TABLE  `cfg_cgi` ADD  `instance_id` INT( 11 ) NULL AFTER  `cgi_name`;
 ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL;
 
+UPDATE  `centreon`.`options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USING utf8 ) =  'monitoring_engine' AND CONVERT(  `options`.`value` USING utf8 ) =  'NAGIOS' LIMIT 1 ;
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;

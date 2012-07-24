@@ -42,10 +42,22 @@
 	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
 
+    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")
+    {
+        $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/centengine.cfg";
+        $oldNagiosCFGFile = $nagiosCFGPath.$tab['id']."/nagios.cfg";
+    }
+    else
+    {
+        $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/nagios.cfg";
+        $oldNagiosCFGFile = $nagiosCFGPath.$tab['id']."/centengine.cfg";
+    }
+    
 	/*
 	 * Create file
 	 */
-	$handle = create_file($nagiosCFGPath.$tab['id']."/nagios.cfg", $oreon->user->get_name());
+    $handle = create_file($nagiosCFGFile, $oreon->user->get_name());
+    unlink($oldNagiosCFGFile);
 
 	/*
 	 * Get all information for nagios.cfg for this poller
@@ -95,6 +107,7 @@
 	    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN") {
             $str .= "cfg_file=".$nagios['cfg_dir']."shinkenBroker.cfg\n";
 		}
+        
 		/*
 		 * Include for Meta Service the cfg file
 		 */
@@ -128,12 +141,11 @@
 	 * Generate all parameters
 	 */
 	require "./include/configuration/configGenerate/genMainFile.php";
+    
+    write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGFile);
+    fclose($handle);
+    setFileMod($nagiosCFGFile);
 
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/nagios.cfg");
-	fclose($handle);
-	
-	setFileMod($nagiosCFGPath.$tab['id']."/nagios.cfg");
-	
 	$DBRESULT->free();
 	unset($str);
 ?>

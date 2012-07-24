@@ -63,7 +63,7 @@
 	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
-	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
+	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("ndo" => "NDOutils", "broker" => "Centreon Broker"));
 
 	/*
@@ -134,7 +134,7 @@
 	$tpl = initSmartyTpl($path."/nagios", $tpl);
 
 	if (!isset($gopt["monitoring_engine"])) {
-		$gopt["monitoring_engine"] = "NAGIOS";
+		$gopt["monitoring_engine"] = "CENGINE";
 	}
 
 	$form->setDefaults($gopt);

@@ -117,6 +117,7 @@ function printDebug($xml)
 }
 
 $path = $centreon_path . "www/include/configuration/configGenerate/";
+require_once $path."DB-Func.php";
 $nagiosCFGPath = $centreon_path . "filesGeneration/nagiosCFG/";
 $centreonBrokerPath = $centreon_path . "filesGeneration/broker/";
 $DebugPath = "filesGeneration/nagiosCFG/";

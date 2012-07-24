@@ -9,7 +9,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.3.0');
 -- Contenu de la table `nagios_server`
 --
 
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `monitoring_engine`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '/etc/centreon-broker', 'NAGIOS');
+INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `monitoring_engine`) VALUES(1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '/etc/centreon-broker', 'CENGINE');
 
 --
 -- Contenu de la table `cfg_cgi`
@@ -317,7 +317,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('patch_url_download','http://update.centreon.com/patch/'),
 ('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
-('monitoring_engine','NAGIOS'),
+('monitoring_engine','CENGINE'),
 ('display_autologin_shortcut','1'),
 ('broker', 'ndo'), 
 ('monitoring_ack_svc', '1'),
