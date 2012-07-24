@@ -116,6 +116,8 @@
 		if (isset($upgrade_conf["lang_files"]) && $upgrade_conf["lang_files"]) $rq .= "lang_files = '".htmlentities($upgrade_conf["lang_files"] , ENT_QUOTES, "UTF-8")."', ";
 		if (isset($upgrade_conf["sql_files"]) && $upgrade_conf["sql_files"]) $rq .= "sql_files = '".htmlentities($upgrade_conf["sql_files"] , ENT_QUOTES, "UTF-8")."', ";
 		if (isset($upgrade_conf["php_files"]) && $upgrade_conf["php_files"]) $rq .= "php_files = '".htmlentities($upgrade_conf["php_files"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["svc_tools"]) && $upgrade_conf["svc_tools"]) $rq .= "svc_tools = '" . htmlentities($upgrade_conf["svc_tools"] , ENT_QUOTES, "UTF-8")."', ";
+		if (isset($upgrade_conf["host_tools"]) && $upgrade_conf["host_tools"]) $rq .= "svc_tools = '" . htmlentities($upgrade_conf["host_tools"] , ENT_QUOTES, "UTF-8")."', ";
 		if (strcmp("UPDATE `modules_informations` SET ", $rq))	{
 			# Delete last ',' in request
 			$rq[strlen($rq)-2] = " ";
