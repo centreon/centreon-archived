@@ -20,35 +20,36 @@
 	</div>
 	<div id='tab1' class='tab'>
 		<table class="ListTable">
-		 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
-		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_name">&nbsp;{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_activate">&nbsp;{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_server_id">&nbsp;{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
+		 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' />&nbsp;&nbsp;{$form.header.title}</td></tr>
+		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif' />&nbsp;&nbsp;{$form.header.information}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_name" />&nbsp;{$form.nagios_name.label}</td><td class="FormRowValue">{$form.nagios_name.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_activate" />&nbsp;{$form.nagios_activate.label}</td><td class="FormRowValue">{$form.nagios_activate.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="nagios_server_id" />&nbsp;{$form.nagios_server_id.label}</td><td class="FormRowValue">{$form.nagios_server_id.html}</td></tr>
 			
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Folders}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir">&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
-	
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$Folders}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_file.label}</td><td class="FormRowValue">{$form.cfg_file.html}</td></tr>
+            
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Files}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_file">&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file">&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file">&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="temp_path">&nbsp;{$form.temp_path.label}</td><td class="FormRowValue">{$form.temp_path.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file">&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="object_cache_file">&nbsp;{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="precached_object_file">&nbsp;{$form.precached_object_file.label}</td><td class="FormRowValue">{$form.precached_object_file.html}</td></tr>		
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="log_file" /> &nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.log_file.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="temp_file" />&nbsp;{$form.temp_file.label}</td><td class="FormRowValue">{$form.temp_file.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="temp_path" />&nbsp;{$form.temp_path.label}</td><td class="FormRowValue">{$form.temp_path.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="lock_file" />&nbsp;{$form.lock_file.label}</td><td class="FormRowValue">{$form.lock_file.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="object_cache_file" />&nbsp;{$form.object_cache_file.label}</td><td class="FormRowValue">{$form.object_cache_file.html}</td></tr>		
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="precached_object_file" />&nbsp;{$form.precached_object_file.label}</td><td class="FormRowValue">{$form.precached_object_file.html}</td></tr>		
 	
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$ResultCache}</td></tr>	
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_path">&nbsp;{$form.check_result_path.label}</td><td class="FormRowValue">{$form.check_result_path.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_result_file_age">&nbsp;{$form.max_check_result_file_age.label}</td><td class="FormRowValue">{$form.max_check_result_file_age.html}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$ResultCache}</td></tr>	
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_path" />&nbsp;{$form.check_result_path.label}</td><td class="FormRowValue">{$form.check_result_path.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_result_file_age" />&nbsp;{$form.max_check_result_file_age.label}</td><td class="FormRowValue">{$form.max_check_result_file_age.html}</td></tr>
 			
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$ExternalCommandes}</td></tr>	
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_external_commands">&nbsp;{$form.check_external_commands.label}</td><td class="FormRowValue">{$form.check_external_commands.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_check_interval">&nbsp;{$form.command_check_interval.label}</td><td class="FormRowValue">{$form.command_check_interval.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_file">&nbsp;{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="external_command_buffer_slots">&nbsp;{$form.external_command_buffer_slots.label}</td><td class="FormRowValue">{$form.external_command_buffer_slots.html}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif' />&nbsp;&nbsp;{$ExternalCommandes}</td></tr>	
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_external_commands" />&nbsp;{$form.check_external_commands.label}</td><td class="FormRowValue">{$form.check_external_commands.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="command_check_interval" />&nbsp;{$form.command_check_interval.label}</td><td class="FormRowValue">{$form.command_check_interval.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_file" />&nbsp;{$form.command_file.label}</td><td class="FormRowValue">{$form.command_file.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="external_command_buffer_slots" />&nbsp;{$form.external_command_buffer_slots.label}</td><td class="FormRowValue">{$form.external_command_buffer_slots.html}</td></tr>
 	
-		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif' />&nbsp;&nbsp;{$form.header.information}</td></tr>
 			<tr class="list_one"><td class="FormRowField">&nbsp;{$form.nagios_comment.label}</td><td class="FormRowValue">{$form.nagios_comment.html}</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
@@ -57,19 +58,19 @@
 	</div>	
 	<div id='tab2' class='tab'>
 		<table class="ListTable">
-		 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+		 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif' />&nbsp;&nbsp;{$form.header.title}</td></tr>
 			
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$HostCheckOptions}</td></tr>	
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_aggressive_host_checking">&nbsp;{$form.use_aggressive_host_checking.label}</td><td class="FormRowValue">{$form.use_aggressive_host_checking.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_host_dependency_checks">&nbsp;{$form.enable_predictive_host_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_host_dependency_checks.html}</td></tr>
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$ServiceCheckOptions}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_for_orphaned_services">&nbsp;{$form.check_for_orphaned_services.label}</td><td class="FormRowValue">{$form.check_for_orphaned_services.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_for_orphaned_hosts">&nbsp;{$form.check_for_orphaned_hosts.label}</td><td class="FormRowValue">{$form.check_for_orphaned_hosts.html}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="soft_state_dependencies">&nbsp;{$form.soft_state_dependencies.label}</td><td class="FormRowValue">{$form.soft_state_dependencies.html}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_service_dependency_checks">&nbsp;{$form.enable_predictive_service_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_service_dependency_checks.html}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$HostCheckOptions}</td></tr>	
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_aggressive_host_checking" />&nbsp;{$form.use_aggressive_host_checking.label}</td><td class="FormRowValue">{$form.use_aggressive_host_checking.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_host_dependency_checks" />&nbsp;{$form.enable_predictive_host_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_host_dependency_checks.html}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$ServiceCheckOptions}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_for_orphaned_services" />&nbsp;{$form.check_for_orphaned_services.label}</td><td class="FormRowValue">{$form.check_for_orphaned_services.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="check_for_orphaned_hosts" />&nbsp;{$form.check_for_orphaned_hosts.label}</td><td class="FormRowValue">{$form.check_for_orphaned_hosts.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="soft_state_dependencies" />&nbsp;{$form.soft_state_dependencies.label}</td><td class="FormRowValue">{$form.soft_state_dependencies.html}</td></tr>
+			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_predictive_service_dependency_checks" />&nbsp;{$form.enable_predictive_service_dependency_checks.label}</td><td class="FormRowValue">{$form.enable_predictive_service_dependency_checks.html}</td></tr>
 			
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$EventHandler}</td></tr>	
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="global_host_event_handler">&nbsp;{$form.global_host_event_handler.label}</td><td class="FormRowValue">{$form.global_host_event_handler.html}</td></tr>
+			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif' />&nbsp;&nbsp;{$EventHandler}</td></tr>	
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="global_host_event_handler" />&nbsp;{$form.global_host_event_handler.label}</td><td class="FormRowValue">{$form.global_host_event_handler.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="global_service_event_handler">&nbsp;{$form.global_service_event_handler.label}</td><td class="FormRowValue">{$form.global_service_event_handler.html}</td></tr>
 		 	
 		 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Freshness}</td></tr>

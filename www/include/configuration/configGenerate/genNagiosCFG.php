@@ -41,30 +41,20 @@
 
 	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
 		mkdir($nagiosCFGPath.$tab['id']."/");
-
-    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")
-    {
-        $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/centengine.cfg";
-        $oldNagiosCFGFile = $nagiosCFGPath.$tab['id']."/nagios.cfg";
-    }
-    else
-    {
-        $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/nagios.cfg";
-        $oldNagiosCFGFile = $nagiosCFGPath.$tab['id']."/centengine.cfg";
-    }
-    
-	/*
-	 * Create file
-	 */
-    $handle = create_file($nagiosCFGFile, $oreon->user->get_name());
-    unlink($oldNagiosCFGFile);
-
 	/*
 	 * Get all information for nagios.cfg for this poller
 	 */
 	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	$nagios = $DBRESULT->fetchRow();
 	$DBRESULT->free();
+    $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/".$nagios['cfg_file'];
+    unset($nagios['cfg_file']);
+    
+	/*
+	 * Create file
+	 */
+    $handle = create_file($nagiosCFGFile, $oreon->user->get_name());
+    //unlink($oldNagiosCFGFile);
 
 	/*
 	 * Get broker module informations

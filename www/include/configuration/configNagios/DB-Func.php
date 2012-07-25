@@ -188,7 +188,7 @@
 				"`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , " .
 				"`enable_environment_macros` , `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, " .
 				"`event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly`, `translate_passive_host_checks`, " .
-				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`) ";
+				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cg_file`) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -318,7 +318,8 @@
 		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != 2 ? $rq .= "'".$ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]."', " : $rq .= "'2', ";
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != 2 ? $rq .= "'".$ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]."', " : $rq .= "'2', ";
 		isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != 2 ? $rq .= "'".$ret["external_command_buffer_slots"]["external_command_buffer_slots"]."') " : $rq .= "'2') ";
-
+        isset($ret["cfg_file"]) && $ret["cfg_file"] != NULL ? $rq .= "'".htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
 		$nagios_id = $DBRESULT->fetchRow();
@@ -499,7 +500,9 @@
 		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != NULL ? $rq .= "passive_host_checks_are_soft = '".htmlentities($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "passive_host_checks_are_soft = NULL, ";
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != NULL ? $rq .= "check_for_orphaned_hosts = '".htmlentities($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "check_for_orphaned_hosts = NULL, ";
 		isset($ret["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]!= NULL ? $rq .= "external_command_buffer_slots = '".htmlentities($ret["external_command_buffer_slots"], ENT_QUOTES, "UTF-8")."', " : $rq .= " external_command_buffer_slots = NULL, ";
-
+        
+        isset($ret["cfg_file"]) && $ret["cfg_file"] != NULL ? $rq .= "cfg_file = '".htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "cfg_file = NULL, ";
+        
 		$rq .= "nagios_activate = '".$ret["nagios_activate"]["nagios_activate"]."' ";
 		$rq .= "WHERE nagios_id = '".$nagios_id."'";
 		$DBRESULT = $pearDB->query($rq);

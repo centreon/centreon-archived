@@ -53,6 +53,8 @@
 	 */
 	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
 	$nagios = $DBRESULT->fetchRow();
+    $cfgNagios = $nagios['cfg_file'];
+    unset($nagios['cfg_file']);
 	$DBRESULT->free();
 
 	/*
