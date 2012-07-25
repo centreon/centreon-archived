@@ -36,23 +36,23 @@
  *
  */
 
-include_once("@CENTREON_ETC@/centreon.conf.php");
-require_once $centreon_path . "/www/class/centreonDB.class.php";
-require_once $centreon_path . "/www/include/common/common-Func.php";
+include_once('@CENTREON_ETC@/centreon.conf.php');
+require_once $centreon_path . '/www/class/centreonDB.class.php';
+require_once $centreon_path . '/www/include/common/common-Func.php';
 
 /*
  * Validate the session
  */
 session_start();
 $db = new CentreonDB();
-if (isset($_GET["sid"]) && !check_injection($_GET["sid"])) {
-    $res = $db->query("SELECT * FROM session WHERE session_id = '" . CentreonDB::escape($_GET["sid"]) . "'");
+if (isset($_GET['sid']) && !check_injection($_GET['sid'])) {
+    $res = $db->query('SELECT * FROM session WHERE session_id = \'' . CentreonDB::escape($_GET['sid']) . '\'');
     if (!$res->fetchRow()) {
-        header($_SERVER['SERVER_PROTOCOL'] . " 401 Unauthorized", true, 401);
+        header($_SERVER['SERVER_PROTOCOL'] . ' 401 Unauthorized', true, 401);
         exit;
     }
 } else {
-    header($_SERVER['SERVER_PROTOCOL'] . " 401 Unauthorized", true, 401);
+    header($_SERVER['SERVER_PROTOCOL'] . ' 401 Unauthorized', true, 401);
     exit;
 }
 
