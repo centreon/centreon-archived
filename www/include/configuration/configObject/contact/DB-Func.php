@@ -811,8 +811,11 @@
 		global $form, $pearDB;
 		if (!$contact_id)
 			return;
-		$rq = "DELETE FROM contactgroup_contact_relation ";
-		$rq .= "WHERE contact_contact_id = '".$contact_id."'";
+		$rq = "DELETE FROM contactgroup_contact_relation
+			WHERE contact_contact_id = '".$contact_id."'
+				AND contactgroup_cg_id IN (SELECT cg_id
+					FROM contactgroup
+					WHERE cg_type = 'local')";
 		$DBRESULT = $pearDB->query($rq);
 		if (isset($ret["contact_cgNotif"]))
 			$ret = $ret["contact_cgNotif"];

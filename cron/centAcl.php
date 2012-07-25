@@ -151,7 +151,7 @@
 	     * If the ldap is enable and the last check
 	     * is more than update period
 	     */
-	    if ($ldap_enable == 1 && $ldap_last_update < (time() + LDAP_UPDATE_PERIOD)) {
+	    if ($ldap_enable == 1 && $ldap_last_update < (time() - LDAP_UPDATE_PERIOD)) {
     	    $query = "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'";
 			$ldapres = $pearDB->query($query);
 
