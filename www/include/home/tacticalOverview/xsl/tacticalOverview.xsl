@@ -246,7 +246,7 @@
 			<td>
 				<table class="tactical_light_table">
 					<tr style="font-weight:bold;" class="tactical_light_header">
-						<td align='center'><xsl:value-of select='//main/str_hostprobhostname'/></td>
+						<td align='center' colspan="2"><xsl:value-of select='//main/str_hostprobhostname'/></td>
 						<td align='center'><xsl:value-of select='//main/str_hostprobstatus'/></td>
 						<td align='center'><xsl:value-of select='//main/str_hostprobip'/></td>
 						<td align='center'><xsl:value-of select='//main/str_hostprobduration'/></td>
@@ -274,7 +274,9 @@
 								<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 								<xsl:value-of select='hostname'/>
 							</xsl:element>
-							<span style='float: right;'>
+						</xsl:element>
+						<xsl:element name='td'>
+							<xsl:attribute name='style'>border-left:0;width:auto;</xsl:attribute>
 							<xsl:if test='host_notesurl != ""'>
 								<xsl:element name='a'>
 									<xsl:attribute name='href'>
@@ -300,7 +302,6 @@
 									</xsl:element>
 								</xsl:element>	
 							</xsl:if>
-							</span>
 						</xsl:element>
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColCenter</xsl:attribute>
