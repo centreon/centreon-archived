@@ -410,8 +410,8 @@
 	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
 
-	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Enabled"), '0', array('onclick' => 'switchTemplate(true);'));
-	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Disabled"), '1', array('onclick' => 'switchTemplate(false);'));
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Yes"), '0', array('onclick' => 'switchTemplate(true);'));
+	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("No"), '1', array('onclick' => 'switchTemplate(false);'));
 	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
 	$form->setDefaults(array('contact_register' => '1'));
 
