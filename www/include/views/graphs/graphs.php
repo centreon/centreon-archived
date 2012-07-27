@@ -386,6 +386,11 @@ function nextPeriod() {
 
 	if (document.FormPeriod.period.value != "")	{
 		period = document.FormPeriod.period.value;
+	} else if (period_start != undefined && period_end != undefined) {
+		StartDate = ctime2date(period_start * 1000);
+		StartTime = ctime2time(period_start * 1000);
+		EndDate = ctime2date(period_end * 1000);
+		EndTime = ctime2time(period_end * 1000);
 	} else {
 		EndDate   = ctime2date(currentTime);
 		EndTime   = ctime2time(currentTime);
