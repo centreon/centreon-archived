@@ -535,6 +535,17 @@
 			updateHostHostGroup_MC($host_id);
 		else
 			updateHostHostGroup($host_id);
+                
+		# Function for updating host hc
+		# 1 - MC with deletion of existing hc
+		# 2 - MC with addition of new hc
+		# 3 - Normal update
+		if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && $ret["mc_mod_hhc"]["mc_mod_hhc"])
+                    updateHostHostCategory($host_id);
+		else if (isset($ret["mc_mod_hhc"]["mc_mod_hhc"]) && !$ret["mc_mod_hhc"]["mc_mod_hhc"])
+                    updateHostHostCategory_MC($host_id);
+		else
+                    updateHostHostCategory($host_id);
 
 		# Function for updating host template
 		# 1 - MC with deletion of existing template
@@ -583,6 +594,7 @@
 		updateHostNotifOptionTimeperiod($host_id, $ret);
 		updateHostNotifOptionFirstNotificationDelay($host_id, $ret);
 		updateHostHostGroup($host_id, $ret);
+		updateHostHostCategory($host_id, $ret);
 		updateHostTemplateService($host_id, $ret);
 		updateNagiosServerRelation($host_id, $ret);
 		$centreon->user->access->updateACL();
@@ -2066,6 +2078,50 @@
 			if (!isset($hgs[$ret[$i]]))	{
 				$rq = "INSERT INTO hostgroup_relation ";
 				$rq .= "(hostgroup_hg_id, host_host_id) ";
+				$rq .= "VALUES ";
+				$rq .= "('".$ret[$i]."', '".$host_id."')";
+				$DBRESULT = $pearDB->query($rq);
+			}
+		}
+	}
+        
+	function updateHostHostCategory($host_id, $ret = array())	{
+		global $form, $pearDB;
+
+		if (!$host_id)
+			return;
+
+		$rq = "DELETE FROM hostcategories_relation ";
+		$rq .= "WHERE host_host_id = '".$host_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		isset($ret["host_hcs"]) ? $ret = $ret["host_hcs"] : $ret = $form->getSubmitValue("host_hcs");
+		$hcsNEW = array();
+		for($i = 0; $i < count($ret); $i++)	{
+			$rq = "INSERT INTO hostcategories_relation ";
+			$rq .= "(hostcategories_hc_id, host_host_id) ";
+			$rq .= "VALUES ";
+			$rq .= "('".$ret[$i]."', '".$host_id."')";
+			$DBRESULT = $pearDB->query($rq);
+			$hcsNEW[$ret[$i]] = $ret[$i];
+		}
+	}
+
+	# For massive change. We just add the new list if the elem doesn't exist yet
+	function updateHostHostCategory_MC($host_id, $ret = array())	{
+		if (!$host_id) return;
+		global $form;
+		global $pearDB;
+		$rq = "SELECT * FROM hostcategories_relation ";
+		$rq .= "WHERE host_host_id = '".$host_id."'";
+		$DBRESULT = $pearDB->query($rq);
+		$hcs = array();
+		while($arr = $DBRESULT->fetchRow())
+			$hcs[$arr["hostcategories_hc_id"]] = $arr["hostcategories_hc_id"];
+		$ret = $form->getSubmitValue("host_hcs");
+		for($i = 0; $i < count($ret); $i++)	{
+			if (!isset($hcs[$ret[$i]]))	{
+				$rq = "INSERT INTO hostcategories_relation ";
+				$rq .= "(hostcategories_hc_id, host_host_id) ";
 				$rq .= "VALUES ";
 				$rq .= "('".$ret[$i]."', '".$host_id."')";
 				$DBRESULT = $pearDB->query($rq);

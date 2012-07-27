@@ -110,6 +110,14 @@
 		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
+                
+		/*
+		 * Set Host Category Parents
+		 */
+		$DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id FROM hostcategories_relation WHERE host_host_id = \''.$host_id.'\'');
+		for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++)
+			$host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
+		$DBRESULT->free();
 
 		/*
 		 * Set Host and Nagios Server Relation
@@ -200,6 +208,15 @@
 		$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
 	while ($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
+	$DBRESULT->free();
+        
+	/*
+	 * Host Categories comes from DB -> Store in $hcs Array
+	 */
+	$hcs = array();
+		$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
+	while ($hc = $DBRESULT->fetchRow())
+		$hcs[$hc["hc_id"]] = $hc["hc_name"];
 	$DBRESULT->free();
 
 	/*
@@ -524,6 +541,7 @@
 
 	$form->addElement('header', 'links', _("Relations"));
 	$form->addElement('header', 'HGlinks', _("Hostgroup Relations"));
+	$form->addElement('header', 'HClinks', _("Host Categories Relations"));
 
 	if ($o == "mc")	{
 		$mc_mod_hpar = array();
@@ -559,6 +577,19 @@
 		$form->setDefaults(array('mc_mod_hhg'=>'0'));
 	}
         $ams3 = $form->addElement('advmultiselect', 'host_hgs', array(_("Parent Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams3->setElementTemplate($eTemplate);
+	echo $ams3->getElementJs(false);
+        
+	if ($o == "mc")	{
+		$mc_mod_hhc = array();
+		$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
+		$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_hhc, 'mc_mod_hhc', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_hhc'=>'0'));
+	}
+        $ams3 = $form->addElement('advmultiselect', 'host_hcs', array(_("Parent Host Categories"), _("Available"), _("Selected")), $hcs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($eTemplate);
