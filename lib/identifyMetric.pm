@@ -65,7 +65,6 @@ sub insertMetrics($$$$$$$){
     if (!$sth2->execute()) { 
 	return error_thrown(2, "Error : " . $sth2->errstr);
     }
-    undef($sth2);
     return 0;
 }
 
@@ -92,11 +91,9 @@ sub updateMetricInformation($$$$$){
 		    if (!$sth1->execute()) {
 			return error_thrown(2, "Error : " . $sth1->errstr);
 		    }
-		    undef($sth1);
 		} else {
 		    writeLogFile("Metric id not found. Check database informations.\n");
 		}
-		undef($str);
     }
     return 0;		   	
 }
@@ -189,17 +186,7 @@ sub identify_metric($$$$$$$){
 		     }	    
 		    $just_insert = 0;
 		}
-		undef($sth1);
-		undef(@data);
     }
-    undef($metric_name);
-    undef($value);
-    undef($unit);
-    undef($min);
-    undef($max);
-    undef($warn);
-    undef($critical);
-    undef($begin);
     return 0;
 }
 
@@ -232,7 +219,7 @@ sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter r
 	    #$data[0] =~ s/\\/#BS#/g;
 	    #$data[0] =~ s/\%/#P#/g;
 	    my $sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
-	    if (!$sth1->execute) { throw Error::Simple("Error : " . $sth1->errstr, 2); }
+	    if (!$sth1->execute) { return error_thrown(2, "Error : " . $sth1->errstr); }
 
 	    if ($sth1->rows() eq 0) {
 		$just_insert = 1;   				
@@ -241,13 +228,13 @@ sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter r
 		# Si pas connue -> insert
 		my $sth2 = $con_ods->prepare("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`) VALUES ('".$_[1]."', ".$con_ods->quote($data[0]).", '".$data[2]."')");
 		if (!$sth2->execute){
-			throw Error::Simple("Error : " . $sth2->errstr, 2);
+			return error_thrown(2, "Error : " . $sth2->errstr);
 		}
 		undef($sth2);
 		# Get ID
 		$sth1 = $con_ods->prepare("SELECT * FROM `metrics` WHERE `index_id` = '".$_[1]."' AND `metric_name` = ".$con_ods->quote($data[0]));
 		if (!$sth1->execute) {
-			throw Error::Simple("Error : " . $sth1->errstr, 2);
+            return error_thrown(2, "Error : " . $sth1->errstr);
 		}
 	    }
 	    my $metric = $sth1->fetchrow_hashref();
@@ -256,7 +243,7 @@ sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter r
 	    if ($just_insert || (defined($data[2]) && defined($metric->{'unit_name'}) && $metric->{'unit_name'} ne $data[2])) {
 		my $sth1 = $con_ods->prepare("UPDATE `metrics` SET `unit_name` = '".$data[2]."' WHERE `metric_id` = '".$metric->{'metric_id'}."'");
 		if (!$sth1->execute){
-			throw Error::Simple("Error : " . $sth1->errstr, 2);
+            return error_thrown(2, "Error : " . $sth1->errstr);
 		}
 		undef($sth1);
 	    }
@@ -279,9 +266,6 @@ sub identify_hidden_metric($$$$$$$){ # perfdata index status time type counter r
 	    $just_insert = 0;
 	}
     }
-    undef($tab);
-    undef(@data);
-    undef($begin);
     return 0;
 }
 
