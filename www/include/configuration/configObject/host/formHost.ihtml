@@ -23,8 +23,8 @@
 	{if $o != "mc"}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_name"> {$form.host_name.label}</td><td class="FormRowValue">{$form.host_name.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="alias"> {$form.host_alias.label}</td><td class="FormRowValue">{$form.host_alias.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="address"> {$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}&nbsp;&nbsp;{$form.host_resolve.html}</td></tr>
 	{/if}
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="address"> {$form.host_address.label}</td><td class="FormRowValue">{$form.host_address.html}&nbsp;&nbsp;{$form.host_resolve.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="snmp_options"> {$form.host_snmp_community.label} & {$form.host_snmp_version.label}</td><td class="FormRowValue">{$form.host_snmp_community.html}&nbsp;&nbsp;{$form.host_snmp_version.html}</td></tr>
 	{if $o == "mc" && $form.nagios_server_id.label}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_nsid.label}</td><td class="FormRowValue">{$form.mc_mod_nsid.html}</td></tr>

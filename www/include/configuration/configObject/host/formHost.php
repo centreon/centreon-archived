@@ -291,9 +291,9 @@
 	if ($o != "mc")	{
 		$form->addElement('text', 'host_name', _("Host Name"), $attrsText);
 		$form->addElement('text', 'host_alias', _("Alias"), $attrsText);
+                $form->addElement('text', 'host_address', _("IP Address / DNS"), array_merge(array('id' => 'host_address'), $attrsText));
+                $form->addElement('button', 'host_resolve', _("Resolve"), array('onClick'=>'resolveHostNameToAddress(document.getElementById(\'host_address\').value, function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});'));
 	}
-	$form->addElement('text', 'host_address', _("IP Address / DNS"), array_merge(array('id' => 'host_address'), $attrsText));
-        $form->addElement('button', 'host_resolve', _("Resolve"), array('onClick'=>'resolveHostNameToAddress(document.getElementById(\'host_address\').value, function(err, ip){if (!err) document.getElementById(\'host_address\').value = ip});'));
 	$form->addElement('text', 'host_snmp_community', _("SNMP Community"), $attrsText);
 	$form->addElement('select', 'host_snmp_version', _("Version"), array(NULL=>NULL, 1=>"1", "2c"=>"2c", 3=>"3"));
 
