@@ -62,7 +62,7 @@
 	$ndo_base_prefix = getNDOPrefix();
 
 	/* security check 2/2*/
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
@@ -71,10 +71,10 @@
 	} else
 		get_error('need session identifiant !');
 
-	(isset($_GET["svc_id"]) && !check_injection($_GET["svc_id"])) ? $svc_id = htmlentities($_GET["svc_id"]) : $svc_id = "0";
-	(isset($_GET["enable"]) && !check_injection($_GET["enable"])) ? $enable = htmlentities($_GET["enable"]) : $enable = "enable";
-	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = htmlentities($_GET["disable"]) : $disable = "disable";
-	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
+	(isset($_GET["svc_id"])) ? $svc_id = htmlentities($_GET["svc_id"]) : $svc_id = "0";
+	(isset($_GET["enable"])) ? $enable = htmlentities($_GET["enable"]) : $enable = "enable";
+	(isset($_GET["disable"])) ? $disable = htmlentities($_GET["disable"]) : $disable = "disable";
+	(isset($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
 
 	$tmpTab = preg_split("/\_/", $svc_id);
 	if (isset($tmpTab[1])) {

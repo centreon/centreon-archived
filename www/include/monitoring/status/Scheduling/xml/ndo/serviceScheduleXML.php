@@ -50,7 +50,7 @@
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($pearDB);
 
-	if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+	if (isset($_GET["sid"])){
 		$sid = $_GET["sid"];
 		$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 		$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
@@ -68,25 +68,23 @@
 	$centreonGMT = new CentreonGMT($pearDB);
 	$centreonGMT->getMyGMTFromSession($sid, $pearDB);
 
-	(isset($_GET["enable"]) && !check_injection($_GET["enable"])) ? $enable = urldecode($_GET["enable"]) : $enable = "enable";
-	(isset($_GET["disable"]) && !check_injection($_GET["disable"])) ? $disable = urldecode($_GET["disable"]) : $disable = "disable";
+	(isset($_GET["enable"])) ? $enable = urldecode($_GET["enable"]) : $enable = "enable";
+	(isset($_GET["disable"])) ? $disable = urldecode($_GET["disable"]) : $disable = "disable";
 
 	$enable = str_replace('&eacute', '&#233', $enable);
 	$disable = str_replace('&eacute', '&#233', $disable);
 
-	(isset($_GET["num"]) 		&& !check_injection($_GET["num"])) ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
-	(isset($_GET["limit"]) 		&& !check_injection($_GET["limit"])) ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
-	(isset($_GET["instance"])/* && !check_injection($_GET["instance"])*/) ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
-	(isset($_GET["search"]) 	&& !check_injection($_GET["search"])) ? $search = htmlentities($_GET["search"]) : $search = "";
-    (isset($_GET["search_host"]) 	&& !check_injection($_GET["search_host"])) ? $search_host = htmlentities($_GET["search_host"]) : $search_host = "";
-
-	(isset($_GET["sort_type"]) 	&& !check_injection($_GET["sort_type"])) ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "last_check";
-
-	(isset($_GET["order"]) 		&& !check_injection($_GET["order"])) ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
-	(isset($_GET["date_time_format_status"]) && !check_injection($_GET["date_time_format_status"])) ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
-	(isset($_GET["o"]) 			&& !check_injection($_GET["o"])) ? $o = htmlentities($_GET["o"]) : $o = "h";
-	(isset($_GET["p"]) 			&& !check_injection($_GET["p"])) ? $p = htmlentities($_GET["p"]) : $p = "2";
-	(isset($_GET["nc"]) 		&& !check_injection($_GET["nc"])) ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
+	(isset($_GET["num"]))                       ? $num = htmlentities($_GET["num"]) : get_error('num unknown');
+	(isset($_GET["limit"]))                     ? $limit = htmlentities($_GET["limit"]) : get_error('limit unknown');
+	(isset($_GET["instance"]))                  ? $instance = htmlentities($_GET["instance"]) : $instance = "ALL";
+	(isset($_GET["search"]))                    ? $search = htmlentities($_GET["search"]) : $search = "";
+        (isset($_GET["search_host"]))               ? $search_host = htmlentities($_GET["search_host"]) : $search_host = "";
+	(isset($_GET["sort_type"]))                 ? $sort_type = htmlentities($_GET["sort_type"]) : $sort_type = "last_check";
+	(isset($_GET["order"]))                     ? $order = htmlentities($_GET["order"]) : $oreder = "ASC";
+	(isset($_GET["date_time_format_status"]))   ? $date_time_format_status = htmlentities($_GET["date_time_format_status"]) : $date_time_format_status = "d/m/Y H:i:s";
+	(isset($_GET["o"]))                         ? $o = htmlentities($_GET["o"]) : $o = "h";
+	(isset($_GET["p"]))                         ? $p = htmlentities($_GET["p"]) : $p = "2";
+	(isset($_GET["nc"]))                        ? $nc = htmlentities($_GET["nc"]) : $nc = "0";
 
 	/* ACL */
 	$is_admin = 0;

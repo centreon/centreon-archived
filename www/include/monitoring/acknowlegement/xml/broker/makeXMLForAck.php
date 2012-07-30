@@ -56,7 +56,7 @@ $dbb = new CentreonDB("centstorage");
 $centreonlang = new CentreonLang($centreon_path, $oreon);
 $centreonlang->bindLang();
 
-if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+if (isset($_GET["sid"])){
     $sid = $_GET["sid"];
     $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
     if (!$session = $res->fetchRow()) {
@@ -66,8 +66,8 @@ if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
     get_error('need session id !');
 }
 
-(isset($_GET["hid"]) && !check_injection($_GET["hid"])) ? $host_id = CentreonDB::escape($_GET["hid"]) : $host_id = 0;
-(isset($_GET["svc_id"]) && !check_injection($_GET["svc_id"])) ? $service_id = CentreonDB::escape($_GET["svc_id"]) : $service_id = 0;
+(isset($_GET["hid"])) ? $host_id = CentreonDB::escape($_GET["hid"]) : $host_id = 0;
+(isset($_GET["svc_id"])) ? $service_id = CentreonDB::escape($_GET["svc_id"]) : $service_id = 0;
 
 /*
  * Init GMT class

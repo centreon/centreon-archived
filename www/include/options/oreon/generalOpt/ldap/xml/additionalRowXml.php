@@ -63,7 +63,7 @@
     $centreonlang = new CentreonLang($centreon_path, $centreon);
     $centreonlang->bindLang();
 
-    if (isset($_GET["sid"]) && !check_injection($_GET["sid"])){
+    if (isset($_GET["sid"])){
         $sid = $_GET["sid"];
         $res = $db->query("SELECT * FROM session WHERE session_id = '".CentreonDB::escape($sid)."'");
         if (!$session = $res->fetchRow()) {

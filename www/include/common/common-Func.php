@@ -1702,25 +1702,18 @@
 		echo $buffer;
 		exit(0);
 	}
-
+        
+        /**
+         * !!! ATTENTION: This function is not implemented. Do not use it !!!
+         * 
+         * @deprecated since version 2.3.8
+         * @param string $sid
+         * @return int
+         */
 	function check_injection($sid){
-		if (!isset($sid))
-			$sid = $_GET["sid"];
-		/*
-		 *
-		if (preg_match("/\</", strtoupper($sid), $matches) ||
-			preg_match("/\>/", strtoupper($sid), $matches) ||
-			preg_match("/\;/", strtoupper($sid), $matches) ||
-			preg_match("/UNION/", strtoupper($sid), $matches) ||
-			preg_match("/ALL/", strtoupper($sid), $matches) ||
-			preg_match("/OR/", strtoupper($sid), $matches) ||
-			preg_match("/AND/", strtoupper($sid), $matches) ||
-			preg_match("/ORDER/", strtoupper($sid), $matches) ||
-			preg_match("/SELECT/", strtoupper($sid), $matches) ||
-			preg_match("/WHERE/", strtoupper($sid), $matches)) {
-			get_error(_('sql injection detected'));
-			return 1;
-		}*/
+		/**
+                 * This function still exists because there are chances that modules use it
+                 */
 		return 0;
 	}
 	/* End Ajax Test */
@@ -1758,7 +1751,7 @@
 	}
 
 	function check_session($sid, $pearDB){
-		if (isset($sid) && !check_injection($sid)){
+		if (isset($sid)){
 			$sid = htmlentities($sid, ENT_QUOTES, "UTF-8");
 			$res = $pearDB->query("SELECT * FROM session WHERE session_id = '".$sid."'");
 			if ($session = $res->fetchRow()){

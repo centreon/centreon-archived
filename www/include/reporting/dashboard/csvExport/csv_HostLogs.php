@@ -56,7 +56,7 @@
 	/*
 	 * Checking session
 	 */
-	if (isset($_GET["sid"]) && isset($_SESSION['centreon']) && !check_injection($_GET["sid"])) {
+	if (isset($_GET["sid"]) && isset($_SESSION['centreon'])) {
         $oreon = $_SESSION['centreon'];
         $query = "SELECT user_id FROM session WHERE user_id = '".$pearDB->escape($oreon->user->user_id)."'";
         $res = $pearDB->query($query);
