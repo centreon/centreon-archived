@@ -4,17 +4,6 @@
  	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/layout_horizontal.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-	<tr class="list_two">
-		<td class="FormRowField">{$form.ds_name.label}</td>
-		<td id="td_ds"><table id="table_ds" border="0"><tr>
-			<td id="td_ds_html" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.ds_name.html}</td>
-			{if $o == "a" || $o == "c"}
-				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
-					&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" onclick="insertValueQuery()" />&nbsp;
-				</td>
-			{/if}
-		</tr></table></td>
-	</tr>
 	<tr class="list_one">
 		<td class="FormRowField">
 			{if $o == "a" || $o == "c"}
@@ -30,6 +19,17 @@
 			{$form.host_id.html}
 			&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
 		</td>
+	</tr>
+	<tr class="list_two">
+		<td class="FormRowField">{$form.ds_name.label}</td>
+		<td id="td_ds"><table id="table_ds" border="0"><tr>
+			<td id="td_ds_html" class="FormRowValue" style="padding: 0px; border-width: 0px;">{$form.ds_name.html}</td>
+			{if $o == "a" || $o == "c"}
+				<td id="td_list_metrics" style="padding: 0px; border-width: 0px;">
+					&nbsp;<img src="./img/icones/16x16/arrow_left_blue.gif" onclick="insertValueQuery()" />&nbsp;
+				</td>
+			{/if}
+		</tr></table></td>
 	</tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.ds_stack.label}</td><td class="FormRowValue">{$form.ds_stack.html}</td></tr>
