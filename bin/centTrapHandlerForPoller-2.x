@@ -147,38 +147,62 @@ sub getServicesIncludeTemplate($$$$) {
 
 sub getServiceInformations($$$)	{
 
-    my $sth = $_[0]->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '$_[2]'");
+    my $sth = $_[0]->prepare("SELECT `host_id`
+    	FROM `host`
+    	WHERE `host_name` = '" . $_[2] . "'");
     $sth->execute();
     my $host_id = $sth->fetchrow_array();
-    exit if (!defined $host_id);
-    $sth->finish();
-    
-    $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment` FROM `traps` WHERE `traps_oid` = '$_[1]'");
-    $sth->execute();
-    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment) = $sth->fetchrow_array();
-    exit if (!defined $trap_id);
+    if ( !defined $host_id ) {
+        exit();
+    }
     $sth->finish();
 
-    #
-    ## getting all "services by host" for given host
-    #
-    my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id FROM service s, host_service_relation h";
-    $st_query .= " where  s.service_id=h.service_service_id and h.host_host_id='$host_id'";
-    my $sth_st = $_[0]->prepare($st_query); 
-    my @service = getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id);
-    $sth_st->finish;
-    
-    #
-    ## getting all "services by hostgroup" for given host
-    #
-    my $query_hostgroup_services = "SELECT s.service_id, service_description, service_template_model_stm_id FROM hostgroup_relation hgr,  service s, host_service_relation hsr";
-    $query_hostgroup_services .= " WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id";
-    $query_hostgroup_services .= " AND s.service_id = hsr.service_service_id";
-    $sth_st = $_[0]->prepare($query_hostgroup_services);
-    $sth_st->execute();
-    @service = (@service,getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id));
-    $sth_st->finish;
-    return $trap_id, $trap_status, \@service, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment;
+    $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment`
+    	FROM `traps`
+    	WHERE `traps_oid` = '" . $_[1] . "'");
+    $sth->execute();
+	my @row;
+	my @traps;
+	while (@row = $sth->fetchrow_array()) {
+		my %trap = (
+			'trap_id' => $row[0],
+			'trap_status' => $row[1],
+			'traps_submit_result_enable' => $row[2],
+			'traps_execution_command' => $row[3],
+			'traps_reschedule_svc_enable' => $row[4],
+			'traps_execution_command_enable' => $row[5],
+			'traps_advanced_treatment' => $row[6]
+		);
+		######################################################
+	    # getting all "services by host" for given host
+	    my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id
+	    	FROM service s, host_service_relation h
+	    	WHERE s.service_id = h.service_service_id and h.host_host_id='" . $host_id . "'";
+	    my $sth_st = $_[0]->prepare($st_query);
+	    my @service = getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap{'trap_id'});
+	    $sth_st->finish;
+	
+	    ######################################################
+	    # getting all "services by hostgroup" for given host
+	    my $query_hostgroup_services = "SELECT s.service_id, service_description, service_template_model_stm_id
+	    	FROM hostgroup_relation hgr,  service s, host_service_relation hsr
+	        WHERE hgr.host_host_id = '" . $host_id . "'
+	        	AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+	    		AND s.service_id = hsr.service_service_id";
+	    $sth_st = $_[0]->prepare($query_hostgroup_services);
+	    $sth_st->execute();
+	    @service = (
+	        @service,
+	        getServicesIncludeTemplate( $_[0], $sth_st, $host_id, $trap{'trap_id'})
+	    );
+	    $sth_st->finish;
+	    
+	    $trap{'services'} = \@service;
+	    
+		push(@traps, \%trap);
+	}
+
+    return \@traps;
 }
 
 #######################################
@@ -196,137 +220,155 @@ sub getTrapsInfos($$$$$){
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach(@host) {
 		my $this_host = $_;
-		my ($trap_id, $status, $ref_servicename, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment) = getServiceInformations($dbh, $oid, $_);
-		my @servicename=@{$ref_servicename};		
-		
-		##########################
-		# REPLACE ARGS	
-		my @macros;
-		my $x = 0;
-		my @args = split(/\'\s+\'|\'/, $allargs);
-		my $x_arg = 0;
-		foreach (@args) {
-	    	my $str = $_;
-	    	if ($str !~ m/^$/) {
-				$x_arg = $x + 1;
-				$macros[$x_arg] = $_;
-				$macros[$x_arg] =~ s/\=/\-/g;
-				$macros[$x_arg] =~ s/\;/\,/g;
-				#$macros[$x_arg] =~ s/\n/\<BR\>/g;
-				$macros[$x_arg] =~ s/\t//g;				
-				$x++;
-	    	}
-		}
-				
-		foreach (@servicename) {
-		    my $this_service = $_;
-	    	my $datetime = `date +%s`;
-	    	chomp($datetime);
-	    	my $sth = $dbh->prepare("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+        my $ref_traps = getServiceInformations( $dbh, $oid, $_ );
+        my @traps = @{$ref_traps};
+        
+        foreach (@traps) {
+        	my $trap = $_;
+        	my $ref_servicename = $trap->{'services'};
+	        my @servicename = @{$ref_servicename};
+	        my $trap_id = $trap->{'trap_id'};
+			my $status = $trap->{'trap_status'};
+			my $traps_submit_result_enable = $trap->{'traps_submit_result_enable'};
+			my $traps_execution_command = $trap->{'traps_execution_command'};
+			my $traps_reschedule_svc_enable = $trap->{'traps_reschedule_svc_enable'};
+			my $traps_execution_command_enable = $trap->{'traps_execution_command_enable'};
+			my $traps_advanced_treatment = $trap->{'traps_advanced_treatment'};
+	
+	        ##########################
+	        # REPLACE ARGS
+	        my @macros;
+	        my $x     = 0;
+	        my @args  = split( /\'\s+\'|\'/, $allargs );
+	        my $x_arg = 0;
+	        foreach (@args) {
+	            my $str = $_;
+	            if ( $str !~ m/^$/ ) {
+	                $x_arg = $x + 1;
+	                $macros[$x_arg] = $_;
+	                $macros[$x_arg] =~ s/\=/\-/g;
+	                $macros[$x_arg] =~ s/\;/\,/g;
+	
+	                #$macros[$x_arg] =~ s/\n/\<BR\>/g;
+	                $macros[$x_arg] =~ s/\t//g;
+	                $x++;
+	            }
+	        }
+	
+	        my $datetime;
+	        my $location;
+	        my $sth = $dbh->prepare("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 	    	$sth->execute();
 	    	my @conf = $sth->fetchrow_array();
-	    	$sth->finish();
-	    		    	
-   		    #####################################################################
-		    # Advanced matching rules
-		    if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-				# Check matching options 
-				my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
-				$sth->execute();
-				while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
-				    my @temp = split(//, $regexp);
-				    my $i = 0;
-				    my $len = length($regexp);
-				    $regexp = "";
-				    foreach (@temp) {
-					if ($i eq 0 && $_ =~ "/") {
-					    $regexp = $regexp . "";
-					} elsif ($i eq ($len - 1) && $_ =~ "/") { 
-					    $regexp = $regexp . "";
-					} else {
-					    $regexp = $regexp . $_;
-					}
-					$i++;
-				    }
-		
-				    ##########################
-				    # REPLACE ARGS
-				    my $x = 1;
-				    foreach (@macros) {
-						if (defined($macros[$x])) {
-						    $tmoString =~ s/\$$x/$macros[$x]/g;
-						    $x++;
+				
+			foreach (@servicename) {
+			    my $this_service = $_;
+		    	my $datetime = `date +%s`;
+		    	chomp($datetime);
+		    	
+		    	$sth->finish();
+		    		    	
+	   		    #####################################################################
+			    # Advanced matching rules
+			    if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
+					# Check matching options 
+					my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
+					$sth->execute();
+					while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
+					    my @temp = split(//, $regexp);
+					    my $i = 0;
+					    my $len = length($regexp);
+					    $regexp = "";
+					    foreach (@temp) {
+						if ($i eq 0 && $_ =~ "/") {
+						    $regexp = $regexp . "";
+						} elsif ($i eq ($len - 1) && $_ =~ "/") { 
+						    $regexp = $regexp . "";
+						} else {
+						    $regexp = $regexp . $_;
 						}
-				    }
-				    
-				    ##########################
-				    # REPLACE MACROS
-				    $tmoString =~ s/\&quot\;/\"/g;
-				    $tmoString =~ s/\&#039\;\&#039\;/"/g;
-				    $tmoString =~ s/\@HOSTNAME\@/$this_host/g;
-				    $tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
-				    $tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
-				    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-				    $tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
-				    $tmoString =~ s/\@TIME\@/$datetime/g;
-				    
-				    if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
-						$status = $tmoStatus;
-						print "Regexp: $tmoString => $regexp\n";
-						print "Status: $status ($tmoStatus)\n";
-						last;
-				    }
+						$i++;
+					    }
+			
+					    ##########################
+					    # REPLACE ARGS
+					    my $x = 1;
+					    foreach (@macros) {
+							if (defined($macros[$x])) {
+							    $tmoString =~ s/\$$x/$macros[$x]/g;
+							    $x++;
+							}
+					    }
+					    
+					    ##########################
+					    # REPLACE MACROS
+					    $tmoString =~ s/\&quot\;/\"/g;
+					    $tmoString =~ s/\&#039\;\&#039\;/"/g;
+					    $tmoString =~ s/\@HOSTNAME\@/$this_host/g;
+					    $tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
+					    $tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
+					    $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+					    $tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
+					    $tmoString =~ s/\@TIME\@/$datetime/g;
+					    
+					    if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
+							$status = $tmoStatus;
+							print "Regexp: $tmoString => $regexp\n";
+							print "Status: $status ($tmoStatus)\n";
+							last;
+					    }
+					}
+					$sth->finish();
 				}
-				$sth->finish();
-			}
-	    	
-	    	#####################################################################
-		    # Submit value to passiv service
-	    	if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) {
-	    		waitPipe($conf[0]); 
-				my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
-			}
+		    	
+		    	#####################################################################
+			    # Submit value to passiv service
+		    	if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) {
+		    		waitPipe($conf[0]); 
+					my $submit = `/bin/echo "[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line" >> $conf[0]`;
+				}
+				
+				######################################################################
+			    # Force service execution with external command
+				if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1){
+					my $time_now = time();
+					waitPipe($conf[0]);
+				    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
+					undef($time_now);
+				}
+				
+				######################################################################
+			    # Execute special command
+				if (defined($traps_execution_command_enable) && $traps_execution_command_enable){
+					my $x = 1;
+					foreach (@macros) {
+					    if (defined($macros[$x])) {
+							$traps_execution_command =~ s/\$$x/$macros[$x]/g;
+							$x++;
+					    }
+					}		
+					##########################
+					# REPLACE MACROS
+					$traps_execution_command =~ s/\&quot\;/\"/g;
+					$traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
+					$traps_execution_command =~ s/\&#039\;/'/g;
+					$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
+					$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
+					$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+					$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
+					$traps_execution_command =~ s/\@OUTPUT\@/$arguments_line/g;
+					$traps_execution_command =~ s/\@STATUS\@/$status/g;
+					$traps_execution_command =~ s/\@TIME\@/$datetime/g;
 			
-			######################################################################
-		    # Force service execution with external command
-			if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1){
-				my $time_now = time();
-				waitPipe($conf[0]);
-			    my $submit = `/bin/echo "[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$time_now" >> $conf[0]`;	
-				undef($time_now);
+					##########################
+					# SEND COMMAND
+					if ($traps_execution_command) {				    
+					    system($traps_execution_command);
+					}				
+				}
+				undef($sth);
 			}
-			
-			######################################################################
-		    # Execute special command
-			if (defined($traps_execution_command_enable) && $traps_execution_command_enable){
-				my $x = 1;
-				foreach (@macros) {
-				    if (defined($macros[$x])) {
-						$traps_execution_command =~ s/\$$x/$macros[$x]/g;
-						$x++;
-				    }
-				}		
-				##########################
-				# REPLACE MACROS
-				$traps_execution_command =~ s/\&quot\;/\"/g;
-				$traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
-				$traps_execution_command =~ s/\&#039\;/'/g;
-				$traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
-				$traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
-				$traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
-				$traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-				$traps_execution_command =~ s/\@OUTPUT\@/$arguments_line/g;
-				$traps_execution_command =~ s/\@STATUS\@/$status/g;
-				$traps_execution_command =~ s/\@TIME\@/$datetime/g;
-		
-				##########################
-				# SEND COMMAND
-				if ($traps_execution_command) {				    
-				    system($traps_execution_command);
-				}				
-			}
-			undef($sth);
-		}
+        }
     }
     $dbh->disconnect();
     exit;
