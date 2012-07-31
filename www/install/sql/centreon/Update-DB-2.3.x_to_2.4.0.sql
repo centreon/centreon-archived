@@ -265,3 +265,9 @@ ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instanc
 
 UPDATE  `centreon`.`options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USING utf8 ) =  'monitoring_engine' AND CONVERT(  `options`.`value` USING utf8 ) =  'NAGIOS' LIMIT 1 ;
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;
+
+SET foreign_key_checks = 0;
+UPDATE  `centreon`.`topology` SET `topology_name` = 'SNMP traps', `topology_parent` =  '6', `topology_page` = '611', `topology_order` = '80', `topology_group` =  '1'  WHERE  `topology`.`topology_page` = 60705;
+UPDATE  `centreon`.`topology_JS` SET  `id_page` =  '611' WHERE  `topology_JS`.`id_page` = 60705;
+SET foreign_key_checks = 1;
+
