@@ -466,6 +466,7 @@ function generateFiles()
 		onSuccess: function (response) {
 						displayStatusMessage(response.responseXML);
 						displayDetails(response.responseXML);
+						displayPhpErrorMsg('generate', response.responseXML);
 						if (isError(response.responseXML) == "1") {
 							abortProgress();
 							return null;
@@ -499,6 +500,7 @@ function moveFiles()
 		onSuccess: function (response) {
 						displayStatusMessage(response.responseXML);
 						displayDetails(response.responseXML);
+						displayPhpErrorMsg('move', response.responseXML);
 						if (restartOption) {
 							updateProgress(67);
 							restartPollers();
@@ -526,6 +528,7 @@ function restartPollers()
 		onSuccess: function (response) {
 						displayStatusMessage(response.responseXML);
 						displayDetails(response.responseXML);
+						displayPhpErrorMsg('restart', response.responseXML);
 						updateProgress(100);
 						exportBtn.disabled = false;
 		}
@@ -575,6 +578,68 @@ function isError(responseXML)
 		return statuscode.item(0).firstChild.data;
 	}
 	return 0;
+}
+
+/**
+ * Action (generate, move, restart)
+ */
+var errorClass = 'list_two';
+function displayPhpErrorMsg(action, responseXML)
+{
+	var errors = responseXML.getElementsByTagName('errorPhp');
+	var titleError;
+	if (errorClass == 'list_one') {
+		errorClass = 'list_two';
+	} else {
+		errorClass = 'list_one';
+	}
+	if (errors.length == 0) {
+		return;
+	}
+	switch (action) {
+		case 'generate':
+			titleError = 'Errors/warnings in generate';
+			break;
+		case 'move':
+			titleError = 'Errors/warnings in move files';
+			break;
+		case 'restart':
+			titleError = 'Errors/warnings in restart';
+			break;
+	}
+
+	var bodyErrors = document.getElementById('error_log');
+	var trEl = document.createElement('tr');
+	trEl.setAttribute('class', errorClass);
+	bodyErrors.appendChild(trEl);
+	var tdEl1 = document.createElement('td');
+	tdEl1.setAttribute('class', 'FormRowField');
+	tdEl1.innerHTML = titleError;
+	trEl.appendChild(tdEl1);
+	var tdEl2 = document.createElement('td');
+	tdEl2.setAttribute('class', 'FormRowValue');
+	tdEl2.innerHTML = '<span style="position: relative; float: left; margin-right: 5px;"><a href="javascript:toggleErrorPhp(\'' + action + '\');" id="expend_' + action + '">[ + ]</a></span>';
+	trEl.appendChild(tdEl2);
+	var divErrors = document.createElement('div');
+	divErrors.setAttribute('id', 'errors_' + action);
+	divErrors.setAttribute('style', 'position: relative; float: left;');
+	divErrors.style.visibility = 'hidden';
+	tdEl2.appendChild(divErrors);
+	for (var i = 0; i < errors.length; i++) {
+		divErrors.innerHTML +=  errors.item(i).firstChild.data;
+	}
+}
+
+function toggleErrorPhp(action) {
+	var linkEl = document.getElementById('expend_' + action);
+	var divErrors = document.getElementById('errors_' + action);
+	if (linkEl.innerHTML == '[ + ]') {
+		linkEl.innerHTML = '[ - ]';
+		divErrors.style.visibility = 'visible';
+	} else {
+		linkEl.innerHTML = '[ + ]';
+		divErrors.style.visibility = 'hidden';
+	}
 }
 
 /**

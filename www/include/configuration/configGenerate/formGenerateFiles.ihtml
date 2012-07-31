@@ -36,6 +36,8 @@
 					<div id="consoleDetails"></div>
 				</td>
 			</tr>
+			<tbody id="error_log">
+			</tbody>
 		</table>
 	</div>
 	{if $msg_debug || $msg_copy || $msg_restart }

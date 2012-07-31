@@ -116,6 +116,39 @@ function printDebug($xml)
     return $returnCode;
 }
 
+/**
+ * List of error from php
+ */
+global $generatePhpErrors;
+$generatePhpErrors = array();
+
+/**
+ * The error handler for get error from PHP
+ *
+ * @see set_error_handler
+ */
+function log_error($errno, $errstr, $errfile, $errline)
+{
+    global $generatePhpErrors;
+    if (!(error_reporting() & $errno)) {
+        return;
+    }
+
+    switch ($errno) {
+        case E_ERROR:
+        case E_USER_ERROR:
+        case E_CORE_ERROR:
+            $generatePhpErrors[] = array('error', $errstr);
+            break;
+        case E_WARNING:
+        case E_USER_WARNING:
+        case E_CORE_WARNING:
+            $generatePhpErrors[] = array('warning', $errstr);
+            break;
+    }
+    return true;
+}
+
 $path = $centreon_path . "www/include/configuration/configGenerate/";
 require_once $path."DB-Func.php";
 $nagiosCFGPath = $centreon_path . "filesGeneration/nagiosCFG/";
@@ -148,6 +181,9 @@ $oreon = $_SESSION['centreon'];
 $centreon = $oreon;
 $xml = new CentreonXML();
 $pearDB = new CentreonDB();
+
+/*  Set new error handler */
+set_error_handler('log_error');
 
 $okMsg = "<b><font color='green'>OK</font></b>";
 $nokMsg = "<b><font color='red'>NOK</font></b>";
@@ -253,6 +289,23 @@ try {
     $xml->writeElement("statuscode", 1);
     $xml->writeElement("error", $e->getMessage());
 }
+/* Restore default error handler */
+restore_error_handler();
+
+/*
+ * Add error form php
+ */
+$xml->startElement('errorsPhp');
+foreach ($generatePhpErrors as $error) {
+    if ($error[0] == 'error') {
+        $errmsg = '<span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span>';
+    } else {
+        $errmsg = '<span style="color: orange;">Warning</span><span style="margin-left: 5px;">' . $error[1] . '</span>';
+    }
+    $xml->writeElement('errorPhp', $errmsg);
+}
+$xml->endElement();
+
 $xml->endElement();
 header('Content-Type: application/xml');
 header('Cache-Control: no-cache');
