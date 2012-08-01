@@ -229,6 +229,15 @@
 		$form->freeze();
 		$valid = true;
 	}
+        
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"]) {
 		require_once($path."listsActionsAccess.php");
