@@ -223,7 +223,7 @@ sub copyTruncatePerfDataFile($$) {
     if ($flag_bckp == 1) {
         $PERFDATA_src = $PERFDATA . ".bckp";
     }
-    if (!open(FD_SRC, "<+" . $PERFDATA_src)) {
+    if (!open(FD_SRC, "+<" . $PERFDATA_src)) {
     	writeLogFile("Cannot read/write the $PERFDATA file : $!");
     	undef($PERFDATA);
     	return(0);
