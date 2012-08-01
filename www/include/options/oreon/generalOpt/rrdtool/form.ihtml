@@ -4,28 +4,28 @@
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/column-chart.gif'>&nbsp;&nbsp;{$genOpt_rrdtool_properties}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_rrdtool_configurations}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_path_bin.label}</td><td class="FormRowValue">{$form.rrdtool_path_bin.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_version.label}</td><td class="FormRowValue">{$form.rrdtool_version.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_directory+rrdtool_binary">{$form.rrdtool_path_bin.label}</td><td class="FormRowValue">{$form.rrdtool_path_bin.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_version">{$form.rrdtool_version.label}</td><td class="FormRowValue">{$form.rrdtool_version.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.title_title}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_title_font.label}</td><td class="FormRowValue">{$form.rrdtool_title_font.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_title_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_title_fontsize.html}&nbsp;px</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_title_font">{$form.rrdtool_title_font.label}</td><td class="FormRowValue">{$form.rrdtool_title_font.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_title_font_size">{$form.rrdtool_title_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_title_fontsize.html}&nbsp;px</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.unit_title}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_unit_font.label}</td><td class="FormRowValue">{$form.rrdtool_unit_font.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_unit_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_unit_fontsize.html}&nbsp;px</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_unit_font">{$form.rrdtool_unit_font.label}</td><td class="FormRowValue">{$form.rrdtool_unit_font.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_unit_font_size">{$form.rrdtool_unit_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_unit_fontsize.html}&nbsp;px</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.axis_title}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_axis_font.label}</td><td class="FormRowValue">{$form.rrdtool_axis_font.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_axis_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_axis_fontsize.html}&nbsp;px</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_axis_font">{$form.rrdtool_axis_font.label}</td><td class="FormRowValue">{$form.rrdtool_axis_font.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_axis_font_size">{$form.rrdtool_axis_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_axis_fontsize.html}&nbsp;px</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.legend_title}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_legend_font.label}</td><td class="FormRowValue">{$form.rrdtool_legend_font.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_legend_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_legend_fontsize.html}&nbsp;px</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_legend_font">{$form.rrdtool_legend_font.label}</td><td class="FormRowValue">{$form.rrdtool_legend_font.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_legend_font_size">{$form.rrdtool_legend_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_legend_fontsize.html}&nbsp;px</td></tr>
 
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.watermark_title}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.rrdtool_watermark_font.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_font.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.rrdtool_watermark_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_fontsize.html}&nbsp;px</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_watermark_font">{$form.rrdtool_watermark_font.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_font.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_watermark_font_size">{$form.rrdtool_watermark_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_fontsize.html}&nbsp;px</td></tr>
 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	
 </table>
@@ -40,3 +40,4 @@
 {/if}
 {$form.hidden}
 </form>
+{$helptext}
