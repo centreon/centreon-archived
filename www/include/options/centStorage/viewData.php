@@ -73,19 +73,18 @@
 	/*
 	 * Prepare search engine
 	 */
-	if (isset($_POST["searchH"])) {
+	if (isset($_POST["search"])) {
 		$searchH = $_POST["searchH"];
-		$_POST["searchH"] = $_POST["searchH"];
-		$oreon->historySearch[$url] = $searchH;
+		$_POST["search"] = $_POST["searchH"];
+		$oreon->historySearch[$url] = $search;
 	} else if (isset($oreon->historySearch[$url])) {
 		$searchH = $oreon->historySearch[$url];
 	} else {
 		$searchH = NULL;
 	}
 
-	if (isset($_POST["searchH"])) {
+	if (isset($_POST["searchS"])) {
 		$searchS = $_POST["searchS"];
-		$_POST["searchS"] = $_POST["searchS"];
 		$oreon->historySearchService[$url] = $searchS;
 	} else if (isset($oreon->historySearchService[$url])) {
 		$searchS = $oreon->historySearchService[$url];
@@ -156,7 +155,7 @@
 			$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
 		}
 	}
-
+	
 	$search_string = "";
 	if ($searchH != "" || $searchS != "") {
 		$search_string = " WHERE ";
@@ -313,11 +312,11 @@
 	$tpl->assign('Pollers', _("Pollers"));
 	$tpl->assign('Search', _("Search"));
 
-	if (isset($_POST["searchH"])) {
-		$tpl->assign('searchH', $_POST["searchH"]);
+	if (isset($searchH)) {
+		$tpl->assign('searchH', $searchH);
 	}
-	if (isset($_POST["searchS"])) {
-		$tpl->assign('searchS', $_POST["searchS"]);
+	if (isset($searchS)) {
+		$tpl->assign('searchS', $searchS);
 	}
 
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
