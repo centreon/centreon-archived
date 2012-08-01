@@ -4,33 +4,33 @@
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_ODS_config}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.enable}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.enable_centstorage.label}</td><td class="FormRowValue">{$form.enable_centstorage.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_centstorage_engine">{$form.enable_centstorage.label}</td><td class="FormRowValue">{$form.enable_centstorage.html}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.folder}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.RRDdatabase_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_path.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.RRDdatabase_status_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_status_path.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.RRDdatabase_nagios_stats_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_nagios_stats_path.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_metrics">{$form.RRDdatabase_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_status">{$form.RRDdatabase_status_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_status_path.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_nagios_statistics">{$form.RRDdatabase_nagios_stats_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_nagios_stats_path.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$form.header.retention}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.len_storage_rrd.label}</td><td class="FormRowValue">{$form.len_storage_rrd.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.len_storage_mysql.label}</td><td class="FormRowValue">{$form.len_storage_mysql.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_database_size">{$form.len_storage_rrd.label}</td><td class="FormRowValue">{$form.len_storage_rrd.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_retention_duration_for_data_in_mysql">{$form.len_storage_mysql.label}</td><td class="FormRowValue">{$form.len_storage_mysql.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/garbage_empty.gif'>&nbsp;&nbsp;{$form.header.Purge}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_auto_delete">{$form.autodelete_rrd_db.label}</td><td class="FormRowValue">{$form.autodelete_rrd_db.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.coreOptions}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.purge_interval.label}</td><td class="FormRowValue">{$form.purge_interval.html}({$ods_purge_interval_expl})</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_purge_check_interval">{$form.purge_interval.label}</td><td class="FormRowValue">{$form.purge_interval.html}({$ods_purge_interval_expl})</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.Input}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.storage_type.label}</td><td class="FormRowValue">{$form.storage_type.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_storage_type">{$form.storage_type.label}</td><td class="FormRowValue">{$form.storage_type.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_down.gif'>&nbsp;&nbsp;{$form.header.Drop}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.auto_drop.label}</td><td class="FormRowValue">{$form.auto_drop.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.drop_file.label}</td><td class="FormRowValue">{$form.drop_file.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_drop_data_in_another_file">{$form.auto_drop.label}</td><td class="FormRowValue">{$form.auto_drop.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_drop_file">{$form.drop_file.label}</td><td class="FormRowValue">{$form.drop_file.html}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.logs}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.archive_retention.label}</td><td class="FormRowValue">{$form.archive_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_archive_nagios_logs">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_logs_retention_duration">{$form.archive_retention.label}</td><td class="FormRowValue">{$form.archive_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_marked.gif'>&nbsp;&nbsp;{$form.header.reporting}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.reporting_retention.label}</td><td class="FormRowValue">{$form.reporting_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
@@ -46,3 +46,4 @@
 {/if}
 {$form.hidden}
 </form>
+{$helptext}

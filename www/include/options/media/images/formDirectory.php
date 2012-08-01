@@ -141,6 +141,14 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 	
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
 	# move files to a directory
 	if ($o == "m")	{
 		$subM = $form->addElement('submit', 'submitM', _("Apply"));

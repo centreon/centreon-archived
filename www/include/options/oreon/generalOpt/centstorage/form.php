@@ -172,6 +172,14 @@
 	$tpl->assign("ods_log_retention_unit", _("days"));
 	$tpl->assign("ods_sleep_time_expl", _("in seconds - Must be higher than 10"));
 	$tpl->assign("ods_purge_interval_expl", _("in seconds - Must be higher than 2"));
+        
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('valid', $valid);

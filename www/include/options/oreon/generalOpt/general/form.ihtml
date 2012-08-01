@@ -5,40 +5,40 @@
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;{$form.header.title}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;{$form.header.oreon}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory">{$form.oreon_path.label}</td><td class="FormRowValue">{$form.oreon_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_web_directory">{$form.oreon_web_path.label}</td><td class="FormRowValue">{$form.oreon_web_path.html}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/window_split_hor.gif'>&nbsp;&nbsp;{$genOpt_max_page_size}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page">{$form.maxViewConfiguration.label}</td><td class="FormRowValue">{$form.maxViewConfiguration.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page_for_monitoring">{$form.maxViewMonitoring.label}</td><td class="FormRowValue">{$form.maxViewMonitoring.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$genOpt_expiration_properties}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}&nbsp;{$time_min}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sessions_expiration_time">{$form.session_expire.label}</td><td class="FormRowValue">{$form.session_expire.html}&nbsp;{$time_min}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/refresh.gif'>&nbsp;&nbsp;{$genOpt_refresh_properties}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.oreon_refresh.label}</td><td class="FormRowValue">{$form.oreon_refresh.html}&nbsp;{$time_sec}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.AjaxFirstTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.AjaxFirstTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr> 	
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval">{$form.oreon_refresh.label}</td><td class="FormRowValue">{$form.oreon_refresh.html}&nbsp;{$time_sec}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">{$form.AjaxTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">{$form.AjaxTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_first_refresh_delay_for_statistics">{$form.AjaxFirstTimeReloadStatistic.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadStatistic.html}&nbsp;{$time_sec}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_first_refresh_delay_for_monitoring">{$form.AjaxFirstTimeReloadMonitoring.label}</td><td class="FormRowValue">{$form.AjaxFirstTimeReloadMonitoring.html}&nbsp;{$time_sec}</td></tr> 	
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_colored.gif'>&nbsp;&nbsp;{$genOpt_display_options}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_template">{$form.template.label}</td><td class="FormRowValue">{$form.template.html}</td></tr>
  	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$genOpt_problem_display}</td></tr>
- 	<tr class="list_one"><td class="FormRowField">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">{$form.problem_sort_type.label}</td><td class="FormRowValue">{$form.problem_sort_type.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">{$form.problem_sort_order.label}</td><td class="FormRowValue">{$form.problem_sort_order.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/lock.gif'>&nbsp;&nbsp;{$genOpt_auth}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.enable_autologin.label}</td><td class="FormRowValue">{$form.enable_autologin.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.display_autologin_shortcut.label}</td><td class="FormRowValue">{$form.display_autologin_shortcut.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_autologin">{$form.enable_autologin.label}</td><td class="FormRowValue">{$form.enable_autologin.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_autologin_shortcut">{$form.display_autologin_shortcut.label}</td><td class="FormRowValue">{$form.display_autologin_shortcut.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$genOpt_time_zone}</td></tr>
- 	<tr class="list_one"><td class="FormRowField">{$form.enable_gmt.label}</td><td class="FormRowValue">{$form.enable_gmt.html}</td></tr>
- 	<tr class="list_two"><td class="FormRowField">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_timezone_management">{$form.enable_gmt.label}</td><td class="FormRowValue">{$form.enable_gmt.html}</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$genOpt_batch}</td></tr>
- 	<tr class="list_one"><td class="FormRowField">{$form.batch_cache_path.label}</td><td class="FormRowValue">{$form.batch_cache_path.html}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_cache_path">{$form.batch_cache_path.label}</td><td class="FormRowValue">{$form.batch_cache_path.html}</td></tr>
  	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
  </table>
 {if !$valid}
@@ -52,3 +52,4 @@
 {/if}
 {$form.hidden}
 </form>
+{$helptext}

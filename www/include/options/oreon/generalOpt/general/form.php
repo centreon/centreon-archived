@@ -190,6 +190,14 @@
 	$tpl->assign("genOpt_auth", _("Authentification properties"));
 	$tpl->assign("genOpt_batch", _("Batch configuration"));
 	$tpl->assign('valid', $valid);
+        
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	/*
 	 * Apply a template definition
