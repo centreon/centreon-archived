@@ -28,6 +28,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `perfdata_file` varchar(255) default NULL,
   `archive_log` enum('0','1') NOT NULL default '0',
   `archive_retention` int(11) default '31',
+  `reporting_retention` int(11) default '365',
   `nagios_log_file` varchar(255) default NULL,
   `last_line_read` int(11) default '31',
   PRIMARY KEY  (`id`)
@@ -440,5 +441,5 @@ CREATE TABLE IF NOT EXISTS `servicestateevents` (
 -- Data 
 --
 
-INSERT INTO `config` (`id`, `RRDdatabase_path`, `RRDdatabase_status_path`, `RRDdatabase_nagios_stats_path`, `len_storage_rrd`, `len_storage_mysql`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `average`, `auto_drop`, `drop_file`, `perfdata_file`, `archive_log`, `archive_retention`, `nagios_log_file`, `last_line_read`) VALUES(1, '@CENTSTORAGE_RRD@/metrics/', '@CENTSTORAGE_RRD@/status/', '@CENTSTORAGE_RRD@/nagios-perf/', 180, 180, '1', 10, 360, 2, NULL, '0', '@NAGIOS_VAR@/service-perfdata.tmp', '@NAGIOS_VAR@/service-perfdata', '1', 31, '@NAGIOS_VAR@/nagios.log', 0);
+INSERT INTO `config` (`id`, `RRDdatabase_path`, `RRDdatabase_status_path`, `RRDdatabase_nagios_stats_path`, `len_storage_rrd`, `len_storage_mysql`, `autodelete_rrd_db`, `sleep_time`, `purge_interval`, `storage_type`, `average`, `auto_drop`, `drop_file`, `perfdata_file`, `archive_log`, `archive_retention`, `reporting_retention`, `nagios_log_file`, `last_line_read`) VALUES(1, '@CENTSTORAGE_RRD@/metrics/', '@CENTSTORAGE_RRD@/status/', '@CENTSTORAGE_RRD@/nagios-perf/', 180, 180, '1', 10, 360, 2, NULL, '0', '@NAGIOS_VAR@/service-perfdata.tmp', '@NAGIOS_VAR@/service-perfdata', '1', 31, 365, '@NAGIOS_VAR@/nagios.log', 0);
 INSERT INTO `statistics` (`id`, `ctime`, `lineRead`, `valueReccorded`, `last_insert_duration`, `average_duration`, `last_nb_line`, `cpt`, `last_restart`, `average`) VALUES(1, 0, 1, 0, 0, 0, 0, 0, 0, 0);

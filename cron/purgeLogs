@@ -82,17 +82,20 @@ my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql
 my $dbh_centreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
 
 # Get conf Data
-my $retention;
-my $sth_config = $dbh->prepare("SELECT `archive_retention` FROM `config`");
-if (!$sth_config->execute) {
+my $logRetention;
+my $reportingRetention;
+my $sth_config = $dbh->prepare("SELECT `archive_retention`, `reporting_retention` FROM `config`");
+if (!$sth_config->execute()) {
 	writeLogFile("Error:" . $sth_config->errstr);
 } else {
 	my $data = $sth_config->fetchrow_hashref();
-	$retention = $data->{'archive_retention'};
+	$logRetention = $data->{'archive_retention'};
+	$reportingRetention = $data->{'reporting_retention'};
 	$sth_config->finish();
 }
 
-#Get broker
+################################
+# Get broker
 my $broker = "ndo";
 $sth_config = $dbh_centreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
 if (!$sth_config->execute) {
@@ -103,21 +106,35 @@ if (!$sth_config->execute) {
     $sth_config->finish();
 }
 
-if (defined($retention) && $retention ne 0){
-    my $last_log = time() - ($retention * 24 * 60 * 60);
-
-    writeLogFile("Begin centstorage.log purge");
+####################################################
+# Logs Data purge
+if (defined($logRetention) && $logRetention ne 0){
+    my $last_log = time() - ($logRetention * 24 * 60 * 60);
 
     # Purge Log Database
-    my $res;
     if ($broker eq "ndo") {
-        $res = $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
+        writeLogFile("Begin centstorage.log purge");
+        $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
+		writeLogFile("End centstorage.log purge");
     } else {
-        $res = $dbh->do("DELETE FROM `logs` WHERE `ctime` < '$last_log'");
-    }
-
-    writeLogFile("End centstorage.log purge");
+        writeLogFile("Begin centstorage.logs purge");
+        $dbh->do("DELETE FROM `logs` WHERE `ctime` < '$last_log'");
+        writeLogFile("End centstorage.logs purge");
+    }   
 }
+
+####################################################
+# Reporting Data purge
+if (defined($reportingRetention) && $reportingRetention ne 0){
+    my $last_log = time() - ($reportingRetention * 24 * 60 * 60);
+
+    # Purge Log Archive Database
+    $dbh->do("DELETE FROM `log_archive_host` WHERE `ctime` < '$last_log'");
+    $dbh->do("DELETE FROM `log_archive_service` WHERE `ctime` < '$last_log'");
+
+    writeLogFile("Purge log_archive table... Done");
+}
+
 $dbh->disconnect();
 $dbh_centreon->disconnect();
 

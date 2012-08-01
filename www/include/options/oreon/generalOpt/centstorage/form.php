@@ -90,6 +90,7 @@
 	$form->addElement('header', 'coreOptions', _("Censtorage Core Options"));
 	$form->addElement('header', 'Drop', _("Drop possibility after parsing performance data"));
 	$form->addElement('header', 'logs', _("Logs Integration Properties"));
+	$form->addElement('header', 'reporting', _("Dashboard Integration Properties"));
 
 	/*
 	 * inputs declaration
@@ -109,6 +110,7 @@
 	$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);
 	$form->addElement('checkbox', 'archive_log', _("Archive Nagios Logs"));
 	$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
+	$form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -152,9 +154,10 @@
    		$valid = true;
 		$form->freeze();
 	}
-	if (!$form->validate() && isset($_POST["gopt_id"]))
+	if (!$form->validate() && isset($_POST["gopt_id"])) {
 	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
-
+	}
+	
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
 
 	/*

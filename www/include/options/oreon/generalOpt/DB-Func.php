@@ -313,6 +313,7 @@
 				`drop_file` = '".$ret["drop_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
+				`reporting_retention` = '".$ret["reporting_retention"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT = $pearDBO->query($rq);
 

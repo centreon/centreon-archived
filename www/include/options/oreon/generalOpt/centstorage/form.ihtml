@@ -31,6 +31,10 @@
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.logs}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.archive_retention.label}</td><td class="FormRowValue">{$form.archive_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+ 	
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_marked.gif'>&nbsp;&nbsp;{$form.header.reporting}</td></tr>
+	<tr class="list_one"><td class="FormRowField">{$form.reporting_retention.label}</td><td class="FormRowValue">{$form.reporting_retention.html}&nbsp;&nbsp;{$ods_log_retention_unit}</td></tr>
+ 	
  	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>	
 {if !$valid}
