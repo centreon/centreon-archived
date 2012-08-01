@@ -57,7 +57,7 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $opt_p $data $LOG);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $opt_p $data $LOG $timeLaunch);
 
 require "@CENTREON_ETC@/conf.pm";
 
@@ -113,6 +113,7 @@ $dbLayer->finish();
 
 my $sthbis;
 my $appID;
+$timeLaunch = time();
 if (defined($data->{'id'})) {
     if (!defined($data->{"running"}) || $data->{"running"} == 0) {
         $appID = $data->{"id"};
@@ -557,8 +558,10 @@ if (!$sth2->execute) {
 			if ($opt_a) {
 				# Empty line counter
 				$res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
-				if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";}
-		
+				if (!defined($res)) {
+					die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";
+				}
+				
 				if (!$flag) {
 					$res = $dbh->do("TRUNCATE TABLE `log`");
 					writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));	   
@@ -576,8 +579,8 @@ if (!$sth2->execute) {
 
 # Remove Lock
 if ($appID) {
-	$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . time() . "' WHERE id = '$appID'");
-	if (!$sth->execute) {
+	$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . (time() - $timeLaunch) . "' WHERE id = '$appID'");
+	if (!$sth->execute()) {
 	    die "Error:" . $sth->errstr . "\n";
 	}
 	undef($appID);
