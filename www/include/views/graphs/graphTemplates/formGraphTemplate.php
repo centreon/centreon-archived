@@ -217,6 +217,14 @@
 
 	$tpl->assign("sort1", _("Properties"));
 	$tpl->assign("sort2", _("Data Sources"));
+                // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
 
 	/*
 	 * Picker Color JS

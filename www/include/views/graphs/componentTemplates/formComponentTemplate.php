@@ -300,6 +300,14 @@
 
 	$tpl->assign("sort1", _("Properties"));
 	$tpl->assign("sort2", _("Graphs"));
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
 	$valid = false;
 	if ($form->validate())	{
 		$compoObj = $form->getElement('compo_id');

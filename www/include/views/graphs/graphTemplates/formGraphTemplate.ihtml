@@ -6,62 +6,62 @@
  	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/layout_vertical.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
 
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.vertical_label.label}</td><td class="FormRowValue">{$form.vertical_label.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.width.label}</td><td class="FormRowValue">{$form.width.html}&nbsp;px</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.height.label}</td><td class="FormRowValue">{$form.height.html}&nbsp;px</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.lower_limit.label}</td><td class="FormRowValue">{$form.lower_limit.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_template_name">{$form.name.label}</td><td class="FormRowValue">{$form.name.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_vertical_label">{$form.vertical_label.label}</td><td class="FormRowValue">{$form.vertical_label.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_width">{$form.width.label}</td><td class="FormRowValue">{$form.width.html}&nbsp;px</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_height">{$form.height.label}</td><td class="FormRowValue">{$form.height.html}&nbsp;px</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_lower_limit">{$form.lower_limit.label}</td><td class="FormRowValue">{$form.lower_limit.html}</td></tr>
 	<tr class="list_two">
-		<td class="FormRowField">{$form.upper_limit.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_upper_limit">{$form.upper_limit.label}</td>
 		<td class="FormRowValue">
 			{$form.upper_limit.html}&nbsp;
 			{$form.size_to_max.label}&nbsp;
 			{$form.size_to_max.html}
 		</td>
 	</tr>
-	<tr class="list_one"><td class="FormRowField">{$form.base.label}</td><td class="FormRowValue">{$form.base.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_base">{$form.base.label}</td><td class="FormRowValue">{$form.base.html}</td></tr>
 
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.color}</td></tr>
 	<tr class="list_one">
-		<td class="FormRowField">{$form.bg_grid_color.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_grid_background_color">{$form.bg_grid_color.label}</td>
 		<td class="FormRowValue">{$form.bg_grid_color.html}&nbsp;&nbsp;{$form.bg_grid_color_color.html}&nbsp;&nbsp;{$form.bg_grid_color_modify.html}</td>
 	</tr>
 	<tr class="list_two">
-		<td class="FormRowField">{$form.grid_main_color.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_main_grid_color">{$form.grid_main_color.label}</td>
 		<td class="FormRowValue">{$form.grid_main_color.html}&nbsp;&nbsp;{$form.grid_main_color_color.html}&nbsp;&nbsp;{$form.grid_main_color_modify.html}</td>
 	</tr>
 	<tr class="list_one">
-		<td class="FormRowField">{$form.grid_sec_color.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_secondary_grid_color">{$form.grid_sec_color.label}</td>
 		<td class="FormRowValue">{$form.grid_sec_color.html}&nbsp;&nbsp;{$form.grid_sec_color_color.html}&nbsp;&nbsp;{$form.grid_sec_color_modify.html}</td>
 	</tr>
 	<tr class="list_two">
-		<td class="FormRowField">{$form.contour_cub_color.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_outline_color">{$form.contour_cub_color.label}</td>
 		<td class="FormRowValue">{$form.contour_cub_color.html}&nbsp;&nbsp;{$form.contour_cub_color_color.html}&nbsp;&nbsp;{$form.contour_cub_color_modify.html}</td>
 	</tr>
 	<tr class="list_one">
-		<td class="FormRowField">{$form.bg_color.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_background_color">{$form.bg_color.label}</td>
 		<td class="FormRowValue">{$form.bg_color.html}&nbsp;&nbsp;{$form.bg_color_color.html}&nbsp;&nbsp;{$form.bg_color_modify.html}</td>
 	</tr>
 	<tr class="list_two">
-		<td class="FormRowField">{$form.police_color.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_text_color">{$form.police_color.label}</td>
 		<td class="FormRowValue">{$form.police_color.html}&nbsp;&nbsp;{$form.police_color_color.html}&nbsp;&nbsp;{$form.police_color_modify.html}</td>
 	</tr>
 	<tr class="list_one">
-		<td class="FormRowField">{$form.col_arrow.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_arrow_color">{$form.col_arrow.label}</td>
 		<td class="FormRowValue">{$form.col_arrow.html}&nbsp;&nbsp;{$form.col_arrow_color.html}&nbsp;&nbsp;{$form.col_arrow_modify.html}</td>
 	</tr>
 	<tr class="list_two">
-		<td class="FormRowField">{$form.col_top.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_top_color">{$form.col_top.label}</td>
 		<td class="FormRowValue">{$form.col_top.html}&nbsp;&nbsp;{$form.col_top_color.html}&nbsp;&nbsp;{$form.col_top_modify.html}</td>
 	</tr>
 	<tr class="list_one">
-		<td class="FormRowField">{$form.col_bot.label}</td>
+		<td class="FormRowField"><img class="helpTooltip" name="tip_bottom_color">{$form.col_bot.label}</td>
 		<td class="FormRowValue">{$form.col_bot.html}&nbsp;&nbsp;{$form.col_bot_color.html}&nbsp;&nbsp;{$form.col_bot_modify.html}</td>
 	</tr>
-	<tr class="list_two"><td class="FormRowField">{$form.split_component.label}</td><td class="FormRowValue">{$form.split_component.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.scaled.label}</td><td class="FormRowValue">{$form.scaled.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_split_components">{$form.split_component.label}</td><td class="FormRowValue">{$form.split_component.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_scale_graph_values">{$form.scaled.label}</td><td class="FormRowValue">{$form.scaled.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_centreon_graph_template">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	{/if}
@@ -76,3 +76,4 @@
 </div>
 {$form.hidden}
 </form>
+{$helptext}

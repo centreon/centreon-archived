@@ -4,15 +4,15 @@
  <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/chart.gif'>&nbsp;&nbsp;{$form.header.ftitle}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-	<tr class="list_one"><td class="FormRowField" width="33%">{$form.vmetric_name.label}</td><td class="FormRowValue">{$form.vmetric_name.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField" width="33%"><img class="helpTooltip" name="tip_metric_name">{$form.vmetric_name.label}</td><td class="FormRowValue">{$form.vmetric_name.html}</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField">
 			{if $o == "a" || $o == "c"}
-				<div style="text-decoration: underline;">{$form.host_id.label}</div>
+				<div style="text-decoration: underline;"><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
 				{$form.hsr_text.label}
 			{/if}
 			{if $o == "w"}
-				<div>{$form.host_id.label}</div>
+				<div><img class="helpTooltip" name="tip_host_service_data_source">{$form.host_id.label}</div>
 			{/if}
 		</td>
 		<td id="td_list_hsr" class="FormRowValue">
@@ -20,17 +20,17 @@
 			&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;
 		</td>
 	</tr>
-	<tr class="list_one"><td class="FormRowField">{$form.def_type.label}</td><td class="FormRowValue">{$form.def_type.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_def_type">{$form.def_type.label}</td><td class="FormRowValue">{$form.def_type.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.function}</td></tr>
 	<tr class="list_two">
 		<td class="FormRowField">
 		{if $o == "a" || $o == "c"}
-			<div style="text-decoration: underline;">{$form.rpn_function.label}</div>
+			<div style="text-decoration: underline;"><img class="helpTooltip" name="tip_rpn_function">{$form.rpn_function.label}</div>
 			{$form.rpn_text.label}
 		{/if}
 		{if $o == "w"}
-			<div>{$form.rpn_function.label}</div>
+			<div><img class="helpTooltip" name="tip_rpn_function">{$form.rpn_function.label}</div>
 		{/if}
 		</td>
 		<td id="td_rpn_fct"><table id="table_rpn_fct" border="0"><tr>
@@ -42,13 +42,13 @@
 			{/if}
 		</tr></table></td>
 	</tr>
-	<tr class="list_one"><td class="FormRowField">{$form.unit_name.label}</td><td class="FormRowValue">{$form.unit_name.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.warn.label}</td><td class="FormRowValue">{$form.warn.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.crit.label}</td><td class="FormRowValue">{$form.crit.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_metric_unit">{$form.unit_name.label}</td><td class="FormRowValue">{$form.unit_name.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_warning_threshold">{$form.warn.label}</td><td class="FormRowValue">{$form.warn.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_critical_threshold">{$form.crit.label}</td><td class="FormRowValue">{$form.crit.html}</td></tr>
 
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.vhidden.label}</td><td class="FormRowValue">{$form.vhidden.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_hidden_graph_and_legend">{$form.vhidden.label}</td><td class="FormRowValue">{$form.vhidden.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required.note}</td></tr>
 	{/if}
@@ -64,4 +64,4 @@
 {$form.required}
 {$form.hidden}
 </form>
-
+{$helptext}
