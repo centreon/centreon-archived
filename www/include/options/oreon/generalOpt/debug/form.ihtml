@@ -4,12 +4,12 @@
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_debug_options}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;{$form.header.debug}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.debug_ldap_import.label}</td><td class="FormRowValue">{$form.debug_ldap_import.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.debug_sql.label}</td><td class="FormRowValue">{$form.debug_sql.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_logs_directory">{$form.debug_path.label}</td><td class="FormRowValue">{$form.debug_path.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_authentication_debug">{$form.debug_auth.label}</td><td class="FormRowValue">{$form.debug_auth.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_nagios_import_debug">{$form.debug_nagios_import.label}</td><td class="FormRowValue">{$form.debug_nagios_import.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdtool_debug">{$form.debug_rrdtool.label}</td><td class="FormRowValue">{$form.debug_rrdtool.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_ldap_user_import_debug">{$form.debug_ldap_import.label}</td><td class="FormRowValue">{$form.debug_ldap_import.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_sql_debug">{$form.debug_sql.label}</td><td class="FormRowValue">{$form.debug_sql.html}</td></tr>
 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
@@ -23,3 +23,4 @@
 {/if}
 {$form.hidden}
 </form>
+{$helptext}
