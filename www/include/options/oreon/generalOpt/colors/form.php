@@ -172,7 +172,15 @@
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->assign('o', $o);
 	$tpl->assign("genOpt_colors_properties", _("Status Color Properties"));
-	
+        
+	// prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");
 ?>
