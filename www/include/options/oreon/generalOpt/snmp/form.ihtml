@@ -4,13 +4,13 @@
 <table class="ListTable">
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$form.header.snmp}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;snmpd</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.snmp_community.label}</td><td class="FormRowValue">{$form.snmp_community.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.snmp_version.label}</td><td class="FormRowValue">{$form.snmp_version.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_global_community">{$form.snmp_community.label}</td><td class="FormRowValue">{$form.snmp_community.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_version">{$form.snmp_version.label}</td><td class="FormRowValue">{$form.snmp_version.html}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/step.gif'>&nbsp;&nbsp;snmptrapd</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.snmpttconvertmib_path_bin.label}</td><td class="FormRowValue">{$form.snmpttconvertmib_path_bin.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField">{$form.snmptt_unknowntrap_log_file.label}</td><td class="FormRowValue">{$form.snmptt_unknowntrap_log_file.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField">{$form.perl_library_path.label}</td><td class="FormRowValue">{$form.perl_library_path.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory_of_traps_configuration_files">{$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_snmpttconvertmib_directory+binary">{$form.snmpttconvertmib_path_bin.label}</td><td class="FormRowValue">{$form.snmpttconvertmib_path_bin.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_snmptt_log_file">{$form.snmptt_unknowntrap_log_file.label}</td><td class="FormRowValue">{$form.snmptt_unknowntrap_log_file.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_perl_library_directory">{$form.perl_library_path.label}</td><td class="FormRowValue">{$form.perl_library_path.html}</td></tr>
 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
@@ -24,3 +24,4 @@
 {/if}
 {$form.hidden}
 </form>
+{$helptext}
