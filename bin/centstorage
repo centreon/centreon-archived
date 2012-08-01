@@ -215,6 +215,36 @@ sub movePerfDataFile($$){
     }
 }
 
+sub copyTruncatePerfDataFile($$) {
+	my $PERFDATA = $_[0];
+	my $flag_bckp = $_[1];
+    my $PERFDATA_src = $PERFDATA;
+
+    if ($flag_bckp == 1) {
+        $PERFDATA_src = $PERFDATA . ".bckp";
+    }
+    if (!open(FD_SRC, "<+" . $PERFDATA_src)) {
+    	writeLogFile("Cannot read/write the $PERFDATA file : $!");
+    	undef($PERFDATA);
+    	return(0);
+    }
+    if (!open(FD_DEST, ">" . $PERFDATA . "_read")) {
+    	close(FD_SRC);
+    	writeLogFile("Cannot write the " . $PERFDATA . "_read file : $!");
+    	undef($PERFDATA);
+    	return(0);
+    }
+    while (<FD_SRC>) {
+    	if (/\n$/) {
+    		print FD_DEST $_;
+    	}
+    }
+    close(FD_DEST);
+    truncate(FD_SRC, 0);
+    close(FD_SRC);
+    return(1);
+}
+
 ########################################
 # Get ODS config data  
 ########################################
@@ -283,7 +313,7 @@ sub GetPerfData() {
         }
 
         # Move perfdata File befor reading		
-        if (movePerfDataFile($PFDT, $flag_bckp) && open(PFDT, "< $PFDT"."_read")) {
+        if (copyTruncatePerfDataFile($PFDT, $flag_bckp) && open(PFDT, "< $PFDT"."_read")) {
             # Get Properties
             $configOptions = getGeneralConfig();
 
