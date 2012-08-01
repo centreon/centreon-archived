@@ -141,6 +141,14 @@
 
 	$subC = $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
+        
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
     $valid = false;
 	if ($form->validate())	{
