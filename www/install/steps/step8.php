@@ -45,10 +45,10 @@ if (isset($passwd_error) && $passwd_error)
     <th align="left">Component</th>
     <th style="text-align: right;">Status</th>
   </tr>
-  <tr>
+  <!--<tr>
     <td><b>Administrator login for Centreon</b></td>
-    <td align="right"><input type="text" name="oreonlogin" value="<?php if (isset($_SESSION["oreonlogin"])) print $_SESSION["oreonlogin"]; ?>"></td>
-  </tr>
+    <td align="right"><input type="text" name="oreonlogin" value="<?php /*if (isset($_SESSION["oreonlogin"])) print $_SESSION["oreonlogin"];*/ ?>"></td>
+  </tr>-->
   <tr>
     <td><b>Administrator password</b></td>
     <td align="right"><input type="password" name="oreonpasswd" value="<?php if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>

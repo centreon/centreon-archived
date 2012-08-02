@@ -38,7 +38,7 @@
 
 
 if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
-	$_SESSION["oreonlogin"] = $_POST["oreonlogin"];
+	//$_SESSION["oreonlogin"] = $_POST["oreonlogin"];
 	$_SESSION["oreonpasswd"] = $_POST["oreonpasswd"];
 	$_SESSION["oreonfirstname"] = $_POST["oreonfirstname"];
 	$_SESSION["oreonlastname"] = $_POST["oreonlastname"];

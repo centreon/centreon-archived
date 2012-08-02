@@ -408,6 +408,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		    $return_false = 1;
 		}
 	}
+    
 	if (!$return_false){
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Centreon User Creation</b></td>';
 		$mysql_msg = '';
@@ -418,19 +419,23 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$nb = @mysql_num_rows($r);
 		while ($tab = @mysql_fetch_array($r))
 			break;
-		if (!$tab && !$nb){
+        
+		/*if (!$tab && !$nb)
+        {
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
 			$requete .= "('".htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8"). " " .htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")."', '". htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."', '". md5($_SESSION["oreonpasswd"]) ."', 'en_US', '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', '1', '1', '1');";
 			if ($DEBUG)
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
 			htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8");
-		} else {
-			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = '".htmlentities($_SESSION["oreonlogin"], ENT_QUOTES, "UTF-8")."' ;";
+		}
+        else
+        {*/
+			$requete = "UPDATE `contact` SET `contact_name` = '". htmlentities($_SESSION["oreonfirstname"], ENT_QUOTES, "UTF-8")." ". htmlentities($_SESSION["oreonlastname"], ENT_QUOTES, "UTF-8")  ."',`contact_passwd` = '". md5($_SESSION["oreonpasswd"]) ."', `contact_email` = '". htmlentities($_SESSION['oreonemail'], ENT_QUOTES, "UTF-8")."', `contact_lang` = 'en_US' WHERE `contact_alias` = 'admin' ;";
 			if ($DEBUG)
 				print $requete . "<br />";
 			$result = @mysql_query($requete, $res['0']);
-		}
+		//}
 		if ($res[1] == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
 		} else {
@@ -438,6 +443,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		    $return_false = 1;
 		}
 	}
+    
 	if (!$return_false){
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set NDO Password</b></td>';
 		$mysql_msg = '';
