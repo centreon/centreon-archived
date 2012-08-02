@@ -409,6 +409,7 @@ function initProgressBar()
 function generationProcess()
 {
 	updateProgress(0);
+	cleanErrorPhp();
 	document.getElementById('console').style.visibility = 'visible';
 	$('consoleContent').update(msgTab['start'] + "... ");
 	$('consoleDetails').update("");
@@ -639,6 +640,13 @@ function toggleErrorPhp(action) {
 	} else {
 		linkEl.innerHTML = '[ + ]';
 		divErrors.style.visibility = 'hidden';
+	}
+}
+
+function cleanErrorPhp() {
+	var bodyErrors = document.getElementById('error_log');
+	while (bodyErrors.hasChildNodes()) {
+		bodyErrors.removeChild(bodyErrors.firstChild);
 	}
 }
 
