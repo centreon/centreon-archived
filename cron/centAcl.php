@@ -199,13 +199,19 @@
             	         */
             	        $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation WHERE contactgroup_cg_id = " . $row['cg_id'];
             	        $pearDB->query($queryDeleteRelation);
-            	        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN ('" . join("', '", $members) . "')";
+            	        $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN ('" . join("', '", array_map('mysql_real_escape_string', $members)) . "')";
             	        $resContact = $pearDB->query($queryContact);
+            	        if (PEAR::isError($resContact)) {
+            	            print "Error in getting contact id form members.\n";
+            	            continue;
+            	        }
             	        while ($rowContact = $resContact->fetchRow()) {
             	            $queryAddRelation = "INSERT INTO contactgroup_contact_relation
             	            						(contactgroup_cg_id, contact_contact_id)
             	            					VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
-            	            $pearDB->query($queryAddRelation);
+            	            if (PEAR::isError($pearDB->query($queryAddRelation))) {
+            	                print "Error insert relation between contactgroup " . $row['cg_id'] . " and contact " . $rowContact['contact_id'] . "\n";
+            	            }
             	        }
             	    }
             	    $queryUpdateTime = "UPDATE `options` SET `value` = '" . time() . "' WHERE `key` = 'ldap_last_acl_update'";
