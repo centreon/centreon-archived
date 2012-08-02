@@ -257,6 +257,14 @@
 	$tpl->assign("label_none", _("No access"));
 	$tpl->assign("label_readwrite", _("Read/Write"));
 	$tpl->assign("label_readonly", _("Read Only"));
+        
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	$valid = false;
 	if ($form->validate())	{
