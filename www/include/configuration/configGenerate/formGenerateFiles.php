@@ -599,13 +599,13 @@ function displayPhpErrorMsg(action, responseXML)
 	}
 	switch (action) {
 		case 'generate':
-			titleError = 'Errors/warnings in generate';
+			titleError = '<b>Errors/warnings in generate</b>';
 			break;
 		case 'move':
-			titleError = 'Errors/warnings in move files';
+			titleError = '<b>Errors/warnings in move files</b>';
 			break;
 		case 'restart':
-			titleError = 'Errors/warnings in restart';
+			titleError = '<b>Errors/warnings in restart</b>';
 			break;
 	}
 
