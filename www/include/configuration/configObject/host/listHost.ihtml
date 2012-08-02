@@ -52,7 +52,7 @@
 		<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 		<td class="ListColLeft">
 			{if $elemArr[elem].pattern}&nbsp;&nbsp;&nbsp;&nbsp;{/if}
-			<img src="{$elemArr[elem].RowMenu_icone}" style='width:16px;heigyh:16px;' />&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
+			<img src="{$elemArr[elem].RowMenu_icone}" style='width:16px;height:16px;' />&nbsp;<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 		</td>
 		<td class="ListColCenter"><a href='./main.php?p=602&host_id={$elemArr[elem].RowMenu_id}'><img src="./img/icones/16x16/gear_view.gif" title='{$HelpServices}'></a></td>
 		<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>

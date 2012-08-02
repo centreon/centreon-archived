@@ -45,7 +45,7 @@
 					{if $elemArr[elem].pattern}
 					&nbsp;&nbsp;&nbsp;&nbsp;
 					{/if}
-					{if $elemArr[elem].RowMenu_icon != ""}<img src="{$elemArr[elem].RowMenu_icon}" style='width:16px;heigyh:16px;' />&nbsp;{/if}<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>				
+					{if $elemArr[elem].RowMenu_icon != ""}<img src="{$elemArr[elem].RowMenu_icon}" style='width:16px;height:16px;' />&nbsp;{/if}<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a>				
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_alias}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_retry}</td>
