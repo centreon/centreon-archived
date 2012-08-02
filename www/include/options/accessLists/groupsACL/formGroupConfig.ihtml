@@ -18,13 +18,13 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>	 	
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.acl_group_name.label}</td><td class="FormRowValue">{$form.acl_group_name.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.acl_group_alias.label}</td><td class="FormRowValue">{$form.acl_group_alias.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_group_name">{$form.acl_group_name.label}</td><td class="FormRowValue">{$form.acl_group_name.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_alias">{$form.acl_group_alias.label}</td><td class="FormRowValue">{$form.acl_group_alias.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/businessmen.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.cg_contacts.label}</td><td class="FormRowValue">{$form.cg_contacts.html}</td></tr>
-	 	<tr class="list_two"><td class="FormRowField">{$form.cg_contactGroups.label}</td><td class="FormRowValue">{$form.cg_contactGroups.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_contacts">{$form.cg_contacts.label}</td><td class="FormRowValue">{$form.cg_contacts.html}</td></tr>
+	 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_linked_contact_groups">{$form.cg_contactGroups.label}</td><td class="FormRowValue">{$form.cg_contactGroups.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.acl_group_activate.label}</td><td class="FormRowValue">{$form.acl_group_activate.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_status">{$form.acl_group_activate.label}</td><td class="FormRowValue">{$form.acl_group_activate.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
@@ -34,11 +34,11 @@
 	 <table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/users_family.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.resource}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.resourceAccess.label}</td><td class="FormRowValue">{$form.resourceAccess.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_resources_access">{$form.resourceAccess.label}</td><td class="FormRowValue">{$form.resourceAccess.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.menu}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.menuAccess.label}</td><td class="FormRowValue">{$form.menuAccess.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_menu_access">{$form.menuAccess.label}</td><td class="FormRowValue">{$form.menuAccess.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.actions}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.actionAccess.label}</td><td class="FormRowValue">{$form.actionAccess.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_actions_access">{$form.actionAccess.label}</td><td class="FormRowValue">{$form.actionAccess.html}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 	</div>
@@ -52,3 +52,4 @@
 	</div>
 	{$form.hidden}
 </form>
+{$helptext}

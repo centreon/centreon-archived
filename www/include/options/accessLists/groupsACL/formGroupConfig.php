@@ -253,6 +253,14 @@
 	 */
 	$tpl->assign("sort1", _("Group Information"));
 	$tpl->assign("sort2", _("Authorizations information"));
+        
+        // prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
 
 	/*
 	 * Just watch a Contact Group information
