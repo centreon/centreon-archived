@@ -47,9 +47,10 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		<td><b>Database : Connection</b></td>	<?php
 	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
 	$mysql_msg = $res['1'];
-	if ($mysql_msg == '')
+	if ($mysql_msg == '') {
 		print '<td align="right"><b><span class="go">OK</b></td></tr>';
-
+	}
+	
 	# Database creation
 	$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
 	if (!$usedb){
@@ -57,8 +58,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$requete = "CREATE DATABASE ". $_SESSION["nameOreonDB"] . ";";
 		if ($DEBUG)
 			print $requete . "<br />";
-		@mysql_query($requete, $res['0']);
-		if ($res['1'])
+		$result = @mysql_query($requete, $res['0']);
+		if (!$result)
 			print '<td align="right"><b><span class="go">CRITICAL</b></td></tr>';
 		else
 			print '<td align="right"><b><span class="go">OK</b></td></tr>';
@@ -68,8 +69,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$requete = "CREATE DATABASE ". $_SESSION["nameOdsDB"] . ";";
 		if ($DEBUG)
 			print $requete . "<br />";
-		@mysql_query($requete, $res['0']);
-		if ($res['1'])
+		$result = @mysql_query($requete, $res['0']);
+		if (!$result)
 			print '<td align="right"><b><span class="go">CRITICAL</b></td></tr>';
 		else
 			print '<td align="right"><b><span class="go">OK</b></td></tr>';
@@ -79,8 +80,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$requete = "CREATE DATABASE ". $_SESSION["nameStatusDB"] . ";";
 		if ($DEBUG)
 			print $requete . "<br />";
-		@mysql_query($requete, $res['0']);
-		if ($res['1'])
+		$result = @mysql_query($requete, $res['0']);
+		if (!$result)
 			print '<td align="right"><b><span class="go">CRITICAL</b></td></tr>';
 		else
 			print '<td align="right"><b><span class="go">OK</b></td></tr>';
@@ -90,22 +91,25 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	if (!$usedb){
 		$mysql_msg = "";
 		print "<tr><td><b>Database &#146;".$_SESSION["nameOreonDB"]."&#146; : Users Management</b></td>";
+		
 		/*
 		 * Centreon
 		 */
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOreonDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
-		if ($DEBUG)
+		if ($DEBUG) {
 			print $requete. "<br />";
-		mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
+		}
+		@mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
 		$mysql_msg = $res['1'];
 
 		/*
 		 * Centstorage
 		 */
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameOdsDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
-		if ($DEBUG)
+		if ($DEBUG) {
 			print $requete. "<br />";
-		mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
+		}
+		@mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
 		$mysql_msg .= $res['1'];
 
 		/*
@@ -114,7 +118,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$requete = "GRANT ALL PRIVILEGES ON `". $_SESSION["nameStatusDB"] . "` . * TO `". $_SESSION["nameOreonDB"] . "`@`". $_SESSION["nagiosLocation"] . "` IDENTIFIED BY '". $_SESSION["pwdOreonDB"] . "' WITH GRANT OPTION";
 		if ($DEBUG)
 			print $requete. "<br />";
-		mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
+		@mysql_query($requete, $res['0']) or ( $mysql_msg = mysql_error());
 		$mysql_msg .= $res['1'];
 
 		if ($res['1'])
@@ -135,7 +139,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
 	if (!$usedb){
 		$return_false = 0;
-		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+		$res = @mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
 		$mysql_msg = $res['1'];
 		if ($mysql_msg == '') {
 			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
