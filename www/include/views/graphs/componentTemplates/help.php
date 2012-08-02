@@ -36,6 +36,7 @@ $help["tip_display_only_the_legend"] = dgettext("help", "Display Only The Legend
 $help["tip_empty_line_after_this_legend"] = dgettext("help", "Empty Line After This Legend.");
 $help["tip_print_max_value"] = dgettext("help", "Print Max value.");
 $help["tip_print_min_value"] = dgettext("help", "Print Min value.");
+$help["tip_print_minmax_int"] = dgettext("help", "Display max min in integer");
 $help["tip_print_average"] = dgettext("help", "Print Average.");
 $help["tip_print_last_value"] = dgettext("help", "Print Last Value.");
 $help["tip_comments"] = dgettext("help", "Comments.");

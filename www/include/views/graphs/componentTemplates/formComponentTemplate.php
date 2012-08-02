@@ -184,6 +184,7 @@
 	$form->addElement('checkbox', 'ds_filled', _("Filling"));
 	$form->addElement('checkbox', 'ds_max', _("Print Max value"));
 	$form->addElement('checkbox', 'ds_min', _("Print Min value"));
+	$form->addElement('checkbox', 'ds_minmax_int', _('Round the min and max'));
 	$form->addElement('checkbox', 'ds_average', _("Print Average"));
 	$form->addElement('checkbox', 'ds_last', _("Print Last Value"));
 	$form->addElement('checkbox', 'ds_invert', _("Invert"));

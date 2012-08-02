@@ -157,7 +157,7 @@
 			$ret["ds_color_area"] = $ret["ds_color_line"];
 
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
-				" `ds_color_line` , `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
+				" `ds_color_line` , `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_minmax_int`, ds_average` , `ds_last` , `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				" `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
 		if ( $ret["index_id"] != NULL ) {
@@ -180,6 +180,7 @@
 		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_min"]) && $ret["ds_minmax_int"] != NULL ? $rq .= "'".htmlentities($ret["ds_minmax_int"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".htmlentities($ret["ds_average"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".htmlentities($ret["ds_last"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_tickness"]) && $ret["ds_tickness"] != NULL ? $rq .= "'".htmlentities($ret["ds_tickness"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -243,6 +244,8 @@ fwrite($fh, $rq);
 		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".$ret["ds_max"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_min = ";
 		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".$ret["ds_min"]."', ": $rq .= "NULL, ";
+		$rq .= "ds_minmax_int = ";
+		isset($ret["ds_min"]) && $ret["ds_minmax_int"] != NULL ? $rq .= "'".$ret["ds_minmax_int"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_average = ";
 		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".$ret["ds_average"]."', ": $rq .= "NULL, ";
 		$rq .= "ds_last = ";

@@ -1525,6 +1525,7 @@ CREATE TABLE IF NOT EXISTS `giv_components_template` (
   `ds_filled` enum('0','1') default NULL,
   `ds_max` enum('0','1') default NULL,
   `ds_min` enum('0','1') default NULL,
+  `ds_minmax_int` enum('0','1') default NULL,
   `ds_average` enum('0','1') default NULL,
   `ds_last` enum('0','1') default NULL,
   `ds_tickness` int(11) default NULL,

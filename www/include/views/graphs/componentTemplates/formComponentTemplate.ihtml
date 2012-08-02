@@ -74,10 +74,11 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_empty_line_after_this_legend">{$form.ds_jumpline.label}</td><td class="FormRowValue">{$form.ds_jumpline.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_max_value">{$form.ds_max.label}</td><td class="FormRowValue">{$form.ds_max.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_print_min_value">{$form.ds_min.label}</td><td class="FormRowValue">{$form.ds_min.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_average">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_print_last_value">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_minmax_int">{$form.ds_minmax_int.label}</td><td class="FormRowValue">{$form.ds_minmax_int.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_print_average">{$form.ds_average.label}</td><td class="FormRowValue">{$form.ds_average.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_print_last_value">{$form.ds_last.label}</td><td class="FormRowValue">{$form.ds_last.html}</td></tr>
 	<!--<tr class="list_two"><td class="FormRowField">{$form.default_tpl1.label}</td><td class="FormRowValue">{$form.default_tpl1.html}</td></tr>-->
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_comments">{$form.comment.label}</td><td class="FormRowValue">{$form.comment.html}</td></tr>
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required.note}</td></tr>
 	{/if}

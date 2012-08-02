@@ -271,3 +271,7 @@ UPDATE  `centreon`.`topology` SET `topology_name` = 'SNMP traps', `topology_pare
 UPDATE  `centreon`.`topology_JS` SET  `id_page` =  '611' WHERE  `topology_JS`.`id_page` = 60705;
 SET foreign_key_checks = 1;
 
+--
+-- Add columns for round min max in grpah
+--
+ALTER TABLE `giv_components_template` ADD `ds_minmax_int` ENUM('0', '1') DEFAULT '0' AFTER `ds_min`;

@@ -245,7 +245,7 @@ class CentreonGraph	{
                         $odsm[$vmilist] = 1;
                     }
                     $DBRESULT->free();
-                    
+
                     foreach ($odsm as $mid => $val) {
                         if (!isset($metrics_cache[$mid])) {
                             $DBRESULT = $this->DB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$mid."', '".$this->user_id."', '0', '".$this->index."');");
@@ -271,7 +271,7 @@ class CentreonGraph	{
 	    $newDsName = preg_replace("/[^a-zA-Z0-9-_]/", "-", $newDsName);
         return $newDsName;
 	}
-	
+
 	/**
 	* Clean up ds name in Legend
 	*
@@ -281,7 +281,7 @@ class CentreonGraph	{
 	*/
 	protected function cleanupDsNameForLegend($dsname, $reverse = false)
 	{
-	    $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#", "\\"), array("/", "\\", "%", "\:", "#", "\\\\"), $dsname);   
+	    $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#", "\\"), array("/", "\\", "%", "\:", "#", "\\\\"), $dsname);
         if (mb_detect_encoding($newDsName) == "UTF-8") {
         	$newDsName = mb_convert_encoding($newDsName, "UTF-8");
         }
@@ -787,7 +787,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 				} else {
 					$arg .= $tm["legend"];
 				}
-				
+
 				for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
 					$arg .= " ";
 				}
@@ -804,12 +804,23 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 					$this->addArgument($arg);
 				}
 				if ($tm["ds_min"]){
-					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MIN:\"Min\:%7.2lf".($this->gprintScaleOption);
+					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MIN:\"Min\:";
+					if ($tm['ds_minmax_int']) {
+					    $arg .= "%7.2lf".($this->gprintScaleOption);
+				    } else {
+					    $arg .= "%7.0lf".($this->gprintScaleOption);
+					}
 					$tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
 					$this->addArgument($arg);
 				}
 				if ($tm["ds_max"]){
-					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MAX:\"Max\:%7.2lf".($this->gprintScaleOption);
+					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MAX:\"Max\:";
+				    if ($tm['ds_minmax_int']) {
+					    $arg .= "%7.2lf".($this->gprintScaleOption);
+				    } else {
+					    $arg .= "%7.0lf".($this->gprintScaleOption);
+					    file_put_contents('/tmp/ddd', var_export($arg, true));
+					}
 					$tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
 					$this->addArgument($arg);
 				}
