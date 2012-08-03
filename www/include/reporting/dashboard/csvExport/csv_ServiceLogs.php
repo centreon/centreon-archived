@@ -112,7 +112,8 @@
 				   ._("OK")." "._("Time")."; "._("OK")."; "._("OK")." Alert;"
 				   ._("Warning")." "._("Time")."; "._("Warning").";"._("Warning")." Alert;"
 				   ._("Unknown")." "._("Time")."; "._("Unknown").";"._("Unknown")." Alert;"
-				   ._("Critical")." "._("Time")."; "._("Critical").";"._("Critical")." Alert;\n";
+				   ._("Critical")." "._("Time")."; "._("Critical").";"._("Critical")." Alert;"
+                   ._("Day").";\n";
 
 	$request = "SELECT  * FROM `log_archive_service` " .
 			"WHERE `host_id` = '".$host_id."' " .
@@ -133,7 +134,8 @@
 		 	$row["OKTimeScheduled"]."s;".$row["OK_MP"]."%;".$row["OKnbEvent"].";".
 		 	$row["WARNINGTimeScheduled"]."s;".$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";".
 		 	$row["UNKNOWNTimeScheduled"]."s;".$row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";".
-		 	$row["CRITICALTimeScheduled"]."s;".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";\n";
+		 	$row["CRITICALTimeScheduled"]."s;".$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";".
+            date("Y-m-d H:i:s", $row["date_start"]).";\n";
 	}
 	$DBRESULT->free();
 ?>

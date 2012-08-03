@@ -123,7 +123,8 @@
 				   ._("OK Mean Time").";"._("OK Alert").";"
 				   ._("Warning Mean Time").";"._("Warning Alert").";"
 				   ._("Unknown Mean Time").";"._("Unknown Alert").";"
-				   ._("Critical Mean Time").";"._("Critical Alert")."\n";
+				   ._("Critical Mean Time").";"._("Critical Alert").";"
+                   ._("Day")."\n";
 	$str = "";
 	$request = "SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$id."'";
 	$DBRESULT = $pearDB->query($request);
@@ -167,7 +168,8 @@
 		 	$row["OK_MP"]."%;".$row["OKnbEvent"].";".
 		 	$row["WARNING_MP"]."%;".$row["WARNINGnbEvent"].";".
 		 	$row["UNKNOWN_MP"]."%;".$row["UNKNOWNnbEvent"].";".
-		 	$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";\n";
+		 	$row["CRITICAL_MP"]."%;".$row["CRITICALnbEvent"].";".
+            date("Y-m-d H:i:s", $row["date_start"]).";\n";
 	}
 	$res->free();
 

@@ -129,7 +129,8 @@
 	echo _("Day").";"._("Duration").";".
 		 _("Up")." "._("Time").";"._("Up").";"._("Up")." "._("Alert").";".
 		 _("Down")." "._("Time").";"._("Down").";"._("Down")." "._("Alert").";".
-		 _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").";\n";
+		 _("Unreachable")." "._("Time").";"._("Unreachable").";"._("Unreachable")." "._("Alert").
+         _("Day").";\n";
 	$rq = "SELECT  * " .
 			"FROM `log_archive_host` " .
 			"WHERE `host_id` = '".$id."' " .
@@ -146,6 +147,7 @@
 			echo $row["date_start"].";".$duration.";".
 			 	$row["UPTimeScheduled"].";".$row["UP_MP"]."%;".$row["UPnbEvent"].";".
 			 	$row["DOWNTimeScheduled"].";".$row["DOWN_MP"]."%;".$row["DOWNnbEvent"].";".
-			 	$row["UNREACHABLETimeScheduled"].";".$row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";\n";
+			 	$row["UNREACHABLETimeScheduled"].";".$row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";".
+                date("Y-m-d H:i:s", $row["date_start"]).";\n";
 	}
 ?>

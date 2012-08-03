@@ -141,13 +141,13 @@
 			"FROM `log_archive_host` WHERE `host_id` IN (".$str.") " .
 			"AND `date_start` >= '".$start_date."' " .
 			"AND `date_end` <= '".$end_date."' " .
-			"GROUP BY `date_end`, `date_start`  ORDER BY `date_start` desc";
+			"GROUP BY `date_end`, `date_start` ORDER BY `date_start` desc";
 	$DBRESULT = $pearDBO->query($rq);
 
 	echo _("Day").";"._("Duration").";".
 	 	_("Up Mean Time").";"._("Up Alert").";".
 	 	_("Down Mean Time").";"._("Down Alert").";".
-	 	_("Unreachable Mean Time").";"._("Unreachable Alert").";\n";
+	 	_("Unreachable Mean Time").";"._("Unreachable Alert")._("Day").";\n";
 	while ($row = $DBRESULT->fetchRow()) {
 		$duration = $row["UPTimeScheduled"] + $row["DOWNTimeScheduled"] + $row["UNREACHABLETimeScheduled"];
 
@@ -159,7 +159,8 @@
 		echo $row["date_start"].";".$duration."s;".
 		 	$row["UP_MP"]."%;".$row["UPnbEvent"].";".
 		 	$row["DOWN_MP"]."%;".$row["DOWNnbEvent"].";".
-		 	$row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";\n";
+		 	$row["UNREACHABLE_MP"]."%;".$row["UNREACHABLEnbEvent"].";".
+            date("Y-m-d H:i:s", $row["date_start"]).";\n";
 	}
 	$DBRESULT->free();
 ?>
