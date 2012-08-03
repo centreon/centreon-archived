@@ -64,17 +64,17 @@ INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `c
 --
 -- Contenu de la table `contact_param`
 --
-INSERT INTO `contact_param` (`id`, `cp_key`, `cp_value`, `cp_contact_id`) VALUES (NULL, 'report_hour_start', '0', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_start', '0', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_hour_end', '24', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_minute_end', '0', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Monday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Tuesday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Wednesday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Thursday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Friday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Saturday', '1', NULL);
-INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (NULL, 'report_Sunday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key`, `cp_value`, `cp_contact_id`) VALUES (1, 'report_hour_start', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (2, 'report_minute_start', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (3, 'report_hour_end', '24', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (4, 'report_minute_end', '0', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (5, 'report_Monday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (6, 'report_Tuesday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (7, 'report_Wednesday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (8, 'report_Thursday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (9, 'report_Friday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (10, 'report_Saturday', '1', NULL);
+INSERT INTO `contact_param` (`id`, `cp_key` , `cp_value` , `cp_contact_id` ) VALUES (11, 'report_Sunday', '1', NULL);
 
 --
 -- Contenu de la table `contactgroup`
@@ -96,17 +96,17 @@ INSERT INTO `contactgroup_contact_relation` (`cgr_id`, `contact_contact_id`, `co
 -- Contenu de la table `contact_hostcommands_relation`
 --
 
-INSERT INTO `contact_hostcommands_relation` (`chr_id`, `contact_contact_id`, `command_command_id`) VALUES(NULL, 1, 35);
-INSERT INTO `contact_hostcommands_relation` (`chr_id`, `contact_contact_id`, `command_command_id`) VALUES(NULL, 17, 35);
-INSERT INTO `contact_hostcommands_relation` (`chr_id`, `contact_contact_id`, `command_command_id`) VALUES(NULL, 18, 35);
+INSERT INTO `contact_hostcommands_relation` (`chr_id`, `contact_contact_id`, `command_command_id`) VALUES(1, 1, 35);
+INSERT INTO `contact_hostcommands_relation` (`chr_id`, `contact_contact_id`, `command_command_id`) VALUES(2, 17, 35);
+INSERT INTO `contact_hostcommands_relation` (`chr_id`, `contact_contact_id`, `command_command_id`) VALUES(3, 18, 35);
 
 --
 -- Contenu de la table `contact_servicecommands_relation`
 --
 
-INSERT INTO `contact_servicecommands_relation` (`csc_id`, `contact_contact_id`, `command_command_id`) VALUES(NULL, 1, 36);
-INSERT INTO `contact_servicecommands_relation` (`csc_id`, `contact_contact_id`, `command_command_id`) VALUES(NULL, 17, 36);
-INSERT INTO `contact_servicecommands_relation` (`csc_id`, `contact_contact_id`, `command_command_id`) VALUES(NULL, 18, 36);
+INSERT INTO `contact_servicecommands_relation` (`csc_id`, `contact_contact_id`, `command_command_id`) VALUES(1, 1, 36);
+INSERT INTO `contact_servicecommands_relation` (`csc_id`, `contact_contact_id`, `command_command_id`) VALUES(2, 17, 36);
+INSERT INTO `contact_servicecommands_relation` (`csc_id`, `contact_contact_id`, `command_command_id`) VALUES(3, 18, 36);
 
 --
 -- Contenu de la table `css_color_menu`
