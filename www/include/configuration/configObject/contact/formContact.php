@@ -673,7 +673,7 @@ function resetPwdType(elem)
 	elem.setAttribute('type', 'password');
 }
 
-function switchTemplate(template)
+/*function switchTemplate(template)
 {
 	if (template) {
 		aclSelected = document.getElementById('contact_acl_groups-t');
@@ -696,5 +696,5 @@ function switchTemplate(template)
 
 Event.observe(window, 'load', function() {
 	switchTemplate(document.getElementsByName('contact_register[contact_register]')[0].checked);
-});
+});*/
 </script>

@@ -45,6 +45,7 @@
 class CentreonACL
 {
  	private $userID; /* ID of the user */
+ 	private $parentTemplates = null;
  	public $admin; /* Flag that tells us if the user is admin or not */
  	private $accessGroups = array(); /* Access groups the user belongs to */
  	private $resourceGroups = array(); /* Resource groups the user belongs to */
@@ -101,6 +102,7 @@ class CentreonACL
  	 */
  	private function resetACL()
  	{
+ 	    $this->parentTemplates = null;
  		$this->accessGroups = array();
 	 	$this->resourceGroups = array();
 	 	$this->hostGroups = array();
@@ -128,11 +130,15 @@ class CentreonACL
  	{
  		global $pearDB;
 
+ 		if (is_null($this->parentTemplates)) {
+ 		    $this->loadParentTemplates();
+ 		}
+
  		if (!$this->admin) {
-	 		$query = "SELECT update_acl FROM session WHERE update_acl = '1' AND user_id = '".$this->userID."'";
+	 		$query = "SELECT update_acl FROM session WHERE update_acl = '1' AND user_id IN (" . join(', ', $this->parentTemplates) . ")";
 	 		$DBRES = $pearDB->query($query);
 	 		if ($DBRES->numRows()) {
-	 			$pearDB->query("UPDATE session SET update_acl = '0' WHERE user_id = '".$this->userID."'");
+	 			$pearDB->query("UPDATE session SET update_acl = '0' WHERE user_id IN (" . join(', ', $this->parentTemplates) . ")");
 	 			$this->resetACL();
 	 		}
  		}
@@ -149,10 +155,14 @@ class CentreonACL
  	{
  		global $pearDB;
 
+ 		if (is_null($this->parentTemplates)) {
+            $this->loadParentTemplates();
+ 		}
+
  		$query = "SELECT acl.acl_group_id, acl.acl_group_name " .
  				"FROM acl_groups acl, acl_group_contacts_relations agcr " .
  				"WHERE acl.acl_group_id = agcr.acl_group_id " .
- 				"AND agcr.contact_contact_id = '".$this->userID."' " .
+ 				"AND agcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
  				"AND acl.acl_group_activate = '1' " .
                 "ORDER BY acl.acl_group_name ASC";
  		$DBRESULT = $pearDB->query($query);
@@ -165,9 +175,10 @@ class CentreonACL
  				"FROM acl_groups acl, acl_group_contactgroups_relations agcgr, contactgroup_contact_relation cgcr " .
  				"WHERE acl.acl_group_id = agcgr.acl_group_id " .
  				"AND cgcr.contactgroup_cg_id = agcgr.cg_cg_id " .
- 				"AND cgcr.contact_contact_id = '".$this->userID."' " .
+ 				"AND cgcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
  				"AND acl.acl_group_activate = '1' " .
                 "ORDER BY acl.acl_group_name ASC";
+ 		file_put_contents('/tmp/test.acl', $query);
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
@@ -320,6 +331,7 @@ class CentreonACL
 				"AND a.acl_action_activate = '1'" .
 				"AND agar.acl_group_id IN (".$this->getAccessGroupsString().") ".
                 "ORDER BY ar.acl_action_name ASC";
+		$DBRESULT = $pearDB->query($query);
 		while ($row = $DBRESULT->fetchRow()) {
 			$this->actions[$row['acl_action_name']] = $row['acl_action_name'];
 		}
@@ -1044,6 +1056,34 @@ class CentreonACL
 	public function getMetaServiceString()
 	{
 		return $this->metaServiceStr;
+	}
+
+	/**
+	 * Load the list of parent template
+	 */
+	private function loadParentTemplates()
+	{
+	    global $pearDB;
+
+		/* Get parents template */
+ 		$this->parentTemplates = array();
+ 		$currentContact = $this->userID;
+ 		while ($currentContact != 0) {
+ 		    $this->parentTemplates[] = $currentContact;
+ 		    $query = 'SELECT contact_template_id
+ 		    	FROM contact
+ 		    	WHERE contact_id = ' . $currentContact;
+ 		    $res = $pearDB->query($query);
+ 		    if (PEAR::isError($res)) {
+ 		        $currentContact = 0;
+ 		    } else {
+ 		        if ($row = $res->fetchRow()) {
+ 		            $currentContact = $row['contact_template_id'];
+ 		        } else {
+ 		            $currentContact = 0;
+ 		        }
+ 		    }
+ 		}
 	}
 }
 ?>
