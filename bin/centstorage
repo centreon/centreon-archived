@@ -56,6 +56,16 @@ use vars qw($con_oreon $con_ods);
 # Init value
 my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id, $configuration);
 
+# Init Proc table
+my %tabProc;
+$tabProc{'parser'} = 0;
+$tabProc{'synchro'} = 0;
+$tabProc{'rebuild'} = 0;
+
+my $timeout_stop = 50;
+
+my %tabProcChld;
+
 # Init status tab
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
@@ -63,12 +73,11 @@ my ($file, $line, @line_tab, @data_service, $hostname, $service_desc, $metric_id
 @rrd_dst = ( "GAUGE","COUNTER","DERIVE","ABSOLUTE");
 
 $debug = 0;
-my $stop = 1;
+our $stop = 1;
 my $error_value;
 my $error_str;
 
 my $LOG = "@CENTREON_LOG@/centstorage.log";
-my $PID = "@CENTREON_RUNDIR@/centstorage.pid";
 
 my $installedPath = "@CENTREON_PATH@/";
 
@@ -86,19 +95,38 @@ sub writeLogFile($){
     close LOG or warn $!;
 }
 
-sub catch_zap {
-    $stop = 0;
-    writeLogFile("Receiving order to stop...");
+sub catch_zap_int {
+	writeLogFile("$$ Receiving order to stop...");
+
+    if ($tabProc{'parser'}) {
+		writeLogFile("Send INT signal to parser sub process...");
+		kill('INT', $tabProc{'parser'})	
+	}
+
+	if ($tabProc{'rebuild'}) {
+    	writeLogFile("Send INT signal to rebuild sub process...");
+		kill('INT', $tabProc{'rebuild'});
+    }
 }
 
-# checking if pid file exists.
-if (-x $PID) {
-    writeLogFile("centstrorage already runnig. can't launch again....");
-    exit(2);
+sub catch_zap_term {
+    $stop = 0;
+
+    writeLogFile("$$ Receiving order to stop...");
+    if ($tabProc{'parser'}) {
+        writeLogFile("Send TERM signal to parser sub process...");
+		kill('TERM', $tabProc{'parser'});	
+    }
+
+    if ($tabProc{'rebuild'}) {
+        writeLogFile("Send TERM signal to rebuild sub process...");
+		kill('TERM', $tabProc{'rebuild'});
+    }
 }
 
 # Set signals
 $SIG{INT}  = \&catch_zap;
+$SIG{TERM}  = \&catch_zap_term;
 
 #
 # require different files
@@ -347,7 +375,7 @@ sub GetPerfData() {
                         }
 
                         $_ =~ s/\n//g;
-			my $save_line = $_;
+						my $save_line = $_;
                         @line_tab = prepardPerfdataParsed($_);
 
                         if ($line_tab[0] !~ m/^[0-9]*$/g || $line_tab[0] > $now) {
@@ -700,6 +728,9 @@ sub CheckRebuild(){
     my $sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
     writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."") if (!$sth2->execute);
     while ($svc_mst_be_rbld = $sth2->fetchrow_hashref()){
+    	if (!$stop) {
+            last;
+        }
 
 	my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
 	writeLogFile("Error when getting perfdata file : " . $sth->errstr . "") if (!$sth->execute);
@@ -780,42 +811,6 @@ sub CheckRebuild(){
     }
 }
 
-
-sub killProc($) {
-    if ($_[0]){
-		if (waitpid($_[0], WNOHANG)){
-		    return 0;
-		} else {
-		    return $_[0];
-		}	
-    }
-}
-
-# Writing PID
-sub writepid($) {
-	if (!defined($_[0]) || $_[0] == 0) {
-		writeLogFile("Cannot write pid file");
-	}
-	open (PID, ">> ".$PID) || print "can't write PID : $!";
-	print PID $_[0] ;
-	close PID or warn $!;
-}
-
-# Write in log file that program is starting
-sub signalstartprogram() {
-	# Starting centstrorage Engine
-	writeLogFile("Starting centstrorage engine...");
-	writeLogFile("PID : ".$$."");
-}
-
-# Write in log file that program is stoping
-sub signalstopprogram() {
-    writeLogFile("Stopping centstrorage engine...");
-    if (!unlink($PID)) {
-		writeLogFile("Error When removing pid file : $!") ;
-    }
-}
-
 # Check if Centstorage have to start
 sub checkProgramStatus() {
     # Init Var
@@ -845,85 +840,127 @@ sub checkProgramStatus() {
 	$con_ods->disconnect();
 }
 
+
+# Write in log file that program is starting
+sub signalstartprogram() {
+	# Starting centstrorage Engine
+	writeLogFile("Starting centstorage engine...");
+}
+
+sub unset_protection {
+	foreach my $pid (keys %tabProcChld) {
+		if ($tabProc{'parser'} == $pid) {
+			delete $tabProcChld{$pid};
+			$tabProc{'parser'} = 0;
+		}
+		if ($tabProc{'synchro'} == $pid) {
+			delete $tabProcChld{$pid};
+			$tabProc{'synchro'} = 0;
+		}
+		if ($tabProc{'rebuild'} == $pid) {
+			delete $tabProcChld{$pid};
+			$tabProc{'rebuild'} = 0;
+		}
+	}
+}
+
+# Write in log file that program is stoping
+sub signalstopprogram() {
+    writeLogFile("Stopping centstorage engine...");
+    # Waiting childs ended
+    my $cpt = 1;
+    while ($cpt < $timeout_stop) {
+		if ($tabProc{'parser'} == 0 && $tabProc{'rebuild'} == 0 && $tabProc{'synchro'} == 0) {
+			last;
+		}
+		unset_protection();
+		sleep(1);
+		$cpt++;
+    }
+
+    if ($cpt >= $timeout_stop) {
+		writeLogFile("Violent killing...Avoid double run...");
+		if ($tabProc{'parser'}) {
+ 	       writeLogFile("Send KILL signal to parser sub process...");
+ 	       kill('KILL', $tabProc{'parser'})
+ 		}
+		if ($tabProc{'rebuild'}) {
+			writeLogFile("Send KILL signal to rebuild sub process...");
+			kill('KILL', $tabProc{'rebuild'})
+		}
+    }
+}
+
+
+sub REAPER {
+	my $child_pid;
+ 	while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
+		$tabProcChld{$child_pid} = 1;
+	}
+	$SIG{CHLD} = \&REAPER;
+}
+
+
+
 # Check Program State
 checkProgramStatus();
 
-my $pid  = 0;
+open my $centstorage_fh, '>>', $LOG;
+open STDOUT, '>&', $centstorage_fh;
+open STDERR, '>&', $centstorage_fh;
+$SIG{CHLD} = \&REAPER;
+
 my $timeParser = time();
 my $timeSynchro = time();
 my $timeRebuild = time();
 
-my $flagParser = 0;
-my $flagSynchro = 0;
-my $flagRebuild = 0;
-
 $stop = 1;
 
-my @tabPID;
-
-# Init Proc table
-my %tabProc;
-$tabProc{'parser'} = 0;
-$tabProc{'synchro'} = 0;
-$tabProc{'rebuild'} = 0;
-
-if ($pid ne fork()) {
-
-    # Fork 
-    if (!fork()) {
-	
-	signalstartprogram();
-	writepid($$);
-	
-	my $i = 0;
-	while ($stop) {
-	    if (time() - $timeParser >= 7 && !$tabProc{'parser'} && !$tabProc{'rebuild'}) {
-		my $timeP = time() - $timeParser;
+signalstartprogram();
+882	
+while ($stop) {
+    if (time() - $timeParser >= 7 && !$tabProc{'parser'} && !$tabProc{'rebuild'}) {
 		$tabProc{'parser'} = fork();
-		if (!$tabProc{'parser'}){
+		if (!defined($tabProc{'parser'})) {
+			writeLogFile("Parser cannot fork: $!");
+		} elsif (!$tabProc{'parser'}){
+		    open STDOUT, '>&', $centstorage_fh;
+            open STDERR, '>&', $centstorage_fh;
 		    GetPerfData();
-		    exit();
-		} else {
-		    my $id = waitpid($tabProc{'parser'}, WNOHANG);
+		    exit(0);
 		}
 		$timeParser = time();
-	    }    
-	    if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}) {
+    }
+    if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}) {
 		$tabProc{'synchro'} = fork();
-		if (!$tabProc{'synchro'}){
-		    CheckRestart();
-		    exit();
-		} else {
-		    my $id = waitpid($tabProc{'synchro'}, WNOHANG);
+		if (!defined($tabProc{'synchro'})) {
+			writeLogFile("Synchro cannot fork: $!");
+		} elsif (!$tabProc{'synchro'}){
+		    open STDOUT, '>&', $centstorage_fh;
+            open STDERR, '>&', $centstorage_fh;
+		    CheckRestart();	
+		    exit(0);
 		}
 		$timeSynchro = time();
-	    }
-	    if (time() - $timeRebuild >= 40 && !$tabProc{'rebuild'} && !$tabProc{'parser'}) {
-		
-		$tabProc{'rebuild'} = fork();
-		if (!$tabProc{'rebuild'}){
-		    CheckRebuild();
-		    exit();
-		} else {
-		    my $id = waitpid($tabProc{'rebuild'}, WNOHANG);
-		}
-		$timeRebuild = time();
-	    }
-	    
-	    $tabProc{'parser'}  = killProc($tabProc{'parser'}) if ($tabProc{'parser'});
-	    $tabProc{'synchro'} = killProc($tabProc{'synchro'}) if ($tabProc{'synchro'});
-	    $tabProc{'rebuild'} = killProc($tabProc{'rebuild'}) if ($tabProc{'rebuild'});
-	    
-	    sleep(1);
-            $i++;
-	}
-	
-    	signalstopprogram();
     }
-    exit 0;
-} 
+    if (time() - $timeRebuild >= 40 && !$tabProc{'rebuild'} && !$tabProc{'parser'}) {
+		$tabProc{'rebuild'} = fork();
+		if (!defined($tabProc{'rebuild'})) {
+			writeLogFile("rebuild cannot fork: $!");
+		}
+		if (!$tabProc{'rebuild'}){
+		    open STDOUT, '>&', $centstorage_fh;
+            open STDERR, '>&', $centstorage_fh;
+		    CheckRebuild();
+		    exit(0);
+	 	}
+		$timeRebuild = time();
+     }
+    unset_protection();
+    sleep(1);
+}
 
-waitpid($pid, 0);
+signalstopprogram();
 exit(1);
 
 __END__
