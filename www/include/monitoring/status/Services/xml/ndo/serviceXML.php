@@ -136,7 +136,7 @@
 	if ($o == "meta") {
 		$where_host_meta = "no_h.name1 = '_Module_Meta' AND ";
 	} else {
-		$where_host_meta = "no_h.name1 != '_Module_Meta' AND ";
+		$where_host_meta = "no_h.name1 NOT LIKE '_Module_%' AND ";
 	}
 
     $where_host_poller = "";
