@@ -323,12 +323,12 @@ function construct_HostGroupSelectList(id) {
 			} else {
 				if ($oreon->user->access->admin || ($oreon->user->access->admin == 0 && isset($hgNdo[$hostgroups["name"]]))) { ?>
 					var m = document.createElement('option');
-					m.value= "<?= addslashes($hostgroups["alias"]); ?>";
+					m.value= "<?php echo addslashes($hostgroups['alias']); ?>";
 					_select.appendChild(m);
 					var n = document.createTextNode("<?php echo $hostgroups["name"]; ?>   ");
 					m.appendChild(n);
 					_select.appendChild(m);
-					select_index["<?= addslashes($hostgroups["alias"]); ?>"] = i;
+					select_index["<?php echo addslashes($hostgroups['alias']); ?>"] = i;
 					i++;
 	<?php 		}
 			}
