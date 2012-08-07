@@ -289,6 +289,6 @@ CREATE TABLE IF NOT EXISTS `connector` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=1 ;
 
-ALTER TABLE  `command` ADD FOREIGN KEY (  `connector_id` ) REFERENCES  `centreon`.`connector` (
-`id`
-) ON DELETE SET NULL ON UPDATE CASCADE ;
+ALTER TABLE `command` ADD FOREIGN KEY (  `connector_id` ) REFERENCES  `connector` (`id`) ON DELETE SET NULL ON UPDATE CASCADE ;
+
+
