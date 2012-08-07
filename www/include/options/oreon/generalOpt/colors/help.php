@@ -24,12 +24,12 @@ $help['tip_row_color_for_service_critical'] = dgettext('help', 'Row Color for Se
  * Miscelleneous
  */
 
-$help['tip_acknowledge_host_or_service_color'] = dgettext('help', 'Acknowledge host or service Color.');
-$help['tip_downtime_host_or_service_color'] = dgettext('help', 'Downtime host or service Color.');
+$help['tip_acknowledge_host_or_service_color'] = dgettext('help', 'Color of Hosts / Services that are acknowledged.');
+$help['tip_downtime_host_or_service_color'] = dgettext('help', 'Color of Hosts / Services that are on downtime.');
 
 /**
  * Specifics for hosts
  */
 
-$help['tip_color_for_host_down_in__service_view'] = dgettext('help', 'Color for host Down (Service view).');
-$help['tip_color_for_host_unreachable_in__service_view'] = dgettext('help', 'Color for host Unreachable (Service view).');
+$help['tip_color_for_host_down_in__service_view'] = dgettext('help', 'Color for Host Down (in Service monitoring consoles).');
+$help['tip_color_for_host_unreachable_in__service_view'] = dgettext('help', 'Color for Host Unreachable (in Service monitoring consoles).');
