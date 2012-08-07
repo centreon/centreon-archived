@@ -97,7 +97,7 @@
 		header("Location: index.php?disconnect=2");
 	}
 
-	if (!isset($centreon) || !isset($_SESSION["centreon"])) {
+	if (!isset($_SESSION["centreon"])) {
 		header("Location: index.php?disconnect=1");
 	}
 
