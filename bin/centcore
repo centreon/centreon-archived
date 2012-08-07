@@ -667,7 +667,7 @@ sub syncTraps($) {
             $port = $ns_server->{'ssh_port'};
         }
 
-        if ($id != 0) {
+        if ($id != 0 && $ns_server->{'localhost'} == 0) {
             writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
             my $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
 			if (defined($stdout) && $stdout){
@@ -796,6 +796,71 @@ sub syncArchives($) {
     }
 }
 
+# Get Monitoring Engine.
+sub getInfos($) {
+ 	my $id = $_[0];
+ 	
+ 	my $port = 22;
+    
+    # Check MySQL Connexion
+    CheckMySQLConnexion();
+    
+    # Get configuration
+    my $ns_server = getServerConfig($id);
+    
+    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
+		$port = $ns_server->{'ssh_port'};
+    }
+    
+    if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}) {
+		# Launch command
+		$cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
+		$stdout = `$cmd`;
+		
+		# TODO 	
+		# => Analyse Datas	
+    } else {
+		writeLogFile("Cannot get informations for poller $id");
+    }
+    
+}
+
+# Restart SNMPTT Daemon
+sub restartSNMPTT($) {
+    my $id = $_[0];
+    my $stdout = "";
+    my $cmd = "";
+    my $port = 22;
+    my $debug = 0;
+    
+    # Check MySQL Connexion
+    CheckMySQLConnexion();
+    
+    # Get configuration
+    my $ns_server = getServerConfig($id);
+    
+    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
+		$port = $ns_server->{'ssh_port'};
+    }
+    
+    if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}
+    	&& defined($ns_server->{'init_script_snmptt'}) && $ns_server->{'init_script_snmptt'}) {
+		# Launch command
+		if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
+			$cmd = "$sudo ".$ns_server->{'init_script_snmptt'}." restart";
+			writeLogFile($cmd) if ($debug);
+			$stdout = `$cmd`;
+		} else {
+			$cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
+			writeLogFile($cmd) if ($debug);
+			$stdout = `$cmd`;
+		}
+		writeLogFile("Restart SNMPTT on poller $id ($ns_server->{'ns_ip_address'})");
+    } else {
+		writeLogFile("Cannot restart SNMPTT for poller $id");
+    }
+}
+
 sub parseRequest($){
     if (!$_[0]) {
 		return ;
@@ -818,12 +883,16 @@ sub parseRequest($){
 		testConfig($1);
     } elsif ($_[0] =~ /^SYNCTRAP\:([0-9]*)/){
 		syncTraps($1);
+    } elsif ($_[0] =~ /^RESTARTSNMPTT\:([0-9]*)/){
+		restartSNMPTT($1);
     } elsif ($_[0] =~ /^SYNCPLUGINS\:([0-9]*)/){
 		;
     } elsif ($_[0] =~ /^SYNCARCHIVES\:([0-9]*)/){
 		syncArchives($1);
     } elsif ($_[0] =~ /^EXTERNALCMD\:([0-9]*)\:(.*)/){
 		storeCommands($1, $2);
+    } elsif ($_[0] =~ /^GETINFOS\:([0-9]*)/){
+		getInfos($1);
     }
 }
 

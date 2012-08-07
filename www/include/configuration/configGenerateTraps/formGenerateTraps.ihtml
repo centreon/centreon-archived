@@ -1,12 +1,14 @@
 {$form.javascript}
 <form {$form.attributes}>
 	 <input type="hidden" name="level" value="1"> 
-	 <table class="ListTableMedium" style="margin:0 auto;">
+	 <table class="ListTable" style="margin:0 auto;">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/server_network.gif'>&nbsp;&nbsp;{$form.header.infos}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host">&nbsp;{$form.host.label}</td><td class="FormRowValue">{$form.host.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
-	 	<tr class="list_one"><td class="FormRowField">{$form.restart.html}&nbsp;{$form.restart.label}</td><td class="FormRowValue">{$form.restart_mode.label}&nbsp;{$form.restart_mode.html}</td></tr>
+	 	<tr class="list_one"><td class="FormRowField" colspan='2'><img class="helpTooltip" name="generate">&nbsp;{$form.generate.html}&nbsp;{$form.generate.label}</td></tr>
+	 	<tr class="list_two"><td class="FormRowField" colspan='2'><img class="helpTooltip" name="apply">&nbsp;{$form.apply.html}&nbsp;{$form.apply.label}</td></tr>
+	 	<tr class="list_one"><td class="FormRowField" colspan='2'><img class="helpTooltip" name="restart">&nbsp;{$form.restart.html}&nbsp;{$form.restart.label}</td></tr>
 	</table>
 	<div align="center" id="validForm"><p class="oreonbutton">{$form.submit.html}</p></div>
 	<br /><br /><br /><br />
@@ -40,3 +42,4 @@
 	{/if}
 	{$form.hidden}
 </form>
+{$helptext}

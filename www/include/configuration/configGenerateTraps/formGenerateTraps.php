@@ -43,6 +43,7 @@
 	 * Init Centcore Pipe
 	 */
 	$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
+	$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	if ($centcore_pipe == "/centcore.cmd") {
 		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
@@ -95,12 +96,14 @@
 	/*
 	 * Add checkbox for enable restart
 	 */
-	$form->addElement('checkbox', 'restart', _("Generate configuration files for SNMP Traps"));
-
+	$form->addElement('checkbox', 'generate', _("Generate configuration files for SNMP Traps (SNMPTT)"));
+	$form->addElement('checkbox', 'apply', _("Apply configurations"));
+	$form->addElement('checkbox', 'restart', _("Restart SNMPTT"));
+	
 	/*
 	 * Set checkbox checked.
 	 */
-	$form->setDefaults(array('restart' => '1', 'opt' => '1'));
+	$form->setDefaults(array('generate' => '1', 'generate' => '1', 'opt' => '1'));
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -122,48 +125,58 @@
 				$host_list[$key] = $value;
 			}
 		}
-		if (isset($ret["restart"]["restart"]) && $ret["restart"]["restart"] && ($ret["host"] == 0 || $ret["host"]))	{
-			/*
-			 * Create Server List to snmptt generation file
-			 */
-			$tab_server = array();
-			$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
-			while ($tab = $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
-					$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
+		if ($ret["host"] == 0 || $ret["host"]) {
+			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
+				/*
+				 * Create Server List to snmptt generation file
+				 */
+				$tab_server = array();
+				$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+				while ($tab = $DBRESULT_Servers->fetchRow()){
+					if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+						$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
+					}
 				}
+				$stdout = "";
+	            if (!isset($msg_generate)) {
+	                $msg_generate = array();
+	            }
+				/* even if we generate files for a remote server, we push snmptt config files on the local server */
+	            shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
+	
+	            foreach ($tab_server as $host) {
+	                if (!isset($msg_generate[$host["id"]])) {
+	                    $msg_generate[$host["id"]] = "";
+	                }
+	                if (isset($host['localhost']) && $host['localhost'] == 0) {
+	                    system("echo 'SYNCTRAP:".$host["id"]."' >> $centcore_pipe");
+	                    $msg_generate[$host["id"]] .= _("<br><b>Centreon : </b>A Synctrap signal has been sent to ".$host["name"]."\n");
+	                } else {
+	                    $stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
+	                    $msg_generate[$host["id"]] .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
+	                }
+					foreach ($msg_generate as $key => $str) {
+						$msg_generate[$key] = str_replace("\n", "<br>", $str);
+					}
+	            }
 			}
-			$stdout = "";
-            if (!isset($msg_restart)) {
-                $msg_restart = array();
-            }
-			/* even if we generate files for a remote server, we push snmptt config files on the local server */
-            shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-
-            foreach ($tab_server as $host) {
-                if (!isset($msg_restart[$host["id"]])) {
-                    $msg_restart[$host["id"]] = "";
-                }
-                if (isset($host['localhost']) && $host['localhost'] == 0) {
-                    system("echo 'SYNCTRAP:".$host["id"]."' >> $centcore_pipe");
-                    $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>A Synctrap signal has been sent to ".$host["name"]."\n");
-                } else {
-                    $stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-                    $msg_restart[$host["id"]] .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
-                }
-				foreach ($msg_restart as $key => $str) {
-					$msg_restart[$key] = str_replace("\n", "<br>", $str);
-				}
-            }
+			
+			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"]) {
+				passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
+			}
+		
+			if (isset($ret["restart"]["restart"]) && $ret["restart"]["restart"]) {
+				passthru("echo 'RESTARTSNMPTT:".$host['id']."' >> $centcore_pipe", $return);
+			}
 		}
 	}
-
+		
 	$form->addElement('header', 'status', _("Status"));
 	if (isset($msg) && $msg) {
 		$tpl->assign('msg', $msg);
 	}
-	if (isset($msg_restart) && $msg_restart) {
-		$tpl->assign('msg_restart', $msg_restart);
+	if (isset($msg_generate) && $msg_generate) {
+		$tpl->assign('msg_generate', $msg_generate);
 	}
 	if (isset($tab_server) && $tab_server) {
 		$tpl->assign('tab_server', $tab_server);
@@ -171,7 +184,15 @@
 	if (isset($host_list) && $host_list) {
 		$tpl->assign('host_list', $host_list);
 	}
-
+	
+	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+	
 	/*
 	 * Apply a template definition
 	 */

@@ -82,6 +82,7 @@
 	$form->addElement('header', 'SSH_Informations', _("SSH Information"));
 	$form->addElement('header', 'Nagios_Informations', _("Scheduler Information"));
 	$form->addElement('header', 'Misc', _("Miscelleneous"));
+	$form->addElement('header', 'SNMPTT', _("SNMPTT Traps Collector"));
 	$form->addElement('select', 'monitoring_engine', _("Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 
 	/*
@@ -114,6 +115,8 @@
 	$Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
 
+	$form->addElement('text', 'init_script_snmptt', _("SNMPTT Init Script"), $attrsText);
+	
 	/*
 	 * Centreon Broker
 	 */
@@ -135,7 +138,8 @@
 		"ssh_port"  =>  '22',
 		"ssh_private_key"  =>  '~/.ssh/rsa.id',
 		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata",
-		"centreonbroker_cfg_path" => "/etc/centreon/broker"));
+		"centreonbroker_cfg_path" => "/etc/centreon/broker", 
+		"init_script" => "/etc/init.d/snmptt"));
 	} else {
 		if (isset($cfg_server))
 			$form->setDefaults($cfg_server);
