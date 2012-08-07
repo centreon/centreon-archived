@@ -276,19 +276,29 @@ SET foreign_key_checks = 1;
 --
 ALTER TABLE `giv_components_template` ADD `ds_minmax_int` ENUM('0', '1') DEFAULT '0' AFTER `ds_min`;
 
-ALTER TABLE `command`  ADD `connector_id` INT UNSIGNED NULL DEFAULT NULL AFTER `command_id`,  ADD INDEX (`connector_id`);
+--
+-- Adding connectors structure
+--
 
-CREATE TABLE IF NOT EXISTS `connector` (
-  `id` int(11) UNSIGNED NOT NULL auto_increment,
-  `name` varchar(255) collate utf8_swedish_ci NOT NULL,
-  `description` varchar(255) collate utf8_swedish_ci default NULL,
-  `command_line` text collate utf8_swedish_ci default NULL,
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `connector` (
+  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci NOT NULL,
+  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci DEFAULT NULL,
+  `command_line` text CHARACTER SET utf8 COLLATE utf8_swedish_ci,
+  `enabled` int(1) NOT NULL DEFAULT '1',
   `created` int(10) unsigned NOT NULL,
   `modified` int(10) unsigned NOT NULL,
-  PRIMARY KEY  (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci AUTO_INCREMENT=1 ;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`),
+  KEY `enabled` (`enabled`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
-ALTER TABLE `command` ADD FOREIGN KEY (  `connector_id` ) REFERENCES  `connector` (`id`) ON DELETE SET NULL ON UPDATE CASCADE ;
+ALTER TABLE `command`  ADD `connector_id` INT UNSIGNED NULL DEFAULT NULL AFTER `command_id`,  ADD INDEX (`connector_id`);
+ALTER TABLE `command` ADD CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id`) REFERENCES `connector` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
-
+--
+-- End adding connectors structure
+--
