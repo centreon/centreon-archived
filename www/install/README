@@ -1,0 +1,53 @@
+--------------------------------------------------------------------------------
+
+
+
+ = How to change the database schema: =
+
+// Notice: Please make sure you use a version of mysqldump that outputs SQL keywords uppercase //
+
+    * Create a backup of the current database schema version
+        $ cp createTables.sql createTables.sql.old
+    * Create an empty database
+        $ mysql
+        mysql> CREATE DATABASE centreon_tmp;
+        Query OK, 1 row affected (0.00 sec)
+    * Import the latest database schema
+        $ mysql centreon_tmp < createTables.sql.old
+    * Make changes via mysql command line tool or a GUI manager
+    * Export the new version
+        $ mysqldump --skip-add-drop-table --skip-comments --no-data centreon_tmp > createTables.sql
+    * Update the migration script
+        //todo
+    * Check that the end result is the same
+        * Create two empty databases:
+            $ mysql
+            mysql> CREATE DATABASE centreon_via_install;
+            Query OK, 1 row affected (0.00 sec)
+
+            mysql> CREATE DATABASE centreon_via_upgrade;
+            Query OK, 1 row affected (0.00 sec)
+        * Simulate upgrade
+            $ mysql centreon_via_install < createTables.sql
+            $ mysql centreon_via_upgrade < createTables.sql.old
+            $ mysql centreon_via_upgrade < sql/centreon/Update-DB-x.y.z_to_x.y.z.sql
+        * Save both databases
+            $ mysqldump --skip-add-drop-table --skip-comments --no-data centreon_via_install > createTables.sql.install
+            $ mysqldump --skip-add-drop-table --skip-comments --no-data centreon_via_upgrade > createTables.sql.upgrade
+        * Check the differences file. There should be no difference
+            $ diff createTables.sql.install createTables.sql.upgrade
+    * Remove temporary files and databases
+        $ rm createTables.sql.old createTables.sql.install createTables.sql.upgrade
+        $ mysql
+        mysql> DROP DATABASE centreon_tmp;
+        Query OK, 0 rows affected (0.00 sec)
+
+        mysql> DROP DATABASE centreon_via_install;
+        Query OK, 0 rows affected (0.00 sec)
+
+        mysql> DROP DATABASE centreon_via_upgrade;
+        Query OK, 0 rows affected (0.00 sec)
+
+        mysql> exit
+        Bye
+    * You are done. Now you can commit the changes
