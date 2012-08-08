@@ -320,7 +320,7 @@ class CentreonConnector
         }
 
         if (PEAR::isError($connectorsResult)) {
-            throw new RuntimeException('Cannot get last insert id');
+            throw new RuntimeException('Cannot select connectors');
         }
         $connectors = array();
         while ($connector = $connectorsResult->fetchRow()) {
