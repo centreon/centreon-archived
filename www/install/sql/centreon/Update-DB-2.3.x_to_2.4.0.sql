@@ -1,7 +1,15 @@
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
---- 
---- Setting Centreon Engine as the default engine and adding a custom centreon engine configuration file
----
+--
+-- Setting Centreon Engine as the default engine and adding a custom centreon engine configuration file
+--
 ALTER TABLE `cfg_nagios` ADD COLUMN `cfg_file` VARCHAR(255) NOT NULL DEFAULT 'centengine.cfg';
 UPDATE `cfg_nagios` SET `cfg_file` = 'nagios.cfg' WHERE `cfg_dir` LIKE '%nagios%';
 INSERT INTO `cfg_nagios` (`nagios_name`, `log_file`, `cfg_dir`, `object_cache_file`, `precached_object_file`, `temp_file`, `temp_path`, `status_file`, `check_result_path`, `max_check_result_file_age`, `p1_file`, `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, `command_check_interval`, `command_file`, `downtime_file`, `comment_file`, `lock_file`, `retain_state_information`, `state_retention_file`, `retention_update_interval`, `use_retained_program_state`, `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`, `log_external_commands`, `log_passive_checks`, `global_host_event_handler`, `global_service_event_handler`, `sleep_time`, `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`, `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, `interval_length`, `auto_reschedule_checks`, `auto_rescheduling_interval`, `auto_rescheduling_window`, `use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, `high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`, `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, `notification_timeout`, `ocsp_timeout`, `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, `ocsp_command`, `obsess_over_hosts`, `ochp_command`, `process_performance_data`, `host_perfdata_command`, `service_perfdata_command`, `host_perfdata_file`, `service_perfdata_file`, `host_perfdata_file_template`, `service_perfdata_file_template`, `host_perfdata_file_mode`, `service_perfdata_file_mode`, `host_perfdata_file_processing_interval`, `service_perfdata_file_processing_interval`, `host_perfdata_file_processing_command`, `service_perfdata_file_processing_command`, `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `service_freshness_check_interval`, `freshness_check_interval`, `check_host_freshness`, `host_freshness_check_interval`, `date_format`, `illegal_object_name_chars`, `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, `event_broker_options`, `translate_passive_host_checks`, `nagios_server_id`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `cached_host_check_horizon`, `cached_service_check_horizon`, `passive_host_checks_are_soft`, `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `additional_freshness_latency`, `enable_embedded_perl`, `use_embedded_perl_implicitly`, `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `cfg_file`) VALUES
@@ -20,12 +28,11 @@ INSERT INTO `topology` (topology_name, topology_icone,topology_parent, topology_
 ('Setup', './img/icones/16x16/press.gif', '507', '50702', '30', '30', './include/options/oreon/widgets/widgets.php', '1');
 
 -- --------------------------------------------------------
-
 --
 -- Structure de la table `custom_views`
 --
 
-CREATE TABLE  `custom_views` (
+CREATE TABLE IF NOT EXISTS `custom_views` (
 	`custom_view_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 	`name` VARCHAR( 255 ) NOT NULL,
 	`layout` VARCHAR( 255 ) NOT NULL,
@@ -38,7 +45,7 @@ CREATE TABLE  `custom_views` (
 -- Structure de la table `custom_view_user_relation`
 --
 
-CREATE TABLE `custom_view_user_relation` (
+CREATE TABLE IF NOT EXISTS `custom_view_user_relation` (
 	`custom_view_id` INT( 11 ) NOT NULL,
 	`user_id` INT( 11 ) NULL,
 	`usergroup_id` INT( 11 ) NULL,
@@ -67,7 +74,7 @@ ALTER TABLE  `custom_view_user_relation` ADD UNIQUE  `view_user_unique_index` ( 
 -- Structure de la table `custom_view_default`
 --
 
-CREATE TABLE `custom_view_default` (
+CREATE TABLE IF NOT EXISTS `custom_view_default` (
   `user_id` INT (11) NOT NULL,
   `custom_view_id` INT (11) NOT NULL,
   CONSTRAINT `fk_custom_view_default_user_id`
@@ -86,7 +93,7 @@ CREATE TABLE `custom_view_default` (
 -- Structure de la table `widget_models`
 --
 
-CREATE TABLE  `widget_models` (
+CREATE TABLE IF NOT EXISTS  `widget_models` (
 	`widget_model_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 	`title` VARCHAR( 255 ) NOT NULL ,
 	`description` VARCHAR( 255 ) NOT NULL ,
@@ -109,7 +116,7 @@ CREATE TABLE  `widget_models` (
 -- Structure de la table `widgets`
 --
 
-CREATE TABLE  `widgets` (
+CREATE TABLE IF NOT EXISTS  `widgets` (
 	`widget_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 	`widget_model_id` INT( 11 ) NOT NULL,
 	`title` VARCHAR( 255 ) NOT NULL ,	
@@ -126,7 +133,7 @@ CREATE TABLE  `widgets` (
 -- Structure de la table `widget_views`
 --
 
-CREATE TABLE  `widget_views` (
+CREATE TABLE IF NOT EXISTS `widget_views` (
 	`widget_view_id` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 	`custom_view_id` INT( 11 ) NOT NULL ,
 	`widget_id` INT( 11 ) NOT NULL ,	
@@ -148,7 +155,7 @@ CREATE TABLE  `widget_views` (
 -- Structure de la table `widget_parameters_field_type`
 --
 
-CREATE TABLE  `widget_parameters_field_type` (
+CREATE TABLE IF NOT EXISTS `widget_parameters_field_type` (
   `field_type_id` INT ( 11 ) NOT NULL AUTO_INCREMENT ,
   `ft_typename` VARCHAR(50) NOT NULL ,
   `is_connector` TINYINT(6) NOT NULL DEFAULT 0,
@@ -161,7 +168,7 @@ CREATE TABLE  `widget_parameters_field_type` (
 -- Structure de la table `widget_parameters`
 --
 
-CREATE TABLE  `widget_parameters` (
+CREATE TABLE IF NOT EXISTS `widget_parameters` (
 	`parameter_id` INT( 11 ) NOT NULL AUTO_INCREMENT,
 	`parameter_name` VARCHAR( 255 ) NOT NULL,
 	`parameter_code_name` VARCHAR( 255 ) NOT NULL,
@@ -188,7 +195,7 @@ CREATE TABLE  `widget_parameters` (
 -- Structure de la table `widget_preferences`
 --
 
-CREATE TABLE  `widget_preferences` (
+CREATE TABLE IF NOT EXISTS `widget_preferences` (
 	`widget_view_id` INT( 11 ) NOT NULL ,
 	`parameter_id` INT( 11 ) NOT NULL ,
 	`preference_value` VARCHAR( 255 ) NOT NULL,
@@ -200,10 +207,10 @@ CREATE TABLE  `widget_preferences` (
     CONSTRAINT `fk_widget_parameter_id`
     FOREIGN KEY (`parameter_id` )
     REFERENCES `widget_parameters` (`parameter_id` )
-    ON DELETE CASCADE
+    ON DELETE CASCADE,
+    UNIQUE  `widget_preferences_unique_index` (  `widget_view_id` ,  `parameter_id`, `user_id` )
 ) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
-ALTER TABLE `widget_preferences` ADD UNIQUE  `widget_preferences_unique_index` (  `widget_view_id` ,  `parameter_id`, `user_id` );
 
 -- --------------------------------------------------------
 
@@ -211,7 +218,7 @@ ALTER TABLE `widget_preferences` ADD UNIQUE  `widget_preferences_unique_index` (
 -- Structure de la table `widget_parameters_multiple_options`
 --
 
-CREATE TABLE `widget_parameters_multiple_options` (
+CREATE TABLE IF NOT EXISTS `widget_parameters_multiple_options` (
 	`parameter_id` INT ( 11 ) NOT NULL,
 	`option_name` VARCHAR ( 255 ) NOT NULL,
 	`option_value` VARCHAR ( 255 ) NOT NULL,
@@ -227,7 +234,7 @@ CREATE TABLE `widget_parameters_multiple_options` (
 -- Structure de la table `widget_parameters_range`
 --
 
-CREATE TABLE `widget_parameters_range` (
+CREATE TABLE IF NOT EXISTS `widget_parameters_range` (
 	`parameter_id` INT ( 11 ) NOT NULL,
 	`min_range` INT ( 11 ) NOT NULL,
 	`max_range` INT ( 11 ) NOT NULL,
@@ -263,12 +270,12 @@ CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
 ALTER TABLE  `cfg_cgi` ADD  `instance_id` INT( 11 ) NULL AFTER  `cgi_name`;
 ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL;
 
-UPDATE  `centreon`.`options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USING utf8 ) =  'monitoring_engine' AND CONVERT(  `options`.`value` USING utf8 ) =  'NAGIOS' LIMIT 1 ;
+UPDATE  `options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USING utf8 ) =  'monitoring_engine' AND CONVERT(  `options`.`value` USING utf8 ) =  'NAGIOS' LIMIT 1 ;
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;
 
 SET foreign_key_checks = 0;
-UPDATE  `centreon`.`topology` SET `topology_name` = 'SNMP traps', `topology_parent` =  '6', `topology_page` = '611', `topology_order` = '80', `topology_group` =  '1'  WHERE  `topology`.`topology_page` = 60705;
-UPDATE  `centreon`.`topology_JS` SET  `id_page` =  '611' WHERE  `topology_JS`.`id_page` = 60705;
+UPDATE  `topology` SET `topology_name` = 'SNMP traps', `topology_parent` =  '6', `topology_page` = '611', `topology_order` = '80', `topology_group` =  '1'  WHERE  `topology`.`topology_page` = 60705;
+UPDATE  `topology_JS` SET  `id_page` =  '611' WHERE  `topology_JS`.`id_page` = 60705;
 SET foreign_key_checks = 1;
 
 --
@@ -307,8 +314,14 @@ ALTER TABLE `command` ADD CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id
 -- Nagios server init script for  snmptt
 --
 
- ALTER TABLE `nagios_server` ADD COLUMN `init_script_snmptt` VARCHAR(255) DEFAULT NULL;
+ALTER TABLE `nagios_server` ADD COLUMN `init_script_snmptt` VARCHAR(255) DEFAULT NULL;
 
 --
 -- End nagios server init script for  snmptt
 --
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
