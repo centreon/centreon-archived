@@ -140,7 +140,7 @@
 	if ($search != "") {
 		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
 	}
-	if ($hostgroups != "") {
+	if ($hostgroups != "" && $hostgroups != '0') {
 		$rq1 .= " AND hg.alias = '" . $obj->DBNdo->escape($hostgroups) . "'";
 	}
 	$rq1 .= " ORDER BY $sort_type, host_name $order ";
