@@ -527,10 +527,19 @@
 		$tools = array();
 		$DBRESULT = $pearDB->query("SELECT * FROM modules_informations");
 		while($module = $DBRESULT->fetchrow()) {
-			if(isset($module['host_tools']) && $module['host_tools'] == 1 && file_exists('modules/'.$module['name'].'/host_tools.php'))
+			if (isset($module['host_tools']) && $module['host_tools'] == 1 && file_exists('modules/'.$module['name'].'/host_tools.php')) {
 				include('modules/'.$module['name'].'/host_tools.php');
+			}
 		}
 		$DBRESULT->free();
+		
+		foreach ($tools as $key => $tab) {
+			$tools[$key]['url'] = str_replace("@host_id@", $host_id, $tools[$key]['url']);
+			$tools[$key]['url'] = str_replace("@host_name@", $host_name, $tools[$key]['url']);
+			$tools[$key]['url'] = str_replace("@current_state@", $host_status[$host_name]["current_state"], $tools[$key]['url']);
+			$tools[$key]['url'] = str_replace("@plugin_output@", $host_status[$host_name]["plugin_output"], $tools[$key]['url']);
+		}
+		
 		if (count($tools) > 0) {
 			$tpl->assign("tools", $tools);
 		}
