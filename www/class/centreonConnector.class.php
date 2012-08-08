@@ -41,6 +41,7 @@
  * 
  * Usage example:
  * 
+ * <?php
  * require_once "/etc/centreon/centreon.conf.php";
  * require_once $centreon_path . 'www/class/centreonConnector.class.php';
  * require_once $centreon_path . 'www/class/centreonDB.class.php';
@@ -62,6 +63,8 @@
  * //));
  * 
  * //$connector->delete(10);
+ * 
+ * //$connector->read(7);
  */
 
 class CentreonConnector
@@ -161,11 +164,31 @@ class CentreonConnector
      * 
      * @param int $id
      * @return array
-     * @todo Implement
      */
     public function read($id)
     {
+        if (!is_int($id)) {
+            throw new InvalidArgumentException('Id is not integer');
+        }
+        $result = $this->dbConnection->query('SELECT
+                                                `id`,
+                                                `name`,
+                                                `description`,
+                                                `command_line`,
+                                                `enabled`,
+                                                `created`,
+                                                `modified`
+                                             FROM
+                                                `connector`
+                                             WHERE
+                                                `id` = ?
+                                             LIMIT
+                                                1', array($id));
+        if (PEAR::isError($result)) {
+            throw new RuntimeException('Cannot select connector');
+        }
         
+        return $result->fetchRow();
     }
 
     /**
@@ -174,7 +197,6 @@ class CentreonConnector
      * @param int $id
      * 
      * @return boolean
-     * @todo Implement
      */
     public function update($id, $connector = array())
     {
@@ -225,7 +247,6 @@ class CentreonConnector
      * 
      * @param int $id
      * @return boolean
-     * @todo Implement
      */
     public function delete($id)
     {
