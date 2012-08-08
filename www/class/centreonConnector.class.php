@@ -41,18 +41,27 @@
  * 
  * Usage example:
  * 
- * <?php
  * require_once "/etc/centreon/centreon.conf.php";
  * require_once $centreon_path . 'www/class/centreonConnector.class.php';
  * require_once $centreon_path . 'www/class/centreonDB.class.php';
  * 
  * $connector = new CentreonConnector(new CentreonDB);
  * 
- * $connector->create(array(
- *     'name' => 'name',
- *     'description' => 'description',
- *     'command_line' => 'command_line'
- *         ), true);
+ * //$connector->create(array(
+ * //    'name' => 'jackyse',
+ * //    'description' => 'some jacky',
+ * //    'command_line' => 'ls -la',
+ * //    'enabled' => true
+ * //        ), true);
+ * 
+ * //$connector->update(10, array(
+ * //    'name' => 'soapy',
+ * //    'description' => 'Lorem ipsum',
+ * //    'enabled' => true,
+ * //    'command_line' => 'ls -laph --color'
+ * //));
+ * 
+ * //$connector->delete(10);
  */
 
 class CentreonConnector
@@ -79,7 +88,7 @@ class CentreonConnector
      * 
      * @param array $connector
      * @param boolean $returnId
-     * @return boolean|integer
+     * @return CentreonConnector|integer
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
@@ -104,6 +113,10 @@ class CentreonConnector
             $connector['command_line'] = null;
         }
 
+        if (!array_key_exists('enabled', $connector)) {
+            $connector['enabled'] = true;
+        }
+
         /**
          * Inserting into database
          */
@@ -111,12 +124,14 @@ class CentreonConnector
                                         `name`,
                                         `description`,
                                         `command_line`,
+                                        `enabled`,
                                         `created`,
                                         `modified`
-                                    ) VALUES (?, ?, ?, ?, ?)', array(
+                                    ) VALUES (?, ?, ?, ?, ?, ?)', array(
             $connector['name'],
             $connector['description'],
             $connector['command_line'],
+            $connector['enabled'],
             $now = time(),
             $now
                 ));
@@ -138,7 +153,7 @@ class CentreonConnector
             }
             return $lastId['id'];
         }
-        return true;
+        return $this;
     }
 
     /**
@@ -157,12 +172,52 @@ class CentreonConnector
      * Updates connector
      * 
      * @param int $id
+     * 
      * @return boolean
      * @todo Implement
      */
-    public function update($id)
+    public function update($id, $connector = array())
     {
-        
+        if (!is_array($connector)) {
+            throw new InvalidArgumentException('Data is not an array');
+        }
+
+        if (!is_int($id)) {
+            throw new InvalidArgumentException('Id is not integer');
+        }
+
+        if (count($connector) === 0) {
+            return $this;
+        }
+
+        $data = array();
+
+        if (isset($connector['name'])) {
+            $data['name'] = $connector['name'];
+        }
+        if (isset($connector['description'])) {
+            $data['description'] = $connector['description'];
+        }
+        if (isset($connector['command_line'])) {
+            $data['command_line'] = $connector['command_line'];
+        }
+        if (isset($connector['enabled'])) {
+            $data['enabled'] = $connector['enabled'];
+        }
+        if (count($data) !== 0) {
+            $sqlParts = array();
+            $sqlParts[] = '`modified` =  ?';
+            foreach ($data as $fieldName => $fieldValue) {
+                $sqlParts[] = "`$fieldName` = ?";
+            }
+            $sqlParts = implode(', ', $sqlParts);
+            $updateResult = $this->dbConnection->query("UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ?", array_merge(array(time()), array_values($data), array($id)));
+            if (PEAR::isError($updateResult)) {
+                throw new RuntimeException('Cannot update connector');
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -174,7 +229,14 @@ class CentreonConnector
      */
     public function delete($id)
     {
-        
+        if (!is_int($id)) {
+            throw new InvalidArgumentException('Id should be integer');
+        }
+        $deleteResult = $this->dbConnection->query('DELETE FROM `connector` WHERE `id` = ?', array($id));
+        if (PEAR::isError($deleteResult)) {
+            throw new RuntimeException('Cannot delete connector');
+        }
+        return $this;
     }
 
     /**
@@ -197,7 +259,7 @@ class CentreonConnector
         if (!is_int($perPage)) {
             throw new InvalidArgumentException('Per page parameter should be integer');
         }
-        
+
         /**
          * Calculating offset
          */
@@ -237,7 +299,7 @@ class CentreonConnector
         }
 
         if (PEAR::isError($connectorsResult)) {
-            throw new RuntimeException('Cannot get last insert ID');
+            throw new RuntimeException('Cannot get last insert id');
         }
         $connectors = array();
         while ($connector = $connectorsResult->fetchRow()) {
