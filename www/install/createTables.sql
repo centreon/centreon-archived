@@ -746,7 +746,7 @@ CREATE TABLE `connector` (
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci NOT NULL,
   `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci DEFAULT NULL,
   `command_line` text CHARACTER SET utf8 COLLATE utf8_swedish_ci,
-  `enabled` int(1) NOT NULL DEFAULT '1',
+  `enabled` int(1) unsigned NOT NULL DEFAULT '1',
   `created` int(10) unsigned NOT NULL,
   `modified` int(10) unsigned NOT NULL,
   PRIMARY KEY (`id`),
