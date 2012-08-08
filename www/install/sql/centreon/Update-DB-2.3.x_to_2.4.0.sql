@@ -302,3 +302,13 @@ ALTER TABLE `command` ADD CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id
 --
 -- End adding connectors structure
 --
+
+--
+-- Nagios server init script for  snmptt
+--
+
+ ALTER TABLE `nagios_server` ADD COLUMN `init_script_snmptt` VARCHAR(255) DEFAULT NULL;
+
+--
+-- End nagios server init script for  snmptt
+--
