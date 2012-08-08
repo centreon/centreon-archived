@@ -61,17 +61,17 @@ class CentreonConnector
      * The database connection
      * @var CentreonDB 
      */
-    protected $db;
+    protected $dbConnection;
 
     /**
      * Constructor
      *
-     * @param CentreonDB $db
+     * @param CentreonDB $dbConnection
      * @return void
      */
-    public function __construct($db)
+    public function __construct($dbConnection)
     {
-        $this->db = $db;
+        $this->dbConnection = $dbConnection;
     }
 
     /**
@@ -85,6 +85,9 @@ class CentreonConnector
      */
     public function create(array $connector, $returnId = false)
     {
+        /**
+         * Checking data
+         */
         if (!isset($connector['name'])) {
             throw new InvalidArgumentException('No name for the connector set');
         }
@@ -101,7 +104,10 @@ class CentreonConnector
             $connector['command_line'] = null;
         }
 
-        $success = $this->db->query('INSERT INTO `connector` (
+        /**
+         * Inserting into database
+         */
+        $success = $this->dbConnection->query('INSERT INTO `connector` (
                                         `name`,
                                         `description`,
                                         `command_line`,
@@ -117,8 +123,12 @@ class CentreonConnector
         if (PEAR::isError($success)) {
             throw new RuntimeException('Cannot insert connector; Check the database schema');
         }
+
+        /**
+         * in case last inserted id needed
+         */
         if ($returnId) {
-            $lastIdQueryResult = $this->db->query('SELECT `id` FROM `connector` WHERE `name` = ?', array($connector['name']));
+            $lastIdQueryResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($connector['name']));
             if (PEAR::isError($lastIdQueryResult)) {
                 throw new RuntimeException('Cannot get last insert ID');
             }
@@ -165,6 +175,74 @@ class CentreonConnector
     public function delete($id)
     {
         
+    }
+
+    /**
+     * Gets list of connectors
+     * 
+     * @param int $page
+     * @param int $perPage
+     * @param boolean $onlyEnabled
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function getList($page = 0, $perPage = 30, $onlyEnabled = true)
+    {
+        /**
+         * Checking parameters
+         */
+        if (!is_int($page)) {
+            throw new InvalidArgumentException('Page number should be integer');
+        }
+        if (!is_int($perPage)) {
+            throw new InvalidArgumentException('Per page parameter should be integer');
+        }
+        
+        /**
+         * Calculating offset
+         */
+        $offset = $page * $perPage;
+        if ($onlyEnabled) {
+            $connectorsResult = $this->dbConnection->query($query = "SELECT
+                                                                `id`,
+                                                                `name`,
+                                                                `description`,
+                                                                `command_line`,
+                                                                `enabled`,
+                                                                `created`,
+                                                                `modified`
+                                                             FROM
+                                                                `connector`
+                                                             WHERE
+                                                                `enabled` = 1
+                                                             LIMIT
+                                                                $perPage
+                                                             OFFSET
+                                                                $offset");
+        } else {
+            $connectorsResult = $this->dbConnection->query($query = "SELECT
+                                                                `id`,
+                                                                `name`,
+                                                                `description`,
+                                                                `command_line`,
+                                                                `enabled`,
+                                                                `created`,
+                                                                `modified`
+                                                             FROM
+                                                                `connector`
+                                                             LIMIT
+                                                                $perPage
+                                                             OFFSET
+                                                                $offset");
+        }
+
+        if (PEAR::isError($connectorsResult)) {
+            throw new RuntimeException('Cannot get last insert ID');
+        }
+        $connectors = array();
+        while ($connector = $connectorsResult->fetchRow()) {
+            $connectors[] = $connector;
+        }
     }
 
 }
