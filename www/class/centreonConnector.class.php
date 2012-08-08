@@ -203,7 +203,7 @@ class CentreonConnector
          */
         $offset = $page * $perPage;
         if ($onlyEnabled) {
-            $connectorsResult = $this->dbConnection->query($query = "SELECT
+            $connectorsResult = $this->dbConnection->query("SELECT
                                                                 `id`,
                                                                 `name`,
                                                                 `description`,
@@ -220,7 +220,7 @@ class CentreonConnector
                                                              OFFSET
                                                                 $offset");
         } else {
-            $connectorsResult = $this->dbConnection->query($query = "SELECT
+            $connectorsResult = $this->dbConnection->query("SELECT
                                                                 `id`,
                                                                 `name`,
                                                                 `description`,
@@ -243,6 +243,7 @@ class CentreonConnector
         while ($connector = $connectorsResult->fetchRow()) {
             $connectors[] = $connector;
         }
+        return $connectors;
     }
 
 }
