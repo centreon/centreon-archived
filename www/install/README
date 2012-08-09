@@ -1,8 +1,7 @@
---------------------------------------------------------------------------------
 
+= Common tasks for editing database schemas and data = 
 
-
- = How to change the database schema: =
+== How to change the database schema ==
 
 // Notice: Please make sure you use a version of mysqldump that outputs SQL keywords uppercase //
 
@@ -51,3 +50,18 @@
         mysql> exit
         Bye
     * You are done. Now you can commit the changes
+
+== How to change installation database data ==
+
+Here is an example of how to change the installation data:
+
+    $ mysql
+    mysql> CREATE DATABASE centreon_tmp;
+    mysql> exit
+    $ mysql centreon_tmp < createTables.sql
+    $ mysql centreon_tmp < insertTopology.sql
+    $ mysqldump --skip-comments --no-create-info --skip-extended-insert --complete-insert centreon_tmp --tables topology topology_JS > insertTopology.sql
+    $ mysql
+    mysql> DROP DATABASE centreon_tmp;
+    mysql> exit
+
