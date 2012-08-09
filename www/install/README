@@ -1,9 +1,9 @@
 
 = Common tasks for editing database schemas and data = 
 
-== How to change the database schema ==
+**Notice**: Please make sure you use a version of mysqldump that outputs SQL keywords uppercase. I used the version 10.13 for the purpose of this tutorial.
 
-// Notice: Please make sure you use a version of mysqldump that outputs SQL keywords uppercase //
+== How to change the database schema ==
 
     * Create a backup of the current database schema version
         $ cp createTables.sql createTables.sql.old
