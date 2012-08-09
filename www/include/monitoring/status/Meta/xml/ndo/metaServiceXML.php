@@ -128,12 +128,13 @@
 				" no.object_id," .
 				" no.name2 as service_description, " .
 				" ss.display_name " .
-				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no";
+				" FROM ".$ndo_base_prefix."servicestatus nss, ".$ndo_base_prefix."objects no, ".$ndo_base_prefix."services ss ";
 
 	$rq .= 	" WHERE no.object_id = nss.service_object_id".
-			" AND no.name1 LIKE '_Module_Meta'" .
-			" AND no.is_active = 1" .
-		  	" AND objecttype_id = 2";
+                " AND nss.service_object_id = ss.service_object_id " .
+                " AND no.name1 LIKE '_Module_Meta'" .
+		" AND no.is_active = 1" .
+		" AND objecttype_id = 2";
 
 	if (!$is_admin) {
 		$ACLString = "";
