@@ -284,15 +284,14 @@ function construct_HostGroupSelectList(id) {
             $acldb = new CentreonDB("ndo");
 		}
 		if (!$oreon->user->access->admin) {
-			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name " .
-				 		"FROM hostgroup hg, acl_resources_hg_relations arhr " .
-				 		"WHERE hg.hg_id = arhr.hg_hg_id " .
-				 		"AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
-				 		"AND hg.hg_activate = '1' ".
-			            "AND hg.hg_id in (SELECT hostgroup_hg_id
-			            				  FROM hostgroup_relation
-			            				  WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) ";
-						"ORDER BY hg.hg_alias";
+			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name 
+				  FROM hostgroup hg, acl_resources_hg_relations arhr
+				  WHERE hg.hg_id = arhr.hg_hg_id 
+                                  AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().")
+                                  AND hg.hg_activate = '1'
+			          AND hg.hg_id in (SELECT hostgroup_hg_id
+			            		   FROM hostgroup_relation
+			            		   WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb)."))";
 			$DBRESULT = $pearDB->query($query);
 			while ($data = $DBRESULT->fetchRow()) {
 				$hgNdo[$data["name"]] = 1;
