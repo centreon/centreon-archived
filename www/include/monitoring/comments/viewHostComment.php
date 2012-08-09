@@ -202,20 +202,41 @@
 	$tpl->assign('search_host', $host_name);
 
 	if ($oreon->broker->getBroker() == "ndo") {
-		$DBRESULT = $pearDBndo->query("SELECT hostgroup_id, alias FROM ".$ndo_base_prefix."hostgroups ORDER BY alias");
-		$options = "<option value='0'></options>";
-		while ($data = $DBRESULT->fetchRow()) {
-	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["alias"]."</option>";
-	    }
-	    $DBRESULT->free();
+            if ($oreon->user->access->admin) {
+                $DBRESULT = $pearDBndo->query("SELECT hg.hostgroup_id, o.name1 as name 
+                                            FROM ".$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects o
+                                            WHERE hg.hostgroup_object_id = o.object_id
+                                            ORDER BY name1");
+            } else {
+                $DBRESULT = $pearDBndo->query("SELECT hg.hostgroup_id, o.name1 as name 
+                                               FROM ".$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects o
+                                               WHERE hg.hostgroup_object_id = o.object_id
+                                               AND hg.hostgroup_id IN (SELECT hostgroup_id 
+                                                                       FROM ".$ndo_base_prefix."hostgroup_members hgm, ".$ndo_base_prefix."objects o
+                                                                       WHERE hgm.host_object_id = o.object_id
+                                                                       AND o.name1 IN (".$oreon->user->access->getHostsString("NAME", $pearDBndo)."))
+                                               ORDER BY name1");
+            }
 	} else {
-		$DBRESULT = $pearDBO->query("SELECT hostgroup_id, name FROM hostgroups ORDER BY name");
-		$options = "<option value='0'></options>";
-		while ($data = $DBRESULT->fetchRow()) {
-	        $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["name"]."</option>";
-	    }
-	    $DBRESULT->free();
+            if ($oreon->user->access->admin) {
+                $DBRESULT = $pearDBO->query("SELECT hostgroup_id, name 
+                                             FROM hostgroups 
+                                             ORDER BY name");
+            } else {                
+                $DBRESULT = $pearDBO->query("SELECT hostgroup_id, name 
+                                             FROM hostgroups 
+                                             WHERE hostgroup_id IN (SELECT hostgroup_id
+                                                                    FROM hosts_hostgroups hgm, hosts h
+                                                                    WHERE hgm.host_id = h.host_id
+                                                                    AND h.host_id IN (".$oreon->user->access->getHostsString("ID", $pearDBO)."))
+                                             ORDER BY name");
+            }
 	}
+        $options = "<option value='0'></options>";
+        while ($data = $DBRESULT->fetchRow()) {
+            $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["name"]."</option>";
+        }
+	$DBRESULT->free();
 
 	$tpl->assign('hostgroup', $options);
 	unset($options);
