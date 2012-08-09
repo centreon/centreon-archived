@@ -320,6 +320,17 @@ ALTER TABLE `nagios_server` ADD COLUMN `init_script_snmptt` VARCHAR(255) DEFAULT
 -- End nagios server init script for  snmptt
 --
 
+--
+-- Added connectors menu to topology
+--
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Connectors', NULL, '608', NULL, NULL, 3, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Connectors', './img/icones/16x16/gauge.gif', 608, 60806, 60, 3, './include/configuration/configObject/connector/connector.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+
+--
+-- End added connectors menu to topology
+--
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

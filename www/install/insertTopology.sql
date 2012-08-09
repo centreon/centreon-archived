@@ -217,7 +217,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(185, 'Actions Access', './img/icones/16x16/lock_new.gif', 502, 50204, 25, 1, './include/options/accessLists/actionsACL/actionsConfig.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(186, 'Logs', NULL, 5, 508, 11, 1, './include/Administration/configChangelog/viewLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(187, 'Visualisation', './img/icones/16x16/text_code.gif', 508, 50801, 10, 80, './include/Administration/configChangelog/viewLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(188, 'Configuration', './img/icones/16x16/text_code.gif', '508', '50802', '10', '80', './include/Administration/configChangelog/confLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(188, 'Configuration', './img/icones/16x16/text_code.gif', '508', '50802', '10', '80', './include/Administration/configChangelog/confLogs.php', NULL, '0', '0', '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(189, 'Reload ACL', './img/icones/16x16/refresh.gif', '502', '50205', '50', '1', './include/options/accessLists/reloadACL/reloadACL.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(190, 'Performance Info', './img/icones/16x16/document_gear.gif', '102', '10203', '10', '1', './include/Administration/corePerformance/performanceInfo.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`) VALUES(191, 'Graphs', './img/icones/16x16/oszillograph.gif', '102', '10201', '10', '1', './include/Administration/corePerformance/nagiosStats.php', NULL, NULL, NULL, '1', NULL, NULL, NULL);
@@ -229,13 +229,13 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 
 INSERT INTO `topology` (`topology_id`, topology_name, topology_icone,topology_parent, topology_page, topology_order, topology_group, topology_url, topology_show) VALUES
 (195, 'Custom Views', NULL, '1', '103', '1', '1', './include/home/customViews/index.php', '1'),
-('Edit', NULL, '103', '10301', NULL, NULL, './include/home/customViews/form.php', '0'),
-('Share', NULL, '103', '10302', NULL, NULL, './include/home/customViews/shareView.php', '0'),
-('Parameters', NULL, '103', '10303', NULL, NULL, './include/home/customViews/widgetParam.php', '0'),
-('Add Widget', NULL, '103', '10304', NULL, NULL, './include/home/customViews/addWidget.php', '0'),
-('Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
-('Widgets', NULL, '507', NULL, '2', '30', NULL, '1'),
-('Setup', './img/icones/16x16/press.gif', '507', '50703', '30', '30', './include/options/oreon/widgets/widgets.php', '1');
+(196, 'Edit', NULL, '103', '10301', NULL, NULL, './include/home/customViews/form.php', '0'),
+(197, 'Share', NULL, '103', '10302', NULL, NULL, './include/home/customViews/shareView.php', '0'),
+(198, 'Parameters', NULL, '103', '10303', NULL, NULL, './include/home/customViews/widgetParam.php', '0'),
+(199, 'Add Widget', NULL, '103', '10304', NULL, NULL, './include/home/customViews/addWidget.php', '0'),
+(200, 'Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
+(201, 'Widgets', NULL, '507', NULL, '2', '30', NULL, '1'),
+(202, 'Setup', './img/icones/16x16/press.gif', '507', '50703', '30', '30', './include/options/oreon/widgets/widgets.php', '1');
 
 
 -- Update pour les options pouvant etre en readonly
@@ -448,7 +448,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(191, 60101, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(192, 60101, 'w', './include/common/javascript/changetab.js', 'initChangeTab');
 
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(193, 60705, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(193, 611, NULL, './include/common/javascript/changetab.js', 'initChangeTab');
 
 -- INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60600, 'a', './include/common/javascript/changetab.js', 'initChangeTab');
 -- INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(NULL, 60600, 'c', './include/common/javascript/changetab.js', 'initChangeTab');
@@ -468,3 +468,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(203, 607, NULL, './include/common/javascript/scriptaculous/jsProgressBarHandler.js', NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES(204, 60701, NULL, './include/common/javascript/scriptaculous/jsProgressBarHandler.js', NULL);
+
+
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Connectors', NULL, '608', NULL, NULL, '3', NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Connectors', './img/icones/16x16/gauge.gif', 608, 60806, 60, 3, './include/configuration/configObject/connector/connector.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
