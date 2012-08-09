@@ -195,8 +195,7 @@ class CentreonConnector
      * Updates connector
      * 
      * @param int $id
-     * 
-     * @return boolean
+     * @return CentreonConnector
      */
     public function update($id, $connector = array())
     {
@@ -228,12 +227,16 @@ class CentreonConnector
         }
         if (count($data) !== 0) {
             $sqlParts = array();
+            $values = array();
             $sqlParts[] = '`modified` =  ?';
+            $values[] = time();
             foreach ($data as $fieldName => $fieldValue) {
                 $sqlParts[] = "`$fieldName` = ?";
+                $values[] = $fieldValue;
             }
             $sqlParts = implode(', ', $sqlParts);
-            $updateResult = $this->dbConnection->query("UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ?", array_merge(array(time()), array_values($data), array($id)));
+            $values[] = $id;
+            $updateResult = $this->dbConnection->query("UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ?", $values);
             if (PEAR::isError($updateResult)) {
                 throw new RuntimeException('Cannot update connector');
             }
@@ -246,7 +249,7 @@ class CentreonConnector
      * Deletes connector
      * 
      * @param int $id
-     * @return boolean
+     * @return CentreonConnector
      */
     public function delete($id)
     {
