@@ -72,22 +72,22 @@ function set_header_title(){
 
 	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Servicegroups / Hosts")?>';
+		h.innerHTML = '<?php echo addslashes(_("Servicegroups / Hosts"))?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		if (document.getElementById('host_state')){
 			var h = document.getElementById('host_state');
-			h.innerHTML = '<?php echo _("Status")?>';
+			h.innerHTML = '<?php echo addslashes(_("Status"))?>';
 		  	h.indice = 'host_state';
-		  	h.title = '<?php echo _("Sort by Status"); ?>';
+		  	h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 		}
 
 		var h = document.getElementById('services');
-		h.innerHTML = '<?php echo _("Services informations")?>';
+		h.innerHTML = '<?php echo addslashes(_("Services informations"))?>';
 	  	h.indice = 'services';
 
 		var h = document.getElementById(_sort_type);

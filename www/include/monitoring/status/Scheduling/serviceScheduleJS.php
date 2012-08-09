@@ -68,35 +68,35 @@ function set_header_title(){
 	if(document.getElementById('host_name')){
 
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Hosts")?>';
+		h.innerHTML = '<?php echo addslashes(_("Hosts"))?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('service_description');
-		h.innerHTML = '<?php echo _("Services")?>';
+		h.innerHTML = '<?php echo addslashes(_("Services"))?>';
 	  	h.indice = 'service_description';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('last_check');
-		h.innerHTML = '<?php echo _("Last Check")?>';
+		h.innerHTML = '<?php echo addslashes(_("Last Check"))?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('next_check');
-		h.innerHTML = '<?php echo _("Next Check")?>';
+		h.innerHTML = '<?php echo addslashes(_("Next Check"))?>';
 	  	h.indice = 'next_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('active_check');
-		h.innerHTML = '<?php echo _("Active Check")?>';
+		h.innerHTML = '<?php echo addslashes(_("Active Check"))?>';
 	  	h.indice = 'active_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";

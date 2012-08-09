@@ -72,51 +72,51 @@ function set_header_title(){
 
 	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Hosts")?>';
+		h.innerHTML = '<?php echo addslashes(_("Hosts"))?>';
 	  	h.indice = 'host_name';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_state');
-		h.innerHTML = '<?php echo _("Status")?>';
+		h.innerHTML = '<?php echo addslashes(_("Status"))?>';
 	  	h.indice = 'current_state';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('ip');
-		h.innerHTML = '<?php echo _("IP Address")?>';
+		h.innerHTML = '<?php echo addslashes(_("IP Address"))?>';
 	  	h.indice = 'ip';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('last_state_change');
-		h.innerHTML = '<?php echo _("Duration")?>';
+		h.innerHTML = '<?php echo addslashes(_("Duration"))?>';
 	  	h.indice = 'last_state_change';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('last_hard_state_change');
 		if (h) {
-			h.innerHTML = '<?php echo _("Hard State Duration")?>';
+			h.innerHTML = '<?php echo addslashes(_("Hard State Duration"))?>';
 		  	h.indice = 'last_hard_state_change';
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 		}
 
 		var h = document.getElementById('last_check');
-		h.innerHTML = '<?php echo _("Last Check")?>';
+		h.innerHTML = '<?php echo addslashes(_("Last Check"))?>';
 	  	h.indice = 'last_check';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('current_check_attempt');
-		h.innerHTML = '<?php echo _("Tries")?>';
+		h.innerHTML = '<?php echo addslashes(_("Tries"))?>';
 	  	h.indice = 'current_check_attempt';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('plugin_output');
-		h.innerHTML = '<?php echo _("Status information")?>';
+		h.innerHTML = '<?php echo addslashes(_("Status information"))?>';
 	  	h.indice = 'plugin_output';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";

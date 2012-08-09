@@ -99,60 +99,60 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 		if (document.getElementById('host_name')){
 			var h = document.getElementById('host_name');
 
-			h.innerHTML = '<?php echo _("Hosts"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Hosts")); ?>';
 		  	h.indice = 'host_name';
 		  	h.title = "<?php echo _("Sort by host name"); ?>";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
 			var h = document.getElementById('service_description');
-			h.innerHTML = '<?php echo _("Services"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Services")); ?>';
 		  	h.indice = 'service_description';
 		  	h.title = "<?php echo _("Sort by service description"); ?>";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
 			var h = document.getElementById('current_state');
-			h.innerHTML = '<?php echo _("Status"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Status")); ?>';
 		  	h.indice = 'current_state';
 		  	h.title = "<?php echo _("Sort by status"); ?>";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
 			var h = document.getElementById('last_state_change');
-			h.innerHTML = '<?php echo _("Duration"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Duration")); ?>';
 		  	h.indice = 'last_state_change';
-		  	h.title = '<?php echo _("Sort by last change date"); ?>';
+		  	h.title = '<?php echo addslashes(_("Sort by last change date")); ?>';
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
 			var h = document.getElementById('last_hard_state_change');
 			if (h) {
-				h.innerHTML = '<?php echo _("Hard State Duration"); ?>';
+				h.innerHTML = '<?php echo addslashes(_("Hard State Duration")); ?>';
 			  	h.indice = 'last_hard_state_change';
-			  	h.title = '<?php echo _("Sort by last hard state change date"); ?>';
+			  	h.title = '<?php echo addslashes(_("Sort by last hard state change date")); ?>';
 			  	h.onclick=function(){change_type_order(this.indice)};
 				h.style.cursor = "pointer";
 			}
 
 			var h = document.getElementById('last_check');
-			h.innerHTML = '<?php echo _("Last Check"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Last Check")); ?>';
 		  	h.indice = 'last_check';
-		  	h.title = '<?php echo _("Sort by last check"); ?>';
+		  	h.title = '<?php echo addslashes(_("Sort by last check")); ?>';
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
 			var h = document.getElementById('current_attempt');
-			h.innerHTML = '<?php echo _("Tries"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Tries")); ?>';
 		  	h.indice = 'current_attempt';
-		  	h.title = '<?php echo _("Sort by retries number"); ?>';
+		  	h.title = '<?php echo addslashes(_("Sort by retries number")); ?>';
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
 			var h = document.getElementById('plugin_output');
-			h.innerHTML = '<?php echo _("Status information"); ?>';
+			h.innerHTML = '<?php echo addslashes(_("Status information")); ?>';
 		  	h.indice = 'plugin_output';
-		  	h.title = '<?php echo _("Sort by plugin output"); ?>';
+		  	h.title = '<?php echo addslashes(_("Sort by plugin output")); ?>';
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 

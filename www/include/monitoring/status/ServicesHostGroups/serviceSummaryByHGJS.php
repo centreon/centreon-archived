@@ -67,13 +67,13 @@ function set_header_title(){
 
 	if (document.getElementById('alias')){
 		var h = document.getElementById('alias');
-		h.innerHTML = '<?php echo _("Hostgroups / Hosts")?>';
+		h.innerHTML = '<?php echo addslashes(_("Hostgroups / Hosts"))?>';
 	  	h.indice = 'alias';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('services');
-		h.innerHTML = '<?php echo _("Services information")?>';
+		h.innerHTML = '<?php echo addslashes(_("Services information"))?>';
 	  	h.indice = 'services';
 
 		var h = document.getElementById(_sort_type);

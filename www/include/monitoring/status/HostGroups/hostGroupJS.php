@@ -69,11 +69,11 @@ function set_header_title(){
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('host_status');
-		h.innerHTML = '<?php echo _("Hosts Status")?>';
+		h.innerHTML = '<?php echo addslashes(_("Hosts Status"))?>';
 	  	h.indice = 'host_status';
 
 		var h = document.getElementById('service_status');
-		h.innerHTML = '<?php echo _("Services Status")?>';
+		h.innerHTML = '<?php echo addslashes(_("Services Status"))?>';
 	  	h.indice = 'service_status';
 
 		var h = document.getElementById(_sort_type);

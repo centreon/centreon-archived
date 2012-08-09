@@ -67,7 +67,7 @@ function set_header_title(){
 
 	if (document.getElementById('host_name')){
 		var h = document.getElementById('host_name');
-		h.innerHTML = '<?php echo _("Hosts")?>';
+		h.innerHTML = '<?php echo addslashes(_("Hosts"))?>';
 	  	h.indice = 'host_name';
 	  	h.title = "<?php echo _("Sort by Host Name"); ?>";
 	  	h.onclick=function(){change_type_order(this.indice)};
@@ -76,12 +76,12 @@ function set_header_title(){
 		var h = document.getElementById('current_state');
 		h.innerHTML = "<?php echo _("Status")?>";
 	  	h.indice = 'current_state';
-	  	h.title = '<?php echo _("Sort by Status"); ?>';
+	  	h.title = '<?php echo addslashes(_("Sort by Status")); ?>';
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
 		var h = document.getElementById('services');
-		h.innerHTML = '<?php echo _("Services information")?>';
+		h.innerHTML = '<?php echo addslashes(_("Services information"))?>';
 	  	h.indice = 'services';
 
 		var h = document.getElementById(_sort_type);
