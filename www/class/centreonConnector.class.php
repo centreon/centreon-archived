@@ -65,6 +65,8 @@
  * //$connector->delete(10);
  * 
  * //$connector->read(7);
+ * 
+ * //$connector->copy(1, 5);
  */
 
 class CentreonConnector
@@ -187,7 +189,7 @@ class CentreonConnector
         if (PEAR::isError($result)) {
             throw new RuntimeException('Cannot select connector');
         }
-        
+
         return $result->fetchRow();
     }
 
@@ -236,7 +238,7 @@ class CentreonConnector
             }
             $sqlParts = implode(', ', $sqlParts);
             $values[] = $id;
-            $updateResult = $this->dbConnection->query("UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ?", $values);
+            $updateResult = $this->dbConnection->query("UPDATE  `connector` SET $sqlParts WHERE  `connector`.`id` = ? LIMIT 1", $values);
             if (PEAR::isError($updateResult)) {
                 throw new RuntimeException('Cannot update connector');
             }
@@ -256,7 +258,7 @@ class CentreonConnector
         if (!is_int($id)) {
             throw new InvalidArgumentException('Id should be integer');
         }
-        $deleteResult = $this->dbConnection->query('DELETE FROM `connector` WHERE `id` = ?', array($id));
+        $deleteResult = $this->dbConnection->query('DELETE FROM `connector` WHERE `id` = ? LIMIT 1', array($id));
         if (PEAR::isError($deleteResult)) {
             throw new RuntimeException('Cannot delete connector');
         }
@@ -330,6 +332,54 @@ class CentreonConnector
             $connectors[] = $connector;
         }
         return $connectors;
+    }
+
+    /**
+     * Copies existing connector
+     * 
+     * @param inr $id
+     * @param inr $numberOfcopies
+     * @param boolean $returnIds
+     * @return CentreonConnector|array
+     * @throws RuntimeException
+     */
+    public function copy($id, $numberOfcopies = 1, $returnIds = false)
+    {
+        try {
+            $connector = $this->read($id);
+        } catch (Exception $e) {
+            throw new RuntimeException('Cannot read connector', 404);
+        }
+
+        $ids = array();
+        $originalName = $connector['name'];
+
+        for ($i = 0; $i < $numberOfcopies; $i++) {
+            $exists = 1;
+            while ($exists) {
+                $newName = $originalName . '-' . sha1(rand(0, 10000));
+                $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($newName));
+                if (PEAR::isError($existsResult)) {
+                    throw new RuntimeException('Cannot verify if connector name already in use; Query not valid; Check the database schema');
+                }
+                $exists = (boolean) $existsResult->fetchRow();
+            }
+            try {
+                $connector['name'] = $newName;
+                if ($returnIds) {
+                    $ids[] = $this->create($connector, true);
+                } else {
+                    $this->create($connector, false);
+                }
+            } catch (Exception $e) {
+                throw new RuntimeException('Cannot write one duplicated connector', 500);
+            }
+        }
+
+        if ($returnIds) {
+            return $ids;
+        }
+        return $this;
     }
 
 }
