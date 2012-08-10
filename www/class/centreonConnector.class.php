@@ -353,16 +353,18 @@ class CentreonConnector
 
         $ids = array();
         $originalName = $connector['name'];
-
+        $suffix = 1;
+        
         for ($i = 0; $i < $numberOfcopies; $i++) {
             $exists = 1;
             while ($exists) {
-                $newName = $originalName . '-' . sha1(rand(0, 10000));
+                $newName = $originalName . '_' . $suffix;
                 $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($newName));
                 if (PEAR::isError($existsResult)) {
                     throw new RuntimeException('Cannot verify if connector name already in use; Query not valid; Check the database schema');
                 }
                 $exists = (boolean) $existsResult->fetchRow();
+                ++$suffix;
             }
             try {
                 $connector['name'] = $newName;
