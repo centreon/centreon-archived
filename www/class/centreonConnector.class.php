@@ -169,7 +169,7 @@ class CentreonConnector
      */
     public function read($id)
     {
-        if (!is_int($id)) {
+        if (!is_numeric($id)) {
             throw new InvalidArgumentException('Id is not integer');
         }
         $result = $this->dbConnection->query('SELECT
@@ -190,7 +190,14 @@ class CentreonConnector
             throw new RuntimeException('Cannot select connector');
         }
 
-        return $result->fetchRow();
+        $connector = $result->fetchRow();
+
+        $connector['id'] = (int) $connector['id'];
+        $connector['enabled'] = (boolean) $connector['enabled'];
+        $connector['created'] = (int) $connector['created'];
+        $connector['modified'] = (int) $connector['modified'];
+
+        return $connector;
     }
 
     /**
@@ -205,7 +212,7 @@ class CentreonConnector
             throw new InvalidArgumentException('Data is not an array');
         }
 
-        if (!is_int($id)) {
+        if (!is_numeric($id)) {
             throw new InvalidArgumentException('Id is not integer');
         }
 
@@ -255,7 +262,7 @@ class CentreonConnector
      */
     public function delete($id)
     {
-        if (!is_int($id)) {
+        if (!is_numeric($id)) {
             throw new InvalidArgumentException('Id should be integer');
         }
         $deleteResult = $this->dbConnection->query('DELETE FROM `connector` WHERE `id` = ? LIMIT 1', array($id));
@@ -279,10 +286,10 @@ class CentreonConnector
         /**
          * Checking parameters
          */
-        if (!is_int($page)) {
+        if (!is_numeric($page)) {
             throw new InvalidArgumentException('Page number should be integer');
         }
-        if (!is_int($perPage)) {
+        if (!is_numeric($perPage)) {
             throw new InvalidArgumentException('Per page parameter should be integer');
         }
 
@@ -329,6 +336,10 @@ class CentreonConnector
         }
         $connectors = array();
         while ($connector = $connectorsResult->fetchRow()) {
+            $connector['id'] = (int) $connector['id'];
+            $connector['enabled'] = (boolean) $connector['enabled'];
+            $connector['created'] = (int) $connector['created'];
+            $connector['modified'] = (int) $connector['modified'];
             $connectors[] = $connector;
         }
         return $connectors;
@@ -354,7 +365,7 @@ class CentreonConnector
         $ids = array();
         $originalName = $connector['name'];
         $suffix = 1;
-        
+
         for ($i = 0; $i < $numberOfcopies; $i++) {
             $exists = 1;
             while ($exists) {
