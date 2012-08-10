@@ -49,7 +49,7 @@
 	else if (isset($centreon->hostgroup) && $centreon->hostgroup)
 	   $hostgroup = $centreon->hostgroup;
 	else
-	   $hostgroup = 0;
+	   $hostgroup = "0";
 
 	if (isset($_POST["search_host"]))
 		$host_name = $_POST["search_host"];
@@ -95,57 +95,53 @@
 
 	$search_request = "";
 	if (isset($host_name)) {
-		$search_request = " AND obj.name1 LIKE '%$host_name%'";
+		$search_request = " AND obj.name1 LIKE '%".$pearDBO->escape($host_name)."%'";
 	}
-
-	$search_HG_request = "";
-	if (isset($hostgroup)) {
-		$search_HG_request = " AND obj.name1 LIKE '%$host_name%'";
-	}
-
+	
 	/** *******************************************
 	 * Hosts Comments
 	 */
 	if ($oreon->broker->getBroker() == "ndo") {
-		if ($is_admin) {
-			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
-					"WHERE obj.name1 IS NOT NULL " .
-					"AND obj.name2 IS NULL " .
-					(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-					($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
-					"AND obj.object_id = cmt.object_id $search_request " .
-					"AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
-		} else {
-			$rq2 =	"SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-					"FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm " : "") .
-					"WHERE obj.name1 IS NOT NULL " .
-					"AND obj.name2 IS NULL " .
-					(isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%$search_output%'" : "") .
-					($hostgroup ? " AND hgm.hostgroup_id = $hostgroup AND hgm.host_object_id = cmt.object_id " : "")  .
-					"AND obj.object_id = cmt.object_id $search_request " .
-					$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list) .
-					" AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
-		}
-		$DBRESULT_NDO = $pearDBndo->query($rq2);
-		$rows = $pearDBndo->numberRows();
-		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
+            $rq2 = "SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
+		   "FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . 
+                   ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm ".", ".$ndo_base_prefix."objects hgobj,".$ndo_base_prefix."hostgroups hg " : "") .
+                   "WHERE obj.name1 IS NOT NULL " .
+                   "AND obj.name2 IS NULL " .
+                   (isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%".$pearDBndo->escape($search_output)."%'" : "");
+                   if ($hostgroup) {
+                        $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id 
+                                  AND hg.hostgroup_object_id = hgobj.object_id 
+                                  AND hgobj.name1 = '".$pearDBndo->escape($hostgroup)."' 
+                                  AND hgm.host_object_id = cmt.object_id ";
+                   }
+                   $rq2 .=	"AND obj.object_id = cmt.object_id $search_request ";
+                   $rq2 .= $centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_list);
+                   $rq2 .= "AND cmt.expires = 0 ORDER BY cmt.comment_time DESC LIMIT ".$num * $limit.", ".$limit;
+                   $DBRESULT_NDO = $pearDBndo->query($rq2);
+                   $rows = $pearDBndo->numberRows();
+                   for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
 			$tab_comments_host[$i] = $data;
 			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
-		}
-		unset($data);
+                   }
+                   unset($data);
 	} else {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, h.name as host_name " .
-				"FROM comments c, hosts h ";
+		$rq2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, h.name as host_name " .
+                       "FROM comments c, hosts h ";
+                $rq2 .= ($hostgroup ? ", hosts_hostgroups hgm, hostgroups hg " : "");
 		if (!$is_admin) {
 			$rq2 .=	", centreon_acl acl ";
 		}
 		$rq2 .=	"WHERE c.service_id IS NULL AND c.host_id = h.host_id " .
-        (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
-		(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
+                (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%".$pearDBO->escape($host_name)."%'" : "") .
+		(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%".$pearDBO->escape($search_output)."%'" : "");
+                if ($hostgroup) {
+                    $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id                               
+                              AND hg.name = '".$pearDBO->escape($hostgroup)."' 
+                              AND hgm.host_id = c.host_id ";
+                }
 		if (!$is_admin) {
-			$rq2 .=	" AND h.name = acl.host_name ";
+                    $rq2 .= " AND h.name = acl.host_name ";
 		}
 		$rq2 .= " AND c.expires = '0' ";
                 $rq2 .= " AND (SELECT count(internal_id) FROM comments c2 WHERE c.internal_id = c2.internal_id AND c2.deletion_time <> 0) = 0 ";
@@ -201,43 +197,30 @@
 	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
 
-	if ($oreon->broker->getBroker() == "ndo") {
-            if ($oreon->user->access->admin) {
-                $DBRESULT = $pearDBndo->query("SELECT hg.hostgroup_id, o.name1 as name 
-                                            FROM ".$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects o
-                                            WHERE hg.hostgroup_object_id = o.object_id
-                                            ORDER BY name1");
-            } else {
-                $DBRESULT = $pearDBndo->query("SELECT hg.hostgroup_id, o.name1 as name 
-                                               FROM ".$ndo_base_prefix."hostgroups hg, ".$ndo_base_prefix."objects o
-                                               WHERE hg.hostgroup_object_id = o.object_id
-                                               AND hg.hostgroup_id IN (SELECT hostgroup_id 
-                                                                       FROM ".$ndo_base_prefix."hostgroup_members hgm, ".$ndo_base_prefix."objects o
-                                                                       WHERE hgm.host_object_id = o.object_id
-                                                                       AND o.name1 IN (".$oreon->user->access->getHostsString("NAME", $pearDBndo)."))
-                                               ORDER BY name1");
-            }
-	} else {
-            if ($oreon->user->access->admin) {
-                $DBRESULT = $pearDBO->query("SELECT hostgroup_id, name 
-                                             FROM hostgroups 
-                                             ORDER BY name");
-            } else {                
-                $DBRESULT = $pearDBO->query("SELECT hostgroup_id, name 
-                                             FROM hostgroups 
-                                             WHERE hostgroup_id IN (SELECT hostgroup_id
-                                                                    FROM hosts_hostgroups hgm, hosts h
-                                                                    WHERE hgm.host_id = h.host_id
-                                                                    AND h.host_id IN (".$oreon->user->access->getHostsString("ID", $pearDBO)."))
-                                             ORDER BY name");
-            }
-	}
-        $options = "<option value='0'></options>";
-        while ($data = $DBRESULT->fetchRow()) {
-            $options .= "<option value='".$data["hostgroup_id"]."' ".(($hostgroup == $data["hostgroup_id"]) ? 'selected' : "").">".$data["name"]."</option>";
+	$acldb = $oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO;
+        $hg = array();
+        if ($oreon->user->access->admin) {
+            $query = "SELECT hg_id, hg_name
+                      FROM hostgroup
+                      WHERE hg_activate = '1' 
+                      ORDER BY hg_name";
+        } else {
+            $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .
+                     "FROM hostgroup hg, acl_resources_hg_relations arhr " .
+                     "WHERE hg.hg_id = arhr.hg_hg_id " .
+                     "AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().") " .
+                     "AND hg.hg_activate = '1' ".
+                     "AND hg.hg_id in (SELECT hostgroup_hg_id
+                                       FROM hostgroup_relation
+                                       WHERE host_host_id IN (".$oreon->user->access->getHostsString("ID", $acldb).")) " .
+                     "ORDER BY hg.hg_name";
         }
-	$DBRESULT->free();
-
+        $res = $pearDB->query($query);
+        $options = "<option value='0'></options>";
+	while ($data = $res->fetchRow()) {
+            $options .= "<option value='".$data["hg_name"]."' ".(($hostgroup == $data["hg_name"]) ? 'selected' : "").">".$data["hg_name"]."</option>";
+        }
+	$res->free();
 	$tpl->assign('hostgroup', $options);
 	unset($options);
 
