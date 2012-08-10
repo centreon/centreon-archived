@@ -917,7 +917,6 @@ my $timeRebuild = time();
 $stop = 1;
 
 signalstartprogram();
-882	
 while ($stop) {
     if (time() - $timeParser >= 7 && !$tabProc{'parser'} && !$tabProc{'rebuild'}) {
 		$tabProc{'parser'} = fork();
