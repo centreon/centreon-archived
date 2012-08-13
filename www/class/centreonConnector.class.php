@@ -281,13 +281,13 @@ class CentreonConnector
     /**
      * Gets list of connectors
      * 
-     * @param int|boolean $page
-     * @param int $perPage
      * @param boolean $onlyEnabled
+     * @param int|boolean $page When false all connectors are returned
+     * @param int $perPage Ignored if $page == false
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    public function getList($page = 0, $perPage = 30, $onlyEnabled = true)
+    public function getList($onlyEnabled = true, $page = false, $perPage = 30)
     {
         /**
          * Checking parameters
