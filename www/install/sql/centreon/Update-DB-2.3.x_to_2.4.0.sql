@@ -337,6 +337,27 @@ ALTER TABLE  `cfg_nagios` ADD  `max_check_result_reaper_time` INT( 11 ) NULL AFT
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Connectors', NULL, '608', NULL, NULL, 3, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (NULL, 'Connectors', './img/icones/16x16/gauge.gif', 608, 60806, 60, 3, './include/configuration/configObject/connector/connector.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 
+
+--
+-- Add retry interval for input and output in Centreon Broker
+-- 
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
+(31, 'retry_interval', 'Retry Interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
+(32, 'buffering_timeout', 'Buffering Timeout', 'Time in seconds to wait before launching failover.', 'int', NULL);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+(21, 31, 1, 2),
+(21, 32, 1, 2);
+
+--
+-- Add options for statistics file in Centreon Broker
+--
+INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES (5, 'stats');
+INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_bundle`, `is_activated`) VALUES (14, 'Statistics', 'stats.so', 5, 0, 1);
+INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_id`) VALUES (23, 'Statistics', 'stats', 14);
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (33, 'fifo', 'File for Centeron Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL);
+INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`) VALUES (5, 23);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (23, 33, 1, 1);
+
 --
 -- End added connectors menu to topology
 --
