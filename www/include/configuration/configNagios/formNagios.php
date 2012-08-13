@@ -233,6 +233,16 @@
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_retained_scheduling_info', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_retained_scheduling_info', _("Use Retained Scheduling Info Option"), '&nbsp;');
 
+        /**
+         * Retention masks
+         */
+        $form->addElement('text', 'retained_contact_host_attribute_mask', _("Retained Contact Host Attribute Mask"), $attrsText3);
+        $form->addElement('text', 'retained_contact_service_attribute_mask', _("Retained Contact Service Attribute Mask"), $attrsText3);        
+        $form->addElement('text', 'retained_process_host_attribute_mask', _("Retained Process Host Attribute Mask"), $attrsText3);
+        $form->addElement('text', 'retained_process_service_attribute_mask', _("Retained Process Service Attribute Mask"), $attrsText3);
+        $form->addElement('text', 'retained_host_attribute_mask', _("Retained Host Attribute Mask"), $attrsText3);
+        $form->addElement('text', 'retained_service_attribute_mask', _("Retained Service Attribute Mask"), $attrsText3);
+        
 	/* *****************************************************
 	 * logging options
 	 */
@@ -686,6 +696,7 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 
 	$form->addRule('nagios_name', _("Compulsory Name"), 'required');
+        $form->addRule('cfg_file', _("Required Field"), 'required');
 	$form->addRule('nagios_comment', _("Required Field"), 'required');
 	$form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');

@@ -28,7 +28,7 @@
 			
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$Folders}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_dir.label}</td><td class="FormRowValue">{$form.cfg_dir.html}</td></tr>
-            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_dir" />&nbsp;{$form.cfg_file.label}</td><td class="FormRowValue">{$form.cfg_file.html}</td></tr>
+                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="cfg_file" />&nbsp;{$form.cfg_file.label}</td><td class="FormRowValue">{$form.cfg_file.html}</td></tr>
             
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$Files}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="status_file" />&nbsp;{$form.log_file.label}</td><td class="FormRowValue">{$form.status_file.html}</td></tr>
@@ -143,6 +143,13 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retention_update_interval">&nbsp;{$form.retention_update_interval.label}</td><td class="FormRowValue">{$form.retention_update_interval.html}&nbsp;{$Minutes}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="use_retained_program_state">&nbsp;{$form.use_retained_program_state.label}</td><td class="FormRowValue">{$form.use_retained_program_state.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_retained_scheduling_info">&nbsp;{$form.use_retained_scheduling_info.label}</td><td class="FormRowValue">{$form.use_retained_scheduling_info.html}</td></tr>
+                        
+                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_host_attribute_mask">&nbsp;{$form.retained_contact_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_host_attribute_mask.html}</td></tr>
+                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_contact_service_attribute_mask">&nbsp;{$form.retained_contact_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_contact_service_attribute_mask.html}</td></tr>
+                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_process_host_attribute_mask">&nbsp;{$form.retained_process_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_host_attribute_mask.html}</td></tr>
+                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_process_service_attribute_mask">&nbsp;{$form.retained_process_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_process_service_attribute_mask.html}</td></tr>
+                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="retained_host_attribute_mask">&nbsp;{$form.retained_host_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_host_attribute_mask.html}</td></tr>
+                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="retained_service_attribute_mask">&nbsp;{$form.retained_service_attribute_mask.label}</td><td class="FormRowValue">{$form.retained_service_attribute_mask.html}</td></tr>
 	
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>

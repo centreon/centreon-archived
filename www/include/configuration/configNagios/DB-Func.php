@@ -168,7 +168,10 @@
 				"`accept_passive_host_checks` , `enable_event_handlers` , `log_rotation_method` , `log_archive_path` , " .
 				"`check_external_commands` , `command_check_interval` , `command_file` , `downtime_file` , `comment_file` , " .
 				"`lock_file` , `retain_state_information` , `state_retention_file` , `retention_update_interval` , " .
-				"`use_retained_program_state` , `use_retained_scheduling_info` , `use_syslog` , `log_notifications` , " .
+				"`use_retained_program_state` , `use_retained_scheduling_info` , " .
+                                "`retained_contact_host_attribute_mask`, `retained_contact_service_attribute_mask`, `retained_process_host_attribute_mask`, " .
+                                "`retained_process_service_attribute_mask`, `retained_host_attribute_mask`, `retained_service_attribute_mask`, " .
+                                "`use_syslog` , `log_notifications` , " .
 				"`log_service_retries` , `log_host_retries` , `log_event_handlers` , `log_initial_states` , " .
 				"`log_external_commands` , `log_passive_checks` , `global_host_event_handler` , " .
 				"`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , " .
@@ -188,7 +191,7 @@
 				"`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , " .
 				"`enable_environment_macros` , `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, " .
 				"`event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly`, `translate_passive_host_checks`, " .
-				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cg_file`) ";
+				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cfg_file`) ";
 		$rq .= "VALUES (";
 		$rq .= "NULL, ";
         isset($ret["nagios_name"]) && $ret["nagios_name"] != NULL ? $rq .= "'".htmlentities($ret["nagios_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -225,6 +228,12 @@
         isset($ret["retention_update_interval"]) && $ret["retention_update_interval"] != NULL ? $rq .= "'".htmlentities($ret["retention_update_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["use_retained_program_state"]["use_retained_program_state"]) && $ret["use_retained_program_state"]["use_retained_program_state"] != 2 ? $rq .= "'".$ret["use_retained_program_state"]["use_retained_program_state"]."',  " : $rq .= "'2', ";
         isset($ret["use_retained_scheduling_info"]["use_retained_scheduling_info"]) && $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] != 2 ? $rq .= "'".$ret["use_retained_scheduling_info"]["use_retained_scheduling_info"]."',  " : $rq .= "'2', ";
+        isset($ret["retained_contact_host_attribute_mask"]) && $ret["retained_contact_host_attribute_mask"] != NULL ? $rq .= "'".htmlentities($ret["retained_contact_host_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["retained_contact_service_attribute_mask"]) && $ret["retained_contact_service_attribute_mask"] != NULL ? $rq .= "'".htmlentities($ret["retained_contact_service_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["retained_process_host_attribute_mask"]) && $ret["retained_process_host_attribute_mask"] != NULL ? $rq .= "'".htmlentities($ret["retained_process_host_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["retained_process_service_attribute_mask"]) && $ret["retained_process_service_attribute_mask"] != NULL ? $rq .= "'".htmlentities($ret["retained_process_service_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["retained_host_attribute_mask"]) && $ret["retained_host_attribute_mask"] != NULL ? $rq .= "'".htmlentities($ret["retained_host_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["retained_service_attribute_mask"]) && $ret["retained_service_attribute_mask"] != NULL ? $rq .= "'".htmlentities($ret["retained_service_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["use_syslog"]["use_syslog"]) && $ret["use_syslog"]["use_syslog"] != 2 ? $rq .= "'".$ret["use_syslog"]["use_syslog"]."',  " : $rq .= "'2', ";
         isset($ret["log_notifications"]["log_notifications"]) && $ret["log_notifications"]["log_notifications"] != 2 ? $rq .= "'".$ret["log_notifications"]["log_notifications"]."',  " : $rq .= "'2', ";
         isset($ret["log_service_retries"]["log_service_retries"]) && $ret["log_service_retries"]["log_service_retries"] != 2 ? $rq .= "'".$ret["log_service_retries"]["log_service_retries"]."',  " : $rq .= "'2', ";
@@ -318,8 +327,8 @@
 		isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"]) && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != 2 ? $rq .= "'".$ret["translate_passive_host_checks"]["translate_passive_host_checks"]."', " : $rq .= "'2', ";
 		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != 2 ? $rq .= "'".$ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]."', " : $rq .= "'2', ";
 		isset($ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]) && $ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"] != 2 ? $rq .= "'".$ret["check_for_orphaned_hosts"]["check_for_orphaned_hosts"]."', " : $rq .= "'2', ";
-		isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != 2 ? $rq .= "'".$ret["external_command_buffer_slots"]["external_command_buffer_slots"]."') " : $rq .= "'2') ";
-        isset($ret["cfg_file"]) && $ret["cfg_file"] != NULL ? $rq .= "'".htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+		isset($ret["external_command_buffer_slots"]["external_command_buffer_slots"]) && $ret["external_command_buffer_slots"]["external_command_buffer_slots"] != 2 ? $rq .= "'".$ret["external_command_buffer_slots"]["external_command_buffer_slots"]."', " : $rq .= "'2', ";
+        isset($ret["cfg_file"]) && $ret["cfg_file"] != NULL ? $rq .= "'".htmlentities($ret["cfg_file"], ENT_QUOTES, "UTF-8")."') " : $rq .= "NULL) ";
         
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(nagios_id) FROM cfg_nagios");
@@ -407,6 +416,12 @@
         isset($ret["retention_update_interval"]) && $ret["retention_update_interval"] != NULL ? $rq .= "retention_update_interval = '".htmlentities($ret["retention_update_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retention_update_interval = NULL, ";
         isset($ret["use_retained_program_state"]["use_retained_program_state"]) && $ret["use_retained_program_state"]["use_retained_program_state"] != 2 ? $rq .= "use_retained_program_state = '".$ret["use_retained_program_state"]["use_retained_program_state"]."',  " : $rq .= "use_retained_program_state = '2', ";
         isset($ret["use_retained_scheduling_info"]["use_retained_scheduling_info"]) && $ret["use_retained_scheduling_info"]["use_retained_scheduling_info"] != 2 ? $rq .= "use_retained_scheduling_info = '".$ret["use_retained_scheduling_info"]["use_retained_scheduling_info"]."',  " : $rq .= "use_retained_scheduling_info = '2', ";
+        isset($ret["retained_contact_host_attribute_mask"]) && $ret["retained_contact_host_attribute_mask"] != NULL ? $rq .= "retained_contact_host_attribute_mask = '".htmlentities($ret["retained_contact_host_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retained_contact_host_attribute_mask = NULL, ";
+        isset($ret["retained_contact_service_attribute_mask"]) && $ret["retained_contact_service_attribute_mask"] != NULL ? $rq .= "retained_contact_service_attribute_mask = '".htmlentities($ret["retained_contact_service_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retained_contact_service_attribute_mask = NULL, ";
+        isset($ret["retained_process_host_attribute_mask"]) && $ret["retained_process_host_attribute_mask"] != NULL ? $rq .= "retained_process_host_attribute_mask = '".htmlentities($ret["retained_process_host_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retained_process_host_attribute_mask = NULL, ";
+        isset($ret["retained_process_service_attribute_mask"]) && $ret["retained_process_service_attribute_mask"] != NULL ? $rq .= "retained_process_service_attribute_mask = '".htmlentities($ret["retained_process_service_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retained_process_service_attribute_mask = NULL, ";
+        isset($ret["retained_host_attribute_mask"]) && $ret["retained_host_attribute_mask"] != NULL ? $rq .= "retained_host_attribute_mask = '".htmlentities($ret["retained_host_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retained_host_attribute_mask = NULL, ";
+        isset($ret["retained_service_attribute_mask"]) && $ret["retained_service_attribute_mask"] != NULL ? $rq .= "retained_service_attribute_mask = '".htmlentities($ret["retained_service_attribute_mask"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "retained_service_attribute_mask = NULL, ";
         isset($ret["use_syslog"]["use_syslog"]) && $ret["use_syslog"]["use_syslog"] != 2 ? $rq .= "use_syslog = '".$ret["use_syslog"]["use_syslog"]."',  " : $rq .= "use_syslog = '2', ";
         isset($ret["log_notifications"]["log_notifications"]) && $ret["log_notifications"]["log_notifications"] != 2 ? $rq .= "log_notifications = '".$ret["log_notifications"]["log_notifications"]."',  " : $rq .= "log_notifications = '2', ";
         isset($ret["log_service_retries"]["log_service_retries"]) && $ret["log_service_retries"]["log_service_retries"] != 2 ? $rq .= "log_service_retries = '".$ret["log_service_retries"]["log_service_retries"]."',  " : $rq .= "log_service_retries = '2', ";
