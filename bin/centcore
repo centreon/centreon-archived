@@ -56,11 +56,11 @@ if (POSIX::getuid() == 0 ) {
 
 #######################################
 # Initiate options
-$debug = 0;
+$debug = 1;
 $timeout = 5; 
 $timeBetween2SyncPerf = 60;
-$perfdataSync = 1;
-$logSync = 1;
+$perfdataSync = 0;
+$logSync = 0;
 
 #######################################
 # Configure Paths
@@ -142,7 +142,6 @@ my $timeSyncPerf = 0;
 my $timeNagiosLogs = 0;
 my $difTime = 10;
 
-
 ###########################################################
 # Function to move command file on temporary file
 #
@@ -177,11 +176,11 @@ sub GetAllNagiosServerPerfData(){
     }
     while (my $data = $sth2->fetchrow_hashref()){
 	if ($perfdataSync == 1) {
-		GetPerfData($data->{'id'});
+	    GetPerfData($data->{'id'});
 	}
 	if ($logSync == 1) {
-		GetLogFile($data->{'id'});
-    }
+	    GetLogFile($data->{'id'});
+	}
     }
     $sth2->finish();
     $con->disconnect();
@@ -256,7 +255,7 @@ sub getPerfDataFile($$){
     my ($filename, $sth2, $data, $con, $poller_id);
     $con = $_[0];
     $poller_id = $_[1];
-    
+
     # Create request
     my $request = "SELECT `nagios_perfdata` FROM `nagios_server` WHERE `id` = '".$poller_id."'";
     $sth2 = $con->prepare($request);
@@ -276,46 +275,54 @@ sub getPerfDataFile($$){
     return $filename;
 }
 
+##################################
+## Check SSH Port Value
 #
-# Send an external command on a remote server.
-# Param : id_remote_server, external command
-#
+sub checkSSHPort($) {
+    my ($value) = @_;
+    my $port;
 
+    if (defined($value) && $value) {
+        $port = $value;
+    } else {
+	$port = 22;
+    }
+    return $port;
+}
+
+################################################
+## Send an external command on a remote server.
+## Param : id_remote_server, external command
+#
 sub sendExternalCommand($$){
     # Init Parameters
     my $id = $_[0];
     my $cmd = $_[1];
-    my $port = 22;
     my $stdout = '';
+
+    # Get server informations
+    my $server_info = getServerConfig($id);
+    my $port = checkSSHPort($server_info->{'ssh_port'});
 
     # Get command file 
     my $command_file = getNagiosConfigurationField($id, "command_file");
 
-    # Get server informations
-    my $server_info = getServerConfig($id);
-
-    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
-	$port = $server_info->{'ssh_port'};
-    }
-
     # check if ip address is defined
     if (defined($server_info->{'ns_ip_address'})) {
-
 	$cmd =~ s/\\/\\\\/g;
-
 	if ($server_info->{'localhost'} == 1) {
-		my $result = waitPipe($command_file);
-		if ($result == 0) {
-			writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
-			my $cmd = "echo \"".$cmd."\" >> ".$command_file."\n";
-			$stdout = `$cmd`;		
-		} else {
-			writeLogFile("Cannot write external command on central server : \"".$cmd."\"");
-		}
+	    my $result = waitPipe($command_file);
+	    if ($result == 0) {
+		writeLogFile("External command on Central Server: ($id) : \"".$cmd."\"");
+		my $cmd = "echo \"".$cmd."\" >> ".$command_file."\n";
+		$stdout = `$cmd`;		
+	    } else {
+		writeLogFile("Cannot write external command on central server : \"".$cmd."\"");
+	    }
 	} else {
-		writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
-		my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
-		$stdout = `$cmd`;
+	    writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
+	    my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
+	    $stdout = `$cmd`;
 	}
 
 	if (defined($stdout) && $stdout){
@@ -328,6 +335,9 @@ sub sendExternalCommand($$){
     } else {
 	writeLogFile("Ip address not defined for poller $id");
     }
+    
+    $commandBuffer{$id} = "";
+
     # Free
     undef($id);
     undef($cmd);
@@ -336,67 +346,54 @@ sub sendExternalCommand($$){
 }
 
 #######################################
-# Wait Nagios Pipe availability
+## Wait Nagios Pipe availability
+#
 sub waitPipe($) {
-	my $i = 0;
-	while (! -p $_[0]) {
-		sleep(1);
-		$i++;
-		if ($i >= 30) {
-			return 1;
-		}
+    my $i = 0;
+    while (! -p $_[0]) {
+	sleep(1);
+	$i++;
+	if ($i >= 30) {
+	    return 1;
 	}
-	return 0;
-}
-
-
-
-#
-# Get PerfdataFile
-#
-
-sub getNagiosInformation($){
-
+    }
+    return 0;
 }
 
 sub GetPerfData($){
     # init Values
     my $id = $_[0];
-    my $port = 22;
 
     # Check MySQL Connection
     CheckMySQLConnexion();
-
+    
     # Get Server Infos
     my $server_info = getServerConfig($id);
+    my $port = checkSSHPort($server_info->{'ssh_port'});;
+ 
     my $distantconnexion = $server_info->{'ns_ip_address'};
-
-    # Check port configuration
-    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
-	$port = $server_info->{'ssh_port'};
-    }
 
     # Where is perfdata file on remote poller 
     my $distantperffile = getPerfDataFile($con, $id);
     my $distantperffile_buffer = $distantperffile . ".buff";
-		
-	if (!defined($distantperffile_buffer) || !$distantperffile_buffer) {
-		writeLogFile("perfdata file not configured for poller $id ($distantconnexion)");
-		return;
-	}
+
+    if (!defined($distantperffile_buffer) || !$distantperffile_buffer) {
+	writeLogFile("perfdata file not configured for poller $id ($distantconnexion)");
+	return;
+    }
 
     # Build destination directory reserved for this poller
     my $localbasevardir = "$VARLIB/perfdata/$id";
 
     # check if directory exists
     if (!-d $localbasevardir) {
-		mkpath $localbasevardir;
+	mkpath $localbasevardir;
     }
 
     my $localtmpperffile = "$localbasevardir/service-perfdata";
     my $localperffile = getPerfDataFile($con, getLocalServerID());
     my $move_cmd = "rm -f $distantperffile_buffer 2> /dev/null; cp $distantperffile $distantperffile_buffer 2> /dev/null ; echo \"# New File\" > $distantperffile";
-    
+
     # Get Perfdata file
     if (!defined($distantperffile)) {
 	writeLogFile("Cannot get perfdata file. Unkown perfdata file on poller $id");
@@ -406,19 +403,18 @@ sub GetPerfData($){
 	writeLogFile($cmd) if ($debug);
 	my $stdout = `$cmd`;
 	if (defined($stdout) && $stdout){
-        writeLogFile("Result : $stdout\n");
-    }
-    undef($stdout);
+	    writeLogFile("Result : $stdout\n");
+	}
+	undef($stdout);
 
-	
 	# Get Perfdata File
 	writeLogFile("$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile") if ($debug);
-	my $stdout = `$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null`;
+	$stdout = `$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null`;
 	if (defined($stdout) && $stdout){
-        writeLogFile("Result : $stdout\n");
-    }
-    undef($stdout);
-	
+	    writeLogFile("Result : $stdout\n");
+	}
+	undef($stdout);
+
 	# Write data from distant poller on local file for centstorage
 	if (-f $localtmpperffile){
 	    # Concat poller perfdata to central perfdata.
@@ -436,16 +432,11 @@ sub GetPerfData($){
 sub GetLogFile($){
     # Init values
     my $id = $_[0];
-    my $port = 22;
     my $last_access;
 
     # Get Server informations
     my $server_info = getServerConfig($id);
-
-    # Check port configuration
-    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
-	$port = $server_info->{'ssh_port'};
-    }
+    my $port = checkSSHPort($server_info->{'ssh_port'});
 
     # Check configuration
     my $distantconnexion = $server_info->{'ns_ip_address'};
@@ -476,14 +467,14 @@ sub GetLogFile($){
 		my $value = `cat $cmd`;
 		$value =~ s/\n//g;
 		undef($cmd);
-		
+
 		# Check update 
 		my $check_cmd = "$ssh -p $port -q $distantconnexion 'stat  -c \'STAT_RESULT=%Y\' $distantlogfile'";
 		writeLogFile("Get Log Files - stat: $check_cmd") if ($debug);
 		$last_access = `$check_cmd`;
-        $last_access =~ /STAT_RESULT=(\d+)/;
-        $last_access = $1;
-        writeLogFile("Get Log File - stat: Finished") if ($debug);
+		$last_access =~ /STAT_RESULT=(\d+)/;
+		$last_access = $1;
+		writeLogFile("Get Log File - stat: Finished") if ($debug);
 
 		# Check buffer
 		if ($value !~ $last_access) {
@@ -491,11 +482,11 @@ sub GetLogFile($){
 		} else {
 		    $flag = 0;
 		}
-		
+
 	    } else {
 		$flag = 1;
 	    }
-	    
+
 	    if ($flag == 1) {
 		# Get file with rsync
 		my $cmd = "$scp -P $port $distantconnexion:$distantlogfile $locallogfile > /dev/null";
@@ -510,7 +501,6 @@ sub GetLogFile($){
 	    my $buffer_cmd = "echo '$last_access' > ".$localDir.".nagios.log.flag";
 	    `$buffer_cmd`; 
 	    undef($buffer_cmd);
-
 	}
     } else {
 	writeLogFile("Unable to create $localDir. Can get nagios log file for poller $id");
@@ -523,25 +513,20 @@ sub GetLogFile($){
 sub sendConfigFile($){
     # Init Values
     my $id = $_[0];
-    my $port = 22;
     my $debug = 0;
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = getServerConfig($id);
-    
+    my $port = checkSSHPort($server_info->{'ssh_port'});
+
     if (!defined($cfg_dir) || $cfg_dir =~ //) {
         writeLogFile("Engine configuration file is empty for poller $id. Please check nagios.cfg file.");
         return;
     }
-    
-    # Check Port configuration
-    if (defined($server_info->{'ssh_port'}) && $server_info->{'ssh_port'}) {
-	$port = $server_info->{'ssh_port'};
-    }
 
     my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
     my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
-    
+
     # Send data with SCP
     writeLogFile("Start: Send config files on poller $id");
     my $cmd = "$scp -P $port $origin $dest > /dev/null";
@@ -552,10 +537,10 @@ sub sendConfigFile($){
     undef($stdout);
     undef($cmd);
     writeLogFile("End: Send config files on poller $id");
-    
+
     # Send configuration for Centreon Broker
     if ( -e $installedPath."/filesGeneration/broker/".$id) {
-	    # Check availability of broker files.
+	# Check availability of broker files.
         my $count = 0;
         opendir(my $dh, $installedPath."/filesGeneration/broker/".$id);
         while(readdir $dh) {
@@ -565,9 +550,9 @@ sub sendConfigFile($){
         undef($dh);
 
         if ($count > 2) {
-		    writeLogFile("Start: Send Centreon Broker config files on poller $id") if ($debug);
-		
-		    if ($server_info->{'localhost'} == 0) {
+	    writeLogFile("Start: Send Centreon Broker config files on poller $id") if ($debug);
+
+	    if ($server_info->{'localhost'} == 0) {
                 $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
                 $origin = $installedPath."/filesGeneration/broker/".$id."/*.xml";
                 $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
@@ -587,10 +572,10 @@ sub sendConfigFile($){
                 undef($stdout);
                 undef($cmd);
             }
-			writeLogFile("End: Send Centreon Broker config files on poller $id") if ($debug);
-		}
+	    writeLogFile("End: Send Centreon Broker config files on poller $id") if ($debug);
+	}
     }
-	
+
     # Free
     undef($cfg_dir);
     undef($server_info);
@@ -603,27 +588,21 @@ sub sendConfigFile($){
 #   - restart
 #   - stop
 #
-sub initNagios($$){
+sub initEngine($$){
     my $id = $_[0];
     my $options = $_[1];
-    my $port = 22;
     my ($cmd, $stdout);
 
     # Get configuration
     my $conf = getServerConfig($id);
+    my $port = checkSSHPort($conf->{'ssh_port'});
 
-	if (!defined($conf)) {
+    if (!defined($conf)) {
         writeLogFile("Poller $id doesn't exists...");
         writeLogFile("Cannot manage undefined poller...");
         return;
     }
 
-
-    # Check port configuration
-    if (defined($conf->{'ssh_port'}) && $conf->{'ssh_port'}) {
-        $port = $conf->{'ssh_port'};
-    }
-    
     if (defined($conf->{'ns_ip_address'}) && $conf->{'ns_ip_address'}) {
 	# Launch command
 	$cmd = "$ssh -p $port ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options;
@@ -631,16 +610,16 @@ sub initNagios($$){
     } else {
 	writeLogFile("Cannot $options Nagios for poller $id");
     }
-    
+
     # Logs Actions
     writeLogFile("Init Script : '$sudo ".$conf->{'init_script'}." ".$options."' On poller ".$conf->{'ns_ip_address'}." ($id)");
     my $line;
     if (defined($stdout)) {
-	    foreach $line (split(/\n/, $stdout)){
-			writeLogFile("NAGIOS : ".$line);
-	    }
+	foreach $line (split(/\n/, $stdout)){
+	    writeLogFile("Engine : ".$line);
 	}
-	
+    }
+
     # Free
     undef($line);
     undef($conf);
@@ -653,7 +632,6 @@ sub initNagios($$){
 # 
 sub syncTraps($) {
     my $id = $_[0];
-    my $port = 22;
 
     # Check MySQL Connexion
     CheckMySQLConnexion();
@@ -661,19 +639,16 @@ sub syncTraps($) {
     if ($id != 0) {
         # Get configuration
         my $ns_server = getServerConfig($id);
-
-        # check port configuration
-        if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
-            $port = $ns_server->{'ssh_port'};
-        }
+	my $port = checkSSHPort($ns_server-->{'ssh_port'});
 
         if ($id != 0 && $ns_server->{'localhost'} == 0) {
-            writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
-            my $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-			if (defined($stdout) && $stdout){
-     			writeLogFile("Result : $stdout\n");
-    		}
-    		undef($stdout);
+	    my $cmd = "$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
+            writeLogFile($cmd) if ($debug);
+            my $stdout = `$cmd`;
+	    if (defined($stdout) && $stdout){
+		writeLogFile("Result : $stdout\n");
+	    }
+	    undef($stdout);
 
             writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
             my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
@@ -681,9 +656,9 @@ sub syncTraps($) {
                 writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);                
                 `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
             	if (defined($stdout) && $stdout){
-	     			writeLogFile("Result : $stdout\n");
-	    		}
-	    		undef($stdout);
+		    writeLogFile("Result : $stdout\n");
+		}
+		undef($stdout);
             }
         }
     } else {
@@ -695,29 +670,25 @@ sub syncTraps($) {
             while (my $server = $sth2->fetchrow_hashref()) {
                 # Get configuration
                 my $ns_server = getServerConfig($server->{'id'});
-
-                # check port configuration
-                if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
-                    $port = $ns_server->{'ssh_port'};
-                }
+		my $port = checkSSHPort($ns_server->{'ssh_port'});
 
                 if ($id == 0) {
                     writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
                     my $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
                     if (defined($stdout) && $stdout){
-             			writeLogFile("Result : $stdout\n");
-            		}
-            		undef($stdout);
+			writeLogFile("Result : $stdout\n");
+		    }
+		    undef($stdout);
 
                     writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
                     my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
-					if ($ls > 1) {
+		    if ($ls > 1) {
                         writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
                         my $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-						if (defined($stdout) && $stdout){
-             				writeLogFile("Result : $stdout\n");
-            			}
-            			undef($stdout);
+			if (defined($stdout) && $stdout){
+			    writeLogFile("Result : $stdout\n");
+			}
+			undef($stdout);
                     }
                 }
 
@@ -728,15 +699,11 @@ sub syncTraps($) {
 
 sub testConfig($) {
     my $id = $_[0];
-    my $port = 22;
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $data = getServerConfig($id);
-    
-    if (defined($data->{'ssh_port'}) && $data->{'ssh_port'}) {
-	$port = $data->{'ssh_port'};
-    }
-    
+    my $port = checkSSHPort($data->{'ssh_port'});
+
     my $distantconnexion = $data->{'ns_ip_address'};
     my $cmd = "$ssh -p ".$port." $distantconnexion $sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
     my $stdout = `$cmd`;
@@ -749,18 +716,14 @@ sub testConfig($) {
 
 sub syncArchives($) {
     my $id = $_[0];
-    my $port = 22;
-    
+
     # Check MySQL Connexion
     CheckMySQLConnexion();
-    
+
     # Get configuration
     my $ns_server = getServerConfig($id);
-    
-    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
-	$port = $ns_server->{'ssh_port'};
-    }
-    
+    my $port = checkSSHPort($ns_server->{'ssh_port'});
+
     if ($id != 0) {
 	# Sync Archive for one poller
 	if (! -d "$VARLIB/log/".$ns_server->{'id'}."/archives/") {
@@ -771,10 +734,9 @@ sub syncArchives($) {
 	my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
 	if ($sth->execute()) {
 	    my $data = $sth->fetchrow_hashref();
-	    
+
 	    # Archive Sync
 	    writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $VARLIB/log/".$ns_server->{'id'}."/archives/") if ($debug);
-	    
 	    `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $VARLIB/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
 	    undef($data);
 	} else {
@@ -798,31 +760,32 @@ sub syncArchives($) {
 
 # Get Monitoring Engine.
 sub getInfos($) {
- 	my $id = $_[0];
- 	
- 	my $port = 22;
-    
+    my $id = $_[0];
+
     # Check MySQL Connexion
     CheckMySQLConnexion();
-    
+
     # Get configuration
     my $ns_server = getServerConfig($id);
-    
-    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
-		$port = $ns_server->{'ssh_port'};
-    }
-    
+    my $port = checkSSHPort($ns_server->{'ssh_port'});
+
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}) {
-		# Launch command
-		$cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
-		$stdout = `$cmd`;
-		
-		# TODO 	
-		# => Analyse Datas	
+	# Launch command
+	my $cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." ".$ns_server->{'nagios_bin'}."";
+	my $stdout = `$cmd`;
+	
+	my @tab = split("\n", $stdout);
+	foreach my $str (@tab) {
+	    if ($str =~ m/(Nagios) Core ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
+		writeLogFile("Engine: $1");
+		writeLogFile("Version: $2");
+		last;
+	    }
+	}
     } else {
-		writeLogFile("Cannot get informations for poller $id");
+	writeLogFile("Cannot get informations for poller $id");
     }
-    
+
 }
 
 # Restart SNMPTT Daemon
@@ -830,105 +793,149 @@ sub restartSNMPTT($) {
     my $id = $_[0];
     my $stdout = "";
     my $cmd = "";
-    my $port = 22;
     my $debug = 0;
-    
+
     # Check MySQL Connexion
     CheckMySQLConnexion();
-    
+
     # Get configuration
     my $ns_server = getServerConfig($id);
-    
-    if (defined($ns_server->{'ssh_port'}) && $ns_server->{'ssh_port'}) {
-		$port = $ns_server->{'ssh_port'};
-    }
-    
+    my $port = checkSSHPort($ns_server->{'ssh_port'});
+
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}
     	&& defined($ns_server->{'init_script_snmptt'}) && $ns_server->{'init_script_snmptt'}) {
-		# Launch command
-		if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
-			$cmd = "$sudo ".$ns_server->{'init_script_snmptt'}." restart";
-			writeLogFile($cmd) if ($debug);
-			$stdout = `$cmd`;
-		} else {
-			$cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
-			writeLogFile($cmd) if ($debug);
-			$stdout = `$cmd`;
-		}
-		writeLogFile("Restart SNMPTT on poller $id ($ns_server->{'ns_ip_address'})");
+	# Launch command
+	if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
+	    $cmd = "$sudo ".$ns_server->{'init_script_snmptt'}." restart";
+	    writeLogFile($cmd) if ($debug);
+	    $stdout = `$cmd`;
+	} else {
+	    $cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
+	    writeLogFile($cmd) if ($debug);
+	    $stdout = `$cmd`;
+	}
+	writeLogFile("Restart SNMPTT on poller $id ($ns_server->{'ns_ip_address'})");
     } else {
-		writeLogFile("Cannot restart SNMPTT for poller $id");
+	writeLogFile("Cannot restart SNMPTT for poller $id");
     }
 }
 
 sub parseRequest($){
     if (!$_[0]) {
-		return ;
+	return ;
     }
-
+    
     # Checks keys for launching commands
-
+    
     if ($_[0] =~ /^RESTART\:([0-9]*)/){
-		initNagios($1, "restart");
+	initEngine($1, "restart");
     } elsif ($_[0] =~ /^RELOAD\:([0-9]*)/){
-		initNagios($1, "reload");
+	initEngine($1, "reload");
     } elsif ($_[0] =~ /^START\:([0-9]*)/){
-		initNagios($1, "start");
+	initEngine($1, "start");
     } elsif ($_[0] =~ /^STOP\:([0-9]*)/){
-		initNagios($1, "stop");
+	initEngine($1, "stop");
     } elsif ($_[0] =~ /^SENDCFGFILE\:([0-9]*)/){
-		sendConfigFile($1);
+	sendConfigFile($1);
     } elsif ($_[0] =~ /^TEST\:([0-9]*)/){
-		# Experimental
-		testConfig($1);
+	# Experimental
+	testConfig($1);
     } elsif ($_[0] =~ /^SYNCTRAP\:([0-9]*)/){
-		syncTraps($1);
+	syncTraps($1);
     } elsif ($_[0] =~ /^RESTARTSNMPTT\:([0-9]*)/){
-		restartSNMPTT($1);
-    } elsif ($_[0] =~ /^SYNCPLUGINS\:([0-9]*)/){
-		;
+	restartSNMPTT($1);
     } elsif ($_[0] =~ /^SYNCARCHIVES\:([0-9]*)/){
-		syncArchives($1);
+	syncArchives($1);
     } elsif ($_[0] =~ /^EXTERNALCMD\:([0-9]*)\:(.*)/){
-		storeCommands($1, $2);
+	storeCommands($1, $2);
     } elsif ($_[0] =~ /^GETINFOS\:([0-9]*)/){
-		getInfos($1);
+	getInfos($1);
+    }
+}
+
+sub checkProfile() {
+    # Check MySQL Connexion
+    CheckMySQLConnexion();
+    
+    my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync')";
+    my $sth = $con->prepare($request);
+    if ($sth->execute()) {
+	my $data;
+	while ($data = $sth->fetchrow_hashref()) {
+	    if (defined($data->{'key'}) && $data->{'key'} ne "" && defined($data->{'value'}) && $data->{'value'} ne "") {
+		if ($data->{'key'} eq "enable_perfdata_sync") {
+		    $perfdataSync = $data->{'value'};
+		} 
+		if ($data->{'key'} eq "enable_logs_sync") {
+		    $logSync = $data->{'value'};
+                }
+		writeLogFile($data->{'key'}." -> ".$data->{'value'});
+	    }
+	}
+	undef($data);
+    }
+    return 0;
+}
+
+# Check if debug has been enable into GUI
+sub checkDebugFlag($) {
+    my ($display) = @_;
+
+    # Check MySQL Connexion
+    CheckMySQLConnexion();
+    my $oldDebug = $debug;
+
+    my $request = "SELECT * FROM options WHERE `key` IN ('debug_centcore')";
+    my $sth = $con->prepare($request);
+    if ($sth->execute()) {
+	my $data = $sth->fetchrow_hashref();
+	if (defined($data->{'value'}) && $data->{'value'} == 1) {
+	    $debug = 1;
+	    if ($debug ne $oldDebug && $display) {
+		writeLogFile("Enable Debug in Centcore");
+	    }
+	} else {
+	    $debug = 0;
+	    if ($debug ne $oldDebug && $display) {
+		writeLogFile("Disable Debug in Centcore");
+	    }
+	}
     }
 }
 
 # Store commands in order to group commands to send.
 sub storeCommands($$) {
-	my ($poller_id, $command) = @_;
-	
-	if (!defined($commandBuffer{$poller_id})) {
-		$commandBuffer{$poller_id} = "";
-	}
-	$commandBuffer{$poller_id} .= $command . "\n";
+    my ($poller_id, $command) = @_;
+    
+    if (!defined($commandBuffer{$poller_id})) {
+	$commandBuffer{$poller_id} = "";
+    }
+    $commandBuffer{$poller_id} .= $command . "\n";
 }
 
 # Write in log file that program is starting
 sub signalstartprogram() {
-	# Starting centcore Engine
-	writeLogFile("Starting centcore engine...");
-	writeLogFile("PID : ".$$."");
+    # Starting centcore Engine
+    writeLogFile("Starting centcore engine...");
+    writeLogFile("PID : ".$$."");
 }
 
 # Write in log file that program is stoping
 sub signalstopprogram() {
     writeLogFile("Stopping centcore engine...");
     if (!unlink($PID)) {
-		writeLogFile("Error When removing pid file : $!") ;
+	writeLogFile("Error When removing pid file : $!") ;
     }
 }
 
 # Writing PID
 sub writepid($) {
-	if (!defined($_[0]) || $_[0] == 0) {
-		writeLogFile("Cannot write pid file");
-	}
-	open (PID, ">> ".$PID) || print "can't write PID : $!";
-	print PID $_[0] ;
-	close PID or warn $!;
+    if (!defined($_[0]) || $_[0] == 0) {
+	writeLogFile("Cannot write pid file");
+    }
+    open (PID, ">> ".$PID) || print "can't write PID : $!";
+    print PID $_[0] ;
+    close PID or warn $!;
 }
 
 
@@ -936,72 +943,80 @@ sub writepid($) {
 my $pid  = 0;
 
 if ($pid ne fork()) {
-
+    
     # Fork 
     if (!fork()) {
-	
-		signalstartprogram();
-		writepid($$);
-	
-		while ($stop) {  
-	
-		    # Read Centcore.cmd
-		    if (-e $cmdFile) {
-				if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")) {
-				    while (<FILE>){
-						parseRequest($_);
-				    }
-				    my $poller;
-				    foreach $poller (keys(%commandBuffer)) {
-						if (length($commandBuffer{$poller}) != 0) {
-						    sendExternalCommand($poller, $commandBuffer{$poller});
-						    $commandBuffer{$poller} = "";
-						}
-				    }
-				}
-				close(FILE);
-				writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+
+	signalstartprogram();
+	writepid($$);
+
+	# Check debug Flag
+	checkDebugFlag(0);
+		
+	while ($stop) {   
+	    # Read Centcore.cmd
+	    if (-e $cmdFile) {
+		if (moveCmdFile($cmdFile) && open(FILE, "< $cmdFile"."_read")) {
+		    while (<FILE>){
+			parseRequest($_);
 		    }
-		    
-		    # Read Centcore Directory
-		    if (-d $cmdDir) {
-		    	opendir(my $dh, $cmdDir);
-				while (my $file = readdir($dh)) {
-					if ($file ne "." && $file ne ".." && $file ne "") {
-						if (moveCmdFile($cmdDir.$file) && open(FILE, "< ".$cmdDir.$file."_read")) {
-						    while (<FILE>){
-								parseRequest($_);
-						    }
-						    my $poller;
-						    foreach $poller (keys(%commandBuffer)) {
-								if (length($commandBuffer{$poller}) != 0) {
-								    sendExternalCommand($poller, $commandBuffer{$poller});
-								    $commandBuffer{$poller} = "";
-								}
-						    }
-							close(FILE);
-							writeLogFile("Error When removing ".$cmdDir.$file."_read file : $!") if (!unlink($cmdDir.$file."_read"));
-						}
-					}
-				}
-				closedir $dh;
+		    my $poller;
+		    foreach $poller (keys(%commandBuffer)) {
+			if (length($commandBuffer{$poller}) != 0) {
+			    sendExternalCommand($poller, $commandBuffer{$poller});
+			    $commandBuffer{$poller} = "";
+			}
 		    }
-		    
-		    if (defined($timeSyncPerf) && $timeSyncPerf) {
-				$difTime = time() - $timeSyncPerf;
-		    }
-		    
-		    # Get PerfData on Nagios Poller
-		    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
-				
-				GetAllNagiosServerPerfData();		
-				$timeSyncPerf = time();
-		    }
-		    sleep(1);
 		}
+		close(FILE);
+		writeLogFile("Error When removing ".$cmdFile."_read file : $!") if (!unlink($cmdFile."_read"));
+	    }
 	    
-	    signalstopprogram();
+	    # Read Centcore Directory
+	    if (-d $cmdDir) {
+		opendir(my $dh, $cmdDir);
+		while (my $file = readdir($dh)) {
+		    if ($file ne "." && $file ne ".." && $file ne "") {
+			if (moveCmdFile($cmdDir.$file) && open(FILE, "< ".$cmdDir.$file."_read")) {
+			    while (<FILE>){
+				parseRequest($_);
+			    }
+			    my $poller;
+			    foreach $poller (keys(%commandBuffer)) {
+				if (length($commandBuffer{$poller}) != 0) {
+				    sendExternalCommand($poller, $commandBuffer{$poller});
+				    $commandBuffer{$poller} = "";
+				}
+			    }
+			    close(FILE);
+			    writeLogFile("Error When removing ".$cmdDir.$file."_read file : $!") if (!unlink($cmdDir.$file."_read"));
+			}
+		    }
+		}
+		closedir $dh;
+	    }
+	    
+	    if (defined($timeSyncPerf) && $timeSyncPerf) {
+		$difTime = time() - $timeSyncPerf;
+	    }
+	    
+	    # Get PerfData on Nagios Poller
+	    if ((defined($difTime) && $timeBetween2SyncPerf <= $difTime) || $timeSyncPerf == 0){
+
+		# Check Activity profile Status
+		checkProfile();
+		
+		# Check debug Flag
+		checkDebugFlag(1);
+		
+		GetAllNagiosServerPerfData();		
+		$timeSyncPerf = time();
+	    }
+	    sleep(1);
 	}
+	
+	signalstopprogram();
+    }
     exit 0;
 }
 
