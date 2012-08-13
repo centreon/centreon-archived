@@ -432,3 +432,7 @@ text-align:justify;
 div.ams		{text-align:center;font-style:italic;}
 
 form label { margin-left: 3px; }
+
+.helpTooltip {padding-right:3px;}
+
+input {padding:0px 15px;}
