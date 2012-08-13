@@ -43,7 +43,9 @@ use strict;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
-use vars qw($cmdFile $etc $TIMEOUT $LOG);
+use vars qw($cmdFile $etc $TIMEOUT $LOG $NAGIOSUSER @OIDTable);
+
+$NAGIOSUSER = 'nagios';
 
 eval "use HTML::Entities";
 if ($@) {
@@ -55,8 +57,8 @@ if ($@) {
 ###############################
 # Init 
 
-$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
-$etc     = "@CENTREON_ETC@";
+$cmdFile = "/var/lib/centreon/centcore.cmd";
+$etc = "/etc/centreon";
 
 # Timeout for write in cmd in seconds
 $TIMEOUT = 10;
@@ -254,14 +256,20 @@ sub replaceMacros($) {
     my @macros;
     my $x = 0;
 
-    my @args = split(/\'\s+\'|\'/, $allargs);
+    #my @args = split(/\'\s+\'|\'/, $allargs);
+    my @args = split(/\#\#C\#\#/, $allargs);
     foreach (@args) {
-	my $str = $_;
+	my $tmp = $_;
+	logit($tmp, "DD");
+	my ($oid, $str) = split(':', $tmp);
+	$OIDTable[($x+1)] = $oid;
+	logit($str, "DD");
 	if ($str !~ m/^$/ && $str ne " ") {
-	    $macros[($x+1)] = $_;
+	    $macros[($x+1)] = $str;
 	    $macros[($x+1)] =~ s/\=/\-/g;
 	    $macros[($x+1)] =~ s/\;/\,/g;
 	    $macros[($x+1)] =~ s/\t//g;
+	    $macros[($x+1)] =~ s/\#\#C\#//g;
 	    if ($debug) {
 		logit("\$".($x+1)." => |". $macros[($x+1)]."|", "DD");
 	    }
@@ -279,7 +287,7 @@ sub forceCheck($$$$) {
 
     my $id = get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
-	my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
+	my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
 	send_command($submit);
 	
 	logit("FORCE: Reschedule linked service", "II");
@@ -299,7 +307,7 @@ sub submitResult($$$$$$$) {
     # No matching rules
     my $id = get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
-	my $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile";
+	my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile'";
 	send_command($submit);
 	
 	logit("SUBMIT: Force service status via passive check update", "II");
@@ -308,6 +316,29 @@ sub submitResult($$$$$$$) {
 	undef($id);
 	undef($submit);
     }
+}
+
+
+sub replaceOID($$) {
+    my ($str, $ref_macros) = @_;
+
+    my @macros = @{$ref_macros};
+
+    ##########################
+    # REPLACE OID ARGS
+    my $x = 1;
+    my $oid = "";
+    foreach (@macros) {
+	if (defined($macros[$x])) {
+	    $oid = $OIDTable[$x];
+	    if ($debug) {
+		logit("REPLACE OID: $str => /\@\{".$oid."\}/".$macros[$x]."/", "DD");
+	    }
+	    $str =~ s/\@\{$oid\}/$macros[$x]/g;
+	    $x++;
+	}
+    }
+    return $str;
 }
 
 #######################################
@@ -346,12 +377,14 @@ sub checkMatchingRules($$$$$$$$$) {
 	foreach (@macros) {
 	    if (defined($macros[$x])) {
 		if ($debug) {
-		    logit("REPLACE: $tmoString => /\$".$x."/".$macros[$x]."/", "DD");
+		    logit("REPLACE VAL: $tmoString => /\$".$x."/".$macros[$x]."/", "DD");
 		}
 		$tmoString =~ s/\$$x/$macros[$x]/g;
 		$x++;
 	    }
 	}
+
+	$tmoString = replaceOID($tmoString, \@macros);
 
 	##########################
 	# REPLACE MACROS
@@ -393,6 +426,8 @@ sub executeCommand($$$$$$$$) {
 	}
     }
 
+    $traps_execution_command = replaceOID($traps_execution_command, \@macros);
+    
     ##########################
     # REPLACE MACROS
     if ($htmlentities == 1) {
@@ -463,6 +498,21 @@ sub getTrapsInfos($$$$$) {
 	    my $datetime = `date +%s`;
 	    chomp($datetime);
 
+            ##########################
+	    # REPLACE OID ARGS
+	    my $x = 1;
+	    my $oid = "";
+	    foreach (@macros) {
+		if (defined($macros[$x])) {
+		    $oid = $OIDTable[$x];
+		    if ($debug) {
+			logit("REPLACE OID: $traps_execution_command => /\@\{".$oid."\}/".$macros[$x]."/", "DD");
+		    }
+		    $arguments_line =~ s/\@\{$oid\}/$macros[$x]/g;
+		    $x++;
+		}
+	    }
+
 	    ######################################################################
 	    # Advanced matching rules
 	    if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
@@ -515,6 +565,7 @@ if (scalar(@ARGV)) {
 	logit("Param: HOSTNAME -> $hostname", "DD");
 	logit("Param: IP -> $ip", "DD");
 	logit("Param: OID -> $oid", "DD");
+	logit("Param: Output -> $arguments", "DD");
 	logit("Param: ARGS -> $allArgs", "DD");
     }
     getTrapsInfos($ip, $hostname, $oid, $arguments, $allArgs);
@@ -523,4 +574,4 @@ if (scalar(@ARGV)) {
     logit("Error: No parameters received.", "EE");
 }
 
-
+__END__
