@@ -173,7 +173,7 @@
 				"`log_external_commands` , `log_passive_checks` , `global_host_event_handler` , " .
 				"`global_service_event_handler` , `sleep_time` , `service_inter_check_delay_method` , " .
 				"`host_inter_check_delay_method` , `service_interleave_factor` , `max_concurrent_checks` , `max_service_check_spread` , " .
-				"`max_host_check_spread` , `check_result_reaper_frequency` , `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
+				"`max_host_check_spread` , `check_result_reaper_frequency` , `max_check_result_reaper_time`, `interval_length` , `auto_reschedule_checks` , `auto_rescheduling_interval` , " .
 				"`auto_rescheduling_window` , `use_aggressive_host_checking` , `enable_predictive_host_dependency_checks`, `enable_flap_detection` , `low_service_flap_threshold` , " .
 				"`high_service_flap_threshold` , `low_host_flap_threshold` , `high_host_flap_threshold` , `soft_state_dependencies` ,`enable_predictive_service_dependency_checks` , " .
 				"`service_check_timeout` , `host_check_timeout` , `event_handler_timeout` , `notification_timeout` , `ocsp_timeout` , `ochp_timeout` , " .
@@ -243,6 +243,7 @@
         isset($ret["max_service_check_spread"]) && $ret["max_service_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_service_check_spread"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != NULL ? $rq .= "'".htmlentities($ret["max_host_check_spread"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["check_result_reaper_frequency"]) && $ret["check_result_reaper_frequency"] != NULL ? $rq .= "'".htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["max_check_result_reaper_time"]) && $ret["max_check_result_reaper_time"] != NULL ? $rq .= "'".htmlentities($ret["max_check_result_reaper_time"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";        
         isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $rq .= "'".htmlentities($ret["interval_length"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["auto_reschedule_checks"]["auto_reschedule_checks"]) && $ret["auto_reschedule_checks"]["auto_reschedule_checks"] != 2 ? $rq .= "'".$ret["auto_reschedule_checks"]["auto_reschedule_checks"]."', " : $rq .= "'2', ";
         isset($ret["auto_rescheduling_interval"]) && $ret["auto_rescheduling_interval"] != NULL ? $rq .= "'".htmlentities($ret["auto_rescheduling_interval"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -422,6 +423,7 @@
         isset($ret["service_interleave_factor"]["service_interleave_factor"]) && $ret["service_interleave_factor"]["service_interleave_factor"] != 2 ? $rq .= "service_interleave_factor = '".$ret["service_interleave_factor"]["service_interleave_factor"]."',  " : $rq .= "service_interleave_factor = '2', ";
   		isset($ret["max_concurrent_checks"]) && $ret["max_concurrent_checks"] != NULL ? $rq .= "max_concurrent_checks = '".htmlentities($ret["max_concurrent_checks"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_concurrent_checks = NULL, ";
         isset($ret["check_result_reaper_frequency"]) && $ret["check_result_reaper_frequency"] != NULL ? $rq .= "check_result_reaper_frequency = '".htmlentities($ret["check_result_reaper_frequency"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "check_result_reaper_frequency = NULL, ";
+        isset($ret["max_check_result_reaper_time"]) && $ret["max_check_result_reaper_time"] != NULL ? $rq .= "max_check_result_reaper_time = '".htmlentities($ret["max_check_result_reaper_time"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_check_result_reaper_time = NULL, ";
         isset($ret["host_inter_check_delay_method"]) && $ret["host_inter_check_delay_method"] != NULL ? $rq .= "host_inter_check_delay_method  = '".$ret["host_inter_check_delay_method"]."',  " : $rq .= "host_inter_check_delay_method  = NULL, ";
         isset($ret["max_host_check_spread"]) && $ret["max_host_check_spread"] != NULL ? $rq .= "max_host_check_spread = '".htmlentities($ret["max_host_check_spread"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_host_check_spread = NULL, ";
         isset($ret["interval_length"]) && $ret["interval_length"] != NULL ? $rq .= "interval_length = '".htmlentities($ret["interval_length"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "interval_length = NULL, ";

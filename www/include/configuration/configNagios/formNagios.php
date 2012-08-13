@@ -305,6 +305,7 @@
 	$form->addElement('text', 'service_inter_check_delay_method', _("Service Inter-Check Delay Method"), $attrsText3);
 
 	$form->addElement('text', 'check_result_reaper_frequency', _("Check Result Reaper Frequency"), $attrsText3);
+        $form->addElement('text', 'max_check_result_reaper_time', _("Maximum Check Result Reaper Time"), $attrsText3);
 
 	$nagTab = array();
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'translate_passive_host_checks', null, _("Yes"), '1');

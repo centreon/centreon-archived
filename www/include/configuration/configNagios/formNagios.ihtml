@@ -204,6 +204,7 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_interleave_factor">&nbsp;{$form.service_interleave_factor.label}</td><td class="FormRowValue">{$form.service_interleave_factor.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_concurrent_checks">&nbsp;{$form.max_concurrent_checks.label}</td><td class="FormRowValue">{$form.max_concurrent_checks.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_reaper_frequency">&nbsp;{$form.check_result_reaper_frequency.label}</td><td class="FormRowValue">{$form.check_result_reaper_frequency.html}&nbsp;{$Seconds}</td></tr>
+                        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_result_reaper_time">&nbsp;{$form.max_check_result_reaper_time.label}</td><td class="FormRowValue">{$form.max_check_result_reaper_time.html}&nbsp;{$Seconds}</td></tr>
 	
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$CachedCheck}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="cached_host_check_horizon">&nbsp;{$form.cached_host_check_horizon.label}</td><td class="FormRowValue">{$form.cached_host_check_horizon.html}&nbsp;{$Seconds}</td></tr>

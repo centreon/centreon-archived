@@ -321,6 +321,16 @@ ALTER TABLE `nagios_server` ADD COLUMN `init_script_snmptt` VARCHAR(255) DEFAULT
 --
 
 --
+-- Max check result reaper time
+--
+
+ALTER TABLE  `cfg_nagios` ADD  `max_check_result_reaper_time` INT( 11 ) NULL AFTER  `check_result_reaper_frequency`;
+
+--
+-- End max check result reaper time
+--
+
+--
 -- Added connectors menu to topology
 --
 
