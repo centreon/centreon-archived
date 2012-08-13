@@ -256,14 +256,11 @@ sub replaceMacros($) {
     my @macros;
     my $x = 0;
 
-    #my @args = split(/\'\s+\'|\'/, $allargs);
     my @args = split(/\#\#C\#\#/, $allargs);
     foreach (@args) {
 	my $tmp = $_;
-	logit($tmp, "DD");
 	my ($oid, $str) = split(':', $tmp);
 	$OIDTable[($x+1)] = $oid;
-	logit($str, "DD");
 	if ($str !~ m/^$/ && $str ne " ") {
 	    $macros[($x+1)] = $str;
 	    $macros[($x+1)] =~ s/\=/\-/g;
@@ -284,18 +281,20 @@ sub replaceMacros($) {
 #
 sub forceCheck($$$$) {
     my ($dbh, $this_host, $this_service, $datetime) = @_;
+    my $result;
 
     my $id = get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
 	my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
-	send_command($submit);
+	$result = send_command($submit);
 	
 	logit("FORCE: Reschedule linked service", "II");
 	logit("FORCE: Launched command: $submit", "II");
 	
-	undef($id);
 	undef($submit);
     }
+    undef($id);
+    return $result;
 }
 
 #######################################
@@ -303,29 +302,31 @@ sub forceCheck($$$$) {
 #
 sub submitResult($$$$$$$) {
     my ($dbh, $this_host, $this_service, $datetime, $status, $arguments_line, $cmdFile) = @_;
+    my $result;
 
     # No matching rules
     my $id = get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
 	my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile'";
-	send_command($submit);
+	$result = send_command($submit);
 	
 	logit("SUBMIT: Force service status via passive check update", "II");
 	logit("SUBMIT: Launched command: $submit", "II");
 	
-	undef($id);
 	undef($submit);
     }
+    undef($id);
+    return $result;
 }
 
-
+##########################
+## REPLACE OID ARGS
+#
 sub replaceOID($$) {
     my ($str, $ref_macros) = @_;
 
     my @macros = @{$ref_macros};
 
-    ##########################
-    # REPLACE OID ARGS
     my $x = 1;
     my $oid = "";
     foreach (@macros) {
@@ -339,6 +340,28 @@ sub replaceOID($$) {
 	}
     }
     return $str;
+}
+
+##########################
+## REPLACE ARGS
+#
+sub replaceArgs($$) {
+    my ($string, $ref_macros) = @_;
+
+    my @macros = @{$ref_macros};
+
+    my $x = 1;
+    foreach (@macros) {
+	if (defined($macros[$x])) {
+	    if ($debug) {
+		logit("REPLACE VAL: $string => /\$".$x."/".$macros[$x]."/", "DD");
+	    }
+	    $string =~ s/\$$x/$macros[$x]/g;
+	    $x++;
+	}
+    }
+    undef($x);
+    return $string;
 }
 
 #######################################
@@ -372,22 +395,13 @@ sub checkMatchingRules($$$$$$$$$) {
 	}
 
 	##########################
-	# REPLACE ARGS
-	my $x = 1;
-	foreach (@macros) {
-	    if (defined($macros[$x])) {
-		if ($debug) {
-		    logit("REPLACE VAL: $tmoString => /\$".$x."/".$macros[$x]."/", "DD");
-		}
-		$tmoString =~ s/\$$x/$macros[$x]/g;
-		$x++;
-	    }
-	}
-
+	# Replace Args
+	$tmoString = replaceArgs($tmoString, \@macros);
+	# Repalce OID
 	$tmoString = replaceOID($tmoString, \@macros);
 
 	##########################
-	# REPLACE MACROS
+	# REPLACE special Chars
 	if ($htmlentities == 1) {
 	    $tmoString = decode_entities($tmoString);
 	} else {
@@ -407,12 +421,15 @@ sub checkMatchingRules($$$$$$$$$) {
 	    logit("Regexp: String:$tmoString => REGEXP:$regexp", "II");
 	    logit("Status: $status ($tmoStatus)", "II");
 	    last;
-	}
+	}    
     }
     $sth->finish();
     return $status;
 }
 
+################################
+## Execute a specific command
+#
 sub executeCommand($$$$$$$$) {
     my ($traps_execution_command, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
     
@@ -450,7 +467,7 @@ sub executeCommand($$$$$$$$) {
     if ($traps_execution_command) {
 	logit("EXEC: Launch specific command", "II");
 	logit("EXEC: Launched command: $traps_execution_command", "II");
-
+	
 	my $output = `$traps_execution_command`;
 	if ($?) {
 	    logit("EXEC: Execution error: $!", "EE");
@@ -460,6 +477,16 @@ sub executeCommand($$$$$$$$) {
 	}
 	undef($output);
     }
+}
+
+#######################################
+## Clean OID Macros in output
+#
+sub cleanOIDMacros($) {
+    my ($output) = @_;
+    
+    $output =~ s/\@\{[\.0-9]*\}//g;
+    return $output;
 }
 
 #######################################
@@ -498,20 +525,14 @@ sub getTrapsInfos($$$$$) {
 	    my $datetime = `date +%s`;
 	    chomp($datetime);
 
-            ##########################
-	    # REPLACE OID ARGS
-	    my $x = 1;
-	    my $oid = "";
-	    foreach (@macros) {
-		if (defined($macros[$x])) {
-		    $oid = $OIDTable[$x];
-		    if ($debug) {
-			logit("REPLACE OID: $traps_execution_command => /\@\{".$oid."\}/".$macros[$x]."/", "DD");
-		    }
-		    $arguments_line =~ s/\@\{$oid\}/$macros[$x]/g;
-		    $x++;
-		}
-	    }
+	    ##########################
+	    # Replace Args
+	    $arguments_line = replaceArgs($arguments_line, \@macros);
+	    # Repalce OID
+	    $arguments_line = replaceOID($arguments_line, \@macros);
+	    
+	    # Clean unknown OID.
+	    $arguments_line = cleanOIDMacros($arguments_line);
 
 	    ######################################################################
 	    # Advanced matching rules
