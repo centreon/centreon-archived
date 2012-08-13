@@ -44,7 +44,41 @@
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
-
+        /**
+         * Quickform rule that checks whether or not monitoring server can be set
+         * 
+         * @return bool
+         */
+        function testPollerDep($instanceId) {
+            global $pearDB, $form;
+                        
+            $hostId = $form->getSubmitValue('host_id');
+            if (!$hostId) {
+                return true;
+            }
+            $query = "SELECT COUNT(*) as nb
+                      FROM host_hostparent_relation hhr, ns_host_relation nhr 
+                      WHERE hhr.host_parent_hp_id = nhr.host_host_id
+                      AND hhr.host_host_id = ".$pearDB->escape($hostId)."
+                      AND nhr.nagios_server_id != ".$pearDB->escape($instanceId);
+            $res = $pearDB->query($query);
+            $row = $res->fetchRow();
+            if ($row['nb']) {
+                return false;
+            }
+             $query = "SELECT COUNT(*) as nb
+                      FROM host_hostparent_relation hhr, ns_host_relation nhr 
+                      WHERE hhr.host_host_id = nhr.host_host_id
+                      AND hhr.host_parent_hp_id = ".$pearDB->escape($hostId)."
+                      AND nhr.nagios_server_id != ".$pearDB->escape($instanceId);
+            $res = $pearDB->query($query);
+            $row = $res->fetchRow();
+            if ($row['nb']) {
+                return false;
+            }
+            return true;
+        }
+        
  	/**
  	 * Quickform rule that checks whether or not reserved macro are used
  	 *

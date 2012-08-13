@@ -753,7 +753,10 @@
 	    $form->registerRule('exist', 'callback', 'testHostExistence');
 	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
 	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
-
+            
+            $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
+            $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+            
 		/*
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
 		 */
