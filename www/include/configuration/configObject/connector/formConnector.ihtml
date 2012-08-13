@@ -1,0 +1,60 @@
+<form {$form.attributes}>
+    
+    <div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+    
+    <div id='tab1' class='tab'>
+        <table class="ListTable">
+            <tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
+            <tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_name"> {$form.connector_name.label}</td><td class="FormRowValue">{$form.connector_name.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_description"> {$form.connector_description.label}</td><td class="FormRowValue">{$form.connector_description.html}</td></tr>
+            <tr class="list_one">
+                <td class="FormRowField"><img class="helpTooltip" name="command_line_help"> {$form.command_line.label}</td>
+                <td>
+                    <table border="0">
+                        <tr>
+                            <td>{$form.command_line.html}</td>
+                        {if $o == "a" || $o == "c"}
+                            <td>
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(1)" />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                {$form.resource.html}
+                                <br /><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(2)" />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                {$form.plugins.html}
+                                &nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icones/16x16/about.gif' onClick="window.open('main.php?p=60706&command_name='+ document.Form.plugins.value + '&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">
+                                <br /><br />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(3)" />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                {$form.macros.html}
+                            </td>
+                        {/if}
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.command_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
+            
+        </table>
+    </div>
+              
+    <div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p>{$form.action.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
