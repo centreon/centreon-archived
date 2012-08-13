@@ -57,12 +57,13 @@
 	
 	$form->addElement('text', 'debug_path', _("Logs Directory"), $attrsText);
 
-	$form->addElement('select', 'debug_auth', _("Authentication debug"), array(0=>_("No"), 1=>_("Yes")));
-	$form->addElement('select', 'debug_sql', _("SQL debug"), array(0=>_("No"), 1=>_("Yes")));
-	$form->addElement('select', 'debug_nagios_import', _("Nagios Import debug"), array(0=>_("No"), 1=>_("Yes")));
-	$form->addElement('select', 'debug_rrdtool', _("RRDTool debug"), array(0=>_("No"), 1=>_("Yes")));
-	$form->addElement('select', 'debug_ldap_import', _("LDAP User Import debug"), array(0=>_("No"), 1=>_("Yes")));
-
+	$form->addElement('checkbox', 'debug_auth', _("Authentication debug"));
+	$form->addElement('checkbox', 'debug_sql', _("SQL debug"));
+	$form->addElement('checkbox', 'debug_nagios_import', _("Nagios Import debug"));
+	$form->addElement('checkbox', 'debug_rrdtool', _("RRDTool debug"));
+	$form->addElement('checkbox', 'debug_ldap_import', _("LDAP User Import debug"));
+	$form->addElement('checkbox', 'debug_centcore', _("Centcore Engine debug"));
+	
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";

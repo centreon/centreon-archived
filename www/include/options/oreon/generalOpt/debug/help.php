@@ -11,4 +11,5 @@ $help['tip_nagios_import_debug'] = dgettext('help', 'Enables Nagios import debug
 $help['tip_rrdtool_debug'] = dgettext('help', 'Enables RRDTool debug.');
 $help['tip_ldap_user_import_debug'] = dgettext('help', 'Enables LDAP user import debug.');
 $help['tip_sql_debug'] = dgettext('help', 'Enables SQL debug.');
+$help['tip_centcore_debug'] = dgettext('help', 'Enables Centcore debug.');
 
