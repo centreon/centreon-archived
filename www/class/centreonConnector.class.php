@@ -62,11 +62,17 @@
  * //    'command_line' => 'ls -laph --color'
  * //));
  * 
+ * //$connector->getList(false, 20, false);
+ * 
  * //$connector->delete(10);
  * 
  * //$connector->read(7);
  * 
- * //$connector->copy(1, 5);
+ * //$connector->copy(1, 5, true);
+ * 
+ * //$connector->count(false);
+ * 
+ * //$connector->checkName('norExists');
  */
 
 class CentreonConnector
@@ -275,7 +281,7 @@ class CentreonConnector
     /**
      * Gets list of connectors
      * 
-     * @param int $page
+     * @param int|boolean $page
      * @param int $perPage
      * @param boolean $onlyEnabled
      * @throws InvalidArgumentException
@@ -286,17 +292,23 @@ class CentreonConnector
         /**
          * Checking parameters
          */
-        if (!is_numeric($page)) {
+        if (!is_numeric($page) && $page !== false) {
             throw new InvalidArgumentException('Page number should be integer');
         }
         if (!is_numeric($perPage)) {
             throw new InvalidArgumentException('Per page parameter should be integer');
         }
 
-        /**
-         * Calculating offset
-         */
-        $offset = $page * $perPage;
+        if ($page === false) {
+            $restrictSql = '';
+        } else {
+            /**
+             * Calculating offset
+             */
+            $offset = $page * $perPage;
+            $restrictSql = "LIMIT $perPage OFFSET $offset";
+        }
+
         if ($onlyEnabled) {
             $connectorsResult = $this->dbConnection->query("SELECT
                                                                 `id`,
@@ -309,11 +321,7 @@ class CentreonConnector
                                                              FROM
                                                                 `connector`
                                                              WHERE
-                                                                `enabled` = 1
-                                                             LIMIT
-                                                                $perPage
-                                                             OFFSET
-                                                                $offset");
+                                                                `enabled` = 1 " . $restrictSql);
         } else {
             $connectorsResult = $this->dbConnection->query("SELECT
                                                                 `id`,
@@ -324,11 +332,7 @@ class CentreonConnector
                                                                 `created`,
                                                                 `modified`
                                                              FROM
-                                                                `connector`
-                                                             LIMIT
-                                                                $perPage
-                                                             OFFSET
-                                                                $offset");
+                                                                `connector` " . $restrictSql);
         }
 
         if (PEAR::isError($connectorsResult)) {
@@ -370,11 +374,7 @@ class CentreonConnector
             $exists = 1;
             while ($exists) {
                 $newName = $originalName . '_' . $suffix;
-                $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($newName));
-                if (PEAR::isError($existsResult)) {
-                    throw new RuntimeException('Cannot verify if connector name already in use; Query not valid; Check the database schema');
-                }
-                $exists = (boolean) $existsResult->fetchRow();
+                $exists = $this->checkName($newName);
                 ++$suffix;
             }
             try {
@@ -393,6 +393,48 @@ class CentreonConnector
             return $ids;
         }
         return $this;
+    }
+
+    /**
+     * Counts total number of connectors
+     * 
+     * @param boolean $onlyEnabled
+     * @return int
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
+     */
+    public function count($onlyEnabled = true)
+    {
+        if (!is_bool($onlyEnabled)) {
+            throw new InvalidArgumentException('Parameter "onlyEnabled" should be boolean');
+        }
+        if ($onlyEnabled) {
+            $countResult = $this->dbConnection->query('SELECT COUNT(*) AS \'count\' FROM `connector` WHERE `enabled` = 1');
+        } else {
+            $countResult = $this->dbConnection->query('SELECT COUNT(*) \'count\' FROM `connector`');
+        }
+
+        if (PEAR::isError($countResult) || !($count = $countResult->fetchRow())) {
+            throw new RuntimeException('Cannot count connectors');
+        }
+
+        return $count['count'];
+    }
+
+    /**
+     * Verifies if connector exists by name
+     * 
+     * @param string $name
+     * @return boolean
+     * @throws RuntimeException
+     */
+    public function checkName($name)
+    {
+        $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($name));
+        if (PEAR::isError($existsResult)) {
+            throw new RuntimeException('Cannot verify if connector name already in use; Query not valid; Check the database schema');
+        }
+        return (boolean) $existsResult->fetchRow();
     }
 
 }
