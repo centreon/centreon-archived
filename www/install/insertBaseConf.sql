@@ -903,7 +903,9 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL),
 (31, 'retry_interval', 'Retry Interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering Timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
-(33, 'fifo', 'File for Centeron Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL);
+(33, 'fifo', 'File for Centeron Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
+(34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
+(35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -1053,4 +1055,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (22, 30, 1, 2),
 (21, 31, 1, 2),
 (21, 32, 1, 2),
-(23, 33, 1, 1);
+(23, 33, 1, 1),
+(16, 34, 0, 7),
+(16, 35, 0, 8),
+(14, 34, 0, 9),
+(14, 35, 0, 10);

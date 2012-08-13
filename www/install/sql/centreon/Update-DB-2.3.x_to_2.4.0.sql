@@ -359,6 +359,18 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`) VALUES (5, 23);
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (23, 33, 1, 1);
 
 --
+-- Add options for transactions in SQL connector for Centreon Broker
+--
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
+(34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
+(35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+(16, 34, 0, 7),
+(16, 35, 0, 8),
+(14, 34, 0, 9),
+(14, 35, 0, 10);
+
+--
 -- End added connectors menu to topology
 --
 
