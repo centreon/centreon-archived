@@ -216,6 +216,15 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (202,'Setup','./img/icones/16x16/press.gif',507,50703,30,30,'./include/options/oreon/widgets/widgets.php',NULL,NULL,NULL,'1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (203,'Connectors',NULL,608,NULL,NULL,3,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (204,'Connectors','./img/icones/16x16/gauge.gif',608,60806,60,3,'./include/configuration/configObject/connector/connector.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_show`) VALUES
+                       ('Custom Views', NULL, '1', '103', '1', '1', './include/home/customViews/index.php', '1'),
+                       ('Edit', NULL, '103', '10301', NULL, NULL, './include/home/customViews/form.php', '0'),
+                       ('Share', NULL, '103', '10302', NULL, NULL, './include/home/customViews/shareView.php', '0'),
+                       ('Parameters', NULL, '103', '10303', NULL, NULL, './include/home/customViews/widgetParam.php', '0'),
+                       ('Add Widget', NULL, '103', '10304', NULL, NULL, './include/home/customViews/addWidget.php', '0'),
+                       ('Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
+                       ('Widgets', NULL, '507', NULL, '2', '20', NULL, '1'),
+                       ('Setup', './img/icones/16x16/press.gif', '507', '50703', '20', '20', './include/options/oreon/widgets/widgets.php', '1');
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
