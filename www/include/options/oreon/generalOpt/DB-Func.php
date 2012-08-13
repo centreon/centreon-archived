@@ -137,13 +137,19 @@
 		updateOption($pearDB, "monitoring_ack_active_checks", isset($ret["monitoring_ack_active_checks"]) && $ret['monitoring_ack_active_checks'] ? 1 : 0);
 		updateOption($pearDB, "monitoring_ack_svc", isset($ret["monitoring_ack_svc"]) && $ret['monitoring_ack_svc'] ? 1 : 0);
 
-		/**
+		/*
 		 * Downtime part
 		 */
 		updateOption($pearDB, "monitoring_dwt_duration", isset($ret["monitoring_dwt_duration"]) && $ret['monitoring_dwt_duration'] ? $pearDB->escape($ret['monitoring_dwt_duration']) : 3600);
         updateOption($pearDB, "monitoring_dwt_fixed", isset($ret["monitoring_dwt_fixed"]) && $ret['monitoring_dwt_fixed'] ? 1 : 0);
         updateOption($pearDB, "monitoring_dwt_svc", isset($ret["monitoring_dwt_svc"]) && $ret['monitoring_dwt_svc'] ? 1 : 0);
 
+        /*
+         * Cencore options
+         */
+        updateOption($pearDB, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
+        updateOption($pearDB, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
+        
 		$oreon->initOptGen($pearDB);
 	}
 

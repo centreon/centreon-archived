@@ -4,31 +4,39 @@
 	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$genOpt_monitoring_properties}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$genOpt_nagios_version}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_engine">{$form.monitoring_engine.label}</td><td class="FormRowValue">{$form.monitoring_engine.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_engine">&nbsp;{$form.monitoring_engine.label}</td><td class="FormRowValue">{$form.monitoring_engine.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">&nbsp;{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">&nbsp;{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
+		
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$genOpt_centcore}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_perfdata_sync">&nbsp;{$form.enable_perfdata_sync.label}</td><td class="FormRowValue">{$form.enable_perfdata_sync.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_logs_sync">&nbsp;{$form.enable_logs_sync.label}</td><td class="FormRowValue">{$form.enable_logs_sync.html}</td></tr>		
+		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$genOpt_dbLayer}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_broker_engine_used_by_centreon">{$form.broker.label}</td><td class="FormRowValue">{$form.broker.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_broker_engine_used_by_centreon">&nbsp;{$form.broker.label}</td><td class="FormRowValue">{$form.broker.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_Correlation_script}</td></tr>		
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_start_script_for_correlator_engine">{$form.broker_correlator_script.label}</td><td class="FormRowValue">{$form.broker_correlator_script.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_start_script_for_correlator_engine">&nbsp;{$form.broker_correlator_script.label}</td><td class="FormRowValue">{$form.broker_correlator_script.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$genOpt_mailer_path}</td></tr>		
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory+mailer_binary">{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory+mailer_binary">&nbsp;{$form.mailer_path_bin.label}</td><td class="FormRowValue">{$form.mailer_path_bin.html}</td></tr>
+		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;{$tacticalOverviewOptions}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_maximum_number_of_hosts_to_show">{$form.tactical_host_limit.label}</td><td class="FormRowValue">{$form.tactical_host_limit.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_maximum_number_of_services_to_show">{$form.tactical_service_limit.label}</td><td class="FormRowValue">{$form.tactical_service_limit.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_page_refresh_interval">{$form.tactical_refresh_interval.label}</td><td class="FormRowValue">{$form.tactical_refresh_interval.html}&nbsp;{$seconds}</td></tr>		
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_maximum_number_of_hosts_to_show">&nbsp;{$form.tactical_host_limit.label}</td><td class="FormRowValue">{$form.tactical_host_limit.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_maximum_number_of_services_to_show">&nbsp;{$form.tactical_service_limit.label}</td><td class="FormRowValue">{$form.tactical_service_limit.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_page_refresh_interval">&nbsp;{$form.tactical_refresh_interval.label}</td><td class="FormRowValue">{$form.tactical_refresh_interval.html}&nbsp;{$seconds}</td></tr>		
+		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/flag_red.gif'>&nbsp;&nbsp;{$acknowledgement_default_settings}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sticky">{$form.monitoring_ack_sticky.label}</td><td class="FormRowValue">{$form.monitoring_ack_sticky.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_notify">{$form.monitoring_ack_notify.label}</td><td class="FormRowValue">{$form.monitoring_ack_notify.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_persistent">{$form.monitoring_ack_persistent.label}</td><td class="FormRowValue">{$form.monitoring_ack_persistent.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_services_attached_to_hosts">{$form.monitoring_ack_svc.label}</td><td class="FormRowValue">{$form.monitoring_ack_svc.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_force_active_checks">{$form.monitoring_ack_active_checks.label}</td><td class="FormRowValue">{$form.monitoring_ack_active_checks.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sticky">&nbsp;{$form.monitoring_ack_sticky.label}</td><td class="FormRowValue">{$form.monitoring_ack_sticky.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_notify">&nbsp;{$form.monitoring_ack_notify.label}</td><td class="FormRowValue">{$form.monitoring_ack_notify.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_persistent">&nbsp;{$form.monitoring_ack_persistent.label}</td><td class="FormRowValue">{$form.monitoring_ack_persistent.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_acknowledge_services_attached_to_hosts">&nbsp;{$form.monitoring_ack_svc.label}</td><td class="FormRowValue">{$form.monitoring_ack_svc.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_force_active_checks">&nbsp;{$form.monitoring_ack_active_checks.label}</td><td class="FormRowValue">{$form.monitoring_ack_active_checks.html}</td></tr>
+		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$downtime_default_settings}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_fixed">{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_set_downtimes_on_services_attached_to_hosts">{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_duration">{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_fixed">&nbsp;{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_set_downtimes_on_services_attached_to_hosts">&nbsp;{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_duration">&nbsp;{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 	{if !$valid}

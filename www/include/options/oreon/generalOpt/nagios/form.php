@@ -98,6 +98,13 @@
     $form->addElement('checkbox', 'monitoring_dwt_svc', _("Set downtimes on services attached to hosts"));
     $form->addElement('text', 'monitoring_dwt_duration', _("Duration"), $attrsText2);
 
+    /*
+     * Centcore Options
+     */
+    $form->addElement('checkbox', 'enable_perfdata_sync', _("Enable Perfdata Synchronisation (Centcore)"));
+    $form->addElement('checkbox', 'enable_logs_sync', _("Enable Logs Synchronisation (Centcore)"));
+    
+    
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -190,6 +197,7 @@
 	$tpl->assign("genOpt_monitoring_properties", "Monitoring properties");
     $tpl->assign("acknowledgement_default_settings", _("Default acknowledgement settings"));
     $tpl->assign("downtime_default_settings", _("Default downtime settings"));
+    $tpl->assign("genOpt_centcore", _("Centcore Options"));
     $tpl->assign("seconds", _("seconds"));
 	$tpl->assign('valid', $valid);
 	$tpl->display("form.ihtml");

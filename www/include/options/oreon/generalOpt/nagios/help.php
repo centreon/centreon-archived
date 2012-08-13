@@ -52,3 +52,9 @@ $help['tip_force_active_checks'] = dgettext('help', '[Force Active Checks] optio
 $help['tip_fixed'] = dgettext('help', 'Fixed.');
 $help['tip_set_downtimes_on_services_attached_to_hosts'] = dgettext('help', '[Set downtimes on services attached to hosts] option is enbaled by default.');
 $help['tip_duration'] = dgettext('help', 'Default duration of scheduled downtimes.');
+
+/**
+ * Centcore Settings
+ */
+$help['tip_enable_perfdata_sync'] = dgettext('help', 'Enable Perfdata synchronisation between poller and Central Server operated by Centore');
+$help['tip_enable_logs_sync'] = dgettext('help', 'Enable Nagios Logs synchronisation between poller and Central Server operated by Centore');
