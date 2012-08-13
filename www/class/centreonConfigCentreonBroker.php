@@ -199,7 +199,7 @@ class CentreonConfigCentreonBroker
         if (isset($this->blockCache[$tagId])) {
             return $this->blockCache[$tagId];
         }
-        $query = "SELECT m.name, t.cb_type_id, t.type_name
+        $query = "SELECT m.name, t.cb_type_id, t.type_name, ttr.cb_type_uniq
         	FROM cb_module m, cb_type t, cb_tag_type_relation ttr
         	WHERE m.cb_module_id = t.cb_module_id AND ttr.cb_type_id = t.cb_type_id AND ttr.cb_tag_id = %d";
         $res = $this->db->query(sprintf($query, $tagId));
@@ -210,7 +210,7 @@ class CentreonConfigCentreonBroker
         while ($row = $res->fetchRow()) {
             $name = $row['name'] . ' - ' . $row['type_name'];
             $id = $tagId . '_' . $row['cb_type_id'];
-            $this->blockCache[$tagId][] = array('id' => $id, 'name' => $name);
+            $this->blockCache[$tagId][] = array('id' => $id, 'name' => $name, 'unique' => $row['cb_type_uniq']);
         }
         return $this->blockCache[$tagId];
     }

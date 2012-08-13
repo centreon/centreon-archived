@@ -33,9 +33,9 @@
 			<tbody id="{$tab.id}_0">
 				<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 				<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$tab.name}</td></tr>
-				<tr class="list_one"><td class="FormRowField" colspan="2"><select id="block_{$tab.id}">{foreach from=$tab.blocks item=block}
+				<tr class="list_one"><td class="FormRowField" colspan="2"><select id="block_{$tab.id}" onchange="checkTypeValidity(this)">{foreach from=$tab.blocks item=block}
 				<option value="{$block.id}">{$block.name}</option>
-				{/foreach}</select>&nbsp;<a href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
+				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
 			</tbody>
 			{foreach from=$tab.forms item=formBlock name=formForeach}
 				{assign var="posBlock" value=$smarty.foreach.formForeach.index}
@@ -88,6 +88,17 @@ infos.setPos("{$tab.id}", {$tab.nb});
 {/foreach}
 {literal}
 
+var uniqueType = new Array();{/literal}
+{foreach from=$tabs item=tab}
+{foreach from=$tab.blocks item=block}
+{if $block.unique == 1}
+uniqueType["{$block.id}"] = true;
+{else}
+uniqueType["{$block.id}"] = false;
+{/if}
+{/foreach}
+{/foreach}{literal}
+
 function addInfo(type) {
 	var prev_id = infos.getPos(type);
 	var id = prev_id + 1;
@@ -102,9 +113,16 @@ function addInfo(type) {
     new Ajax.Updater(
     		tbody,
     		'main.php' + params,
-    		{evalScripts: true}
+    		{
+    			evalScripts: true,
+    			onComplete: function(response) {
+    				if (response.status == 200) {
+	    				infos.incrementPos(type);
+	    				checkTypeValidity('block_' + type);
+    				}
+    			}
+    		}
     		);
-    infos.incrementPos(type);
 }
 
 function deleteRow(type, id) {
@@ -112,6 +130,30 @@ function deleteRow(type, id) {
 	var parent = document.getElementById(type);
 	var delEl = document.getElementById(row_name);
 	parent.removeChild(delEl);
+	checkTypeValidity("block_" + type);
+}
+
+function checkTypeValidity(selectType) {
+	var typeId = $(selectType).getValue();
+	var tagName = $(selectType).id.replace('block_', '');
+	if (typeId in uniqueType && uniqueType[typeId] == true) {
+		var blockNameArray = $$('input[value="' + typeId + '"]');
+		if (blockNameArray.length > 0) {
+			$('add_' + tagName).hide();
+		} else {
+			$('add_' + tagName).show();
+		}
+	} else {
+		$('add_' + tagName).show();
+	}
+}
+
+function loadedConfiguration() {
+$$('table.ListTable').each(function(el) {
+	if (el.id != undefined && el.id != '') {
+		checkTypeValidity("block_" + el.id);
+	}
+});
 }
 </script> 
 {/literal}

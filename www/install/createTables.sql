@@ -361,6 +361,7 @@ CREATE TABLE `cb_tag` (
 CREATE TABLE `cb_tag_type_relation` (
   `cb_tag_id` int(11) NOT NULL,
   `cb_type_id` int(11) NOT NULL,
+  `cb_type_uniq` int(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`cb_tag_id`,`cb_type_id`),
   KEY `fk_cb_tag_type_relation_1` (`cb_tag_id`),
   KEY `fk_cb_tag_type_relation_2` (`cb_type_id`),
