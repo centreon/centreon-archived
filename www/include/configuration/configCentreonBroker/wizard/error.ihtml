@@ -1,0 +1,4 @@
+<div class="content">
+    <p class="error">{$strerr}</p>
+    <input type="hidden" name="end" value="false" />
+</div>

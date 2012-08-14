@@ -1,0 +1,31 @@
+<link rel="stylesheet" type="text/css" href="./include/configuration/configCentreonBroker/wizard/css/style.css" />
+<link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
+<div id="wizard">
+<div id="frames">
+</div>
+<div class="buttonbar">
+<span class="button" style="display: none;" id="button_previous">Previous</span>&nbsp;
+<span class="button" id="button_next">Next</span>&nbsp;
+<span class="button" style="display: none;" id="button_finish">Finish</span>
+</div>
+</div>
+<script type="text/javascript" src="./include/common/javascript/jquery/jquery.js"></script>
+<script type="text/javascript">
+jQuery.noConflict();
+</script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonWizard.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/centreon/jquery.centreonValidate.js"></script>
+<script type="text/javascript">
+{literal}
+jQuery('document').ready(function() {
+    jQuery('.button').mousedown(function(){
+      jQuery(this).addClass('click');
+    });
+    jQuery('.button').mouseup(function(){
+      jQuery(this).removeClass('click');
+    });
+    jQuery('#wizard').centreonWizard({url: 'main.php?p=6090902&min=1&iframe=1', method: 'POST', name: 'broker', uuid: '{/literal}{$wizardId}{literal}'});
+});
+{/literal}
+</script>
