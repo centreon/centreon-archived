@@ -1,0 +1,119 @@
+#!/usr/bin/perl
+################################################################################
+# Copyright 2005-2011 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation ; either version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, see <http://www.gnu.org/licenses>.
+#
+# Linking this program statically or dynamically with other modules is making a
+# combined work based on this program. Thus, the terms and conditions of the GNU
+# General Public License cover the whole combination.
+#
+# As a special exception, the copyright holders of this program give MERETHIS
+# permission to link this program with independent modules to produce an executable,
+# regardless of the license terms of these independent modules, and to copy and
+# distribute the resulting executable under terms of MERETHIS choice, provided that
+# MERETHIS also meet, for each linked independent module, the terms  and conditions
+# of the license of that module. An independent module is a module which is not
+# derived from this program. If you modify this program, you may extend this
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+#
+# For more information : contact@centreon.com
+#
+# SVN : $URL
+# SVN : $Id
+#
+####################################################################################
+use strict;
+use vars qw($log_centrapforward $log_centrapforward_debug $spool_directory);
+
+use Getopt::Long;
+use Time::HiRes qw(gettimeofday);
+require "@CENTREON_ETC@/centreon-trap.conf.pm";
+
+my $version = '';
+my $help = '';
+
+###############################
+## Write into Log File
+#
+sub logit($$) {
+    my ($log, $criticity) = @_;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+    open (LOG, ">> ".$log_centrapforward) || print "can't write $log_centrapforward: $!";
+    printf LOG "[%04d-%02d-%02d %02d:%02d:%02d] [$criticity] %s\n", $year+1900, $mon+1, $mday, $hour, $min, $sec, $_[0];
+    close LOG or warn $!;
+}
+
+sub showversion {
+	printf "\ncentreon-trapforward v1.0\n";
+}
+
+GetOptions('version' => \$version, 
+           'help' => \$help);
+if ($version) {
+    &showversion;
+    exit(0);
+}
+
+if ($help) {
+    my $USAGE = qq/Usage:
+    centrapforward [<options>] 
+Options:
+    --help                               Display this message
+    --version                            Display author and version information
+/;
+
+    &showversion;
+    print $USAGE;
+
+    exit(0);
+}
+
+# Create file in spool directory based on current time
+my ($s, $usec) = gettimeofday;
+
+# Pad the numbers with 0's to make sure they are all the same length.  Sometimes the
+# usec is shorter than 6.
+my $s_pad = sprintf("%09d",$s);
+my $usec_pad = sprintf("%06d",$usec);
+
+if ($log_centrapforward_debug >= 0) {
+    # Print out time
+    logit("centreon-trapforward started: " . scalar(localtime), "DD");
+    logit("s = $s, usec = $usec", "DD");
+    logit("s_pad = $s_pad, usec_pad = $usec_pad", "DD");
+    logit("Data received:", "DD");
+}
+
+my $spoolfile = $spool_directory.'#centreon-trap-'.$s_pad.$usec_pad;
+
+unless (open SPOOL, ">$spoolfile") {
+    logit("Could not write to file file $spoolfile!  Trap will be lost!", "EE");
+    exit(1);
+}
+
+print SPOOL time()."\n";
+
+while (defined(my $line = <>)) {
+    print SPOOL $line;
+	
+	if ($log_centrapforward_debug >= 0) {
+		# Print out item passed from snmptrapd
+        chomp $line;
+		logit($line, "DD");
+	}
+}
+
+exit(0);
