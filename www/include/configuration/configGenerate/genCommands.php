@@ -78,6 +78,25 @@
 			$command["command_comment"] = trim(preg_replace($slashesOri,$slashesRep,$command["command_comment"]));
 		}
 
+        
+        
+        
+        // Ajoute un connecteur si nécessaire
+        if ($tab['monitoring_engine'] == 'CENGINE')
+        {
+            if ($command["connector_id"] != NULL)
+            {
+                $DBRESULT2 = $pearDB->query("SELECT `name` FROM `command`, `connector` WHERE `command`.`connector_id` = '".$command["connector_id"]."' AND `command`.`connector_id` = `connector`.`id`");
+                if (!PEAR::isError($DBRESULT2))
+                {
+                    $connector = $DBRESULT2->fetchRow();
+                    $connectorLine = print_line("connector_name", $connector["name"]);
+                    unset($DBRESULT2);
+                }
+            }
+        }
+        
+        
 		if ($command["command_type"] == 1 || $command["command_type"] == 3)	{
 			/*
 			 * Notification Command case -> command_type == 1
@@ -109,6 +128,9 @@
 			}
 			$DBRESULT2->free();
 			unset($args);
+            
+            if (isset($connectorLine))
+                $str1 .= $connectorLine;
 
 			$str1 .= "}\n\n";
 			$i1++;
@@ -144,6 +166,9 @@
 			}
 			$DBRESULT2->free();
 			unset($args);
+            
+            if (isset($connectorLine))
+                $str2 .= $connectorLine;
 
 			$str2 .= "}\n\n";
 			$i2++;
