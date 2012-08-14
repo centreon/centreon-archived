@@ -89,13 +89,13 @@ sub main() {
     $sth->finish();
     my $NAGIOS_TRAPS = $conf->{'value'}."bin/";
 
-    $sth = $dbh->prepare("SELECT `id`, `name` FROM `traps_vendor`")
+    $sth = $dbh->prepare("SELECT DISTINCT tv.`id`, tv.`name` FROM `traps` t, `traps_service_relation` tsr, `traps_vendor` tv WHERE tsr.`traps_id` = t.`traps_id` AND t.`manufacturer_id` = tv.`id` ORDER BY tv.name")
 		or die "Couldn't prepare 'get id and name' statement: " . $dbh->errstr;
     $sth->execute()
 		or die "Couldn't execute 'get id and name' statement: " . $sth->errstr;
     my $snmpttIni = "";
     while (my ($man_id, $man_name) = $sth->fetchrow_array()) {
-		my $sth2 = $dbh->prepare("SELECT `traps_name`, `traps_oid`, `traps_status`, `traps_args`, `traps_comments` FROM `traps` WHERE `manufacturer_id` = '$man_id'")
+		my $sth2 = $dbh->prepare("SELECT t.`traps_oid`, t.`traps_status`, t.`traps_args`, t.`traps_comments`, t.`traps_name`, tv.`name` FROM `traps` t, `traps_service_relation` tsr, `traps_vendor` tv WHERE tsr.`traps_id` = t.`traps_id` AND tv.`id` = '$man_id' AND t.`manufacturer_id` = '$man_id' ORDER BY tv.name")
 			or die "Couldn't prepare 'get traps information' statement: " . $dbh->errstr;
 		$sth2->execute()
 			or die "Couldn't execute 'get traps information' statement: " . $sth->errstr;
