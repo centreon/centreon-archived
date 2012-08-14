@@ -145,13 +145,13 @@
 	{
 		global $form, $pearDB, $oreon;
 
+        
 		if (!$cmd_id) {
 			return;
 		}
 
 		$ret = array();
 		$ret = $form->getSubmitValues();
-
 		//set_magic_quotes_runtime(1);
 
 		$ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
@@ -161,7 +161,8 @@
 				"`command_example` = '".$pearDB->escape($ret["command_example"])."', " .
 				"`command_type` = '".$pearDB->escape($ret["command_type"]["command_type"])."', " .
 				"`command_comment` = '".$pearDB->escape($ret["command_comment"])."', " .
-				"`graph_id` = '".$pearDB->escape($ret["graph_id"])."' " .
+				"`graph_id` = '".$pearDB->escape($ret["graph_id"])."', " .
+                "`connector_id` = " . (isset($ret["connectors"]) ? "'".$ret['connectors']."'" : "NULL")." ";
 				"WHERE `command_id` = '".$cmd_id."'";
 		$DBRESULT = $pearDB->query($rq);
 
@@ -170,6 +171,7 @@
 		$fields["command_example"] = $pearDB->escape($ret["command_example"]);
 		$fields["command_comment"] = $pearDB->escape($ret["command_comment"]);
 		$fields["command_type"] = $ret["command_type"]["command_type"];
+        
 		$fields["graph_id"] = $ret["graph_id"];
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
 		insertArgDesc($cmd_id, $ret);
@@ -195,15 +197,19 @@
 		/*
 		 * Insert
 		 */
-		$rq = "INSERT INTO `command` (`command_name`, `command_line`, `command_example`, `command_type`, `graph_id`) ";
-		$rq .= "VALUES ('".$pearDB->escape($ret["command_name"])."', '".$pearDB->escape($ret["command_line"])."', '".$pearDB->escape($ret["command_example"])."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."')";
-		$DBRESULT = $pearDB->query($rq);
+        
+        $rq = "INSERT INTO `command` (`command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `connector_id`) ";
+        $rq .= "VALUES ('".$pearDB->escape($ret["command_name"])."', '".$pearDB->escape($ret["command_line"])."', '".$pearDB->escape($ret["command_example"])."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."', ".
+              (isset($ret["connectors"]) ? "'".$ret['connectors']."'" : "NULL").")";
+        
+        $DBRESULT = $pearDB->query($rq);
 		$fields["command_name"] = $pearDB->escape($ret["command_name"]);
 		$fields["command_line"] = $pearDB->escape($ret["command_line"]);
 		$fields["command_example"] = $pearDB->escape($ret["command_example"]);
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
-
+        $fields["connector_id"] = $pearDB->escape($ret["connector_id"]);
+        
 		/*
 		 * Get Max ID
 		 */

@@ -90,6 +90,17 @@
 	}
 	unset($row);
 	$DBRESULT->free();
+    
+    /*
+	 * Connectors
+	 */
+
+	$connectors = array();
+	$DBRESULT = $pearDB->query("SELECT `id`, `name` FROM `connector` WHERE `enabled` = '1' ORDER BY `name`");
+	while ($row = $DBRESULT->fetchRow())
+		$connectors[$row["id"]] = $row["name"];
+	unset($row);
+	$DBRESULT->free();
 
 	/*
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
@@ -151,6 +162,11 @@
 		$form->setDefaults(array('command_type' => $type));
 	else
 		$form->setDefaults(array('command_type' => '2'));
+    
+    if (is_numeric($cmd['connector_id']))
+        $form->setDefaults(array('connectors' => $cmd['connector_id']));
+    else
+        $form->setDefaults(array('connectors' => ""));
 
 	$form->addElement('text', 'command_name', _("Command Name"), $attrsText);
 	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
@@ -173,6 +189,7 @@
 	$form->setDefaults(array("listOfArg"=>$strArgDesc));
 
 	$form->addElement('select', 'resource', null, $resource);
+    $form->addElement('select', 'connectors', _("Connectors"), $connectors);
 	$form->addElement('select', 'macros', null, $macros);
 
 	ksort($plugins_list);
@@ -202,6 +219,7 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
+    $tpl->assign("connectorsWarning", '<span style="color: #FF0000">[Works only in Centreon Engine 1.3]</span>');
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 	# prepare help texts
 	$helptext = "";
