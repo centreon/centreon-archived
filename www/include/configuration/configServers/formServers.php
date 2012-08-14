@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($oreon)) {
 		exit();
+	}
 
 	/*
 	 * Database retrieve information for Nagios
@@ -55,8 +56,9 @@
 	 */
 	$nagios_servers = array();
 	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
-	while($nagios_server = $DBRESULT->fetchRow())
+	while($nagios_server = $DBRESULT->fetchRow()) {
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
+	}
 	$DBRESULT->free();
 
 	$attrsText		= array("size"=>"30");
@@ -115,8 +117,6 @@
 	$Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 	$form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
 
-	$form->addElement('text', 'init_script_snmptt', _("SNMPTT Init Script"), $attrsText);
-	
 	/*
 	 * Centreon Broker
 	 */
@@ -124,6 +124,14 @@
 	$form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configuration path"), $attrsText2);
 	$form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
 
+	/*
+	 * SNMPTT
+	 */
+	$form->addElement('text', 'init_script_snmptt', _("SNMPTT init script path"), $attrsText2);
+	
+	/*
+	 * Set Default Values
+	 */
 	if (isset($_GET["o"]) && $_GET["o"] == 'a'){
 		$form->setDefaults(array(
 		"name" => '',
@@ -139,10 +147,12 @@
 		"ssh_private_key"  =>  '~/.ssh/rsa.id',
 		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata",
 		"centreonbroker_cfg_path" => "/etc/centreon/broker", 
-		"init_script" => "/etc/init.d/snmptt"));
+		"init_script" => "/etc/init.d/snmptt", 
+		"init_script_snmptt" => $centreon->optGen["init_script_snmptt"]));
 	} else {
-		if (isset($cfg_server))
+		if (isset($cfg_server)) {
 			$form->setDefaults($cfg_server);
+		}
 	}
 	$form->addElement('hidden', 'id');
 	$redirect = $form->addElement('hidden', 'o');
@@ -206,6 +216,7 @@
 		$tpl->assign('o', $o);
 
 		include_once("help.php");
+		
 		$helptext = "";
         foreach ($help as $key => $text) {
             $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
