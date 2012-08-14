@@ -7,6 +7,7 @@ $help['is_default'] = dgettext("help", "Main poller");
 $help['ssh_port'] = dgettext("help", "SSH port of the remote poller");
 $help['monitoring_engine'] = dgettext("help", "Scheduling engine");
 $help['init_script'] = dgettext("help", "Path of init script of the scheduler");
+$help['init_script_snmptt'] = dgettext("help", "Path of init script of SNMPTT");
 $help['nagios_bin'] = dgettext("help", "Path of binary of the scheduler");
 $help['nagiostats_bin'] = dgettext("help", "Path of stats binary of the scheduler");
 $help['nagios_perfdata'] = dgettext("help", "Perfdata script");
