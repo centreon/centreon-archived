@@ -212,13 +212,13 @@ class CentreonUser	{
    *
    * @return array
    */
-  public function getUserList()
+  public function getUserList($db)
   {
       static $userList;
 
       if (!isset($userList)) {
         $userList = array();
-        $res = $this->db->query("SELECT contact_id, contact_name
+        $res = $db->query("SELECT contact_id, contact_name
         				  FROM contact
         				  WHERE contact_register = '1'
         				  AND contact_activate = '1'

@@ -99,7 +99,7 @@ $viewerGroups = $viewObj->getUsergroupsFromViewId($viewId);
 /**
  * Users
  */
-$userList = array_diff_key($centreon->user->getUserList(), $viewers);
+$userList = array_diff_key($centreon->user->getUserList($db), $viewers);
 $ams1 = $form->addElement('advmultiselect', 'user_id', array(_("User List"), _("Available"), _("Selected")), $userList, $attrsAdvSelect);
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
