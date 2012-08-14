@@ -34,10 +34,14 @@
  * 
  */
 
+include_once "./include/common/autoNumLimit.php";
+    
 // So what we get drunk; So what we don't sleep; We're just having Fun and we d'ont car who sees
 try
 {
-    $connectorsList = $connectorObj->getList(0, 30, false);
+    $connectorsList = $connectorObj->getList(false, (int)$num, (int)$limit);
+    
+    //echo '<pre>'; var_dump(); echo '</pre>';
     
     $tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
@@ -95,36 +99,38 @@ try
         $selectedElements = $form->addElement('checkbox', "select[".$result['id']."]");
         if ($result)
         {
+            if ($result['enabled'])
+                $result['enabled'] = "enabled";
+            else
+                $result['enabled'] = "disabled";
+            
             $elemArr[$j] = array("RowMenu_select"         => $selectedElements->toHtml(),
                                  "RowMenu_link"           => "?p=".$p."&o=c&id=".$result['id'],
                                  "RowMenu_name"           => $result["name"],
                                  "RowMenu_description"    => $result['description'],
-                                 "RowMenu_command_line"    => $result['command_line'],
+                                 "RowMenu_command_line"   => $result['command_line'],
                                  "RowMenu_enabled"        => $result['enabled'],
                                  "RowMenu_options"        => $MyOption->toHtml()
                                 );
         }
         $j++;
-        $rows++;
     }
+    
+    /**
+     * @todo implement
+     */
+    $rows = $connectorObj->count(false);
+    
+    include_once "./include/common/checkPagination.php";
+    
     $tpl->assign("elemArr", $elemArr);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     $tpl->assign('p', $p);
+    $tpl->assign("connectorsWarning", '<span style="color: #FF0000">[Works only in Centreon Engine 1.3]</span>');
     $tpl->assign('connectorsList', $connectorsList);
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	
 	$tpl->assign('form', $renderer->toArray());
-    
+    $tpl->assign('limit', $limit);
     $tpl->display("listConnector.ihtml");
 }
  catch (Exception $e)

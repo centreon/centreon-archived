@@ -41,6 +41,7 @@
     require_once '/etc/centreon/centreon.conf.php';
     require_once $centreon_path . 'www/class/centreonConnector.class.php';
     $path = $centreon_path . 'www/include/configuration/configObject/connector/';
+    require_once $path . "DB-Func.php";
 
     /*
 	 * Pear library
@@ -56,9 +57,9 @@
     if (isset($_REQUEST['select']))
         $select = $_REQUEST['select'];
     
-    if (isset($_REQUEST['connector_id']))
-        $connector_id = $_REQUEST['connector_id'];
-    
+    if (isset($_REQUEST['id']))
+        $connector_id = $_REQUEST['id'];
+     
     if (isset($_REQUEST['options']))
         $options = $_REQUEST['options'];
     

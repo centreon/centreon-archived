@@ -34,19 +34,47 @@
  * 
  */
 
+function return_plugin($rep)
+{
+    global $oreon;
 
+    $plugins = array();
+    $is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
+    $handle[$rep] = opendir($rep);
+    while (false != ($filename = readdir($handle[$rep]))){
+        if ($filename != "." && $filename != ".."){
+            if (is_dir($rep.$filename)){
+                $plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
+                $plugins = array_merge($plugins, $plg_tmp);
+                unset($plg_tmp);
+            } elseif (!isset($is_not_a_plugin[$filename]) && substr($filename, -1)!= "~" && substr($filename, -1) != "#") {
+                $key = substr($rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"]));
+                $plugins[$key] = $key;
+            }
+        }
+    }
+    closedir($handle[$rep]);
+    return ($plugins);
+}
+    
 try
 {
     $tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
     
-    
     if (($o == "c" || $o == "w") && $connector_id)
     {
+        
         $cnt = $connectorObj->read((int)$connector_id);
         $cnt['connector_name'] = $cnt['name'];
         $cnt['connector_description'] = $cnt['description'];
-        $cnt['connector_status'] = $cnt['enabled'];
+        $cnt['command_line'] = $cnt['command_line'];
+        
+        if($cnt['enabled'])
+            $cnt['connector_status'] = '1';
+        else
+            $cnt['connector_status'] = '0';
+        
         $cnt['connector_id'] = $cnt['id'];
         
         unset($cnt['name']);
@@ -54,6 +82,33 @@ try
         unset($cnt['status']);
         unset($cnt['id']);
     }
+    
+    /*
+	 * Resource Macro
+	 */
+	$resource = array();
+	$DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
+	while ($row = $DBRESULT->fetchRow())
+    {
+		$resource[$row["resource_name"]] = $row["resource_name"];
+		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
+			 $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+	}
+	unset($row);
+	$DBRESULT->free();
+    
+    
+    /*
+	 * Nagios Macro
+	 */
+	$macros = array();
+	$DBRESULT = $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
+	while ($row = $DBRESULT->fetchRow())
+		$macros[$row["macro_name"]] = $row["macro_name"];
+	unset($row);
+	$DBRESULT->free();
+    
+    $plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
     
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
     
@@ -67,18 +122,25 @@ try
     
     $attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
+    //$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
 
     
     $form->addElement('text', 'connector_name', _("Connector Name"), $attrsText);
     $form->addElement('text', 'connector_description', _("Connector Description"), $attrsText);
 	$form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
     
-    $connectorStatus = array();
-    $connectorStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Enabled"), '1');
-    $connectorStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Disabled"), '0');
-	$form->addGroup($connectorStatus, 'connector_status', _("Connector Status"), '&nbsp;&nbsp;');
+    $form->addElement('select', 'resource', null, $resource);
+	$form->addElement('select', 'macros', null, $macros);
+	ksort($plugins_list);
+	$form->addElement('select', 'plugins', null, $plugins_list);
+
     
-    if (isset($cnt['connector_status']) && $cnt['connector_status'] != "")
+    $cntStatus = array();
+    $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Enabled"), '1');
+    $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Disabled"), '0');
+	$form->addGroup($cntStatus, 'connector_status', _("Connector Status"), '&nbsp;&nbsp;');
+    
+    if (isset($cnt['connector_status']) && is_numeric($cnt['connector_status']))
 		$form->setDefaults(array('connector_status' => $cnt['connector_status']));
 	else
 		$form->setDefaults(array('connector_status' => '0'));
@@ -105,6 +167,8 @@ try
     
     $form->addRule('connector_name', _("Name"), 'required');
 	$form->addRule('command_line', _("Command Line"), 'required');
+    $form->registerRule('exist', 'callback', 'testConnectorExistence');
+    $form->addRule('connector_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
     $form->addElement('hidden', 'connector_id');
     $redirect = $form->addElement('hidden', 'o');
@@ -119,7 +183,7 @@ try
         $connectorValues['name'] = $tab['connector_name'];
         $connectorValues['description'] = $tab['connector_description'];
         $connectorValues['command_line'] = $tab['command_line'];
-        $connectorValues['enabled'] = (int)$tab['connector_status'];
+        $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
         $connectorId = $tab['connector_id'];
         
         if ($form->getSubmitValue("submitA"))
@@ -139,6 +203,7 @@ try
         $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
         $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
         $form->accept($renderer);
+        $tpl->assign("connectorsWarning", '<span style="color: #FF0000">[Works only in Centreon Engine 1.3]</span>');
         $tpl->assign('form', $renderer->toArray());
         $tpl->assign('o', $o);
         $tpl->display("formConnector.ihtml");
@@ -150,3 +215,52 @@ catch(Exception $e)
 }
 
 ?>
+<script type='text/javascript'>
+    <!--
+    function insertValueQuery(elem)
+    {
+        var myQuery = document.Form.command_line;
+        if(elem == 1)
+            var myListBox = document.Form.resource;
+        else if (elem == 2)
+            var myListBox = document.Form.plugins;
+        else if (elem == 3)
+            var myListBox = document.Form.macros;
+        
+        if (myListBox.options.length > 0)
+        {
+            var chaineAj = '';
+            var NbSelect = 0;
+            for (var i=0; i<myListBox.options.length; i++)
+            {
+                if (myListBox.options[i].selected)
+                {
+                    NbSelect++;
+                    if (NbSelect > 1)
+                        chaineAj += ', ';
+                    chaineAj += myListBox.options[i].value;
+                }
+            }
+
+            if (document.selection)
+            {
+                // IE support
+                myQuery.focus();
+                sel = document.selection.createRange();
+                sel.text = chaineAj;
+                document.Form.insert.focus();
+            }
+            else if (document.Form.command_line.selectionStart || document.Form.command_line.selectionStart == '0')
+            {
+                // MOZILLA/NETSCAPE support
+                var startPos = document.Form.command_line.selectionStart;
+                var endPos = document.Form.command_line.selectionEnd;
+                var chaineSql = document.Form.command_line.value;
+                myQuery.value = chaineSql.substring(0, startPos) + chaineAj + chaineSql.substring(endPos, chaineSql.length);
+            }
+            else
+                myQuery.value += chaineAj;
+        }
+    }
+    //-->
+</script>

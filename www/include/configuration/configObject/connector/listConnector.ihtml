@@ -1,4 +1,9 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+
+<table class="ListTable">
+    <tr><td class="ListColHeaderCenter">{$connectorsWarning}</td></tr>
+</table>
+
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
@@ -55,8 +60,11 @@
 			{/php}
 		</tr>
 	</table>
-    <input type='hidden' name='o' id='o' value='42'>
+    <input type='hidden' name='o' id='o' value='42' />
+    <input type='hidden' id='limit' name='limit' value='{$limit}' />
+    {$form.hidden}
 </form>
+
 <script type="text/javascript">
 {literal}
 function setO(_i)
