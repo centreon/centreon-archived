@@ -16,3 +16,4 @@ $help['tip_directory_of_traps_configuration_files'] = dgettext('help', 'Director
 $help['tip_snmpttconvertmib_directory+binary'] = dgettext('help', 'snmpttconvertmib binary with complete path.');
 $help['tip_snmptt_log_file'] = dgettext('help', 'SNMPTT log file.');
 $help['tip_perl_library_directory'] = dgettext('help', 'Perl library directory.');
+$help['tip_init_script_snmptt'] = dgettext('help', 'SNMPTT init script. This options is used only if snmptt is used in daemon mode.');

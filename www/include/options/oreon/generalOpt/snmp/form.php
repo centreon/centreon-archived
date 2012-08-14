@@ -68,6 +68,7 @@
 	$form->addElement('text', 'snmpttconvertmib_path_bin', _("snmpttconvertmib Directory + Binary"), $attrsText);
 	$form->addElement('text', 'snmptt_unknowntrap_log_file', _("SNMPTT log file"), $attrsText);
 	$form->addElement('text', 'perl_library_path', _("Perl library directory"), $attrsText);
+	$form->addElement('text', 'init_script_snmptt', _("Default SNMPTT Init Script"), $attrsText);
 	
 	#
 	## Form Rules
