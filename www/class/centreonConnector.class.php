@@ -428,7 +428,7 @@ class CentreonConnector
      * @return boolean
      * @throws RuntimeException
      */
-    public function isNameAvailable($name, $connectorId = false)
+    public function isNameAvailable($name, $connectorId = null)
     {
         if (!is_string($name)) {
             throw new InvalidArgumentException('Name is not intrger');
