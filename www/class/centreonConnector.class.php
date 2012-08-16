@@ -72,7 +72,7 @@
  * 
  * //$connector->count(false);
  * 
- * //$connector->checkName('norExists');
+ * //$connector->isNameAvailable('norExists');
  */
 
 class CentreonConnector
@@ -371,10 +371,10 @@ class CentreonConnector
         $suffix = 1;
 
         for ($i = 0; $i < $numberOfcopies; $i++) {
-            $exists = 1;
-            while ($exists) {
+            $available = 0;
+            while (!$available) {
                 $newName = $originalName . '_' . $suffix;
-                $exists = $this->checkName($newName);
+                $available = $this->isNameAvailable($newName);
                 ++$suffix;
             }
             try {
@@ -428,13 +428,26 @@ class CentreonConnector
      * @return boolean
      * @throws RuntimeException
      */
-    public function checkName($name)
+    public function isNameAvailable($name, $connectorId = false)
     {
+        if (!is_string($name)) {
+            throw new InvalidArgumentException('Name is not intrger');
+        }
+        if ($connectorId) {
+            if (!is_numeric($connectorId)) {
+                throw new InvalidArgumentException('Id is not an integer');
+            }
+            $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `id` = ? AND `name` = ? LIMIT 1', array($connectorId, $name));
+            if ((boolean) $existsResult->fetchRow()) {
+                return true;
+            }
+        }
+
         $existsResult = $this->dbConnection->query('SELECT `id` FROM `connector` WHERE `name` = ? LIMIT 1', array($name));
         if (PEAR::isError($existsResult)) {
             throw new RuntimeException('Cannot verify if connector name already in use; Query not valid; Check the database schema');
         }
-        return (boolean) $existsResult->fetchRow();
+        return !((boolean) $existsResult->fetchRow());
     }
 
 }
