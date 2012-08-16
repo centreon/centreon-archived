@@ -154,18 +154,30 @@
 				/*
 				 * Check Update
 				 */
-				if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
-					$handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
-					while (false !== ($filename2 = readdir($handle2)))	{
-						if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
-							include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
-							if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
-								$elemArr[$i]["RowMenu_upgrade"] = 1;
-							}
-						}
-					}
-					closedir($handle2);
-				}
+                $upgradeAvailable = false;
+                if (!file_exists($centreon_path . "www/modules/" . $filename . "/license"))
+                    $upgradeAvailable = true;
+                else
+                {
+                    if (function_exists('zend_loader_enabled') && file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl"))
+                        $upgradeAvailable = true;
+                }
+                
+                if ($upgradeAvailable)
+                {
+                    if (is_dir("./modules/".$moduleinfo["name"]."/UPGRADE")) {
+                        $handle2 = opendir("./modules/".$moduleinfo["name"]."/UPGRADE");
+                        while (false !== ($filename2 = readdir($handle2)))	{
+                            if (substr($filename2, 0, 1) != "." && strstr($filename2, $moduleinfo["name"]."-") && file_exists("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php"))	{
+                                include_once("./modules/".$moduleinfo["name"]."/UPGRADE/".$filename2."/conf.php");
+                                if ($moduleinfo["mod_release"] == $upgrade_conf[$moduleinfo["name"]]["release_from"])	{
+                                    $elemArr[$i]["RowMenu_upgrade"] = 1;
+                                }
+                            }
+                        }
+                        closedir($handle2);
+                    }
+                }
 
 				$style != "two" ? $style = "two" : $style = "one";
 
@@ -249,4 +261,5 @@
 	 */
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$tpl->display("listModules.ihtml");
+    
 ?>

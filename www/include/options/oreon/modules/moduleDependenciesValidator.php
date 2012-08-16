@@ -51,7 +51,7 @@ function parse_zend_license_file($file)
     
 // Load conf
 ini_set('display_errors', '1');
-require_once "/etc/centreon/centreon.conf.php";
+require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
 // Modules access
@@ -67,6 +67,8 @@ while(false !== ($filename = readdir($modulesDirResource)))
         $XmlObj->startElement("module");
         $XmlObj->writeAttribute('name', $filename);
         $checklistDir = $modulesPath.$filename . '/checklist/';
+        $warning = false;
+        $critical = false;
         
         if (file_exists($checklistDir))
         {
@@ -101,7 +103,5 @@ while(false !== ($filename = readdir($modulesDirResource)))
 
 $XmlObj->endElement();
 echo $XmlObj->output();
-
-
 
 ?>

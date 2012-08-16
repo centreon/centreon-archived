@@ -51,14 +51,6 @@
 
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/themes/blitzer/jquery-ui.css" />
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/xml2json/jquery.xml2json.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/jquery.ui.widget.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.fileupload-ui.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.iframe-transport.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.xdr-transport.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/fileUpload/jquery.postmessage-transport.js"></script>
 <script type="text/javascript">
     {literal}
     function CheckModule()
