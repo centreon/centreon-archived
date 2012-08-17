@@ -54,11 +54,23 @@
     }
 
     if ($wizard->getValue(1, 'configtype') == 'central_without_poller') {
-        $lang['title_finish'] = 'Finish configuration';
-        $lang['requester'] = _('Requester');
         $requester = getLocalRequester();
-    } elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
-    } elseif ($wizard->getValue(1, 'configtype') == 'poller') {
+        if (count($requester) != 0) {
+            $lang['central_configuration_without_poller'] = _('Central without poller configuration');
+            $lang['requester'] = _('Requester');
+            $lang['informations'] = _('Informations');
+            $lang['configuration_name'] = _('Configuration name');
+            $lang['additional_daemon'] = _('Additional daemon');
+            $lang['none'] = _('None');
+            $tpl->assign('requester', $requester['name']);
+            $tpl->assign('requester_id', $requester['id']);
+            $page = 'step2_central_without_poller.ihtml';
+        } else {
+            $tpl->assign('strerr', _('Error for getting the localhost requester.'));
+            $page = 'error.ihtml';
+        }
+    //} elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
+    //} elseif ($wizard->getValue(1, 'configtype') == 'poller') {
     } else {
         $tpl->assign('strerr', _('Bad configuration type'));
         $page = 'error.ihtml';
