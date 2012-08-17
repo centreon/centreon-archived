@@ -107,7 +107,8 @@
 		$rq1 = 	"SELECT hg.alias as alias, h.state, count(h.host_id) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-                "AND hhg.host_id = h.host_id ";
+                "AND hhg.host_id = h.host_id " .
+                "AND h.enabled = 1 ";
 		if (isset($instance) && $instance > 0) {
 		    $rq1 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
@@ -117,7 +118,8 @@
 		$rq1 = 	"SELECT hg.alias as alias, h.state, count(h.host_id) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
-                "AND hhg.host_id = h.host_id ";
+                "AND hhg.host_id = h.host_id " .
+                "AND h.enabled = 1 ";
 		if (isset($instance) && $instance > 0) {
 		    $rq1 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
@@ -142,7 +144,9 @@
 					"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
 					"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
 					"AND hhg.host_id = h.host_id " .
-					"AND h.host_id = s.host_id ";
+                    "AND h.enabled = 1 " .
+					"AND h.host_id = s.host_id " .
+                    "AND s.enabled = 1 ";
 			if (isset($instance) && $instance > 0) {
                 $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 			}
@@ -155,7 +159,9 @@
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
 				"AND hhg.host_id = h.host_id " .
-				"AND h.host_id = s.host_id ";
+                "AND h.enabled = 1 " .
+				"AND h.host_id = s.host_id " .
+                "AND s.enabled = 1 ";
 	    if (isset($instance) && $instance > 0) {
             $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 		}
