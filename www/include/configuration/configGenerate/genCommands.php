@@ -90,7 +90,7 @@
                 if (!PEAR::isError($DBRESULT2))
                 {
                     $connector = $DBRESULT2->fetchRow();
-                    $connectorLine = print_line("connector_name", $connector["name"]);
+                    $connectorLine = print_line("connector", $connector["name"]);
                     unset($DBRESULT2);
                 }
             }

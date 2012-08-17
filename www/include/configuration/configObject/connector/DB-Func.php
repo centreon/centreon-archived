@@ -36,16 +36,14 @@
 
 function testConnectorExistence($name = null)
 {
-    global $connectorObj;
+    global $connectorObj, $form;
     
-    $isExist = $connectorObj->checkName($name);
-    
-    if ($isExist)
-        return FALSE;
+    if (isset($form))
+        $id = $form->getSubmitValue('connector_id');
     else
-        return TRUE;
+        $id = NULL;
     
-    return $connectorObj->checkName($name);
+    return $connectorObj->isNameAvailable($name, $id);
 }
 
 ?>

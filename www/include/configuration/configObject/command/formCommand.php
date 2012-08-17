@@ -188,6 +188,8 @@
 	$form->setDefaults(array('action' => '1'));
 	$form->setDefaults(array("listOfArg"=>$strArgDesc));
 
+    //array_unshift($connectors, _("Select a connector..."));
+    $connectors[NULL] = _("Select a connector...");
 	$form->addElement('select', 'resource', null, $resource);
     $form->addElement('select', 'connectors', _("Connectors"), $connectors);
 	$form->addElement('select', 'macros', null, $macros);

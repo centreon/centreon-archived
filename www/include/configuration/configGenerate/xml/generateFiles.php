@@ -59,7 +59,7 @@ function printDebug($xml)
         }
     }
     foreach ($tab_server as $host) {
-        $stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG");
+        $stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG 2>&1");
         $stdout = htmlentities($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
         $msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);

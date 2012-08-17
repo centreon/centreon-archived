@@ -49,6 +49,7 @@
 			else if ($key == "retain_state_information" && $value == 2);
 			else if ($key == "use_retained_program_state" && $value == 2);
 			else if ($key == "use_retained_scheduling_info" && $value == 2);
+            else if ($key == "cfg_file");
 			else if ($key == "use_syslog" && $value == 2);
 			else if ($key == "log_notifications" && $value == 2);
 			else if ($key == "log_service_retries" && $value == 2);

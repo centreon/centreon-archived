@@ -70,7 +70,7 @@
             $connector['command_line'] = trim(preg_replace($slashesOri, $slashesRep, $connector['command_line']));
             $str .= "define connector{\n";
             $str .= print_line('connector_name', $connector['name']);
-            $str .= print_line('command_line', $connector['command_line']);
+            $str .= print_line('connector_line', $connector['command_line']);
             $str .= "}\n\n";
         }
     }

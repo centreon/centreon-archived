@@ -38,23 +38,23 @@ function return_plugin($rep)
 {
     global $oreon;
 
-    $plugins = array();
+    $availableConnectors = array();
     $is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
     $handle[$rep] = opendir($rep);
     while (false != ($filename = readdir($handle[$rep]))){
         if ($filename != "." && $filename != ".."){
             if (is_dir($rep.$filename)){
                 $plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
-                $plugins = array_merge($plugins, $plg_tmp);
+                $availableConnectors = array_merge($availableConnectors, $plg_tmp);
                 unset($plg_tmp);
             } elseif (!isset($is_not_a_plugin[$filename]) && substr($filename, -1)!= "~" && substr($filename, -1) != "#") {
-                $key = substr($rep."/".$filename, strlen($oreon->optGen["nagios_path_plugins"]));
-                $plugins[$key] = $key;
+                $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
+                $availableConnectors[$key] = $key;
             }
         }
     }
     closedir($handle[$rep]);
-    return ($plugins);
+    return ($availableConnectors);
 }
     
 try
@@ -108,7 +108,7 @@ try
 	unset($row);
 	$DBRESULT->free();
     
-    $plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
+    $availableConnectors_list = return_plugin($oreon->optGen["cengine_path_connectors"]);
     
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
     
@@ -131,8 +131,8 @@ try
     
     $form->addElement('select', 'resource', null, $resource);
 	$form->addElement('select', 'macros', null, $macros);
-	ksort($plugins_list);
-	$form->addElement('select', 'plugins', null, $plugins_list);
+	ksort($availableConnectors_list);
+	$form->addElement('select', 'plugins', null, $availableConnectors_list);
 
     
     $cntStatus = array();

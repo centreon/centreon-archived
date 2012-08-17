@@ -75,7 +75,21 @@
 
         case "c":
             require_once($path.'formConnector.php');
-        break; 
+        break;
+    
+        case "s":
+            $myConnector = $connectorObj->read($connector_id);
+            $myConnector['enabled'] = '1';
+            $connectorObj->update($connector_id, $myConnector);
+            require_once($path.'listConnector.php');
+        break;
+        
+        case "u":
+            $myConnector = $connectorObj->read($connector_id);
+            $myConnector['enabled'] = '0';
+            $connectorObj->update($connector_id, $myConnector);
+            require_once($path.'listConnector.php');
+        break;
 
         case "m":
             $selectedConnectors = array_keys($select);
