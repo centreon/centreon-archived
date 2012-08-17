@@ -198,9 +198,8 @@ div.update_readme,div.update_output {background-color:#FFF;border:1px #AEAEAE so
 .search_input_host, .search_input_active_host, .search_input_service, .search_input_active_service, .search_input_active, .search_input_found {height:14px;}
 
 /* Log Options */
-.ajaxOption             {margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;border: 2px #cccccc solid;border-radius:2px;}
+.ajaxOption             {margin:0px 0px -5px 0px;border-collapse:separate;empty-cells:show;background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x;background-color: #d7d6dc;color:#666;border: 2px #cccccc solid;border-radius:2px;}
 .ajaxOption td          {padding:2px 4px 2px 4px;}
-.ajaxOption table td    {background-image:url("./Images/bg_header_bluegray.gif");background-position:top left;background-repeat:repeat-x; color:#666;}
 .ajaxOption input       {margin-right:5px;}
 
 
