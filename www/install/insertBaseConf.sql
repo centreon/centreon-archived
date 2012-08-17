@@ -291,6 +291,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('nagios_init_script','@NAGIOS_INIT_SCRIPT@'),
 ('nagios_path_img','@NAGIOS_IMG@/'),
 ('nagios_path_plugins','@NAGIOS_PLUGIN@/'),
+('cengine_path_connectors','@CENTREON_ENGINE_CONNECTORS@/'),
 ('nagios_version','3'),
 ('mailer_path_bin','@BIN_MAIL@'),
 ('snmp_community','public'),

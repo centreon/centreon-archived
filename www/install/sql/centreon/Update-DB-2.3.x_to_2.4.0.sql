@@ -261,6 +261,7 @@ CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
 ALTER TABLE  `cfg_cgi` ADD  `instance_id` INT( 11 ) NULL AFTER  `cgi_name`;
 ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL;
 
+INSERT INTO `options` (`key`, `value`) VALUES ('cengine_path_connectors','@CENTREON_ENGINE_CONNECTORS@/');
 UPDATE  `options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USING utf8 ) =  'monitoring_engine' AND CONVERT(  `options`.`value` USING utf8 ) =  'NAGIOS' LIMIT 1 ;
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;
 
