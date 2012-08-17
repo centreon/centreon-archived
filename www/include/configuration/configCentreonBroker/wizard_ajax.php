@@ -70,6 +70,10 @@
     $name = $_POST['name'];
     $step = $_POST['step'];
     $uuid = $_POST['uuid'];
+    $finish = false;
+    if (isset($_POST['finish'])) {
+        $finish = $_POST['finish'];
+    }
 
     if (false === isset($_SESSION['wizard'][$name][$uuid])) {
         $tpl->assign('strerr', _('The wizard is not correctly initialized.'));
@@ -84,25 +88,41 @@
     }
 
     if (isset($_POST['values'])) {
+        file_put_contents('/tmp/wizard', var_export($wizard, true));
         $wizard->addValues($step - 1, $_POST['values']);
+        file_put_contents('/tmp/wizard', var_export($wizard, true), FILE_APPEND);
+        $_SESSION['wizard'][$name][$uuid] = serialize($wizard);
     }
 
     $lang = array();
-    switch ($step) {
-        case 1:
-            $lang['welcome'] = _('Welcome for Centreon Broker configuration:');
-            $lang['central_configuration_without_poller'] = _('Central without poller configuration');
-            $lang['central_configuration_with_poller'] = _('Central with pollers configuration');
-            $lang['poller_configuration'] = _('Poller configuration');
-            $page = 'step1.ihtml';
-            break;
-        case 2:
-            include $path . 'wizard/step2.php';
-            break;
-        default:
-            $tpl->assign('strerr', "The step does'nt exists.");
+    $msgErr = array();
+    if ($finish) {
+        include $path . 'wizard/save.php';
+        if (count($msgErr) > 0) {
             $page = 'error.ihtml';
-            break;
+            $tpl->assign('strerr', _('Error in save configuration.'));
+        } else {
+            $page = 'finish.ihtml';
+            $lang['configuration_saved'] = _('Configuration saved.');
+        }
+    } else {
+        switch ($step) {
+            case 1:
+                $lang['welcome'] = _('Welcome for Centreon Broker configuration:');
+                $lang['central_configuration_without_poller'] = _('Central without poller configuration');
+                $lang['central_configuration_with_poller'] = _('Central with pollers configuration');
+                $lang['poller_configuration'] = _('Poller configuration');
+                $page = 'step1.ihtml';
+                break;
+            case 2:
+                include $path . 'wizard/step2.php';
+                break;
+            default:
+                $tpl->assign('strerr', "The step does'nt exists.");
+                $page = 'error.ihtml';
+                break;
+        }
     }
     $tpl->assign('lang', $lang);
+    $tpl->assign('msgErr', $msgErr);
     $tpl->display($page);

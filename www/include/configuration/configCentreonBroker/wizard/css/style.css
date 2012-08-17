@@ -44,11 +44,18 @@ body {
 
 #wizard .frame .content p {
   width: 90%;
+  font-size: 14px;
 }
 
 #wizard .frame .content p.title {
   margin-bottom: 8px;
+  font-size: 18px;
+}
+
+#wizard .frame .content p.title2 {
+  margin-top: 6px;
   font-size: 16px;
+  font-style: italic;
 }
 
 #wizard .frame .content p.form {
@@ -63,11 +70,14 @@ body {
 #wizard .frame .content label {
   width: 200px;
   line-height: 18px;
+  margin-right: 5px;
+  margin-left: 0px;
 }
 
 #wizard .frame .content label.left {
   display: block;
   float: left;
+  margin-left: 5px;
 }
 
 #wizard .frame .content label span.v_required_star {
@@ -77,7 +87,7 @@ body {
 
 #wizard .frame .content input[type="text"] {
   border: 1px solid #000;
-  font-size: 11px;
+  font-size: 14px;
 }
 
 #wizard .frame .content input.number4 {

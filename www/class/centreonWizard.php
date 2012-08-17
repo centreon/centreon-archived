@@ -124,7 +124,7 @@ class Centreon_Wizard
     public function __sleep()
     {
         $this->_lastUpdate = time();
-        return array('_uuid', '_lastUpdate', '_name');
+        return array('_uuid', '_lastUpdate', '_name', '_values');
     }
 
     /**
