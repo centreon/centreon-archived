@@ -53,6 +53,25 @@
         return $row;
     }
 
+    function getListRequester($withLocal = false) {
+        global $pearDB;
+        $query = 'SELECT id, name
+        	FROM nagios_server
+        	WHERE ns_activate = "1"';
+        if ($withLocal === false) {
+            $query .= ' AND localhost != "1"';
+        }
+        $res = $pearDB->query($query);
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $list = array();
+        while ($row = $res->fetchRow()) {
+            $list[] = $row;
+        }
+        return $list;
+    }
+
     if ($wizard->getValue(1, 'configtype') == 'central_without_poller') {
         $requester = getLocalRequester();
         if (count($requester) != 0) {
@@ -70,7 +89,22 @@
             $page = 'error.ihtml';
         }
     //} elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
-    //} elseif ($wizard->getValue(1, 'configtype') == 'poller') {
+    } elseif ($wizard->getValue(1, 'configtype') == 'poller') {
+        $requester_list = getListRequester();
+        if (count($requester_list) == 0) {
+            $tpl->assign('strerr', _('No active poller is defined in Centreon.'));
+            $page = 'error.ihtml';
+        } else {
+            $lang['requester'] = _('Requester');
+            $lang['informations'] = _('Informations');
+            $lang['configuration_name'] = _('Configuration name');
+            $lang['central_address'] = _('Central address');
+            $lang['additional_daemon'] = _('Additional daemon');
+            $lang['communication_port'] = _('Communication port');
+            $lang['none'] = _('None');
+            $tpl->assign('requesters', $requester_list);
+            $page = 'step2_poller.ihtml';
+        }
     } else {
         $tpl->assign('strerr', _('Bad configuration type'));
         $page = 'error.ihtml';

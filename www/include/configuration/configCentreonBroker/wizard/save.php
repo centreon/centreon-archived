@@ -126,6 +126,70 @@
                 $msgErr[] = _('Error in insert central-module configuration');
             }
             break;
+        case 'poller':
+            $configuration = array(
+                'name' => $wizard->getValue(2, 'configname'),
+                'filename' => 'poller-module.xml',
+                'activate' => array('activate' => 0),
+                'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
+                'logger' => array(
+                    array (
+                        'name' => '/var/log/centreon-broker/poller-module.log',
+                        'config' => array ('config' => 'yes'),
+                        'debug' => array ('debug' => 'no'),
+                        'error' => array ('error' => 'yes'),
+                        'info' => array ('info' => 'no'),
+                        'level' => 'low',
+                        'type' => 'file',
+                        'blockId' => '3_17',
+                    )
+                ),
+                'output' => array(
+                    array (
+                        'name' => 'Central',
+                        'port' => '5669',
+                        'failover' => 'CentralFailover',
+                        'retry_interval' => '',
+                        'buffering_timeout' => '',
+                        'host' => $wizard->getValue(2, 'central_address'),
+                        'protocol' => 'ndo',
+                        'tls' => array ('tls' => 'no'),
+                        'private_key' => '',
+                        'public_cert' => '',
+                        'ca_certificate' => '',
+                        'compression' => array ('compression' => 'no'),
+                        'compression_level' => '',
+                        'compression_buffer' => '',
+                        'type' => 'ipv4',
+                        'blockId' => '1_3',
+                    ),
+                    array (
+                        'name' => 'CentralFailover',
+                        'path' => '/var/log/centreon-broker/central-retention.dat',
+                        'failover' => '',
+                        'retry_interval' => '',
+                        'protocol' => 'ndo',
+                        'buffering_timeout' => '',
+                        'compression' => array ('compression' => 'no'),
+                        'compression_level' => '',
+                        'compression_buffer' => '',
+                        'type' => 'file',
+                        'blockId' => '1_11',
+                    )
+                ),
+                'stats' => array(
+                    array (
+                        'name' => 'StatisticFile',
+                        'fifo' => '/var/log/centreon-broker/poller-module.stats',
+                        'type' => 'stats',
+						'blockId' => '5_23',
+                    )
+                )
+            );
+            if (false === $cBroker->insertConfig($configuration)) {
+                $msgErr[] = _('Error in insert central-module configuration');
+            }
+            break;
         default:
             $msgErr[] = _('Bad configuration type');
     }
