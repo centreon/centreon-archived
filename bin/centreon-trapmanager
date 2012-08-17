@@ -74,7 +74,8 @@ my $config_centreon_trap = "centreon-trap.conf.pm";
 
 ###############################
 # require config file
-require $etc."/conf.pm";
+
+init_config($etc . "/conf.pm", 1);
 init_config($etc . "/" . $config_centreon_trap, 1);
 
 manage_params_conf();
@@ -585,6 +586,7 @@ if ($centrapmanager_daemon == 1) {
                 
         if ($timetoreload == 1) {
             logit("Reloading configuration file", "DD") if ($centrapmanager_log_debug >= 1);
+            init_config($etc . "/conf.pm", 0);
             init_config($etc . "/" . $config_centreon_trap, 0);
             manage_params_conf();
             init_modules();

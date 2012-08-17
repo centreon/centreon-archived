@@ -97,7 +97,7 @@ sub init_modules {
     }
 }
 
-sub init_config() {
+sub init_config {
     my $file = $_[0];
     my $type = $_[0];
     
