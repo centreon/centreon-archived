@@ -130,7 +130,7 @@
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 
-	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path');
+	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path_images');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
 	$form->addRule('tactical_refresh_interval', _("Refresh interval must be numeric"), 'numeric');
 

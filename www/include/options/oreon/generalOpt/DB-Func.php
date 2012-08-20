@@ -48,7 +48,20 @@
 		/*
 		 * Add
 		 */
-		$DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', '$value')");
+		if (!is_null($value) && $value != 'NULL') {
+		    $value = "'$value'";
+		}
+		$DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+	}
+
+	function is_valid_path_images($path) {
+	    if (trim($path) == '') {
+	        return true;
+	    }
+	    if (is_dir($path)) {
+		    return true;
+	    }
+	    return false;
 	}
 
 	function is_valid_path($path) {
@@ -149,7 +162,7 @@
          */
         updateOption($pearDB, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
         updateOption($pearDB, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
-        
+
 		$oreon->initOptGen($pearDB);
 	}
 
@@ -166,7 +179,7 @@
 		updateOption($pearDB, "snmpttconvertmib_path_bin", isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $ret["snmpttconvertmib_path_bin"] : "NULL");
 		updateOption($pearDB, "perl_library_path", isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $ret["perl_library_path"] : "NULL");
 		updateOption($pearDB, "init_script_snmptt", isset($ret["init_script_snmptt"]) && $ret["init_script_snmptt"] != NULL ? $ret["init_script_snmptt"] : "NULL");
-		
+
 		$oreon->initOptGen($pearDB);
 	}
 
@@ -183,7 +196,7 @@
 		updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret['debug_ldap_import'] ? 1 : 0);
 		updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
 		updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
-		
+
 		$oreon->initOptGen($pearDB);
 	}
 

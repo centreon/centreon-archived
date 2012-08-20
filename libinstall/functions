@@ -258,6 +258,40 @@ function answer_with_testdir() {
 }
 
 #----
+## print a message, test directory if answer is correct, this directory is optional
+## Loop if not a valid directory
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function answer_with_testoptionaldir() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_define"
+	local first=0
+	while [ -n "$res" -a ! -d "$res" ]; do
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not a directory or does not exist.")" "$critical"
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to [$default]")"
+		echo -en "> "
+		read res
+		if [ -z "$res" ] ; then 
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+		if [ -n "${res}" -a -z "${res#/}" ] ; then
+			echo_passed  "$(gettext "You select slash...")"
+			res="not_define"
+		else
+			first=1
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
 ## print a message, create directory with answer 
 ## Loop if not a valid directory (slash...)
 ## @param	message
@@ -564,7 +598,7 @@ function locate_nagios_p1_file() {
 function locate_nagios_imgdir() {
 	testdir_clean "$NAGIOS_IMG" "NAGIOS_IMG"
 	if [ -z "$NAGIOS_IMG" ] ; then
-		answer_with_testdir "$(gettext "Where is your Nagios image directory ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
+		answer_with_testoptionaldir "$(gettext "Where is your Nagios image directory (Empty : no image directory) ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
 		echo_success "$(gettext "Path" ) $NAGIOS_IMG" "$ok"
 	fi
 	NAGIOS_IMG=`trim ${NAGIOS_IMG%/}`
