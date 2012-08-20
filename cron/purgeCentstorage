@@ -144,7 +144,7 @@ sub purgeMysqlData(){
     if (defined($data->{'len_storage_mysql'}) && $data->{'len_storage_mysql'} ne 0) {
 		my $delete_limit = time() - 60 * 60 * 24 * $data->{'len_storage_mysql'};
 		if ($debug) {
-			print "DELETE FROM data_bin WHERE ctime < '".$delete_limit."'";
+			writeLogFile("Debug : DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
 		}
 		$sth2 = $con_ods->prepare("DELETE FROM data_bin WHERE ctime < '".$delete_limit."'");
 		writeLogFile("Error when purging Mysql data  : ".$sth2->errstr."\n")if (!$sth2->execute());
