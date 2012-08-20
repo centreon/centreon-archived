@@ -63,11 +63,16 @@ function printDebug($xml)
         $stdout = htmlentities($stdout, ENT_QUOTES, "UTF-8");
         $msg_debug[$host['id']] = str_replace ("\n", "<br />", $stdout);
         $msg_debug[$host['id']] = str_replace ("Warning:", "<font color='orange'>Warning</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace ("warning: ", "<font color='orange'>Warning</font> ", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = str_replace ("Error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace ("error:", "<font color='red'>Error</font>", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace ("reading", "Reading", $msg_debug[$host['id']]);
+        $msg_debug[$host['id']] = str_replace ("running", "Running", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = str_replace ("Total Warnings: 0", "<font color='green'>Total Warnings: 0</font>", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = str_replace ("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
-
+        $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
+        
         $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = "";
         $i = 0;
