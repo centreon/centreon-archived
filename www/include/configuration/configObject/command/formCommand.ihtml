@@ -44,6 +44,7 @@
 				</table>
 			</td>
 		</tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_shell"> {$form.enable_shell.label}</td><td class="FormRowValue">{$form.enable_shell.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="arg_example"> {$form.command_example.label}</td><td class="FormRowValue">{$form.command_example.html} &nbsp;{$form.command_hostaddress.label}&nbsp;{$form.command_hostaddress.html}&nbsp;<img alt='{$cmd_play}' title='{$cmd_play}' src='./img/icones/16x16/media_play.gif' onClick="window.open('main.php?p=60706&command_hostaddress='+ document.Form.command_hostaddress.value +'&command_example='+ document.Form.command_example.value +'&command_line='+ document.Form.command_line.value + '&o=p&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');"></td></tr>
 		<tr class="list_one">
 			<td class="FormRowField"><img class="helpTooltip" name="arg_description"> {$arg_desc_label}</td>

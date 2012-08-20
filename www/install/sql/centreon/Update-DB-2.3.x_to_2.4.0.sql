@@ -413,3 +413,13 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
 (NULL, 'Wizard', NULL, 60909, 6090901, 40, 11, './include/configuration/configCentreonBroker/wizard.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1'),
 (NULL, 'WizardAjax', NULL, 60909, 6090902, 40, 11, './include/configuration/configCentreonBroker/wizard_ajax.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1');
+
+--
+-- Add enable shell option for commands
+--
+
+ALTER TABLE  `command` ADD  `enable_shell` INT( 1 ) UNSIGNED NOT NULL DEFAULT  '0' AFTER  `command_type`
+
+--
+-- End add enable shell option for commands
+--

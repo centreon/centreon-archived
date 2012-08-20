@@ -703,6 +703,7 @@ CREATE TABLE `command` (
   `command_line` text,
   `command_example` varchar(254) DEFAULT NULL,
   `command_type` tinyint(4) DEFAULT NULL,
+  `enable_shell` int(1) unsigned NOT NULL DEFAULT '0',
   `command_comment` text,
   `graph_id` int(11) DEFAULT NULL,
   `cmd_cat_id` int(11) DEFAULT NULL,

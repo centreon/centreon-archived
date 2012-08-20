@@ -113,7 +113,11 @@
 				$str1 .= print_line("command_name", $command["command_name"]);
 			}
 			if ($command["command_line"]) {
-			    $str1 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
+                $commandLineTmp = str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]);
+                if ($tab['monitoring_engine'] == 'CENGINE' && $command['enable_shell']) {
+                    $commandLineTmp = '/bin/sh -c ' . escapeshellarg($commandLineTmp);
+                }
+			    $str1 .= print_line("command_line", $commandLineTmp);
 			}
 			if ($command["command_example"]) {
 				$str1 .= print_line(";command_example", $command["command_example"]);
@@ -151,7 +155,11 @@
 				$str2 .= print_line("command_name", $command["command_name"]);
 			}
 			if ($command["command_line"]) {
-				$str2 .= print_line("command_line", str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]));
+                $commandLineTmp = str_replace("@MAILER@", $oreon->optGen["mailer_path_bin"], $command["command_line"]);
+                if ($tab['monitoring_engine'] == 'CENGINE' && $command['enable_shell']) {
+                    $commandLineTmp = '/bin/sh -c ' . escapeshellarg($commandLineTmp);
+                }
+			    $str2 .= print_line("command_line", $commandLineTmp);
 			}
 			if ($command["command_example"]) {
 				$str2 .= print_line(";command_example", $command["command_example"]);

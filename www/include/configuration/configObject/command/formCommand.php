@@ -163,7 +163,7 @@
 	else
 		$form->setDefaults(array('command_type' => '2'));
     
-    if (is_numeric($cmd['connector_id']))
+    if (isset($cmd['connector_id']) && is_numeric($cmd['connector_id']))
         $form->setDefaults(array('connectors' => $cmd['connector_id']));
     else
         $form->setDefaults(array('connectors' => ""));
@@ -172,6 +172,7 @@
 	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
 	$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
 	$form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
+    $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null , $attrsText);
 	$argListObj = $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
 	$argListObj->setAttribute("readonly");
 	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
