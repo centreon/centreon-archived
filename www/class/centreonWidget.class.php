@@ -628,7 +628,11 @@ class CentreonWidget
             if (isset($pref['option'])) {
                 $str2 = "";
                 foreach ($pref['option'] as $option) {
-                    $opt = $option['@attributes'];
+                    if (isset($option['@attributes'])) {
+                        $opt = $option['@attributes'];
+                    } else {
+                        $opt = $option;
+                    }
                     if ($str2 != "") {
                         $str2 .= ", ";
                     }
