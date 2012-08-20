@@ -75,10 +75,23 @@
 	$tpl->assign("headerMenu_options", _("Options"));
 	
 	$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
-	$DBRESULT = $pearDB->query($rq);
+    $results = $pearDB->getAll($rq);
+    $ar_relations = array();
 
 	$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
 	
+    /*
+    * Construct request
+    */
+    $in_statement = "";
+    $in_statement_append = "";
+    foreach ($results as $row) {
+        $ar_relations[$row['metric_id']][] = array("activate" => $row['activate'], "msr_id" => $row['msr_id']);
+        $in_statement .= $in_statement_append . $row['metric_id'];
+        $in_statement_append = ",";
+    }
+
+    $DBRESULTO = $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id IN ($in_statement) and m.index_id=i.id ORDER BY i.host_name, i.service_description, m.metric_name");
 	/*
 	 * Different style between each lines
 	 */
@@ -87,28 +100,28 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr1 = array();
-	for ($i = 0; $metric = $DBRESULT->fetchRow(); $i++) {
-		$moptions = "";
-		$selectedElements = $form->addElement('checkbox', "select[".$metric['msr_id']."]");	
-		if ($metric["activate"])
-			$moptions .= "<a href='main.php?p=".$p."&msr_id=".$metric['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
-		else
-			$moptions .= "<a href='main.php?p=".$p."&msr_id=".$metric['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
-		$DBRESULTO = $pearDBO->query("SELECT * FROM metrics m, index_data i WHERE m.metric_id = '".$metric['metric_id']."' and m.index_id=i.id");
-		$row = $DBRESULTO->fetchRow();
-		$row["service_description"] = str_replace("#S#", "/", $row["service_description"]);
-		$row["service_description"] = str_replace("#BS#", "\\", $row["service_description"]);
-		$elemArr1[$i] = array(	"MenuClass"=>"list_".$style, 
-								"RowMenu_select"=>$selectedElements->toHtml(),
-								"RowMenu_host"=>htmlentities($row["host_name"], ENT_QUOTES, "UTF-8"),
-								"RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$metric['msr_id'],
-								"RowMenu_service"=>htmlentities($row["service_description"], ENT_QUOTES, "UTF-8"),
-								"RowMenu_metric"=>$row["metric_name"]." (".$row["unit_name"].")",
-								"RowMenu_status"=>$metric["activate"] ? _("Enabled") : _("Disabled"),
-								"RowMenu_options"=>$moptions);
-		$DBRESULTO->free();
-		$style != "two" ? $style = "two" : $style = "one";
-	}
+    $i = 0;
+    while ($metric = $DBRESULTO->fetchRow()) {
+        foreach ($ar_relations[$metric['metric_id']] as $relation) {
+                $moptions = "";
+                $selectedElements = $form->addElement('checkbox', "select[".$relation['msr_id']."]");
+                if ($relation["activate"])
+                    $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=us&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
+                else
+                    $moptions .= "<a href='main.php?p=".$p."&msr_id=".$relation['msr_id']."&o=ss&meta_id=".$meta_id."&metric_id=".$metric['metric_id']."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
+                $metric["service_description"] = str_replace("#S#", "/", $metric["service_description"]);
+                $metric["service_description"] = str_replace("#BS#", "\\", $metric["service_description"]);
+                $elemArr1[$i] = array(  "MenuClass"=>"list_".$style,
+                                                        "RowMenu_select"=>$selectedElements->toHtml(),
+                                                        "RowMenu_host"=>htmlentities($metric["host_name"], ENT_QUOTES, "UTF-8"),
+                                                        "RowMenu_link"=>"?p=".$p."&o=ws&msr_id=".$relation['msr_id'],
+                                                        "RowMenu_service"=>htmlentities($metric["service_description"], ENT_QUOTES, "UTF-8"),
+                                                        "RowMenu_metric"=>$metric["metric_name"]." (".$metric["unit_name"].")",
+                                                        "RowMenu_status"=>$relation["activate"] ? _("Enabled") : _("Disabled"),
+                                                        "RowMenu_options"=>$moptions);
+                $style != "two" ? $style = "two" : $style = "one";
+                $i++;
+    }
 	$tpl->assign("elemArr1", $elemArr1);	
 
 	/*
