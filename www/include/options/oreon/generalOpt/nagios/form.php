@@ -59,7 +59,7 @@
 	/*
 	 * Nagios information
 	 */
-	$form->addElement('header', 'nagios', _("Nagios information"));
+	$form->addElement('header', 'nagios', _("Monitoring Engine information"));
 	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
@@ -103,8 +103,8 @@
      */
     $form->addElement('checkbox', 'enable_perfdata_sync', _("Enable Perfdata Synchronisation (Centcore)"));
     $form->addElement('checkbox', 'enable_logs_sync', _("Enable Logs Synchronisation (Centcore)"));
-    
-    
+
+
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
@@ -148,7 +148,7 @@
 
 	$subC = $form->addElement('submit', 'submitC', _("Save"));
 	$DBRESULT = $form->addElement('reset', 'reset', _("Reset"));
-        
+
         // prepare help texts
 	$helptext = "";
 	include_once("help.php");

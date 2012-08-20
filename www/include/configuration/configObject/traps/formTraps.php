@@ -228,8 +228,8 @@
 		$tpl->assign('o', $o);
 
 		$tpl->assign('subtitle0', _("Main information"));
-		$tpl->assign('subtitle0', _("Convert Trap information for Nagios"));
-		$tpl->assign('subtitle1', _("Action 1 : Submit result to Nagios"));
+		$tpl->assign('subtitle0', _("Convert Trap information"));
+		$tpl->assign('subtitle1', _("Action 1 : Submit result to Monitoring Engine"));
 		$tpl->assign('subtitle2', _("Action 2 : Force rescheduling of service check"));
 		$tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
 		$tpl->assign('subtitle4', _("Trap description"));

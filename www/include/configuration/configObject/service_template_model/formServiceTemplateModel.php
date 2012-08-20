@@ -613,7 +613,7 @@
 		$form->addElement('header', 'title2', _("Massive Change"));
 	}
 
-	$form->addElement('header', 'nagios', _("Nagios"));
+	$form->addElement('header', 'nagios', _("Monitoring Engine"));
 	$form->addElement('text', 'esi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'esi_notes_url', _("URL"), $attrsText);
 	$form->addElement('text', 'esi_action_url', _("Action URL"), $attrsText);

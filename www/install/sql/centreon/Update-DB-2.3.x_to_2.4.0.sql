@@ -423,3 +423,15 @@ ALTER TABLE  `command` ADD  `enable_shell` INT( 1 ) UNSIGNED NOT NULL DEFAULT  '
 --
 -- End add enable shell option for commands
 --
+
+--
+-- Replace Nagios name for generic
+--
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_parent` = 202 AND `topology_group` = 12 AND `topology_page` IS NULL;
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_parent` = 202 AND `topology_group` = 33 AND `topology_page` IS NULL;
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_parent` = 607 AND `topology_group` = 33 AND `topology_page` IS NULL;
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_parent` = 203 AND `topology_group` = 34 AND `topology_page` IS NULL;
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_parent` = 201 AND `topology_group` = 2 AND `topology_page` IS NULL;
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_page` = 607;
+UPDATE `topology` SET `topology_name` = 'Monitoring Engine Statistics' WHERE `topology_page` = 102;
+UPDATE `topology` SET `topology_name` = 'main.cfg' WHERE `topology_page` = 60703;

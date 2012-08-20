@@ -161,7 +161,7 @@ aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
 		</td>
   </tr>
   <tr>
-    <td><b>Writable Nagios Config Directory</b></td>
+    <td><b>Writable Monitoring Engine Config Directory</b></td>
     <td align="right"><?php
 
 	    if (is_dir($_SESSION['nagios_conf'])) {

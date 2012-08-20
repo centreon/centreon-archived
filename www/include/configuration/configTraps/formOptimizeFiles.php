@@ -40,7 +40,7 @@
 		exit();
 
 	# Get Poller List
-	$tab_nagios_server = array("0" => "All Nagios Servers");
+	$tab_nagios_server = array("0" => "All Pollers");
 	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY `name`");
 	while ($nagios = $DBRESULT->fetchRow())
 		$tab_nagios_server[$nagios['id']] = $nagios['name'];
@@ -51,11 +51,11 @@
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', _("Nagios Configuration Files Export"));
+	$form->addElement('header', 'title', _("Monitoring Engine Configuration Files Export"));
 
 	$form->addElement('header', 'infos', _("Implied Server"));
 
-    $form->addElement('select', 'host', _("Nagios Server"), $tab_nagios_server, $attrSelect);
+    $form->addElement('select', 'host', _("Poller"), $tab_nagios_server, $attrSelect);
 
 	$form->addElement('header', 'opt', _("Export Options"));
 
@@ -94,7 +94,7 @@
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
-	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
+	$form->addGroup($tab, 'debug', _("Run debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '1'));
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'optimize', null, _("Yes"), '1');
@@ -109,11 +109,11 @@
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'restart', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'restart', null, _("No"), '0');
-	$form->addGroup($tab, 'restart', _("Restart Nagios"), '&nbsp;');
+	$form->addGroup($tab, 'restart', _("Restart Monitoring Engine"), '&nbsp;');
 	$form->setDefaults(array('restart' => '0'));
 
 	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
-	$form->addElement('select', 'restart_mode', _("Restart Nagios"), $tab_restart_mod, $attrSelect);
+	$form->addElement('select', 'restart_mode', _("Restart Monitoring Engine"), $tab_restart_mod, $attrSelect);
 	$form->setDefaults(array('restart_mode' => '2'));
 
 	$redirect = $form->addElement('hidden', 'o');

@@ -102,11 +102,11 @@
 	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Add a Monitoring Engine Configuration File"));
 	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("Modify a Monitoring Engine Configuration File"));
 	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Nagios Configuration File"));
+		$form->addElement('header', 'title', _("View a Monitoring Engine Configuration File"));
 
 	/* *****************************************************
 	 * Nagios Configuration basic information
@@ -119,7 +119,7 @@
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'nagios_activate', null, _("Disabled"), '0');
 	$form->addGroup($nagTab, 'nagios_activate', _("Status"), '&nbsp;');
 
-	$form->addElement('select', 'nagios_server_id', _("Linked Nagios Server"), $nagios_server);
+	$form->addElement('select', 'nagios_server_id', _("Linked poller"), $nagios_server);
 
 	/* *****************************************************
 	 * Part 1
@@ -138,8 +138,8 @@
 	/* *****************************************************
 	 * User / Groups
 	 */
-	$form->addElement('text', 'nagios_user', _("Nagios User"), $attrsText);
-	$form->addElement('text', 'nagios_group', _("Nagios Group"), $attrsText);
+	$form->addElement('text', 'nagios_user', _("Monitoring system User"), $attrsText);
+	$form->addElement('text', 'nagios_group', _("Monitoring system Group"), $attrsText);
 
 	/* *****************************************************
 	 * Enable / Disable functionalities
@@ -237,12 +237,12 @@
          * Retention masks
          */
         $form->addElement('text', 'retained_contact_host_attribute_mask', _("Retained Contact Host Attribute Mask"), $attrsText3);
-        $form->addElement('text', 'retained_contact_service_attribute_mask', _("Retained Contact Service Attribute Mask"), $attrsText3);        
+        $form->addElement('text', 'retained_contact_service_attribute_mask', _("Retained Contact Service Attribute Mask"), $attrsText3);
         $form->addElement('text', 'retained_process_host_attribute_mask', _("Retained Process Host Attribute Mask"), $attrsText3);
         $form->addElement('text', 'retained_process_service_attribute_mask', _("Retained Process Service Attribute Mask"), $attrsText3);
         $form->addElement('text', 'retained_host_attribute_mask', _("Retained Host Attribute Mask"), $attrsText3);
         $form->addElement('text', 'retained_service_attribute_mask', _("Retained Service Attribute Mask"), $attrsText3);
-        
+
 	/* *****************************************************
 	 * logging options
 	 */

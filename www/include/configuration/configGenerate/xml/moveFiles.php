@@ -149,10 +149,10 @@ try {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
                 $msg_copy[$host["id"]] = "";
                 if (!is_dir($oreon->Nagioscfg["cfg_dir"])) {
-                    $msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+                    $msg_copy[$host["id"]] .= sprintf(_("Monitoring Engine config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
                 }
                 if (!is_writable($oreon->Nagioscfg["cfg_dir"])) {
-                    $msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+                    $msg_copy[$host["id"]] .= sprintf(_("Monitoring Engine config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
                 }
                 foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
                     $bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].basename($filename));

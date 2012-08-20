@@ -78,7 +78,7 @@
 	 * Display all server options
 	 */
 	if ($n > 1) {
-		$tab_nagios_server[0] = _("All Nagios Servers");
+		$tab_nagios_server[0] = _("All Pollers");
 	}
 
 	/*
@@ -87,22 +87,22 @@
 	$attrSelect = array("style" => "width: 220px;");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', 	_("Nagios Configuration Files Export"));
+	$form->addElement('header', 'title', 	_("Configuration Files Export"));
 	$form->addElement('header', 'infos', 	_("Implied Server"));
 	$form->addElement('header', 'opt', 		_("Export Options"));
 	$form->addElement('header', 'result', 	_("Actions"));
 
-    $form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, array("id" => "nhost", "style" => "width: 220px;"));
+    $form->addElement('select', 'host', 	_("Poller"), $tab_nagios_server, array("id" => "nhost", "style" => "width: 220px;"));
 
 	$form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 
-	$form->addElement('checkbox', 'debug', _("Run Nagios debug (-v)"), null, array('id' => 'ndebug'));
+	$form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
 	$form->setDefaults(array('debug' => '1'));
 
 	$form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
 	$form->setDefaults(array('gen' => '1'));
 	$form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
-	$form->addElement('checkbox', 'restart', _("Restart Nagios"), null, array('id' => 'nrestart'));
+	$form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 
 	$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
 	$form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
@@ -197,10 +197,10 @@
 					if (isset($host['localhost']) && $host['localhost'] == 1) {
 						$msg_copy[$host["id"]] = "";
 						if (!is_dir($oreon->Nagioscfg["cfg_dir"])) {
-							$msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+							$msg_copy[$host["id"]] .= sprintf(_("Monitoring engine config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
 						}
 						if (!is_writable($oreon->Nagioscfg["cfg_dir"])) {
-							$msg_copy[$host["id"]] .= sprintf(_("Nagios config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+							$msg_copy[$host["id"]] .= sprintf(_("Monitoring engine config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
 						}
 						foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
 							$bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].basename($filename));

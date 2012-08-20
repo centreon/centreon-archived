@@ -82,7 +82,7 @@
 	 */
 	$form->addElement('header', 'Server_Informations', _("Server Information"));
 	$form->addElement('header', 'SSH_Informations', _("SSH Information"));
-	$form->addElement('header', 'Nagios_Informations', _("Scheduler Information"));
+	$form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 	$form->addElement('header', 'Misc', _("Miscelleneous"));
 	$form->addElement('header', 'SNMPTT', _("SNMPTT Traps Collector"));
 	$form->addElement('select', 'monitoring_engine', _("Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
@@ -93,10 +93,10 @@
 	$form->addElement('header', 'information', _("Satellite configuration"));
 	$form->addElement('text', 'name', _("Poller Name"), $attrsText);
 	$form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
-	$form->addElement('text', 'init_script', _("Nagios Init Script"), $attrsText);
+	$form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText);
 
-	$form->addElement('text', 'nagios_bin', _("Scheduler Binary"), $attrsText2);
-	$form->addElement('text', 'nagiostats_bin', _("Nagios Statistics Binary"), $attrsText2);
+	$form->addElement('text', 'nagios_bin', _("Monitoring Engine Binary"), $attrsText2);
+	$form->addElement('text', 'nagiostats_bin', _("Monitoring Engine Statistics Binary"), $attrsText2);
 	$form->addElement('text', 'nagios_perfdata', _("Perfdata file"), $attrsText2);
 
 	$form->addElement('text', 'ssh_private_key', _("SSH Private key"), $attrsText2);
@@ -128,7 +128,7 @@
 	 * SNMPTT
 	 */
 	$form->addElement('text', 'init_script_snmptt', _("SNMPTT init script path"), $attrsText2);
-	
+
 	/*
 	 * Set Default Values
 	 */
@@ -146,8 +146,8 @@
 		"ssh_port"  =>  '22',
 		"ssh_private_key"  =>  '~/.ssh/rsa.id',
 		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata",
-		"centreonbroker_cfg_path" => "/etc/centreon/broker", 
-		"init_script" => "/etc/init.d/snmptt", 
+		"centreonbroker_cfg_path" => "/etc/centreon/broker",
+		"init_script" => "/etc/init.d/snmptt",
 		"init_script_snmptt" => $centreon->optGen["init_script_snmptt"]));
 	} else {
 		if (isset($cfg_server)) {
@@ -216,7 +216,7 @@
 		$tpl->assign('o', $o);
 
 		include_once("help.php");
-		
+
 		$helptext = "";
         foreach ($help as $key => $text) {
             $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";

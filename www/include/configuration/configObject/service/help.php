@@ -11,10 +11,10 @@ $help["use"] = dgettext("help", "This is where you specify the name of the templ
 
 $help["is_volatile"] = dgettext("help", "This directive is used to denote whether the service is \"volatile\". A volatile service resets its state to OK with every query. Services are normally not volatile.");
 $help["check_period"] = dgettext("help", "Specify the time period during which active checks of this service can be made.");
-$help["check_command"] = dgettext("help", "Specify the command that Nagios will run in order to check the status of the service.");
+$help["check_command"] = dgettext("help", "Specify the command that monitoring engine will run in order to check the status of the service.");
 $help["check_command_args"] = dgettext("help", "Specify the parameters for the selected check command here.");
 
-$help["max_check_attempts"] = dgettext("help", "Define the number of times that Nagios will retry the service check command if it returns any state other than an OK state. Setting this value to 1 will cause Nagios to generate an alert without retrying the service check again.");
+$help["max_check_attempts"] = dgettext("help", "Define the number of times that monitoring engine will retry the service check command if it returns any state other than an OK state. Setting this value to 1 will cause monitoring engine to generate an alert without retrying the service check again.");
 $help["check_interval"] = dgettext("help", "Define the number of \"time units\" between regularly scheduled checks of the service. With the default time unit of 60s, this number will mean multiples of 1 minute. \"Regular\" checks are those that occur when the service is in an OK state or when the service is in a non-OK state, but has already been rechecked max_check_attempts number of times.");
 $help["retry_interval"] = dgettext("help", "Define the number of \"time units\" to wait before scheduling a re-check for this service after a non-OK state was detected. With the default time unit of 60s, this number will mean multiples of 1 minute. Once the service has been retried max_check_attempts times without a change in its status, it will revert to being scheduled at its \"normal\" check interval rate.");
 
@@ -26,8 +26,8 @@ $help["contacts"] = dgettext("help", "This is a list of contacts that should be 
 $help["contact_groups"] = dgettext("help", "This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this service. You must specify at least one contact or contact group in each service definition.");
 $help["notification_interval"] = dgettext("help", "Define the number of \"time units\" to wait before re-notifying a contact that this service is still in a warning or critical condition. With the default time unit of 60s, this number will mean multiples of 1 minute. A value of 0 disables re-notififications of contacts about problems for this service - only one problem notification will be sent out.");
 $help["notification_period"] = dgettext("help", "Specify the time period during which notifications of events for this service can be sent out to contacts. If a state change occurs during a time which is not covered by the time period, no notifications will be sent out.");
-$help["notification_options"] = dgettext("help", "Define the states of the service for which notifications should be sent out. If you specify None as an option, no service notifications will be sent out. If you do not specify any notification options, Nagios will assume that you want notifications to be sent out for all possible states.");
-$help["first_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the first problem notification when this service enters a non-OK state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, Nagios will start sending out notifications immediately.");
+$help["notification_options"] = dgettext("help", "Define the states of the service for which notifications should be sent out. If you specify None as an option, no service notifications will be sent out. If you do not specify any notification options, monitoring engine will assume that you want notifications to be sent out for all possible states.");
+$help["first_notification_delay"] = dgettext("help", "Define the number of \"time units\" to wait before sending out the first problem notification when this service enters a non-OK state. With the default time unit of 60s, this number will mean multiples of 1 minute. If you set this value to 0, monitoring engine will start sending out notifications immediately.");
 
 /*
  * Relations
@@ -42,8 +42,8 @@ $help["snmptraps"] = dgettext("help", "Specify the relation of known SNMP traps 
  * Data processing
  */
 $help["obsess_over_service"] = dgettext("help", "This directive determines whether or not checks for the service will be \"obsessed\" over. When enabled the obsess over service command will be executed after every check of this service.");
-$help["check_freshness"] = dgettext("help", "This directive is used to determine whether or not freshness checks are enabled for this service. When enabled Nagios will trigger an active check when last passive result is older than the value defined in the threshold. By default freshness checks are enabled.");
-$help["freshness_threshold"] = dgettext("help", "This directive is used to specify the freshness threshold (in seconds) for this service. If you set this directive to a value of 0, Nagios will determine a freshness threshold to use automatically.");
+$help["check_freshness"] = dgettext("help", "This directive is used to determine whether or not freshness checks are enabled for this service. When enabled monitoring engine will trigger an active check when last passive result is older than the value defined in the threshold. By default freshness checks are enabled.");
+$help["freshness_threshold"] = dgettext("help", "This directive is used to specify the freshness threshold (in seconds) for this service. If you set this directive to a value of 0, monitoring engine will determine a freshness threshold to use automatically.");
 
 $help["flap_detection_enabled"] = dgettext("help", "This directive is used to determine whether or not flap detection is enabled for this service. A service is marked as flapping when frequent state changes occur.");
 $help["low_flap_threshold"] = dgettext("help", "Specify the low state change threshold used in flap detection for this service. A service with a state change rate below this threshold is marked normal. By setting the value to 0, the program-wide value will be used.");
@@ -82,7 +82,7 @@ $help["macro"] = dgettext("help", "Macros are used as object-specific variables/
  */
 $help["display_name"] = dgettext("help", "This directive is used to define an alternate name that should be displayed in the web interface for this service. If not specified, this defaults to the value you specify as service description.");
 $help["flap_detection_options"] = dgettext("help", "This directive is used to determine what service states the flap detection logic will use for this service.");
-$help["initial_state"] = dgettext("help", "By default Nagios will assume that all services are in OK states when it starts. You can override the initial state for a service by using this directive.");
+$help["initial_state"] = dgettext("help", "By default monitoring engine will assume that all services are in OK states when it starts. You can override the initial state for a service by using this directive.");
 
 ?>
 

@@ -98,7 +98,7 @@
 	$form->addElement('checkbox', 'enable_centstorage', _("Enable Centstorage Engine (require restart of centstorage)"));
 	$form->addElement('text', 'RRDdatabase_path', _("Path to RRDTool Database For Metrics"), $attrsText);
 	$form->addElement('text', 'RRDdatabase_status_path', _("Path to RRDTool Database For Status"), $attrsText);
-	$form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Nagios Statistics"), $attrsText);
+	$form->addElement('text', 'RRDdatabase_nagios_stats_path', _("Path to RRDTool Database For Monitoring Engine Statistics"), $attrsText);
 	$form->addElement('text', 'len_storage_rrd', _("RRDTool database size"), $attrsText2);
 	$form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
 	$form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
@@ -108,7 +108,7 @@
 
 	$storage_type = array(0 => "RRDTool", 2 => _("RRDTool & MySQL"));
 	$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);
-	$form->addElement('checkbox', 'archive_log', _("Archive Nagios Logs"));
+	$form->addElement('checkbox', 'archive_log', _("Archive logs of monitoring engine"));
 	$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 	$form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
 
@@ -157,7 +157,7 @@
 	if (!$form->validate() && isset($_POST["gopt_id"])) {
 	    print("<div class='msg' align='center'>"._("Impossible to validate, one or more field is incorrect")."</div>");
 	}
-	
+
 	$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=ods'"));
 
 	/*
@@ -172,7 +172,7 @@
 	$tpl->assign("ods_log_retention_unit", _("days"));
 	$tpl->assign("ods_sleep_time_expl", _("in seconds - Must be higher than 10"));
 	$tpl->assign("ods_purge_interval_expl", _("in seconds - Must be higher than 2"));
-        
+
         // prepare help texts
 	$helptext = "";
 	include_once("help.php");

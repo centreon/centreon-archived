@@ -13,7 +13,7 @@ $help["notes_url"] = dgettext("help", "Define an optional URL that can be used t
 $help["action_url"] = dgettext("help", "Define an optional URL that can be used to provide more actions to be performed on the host group. You will see the link to the action URL in the host group details.");
 $help["icon_image"] = dgettext("help", "Define the image that should be associated with this host group here. This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.");
 $help["icon_image_alt"] = dgettext("help", "Define an optional string that is used in the alternative description of the icon image.");
-$help["statusmap_image"] = dgettext("help", "Define an image that should be associated with this host group in the statusmap CGI in Nagios. You can choose a JPEG, PNG, and GIF image. The GD2 image format is preferred, as other image formats must be converted first when the statusmap image is generated. The image will look best if it is 40x40 pixels in size.");
+$help["statusmap_image"] = dgettext("help", "Define an image that should be associated with this host group in the statusmap CGI in monitoring engine. You can choose a JPEG, PNG, and GIF image. The GD2 image format is preferred, as other image formats must be converted first when the statusmap image is generated. The image will look best if it is 40x40 pixels in size.");
 
 
 ?>

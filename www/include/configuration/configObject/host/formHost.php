@@ -110,7 +110,7 @@
 		for ($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
 			$host["host_hgs"][$i] = $hg["hostgroup_hg_id"];
 		$DBRESULT->free();
-                
+
 		/*
 		 * Set Host Category Parents
 		 */
@@ -209,7 +209,7 @@
 	while ($hg = $DBRESULT->fetchRow())
 		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
-        
+
 	/*
 	 * Host Categories comes from DB -> Store in $hcs Array
 	 */
@@ -581,7 +581,7 @@
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($eTemplate);
 	echo $ams3->getElementJs(false);
-        
+
 	if ($o == "mc")	{
 		$mc_mod_hhc = array();
 		$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
@@ -681,16 +681,16 @@
 	else if ($o == "mc")
 		$form->addElement('header', 'title4', _("Massive Change"));
 
-	$form->addElement('header', 'nagios', _("Nagios"));
+	$form->addElement('header', 'nagios', _("Monitoring engine"));
 	$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 	$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
 	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
-	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"), $extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
-	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
-	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
+	$form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"), $extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+	$form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
+	$form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
 	/*
 	 * Sort 5 - Macros - Nagios 3
@@ -753,10 +753,10 @@
 	    $form->registerRule('exist', 'callback', 'testHostExistence');
 	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
 	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
-            
+
             $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
             $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
-            
+
 		/*
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
 		 */

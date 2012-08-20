@@ -507,16 +507,16 @@
 	else if ($o == "w")
 		$form->addElement('header', 'title4', _("View a Host Extended Info"));
 
-	$form->addElement('header', 'nagios', _("Nagios"));
+	$form->addElement('header', 'nagios', _("Monitoring engine"));
 	$form->addElement('text', 'ehi_notes', _("Notes"), $attrsText);
 	$form->addElement('text', 'ehi_notes_url', _("URL"), $attrsText);
 	$form->addElement('text', 'ehi_action_url', _("Action URL"), $attrsText);
 	$form->addElement('select', 'ehi_icon_image', _("Icon"), $extImg, array("id"=>"ehi_icon_image", "onChange"=>"showLogo('ehi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'ehi_icon_image_alt', _("Alt icon"), $attrsText);
 	$form->addElement('select', 'ehi_vrml_image', _("VRML Image"), $extImg, array("id"=>"ehi_vrml_image", "onChange"=>"showLogo('ehi_vrml_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
-	$form->addElement('select', 'ehi_statusmap_image', _("Nagios Status Map Image"),$extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
-	$form->addElement('text', 'ehi_2d_coords', _("Nagios 2d Coords"), $attrsText2);
-	$form->addElement('text', 'ehi_3d_coords', _("Nagios 3d Coords"), $attrsText2);
+	$form->addElement('select', 'ehi_statusmap_image', _("Status Map Image"),$extImgStatusmap, array("id"=>"ehi_statusmap_image", "onChange"=>"showLogo('ehi_statusmap_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
+	$form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
+	$form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
 	$form->addElement('header', 'oreon', _("Centreon"));
 

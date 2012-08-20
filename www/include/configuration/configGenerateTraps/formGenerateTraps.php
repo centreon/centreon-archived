@@ -74,7 +74,7 @@
 	 * Display all server options
 	 */
 	if ($n > 1) {
-		$tab_nagios_server[0] = _("All Nagios Servers");
+		$tab_nagios_server[0] = _("All Pollers");
 	}
 
 	/*
@@ -91,7 +91,7 @@
 	$form->addElement('header', 'result', 	_("Actions"));
     $form->addElement('header', 'infos', 	_("Implied Server"));
 
-	$form->addElement('select', 'host', 	_("Nagios Server"), $tab_nagios_server, $attrSelect);
+	$form->addElement('select', 'host', 	_("Poller"), $tab_nagios_server, $attrSelect);
 
 	/*
 	 * Add checkbox for enable restart
@@ -99,7 +99,7 @@
 	$form->addElement('checkbox', 'generate', _("Generate configuration files for SNMP Traps (SNMPTT)"));
 	$form->addElement('checkbox', 'apply', _("Apply configurations"));
 	$form->addElement('checkbox', 'restart', _("Restart SNMPTT"));
-	
+
 	/*
 	 * Set checkbox checked.
 	 */
@@ -143,7 +143,7 @@
 	            }
 				/* even if we generate files for a remote server, we push snmptt config files on the local server */
 	            shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-	
+
 	            foreach ($tab_server as $host) {
 	                if (!isset($msg_generate[$host["id"]])) {
 	                    $msg_generate[$host["id"]] = "";
@@ -160,17 +160,17 @@
 					}
 	            }
 			}
-			
+
 			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"]) {
 				passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
 			}
-		
+
 			if (isset($ret["restart"]["restart"]) && $ret["restart"]["restart"]) {
 				passthru("echo 'RESTARTSNMPTT:".$host['id']."' >> $centcore_pipe", $return);
 			}
 		}
 	}
-		
+
 	$form->addElement('header', 'status', _("Status"));
 	if (isset($msg) && $msg) {
 		$tpl->assign('msg', $msg);
@@ -184,7 +184,7 @@
 	if (isset($host_list) && $host_list) {
 		$tpl->assign('host_list', $host_list);
 	}
-	
+
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 	$helptext = "";
 	include_once("help.php");
@@ -192,7 +192,7 @@
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-	
+
 	/*
 	 * Apply a template definition
 	 */

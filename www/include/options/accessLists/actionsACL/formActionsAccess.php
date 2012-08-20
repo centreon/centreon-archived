@@ -127,8 +127,8 @@
 	$form->addElement('checkbox', 'host_submit_result', _("Submit result for a host"));
 
 	// Global Nagios External Commands
-	$form->addElement('checkbox', 'global_shutdown', _("Shutdown Nagios"));
-	$form->addElement('checkbox', 'global_restart', _("Restart Nagios"));
+	$form->addElement('checkbox', 'global_shutdown', _("Shutdown Monitoring Engine"));
+	$form->addElement('checkbox', 'global_restart', _("Restart Monitoring Engine"));
 	$form->addElement('checkbox', 'global_notifications', _("Enable/Disable notifications"));
 	$form->addElement('checkbox', 'global_service_checks', _("Enable/Disable service checks"));
 	$form->addElement('checkbox', 'global_service_passive_checks', _("Enable/Disable passive service checks"));
@@ -152,7 +152,7 @@
 	$form->addElement('header', 'notification', _("Relations"));
 	$form->addElement('header', 'service_actions', _("Services Actions Access"));
 	$form->addElement('header', 'host_actions', _("Hosts Actions Access"));
-	$form->addElement('header', 'global_actions', _("Global Nagios Actions (External Process Commands)"));
+	$form->addElement('header', 'global_actions', _("Global Monitoring Engine Actions (External Process Commands)"));
 	$form->addElement('header', 'global_access', _("Global Functionalities Access"));
 
     $ams1 = $form->addElement('advmultiselect', 'acl_groups', _("Linked Groups"), $groups, $attrsAdvSelect, SORT_ASC);
@@ -229,7 +229,7 @@
 		$form->freeze();
 		$valid = true;
 	}
-        
+
         // prepare help texts
 	$helptext = "";
 	include_once("help.php");
@@ -237,7 +237,7 @@
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-        
+
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"]) {
 		require_once($path."listsActionsAccess.php");

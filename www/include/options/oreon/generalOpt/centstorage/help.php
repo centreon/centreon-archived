@@ -8,7 +8,7 @@ $help = array();
 $help['tip_enable_centstorage_engine'] = dgettext('help', 'Enables Centstorage Engine.');
 $help['tip_path_to_rrdtool_database_for_metrics'] = dgettext('help', 'Path to RRDTool database for graphs of metrics.');
 $help['tip_path_to_rrdtool_database_for_status'] = dgettext('help', 'Path to RRDTool database for graphs of status.');
-$help['tip_path_to_rrdtool_database_for_nagios_statistics'] = dgettext('help', 'Path to RRDTool database for graphs of Nagios stats.');
+$help['tip_path_to_rrdtool_database_for_nagios_statistics'] = dgettext('help', 'Path to RRDTool database for graphs of monitoring engine stats.');
 
 /**
  * Retention durations
@@ -46,11 +46,11 @@ $help['tip_drop_file'] = dgettext('help', 'Dump file.');
  * Logs Integration Properties
  */
 
-$help['tip_archive_nagios_logs'] = dgettext('help', 'Archives Nagios logs.');
+$help['tip_archive_nagios_logs'] = dgettext('help', 'Archives logs of monitoring engine.');
 $help['tip_logs_retention_duration'] = dgettext('help', 'Retention duration of logs.');
 
 /**
- * Reporting Dashboard 
+ * Reporting Dashboard
  */
 
 $help['tip_reporting_retention'] = dgettext('help', 'Retention duration of reporting data.');
