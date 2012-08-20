@@ -136,17 +136,21 @@
 	}
 
 	function insertServiceGroupInDB ($ret = array())	{
-		$sg_id = insertServiceGroup($ret);
-		updateServiceGroupServices($sg_id, $ret);
-		$centreon->user->access->updateACL();
-		return $sg_id;
+            global $centreon;
+            
+            $sg_id = insertServiceGroup($ret);
+            updateServiceGroupServices($sg_id, $ret);
+            $centreon->user->access->updateACL();
+            return $sg_id;
 	}
 
 	function updateServiceGroupInDB ($sg_id = NULL, $ret = array(), $increment = false)	{
-		if (!$sg_id) return;
-		updateServiceGroup($sg_id, $ret);
-		updateServiceGroupServices($sg_id, $ret, $increment);
-		$centreon->user->access->updateACL();
+            global $centreon;
+                
+            if (!$sg_id) return;
+            updateServiceGroup($sg_id, $ret);
+            updateServiceGroupServices($sg_id, $ret, $increment);
+            $centreon->user->access->updateACL();
 	}
 
 	function insertServiceGroup($ret = array())	{
