@@ -88,7 +88,21 @@
             $tpl->assign('strerr', _('Error for getting the localhost requester.'));
             $page = 'error.ihtml';
         }
-    //} elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
+    } elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
+        $requester = getLocalRequester();
+        if (count($requester) != 0) {
+            $lang['central_configuration_with_poller'] = _('Central with poller configuration');
+            $lang['requester'] = _('Requester');
+            $lang['informations'] = _('Informations');
+            $lang['prefix_configuration_name'] = _('Prefix configuration name');
+            $lang['additional_daemon'] = _('Additional daemon');
+            $tpl->assign('requester', $requester['name']);
+            $tpl->assign('requester_id', $requester['id']);
+            $page = 'step2_central_with_poller.ihtml';
+        } else {
+            $tpl->assign('strerr', _('Error for getting the localhost requester.'));
+            $page = 'error.ihtml';
+        }
     } elseif ($wizard->getValue(1, 'configtype') == 'poller') {
         $requester_list = getListRequester();
         if (count($requester_list) == 0) {

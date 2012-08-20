@@ -225,6 +225,9 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
                        ('Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
                        ('Widgets', NULL, '507', NULL, '2', '20', NULL, '1'),
                        ('Setup', './img/icones/16x16/press.gif', '507', '50703', '20', '20', './include/options/oreon/widgets/widgets.php', '1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
+	(NULL, 'Wizard', NULL, 60909, 6090901, 40, 11, './include/configuration/configCentreonBroker/wizard.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1'),
+	(NULL, 'WizardAjax', NULL, 60909, 6090902, 40, 11, './include/configuration/configCentreonBroker/wizard_ajax.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1');
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 

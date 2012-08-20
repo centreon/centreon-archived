@@ -7,6 +7,8 @@
 				{$msg.options} {$form.o1.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				&nbsp;&nbsp;&nbsp;
+				<a href="?p=6090901">{$msg.addWizard}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
@@ -48,6 +50,8 @@
 				{$msg.options} {$form.o2.html}
 				&nbsp;&nbsp;&nbsp;
 				<a href="{$msg.addL}">{$msg.addT}</a>
+				&nbsp;&nbsp;&nbsp;
+				<a href="?p=6090901">{$msg.addWizard}</a>
 			</td>
 			{ else }
 			<td>&nbsp;</td>
