@@ -108,7 +108,7 @@
 		$centreon = $_SESSION["centreon"];
 		$oreon = $centreon;
 	}
-	if (!is_object($centreon)) {
+	if (!isset($centreon) || !is_object($centreon)) {
 		exit();
 	}
 
