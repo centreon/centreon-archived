@@ -36,14 +36,14 @@
  *
  */
 
-if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
+/*if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["ldap_auth_enable"] = $_POST["ldap_auth_enable"];
 	$_SESSION["ldap_host"] = $_POST["ldap_host"];
 	$_SESSION["ldap_port"] = $_POST["ldap_port"];
 	$_SESSION["ldap_base_dn"] = $_POST["ldap_base_dn"];
 	$_SESSION["ldap_login_attrib"] = $_POST["ldap_login_attrib"];
 	$_SESSION["ldap_ssl"] = $_POST["ldap_ssl"];
-}
+}*/
 
 aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">

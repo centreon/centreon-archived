@@ -50,7 +50,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	if ($mysql_msg == '') {
 		print '<td align="right"><b><span class="go">OK</b></td></tr>';
 	}
-	
+
 	# Database creation
 	$usedb = mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg = mysql_error());
 	if (!$usedb){
@@ -91,7 +91,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	if (!$usedb){
 		$mysql_msg = "";
 		print "<tr><td><b>Database &#146;".$_SESSION["nameOreonDB"]."&#146; : Users Management</b></td>";
-		
+
 		/*
 		 * Centreon
 		 */
@@ -412,7 +412,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		    $return_false = 1;
 		}
 	}
-    
+
 	if (!$return_false){
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Centreon User Creation</b></td>';
 		$mysql_msg = '';
@@ -423,7 +423,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		$nb = @mysql_num_rows($r);
 		while ($tab = @mysql_fetch_array($r))
 			break;
-        
+
 		/*if (!$tab && !$nb)
         {
 			$requete = "INSERT INTO `contact` (`contact_name` , `contact_alias` , `contact_passwd` , `contact_lang` , `contact_email` , `contact_oreon` , `contact_admin` , `contact_activate` ) VALUES ";
@@ -447,13 +447,29 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 		    $return_false = 1;
 		}
 	}
-    
+
 	if (!$return_false){
 		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set NDO Password</b></td>';
 		$mysql_msg = '';
 		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
 		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
 		$requete = "UPDATE `cfg_ndo2db` SET `db_pass` = '".$_SESSION["pwdOreonDB"]."';";
+		if ($DEBUG)
+			print $requete . "<br />";
+		$result = @mysql_query($requete, $res['0']);
+		if ($res[1] == '') {
+			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
+		} else {
+			echo '<td align="right"><b><span class="stop">CRITICAL</span></b><br />'.$res[1].'<br /></td></tr>';
+		    $return_false = 1;
+		}
+	}
+	if (!$return_false){
+		print '<tr><td><b>Database &#146;'.$_SESSION["nameOreonDB"].'&#146; : Set Monitoring Engine</b></td>';
+		$mysql_msg = '';
+		$res = connexion($_SESSION["nameOreonDB"], $_SESSION["pwdOreonDB"], $_SESSION["dbLocation"]);
+		@mysql_select_db($_SESSION["nameOreonDB"], $res['0']) or ( $mysql_msg= mysql_error());
+		$requete = "INSERT INTO `options` (`key`, `value`) SET ('monitoring_engine', '".$_SESSION["monitoring_engine"]."');";
 		if ($DEBUG)
 			print $requete . "<br />";
 		$result = @mysql_query($requete, $res['0']);

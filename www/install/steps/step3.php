@@ -59,12 +59,19 @@ In order for your Centreon installation to function properly, please complete th
 		<td><input name="apache_group" type="text" value="<?php echo (isset($_SESSION["apache_group"]) ?  $_SESSION["apache_group"]  : (isset($conf_centreon["apache_group"]) ?  $conf_centreon["apache_group"]  : "apache" ) );?>"></td>
   	</tr>
   	<tr>
-    	<td style="padding-left:50px ">Nagios Version</td>
+    	<td style="padding-left:50px ">Monitoring Engine</td>
 		<td>
-		<select name="nagios_version">
+		<select name="monitoring_engine">
+			<option value="CENGINE" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "CENGINE") print "selected"; ?>>Centreon Engine</option>
+			<option value="ICINGA" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "ICINGA") print "selected"; ?>>Icinga</option>
+			<option value="NAGIOS" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "NAGIOS") print "selected"; else if (!isset($_SESSION["monitoring_engine"])) print "selected"; ?>>Nagios</option>
+			<option value="SHINKEN" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "SHINKEN") print "selected"; ?>>Shinken</option>
+		</select>
+		<input type="hidden" name="nagios_version" value="3" />
+		<!-- <select name="nagios_version">
 			<option value="2" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; ?>>2.x</option>
     		<option value="3" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>3.x</option>
-    	</select>
+    	</select> -->
 		</td>
   	</tr>
   	<tr>

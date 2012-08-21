@@ -95,9 +95,9 @@
 	else if (isset($_POST["step"]) && $_POST["step"] == 7)
 		include("./steps/step8.php");
 	else if (isset($_POST["step"]) && $_POST["step"] == 8)
-		include("./steps/step9.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 9)
 		include("./steps/step10.php");
+	/*else if (isset($_POST["step"]) && $_POST["step"] == 9)
+		include("./steps/step10.php");*/
 	else if (isset($_POST["step"]) && $_POST["step"] == 10)
 		include("./steps/step11.php");
 	else if (isset($_POST["step"]) && $_POST["step"] == 11)

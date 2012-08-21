@@ -41,6 +41,7 @@ if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
 	$_SESSION["nagios_group"] = $_POST["nagios_group"];
 	$_SESSION["apache_user"] = $_POST["apache_user"];
 	$_SESSION["apache_group"] = $_POST["apache_group"];
+	$_SESSION["monitoring_engine"] = $_POST["monitoring_engine"];
 	$_SESSION["nagios_version"] = $_POST["nagios_version"];
 	$_SESSION["nagios_conf"] = $_POST["nagios_conf"];
 	$_SESSION["nagios_plugins"] = $_POST["nagios_plugins"];
