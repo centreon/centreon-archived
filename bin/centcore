@@ -248,6 +248,9 @@ sub getServerConfig($){
     }
     my $data = $sth2->fetchrow_hashref();
     $sth2->finish();
+    
+    # Get Nagios User
+    $data->{'nagios_user'} = getNagiosConfigurationField($_[0], 'nagios_user');
     return $data;
 }
 
@@ -310,11 +313,15 @@ sub sendExternalCommand($$){
     my $id = $_[0];
     my $cmd = $_[1];
     my $stdout = '';
+    my $user_distant = '';
 
     # Get server informations
     my $server_info = getServerConfig($id);
     my $port = checkSSHPort($server_info->{'ssh_port'});
-
+    if (defined($server_info->{'nagios_user'}) and $server_info->{'nagios_user'} ne "") {
+        $user_distant = $server_info->{'nagios_user'} . "@";
+    }
+    
     # Get command file 
     my $command_file = getNagiosConfigurationField($id, "command_file");
 
@@ -332,7 +339,7 @@ sub sendExternalCommand($$){
             }
         } else {
             writeLogFile("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
-            my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
+            my $cmd = "$ssh -q ". $user_distant . $server_info->{'ns_ip_address'} ." -p $port 'echo \"".$cmd."\" >> ".$command_file."'\n";
             $stdout = `$cmd`;
         }
 
@@ -365,6 +372,7 @@ sub waitPipe($) {
 sub GetPerfData($){
     # init Values
     my $id = $_[0];
+    my $user_distant = '';
 
     # Check MySQL Connection
     CheckMySQLConnexion();
@@ -372,6 +380,9 @@ sub GetPerfData($){
     # Get Server Infos
     my $server_info = getServerConfig($id);
     my $port = checkSSHPort($server_info->{'ssh_port'});;
+    if (defined($server_info->{'nagios_user'}) and $server_info->{'nagios_user'} ne "") {
+        $user_distant = $server_info->{'nagios_user'} . "@";
+    }
  
     my $distantconnexion = $server_info->{'ns_ip_address'};
 
@@ -401,7 +412,7 @@ sub GetPerfData($){
         writeLogFile("Cannot get perfdata file. Unkown perfdata file on poller $id");
     } else {
         # Rename perfdata file
-        my $cmd = "$ssh ".$server_info->{'ns_ip_address'}." -p $port '".$move_cmd."'";
+        my $cmd = "$ssh ". $user_distant $server_info->{'ns_ip_address'} ." -p $port '".$move_cmd."'";
         writeLogFile($cmd) if ($debug);
         my $stdout = `$cmd`;
         if (defined($stdout) && $stdout){
@@ -410,7 +421,7 @@ sub GetPerfData($){
 
         # Get Perfdata File
         writeLogFile("$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile") if ($debug);
-        $stdout = `$scp -P $port $distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null`;
+        $stdout = `$scp -P $port ${user_distant}$distantconnexion:$distantperffile_buffer $localtmpperffile 2>> /dev/null`;
         if (defined($stdout) && $stdout){
             writeLogFile("Result : $stdout\n");
         }
@@ -433,13 +444,17 @@ sub GetLogFile($){
     # Init values
     my $id = $_[0];
     my $last_access;
+    my $user_distant = '';
 
     # Get Server informations
     my $server_info = getServerConfig($id);
     my $port = checkSSHPort($server_info->{'ssh_port'});
-
+    if (defined($server_info->{'nagios_user'}) and $server_info->{'nagios_user'} ne "") {
+        $user_distant = $server_info->{'nagios_user'} . "@";
+    }
+    
     # Check configuration
-    my $distantconnexion = $server_info->{'ns_ip_address'};
+    my $distantconnexion = $user_distant . $server_info->{'ns_ip_address'};
     if (!defined($distantconnexion)) {
         writeLogFile("IP address not defined for poller $id");	
     }
@@ -512,10 +527,14 @@ sub sendConfigFile($){
     # Init Values
     my $id = $_[0];
     my $debug = 0;
+    my $user_distant = '';
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = getServerConfig($id);
     my $port = checkSSHPort($server_info->{'ssh_port'});
+    if (defined($server_info->{'nagios_user'}) and $server_info->{'nagios_user'} ne "") {
+        $user_distant = $server_info->{'nagios_user'} . "@";
+    }
 
     if (!defined($cfg_dir) || $cfg_dir =~ //) {
         writeLogFile("Engine configuration file is empty for poller $id. Please check nagios.cfg file.");
@@ -523,7 +542,7 @@ sub sendConfigFile($){
     }
 
     my $origin = $installedPath."/filesGeneration/nagiosCFG/".$id."/*";
-    my $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+    my $dest = $user_distant . $server_info->{'ns_ip_address'}.":$cfg_dir";
 
     # Send data with SCP
     writeLogFile("Start: Send config files on poller $id");
@@ -550,7 +569,7 @@ sub sendConfigFile($){
             if ($server_info->{'localhost'} == 0) {
                 $cfg_dir = $server_info->{'centreonbroker_cfg_path'};
                 $origin = $installedPath."/filesGeneration/broker/".$id."/*.xml";
-                $dest = $server_info->{'ns_ip_address'}.":$cfg_dir";
+                $dest = $user_distant . $server_info->{'ns_ip_address'}.":$cfg_dir";
                 $cmd = "$scp -P $port $origin $dest 2>&1";
                 my $stdout = `$cmd`;
                 if (defined($stdout) && $stdout) {
@@ -563,7 +582,7 @@ sub sendConfigFile($){
                     writeLogFile("Result : $stdout\n");
                 }
             }
-	    writeLogFile("End: Send Centreon Broker config files on poller $id") if ($debug);
+            writeLogFile("End: Send Centreon Broker config files on poller $id") if ($debug);
         }
     }
 }
@@ -579,10 +598,14 @@ sub initEngine($$){
     my $id = $_[0];
     my $options = $_[1];
     my ($cmd, $stdout);
+    my $user_distant = '';
 
     # Get configuration
     my $conf = getServerConfig($id);
     my $port = checkSSHPort($conf->{'ssh_port'});
+    if (defined($conf->{'nagios_user'}) and $conf->{'nagios_user'} ne "") {
+        $user_distant = $conf->{'nagios_user'} . "@";
+    }
 
     if (!defined($conf)) {
         writeLogFile("Poller $id doesn't exists...");
@@ -592,7 +615,7 @@ sub initEngine($$){
 
     if (defined($conf->{'ns_ip_address'}) && $conf->{'ns_ip_address'}) {
         # Launch command
-        $cmd = "$ssh -p $port ".$conf->{'ns_ip_address'}." $sudo ".$conf->{'init_script'}." ".$options;
+        $cmd = "$ssh -p $port ". $user_distant . $conf->{'ns_ip_address'} ." $sudo ".$conf->{'init_script'}." ".$options;
         $stdout = `$cmd`;
     } else {
         writeLogFile("Cannot $options Nagios for poller $id");
@@ -614,6 +637,7 @@ sub initEngine($$){
 sub syncTraps($) {
     my $id = $_[0];
     my $stdout;
+    my $user_distant = '';
 
     # Check MySQL Connexion
     CheckMySQLConnexion();
@@ -621,10 +645,13 @@ sub syncTraps($) {
     if ($id != 0) {
         # Get configuration
         my $ns_server = getServerConfig($id);
-        my $port = checkSSHPort($ns_server-->{'ssh_port'});
+        my $port = checkSSHPort($ns_server->{'ssh_port'});
+        if (defined($ns_server->{'nagios_user'}) and $ns_server->{'nagios_user'} ne "") {
+            $user_distant = $ns_server->{'nagios_user'} . "@";
+        }
 
         if ($id != 0 && $ns_server->{'localhost'} == 0) {
-            my $cmd = "$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
+            my $cmd = "$scp -P $port /etc/snmp/centreon_traps/*.ini ${user_distant}$ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
             writeLogFile($cmd) if ($debug);
             $stdout = `$cmd`;
             if (defined($stdout) && $stdout){
@@ -634,8 +661,8 @@ sub syncTraps($) {
             writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
             my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
             if ($ls > 1) {
-                writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ".$ns_server->{'ns_ip_address'}.":/etc/snmp/centreon_traps/") if ($debug);                
-                $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+                writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ". $user_distant . $ns_server->{'ns_ip_address'} .":/etc/snmp/centreon_traps/") if ($debug);                
+                $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ${user_distant}$ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
             	if (defined($stdout) && $stdout){
                     writeLogFile("Result : $stdout\n");
                 }
@@ -651,19 +678,22 @@ sub syncTraps($) {
             while (my $server = $sth2->fetchrow_hashref()) {
                 # Get configuration
                 my $ns_server = getServerConfig($server->{'id'});
+                if (defined($ns_server->{'nagios_user'}) and $ns_server->{'nagios_user'} ne "") {
+                    $user_distant = $ns_server->{'nagios_user'} . "@";
+                }
                 my $port = checkSSHPort($ns_server->{'ssh_port'});
 
                 if ($id == 0) {
-                    writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
-                    $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+                    writeLogFile("$scp -P $port /etc/snmp/centreon_traps/*.ini ${user_distant}$ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
+                    $stdout = `$scp -P $port /etc/snmp/centreon_traps/*.ini ${user_distant}$ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
                     if (defined($stdout) && $stdout){
                         writeLogFile("Result : $stdout\n");
                     }
                     writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
                     my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
                     if ($ls > 1) {
-                        writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
-                        $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+                        writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ${user_distant}$ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/") if ($debug);
+                        $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ${user_distant}$ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
                         if (defined($stdout) && $stdout){
                             writeLogFile("Result : $stdout\n");
                         }
@@ -676,12 +706,16 @@ sub syncTraps($) {
 
 sub testConfig($) {
     my $id = $_[0];
+    my $user_distant = '';
 
     my $cfg_dir = getNagiosConfigurationField($id, "cfg_dir");
     my $data = getServerConfig($id);
     my $port = checkSSHPort($data->{'ssh_port'});
+    if (defined($data->{'nagios_user'}) and $data->{'nagios_user'} ne "") {
+        $user_distant = $data->{'nagios_user'} . "@";
+    }
 
-    my $distantconnexion = $data->{'ns_ip_address'};
+    my $distantconnexion = $user_distant . $data->{'ns_ip_address'};
     my $cmd = "$ssh -p ".$port." $distantconnexion $sudo ".$data->{'nagios_bin'}." -v $cfg_dir/nagios.cfg";
     my $stdout = `$cmd`;
     writeLogFile("$stdout\n");
@@ -689,6 +723,7 @@ sub testConfig($) {
 
 sub syncArchives($) {
     my $id = $_[0];
+    my $user_distant = '';
 
     # Check MySQL Connexion
     CheckMySQLConnexion();
@@ -696,6 +731,9 @@ sub syncArchives($) {
     # Get configuration
     my $ns_server = getServerConfig($id);
     my $port = checkSSHPort($ns_server->{'ssh_port'});
+    if (defined($ns_server->{'nagios_user'}) and $ns_server->{'nagios_user'} ne "") {
+        $user_distant = $ns_server->{'nagios_user'} . "@";
+    }
 
     if ($id != 0) {
         # Sync Archive for one poller
@@ -709,8 +747,8 @@ sub syncArchives($) {
             my $data = $sth->fetchrow_hashref();
 
             # Archive Sync
-            writeLogFile("$rsync --port=$port -c ".$ns_server->{'ns_ip_address'}.":".$data->{'log_archive_path'}."/*.log $VARLIB/log/".$ns_server->{'id'}."/archives/") if ($debug);
-            `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $VARLIB/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
+            writeLogFile("$rsync --port=$port -c ". $user_distant . $ns_server->{'ns_ip_address'}. ":".$data->{'log_archive_path'}."/*.log $VARLIB/log/".$ns_server->{'id'}."/archives/") if ($debug);
+            `$rsyncWT --port=$port -c ${user_distant}$ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $VARLIB/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
         } else {
             print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
         }
@@ -732,6 +770,7 @@ sub syncArchives($) {
 # Get Monitoring Engine.
 sub getInfos($) {
     my $id = $_[0];
+    my $user_distant = '';
 
     # Check MySQL Connexion
     CheckMySQLConnexion();
@@ -739,10 +778,13 @@ sub getInfos($) {
     # Get configuration
     my $ns_server = getServerConfig($id);
     my $port = checkSSHPort($ns_server->{'ssh_port'});
+    if (defined($ns_server->{'nagios_user'}) and $ns_server->{'nagios_user'} ne "") {
+        $user_distant = $ns_server->{'nagios_user'} . "@";
+    }
 
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}) {
         # Launch command
-        my $cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." ".$ns_server->{'nagios_bin'}."";
+        my $cmd = "$ssh -p $port ". $user_distant . $ns_server->{'ns_ip_address'} ." ".$ns_server->{'nagios_bin'}."";
         my $stdout = `$cmd`;
 	
         my @tab = split("\n", $stdout);
@@ -764,6 +806,7 @@ sub restartSNMPTT($) {
     my $stdout = "";
     my $cmd = "";
     my $debug = 0;
+    my $user_distant = '';
 
     # Check MySQL Connexion
     CheckMySQLConnexion();
@@ -771,6 +814,9 @@ sub restartSNMPTT($) {
     # Get configuration
     my $ns_server = getServerConfig($id);
     my $port = checkSSHPort($ns_server->{'ssh_port'});
+    if (defined($ns_server->{'nagios_user'}) and $ns_server->{'nagios_user'} ne "") {
+        $user_distant = $ns_server->{'nagios_user'} . "@";
+    }
 
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}
     	&& defined($ns_server->{'init_script_snmptt'}) && $ns_server->{'init_script_snmptt'}) {
@@ -780,7 +826,7 @@ sub restartSNMPTT($) {
             writeLogFile($cmd) if ($debug);
             $stdout = `$cmd`;
         } else {
-            $cmd = "$ssh -p $port ".$ns_server->{'ns_ip_address'}." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
+            $cmd = "$ssh -p $port ". $user_distant . $ns_server->{'ns_ip_address'} ." $sudo ".$ns_server->{'init_script_snmptt'}." restart";
             writeLogFile($cmd) if ($debug);
             $stdout = `$cmd`;
         }
