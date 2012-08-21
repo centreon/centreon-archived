@@ -590,6 +590,9 @@
 	    } elseif ($tab_hostprobstate[$key] == 2) {
 	        $xml->writeElement('state', _('Unreachable'));
 	        $xml->writeElement('bgcolor', $general_opt['color_unreachable']);
+	    } elseif ($tab_hostprobstate[$key] == 3) {
+	        $xml->writeElement('state', _('Pending'));
+	        $xml->writeElement('bgcolor', $general_opt['color_pending']);
 	    }
 	    $xml->endElement();
 	}
@@ -627,6 +630,10 @@
 	    elseif ($tab_state[$key] == 3) {
 	        $xml->writeElement('state', _('Unknown'));
 	        $xml->writeElement('bgcolor', $general_opt['color_unknown']);
+	    }
+	    elseif ($tab_state[$key] == 4) {
+	        $xml->writeElement('state', _('Pending'));
+	        $xml->writeElement('bgcolor', $general_opt['color_pending']);
 	    }
 	    $xml->endElement();
 	}
