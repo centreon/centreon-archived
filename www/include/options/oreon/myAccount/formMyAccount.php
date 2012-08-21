@@ -59,7 +59,7 @@
 	#
 	$cct = array();
 	if ($o == "c")	{	
-		$DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
+		$DBRESULT = $pearDB->query("SELECT contact_id, contact_name, contact_alias, contact_lang, contact_email, contact_pager, contact_js_effects FROM contact WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
 		# Set base value
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
 	}
@@ -94,6 +94,7 @@
 	$form->addElement('password', 'contact_passwd', _("Password"), $attrsText);
 	$form->addElement('password', 'contact_passwd2', _("Confirm password"), $attrsText);
     $form->addElement('select', 'contact_lang', _("Language"), $langs);
+    $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
