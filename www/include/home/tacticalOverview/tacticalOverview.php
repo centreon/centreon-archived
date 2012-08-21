@@ -77,9 +77,15 @@ document.onLoad = ajax.start();
 // Poppin Function
 var func_popupXsltCallback = function() {
         jQuery('.popup_volante .container-load').empty();
+        <?php   if ($centreon->user->get_js_effects() > 0) { ?>
         jQuery('.popup_volante').animate({width: jQuery('#popup-container-display').width(), height: jQuery('#popup-container-display').height(),
                              top: (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2)}, "slow");
         jQuery('#popup-container-display').fadeIn(1000);
+        <?php } else { ?>
+        jQuery('.popup_volante').css('left', jQuery('.popup_volante').attr('left'));
+        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2));
+        jQuery('#popup-container-display').show();
+        <?php } ?>
 };
 
 var func_displayPOPUP = function(event) {

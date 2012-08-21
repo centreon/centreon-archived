@@ -777,6 +777,7 @@ CREATE TABLE `contact` (
   `contact_address5` varchar(200) DEFAULT NULL,
   `contact_address6` varchar(200) DEFAULT NULL,
   `contact_comment` text,
+  `contact_js_effects` enum('0','1') DEFAULT '1',
   `contact_location` int(11) DEFAULT '0',
   `contact_oreon` enum('0','1') DEFAULT NULL,
   `contact_enable_notifications` enum('0','1') DEFAULT '0',

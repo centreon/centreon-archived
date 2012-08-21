@@ -313,6 +313,16 @@ ALTER TABLE `nagios_server` ADD COLUMN `init_script_snmptt` VARCHAR(255) DEFAULT
 --
 
 --
+-- Add js effects options
+--
+
+ALTER TABLE contact ADD COLUMN contact_js_effects ENUM('0','1') DEFAULT '1' AFTER contact_comment;
+
+--
+-- End js effects options
+--
+
+--
 -- Max check result reaper time
 --
 

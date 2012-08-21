@@ -811,14 +811,26 @@ var func_displayIMG = function(event) {
         var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
         NewImage.onload = function(){
                 jQuery('.img_volante').html('<img style="display: none" src="' + encodeURI(this.src) + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+                <?php   if ($centreon->user->get_js_effects() > 0) { ?>
                 jQuery('.img_volante').animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, "slow");
                 jQuery('.img_volante img').fadeIn(1000);
+                <?php } else { ?>
+                jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
+                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (this.height / 2));
+                jQuery('.img_volante img').show();
+                <?php } ?>
         };
         NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
         if (NewImage.complete) {
                 jQuery('.img_volante').html('<img style="display: none" src="' + NewImage.src + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
+                <?php   if ($centreon->user->get_js_effects() > 0) { ?>
                 jQuery('.img_volante').animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, "slow");
                 jQuery('.img_volante img').fadeIn(1000);
+                <?php } else { ?>
+                jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
+                jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
+                jQuery('.img_volante img').show();
+                <?php } ?>
         }
 };
 
@@ -837,9 +849,15 @@ function set_displayPOPUP() {
 
 var func_popupXsltCallback = function() {
         jQuery('.popup_volante .container-load').empty();
+<?php   if ($centreon->user->get_js_effects() > 0) { ?>
         jQuery('.popup_volante').animate({width: jQuery('#popup-container-display').width(), height: jQuery('#popup-container-display').height(),
                              top: (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2)}, "slow");
         jQuery('#popup-container-display').fadeIn(1000);
+<?php } else { ?>
+        jQuery('.popup_volante').css('left', jQuery('#popup-container-display').attr('left'));
+        jQuery('.popup_volante').css('top', (jQuery(window).height() / 2) - (jQuery('#popup-container-display').height() / 2));
+        jQuery('#popup-container-display').show();
+<?php } ?>
 };
 
 var func_displayPOPUP = function(event) {

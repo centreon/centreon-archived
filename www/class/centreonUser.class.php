@@ -51,6 +51,7 @@ class CentreonUser	{
 	var $version;
 	var $admin;
 	var $limit;
+    var $js_effects;
 	var $num;
 	var $gmt;
 	var $is_admin;
@@ -80,6 +81,7 @@ class CentreonUser	{
 		$this->admin = $user["contact_admin"];
 		$this->version = 3;
 	  	$this->gmt = $user["contact_location"];
+        $this->js_effects = $user["contact_js_effects"];
 	  	$this->is_admin = NULL;
 	  	/*
 	  	 * Initiate ACL
@@ -177,6 +179,10 @@ class CentreonUser	{
   	return $this->is_admin;
   }
 
+  function get_js_effects(){
+    return $this->js_effects;
+  }
+  
   // Set
 
   function set_id($id)	{
@@ -201,6 +207,10 @@ class CentreonUser	{
 
   function set_version($version)	{
   	$this->version = $version;
+  }
+  
+  function set_js_effects($js_effects){
+    $this->js_effects = $js_effects;
   }
 
   function getMyGMT(){
