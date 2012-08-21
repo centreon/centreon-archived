@@ -665,6 +665,7 @@
 		"host_perfdata_file_mode" => 'a',
 		"service_perfdata_file_mode" => 'a',
 		"check_for_orphaned_services" => '0',
+		"check_for_orphaned_hosts" => '0',
 		"check_service_freshness" => '1',
 		"check_host_freshness" => '1',
 		"illegal_object_name_chars" => "~!$%^&*\"|'<>?,()=",
