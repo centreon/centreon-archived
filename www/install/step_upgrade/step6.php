@@ -57,7 +57,7 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 6);	?>
 	<td colspan="2">&nbsp;</td>
   </tr>
   <tr>
-  	<td colspan="2" style="color:red;">Make sure to start CentStorage : /etc/init.d/centstorage start</td>
+  	<td colspan="2" style="color:red;">Make sure to start CentStorage if you use NDOutils or IDOutils: /etc/init.d/centstorage start</td>
   </tr>
   <tr>
 	<td colspan="2"><br />
@@ -69,7 +69,9 @@ aff_header("Centreon Setup Wizard", "Post-Installation", 6);	?>
 	<ul>
 		<li> Centreon WebSite : <a target="_blank" href="http://www.centreon.com">www.centreon.com</a></li>
 		<li> Centreon Forum : <a target="_blank" href="http://forum.centreon.com">forum.centreon.com</a></li></li>
-		<li> Centreon Wiki : <a target="_blank" href="http://doc.centreon.com">doc.centreon.com</a></li>
+		<li> Centreon Official Documentation : <a target="_blank" href="http://documentation.centreon.com">documentation.centreon.com</a></li>
+        <li> Centreon Wiki (Community documentation): <a target="_blank" href="http://doc.centreon.com">wiki.centreon.com</a></li>
+        <li> Centreon Bug Tracker: <a target="_blank" href="http://forge.centreon.com">forge.centreon.com</a></li>
 	</ul>
 	<br /><p align="justify">
 	If your company needs professional consulting and services for Centreon, or if you need to purchase a support contract for it, don't hesitate to contact official </b><a  target="_blank" href="http://support.centreon.com">Centreon support center</a></b>.
