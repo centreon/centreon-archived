@@ -549,6 +549,18 @@
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							}
 
+                                                        /*
+                                                         * Criticality
+                                                         */
+                                                        $sql = "SELECT criticality_id 
+                                                                FROM criticality_resource_relations 
+                                                                WHERE service_id = ".$pearDB->escape($key);
+                                                        $res = $pearDB->query($sql);
+                                                        if ($res->numRows()) {
+                                                            $cr = $res->fetchRow();
+                                                            setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
+                                                        }
+                                                        
 							/*
 							 *  get svc desc
 							 */
@@ -818,7 +830,11 @@
 	 			}
 	 		}
 		}
-
+                
+                if (isset($ret['criticality_id'])) {
+                    setServiceCriticality($service_id['MAX(service_id)'], $ret['criticality_id']);
+                }
+                
 		if (isset($ret["service_template_model_stm_id"])) {
 		    $fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
 		}
@@ -1135,6 +1151,11 @@
 	 			}
 	 		}
 		}
+                
+                if (isset($ret['criticality_id'])) {
+                    setServiceCriticality($service_id, $ret['criticality_id']);
+                }
+                
 		$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
 		$fields["command_command_id"] = $ret["command_command_id"];
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
@@ -1438,6 +1459,11 @@
 	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 	 		}
 		}
+                
+                if (isset($ret['criticality_id']) && $ret['criticality_id']) {
+                    setServiceCriticality($service_id, $ret['criticality_id']);
+                }
+                
 		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES, "UTF-8"), "mc", $fields);
 	}
 
@@ -2053,4 +2079,21 @@
 			$DBRESULT = $pearDB->query($rq);
 		}
 	}
+        
+        /**
+         * Inserts criticality relations
+         * 
+         * @param int $serviceId
+         * @param int $criticalityId
+         * @return void 
+         */
+        function setServiceCriticality($serviceId, $criticalityId) {
+            global $pearDB;
+            
+            $pearDB->query("DELETE FROM criticality_resource_relations WHERE service_id = " . $pearDB->escape($serviceId));
+            if ($criticalityId) {
+                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, service_id) 
+                                VALUES (".$pearDB->escape($criticalityId).", ".$pearDB->escape($serviceId).")");
+            }
+        }
 ?>

@@ -441,6 +441,18 @@
                         $DBRESULT3 = $pearDB->query($request);
 
 						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
+                                                
+                                                /*
+                                                 * Criticality
+                                                 */
+                                                $sql = "SELECT criticality_id 
+                                                        FROM criticality_resource_relations 
+                                                        WHERE host_id = ".$pearDB->escape($key);
+                                                $res = $pearDB->query($sql);
+                                                if ($res->numRows()) {
+                                                    $cr = $res->fetchRow();
+                                                    setHostCriticality($maxId['MAX(host_id)'], $cr['criticality_id']);
+                                                }
 					}
 				}
 			}
@@ -781,6 +793,10 @@
 	 		}
 		}
 
+                if (isset($ret['criticality_id'])) {
+                    setHostCriticality($host_id['MAX(host_id)'], $ret['criticality_id']);
+                }
+                
 		/*
 		 *  Logs
 		 */
@@ -1245,6 +1261,10 @@
 	 		}
 		}
 
+                if (isset($ret['criticality_id'])) {
+                    setHostCriticality($host_id, $ret['criticality_id']);
+                }
+                
 		/*
 		 *  Logs
 		 */
@@ -1600,6 +1620,10 @@
 	 		}
 		}
 
+                if (isset($ret['criticality_id']) && $ret['criticality_id']) {
+                    setHostCriticality($host_id, $ret['criticality_id']);
+                }
+                
 		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL)
 			$fields["ehi_notes"] = CentreonDB::escape($ret["ehi_notes"]);
 		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL)
@@ -2342,4 +2366,21 @@
 			$DBRESULT = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".$host_id."', '".$ret."')");
 		}
 	}
+        
+        /**
+         * Inserts criticality relations
+         * 
+         * @param int $hostId
+         * @param int $criticalityId
+         * @return void 
+         */
+        function setHostCriticality($hostId, $criticalityId) {
+            global $pearDB;
+            
+            $pearDB->query("DELETE FROM criticality_resource_relations WHERE host_id = " . $pearDB->escape($hostId));
+            if ($criticalityId) {
+                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, host_id) 
+                                VALUES (".$pearDB->escape($criticalityId).", ".$pearDB->escape($hostId).")");
+            }
+        }
 ?>

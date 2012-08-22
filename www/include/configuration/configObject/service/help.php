@@ -71,6 +71,7 @@ $help["action_url"] = dgettext("help", "Define an optional URL that can be used 
 $help["icon_image"] = dgettext("help", "Define the image that should be associated with this service here. This image will be displayed in the various places. The image will look best if it is 40x40 pixels in size.");
 $help["icon_image_alt"] = dgettext("help", "Define an optional string that is used in the alternative description of the icon image.");
 
+$help['criticality_id'] = dgettext("help", "Criticality level");
 
 /*
  * Macros

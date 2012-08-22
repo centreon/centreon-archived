@@ -133,6 +133,15 @@
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		}
 		$DBRESULT->free();
+                
+                /*
+                 * Set criticality
+                 */
+                $res = $pearDB->query("SELECT criticality_id FROM criticality_resource_relations WHERE service_id = " . $pearDB->escape($service_id));
+                if ($res->numRows()) {
+                    $cr = $res->fetchRow();
+                    $service['criticality_id'] = $cr['criticality_id'];
+                }
 	}
 	/*
 	 * 	Database retrieve information for differents elements list we need on the page
@@ -620,6 +629,17 @@
 	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id"=>"esi_icon_image", "onChange"=>"showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
+        /*
+         * Criticality 
+         */
+        $criticality = new CentreonCriticality($pearDB);
+        $critList = $criticality->getList();
+        $criticalityIds = array(null => null);
+        foreach($critList as $critId => $critData) {
+           $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
+        }
+        $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
+        
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
 

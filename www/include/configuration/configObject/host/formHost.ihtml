@@ -223,6 +223,7 @@
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.ehi_statusmap_image.label}</td><td class="FormRowValue">{$form.ehi_statusmap_image.html}&nbsp;&nbsp;<img id='ehi_statusmap_image_img' src='./img/blank.gif'></td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="2d_coords"> {$form.ehi_2d_coords.label}</td><td class="FormRowValue">{$form.ehi_2d_coords.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="3d_coords"> {$form.ehi_3d_coords.label}</td><td class="FormRowValue">{$form.ehi_3d_coords.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 	<tr class="list_two"><td class="FormRowField">{$form.host_activate.label}</td><td class="FormRowValue">{$form.host_activate.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField">{$form.host_comment.label}</td><td class="FormRowValue">{$form.host_comment.html}</td></tr>

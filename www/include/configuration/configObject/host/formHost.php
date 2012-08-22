@@ -127,6 +127,15 @@
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
 		unset($ns);
+                
+                /*
+                 * Set criticality
+                 */
+                $res = $pearDB->query("SELECT criticality_id FROM criticality_resource_relations WHERE host_id = " . $pearDB->escape($host_id));
+                if ($res->numRows()) {
+                    $cr = $res->fetchRow();
+                    $host['criticality_id'] = $cr['criticality_id'];
+                }
 	}
 
 	/*
@@ -692,6 +701,17 @@
 	$form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
+        /*
+         * Criticality 
+         */
+        $criticality = new CentreonCriticality($pearDB);
+        $critList = $criticality->getList();
+        $criticalityIds = array(null => null);
+        foreach($critList as $critId => $critData) {
+            $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
+        }
+        $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
+        
 	/*
 	 * Sort 5 - Macros - Nagios 3
 	 */

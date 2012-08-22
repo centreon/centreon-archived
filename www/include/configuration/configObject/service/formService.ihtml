@@ -224,7 +224,7 @@
 	 	{/if}
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="icon_image"> {$form.esi_icon_image.label}</td><td class="FormRowValue">{$form.esi_icon_image.html}&nbsp;&nbsp;<img id='esi_icon_image_img' src='./img/blank.gif'></td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="icon_image_alt"> {$form.esi_icon_image_alt.label}</td><td class="FormRowValue">{$form.esi_icon_image_alt.html}</td></tr>
-
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="criticality_id"> {$form.criticality_id.label}</td><td class="FormRowValue">{$form.criticality_id.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.service_activate.label}</td><td class="FormRowValue">{$form.service_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.service_comment.label}</td><td class="FormRowValue">{$form.service_comment.html}</td></tr>
