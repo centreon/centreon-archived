@@ -1,0 +1,114 @@
+{literal}
+<style type="text/css">
+.broker_stats_lastmodif {
+	position: relative;
+	float: right;
+}
+
+.broker_stats .informations {
+	display: none;
+}
+
+.broker_stats {
+	border: 1px solid #BFD0E2;
+	margin-bottom: 5px;
+}
+
+.broker_stats .expand {
+	cursor: pointer;
+}
+
+.broker_stats p.title {
+	background-color: #EAEAEE;
+	color: #666;
+	background-image: url('./Themes/Centreon-2/Images/bg_header_bluegray.gif');
+	background-position: top left;
+	background-repeat: repeat-x;
+	padding: 0 4px;
+}
+
+.broker_stats ul {
+	margin: 3px;
+}
+
+.broker_stats ul.peers {
+	margin-left: 153px;
+}
+
+.broker_stats ul li {
+	list-style: none;
+}
+
+.broker_stats .info_name {
+	float: left;
+	width: 150px;
+	margin-left: 3px;
+}
+
+.broker_stats .module_status, .broker_stats .expand {
+	position: relative;
+	float: right;
+}
+
+.broker_stats .loaded {
+	color: green;
+}
+</style>
+{/literal}
+{if $msg_err}
+<div class="err">
+{$msg_err}
+</div>
+{else}
+<form {$form.attributes}>
+<table class="ajaxOption">
+	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td></tr>
+</table>
+</form>
+<div>
+ 	<table class="ListTable">
+ 		<tr class="ListHeader">
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$poller_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}&nbsp;{$perf_info.lastmodif}</span></td>
+	 	</tr>
+	 	<tr>
+	 		<td style="vertical-align: top;">
+	 		<div id="modules" class="broker_stats">
+	 		<p class="title">{$lang.modules}</p>
+	 		<ul class="module_list">{foreach from=$perf_info.modules key=m_name item=m_status}
+	 			<li><span class="module_name">{$m_name}</span><span class="module_status {$m_status}">{$lang[$m_status]}</span></li>
+	 		{/foreach}</ul>
+	 		</div>
+	 		</td>
+	 		<td style="vertical-align: top;">{foreach from=$perf_info.io key=io_name item=io_infos}
+	 		<div class="broker_stats">
+	 		<p class="title">{$io_name} - {$lang[$io_infos.type]}<span class="expand" onclick="toggleInfoBlock('{$io_name}')">[ + ]</span></p>
+	 		<div class="informations" id="{$io_name}">
+	 		<div class="info"><span class="info_name">{$lang.state}</span><span>{$io_infos.state}</span></div>
+	 		{foreach from=$io_infos key=info_key item=info_value}
+	 		{if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers'}
+	 		<div class="info"><span class="info_name">{$lang[$info_key]}</span><span>{$info_value}</span></div>
+	 		{/if}
+	 		{/foreach}
+	 		{if count($io_infos.peers)}
+	 		<div class="info"><span class="info_name">{$lang.peers}</span><span>
+	 		<ul class="peers" id="peers_{$io_name}">{foreach from=$io_infos.peers item=peer}
+	 		<li>{$peer}</li>
+	 		{/foreach}</ul>
+	 		</span></div>
+	 		{/if}
+	 		</div>
+	 		</div>
+	 		{/foreach}</td>
+	 	</tr>
+	 </table>
+</div>
+{/if}
+<script type="text/javascript" src="./include/common/javascript/jquery/jquery.js"></script>
+{literal}
+<script type="text/javascript">
+jQuery.noConflict();
+function toggleInfoBlock(id) {
+	jQuery('#' + id).slideToggle('show');
+}
+</script>
+{/literal}

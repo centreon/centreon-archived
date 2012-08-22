@@ -446,7 +446,6 @@ UPDATE `topology` SET `topology_name` = 'Monitoring Engine' WHERE `topology_page
 UPDATE `topology` SET `topology_name` = 'Monitoring Engine Statistics' WHERE `topology_page` = 102;
 UPDATE `topology` SET `topology_name` = 'main.cfg' WHERE `topology_page` = 60703;
 
-
 --
 -- Criticality stuff
 --
@@ -480,3 +479,10 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
 --
 -- End of criticality stuff
 --
+
+--
+-- Add wizards topology for Centreon Broker
+--
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
+(NULL, 'Broker Statistics', './img/icones/16x16/document_gear.gif', 102, 10205, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+UPDATE `topology` SET `topology_order` = 20 WHERE `topology_page` = 10201;
