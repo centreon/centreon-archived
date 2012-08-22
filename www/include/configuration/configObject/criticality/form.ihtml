@@ -1,0 +1,45 @@
+{$form.javascript}
+<form {$form.attributes}>
+	<div id="validFormTop">
+	{if $o == "a" || $o == "c"}
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	<div id='tab1' class='tab'>
+	 <table class="ListTable">
+		<tr class="ListHeader"><td class="FormHeader"><img src='./img/icones/16x16/clients.gif'>&nbsp;&nbsp;{$form.header.title}</td><td style="text-align:right;"><a href="./main.php?p={$p}&min=1&doc=1&page={if $msg.nagios >= 3}configobject.html{/if}{if $msg.nagios <= 2}xodtemplate.html#hostgroup{/if}" target="_blank"  style='cursor:help' alt='{$topdoc}'><img src="./img/icones/16x16/text_code.gif" title="{$topdoc}"></a>&nbsp;&nbsp;</td></tr>
+	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
+		<tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="name"> {$form.name.label}</td>
+                    <td class="FormRowValue">{$form.name.html}</td>
+                </tr>
+                <tr class="list_two">
+                    <td class="FormRowField"><img class="helpTooltip" name="level"> {$form.level.label}</td>
+                    <td class="FormRowValue">{$form.level.html}</td>
+                </tr>
+                <tr class="list_one">
+                    <td class="FormRowField"><img class="helpTooltip" name="icon_id"> {$form.icon_id.label}</td>
+                    <td class="FormRowValue">{$form.icon_id.html}&nbsp;<img id='icon_id_ctn' src='./img/blank.gif' height='16' width='16'></td>
+                </tr>
+		<tr class="list_two">
+                    <td class="FormRowField"><img class="helpTooltip" name="comments"> {$form.comments.label}</td>
+                    <td class="FormRowValue">{$form.comments.html}</td>
+                </tr>
+		{if $o == "a" || $o == "c"}
+                    <tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
+		{/if}
+	</table>
+	</div>
+	<div id="validForm">
+	{if $o == "a" || $o == "c"}
+		<p>{$form.action.html}</p>
+		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
+	{else if $o == "w"}
+		<p class="oreonbutton">{$form.change.html}</p>
+	{/if}
+	</div>
+	{$form.hidden}
+</form>
+{$helptext}

@@ -228,6 +228,14 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
 	(NULL, 'Wizard', NULL, 60909, 6090901, 40, 11, './include/configuration/configCentreonBroker/wizard.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1'),
 	(NULL, 'WizardAjax', NULL, 60909, 6090902, 40, 11, './include/configuration/configCentreonBroker/wizard_ajax.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1');
+
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
+                       ('Extra', NULL, 602, NULL, NULL, 10, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
+                       ('Extra', NULL, 601, NULL, 20, 2, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
+                       ('Criticality', './img/icones/16x16/scroll_warning.gif', 602, 60228, 1, 10, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
+                       ('Criticality', './img/icones/16x16/scroll_warning.gif', 601, 60107, 10, 2, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1');
+
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 

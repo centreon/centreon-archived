@@ -948,6 +948,31 @@ CREATE TABLE `contactgroup_servicegroup_relation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `criticality` (
+  `criticality_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `level` int(11) NOT NULL,
+  `comments` text,
+  `icon_id` int(11) NOT NULL,
+  PRIMARY KEY  (`criticality_id`),
+  KEY `fk_criticality_icon_id` (`icon_id`),
+  CONSTRAINT `fk_criticality_icon_id` FOREIGN KEY (`icon_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `criticality_resource_relations` (
+  `criticality_id` int(11) NOT NULL,
+  `host_id` int(11) default NULL,
+  `service_id` int(11) default NULL,
+  KEY `fk_crit_host_id` (`host_id`),
+  KEY `fk_crit_svc_id` (`service_id`),
+  CONSTRAINT `fk_crit_host_id` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_crit_svc_id` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cron_operation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(254) DEFAULT NULL,
