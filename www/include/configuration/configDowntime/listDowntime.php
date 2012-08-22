@@ -146,7 +146,7 @@
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
 	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "ms"=>_("Enable"), "mu"=>_("Disable")), $attrs2);
