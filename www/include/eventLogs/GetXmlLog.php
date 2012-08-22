@@ -857,7 +857,7 @@
 	 */
 	$buffer->writeElement("d", _("Day"), 0);
 	$buffer->writeElement("t", _("Time"), 0);
-	$buffer->writeElement("h", _("Host/Service"), 0);
+	$buffer->writeElement("h", _("Host Status"), 0);
 	$buffer->writeElement("sc", _("Service Status"), 0);
 	$buffer->writeElement("T", _("Type"), 0);
 	$buffer->writeElement("R", _("Retry"), 0);
