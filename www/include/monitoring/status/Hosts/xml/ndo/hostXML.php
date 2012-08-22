@@ -147,6 +147,9 @@
 	} elseif ($o == "h_unreachable") {
         $rq1 .= " AND nhs.current_state = 2 ";
 	}
+    elseif ($o == "h_pending") {
+        $rq1 .= " AND nhs.current_state = 4 ";
+	}
 
 	if (preg_match("/^h_unhandled/", $o)) {
 	    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
@@ -154,6 +157,8 @@
 				$rq1 .= " AND nhs.current_state = 1 ";
 			} elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
                 $rq1 .= " AND nhs.current_state = 2 ";
+			} elseif (isset($matches[1]) && $matches[1] == 'pending') {
+                $rq1 .= " AND nhs.current_state = 4 ";
 			}
 	    } else {
 	        $rq1 .= " AND nhs.current_state != 0 ";

@@ -169,7 +169,7 @@ function reloadStatusCounter(_relaod_time, _sid) {
 					document.getElementById('service_pending').innerHTML = '';
 					var _text_service_pending = document.createTextNode(_statistic_service_pending);
 					var _linkservice_pending = document.createElement("a");
-				  	_linkservice_pending.href = 'main.php?p=20202&o=svcpb&search=';
+				  	_linkservice_pending.href = 'main.php?p=20201&o=svc_pending&search=';
 					_linkservice_pending.appendChild(_text_service_pending);
 					document.getElementById('service_pending').appendChild(_linkservice_pending);
 			}

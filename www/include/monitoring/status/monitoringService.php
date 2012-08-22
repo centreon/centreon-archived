@@ -150,6 +150,9 @@
 			case "svc_ok" 		:
 				require_once($svc_path."service.php");
 				break;
+            case "svc_pending" 		:
+				require_once($svc_path."service.php");
+				break;
 			case "svc_unhandled":
 				require_once($svc_path."service.php");
 				break;

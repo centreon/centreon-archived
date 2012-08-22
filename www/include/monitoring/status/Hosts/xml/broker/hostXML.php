@@ -144,13 +144,19 @@
         $rq1 .= " AND h.state = 1 ";
 	} elseif ($o == "h_unreachable") {
         $rq1 .= " AND h.state = 2 ";
+	} elseif ($o == "h_pending") {
+        $rq1 .= " AND h.state = 4 ";
 	}
+    
 	if (preg_match("/^h_unhandled/", $o)) {
 	    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
 	        if (isset($matches[1]) && $matches[1] == 'down') {
 				$rq1 .= " AND h.state = 1 ";
 			} elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
                 $rq1 .= " AND h.state = 2 ";
+			}
+            elseif (isset($matches[1]) && $matches[1] == 'pending') {
+                $rq1 .= " AND h.state = 4 ";
 			}
 	    } else {
 	        $rq1 .= " AND h.state != 0 ";

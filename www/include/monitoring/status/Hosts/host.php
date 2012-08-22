@@ -168,7 +168,8 @@
 	$statusList = array("" => "",
 	                    "up" => _("Up"),
 	                    "down" => _("Down"),
-	                    "unreachable" => _("Unreachable"));
+	                    "unreachable" => _("Unreachable"),
+	                    "pending" => _("Pending"));
 	if ($o == "h") {
 	    $keyPrefix = "h";
 	} elseif ($o == "hpb") {

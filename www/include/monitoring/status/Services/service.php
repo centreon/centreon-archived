@@ -234,7 +234,8 @@
 	                    "ok" => _("OK"),
 	                    "warning" => _("Warning"),
 	                    "critical" => _("Critical"),
-	                    "unknown" => _("Unknown"));
+	                    "unknown" => _("Unknown"),
+                        "pending" => _("Pending"));
 	if ($o == "svc") {
 	    $keyPrefix = "svc";
 	} elseif ($o == "svcpb") {

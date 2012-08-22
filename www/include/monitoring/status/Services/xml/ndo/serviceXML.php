@@ -170,6 +170,8 @@
 		$rq_state = " AND nss.current_state = 2";
 	if ($o == "svc_unknown")
 		$rq_state = " AND nss.current_state = 3";
+    if ($o == "svc_pending")
+		$rq_state = " AND nss.current_state = 4";
 
 	if (preg_match("/^svc_unhandled/", $o)) {
 		if (preg_match("/^svc_unhandled_(warning|critical|unknown)\$/", $o, $matches)) {
@@ -180,6 +182,8 @@
 				$rq_state .= " AND nss.current_state = '2'";
 			} elseif (isset($matches[1]) && $matches[1] == "unknown") {
 				$rq_state .= " AND nss.current_state = '3'";
+			} elseif (isset($matches[1]) && $matches[1] == "pending") {
+				$rq_state .= " AND nss.current_state = '4'";
 			} else {
 				$rq_state .= " AND nss.current_state != '0'";
 			}

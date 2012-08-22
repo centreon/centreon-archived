@@ -178,7 +178,9 @@
 				$request .= " AND s.state = '2' ";
 			} elseif (isset($matches[1]) && $matches[1] == "unknown") {
 				$request .= " AND s.state = '3' ";
-			} else {
+			} elseif (isset($matches[1]) && $matches[1] == "pending") {
+				$request .= " AND s.state = '4' ";
+			}else {
 				$request .= " AND s.state != '0' ";
 			}
 		} else {
@@ -198,6 +200,8 @@
 		$request .= " AND s.state = 2";
 	} else if ($o == "svc_unknown") {
 		$request .= " AND s.state = 3";
+	} else if ($o == "svc_pending") {
+		$request .= " AND s.state = 4";
 	}
     $request .= " AND h.name NOT LIKE '_Module_%' ";
 
