@@ -225,6 +225,7 @@ class CentreonGraph	{
 						   AND `hidden` = '0'
 						   ORDER BY `metric_name`");
                     $count = 0;
+                    $odsm = array();
                     while ($milist = $DBRESULT->fetchRow()) {
                         $odsm[$milist["metric_id"]] = 1;
                         $count++;

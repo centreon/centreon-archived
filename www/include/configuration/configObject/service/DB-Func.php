@@ -1214,10 +1214,12 @@
 
 		$ret = array();
 		$ret = $form->getSubmitValues();
+        
+        if (isset($ret["sg_name"])) {
+            $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
+        }
 
-		$ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
-
-		if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
+        if (isset($ret["command_command_id_arg"]) && $ret["command_command_id_arg"] != NULL)		{
 			$ret["command_command_id_arg"] = str_replace("\n", "#BR#", $ret["command_command_id_arg"]);
 			$ret["command_command_id_arg"] = str_replace("\t", "#T#", $ret["command_command_id_arg"]);
 			$ret["command_command_id_arg"] = str_replace("\r", "#R#", $ret["command_command_id_arg"]);
@@ -1525,9 +1527,11 @@
 		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
 
 		$ret = $form->getSubmitValue("service_notifOpts");
-
-		isset($service["service_notification_options"]) && $service["service_notification_options"] != NULL ? $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
-
+        
+        if(is_array($ret)){
+            isset($service["service_notification_options"]) && $service["service_notification_options"] != NULL ? $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
+        }
+        
 		if (isset($temp) && $temp != NULL) {
 		    $rq = "UPDATE service SET " ;
 			$rq .= "service_notification_options = '". trim ($temp ,',')."' ";
