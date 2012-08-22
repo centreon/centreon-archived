@@ -16,7 +16,10 @@
 */
 
 function showLogo(_img_dst, _value) {
-	var _img = document.getElementById(_img_dst);
-	if (_img_dst.indexOf('REP')<0) 
-		_img.src = 'include/common/getHiddenImage.php?id=' + _value + '&logo=1' ;
+	var _img = document.getElementById(_img_dst);        
+	if (_value && _value.indexOf('REP') < 0) {            
+            _img.src = 'include/common/getHiddenImage.php?id=' + _value + '&logo=1';            
+        } else {
+            _img.src = './img/blank.gif';
+        }
 }
