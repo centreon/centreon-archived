@@ -82,7 +82,6 @@
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/hostTemplates.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/serviceTemplates.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/services.cfg\n";
-    $str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/connectors.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/misccommands.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/checkcommands.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/contactgroups.cfg\n";
@@ -93,6 +92,9 @@
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/timeperiods.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/escalations.cfg\n";
 	$str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/dependencies.cfg\n";
+    
+    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")
+        $str .= "cfg_file=".$oreon->optGen["oreon_path"].$DebugPath.$tab['id']."/connectors.cfg\n";
 
 	/*
 	 * Include for Meta Service the cfg file

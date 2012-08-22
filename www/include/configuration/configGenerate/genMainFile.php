@@ -83,6 +83,13 @@
 			else if ($key == "use_embedded_perl_implicitly" && $value == 2);
 			else if ($key == "host_perfdata_file_mode" && $value == 2);
 			else if ($key == "translate_passive_host_checks" && $value == 2);
+            else if (($key == "temp_file") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "p1_file") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "nagios_user") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "nagios_group") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "log_rotation_method") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "log_archive_path") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
+            else if (($key == "lock_file") && ((isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")));
 			else if ($key == "global_host_event_handler" && $value)	{
 				$DBRESULT2 = $pearDB->query("SELECT command_name FROM `command` WHERE command_id = '".$value."'");
 				$row = $DBRESULT2->fetchRow();

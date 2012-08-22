@@ -79,7 +79,6 @@
 	$str .= "cfg_file=".$nagios["cfg_dir"]."hosts.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."serviceTemplates.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."services.cfg\n";
-    $str .= "cfg_file=".$nagios["cfg_dir"]."connectors.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."misccommands.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."checkcommands.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."contactgroups.cfg\n";
@@ -90,6 +89,9 @@
 	$str .= "cfg_file=".$nagios["cfg_dir"]."timeperiods.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."escalations.cfg\n";
 	$str .= "cfg_file=".$nagios["cfg_dir"]."dependencies.cfg\n";
+    
+    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")
+        $str .= "cfg_file=".$nagios["cfg_dir"]."connectors.cfg\n";
 
 	if (isset($tab['localhost']) && $tab['localhost']){
 		/*
