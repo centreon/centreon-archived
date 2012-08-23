@@ -35,6 +35,7 @@
  */
 
 if (isset($pearDB)) {
+    $errors = true;
     $query = "SELECT `key`, `value` FROM `options` WHERE `key` LIKE 'ldap_%'";
     $res = $pearDB->query($query);
     if (PEAR::isError($res)) {
