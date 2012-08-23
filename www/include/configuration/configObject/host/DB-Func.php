@@ -1950,7 +1950,7 @@
 
 		$ret = $form->getSubmitValue("host_notifOpts");
 
-		isset($host["host_notification_options"]) ? $temp = $host["host_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
+		isset($host["host_notification_options"]) && $ret != NULL ? $temp = $host["host_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
 
 		if (isset($temp) && $temp != NULL) {
 		    $rq = "UPDATE host SET " ;

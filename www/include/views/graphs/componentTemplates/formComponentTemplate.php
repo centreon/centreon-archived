@@ -144,7 +144,7 @@
 	$form->addElement('header', 'color', _("Colors"));
 	$form->addElement('header', 'legend', _("Legend"));
 	$form->addElement('text', 'name', _("Template Name"), $attrsText);
-	$form->addElement('checkbox', 'ds_stack', _("Stack"), $stack);
+	$form->addElement('checkbox', 'ds_stack', _("Stack"));
 
 	for ($cpt = 1; $cpt <= 100; $cpt++) {
 		$orders[$cpt] = $cpt;

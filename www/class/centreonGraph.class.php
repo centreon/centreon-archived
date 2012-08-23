@@ -1352,8 +1352,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 			return -1;
 		else if ($a["ds_order"]>$b["ds_order"])
 			return 1;
-		return strnatcasecmp($a["legend"], $b["legend"]);
-		return 0;
+		return strnatcasecmp($a["legend"] ? $a["legend"] : null, $b["legend"] ? $b["legend"] : null);
 	}
 
 	/**
