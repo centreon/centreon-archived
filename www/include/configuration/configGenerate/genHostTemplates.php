@@ -200,7 +200,10 @@
                          * Criticality level
                          */
                         if (isset($critCache[$host['host_id']])) {
-                           $str .= print_line("_CRITICALITY_LEVEL", $criticality->getLevel($critCache[$host['host_id']]));
+                            $critData = $criticality->getData($critCache[$host['host_id']]);
+                            if (!is_null($critData)) {
+                                $str .= print_line("_CRITICALITY_LEVEL", $critData['level']);
+                            }
                         }
                         
 

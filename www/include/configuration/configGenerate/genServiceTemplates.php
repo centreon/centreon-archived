@@ -138,7 +138,10 @@
                          * Criticality level
                          */
                         if (isset($critCache[$service['service_id']])) {
-                            $strTMP .= print_line("_CRITICALITY_LEVEL", $criticality->getLevel($critCache[$service['service_id']]));
+                            $critData = $criticality->getData($critCache[$service['service_id']]);
+                            if (!is_null($critData)) {
+                                $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
+                            }
                         }
                         
 			/*

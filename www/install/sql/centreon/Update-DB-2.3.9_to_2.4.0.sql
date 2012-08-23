@@ -458,7 +458,7 @@ CREATE TABLE `criticality` (
   PRIMARY KEY  (`criticality_id`),
   KEY `fk_criticality_icon_id` (`icon_id`),
   CONSTRAINT `fk_criticality_icon_id` FOREIGN KEY (`icon_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `criticality_resource_relations` (
   `criticality_id` int(11) NOT NULL,

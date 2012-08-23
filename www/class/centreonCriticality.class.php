@@ -157,32 +157,21 @@ class CentreonCriticality {
      * @return array
      */
     public function getData($critId) {
-        $sql = "SELECT criticality_id, name, level, icon_id, comments 
-                FROM criticality 
-                WHERE criticality_id = " . $this->db->escape($critId);
-        $res = $this->db->query($sql);
-        $row = $res->fetchRow();
-        return $row;
-    }
-    
-    /**
-     * Get level of a given criticality
-     * 
-     * @param int $critId
-     * @return int
-     */
-    public function getLevel($critId) {
-        static $levels = array();
+        static $data = array();
         
-        if (!isset($levels[$critId])) {
-            $res = $this->db->query("SELECT criticality_id, level FROM criticality");
+        if (!isset($data[$critId])) {
+            $sql = "SELECT criticality_id, name, level, icon_id, comments 
+                    FROM criticality";            
+            $res = $this->db->query($sql);
             while ($row = $res->fetchRow()) {
-                $levels[$row['criticality_id']] = $row['level'];
-            }
+                if (!isset($data[$row['criticality_id']])) {
+                    $data[$row['criticality_id']] = $row;
+                }                
+            }            
         }
-        if (isset($levels[$critId])) {
-            return $levels[$critId];
+        if (isset($data[$critId])) {
+            return $data[$critId];
         }
-        return 0;
+        return null;
     }
 }
