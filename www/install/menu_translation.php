@@ -148,6 +148,8 @@ echo _("Logs");
 echo _("Reload ACL");
 echo _("Performance Info");
 echo _("Process Info");
+echo _("Process Control");
+echo _("System Information");
 
 /* List select on Administration -> Log */
 

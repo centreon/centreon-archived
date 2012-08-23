@@ -81,7 +81,7 @@
 	# Existing Real Metric List comes from DBO -> Store in $rmetrics Array
 	#
 	$s_datas = array();
-	$o_datas = array(""=> sprintf("%s%s", _("List of known metrics"), "&nbsp;&nbsp;&nbsp;"));
+	$o_datas = array(""=> utf8_decode(sprintf("%s%s", _("List of known metrics"), "&nbsp;&nbsp;&nbsp;")));
 	$mx_l = strlen($o_datas[""]);
 	$where = "";
 	$def_type = array(0=>"CDEF",1=>"VDEF");
