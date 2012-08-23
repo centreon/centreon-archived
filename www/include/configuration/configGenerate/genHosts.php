@@ -40,7 +40,10 @@
 		exit();
 
 	require_once ($centreon_path . "/www/class/centreonHost.class.php");
+        require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
+        $criticality = new CentreonCriticality($pearDB);
+        
 	/*
 	 * Create table for host / instance list.
 	 */
@@ -119,6 +122,18 @@
 	$DBRESULT->free();
 	unset($cg);
 
+        /*
+         * Criticality cache
+         */
+        $critCache = array();
+        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id 
+                                   FROM criticality_resource_relations crr, host h
+                                   WHERE crr.host_id = h.host_id
+                                   AND h.host_register = '1'");
+        while ($critRow = $critRes->fetchRow()) {
+            $critCache[$critRow['host_id']] = $critRow['criticality_id'];
+        }
+        
 	/*
 	 * Build GMT cache
 	 */
@@ -204,10 +219,19 @@
 					$str .= print_line("alias", $host["host_alias"]);
 				if ($host["host_address"])
 					$str .= print_line("address", $host["host_address"]);
+                                
+                                /*
+                                 * Criticality level
+                                 */
+                                if (isset($critCache[$host['host_id']])) {
+                                    $str .= print_line("_CRITICALITY_LEVEL", $criticality->getLevel($critCache[$host['host_id']]));
+                                }
+                                
+                                
 				/*
-                 * Write Host_id
-                 */
-                $str .= print_line("_HOST_ID", $host["host_id"]);
+                                 * Write Host_id
+                                 */
+                                $str .= print_line("_HOST_ID", $host["host_id"]);
 
 				if ($host["host_register"] == 1 && $host["host_location"] != "")
 					$str .= print_line("#location", $host["host_location"]);

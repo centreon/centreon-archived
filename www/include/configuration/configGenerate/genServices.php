@@ -40,7 +40,10 @@
 		exit();
 
 	require_once ($centreon_path . "/www/class/centreonService.class.php");
+        require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
+        $criticality = new CentreonCriticality($pearDB);
+        
 	/*
 	 * Build cache for CG
 	 */
@@ -119,13 +122,25 @@
 	$DBRESULT3->free();
 	unset($esi);
 
+        /*
+         * Criticality cache
+         */
+        $critCache = array();
+        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.service_id
+                                   FROM criticality_resource_relations crr, service s
+                                   WHERE crr.service_id = s.service_id
+                                   AND s.service_register = '1'");
+        while ($critRow = $critRes->fetchRow()) {
+            $critCache[$critRow['service_id']] = $critRow['criticality_id'];
+        }
+        
 	$cacheSVCTpl = intCmdParam($pearDB);
 
 	/*
 	 * Create file
 	 */
 	$handle = create_file($nagiosCFGPath.$tab['id']."/services.cfg", $oreon->user->get_name());
-    $instanceId = $tab['id'];
+        $instanceId = $tab['id'];
 
 	/*
 	 * Get Service List
@@ -163,11 +178,18 @@
 				$strTMP .= print_line("host_name", $host_name);
 				$strTMP .= print_line("service_description", convertServiceSpecialChar($service["service_description"]));
 
+                                /*
+                                 * Criticality level
+                                 */                                
+                                if (isset($critCache[$service['service_id']])) {
+                                    $strTMP .= print_line("_CRITICALITY_LEVEL", $criticality->getLevel($critCache[$service['service_id']]));
+                                }
+                                
 				/*
-                 * Write service_id
-                 */
-                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
-
+                                 * Write service_id
+                                 */
+                                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);                                
+                                
 				/*
 				 * Template Model Relation
 				 */
@@ -439,10 +461,17 @@
 				if ($service["service_description"])
 					$strTMP .= print_line("service_description", $service["service_description"]);
 
+                                /*
+                                 * Criticality level
+                                 */                                
+                                if (isset($critCache[$service['service_id']])) {
+                                    $strTMP .= print_line("_CRITICALITY_LEVEL", $criticality->getLevel($critCache[$service['service_id']]));
+                                }
+                                
 				/*
-                 * Write service_id
-                 */
-               $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+                                 * Write service_id
+                                 */
+                                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
 
 				/*
 				 * Template Model Relation

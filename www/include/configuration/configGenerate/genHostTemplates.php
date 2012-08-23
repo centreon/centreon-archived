@@ -40,7 +40,8 @@
 		exit();
 
 	require_once ($centreon_path . "/www/class/centreonHost.class.php");
-
+        require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
+        
 	/*
 	 * Create table for host / instance list.
 	 */
@@ -113,6 +114,18 @@
 	}
 	$DBRESULT->free();
 	unset($cg);
+        
+        /*
+         * Criticality cache
+         */
+        $critCache = array();
+        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id 
+                                   FROM criticality_resource_relations crr, host h
+                                   WHERE crr.host_id = h.host_id
+                                   AND h.host_register = '0'");
+        while ($critRow = $critRes->fetchRow()) {
+            $critCache[$critRow['host_id']] = $critRow['criticality_id'];
+        }
 
 	/******************************************************
 	 * Template Generation
@@ -181,6 +194,15 @@
 				$str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
 			if ($host["host_snmp_version"])
 				$str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
+                        
+                        
+                        /*
+                         * Criticality level
+                         */
+                        if (isset($critCache[$host['host_id']])) {
+                           $str .= print_line("_CRITICALITY_LEVEL", $criticality->getLevel($critCache[$host['host_id']]));
+                        }
+                        
 
 			/*
 			 * Hostgroups relation

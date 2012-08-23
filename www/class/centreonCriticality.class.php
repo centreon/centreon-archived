@@ -164,4 +164,25 @@ class CentreonCriticality {
         $row = $res->fetchRow();
         return $row;
     }
+    
+    /**
+     * Get level of a given criticality
+     * 
+     * @param int $critId
+     * @return int
+     */
+    public function getLevel($critId) {
+        static $levels = array();
+        
+        if (!isset($levels[$critId])) {
+            $res = $this->db->query("SELECT criticality_id, level FROM criticality");
+            while ($row = $res->fetchRow()) {
+                $levels[$row['criticality_id']] = $row['level'];
+            }
+        }
+        if (isset($levels[$critId])) {
+            return $levels[$critId];
+        }
+        return 0;
+    }
 }
