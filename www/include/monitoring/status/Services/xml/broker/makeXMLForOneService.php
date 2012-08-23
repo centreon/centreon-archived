@@ -158,17 +158,15 @@
 			$data["last_check"] = _("N/A");
 		}
 
-		if ($ndo['hostname'] == '_Module_Meta') {
+		if ($data['name'] == '_Module_Meta') {
 		    $hostname = _('Meta service');
 		    $service_desc = $data['display_name'];
 		} else {
 		    $hostname = $data['name'];
-		    $service_desc = $data['service_description'];
+		    $service_desc = $data['description'];
 		}
-		$buffer->writeElement("service_description", $service_desc, false);
-		$buffer->writeElement("hostname", $hostname, false);
-		$obj->XML->writeElement("service_description", $data["description"], false);
-		$obj->XML->writeElement("hostname", $data["name"], false);
+		$obj->XML->writeElement("service_description", $service_desc, false);
+		$obj->XML->writeElement("hostname", $hostname, false);
 		$obj->XML->startElement("current_state");
 		$obj->XML->writeAttribute("color", $obj->colorService[$data["state"]]);
 		$obj->XML->text(_($obj->statusService[$data["state"]]), false);
