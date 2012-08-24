@@ -50,7 +50,9 @@ INSERT INTO `cfg_ndomod` (`id`, `description`, `local`, `ns_nagios_server`, `ins
 -- Contenu de la table `cfg_resource`
 --
 
-INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES(1, '$USER1$', '@NAGIOS_PLUGIN@', 'path to the plugins', '1');
+INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
+(1, '$USER1$', '/usr/lib/nagios/plugins', 'path to the plugins', '1'),
+(2, '$USER2$', '@CENTREON_ENGINE_CONNECTORS@/bin', 'path to the connectors', '1');
 
 --
 -- Contenu de la table `contact`
@@ -457,6 +459,13 @@ INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `h
 --
 
 INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) VALUES (1250, 53, 14);
+
+---
+--- Contenu de la table Connector
+---
+INSERT INTO `connector` (`id`, `name`, `description`, `command_line`, `enabled`, `created`, `modified`) VALUES
+(1, 'Perl Connector', '', '$USER2$/centreon_connector_perl', 1, 1345126890, 1345127506),
+(2, 'SSH Connector', '', '$USER2$/centreon_connector_ssh', 1, 1345127090, 1345127508);
 
 
 --
