@@ -421,7 +421,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 -- Add enable shell option for commands
 --
 
-ALTER TABLE  `command` ADD  `enable_shell` INT( 1 ) UNSIGNED NOT NULL DEFAULT  '0' AFTER  `command_type`
+ALTER TABLE  `command` ADD  `enable_shell` INT( 1 ) UNSIGNED NOT NULL DEFAULT  '0' AFTER  `command_type`;
 
 --
 -- End add enable shell option for commands
@@ -477,6 +477,13 @@ INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_ID$');
 --
 -- End of criticality stuff
 --
+
+---
+--- Contenu de la table Connector
+---
+INSERT INTO `connector` (`id`, `name`, `description`, `command_line`, `enabled`, `created`, `modified`) VALUES
+(1, 'Perl Connector', '', '$USER2$/centreon_connector_perl', 1, 1345126890, 1345127506),
+(2, 'SSH Connector', '', '$USER2$/centreon_connector_ssh', 1, 1345127090, 1345127508);
 
 --
 -- Add wizards topology for Centreon Broker
