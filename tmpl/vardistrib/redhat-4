@@ -111,6 +111,8 @@ NAGIOS_VAR="/opt/nagios/var"
 #NDOMOD_BINARY=
 ## Nagios init script (optional)
 #NAGIOS_INIT_SCRIPT="/etc/init.d/nagios"
+## Centreon Connector PATH
+#CENTREON_ENGINE_CONNECTORS="/usr/lib/centreon-connector"
 #####################################################################
 ## End: Nagios preferences
 #####################################################################

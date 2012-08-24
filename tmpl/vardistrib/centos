@@ -111,6 +111,8 @@ NAGIOS_VAR="/var/log/nagios/"
 NAGIOS_USER="nagios"
 ## Nagios group (optional)
 NAGIOS_GROUP="nagios"
+## Centreon Connector PATH
+CENTREON_ENGINE_CONNECTORS="/usr/lib/centreon-connector"
 #####################################################################
 ## End: Nagios preferences
 #####################################################################

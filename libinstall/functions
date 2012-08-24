@@ -509,6 +509,22 @@ function locate_nagios_plugindir() {
 }
 
 #----
+## Define where is centreon connector directory
+## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
+## @Globals	CENTREON_ENGINE_CONNECTORS, DEFAULT_CENTREON_ENGINE_CONNECTORS
+#----
+function locate_centreon_connector_dir() {
+	testdir_clean "$CENTREON_ENGINE_CONNECTORS" "CENTREON_ENGINE_CONNECTORS"
+	if [ -z "$CENTREON_ENGINE_CONNECTORS" ] ; then
+		answer_with_testoptionaldir "$(gettext "Where is your Centreon Connectors directory ?")" "$DEFAULT_CENTREON_ENGINE_CONNECTORS"
+		echo_success "$(gettext "Path ) $CENTREON_ENGINE_CONNECTORS" "$ok"
+	fi
+	CENTREON_ENGINE_CONNECTORS=`trim ${CENTREON_ENGINE_CONNECTORS%}`
+	export CENTREON_ENGINE_CONNECTORS
+	log "INFO" "CENTREON_ENGINE_CONNECTORS: $CENTREON_ENGINE_CONNECTORS"
+}
+
+#----
 ## Define where is your nagios binary
 ## By default, use nagios,nagios2 or nagios3 name and find in PATH
 ## @Globals	NAGIOS_BINARY, DEFAULT_NAGIOS_BINARY

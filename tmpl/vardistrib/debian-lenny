@@ -122,6 +122,8 @@ NAGIOS_P1_FILE="/usr/lib/nagios3/p1.pl"
 #NDOMOD_BINARY=
 ## Nagios init script (optional)
 NAGIOS_INIT_SCRIPT="/etc/init.d/nagios3"
+## Centreon Connector PATH
+CENTREON_ENGINE_CONNECTORS="/usr/lib/centreon-connector"
 #####################################################################
 ## End: Nagios preferences
 #####################################################################

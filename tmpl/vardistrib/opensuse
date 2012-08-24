@@ -101,6 +101,8 @@ NAGIOS_VAR=""
 #NAGIOS_USER=""
 ## Nagios group (optional)
 #NAGIOS_GROUP=""
+## Centreon Connector PATH
+#CENTREON_ENGINE_CONNECTORS=""
 #####################################################################
 ## End: Nagios preferences
 #####################################################################
