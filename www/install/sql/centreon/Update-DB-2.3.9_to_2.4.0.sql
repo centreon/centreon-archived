@@ -385,8 +385,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (31, 'retry_interval', 'Retry Interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering Timeout', 'Time in seconds to wait before launching failover.', 'int', NULL);
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
-(21, 31, 1, 2),
-(21, 32, 1, 2);
+(21, 31, 0, 2),
+(21, 32, 0, 2);
 
 --
 -- Add options for statistics file in Centreon Broker
