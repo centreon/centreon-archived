@@ -88,7 +88,7 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
             if ($license_expires > time())
                 $licenseExpired = false;
             
-            if ($zend_info['Admin'] < 1)
+            if (isset($zend_info['Admin']) && $zend_info['Admin'] < 1 && ($filename == 'centreon-map-server'))
                 $licenseHasAdmin = false;
 
             if ($licenseMatchedProduct && $licenseMatchedZendID && $licenseHasAdmin && ($licenseExpired == FALSE))
