@@ -227,6 +227,7 @@
                                     $critData = $criticality->getData($critCache[$host['host_id']]);
                                     if (!is_null($critData)) {
                                         $str .= print_line("_CRITICALITY_LEVEL", $critData['level']);
+                                        $str .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
                                     }
                                 }
                                 

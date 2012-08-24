@@ -469,6 +469,11 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
                        ('Criticality', './img/icones/16x16/scroll_warning.gif', 602, 60228, 10, 10, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
                        ('Criticality', './img/icones/16x16/scroll_warning.gif', 601, 60107, 10, 2, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1');
 
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_LEVEL$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_LEVEL$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_ID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_ID$');
+
 --
 -- End of criticality stuff
 --

@@ -141,6 +141,7 @@
                             $critData = $criticality->getData($critCache[$service['service_id']]);
                             if (!is_null($critData)) {
                                 $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
+                                $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
                             }
                         }
                         
