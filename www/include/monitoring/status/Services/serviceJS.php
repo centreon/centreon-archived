@@ -60,6 +60,7 @@ var _debug = 0;
 
 var _addrXML = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/serviceXML.php";
 var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
+var _criticality_id = 0;
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -97,8 +98,7 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 		var _img_desc = mk_imgOrder('./img/icones/7x7/sort_desc.gif', "<?php echo _("Sort results (descendant)"); ?>");
 
 		if (document.getElementById('host_name')){
-			var h = document.getElementById('host_name');
-
+                        var h = document.getElementById('host_name');
 			h.innerHTML = '<?php echo addslashes(_("Hosts")); ?>';
 		  	h.indice = 'host_name';
 		  	h.title = "<?php echo _("Sort by host name"); ?>";
@@ -149,6 +149,15 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 		  	h.onclick=function(){change_type_order(this.indice)};
 			h.style.cursor = "pointer";
 
+                        var h = document.getElementById('criticality_id');
+                        if (h) {
+                            h.innerHTML = '<?php echo addslashes("C"); ?>';
+                            h.indice = 'criticality_id';
+                            h.title = "<?php echo _("Sort by criticality"); ?>";
+                            h.onclick=function(){change_type_order(this.indice)};
+                            h.style.cursor = "pointer";
+                        }
+
 			var h = document.getElementById('plugin_output');
 			h.innerHTML = '<?php echo addslashes(_("Status information")); ?>';
 		  	h.indice = 'plugin_output';
@@ -167,7 +176,9 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 
 			_linkaction_asc.href = '#' ;
 			_linkaction_asc.onclick=function(){change_order()};
-			h.appendChild(_linkaction_asc);
+                        if (h) {
+                            h.appendChild(_linkaction_asc);
+                        }
 		}
 	}
 
@@ -234,7 +245,7 @@ var _addrXSL = "./include/monitoring/status/Services/xsl/service.xsl";
 		}
 
 		proc.setCallback(monitoringCallBack);
-		proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc);
+		proc.setXml(_addrXML+"?"+'&sid='+_sid+'&search='+_search+'&search_host='+_host_search+'&search_output='+_output_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&host_name=<?php echo $host_name; ?>'+'&nc='+_nc+'&criticality='+_criticality_id);
 		proc.setXslt(_addrXSL);
 		proc.transform("forAjax");
 

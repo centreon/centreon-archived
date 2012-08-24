@@ -6,18 +6,20 @@
 	<tr>
 		<td>{$hostStr}:</td>
 		<td><input type='text' name='host_search' id='host_search'></td>
-	    <td>{$serviceStr}:</td>
+                <td>{$serviceStr}:</td>
 		<td><input type='text' name='search' id='input_search'></td>
 		<td>{$form.statusFilter.label}:</td>
 		<td>{$form.statusFilter.html}</td>
-	    <td>{$outputStr}:</td>
+                <td>{$form.criticality.label}:</td>
+		<td>{$form.criticality.html}</td>
+                <td>{$outputStr}:</td>
 		<td><input type='text' name='output_search' id='output_search'></td>	    
-	    {if $poller_listing}
-		    <td>{$pollerStr}:</td>
-		    <td><span id="instance_selected"></span></td>
-	    {/if}		
-	    <td>{$hgStr}:</td>
-	    <td><span id="hostgroups_selected"></span></td>
+                {if $poller_listing}
+                    <td>{$pollerStr}:</td>
+                    <td><span id="instance_selected"></span></td>
+                {/if}		
+                <td>{$hgStr}:</td>
+                <td><span id="hostgroups_selected"></span></td>
 	</tr>
 </table>
 <br/>

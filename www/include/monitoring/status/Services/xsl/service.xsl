@@ -4,8 +4,11 @@
 <xsl:template match="/">
 <table class="ListTable">
 	<tr class='ListHeader'>
-		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
+		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>		
+                <xsl:if test = "//i/use_criticality = 1">
+                    <td class="ListColHeaderCenter" style="white-space:nowrap;" id="criticality_id"></td>
+                </xsl:if>
+                <td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td colspan="3" class="ListColHeaderCenter" style="white-space:nowrap;" id="service_description"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_state_change"></td>
@@ -17,7 +20,7 @@
 			</xsl:if>
 		</xsl:for-each>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="last_check"></td>
-		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_attempt"></td>                
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="plugin_output"></td>
 		<xsl:for-each select="//i">
 			<xsl:if test="nc = 1">
@@ -44,6 +47,18 @@
 				</xsl:attribute>
 			</xsl:element>
 		</td>
+                <xsl:if test = "//i/use_criticality = 1">
+                    <td class="ListColLeft" style="white-space:nowrap;">
+                    <xsl:if test = "hci = 1">
+                        <xsl:element name="img">
+                            <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
+                            <xsl:attribute name="width">16</xsl:attribute>
+                            <xsl:attribute name="height">16</xsl:attribute>
+                            <xsl:attribute name="title"><xsl:value-of select='cih'/></xsl:attribute>
+                        </xsl:element>
+                    </xsl:if>                
+                    </td>
+                </xsl:if>
 		<td class="ListColLeft" style="white-space:nowrap;">
 			<xsl:if test="hn/@none = 0">
 				<xsl:element name="span">
@@ -274,19 +289,19 @@
 			</td>
 		</xsl:if>
         <td class="ListColCenter" style="white-space:nowrap;">
-        	<xsl:value-of select="lc"/>
+            <xsl:value-of select="lc"/>
         </td>
         <td class="ListColCenter" style="white-space:nowrap;">
-        	<xsl:value-of select="ca"/>
+            <xsl:value-of select="ca"/>
         </td>
         <td class="ListColLeft" >
-        	<xsl:value-of select="po" disable-output-escaping="yes" />
+            <xsl:value-of select="po" disable-output-escaping="yes" />
         </td>
-		<xsl:if test="//i/nc = 1">
-			<td class="ListColCenter" style="white-space:nowrap;">
-				<xsl:value-of select="nc"/>
-			</td>
-		</xsl:if>
+        <xsl:if test="//i/nc = 1">
+        <td class="ListColCenter" style="white-space:nowrap;">
+            <xsl:value-of select="nc"/>
+        </td>
+        </xsl:if>
 	</tr>
 </xsl:for-each>
 </table>

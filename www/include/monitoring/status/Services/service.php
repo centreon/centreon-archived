@@ -77,14 +77,16 @@
 		} else
 			$order = $_GET["order"];
 	} else {
-		if (!isset($_GET["sort_type"]))
-			$sort_type = "host_name";
-		else
-			$sort_type = $_GET["sort_type"];
+		if (!isset($_GET["sort_type"])) {
+                    $sort_type = "criticality_id";
+                } else {
+                    $sort_type = $_GET["sort_type"];
+                }
 		if (!isset($_GET["order"])) {
-			$order = "ASC";
-		} else
-			$order = $_GET["order"];
+                    $order = "ASC";
+		} else {
+		    $order = $_GET["order"];
+                }
 	}
 
 	/**
@@ -251,10 +253,18 @@
         }
     }
 	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
-    if (isset($defaultStatus)) {
-        $form->setDefaults(array('statusFilter' => $defaultStatus));
-    }
+        if (isset($defaultStatus)) {
+            $form->setDefaults(array('statusFilter' => $defaultStatus));
+        }
 
+        $criticality = new CentreonCriticality($pearDB);
+        $crits = $criticality->getList();
+        $critArray = array(0 => "");
+        foreach($crits as $critId => $crit) {
+            $critArray[$critId] = $crit['name']. " ({$crit['level']})";
+        }
+        $form->addElement('select', 'criticality', _('Criticality'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
+        
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('hostStr', _('Host'));
@@ -287,5 +297,13 @@ function filterStatus(value)
 	}
 	window.clearTimeout(_timeoutID);
 	initM(_tm, _sid, _o);
+}
+
+function filterCrit(value) {
+    if (value) {
+       _criticality_id = value;
+    }
+    window.clearTimeout(_timeoutID);
+    initM(_tm, _sid, _o);
 }
 </script>

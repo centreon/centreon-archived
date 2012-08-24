@@ -39,8 +39,10 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-    include_once $centreon_path . "www/class/centreonInstance.class.php";
-
+        include_once $centreon_path . "www/class/centreonInstance.class.php";
+        include_once $centreon_path . "www/class/centreonCriticality.class.php";
+        include_once $centreon_path . "www/class/centreonMedia.class.php";
+        
 	include_once $centreon_path . "www/include/monitoring/status/Common/common-Func.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
@@ -50,7 +52,9 @@
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
 
+        $criticality = new CentreonCriticality($obj->DB);
 	$instanceObj = new CentreonInstance($obj->DB);
+        $media = new CentreonMedia($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -104,12 +108,13 @@
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$search_host	= $obj->checkArgument("search_host", $_GET, "");
 	$search_output 	= $obj->checkArgument("search_output", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");        
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 	$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
-
+        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        
 	/*
 	 * Backup poller selection
 	 */
@@ -118,7 +123,16 @@
         
 	$selected = "no_s.name1 as host_name, " . $obj->ndoPrefix . "instances.instance_name as instance_name, no_h.object_id as host_object_id, nhs.scheduled_downtime_depth as host_scheduled_downtime_depth, nhs.current_state as host_current_state, nhs.problem_has_been_acknowledged as host_problem_has_been_acknowledged, nhs.passive_checks_enabled as host_passive_checks_enabled, nhs.active_checks_enabled as host_active_checks_enabled";
 	$selected .= ", no_s.name2 as service_description, no_s.object_id as service_object_id, nss.process_performance_data as service_process_performance_data, nss.current_state as service_current_state, nss.output as service_output, nss.state_type as service_state_type, nss.current_check_attempt as service_current_check_attempt, nss.status_update_time as service_status_update_time, unix_timestamp(nss.last_state_change) as service_last_state_change, unix_timestamp(nss.last_hard_state_change) as service_last_hard_state_change, unix_timestamp(nss.last_check) as service_last_check, unix_timestamp(nss.next_check) as service_next_check, nss.notifications_enabled as service_notifications_enabled, nss.problem_has_been_acknowledged as service_problem_has_been_acknowledged, nss.passive_checks_enabled as service_passive_checks_enabled, nss.active_checks_enabled as service_active_checks_enabled, nss.event_handler_enabled as service_event_handler_enabled, nss.is_flapping as service_is_flapping, nss.scheduled_downtime_depth as service_scheduled_downtime_depth, nss.flap_detection_enabled as service_flap_detection_enabled";
-	$from = $obj->ndoPrefix . "objects as no_h, " . $obj->ndoPrefix . "objects as no_s, " . $obj->ndoPrefix . "hoststatus as nhs, " . $obj->ndoPrefix . "servicestatus as nss, " . $obj->ndoPrefix . "instances";
+        $selected .= ", cv.varvalue as criticality, cv.varvalue IS NULL as isnull ";
+	$from = $obj->ndoPrefix . "objects as no_h, " .                 
+                $obj->ndoPrefix . "hoststatus as nhs, " . 
+                $obj->ndoPrefix . "servicestatus as nss, " . 
+                $obj->ndoPrefix . "instances, ";
+        if ($criticality_id) {
+            $from .= $obj->ndoPrefix . "customvariablestatus cvs, ";
+        }
+        $from .= $obj->ndoPrefix . "objects as no_s LEFT JOIN ".
+                 $obj->ndoPrefix . "customvariablestatus cv ON (no_s.object_id = cv.object_id AND cv.varname = 'CRITICALITY_LEVEL') ";
 
     /* Il faut gerer les hostsgroup */
 	$where_hg = "";
@@ -213,21 +227,30 @@
 
 	/************************/
 
-	$where = " no_h.objecttype_id = 1 AND no_h.object_id = nhs.host_object_id AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "no_h.name1 = no_s.name1 AND no_h.instance_id = no_s.instance_id AND no_s.objecttype_id = 2 AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
+	$where = " no_h.objecttype_id = 1 
+                   AND no_h.object_id = nhs.host_object_id 
+                   AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "no_h.name1 = no_s.name1 AND no_h.instance_id = no_s.instance_id AND no_s.objecttype_id = 2 AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
 
+        if ($criticality_id) {
+            $where .= " AND no_s.object_id = cvs.object_id 
+                        AND cvs.varname = 'CRITICALITY_ID' 
+                        AND cvs.varvalue = '".$obj->DBNdo->escape($criticality_id)."' ";
+        }
+        
 	/* LIMIT, ORDER */
 
 	$rq_limit = " LIMIT ".($num * $limit).",".$limit;
 
 	$tabOrder = array();
+        $tabOrder["criticality_id"]             = " ORDER BY isnull $order, criticality $order, host_name, service_description";
 	$tabOrder["host_name"] 			= " ORDER BY host_name ". $order.", service_description";
-	$tabOrder["service_description"]= " ORDER BY service_description ". $order.", host_name";
+	$tabOrder["service_description"]        = " ORDER BY service_description ". $order.", host_name";
 	$tabOrder["current_state"] 		= " ORDER BY nss.current_state ". $order.", host_name, service_description";
-	$tabOrder["last_state_change"] 	= " ORDER BY nss.last_state_change ". $order.", host_name, service_description";
-	$tabOrder["last_hard_state_change"] = " ORDER by nss.last_hard_state_change ". $order.", host_name, service_description";
+	$tabOrder["last_state_change"]          = " ORDER BY nss.last_state_change ". $order.", host_name, service_description";
+	$tabOrder["last_hard_state_change"]     = " ORDER by nss.last_hard_state_change ". $order.", host_name, service_description";
 	$tabOrder["last_check"] 		= " ORDER BY nss.last_check ". $order.", host_name, service_description";
-	$tabOrder["current_attempt"] 	= " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description";
-	$tabOrder["default"] 			= " ORDER BY host_name ". $order;
+	$tabOrder["current_attempt"]            = " ORDER BY nss.current_check_attempt ". $order.", host_name, service_description";
+	$tabOrder["default"] 			= $tabOrder["criticality_id"];
 	if (isset($tabOrder[$sort_type])) {
 		$rq_sorte = $tabOrder[$sort_type];
 	} else {
@@ -274,6 +297,21 @@
 		$DBRESULT->free();
 	}
 
+        /**
+         * Get criticality ids
+         */
+        $critRes = $obj->DBNdo->query("SELECT varvalue, object_id 
+                                    FROM nagios_customvariablestatus
+                                    WHERE varname = 'CRITICALITY_ID'");
+        $criticalityUsed = 0;
+        $critCache = array();
+        if ($critRes->numRows()) {
+            $criticalityUsed = 1;
+            while ($critRow = $critRes->fetchRow()) {
+                $critCache[$critRow['object_id']] = $critRow['varvalue'];
+            }
+        }
+        
 	/* ***************************************************
 	 * Create Buffer
 	 */
@@ -297,11 +335,13 @@
 	$obj->XML->writeElement("service_not_active_not_passive", _("This service is neither active nor passive"));
 	$obj->XML->writeElement("service_flapping", _("This Service is flapping"));
 	$obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
+        $obj->XML->writeElement("use_criticality", $criticalityUsed);
 	$obj->XML->endElement();
 
 	$host_prev = "";
 	$ct = 0;
-	$flag = 0;
+	$flag = 0;        
+        
 	foreach ($all_ndo as $ndo) {
 		$passive = 0;
 		$active = 1;
@@ -410,6 +450,14 @@
 		$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["service_current_state"]]), false);
 		$obj->XML->writeElement("po", 	$ndo["service_output"]);
 		$obj->XML->writeElement("ca", 	$ndo["service_current_check_attempt"]."/".get_service_config_type($ndo['service_object_id'], "service_max_check_attempts")." (".$obj->stateType[$ndo["service_state_type"]].")");
+                if ($ndo['criticality'] && isset($critCache[$ndo['service_object_id']])) {
+                    $obj->XML->writeElement("hci", 1); // has criticality
+                    $critData = $criticality->getData($critCache[$ndo['service_object_id']]);                    
+                    $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
+                    $obj->XML->writeElement("cih", $critData['name']);
+                } else {
+                    $obj->XML->writeElement("hci", 0); // has no criticality
+                }
 		$obj->XML->writeElement("ne", 	$ndo["service_notifications_enabled"]);
 		$obj->XML->writeElement("pa", 	$ndo["service_problem_has_been_acknowledged"]);
 		$obj->XML->writeElement("pc", 	$ndo["service_passive_checks_enabled"]);

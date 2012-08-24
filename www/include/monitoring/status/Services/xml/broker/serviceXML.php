@@ -46,7 +46,9 @@
 	 */
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/class/centreonInstance.class.php";
-
+        include_once $centreon_path . "www/class/centreonCriticality.class.php";
+        include_once $centreon_path . "www/class/centreonMedia.class.php";
+        
 	/**
 	 * Require commonu Files.
 	 */
@@ -59,7 +61,9 @@
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
 
+        $criticality = new CentreonCriticality($obj->DB);	        
 	$instanceObj = new CentreonInstance($obj->DB);
+        $media = new CentreonMedia($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -86,12 +90,13 @@
 	$search 	= $obj->checkArgument("search", $_GET, "");
 	$search_host	= $obj->checkArgument("search_host", $_GET, "");
 	$search_output 	= $obj->checkArgument("search_output", $_GET, "");
-	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	$sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 	$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
-
+        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        
 	/** **************************************************
 	 * Backup poller selection
 	 */
@@ -127,6 +132,7 @@
 	}
 
 	$tabOrder = array();
+        $tabOrder["criticality_id"]             = " ORDER BY isnull $order, criticality $order, h.name, s.description ";
 	$tabOrder["host_name"] 			= " ORDER BY h.name ". $order.", s.description ";
 	$tabOrder["service_description"]= " ORDER BY s.description ". $order.", h.name";
 	$tabOrder["current_state"] 		= " ORDER BY s.state ". $order.", h.name, s.description";
@@ -135,7 +141,7 @@
 	$tabOrder["last_check"] 		= " ORDER BY s.last_check ". $order.", h.name, s.description";
 	$tabOrder["current_attempt"] 	= " ORDER BY s.check_attempt ". $order.", h.name, s.description";
 	$tabOrder["output"] 			= " ORDER BY s.output ". $order.", h.name, s.description";
-	$tabOrder["default"] 			= " ORDER BY h.name ". $order ;
+	$tabOrder["default"] 			= $tabOrder['criticality_id'];
 
 	$request = "SELECT SQL_CALC_FOUND_ROWS DISTINCT h.name, h.host_id, s.description, s.service_id, s.notes, s.notes_url, s.action_url, s.max_check_attempts,
 				s.icon_image, s.display_name, s.process_perfdata, s.state, s.output as plugin_output,
@@ -144,20 +150,30 @@
 				s.notify, s.acknowledged, s.passive_checks, s.active_checks, s.event_handler_enabled, s.flapping,
 				s.scheduled_downtime_depth, s.flap_detection, h.state as host_state, h.acknowledged AS h_acknowledged, h.scheduled_downtime_depth AS h_scheduled_downtime_depth,
 				h.icon_image AS h_icon_images, h.display_name AS h_display_name, h.action_url AS h_action_url, h.notes_url AS h_notes_url, h.notes AS h_notes, h.address,
-				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name ";
-	$request .= " FROM hosts h, services s, instances i ";
+				h.passive_checks AS h_passive_checks, h.active_checks AS h_active_checks, i.name as instance_name, cv.value as criticality, cv.value IS NULL as isnull ";
+	$request .= " FROM hosts h, instances i ";
 	if (isset($hostgroups) && $hostgroups != 0) {
 		$request .= ", hosts_hostgroups hg ";
 	}
+        if ($criticality_id) {
+            $request .= ", customvariables cvs ";
+        }
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
+        $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND cv.name = 'CRITICALITY_LEVEL') ";
 	$request .= " WHERE h.host_id = s.host_id
 				  AND s.service_id IS NOT NULL
 				  AND s.service_id != 0
 				  AND s.enabled = 1
 				  AND h.enabled = 1
 				  AND h.instance_id = i.instance_id ";
+        if ($criticality_id) {
+            $request .= " AND s.service_id = cvs. service_id
+                          AND cvs.name = 'CRITICALITY_ID'
+                          AND cvs.value = '" . $obj->DBC->escape($criticality_id)."' ";
+        }
+        
 	if ($searchHost) {
 		$request .= $searchHost;
 	}
@@ -228,6 +244,22 @@
 	$DBRESULT = $obj->DBC->query($request);
 	$numRows = $obj->DBC->numberRows();
 
+        /**
+         * Get criticality ids
+         */
+        $critRes = $obj->DBC->query("SELECT value, service_id 
+                                       FROM customvariables
+                                       WHERE name = 'CRITICALITY_ID'
+                                       AND service_id IS NOT NULL");
+        $criticalityUsed = 0;
+        $critCache = array();
+        if ($critRes->numRows()) {
+            $criticalityUsed = 1;
+            while ($critRow = $critRes->fetchRow()) {
+                $critCache[$critRow['service_id']] = $critRow['value'];
+            }
+        }
+        
 	/* ***************************************************
 	 * Create Buffer
 	 */
@@ -251,6 +283,7 @@
 	$obj->XML->writeElement("service_not_active_not_passive", _("This service is neither active nor passive"));
 	$obj->XML->writeElement("service_flapping", _("This Service is flapping"));
 	$obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
+        $obj->XML->writeElement("use_criticality", $criticalityUsed);
 	$obj->XML->endElement();
 
 	$host_prev = "";
@@ -364,6 +397,14 @@
 		$obj->XML->writeElement("cs", 	_($obj->statusService[$data["state"]]), false);
 		$obj->XML->writeElement("po", 	$data["plugin_output"]);
 		$obj->XML->writeElement("ca", 	$data["current_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
+                if ($data['criticality'] && isset($critCache[$data['service_id']])) {
+                    $obj->XML->writeElement("hci", 1); // has criticality
+                    $critData = $criticality->getData($critCache[$data['service_id']]);
+                    $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
+                    $obj->XML->writeElement("cih", $critData['name']);
+                } else {
+                    $obj->XML->writeElement("hci", 0); // has no criticality
+                }
 		$obj->XML->writeElement("ne", 	$data["notify"]);
 		$obj->XML->writeElement("pa", 	$data["acknowledged"]);
 		$obj->XML->writeElement("pc", 	$data["passive_checks"]);
