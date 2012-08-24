@@ -186,9 +186,17 @@
 	}
 
 	$form->addElement('select', 'statusFilter', _('Status'), $statusList, array('id' => 'statusFilter', 'onChange' => "filterStatus(this.value);"));
-    if (isset($defaultStatus)) {
-        $form->setDefaults(array('statusFilter' => $defaultStatus));
-    }
+        if (isset($defaultStatus)) {
+            $form->setDefaults(array('statusFilter' => $defaultStatus));
+        }
+        
+        $criticality = new CentreonCriticality($pearDB);
+        $crits = $criticality->getList();
+        $critArray = array(0 => "");
+        foreach($crits as $critId => $crit) {
+            $critArray[$critId] = $crit['name']. " ({$crit['level']})";
+        }
+        $form->addElement('select', 'criticality', _('Criticality'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
 
 	$tpl->assign('limit', $limit);
 	$tpl->assign('hostStr', _('Host'));
@@ -222,5 +230,13 @@ function filterStatus(value)
 	}
 	window.clearTimeout(_timeoutID);
 	initM(_tm, _sid, _o);
+}
+
+function filterCrit(value) {
+    if (value) {
+       _criticality_id = value;
+    }
+    window.clearTimeout(_timeoutID);
+    initM(_tm, _sid, _o);
 }
 </script>

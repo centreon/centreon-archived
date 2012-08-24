@@ -161,7 +161,7 @@
 	if (!$obj->is_admin) {
 		$request .= ", centreon_acl ";
 	}
-        $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND cv.name = 'CRITICALITY_LEVEL') ";
+        $request .= ", services s LEFT JOIN customvariables cv ON (s.service_id = cv.service_id AND cv.host_id = s.host_id AND cv.name = 'CRITICALITY_LEVEL') ";
 	$request .= " WHERE h.host_id = s.host_id
 				  AND s.service_id IS NOT NULL
 				  AND s.service_id != 0
@@ -170,6 +170,7 @@
 				  AND h.instance_id = i.instance_id ";
         if ($criticality_id) {
             $request .= " AND s.service_id = cvs. service_id
+                          AND cvs.host_id = h.host_id
                           AND cvs.name = 'CRITICALITY_ID'
                           AND cvs.value = '" . $obj->DBC->escape($criticality_id)."' ";
         }

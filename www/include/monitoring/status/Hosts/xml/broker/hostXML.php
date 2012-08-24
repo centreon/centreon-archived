@@ -39,6 +39,8 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/class/centreonInstance.class.php";
+        include_once $centreon_path . "www/class/centreonCriticality.class.php";
+        include_once $centreon_path . "www/class/centreonMedia.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*
@@ -47,7 +49,9 @@
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
 
+	$criticality = new CentreonCriticality($obj->DB);
 	$instanceObj = new CentreonInstance($obj->DB);
+        $media = new CentreonMedia($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -76,13 +80,14 @@
 	if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
 	    $sort_type = "name";
 	} else {
-    	if ($o == "hpb" || $o == "h_unhandled") {
-    	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
-    	} else {
-    	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "name");
-    	}
+            if ($o == "hpb" || $o == "h_unhandled") {
+                $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+            } else {
+                $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
+            }
 	}
-
+        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        
 	/*
 	 * Backup poller selection
 	 */
@@ -115,7 +120,9 @@
 			" h.host_id, " .
 			" h.flapping, " .
 			" hph.parent_id as is_parent, " .
-	        " i.name as instance_name ";
+                        " i.name as instance_name, " .
+                        " cv.value as criticality, ".
+                        " cv.value IS NULL as isnull ";
 	$rq1 .= " FROM instances i, ";
 	if (!$obj->is_admin) {
 		$rq1 .= " centreon_acl, ";
@@ -123,31 +130,44 @@
 	if ($hostgroups) {
 		$rq1 .= " hosts_hostgroups hhg, ";
 	}
-	$rq1 .=" `hosts` h ";
+        if ($criticality_id) {
+            $rq1 .= "customvariables cvs, ";
+        }
+	$rq1 .= " `hosts` h ";
 	$rq1 .= " LEFT JOIN hosts_hosts_parents hph ";
-    $rq1 .= " ON hph.parent_id = h.host_id ";
-
+        $rq1 .= " ON hph.parent_id = h.host_id ";
+        
+        $rq1 .= " LEFT JOIN `customvariables` cv ";
+        $rq1 .= " ON (cv.host_id = h.host_id AND cv.service_id IS NULL AND cv.name = 'CRITICALITY_LEVEL') ";
+        
 	$rq1 .= " WHERE h.name NOT LIKE '_Module_%'";
-    $rq1 .= " AND h.instance_id = i.instance_id ";
+        $rq1 .= " AND h.instance_id = i.instance_id ";
 
+        if ($criticality_id) {
+            $rq1 .= " AND h.host_id = cvs.host_id
+                      AND cvs.name = 'CRITICALITY_ID'
+                      AND cvs.service_id IS NULL
+                      AND cvs.value = '".$obj->DBC->escape($criticality_id)."' ";
+        }
+        
 	if (!$obj->is_admin) {
-		$rq1 .= " AND h.host_id = centreon_acl.host_id " . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
+            $rq1 .= " AND h.host_id = centreon_acl.host_id " . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 	}
 	if ($search != "") {
-		$rq1 .= " AND (h.name LIKE '%" . $search . "%' OR h.alias LIKE '%" . $search . "%' OR h.address LIKE '%" . $search . "%') ";
+            $rq1 .= " AND (h.name LIKE '%" . $search . "%' OR h.alias LIKE '%" . $search . "%' OR h.address LIKE '%" . $search . "%') ";
 	}
 	if ($o == "hpb") {
-		$rq1 .= " AND h.state != 0 ";
+            $rq1 .= " AND h.state != 0 ";
 	} elseif ($o == "h_up") {
-        $rq1 .= " AND h.state = 0 ";
+            $rq1 .= " AND h.state = 0 ";
 	} elseif ($o == "h_down") {
-        $rq1 .= " AND h.state = 1 ";
+            $rq1 .= " AND h.state = 1 ";
 	} elseif ($o == "h_unreachable") {
-        $rq1 .= " AND h.state = 2 ";
+            $rq1 .= " AND h.state = 2 ";
 	} elseif ($o == "h_pending") {
-        $rq1 .= " AND h.state = 4 ";
-	}
-    
+            $rq1 .= " AND h.state = 4 ";
+	}        
+        
 	if (preg_match("/^h_unhandled/", $o)) {
 	    if (preg_match("/^h_unhandled_(down|unreachable)\$/", $o, $matches)) {
 	        if (isset($matches[1]) && $matches[1] == 'down') {
@@ -176,33 +196,36 @@
 	$rq1 .= " AND h.enabled = 1 ";
 	switch ($sort_type) {
 		case 'name' :
-			$rq1 .= " ORDER BY h.name ". $order;
-			break;
+                    $rq1 .= " ORDER BY h.name ". $order;
+                    break;
 		case 'current_state' :
-			$rq1 .= " ORDER BY h.state ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY h.state ". $order.",h.name ";
+                    break;
 		case 'last_state_change' :
-			$rq1 .= " ORDER BY h.last_state_change ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY h.last_state_change ". $order.",h.name ";
+                    break;
 		case 'last_hard_state_change' :
-			$rq1 .= " ORDER BY h.last_hard_state_change ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY h.last_hard_state_change ". $order.",h.name ";
+                    break;
 		case 'last_check' :
-			$rq1 .= " ORDER BY h.last_check ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY h.last_check ". $order.",h.name ";
+                    break;
 		case 'current_check_attempt' :
-			$rq1 .= " ORDER BY h.check_attempt ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY h.check_attempt ". $order.",h.name ";
+                    break;
 		case 'ip' :
             # Not SQL portable
-			$rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY IFNULL(inet_aton(h.address), h.address) ". $order.",h.name ";
+                    break;
 		case 'plugin_output' :
-			$rq1 .= " ORDER BY h.output ". $order.",h.name ";
-			break;
+                    $rq1 .= " ORDER BY h.output ". $order.",h.name ";
+                    break;
+                case 'criticality_id':
+                    $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+                    break;
 		default :
-			$rq1 .= " ORDER BY is_parent DESC, h.state DESC, h.name ASC";
-			break;
+                    $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+                    break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
@@ -211,6 +234,22 @@
 	$DBRESULT = $obj->DBC->query($rq1);
 	$numRows = $obj->DBC->numberRows();
 
+        /**
+         * Get criticality ids
+         */
+        $critRes = $obj->DBC->query("SELECT value, host_id 
+                                     FROM customvariables
+                                     WHERE name = 'CRITICALITY_ID'
+                                     AND service_id IS NULL");
+        $criticalityUsed = 0;
+        $critCache = array();
+        if ($critRes->numRows()) {
+            $criticalityUsed = 1;
+            while ($critRow = $critRes->fetchRow()) {
+                $critCache[$critRow['host_id']] = $critRow['value'];
+            }
+        }
+        
 	$obj->XML->startElement("reponse");
 	$obj->XML->startElement("i");
 	$obj->XML->writeElement("numrows", $numRows);
@@ -222,6 +261,7 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
 	$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
+        $obj->XML->writeElement("use_criticality", $criticalityUsed);
 	$obj->XML->endElement();
 
 	$delimInit = 0;
@@ -286,6 +326,14 @@
         $obj->XML->writeElement("hpe", 	$ndo["passive_checks"]);
         $obj->XML->writeElement("ne", 	$ndo["notify"]);
         $obj->XML->writeElement("tr", 	$ndo["check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
+        if ($ndo['criticality'] && isset($critCache[$ndo['host_id']])) {
+            $obj->XML->writeElement("hci", 1); // has criticality
+            $critData = $criticality->getData($critCache[$ndo['host_id']]);                    
+            $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
+            $obj->XML->writeElement("cih", $critData['name']);
+        } else {
+            $obj->XML->writeElement("hci", 0); // has no criticality
+        }
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
         $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
         $obj->XML->writeElement("isf",  $ndo["flapping"]);

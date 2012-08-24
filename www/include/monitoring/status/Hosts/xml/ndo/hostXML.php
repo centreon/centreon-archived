@@ -39,6 +39,8 @@
 	include_once "@CENTREON_ETC@/centreon.conf.php";
 	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
 	include_once $centreon_path . "www/class/centreonInstance.class.php";
+        include_once $centreon_path . "www/class/centreonCriticality.class.php";
+        include_once $centreon_path . "www/class/centreonMedia.class.php";
 	include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*
@@ -47,7 +49,9 @@
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
 
+        $criticality = new CentreonCriticality($obj->DB);
 	$instanceObj = new CentreonInstance($obj->DB);
+        $media = new CentreonMedia($obj->DB);
 
 	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
 		;
@@ -74,12 +78,14 @@
 	if ($o == "hpb" || $o == "h_unhandled") {
 	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
 	} else {
-	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
 	}
 
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-
+        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        
+        
 	/*
 	 * Backup poller selection
 	 */
@@ -112,8 +118,10 @@
 			" nh.host_object_id, " .
 			" nhs.is_flapping, " .
 	        " hph.host_parenthost_id as is_parent, ".
-	        " i.instance_name " .
-			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."objects no, ".$obj->ndoPrefix."instances i ";
+	        " i.instance_name, " .
+                "cv.varvalue as criticality,".
+                "cv.varvalue IS NULL as isnull ".
+			" FROM ".$obj->ndoPrefix."hoststatus nhs, ".$obj->ndoPrefix."instances i ";
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
@@ -121,16 +129,27 @@
 		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
 	}
 
-	$rq1 .= ", " . $obj->ndoPrefix."hosts nh " ;
-
+	$rq1 .= ", (" . $obj->ndoPrefix."hosts nh " ;
 	$rq1 .= " LEFT JOIN " . $obj->ndoPrefix . "host_parenthosts hph ";
-    $rq1 .= " ON hph.parent_host_object_id = nh.host_object_id ";
+        $rq1 .= " ON hph.parent_host_object_id = nh.host_object_id) ";
+        $rq1 .= ", (" .$obj->ndoPrefix."objects no  LEFT JOIN ".
+                $obj->ndoPrefix."customvariablestatus cv ON no.object_id = cv.object_id AND cv.varname = 'CRITICALITY_LEVEL' )";
 
+        if ($criticality_id) {
+            $rq1 .= ", ".$obj->ndoPrefix . "customvariablestatus cvs ";
+        }
+        
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%' " .
 	        " AND i.instance_id = no.instance_id ";
 
+        if ($criticality_id) {
+            $rq1 .= " AND cvs.object_id = no.object_id 
+                      AND cvs.varname = 'CRITICALITY_ID'
+                      AND cvs.varvalue = '".$obj->DBNdo->escape($criticality_id)."' ";
+        }
+        
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 	}
@@ -178,33 +197,36 @@
 	$rq1 .= " GROUP BY host_name ";
 	switch ($sort_type) {
 		case 'host_name' :
-			$rq1 .= " order by no.name1 ". $order;
-			break;
+                    $rq1 .= " ORDER BY no.name1 ". $order;
+                    break;
 		case 'current_state' :
-			$rq1 .= " order by nhs.current_state ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY nhs.current_state ". $order.",no.name1 ";
+                    break;
 		case 'last_state_change' :
-			$rq1 .= " order by nhs.last_state_change ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY nhs.last_state_change ". $order.",no.name1 ";
+                    break;
 		case 'last_hard_state_change' :
-			$rq1 .= " order by nhs.last_hard_state_change ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY nhs.last_hard_state_change ". $order.",no.name1 ";
+                    break;
 		case 'last_check' :
-			$rq1 .= " order by nhs.last_check ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY nhs.last_check ". $order.",no.name1 ";
+                    break;
 		case 'current_check_attempt' :
-			$rq1 .= " order by nhs.current_check_attempt ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY nhs.current_check_attempt ". $order.",no.name1 ";
+                    break;
 		case 'ip' :
             # Not SQL portable
-			$rq1 .= " order by IFNULL(inet_aton(nh.address), nh.address) ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY IFNULL(inet_aton(nh.address), nh.address) ". $order.",no.name1 ";
+                    break;
 		case 'plugin_output' :
-			$rq1 .= " order by nhs.output ". $order.",no.name1 ";
-			break;
+                    $rq1 .= " ORDER BY nhs.output ". $order.",no.name1 ";
+                    break;
+                case 'criticality_id':
+                    $rq1 .= " ORDER BY isnull $order, criticality $order, no.name1 ";
+                    break;
 		default :
-			$rq1 .= " order by is_parent DESC, nhs.current_state DESC, no.name1 ASC ";
-			break;
+                    $rq1 .= " ORDER BY isnull $order, criticality $order, no.name1 ";
+                    break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
@@ -213,6 +235,22 @@
 	$DBRESULT = $obj->DBNdo->query($rq1);
 	$numRows = $obj->DBNdo->numberRows();
 
+        
+        /**
+         * Get criticality ids
+         */
+        $critRes = $obj->DBNdo->query("SELECT varvalue, object_id 
+                                    FROM nagios_customvariablestatus
+                                    WHERE varname = 'CRITICALITY_ID'");
+        $criticalityUsed = 0;
+        $critCache = array();
+        if ($critRes->numRows()) {
+            $criticalityUsed = 1;
+            while ($critRow = $critRes->fetchRow()) {
+                $critCache[$critRow['object_id']] = $critRow['varvalue'];
+            }
+        }
+        
 	$obj->XML->startElement("reponse");
 	$obj->XML->startElement("i");
 	$obj->XML->writeElement("numrows", $numRows);
@@ -224,6 +262,7 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
 	$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
+        $obj->XML->writeElement("use_criticality", $criticalityUsed);
 	$obj->XML->endElement();
 
 	$delimInit = 0;
@@ -289,6 +328,14 @@
         $obj->XML->writeElement("hpe", 	$ndo["passive_checks_enabled"]);
         $obj->XML->writeElement("ne", 	$ndo["notifications_enabled"]);
         $obj->XML->writeElement("tr", 	$ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
+        if ($ndo['criticality'] && isset($critCache[$ndo['host_object_id']])) {
+            $obj->XML->writeElement("hci", 1); // has criticality
+            $critData = $criticality->getData($critCache[$ndo['host_object_id']]);                    
+            $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
+            $obj->XML->writeElement("cih", $critData['name']);
+        } else {
+            $obj->XML->writeElement("hci", 0); // has no criticality
+        }
         $obj->XML->writeElement("ico", 	$ndo["icon_image"]);
         $obj->XML->writeElement("isp", 	$ndo["is_parent"] ? 1 : 0);
         $obj->XML->writeElement("isf",  	$ndo["is_flapping"]);

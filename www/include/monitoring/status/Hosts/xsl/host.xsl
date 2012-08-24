@@ -5,6 +5,9 @@
 <table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+                <xsl:if test = "//i/use_criticality = 1">
+                    <td class="ListColHeaderCenter" style="white-space:nowrap;" id="criticality_id"></td>
+                </xsl:if>
 		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="ip"></td>
@@ -47,6 +50,18 @@
             </xsl:attribute>
 		</xsl:element>
 		</td>
+                <xsl:if test = "//i/use_criticality = 1">
+                    <td class="ListColLeft" style="white-space:nowrap;">
+                    <xsl:if test = "hci = 1">
+                        <xsl:element name="img">
+                            <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
+                            <xsl:attribute name="width">16</xsl:attribute>
+                            <xsl:attribute name="height">16</xsl:attribute>
+                            <xsl:attribute name="title"><xsl:value-of select='cih'/></xsl:attribute>
+                        </xsl:element>
+                    </xsl:if>                
+                    </td>
+                </xsl:if>
 		<td class="ListColLeft">
 			<xsl:element name="span">
 				<xsl:if test="hdtm != 0">

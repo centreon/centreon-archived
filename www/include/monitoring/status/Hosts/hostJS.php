@@ -60,6 +60,7 @@ var _debug = 0;
 
 var _addrXML = "./include/monitoring/status/Hosts/xml/<?php print $centreon->broker->getBroker(); ?>/hostXML.php";
 var _addrXSL = "./include/monitoring/status/Hosts/xsl/host.xsl";
+var _criticality_id = 0;
 
 <?php include_once "./include/monitoring/status/Common/commonJS.php"; ?>
 
@@ -115,6 +116,15 @@ function set_header_title(){
 	  	h.onclick=function(){change_type_order(this.indice)};
 		h.style.cursor = "pointer";
 
+                var h = document.getElementById('criticality_id');
+                if (h) {
+                    h.innerHTML = '<?php echo addslashes("C"); ?>';
+                    h.indice = 'criticality_id';
+                    h.title = "<?php echo _("Sort by criticality"); ?>";
+                    h.onclick=function(){change_type_order(this.indice)};
+                    h.style.cursor = "pointer";
+                }
+
 		var h = document.getElementById('plugin_output');
 		h.innerHTML = '<?php echo addslashes(_("Status information"))?>';
 	  	h.indice = 'plugin_output';
@@ -122,16 +132,18 @@ function set_header_title(){
 		h.style.cursor = "pointer";
 
 		if (_sort_type) {
-    		var h = document.getElementById(_sort_type);
-    		var _linkaction_asc = document.createElement("a");
-    		if (_order == 'ASC') {
-    			_linkaction_asc.appendChild(_img_asc);
-    		} else {
-    			_linkaction_asc.appendChild(_img_desc);
-    		}
-    		_linkaction_asc.href = '#' ;
-    		_linkaction_asc.onclick=function(){change_order()};
-    		h.appendChild(_linkaction_asc);
+                    var h = document.getElementById(_sort_type);
+                    var _linkaction_asc = document.createElement("a");
+                    if (_order == 'ASC') {
+                        _linkaction_asc.appendChild(_img_asc);
+                    } else {
+                        _linkaction_asc.appendChild(_img_desc);
+                    }
+                    _linkaction_asc.href = '#' ;
+                    _linkaction_asc.onclick=function(){change_order()};
+                    if (h) {
+                        h.appendChild(_linkaction_asc);
+                    }
 		}
 	}
 }
@@ -212,7 +224,7 @@ function goM(_time_reload, _sid, _o) {
 	}
 
 	proc.setCallback(monitoringCallBack);
-	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>');
+	proc.setXml(_addrXML+"?"+'sid='+_sid+'&search='+_host_search+'&num='+_num+'&limit='+_limit+'&sort_type='+_sort_type+'&order='+_order+'&date_time_format_status='+_date_time_format_status+'&o='+_o+'&p='+_p+'&time=<?php print time(); ?>&criticality='+_criticality_id);
 	proc.setXslt(_addrXSL);
 	proc.transform("forAjax");
 
