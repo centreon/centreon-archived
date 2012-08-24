@@ -485,5 +485,21 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 (NULL, 'Broker Statistics', './img/icones/16x16/document_gear.gif', 102, 10205, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 UPDATE `topology` SET `topology_order` = 20 WHERE `topology_page` = 10201;
 
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES 
+                                           ('text', 0),
+                                           ('boolean', 0),
+                                           ('hidden', 0),
+                                           ('password', 0),
+                                           ('list', 0),
+                                           ('range', 0),
+                                           ('compare', 0),
+                                           ('sort', 0),
+                                           ('date', 0),
+                                           ('host', 1),
+                                           ('hostTemplate', 1),
+                                           ('serviceTemplate', 1),
+                                           ('hostgroup', 1),
+                                           ('servicegroup', 1),
+                                           ('service', 1);
 
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.9' LIMIT 1;

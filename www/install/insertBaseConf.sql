@@ -1070,3 +1070,23 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (16, 35, 0, 8),
 (14, 34, 0, 9),
 (14, 35, 0, 10);
+
+--
+-- Contenu de la table `widget_parameters_field_type`
+--
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES 
+                                           ('text', 0),
+                                           ('boolean', 0),
+                                           ('hidden', 0),
+                                           ('password', 0),
+                                           ('list', 0),
+                                           ('range', 0),
+                                           ('compare', 0),
+                                           ('sort', 0),
+                                           ('date', 0),
+                                           ('host', 1),
+                                           ('hostTemplate', 1),
+                                           ('serviceTemplate', 1),
+                                           ('hostgroup', 1),
+                                           ('servicegroup', 1),
+                                           ('service', 1);
