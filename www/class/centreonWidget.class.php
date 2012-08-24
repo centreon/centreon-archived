@@ -562,6 +562,9 @@ class CentreonWidget
                     if (!isset($attr['requirePermission'])) {
                         $attr['requirePermission'] = 0;
                     }
+                    if (!isset($attr['defaultValue'])) {
+                        $attr['defaultValue'] = '';
+                    }
                     $str = "(".$lastId.", ".$types[$attr['type']].", '".$this->db->escape($attr['label'])."', '".$this->db->escape($attr['name'])."', '".$this->db->escape($attr['defaultValue'])."', $order, '".$this->db->escape($attr['requirePermission'])."', ";
                     if (isset($attr['header']) && $attr['header'] != "") {
                         $str .= "'".$this->db->escape($attr['header'])."'";
