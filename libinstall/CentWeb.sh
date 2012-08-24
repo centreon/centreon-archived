@@ -174,6 +174,30 @@ check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
 log "INFO" "$( gettext "Copying www/install/insertBaseConf.sql in final directory")"
 cp $TMP_DIR/work/www/install/insertBaseConf.sql \
 	$TMP_DIR/final/www/install/insertBaseConf.sql >> "$LOG_FILE" 2>&1
+	
+### Chagne Macro for sql update file
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREON_ENGINE_CONNECTORS@"
+find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.sql" "file_sql_temp"
+
+log "INFO" "$(gettext "Apply macros")"
+
+flg_error=0
+${CAT} "$file_sql_temp" | while read file ; do
+	log "MACRO" "$(gettext "Change macro for") : $file"
+	[ ! -d $(dirname $TMP_DIR/work/$file) ] && \
+		mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
+	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+		-e 's|@CENTREON_ENGINE_CONNECTORS@|'"$CENTREON_ENGINE_CONNECTORS"'|g' \
+		$TMP_DIR/src/$file > $TMP_DIR/work/$file
+		[ $? -ne 0 ] && flg_error=1
+	log "MACRO" "$(gettext "Copy in final dir") : $file"
+	cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1 
+done
+check_result $flg_error "$(gettext "Change macros for sql update files")"
 
 ### Step 2: Change right on Centreon WebFront
 
