@@ -433,7 +433,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 -- Add enable shell option for commands
 --
 
-ALTER TABLE  `command` ADD  `enable_shell` INT( 1 ) UNSIGNED NOT NULL DEFAULT  '0' AFTER  `command_type`
+ALTER TABLE  `command` ADD  `enable_shell` INT( 1 ) UNSIGNED NOT NULL DEFAULT  '0' AFTER  `command_type`;
 
 --
 -- End add enable shell option for commands

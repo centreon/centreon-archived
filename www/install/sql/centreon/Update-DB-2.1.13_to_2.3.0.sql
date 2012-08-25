@@ -1085,12 +1085,6 @@ ALTER TABLE `giv_graphs_template` ADD COLUMN `size_to_max` TINYINT(6) NOT NULL A
 UPDATE  `cb_field` SET  `fieldtype` =  'password' WHERE  `cb_field_id` = 9;
 
 --
--- Insert DB Port for Centreon Broker Configuration
---
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (14, 18, 1, 5);
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (16, 18, 1, 3);
-
---
 -- Update default information for Centreon Broker configuration in poller
 -- 
 UPDATE `nagios_server` SET `centreonbroker_cfg_path` = '/etc/centreon-broker', `centreonbroker_module_path` = '/usr/share/centreon/lib/centreon-broker';
@@ -1110,8 +1104,6 @@ DELETE FROM topology WHERE topology_page = '20312' OR topology_parent = '20312';
 
 INSERT INTO options (`key`, `value`) VALUES ('centstorage', '1');
 
-ALTER TABLE `acl_topology` ADD `acl_comments` text DEFAULT NULL AFTER acl_topo_alias ;
-
 --
 -- Update order for Perfdata generator for Centreon Broker configuration
 --
@@ -1125,12 +1117,6 @@ UPDATE `cb_type_field_relation` SET `order_display` = '8' WHERE `cb_type_field_r
 UPDATE `cb_type_field_relation` SET `order_display` = '4' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =8;
 UPDATE `cb_type_field_relation` SET `order_display` = '5' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =9;
 UPDATE `cb_type_field_relation` SET `order_display` = '6' WHERE `cb_type_field_relation`.`cb_type_id` =16 AND `cb_type_field_relation`.`cb_field_id` =10;
-
--- 
--- Insert new field for Centreon Broker correlation
---
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (22, 30, 1, 2);
 
 -- ALTER TABLE `giv_graphs_template` ADD `unit_exponent` tinyint(6) NULL AFTER scaled ;
 
