@@ -517,9 +517,9 @@ function locate_centreon_connector_dir() {
 	testdir_clean "$CENTREON_ENGINE_CONNECTORS" "CENTREON_ENGINE_CONNECTORS"
 	if [ -z "$CENTREON_ENGINE_CONNECTORS" ] ; then
 		answer_with_testoptionaldir "$(gettext "Where is your Centreon Connectors directory ?")" "$DEFAULT_CENTREON_ENGINE_CONNECTORS"
-		echo_success "$(gettext "Path ) $CENTREON_ENGINE_CONNECTORS" "$ok"
+		echo_success "$(gettext "Path" )  $CENTREON_ENGINE_CONNECTORS" "$ok"
 	fi
-	CENTREON_ENGINE_CONNECTORS=`trim ${CENTREON_ENGINE_CONNECTORS%}`
+	CENTREON_ENGINE_CONNECTORS=`trim ${CENTREON_ENGINE_CONNECTORS%/}` 
 	export CENTREON_ENGINE_CONNECTORS
 	log "INFO" "CENTREON_ENGINE_CONNECTORS: $CENTREON_ENGINE_CONNECTORS"
 }
