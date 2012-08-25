@@ -4,7 +4,7 @@
 ALTER TABLE `cfg_nagios` ADD COLUMN `cfg_file` VARCHAR(255) NOT NULL DEFAULT 'centengine.cfg';
 UPDATE `cfg_nagios` SET `cfg_file` = 'nagios.cfg' WHERE `cfg_dir` LIKE '%nagios%';
 INSERT INTO `cfg_nagios` (`nagios_name`, `log_file`, `cfg_dir`, `object_cache_file`, `precached_object_file`, `temp_file`, `temp_path`, `status_file`, `check_result_path`, `max_check_result_file_age`, `p1_file`, `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, `command_check_interval`, `command_file`, `downtime_file`, `comment_file`, `lock_file`, `retain_state_information`, `state_retention_file`, `retention_update_interval`, `use_retained_program_state`, `use_retained_scheduling_info`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`, `log_external_commands`, `log_passive_checks`, `global_host_event_handler`, `global_service_event_handler`, `sleep_time`, `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`, `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, `interval_length`, `auto_reschedule_checks`, `auto_rescheduling_interval`, `auto_rescheduling_window`, `use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, `high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`, `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, `notification_timeout`, `ocsp_timeout`, `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, `ocsp_command`, `obsess_over_hosts`, `ochp_command`, `process_performance_data`, `host_perfdata_command`, `service_perfdata_command`, `host_perfdata_file`, `service_perfdata_file`, `host_perfdata_file_template`, `service_perfdata_file_template`, `host_perfdata_file_mode`, `service_perfdata_file_mode`, `host_perfdata_file_processing_interval`, `service_perfdata_file_processing_interval`, `host_perfdata_file_processing_command`, `service_perfdata_file_processing_command`, `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `service_freshness_check_interval`, `freshness_check_interval`, `check_host_freshness`, `host_freshness_check_interval`, `date_format`, `illegal_object_name_chars`, `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, `event_broker_options`, `translate_passive_host_checks`, `nagios_server_id`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `cached_host_check_horizon`, `cached_service_check_horizon`, `passive_host_checks_are_soft`, `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `additional_freshness_latency`, `enable_embedded_perl`, `use_embedded_perl_implicitly`, `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `cfg_file`) VALUES
-('Centreon Engine CFG 1', '/var/log/centreon-engine/centengine.log', '/etc/centreon-engine/', NULL, NULL, '/var/log/centreon-engine/centengine.tmp', NULL, '/var/log/centreon-engine/status.dat', NULL, NULL, '/usr/sbin/p1.pl', NULL, 'centreon-engine', 'centreon-engine', '1', '1', '1', '2', '2', '1', 'd', '/var/log/centreon-engine/archives/', '1', NULL, '1s', '/var/lib/centreon-engine/rw/centengine.cmd', NULL, NULL, '/var/lock/subsys/centengine.lock', '1', '/var/log/centreon-engine/retention.dat', 60, '1', '1', '0', '1', '1', '1', '1', '1', '1', '2', NULL, NULL, '1', 's', NULL, 's', 200, 5, NULL, 5, 60, '2', NULL, NULL, '1', '0', '25.0', '50.0', '25.0', '50.0', '0', 60, 10, 30, 30, 5, 5, 5, '0', NULL, '2', NULL, '1', NULL, 41, NULL, NULL, NULL, NULL, '2', '2', NULL, NULL, NULL, NULL, '0', NULL, '1', NULL, NULL, '2', NULL, 'euro', '~!$%^&amp;*&quot;|&#039;&lt;&gt;?,()=', '`~$^&amp;&quot;|&#039;&lt;&gt;', '2', '2', 'admin@localhost', 'admin', 'Centreon Engine', '1', '-1', NULL, 1, '2', '2', NULL, NULL, NULL, '2', '2', '2', '2', NULL, '2', '2', '/var/log/centreon-engine/centengine.log', 0, '0', '2', NULL, 'centengine.cfg');
+('Centreon Engine CFG 1', '/var/log/centreon-engine/centengine.log', '/etc/centreon-engine/', NULL, NULL, '/var/log/centreon-engine/centengine.tmp', NULL, '/var/log/centreon-engine/status.dat', NULL, NULL, '/usr/sbin/p1.pl', NULL, 'centreon-engine', 'centreon-engine', '1', '1', '1', '2', '2', '1', 'd', '/var/log/centreon-engine/archives/', '1', NULL, '1s', '/var/lib/centreon-engine/rw/centengine.cmd', NULL, NULL, '/var/lock/subsys/centengine.lock', '1', '/var/log/centreon-engine/retention.dat', 60, '1', '1', '0', '1', '1', '1', '1', '1', '1', '2', NULL, NULL, '1', 's', NULL, 's', 200, 5, NULL, 5, 60, '2', NULL, NULL, '1', '0', '25.0', '50.0', '25.0', '50.0', '0', 60, 10, 30, 30, 5, 5, 5, '0', NULL, '2', NULL, '1', NULL, 41, NULL, NULL, NULL, NULL, '2', '2', NULL, NULL, NULL, NULL, '0', NULL, '1', NULL, NULL, '2', NULL, 'euro', '~!$%^&amp;*&quot;|&#039;&lt;&gt;?,()=', '`~$^&amp;&quot;|&#039;&lt;&gt;', '2', '2', 'admin@localhost', 'admin', 'Centreon Engine', '0', '-1', NULL, 1, '2', '2', NULL, NULL, NULL, '2', '2', '2', '2', NULL, '2', '2', '/var/log/centreon-engine/centengine.log', 0, '0', '2', NULL, 'centengine.cfg');
 
 
 
@@ -266,8 +266,17 @@ UPDATE  `options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USIN
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;
 
 SET foreign_key_checks = 0;
-UPDATE  `topology` SET `topology_name` = 'SNMP traps', `topology_parent` =  '6', `topology_page` = '611', `topology_order` = '80', `topology_group` =  '1'  WHERE  `topology`.`topology_page` = 60705;
-UPDATE  `topology_JS` SET  `id_page` =  '611' WHERE  `topology_JS`.`id_page` = 60705;
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
+(NULL, 'SNMP Traps', NULL, 6, 611, 40, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1'),
+(NULL, 'SNMP Traps', NULL, 611, NULL, 40, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+UPDATE  `topology` SET `topology_name` = 'SNMP Traps', `topology_parent` =  '611', `topology_page` = '61101', `topology_order` = '10', `topology_group` =  '1'  WHERE  `topology_page` = 60205;
+UPDATE  `topology` SET `topology_name` = 'Manufacturer', `topology_parent` =  '611', `topology_page` = '61102', `topology_order` = '20', `topology_group` =  '1'  WHERE  `topology_page` = 60207;
+UPDATE  `topology` SET `topology_name` = 'MIBs', `topology_parent` =  '611', `topology_page` = '61103', `topology_order` = '30', `topology_group` =  '1'  WHERE  `topology_page` = 60208;
+UPDATE  `topology` SET `topology_name` = 'Generate', `topology_parent` =  '611', `topology_page` = '61104', `topology_order` = '40', `topology_group` =  '1'  WHERE  `topology_page` = 60705;
+UPDATE  `topology_JS` SET  `id_page` =  '61101' WHERE  `id_page` = 60205;
+UPDATE  `topology_JS` SET  `id_page` =  '61102' WHERE  `id_page` = 60207;
+UPDATE  `topology_JS` SET  `id_page` =  '61103' WHERE  `id_page` = 60208;
+UPDATE  `topology_JS` SET  `id_page` =  '61104' WHERE  `id_page` = 60705;
 SET foreign_key_checks = 1;
 
 --
@@ -381,22 +390,6 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES
 ('60909', 'w', NULL, 'loadedConfiguration'),
 ('60909', 'a', NULL, 'loadedConfiguration');
 
-
-
---
--- Add widget pages
---
-
-INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_show`) VALUES
-                       ('Custom Views', NULL, '1', '103', '1', '1', './include/home/customViews/index.php', '1'),
-                       ('Edit', NULL, '103', '10301', NULL, NULL, './include/home/customViews/form.php', '0'),
-                       ('Share', NULL, '103', '10302', NULL, NULL, './include/home/customViews/shareView.php', '0'),
-                       ('Parameters', NULL, '103', '10303', NULL, NULL, './include/home/customViews/widgetParam.php', '0'),
-                       ('Add Widget', NULL, '103', '10304', NULL, NULL, './include/home/customViews/addWidget.php', '0'),
-                       ('Rotation', NULL, '103', '10305', NULL, NULL, './include/home/customViews/rotation.php', '0'),
-                       ('Widgets', NULL, '507', NULL, '2', '20', NULL, '1'),
-                       ('Setup', './img/icones/16x16/press.gif', '507', '50703', '20', '20', './include/options/oreon/widgets/widgets.php', '1');
-
 --
 -- Add retry interval for input and output in Centreon Broker
 -- 
@@ -404,8 +397,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (31, 'retry_interval', 'Retry Interval', 'Time in seconds to wait between each connection attempt.', 'int', NULL),
 (32, 'buffering_timeout', 'Buffering Timeout', 'Time in seconds to wait before launching failover.', 'int', NULL);
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
-(21, 31, 1, 2),
-(21, 32, 1, 2);
+(21, 31, 0, 2),
+(21, 32, 0, 2);
 
 --
 -- Add options for statistics file in Centreon Broker
@@ -470,7 +463,7 @@ CREATE TABLE `criticality` (
   PRIMARY KEY  (`criticality_id`),
   KEY `fk_criticality_icon_id` (`icon_id`),
   CONSTRAINT `fk_criticality_icon_id` FOREIGN KEY (`icon_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `criticality_resource_relations` (
   `criticality_id` int(11) NOT NULL,
@@ -488,6 +481,11 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
                        ('Criticality', './img/icones/16x16/scroll_warning.gif', 602, 60228, 10, 10, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
                        ('Criticality', './img/icones/16x16/scroll_warning.gif', 601, 60107, 10, 2, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1');
 
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_LEVEL$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_LEVEL$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_HOSTCRITICALITY_ID$');
+INSERT INTO `nagios_macro` (`macro_name`) VALUES ('$_SERVICECRITICALITY_ID$');
+
 --
 -- End of criticality stuff
 --
@@ -498,3 +496,22 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
 (NULL, 'Broker Statistics', './img/icones/16x16/document_gear.gif', 102, 10205, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 UPDATE `topology` SET `topology_order` = 20 WHERE `topology_page` = 10201;
+
+INSERT INTO `widget_parameters_field_type` (`ft_typename`, `is_connector`) VALUES 
+                                           ('text', 0),
+                                           ('boolean', 0),
+                                           ('hidden', 0),
+                                           ('password', 0),
+                                           ('list', 0),
+                                           ('range', 0),
+                                           ('compare', 0),
+                                           ('sort', 0),
+                                           ('date', 0),
+                                           ('host', 1),
+                                           ('hostTemplate', 1),
+                                           ('serviceTemplate', 1),
+                                           ('hostgroup', 1),
+                                           ('servicegroup', 1),
+                                           ('service', 1);
+
+UPDATE `informations` SET `value` = '2.4.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.9' LIMIT 1;
