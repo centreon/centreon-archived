@@ -124,7 +124,7 @@
 					$cmd_id = $DBRESULT->fetchRow();
 					$oreon->CentreonLogAction->insertLog("command", $cmd_id["MAX(command_id)"], $command_name, "a", $fields);
 				}
-				
+
 				/*
 				 * Duplicate Arguments
 				 */
@@ -145,7 +145,7 @@
 	{
 		global $form, $pearDB, $oreon;
 
-        
+
 		if (!$cmd_id) {
 			return;
 		}
@@ -155,6 +155,9 @@
 		//set_magic_quotes_runtime(1);
 
 		$ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+		if (!isset($ret['enable_shell'])) {
+		    $ret['enable_shell'] = 0;
+		}
 
 		$rq = "UPDATE `command` SET `command_name` = '".$pearDB->escape($ret["command_name"])."', " .
 				"`command_line` = '".$pearDB->escape($ret["command_line"])."', " .
@@ -163,7 +166,7 @@
 				"`command_type` = '".$pearDB->escape($ret["command_type"]["command_type"])."', " .
 				"`command_comment` = '".$pearDB->escape($ret["command_comment"])."', " .
 				"`graph_id` = '".$pearDB->escape($ret["graph_id"])."', " .
-                "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'".$ret['connectors']."'" : "NULL") . " " . 
+                "`connector_id` = " . (isset($ret["connectors"]) && !empty($ret["connectors"]) ? "'".$ret['connectors']."'" : "NULL") . " " .
 				"WHERE `command_id` = '".$cmd_id."'";
 		$DBRESULT = $pearDB->query($rq);
 
@@ -173,7 +176,7 @@
 		$fields["command_example"] = $pearDB->escape($ret["command_example"]);
 		$fields["command_comment"] = $pearDB->escape($ret["command_comment"]);
 		$fields["command_type"] = $ret["command_type"]["command_type"];
-        
+
 		$fields["graph_id"] = $ret["graph_id"];
 		$fields["connector_id"] = $ret["connectors"];
 		$oreon->CentreonLogAction->insertLog("command", $cmd_id, $pearDB->escape($ret["command_name"]), "c", $fields);
@@ -196,15 +199,18 @@
 		//set_magic_quotes_runtime(1);
 
 		$ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
+	    if (!isset($ret['enable_shell'])) {
+		    $ret['enable_shell'] = 0;
+		}
 
 		/*
 		 * Insert
 		 */
-        
+
         $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, `graph_id`, `connector_id`) ";
         $rq .= "VALUES ('".$pearDB->escape($ret["command_name"])."', '".$pearDB->escape($ret["command_line"]) . "', '" . $pearDB->escape($ret['enable_shell']) . "', '".$pearDB->escape($ret["command_example"])."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."', ".
               (isset($ret["connectors"]) && !empty($ret["connectors"])? "'".$ret['connectors']."'" : "NULL").")";
-        
+
         $DBRESULT = $pearDB->query($rq);
 		$fields["command_name"] = $pearDB->escape($ret["command_name"]);
 		$fields["command_line"] = $pearDB->escape($ret["command_line"]);
@@ -213,7 +219,7 @@
 		$fields["command_type"] = $ret["command_type"]["command_type"];
 		$fields["graph_id"] = $ret["graph_id"];
         $fields["connector_id"] = $ret["connectors"];
-        
+
 		/*
 		 * Get Max ID
 		 */
@@ -271,9 +277,9 @@
 			$pearDB->query($query);
 		}
 	}
-	
+
 	/**
-	 * Duplicate The argument description of a command 
+	 * Duplicate The argument description of a command
 	 * @param $cmd_id
 	 * @param $ret
 	 * @return unknown_type
@@ -292,12 +298,12 @@
 	 */
 	function getHostNumberUse($command_id) {
 		global $pearDB;
-		
+
 		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '$command_id' AND host_register = '1'");
 		$data = $DBRESULT->fetchRow();
 		return $data['number'];
 	}
-	
+
 	/**
 	 * Return the number of time a command is used as a service command check
 	 * @param $command_id
@@ -305,12 +311,12 @@
 	 */
 	function getServiceNumberUse($command_id) {
 		global $pearDB;
-		
+
 		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '$command_id' AND service_register = '1'");
 		$data = $DBRESULT->fetchRow();
 		return $data['number'];
 	}
-	
+
 		/**
 	 * Return the number of time a command is used as a host command check
 	 * @param $command_id
@@ -318,12 +324,12 @@
 	 */
 	function getHostTPLNumberUse($command_id) {
 		global $pearDB;
-		
+
 		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM host WHERE command_command_id = '$command_id' AND host_register = '0'");
 		$data = $DBRESULT->fetchRow();
 		return $data['number'];
 	}
-	
+
 	/**
 	 * Return the number of time a command is used as a service command check
 	 * @param $command_id
@@ -331,7 +337,7 @@
 	 */
 	function getServiceTPLNumberUse($command_id) {
 		global $pearDB;
-		
+
 		$DBRESULT = $pearDB->query("SELECT count(*) AS number FROM service WHERE command_command_id = '$command_id' AND service_register = '0'");
 		$data = $DBRESULT->fetchRow();
 		return $data['number'];
