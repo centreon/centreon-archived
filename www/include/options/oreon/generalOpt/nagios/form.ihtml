@@ -7,6 +7,7 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_default_engine">&nbsp;{$form.monitoring_engine.label}</td><td class="FormRowValue">{$form.monitoring_engine.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">&nbsp;{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">&nbsp;{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_cengine_path_connectors">&nbsp;{$form.cengine_path_connectors.label}</td><td class="FormRowValue">{$form.cengine_path_connectors.html}</td></tr>
 		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$genOpt_centcore}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_perfdata_sync">&nbsp;{$form.enable_perfdata_sync.label}</td><td class="FormRowValue">{$form.enable_perfdata_sync.html}</td></tr>

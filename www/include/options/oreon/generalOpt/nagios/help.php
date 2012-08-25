@@ -8,6 +8,7 @@ $help = array();
 $help['tip_default_engine'] = dgettext('help', 'Default monitoring engine.');
 $help['tip_images_directory'] = dgettext('help', 'Directory where images are stored.');
 $help['tip_plugins_directory'] = dgettext('help', 'Directory where check plugins are stored.');
+$help['tip_cengine_path_connectors'] = dgettext('help', 'Directory for Centreon Connector for Centreon Engine >= 1.3');
 
 /**
  * Monitoring database layer
