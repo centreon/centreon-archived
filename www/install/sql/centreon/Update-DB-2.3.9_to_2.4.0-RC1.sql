@@ -288,7 +288,7 @@ ALTER TABLE `giv_components_template` ADD `ds_minmax_int` ENUM('0', '1') DEFAULT
 --- 
 ---
 INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
-(NULL, '$USER2$', '@CENTREON_ENGINE_CONNECTORS@/bin', 'path to the connectors', '1');
+(NULL, '$USER3$', '@CENTREON_ENGINE_CONNECTORS@', 'path to the connectors', '1');
 --
 -- Adding connectors structure
 --
@@ -320,8 +320,8 @@ ALTER TABLE `command` ADD CONSTRAINT `command_ibfk_1` FOREIGN KEY (`connector_id
 --- Contenu de la table Connector
 ---
 INSERT INTO `connector` (`id`, `name`, `description`, `command_line`, `enabled`, `created`, `modified`) VALUES
-(1, 'Perl Connector', '', '$USER2$/centreon_connector_perl', 1, 1345126890, 1345127506),
-(2, 'SSH Connector', '', '$USER2$/centreon_connector_ssh', 1, 1345127090, 1345127508);
+(1, 'Perl Connector', '', '$USER3$/centreon_connector_perl', 1, 1345126890, 1345127506),
+(2, 'SSH Connector', '', '$USER3$/centreon_connector_ssh', 1, 1345127090, 1345127508);
 
 --
 -- Nagios server init script for  snmptt

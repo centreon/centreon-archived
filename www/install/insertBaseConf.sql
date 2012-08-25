@@ -52,7 +52,7 @@ INSERT INTO `cfg_ndomod` (`id`, `description`, `local`, `ns_nagios_server`, `ins
 
 INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
 (1, '$USER1$', '/usr/lib/nagios/plugins', 'path to the plugins', '1'),
-(2, '$USER2$', '@CENTREON_ENGINE_CONNECTORS@/bin', 'path to the connectors', '1');
+(2, '$USER3$', '@CENTREON_ENGINE_CONNECTORS@', 'path to the connectors', '1');
 
 --
 -- Contenu de la table `contact`

@@ -34,6 +34,7 @@ locate_centreon_etcdir
 locate_centreon_generationdir
 locate_centreon_varlib
 locate_centpluginstraps_bindir
+locate_centreon_connector_dir
 
 ## Config pre-require
 # define all necessary variables.
