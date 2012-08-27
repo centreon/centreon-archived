@@ -794,6 +794,11 @@ sub getInfos($) {
                 writeLogFile("Version: $2");
                 last;
             }
+            if ($str =~ m/(Centreon) Engine ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
+                writeLogFile("Engine: $1");
+                writeLogFile("Version: $2");
+                last;
+            }
         }
     } else {
         writeLogFile("Cannot get informations for poller $id");
