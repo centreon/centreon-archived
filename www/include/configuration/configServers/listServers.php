@@ -148,7 +148,7 @@
 	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
-	$rows = $DBRESULT->numRows();
+	$rows = $pearDB->numberRows();
 
 	include("./include/common/checkPagination.php");
 
