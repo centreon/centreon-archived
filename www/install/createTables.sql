@@ -583,6 +583,7 @@ CREATE TABLE `cfg_nagios` (
   `debug_level_opt` varchar(200) DEFAULT '0',
   `debug_verbosity` enum('0','1','2') DEFAULT NULL,
   `max_debug_file_size` int(11) DEFAULT NULL,
+  `cfg_file` VARCHAR(255) NOT NULL DEFAULT 'centengine.cfg',
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
   KEY `cmd2_index` (`global_service_event_handler`),
