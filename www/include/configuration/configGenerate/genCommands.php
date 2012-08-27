@@ -86,7 +86,7 @@
         {
             if ($command["connector_id"] != NULL)
             {
-                $DBRESULT2 = $pearDB->query("SELECT `name` FROM `command`, `connector` WHERE `command`.`connector_id` = '".$command["connector_id"]."' AND `command`.`connector_id` = `connector`.`id`");
+                $DBRESULT2 = $pearDB->query("SELECT `name` FROM `connector` WHERE `connector`.`id` = '".$command["connector_id"]."'");
                 if (!PEAR::isError($DBRESULT2))
                 {
                     $connector = $DBRESULT2->fetchRow();
