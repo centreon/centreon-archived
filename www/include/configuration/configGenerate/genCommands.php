@@ -87,7 +87,6 @@
             $connectorLine = "";
             if ($command["connector_id"] != NULL)
             {
-                file_put_contents('/tmp/myCommandConnectorLink', $text, FILE_APPEND);
                 $DBRESULT2 = $pearDB->query("SELECT `name` FROM `connector` WHERE `connector`.`id` = '".$command["connector_id"]."'");
                 if (!PEAR::isError($DBRESULT2))
                 {
