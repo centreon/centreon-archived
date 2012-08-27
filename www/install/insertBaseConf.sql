@@ -9,8 +9,8 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.4.0-RC2');
 -- Contenu de la table `nagios_server`
 --
 
---- INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `monitoring_engine`) VALUES
---- (1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '/etc/centreon-broker', 'CENGINE');
+-- INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `monitoring_engine`) VALUES
+-- (1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '/etc/centreon-broker', 'CENGINE');
 INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `is_default`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `monitoring_engine`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `centreonbroker_module_path`, `ssh_port`, `ssh_private_key`) VALUES
 (1, 'Central', '1', 0, 1342796158, '127.0.0.1', '1', '0', '/etc/init.d/centengine', 'CENGINE', '/usr/sbin/centengine', '/usr/sbin/centenginestats', '/var/log/centreon-engine/service-perfdata', '/etc/centreon/broker', NULL, 22, NULL);
 --
@@ -460,9 +460,9 @@ INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `h
 
 INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) VALUES (1250, 53, 14);
 
----
---- Contenu de la table Connector
----
+--
+-- Contenu de la table Connector
+--
 INSERT INTO `connector` (`id`, `name`, `description`, `command_line`, `enabled`, `created`, `modified`) VALUES
 (1, 'Perl Connector', '', '$USER2$/centreon_connector_perl', 1, 1345126890, 1345127506),
 (2, 'SSH Connector', '', '$USER2$/centreon_connector_ssh', 1, 1345127090, 1345127508);
