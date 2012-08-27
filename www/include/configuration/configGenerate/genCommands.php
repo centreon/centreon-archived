@@ -84,8 +84,10 @@
         // Ajoute un connecteur si nécessaire
         if ($tab['monitoring_engine'] == 'CENGINE')
         {
+            $connectorLine = "";
             if ($command["connector_id"] != NULL)
             {
+                file_put_contents('/tmp/myCommandConnectorLink', $text, FILE_APPEND);
                 $DBRESULT2 = $pearDB->query("SELECT `name` FROM `connector` WHERE `connector`.`id` = '".$command["connector_id"]."'");
                 if (!PEAR::isError($DBRESULT2))
                 {
@@ -133,7 +135,7 @@
 			$DBRESULT2->free();
 			unset($args);
             
-            if (isset($connectorLine))
+            if (isset($connectorLine) && !empty($connectorLine))
                 $str1 .= $connectorLine;
 
 			$str1 .= "}\n\n";
