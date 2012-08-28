@@ -121,6 +121,7 @@ function Transformation() {
     var xmlDoc;
     var xslt;
     var xsltDoc;
+    var targetElem;
 
     var callback = function() {};
 
@@ -211,6 +212,15 @@ function Transformation() {
         callback = c;
         return this;
     }
+	
+	/**
+     * Returns the target Element.
+     *
+     * @return the target Element
+     */
+    this.getTargetElement = function() {
+        return targetElem;
+    }
 
 	/**
 	 * Sets the target element to write the transformed content to and asynchronously
@@ -233,6 +243,7 @@ function Transformation() {
 	 */
 	
 	this.transform = function(target) {
+        targetElem = target;
 	    var t = this;
 	
 	    if (!browserSupportsXSLT()) {
