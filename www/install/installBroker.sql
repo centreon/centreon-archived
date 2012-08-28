@@ -453,6 +453,7 @@ CREATE TABLE IF NOT EXISTS comments (
   type smallint default NULL,
 
   PRIMARY KEY (comment_id),
+  KEY `internal_id` (`internal_id`),
   UNIQUE (entry_time, host_id, service_id),
   FOREIGN KEY (host_id) REFERENCES hosts (host_id)
     ON DELETE CASCADE,
