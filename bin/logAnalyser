@@ -172,6 +172,7 @@ if (!$sth_config->execute) {
 $data = $sth_config->fetchrow_hashref();
 $sth_config->finish();
 
+my $msg_type5_disabled = 0;
 my $cpt = 0;
 my $ctime = 0;
 my $last_line_read;
@@ -418,7 +419,7 @@ sub parseFile ($$) {
 		    $tab =~ s/\'/\\\'/g;
 		    my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('4','$ctime', '".$tab."', '".$instance."')";
 		    my $res = $dbh->do($rq) or insert_quit("SQL INSERT ERROR :" . $dbh->errstr, $instance);
-		} elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/) {
+		} elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/ && (!defined($msg_type5_disabled) || $msg_type5_disabled == 0)) {
 		    $ctime = $1;
 		    my $tab = $2;
 		    $tab =~ s/\\/\\\\/g; 
