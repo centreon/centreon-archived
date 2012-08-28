@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
 <xsl:template match="//reponse">
-	<table style="padding:5px;margin:5px;z-index:15;" width='350'>
+	<table style="z-index:15;" width='350'>
 		<tr class="ListHeaderPopup">
 			<td rowspan="2">
 				<xsl:element name="img">
