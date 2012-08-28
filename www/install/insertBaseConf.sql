@@ -464,8 +464,8 @@ INSERT INTO `hostgroup_relation` (`hgr_id`, `hostgroup_hg_id`, `host_host_id`) V
 -- Contenu de la table Connector
 --
 INSERT INTO `connector` (`id`, `name`, `description`, `command_line`, `enabled`, `created`, `modified`) VALUES
-(1, 'Perl Connector', '', '$USER2$/centreon_connector_perl', 1, 1345126890, 1345127506),
-(2, 'SSH Connector', '', '$USER2$/centreon_connector_ssh', 1, 1345127090, 1345127508);
+(1, 'Perl Connector', '', '$USER3$/centreon_connector_perl', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP()),
+(2, 'SSH Connector', '', '$USER3$/centreon_connector_ssh', 1, UNIX_TIMESTAMP(), UNIX_TIMESTAMP());
 
 
 --

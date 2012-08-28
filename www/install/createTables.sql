@@ -752,9 +752,9 @@ CREATE TABLE `command_categories_relation` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `connector` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci NOT NULL,
-  `description` varchar(255) CHARACTER SET utf8 COLLATE utf8_swedish_ci DEFAULT NULL,
-  `command_line` text CHARACTER SET utf8 COLLATE utf8_swedish_ci,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) DEFAULT NULL,
+  `command_line` text,
   `enabled` int(1) unsigned NOT NULL DEFAULT '1',
   `created` int(10) unsigned NOT NULL,
   `modified` int(10) unsigned NOT NULL,
