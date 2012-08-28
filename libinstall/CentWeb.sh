@@ -113,11 +113,13 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 
 # change right on nagios images/logos
-log "INFO" "$(gettext "Change right on") $NAGIOS_IMG"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -d 755 \
-	"$NAGIOS_IMG" >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right on") $NAGIOS_IMG"
+if [ -z "${NAGIOS_IMG}" ]; then
+	log "INFO" "$(gettext "Change right on") $NAGIOS_IMG"
+	$INSTALL_DIR/cinstall $cinstall_opts \
+		-u "$WEB_USER" -d 755 \
+		"$NAGIOS_IMG" >> "$LOG_FILE" 2>&1
+	check_result $? "$(gettext "Change right on") $NAGIOS_IMG"
+fi
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
@@ -178,7 +180,7 @@ cp $TMP_DIR/work/www/install/insertBaseConf.sql \
 	
 ### Chagne Macro for sql update file
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREON_ENGINE_CONNECTORS@"
-find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.sql" "file_sql_temp"
+find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "Update*.sql" "file_sql_temp"
 
 log "INFO" "$(gettext "Apply macros")"
 
