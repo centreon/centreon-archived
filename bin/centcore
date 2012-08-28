@@ -412,7 +412,7 @@ sub GetPerfData($){
         writeLogFile("Cannot get perfdata file. Unkown perfdata file on poller $id");
     } else {
         # Rename perfdata file
-        my $cmd = "$ssh ". $user_distant $server_info->{'ns_ip_address'} ." -p $port '".$move_cmd."'";
+        my $cmd = "$ssh ". $user_distant . $server_info->{'ns_ip_address'} ." -p $port '".$move_cmd."'";
         writeLogFile($cmd) if ($debug);
         my $stdout = `$cmd`;
         if (defined($stdout) && $stdout){
