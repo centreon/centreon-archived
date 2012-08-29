@@ -158,33 +158,32 @@
 	$gopt = array_merge($defaultOpt, $gopt);
 
 	$tmpOptions = $ldapAdmin->getTemplate();
-	$gopt['ldap_template'] = $tmpOptions['tmpl'];
-	if (isset($tmpOptions['protocol_version'])) {
+        $gopt['ldap_version_protocol'] = 3;
+        $gopt['ldap_user_filter'] = "";
+        if (count($tmpOptions)) {
+            $gopt['ldap_template'] = $tmpOptions['tmpl'];
+            if (isset($tmpOptions['protocol_version'])) {
  		$gopt['ldap_version_protocol'] = $tmpOptions['protocol_version'];
-	} else {
-		$gopt['ldap_version_protocol'] = 3;
-	}
- 	$gopt['ldap_binduser'] = $tmpOptions['bind_dn'];
-    $gopt['ldap_bindpass'] = $tmpOptions['bind_pass'];
-    $gopt['ldap_user_basedn'] = $tmpOptions['user_base_search'];
-    $gopt['ldap_group_basedn'] = $tmpOptions['group_base_search'];
-    if (isset($tmpOptions['user_filter'])) {
-    	$gopt['ldap_user_filter'] = $tmpOptions['user_filter'];
-    } else {
-    	$gopt['ldap_user_filter'] = "";
-    }
-    $gopt['ldap_user_uid_attr'] = $tmpOptions['alias'];
-    $gopt['ldap_user_group'] = $tmpOptions['user_group'];
-    $gopt['ldap_user_name'] = $tmpOptions['user_name'];
-    $gopt['ldap_user_firstname'] = $tmpOptions['user_firstname'];
-    $gopt['ldap_user_lastname'] = $tmpOptions['user_lastname'];
-    $gopt['ldap_user_email'] = $tmpOptions['user_email'];
-    $gopt['ldap_user_pager'] = $tmpOptions['user_pager'];
-    $gopt['ldap_group_filter'] = $tmpOptions['group_filter'];
-    $gopt['ldap_group_gid_attr'] = $tmpOptions['group_name'];
-    $gopt['ldap_group_member'] = $tmpOptions['group_member'];
-	unset($tmpOptions);
-
+            }
+            $gopt['ldap_binduser'] = $tmpOptions['bind_dn'];
+            $gopt['ldap_bindpass'] = $tmpOptions['bind_pass'];
+            $gopt['ldap_user_basedn'] = $tmpOptions['user_base_search'];
+            $gopt['ldap_group_basedn'] = $tmpOptions['group_base_search'];
+            if (isset($tmpOptions['user_filter'])) {
+                $gopt['ldap_user_filter'] = $tmpOptions['user_filter'];
+            }
+            $gopt['ldap_user_uid_attr'] = $tmpOptions['alias'];
+            $gopt['ldap_user_group'] = $tmpOptions['user_group'];
+            $gopt['ldap_user_name'] = $tmpOptions['user_name'];
+            $gopt['ldap_user_firstname'] = $tmpOptions['user_firstname'];
+            $gopt['ldap_user_lastname'] = $tmpOptions['user_lastname'];
+            $gopt['ldap_user_email'] = $tmpOptions['user_email'];
+            $gopt['ldap_user_pager'] = $tmpOptions['user_pager'];
+            $gopt['ldap_group_filter'] = $tmpOptions['group_filter'];
+            $gopt['ldap_group_gid_attr'] = $tmpOptions['group_name'];
+            $gopt['ldap_group_member'] = $tmpOptions['group_member'];
+            unset($tmpOptions);
+        }
 	$form->setDefaults($gopt);
 
 	$subC = $form->addElement('submit', 'submitC', _("Save"));
