@@ -494,6 +494,7 @@ CREATE TABLE `cfg_nagios` (
   `retention_update_interval` int(11) DEFAULT NULL,
   `use_retained_program_state` enum('0','1','2') DEFAULT NULL,
   `use_retained_scheduling_info` enum('0','1','2') DEFAULT NULL,
+  `retained_contact_host_attribute_mask` BIGINT NULL,
   `retained_contact_service_attribute_mask` BIGINT NULL,
   `retained_process_host_attribute_mask` BIGINT NULL,
   `retained_process_service_attribute_mask` BIGINT NULL,
