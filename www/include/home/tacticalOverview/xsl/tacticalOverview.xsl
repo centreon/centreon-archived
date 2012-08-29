@@ -693,7 +693,7 @@
 										</xsl:element>
 									</xsl:if>						
 									<xsl:element name='a'>
-										<xsl:attribute name="id">host-'<xsl:value-of select="hid"/></xsl:attribute>
+										<xsl:attribute name="id">host-<xsl:value-of select="hid"/></xsl:attribute>
 										<xsl:attribute name="class">infobulle link_popup_volante</xsl:attribute>
 										<xsl:attribute name='href'>
 											<xsl:value-of select='//main/url_hostdetail'/><xsl:value-of select='hostname'/>
