@@ -40,31 +40,33 @@ function return_plugin($rep)
 
     $availableConnectors = array();
     $is_not_a_plugin = array("." => 1, ".." => 1, "oreon.conf" => 1, "oreon.pm" => 1, "utils.pm" => 1, "negate" => 1, "centreon.conf" => 1, "centreon.pm" => 1);
-    $handle[$rep] = opendir($rep);
-    while (false != ($filename = readdir($handle[$rep]))){
-        if ($filename != "." && $filename != ".."){
-            if (is_dir($rep.$filename)){
-                $plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
-                $availableConnectors = array_merge($availableConnectors, $plg_tmp);
-                unset($plg_tmp);
-            } elseif (!isset($is_not_a_plugin[$filename]) && substr($filename, -1)!= "~" && substr($filename, -1) != "#") {
-                $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
-                $availableConnectors[$key] = $key;
+    if (is_readable($rep)) {
+        $handle[$rep] = opendir($rep);
+        while (false != ($filename = readdir($handle[$rep]))) {
+            if ($filename != "." && $filename != "..") {
+                if (is_dir($rep.$filename)){
+                    $plg_tmp = return_plugin($rep."/".$filename, $handle[$rep]);
+                    $availableConnectors = array_merge($availableConnectors, $plg_tmp);
+                    unset($plg_tmp);
+                } elseif (!isset($is_not_a_plugin[$filename]) && substr($filename, -1)!= "~" && substr($filename, -1) != "#") {
+                    $key = substr($rep."/".$filename, strlen($oreon->optGen["cengine_path_connectors"]));
+                    $availableConnectors[$key] = $key;
+                }
             }
         }
+        closedir($handle[$rep]);      
     }
-    closedir($handle[$rep]);
     return ($availableConnectors);
 }
     
 try
 {
     $tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+    $tpl = initSmartyTpl($path, $tpl);
     
-    if (($o == "c" || $o == "w") && $connector_id)
+    $cnt = array();
+    if (($o == "c" || $o == "w") && isset($connector_id))
     {
-        
         $cnt = $connectorObj->read((int)$connector_id);
         $cnt['connector_name'] = $cnt['name'];
         $cnt['connector_description'] = $cnt['description'];
@@ -145,39 +147,34 @@ try
 	else
 		$form->setDefaults(array('connector_status' => '0'));
     
-    if ($o == "w")
-    {
-		if ($centreon->user->access->page($p) != 2)
+    if ($o == "w") {
+        if ($centreon->user->access->page($p) != 2) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&connector_id=".$connector_id."&status=".$status."'"));
-	    $form->setDefaults($cmd);
-		$form->freeze();
-	}
-    else if ($o == "c")
-    {
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	    $form->setDefaults($cnt);
-	}
-    else if ($o == "a")
-    {
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	}
+        }
+	$form->setDefaults($cmd);
+	$form->freeze();
+    } elseif ($o == "c") {
+        $subC = $form->addElement('submit', 'submitC', _("Save"));
+        $res = $form->addElement('reset', 'reset', _("Reset"));
+	$form->setDefaults($cnt);
+    } elseif ($o == "a") {
+        $subA = $form->addElement('submit', 'submitA', _("Save"));
+	$res = $form->addElement('reset', 'reset', _("Reset"));
+    }
     
     
     $form->addRule('connector_name', _("Name"), 'required');
-	$form->addRule('command_line', _("Command Line"), 'required');
+    $form->addRule('command_line', _("Command Line"), 'required');
     $form->registerRule('exist', 'callback', 'testConnectorExistence');
     $form->addRule('connector_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+    $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
     $form->addElement('hidden', 'connector_id');
     $redirect = $form->addElement('hidden', 'o');
-	$redirect->setValue($o);
+    $redirect->setValue($o);
     
     $valid = false;
-	if ($form->validate())
-    {
-		$cntObj = new CentreonConnector($pearDB);
+    if ($form->validate()) {
+        $cntObj = new CentreonConnector($pearDB);
         $tab = $form->getSubmitValues();
         $connectorValues = array();
         $connectorValues['name'] = $tab['connector_name'];
@@ -190,15 +187,13 @@ try
             $connectorId = $cntObj->create($connectorValues, true);
         elseif ($form->getSubmitValue("submitC"))
             $cntObj->update((int)$connectorId, $connectorValues);
-        
-		$valid = true;
-	}
+        $valid = true;
+    }
     
     
-	if ($valid)
-		require_once($path."listConnector.php");
-	else
-    {
+    if ($valid)
+        require_once($path."listConnector.php");
+    else {
         $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
         $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
         $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');

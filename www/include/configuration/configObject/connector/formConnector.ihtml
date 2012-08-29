@@ -31,7 +31,6 @@
                                 <input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(2)" />
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 {$form.plugins.html}
-                                &nbsp;<img alt='{$cmd_help}' title='{$cmd_help}' src='./img/icones/16x16/about.gif' onClick="window.open('main.php?p=60706&command_name='+ document.Form.plugins.value + '&o=h&min=1','','toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=yes,copyhistory=no, width=700, height=400');">
                                 <br /><br />
                                 &nbsp;&nbsp;&nbsp;&nbsp;
                                 <input type="button" value="&nbsp;&nbsp;&lt;&nbsp;&lt;&nbsp;&nbsp;" onclick="insertValueQuery(3)" />
@@ -43,7 +42,7 @@
                     </table>
                 </td>
             </tr>
-            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.command_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
+            <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.connector_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
             
         </table>
     </div>
