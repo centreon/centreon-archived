@@ -261,11 +261,13 @@
 
 	# Traps definition comes from DB -> Store in $traps Array
 	$traps = array();
-	$DBRESULT = $pearDB->query("SELECT t.traps_id, t.traps_name FROM traps t, traps_service_relation sr WHERE t.traps_id = sr.traps_id AND sr.service_id = '".$service["service_id"]."' ORDER BY t.traps_name");
-	while ($trap = $DBRESULT->fetchRow()) {
-		$traps[$trap["traps_id"]] = $trap["traps_name"];
-	}
-	$DBRESULT->free();
+        if (isset($service_id)) {
+            $DBRESULT = $pearDB->query("SELECT t.traps_id, t.traps_name FROM traps t, traps_service_relation sr WHERE t.traps_id = sr.traps_id AND sr.service_id = '".$service["service_id"]."' ORDER BY t.traps_name");
+            while ($trap = $DBRESULT->fetchRow()) {
+                    $traps[$trap["traps_id"]] = $trap["traps_name"];
+            }
+            $DBRESULT->free();
+        }
 
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
