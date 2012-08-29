@@ -88,7 +88,7 @@
 	} else {
 		$ndoPrefix = getNDOPrefix();
 		$nagiosInfo = array();
-		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time) as program_start_time, is_currently_running, process_id, p.instance_id, instance_name, status_update_time AS last_alive FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
+		$DBRESULT = $pearDBNdo->query("SELECT UNIX_TIMESTAMP(program_start_time) as program_start_time, is_currently_running, process_id, p.instance_id, instance_name, UNIX_TIMESTAMP(status_update_time) AS last_alive FROM `".$ndoPrefix."programstatus` p, ".$ndoPrefix."instances i WHERE p.instance_id = i.instance_id");
 		while ($info = $DBRESULT->fetchRow()) {
 			$nagiosInfo[$info["instance_name"]] = $info;
 		}
