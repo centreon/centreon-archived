@@ -145,6 +145,7 @@
 	/*
 	 * Get Service List
 	 */
+        $svcMethod = new CentreonService($pearDB);
 	$str = "";
 	if ($oreon->CentreonGMT->used() == 1) {
 		foreach ($hostGenerated as $host_id => $host_name) {
