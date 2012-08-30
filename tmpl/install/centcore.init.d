@@ -16,7 +16,7 @@ servicename=$(basename "$0")
 user=@NAGIOS_USER@
 timeout=60
 
-pidfile=${RunDir}/centcore.pid
+pidfile=@CENTREON_RUNDIR@/centcore.pid
 
 # Check if we can find the binary.
 if [ ! -x $binary ]; then
