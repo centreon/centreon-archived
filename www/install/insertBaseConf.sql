@@ -889,7 +889,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (6, 'tls', 'Enable TLS encryption', 'Enable TLS encryption.', 'radio', NULL),
 (7, 'db_host', 'DB host', 'IP address or hostname of the database server.', 'text', NULL),
 (8, 'db_user', 'DB user', 'User for connect to database', 'text', NULL),
-(9, 'db_password', 'DB password', 'Used password for connect to the database.' 'password', NULL),
+(9, 'db_password', 'DB password', 'Used password for connect to the database.', 'password', NULL),
 (10, 'db_name', 'DB name', 'Database name.', 'text', NULL),
 (11, 'path', 'File path', 'Path to the file.', 'text', NULL),
 (12, 'protocol', 'Serialization Protocol', 'Serialization protocol.', 'select', NULL),
