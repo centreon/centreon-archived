@@ -63,10 +63,10 @@
 	$attrsTextarea 	= array("rows"=>"12", "cols"=>"90");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	$form->addElement('header', 'title', _("Nagios Configuration Upload"));
+	$form->addElement('header', 'title', _("Monitoring Engine configuration upload"));
 
 	$form->addElement('header', 'infos', _("Implied Server"));
-    $form->addElement('select', 'host', _("Nagios/Centreon Server"), $tab_nagios_server, $attrSelect);
+    $form->addElement('select', 'host', _("Poller/Centreon Server"), $tab_nagios_server, $attrSelect);
 
 	$form->addElement('header', 'opt', _("Upload Options"));
 	$tab = array();
@@ -91,7 +91,7 @@
 	$form->addElement('header', 'fileMis1', _("For archive upload, be sure that the first line of each file has no importance because it is not handled.<br />Avoid to begin with a definition."));
 
 	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("nagios.cfg"), 'nagios');
+	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("main.cfg"), 'nagios');
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("resource.cfg"), 'res');
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("Template based method file"), 'cfg');
@@ -119,7 +119,7 @@
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'debug', null, _("No"), '0');
-	$form->addGroup($tab, 'debug', _("Run Nagios debug (-v)"), '&nbsp;');
+	$form->addGroup($tab, 'debug', _("Run debug (-v)"), '&nbsp;');
 	$form->setDefaults(array('debug' => '0'));
 
 	$redirect = $form->addElement('hidden', 'o');

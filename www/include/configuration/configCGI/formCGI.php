@@ -92,7 +92,7 @@
 	$form->addElement('text', 'url_html_path', _("URL HTML Path"), $attrsText2);
 
 	// Part 2
-	$form->addElement('text', 'nagios_check_command', _("Nagios Process Check Command"), $attrsText2);
+	$form->addElement('text', 'nagios_check_command', _("Monitoring Engine process check command"), $attrsText2);
 	$nagTab = array();
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_authentication', null, _("Yes"), '1');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_authentication', null, _("No"), '0');
