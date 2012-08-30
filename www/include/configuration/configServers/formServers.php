@@ -148,7 +148,7 @@
 		"nagios_perfdata"  =>  "/var/log/nagios/service-perfdata",
 		"centreonbroker_cfg_path" => "/etc/centreon/broker",
 		"init_script" => "/etc/init.d/snmptt",
-		"init_script_snmptt" => $centreon->optGen["init_script_snmptt"]));
+		"init_script_snmptt" => isset($centreon->optGen["init_script_snmptt"]) ? $centreon->optGen["init_script_snmptt"] : ''));
 	} else {
 		if (isset($cfg_server)) {
 			$form->setDefaults($cfg_server);
