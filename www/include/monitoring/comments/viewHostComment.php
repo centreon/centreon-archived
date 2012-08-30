@@ -97,21 +97,21 @@
 	if (isset($host_name)) {
 		$search_request = " AND obj.name1 LIKE '%".$pearDBO->escape($host_name)."%'";
 	}
-	
+
 	/** *******************************************
 	 * Hosts Comments
 	 */
 	if ($oreon->broker->getBroker() == "ndo") {
             $rq2 = "SELECT SQL_CALC_FOUND_ROWS cmt.internal_comment_id, unix_timestamp(cmt.comment_time) AS entry_time, cmt.author_name, cmt.comment_data, cmt.is_persistent, obj.name1 host_name, obj.name2 service_description " .
-		   "FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " . 
+		   "FROM ".$ndo_base_prefix."comments cmt, ".$ndo_base_prefix."objects obj " .
                    ($hostgroup ? ", ".$ndo_base_prefix."hostgroup_members hgm ".", ".$ndo_base_prefix."objects hgobj,".$ndo_base_prefix."hostgroups hg " : "") .
                    "WHERE obj.name1 IS NOT NULL " .
                    "AND obj.name2 IS NULL " .
                    (isset($search_output) && $search_output != "" ? " AND cmt.comment_data LIKE '%".$pearDBndo->escape($search_output)."%'" : "");
                    if ($hostgroup) {
-                        $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id 
-                                  AND hg.hostgroup_object_id = hgobj.object_id 
-                                  AND hgobj.name1 = '".$pearDBndo->escape($hostgroup)."' 
+                        $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id
+                                  AND hg.hostgroup_object_id = hgobj.object_id
+                                  AND hgobj.name1 = '".$pearDBndo->escape($hostgroup)."'
                                   AND hgm.host_object_id = cmt.object_id ";
                    }
                    $rq2 .=	"AND obj.object_id = cmt.object_id $search_request ";
@@ -123,6 +123,7 @@
 			$tab_comments_host[$i] = $data;
 			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
+			$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
                    }
                    unset($data);
 	} else {
@@ -136,8 +137,8 @@
                 (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%".$pearDBO->escape($host_name)."%'" : "") .
 		(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%".$pearDBO->escape($search_output)."%'" : "");
                 if ($hostgroup) {
-                    $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id                               
-                              AND hg.name = '".$pearDBO->escape($hostgroup)."' 
+                    $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id
+                              AND hg.name = '".$pearDBO->escape($hostgroup)."'
                               AND hgm.host_id = c.host_id ";
                 }
 		if (!$is_admin) {
@@ -152,6 +153,7 @@
 			$tab_comments_host[$i] = $data;
 			$tab_comments_host[$i]["is_persistent"] = $en[$tab_comments_host[$i]["is_persistent"]];
 			$tab_comments_host[$i]["entry_time"] = $centreonGMT->getDate("m/d/Y H:i" , $tab_comments_host[$i]["entry_time"]);
+			$tab_comments_host[$i]["host_name_link"] = urlencode($tab_comments_host[$i]["host_name"]);
 		}
 		unset($data);
 		$DBRESULT->free();
@@ -202,7 +204,7 @@
         if ($oreon->user->access->admin) {
             $query = "SELECT hg_id, hg_name
                       FROM hostgroup
-                      WHERE hg_activate = '1' 
+                      WHERE hg_activate = '1'
                       ORDER BY hg_name";
         } else {
             $query = "SELECT DISTINCT hg.hg_id, hg.hg_name " .

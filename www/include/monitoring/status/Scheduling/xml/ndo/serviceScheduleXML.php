@@ -260,6 +260,7 @@
 
 			if ($host_prev == $ndo["host_name"]){
 				$buffer->writeElement("hc", "transparent");
+				$buffer->writeElement("hnl", urlencode($ndo["host_name"]));
 				$buffer->startElement("hn");
 				$buffer->writeAttribute("none", "1");
 				$buffer->text($ndo["host_name"], true, false);
@@ -267,6 +268,7 @@
 			} else {
 				$host_prev = $ndo["host_name"];
 				$buffer->writeElement("hc", $color_host);
+				$buffer->writeElement("hnl", urlencode($ndo["host_name"]));
 				$buffer->startElement("hn");
 				$buffer->writeAttribute("none", "0");
 				$buffer->text($ndo["host_name"], true, false);

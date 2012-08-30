@@ -47,8 +47,8 @@
 	{foreach item=tds from=$tab_downtime_svc}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
-		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tds.host_name}'>{$tds.host_name}</a></td>
-		<td class="ListColLeft" width="150"><a href='./main.php?p=202&o=svcd&host_name={$tds.host_name}&service_description={$tds.service_description}'>{$tds.service_description}</a></td>
+		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tds.host_name_link}'>{$tds.host_name}</a></td>
+		<td class="ListColLeft" width="150"><a href='./main.php?p=202&o=svcd&host_name={$tds.host_name_link}&service_description={$tds.service_description}'>{$tds.service_description}</a></td>
 		<td class="ListColRight" width="120">{$tds.scheduled_start_time}</td>
 		<td class="ListColRight" width="120">{$tds.scheduled_end_time}</td>
 		<td class="ListColRight" width="120">{$tds.duration} {$secondes}</td>

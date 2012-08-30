@@ -44,7 +44,7 @@
 	{foreach item=tdh from=$tab_downtime_host}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tdh.host_name};{$tdh.internal_downtime_id}]'></td>
-		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tdh.host_name}'>{$tdh.host_name}</a></td>
+		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tdh.host_name_link}'>{$tdh.host_name}</a></td>
 		<td class="ListColCenter" width="120">{$tdh.scheduled_start_time}</td>
 		<td class="ListColCenter" width="120">{$tdh.scheduled_end_time}</td>
 		<td class="ListColRight" width="60">{$tdh.duration} {$secondes}</td>

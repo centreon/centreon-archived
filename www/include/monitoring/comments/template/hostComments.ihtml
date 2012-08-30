@@ -38,7 +38,7 @@
 	{foreach item=tch from=$tab_comments_host}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tch.host_name};{$tch.internal_comment_id}]'></td>
-		<td class="ListColLeft"><a href='./main.php?p=201&o=hd&host_name={$tch.host_name}'>{$tch.host_name}</a></td>
+		<td class="ListColLeft"><a href='./main.php?p=201&o=hd&host_name={$tch.host_name_link}'>{$tch.host_name}</a></td>
 		<td class="ListColCenter">{$tch.entry_time}</td>
 		<td class="ListColCenter">{$tch.author_name}</td>
 		<td class="ListColNoWrap">{$tch.comment_data}</td>
