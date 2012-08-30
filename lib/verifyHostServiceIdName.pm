@@ -204,7 +204,7 @@ sub deleteStatusDatabase(){
 sub check_HostServiceID() {
     my ($data, $host_name, $service_description, $purge_mod, %serviceCache, %hostCache);
 
-    writeLogFile("Sync : Nagios restart - Process start");
+    writeLogFile("Sync : Monitoring Engine restart - Process start");
 
     # connection to MySQL DB
    	CheckMySQLConnexion();

@@ -208,7 +208,7 @@
 	$tpl->assign("str_prog_start_time", _("Program Start Time"));
 	$tpl->assign("str_last_log_rotation", _("Last Log File Rotation:"));
 	$tpl->assign("str_last_command_check", _("Last External Command Check:"));
-	$tpl->assign("str_process_id", _("Nagios PID"));
+	$tpl->assign("str_process_id", _("Monitoring Engine PID"));
 	$tpl->assign("str_notifications_enabled", _("Notifications enabled?"));
 	$tpl->assign("str_currently_running", _("Currently running?"));
 	$tpl->assign("str_host_check_execute", _("Host Checks Being Executed?"));
@@ -225,9 +225,9 @@
 	/*
 	 * Process commands
 	 */
-	$str_shutdown = _("Shutdown the Nagios process");
-	$str_start = _("Start the Nagios process");
-	$str_restart = _("Restart the Nagios process");
+	$str_shutdown = _("Shutdown the Monitoring Engine process");
+	$str_start = _("Start the Monitoring Engine process");
+	$str_restart = _("Restart the Monitoring Engine process");
 	$str_notif_enable = _("Enable notifications");
 	$str_notif_disable = _("Disable notifications");
 	$str_start_svc_check = _("Start executing service checks");

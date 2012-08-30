@@ -84,8 +84,8 @@
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
         $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
-        
-        
+
+
 	/*
 	 * Backup poller selection
 	 */
@@ -138,18 +138,18 @@
         if ($criticality_id) {
             $rq1 .= ", ".$obj->ndoPrefix . "customvariablestatus cvs ";
         }
-        
+
 	$rq1 .= " WHERE no.object_id = nhs.host_object_id AND nh.host_object_id = no.object_id " .
 			" AND no.is_active = 1 AND no.objecttype_id = 1 " .
 			" AND no.name1 NOT LIKE '_Module_%' " .
 	        " AND i.instance_id = no.instance_id ";
 
         if ($criticality_id) {
-            $rq1 .= " AND cvs.object_id = no.object_id 
+            $rq1 .= " AND cvs.object_id = no.object_id
                       AND cvs.varname = 'CRITICALITY_ID'
                       AND cvs.varvalue = '".$obj->DBNdo->escape($criticality_id)."' ";
         }
-        
+
 	if (!$obj->is_admin) {
 		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr);
 	}
@@ -235,12 +235,12 @@
 	$DBRESULT = $obj->DBNdo->query($rq1);
 	$numRows = $obj->DBNdo->numberRows();
 
-        
+
         /**
          * Get criticality ids
          */
-        $critRes = $obj->DBNdo->query("SELECT varvalue, object_id 
-                                    FROM nagios_customvariablestatus
+        $critRes = $obj->DBNdo->query("SELECT varvalue, object_id
+                                    FROM ". $obj->ndoPrefix . "customvariablestatus
                                     WHERE varname = 'CRITICALITY_ID'");
         $criticalityUsed = 0;
         $critCache = array();
@@ -250,7 +250,7 @@
                 $critCache[$critRow['object_id']] = $critRow['varvalue'];
             }
         }
-        
+
 	$obj->XML->startElement("reponse");
 	$obj->XML->startElement("i");
 	$obj->XML->writeElement("numrows", $numRows);
@@ -330,7 +330,7 @@
         $obj->XML->writeElement("tr", 	$ndo["current_check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
         if ($ndo['criticality'] && isset($critCache[$ndo['host_object_id']])) {
             $obj->XML->writeElement("hci", 1); // has criticality
-            $critData = $criticality->getData($critCache[$ndo['host_object_id']]);                    
+            $critData = $criticality->getData($critCache[$ndo['host_object_id']]);
             $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
             $obj->XML->writeElement("cih", $critData['name']);
         } else {

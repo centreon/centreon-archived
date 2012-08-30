@@ -208,6 +208,6 @@
 		$tpl->assign('tab_server', $tab_server);
 	}
 
-	$tpl->assign("performanceInfoLabel", _("Nagios Performance Information"));
+	$tpl->assign("performanceInfoLabel", _("Monitoring Engine performance informations"));
 	$tpl->display("performanceInfo.ihtml");
 ?>
