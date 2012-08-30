@@ -52,7 +52,7 @@
 
     $db = new CentreonDB();
     $pearDB = $db;
-
+    
     $centreonlang = new CentreonLang($centreon_path, $centreon);
     $centreonlang->bindLang();
 

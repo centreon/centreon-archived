@@ -36,6 +36,15 @@
  *
  */
  
+    /*
+	 * Lang file
+	 */
+	$locale = $oreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bind_textdomain_codeset("messages", "UTF-8"); 
+	textdomain("messages");
 ?><script type="text/javascript">
 
 var _o = '<?php echo $o;?>';

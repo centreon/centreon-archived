@@ -45,7 +45,6 @@
     $currentId = htmlentities($_GET['id'], ENT_QUOTES, "UTF-8");
 
     include_once("@CENTREON_ETC@/centreon.conf.php");
-    //include_once("/etc/centreon/centreon.conf.php");
     require_once $centreon_path . "/www/class/centreonDB.class.php";
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
 	require_once $centreon_path . "/www/class/centreonLang.class.php";
@@ -59,7 +58,7 @@
 
     $db = new CentreonDB();
     $pearDB = $db;
-
+    
     $centreonlang = new CentreonLang($centreon_path, $centreon);
     $centreonlang->bindLang();
 

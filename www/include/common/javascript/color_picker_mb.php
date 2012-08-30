@@ -83,8 +83,8 @@
 		<div id="cg_<?php echo $l_i; ?>" class="cg_slice"></div>
 <?php		}?>
 		</div>
-		<div id="colpick_subtitle" style="float: left;width: 49%; margin-top: 4px">Active Color</div>
-		<div id="colpick_subtitle" style="float: right;width: 49%; margin-top: 4px;">New Color</div>
+		<div id="colpick_subtitle" style="float: left;width: 49%; margin-top: 4px"><?php _("Active Color") ?></div>
+		<div id="colpick_subtitle" style="float: right;width: 49%; margin-top: 4px;"><?php _("New Color") ?></div>
 		<div id="colpick_acolor" style="float: left;"></div>
 		<div id="colpick_ncolor" style="float: right;"></div>
 		<div id="colpick_button" style="float: left;">

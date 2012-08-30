@@ -281,7 +281,7 @@ var _criticality_id = 0;
 					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
 				}
 			}
-			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'External commands',width:600});
+			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'<?php echo _("External commands") ?>',width:600});
 			return 0;
 		}
 	}
