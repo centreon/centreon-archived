@@ -70,7 +70,7 @@ while(false !== ($filename = readdir($modulesDirResource)))
         $warning = false;
         $critical = false;
         
-        if (file_exists($checklistDir))
+        if (file_exists($checklistDir.'requirements.php'))
         {
             require_once $checklistDir.'requirements.php';
             if ($critical || $warning)
