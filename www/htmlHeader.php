@@ -144,7 +144,7 @@
 	<?php
 		require_once ("./include/common/javascript/autologout.php");
 	?>
-    window.onload = function () {
+    jQuery(function () {
 	<?php
 
 	if ($centreon->user->access->admin == 0) {
@@ -180,7 +180,7 @@
 		}
 	}
 	print "check_session();";
-	print "\n};\n</script>\n";
+	print "\n});\n</script>\n";
 
 ?>
 <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>

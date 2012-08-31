@@ -101,8 +101,11 @@ $tpl->display("renderTimeperiod.ihtml");
 ?>
 <script type="text/javascript">
 var tipDiv;
-document.onload = genToolTip();
 
+jQuery(function() {
+    genToolTip();
+});
+ 
 /**
  * Set Time period
  */

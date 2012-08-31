@@ -220,7 +220,10 @@
 		}
 ?>
 <script type='text/javascript'>
-document.onLoad = setDurationField();
+jQuery(function() {
+    setDurationField();
+});
+
 function setDurationField()
 {
 	var durationField = document.getElementById('duration');

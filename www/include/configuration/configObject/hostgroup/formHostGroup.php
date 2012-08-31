@@ -248,9 +248,9 @@
 	$tpl->assign('p', $p);
 	$tpl->assign('nagios', $oreon->user->get_version());
 	$tpl->assign("initJS", "<script type='text/javascript'>
-							window.onload = function () {
+							jQuery(function () {
 							initAutoComplete('Form','city_name','sub');
-							};</script>");
+							});</script>");
 	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 

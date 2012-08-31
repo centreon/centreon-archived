@@ -210,8 +210,10 @@
 	$tpl->display("host.ihtml");
 ?>
 <script type='text/javascript'>
-document.onLoad = preInit();
 var _keyPrefix;
+jQuery(function() {
+    preInit();
+});
 
 function preInit()
 {

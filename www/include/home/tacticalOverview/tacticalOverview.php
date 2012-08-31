@@ -74,8 +74,11 @@ var broker = '<?php  echo $oreon->broker->getBroker();?>';
 var ajax = new CentreonAjax('./include/home/tacticalOverview/xml/' + broker +'/tacticalOverviewXml.php', './include/home/tacticalOverview/xsl/tacticalOverview.xsl', 'ajaxDiv');
 ajax.setCallback($set_displayPOPUP);
 ajax.setTime(refreshInterval);
-document.onLoad = ajax.start();
 
+jQuery(function() {
+    ajax.start();
+});
+ 
 // Poppin Function
 var func_popupXsltCallback = function(trans_obj) {
         var target_element = trans_obj.getTargetElement();

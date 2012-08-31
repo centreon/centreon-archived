@@ -277,8 +277,10 @@
 	$tpl->display("service.ihtml");
 ?>
 <script type='text/javascript'>
-document.onLoad = preInit();
 var _keyPrefix;
+jQuery(function() {
+    preInit();
+});
 
 function preInit()
 {

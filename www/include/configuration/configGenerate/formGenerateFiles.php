@@ -375,7 +375,9 @@ msgTab['restart'] = "<?php echo _("Restarting engine");?>";
 msgTab['abort'] = "<?php echo _("Aborted.");?>";
 msgTab['noPoller'] = "<?php echo _("No poller selected");?>";
 
-document.onLoad = initProgressBar();
+jQuery(function() {
+    initProgressBar();
+});
 
 /**
  * Init Progress bar

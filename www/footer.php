@@ -78,7 +78,9 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 		$pearDBO->disconnect();
 ?>
 <script type='text/javascript'>
-document.onLoad = initWholePage();
+jQuery(function() {
+    initWholePage();
+});
 
 /**
  * Init whole page

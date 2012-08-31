@@ -492,9 +492,7 @@ function nextPeriod() {
 		list_img = new Hash();
 	}
 
-	// Let's save the existing assignment, if any
-	var nowOnload = window.onload;
-	window.onload = function () {
+	jQuery(function () {
 	    // Here is your precious function
 	    // You can call as many functions as you want here;
 	    myOnloadFunction1();
@@ -504,12 +502,7 @@ function nextPeriod() {
 	    } else {
 			graph_4_host(<?php echo $id_log;?>, <?php echo $multi;?>);
 	    }
-
-	    // Now we call old function which was assigned to onLoad, thus playing nice
-	    if (nowOnload != null && typeof(nowOnload) == 'function') {
-	        nowOnload();
-	    }
-	}
+	});
 
     // Your precious function
     function myOnloadFunction1() {}
