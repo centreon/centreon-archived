@@ -43,7 +43,6 @@
 	 * Init Centcore Pipe
 	 */
 	$centcore_pipe = "@CENTREON_VARLIB@/centcore.cmd";
-	$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	if ($centcore_pipe == "/centcore.cmd") {
 		$centcore_pipe = "/var/lib/centreon/centcore.cmd";
 	}
