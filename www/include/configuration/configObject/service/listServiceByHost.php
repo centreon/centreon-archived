@@ -216,7 +216,8 @@
 	 */
 	if (isset($searchS) && $searchS != "" || isset($searchH) && $searchH != "")	{
 		if ($search_type_service && !$search_type_host) {
-			$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE $searchHostallone sv.service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit));
+			$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host". ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr " : "") . " WHERE $searchHostallone sv.service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')"
+                    . ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "")  .((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit));
 			while ($service = $DBRESULT->fetchRow()){
 				if (!isset($tab_buffer[$service["service_id"]])) {
 					$tmp[] = $service["service_id"];
@@ -225,14 +226,16 @@
 				$tab_buffer[$service["service_id"]] = $service["service_id"];
 			}
 		} elseif (!$search_type_service && $search_type_host)	{
-			$locale_query = "SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit);
+			$locale_query = "SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host" . ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr " : ", ") . " WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL"
+                    . ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "")  . ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit."".$limit);
 			$DBRESULT = $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {
 				$tmp[] = $service["service_id"];
 				$tmp2[] = $service["host_id"];
 			}
 		} else {
-			$locale_query = "SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit);
+			$locale_query = "SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host". ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr " : "") . " WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL"
+                    . ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") . ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.",".$limit);
 			$DBRESULT = $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {
 				$tmp[] = $service["service_id"];
@@ -240,9 +243,11 @@
 			}
 		}
     } else {
-    	$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS service_description FROM service sv, host_service_relation hsr WHERE $searchHostallone service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit));
+    	$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS service_description FROM service sv, host_service_relation hsr".((isset($hostgroups) && $hostgroups) ? ", host, hostgroup_relation hogr " : ""). " WHERE $searchHostallone service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL"
+                . ((isset($hostgroups) && $hostgroups) ? " AND hsr.host_host_id = host.host_id AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") . ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit));
 	}
 	$rows = $pearDB->numberRows();
+    
 
 	/*
 	 * Smarty template Init
