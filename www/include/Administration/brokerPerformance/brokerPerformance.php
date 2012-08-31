@@ -235,7 +235,7 @@ if ($oreon->broker->getBroker() == 'broker') {
         } else {
             $statsfile = $row['config_value'];
             if ($defaultPoller != $selectedPoller) {
-                // @todo see with CentCore
+                $statsfile = '@CENTREON_VARLIB@/broker-stats/broker-stats-' . $selectedPoller . '.dat';
             }
             if (!file_exists($statsfile) || !is_readable($statsfile)) {
                 $tpl->assign('msg_err', _('Cannot open statistics file'));
