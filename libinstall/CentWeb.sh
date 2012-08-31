@@ -243,6 +243,12 @@ find "$NAGIOS_ETC" -type f -print | \
 [ $? -ne 0 ] && flg_error=1
 check_result $flg_error "$(gettext "Change right on") $NAGIOS_ETC" 
 
+if [ "$upgrade" = "1" ]; then
+	echo_info "$(gettext "Disconnect users from WebUI")"
+	php $INSTALL_DIR/clean_session.php "$CENTREON_ETC" >> "$LOG_FILE" 2>&1
+	check_result $? "$(gettext "All users are disconnected")"
+fi
+
 ### Step 4: Copy final stuff in system directoy
 echo_info "$(gettext "Copy CentWeb in system directory")"
 $INSTALL_DIR/cinstall $cinstall \
