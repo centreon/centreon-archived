@@ -62,7 +62,7 @@
 	} else {
 		$template = NULL;
 	}
-    
+
     if (isset($_POST["hostgroups"])) {
 		$hostgroups = $_POST["hostgroups"];
 	} else if (isset($_GET["hostgroups"])) {
@@ -122,9 +122,9 @@
 	$service_method = new CentreonService($pearDB);
     /*$hostGroup_handler = new CentreonHostgroups($pearDB);
     echo '<pre>'; var_dump($hostGroup_handler->getHostgroupsList($pearDB)); echo '</pre>';*/
-    
+
     /**
-     * Get  
+     * Get
      */
     $hostgroupsTab = array();
 	$hostgroupsFilter = "<option value='0'></option>";
@@ -136,7 +136,7 @@
 	}
 	$DBRESULT->free();
 
-    
+
 	if (isset($_POST["searchH"])) {
 		$searchH = $_POST["searchH"];
 		$oreon->svc_host_search = $searchH;
@@ -205,8 +205,8 @@
 	}
 
 	$rows = 0;
-	$tmp = "";
-	$tmp2 = "";
+	$tmp = array();
+	$tmp2 = array();
 	$tab_buffer = array();
 	$searchH = CentreonDB::escape($searchH);
 	$searchS = CentreonDB::escape($searchS);
@@ -216,36 +216,33 @@
 	 */
 	if (isset($searchS) && $searchS != "" || isset($searchH) && $searchH != "")	{
 		if ($search_type_service && !$search_type_host) {
-			$DBRESULT = $pearDB->query("SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE $searchHostallone sv.service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
+			$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE $searchHostallone sv.service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL AND hsr.host_host_id = host.host_id AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit));
 			while ($service = $DBRESULT->fetchRow()){
 				if (!isset($tab_buffer[$service["service_id"]])) {
-					$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
+					$tmp[] = $service["service_id"];
 				}
-				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
+				$tmp2[] = $service["host_id"];
 				$tab_buffer[$service["service_id"]] = $service["service_id"];
-				$rows++;
 			}
 		} elseif (!$search_type_service && $search_type_host)	{
-			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
+			$locale_query = "SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone (host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit);
 			$DBRESULT = $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {
-				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
-				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
-				$rows++;
+				$tmp[] = $service["service_id"];
+				$tmp2[] = $service["host_id"];
 			}
 		} else {
-			$locale_query = "SELECT host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "");
+			$locale_query = "SELECT SQL_CALC_FOUND_ROWS host.host_id, service_id, service_description, service_template_model_stm_id FROM service sv, host_service_relation hsr, host WHERE sv.service_register = '1' $sqlFilterCase AND $searchHostallone ((host_name LIKE '%".$searchH."%' OR host_alias LIKE '%".$searchH."%' OR host_address LIKE '%".$searchH."%') AND (sv.service_alias LIKE '%$searchS%' OR sv.service_description LIKE '%$searchS%')) AND hsr.host_host_id=host.host_id AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit);
 			$DBRESULT = $pearDB->query($locale_query);
 			while ($service = $DBRESULT->fetchRow()) {
-				$tmp ? $tmp .= ", ".$service["service_id"] : $tmp = $service["service_id"];
-				$tmp2 ? $tmp2 .= ", ".$service["host_id"] : $tmp2 = $service["host_id"];
-				$rows++;
+				$tmp[] = $service["service_id"];
+				$tmp2[] = $service["host_id"];
 			}
 		}
     } else {
-    	$DBRESULT = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE $searchHostallone service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
-		$rows = $DBRESULT->numRows();
+    	$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS service_description FROM service sv, host_service_relation hsr WHERE $searchHostallone service_register = '1' $sqlFilterCase AND hsr.service_service_id = sv.service_id AND hsr.hostgroup_hg_id IS NULL".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : " LIMIT ".$num * $limit.", ".$limit));
 	}
+	$rows = $pearDB->numberRows();
 
 	/*
 	 * Smarty template Init
@@ -277,6 +274,20 @@
 	 * Host/service list
 	 */
 	if ($searchH && $searchH != "" || $searchS && $searchS != "") {
+	    $listServiceId = 'IN (NULL)';
+	    $listHostId = 'IN (NULL)';
+	    $tmp = array_unique($tmp);
+	    $tmp2 = array_unique($tmp2);
+	    if (count($tmp) == 1) {
+	        $listServiceId = '= ' . $tmp[0];
+	    } elseif (count($tmp) > 1) {
+	        $listServiceId = 'IN (' . join(', ', $tmp) . ')';
+	    }
+	    if (count($tmp2) == 1) {
+	        $listHostId = '= ' . $tmp2[0];
+	    } elseif (count($tmp2) > 1) {
+	        $listHostId = 'IN (' . join(', ', $tmp2) . ')';
+	    }
 		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 				"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 				"sv.service_retry_check_interval, sv.service_max_check_attempts " .
@@ -284,15 +295,15 @@
                 ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
                 "host_service_relation hsr " .
 		        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
-				"WHERE $searchHostallone sv.service_id IN (".($tmp ? $tmp : 'NULL').") " .
-						($searchHostallone == "" ? "AND host.host_id IN (".($tmp2 ? $tmp2 : 'NULL').") " : "") .
+				"WHERE $searchHostallone sv.service_id " . $listServiceId . " " .
+						($searchHostallone == "" ? "AND host.host_id " . $listHostId . " " : "") .
 						"AND sv.service_register = '1' $sqlFilterCase " .
 						"AND hsr.service_service_id = sv.service_id " .
 						"AND host.host_id = hsr.host_host_id " .
 						"AND host.host_register = '1' " .
 						((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                         ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
-						"ORDER BY host.host_name, service_description LIMIT ".$num * $limit.", ".$limit;
+						"ORDER BY host.host_name, service_description";
 	} else {
 		$rq = 	"SELECT esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, host.host_id, " .
 				"host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, sv.service_retry_check_interval, " .
