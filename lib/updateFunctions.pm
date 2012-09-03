@@ -35,10 +35,7 @@
 #
 ####################################################################################
 
-sub getIntervalLenght(){
-
-    CreateConnexionForOreon();
-    
+sub getIntervalLenght(){ 
     my $sth = $con_oreon->prepare("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
     if (!$sth->execute()) {
 	writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
@@ -129,8 +126,6 @@ sub updateMysqlDB($$$$) {
 # $metric_id $connexion
 sub getServiceDescFromIndex($$) {
     my $index = $_[0];
-
-    CreateConnexionForCentstorage();
 
     my $sth1 = $con_ods->prepare("SELECT service_description FROM `metrics` m, `index_data` i WHERE i.id = m.index_id AND m.metric_id = '".$index."'");
     if (!$sth1->execute()){

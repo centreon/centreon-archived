@@ -39,11 +39,7 @@
 # need parameter hostname and service description
 sub identify_service($$){
 
-    # Check MySQL Connexion
-    CheckMySQLConnexion();
-
-    if ($con_ods->ping) {
-	my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
+    my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
 	if (!$sth1->execute) {
 		return error_thrown(1, "Error : " . $sth1->errstr);
 	}
@@ -97,13 +93,10 @@ sub identify_service($$){
 	my @data_return = ($data->{'id'}, $data->{'storage_type'}, $data->{'must_be_rebuild'});
 	undef($data);
 	return @data_return;
-    }
 }
 
 sub identify_hidden_service($$){
-    CheckMySQLConnexion();
-    if ($con_ods->ping){
-	my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
+    my $sth1 = $con_ods->prepare("SELECT id, storage_type, must_be_rebuild FROM index_data WHERE host_name = '".$_[0]."' AND service_description = '".$_[1]."'");
 	if (!$sth1->execute) { return error_thrown(1, "Error : " . $sth1->errstr); }
 	# IF service unknown, insert it.
 	if ($sth1->rows() == 0){
@@ -122,6 +115,5 @@ sub identify_hidden_service($$){
 	my @data_return = ($data->{'id'}, $data->{'storage_type'}, $data->{'must_be_rebuild'});
 	undef($data);
 	return @data_return;
-    }
 }
 1;
