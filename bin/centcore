@@ -57,7 +57,7 @@ if (POSIX::getuid() == 0 ) {
 
 #######################################
 # Initiate options
-$debug = 1;
+$debug = 0;
 $timeout = 5; 
 $timeBetween2SyncPerf = 60;
 $perfdataSync = 0;
