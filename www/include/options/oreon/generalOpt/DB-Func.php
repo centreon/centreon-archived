@@ -179,7 +179,6 @@
 		updateOption($pearDB, "snmptt_unknowntrap_log_file", isset($ret["snmptt_unknowntrap_log_file"]) && $ret["snmptt_unknowntrap_log_file"] != NULL ? $ret["snmptt_unknowntrap_log_file"] : "NULL");
 		updateOption($pearDB, "snmpttconvertmib_path_bin", isset($ret["snmpttconvertmib_path_bin"]) && $ret["snmpttconvertmib_path_bin"] != NULL ? $ret["snmpttconvertmib_path_bin"] : "NULL");
 		updateOption($pearDB, "perl_library_path", isset($ret["perl_library_path"]) && $ret["perl_library_path"] != NULL ? $ret["perl_library_path"] : "NULL");
-		updateOption($pearDB, "init_script_snmptt", isset($ret["init_script_snmptt"]) && $ret["init_script_snmptt"] != NULL ? $ret["init_script_snmptt"] : "NULL");
 
 		$oreon->initOptGen($pearDB);
 	}
