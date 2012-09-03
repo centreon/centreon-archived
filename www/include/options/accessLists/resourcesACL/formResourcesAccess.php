@@ -244,7 +244,10 @@
 
 	$form->addElement('header', 'Host_infos', _("Shared Resouces"));
 	$form->addElement('header', 'help', _("Help"));
-	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> In this tab, you will be able to select hosts and hostgroups that you want to share to people present in group(s) selected on the previous tab. You have also the possibilty to exclude host(s) on selected hostgroup(s). You can also filter on selected hosts services. If you select a service category, the user will only see services of the selected categories."));
+	$form->addElement('header', 'HSharedExplain', _("<b><i>Help :</i></b> Select hosts and hostgroups that can be seen by associated users. You also have the possibilty to exclude host(s) from selected hostgroup(s)."));
+        $form->addElement('header', 'SSharedExplain', _("<b><i>Help :</i></b> Select services that can be seen by associated users."));
+        $form->addElement('header', 'MSSharedExplain', _("<b><i>Help :</i></b> Select meta services that can be seen by associated users."));
+        $form->addElement('header', 'FilterExplain', _("<b><i>Help :</i></b> Select the filter(s) you want to apply to the resource definition for a more restrictive view."));
 
 	/*
 	 * Pollers
@@ -305,7 +308,6 @@
 	/*
 	 * Service Groups Add
 	 */
-	$form->addElement('header', 'SSharedExplain', "");
 	$attrsAdvSelect['id'] = 'servicegroupAdvancedSelect';
 	$ams2 = $form->addElement('advmultiselect', 'acl_sg', array(_("Service Groups"), _("Available"), _("Selected")), $service_groups, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
@@ -317,7 +319,6 @@
 	/*
 	 * Meta Services
 	 */
-	$form->addElement('header', 'MSSharedExplain', "");
 	$ams2 = $form->addElement('advmultiselect', 'acl_meta', array(_("Meta Services"), _("Available"), _("Selected")), $meta_services, $attrsAdvSelect, SORT_ASC);
 	$ams2->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams2->setButtonAttributes('remove', array('value' => _("Remove")));

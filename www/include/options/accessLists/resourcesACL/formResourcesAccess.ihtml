@@ -72,7 +72,7 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_host_category_filter"><img src="./img/icones/16x16/cube_green.gif">&nbsp;{$form.acl_hc.label}</td><td class="FormRowValue">{$form.acl_hc.html}</td></tr>	
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_service_category_filter"><img src="./img/icones/16x16/cube_green.gif">&nbsp;{$form.acl_sc.label}</td><td class="FormRowValue">{$form.acl_sc.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/help.gif'>&nbsp;&nbsp;{$form.header.help}</td></tr>
-		<tr class="list_two"><td class="FormRowValue" colspan="2">{$form.header.FSharedExplain}</td></tr>
+		<tr class="list_two"><td class="FormRowValue" colspan="2">{$form.header.FilterExplain}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 </div>
