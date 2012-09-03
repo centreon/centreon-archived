@@ -37,37 +37,39 @@
 
 sub getIntervalLenght(){
 
+    CreateConnexionForOreon();
+    
     my $sth = $con_oreon->prepare("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
     if (!$sth->execute()) {
-		writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
+	writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
     }
     my $data = $sth->fetchrow_hashref();
     undef($sth);
     if (defined($data)) {
-		return $data->{'interval_length'};
+	return $data->{'interval_length'};
     } else {
-		return 60;
+	return 60;
     }
 }
 
 sub checkDBDirectory($) {
     if (defined($_[0])) {
-		if (!-d $_[0]){
-		    writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
-		    if (!mkdir($_[0], 0775)) {
-				writeLogFile("Can't create ".$_[0]." : permission denied\n");
-				return 0;
-		    } else {
-				writeLogFile($_[0]." Created\n");
-				return 1;
-		    }
-		}
-		return 1;
-    } else {
-		writeLogFile("Directory name empty...");
+	if (!-d $_[0]) {
+	    writeLogFile("Directory ".$_[0]." does not exists. Trying to create it....\n");
+	    if (!mkdir($_[0], 0775)) {
+		writeLogFile("Can't create ".$_[0]." : permission denied\n");
 		return 0;
+	    } else {
+		writeLogFile($_[0]." Created\n");
+		return 1;
+	    }
+	}
+	return 1;
+    } else {
+	writeLogFile("Directory name empty...");
+	return 0;
     }
-    
+
 }
 
 # Update RRDTool DB with data
@@ -81,30 +83,30 @@ sub updateRRDDB($$$$$$$$) {
     my $begin;
 
     if (checkDBDirectory($_[0]) == 0) {
-		writeLogFile("Data droped....\n");
-		return 0;
+	writeLogFile("Data droped....\n");
+	return 0;
     }
 
     $_[3] =~ s/,/./g;
     # call function to check if DB exist and else create it
     if (-e $_[0]."/".$_[1].".rrd") {
-		updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
+	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
     } else {
-		if ($_[0] && $_[1] && $_[5]) {
-	
-		    $begin = $_[4] - 200000;
-		    $interval = getServiceCheckInterval($_[1]) * getIntervalLenght();
-		    $interval_hb = $interval * 10;
-	
-		    # Caclulate number of value 
-		    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-	
-		    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
-		    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
-		    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
-	
-		    undef($begin);
-		}
+	if ($_[0] && $_[1] && $_[5]) {
+
+	    $begin = $_[4] - 200000;
+	    $interval = getServiceCheckInterval($_[1]) * getIntervalLenght();
+	    $interval_hb = $interval * 10;
+
+	    # Caclulate number of value 
+	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
+
+	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
+	    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
+	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
+
+	    undef($begin);
+	}
     }
     undef($interval);
     undef($ERR);
@@ -114,10 +116,10 @@ sub updateRRDDB($$$$$$$$) {
 
 sub updateMysqlDB($$$$) {
     if (length($dataBinInfo)) {
-		$dataBinInfo .= ", ";
+	$dataBinInfo .= ", ";
     }
     if (!defined($_[3])) {
-		$_[3] = "";
+	$_[3] = "";
     }
     $dataBinInfo .= "('".$_[0]."', '".$_[1]."', '".$_[2]."', '".$_[3]."')";
 }
@@ -127,10 +129,12 @@ sub updateMysqlDB($$$$) {
 # $metric_id $connexion
 sub getServiceDescFromIndex($$) {
     my $index = $_[0];
-  
+
+    CreateConnexionForCentstorage();
+
     my $sth1 = $con_ods->prepare("SELECT service_description FROM `metrics` m, `index_data` i WHERE i.id = m.index_id AND m.metric_id = '".$index."'");
     if (!$sth1->execute()){
-		writeLogFile("Error with request to get service description (getServiceDescFromIndex) : ".$sth1->errstr);
+	writeLogFile("Error with request to get service description (getServiceDescFromIndex) : ".$sth1->errstr);
     }
     my $data = $sth1->fetchrow_hashref();
     undef($sth1);
@@ -148,29 +152,31 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 
     $_[3] =~s/,/./g;
     if (checkDBDirectory($_[0]) == 0) {
-		writeLogFile("Data droped....\n");
-		return 0;
+	writeLogFile("Data droped....\n");
+	return 0;
     }
 
     # call function to check if DB exist and else create it
     if (-e $_[0]."/".$_[1].".rrd"){
-		updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
+	updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
     } else {
-		if ($_[0] && $_[1] && $_[5]){
-		    my $begin = $_[4] - 200000;
-		    
-		    $interval = getModulesInterval(getServiceDescFromIndex($_[1], $con_ods), $con_oreon);
-		    $interval_hb = $interval * 10;
-		    
-		    # Caclulate number of value 
-		    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-	
-		    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
-		    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
-		    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
-	
-		    undef($begin);
-		}
+	if ($_[0] && $_[1] && $_[5]){
+	    my $begin = $_[4] - 200000;
+
+	    CheckMySQLConnexion();
+
+	    $interval = getModulesInterval(getServiceDescFromIndex($_[1], $con_ods), $con_oreon);
+	    $interval_hb = $interval * 10;
+
+	    # Caclulate number of value 
+	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
+
+	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
+	    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
+	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);
+
+	    undef($begin);
+	}
     }
     undef($interval);
 }
@@ -182,7 +188,7 @@ sub updateRRDDBforHiddenSVC($$$$$$$$) {
 
 sub updateMysqlDBforHiddenSVC($$$$) {
     if (length($dataBinInfo)) {
-		$dataBinInfo .= ", ";
+	$dataBinInfo .= ", ";
     }
     $dataBinInfo .= "('".$_[0]."', '".$_[1]."', '".$_[2]."', '".$_[3]."')";
 }

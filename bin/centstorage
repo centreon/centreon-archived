@@ -43,8 +43,8 @@ use strict;
 use warnings;
 use DBI;
 use POSIX ":sys_wait_h";
-
-#use lib "/usr/lib/perl5";
+use Fcntl qw(:flock SEEK_END); 
+ 
 use RRDs;
 use File::Copy;
 
@@ -70,9 +70,9 @@ my %tabProcChld;
 %status = ('OK' => '0', 'WARNING' => '1', 'CRITICAL' => '2', 'UNKNOWN' => '3', 'PENDING' => '4');
 
 # Init RRD:DST -- Data Source Type
-@rrd_dst = ( "GAUGE","COUNTER","DERIVE","ABSOLUTE");
+@rrd_dst = ("GAUGE","COUNTER","DERIVE","ABSOLUTE");
 
-$debug = 0;
+$debug = 1;
 our $stop = 1;
 my $error_value;
 my $error_str;
@@ -89,23 +89,25 @@ require "@CENTREON_ETC@/conf.pm";
 # Create log line in $LOG file.
 #
 sub writeLogFile($){
+    my ($log) = @_;
+
     my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
     open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-	printf LOG "%04d-%02d-%02d %02d:%02d:%02d - %s\n", $year+1900, $mon+1, $mday, $hour, $min, $sec, $_[0];
+    printf LOG "%04d-%02d-%02d %02d:%02d:%02d - %s\n", $year+1900, $mon+1, $mday, $hour, $min, $sec, $log;
     close LOG or warn $!;
 }
 
 sub catch_zap_int {
-	writeLogFile("$$ Receiving order to stop...");
-
+    writeLogFile("$$ Receiving order to stop...");
+    
     if ($tabProc{'parser'}) {
-		writeLogFile("Send INT signal to parser sub process...");
-		kill('INT', $tabProc{'parser'})	
-	}
-
-	if ($tabProc{'rebuild'}) {
+	writeLogFile("Send INT signal to parser sub process...");
+	kill('INT', $tabProc{'parser'})	
+    }
+    
+    if ($tabProc{'rebuild'}) {
     	writeLogFile("Send INT signal to rebuild sub process...");
-		kill('INT', $tabProc{'rebuild'});
+	kill('INT', $tabProc{'rebuild'});
     }
 }
 
@@ -115,20 +117,19 @@ sub catch_zap_term {
     writeLogFile("$$ Receiving order to stop...");
     if ($tabProc{'parser'}) {
         writeLogFile("Send TERM signal to parser sub process...");
-		kill('TERM', $tabProc{'parser'});	
+	kill('TERM', $tabProc{'parser'});	
     }
 
     if ($tabProc{'rebuild'}) {
         writeLogFile("Send TERM signal to rebuild sub process...");
-		kill('TERM', $tabProc{'rebuild'});
+	kill('TERM', $tabProc{'rebuild'});
     }
 }
 
 # Set signals
-$SIG{INT}  = \&catch_zap;
+$SIG{INT}   = \&catch_zap;
 $SIG{TERM}  = \&catch_zap_term;
 
-#
 # require different files
 require $installedPath."lib/misc.pm";
 require $installedPath."lib/purge.pm";
@@ -193,9 +194,9 @@ sub CreateConnexionForOreon() {
 }
 
 sub error_thrown($$) {
-	$error_value = shift;
-	$error_str = shift;
-	return undef;
+    $error_value = shift;
+    $error_str = shift;
+    return undef;
 }
 
 ########################################
@@ -206,9 +207,9 @@ sub getPerfDataFile() {
     my ($filename, $sth2, $data, $con);
     
     $sth2 = $con_oreon->prepare("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
-    if (!$sth2->execute){
-		writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "");
-		return "";
+    if (!$sth2->execute()){
+	writeLogFile("Error when getting perfdata file : " . $sth2->errstr . "");
+	return "";
     }
     $data = $sth2->fetchrow_hashref();
     $filename = $data->{'nagios_perfdata'};
@@ -230,24 +231,24 @@ sub movePerfDataFile($$){
         $PERFDATA_src = $PERFDATA . ".bckp";
     }
     if (move($PERFDATA_src, $PERFDATA."_read")){
-		# Erase old perfdata file.
-		if ($flag_bckp == 0) {
-			`echo "# New File " > $PERFDATA`;
-		}
-		undef($PERFDATA);
-		return(1);
+	# Erase old perfdata file.
+	if ($flag_bckp == 0) {
+	    `echo "# New File " > $PERFDATA`;
+	}
+	undef($PERFDATA);
+	return(1);
     } else {
-		writeLogFile("Cannot copy $PERFDATA file : $!");
-		undef($PERFDATA);
-		return (0);
+	writeLogFile("Cannot copy $PERFDATA file : $!");
+	undef($PERFDATA);
+	return (0);
     }
 }
 
 sub copyTruncatePerfDataFile($$) {
-	my $PERFDATA = $_[0];
-	my $flag_bckp = $_[1];
+    my $PERFDATA = $_[0];
+    my $flag_bckp = $_[1];
     my $PERFDATA_src = $PERFDATA;
-
+    
     if ($flag_bckp == 1) {
         $PERFDATA_src = $PERFDATA . ".bckp";
     }
@@ -264,8 +265,8 @@ sub copyTruncatePerfDataFile($$) {
     }
     while (<FD_SRC>) {
     	if (/\n$/) {
-    		print FD_DEST $_;
-    	}
+	    print FD_DEST $_;
+	}
     }
     close(FD_DEST);
     truncate(FD_SRC, 0);
@@ -303,11 +304,10 @@ sub prepardPerfdataParsed($) {
     return @line_tab;
 }
 
-sub getGeneralConfig(){
-
+sub getGeneralConfig(){   
     my $sth1 = $con_ods->prepare("SELECT * FROM `config`");
     if (!$sth1->execute) {
-		writeLogFile("Error:" . $sth1->errstr . "\n");
+	writeLogFile("Error:" . $sth1->errstr . "\n");
     }
     my $config = $sth1->fetchrow_hashref();
     $sth1->finish();
@@ -361,12 +361,12 @@ sub GetPerfData() {
                 if (!m/^\#.*/ && !m/^\[.*/) {
                     if ($stop == 0) {
                         if ($flag_drop != 2) {
-                                if (open(DROP, ">> ".$PFDT.".bckp")){
-                                    writeLogFile("Save reading data into ".$PFDT.".bckp");
-                                    $flag_drop = 2;
-                                } else {
-                                    writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");
-                                }
+			    if (open(DROP, ">> ".$PFDT.".bckp")){
+				writeLogFile("Save reading data into ".$PFDT.".bckp");
+				$flag_drop = 2;
+			    } else {
+				writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");
+			    }
                         }
                         print DROP $_;
                     } else {
@@ -375,7 +375,7 @@ sub GetPerfData() {
                         }
 
                         $_ =~ s/\n//g;
-						my $save_line = $_;
+			my $save_line = $_;
                         @line_tab = prepardPerfdataParsed($_);
 
                         if ($line_tab[0] !~ m/^[0-9]*$/g || $line_tab[0] > $now) {
@@ -387,20 +387,20 @@ sub GetPerfData() {
                                     next;
                                 }
                                 if (!defined(checkAndUpdate(@line_tab, $configOptions))) {
-					if ($error_value == 1 || $error_value == 2) {
-						# Error in "identify_*_service" functions. We save data
-						# For 2, not succeed rrd or data_bin construct. We have to save
-                                		if (open(DROP, ">> ".$PFDT.".bckp")){
-                                		    writeLogFile("Save reading data into ".$PFDT.".bckp");
-						    print DROP $save_line; 
-						    close DROP;
-                                		} else {
-                                    		    writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");
-                                		}
+				    if ($error_value == 1 || $error_value == 2) {
+					# Error in "identify_*_service" functions. We save data
+					# For 2, not succeed rrd or data_bin construct. We have to save
+					if (open(DROP, ">> ".$PFDT.".bckp")){
+					    writeLogFile("Save reading data into ".$PFDT.".bckp");
+					    print DROP $save_line; 
+					    close DROP;
+					} else {
+					    writeLogFile("Cannot save reading data into ".$PFDT.".bckp : $!");
 					}
-    					writeLogFile("error_value = " . $error_value . ": " . $error_str);
+				    }
+				    writeLogFile("error_value = " . $error_value . ": " . $error_str);
 				} else {
-                                	$counterData++;
+				    $counterData++;
 				}
                             }
                             undef($line_tab);
@@ -560,7 +560,7 @@ sub updateServiceState($$$$$$) {
     my $nb_value;
     my $interval_length;
     my $rrdtoolDBPath = $_[5];
-    
+
     # Set Index
     my $index = $_[3];
 
@@ -619,7 +619,7 @@ sub replaceMetricSpecialChar($){
     $metric_name =~ s/\#S\#/slash\_/g;
     $metric_name =~ s/\#BS\#/bslash\_/g;
     $metric_name =~ s/\#P\#/pct\_/g;
-	$metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
+    #$metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
     return $metric_name;
 }
 
@@ -629,6 +629,8 @@ sub replaceMetricSpecialChar($){
 sub createRRDDatabase($$$$$$$){
     my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd, $data_source_type) = @_;
     
+    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
+
     RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$rrd_dst[$data_source_type].":".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".($my_len_storage_rrd / 12));
     my $ERR = RRDs::error;
     if( $ERR) {
@@ -644,6 +646,8 @@ sub createRRDDatabase($$$$$$$){
 #
 sub tuneRRDDatabase($$$$){
     my ($RRDdatabase_path, $metric_id ,$metric_name, $interval_hb) = @_;
+
+    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
 
     RRDs::tune($RRDdatabase_path.$metric_id.".rrd", "-h", substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$interval_hb);
     my $ERR = RRDs::error;
@@ -665,6 +669,8 @@ sub removeOldRRDDatabase($$$$) {
 
 sub updateRRDDatabase($$$$$$){
     my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value, $data_source_type) = @_;
+
+    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
     
     $value =~ s/\,/\./g;
     if ( $data_source_type == 0 ) {
@@ -672,7 +678,7 @@ sub updateRRDDatabase($$$$$$){
     } else {
         # 'Data Source Type' : COUNTER need long integer
         RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%.0f", $value));
-    }
+      }
     my $ERR = RRDs::error;
     if ($ERR){
 	writeLogFile("ERROR while updating ".$RRDdatabase_path.$metric_id.".rrd at ".$ctime." -> ".$value." : $ERR");
@@ -687,12 +693,14 @@ sub updateRRDDatabase($$$$$$){
 sub updateRRDDatabaseForRebuild($$$$$$){
     my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value, $data_source_type) = @_;
     
+    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
+    
     $value =~ s/\,/\./g;
     if ( $data_source_type == 0 ) {
         RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
     } else {
-        # 'Data Source Type' : COUNTER need long integer
-        RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%.0f", $value));
+	# 'Data Source Type' : COUNTER need long integer
+	RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%.0f", $value));
     }
     my $ERR = RRDs::error;
     if ($ERR){
@@ -755,45 +763,53 @@ sub CheckRebuild(){
 
 	writeLogFile("ERROR : can t rebuild... interval = 0 (time unit : ".getIntervalLenght().")") if ($interval == 0);
 	my $sth4;
-	if ($interval != 0){
-	    while ($metric = $sth3->fetchrow_hashref()){
-				# Replace Special chars
+	my $my_len_storage_rrd;
+
+	if ($interval != 0) {
+	    while ($metric = $sth3->fetchrow_hashref()) {
+		# Replace Special chars
 		$metric->{'metric_name'} = replaceMetricSpecialChar($metric->{'metric_name'});
+		
 		# manage 'data_source_type' default value : NULL = '0'
 		$metric->{'data_source_type'} = defined($metric->{'data_source_type'}) ? $metric->{'data_source_type'} : 0;
 		writeLogFile("Get Data for rebuilding $RRDdatabase_path".$metric->{'metric_id'}.".rrd");					
 
-				# Get All Data
+		$my_len_storage_rrd = $len_storage_rrd / $interval;
+
+		# Clean old Database
+		removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
+
+		# Get All Data
 		$sth4 = $con_ods->prepare("SELECT * FROM data_bin WHERE id_metric = '".$metric->{'metric_id'}."' ORDER BY ctime");
 		writeLogFile("Error when getting perfdata file : " . $sth4->errstr . "") if (!$sth4->execute);
 
-		for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++){
-		    if (!$flag){
-			# Calculate first entry in database					
+		for ($flag = 0, $cpt = 0;$data = $sth4->fetchrow_hashref();$cpt++) {
+		    if (!$flag){    
+			# Calculate first entry in database
 			my $begin = $data->{'ctime'} - 200;
-
-			my $my_len_storage_rrd = $len_storage_rrd / $interval;
-
-			removeOldRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $interval, $my_len_storage_rrd);
-
+			
 			# Create DB
 			createRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $begin, $interval, $metric->{'metric_name'}, $my_len_storage_rrd, $metric->{'data_source_type'});
 			tuneRRDDatabase($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $interval_hb);
-
+			
 			undef($begin);
-			undef($my_len_storage_rrd);
+			
 			$flag++;
 		    }
 		    updateRRDDatabaseForRebuild($RRDdatabase_path, $metric->{'metric_id'}, $metric->{'metric_name'}, $data->{'ctime'}, $data->{'value'}, $metric->{'data_source_type'});
 		}
 		undef($sth4);
+		undef($my_len_storage_rrd);
 		# -----------------------------------------------------
 	    }
 	}
 	undef($interval);
 	undef($sth3);
+	
 	$sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
-	writeLogFile("Error when updating rebuild flag for service ". $svc_mst_be_rbld->{'id'} ." : " . $sth->errstr . "") if (!$sth->execute);
+	if (!$sth->execute()) {
+	    writeLogFile("Error when updating rebuild flag for service ". $svc_mst_be_rbld->{'id'} ." : " . $sth->errstr . "");
+	}
 	undef($sth);
 	undef($cpt);
 	undef($metric);
@@ -804,7 +820,7 @@ sub CheckRebuild(){
     undef($sth2);
     undef($data);
     if (defined($con_oreon)){
-		$con_oreon->disconnect();
+	$con_oreon->disconnect();
     }
     if (defined($con_ods)){
      	$con_ods->disconnect();
@@ -819,49 +835,49 @@ sub checkProgramStatus() {
     # Connect MySQL DB
     CheckMySQLConnexion();				
 
-	my $sth = $con_oreon->prepare("SELECT * FROM options WHERE `key` = 'centstorage'");
-	if (!$sth->execute()) {
-		writeLogFile("Error when getting status of centstorage program : " . $sth->errstr . "");
+    my $sth = $con_oreon->prepare("SELECT * FROM options WHERE `key` = 'centstorage'");
+    if (!$sth->execute()) {
+	writeLogFile("Error when getting status of centstorage program : " . $sth->errstr . "");
+    }
+    my $status = 0;
+    while (my $option = $sth->fetchrow_hashref()) {
+	if ($option->{'value'} == 1) {
+	    $status = 1;
 	}
-	my $status = 0;
-	while (my $option = $sth->fetchrow_hashref()) {
-		if ($option->{'value'} == 1) {
-			$status = 1;
-		}
-	}
-	
-	if ($status == 0) {
-		writeLogFile("Centstorage is not enable into Centreon Config Panel");
-		writeLogFile("Program cannot start");
-		exit(2);
-	}
+    }
 
-	$con_oreon->disconnect();
-	$con_ods->disconnect();
+    if ($status == 0) {
+	writeLogFile("Centstorage is not enable into Centreon Config Panel");
+	writeLogFile("Program cannot start");
+	exit(2);
+    }
+
+    $con_oreon->disconnect();
+    $con_ods->disconnect();
 }
 
 
 # Write in log file that program is starting
 sub signalstartprogram() {
-	# Starting centstrorage Engine
-	writeLogFile("Starting centstorage engine...");
+    # Starting centstrorage Engine
+    writeLogFile("Starting centstorage engine...");
 }
 
 sub unset_protection {
-	foreach my $pid (keys %tabProcChld) {
-		if ($tabProc{'parser'} == $pid) {
-			delete $tabProcChld{$pid};
-			$tabProc{'parser'} = 0;
-		}
-		if ($tabProc{'synchro'} == $pid) {
-			delete $tabProcChld{$pid};
-			$tabProc{'synchro'} = 0;
-		}
-		if ($tabProc{'rebuild'} == $pid) {
-			delete $tabProcChld{$pid};
-			$tabProc{'rebuild'} = 0;
-		}
+    foreach my $pid (keys %tabProcChld) {
+	if ($tabProc{'parser'} == $pid) {
+	    delete $tabProcChld{$pid};
+	    $tabProc{'parser'} = 0;
 	}
+	if ($tabProc{'synchro'} == $pid) {
+	    delete $tabProcChld{$pid};
+	    $tabProc{'synchro'} = 0;
+	}
+	if ($tabProc{'rebuild'} == $pid) {
+	    delete $tabProcChld{$pid};
+	    $tabProc{'rebuild'} = 0;
+	}
+    }
 }
 
 # Write in log file that program is stoping
@@ -870,37 +886,35 @@ sub signalstopprogram() {
     # Waiting childs ended
     my $cpt = 1;
     while ($cpt < $timeout_stop) {
-		if ($tabProc{'parser'} == 0 && $tabProc{'rebuild'} == 0 && $tabProc{'synchro'} == 0) {
-			last;
-		}
-		unset_protection();
-		sleep(1);
-		$cpt++;
+	if ($tabProc{'parser'} == 0 && $tabProc{'rebuild'} == 0 && $tabProc{'synchro'} == 0) {
+	    last;
+	}
+	unset_protection();
+	sleep(1);
+	$cpt++;
     }
 
     if ($cpt >= $timeout_stop) {
-		writeLogFile("Violent killing...Avoid double run...");
-		if ($tabProc{'parser'}) {
- 	       writeLogFile("Send KILL signal to parser sub process...");
- 	       kill('KILL', $tabProc{'parser'})
- 		}
-		if ($tabProc{'rebuild'}) {
-			writeLogFile("Send KILL signal to rebuild sub process...");
-			kill('KILL', $tabProc{'rebuild'})
-		}
+	writeLogFile("Violent killing...Avoid double run...");
+	if ($tabProc{'parser'}) {
+	    writeLogFile("Send KILL signal to parser sub process...");
+	    kill('KILL', $tabProc{'parser'})
+	}
+	if ($tabProc{'rebuild'}) {
+	    writeLogFile("Send KILL signal to rebuild sub process...");
+	    kill('KILL', $tabProc{'rebuild'})
+	}
     }
 }
 
 
 sub REAPER {
-	my $child_pid;
- 	while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
-		$tabProcChld{$child_pid} = 1;
-	}
-	$SIG{CHLD} = \&REAPER;
+    my $child_pid;
+    while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
+	$tabProcChld{$child_pid} = 1;
+    }
+    $SIG{CHLD} = \&REAPER;
 }
-
-
 
 # Check Program State
 checkProgramStatus();
@@ -919,42 +933,42 @@ $stop = 1;
 signalstartprogram();
 while ($stop) {
     if (time() - $timeParser >= 7 && !$tabProc{'parser'} && !$tabProc{'rebuild'}) {
-		$tabProc{'parser'} = fork();
-		if (!defined($tabProc{'parser'})) {
-			writeLogFile("Parser cannot fork: $!");
-		} elsif (!$tabProc{'parser'}){
-		    open STDOUT, '>&', $centstorage_fh;
+	$tabProc{'parser'} = fork();
+	if (!defined($tabProc{'parser'})) {
+	    writeLogFile("Parser cannot fork: $!");
+	} elsif (!$tabProc{'parser'}){
+	    open STDOUT, '>&', $centstorage_fh;
             open STDERR, '>&', $centstorage_fh;
-		    GetPerfData();
-		    exit(0);
-		}
-		$timeParser = time();
+	    GetPerfData();
+	    exit(0);
+	}
+	$timeParser = time();
     }
     if (time() - $timeSynchro >= 60 && !$tabProc{'synchro'}) {
-		$tabProc{'synchro'} = fork();
-		if (!defined($tabProc{'synchro'})) {
-			writeLogFile("Synchro cannot fork: $!");
-		} elsif (!$tabProc{'synchro'}){
-		    open STDOUT, '>&', $centstorage_fh;
+	$tabProc{'synchro'} = fork();
+	if (!defined($tabProc{'synchro'})) {
+	    writeLogFile("Synchro cannot fork: $!");
+	} elsif (!$tabProc{'synchro'}){
+	    open STDOUT, '>&', $centstorage_fh;
             open STDERR, '>&', $centstorage_fh;
-		    CheckRestart();	
-		    exit(0);
-		}
-		$timeSynchro = time();
+	    CheckRestart();	
+	    exit(0);
+	}
+	$timeSynchro = time();
     }
     if (time() - $timeRebuild >= 40 && !$tabProc{'rebuild'} && !$tabProc{'parser'}) {
-		$tabProc{'rebuild'} = fork();
-		if (!defined($tabProc{'rebuild'})) {
-			writeLogFile("rebuild cannot fork: $!");
-		}
-		if (!$tabProc{'rebuild'}){
-		    open STDOUT, '>&', $centstorage_fh;
+	$tabProc{'rebuild'} = fork();
+	if (!defined($tabProc{'rebuild'})) {
+	    writeLogFile("rebuild cannot fork: $!");
+	}
+	if (!$tabProc{'rebuild'}){
+	    open STDOUT, '>&', $centstorage_fh;
             open STDERR, '>&', $centstorage_fh;
-		    CheckRebuild();
-		    exit(0);
-	 	}
-		$timeRebuild = time();
-     }
+	    CheckRebuild();
+	    exit(0);
+	}
+	$timeRebuild = time();
+    }
     unset_protection();
     sleep(1);
 }
