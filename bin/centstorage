@@ -72,7 +72,7 @@ my %tabProcChld;
 # Init RRD:DST -- Data Source Type
 @rrd_dst = ("GAUGE","COUNTER","DERIVE","ABSOLUTE");
 
-$debug = 1;
+$debug = 0;
 our $stop = 1;
 my $error_value;
 my $error_str;
