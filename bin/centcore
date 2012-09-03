@@ -854,7 +854,7 @@ sub restartSNMPTT($) {
     my $port = checkSSHPort($ns_server->{'ssh_port'});
 
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}
-    	&& defined($ns_server->{'init_script_snmptt'}) && $ns_server->{'init_script_snmptt'}) {
+    	&& defined($ns_server->{'init_script_snmptt'}) && $ns_server->{'init_script_snmptt'} ne "") {
         # Launch command
         if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
             $cmd = "$sudo ".$ns_server->{'init_script_snmptt'}." restart";
