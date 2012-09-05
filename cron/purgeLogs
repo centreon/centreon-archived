@@ -129,8 +129,8 @@ if (defined($reportingRetention) && $reportingRetention ne 0){
     my $last_log = time() - ($reportingRetention * 24 * 60 * 60);
 
     # Purge Log Archive Database
-    $dbh->do("DELETE FROM `log_archive_host` WHERE `ctime` < '$last_log'");
-    $dbh->do("DELETE FROM `log_archive_service` WHERE `ctime` < '$last_log'");
+    $dbh->do("DELETE FROM `log_archive_host` WHERE `date_end` < '$last_log'");
+    $dbh->do("DELETE FROM `log_archive_service` WHERE `date_end` < '$last_log'");
 
     writeLogFile("Purge log_archive table... Done");
 }
