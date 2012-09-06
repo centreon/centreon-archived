@@ -355,6 +355,7 @@ sub get_poller()	{
     my $is_localhost;
     my $nagiostats_bin;
     my $cfg_item;
+    my $cfg_result;
     my $cfg_dir;
     my $nagiostats;
     my $tmp;
@@ -367,15 +368,22 @@ sub get_poller()	{
 	if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
 	while (($id, $ssh_port, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array())	{
 	    $must_update_ds = 0;
-	    $cfg_item = $dbh->prepare("SELECT cfg_dir FROM cfg_nagios WHERE nagios_server_id = " . $id . " AND nagios_activate = '1'");
+	    $cfg_item = $dbh->prepare("SELECT cfg_dir, cfg_file FROM cfg_nagios WHERE nagios_server_id = " . $id . " AND nagios_activate = '1'");
 	    if (!$cfg_item->execute) {
-		die "Error:" . $cfg_item->errstr . "\n";
+			die "Error:" . $cfg_item->errstr . "\n";
 	    }
-	    $cfg_dir = $cfg_item->fetchrow_hashref();
+	    $cfg_result = $cfg_item->fetchrow_hashref();
+	    $cfg_dir = $cfg_result->{'cfg_dir'};
+	    $cfg_dir =~ s!/$!!g;
+	    if ($cfg_dir == '') {
+	    	die "Error: The Monitoring engine configuration dir is empty.";
+	    } else if ($cfg_result->{'cfg_file'}) {
+	    	die "Error: The Monitoring engine configuration filename is empty.";
+	    }
 	    if ($is_localhost){
-		$nagiostats = `$nagiostats_bin -c $cfg_dir->{'cfg_dir'}nagios.cfg`;
+			$nagiostats = `$nagiostats_bin -c $cfg_dir/$cfg_result->{'cfg_file'}`;
 	    } else {
-		if (-e $dataDir."/$id/nagiostats.trace.txt") {
+			if (-e $dataDir."/$id/nagiostats.trace.txt") {
                     $nagiostats = '';
                     open(FILE, $dataDir."$id/nagiostats.trace.txt") or writeLogFile("Error when reading nagiostats.trace.txt : ".$!);
                     while (<FILE>) {
@@ -387,7 +395,7 @@ sub get_poller()	{
                     if (!defined($ssh_port) || !$ssh_port) {
                         $ssh_port = "22";
                     }
-                    $nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c $cfg_dir->{'cfg_dir'}/nagios.cfg`;
+                    $nagiostats = `ssh $sshOptions -p $ssh_port $ip $nagiostats_bin -c $cfg_dir/$cfg_result->{'cfg_file'}`;
 		    }
 		}
 	    if ($nagiostats =~ m/Error reading status file/ ) {
