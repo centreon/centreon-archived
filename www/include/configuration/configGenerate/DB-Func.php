@@ -533,6 +533,7 @@
 
 	// Create File, print header and return handle.
 	function create_file($filename, $name, $header = true)	{
+		umask(0113);
 		if (!$handle = fopen($filename, 'w')) {
 	    	echo _("Can't access to needed file").$filename;
 	    	exit;
@@ -555,7 +556,7 @@
 	* @param unknown_type $filename
 	*/
 	function setFileMod($filename) {
-		chmod($filename, 0664);
+		//chmod($filename, 0664);
 	}
 
 	// Put text in good format
