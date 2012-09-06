@@ -89,15 +89,15 @@
 		}
 	}
 
-	print "time";
+	print "time;humantime";
 	foreach ($listMetric as $table) {
 		print ";".$table;
 	}
 	print "\n";
 	foreach ($datas as $key => $tab) {
-		print $key;
+		print $key.";".date("Y-m-d H:i:s", $key);
 		foreach($tab as $value) {
-			printf(";%f", $value);
+            printf(";%f", $value);
 		}
 		print "\n";
 	}

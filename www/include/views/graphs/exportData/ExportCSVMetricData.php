@@ -73,7 +73,7 @@
 
 	$res = $pearDB->query("SELECT ctime,value FROM data_bin WHERE id_metric = '".$mtrcs."' AND CTIME >= '".$begin."'");
 	while ($data = $res->fetchRow()){
-		print $data["ctime"].";".$data["value"]."\n";
+		print $data["ctime"].";".$data["value"].";".date("Y-m-d H:i:s", $data["ctime"])."\n";
 	}
 	exit();
 ?>
