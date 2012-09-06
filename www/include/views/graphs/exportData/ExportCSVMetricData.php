@@ -76,4 +76,5 @@
 		print $data["ctime"].";".$data["value"].";".date("Y-m-d H:i:s", $data["ctime"])."\n";
 	}
 	exit();
+    
 ?>
