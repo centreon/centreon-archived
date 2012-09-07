@@ -806,7 +806,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 				}
 				if ($tm["ds_min"]){
 					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MIN:\"Min\:";
-					if ($tm['ds_minmax_int']) {
+					if (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int']) {
 					    $arg .= "%7.2lf".($this->gprintScaleOption);
 				    } else {
 					    $arg .= "%7.0lf".($this->gprintScaleOption);
@@ -816,7 +816,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 				}
 				if ($tm["ds_max"]){
 					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MAX:\"Max\:";
-				    if ($tm['ds_minmax_int']) {
+				    if (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int']) {
 					    $arg .= "%7.2lf".($this->gprintScaleOption);
 				    } else {
 					    $arg .= "%7.0lf".($this->gprintScaleOption);
