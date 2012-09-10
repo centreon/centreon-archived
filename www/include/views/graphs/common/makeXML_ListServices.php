@@ -34,6 +34,19 @@
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	require_once $centreon_path."/www/class/centreonDB.class.php";
 	require_once $centreon_path."/www/class/centreonXML.class.php";
+	/*
+ 	 * Get session
+     */
+    require_once ($centreon_path . "www/class/centreonSession.class.php");
+    require_once ($centreon_path . "www/class/centreon.class.php");
+    if(!isset($_SESSION['centreon'])) {
+            CentreonSession::start();
+    }
+    if (isset($_SESSION['centreon'])) {
+        $oreon = $_SESSION['centreon'];
+    } else {
+        exit;
+    }
 
 	$pearDBO = new CentreonDB("centstorage");
 
