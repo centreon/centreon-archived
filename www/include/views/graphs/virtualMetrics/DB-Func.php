@@ -256,7 +256,7 @@
 		}
 	}
 
-	function enableVirtualMetric($v_id, $v_name, $index_id) {
+	function enableVirtualMetric($v_id, $v_name = null, $index_id = null) {
 		global $pearDB;
 
 		$l_where = "vmetric_id = '".$v_id."'";
