@@ -136,7 +136,7 @@
 	}
 
 	function insertVirtualMetric()	{
-		global $form, $pearDB;
+		global $form, $pearDB, $centreon;
 		$h_id = NULL;
 		$s_id = NULL;
 		$ret = array();
@@ -154,7 +154,10 @@
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "NULL, NULL";
 		$rq .= ")";
-`echo "Insert VMetric 'RQ' : $rq" >> /opt/app/centreon/www/include/views/graphs/virtualMetrics/DB.log`;
+		if ($centreon->optGen["debug_rrdtool"] == "1") {
+		    $debug_path = realpath($centreon->optGen["debug_path"]);
+		    error_log("[" . date("d/m/Y H:s") ."] VIRTUAL METRIC : $rq \n", 3, $debug_path . "/rrdtool.log");
+		}
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
 		$vmetric_id = $DBRESULT->fetchRow();
