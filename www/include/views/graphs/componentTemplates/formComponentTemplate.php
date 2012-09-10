@@ -293,7 +293,7 @@
                                         hcolor = bckcolor.substr(1,6);
                                 }
                         }
-                        Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title:  <?php echo _('Pick a color') ?>, width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
+                        Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title:  "<?php echo _('Pick a color') ?>", width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
                 }
 	</script><?php
 	}
@@ -308,7 +308,7 @@
 		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
 	}
 	$tpl->assign("helptext", $helptext);
-        
+
 	$valid = false;
 	if ($form->validate())	{
 		$compoObj = $form->getElement('compo_id');
