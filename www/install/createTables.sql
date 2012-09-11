@@ -2055,7 +2055,7 @@ CREATE TABLE `traps` (
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
   `traps_comments` text,
-  UNIQUE KEY `traps_name` (`traps_name`),
+  UNIQUE KEY `traps_name` (`traps_name`, `traps_oid`),
   KEY `traps_id` (`traps_id`),
   KEY `traps_ibfk_1` (`manufacturer_id`),
   CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE

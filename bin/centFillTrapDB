@@ -49,9 +49,9 @@ require "@CENTREON_ETC@/conf.pm";
 ## TEST IF OID ALREADY EXISTS IN DATABASE
 #
 
-sub existsInDB($$) {
-    my ($dbh, $oid) = @_;
-    my $sth = $dbh->prepare("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = '$oid'");
+sub existsInDB($$$) {
+    my ($dbh, $oid, $name) = @_;
+    my $sth = $dbh->prepare("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = '$oid' AND `traps_name` = '$name'");
     $sth->execute();
     if (defined($sth->fetchrow_array)) {
 		$sth->finish();
@@ -100,7 +100,7 @@ sub main($$) {
 	while (<FILE>) {	
 		if ($_ =~ /^EVENT\ ([a-zA-Z0-9\_\-]+)\ ([0-9\.]+)\ (\"[A-Za-z\ \_\-]+\")\ ([a-zA-Z]+)/) {
 			my ($name,$oid,$type,$val) = ($1,$2,$3,$4);
-		    if (existsInDB($dbh, $oid)) {
+		    if (existsInDB($dbh, $oid, $name)) {
 				print "Trap oid : $name => $oid already exists in database\n";
 				$last_oid = $oid;
 		    } else {
