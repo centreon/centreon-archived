@@ -264,6 +264,7 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_debug_level">&nbsp;{$form.nagios_debug_level.label}</td><td class="FormRowValue">{$form.nagios_debug_level.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="debug_verbosity">&nbsp;{$form.debug_verbosity.label}</td><td class="FormRowValue">{$form.debug_verbosity.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_debug_file_size">&nbsp;{$form.max_debug_file_size.label}</td><td class="FormRowValue">{$form.max_debug_file_size.html}&nbsp;{$Bytes}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="daemon_dumps_core">&nbsp;{$form.daemon_dumps_core.label}</td><td class="FormRowValue">{$form.daemon_dumps_core.html}&nbsp;</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 			{/if}	

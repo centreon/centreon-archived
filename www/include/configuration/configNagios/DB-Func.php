@@ -188,7 +188,7 @@
 				"`cached_service_check_horizon` , `additional_freshness_latency` , " .
 				"`check_host_freshness` , `host_freshness_check_interval` , `date_format` , `illegal_object_name_chars` , `illegal_macro_output_chars`, " .
 				"`use_large_installation_tweaks` , `free_child_process_memory` , `child_processes_fork_twice` , `debug_file` , `debug_level` , " .
-				"`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , " .
+				"`debug_level_opt`, `debug_verbosity` , `max_debug_file_size` , `daemon_dumps_core`, " .
 				"`enable_environment_macros` , `use_regexp_matching` , `use_true_regexp_matching` , `admin_email` , `admin_pager` , `nagios_comment` , `nagios_activate`, " .
 				"`event_broker_options` , `enable_embedded_perl` , `use_embedded_perl_implicitly`, `translate_passive_host_checks`, " .
 				"`passive_host_checks_are_soft`, `check_for_orphaned_hosts`, `external_command_buffer_slots`, `cfg_file`) ";
@@ -314,6 +314,7 @@
         isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL ? $rq .= "'".implode(",", array_keys($ret["nagios_debug_level"]))."',  " : $rq .= "'0', ";
         isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "'".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "'2', ";
         isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "'".htmlentities($ret["max_debug_file_size"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["daemon_dumps_core"]["daemon_dumps_core"]) && $ret["daemon_dumps_core"]["daemon_dumps_core"] ? $rq .= "'1', " : $rq .= "'0', ";
         isset($ret["enable_environment_macros"]["enable_environment_macros"]) && $ret["enable_environment_macros"]["enable_environment_macros"] != 2 ? $rq .= "'".$ret["enable_environment_macros"]["enable_environment_macros"]."',  " : $rq .= "'2', ";
         isset($ret["use_regexp_matching"]["use_regexp_matching"]) && $ret["use_regexp_matching"]["use_regexp_matching"] != 2 ? $rq .= "'".$ret["use_regexp_matching"]["use_regexp_matching"]."',  " : $rq .= "'2', ";
         isset($ret["use_true_regexp_matching"]["use_true_regexp_matching"]) && $ret["use_true_regexp_matching"]["use_true_regexp_matching"] != 2 ? $rq .= "'".$ret["use_true_regexp_matching"]["use_true_regexp_matching"]."',  " : $rq .= "'2', ";
@@ -512,6 +513,7 @@
 		isset($ret["nagios_debug_level"]) && $ret["nagios_debug_level"] != NULL ? $rq .= "debug_level_opt = '".implode(",", array_keys($ret["nagios_debug_level"]))."',  " : $rq .= "debug_level = NULL, ";
 		isset($ret["debug_verbosity"]["debug_verbosity"]) && $ret["debug_verbosity"]["debug_verbosity"] != 2 ? $rq .= "debug_verbosity   = '".$ret["debug_verbosity"]["debug_verbosity"]."',  " : $rq .= "debug_verbosity   = '2', ";
 		isset($ret["max_debug_file_size"]) && $ret["max_debug_file_size"] != NULL ? $rq .= "max_debug_file_size = '".htmlentities($ret["max_debug_file_size"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_debug_file_size = NULL, ";
+        isset($ret["daemon_dumps_core"]["daemon_dumps_core"]) && $ret["daemon_dumps_core"]["daemon_dumps_core"] ? $rq .= "daemon_dumps_core = '1',  " : $rq .= "daemon_dumps_core = '0', ";
 
 		isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"]) && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != NULL ? $rq .= "translate_passive_host_checks = '".htmlentities($ret["translate_passive_host_checks"]["translate_passive_host_checks"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "translate_passive_host_checks = NULL, ";
 		isset($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"]) && $ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"] != NULL ? $rq .= "passive_host_checks_are_soft = '".htmlentities($ret["passive_host_checks_are_soft"]["passive_host_checks_are_soft"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "passive_host_checks_are_soft = NULL, ";

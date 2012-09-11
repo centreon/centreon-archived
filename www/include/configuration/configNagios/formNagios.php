@@ -595,6 +595,11 @@
 	 */
 	$form->addElement('text', 'debug_file', _("Debug file (Directory + File)"), $attrsText);
 	$form->addElement('text', 'max_debug_file_size', _("Debug file Maximum Size"), $attrsText);
+    
+    $nagTab = array();
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'daemon_dumps_core', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'daemon_dumps_core', null, _("No"), '0');
+	$form->addGroup($nagTab, 'daemon_dumps_core', _('Daemon core dumps'), '&nbsp;');
 
 	$verboseOptions = array('0'=>_("Basic information"),
 				'1'=>_("More detailed information"),
