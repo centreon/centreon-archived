@@ -125,47 +125,39 @@
 			}
 		}
 		if ($ret["host"] == 0 || $ret["host"]) {
-			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
-				/*
-				 * Create Server List to snmptt generation file
-				 */
-				$tab_server = array();
-				$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
-				while ($tab = $DBRESULT_Servers->fetchRow()){
-					if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
-						$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
-					}
+			/*
+			 * Create Server List to snmptt generation file
+			 */
+			$tab_server = array();
+			$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+			while ($tab = $DBRESULT_Servers->fetchRow()){
+				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+					$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
 				}
+				if (isset($ret['localhost']) && $ret['localhost'] == 1) {
+				    $localhost_poller_id = $ret['id'];
+				}
+			}
+			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
 				$stdout = "";
 	            if (!isset($msg_generate)) {
 	                $msg_generate = array();
 	            }
 				/* even if we generate files for a remote server, we push snmptt config files on the local server */
-	            shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-
-	            foreach ($tab_server as $host) {
-	                if (!isset($msg_generate[$host["id"]])) {
-	                    $msg_generate[$host["id"]] = "";
-	                }
-	                if (isset($host['localhost']) && $host['localhost'] == 0) {
-	                    system("echo 'SYNCTRAP:".$host["id"]."' >> $centcore_pipe");
-	                    $msg_generate[$host["id"]] .= _("<br><b>Centreon : </b>A Synctrap signal has been sent to ".$host["name"]."\n");
-	                } else {
-	                    $stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-	                    $msg_generate[$host["id"]] .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
-	                }
-					foreach ($msg_generate as $key => $str) {
-						$msg_generate[$key] = str_replace("\n", "<br>", $str);
-					}
-	            }
+	            $stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
+	            $msg_generate[$ret['host']] .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
 			}
 
 			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"]) {
-				passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
+			    foreach ($tab_server as $host) {
+				    passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
+			    }
 			}
 
 			if (isset($ret["restart"]["restart"]) && $ret["restart"]["restart"]) {
-				passthru("echo 'RESTARTSNMPTT:".$host['id']."' >> $centcore_pipe", $return);
+			    foreach ($tab_server as $host) {
+				    passthru("echo 'RESTARTSNMPTT:".$host['id']."' >> $centcore_pipe", $return);
+			    }
 			}
 		}
 	}
