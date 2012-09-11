@@ -44,6 +44,13 @@
 	$_SESSION["ldap_login_attrib"] = $_POST["ldap_login_attrib"];
 	$_SESSION["ldap_ssl"] = $_POST["ldap_ssl"];
 }*/
+if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
+	//$_SESSION["oreonlogin"] = $_POST["oreonlogin"];
+	$_SESSION["oreonpasswd"] = $_POST["oreonpasswd"];
+	$_SESSION["oreonfirstname"] = $_POST["oreonfirstname"];
+	$_SESSION["oreonlastname"] = $_POST["oreonlastname"];
+	$_SESSION["oreonemail"] = $_POST["oreonemail"];
+}
 
 aff_header("Centreon Setup Wizard", "Centreon Configuration File", 10);	?>
 <table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
