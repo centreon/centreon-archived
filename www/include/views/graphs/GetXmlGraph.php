@@ -51,7 +51,7 @@
 		return strnatcasecmp($a["metric_name"], $b["metric_name"]);
 		return 0;
 	}
-    
+
     /*
 	 * Include Config file
 	 */
@@ -64,9 +64,9 @@
 	require_once $centreon_path . "www/class/centreonGMT.class.php";
 	require_once $centreon_path . "www/class/centreonBroker.class.php";
     require_once $centreon_path . "www/class/centreon.class.php";
-    
+
     session_start();
-    
+
 	/*
 	 * Database connect
 	 */
@@ -102,20 +102,14 @@
 	/*
 	 * Lang file
 	 */
-    ob_start();
-    var_dump($_SESSION);
-    $data = ob_get_clean();
-    $fp = fopen("/tmp/mySessionDatas", "w");
-    fwrite($fp, $data);
-    fclose($fp);  
     $oreon = $_SESSION['centreon'];
 	$locale = $oreon->user->get_lang();
 	putenv("LANG=$locale");
 	setlocale(LC_ALL, $locale);
 	bindtextdomain("messages",  $centreon_path . "www/locale/");;
-	bind_textdomain_codeset("messages", "UTF-8"); 
+	bind_textdomain_codeset("messages", "UTF-8");
 	textdomain("messages");
-    
+
 	function getMyHostIDService($svc_id = NULL)	{
 		global $pearDB;
 
