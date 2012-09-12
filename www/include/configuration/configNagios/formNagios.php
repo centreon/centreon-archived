@@ -683,7 +683,8 @@
 		"enable_environment_macros" => '2',
 		"enable_embedded_perl" => '2',
 		"use_embedded_perl_implicitly" => '2',
-		'action' => '1'
+		'action' => '1',
+		'daemon_dumps_core' => '0'
 		));
 
 	$form->addElement('hidden', 'nagios_id');
