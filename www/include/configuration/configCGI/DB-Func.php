@@ -146,8 +146,8 @@
 		global $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-		$rq = "INSERT INTO `cfg_cgi` ( `cgi_id` , `cgi_name` , `instance_id`, `main_config_file` , `physical_html_path` , `url_html_path` , " .
-				"`nagios_check_command` , `use_authentication` , `default_user_name` , `authorized_for_system_information` , " .
+		$rq = "INSERT INTO `cfg_cgi` ( `cgi_id` , `cgi_name` , `instance_id`, `main_config_file` , `physical_html_path` , `url_html_path` , `action_url_target`, `notes_url_target`, " .
+				"`escape_html_tags`, `lock_author_names`, `nagios_check_command` , `use_authentication` , `default_user_name` , `authorized_for_system_information` , " .
 				"`authorized_for_system_commands` , `authorized_for_configuration_information` , `authorized_for_all_hosts` , " .
 				"`authorized_for_all_host_commands` , `authorized_for_all_services` , `authorized_for_all_service_commands` , " .
 				"`statusmap_background_image` , `default_statusmap_layout` , `statuswrl_include` , `default_statuswrl_layout` , " .
@@ -156,10 +156,14 @@
 				" VALUES (";
 		$rq .= "NULL, ";
         isset($ret["cgi_name"]) && $ret["cgi_name"] != NULL ? $rq .= "'".htmlentities($ret["cgi_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
-        isset($ret["instance_id"]) && $ret["instance_id"] != NULL ? $rq .= "'".htmlentities($ret["instance_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["instance_id"]) && $ret["instance_id"] != NULL && $ret["instance_id"] != '0' ? $rq .= "'".htmlentities($ret["instance_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["main_config_file"]) && $ret["main_config_file"] != NULL ? $rq .= "'".htmlentities($ret["main_config_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["physical_html_path"]) && $ret["physical_html_path"] != NULL ? $rq .= "'".htmlentities($ret["physical_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["url_html_path"]) && $ret["url_html_path"] != NULL ? $rq .= "'".htmlentities($ret["url_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["action_url_target"]) && $ret["action_url_target"] != NULL ? $rq .= "'".htmlentities($ret["action_url_target"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["notes_url_target"]) && $ret["notes_url_target"] != NULL ? $rq .= "'".htmlentities($ret["notes_url_target"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["escape_html_tags"]["escape_html_tags"]) && $ret["escape_html_tags"]["escape_html_tags"] != NULL ? $rq .= "'".htmlentities($ret["escape_html_tags"]["escape_html_tags"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["lock_author_names"]["lock_author_names"]) && $ret["lock_author_names"]["lock_author_names"] != NULL ? $rq .= "'".htmlentities($ret["lock_author_names"]["lock_author_names"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["nagios_check_command"]) && $ret["nagios_check_command"] != NULL ? $rq .= "'".htmlentities($ret["nagios_check_command"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["use_authentication"]["use_authentication"]) && $ret["use_authentication"]["use_authentication"] != NULL ? $rq .= "'".$ret["use_authentication"]["use_authentication"]."', " : $rq .= "NULL, ";
         isset($ret["default_user_name"]) && $ret["default_user_name"] != NULL ? $rq .= "'".htmlentities($ret["default_user_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
@@ -203,10 +207,14 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE cfg_cgi SET ";
         isset($ret["cgi_name"]) && $ret["cgi_name"] != NULL ? $rq .= "cgi_name = '".htmlentities($ret["cgi_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "cgi_name = NULL, ";
-        isset($ret["instance_id"]) && $ret["instance_id"] != NULL ? $rq .= "instance_id = '".htmlentities($ret["instance_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "instance_id = NULL, ";
+        isset($ret["instance_id"]) && $ret["instance_id"] != NULL && $ret["instance_id"] != '0' ? $rq .= "instance_id = '".htmlentities($ret["instance_id"], ENT_QUOTES, "UTF-8")."', " : $rq .= "instance_id = NULL, ";
         isset($ret["main_config_file"]) && $ret["main_config_file"] != NULL ? $rq .= "main_config_file = '".htmlentities($ret["main_config_file"], ENT_QUOTES, "UTF-8")."', " : $rq .= "main_config_file = NULL, ";
         isset($ret["physical_html_path"]) && $ret["physical_html_path"] != NULL ? $rq .= "physical_html_path = '".htmlentities($ret["physical_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "physical_html_path = NULL, ";
         isset($ret["url_html_path"]) && $ret["url_html_path"] != NULL ? $rq .= "url_html_path = '".htmlentities($ret["url_html_path"], ENT_QUOTES, "UTF-8")."', " : $rq .= "url_html_path = NULL, ";
+        isset($ret["action_url_target"]) && $ret["action_url_target"] != NULL ? $rq .= "action_url_target = '".htmlentities($ret["action_url_target"], ENT_QUOTES, "UTF-8")."', " : $rq .= "action_url_target = NULL, ";
+        isset($ret["notes_url_target"]) && $ret["notes_url_target"] != NULL ? $rq .= "notes_url_target = '".htmlentities($ret["notes_url_target"], ENT_QUOTES, "UTF-8")."', " : $rq .= "notes_url_target = NULL, ";
+        isset($ret["escape_html_tags"]["escape_html_tags"]) && $ret["escape_html_tags"]["escape_html_tags"] != NULL ? $rq .= "escape_html_tags = '".htmlentities($ret["escape_html_tags"]["escape_html_tags"], ENT_QUOTES, "UTF-8")."', " : $rq .= "escape_html_tags = NULL, ";
+        isset($ret["lock_author_names"]["lock_author_names"]) && $ret["lock_author_names"]["lock_author_names"] != NULL ? $rq .= "lock_author_names = '".htmlentities($ret["lock_author_names"]["lock_author_names"], ENT_QUOTES, "UTF-8")."', " : $rq .= "lock_author_names = NULL, ";
         isset($ret["nagios_check_command"]) && $ret["nagios_check_command"] != NULL ? $rq .= "nagios_check_command = '".htmlentities($ret["nagios_check_command"], ENT_QUOTES, "UTF-8")."', " : $rq .= "nagios_check_command = NULL, ";
         isset($ret["use_authentication"]["use_authentication"]) && $ret["use_authentication"]["use_authentication"] != NULL ? $rq .= "use_authentication = '".$ret["use_authentication"]["use_authentication"]."', " : $rq .= "use_authentication = NULL, ";
         isset($ret["default_user_name"]) && $ret["default_user_name"] != NULL ? $rq .= "default_user_name = '".htmlentities($ret["default_user_name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "default_user_name = NULL, ";

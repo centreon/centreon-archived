@@ -451,6 +451,10 @@ CREATE TABLE `cfg_cgi` (
   `ping_syntax` text,
   `cgi_comment` text,
   `cgi_activate` enum('0','1') DEFAULT NULL,
+  `action_url_target` varchar(255) DEFAULT NULL,
+  `escape_html_tags` enum('0','1','2') DEFAULT '2',
+  `lock_author_names` enum('0','1','2') DEFAULT '2',
+  `notes_url_target` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`cgi_id`),
   KEY `fk_cgi_instance_id` (`instance_id`),
   CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL
@@ -2055,7 +2059,7 @@ CREATE TABLE `traps` (
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
   `traps_comments` text,
-  UNIQUE KEY `traps_name` (`traps_name`, `traps_oid`),
+  UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),
   KEY `traps_ibfk_1` (`manufacturer_id`),
   CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE

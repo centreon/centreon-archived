@@ -90,6 +90,18 @@
 	$form->addElement('text', 'main_config_file', _("Main Configuration File Location"), $attrsText2);
 	$form->addElement('text', 'physical_html_path', _("Physical HTML Path"), $attrsText2);
 	$form->addElement('text', 'url_html_path', _("URL HTML Path"), $attrsText2);
+	$form->addElement('text', 'action_url_target', _("Acrion URL target"), $attrsText2);
+	$form->addElement('text', 'notes_url_target', _("Notes URL target"), $attrsText2);
+    $nagTab = array();
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'escape_html_tags', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'escape_html_tags', null, _("No"), '0');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'escape_html_tags', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'escape_html_tags', _("Escape HTML tags"), '&nbsp;');
+    $nagTab = array();
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'lock_author_names', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'lock_author_names', null, _("No"), '0');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'lock_author_names', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'lock_author_names', _("Lock author names"), '&nbsp;');
 
 	// Part 2
 	$form->addElement('text', 'nagios_check_command', _("Monitoring Engine process check command"), $attrsText2);
@@ -145,7 +157,9 @@
 	"default_statuswrl_layout"=>'4',
 	"refresh_rate"=>'90',
 	"ping_syntax"=>'/bin/ping -n -U -c 5 $HOSTADDRESS$',
-	'action'=>'1'
+	'action'=>'1',
+	'escape_html_tags'=>'2',
+	'lock_author_names'=>'2'
 	));
 
 	$form->addElement('hidden', 'cgi_id');

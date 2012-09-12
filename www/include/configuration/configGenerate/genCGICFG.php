@@ -67,7 +67,9 @@
 			$str .= "# ".$cmt."\n";
 	}
 	foreach ($cgi as $key=>$value)	{
-		if ($value && $key != "cgi_id" && $key != "cgi_name" && $key != "cgi_comment" && $key != "cgi_activate" && $key != "instance_id") {
+        if ($key == 'escape_html_tags' && $value == 2) continue;
+        if ($key == 'lock_author_names' && $value == 2) continue;
+		if (($value || $value === '0') && $key != "cgi_id" && $key != "cgi_name" && $key != "cgi_comment" && $key != "cgi_activate" && $key != "instance_id") {
 			$value = str_replace("\r\n", ",", $value);
 			$str .= $key."=".$value."\n";
 		} else if ($key == "use_authentication") {
