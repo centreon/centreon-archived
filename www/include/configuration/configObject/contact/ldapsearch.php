@@ -129,7 +129,7 @@
     	    while ($row = $res->fetchRow()) {
     	        switch ($row['ari_name']) {
     	            case "user_filter":
-    	                $ldap_search_filter = $row['ari_value'];
+    	                $ldap_search_filter = sprintf($row['ari_value'], '*');
     	                break;
     	            case "user_base_search":
     	                $ldap_base_dn = $row['ari_value'];
