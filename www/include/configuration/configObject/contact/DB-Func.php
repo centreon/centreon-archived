@@ -892,7 +892,7 @@
             $contact_id = $row['contact_id'];
             $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
             if (count($listGroup) > 0) {
-                $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join(",'", $listGroup) . "')";
+                $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join("','", $listGroup) . "')";
                 $res = $pearDB->query($query);
                 if (PEAR::isError($res)) {
                     return false;
