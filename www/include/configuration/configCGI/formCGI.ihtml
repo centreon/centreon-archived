@@ -22,9 +22,9 @@
 		<tr class="list_one"><td class="FormRowField">{$form.main_config_file.label}</td><td class="FormRowValue">{$form.main_config_file.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.physical_html_path.label}</td><td class="FormRowValue">{$form.physical_html_path.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.url_html_path.label}</td><td class="FormRowValue">{$form.url_html_path.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.action_url_target.label}</td><td class="FormRowValue">{$form.action_url_target.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.action_url_target.label}</td><td class="FormRowValue">{$form.action_url_target.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.notes_url_target.label}</td><td class="FormRowValue">{$form.notes_url_target.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.escape_html_tags.label}</td><td class="FormRowValue">{$form.escape_html_tags.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.escape_html_tags.label}</td><td class="FormRowValue">{$form.escape_html_tags.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.lock_author_names.label}</td><td class="FormRowValue">{$form.lock_author_names.html}</td></tr>
 		
 		<!-- Part 2 -->
