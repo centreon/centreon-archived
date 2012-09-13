@@ -41,26 +41,6 @@
 	</tr>
 	{/if}	
 	<tr class="list_two"><td class="FormRowField" colspan="2" id="dynamicDiv" style="padding:0;"></td></tr>
-<!--
-	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'/>&nbsp;&nbsp;{$form.header.ldapinfo}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_binduser" /><span>{$form.ldap_binduser.label}</span></td><td class="FormRowValue">{$form.ldap_binduser.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_bindpass" /><span>{$form.ldap_bindpass.label}</span></td><td class="FormRowValue">{$form.ldap_bindpass.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_version_protocol" /><span>{$form.ldap_version_protocol.label}</span></td><td class="FormRowValue">{$form.ldap_version_protocol.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_template" /><span>{$form.ldap_template.label}</span></td><td class="FormRowValue">{$form.ldap_template.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_basedn" /><span>{$form.ldap_user_basedn.label}</span></td><td class="FormRowValue">{$form.ldap_user_basedn.html}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_basedn" /><span>{$form.ldap_group_basedn.label}</span></td><td class="FormRowValue">{$form.ldap_group_basedn.html}</td></tr>
-	<tr class="list_one" id="ldap_user_filter"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_filter" /><span>{$form.ldap_user_filter.label}</span></td><td class="FormRowValue">{$form.ldap_user_filter.html}</td></tr>
-	<tr class="list_two" id="ldap_user_uid_attr"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_uid_attr" /><span>{$form.ldap_user_uid_attr.label}</span></td><td class="FormRowValue">{$form.ldap_user_uid_attr.html}</td></tr>
-	<tr class="list_one" id="ldap_user_group"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_group" /><span>{$form.ldap_user_group.label}</span></td><td class="FormRowValue">{$form.ldap_user_group.html}</td></tr>
-	<tr class="list_two" id="ldap_user_name"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_name" /><span>{$form.ldap_user_name.label}</span></td><td class="FormRowValue">{$form.ldap_user_name.html}</td></tr>
-	<tr class="list_one" id="ldap_user_firstname"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_firstname" /><span>{$form.ldap_user_firstname.label}</span></td><td class="FormRowValue">{$form.ldap_user_firstname.html}</td></tr>
-	<tr class="list_two" id="ldap_user_lastname"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_lastname" /><span>{$form.ldap_user_lastname.label}</span></td><td class="FormRowValue">{$form.ldap_user_lastname.html}</td></tr>
-	<tr class="list_one" id="ldap_user_email"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_email" /><span>{$form.ldap_user_email.label}</span></td><td class="FormRowValue">{$form.ldap_user_email.html}</td></tr>
-	<tr class="list_two" id="ldap_user_pager"><td class="FormRowField"><img class="helpTooltip" name="ldap_user_pager" /><span>{$form.ldap_user_pager.label}</span></td><td class="FormRowValue">{$form.ldap_user_pager.html}</td></tr>
-	<tr class="list_one" id="ldap_group_filter"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_filter" /><span>{$form.ldap_group_filter.label}</span></td><td class="FormRowValue">{$form.ldap_group_filter.html}</td></tr>
-	<tr class="list_two" id="ldap_group_gid_attr"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_gid_attr" /><span>{$form.ldap_group_gid_attr.label}</span></td><td class="FormRowValue">{$form.ldap_group_gid_attr.html}</td></tr>
-	<tr class="list_one" id="ldap_group_member"><td class="FormRowField"><img class="helpTooltip" name="ldap_group_member" />{$form.ldap_group_member.label}</span></td><td class="FormRowValue">{$form.ldap_group_member.html}</td></tr>
---!>
 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
