@@ -114,7 +114,7 @@ function monitoringCallBack(t)
 	resetSelectedCheckboxes();
 	mk_pagination(t.getXmlDocument());
 	set_header_title();
-    
+
     set_displayIMG();
     set_displayPOPUP();
     set_displayGenericInfo();
@@ -284,9 +284,9 @@ function construct_HostGroupSelectList(id) {
             $acldb = new CentreonDB("ndo");
 		}
 		if (!$oreon->user->access->admin) {
-			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name 
+			$query = "SELECT DISTINCT hg.hg_alias, hg.hg_name AS name
 				  FROM hostgroup hg, acl_resources_hg_relations arhr
-				  WHERE hg.hg_id = arhr.hg_hg_id 
+				  WHERE hg.hg_id = arhr.hg_hg_id
                                   AND arhr.acl_res_id IN (".$oreon->user->access->getResourceGroupsString().")
                                   AND hg.hg_activate = '1'
 			          AND hg.hg_id in (SELECT hostgroup_hg_id
@@ -729,17 +729,17 @@ function mainLoop() {
 
 			if (isset(_currentInputFieldValue.className) && _currentInputFieldValue.length >= 3) {
 				_currentInputField.className = "search_input_active";
-			} else {
+			} else if (isset(_currentInputFieldValue.className)) {
 				_currentInputField.className = "search_input";
 			}
 			if (isset(_currentInputHostFieldValue.className) && _currentInputHostFieldValue.length >= 3) {
 				_currentInputHostField.className = "search_input_active";
-			} else {
+			} else if (isset(_currentInputHostFieldValue.className)) {
 				_currentInputHostField.className = "search_input";
 			}
 			if (isset(_currentInputOutputFieldValue.className) && _currentInputOutputFieldValue.length >= 3) {
 				_currentInputOutputField.className = "search_input_active";
-			} else {
+			} else if (isset(_currentInputOutputFieldValue.className)) {
 				_currentInputOutputField.className = "search_input";
 			}
 		}
