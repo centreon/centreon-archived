@@ -72,7 +72,7 @@ function printDebug($xml)
         $msg_debug[$host['id']] = str_replace ("Total Errors:   0", "<font color='green'>Total Errors: 0</font>", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = str_replace ("<br />License:", " - License:", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = preg_replace('/\[[0-9]+?\] /', '', $msg_debug[$host['id']]);
-        
+
         $lines = preg_split("/\<br\ \/\>/", $msg_debug[$host['id']]);
         $msg_debug[$host['id']] = "";
         $i = 0;
@@ -304,10 +304,10 @@ restore_error_handler();
 $xml->startElement('errorsPhp');
 foreach ($generatePhpErrors as $error) {
     if ($error[0] == 'error') {
-        $errmsg = '<span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span>';
-    } else {
-        $errmsg = '<span style="color: orange;">Warning</span><span style="margin-left: 5px;">' . $error[1] . '</span>';
-    }
+        $errmsg = '<p><span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
+    }/* else {
+        $errmsg = '<p><span style="color: orange;">Warning</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
+    }*/
     $xml->writeElement('errorPhp', $errmsg);
 }
 $xml->endElement();
