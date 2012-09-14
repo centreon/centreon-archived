@@ -106,6 +106,19 @@
 		$ldap_search_limit = $_POST["ldap_search_limit"];
 */
 
+	/* Get ldap users in database */
+	$queryGetLdap = 'SELECT contact_ldap_dn
+		FROM contact
+		WHERE contact_ldap_dn IS NOT NULL
+			AND contact_auth_type = "ldap"';
+	$res = $pearDB->query($queryGetLdap);
+	$listLdapUsers = array();
+	if (!PEAR::isError($res)) {
+	    while ($row = $res->fetchRow()) {
+	        $listLdapUsers[] = $row['contact_ldap_dn'];
+	    }
+	}
+
 	$buffer = new CentreonXML();
     $buffer->startElement("reponse");
 
@@ -163,6 +176,10 @@
     					if ($searchResult[$i]["alias"] != "") {
     					    $isvalid = "1";
     					}
+    					$in_database = "0";
+    					if (in_array($searchResult[$i]["dn"], $listLdapUsers)) {
+    					    $in_database = "1";
+    					}
 
     					$searchResult[$i]["firstname"] = str_replace("'", "", $searchResult[$i]["firstname"]);
     					$searchResult[$i]["firstname"] = str_replace("\"", "", $searchResult[$i]["firstname"]);
@@ -209,6 +226,9 @@
     					$buffer->startElement("uid");
     					$buffer->writeAttribute("isvalid", (($searchResult[$i]['alias'] != '') ? "1" : "0" ), 1, 0);
     					$buffer->text($searchResult[$i]['alias'], 1, 0);
+    					$buffer->endElement();
+    					$buffer->startElement("in_database");
+    					$buffer->text($in_database, 1, 0);
     					$buffer->endElement();
     					$buffer->endElement();
     				}

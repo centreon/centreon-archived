@@ -217,7 +217,7 @@ function LdapSearch(){
 
 					var cbx = document.createElement("input");
 	  				cbx.type = "checkbox";
-	  				if (info.getAttribute('isvalid') == 0) {
+	  				if (info.getAttribute('isvalid') == 0 || info.getElementsByTagName('in_database')[0].firstChild.nodeValue == 1) {
 	  					cbx.disabled = "1";
 	  				}
 	  				cbx.id = "contact_select"+i;
