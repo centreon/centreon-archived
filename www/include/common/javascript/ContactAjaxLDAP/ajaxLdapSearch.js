@@ -117,8 +117,8 @@ function LdapSearch(){
 		cbx.name = "checkall";
 		cbx.value = "checkall";
 		cbx.setAttribute("onclick","checkUncheckAll(this);");
-		cbx.onclick = "checkUncheckAll(this);";
-
+		cbx.onclick = function () { checkUncheckAll(this); };
+		
      	_td0.appendChild(cbx);
 		_td1.appendChild(document.createTextNode('DN'));
 		_td2.appendChild(document.createTextNode('UID'));

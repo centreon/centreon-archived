@@ -1,7 +1,6 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
 {$javascript}
 {$form.javascript}
-<form {$form.attributes}>
  	<table class="ListTable">
 	 	<tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/user1_view.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.options}</td></tr>
@@ -17,6 +16,9 @@
 			<td class='FormRowValue'>{$ldapServerList}</td>
 		</tr>
 		<tr class="list_two" style="text-align: center;"><td class="FormRowField" colspan="4" style="text-align: center;" >{$form.ldap_search_button.html}</td></tr>
+	</table>
+<form {$form.attributes}>
+	<table class="ListTable">		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/view.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>
 		<tr class="list_one"><td class="ListColLvl1_name" colspan="2" style="text-align: center;" id='ldap_search_result_output' ></td></tr>
 	</table>
