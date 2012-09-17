@@ -374,10 +374,10 @@ sub get_poller()	{
 	    }
 	    $cfg_result = $cfg_item->fetchrow_hashref();
 	    $cfg_dir = $cfg_result->{'cfg_dir'};
-	    $cfg_dir =~ s!/$!!g;
-	    if ($cfg_dir == '') {
+	    $cfg_dir =~ s!/\$!!g;
+	    if ($cfg_dir eq '') {
 	    	die "Error: The Monitoring engine configuration dir is empty.";
-	    } else if ($cfg_result->{'cfg_file'}) {
+	    } elsif ($cfg_result->{'cfg_file'} eq '') {
 	    	die "Error: The Monitoring engine configuration filename is empty.";
 	    }
 	    if ($is_localhost){
