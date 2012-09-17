@@ -200,12 +200,10 @@
 		$ret["hg_name"] = $oreon->checkIllegalChar($ret["hg_name"]);
 
 		$rq = "INSERT INTO hostgroup ";
-		$rq .= "(hg_name, hg_alias, hg_snmp_community, hg_snmp_version, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, hg_comment, hg_activate) ";
+		$rq .= "(hg_name, hg_alias, hg_notes, hg_notes_url, hg_action_url, hg_icon_image, hg_map_icon_image, hg_comment, hg_activate) ";
 		$rq .= "VALUES (";
 		isset($ret["hg_name"]) && $ret["hg_name"] ? $rq .= "'".CentreonDB::escape($ret["hg_name"])."', " : $rq .= "NULL,";
 		isset($ret["hg_alias"]) && $ret["hg_alias"] ? $rq .= "'".CentreonDB::escape($ret["hg_alias"])."', " : $rq .= "NULL,";
-		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_community"])."', " : $rq .= "NULL,";
-		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_version"])."', " : $rq .= "NULL,";
 		isset($ret["hg_notes"]) && $ret["hg_notes"] ? $rq .= "'".CentreonDB::escape($ret["hg_notes"])."', " : $rq .= "NULL,";
 		isset($ret["hg_notes_url"]) && $ret["hg_notes_url"] ? $rq .= "'".CentreonDB::escape($ret["hg_notes_url"])."', " : $rq .= "NULL,";
 		isset($ret["hg_action_url"]) && $ret["hg_action_url"] ? $rq .= "'".CentreonDB::escape($ret["hg_action_url"])."', " : $rq .= "NULL,";
@@ -221,8 +219,6 @@
 
 		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);
 		$fields["hg_alias"] = CentreonDB::escape($ret["hg_alias"]);
-		$fields["hg_snmp_community"] = CentreonDB::escape($ret["hg_snmp_community"]);
-		$fields["hg_snmp_version"] = CentreonDB::escape($ret["hg_snmp_version"]);
 		$fields["hg_notes"] = CentreonDB::escape($ret["hg_notes"]);
 		$fields["hg_notes_url"] = CentreonDB::escape($ret["hg_notes_url"]);
 		$fields["hg_action_url"] = CentreonDB::escape($ret["hg_action_url"]);
@@ -268,10 +264,6 @@
 		isset($ret["hg_name"]) && $ret["hg_name"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_name"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_alias = ";
 		isset($ret["hg_alias"]) && $ret["hg_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_alias"])."', " : $rq .= "NULL, ";
-		$rq .= "hg_snmp_community = ";
-		isset($ret["hg_snmp_community"]) && $ret["hg_snmp_community"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_community"])."', " : $rq .= "NULL, ";
-		$rq .= "hg_snmp_version = ";
-		isset($ret["hg_snmp_version"]) && $ret["hg_snmp_version"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_snmp_version"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_notes = ";
 		isset($ret["hg_notes"]) && $ret["hg_notes"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_notes"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_notes_url = ";
@@ -291,8 +283,6 @@
 
 		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);
 		$fields["hg_alias"] = CentreonDB::escape($ret["hg_alias"]);
-		$fields["hg_snmp_community"] = CentreonDB::escape($ret["hg_snmp_community"]);
-		$fields["hg_snmp_version"] = CentreonDB::escape($ret["hg_snmp_version"]);
 		$fields["hg_notes"] = CentreonDB::escape($ret["hg_notes"]);
 		$fields["hg_notes_url"] = CentreonDB::escape($ret["hg_notes_url"]);
 		$fields["hg_action_url"] = CentreonDB::escape($ret["hg_action_url"]);

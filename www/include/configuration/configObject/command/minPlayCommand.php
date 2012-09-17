@@ -73,22 +73,6 @@
 		}
 	}
 	
-	while (preg_match("/@DOLLAR@_HOSTSNMPCOMMUNITY@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
-		if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-			$resource_def = str_replace("@DOLLAR@_HOSTSNMPCOMMUNITY@DOLLAR@", getMySnmpCommunity(myDecode( getMyHostIDByAddress(   $_GET["command_hostaddress"] )))  , $resource_def);
-		} else {
-			$error_msg .= "\$_HOSTSNMPCOMMUNITY\$";
-		}
-	}
-
-	while (preg_match("/@DOLLAR@_HOSTSNMPVERSION@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
-		if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-			$resource_def = str_replace("@DOLLAR@_HOSTSNMPVERSION@DOLLAR@", getMySnmpVersion(myDecode( getMyHostIDByAddress(   $_GET["command_hostaddress"] )))  , $resource_def);
-		} else {
-			$error_msg .= "\$_HOSTSNMPVERSION\$";
-		}
-	}
-	
 	while (preg_match("/@DOLLAR@ARG([0-9]+)@DOLLAR@/", $resource_def, $matches) and $error_msg == "")	{
 		$match_id = $matches[1];
 		if (isset($args[$match_id])){
@@ -108,20 +92,6 @@
 					$resource_def = str_replace("@DOLLAR@HOSTADDRESS@DOLLAR@", $_GET["command_hostaddress"], $resource_def);
 				} else {
 					$error_msg .= "\$HOSTADDRESS\$";
-				}
-			}
-			if (preg_match("/@DOLLAR@_HOSTSNMPCOMMUNITY@DOLLAR@/", $resource_def, $matches) )	{
-				if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-					$resource_def = str_replace("@DOLLAR@_HOSTSNMPCOMMUNITY@DOLLAR@", getMySnmpCommunity(myDecode( getMyHostIDByAddress(   $_GET["command_hostaddress"] )))  , $resource_def);
-				} else {
-					$error_msg .= "\$_HOSTSNMPCOMMUNITY\$";
-				}
-			}
-			if (preg_match("/@DOLLAR@_HOSTSNMPVERSION@DOLLAR@/", $resource_def, $matches) )	{
-				if (isset($_GET["command_hostaddress"]) && $_GET["command_hostaddress"] != "") {
-					$resource_def = str_replace("@DOLLAR@_HOSTSNMPVERSION@DOLLAR@", getMySnmpVersion(myDecode( getMyHostIDByAddress(   $_GET["command_hostaddress"] )))  , $resource_def);
-				} else {
-					$error_msg .= "\$_HOSTSNMPVERSION\$";
 				}
 			}			
 		} else {

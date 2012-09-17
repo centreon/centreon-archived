@@ -1611,8 +1611,6 @@ CREATE TABLE `hostgroup` (
   `hg_id` int(11) NOT NULL AUTO_INCREMENT,
   `hg_name` varchar(200) DEFAULT NULL,
   `hg_alias` varchar(200) DEFAULT NULL,
-  `hg_snmp_community` varchar(255) DEFAULT NULL,
-  `hg_snmp_version` varchar(255) DEFAULT NULL,
   `hg_notes` varchar(255) DEFAULT NULL,
   `hg_notes_url` varchar(255) DEFAULT NULL,
   `hg_action_url` varchar(255) DEFAULT NULL,

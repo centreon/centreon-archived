@@ -445,14 +445,14 @@ INSERT INTO `contactgroup_host_relation` (`cghr_id`, `host_host_id`, `contactgro
 -- Contenu de la table `hostgroup`
 --
 
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(53, 'Linux-Servers', 'All linux servers', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(54, 'Windows-Servers', 'All windows servers', NULL, NULL, NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(55, 'Networks', 'All other equipments', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(56, 'Printers', 'All printers', NULL, NULL, NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(58, 'Routers', 'All routers', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(59, 'Switchs', 'All switchs', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(60, 'Firewall', 'All firewalls', NULL, '0', NULL, '1');
-INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_snmp_community`, `hg_snmp_version`, `hg_comment`, `hg_activate`) VALUES(61, 'Unix-Servers', 'All unix servers', NULL, '0', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(53, 'Linux-Servers', 'All linux servers', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(54, 'Windows-Servers', 'All windows servers', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(55, 'Networks', 'All other equipments', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(56, 'Printers', 'All printers', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(58, 'Routers', 'All routers', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(59, 'Switchs', 'All switchs', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(60, 'Firewall', 'All firewalls', NULL, '1');
+INSERT INTO `hostgroup` (`hg_id`, `hg_name`, `hg_alias`, `hg_comment`, `hg_activate`) VALUES(61, 'Unix-Servers', 'All unix servers', NULL, '1');
 
 --
 -- Contenu de la table `hostgroup_relation`

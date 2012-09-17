@@ -285,70 +285,7 @@
 			$hgs[$hg["hostgroup_hg_id"]] = html_entity_decode($hg["hg_name"], ENT_QUOTES, "UTF-8");
 		return $hgs;
 	}
-
-	// Search community in Host, Host Tpl, Hostgroup, General Options
-	function getMySnmpCommunity($host_id = NULL)	{
-		if (!$host_id)
-			return;
-		global $pearDB;
-		$host_id_bkp = $host_id;
-		while(1)	{
-			$DBRESULT = $pearDB->query("SELECT host_snmp_community, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row = $DBRESULT->fetchRow();
-			if ($row["host_snmp_community"])
-				return $row["host_snmp_community"];
-			else if ($row["host_template_model_htm_id"])
-				$host_id = $row["host_template_model_htm_id"];
-			else	{
-				$hgs = getMyHostGroups($host_id_bkp);
-				foreach ($hgs as $key=>$value)	{
-					$DBRESULT = $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					$row = $DBRESULT->fetchRow();
-					if ($row["hg_snmp_community"])
-						return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES, "UTF-8");
-				}
-				$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_community' LIMIT 1");
-				$row = $DBRESULT->fetchRow();
-				if (isset($row["value"]))
-					return html_entity_decode($row["value"], ENT_QUOTES, "UTF-8");
-				return NULL;
-			}
-		}
-		return NULL;
-	}
-
-	// Search version in Host, Host Tpl, Hostgroup, General Options
-	function getMySnmpVersion($host_id = NULL)	{
-		if (!$host_id) return;
-		global $pearDB;
-		$host_id_bkp = $host_id;
-		while(1)	{
-			$DBRESULT = $pearDB->query("SELECT host_snmp_version, host_template_model_htm_id FROM host WHERE host_id = '".$host_id."' LIMIT 1");
-			$row = $DBRESULT->fetchRow();
-			if ($row["host_snmp_version"])
-				return $row["host_snmp_version"];
-			else if ($row["host_template_model_htm_id"])
-				$host_id = $row["host_template_model_htm_id"];
-			else	{
-				$hgs = getMyHostGroups($host_id_bkp);
-				foreach ($hgs as $key=>$value)	{
-					$DBRESULT = $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
-					$row = $DBRESULT->fetchRow();
-					if ($row["hg_snmp_version"])
-						return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES, "UTF-8");
-				}
-				$DBRESULT = $pearDB->query("SELECT value FROM options WHERE `key` = 'snmp_version' LIMIT 1");
-				$row = $DBRESULT->fetchRow();
-				if (isset($row["value"]))
-					return html_entity_decode($row["value"], ENT_QUOTES, "UTF-8");
-				else
-					break;
-				break;
-			}
-		}
-		return NULL;
-	}
-
+    
 	function getMyHostField($host_id = NULL, $field)	{
 		if (!$host_id)
 			return;
@@ -822,32 +759,7 @@
 		unset($elem);
 		return $hosts;
 	}
-
-	function getMyHostGroupCommunity($hg_id = NULL)	{
-		global $pearDB;
-
-		if (!$hg_id)
-			return;
-		$DBRESULT = $pearDB->query("SELECT hg_snmp_community FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		$row = $DBRESULT->fetchRow();
-		if ($row["hg_snmp_community"]) {
-			return html_entity_decode($row["hg_snmp_community"], ENT_QUOTES, "UTF-8");
-		}
-		return NULL;
-	}
-
-	function getMyHostGroupVersion($hg_id = NULL)	{
-		global $pearDB;
-
-		if (!$hg_id)
-			return;
-		$DBRESULT = $pearDB->query("SELECT hg_snmp_version FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		$row = $DBRESULT->fetchRow();
-		if ($row["hg_snmp_version"])
-			return html_entity_decode($row["hg_snmp_version"], ENT_QUOTES, "UTF-8");
-		return NULL;
-	}
-
+    
 	#
 	## SERVICE GROUP
 	#
