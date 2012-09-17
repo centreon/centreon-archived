@@ -52,7 +52,6 @@ start() {
 	pid=$(pidofproc $binary)
 	RETVAL=$?
 	echo $pid > $pidfile
-	success $"service launched"
 	echo
 	return $RETVAL
 }
