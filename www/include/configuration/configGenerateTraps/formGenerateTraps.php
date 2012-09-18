@@ -140,6 +140,9 @@
 			}
 			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
 				$stdout = "";
+                if (!isset($msg_generate[$ret['host']])) {
+                    $msg_generate[$ret['host']] = "";
+                }
 	            if (!isset($msg_generate)) {
 	                $msg_generate = array();
 	            }
