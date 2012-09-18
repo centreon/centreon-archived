@@ -125,7 +125,7 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 -- Broker configuration
 --
 
-INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (1, 'Central-broker', 'central-broker.xml', '0', 1); 
+INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (1, 'Central-broker', 'central-broker.xml', '0', 1);
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'Central Master', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '5669', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'host', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
@@ -192,7 +192,7 @@ INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config
 --  Creation et config central rrd
 --
 
-INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (1, 'Central-rrd', 'central-rrd.xml', '0', 1); 
+INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (2, 'Central-rrd', 'central-rrd.xml', '0', 1);
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'RRD-Master', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '5669', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'host', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
@@ -228,7 +228,7 @@ INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config
 --  Creation et config central module
 --
 
-INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (1, 'central-module', 'central-module.xml', '0', 1); 
+INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (3, 'central-module', 'central-module.xml', '0', 1);
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-module.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
 INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
