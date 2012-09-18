@@ -86,13 +86,14 @@
                 $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
             }
 	}
-        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
         
 	/*
 	 * Backup poller selection
 	 */
 	$obj->setInstanceHistory($instance);
 	$obj->setHostGroupsHistory($hostgroups);
+    $obj->setCriticality($criticality_id);
 
 	/*
 	 * Get Host status

@@ -83,7 +83,7 @@
 
 	$order 		= $obj->checkArgument("order", $_GET, "ASC");
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 
 	/*
@@ -91,6 +91,7 @@
 	 */
 	$obj->setInstanceHistory($instance);
 	$obj->setHostGroupsHistory($hostgroups);
+    $obj->setCriticality($criticality_id);
 
 	/*
 	 * Get Host status

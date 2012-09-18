@@ -201,6 +201,11 @@ function initM(_time_reload, _sid, _o ){
 		_host_search = "";
 	}
 
+    if (document.getElementById("critFilter") && document.getElementById("critFilter").value) {
+		_criticality_id = document.getElementById("critFilter").value;
+		viewDebugInfo('Host criticality: '+document.getElementById("critFilter").value);
+    }
+
 	if (_first){
 		mainLoopHost();
 		_first = 0;
