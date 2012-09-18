@@ -264,6 +264,7 @@
             $critArray[$critId] = $crit['name']. " ({$crit['level']})";
         }
         $form->addElement('select', 'criticality', _('Criticality'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
+        $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
         
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
@@ -302,9 +303,6 @@ function filterStatus(value)
 }
 
 function filterCrit(value) {
-    if (value) {
-       _criticality_id = value;
-    }
     window.clearTimeout(_timeoutID);
     initM(_tm, _sid, _o);
 }

@@ -113,12 +113,17 @@
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 	$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
-        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 	/*
 	 * Backup poller selection
 	 */
 	$obj->setInstanceHistory($instance);
+    
+    /** **************************************************
+	 * Backup criticality id
+	 */
+	$obj->setCriticality($criticality_id);
 
 
 	$selected = "no_s.name1 as host_name, " . $obj->ndoPrefix . "instances.instance_name as instance_name, no_h.object_id as host_object_id, nhs.scheduled_downtime_depth as host_scheduled_downtime_depth, nhs.current_state as host_current_state, nhs.problem_has_been_acknowledged as host_problem_has_been_acknowledged, nhs.passive_checks_enabled as host_passive_checks_enabled, nhs.active_checks_enabled as host_active_checks_enabled";

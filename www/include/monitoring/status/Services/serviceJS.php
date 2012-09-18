@@ -220,6 +220,11 @@ var _criticality_id = 0;
 		} else if (document.getElementById("input_search").lenght == 0) {
 			_search = "";
 		}
+        
+		if (document.getElementById("critFilter") && document.getElementById("critFilter").value) {
+			_criticality_id = document.getElementById("critFilter").value;
+			viewDebugInfo('service criticality: '+document.getElementById("critFilter").value);
+		}
 
 		if (_first){
 			mainLoop();

@@ -95,12 +95,17 @@
 	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
 	$search_type_host = $obj->checkArgument("search_type_host", $_GET, 1);
 	$search_type_service = $obj->checkArgument("search_type_service", $_GET, 1);
-        $criticality_id = $obj->checkArgument('criticality', $_GET, 0);
+        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
         
 	/** **************************************************
 	 * Backup poller selection
 	 */
 	$obj->setInstanceHistory($instance);
+    
+    /** **************************************************
+	 * Backup criticality id
+	 */
+	$obj->setCriticality($criticality_id);
 
 	/**
 	 * Graphs Tables

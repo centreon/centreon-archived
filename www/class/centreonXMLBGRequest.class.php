@@ -95,6 +95,7 @@ class CentreonXMLBGRequest
 	 */
 	var $defaultPoller;
 	var $defaultHostgroups;
+	var $defaultCriticality = 0;
 
 	/*
 	 * Class constructor
@@ -305,6 +306,9 @@ class CentreonXMLBGRequest
 		if (isset($_SESSION['monitoring_default_poller'])) {
 			$this->defaultPoller = $_SESSION['monitoring_default_poller'];
 		}
+		if (isset($_SESSION['criticality_id'])) {
+			$this->defaultCriticality = $_SESSION['criticality_id'];
+		}
 	}
 
 	public function setInstanceHistory($instance)
@@ -315,6 +319,11 @@ class CentreonXMLBGRequest
 	public function setHostGroupsHistory($hg)
 	{
 		$_SESSION['monitoring_default_hostgroups'] = $hg;
+	}
+    
+	public function setCriticality($criticality)
+	{
+		$_SESSION['criticality_id'] = $criticality;
 	}
 
 	public function checkArgument($name, $tab, $defaultValue)
