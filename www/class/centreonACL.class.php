@@ -178,7 +178,7 @@ class CentreonACL
  				"AND cgcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
  				"AND acl.acl_group_activate = '1' " .
                 "ORDER BY acl.acl_group_name ASC";
- 		file_put_contents('/tmp/test.acl', $query);
+
  		$DBRESULT = $pearDB->query($query);
  		while ($row = $DBRESULT->fetchRow()) {
  			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
