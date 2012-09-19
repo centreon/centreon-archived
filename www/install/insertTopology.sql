@@ -224,13 +224,13 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
 (NULL, 'Broker Statistics', './img/icones/16x16/document_gear.gif', 102, 10205, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
-(NULL, 'SNMP Traps', NULL, 6, 611, 40, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1'),
-(NULL, 'SNMP Traps', NULL, 611, NULL, 40, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1');
+(NULL, 'SNMP Traps', NULL, 6, 617, 40, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1'),
+(NULL, 'SNMP Traps', NULL, 617, NULL, 40, 1, NULL, NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
-(NULL,'SNMP Traps','./img/icones/16x16/funnel_new.gif',611,61101,10,1,'./include/configuration/configObject/traps/traps.php',NULL,NULL,NULL,'1',NULL,NULL,NULL,'0'),
-(NULL,'Manufacturer','./img/icones/16x16/factory.gif',611,61102,20,1,'./include/configuration/configObject/traps-manufacturer/mnftr.php',NULL,'0','0','1',NULL,NULL,NULL,'0'),
-(NULL,'MIBs','./img/icones/16x16/component_add.gif',611,61103,30,1,'./include/configuration/configObject/traps-mibs/mibs.php',NULL,'0','0','1',NULL,NULL,NULL,'1'),
-(NULL,'SNMP traps','./img/icones/16x16/funnel_new.gif',611,61104,40,1,'./include/configuration/configGenerateTraps/generateTraps.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
+(NULL,'SNMP Traps','./img/icones/16x16/funnel_new.gif',617,61701,10,1,'./include/configuration/configObject/traps/traps.php',NULL,NULL,NULL,'1',NULL,NULL,NULL,'0'),
+(NULL,'Manufacturer','./img/icones/16x16/factory.gif',617,61702,20,1,'./include/configuration/configObject/traps-manufacturer/mnftr.php',NULL,'0','0','1',NULL,NULL,NULL,'0'),
+(NULL,'MIBs','./img/icones/16x16/component_add.gif',617,61703,30,1,'./include/configuration/configObject/traps-mibs/mibs.php',NULL,'0','0','1',NULL,NULL,NULL,'1'),
+(NULL,'Generate','./img/icones/16x16/funnel_new.gif',617,61704,40,1,'./include/configuration/configGenerateTraps/generateTraps.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -428,7 +428,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (190,60101,'a','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (191,60101,'c','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (192,60101,'w','./include/common/javascript/changetab.js','initChangeTab');
-INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (193,61104,NULL,'./include/common/javascript/changetab.js','initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (193,61704,NULL,'./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (194,60909,'c','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (195,60909,'a','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (196,60909,'w','./include/common/javascript/changetab.js','initChangeTab');

@@ -16,3 +16,18 @@ ALTER TABLE `cfg_cgi` ADD `notes_url_target` VARCHAR(255) CHARACTER SET utf8 COL
 ALTER TABLE `hostgroup`
   DROP `hg_snmp_community`,
   DROP `hg_snmp_version`;
+  
+/*!40000 ALTER TABLE `topology` DISABLE KEYS */;
+/*!40000 ALTER TABLE `topology_JS` DISABLE KEYS */;
+SET FOREIGN_KEY_CHECKS = 0;
+UPDATE `topology` SET `topology_page` = 617 WHERE `topology_page` = 611 AND `topology_name` = 'SNMP Traps' AND `topology_order` = 40;
+UPDATE `topology` SET `topology_parent` = 617 WHERE `topology_parent` = 611 AND `topology_name` = 'SNMP Traps' AND `topology_order` = 40 AND `topology_page` IS NULL;
+UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61701 WHERE `topology_parent` = 611 AND `topology_name` = 'SNMP Traps' AND `topology_order` = 10 AND `topology_page` = 61101;
+UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61702 WHERE `topology_parent` = 611 AND `topology_name` = 'Manufacturer' AND `topology_order` = 20 AND `topology_page` = 61102;
+UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61703 WHERE `topology_parent` = 611 AND `topology_name` = 'MIBs' AND `topology_order` = 30 AND `topology_page` = 61103;
+UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61704, `topology_name` = 'Generate' WHERE `topology_parent` = 611 AND (`topology_name` = 'Generate' OR `topology_name` = 'SNMP traps') AND `topology_order` = 30 AND `topology_page` = 61104;
+
+UPDATE `topology_JS` SET `id_page` = 61704 WHERE `id_page` = 61104 AND `o` IS NULL;
+SET FOREIGN_KEY_CHECKS = 1;
+/*!40000 ALTER TABLE `topology` ENABLE KEYS */;
+/*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
