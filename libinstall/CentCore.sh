@@ -50,7 +50,14 @@ mkdir -p $TMP_DIR/{work,final}/www/include/configuration/configGenerate
 mkdir -p $TMP_DIR/{work,final}/www/include/monitoring/external_cmd
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 # Copy init.d template in src
-cp -f $BASE_DIR/tmpl/install/centcore.init.d $TMP_DIR/src
+DISTRIB=""
+find_OS "DISTRIB"
+if [ "$DISTRIB" = "DEBIAN" ]; then
+    cp -f $BASE_DIR/tmpl/install/debian/centcore.init.d $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/debian/centcore.default $TMP_DIR/src
+else
+    cp -f $BASE_DIR/tmpl/install/redhat/centcore.init.d $TMP_DIR/src
+fi
 
 ###### CentCore binary
 #################################
@@ -143,6 +150,13 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	$TMP_DIR/src/centcore.init.d > $TMP_DIR/work/centcore.init.d
 check_result $? "$(gettext "Replace CentCore init script Macro")"
 
+if [ "$DISTRIB" = "DEBIAN" ]; then
+  ${SED} -e 's|"NO"|"YES"|g' $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
+  check_result $? "$(gettext "Replace CentCore default script Macro")"
+  cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
+  cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/exemples/centcore.default
+fi
+
 cp $TMP_DIR/work/centcore.init.d $TMP_DIR/final/centcore.init.d
 cp $TMP_DIR/final/centcore.init.d $INSTALL_DIR_CENTREON/examples/centcore.init.d
 
@@ -157,10 +171,19 @@ if [ "$RC" -eq "0" ] ; then
 	log "INFO" "$(gettext "CentCore init script installed")"
 	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 		$TMP_DIR/final/centcore.init.d \
-    $INIT_D/centcore >> $LOG_FILE 2>&1
+                 $INIT_D/centcore >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentCore init script installed")"
 	log "INFO" "$(gettext "CentCore init script installed")"
 	RC="1"
+        if [ "$DISTRIB" = "DEBIAN" ]; then
+	    log "INFO" "$(gettext "CentCore default script installed")"
+            $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+                 $TMP_DIR/final/centcore.default \
+                 /etc/default/centore >> $LOG_FILE 2>&1
+	    check_result $? "$(gettext "CentCore default script installed")"
+	    log "INFO" "$(gettext "CentCore default script installed")"
+	    RC="1"
+        fi
 	if [ ! "${CENTCORE_INSTALL_RUNLVL}" ] ; then
 		yes_no_default "$(gettext "Do you want me to install CentCore run level ?")"
 		RC="$?"

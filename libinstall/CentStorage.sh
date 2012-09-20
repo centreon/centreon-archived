@@ -56,6 +56,14 @@ mkdir -p $TMP_DIR/work/cron
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && \
 	mkdir -p $INSTALL_DIR_CENTREON/examples
 cp -f $BASE_DIR/tmpl/install/centstorage.init.d $TMP_DIR/src
+DISTRIB=""
+find_OS "DISTRIB"
+if [ "$DISTRIB" = "DEBIAN" ]; then
+    cp -f $BASE_DIR/tmpl/install/debian/centstorage.init.d $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/debian/centstorage.default $TMP_DIR/src
+else
+    cp -f $BASE_DIR/tmpl/install/redhat/centstorage.init.d $TMP_DIR/src
+fi
 cp -rf $TMP_DIR/src/lib $TMP_DIR/final
 
 ###### DB script
@@ -152,6 +160,13 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	$TMP_DIR/src/centstorage.init.d > $TMP_DIR/work/centstorage.init.d
 check_result $? "$(gettext "Change macros for centstorage init script")"
 
+if [ "$DISTRIB" = "DEBIAN" ]; then
+  ${SED} -e 's|"NO"|"YES"|g' $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
+  check_result $? "$(gettext "Replace CentCore default script Macro")"
+  cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
+  cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/exemples/centcore.default
+fi
+
 cp $TMP_DIR/work/centstorage.init.d \
 	$TMP_DIR/final/centstorage.init.d
 cp $TMP_DIR/final/centstorage.init.d \
@@ -171,6 +186,15 @@ if [ "$RC" -eq "0" ] ; then
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentStorage init script installed")"
 	RC="1"
+        if [ "$DISTRIB" = "DEBIAN" ]; then
+	    log "INFO" "$(gettext "CentStorage default script installed")"
+            $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+                 $TMP_DIR/final/centstorage.default \
+                 /etc/default/centstorage >> $LOG_FILE 2>&1
+	    check_result $? "$(gettext "CentStorage default script installed")"
+	    log "INFO" "$(gettext "CentStorage default script installed")"
+	    RC="1"
+        fi
 	if [ ! "${CENTSTORAGE_INSTALL_RUNLVL}" ] ; then
 		yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
 		RC="$?"
@@ -189,7 +213,7 @@ if [ "$RC" -eq "0" ] ; then
 	/etc/init.d/centstorage stop
 	check_result $? "$(gettext "CentStorage stop")"
 else
-	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centstorage.init.d" "$passed"
+	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/INSTALL_DIR_CENTREONexamples/centstorage.init.d" "$passed"
 	log "INFO" "$(gettext "CentStorage init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centstorage.init.d"
 fi
 
