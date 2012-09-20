@@ -206,7 +206,7 @@
        	isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "'".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "'".htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "'".htmlentities($ret["p1_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
-        isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "'".htmlentities($ret["status_update_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "'".(int)$ret["status_update_interval"]."',  " : $rq .= "NULL, ";
         isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "'".htmlentities($ret["nagios_user"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "'".htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["enable_notifications"]["enable_notifications"]) && $ret["enable_notifications"]["enable_notifications"] != 2 ? $rq .= "'".$ret["enable_notifications"]["enable_notifications"]."',  " : $rq .= "'2', ";
@@ -395,7 +395,7 @@
         isset($ret["max_check_result_file_age"]) && $ret["max_check_result_file_age"] != NULL ? $rq .= "max_check_result_file_age = '".htmlentities($ret["max_check_result_file_age"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "max_check_result_file_age = NULL, ";
         isset($ret["status_file"]) && $ret["status_file"] != NULL ? $rq .= "status_file = '".htmlentities($ret["status_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "status_file = NULL, ";
         isset($ret["p1_file"]) && $ret["p1_file"] != NULL ? $rq .= "p1_file = '".htmlentities($ret["p1_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "p1_file = NULL, ";
-        isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "status_update_interval = '".htmlentities($ret["status_update_interval"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "status_update_interval = NULL, ";
+        isset($ret["status_update_interval"]) && $ret["status_update_interval"] != NULL ? $rq .= "status_update_interval = '".(int)$ret["status_update_interval"]."',  " : $rq .= "status_update_interval = NULL, ";
  	    isset($ret["nagios_user"]) && $ret["nagios_user"] != NULL ? $rq .= "nagios_user = '".htmlentities($ret["nagios_user"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_user = NULL, ";
         isset($ret["nagios_group"]) && $ret["nagios_group"] != NULL ? $rq .= "nagios_group = '".htmlentities($ret["nagios_group"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "nagios_group = NULL, ";
         isset($ret["enable_notifications"]["enable_notifications"]) && $ret["enable_notifications"]["enable_notifications"] != 2 ? $rq .= "enable_notifications = '".$ret["enable_notifications"]["enable_notifications"]."',  " : $rq .= "enable_notifications = '2', ";

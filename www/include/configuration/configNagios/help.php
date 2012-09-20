@@ -1,6 +1,7 @@
 <?php
 $help = array();
 $help["status_file"] = dgettext("help", "This is the file that Monitoring Engine uses to store the current status, comment, and downtime information. This file is deleted every time Monitoring Engine stops and recreated when it starts.");
+$help["status_update_interval"] = dgettext("help", "Combined with the aggregate_status_updates option, this option determines the frequency (in seconds!) that Nagios will periodically dump program, host, and service status data.  If you are not using aggregated status data updates, this option has no effect. The minimum update interval is 2 seconds.");
 $help["log_file"] = dgettext("help", "Location (path and filename) where Monitoring Engine should create its main log file.");
 $help["cfg_dir"] = dgettext("help", "Directory where Centreon will export Monitoring Engine object configuration files to. Monitoring Engine will parse all .cfg files in this directory.");
 $help["object_cache_file"] = dgettext("help", "Specify a file in which a cached copy of object definitions should be stored. The cache file is (re)created every time Monitoring Engine is (re)started and is used by the CGIs. It is intended to speed up config file caching in the CGIs and allow you to edit the source object config files while Monitoring Engine is running without affecting the output displayed in the CGIs.");

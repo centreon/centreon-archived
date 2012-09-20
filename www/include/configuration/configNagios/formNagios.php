@@ -125,6 +125,7 @@
 	 * Part 1
 	 */
 	$form->addElement('text', 'status_file', _("Status file"), $attrsText2);
+	$form->addElement('text', 'status_update_interval', _("Status File Update Interval"), $attrsText3);
 	$form->addElement('text', 'log_file', _("Log file"), $attrsText2);
 	$form->addElement('text', 'cfg_dir', _("Object Configuration Directory"), $attrsText2);
     $form->addElement('text', 'cfg_file', _("Object Configuration File"), $attrsText2);
