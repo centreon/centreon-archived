@@ -257,7 +257,7 @@ sub getBrokerStats($) {
 
 sub getNagiosConfigurationField($$){
     CheckMySQLConnexion();
-    my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."'");
+    my $sth2 = $con->prepare("SELECT ".$_[1]." FROM `cfg_nagios` WHERE `nagios_server_id` = '".$_[0]."' AND nagios_activate = '1'");
     if (!$sth2->execute()) {
         writeLogFile("Error when getting server properties : ".$sth2->errstr);
     }
