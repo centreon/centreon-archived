@@ -157,8 +157,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -198,8 +198,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -224,8 +224,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -251,8 +251,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -290,8 +290,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -316,8 +316,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -342,8 +342,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -368,8 +368,8 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
@@ -394,8 +394,7 @@ aff_header("Centreon Setup Wizard", "Creating Database", 11);
 	    for ($i = 0; $i <= count($file_sql) - 1; $i++){
 	        $line = $file_sql[$i];
 	        if (($line[0] != '#' ) and ( $line[0] != '-' )  )    {
-	            $pos = strrpos($line, ";", strlen($line) - 2);
-	            if ($pos != false)      {
+	            if (preg_match('/;$/',  trim($line))) {
 	                $str .= $line;
 	                $str = chop ($str);
 	  				if ($DEBUG) print $str . "<br />";
