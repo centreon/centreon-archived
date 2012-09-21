@@ -533,11 +533,12 @@
 
 	// Create File, print header and return handle.
 	function create_file($filename, $name, $header = true)	{
-		umask(0113);
+		$oldumask = umask(0113);
 		if (!$handle = fopen($filename, 'w')) {
 	    	echo _("Can't access to needed file").$filename;
 	    	exit;
 		}
+		umask($oldumask);
 		$header ? print_header($handle, $name) : NULL;
 	   	return $handle;
 	}
@@ -549,7 +550,7 @@
 			exit();
 		}
 	}
-	
+
 	/**
 	*
 	* Change file mod in order to allow nagios to change it.
@@ -709,10 +710,10 @@ Modified for Oreon by Christophe Coraboeuf
 	    }
 	    return null;
 	}
-	
+
 	/**
 	 * Return the local poller
-	 * 
+	 *
 	 * @return mixed false if error, int the poller id
 	 */
 	function getLocalhostId()
