@@ -242,6 +242,7 @@ try {
 
             if ($tab['localhost']) {
                 $flag_localhost = $tab['localhost'];
+                
                 /*
                  * Meta Services Generation
                  */
@@ -256,9 +257,17 @@ try {
              * Module Generation
              */
             foreach ($oreon->modules as $key => $value) {
-                if ($value["gen"] && $files = glob($centreon_path . "www/modules/".$key."/generate_files/*.php")) {
-                    foreach ($files as $filename) {
-                        include $filename;
+                $addModule = true;
+                if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
+                    $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
+                    if ($module_license_validity == false)
+                        $addModule = false;
+                }
+                
+                if ($addModule) {
+                    if ($value["gen"] && $files = glob($centreon_path . "www/modules/".$key."/generate_files/*.php")) {
+                        foreach ($files as $filename)
+                            include $filename;
                     }
                 }
             }
@@ -305,10 +314,11 @@ $xml->startElement('errorsPhp');
 foreach ($generatePhpErrors as $error) {
     if ($error[0] == 'error') {
         $errmsg = '<p><span style="color: red;">Error</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
+        $xml->writeElement('errorPhp', $errmsg);
     }/* else {
         $errmsg = '<p><span style="color: orange;">Warning</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
     }*/
-    $xml->writeElement('errorPhp', $errmsg);
+    
 }
 $xml->endElement();
 
