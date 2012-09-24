@@ -319,7 +319,8 @@
 	 */
 	if (!$is_admin) {
 		$rq1 = 	" SELECT DISTINCT s.state, " .
-		        " s.acknowledged, " .
+		        " s.service_id, " .
+                        " s.acknowledged, " .
 		        " s.scheduled_downtime_depth " .
 			" FROM services s, centreon_acl, hosts h" .
 			" WHERE h.host_id = s.host_id " .
@@ -333,7 +334,8 @@
 			" AND h.name NOT LIKE '_Module_%' ";
 	} else {
 		$rq1 = 	" SELECT DISTINCT s.state, " .
-		        " s.acknowledged, " .
+		        " s.service_id, " .
+                        " s.acknowledged, " .
 		        " s.scheduled_downtime_depth " .
                         " FROM services s, hosts h" .
 			" WHERE h.host_id = s.host_id " .
