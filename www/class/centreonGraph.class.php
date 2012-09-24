@@ -283,7 +283,7 @@ class CentreonGraph	{
 	protected function cleanupDsNameForLegend($dsname, $reverse = false)
 	{
 	    $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#", "\\"), array("/", "\\", "%", "\:", "#", "\\\\"), $dsname);
-        if (mb_detect_encoding($newDsName) == "UTF-8") {
+        if (mb_detect_encoding($newDsName) != "UTF-8") {
         	$newDsName = mb_convert_encoding($newDsName, "UTF-8");
         }
 	    return $newDsName;
