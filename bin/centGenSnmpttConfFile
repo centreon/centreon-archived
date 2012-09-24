@@ -104,22 +104,22 @@ sub main() {
 		    exit;
 		}
 		$nbMan++ if ($sth2->rows);
-		while (my @values = $sth2->fetchrow_array()) {
+		while (my $values = $sth2->fetchrow_hashref()) {
 		    $nbTraps++;
 		    my $args = "";
-		    print FILE "EVENT ".$values[0]." ".$values[1]." \"Status Event\" ".$values[2]."\n";
-		    if (defined($values[3])) {
+		    print FILE "EVENT ".$values->{'traps_name'}." ".$values->{'traps_oid'}." \"Status Event\" ".$values->{'traps_status'}."\n";
+		    if (defined($values->{'traps_args'})) {
 				if (exists &decode_entities) {
-					$values[3] = decode_entities($values[3]);
+					$values->{'traps_args'} = decode_entities($values->{'traps_args'});
 				}
-				print FILE "FORMAT ".$values[3]."\n";
+				print FILE "FORMAT ".$values->{'traps_args'}."\n";
 		    } else {
-				$values[3] = "no output for trap!";
+				$values->{'traps_args'} = "no output for trap!";
 		    }
-		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"$values[3]\" \"\$+*\"\n";
-		    if (defined($values[4])) {
-				print FILE "SDESC\n".$values[4];
-				if ($values[4] =~ /\n$/) {
+		    print FILE "EXEC ".$NAGIOS_TRAPS."centTrapHandler-2.x \$aA \$A \$o \"".$values->{'traps_args'}."\" \"\$+*\"\n";
+		    if (defined($values->{'traps_comments'})) {
+				print FILE "SDESC\n".$values->{'traps_comments'};
+				if ($values->{'traps_comments'} =~ /\n$/) {
 				    print FILE "EDESC\n\n";
 				} else {
 				    print FILE "\nEDESC\n\n";
