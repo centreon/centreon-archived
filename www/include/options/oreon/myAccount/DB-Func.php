@@ -112,7 +112,7 @@
 		$rq .= "contact_pager = ";
 		isset($ret["contact_pager"]) && $ret["contact_pager"] != NULL ? $rq .= "'".htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		$rq .= "contact_js_effects = ";
-		$ret["contact_js_effects"] ? $rq .= "'1' ": $rq .= "'0' ";
+		isset($ret["contact_js_effects"]) ? $rq .= "'1' ": $rq .= "'0' ";
 		$rq .= "WHERE contact_id = '".$contact_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		

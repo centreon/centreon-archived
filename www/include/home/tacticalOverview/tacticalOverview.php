@@ -89,7 +89,7 @@ var func_popupXsltCallback = function(trans_obj) {
         jQuery('.popup_volante .container-load').empty();
         <?php   if ($centreon->user->get_js_effects() > 0) { ?>
         jQuery('.popup_volante').stop(true, true).animate({width: jQuery('#' + target_element).width(), height: jQuery('#' + target_element).height(),
-                             top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, "slow");
+                             top: (jQuery(window).height() / 2) - (jQuery('#' + target_element).height() / 2)}, 25);
         jQuery('#' + target_element).stop(true, true).fadeIn(1000);
         <?php } else { ?>
         jQuery('.popup_volante').css('left', jQuery('.popup_volante').attr('left'));

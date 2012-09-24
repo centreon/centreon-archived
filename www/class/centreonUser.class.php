@@ -180,6 +180,15 @@ class CentreonUser	{
   }
 
   function get_js_effects(){
+    global $pearDB;
+    
+    $DBRESULT = $pearDB->query('SELECT contact_js_effects FROM contact WHERE contact_id = ' . $this->user_id);
+    if (($jsEffectsEnabled = $DBRESULT->fetchRow()) && isset($jsEffectsEnabled['contact_js_effects'])) {
+        $this->js_effects = $jsEffectsEnabled['contact_js_effects'];
+    } else {
+        $this->js_effects = 0;
+    }
+            
     return $this->js_effects;
   }
   
