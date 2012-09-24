@@ -189,7 +189,7 @@ sub GetAllNagiosServerPerfData(){
         return ;
     }
     while (my $data = $sth2->fetchrow_hashref()) {
-        if ($stop) {
+        if (!$stop) {
             $sth2->finish();
             $con->disconnect();
             return ;
