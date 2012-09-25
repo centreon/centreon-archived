@@ -466,6 +466,11 @@
 				if ($service["service_description"])
 					$strTMP .= print_line("service_description", $service["service_description"]);
 
+				/*
+                                 * Write service_id
+                                 */
+                                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+
                                 /*
                                  * Criticality level
                                  */                                
@@ -476,12 +481,7 @@
                                         $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
                                     }
                                 }
-                        
-				/*
-                                 * Write service_id
-                                 */
-                                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
-
+                                
 				/*
 				 * Template Model Relation
 				 */
