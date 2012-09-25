@@ -637,6 +637,7 @@ sub createRRDDatabase($$$$$$$){
 	writeLogFile("ERROR while creating ".$RRDdatabase_path.$metric_id.".rrd : $ERR");
     } else {
 	writeLogFile("New Database creation successful : ".$RRDdatabase_path.$metric_id.".rrd");
+        my $chCmd = `chmod 664 ${RRDdatabase_path}${metric_id}.rrd`;
     }
     undef($ERR);
 }
