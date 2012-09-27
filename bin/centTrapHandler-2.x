@@ -502,6 +502,10 @@ sub getTrapsInfos($$$$$) {
     my $status;
     my @macros;
 
+	# Remove SNMPTT Separator
+    $arguments_line =~ s/\#\#C\#\#/\ /g;
+    $arguments_line =~ s/\#\#C\#/\ /g;
+
     # Connect to MySQL Database
     my $dbh = connectDB();
 
