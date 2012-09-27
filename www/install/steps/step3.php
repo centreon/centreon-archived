@@ -75,11 +75,11 @@ In order for your Centreon installation to function properly, please complete th
 		</td>
   	</tr>
   	<tr>
-    	<td style="padding-left:50px ">Nagios configuration directory</td>
+    	<td style="padding-left:50px ">Monitoring engine configuration directory</td>
 		<td><input name="nagios_conf" type="text" value="<?php echo (isset($_SESSION["nagios_conf"]) ?  $_SESSION["nagios_conf"]  : (isset($conf_centreon["nagios_conf"]) ?  $conf_centreon["nagios_conf"]  : "/usr/local/nagios/etc/" ) );?>" size="40"></td>
   	</tr>
   	<tr>
-    	<td style="padding-left:50px ">Nagios plugins</td>
+    	<td style="padding-left:50px ">Monitoring engine plugins</td>
 		<td><input name="nagios_plugins" type="text" value="<?php echo (isset($_SESSION["nagios_plugins"]) ?  $_SESSION["nagios_plugins"]  : (isset($conf_centreon["nagios_plugins"]) ?  $conf_centreon["nagios_plugins"]  : "/usr/local/nagios/libexec/" ) );?>" size="40"></td>
   	</tr>
   	<tr>
