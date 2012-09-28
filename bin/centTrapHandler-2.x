@@ -64,7 +64,7 @@ $etc = "@CENTREON_ETC@";
 $TIMEOUT = 10;
 
 # Define Log File
-$LOG = "/var/log/centreon/centTrapHandler.log";
+$LOG = "@CENTREON_VARLOG@/centTrapHandler.log";
 
 # Configure Debug status
 $debug = 0;
