@@ -57,14 +57,14 @@ if ($@) {
 ###############################
 # Init 
 
-$cmdFile = "/var/log/nagios/rw/nagios.cmd";
+$cmdFile = "@NAGIOS_VARLOG@/rw/nagios.cmd";
 $etc = "@CENTREON_ETC@";
 
 # Timeout for write in cmd in seconds
 $TIMEOUT = 10;
 
 # Define Log File
-$LOG = "/var/log/centreon/centTrapHandler.log";
+$LOG = "@CENTREON_VARLOG@/centTrapHandler.log";
 
 # Configure Debug status
 $debug = 1;
@@ -220,7 +220,7 @@ sub getServiceInformations($$$)	{
 	exit();
     }
     $sth->finish();
-    
+
     $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
     my @row;
@@ -509,7 +509,7 @@ sub getTrapsInfos($$$$$) {
     my $status;
     my @macros;
 
-	# Remove SNMPTT Separator
+    # Remove SNMPTT Separator
     $arguments_line =~ s/\#\#C\#\#/\ /g;
     $arguments_line =~ s/\#\#C\#/\ /g;
 
@@ -519,54 +519,68 @@ sub getTrapsInfos($$$$$) {
     my @host = get_hostinfos($dbh, $ip, $hostname);
     foreach (@host) {
 	my $this_host = $_;
-	my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $ref_servicename) = getServiceInformations($dbh, $oid, $_);
-	my @servicename = @{$ref_servicename};
-	
-	##########################
-	# REPLACE ARGS	
-	@macros = replaceMacros($allargs);
 
-	foreach (@servicename) {
-	    my $this_service = $_;
+	my $ref_traps = getServiceInformations( $dbh, $oid, $_ );
+	my @traps = @{$ref_traps};
 
-	    if ($debug) {
-		logit("Trap found on service \'$this_service\' for host \'$this_host\'.", "DD");
-	    }
-
-	    my $datetime = `date +%s`;
-	    chomp($datetime);
+	foreach (@traps) {
+	    my $trap = $_;
+	    my $ref_servicename = $trap->{'services'};
+	    my @servicename = @{$ref_servicename};
+	    my $trap_id = $trap->{'trap_id'};
+	    my $status = $trap->{'trap_status'};
+	    my $traps_submit_result_enable = $trap->{'traps_submit_result_enable'};
+	    my $traps_execution_command = $trap->{'traps_execution_command'};
+	    my $traps_reschedule_svc_enable = $trap->{'traps_reschedule_svc_enable'};
+	    my $traps_execution_command_enable = $trap->{'traps_execution_command_enable'};
+	    my $traps_advanced_treatment = $trap->{'traps_advanced_treatment'};
 
 	    ##########################
-	    # Replace Args
-	    $arguments_line = replaceArgs($arguments_line, \@macros);
-	    # Repalce OID
-	    $arguments_line = replaceOID($arguments_line, \@macros);
+	    # REPLACE ARGS	
+	    @macros = replaceMacros($allargs);
 	    
-	    # Clean unknown OID.
-	    $arguments_line = cleanOIDMacros($arguments_line);
-
-	    ######################################################################
-	    # Advanced matching rules
-	    if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-		$status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, \@macros);
-	    }
-
-	    #####################################################################
-	    # Submit value to passive service
-	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-		submitResult($dbh, $this_host, $this_service, $datetime, $status, $arguments_line, $cmdFile);
-	    }
-
-	    ######################################################################
-	    # Force service execution with external command
-	    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
-		forceCheck($dbh, $this_host, $this_service, $datetime);
-	    }
-	    
-	    ######################################################################
-	    # Execute special command
-	    if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-		executeCommand($traps_execution_command, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, \@macros);
+	    foreach (@servicename) {
+		my $this_service = $_;
+		
+		if ($debug) {
+		    logit("Trap found on service \'$this_service\' for host \'$this_host\'.", "DD");
+		}
+		
+		my $datetime = `date +%s`;
+		chomp($datetime);
+		
+		##########################
+		# Replace Args
+		$arguments_line = replaceArgs($arguments_line, \@macros);
+		# Repalce OID
+		$arguments_line = replaceOID($arguments_line, \@macros);
+		
+		# Clean unknown OID.
+		$arguments_line = cleanOIDMacros($arguments_line);
+		
+		######################################################################
+		# Advanced matching rules
+		if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
+		    $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, \@macros);
+		}
+		
+		#####################################################################
+		# Submit value to passive service
+		if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
+		    submitResult($dbh, $this_host, $this_service, $datetime, $status, $arguments_line, $cmdFile);
+		}
+		
+		######################################################################
+		# Force service execution with external command
+		if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
+		    forceCheck($dbh, $this_host, $this_service, $datetime);
+		}
+		
+		######################################################################
+		# Execute special command
+		if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
+		    executeCommand($traps_execution_command, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, \@macros);
+		}
 	    }
 	}
     }
