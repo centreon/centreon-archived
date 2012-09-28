@@ -223,29 +223,42 @@ sub getServiceInformations($$$)	{
     
     $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
-    my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment) = $sth->fetchrow_array();
-    exit if (!defined $trap_id);
-    $sth->finish();
+    my @row;
+    my @traps;
 
-    ######################################################
-    # getting all "services by host" for given host
-    my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id FROM service s, host_service_relation h";
-    $st_query .= " where  s.service_id = h.service_service_id and h.host_host_id='$host_id'";
-    my $sth_st = $_[0]->prepare($st_query); 
-    my @service = getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id);
-    $sth_st->finish;
+    while (@row = $sth->fetchrow_array()) {
+        my %trap = ('trap_id' => $row[0],
+                    'trap_status' => $row[1],
+                    'traps_submit_result_enable' => $row[2],
+                    'traps_execution_command' => $row[3],
+                    'traps_reschedule_svc_enable' => $row[4],
+                    'traps_execution_command_enable' => $row[5],
+                    'traps_advanced_treatment' => $row[6]);
 
-    ######################################################
-    # getting all "services by hostgroup" for given host
-    my $query_hostgroup_services = "SELECT s.service_id, service_description, service_template_model_stm_id FROM hostgroup_relation hgr,  service s, host_service_relation hsr";
-    $query_hostgroup_services .= " WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id";
-    $query_hostgroup_services .= " AND s.service_id = hsr.service_service_id";
-    $sth_st = $_[0]->prepare($query_hostgroup_services);
-    $sth_st->execute();
-    @service = (@service, getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id));
-    $sth_st->finish;
+	######################################################
+        # getting all "services by host" for given host
+        my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id
+        	    	FROM service s, host_service_relation h
+                	WHERE s.service_id = h.service_service_id and h.host_host_id='" . $host_id . "'";
+        my $sth_st = $_[0]->prepare($st_query);
+        my @service = getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap{'trap_id'});
+        $sth_st->finish;
 
-    return $trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, \@service ;
+        ######################################################
+        # getting all "services by hostgroup" for given host
+        my $query_hostgroup_services = "SELECT s.service_id, service_description, service_template_model_stm_id
+                        	    	FROM hostgroup_relation hgr,  service s, host_service_relation hsr
+                                        WHERE hgr.host_host_id = '" . $host_id . "'
+                                        AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+                                        AND s.service_id = hsr.service_service_id";
+        $sth_st = $_[0]->prepare($query_hostgroup_services);
+        $sth_st->execute();
+        @service = (@service, getServicesIncludeTemplate( $_[0], $sth_st, $host_id, $trap{'trap_id'}));
+        $sth_st->finish;
+	$trap{'services'} = \@service;
+	push(@traps, \%trap);
+    }
+    return \@traps;
 }
 
 #######################################
