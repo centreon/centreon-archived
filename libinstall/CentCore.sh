@@ -179,7 +179,7 @@ if [ "$RC" -eq "0" ] ; then
 	    log "INFO" "$(gettext "CentCore default script installed")"
             $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
                  $TMP_DIR/final/centcore.default \
-                 /etc/default/centore >> $LOG_FILE 2>&1
+                 /etc/default/centcore >> $LOG_FILE 2>&1
 	    check_result $? "$(gettext "CentCore default script installed")"
 	    log "INFO" "$(gettext "CentCore default script installed")"
 	    RC="1"
