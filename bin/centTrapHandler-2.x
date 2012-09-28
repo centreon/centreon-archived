@@ -67,7 +67,7 @@ $TIMEOUT = 10;
 $LOG = "/var/log/centreon/centTrapHandler.log";
 
 # Configure Debug status
-$debug = 1;
+$debug = 0;
 
 ###############################
 # require config file
