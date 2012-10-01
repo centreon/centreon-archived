@@ -221,19 +221,30 @@ sub getServiceInformations($$$)	{
     }
     $sth->finish();
 
-    $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment` FROM `traps` WHERE `traps_oid` = '$_[1]'");
+    $sth = $_[0]->prepare("SELECT
+                               `traps_id`,
+                               `traps_status`,
+                               `traps_submit_result_enable`,
+                               `traps_execution_command`,
+                               `traps_reschedule_svc_enable`,
+                               `traps_execution_command_enable`,
+                               `traps_advanced_treatment`,
+                               `traps_args`
+                           FROM `traps`
+                           WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
-    my @row;
+    my $row;
     my @traps;
 
-    while (@row = $sth->fetchrow_array()) {
-        my %trap = ('trap_id' => $row[0],
-                    'trap_status' => $row[1],
-                    'traps_submit_result_enable' => $row[2],
-                    'traps_execution_command' => $row[3],
-                    'traps_reschedule_svc_enable' => $row[4],
-                    'traps_execution_command_enable' => $row[5],
-                    'traps_advanced_treatment' => $row[6]);
+    while ($row = $sth->fetchrow_hashref()) {
+        my %trap = ('trap_id' => $row->{'traps_id'},
+                    'trap_status' => $row->{'traps_status'},
+                    'traps_submit_result_enable' => $row->{'traps_submit_result_enable'},
+                    'traps_execution_command' => $row->{'traps_execution_command'},
+                    'traps_reschedule_svc_enable' => $row->{'traps_reschedule_svc_enable1'},
+                    'traps_execution_command_enable' => $row->{'traps_execution_command_enable'},
+                    'traps_advanced_treatment' => $row->{'traps_advanced_treatment'},
+                    'traps_args' => $row->{'traps_args'});
 
 	######################################################
         # getting all "services by host" for given host
@@ -540,6 +551,7 @@ sub getTrapsInfos($$$$$) {
 	    my $traps_reschedule_svc_enable = $trap->{'traps_reschedule_svc_enable'};
 	    my $traps_execution_command_enable = $trap->{'traps_execution_command_enable'};
 	    my $traps_advanced_treatment = $trap->{'traps_advanced_treatment'};
+	    my $traps_args = $trap->{'traps_args'};
 
 	    ##########################
 	    # REPLACE ARGS	
@@ -557,23 +569,23 @@ sub getTrapsInfos($$$$$) {
 		
 		##########################
 		# Replace Args
-		$arguments_line = replaceArgs($arguments_line, \@macros);
+		$traps_args = replaceArgs($traps_args, \@macros);
 		# Repalce OID
-		$arguments_line = replaceOID($arguments_line, \@macros);
+		$traps_args = replaceOID($traps_args, \@macros);
 		
 		# Clean unknown OID.
-		$arguments_line = cleanOIDMacros($arguments_line);
+		$traps_args = cleanOIDMacros($traps_args);
 		
 		######################################################################
 		# Advanced matching rules
 		if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-		    $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, \@macros);
+		    $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
 		}
 		
 		#####################################################################
 		# Submit value to passive service
 		if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-		    submitResult($dbh, $this_host, $this_service, $datetime, $status, $arguments_line, $cmdFile);
+		    submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_args, $cmdFile);
 		}
 		
 		######################################################################
@@ -585,7 +597,7 @@ sub getTrapsInfos($$$$$) {
 		######################################################################
 		# Execute special command
 		if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-		    executeCommand($traps_execution_command, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, \@macros);
+		    executeCommand($traps_execution_command, $this_host, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
 		}
 	    }
 	}
