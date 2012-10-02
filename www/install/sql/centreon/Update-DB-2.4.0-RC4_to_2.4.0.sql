@@ -25,7 +25,7 @@ UPDATE `topology` SET `topology_parent` = 617 WHERE `topology_parent` = 611 AND 
 UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61701 WHERE `topology_parent` = 611 AND `topology_name` = 'SNMP Traps' AND `topology_order` = 10 AND `topology_page` = 61101;
 UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61702 WHERE `topology_parent` = 611 AND `topology_name` = 'Manufacturer' AND `topology_order` = 20 AND `topology_page` = 61102;
 UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61703 WHERE `topology_parent` = 611 AND `topology_name` = 'MIBs' AND `topology_order` = 30 AND `topology_page` = 61103;
-UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61704, `topology_name` = 'Generate' WHERE `topology_parent` = 611 AND (`topology_name` = 'Generate' OR `topology_name` = 'SNMP traps') AND `topology_order` = 30 AND `topology_page` = 61104;
+UPDATE `topology` SET `topology_parent` = 617, `topology_page` = 61704, `topology_name` = 'Generate' WHERE `topology_parent` = 611 AND (`topology_name` = 'Generate' OR `topology_name` = 'SNMP traps') AND `topology_order` = 40 AND `topology_page` = 61104;
 
 UPDATE `topology_JS` SET `id_page` = 61704 WHERE `id_page` = 61104 AND `o` IS NULL;
 SET FOREIGN_KEY_CHECKS = 1;
