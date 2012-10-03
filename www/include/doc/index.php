@@ -35,71 +35,27 @@
  * SVN : $Id$
  *
  */
-
-	if (!isset($oreon))
-		exit();
-
-	/*
-	 * Filter Args
-	 */
-
-	if (function_exists("filter_var")) {
-		$page = filter_var($_GET["page"], FILTER_SANITIZE_SPECIAL_CHARS);
-	} else if (function_exists("filter_get")) {
-		$page = filter_get($_GET["page"]);
-	} else {
-		$page = $_GET["page"];
-	}
-
-	if (strstr($page, "http:"))
-		header("Location: $page");
-
-	$tab_pages = preg_split("/\//", $page);
-	foreach ($tab_pages as $value)
-		$page = $value;
-
-	if (!file_exists("../doc/".$oreon->user->get_version()."/".$oreon->user->get_lang()."/"))
-		$lang = "en_US";
-	else
-		$lang = $oreon->user->get_lang();
-
-	if (preg_match("/png/i", $page)) {
-		print "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=images/".$page."\" />" ;
-		exit ;
-	}
-
-	unset($tpl);
-	unset($path);
-
-	$path = "./include/doc/";
-
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl, "./");
-
-	$flag_begin = 0;
-	$flag_end = 0;
-	print "<div style='padding=20px'>";
-
-	if ($doc = fopen("../doc/".$oreon->user->get_version()."/".$lang."/".$page, "r"))
-		while ($line = fgets($doc)){
-			if ($flag_begin && !$flag_end){
-				$line = preg_replace("/href\=\"/", "href=\"./main.php?p=$p&doc=1&page=", $line);
-				$line = preg_replace("/page\=\#/", "page=".$_GET["page"]."#", $line);
-				$line = preg_replace("/\<ul\>/", "<ul style=\"padding-left:40px;\">", $line);
-				$line = preg_replace("/\<li\>/", "<li style=\"padding-left:30px;\">", $line);
-				$line = preg_replace("/\<strong\>/", "<strong style=\"padding-left:20px;\">", $line);
-				$line = preg_replace("/\<p\>/", "<p style=\"text-align:justify;padding-left:20px;padding-right:10px;padding-top:5px;padding-bottom:10px;\">", $line);
-				$line = preg_replace("/\<img src\=\"images\//", "<img src=\"./include/doc/getImage.php?lang=".$oreon->user->get_lang()."&version=".$oreon->user->get_version()."&img=", $line);
-				$line = preg_replace("/\<table border\=\"0\"/", "<table border=\"1\"", $line);
-				print $line;
-			}
-			if (preg_match("/\<body[.]*/", $line))
-				$flag_begin = 1;
-			if (preg_match("/\<\/body[.]*/", $line))
-				$flag_end = 1;
-		}
-	print "</div>";
 ?>
+
+<div id="EnginesListTitleArea">
+    <h1>Monitoring Engine Documentation</h1>
+</div>
+
+<br />
+
+<div id="EnginesListArea" style="font-size: 18px;">
+    <ul id="EnginesList" style="padding-left: 40px;">
+        <li class="EnginesDoc" id="CengineDoc">
+            <a href="http://documentation.centreon.com/01-centreon/centreon_engine/documentation/documentation">Centreon Engine</a>
+        </li>
+        <li class="EnginesDoc" id="IcingaDoc">
+            <a href="http://docs.icinga.org/latest/en/">Icinga</a>
+        </li>
+        <li class="EnginesDoc" id="NagiosDoc">
+            <a href="http://nagios.sourceforge.net/docs/nagioscore/3/en/toc.html">Nagios</a>
+        </li>
+        <li class="EnginesDoc" id="ShinkenDoc">
+            <a href="http://shinken-monitoring.org/wiki/official/start">Shinken</a>
+        </li>
+    </ul>
+</div>
