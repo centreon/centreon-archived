@@ -69,7 +69,7 @@ $logSync = 0;
 my $installedPath = "@CENTREON_DIR@";
 my $LOG = "@CENTREON_LOG@/centcore.log";
 my $cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
-my $cmdDir = "@CENTREON_VARLIB@/centreon/centcore/";
+my $cmdDir = "@CENTREON_VARLIB@/centcore/";
 my $VARLIB = "@CENTREON_VARLIB@";
 
 $echo = "/bin/echo";
