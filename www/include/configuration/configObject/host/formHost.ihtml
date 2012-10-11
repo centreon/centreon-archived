@@ -165,6 +165,11 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_htpl.label}</td><td class="FormRowValue">{$form.mc_mod_htpl.html}</td></tr>
 		{/if}
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="service_templates"> {$form.host_svTpls.label}</td><td class="FormRowValue">{$form.host_svTpls.html}</td></tr>
+        <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.HClinks}</td></tr>
+        {if $o == "mc"}
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_hhc.label}</td><td class="FormRowValue">{$form.mc_mod_hhc.html}</td></tr>
+		{/if}
+         <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hostcategories"> {$form.host_hcs.label}</td><td class="FormRowValue">{$form.host_hcs.html}</td></tr>
 	{/if}		
 	{if $o == "a" || $o == "c"}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>

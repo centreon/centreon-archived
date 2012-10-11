@@ -90,6 +90,14 @@
 
 			}
 			$DBRESULT->free();
+
+            /*
+             * Set Host Category Parents
+             */
+            $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id FROM hostcategories_relation WHERE host_host_id = \''.$host_id.'\'');
+            for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++)
+                $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
+            $DBRESULT->free();
                         
                         /*
                          * Set criticality
@@ -170,6 +178,14 @@
 		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
 	$DBRESULT->free();
 
+    /*
+     * Host Categories comes from DB -> Store in $hcs Array
+     */
+    $hcs = array();
+    $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
+    while ($hc = $DBRESULT->fetchRow())
+        $hcs[$hc["hc_id"]] = $hc["hc_name"];
+    $DBRESULT->free();
 
 	/*
 	 *  Host multiple templates relations stored in DB
@@ -363,6 +379,23 @@
 	 *  Contact groups
 	 */
 	$ams3 = $form->addElement('advmultiselect', 'host_cgs', array(_("Linked Contact Groups"), _("Available"), _("Selected")), $notifCgs, $attrsAdvSelect, SORT_ASC);
+	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams3->setElementTemplate($advancedSelectTemplate);
+	echo $ams3->getElementJs(false);
+    
+    /*
+	 * Categories
+	 */
+    if ($o == "mc")	{
+		$mc_mod_hhc = array();
+		$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Incremental"), '0');
+		$mc_mod_hhc[] = HTML_QuickForm::createElement('radio', 'mc_mod_hhc', null, _("Replacement"), '1');
+		$form->addGroup($mc_mod_hhc, 'mc_mod_hhc', _("Update mode"), '&nbsp;');
+		$form->setDefaults(array('mc_mod_hhc'=>'0'));
+	}
+    $form->addElement('header', 'HClinks', _("Host Categories Relations"));
+    $ams3 = $form->addElement('advmultiselect', 'host_hcs', array(_("Parent Host Categories"), _("Available"), _("Selected")), $hcs, $attrsAdvSelect, SORT_ASC);
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($advancedSelectTemplate);
