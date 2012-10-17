@@ -155,7 +155,7 @@ try {
                     $msg_copy[$host["id"]] .= sprintf(_("Monitoring Engine config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
                 }
                 foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
-                    $bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].basename($filename));
+                    $bool = @copy($filename, $oreon->Nagioscfg["cfg_dir"].'/'.basename($filename));
                     $filename = array_pop(explode("/", $filename));
                     if (!$bool) {
                         throw new Exception("Could not copy files");
