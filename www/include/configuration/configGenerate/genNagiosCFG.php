@@ -75,30 +75,30 @@
 		foreach ($comment as $cmt)
 			$str .= "# ".$cmt."\n";
 	}
-	$str .= "cfg_file=".$nagios["cfg_dir"]."hostTemplates.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."hosts.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."serviceTemplates.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."services.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."misccommands.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."checkcommands.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."contactgroups.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."contactTemplates.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."contacts.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."hostgroups.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."servicegroups.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."timeperiods.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."escalations.cfg\n";
-	$str .= "cfg_file=".$nagios["cfg_dir"]."dependencies.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/hostTemplates.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/hosts.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/serviceTemplates.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/services.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/misccommands.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/checkcommands.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/contactgroups.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/contactTemplates.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/contacts.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/hostgroups.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/servicegroups.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/timeperiods.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/escalations.cfg\n";
+	$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/dependencies.cfg\n";
     
     if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "CENGINE")
-        $str .= "cfg_file=".$nagios["cfg_dir"]."connectors.cfg\n";
+        $str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/connectors.cfg\n";
 
 	if (isset($tab['localhost']) && $tab['localhost']){
 		/*
 		 * Include shinken broker cfg if necessary
 		 */
 	    if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN") {
-            $str .= "cfg_file=".$nagios['cfg_dir']."shinkenBroker.cfg\n";
+            $str .= "cfg_file=".rtrim($nagios['cfg_dir'], "/")."/shinkenBroker.cfg\n";
 		}
         
 		/*
@@ -110,7 +110,7 @@
 				$file = basename($filename);
 				$file = explode(".", $file);
 				$cfg .= $file[0];
-				$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
+				$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/".$cfg.".cfg\n";
 			}
 		}
 	}
@@ -124,11 +124,11 @@
 				$file = basename($filename);
 				$file = explode(".", $file);
 				$cfg .= $file[0];
-				$str .= "cfg_file=".$nagios["cfg_dir"].$cfg.".cfg\n";
+				$str .= "cfg_file=".rtrim($nagios["cfg_dir"], "/")."/".$cfg.".cfg\n";
 			}
 		}
 	}
-	$str .= "resource_file=".$nagios["cfg_dir"]."resource.cfg\n";
+	$str .= "resource_file=".rtrim($nagios["cfg_dir"], "/")."/resource.cfg\n";
 
 	/*
 	 * Generate all parameters
