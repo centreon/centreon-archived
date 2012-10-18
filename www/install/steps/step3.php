@@ -36,60 +36,94 @@
  *
  */
 
-aff_header("Centreon Setup Wizard", "Environment Configuration", 3);   ?>
-In order for your Centreon installation to function properly, please complete the following fields.<br /><br />
-<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-  	<tr>
-    	<th style="padding-left:20px " colspan="2">Environment Configurations</th>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">Monitoring system user</td>
-		<td><input name="nagios_user" type="text" value="<?php echo (isset($_SESSION["nagios_user"]) ?  $_SESSION["nagios_user"]  : (isset($conf_centreon['nagios_user']) ?  $conf_centreon['nagios_user']  : "nagios" ) );?>"></td>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">Monitoring system group</td>
-		<td><input name="nagios_group" type="text" value="<?php echo (isset($_SESSION["nagios_group"]) ?  $_SESSION["nagios_group"]  : (isset($conf_centreon["nagios_group"]) ?  $conf_centreon["nagios_group"]  : "nagios" ) );?>"></td>
-  	</tr>
- 	<tr>
-    	<td style="padding-left:50px ">Apache User</td>
-		<td><input name="apache_user" type="text" value="<?php echo (isset($_SESSION["apache_user"]) ?  $_SESSION["apache_user"]  : (isset($conf_centreon["apache_user"]) ?  $conf_centreon["apache_user"]  : "apache" ) );?>"></td>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">Apache Group</td>
-		<td><input name="apache_group" type="text" value="<?php echo (isset($_SESSION["apache_group"]) ?  $_SESSION["apache_group"]  : (isset($conf_centreon["apache_group"]) ?  $conf_centreon["apache_group"]  : "apache" ) );?>"></td>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">Monitoring Engine</td>
-		<td>
-		<select name="monitoring_engine">
-			<option value="CENGINE" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "CENGINE") print "selected"; ?>>Centreon Engine</option>
-			<option value="ICINGA" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "ICINGA") print "selected"; ?>>Icinga</option>
-			<option value="NAGIOS" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "NAGIOS") print "selected"; else if (!isset($_SESSION["monitoring_engine"])) print "selected"; ?>>Nagios</option>
-			<option value="SHINKEN" <?php if (isset($_SESSION["monitoring_engine"]) && $_SESSION["monitoring_engine"] == "SHINKEN") print "selected"; ?>>Shinken</option>
-		</select>
-		<input type="hidden" name="nagios_version" value="3" />
-		<!-- <select name="nagios_version">
-			<option value="2" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "2") print "selected"; ?>>2.x</option>
-    		<option value="3" <?php if (isset($_SESSION["nagios_version"]) && $_SESSION["nagios_version"] == "3") print "selected"; else if (!isset($_SESSION["nagios_version"])) print "selected"; ?>>3.x</option>
-    	</select> -->
-		</td>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">Monitoring engine configuration directory</td>
-		<td><input name="nagios_conf" type="text" value="<?php echo (isset($_SESSION["nagios_conf"]) ?  $_SESSION["nagios_conf"]  : (isset($conf_centreon["nagios_conf"]) ?  $conf_centreon["nagios_conf"]  : "/usr/local/nagios/etc/" ) );?>" size="40"></td>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">Monitoring engine plugins</td>
-		<td><input name="nagios_plugins" type="text" value="<?php echo (isset($_SESSION["nagios_plugins"]) ?  $_SESSION["nagios_plugins"]  : (isset($conf_centreon["nagios_plugins"]) ?  $conf_centreon["nagios_plugins"]  : "/usr/local/nagios/libexec/" ) );?>" size="40"></td>
-  	</tr>
-  	<tr>
-    	<td style="padding-left:50px ">RRDTool binary</td>
-		<td><input name="rrdtool_dir" type="text" value="<?php echo (isset($_SESSION["rrdtool_dir"]) ?  $_SESSION["rrdtool_dir"]  : (isset($conf_centreon["rrdtool_dir"]) ?  $conf_centreon["rrdtool_dir"]  : "/usr/bin/rrdtool" ) );?>" size="40"></td>
-  	</tr>
-</table>
-<?php
-aff_middle();
-print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-aff_footer();
+session_start();
+DEFINE('STEP_NUMBER', 3);
+$_SESSION['step'] = STEP_NUMBER;
 
+require_once 'functions.php';
+$template = getTemplate('./templates');
+
+$title = _('Monitoring engine information');
+
+$engines = array();
+$varPath = '../var/engines';
+if ($handle = opendir($varPath)) {
+    while (false !== ($engine = readdir($handle))) {
+        if ($engine != "." && $engine != "..") {
+            $engines[] = $engine;
+        }
+    }
+    closedir($handle);
+}
+
+$selectedEngine = "";
+if (isset($_SESSION['MONITORING_ENGINE'])) {
+    $selectedEngine = $_SESSION['MONITORING_ENGINE'];
+}
+
+$engineOption = "<option value='0'></option>";
+foreach ($engines as $engine) {
+    $selected = "";
+    if ($engine == $selectedEngine) {
+        $selected = "selected";
+    }
+    $engineOption .= "<option value='$engine' $selected>$engine</option>";
+}
+$contents = " 
+    <form id='form_step".STEP_NUMBER."'>
+        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <thead>
+            <tr>
+                <th colspan='2'>"._('Monitoring engine information')."</th>
+            </tr>
+            <tr>
+                <td class='formlabel'>"._('Monitoring engine')."</td>
+                <td class='formvalue'>
+                    <select name='MONITORING_ENGINE' onChange='loadParameters(this.value);'>$engineOption</select>
+                    <label class='field_msg'></label>
+                </td>
+            </tr>
+        </thead>
+        <tbody id='engineParams'></tbody>
+        <table>
+    </form>    
+";
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->display('content.tpl');
 ?>
+<script type='text/javascript'>
+    var step = <?php echo STEP_NUMBER; ?>;
+    var engine = '<?php echo $selectedEngine; ?>';
+    
+    jQuery(function() {
+       loadParameters(engine);
+    });
+    
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+        var result = false;
+        jQuery('.field_msg').html('');
+        doProcess(false, './steps/process/process_step'+step+'.php', jQuery('#form_step'+step).serialize(), function(data) {
+            if (data == 0) {
+                result = true;
+            } else {
+                eval(data);
+            }
+        });
+        return result;
+    }
+    
+    function loadParameters(engine) {
+        jQuery("select[name=MONITORING_ENGINE]").next().html("");
+        doProcess(true, './steps/process/loadEngineParameters.php', { 'engine' : engine }, function(data) {
+                            jQuery('#engineParams').html(data);
+                        });
+    }
+</script>

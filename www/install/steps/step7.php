@@ -36,93 +36,103 @@
  * 
  */
 
-if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
-	if (isset($_POST["nagiosLocation"]) && strcmp($_POST["nagiosLocation"], ""))
-		$_SESSION["nagiosLocation"] = $_POST["nagiosLocation"];
-	else
-		$_SESSION["nagiosLocation"] = "localhost";
-	if (isset($_POST["dbLocation"]) && strcmp($_POST["dbLocation"], ""))
-		$_SESSION["dbLocation"] = $_POST["dbLocation"];
-	else
-		$_SESSION["dbLocation"] = "localhost";
-	if (isset($_POST["pwdOreonDB"])) $_SESSION["pwdOreonDB"] = $_POST["pwdOreonDB"];
-	if (isset($_POST["pwdOreonDB2"])) $_SESSION["pwdOreonDB2"] = $_POST["pwdOreonDB2"];
-	if (isset($_POST["pwdroot"])) $_SESSION["pwdroot"] = $_POST["pwdroot"];
-	if (isset($_POST["nameOreonDB"])) $_SESSION["nameOreonDB"] = $_POST["nameOreonDB"];
-	if (isset($_POST["nameOdsDB"])) $_SESSION["nameOdsDB"] = $_POST["nameOdsDB"];
-	if (isset($_POST["nameStatusDB"])) $_SESSION["nameStatusDB"] = $_POST["nameStatusDB"];
-	if (isset($_POST["nagiosVersion"])) $_SESSION["nagiosVersion"] = $_POST["nagiosVersion"];
-	if (isset($_POST["mysqlVersion"])) $_SESSION["mysqlVersion"] = $_POST["mysqlVersion"];
-}
-aff_header("Centreon Setup Wizard", "DataBase Verification", 7);
+session_start();
+DEFINE('STEP_NUMBER', 7);
+$_SESSION['step'] = STEP_NUMBER;
 
+require_once 'functions.php';
+$template = getTemplate('./templates');
+
+$title = _('Installation');
+
+$contents = _('Currently installing database... please do not interrupt this process.<br/><br/>');
+
+$contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+                <thead>
+                    <tr>
+                        <th>"._('Step')."</th>
+                        <th>"._('Status')."</th>
+                    </tr>
+                </thead>
+                <tbody id='step_contents'>
+                </tbody>
+              </table>";
+
+$map = "{            
+            'dbconf'     : './steps/process/installConfigurationDb.php',
+            'dbstorage'  : './steps/process/installStorageDb.php',
+            'dbutils'    : './steps/process/installUtilsDb.php',
+            'createuser' : './steps/process/createDbUser.php',
+            'baseconf'   : './steps/process/insertBaseConf.php',
+            'configfile' : './steps/process/configFileSetup.php'
+        }";
+
+$labels = "{
+            'dbconf'    : '"._('Configuration database')."',
+            'dbstorage' : '"._('Storage database')."',
+            'dbutils'   : '"._('Utils database')."',
+            'createuser': '"._('Creating database user')."',
+            'baseconf'  : '"._('Setting up basic configuration')."',
+            'configfile': '"._('Setting up configuration file')."'
+           }";
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->display('content.tpl');
 ?>
-<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-  <tr>
-    <th align="left">Component</th>
-    <th style="text-align: right;">Status</th>
-  </tr>
-  <tr>
-    <td><b>MySQL version</b></td>
-  <?php
-	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
-	$mysql_msg = $res['1'];
-
-	if ($mysql_msg == '') {
-		$requete = "SELECT VERSION() AS mysql_version;";
-		if ($DEBUG) print $requete . "<br />";
-		$result = mysql_query($requete, $res['0']);
-		$row = mysql_fetch_assoc($result);
-		if (preg_match("/^(4\.1|5\.)/", $row['mysql_version'])){
-			echo '<td align="right"><b><span class="go">OK ('.$row['mysql_version'].')</b></td></tr>';
-		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL ('.$row['mysql_version'].')</b></td></tr>';
-			$mysql_msg = "MySQL 4.1 or newer needed";
-			$return_false = 1;
-		}
-	} else {
-  		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-		$return_false = 1;
-	} ?>
-	<tr>
-    	<td colspan="2" align="right"><?php echo $mysql_msg; ?></td>
-	</tr>
-  <tr>
-    <td><b>MySQL InnoDB Engine status</b></td>
-  <?php
-	$res = connexion('root', (isset($_SESSION["pwdroot"]) ? $_SESSION["pwdroot"] : '' ) , $_SESSION["dbLocation"]) ;
-	$mysql_msg = $res['1'];
-
-	if ($mysql_msg == '') {
-		$requete = "show variables where Variable_name LIKE 'have_innodb';";
-		if ($DEBUG) print $requete . "<br />";
-		$result = mysql_query($requete, $res['0']);
-		$row = mysql_fetch_assoc($result);
-		if ($row['Value'] == "YES") {
-			echo '<td align="right"><b><span class="go">OK</b></td></tr>';
-		} else {
-			echo '<td align="right"><b><span class="stop">CRITICAL</b></td></tr>';
-			$mysql_msg = "MySQL InnoDB Engine Must be enable";
-			$return_false = 1;
-		}
-	} else {
-  		echo '<td align="right"><b><span class="stop">CRITICAL</span></b></td></tr>';
-		$return_false = 1;
-	} ?>
-	<tr>
-    	<td colspan="2" align="right"><?php echo $mysql_msg; ?></td>
-	</tr>
-
-</table>
-<?php
-aff_middle();
-$str ='';
-if ($return_false)
-	$str .= "<input class='button' type='submit' name='Recheck' value='Recheck' />";
-$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' ";
-if ($return_false)
-	$str .= " disabled";
-$str .= " />";
-		print $str;
-		aff_footer();
-?>
+<script type='text/javascript'>
+    var processStatus = false;
+    var map = <?php echo $map;?>;
+    var labels = <?php echo $labels;?>;
+    
+    jQuery(function() {
+        jQuery("input[type=button]").hide();
+        nextStep('dbconf');
+    });
+    
+    /**
+     * Next step
+     * 
+     * @param string key
+     * @return void
+     */
+    function nextStep(key) {
+       jQuery('#step_contents').append('<tr>');
+       jQuery('#step_contents').append('<td>'+labels[key]+'</td>');
+       jQuery('#step_contents').append('<td style="font-weight: bold;" id="'+key+'"><img src="../img/misc/ajax-loader.gif"></td>');
+       jQuery('#step_contents').append('</tr>');
+       doProcess(true, map[key], new Array, function(response) {
+            var data = jQuery.parseJSON(response);
+            if (data['result'] == 0) {
+                jQuery('#'+data['id']).html('<span style="color:#10CA31;">OK</span>');
+                if (key == 'dbconf') {
+                    nextStep('dbstorage');   
+                } else if (key == 'dbstorage') {
+                    nextStep('dbutils')
+                } else if (key == 'dbutils') {
+                    nextStep('createuser');
+                } else if (key == 'createuser') {
+                    nextStep('baseconf');
+                } else if (key == 'baseconf') {
+                    nextStep('configfile');
+                } else if ('configfile') {
+                    processStatus = true;
+                    jQuery("#next").show();
+                }
+            } else {
+                jQuery("#previous").show();
+                jQuery('#'+data['id']).html(data['msg']);
+            }
+       }); 
+    }
+    
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+       return processStatus;
+    }
+</script>

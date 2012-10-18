@@ -1,0 +1,11 @@
+# column 1 => name of macro
+# column 2 => label of macro
+# column 3 => 0:optional, 1: required
+# column 4 => 0:directory, 1: file, 2: other
+# column 5 => default value
+INSTALL_DIR_ENGINE;Centreon Engine directory;1;0;/usr/share/centreon-engine
+CENTREON_ENGINE_STATS_BINARY;Centreon Engine Stats binary;1;1;/usr/sbin/centenginestats
+MONITORING_VAR_LOG;Centreon Engine var log directory;1;0;/var/log/centreon-engine
+MONITORING_VAR_LIB;Centreon Engine var lib directory;1;0;/var/lib/centreon-engine
+CENTREON_ENGINE_CONNECTORS;Centreon Engine Connector path;0;0;/usr/lib64/centreon-connector
+CENTREON_ENGINE_LIB;Centreon Engine Library (*.so) directory;1;0;/usr/lib64/centreon-engine

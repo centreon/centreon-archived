@@ -1,0 +1,9 @@
+# column 1 => name of macro
+# column 2 => label of macro
+# column 3 => 0:optional, 1: required
+# column 4 => 0:directory, 1: file
+# column 5 => default value
+INSTALL_DIR_NAGIOS;Nagios directory;1;0;/usr/share/nagios
+NAGIOSTATS_BINARY;Nagiostats binary;1;1;/usr/bin/nagiostats
+MONITORING_VAR_LOG;Nagios var directory;1;0;/var/log/nagios
+NAGIOS_IMG;Nagios image directory;0;0;/usr/share/nagios/html/images

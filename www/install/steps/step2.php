@@ -36,36 +36,64 @@
  * 
  */
 
- 	// Testing the Cookie in order to determined if cookie are authorized by the browser
-	if($_COOKIE['COOKIE'] != "COOKIE-TEST")
-	{
-	aff_header("Centreon Setup Wizard", "Cookies are disabled", 2);
-	print "<font color='red'>You have to enable Cookies to proceed with the installation!</font>";
-    aff_middle();
-    print "<input class='button' type='submit' name='Restart' value='Restart' />";
-    aff_footer();
-	}
-	else{
-	// If the cookies are authorized, we can perform the installation	
-	aff_header("Centreon Setup Wizard", "Licence", 2);
-	$license_file_name = "./LICENSE.txt";
-	$fh = fopen( $license_file_name, 'r' ) or die( "License file not found!" );
-	$license_file = fread( $fh, filesize( $license_file_name ) );
-	fclose($fh);
-	$str = "<textarea cols='80' rows='20' readonly>".$license_file."</textarea>";
-	$str .= "</td>
-	</tr>
-	<tr>
-	  <td align=\"left\">
-		<input type='checkbox' class='checkbox' name='setup_license_accept' onClick='LicenceAccepted();' value='0' /><a href=\"javascript:void(0)\" onClick=\"LicenceAcceptedByLink();\">I Accept</a>
-	  </td>
-	  <td align=right>
-		&nbsp;
-	  </td>
-	</tr>";
-	print $str;
-	aff_middle();
-	print "<input class='button' type='submit' name='goto' value='Next' id='button_next' disabled='disabled' />";
-	aff_footer();
-	}
+session_start();
+DEFINE('STEP_NUMBER', 2);
+$_SESSION['step'] = STEP_NUMBER;
+
+require_once 'functions.php';
+$template = getTemplate('./templates');
+
+$title = _('Dependency check up');
+$requiredLib = explode("\n", file_get_contents('../var/phplib'));
+/**
+ * PHP Libraries 
+ */
+$contents = "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>";
+$allClear = 1;
+$contents .= "<tr>
+                <th>"._('Module name')."</th>
+                <th>"._('File')."</th>
+                <th>"._('Status')."</th>
+             </tr>";
+foreach ($requiredLib as $line) {
+    $contents .= "<tr>";
+    list($name, $lib) = explode(":", $line);
+    $contents .= "<td>".$name."</td>";
+    $contents .= "<td>".$lib.".so</td>";
+    $contents .= "<td>";    
+    if (extension_loaded($lib)) {
+        $libMessage = '<span style="color:#10CA31; font-weight:bold;">'._('Loaded').'</span>';
+    } else {
+        $libMessage = '<span style="color:#f91e05; font-weight:bold;">'._('Not loaded').'</span>';
+        $allClear = 0;
+    }
+    $contents .= $libMessage;
+    $contents .= "</td>";
+    $contents .= "</tr>";
+}
+$contents .= "</table>";
+
+/**
+ * PEAR Libraries 
+ */
+//@todo
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->display('content.tpl');
 ?>
+<script type='text/javascript'>
+    var allClear = <?php echo $allClear; ?> 
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+       if (!allClear) {
+           return false;
+       }
+       return true; 
+    }
+</script>

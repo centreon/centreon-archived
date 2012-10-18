@@ -36,10 +36,54 @@
  * 
  */
 
-		aff_header("Centreon Upgrade Wizard", "Welcome to Centreon Upgrade Setup", 1);
-		print "<p>This installer updates the Centreon database tables. The entire process should take about 2 minutes.</p>";
-		aff_middle();
-		print "<input class='button' type='submit' name='goto' value='Start' id='defaultFocus' /></td>";
-		aff_footer();
+session_start();
+DEFINE('STEP_NUMBER', 1);
+$_SESSION['step'] = STEP_NUMBER;
 
+require_once '../steps/functions.php';
+$template = getTemplate('../steps/templates');
+
+$title = _('Centreon Upgrade');
+
+if (is_file('../install.conf.php')) {
+    $status = 0;
+    $content = sprintf("<p>%s%s</p>",
+                  _('You are about to upgrade Centreon.'),
+                  _('The entire process should take around ten minutes.'));
+    require_once '../install.conf.php';
+    $_SESSION['INSTALL_DIR_CENTREON'] = $conf_centreon['centreon_dir'];
+    $_SESSION['CENTREON_ETC'] = $conf_centreon['centreon_etc'];
+    $_SESSION['BIN_MAIL'] = $conf_centreon['mail'];
+    $_SESSION['MONITORINGENGINE_USER'] = $conf_centreon['monitoring_user'];
+    $_SESSION['MONITORINGENGINE_GROUP'] = $conf_centreon['monitoring_group'];
+    $_SESSION['MONITORINGENGINE_ETC'] = $conf_centreon['monitoring_etc'];
+    $_SESSION['MONITORINGENGINE_PLUGIN'] = $conf_centreon['plugin_dir'];
+    $_SESSION['CENTREON_LOG'] = $conf_centreon['centreon_log'];
+    $_SESSION['CENTREON_RRD_DIR'] = $conf_centreon['centreon_dir_rrd'];
+    $_SESSION['MONITORING_INIT_SCRIPT'] = $conf_centreon['monitoring_init_script'];
+    $_SESSION['MONITORING_BINARY'] = $conf_centreon['monitoring_binary'];
+    $_SESSION['CENTREON_VARLIB'] = $conf_centreon['centreon_varlib'];
+} else {
+    $status = 1;
+    $content = sprintf("<p class='required'>%s</p>", _('Configuration file not found.'));
+}
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $content);
+$template->display('content.tpl');
 ?>
+<script type='text/javascript'>
+    var status = <?php echo $status;?>;
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+       if (status == 0) {
+        return true;
+       }
+       return false;
+    }
+</script>

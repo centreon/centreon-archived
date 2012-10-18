@@ -52,31 +52,6 @@
 		include_once ("pear_module.conf.php");
 
 	$DEBUG = 0;
-
-	if (isset($_POST["Recheck"]) && $_POST["step"] == 5)
-		 $_POST["step"] = 4;
-
-	if (isset($_POST["goto"]) && !strcmp($_POST["goto"], "Back"))
-		 $_POST["step"] -= 2;
-
-	if (isset($_POST["goto-B"]) && !strcmp($_POST["goto-B"], "Back"))
-		 $_POST["step"] -= 3;
-
-	if (!isset($_POST["step"])){
-		include("./step_upgrade/step1.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 1){
-		include("./step_upgrade/step2.php");
-	} else if (isset($_POST["step"]) && ($_POST["step"] == 2 || ($_POST["step"] == 3 && isset($_POST["Recheck"])))) {
-		include("./step_upgrade/step3.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 3){
-		include("./step_upgrade/step4.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 4){
-		include("./step_upgrade/step5.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 5){
-		include("./step_upgrade/step6.php");
-	} else if (isset($_POST["step"]) && $_POST["step"] == 6){
-		include("./step_upgrade/step7.php");
-	}
-
-	exit();
+        require_once './step_upgrade/index.php';
+        exit;
 ?>

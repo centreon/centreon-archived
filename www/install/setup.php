@@ -78,32 +78,6 @@
 		$passwd_error = "Password not confirmed correctly.";
 	}
 
-	if (!isset($_POST["step"]))
-		include("./steps/step1.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 1)
-		include("./steps/step2.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 2)
-		include("./steps/step3.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 3)
-		include("./steps/step4.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 4)
-		include("./steps/step5.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 5)
-		include("./steps/step6.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 6)
-		include("./steps/step7.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 7)
-		include("./steps/step8.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 8)
-		include("./steps/step10.php");
-	/*else if (isset($_POST["step"]) && $_POST["step"] == 9)
-		include("./steps/step10.php");*/
-	else if (isset($_POST["step"]) && $_POST["step"] == 10)
-		include("./steps/step11.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 11)
-		include("./steps/step12.php");
-	else if (isset($_POST["step"]) && $_POST["step"] == 12)
-		include("./steps/step13.php");
-		ini_set("track_errors",false);
-	exit();
+        require_once './steps/index.php';
+        exit;
 ?>

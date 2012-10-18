@@ -161,8 +161,7 @@ table.StyleDottedHr th {
 .go {
 	color: #00cc00;
 	}
-.required {
+.required,.field_msg {
 	color: #ff2222;
 	font-weight: bold;
 	}
-

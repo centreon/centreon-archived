@@ -36,74 +36,126 @@
  *
  */
 
-if (!isset($_SESSION["nameOreonDB"])) {
-	$_SESSION["nameOreonDB"] = "centreon";
-}
-if (!isset($_SESSION["nameOdsDB"])) {
-	$_SESSION["nameOdsDB"] = "centstorage";
-}
-if (!isset($_SESSION["nameStatusDB"])) {
-	$_SESSION["nameStatusDB"] = "centstatus";
-}
+session_start();
+DEFINE('STEP_NUMBER', 6);
+DEFINE('DEFAULT_CONF_NAME', 'centreon');
+DEFINE('DEFAULT_STORAGE_NAME', 'centreon_storage');
+DEFINE('DEFAULT_UTILS_NAME', 'centreon_status');
+DEFINE('DEFAULT_DB_USER', 'centreon');
 
-aff_header("Centreon Setup Wizard", "DataBase Configuration", 6);
-if (isset($passwd_error) && $passwd_error)
-	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br />";
+$_SESSION['step'] = STEP_NUMBER;
+
+require_once 'functions.php';
+$template = getTemplate('./templates');
+$title = _('Database information');
+
+$defaults = array('ADDRESS' => '', 
+                'root_password' => '', 
+                'CONFIGURATION_DB' => DEFAULT_CONF_NAME, 
+                'STORAGE_DB' => DEFAULT_STORAGE_NAME, 
+                'UTILS_DB' => DEFAULT_UTILS_NAME,
+                'DB_USER' => DEFAULT_DB_USER,
+                'DB_PASS' => '',
+                'db_pass_confirm' => '');
+foreach ($defaults as $k => $v) {
+    if (isset($_SESSION[$k])) {
+        $defaults[$k] = $_SESSION[$k];
+    }
+}
+$star = "<span style='color:#f91e05'> *</span>";
+$contents = " 
+    <form id='form_step".STEP_NUMBER."'>
+        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <thead>
+            <tr>
+                <th colspan='2'>"._('Database information')."</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class='formlabel'>"._('Database Host Address (default: localhost)')."</td>
+            <td class='formvalue'>
+                <input type='text' name='ADDRESS' value='".$defaults['ADDRESS']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Root password')."</td>
+            <td class='formvalue'>
+                <input type='password' name='root_password' value='".$defaults['root_password']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Configuration database name').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='CONFIGURATION_DB' value='".$defaults['CONFIGURATION_DB']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Storage database name').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='STORAGE_DB' value='".$defaults['STORAGE_DB']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Utils database name').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='UTILS_DB' value='".$defaults['UTILS_DB']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Database user name').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='DB_USER' value='".$defaults['DB_USER']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Database user password').$star."</td>
+            <td class='formvalue'>
+                <input type='password' name='DB_PASS' value='".$defaults['DB_PASS']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Confirm user password').$star."</td>
+            <td class='formvalue'>
+                <input type='password' name='db_pass_confirm' value='".$defaults['db_pass_confirm']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </form>
+";
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->display('content.tpl');
 ?>
-<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-  <tr>
-    <th align="left">Component</th>
-    <th style="text-align: right;">Status</th>
-  </tr>
-  <tr>
-    <td><b>Root password for Mysql</b></td>
-    <td align="right"><input type="password" name="pwdroot" value="<?php if (isset($_SESSION["pwdroot"])) print $_SESSION["pwdroot"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Centreon Database Name</b></td>
-    <td align="right"><input type="text" name="nameOreonDB" value="<?php if (isset($_SESSION["nameOreonDB"])) print $_SESSION["nameOreonDB"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Centstorage Database Name</b></td>
-    <td align="right"><input type="text" name="nameOdsDB" value="<?php if (isset($_SESSION["nameOdsDB"])) print $_SESSION["nameOdsDB"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>NDO Database Name</b></td>
-    <td align="right"><input type="text" name="nameStatusDB" value="<?php if (isset($_SESSION["nameStatusDB"])) print $_SESSION["nameStatusDB"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Database Password</b></td>
-    <td align="right"><input type="password" name="pwdOreonDB" value="<?php if (isset($_SESSION["pwdOreonDB"])) print $_SESSION["pwdOreonDB"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Confirm it</b></td>
-    <td align="right"><input type="password" name="pwdOreonDB2" value="<?php if (isset($_SESSION["pwdOreonDB2"])) print $_SESSION["pwdOreonDB2"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Database location</b> (it's MySQL Server IP address. Default: localhost)</td>
-    <td align="right"><input type="text" name="dbLocation" value="<?php if (isset($_SESSION["dbLocation"])) print $_SESSION["dbLocation"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Centreon Web Interface location</b> (Default: localhost)</td>
-    <td align="right"><input type="text" name="nagiosLocation" value="<?php if (isset($_SESSION["nagiosLocation"])) print $_SESSION["nagiosLocation"]; ?>"></td>
-  </tr>
-  <tr>
-    <td colspan="2" ><span class="small">If you used a remote mysql server, enter ip address of your oreon box</span></td>
-  </tr>
-   <tr>
-    <td><b>MySQL Client version (Password Haching Changes)</b></td>
-    <td align="right">
-    	<select name="mysqlVersion">
-    		<option value="3" <?php if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "3") print "selected"; else if (!isset($_SESSION["mysqlVersion"])) print "selected"; ?>>>= 4.1 - PASSWORD()</option>
-    		<option value="2" <?php if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "2") print "selected"; ?>>>= 4.1 - OLD_PASSWORD()</option>
-    		<option value="1" <?php if (isset($_SESSION["mysqlVersion"]) && $_SESSION["mysqlVersion"] == "1") print "selected"; ?>>3.x</option>
-    	</select>
-   	</td>
-  </tr>
-</table>
-<?php
-aff_middle();
-$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-print $str;
-aff_footer();
-?>
+<script type='text/javascript'>
+    var step = <?php echo STEP_NUMBER;?>;
+    
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+        var result = false;
+        jQuery('label[class=field_msg]').html('');
+        doProcess(false, './steps/process/process_step'+step+'.php', jQuery('#form_step'+step).serialize(), function(data) {
+            if (data == 0) {
+                result = true;
+            } else {
+                eval(data);
+            }
+       });
+       return result;
+    }
+</script>

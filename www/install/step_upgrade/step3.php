@@ -36,140 +36,113 @@
  *
  */
 
-	include_once $centreon_path . "/www/class/centreonDB.class.php";
+session_start();
+DEFINE('STEP_NUMBER', 3);
+$_SESSION['step'] = STEP_NUMBER;
 
-	$pearDB 	= new CentreonDB();
-	$pearDBO 	= new CentreonDB("centstorage");
+require_once '@CENTREON_ETC@/centreon.conf.php';
+require_once '../steps/functions.php';
+$template = getTemplate('../steps/templates');
 
-	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version = $DBRESULT->fetchRow();
+include_once $centreon_path . "/www/class/centreonDB.class.php";
 
-	$DBRESULT = $pearDB->query("SELECT db_name, db_prefix, db_user, db_pass, db_host FROM cfg_ndo2db LIMIT 1");
-	if (PEAR::isError($DBRESULT)) {
-		print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-	}
-	$confNDO = $DBRESULT->fetchRow();
-	$DBRESULT->free();
+$db = new CentreonDB();
+$dbstorage = new CentreonDB('centstorage');
 
-$return_false = 0;
+$res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
+$row = $res->fetchRow();
+$current = $row['value'];
+$_SESSION['CURRENT_VERSION'] = $current;
 
-aff_header("Centreon Upgrade Wizard", "Verifying Configuration", 3);	?>
+$title = _('Installation');
+$contents = _('Currently upgrading database... please do not interrupt this process.<br/><br/>');
+$contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+                <thead>
+                    <tr>
+                        <th>"._('Step')."</th>
+                        <th>"._('Status')."</th>
+                    </tr>
+                </thead>
+                <tbody id='step_contents'>
+                </tbody>
+              </table>";
 
-<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
-  	<tr>
-    	<th align="left">Component</th>
-    	<th style="text-align: right;">Status</th>
-  	</tr>
-  	<tr>
-   		<td><b>PHP Version 5.x</b></td>
-    	<td align="right"><?php
-			$php_version = phpversion();
-	       	if(str_replace(".", "", $php_version) < "500" ){
-	         	echo "<b><span class=stop>Invalid version ($php_version) Installed</span></b>";
-			  	$return_false = 1;
-	       	} else {
-	          	echo "<b><span class=go>OK (ver $php_version)</span></b>";
-	       	}?>
-     	</td>
-  </tr>
-  <tr>
-    	<td><b>PHP Extension</b></td>
-    	<td align="right">&nbsp;</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;MySQL</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('mysql')) {
-          		echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Critical: mysql.so not loaded in php.ini</font></b>';
-		    	$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;GD</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('gd')) {
-          		echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Critical: gd.so not loaded in php.ini</font></b>';
-		    	$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;LDAP</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('ldap')) {
-          		echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="warning">Warning: ldap.so not loaded in php.ini</font></b>';
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;XML Writer</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('xmlwriter'))
-          		echo '<b><span class="go">OK</font></b>';
-			else {
-				echo '<b><span class="warning">Warning: xmlwriter.so not loaded in php.ini</font></b>';
-				$return_false = 1;
-			}	?>
-		</td>
-  </tr>
-  <tr>
-		<td><b>&nbsp;&nbsp;&nbsp;MB String</b></td>
-		<td align="right"><?php
-        	if (extension_loaded('mbstring'))
-            	echo '<b><span class="go">OK</font></b>';
-            else {
-                echo '<b><span class="warning">Critical: php-mbstring functions are not installed</font></b>';
-                $return_false = 1;
-            }       ?>
-       	</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;PHP-POSIX</b></td>
-    	<td align="right"><?php
-			if (function_exists('posix_getpwuid'))
-          		echo '<b><span class="go">OK</font></b>';
-			else {
-				echo '<b><span class="stop">Critical: php-posix functions are not installed</font></b>';
-				$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
-    	<td align="right"><?php
-    		$tab_path = preg_split("/\:/", get_include_path());
-    		$ok = 0;
-    		foreach ($tab_path as $path){
-    			if (file_exists($path. '/PEAR.php')){
-    				$_SESSION["include_path"] = $path;
-    				$ok = 1;
-    			}
-    		}
-			if ($ok){
-				echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';
-			    $return_false = 1;
-			}?>
-		</td>
-  </tr>
-</table>
-<?php
-aff_middle();
-$str = '';
-if ($return_false)
-	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
-$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
-if ($return_false)
-	$str .= " disabled";
-$str .= " />";
-print $str;
-aff_footer();
+$next = '';
+if ($handle = opendir('../sql/centreon')) {
+    while (false !== ($file = readdir($handle))) {
+        if (preg_match('/Update-DB-'.preg_quote($current).'_to_([a-zA-Z0-9\-\.]+)\.sql/', $file, $matches)) {
+            $next = $matches[1];
+        }
+    }
+    closedir($handle);
+}
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->assign('blockPreview', 1);
+$template->display('content.tpl');
 ?>
+<script type='text/javascript'>
+var step = <?php echo STEP_NUMBER;?>;
+var mycurrent;
+var mynext;
+var result = false;
+
+jQuery(function(){
+   mycurrent = '<?php echo $current;?>';
+   mynext = '<?php echo $next;?>';
+   if (mycurrent != '' && mynext != '') {
+       jQuery("input[type=button]").hide();
+       nextStep(mycurrent, mynext);
+   } else {
+       result = true;
+   }
+});
+
+/**
+ * Go to next upgrade script
+ *
+ * @param string current
+ * @param string next
+ * @return void
+ */
+function nextStep(current, next) {
+    jQuery('#step_contents').append('<tr>');
+    jQuery('#step_contents').append('<td>'+current+' to '+next+'</td>');
+    jQuery('#step_contents').append('<td style="font-weight: bold;" name="'+replaceDot(current)+'"><img src="../img/misc/ajax-loader.gif"></td>');
+    jQuery('#step_contents').append('</tr>');
+    doProcess(true, './step_upgrade/process/process_step'+step+'.php', {'current':current,'next':next}, function(response) {
+        var data = jQuery.parseJSON(response);
+        jQuery('td[name='+replaceDot(current)+']').html(data['msg']);
+        if (data['result'] == 0) {
+            if (data['next']) {
+                nextStep(data['current'], data['next']);
+            } else {
+                jQuery('#next').show();
+                result = true;
+            }
+        } else {
+            jQuery('#previous').show();            
+        }
+    }); 
+}
+
+/**
+ * Replace dot with dash characters
+ * 
+ * @param string str
+ * @return void
+ */
+function replaceDot(str) {
+    return str.replace(/\./g, '-');
+}
+
+/**
+ * Validates info
+ * 
+ * @return bool
+ */
+function validation() {
+    return result;
+}
+</script>

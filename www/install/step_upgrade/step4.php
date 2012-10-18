@@ -35,46 +35,27 @@
  * SVN : $Id$
  * 
  */
- 	
-	include_once $centreon_path . "/www/class/centreonDB.class.php";
-	
-	chdir('sql/centreon/');
-	    
-	$pearDB = new CentreonDB();
-		
-	$DBRESULT = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
-	$version = $DBRESULT->fetchRow();        		
-	
-	if (count(glob("Update-DB-".$version["value"]."_to_*.sql")) == 0) {
-    	chdir("../..");
-        require_once("./step_upgrade/step6.php");
-    } else {
-	
-		aff_header("Centreon Upgrade Wizard", "Select Version", 4); ?>
-		In order for your Centreon upgrade to work properly, please select the appropriate Centreon upgrade script.<br /><br />
-		<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-	      <tr>
-	        <th style="padding-left:20px;" colspan="2">Upgrade SQL Scripts</th>
-	      </tr>
-		  <tr>
-	        <td><b>MySQL Scripts</b></td>
-	        <td align="right">
-	        	<select name="script">
-	        	<?php       		
-	        		foreach (glob("Update-DB-".$version["value"]."_to_*.sql") as $filename) {
-						$filenameDisplayed = str_replace("Update-DB-", "", $filename);
-						$filenameDisplayed = str_replace(".sql", "", $filenameDisplayed);
-						$filenameDisplayed2 = str_replace("_", " ", $filenameDisplayed);
-						echo '<option value="'.$filenameDisplayed.'">'.$filenameDisplayed2.'</option>'; 
-					}
-	        	?>
-	        	</select>
-	       	</td>
-	      </tr>
-		</table>
-		<?php
-		aff_middle();
-		print "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-		aff_footer();	
-	}
+
+session_start();
+DEFINE('STEP_NUMBER', 4);
+$_SESSION['step'] = STEP_NUMBER;
+
+require_once '../steps/functions.php';
+$template = getTemplate('../steps/templates');
+
+$tmpfname = tempnam("../..", "");
+@unlink($tmpfname);
+@rename(str_replace('step_upgrade', '', getcwd()), realpath("../..")."/".basename($tmpfname) );
+
+$title = _('Upgrade finished');
+$contents = sprintf(_('Congratulations, you have successfully upgraded to Centreon version <b>%s</b>.'), $_SESSION['CURRENT_VERSION']);
+
+session_destroy();
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->assign('finish', 1);
+$template->assign('blockPreview', 1);
+$template->display('content.tpl');
 ?>

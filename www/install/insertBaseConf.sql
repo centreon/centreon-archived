@@ -6,59 +6,10 @@
 INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.4.0-RC5');
 
 --
--- Contenu de la table `nagios_server`
---
-
--- INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `monitoring_engine`) VALUES
--- (1, 'Central', '1', 1208530384, '127.0.0.1', '1', '0', '@NAGIOS_INIT_SCRIPT@', '@NAGIOS_BINARY@', '@NAGIOSTATS_BINARY@', '@NAGIOS_VAR@/service-perfdata', '/etc/centreon-broker', 'CENGINE');
-INSERT INTO `nagios_server` (`id`, `name`, `localhost`, `is_default`, `last_restart`, `ns_ip_address`, `ns_activate`, `ns_status`, `init_script`, `monitoring_engine`, `nagios_bin`, `nagiostats_bin`, `nagios_perfdata`, `centreonbroker_cfg_path`, `centreonbroker_module_path`, `ssh_port`, `ssh_private_key`) VALUES
-(1, 'Central', '1', 0, 1342796158, '127.0.0.1', '1', '0', '/etc/init.d/centengine', 'CENGINE', '/usr/sbin/centengine', '/usr/sbin/centenginestats', '/var/log/centreon-engine/service-perfdata', '/etc/centreon/broker', NULL, 22, NULL);
---
--- Contenu de la table `cfg_cgi`
---
-
-INSERT INTO `cfg_cgi` (`cgi_id`, `cgi_name`, `main_config_file`, `physical_html_path`, `url_html_path`, `nagios_check_command`, `use_authentication`, `default_user_name`, `authorized_for_system_information`, `authorized_for_system_commands`, `authorized_for_configuration_information`, `authorized_for_all_hosts`, `authorized_for_all_host_commands`, `authorized_for_all_services`, `authorized_for_all_service_commands`, `statusmap_background_image`, `default_statusmap_layout`, `statuswrl_include`, `default_statuswrl_layout`, `refresh_rate`, `host_unreachable_sound`, `host_down_sound`, `service_critical_sound`, `service_warning_sound`, `service_unknown_sound`, `ping_syntax`, `cgi_comment`, `cgi_activate`) VALUES(10, 'CGI.cfg', '@NAGIOS_ETC@/nagios.cfg', '@INSTALL_DIR_NAGIOS@', '/nagios', '@NAGIOS_PLUGIN@/check_nagios @NAGIOS_VAR@/status.log 5 &#039;@NAGIOS_BINARY@&#039;', '1', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'nagiosadmin', 'logofullsize.jpg', '4', NULL, '4', 90, NULL, NULL, NULL, NULL, NULL, '/bin/ping -n -c 5 $HOSTADDRESS$', 'Install Nagios TGZ', '1');
-
---
--- Contenu de la table `cfg_nagios`
---
-
-INSERT INTO `cfg_nagios` (`nagios_id`, `nagios_name`, `log_file`, `cfg_dir`, `object_cache_file`, `precached_object_file`, `temp_file`, `temp_path`, `status_file`, `check_result_path`, `max_check_result_file_age`, `p1_file`, `status_update_interval`, `nagios_user`, `nagios_group`, `enable_notifications`, `execute_service_checks`, `accept_passive_service_checks`, `execute_host_checks`, `accept_passive_host_checks`, `enable_event_handlers`, `log_rotation_method`, `log_archive_path`, `check_external_commands`, `external_command_buffer_slots`, `command_check_interval`, `command_file`, `downtime_file`, `comment_file`, `lock_file`, `retain_state_information`, `state_retention_file`, `retention_update_interval`, `use_retained_program_state`, `use_retained_scheduling_info`, `retained_contact_host_attribute_mask`, `retained_contact_service_attribute_mask`, `retained_process_host_attribute_mask`, `retained_process_service_attribute_mask`, `retained_host_attribute_mask`, `retained_service_attribute_mask`, `use_syslog`, `log_notifications`, `log_service_retries`, `log_host_retries`, `log_event_handlers`, `log_initial_states`, `log_external_commands`, `log_passive_checks`, `global_host_event_handler`, `global_service_event_handler`, `sleep_time`, `service_inter_check_delay_method`, `host_inter_check_delay_method`, `service_interleave_factor`, `max_concurrent_checks`, `max_service_check_spread`, `max_host_check_spread`, `check_result_reaper_frequency`, `max_check_result_reaper_time`, `interval_length`, `auto_reschedule_checks`, `auto_rescheduling_interval`, `auto_rescheduling_window`, `use_aggressive_host_checking`, `enable_flap_detection`, `low_service_flap_threshold`, `high_service_flap_threshold`, `low_host_flap_threshold`, `high_host_flap_threshold`, `soft_state_dependencies`, `service_check_timeout`, `host_check_timeout`, `event_handler_timeout`, `notification_timeout`, `ocsp_timeout`, `ochp_timeout`, `perfdata_timeout`, `obsess_over_services`, `ocsp_command`, `obsess_over_hosts`, `ochp_command`, `process_performance_data`, `host_perfdata_command`, `service_perfdata_command`, `host_perfdata_file`, `service_perfdata_file`, `host_perfdata_file_template`, `service_perfdata_file_template`, `host_perfdata_file_mode`, `service_perfdata_file_mode`, `host_perfdata_file_processing_interval`, `service_perfdata_file_processing_interval`, `host_perfdata_file_processing_command`, `service_perfdata_file_processing_command`, `check_for_orphaned_services`, `check_for_orphaned_hosts`, `check_service_freshness`, `service_freshness_check_interval`, `freshness_check_interval`, `check_host_freshness`, `host_freshness_check_interval`, `date_format`, `illegal_object_name_chars`, `illegal_macro_output_chars`, `use_regexp_matching`, `use_true_regexp_matching`, `admin_email`, `admin_pager`, `nagios_comment`, `nagios_activate`, `event_broker_options`, `translate_passive_host_checks`, `nagios_server_id`, `enable_predictive_host_dependency_checks`, `enable_predictive_service_dependency_checks`, `cached_host_check_horizon`, `cached_service_check_horizon`, `passive_host_checks_are_soft`, `use_large_installation_tweaks`, `free_child_process_memory`, `child_processes_fork_twice`, `enable_environment_macros`, `additional_freshness_latency`, `enable_embedded_perl`, `use_embedded_perl_implicitly`, `debug_file`, `debug_level`, `debug_level_opt`, `debug_verbosity`, `max_debug_file_size`, `cfg_file`) VALUES
-(1, 'Centreon Engine CFG 1', '/var/log/centreon-engine/centengine.log', '/etc/centreon-engine/', NULL, NULL, '/var/log/centreon-engine/centengine.tmp', NULL, '/var/log/centreon-engine/status.dat', NULL, NULL, '/usr/sbin/p1.pl', NULL, 'centreon-engine', 'centreon-engine', '1', '1', '1', '2', '2', '1', 'd', '/var/log/centreon-engine/archives/', '1', NULL, '1s', '/var/lib/centreon-engine/rw/centengine.cmd', NULL, NULL, '/var/lock/subsys/centengine.lock', '1', '/var/log/centreon-engine/retention.dat', 60, '1', '1', NULL, NULL, NULL, NULL, NULL, NULL, '0', '1', '1', '1', '1', '1', '1', '2', NULL, NULL, '1', 's', NULL, 's', 200, 5, NULL, 5, NULL, 60, '2', NULL, NULL, '1', '0', '25.0', '50.0', '25.0', '50.0', '0', 60, 10, 30, 30, 5, 5, 5, '0', NULL, '2', NULL, '1', NULL, 41, NULL, NULL, NULL, NULL, '2', '2', NULL, NULL, NULL, NULL, '0', '0', '1', NULL, NULL, '2', NULL, 'euro', '~!$%^&amp;*&quot;|&#039;&lt;&gt;?,()=', '`~$^&amp;&quot;|&#039;&lt;&gt;', '2', '2', 'admin@localhost', 'admin', 'Centreon Engine', '1', '-1', NULL, 1, '2', '2', NULL, NULL, NULL, '2', '2', '2', '2', NULL, '2', '2', '/var/log/centreon-engine/centengine.debug', 0, '0', '2', NULL, 'centengine.cfg'),
-(2, 'Nagios CFG 1', '/var/log/nagios/nagios.log', '/etc/nagios/', NULL, NULL, '/var/log/nagios/nagios.tmp', NULL, '/var/log/nagios/status.log', NULL, NULL, '/usr/sbin/p1.pl', NULL, 'nagios', 'nagios', '1', '1', '1', '2', '2', '1', 'd', '/var/log/nagios/archives/', '1', NULL, '1s', '/var/log/nagios/rw/nagios.cmd', NULL, NULL, '/var/log/nagios/nagios.lock', '1', '/var/log/nagios/retention.dat', 60, '1', '1', NULL, NULL, NULL, NULL, NULL, NULL, '0', '1', '1', '1', '1', '1', '1', '2', NULL, NULL, '1', 's', NULL, 's', 200, 5, NULL, 5, NULL, 60, '2', NULL, NULL, '1', '0', '25.0', '50.0', '25.0', '50.0', '0', 60, 10, 30, 30, 5, 5, 5, '0', NULL, '2', NULL, '1', NULL, 41, NULL, NULL, NULL, NULL, '2', '2', NULL, NULL, NULL, NULL, '0', '0', '1', NULL, NULL, '2', NULL, 'euro', '~!$%^&amp;*&quot;|&#039;&lt;&gt;?,()=', '`~$^&amp;&quot;|&#039;&lt;&gt;', '2', '2', 'admin@localhost', 'admin', 'Default Nagios.cfg', '0', '-1', NULL, 1, '2', '2', NULL, NULL, NULL, '2', '2', '2', '2', NULL, '2', '2', NULL, 0, '0', '2', NULL, 'nagios.cfg');
-
---
--- Contenu de la table `cfg_nagios`
---
-
-INSERT INTO `cfg_nagios_broker_module` (`cfg_nagios_id`, `broker_module`) VALUES ('1', '/usr/lib/centreon-engine/externalcmd.so');
-INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('2', '@NDOMOD_BINARY@ config_file=@NAGIOS_ETC@/ndomod.cfg');
-
---
--- Contenu de la table `cfg_ndo2db`
---
-
-INSERT INTO `cfg_ndo2db` (`id`, `description`, `ndo2db_user`, `ndo2db_group`, `local`, `ns_nagios_server`, `socket_type`, `socket_name`, `tcp_port`, `db_servertype`, `db_host`, `db_name`, `db_port`, `db_prefix`, `db_user`, `db_pass`, `max_timedevents_age`, `max_systemcommands_age`, `max_servicechecks_age`, `max_hostchecks_age`, `max_eventhandlers_age`, `activate`) VALUES(1, 'Principal', '@NAGIOS_USER@', '@NAGIOS_GROUP@', '0', 1, 'tcp', '/var/run/ndo.sock', 5668, 'mysql', 'localhost', 'centstatus', '3306', 'nagios_', 'centreon', 'centreon', '1440', '1440', '1440', '1440', '1440', '1');
-
---
--- Contenu de la table `cfg_ndomod`
---
-
-INSERT INTO `cfg_ndomod` (`id`, `description`, `local`, `ns_nagios_server`, `instance_name`, `output_type`, `output`, `tcp_port`, `output_buffer_items`, `buffer_file`, `file_rotation_interval`, `file_rotation_command`, `file_rotation_timeout`, `reconnect_interval`, `reconnect_warning_interval`, `data_processing_options`, `config_output_options`, `activate`) VALUES(1, 'Central-mod', NULL, 1, 'Central', 'tcpsocket', '127.0.0.1', '5668', 5000, NULL, 14400, NULL, 60, 15, 900, -1, 3, '1');
-
---
--- Contenu de la table `cfg_resource`
---
-
-INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
-(1, '$USER1$', '/usr/lib/nagios/plugins', 'path to the plugins', '1'),
-(2, '$USER3$', '@CENTREON_ENGINE_CONNECTORS@', 'path to the connectors', '1');
-
---
 -- Contenu de la table `contact`
 --
 
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, 'Supervisor', 'admin', '21496cd6c19f4bf6dcfd3ae2ec5f397e', 'en_US', 'n', 'n', 'root@localhost', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, 'Supervisor', 'admin', MD5('@ADMIN_PASSWORD@'), 'en_US', 'n', 'n', 'root@localhost', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', NULL, 'en_US', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 
@@ -121,137 +72,6 @@ INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(5, 5, 'blue_css.php');
 INSERT INTO `css_color_menu` (`id_css_color_menu`, `menu_nb`, `css_name`) VALUES(6, 6, 'blue_css.php');
 
--- 
--- Broker configuration
---
-
-INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (1, 'Central-broker', 'central-broker.xml', '0', 1);
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'Central Master', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '5669', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'host', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'protocol', 'ndo', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'tls', 'no', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'private_key', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'public_cert', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'ca_certificate', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression', 'no', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_level', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_buffer', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'ipv4', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '2_3', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-broker.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'error', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'info', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'level', 'low', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'file', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '3_17', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'Broker SQL', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_type', 'mysql', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_host', '127.0.0.1', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_port', '3306', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_user', 'centreon', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_password', 'password', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_name', 'centstorage', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'sql', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '1_16', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'Perfdata Master', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'interval', '60', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'length', '15552000', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_type', 'mysql', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_host', '127.0.0.1', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_port', '3306', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_user', 'centreon', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_password', 'password', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'db_name', 'centstorage', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'storage', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '1_14', 'output', 2 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'RRD Master', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '5669', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'host', '127.0.0.1', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'protocol', 'ndo', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'tls', 'no', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'private_key', '', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'public_cert', '', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'ca_certificate', '', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression', 'no', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_level', '', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_buffer', '', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'ipv4', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
--- INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '1_3', 'output', 3 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-broker'; 
-
--- 
---  Creation et config central rrd
---
-
-INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (2, 'Central-rrd', 'central-rrd.xml', '0', 1);
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'RRD-Master', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '5669', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'host', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'protocol', 'ndo', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'tls', 'no', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'private_key', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'public_cert', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'ca_certificate', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression', 'no', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_level', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_buffer', '', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'ipv4', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '2_3', 'input', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-rrd.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'error', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'info', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'level', 'low', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'file', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '3_17', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'RRD-File', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'metrics_path', '@CENTREON_VARLIB@/metrics', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'status_path', '@CENTREON_VARLIB@/status', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'path', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'rrd', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '1_13', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-rrd'; 
-
---
---  Creation et config central module
---
-
-INSERT INTO cfg_centreonbroker (config_id, config_name, config_filename, config_activate, ns_nagios_server) VALUES (3, 'central-module', 'central-module.xml', '0', 1);
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', '@CENTREON_LOG@/central-module.log', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'config', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'debug', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'error', 'yes', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'info', 'no', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'level', 'low', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'file', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '3_17', 'logger', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'name', 'Central-Module-output', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'port', '5669', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'host', '127.0.0.1', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'failover', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'protocol', 'ndo', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'tls', 'no', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'private_key', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'public_cert', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'ca_certificate', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression', 'no', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_level', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'compression_buffer', '', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'type', 'ipv4', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-INSERT INTO cfg_centreonbroker_info (config_id, config_key, config_value, config_group, config_group_id) SELECT config_id, 'blockId', '1_3', 'output', 1 FROM `cfg_centreonbroker` WHERE `config_name` = 'Central-module'; 
-
 --
 -- Contenu de la table `options`
 --
@@ -291,9 +111,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('nagios_path','@INSTALL_DIR_NAGIOS@'),
 ('nagios_path_bin','@NAGIOS_BINARY@'),
 ('nagios_init_script','@NAGIOS_INIT_SCRIPT@'),
-('nagios_path_img','@NAGIOS_IMG@/'),
-('nagios_path_plugins','@NAGIOS_PLUGIN@/'),
-('cengine_path_connectors','@CENTREON_ENGINE_CONNECTORS@/'),
+('nagios_path_plugins','@MONITORINGENGINE_PLUGIN@/'),
 ('nagios_version','3'),
 ('mailer_path_bin','@BIN_MAIL@'),
 ('snmp_community','public'),
@@ -325,9 +143,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('patch_url_download','http://update.centreon.com/patch/'),
 ('patch_path_download','/tmp/'),
 ('enable_autologin','0'),
-('monitoring_engine','CENGINE'),
 ('display_autologin_shortcut','1'),
-('broker', 'ndo'), 
 ('monitoring_ack_svc', '1'),
 ('monitoring_dwt_duration', '3600'),
 ('monitoring_ack_active_checks', '1'),

@@ -36,43 +36,36 @@
  * 
  */
 
-aff_header("Centreon Setup Wizard", "User Interface Configuration", 8);
-if (isset($passwd_error) && $passwd_error)
-	print "<center><b><span class=\"stop\">$passwd_error</span></b></center><br />";
-?>
-<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
-  <tr>
-    <th align="left">Component</th>
-    <th style="text-align: right;">Status</th>
-  </tr>
-  <!--<tr>
-    <td><b>Administrator login for Centreon</b></td>
-    <td align="right"><input type="text" name="oreonlogin" value="<?php /*if (isset($_SESSION["oreonlogin"])) print $_SESSION["oreonlogin"];*/ ?>"></td>
-  </tr>-->
-  <tr>
-    <td><b>Administrator password</b></td>
-    <td align="right"><input type="password" name="oreonpasswd" value="<?php if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Confirm Password</b></td>
-    <td align="right"><input type="password" name="oreonpasswd2" value="<?php if (isset($_SESSION["oreonpasswd"])) print $_SESSION["oreonpasswd"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Administrator firstname</b></td>
-    <td align="right"><input type="text" name="oreonfirstname" value="<?php if (isset($_SESSION["oreonfirstname"])) print $_SESSION["oreonfirstname"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Administrator lastname</b></td>
-    <td align="right"><input type="text" name="oreonlastname" value="<?php if (isset($_SESSION["oreonlastname"])) print $_SESSION["oreonlastname"]; ?>"></td>
-  </tr>
-  <tr>
-    <td><b>Administrator email</b></td>
-    <td align="right"><input type="text" name="oreonemail" value="<?php if (isset($_SESSION["oreonemail"])) print $_SESSION["oreonemail"]; ?>"></td>
-  </tr>
-</table>
-<?php
-aff_middle();
-$str = "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next' />";
-print $str;
-aff_footer();
+session_start();
+DEFINE('STEP_NUMBER', 8);
+$_SESSION['step'] = STEP_NUMBER;
+
+require_once 'functions.php';
+$template = getTemplate('./templates');
+
+$title = _('Installation finished');
+
+$contents = '<div>'._('The installation is now finished. To get further information regarding Centreon please visit the following links').':</div>';
+$contents .= '
+    <ul>
+        <li>'._('Official website').': <a href="http://www.centreon.com">www.centreon.com</a></li>
+        <li>'._('Forum').': <a href="http://forum.centreon.com">forum.centreon.com</a></li>
+        <li>'._('Documentation').': <a href="http://documentation.centreon.com">documentation.centreon.com</a></li>
+        <li>'._('Wiki').': <a href="http://doc.centreon.com">doc.centreon.com</a></li>
+        <li>'._('Bug Tracker').': <a href="http://forge.centreon.com">forge.centreon.com</a></li>
+    </ul>';
+$contents .= _('For professional support subscription please contact the <a href="http://support.centreon.com">Centreon Support Center</a>.');
+
+$tmpfname = tempnam("../..", "");
+@unlink($tmpfname);
+@rename(str_replace('steps', '', getcwd()), realpath("../..")."/".basename($tmpfname) );
+
+session_destroy();
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->assign('finish', 1);
+$template->assign('blockPreview', 1);
+$template->display('content.tpl');
 ?>

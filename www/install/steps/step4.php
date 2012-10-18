@@ -36,166 +36,93 @@
  *
  */
 
-if (isset($_POST["goto"]) && strcmp($_POST["goto"], "Back")){
-	$_SESSION["nagios_user"] = $_POST["nagios_user"];
-	$_SESSION["nagios_group"] = $_POST["nagios_group"];
-	$_SESSION["apache_user"] = $_POST["apache_user"];
-	$_SESSION["apache_group"] = $_POST["apache_group"];
-	$_SESSION["monitoring_engine"] = $_POST["monitoring_engine"];
-	$_SESSION["nagios_version"] = $_POST["nagios_version"];
-	$_SESSION["nagios_conf"] = $_POST["nagios_conf"];
-	$_SESSION["nagios_plugins"] = $_POST["nagios_plugins"];
-	$_SESSION["rrdtool_dir"] = $_POST["rrdtool_dir"];
-	chdir('..');
-	$_SESSION["oreon_dir_www"] = getcwd() . '/';
-	chdir('..');
-	$_SESSION["oreon_dir"] = getcwd() . '/' ;
-	$_SESSION["oreon_dir_rrd"] = getcwd() . '/rrd/';
-	chdir('www/install');
+session_start();
+DEFINE('STEP_NUMBER', 4);
+$_SESSION['step'] = STEP_NUMBER;
+
+require_once 'functions.php';
+$template = getTemplate('./templates');
+
+$title = _('Broker module information');
+
+$brokers = array();
+if ($handle = opendir('../var/brokers')) {
+    while (false !== ($broker = readdir($handle))) {
+        if ($broker != "." && $broker != "..") {
+            $brokers[] = $broker;
+        }
+    }
+    closedir($handle);
 }
-aff_header("Centreon Setup Wizard", "Verifying Configuration", 4);	?>
-<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
-  	<tr>
-    	<th align="left">Component</th>
-    	<th style="text-align: right;">Status</th>
-  	</tr>
-  	<tr>
-   		<td><b>PHP Version 5.x</b></td>
-    	<td align="right"><?php
-			$php_version = phpversion();
-	       	if(str_replace(".", "", $php_version) < "500" ){
-	         	echo "<b><span class=stop>Invalid version ($php_version) Installed</span></b>";
-			  	$return_false = 1;
-	       	} else {
-	          	echo "<b><span class=go>OK (ver $php_version)</span></b>";
-	       	}?>
-     	</td>
-  </tr>
-  <tr>
-    	<td><b>PHP Extension</b></td>
-    	<td align="right">&nbsp;</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;MySQL</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('mysql')) {
-          		echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Critical: mysql.so not loaded in php.ini</font></b>';
-		    	$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;GD</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('gd')) {
-          		echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Critical: gd.so not loaded in php.ini</font></b>';
-		    	$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;LDAP</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('ldap')) {
-          		echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="warning">Warning: ldap.so not loaded in php.ini</font></b>';
-		    	//$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;XML Writer</b></td>
-    	<td align="right"><?php
-			if (extension_loaded('xmlwriter'))
-          		echo '<b><span class="go">OK</font></b>';
-			else {
-				echo '<b><span class="warning">Warning: xml.so not loaded in php.ini</font></b>';
-				$return_false = 1;
-			}	?>
-		</td>
-  </tr>
-  <tr>
-		<td><b>&nbsp;&nbsp;&nbsp;MB String</b></td>
-		<td align="right"><?php
-        	if (extension_loaded('mbstring'))
-            	echo '<b><span class="go">OK</font></b>';
-            else {
-                echo '<b><span class="warning">Critical: php-mbstring functions are not installed</font></b>';
-                $return_false = 1;
-            }       ?>
-       	</td>
-  </tr>
-  <tr>
-    	<td><b>&nbsp;&nbsp;&nbsp;PHP-POSIX</b></td>
-    	<td align="right"><?php
-			if (function_exists('posix_getpwuid'))
-          		echo '<b><span class="go">OK</font></b>';
-			else {
-				echo '<b><span class="stop">Critical: php-posix functions are not installed</font></b>';
-				$return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-		<td><b>&nbsp;&nbsp;&nbsp;PEAR</b></td>
-    	<td align="right"><?php
-    		$tab_path = preg_split("/\:/", get_include_path());
-    		$ok = 0;
-    		foreach ($tab_path as $path){
-    			if (file_exists($path. '/PEAR.php')){
-    				$_SESSION["include_path"] = $path;
-    				$ok = 1;
-    			}
-    		}
 
-			if ($ok){
-				echo '<b><span class="go">OK</font></b>';
-			} else {
-				echo '<b><span class="stop">Warning: PHP Pear not found <br />'. $pear_path . '/PEAR.php</font></b>';
-			    $return_false = 1;
-			}?>
-		</td>
-  </tr>
-  <tr>
-    <td><b>Writable Monitoring Engine Config Directory</b></td>
-    <td align="right"><?php
+$selectedBroker = "";;
+if (isset($_SESSION['BROKER_MODULE'])) {
+    $selectedBroker = $_SESSION['BROKER_MODULE'];
+}
 
-	    if (is_dir($_SESSION['nagios_conf'])) {
-	       	$uid = @posix_getpwuid (fileowner($_SESSION['nagios_conf']));
-			$gid = @posix_getgrgid (filegroup($_SESSION['nagios_conf']));
-	       	$perms = substr(sprintf('%o', fileperms($_SESSION['nagios_conf'])), -3) ;
-			if (!(strcmp($perms,'775')) && (!strcmp($_SESSION['nagios_user'], $uid['name']) || !strcmp($_SESSION['apache_group'], $gid['name']))){
-	          	echo '<b><span class="go">OK</font></b>';
-	          	 $msg =  '';
-			} else {
-	            echo '<b><span class="stop">Critical: Not Writeable</font></b>';
-	          	$msg =  $uid['name'] .':'. $gid['name'] .'&nbsp;(' .$perms. ')</b></span>' ;
-	          	$msg .=  '<br />Should be '.$_SESSION['nagios_user'].':'.$_SESSION['apache_group'].' (775)';
-			   	echo $msg;
-			    $return_false = 1;
-	       	}
-	    } else {
-	    	echo '<b><span class="stop">Critical: Directory not exist</span></b>';
-	    	$msg =  '';
-			$return_false = 1;
-	    } ?>
-		</td>
-  </tr>
-</table>
-<?php
-aff_middle();
-$str = '';
-if (isset($return_false))
-	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
-$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
-if ($return_false)
-	$str .= " disabled";
-$str .= " />";
-print $str;
-aff_footer();
+$brokerOption = "<option value='0'></option>";
+foreach ($brokers as $broker) {
+    $selected = "";
+    if ($broker == $selectedBroker) {
+        $selected = "selected";
+    }
+    $brokerOption .= "<option value='$broker' $selected>$broker</option>";
+}
+$contents = " 
+<form id='form_step".STEP_NUMBER."'>
+        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <thead>
+            <tr>
+                <th colspan='2'>"._('Broker Module information')."</th>
+            </tr>
+            <tr>
+                <td class='formlabel'>"._('Broker Module')."</td>
+                <td class='formvalue'>
+                    <select name='BROKER_MODULE' onChange='loadParameters(this.value);'>$brokerOption</select>
+                    <label class='field_msg'></label>
+                </td>
+            </tr>
+        </thead>
+        <tbody id='brokerParams'></tbody>
+        <table>
+    </form>
+";
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->display('content.tpl');
 ?>
+<script type='text/javascript'>
+    var step = <?php echo STEP_NUMBER;?>;
+    var broker = '<?php echo $selectedBroker;?>';
+    
+    jQuery(function() {
+       loadParameters(broker);
+    });
+    
+    
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+       var result = false;
+        doProcess(false, './steps/process/process_step'+step+'.php', jQuery('#form_step'+step).serialize(), function(data) {
+            if (data == 0) {
+                result = true;
+            } else {
+                eval(data);
+            }
+        });
+        return result;
+    }
+    
+    function loadParameters(broker) {
+        jQuery("select[name=BROKER_MODULE]").next().html("");
+        doProcess(true, './steps/process/loadBrokerParameters.php', { 'broker' : broker }, function(data) {
+                            jQuery('#brokerParams').html(data);
+                        });
+    }
+</script>

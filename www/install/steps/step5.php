@@ -36,72 +36,105 @@
  *
  */
 
-aff_header("Centreon Setup Wizard", "Verifying PHP Pear Component", 5);
+session_start();
+DEFINE('STEP_NUMBER', 5);
+$_SESSION['step'] = STEP_NUMBER;
 
+require_once 'functions.php';
+$template = getTemplate('./templates');
+
+$title = _('Admin information');
+
+$defaults = array('ADMIN_PASSWORD' => '', 
+                'confirm_password' => '', 
+                'firstname' => '', 
+                'lastname' => '', 
+                'email' => '');
+foreach ($defaults as $k => $v) {
+    if (isset($_SESSION[$k])) {
+        $defaults[$k] = $_SESSION[$k];
+    }
+}
+$star = "<span style='color:#f91e05'> *</span>";
+$contents = " 
+    <form id='form_step".STEP_NUMBER."'>
+        <table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+        <thead>
+            <tr>
+                <th colspan='2'>"._('Admin information')."</th>
+            </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td class='formlabel'>"._('Login')."</td>
+            <td class='formvalue'>
+                <label>admin</label>
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Password').$star."</td>
+            <td class='formvalue'>
+                <input type='password' name='ADMIN_PASSWORD' value='".$defaults['ADMIN_PASSWORD']."'/>
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Confirm password').$star."</td>
+            <td class='formvalue'>
+                <input type='password' name='confirm_password' value='".$defaults['confirm_password']."'/>
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('First name').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='firstname' value='".$defaults['firstname']."'/>
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Last name').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='lastname' value='".$defaults['lastname']."'/>
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Email').$star."</td>
+            <td class='formvalue'>
+                <input type='text' name='email' value='".$defaults['email']."'/>
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        </tbody>
+        </table>
+    </form>
+";
+
+$template->assign('step', STEP_NUMBER);
+$template->assign('title', $title);
+$template->assign('content', $contents);
+$template->display('content.tpl');
 ?>
-<table cellpadding="0" cellspacing="0" border="0" width="100%" class="StyleDottedHr">
-  <tr>
-    <th align="left">Component</th>
-    <th style="text-align: right;">Status</th>
-  </tr>
-  <tr>
-    <td><b>PHP Pear Extension</b></td>
-    <td align="right">&nbsp;</td>
-  </tr>
-
-	<?php
-	$msg = NULL;
-	$alldeps = NULL;
-
-	$tab_path = preg_split("/\:/", get_include_path());
-
-	foreach ($pear_module as $module) {	?>
-   <tr>
-    <td><b>&nbsp;&nbsp;&nbsp;<?php echo $module["name"] ?></b></td>
-    <td align="right"><?php
-    	$msg = NULL;
-    	$ok = 0;
-    	foreach ($tab_path as $path){
-			if (file_exists($path. '/PEAR.php'))
-				$ok = 1;
-		}
-    	if ($ok) {
-          	echo '<b><span class="go">OK</font></b>';
-		} else {
-			echo '<b><span class="stop">Failed</font></b>';
-			$msg ="Need " . $module["name"] . "-" . $module["version"];
-			$alldeps =  $alldeps . " " . $module["name"];
-		    $return_false = 1;
-		}
-		?></td>
-  </tr>
-  <?php if($msg)  { ?>
-  <tr>
-    <td align="right" colspan="2"><?php echo $msg ; ?></td>
-  </tr>
-  <?php } ?>
-
-  <?php } ?>
-  <?php if($alldeps)  { ?>
-   <tr>
-    <td colspan="2" ><span class="warning">Run this shell command under root user : </span></td>
-  </tr>
-  <tr>
-    <td colspan="2" ><span class="warning">pear install -o -f --alldeps <?php echo $alldeps; ?> </span></td>
-  </tr>
-   <?php } ?>
-
-</table>
-<?php
-
-aff_middle();
-$str = '';
-if (isset($return_false))
-	$str = "<input class='button' type='submit' name='Recheck' value='Recheck' />";
-$str .= "<input class='button' type='submit' name='goto' value='Back' /><input class='button' type='submit' name='goto' value='Next' id='button_next'";
-if ($return_false)
-	$str .= " disabled";
-$str .= " />";
-print $str;
-aff_footer();
-?>
+<script type='text/javascript'>
+    var step = <?php echo STEP_NUMBER;?>;
+    
+    /**
+     * Validates info
+     * 
+     * @return bool
+     */
+    function validation() {
+        var result = false;
+        jQuery('label[class=field_msg]').html('');
+        doProcess(false, './steps/process/process_step'+step+'.php', jQuery('#form_step'+step).serialize(), function(data) {
+            if (data == 0) {
+                result = true;
+            } else {
+                eval(data);
+            }
+       });
+       return result;
+    }
+</script>
