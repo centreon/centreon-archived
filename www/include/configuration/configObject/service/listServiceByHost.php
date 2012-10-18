@@ -339,7 +339,7 @@
 	$elemArr = array();
 	$fgHost = array("value"=>NULL, "print"=>NULL);
 
-	$interval_length = $oreon->Nagioscfg['interval_length'];
+	$interval_length = $oreon->optGen['interval_length'];
 
 	for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
 		/**

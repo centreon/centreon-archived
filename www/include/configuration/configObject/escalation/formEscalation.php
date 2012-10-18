@@ -326,7 +326,7 @@
 	$tpl->assign("sort5", _("Meta Services Escalation"));
 	$tpl->assign("sort6", _("Servicegroups Escalation"));
 
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+	$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 	# prepare help texts

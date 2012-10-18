@@ -110,7 +110,7 @@
 	 */
 	$elemArr = array();
 
-	$interval_length = $oreon->Nagioscfg['interval_length'];
+	$interval_length = $oreon->optGen['interval_length'];
 
 	$search = str_replace('#S#', "/", $search);
 	$search = str_replace('#BS#', "\\", $search);

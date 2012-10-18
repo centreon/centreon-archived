@@ -875,12 +875,12 @@
 	$tpl->assign("helptext", $helptext);
 
 	if ($o != "a" && $o != "c") {
-		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+		$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 	} else {
 		/*
 		 * Get interval for the good poller.
 		 */
-		$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+		$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 	}
 
 	$valid = false;

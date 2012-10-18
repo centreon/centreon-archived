@@ -199,8 +199,7 @@
 		<table class="ListTable">
 		 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code_colored.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$TimeUnit}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="interval_length">&nbsp;{$form.interval_length.label}</td><td class="FormRowValue">{$form.interval_length.html}&nbsp;{$Seconds}</td></tr>
-			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sleep_time">&nbsp;{$form.sleep_time.label}</td><td class="FormRowValue">{$form.sleep_time.html}</td></tr>
+			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sleep_time">&nbsp;{$form.sleep_time.label}</td><td class="FormRowValue">{$form.sleep_time.html}</td></tr>
 	
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$HostCheckSchedulingOptions}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_inter_check_delay_method">&nbsp;{$form.host_inter_check_delay_method.label}</td><td class="FormRowValue">{$form.host_inter_check_delay_method.html}</td></tr>

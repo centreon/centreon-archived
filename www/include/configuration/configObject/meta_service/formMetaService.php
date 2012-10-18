@@ -293,7 +293,7 @@
 	}
 
 	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version()));
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+	$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 
 	$valid = false;
 	if ($form->validate())	{

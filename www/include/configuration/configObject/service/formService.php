@@ -837,7 +837,7 @@
 	$tpl->assign("sort4", _("Service Extended Info"));
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+	$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 	$tpl->assign("p", $p);
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 

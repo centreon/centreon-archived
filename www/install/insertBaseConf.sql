@@ -155,7 +155,8 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('centstorage', '1'),
 ('tactical_host_limit', '100'),
 ('tactical_service_limit', '100'),
-('tactical_refresh_interval', '20');
+('tactical_refresh_interval', '20'), 
+('interval_length', '60');
 
 --
 -- Contenu de la table `giv_components_template`

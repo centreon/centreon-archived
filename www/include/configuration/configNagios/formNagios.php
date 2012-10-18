@@ -304,8 +304,6 @@
 	/* *****************************************************
 	 * General Options
 	 */
-	$form->addElement('text', 'interval_length', _("Timing Interval Length"), $attrsText3);
-
 	$form->addElement('text', 'sleep_time', _("Inter-Check Sleep Time"), $attrsText3);
 	$form->addElement('text', 'max_concurrent_checks', _("Maximum Concurrent Service Checks"), $attrsText3);
 	$form->addElement('text', 'max_host_check_spread', _("Maximum Host Check Spread"), $attrsText3);

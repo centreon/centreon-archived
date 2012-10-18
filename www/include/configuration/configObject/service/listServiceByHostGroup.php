@@ -216,7 +216,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 
-	$interval_length = $centreon->Nagioscfg['interval_length'];
+	$interval_length = $centreon->optGen['interval_length'];
 
 	$elemArr = array();
 	$fgHostgroup = array("value" => NULL, "print" => NULL);

@@ -35,11 +35,18 @@
  * SVN : $Id$
  *
  */
-    if (!isset($oreon))
+
+    if (!isset($oreon)) {
 		exit();
+	}
 
+	/*
+	 * Connect to MySQL
+	 */
+	$pearDBO = new CentreonDB("centstorage");
+	
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
-
+	
 	$dir_conf = $centreonBrokerPath . '/' . $tab['id'];
 
 	if (!is_dir($dir_conf) && is_writable($centreonBrokerPath)) {
@@ -62,7 +69,32 @@
 	        $centreonBrokerModulePath = trim($row['centreonbroker_module_path']);
 	    }
 	}
+	
+	/*
+	 * Get Interval
+	 */
+	$interval_length = 60;
+	$query = "SELECT * FROM options WHERE `key` = 'interval_length'";
+	$res = $pearDB->query($query);
+	if (false === PEAR::isError($res) && $res->numRows() == 1) {
+		$row = $res->fetchRow();
+		$interval_length = $row["value"];
+	}
+	
+	/*
+	 * Get Len RRD Retention
+	 */
+	$len_storage_rrd = 180 * 24 * 60 * 60;
+	$query = "SELECT len_storage_rrd FROM config";
+	$res = $pearDBO->query($query);
+	if (false === PEAR::isError($res) && $res->numRows() == 1) {
+		$row = $res->fetchRow();
+		$len_storage_rrd = (int)$row["len_storage_rrd"] * 24 * 60 * 60;
+	}
 
+	/*
+	 * Init Broker configuration object
+	 */
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name
@@ -105,17 +137,24 @@
 
     	    foreach ($groups as $group => $listInfos) {
     	        if (count($listInfos) > 0) {
-        	        foreach ($listInfos as $infos) {
+        	        foreach ($listInfos as $key2 => $infos) {
         	            $fileXml->startElement($group);
         	            foreach ($infos as $key => $value) {
         	                if (trim($value) != '' && $key != 'blockId') {
-        	                    $fileXml->writeElement($key, $value);
-        	                }
-            	            /*if (CentreonConfigCentreonBroker::CORRELATION_STRING == $group . '_' . $key) {
-            	                $filenameCorrelation = $value;
-            	                generateCentreonBrokerCorrelation($cbObj, $filenameCorrelation, $pearDB);
-            	            }*/
+        	                    if ($key != 'length' && $key != 'interval') {
+	        	                	$fileXml->writeElement($key, $value);
+	        	                    if ($key == "type") {
+			 							$type = $value;
+					   				}
+        	                    }
+        	            	}
         	            }
+
+        	            if ($group == "output" && $type == 'storage') {
+        	            	$fileXml->writeElement("length", $len_storage_rrd);
+        	            	$fileXml->writeElement("interval", $interval_length);
+        	            }
+        	            
         	            $fileXml->endElement();
         	        }
     	        }

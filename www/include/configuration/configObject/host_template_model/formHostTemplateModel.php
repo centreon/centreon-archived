@@ -693,7 +693,7 @@
 	}
 	$tpl->assign("helptext", $helptext);
 
-	$tpl->assign('time_unit', " * ".$oreon->Nagioscfg["interval_length"]." "._("seconds"));
+	$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 
 	$valid = false;
 	if ($form->validate() && $from_list_menu == false)	{

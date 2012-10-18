@@ -45,6 +45,12 @@
 	}
 	$DBRESULT->free();
 
+	/*
+	 * Check value for interval_length
+	 */
+	if (!isset($gopt["interval_length"])) {
+		$gopt["interval_length"] = 60;
+	}
 
 	$attrsText 		= array("size"=>"40");
 	$attrsText2		= array("size"=>"5");
@@ -62,6 +68,7 @@
 	$form->addElement('header', 'nagios', _("Monitoring Engine information"));
 	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
+	$form->addElement('text', 'interval_length', _("Interval Length"), $attrsText2);
 	$form->addElement('text', 'cengine_path_connectors', _("Connectors Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));

@@ -9,6 +9,7 @@ $help['tip_default_engine'] = dgettext('help', 'Default monitoring engine.');
 $help['tip_images_directory'] = dgettext('help', 'Directory where images are stored.');
 $help['tip_plugins_directory'] = dgettext('help', 'Directory where check plugins are stored.');
 $help['tip_cengine_path_connectors'] = dgettext('help', 'Directory for Centreon Connector for Centreon Engine >= 1.3');
+$help["tip_interval_length"] = dgettext("help", "This is the number of seconds per \"unit interval\" used for timing in the scheduling queue, re-notifications, etc. \"Units intervals\" are used in the object configuration file to determine how often to run a service check, how often to re-notify a contact, etc. The default value for this is set to 60, which means that a \"unit value\" of 1 in the object configuration file will mean 60 seconds (1 minute).");
 
 /**
  * Monitoring database layer

@@ -36,7 +36,7 @@
 ####################################################################################
 
 sub getIntervalLenght(){ 
-    my $sth = $con_oreon->prepare("SELECT `interval_length` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+    my $sth = $con_oreon->prepare("SELECT * FROM options WHERE `key` LIKE 'interval_length'");
     if (!$sth->execute()) {
 	writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
     }

@@ -36,6 +36,27 @@
  *
  */
 
+	/*
+	 * Get interval_lenth value
+	 */
+	$interval_length = 60;
+	$query = "SELECT * FROM options WHERE `key` LIKE 'interval_length'";
+	$res = $pearDBO->query($query);
+	if (false === PEAR::isError($res) && $res->numRows() == 1) {
+		$row = $res->fetchRow();
+		$interval_length = (int)$row['interval_length'];
+		$nagios["interval_length"] = $interval_length;
+	}
+
+	/*
+	 * Update all interval_length value for each poller.
+	 */
+	$query = "UPDATE cfg_nagios SET interval_length = '".$interval_length."'";
+	$res = $pearDBO->query($query);
+	if (false === PEAR::isError($res)) {
+		print "Cannot update interval_length informations. Please check SQL logs.\n<br>";
+	}
+	
 	$nagios["cfg_dir"] = NULL;
 	foreach ($nagios as $key => $value)	{
 		if ($value != NULL && $key != "nagios_id" && $key != "nagios_name" && $key != "nagios_server_id" && $key != "nagios_comment" && $key != "nagios_activate")	{
@@ -127,14 +148,12 @@
 					$key = str_replace("nagios", "icinga", $key);
 				}
 				$str .= $key."=".$value."\n";
-			}
-			else if ($key == "broker_module") {
+			} else if ($key == "broker_module") {
 				foreach ($nagios["broker_module"] as $kBrm => $vBrm)
 					if ( $vBrm["broker_module"] != NULL )
 						$str .= $key."=".$vBrm["broker_module"]."\n";
 
-			}
-			else if ($key == "debug_level_opt");
+			} else if ($key == "debug_level_opt");
 			else
 				$str .= $key."=".$value."\n";
 		}
