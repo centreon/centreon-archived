@@ -36,7 +36,7 @@
 ####################################################################################
 
 sub getIntervalLenght(){ 
-    my $sth = $con_oreon->prepare("SELECT * FROM options WHERE `key` LIKE 'interval_length'");
+    my $sth = $con_oreon->prepare("SELECT `value` AS interval_length FROM options WHERE `key` LIKE 'interval_length'");
     if (!$sth->execute()) {
 	writeLogFile("Error when getting interval_length : " . $sth->errstr . "\n");
     }
