@@ -4,4 +4,4 @@
 RUN_AT_STARTUP="NO"
 
 # Centreon user default: nagios
-CENTREON_USER="nagios"
+CENTREON_USER="@CENTREON_USER@"

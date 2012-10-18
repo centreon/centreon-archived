@@ -34,23 +34,13 @@ locate_centreon_etcdir
 locate_centreon_generationdir
 locate_centreon_varlib
 locate_centpluginstraps_bindir
-locate_centreon_connector_dir
 
 ## Config pre-require
 # define all necessary variables.
 locate_rrd_perldir
 locate_rrdtool
 locate_mail
-locate_pear
-locate_nagios_installdir
-locate_nagios_etcdir
-locate_nagios_vardir
-locate_nagios_plugindir
-locate_nagios_binary
-locate_nagios_imgdir
-locate_nagiostats_binary
-locate_nagios_plugindir
-locate_nagios_p1_file $NAGIOS_ETC
+#locate_nagios_p1_file $NAGIOS_ETC
 locate_cron_d
 locate_logrotate_d
 locate_init_d
@@ -59,28 +49,22 @@ locate_perl
 
 ## Config apache
 check_httpd_directory
-check_group_apache
 check_user_apache
-## Check Nagios config
-check_user_nagios
-check_group_nagios
+check_group_apache
+## Ask for centreon user
+check_centreon_group
+check_centreon_user
+## Ask for monitoring engine user
+check_engine_user
+## Ask for monitoring broker user
+check_broker_user
+## Ask for plugins directory
+locate_plugindir
 
-## NDO binary
-## IS NOT POSSIBLE TO USE CENTREON WITHOUT NDO !! CAUTION
-if [ "${FORCE_NOT_USE_NDO:-0}" -eq 1 ] ; then 
-	NDOMOD_BINARY="CAUTION_NOT_POSSIBLE_TO_USE_CENTREON_WITHOUT_NDO"
-else 
-	locate_ndomod_binary
-fi
-## For a moment, Centreon2 does not support when NDO not use.
-## by default, I prefert force NDO usage. But you can use 
-## FORCE_NOT_USE_NDO
-#yes_no_default "$(gettext "Do you want to use NDO ?")" "$no"
-#if [ "$?" -eq 0 ] ; then
-#	log "INFO" "$(gettext "NDO use...")"
-#	locate_ndomod_binary
-#fi
-
+add_group "$WEB_USER" "$CENTREON_GROUP"
+add_group "$MONITORINGENGINE_USER" "$CENTREON_GROUP"
+get_primary_group "$MONITORINGENGINE_USER" "MONITORINGENGINE_GROUP"
+add_group "$WEB_USER" "$MONITORINGENGINE_GROUP"
 
 ## Config Sudo
 # I think this process move on CentCore install...
@@ -101,25 +85,25 @@ copyInTempFile 2>>$LOG_FILE
 # change right centreon_log directory
 log "INFO" "$(gettext "Change right on") $CENTREON_LOG"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$NAGIOS_GROUP" -d 775 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	"$CENTREON_LOG" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_LOG"
 
 # change right on centreon etc
 log "INFO" "$(gettext "Change right on") $CENTREON_ETC"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -d 755 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	"$CENTREON_ETC" >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Change right on") $CENTREON_ETC"
 
 # change right on nagios images/logos
-if [ -z "${NAGIOS_IMG}" ]; then
-	log "INFO" "$(gettext "Change right on") $NAGIOS_IMG"
-	$INSTALL_DIR/cinstall $cinstall_opts \
-		-u "$WEB_USER" -d 755 \
-		"$NAGIOS_IMG" >> "$LOG_FILE" 2>&1
-	check_result $? "$(gettext "Change right on") $NAGIOS_IMG"
-fi
+#if [ -z "${NAGIOS_IMG}" ]; then
+#	log "INFO" "$(gettext "Change right on") $NAGIOS_IMG"
+#	$INSTALL_DIR/cinstall $cinstall_opts \
+#		-u "$WEB_USER" -d 755 \
+#		"$NAGIOS_IMG" >> "$LOG_FILE" 2>&1
+#	check_result $? "$(gettext "Change right on") $NAGIOS_IMG"
+#fi
 
 ## Copy Web Front Source in final
 log "INFO" "$(gettext "Copy CentWeb and GPL_LIB in temporary final directory")"
@@ -133,10 +117,10 @@ mkdir -p $TMP_DIR/final/cron/reporting >> "$LOG_FILE" 2>&1
 mkdir -p $TMP_DIR/final/libinstall >> "$LOG_FILE" 2>&1
 
 ## Install Centreon doc (nagios doc)
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-g $WEB_GROUP -d 755 -m 644 \
-	$TMP_DIR/src/doc $INSTALL_DIR_CENTREON/doc >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install nagios documentation")"
+#$INSTALL_DIR/cinstall $cinstall_opts \
+#	-g $CENTREON_GROUP -d 755 -m 644 \
+#	$TMP_DIR/src/doc $INSTALL_DIR_CENTREON/doc >> $LOG_FILE 2>&1
+#check_result $? "$(gettext "Install nagios documentation")"
 
 ## Ticket #372 : add functions/cinstall fonctionnality
 cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
@@ -147,28 +131,13 @@ cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
 ### Step 1:
 ## Change Macro on sql file
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
-${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
-	-e 's|@NAGIOS_BINARY@|'"$NAGIOS_BINARY"'|g' \
-	-e 's|@NAGIOSTATS_BINARY@|'"$NAGIOSTATS_BINARY"'|g' \
-	-e 's|@NAGIOS_IMG@|'"$NAGIOS_IMG"'|g' \
-	-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
-	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
-	-e 's|@NAGIOS_GROUP@|'"$NAGIOS_GROUP"'|g' \
-	-e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
-	-e 's|@NAGIOS_PLUGIN@|'"$NAGIOS_PLUGIN"'|g' \
-	-e 's|@NAGIOS_BIN@|'"$NAGIOS_BIN"'|g' \
-	-e 's|@NAGIOS_INIT_SCRIPT@|'"$NAGIOS_INIT_SCRIPT"'|g' \
-	-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
+${SED} -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
 	-e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
-	-e 's|@INIT_D@|'"$INIT_D"'|g' \
-	-e 's|@NDOMOD_BINARY@|'"$NDOMOD_BINARY"'|g' \
-	-e 's|@P1_PL@|'"$NAGIOS_P1_FILE"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	-e 's|@CENTREON_ENGINE_CONNECTORS@|'"$CENTREON_ENGINE_CONNECTORS"'|g' \
 	$TMP_DIR/src/www/install/insertBaseConf.sql > \
 	$TMP_DIR/work/www/install/insertBaseConf.sql
 check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
@@ -227,21 +196,46 @@ ${CAT} "$file_php_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
 
-### Step 3: Change right on nagios_etcdir
-log "INFO" "$(gettext "Change right on") $NAGIOS_ETC" 
+### Step 3: Change right on monitoringengine_etcdir
+log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
 flg_error=0
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-g "$WEB_GROUP" -d 775 \
-	"$NAGIOS_ETC" >> "$LOG_FILE" 2>&1
+	-g "$MONITORINGENGINE_GROUP" -d 775 \
+	"$MONITORINGENGINE_ETC" >> "$LOG_FILE" 2>&1
 [ $? -ne 0 ] && flg_error=1
 
-find "$NAGIOS_ETC" -type f -print | \
+find "$MONITORINGENGINE_ETC" -type f -print | \
 	xargs -I '{}' ${CHMOD}  775 '{}' >> "$LOG_FILE" 2>&1
 [ $? -ne 0 ] && flg_error=1
-find "$NAGIOS_ETC" -type f -print | \
-	xargs -I '{}' ${CHOWN} "$WEB_USER":"$WEB_GROUP" '{}' >> "$LOG_FILE" 2>&1
+find "$MONITORINGENGINE_ETC" -type f -print | \
+	xargs -I '{}' ${CHOWN} "$MONITORINGENGINE_USER":"$MONITORINGENGINE_GROUP" '{}' >> "$LOG_FILE" 2>&1
 [ $? -ne 0 ] && flg_error=1
-check_result $flg_error "$(gettext "Change right on") $NAGIOS_ETC" 
+check_result $flg_error "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
+
+### Change right to broker_etcdir
+log "INFO" "$(gettext "Change right on ") $BROKER_ETC"
+flg_error=0
+if [ -z "$BROKER_USER" ]; then
+	BROKER_USER=$MONITORINGENGINE_USER
+	get_primary_group "$BROKER_USER" "BROKER_GROUP"
+else
+	get_primary_group "$BROKER_USER" "BROKER_GROUP"
+	add_group "$WEB_USER" "$BROKER_GROUP"
+	add_group "$BROKER_USER" "$CENTREON_GROUP"
+fi
+if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
+	$INSTALL_DIR/cinstall $cinstall_opts \
+		-g "$BROKER_GROUP" -d 775 \
+		"$BROKER_ETC" >> "$LOG_FILE" 2>&1
+	[ $? -ne 0 ] && flg_error=1
+	find "$BROKER_ETC" -type f -print | \
+		xargs -I '{}' ${CHMOD}  775 '{}' >> "$LOG_FILE" 2>&1
+	[ $? -ne 0 ] && flg_error=1
+	find "$BROKER_ETC" -type f -print | \
+		xargs -I '{}' ${CHOWN} "$BROKER_USER":"$BROKER_GROUP" '{}' >> "$LOG_FILE" 2>&1
+	[ $? -ne 0 ] && flg_error=1
+	check_result $flg_error "$(gettext "Change right on") $BROKER_ETC" 
+fi
 
 if [ "$upgrade" = "1" ]; then
 	echo_info "$(gettext "Disconnect users from WebUI")"
@@ -252,30 +246,34 @@ fi
 ### Step 4: Copy final stuff in system directoy
 echo_info "$(gettext "Copy CentWeb in system directory")"
 $INSTALL_DIR/cinstall $cinstall \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	$INSTALL_DIR_CENTREON/www >> "$LOG_FILE" 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
 	-p $TMP_DIR/final/www \
 	$TMP_DIR/final/www/* $INSTALL_DIR_CENTREON/www/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install CentWeb (web front of centreon)")"
 
+echo_info "$(gettext "Change right for install directory")"
+$CHOWN -R $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON/www/install/
+check_result $? "$(gettext "Change right for install directory")"
+
 [ ! -d "$INSTALL_DIR_CENTREON/www/modules" ] && \
 	$INSTALL_DIR/cinstall $cinstall_opts \
-		-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
+		-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 \
 		$INSTALL_DIR_CENTREON/www/modules >> "$LOG_FILE" 2>&1
 
 [ ! -d "$INSTALL_DIR_CENTREON/www/img/media" ] && \
 	$INSTALL_DIR/cinstall $cinstall_opts \
-		-u "$WEB_USER" -d 755 \
+		-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 		$INSTALL_DIR_CENTREON/www/img/media >> "$LOG_FILE" 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG >> "$LOG_FILE" 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	$CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1	
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -283,7 +281,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	ln -s $CENTREON_GENDIR/filesGeneration $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -v \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 -v \
 	$CENTREON_GENDIR/filesUpload/nagiosCFG >> "$LOG_FILE" 2>&1
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -291,7 +289,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	ln -s $CENTREON_GENDIR/filesUpload $INSTALL_DIR_CENTREON >> $LOG_FILE 2>&1
 
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -v \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 -v \
 	$CENTREON_GENDIR/filesUpload/images >> "$LOG_FILE" 2>&1
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
@@ -300,9 +298,13 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 
 log "INFO" "$(gettext "Copying GPL_LIB")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$WEB_USER" -g "$WEB_GROUP" -d 755 -m 644 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
 	$TMP_DIR/final/GPL_LIB $INSTALL_DIR_CENTREON/GPL_LIB >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install libraries")"
+
+log "INFO" "$(gettext "Add right for Smarty cache and compile")"
+$CHMOD -R g+w $INSTALL_DIR_CENTREON/GPL_LIB/SmartyCache
+check_result $? "$(gettext "Write right to Smarty Cache")"
 
 log "INFO" "$(gettext "Copying libinstall")"
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -317,7 +319,7 @@ ${SED} -e 's|@PHP_BIN@|'"$PHP_BIN"'|g' \
 	-e 's|@PERL_BIN@|'"$BIN_PERL"'|g' \
 	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	-e 's|@WEB_USER@|'"$WEB_USER"'|g' \
 	$BASE_DIR/tmpl/install/centreon.cron > $TMP_DIR/work/centreon.cron
 check_result $? "$(gettext "Change macros for centreon.cron")"
@@ -371,7 +373,7 @@ cp -f $TMP_DIR/work/cron/dashboardBuilder.pl \
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$NAGIOS_USER" -g "$WEB_GROUP" -d 755 -m 644 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 755 -m 644 \
 	$TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 

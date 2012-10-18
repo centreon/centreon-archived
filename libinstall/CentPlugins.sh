@@ -18,18 +18,15 @@ check_tmp_disk_space
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir
 
 ## Where is nagios_pluginsdir
-locate_nagios_plugindir
+locate_plugindir
 
 ## Locale for sed
-locate_nagios_vardir
-locate_nagios_installdir
-locate_nagios_etcdir
 locate_rrd_perldir
 locate_centplugins_tmpdir
 
-## check nagios user and group
-check_user_nagios
-check_group_nagios
+## check centreon user and group
+check_centreon_user
+check_centreon_group
 
 
 ## Populate temporaty source directory
@@ -51,11 +48,14 @@ for FILE in `ls $TMP_DIR/src/plugins/src/check*centreon*` \
 	$TMP_DIR/src/plugins/src/submit_host_check_result \
 	$TMP_DIR/src/plugins/src/submit_service_check_result; do
 
+	# NAGIOS_ETC / NAGIOS_PLUGINS for compatibility
 	${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
 		-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
-		-e 's|@NAGIOS_ETC@|'"$NAGIOS_ETC"'|g' \
+		-e 's|@MONITORINGENGINE_ETC@|'"$MONITORINGENGINE_ETC"'|g' \
+		-e 's|@NAGIOS_ETC@|'"$MONITORINGENGINE_ETC"'|g' \
 		-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-		-e 's|@NAGIOS_PLUGINS@|'"$NAGIOS_PLUGIN"'|g' \
+		-e 's|@PLUGIN_DIR@|'"$PLUGIN_DIR"'|g' \
+		-e 's|@NAGIOS_PLUGINS@|'"$PLUGIN_DIR"'|g' \
 		-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
 		-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 		-e 's|@CENTPLUGINS_TMP@|'"$CENTPLUGINS_TMP"'|g' \
@@ -68,25 +68,25 @@ check_result $flg_error "$(gettext "Change macros for CentPlugins")"
 log "INFO" "$(gettext "Copying plugins in final directory")"
 cp -r $TMP_DIR/work/plugins/* $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
 cp -r $BASE_DIR/plugins/src/Centreon $TMP_DIR/final/plugins >> $LOG_FILE 2>&1
-chown -R $NAGIOS_USER:$NAGIOS_GROUP $TMP_DIR/final/plugins/Centreon
+chown -R $CENTREON_USER:$CENTREON_GROUP $TMP_DIR/final/plugins/Centreon
 
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 755 -p $TMP_DIR/final/plugins \
-	$TMP_DIR/final/plugins/* $NAGIOS_PLUGIN >> $LOG_FILE 2>&1
+	$TMP_DIR/final/plugins/* $PLUGIN_DIR >> $LOG_FILE 2>&1
 	
 check_result $? "$(gettext "Installing the plugins")"
 
 ## change right for a specific file
 $INSTALL_DIR/cinstall -f $cinstall_opts -g $NAGIOS_GROUP \
 	-m 664 $TMP_DIR/final/plugins/centreon.conf \
-	$NAGIOS_PLUGIN/centreon.conf >> $LOG_FILE 2>&1
+	$PLUGIN_DIR/centreon.conf >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Change right on") centreon.conf"
 
 log "INFO" "$(gettext "Install temporary directory for plugins") : $CENTPLUGINS_TMP"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $NAGIOS_USER -g $NAGIOS_GROUP -d 755 -v \
+	-u $CENTREON_USER -g $CENTREON_GROUP -d 755 -v \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "$(gettext "CentPlugins is installed")"
 

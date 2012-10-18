@@ -13,7 +13,7 @@
   
 binary=@CENTSTORAGE_BINDIR@/centstorage
 servicename=$(basename "$0")
-user=@NAGIOS_USER@
+user=@CENTREON_USER@
 timeout=60
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid

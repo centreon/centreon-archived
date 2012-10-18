@@ -18,7 +18,7 @@ check_tmp_disk_space
 [ "$?" -eq 1 ] && purge_centreon_tmp_dir
 
 ## Where is nagios_pluginsdir
-locate_nagios_plugindir
+locate_plugindir
 
 ## Locate centreon etc_dir
 locate_centreon_etcdir
@@ -26,7 +26,7 @@ locate_snmp_etcdir
 locate_snmptt_bindir
 locate_centpluginstraps_bindir
 
-check_group_nagios
+check_centreon_group
 check_httpd_directory
 check_user_apache
 
@@ -70,7 +70,7 @@ check_result $? "$(gettext "Installing the plugins Trap binaries ")"
 # Create a SNMP config
 ## Create centreon_traps directory
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $WEB_USER -g $NAGIOS_GROUP -d 775 \
+	-u $WEB_USER -g $CENTREON_GROUP -d 775 \
 	$SNMP_ETC/centreon_traps >> $LOG_FILE 2>&1
 
 log "INFO" "$(gettext "Backup all your snmp files")"
@@ -148,7 +148,7 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 check_result $? "$(gettext "Install") : snmp.conf"
 
 log "INFO" "$(gettext "Install") : snmptt.ini"
-$INSTALL_DIR/cinstall $cinstall_opts -u $WEB_USER -g $NAGIOS_GROUP -m 644 \
+$INSTALL_DIR/cinstall $cinstall_opts -u $WEB_USER -g $CENTREON_GROUP -m 644 \
 	$TMP_DIR/final/snmptt/snmptt.ini \
 	$SNMP_ETC/centreon_traps/snmptt.ini >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install") : snmptt.ini"

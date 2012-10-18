@@ -328,7 +328,7 @@ sub check_dir($) {
     
     if (!-e $global_prefix . "perfmon-" . $nagios_id){
 	system("mkdir " . $global_prefix . "perfmon-" . $nagios_id);
-	system("chown @NAGIOS_USER@:@NAGIOS_GROUP@ " . $global_prefix . "perfmon-" . $nagios_id);
+	system("chown @CENTREON_USER@:@CENTREON_GROUP@ " . $global_prefix . "perfmon-" . $nagios_id);
 	system("chmod 775 " . $global_prefix . "perfmon-" . $nagios_id);
     }
     
@@ -413,7 +413,7 @@ sub get_poller()	{
 
 if (!-e $global_prefix){
     system("mkdir " . $global_prefix);
-    system("chown @NAGIOS_USER@:@NAGIOS_GROUP@ " . $global_prefix);
+    system("chown @CENTREON_USER@:@CENTREON_GROUP@ " . $global_prefix);
     system("chmod 755 " . $global_prefix);
 }
 

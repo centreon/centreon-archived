@@ -33,9 +33,8 @@ locate_ssh
 locate_scp
 
 ## Config Nagios
-locate_nagios_etcdir
-check_group_nagios
-check_user_nagios
+check_centreon_group
+check_centreon_user
 
 ## Other requirement
 locate_init_d
@@ -79,7 +78,7 @@ cp $TMP_DIR/work/bin/centcore $TMP_DIR/final/bin/centcore 2>&1  >> $LOG_FILE
 
 log "INFO" "$(gettext "Copying CentCore in binary directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$NAGIOS_USER" -g "$NAGIOS_GROUP" -m 755 \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
 	$TMP_DIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Copy CentCore in binary directory")"
 
@@ -115,13 +114,13 @@ $INSTALL_DIR/cinstall $cinstall_opts -f \
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "$(gettext "Change right") : $CENTREON_RUNDIR"
-$INSTALL_DIR/cinstall $cinstall_opts -u "$NAGIOS_USER" -d 750 \
+$INSTALL_DIR/cinstall $cinstall_opts -u "$CENTREON_USER" -d 750 \
 	$CENTREON_RUNDIR >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Change right") : $CENTREON_RUNDIR"
 
 ## Change tight on CENTREON_VARLIB
 log "INFO" "$(gettext "Change right") : $CENTREON_VARLIB"
-$INSTALL_DIR/cinstall $cinstall_opts -g "$NAGIOS_USER" -d 775 \
+$INSTALL_DIR/cinstall $cinstall_opts -g "$CENTREON_USER" -d 775 \
 	$CENTREON_VARLIB >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Change right") : $CENTREON_VARLIB"
 
@@ -146,15 +145,15 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
 	-e 's|@CENTCORE_BINDIR@|'"$CENTCORE_BINDIR"'|g' \
-	-e 's|@NAGIOS_USER@|'"$NAGIOS_USER"'|g' \
+	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	$TMP_DIR/src/centcore.init.d > $TMP_DIR/work/centcore.init.d
 check_result $? "$(gettext "Replace CentCore init script Macro")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-  ${SED} -e 's|"NO"|"YES"|g' $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
+  ${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
   check_result $? "$(gettext "Replace CentCore default script Macro")"
   cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
-  cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/exemples/centcore.default
+  cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/examples/centcore.default
 fi
 
 cp $TMP_DIR/work/centcore.init.d $TMP_DIR/final/centcore.init.d

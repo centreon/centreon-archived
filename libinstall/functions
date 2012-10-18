@@ -244,7 +244,7 @@ function answer_with_testdir() {
 		echo -en "> "
 		read res
 		if [ -z "$res" ] ; then 
-			[ $default != "NO_DEFAULT" ] && res=$default
+			[ "$default" != "NO_DEFAULT" ] && res=$default
 		fi
 		if [ -z ${res#/} ] ; then
 			echo_passed  "$(gettext "You select slash...")"
@@ -365,6 +365,147 @@ function answer_with_testfile() {
 }
 
 #----
+## print a message for get informations with create a group system
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function answer_with_creategroup() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_def"
+	local first=0
+	while ! $(grep "^$res:" /etc/group &>/dev/null) ; do
+		[ $first -eq 1 ] && echo_passed "$(gettext "The group $res does not exists.")" "$critical"
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ]; then
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+		first=1
+		if [ -n "$res" ]; then
+			grep "^$res:" /etc/group &>/dev/null && break;
+			yes_no_default "$(gettext "Do you want me to create this group ?") [$res]"
+			if [ $? -eq 0 ]; then
+				groupadd -r $res
+				if [ $? -ne 0 ]; then
+					echo_passed "$(gettext "Could not create group.")" "$critical"
+				fi
+				log "INFO" "$(gettext "Creating group") : $res"
+			fi
+		else
+			res="not_def"
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
+## print a message for get informations with create a user system
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function answer_with_createuser() {
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_def"
+	local first=0
+	while ! $(grep "^$res:" /etc/passwd &>/dev/null); do
+		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exists.")" "$critical"
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ]; then
+			[ "$default" != "NO_DEFAULT" ] && res=$default
+		fi
+		if [ -n "$res" ]; then
+			first=1
+			grep "^$res:" /etc/passwd &>/dev/null && break;
+			yes_no_default "$(gettext "Do you want me to create this user ?") [$res]"
+			if [ $? -eq 0 ]; then
+				group_id=$(grep "^$CENTREON_GROUP:" /etc/group | awk -F: '{ print $3 }')
+				useradd -r -c "Centreon User" -d "$CENTREON_VARLIB" -g $group_id $res
+				if [ $? -ne 0 ]; then
+					echo_passed "$(gettext "Could not create user")" "$critical"
+				fi
+				log "INFO" "$(gettext "Creating user") : $res"
+			fi
+		else
+			res="not_def"
+		fi
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
+## print a message for get informations with test if user exists
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function answer_with_testuser()
+{
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_def"
+	local first=0
+	while ! $(grep "^$res:" /etc/passwd &>/dev/null); do
+		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exists.")" "$critical"
+		echo -e "\n$message"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ]; then
+			res="not_def"
+		fi
+		first=1
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
+## print a message for get informations with test if user exists, the user is optional
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function answer_with_testuser_optional()
+{
+	local message=$1
+	local default=$2
+	local var_ref=$3
+	local res="not_def"
+	local first=0
+	while ! $(grep "^$res:" /etc/passwd &>/dev/null); do
+		[ $first -eq 1 ] && echo_passed "$(gettext "The user $res does not exists.")" "$critical"
+		echo -e "\n$message (optional)"
+		[ "$default" != "NO_DEFAULT" ] && echo -e "$(gettext "default to") [$default]"
+		echo -en "> "
+		read res
+		if [ -z "$res" ]; then
+			break
+		fi
+		first=1
+	done
+	eval $var_ref=$res
+	return 0
+}
+
+#----
 ## Test if file exist
 ## @param	file
 ## @param	variable to reset
@@ -448,230 +589,19 @@ function select_in_array() {
 }
 
 #----
-## Define where nagios is installed
-## @Globals	INSTALL_DIR_NAGIOS, DEFAULT_INSTALL_DIR_NAGIOS
-#----
-function locate_nagios_installdir() {
-	testdir_clean "$INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS" 
-	if [ -z "$INSTALL_DIR_NAGIOS" ] ; then
-		answer_with_testdir "$(gettext "Where is installed Nagios ?")" "$DEFAULT_INSTALL_DIR_NAGIOS" "INSTALL_DIR_NAGIOS"
-		echo_success "$(gettext "Path") $INSTALL_DIR_NAGIOS" "$ok"
-	fi
-	INSTALL_DIR_NAGIOS=`trim ${INSTALL_DIR_NAGIOS%/}`
-	export INSTALL_DIR_NAGIOS
-	log "INFO" "INSTALL_DIR_NAGIOS: $INSTALL_DIR_NAGIOS"
-}
-
-#----
-## Define where is nagios config directory
-## @Globals	NAGIOS_ETC, DEFAULT_NAGIOS_ETC
-#----
-function locate_nagios_etcdir() {
-	testdir_clean "$NAGIOS_ETC" "NAGIOS_ETC"
-	if [ -z "$NAGIOS_ETC" ] ; then
-		answer_with_testdir "$(gettext "Where is your nagios config directory")" "$DEFAULT_NAGIOS_ETC" "NAGIOS_ETC"
-		echo_success "$(gettext "Path") $NAGIOS_ETC" "$ok"
-	fi
-	NAGIOS_ETC=`trim ${NAGIOS_ETC%/}`
-	export NAGIOS_ETC
-	log "INFO" "NAGIOS_ETC: $NAGIOS_ETC"
-}
-
-#----
-## Define where is nagios var directory (/var/log)
-## @Globals	NAGIOS_VAR, DEFAULT_NAGIOS_VAR
-#----
-function locate_nagios_vardir() {
-	testdir_clean "$NAGIOS_VAR" "NAGIOS_VAR"
-	if [ -z "$NAGIOS_VAR" ] ; then
-		answer_with_testdir "$(gettext "Where is your Nagios var directory ?")" "$DEFAULT_NAGIOS_VAR" "NAGIOS_VAR"
-		echo_success "$(gettext "Path" ) $NAGIOS_VAR" "$ok"
-	fi
-	NAGIOS_VAR=`trim ${NAGIOS_VAR%/}`
-	export NAGIOS_VAR
-	log "INFO" "NAGIOS_VAR: $NAGIOS_VAR"
-}
-
-#----
-## Define where is nagios plugins directory
+## Define where is  plugins directory
 ## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
-## @Globals	NAGIOS_PLUGIN, DEFAULT_NAGIOS_PLUGIN
+## @Globals     PLUGIN_DIR, DEFAULT_PLUGIN_DIR
 #----
-function locate_nagios_plugindir() {
-	testdir_clean "$NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
-	if [ -z "$NAGIOS_PLUGIN" ] ; then
-		answer_with_testdir "$(gettext "Where is your Nagios plugins (libexec) directory ?")" "$DEFAULT_NAGIOS_PLUGIN" "NAGIOS_PLUGIN"
-		echo_success "$(gettext "Path" ) $NAGIOS_PLUGIN" "$ok"
-	fi
-	NAGIOS_PLUGIN=`trim ${NAGIOS_PLUGIN%/}`
-	export NAGIOS_PLUGIN
-	log "INFO" "NAGIOS_PLUGIN: $NAGIOS_PLUGIN"
-}
-
-#----
-## Define where is centreon connector directory
-## in last version of this script, you have been a possibility to create if not exist. now is not possible. You will create manualy.
-## @Globals	CENTREON_ENGINE_CONNECTORS, DEFAULT_CENTREON_ENGINE_CONNECTORS
-#----
-function locate_centreon_connector_dir() {
-	testdir_clean "$CENTREON_ENGINE_CONNECTORS" "CENTREON_ENGINE_CONNECTORS"
-	if [ -z "$CENTREON_ENGINE_CONNECTORS" ] ; then
-		answer_with_testoptionaldir "$(gettext "Where is your Centreon Connectors directory ?")" "$DEFAULT_CENTREON_ENGINE_CONNECTORS" "CENTREON_ENGINE_CONNECTORS"
-		echo_success "$(gettext "Path" )  $CENTREON_ENGINE_CONNECTORS" "$ok"
-	fi
-	CENTREON_ENGINE_CONNECTORS=`trim ${CENTREON_ENGINE_CONNECTORS%/}` 
-	export CENTREON_ENGINE_CONNECTORS
-	log "INFO" "CENTREON_ENGINE_CONNECTORS: $CENTREON_ENGINE_CONNECTORS"
-}
-
-#----
-## Define where is your nagios binary
-## By default, use nagios,nagios2 or nagios3 name and find in PATH
-## @Globals	NAGIOS_BINARY, DEFAULT_NAGIOS_BINARY
-#----
-function locate_nagios_binary() {
-	testfile_clean "$NAGIOS_BINARY" "NAGIOS_BINARY"
-	if [ -z "$NAGIOS_BINARY" ] ; then
-		nagios_binaries="nagios nagios2 nagios3"
-		for binary in $nagios_binaries ; do
-			pathfind_ret "$binary" "NAGIOS_BINARY"
-			if [ "$?" -eq 0 ] ; then
-				NAGIOS_BINARY="$NAGIOS_BINARY/$binary"
-				break
-			fi
-		done
-		if [ -z "$NAGIOS_BINARY" ] ; then 
-			answer_with_testfile "$(gettext "Where is your nagios binary ? ")" "$DEFAULT_NAGIOS_BINARY" "NAGIOS_BINARY"
-		fi
-		echo_success "$NAGIOS_BINARY" "$ok"
-	fi
-	NAGIOS_BINARY=`trim ${NAGIOS_BINARY%/}`
-	export NAGIOS_BINARY
-	log "INFO" "NAGIOS_BINARY: $NAGIOS_BINARY"
-}
-
-#----
-## Define where is your nagiostats binary
-## By default, use nagiostats,nagios2stats or nagios3stats name and find in PATH
-## @Globals	NAGIOSTATS_BINARY, DEFAULT_NAGIOSTATS_BINARY
-#----
-function locate_nagiostats_binary() {
-	testfile_clean "$NAGIOSTATS_BINARY" "NAGIOSTATS_BINARY"
-	if [ -z "$NAGIOSTATS_BINARY" ] ; then
-		nagiostats_binaries="nagiostats nagios2stats nagios3stats"
-		for binary in $nagiostats_binaries ; do
-			pathfind_ret "$binary" "NAGIOSTATS_BINARY"
-			if [ "$?" -eq 0 ] ; then
-				NAGIOSTATS_BINARY="$NAGIOSTATS_BINARY/$binary"
-				break
-			fi
-		done
-		if [ -z "$NAGIOSTATS_BINARY" ] ; then 
-			answer_with_testfile "$(gettext "Where is your nagiostats binary ? ")" "$DEFAULT_NAGIOSTATS_BINARY" "NAGIOSTATS_BINARY"
-		fi
-		echo_success "$NAGIOSTATS_BINARY" "$ok"
-	fi
-	NAGIOSTATS_BINARY=`trim ${NAGIOSTATS_BINARY%/}`
-	export NAGIOSTATS_BINARY
-	log "INFO" "NAGIOSTATS_BINARY: $NAGIOSTATS_BINARY"
-}
-
-#----
-## Define where is a p1.pl file for nagios
-## If you use a --enable-embedded-perl options in nagios configure, you'll use
-## a p1 file.
-## <p>
-## This fonction find un nagios etc directory if one config file use p1_file.
-## @Globals	NAGIOS_P1_FILE
-#----
-function locate_nagios_p1_file() {
-	testfile_clean "$NAGIOS_P1_FILE" "NAGIOS_P1_FILE"
-	local nagios_etc="$1"
-	if [ -z "$NAGIOS_P1_FILE" ] ; then 
-		NAGIOS_P1_FILE=$(${GREP} -r "^p1_file" $nagios_etc | ${GREP} -v -i "sample" | cut -d= -f2 | uniq )
-		if [ -z "$NAGIOS_P1_FILE" ] ; then
-			log "INFO" "$(gettext "p1_file not found")"
-		else
-			is_single "$NAGIOS_P1_FILE"
-			if [ "$?" -eq 1 ] ; then
-				echo -e "$(gettext "Please select a good nagios p1 file")"
-				select_in_array \
-					"NAGIOS_P1_FILE" "${NAGIOS_P1_FILE[@]}"
-			fi
-			log "INFO" "$(gettext "p1_file found") : $NAGIOS_P1_FILE"
-			echo_success "p1_file : $NAGIOS_P1_FILE" "$ok"	
-		fi
-	fi
-	NAGIOS_P1_FILE=`trim ${NAGIOS_P1_FILE%/}`
-	export NAGIOS_P1_FILE
-	log "INFO" "NAGIOS_P1_FILE: $NAGIOS_P1_FILE"
-}
-
-#----
-## Define where is nagios images directory
-## @Globals NAGIOS_IMG, $DEFAULT_NAGIOS_IMG
-#----
-function locate_nagios_imgdir() {
-	testdir_clean "$NAGIOS_IMG" "NAGIOS_IMG"
-	if [ -z "$NAGIOS_IMG" ] ; then
-		answer_with_testoptionaldir "$(gettext "Where is your Nagios image directory (Empty : no image directory) ?")" "$DEFAULT_NAGIOS_IMG" "NAGIOS_IMG"
-		echo_success "$(gettext "Path" ) $NAGIOS_IMG" "$ok"
-	fi
-	NAGIOS_IMG=`trim ${NAGIOS_IMG%/}`
-	export NAGIOS_IMG
-	log "INFO" "NAGIOS_IMG: $NAGIOS_IMG"
-}
-
-#----
-## Define where is your NDO ndo2db binary
-## By default, use ndo2db,ndo2db-2x and ndo2db-3x name and find in PATH
-## @Globals	NDO2DB_BINARY, DEFAULT_NDO2DB_BINARY
-#----
-function locate_ndo2db_binary() {
-	testfile_clean "$NDO2DB_BINARY" "NDO2DB_BINARY"
-	if [ -z "$NDO2DB_BINARY" ] ; then
-		ndo2db_binaries="ndo2db ndo2db-2x ndo2db-3x"
-		for binary in $ndo2db_binaries ; do
-			pathfind_ret "$binary" "NDO2DB_BINARY"
-			if [ "$?" -eq 0 ] ; then
-				NDO2DB_BINARY="$NDO2DB_BINARY/$binary"
-				break
-			fi
-		done
-		if [ -z "$NDO2DB_BINARY" ] ; then 
-			answer_with_testfile "$(gettext "Where is your NDO ndo2db binary ? ")" "$DEFAULT_NDO2DB_BINARY" "NDO2DB_BINARY"
-		fi
-		echo_success "$NDO2DB_BINARY" "$ok"
-	fi
-	NDO2DB_BINARY=`trim ${NDO2DB_BINARY%/}`
-	export NDO2DB_BINARY
-	log "INFO" "NDO2DB_BINARY: $NDO2DB_BINARY"
-}
-
-#----
-## Define where is your NDO ndomob binary
-## By default, use ndomod,ndomod.o,ndomod-2x,ndomod-2x.o,ndomod-3x and ndomod-3x.o name and find in PATH
-## @Globals	NDOMOD_BINARY, DEFAULT_NDOMOD_BINARY
-#----
-function locate_ndomod_binary() {
-	testfile_clean "$NDOMOD_BINARY" "NDOMOD_BINARY"
-	if [ -z "$NDOMOD_BINARY" ] ; then
-		ndomod_binaries="ndomod ndomod.o ndomod-2x ndomod-2x.o ndomod-3x ndomod-3x.o"
-		for binary in $ndomod_binaries ; do
-			pathfind_ret "$binary" "NDOMOD_BINARY"
-			if [ "$?" -eq 0 ] ; then
-				NDOMOD_BINARY="$NDOMOD_BINARY/$binary"
-				break
-			fi
-		done
-		if [ -z "$NDOMOD_BINARY" ] ; then 
-			answer_with_testfile "$(gettext "Where is your NDO ndomod binary ? ")" "$DEFAULT_NDOMOD_BINARY" "NDOMOD_BINARY"
-		fi
-		echo_success "$NDOMOD_BINARY" "$ok"
-	fi
-	NDOMOD_BINARY=`trim ${NDOMOD_BINARY%/}`
-	export NDOMOD_BINARY
-	log "INFO" "NDOMOD_BINARY: $NDOMOD_BINARY"
+function locate_plugindir() {
+        testdir_clean "$PLUGIN_DIR" "PLUGIN_DIR"
+        if [ -z "$PLUGIN_DIR" ] ; then
+                answer_with_testdir "$(gettext "Where is your monitoring plugins (libexec) directory ?")" "$DEFAULT_PLUGIN_DIR" "PLUGIN_DIR"
+                echo_success "$(gettext "Path" ) $PLUGIN_DIR" "$ok"
+        fi
+        PLUGIN_DIR=`trim ${PLUGIN_DIR%/}`
+        export PLUGIN_DIR
+        log "INFO" "PLUGIN_DIR: $PLUGIN_DIR"
 }
 
 #----
@@ -698,6 +628,58 @@ function locate_init_d() {
 	INIT_D=`trim ${INIT_D%/}`
 	export INIT_D
 	log "INFO" "INIT_D: $INIT_D"
+}
+
+#----
+## Ask where is the monitoring engine binary
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
+#----
+function locate_monitoringengine_binary()
+{
+	local message=$1
+	local default=$2
+	local val_ref=$3
+	local res="not_define"
+	local first=0
+	if [ -n "$MONITORINGENGINE_BINARY" -a -x "$MONITORINGENGINE_BINARY" ]; then
+		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_BINARY"
+		return 0
+	fi
+	while [ ! -x "$res" ]; do
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
+		echo -e "\n$message"
+		echo -en "> "
+		read res
+		if [ -z "$res" ]; then
+			res="not_define"
+		fi
+		first=1
+	done
+	eval $val_ref=$res
+	return 0
+}
+
+function locate_monitoringengine_etc()
+{
+	if [ -z "$MONITORINGENGINE_ETC" ]; then
+		answer_with_testdir "$(gettext "Monitoring engine etc")" "NO_DEFAULT" "MONITORINGENGINE_ETC"
+	fi
+	MONITORINGENGINE_ETC=`trim ${MONITORINGENGINE_ETC%/}`
+	export MONITORINGENGINE_ETC
+	log "INFO" "MONITORINGENGINE_ETC: $MONITORINGENGINE_ETC"
+}
+
+function locate_broker_etc()
+{
+	if [ -z "$BROKER_ETC" ]; then
+		answer_with_testdir "$(gettext "Broker etc")" "NO_DEFAULT" "BROKER_ETC"
+	fi
+	BROKER_ETC=`trim ${BROKER_ETC%/}`
+	export BROKER_ETC
+	log "INFO" "BROKER_ETC: $BROKER_ETC"
 }
 
 #----
@@ -882,6 +864,7 @@ function locate_centplugins_tmpdir() {
 		echo_success "$(gettext "Path" ) $CENTPLUGINS_TMP" "$ok"
 	elif [ ! -d "$CENTPLUGINS_TMP" -a "$silent_install" -eq 1 ] ; then
 		mkdir -p "$CENTPLUGINS_TMP"
+		$CHMOD g+w "$CENTPLUGINS_TMP"
 		log "INFO" "$(gettext "Create") $CENTPLUGINS_TMP"
 	fi
 	CENTPLUGINS_TMP=`trim ${CENTPLUGINS_TMP%/}`
@@ -1310,36 +1293,38 @@ __EOT__
 ## @param	directory to generate a centreon.sudo file
 ## @return 0	create file ok
 ## @return 1	create file fail
-## @Globals	NAGIOS_BINARY, INIT_D, WEB_USER, NAGIOS_INIT_SCRIPT
+## @Globals	MONITORINGENGINE_BINARY, INIT_D, WEB_USER, MONITORINGENGINE_INIT_SCRIPT
 #----
 function prepare_sudo_config() {
 	local directory="$1"
 
     	locate_sudo
-	# Find Nagios Init Script
-	check_nagios_init_script
+	# Find Monitoring Engine Init Script
+	locate_monitoringengine_init_script "Monitoring engine init.d script" "NO_DEFAULT" "MONITORINGENGINE_INIT_SCRIPT"
 	# find nagios binary if not define
-	[ -z "$NAGIOS_BINARY" ] && locate_nagios_binary
+	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "Monitoring engine binary" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
+	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
+	[ -z "$BROKER_ETC" ] && locate_broker_etc
 	[ -z "$INIT_D" ] && locate_init_d
 	# Prepare sudo.conf
 	
 	${CAT} <<- __EOT__ > $directory/centreon.sudo
 	## BEGIN: CENTREON SUDO
 	#Add by CENTREON installation script
-	User_Alias      CENTREON=$WEB_USER,$NAGIOS_USER
+	User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
 	Defaults:CENTREON !requiretty
 	# Nagios Restart
-	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT* restart
-	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT restart
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* restart
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
 	# Nagios reload
-	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT* reload
-	CENTREON   ALL = NOPASSWD: $NAGIOS_INIT_SCRIPT reload
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* reload
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
 	# Nagios test config
-	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY* -v *
-	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -v *
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -v *
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *
 	# Nagios test for optim config
-	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY* -s *
-	CENTREON   ALL = NOPASSWD: $NAGIOS_BINARY -s *
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -s *
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -s *
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
 	# CentStorage Restart
@@ -1443,10 +1428,10 @@ function configureSUDO(){
 
 #----
 ## Create a config file for Web post install
-## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC, INSTALL_DIR_NAGIOS,
-## @Globals	NAGIOS_ETC, NAGIOS_PLUGIN, NAGIOS_BINARY, NAGIOSTATS_BINARY, 
-## @Globals	NAGIOS_INIT_SCRIPT, BIN_RRDTOOL, WEB_USER, WEB_GROUP, 
-## @Globals	NAGIOS_USER, NAGIOS_GROUP, BIN_MAIL, BIN_MAIL
+## @Globals	line, INSTALL_DIR_CENTREON, CENTREON_ETC,
+## @Globals	MONITORINGENGINE_BINARY, MONITORINGENGINE_INIT_SCRIPT
+## @Globals	BIN_RRDTOOL, WEB_USER, WEB_GROUP, 
+## @Globals	CENTREON_USER, BIN_MAIL
 #----
 function createConfFile()
 {
@@ -1479,43 +1464,26 @@ function createConfFile()
 \$conf_centreon['centreon_etc'] = "$CENTREON_ETC/";
 \$conf_centreon['centreon_dir_www'] = "$INSTALL_DIR_CENTREON/www/";
 \$conf_centreon['centreon_dir_rrd'] = "$INSTALL_DIR_CENTREON/rrd/";
-\$conf_centreon['nagios'] = "$INSTALL_DIR_NAGIOS/";
-\$conf_centreon['nagios_conf'] = "$NAGIOS_ETC/";
-\$conf_centreon['nagios_plugins'] = "$NAGIOS_PLUGIN/";
-\$conf_centreon['nagios_binary'] = "$NAGIOS_BINARY";
-\$conf_centreon['nagiostats_binary'] = "$NAGIOSTATS_BINARY";
-\$conf_centreon['nagios_init_script'] = "$NAGIOS_INIT_SCRIPT";
+\$conf_centreon['centreon_log'] = "$CENTREON_LOG";
+\$conf_centreon['centreon_varlib'] = "$CENTREON_VARLIB";
+\$conf_centreon['centreon_group'] = "$CENTREON_GROUP";
+\$conf_centreon['centreon_user'] = "$CENTREON_USER";
 \$conf_centreon['rrdtool_dir'] = "$BIN_RRDTOOL";
 \$conf_centreon['apache_user'] = "$WEB_USER";
 \$conf_centreon['apache_group'] = "$WEB_GROUP";
-\$conf_centreon['nagios_user'] = "$NAGIOS_USER";
-\$conf_centreon['nagios_group'] = "$NAGIOS_GROUP";
 \$conf_centreon['mail'] = "$BIN_MAIL";
-\$conf_centreon['pear_dir'] = "$PEAR_PATH";
+\$conf_centreon['broker_user'] = "$BROKER_USER";
+\$conf_centreon['broker_group'] = "$BROKER_GROUP";
+\$conf_centreon['broker_etc'] = "$BROKER_ETC";
+\$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
+\$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
+\$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
+\$conf_centreon['monitoring_init_script'] = "$MONITORINGENGINE_INIT_SCRIPT";
+\$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
+\$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
 
 __EOT__
 
-	# Conf nagios.cfg
-	
-	for fichier in `${CAT} $NAGIOS_ETC/nagios.cfg | ${GREP} "_file" | ${GREP} -v "\#"`
-	do
-		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
-	done
-	
-	# Conf nagios.cfg
-	
-	for fichier in `${CAT} $NAGIOS_ETC/nagios.cfg | ${GREP} "_path" | ${GREP} -v "\#"`
-	do
-		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF
-	done
-	
-	# Conf GCI.cfg
-	
-	for fichier in `${CAT} $NAGIOS_ETC/cgi.cfg | ${GREP} "physical_html_path" | ${GREP} -v "\#"`
-	do
-		echo "\$conf_centreon['$(echo "$fichier" |cut -d= -f1)'] = \"$(echo "$fichier" |cut -d= -f2)\";" >> $INSTALL_DIR_CENTREON_CONF		
-	done
-	
 	echo "?>" >> $INSTALL_DIR_CENTREON_CONF
 	log "INFO" "$(gettext "Change right on") : $INSTALL_DIR_CENTREON_CONF"
 	${CHOWN} $WEB_USER:$WEB_GROUP $INSTALL_DIR_CENTREON_CONF >> $LOG_FILE 2>&1
@@ -1537,19 +1505,10 @@ __EOT__
 function createCentreonInstallConf() {
 	${CAT} <<- __EOT__ > $CENTREON_ETC/instCentWeb.conf
 	INSTALL_DIR_CENTREON=$INSTALL_DIR_CENTREON
-	INSTALL_DIR_NAGIOS=$INSTALL_DIR_NAGIOS
-	NAGIOS_ETC=$NAGIOS_ETC
-	NAGIOS_PLUGIN=$NAGIOS_PLUGIN
-	NAGIOS_IMG=$NAGIOS_IMG
-	NAGIOS_BINARY=$NAGIOS_BINARY
-	NAGIOSTATS_BINARY=$NAGIOSTATS_BINARY
-	NAGIOS_VAR=$NAGIOS_VAR
 	RRD_PERL=$RRD_PERL
 	SUDO_FILE=$SUDO_FILE
 	WEB_USER=$WEB_USER
 	WEB_GROUP=$WEB_GROUP
-	NAGIOS_USER=$NAGIOS_USER
-	NAGIOS_GROUP=$NAGIOS_GROUP
 	BIN_RRDTOOL=$BIN_RRDTOOL
 	BIN_MAIL=$BIN_MAIL
 	PEAR_PATH=$PEAR_PATH
@@ -1557,19 +1516,20 @@ function createCentreonInstallConf() {
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_GENDIR=$CENTREON_GENDIR
 	CENTREON_VARLIB=$CENTREON_VARLIB	
+	CENTREON_GROUP=$CENTREON_GROUP
+	CENTREON_USER=$CENTREON_USER
 	CRON_D=$CRON_D
 	INIT_D=$INIT_D
 	PHP_BIN=$PHP_BIN
 	DIR_APACHE=$DIR_APACHE
 	DIR_APACHE_CONF=$DIR_APACHE_CONF
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
+	BROKER_ETC=$BROKER_ETC
+	BROKER_USER=$BROKER_USER
+	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
+	MONITORINGENGINE_INIT_SCRIPT=$MONITORINGENGINE_INIT_SCRIPT
+	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
 	__EOT__
-
-	[ -n "$NAGIOS_P1_FILE" ] && \
-		echo "NAGIOS_P1_FILE=$NAGIOS_P1_FILE" >> $CENTREON_ETC/instCentWeb.conf
-
-	[ -n "$NDOMOD_BINARY" ] && \
-		echo "NDOMOD_BINARY=$NDOMOD_BINARY" >> $CENTREON_ETC/instCentWeb.conf
 
 	echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"
 	return 0
@@ -1596,8 +1556,8 @@ function createCentStorageInstallConf() {
 	CRON_D=$CRON_D
 	CENTSTORAGE_BINDIR=$CENTSTORAGE_BINDIR
 	CENTSTORAGE_RRD=$CENTSTORAGE_RRD
-	NAGIOS_USER=$NAGIOS_USER
-	NAGIOS_GROUP=$NAGIOS_GROUP
+	CENTREON_USER=$CENTREON_USER
+	CENTREON_GROUP=$CENTREON_GROUP
 	__EOT__
 
 	echo_success "Create $CENTREON_ETC/instCentStorage.conf " "OK"
@@ -1622,9 +1582,8 @@ function createCentCoreInstallConf() {
 	CENTCORE_BINDIR=$CENTCORE_BINDIR
 	BIN_SSH=$BIN_SSH
 	BIN_SCP=$BIN_SCP
-	NAGIOS_ETC=$NAGIOS_ETC
-	NAGIOS_GROUP=$NAGIOS_GROUP
-	NAGIOS_USER=$NAGIOS_USER
+	CENTREON_GROUP=$CENTREON_GROUP
+	CENTREON_USER=$CENTREON_USER
 	RRD_PERL=$RRD_PERL
 	INIT_D=$INIT_D
 	__EOT__
@@ -1648,8 +1607,8 @@ function createCentPluginsInstallConf() {
 	NAGIOS_ETC=$NAGIOS_ETC
 	RRD_PERL=$RRD_PERL
 	CENTPLUGINS_TMP=$CENTPLUGINS_TMP
-	NAGIOS_USER=$NAGIOS_USER
-	NAGIOS_GROUP=$NAGIOS_GROUP
+	CENTREON_USER=$CENTREON_USER
+	CENTREON_GROUP=$CENTREON_GROUP
 	INIT_D=$INIT_D
 	__EOT__
 
@@ -1669,184 +1628,42 @@ function createCentPluginsInstallConf() {
 }
 
 #----
-## Find the user nagios in nagios.cfg and ask if we do not find
-## @return 0
-## @Globals	NAGIOS_ETC, NAGIOS_USER
+## Locate the init.d script for monitoring engine
+## @param	message
+## @param	default value (use "NO_DEFAULT" if not default value)
+## @param	global variable to set a result
+## @return 0	end
 #----
-function find_user_nagios()
+function locate_monitoringengine_init_script()
 {
-	# If I am on this function, I suppose you do not force a nagios user name. So I init this :p
-	NAGIOS_USER=""
-	# In a first time, I search on nagios.cfg because it had most of chance to find it.
-	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then 
-		NAGIOS_USER=`${GREP} "^nagios_user" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
-	fi
-
-	# If I not locate nagios user, I find on all file.
-	if [ -z "$NAGIOS_USER" ] ; then
-		local NAGIOS_USER_TEMP=""
-		log "INFO" "$(gettext "Find nagios user in all file in") : $NAGIOS_ETC"
-		for fichier in $NAGIOS_ETC/*.cfg ; do
-			if [ -f "$fichier" ] ; then
-			NAGIOS_USER_TEMP=`${GREP} "^nagios_user" $fichier | cut -d= -f2 2>/dev/null`
-				if [ -n "$NAGIOS_USER_TEMP" ] ; then
-					NAGIOS_USER="$NAGIOS_USER_TEMP"
-				fi
-			fi
-		done
-	fi
-    
-	if [ -z "$NAGIOS_USER"  ] ; then
-		log "INFO" "$(gettext "First find nagios user fail")"
-		return 1	
-    	else
-		is_single "$NAGIOS_USER"
-		if [ "$?" -eq 1 ] ; then
-			echo -e "$(gettext "Please select a good nagios user")"
-			select_in_array "NAGIOS_USER" "${NAGIOS_USER[@]}"
-		fi
-		echo_info "$(gettext "Finding Nagios user") :" "$NAGIOS_USER"
-	fi
-	return 0
-}
-
-#----
-## Find the group nagios in nagios.cfg and ask if we do not find
-## @return 0
-## @Globals	NAGIOS_ETC, NAGIOS_GROUP
-#----
-function find_group_nagios()
-{
-	# Same to user, If I am on this function I must reset NAGIOS_GROUP
-	NAGIOS_GROUP=""
-	# In a first time, I search on nagios.cfg because it had most of chance to find it.
-	if [ -f $NAGIOS_ETC/nagios.cfg ] ; then  
-		NAGIOS_GROUP=`${GREP} "^nagios_group" $NAGIOS_ETC/nagios.cfg | cut -d= -f2 2>/dev/null`
-	fi
-
-	# If I not locate nagios group, I find on all file.
-	if [ -z "$NAGIOS_GROUP"  ] ; then
-	local NAGIOS_GROUP_TEMP=""
-		log "INFO" "$(gettext "Find nagios group in all file in") : $NAGIOS_ETC"
-		for fichier in $NAGIOS_ETC/*.cfg ; do
-			if [ -f "$fichier" ];	then
-				NAGIOS_GROUP_TEMP=`${GREP} "^nagios_group" $fichier | cut -d= -f2 2>/dev/null`
-				if [ -n "$NAGIOS_GROUP_TEMP" ]; then
-					NAGIOS_GROUP="$NAGIOS_GROUP_TEMP"
-				fi
-			fi
-		done
-	fi
-    
-	if [ -z "$NAGIOS_GROUP"  ] ; then
-		log "INFO" "$(gettext "First find nagios user fail")"
-		return 1
-	else 
-		is_single "$NAGIOS_GROUP"
-		if [ "$?" -eq 1 ] ; then
-			echo -e "$(gettext "Please select a good nagios group")"
-			select_in_array "NAGIOS_GROUP" "${NAGIOS_GROUP[@]}"
-		fi
-		echo_info "$(gettext "Finding Nagios group") :" "$NAGIOS_GROUP"	
-    	fi
-	return 0
-}
-
-#----
-## Check the user nagios
-## if NAGIOS_USER already define, this functions test if is it a valid system user
-## @return 0	found
-## @Globals	NAGIOS_USER
-#----
-function check_user_nagios()
-{
-	local RC="1"        
-
-	# check if you want to force nagios user
-	FORCE_NAGIOS_USER=${FORCE_NAGIOS_USER:-0}
-
-	if [ -n "$NAGIOS_USER" ] ; then
-		if [ "$FORCE_NAGIOS_USER" -eq 0 ] ; then 
-			log "DEBUG" "$(gettext "Test user nagios")"
-			id -u "$NAGIOS_USER" >> $LOG_FILE 2>&1
-			RC="$?"
-		else 
-			RC=0
-		fi
-		if [ "$RC" -eq 0 ] ; then
-			echo_info "$(gettext "Finding Nagios user") :" "$NAGIOS_USER"
-                        # Testing if user nagios is in web group
-                        log "DEBUG" "$(gettext "Test user nagios in web group")"
-                        id "$NAGIOS_USER" | grep "($WEB_GROUP)" >> $LOG_FILE 2>&1
-                        if [ $? -ne 0 ]; then
-                            log "DEBUG" "$(gettext "Add user nagios to web group")"
-                            usermod -aG $WEB_GROUP $NAGIOS_USER >> $LOG_FILE 2>&1
-                        fi
-			return 0
-		fi
-	fi
-    	# Try to find nagios user/group from nagios.cfg file.
-	# If not, we ask...
-	find_user_nagios
-
-	if [ "$?" -eq 0 ] ; then 
-            # put nagios user into apache group
-            log "DEBUG" "$(gettext "Add user nagios to web group")"
-            usermod -aG $WEB_GROUP $NAGIOS_USER
-            return 0
-	fi
-
-	echo_failure "$(gettext "Nagios User not found")" "$fail"
-	echo -e "$(gettext "Have you create you nagios user ? use this command")"
-	echo -e "useradd -G $NAGIOS_GROUP $NAGIOS_USER \n"
-	echo -e "$(gettext "If you want to force a nagios user name, use (FORCE_)NAGIOS_USER variable(s) in a template file and try 'bash install.sh -f file'")"
-	clean_and_exit 1
-	
-}
-
-#----
-## Check the nagios group
-## Find un /etc/group if is a valid group.
-## @Globals	NAGIOS_GROUP
-#----
-function check_group_nagios()
-{
-	local RC="1"
-	# check if you want to force nagios group
-	FORCE_NAGIOS_GROUP=${FORCE_NAGIOS_GROUP:-0}
-
-	if [ -n "$NAGIOS_GROUP" ] ; then
-		if [ "$FORCE_NAGIOS_GROUP" -eq 0 ] ; then 
-			log "DEBUG" "$(gettext "Test group nagios")"
-			${GREP} "$NAGIOS_GROUP" /etc/group >> $LOG_FILE 2>&1
-			RC="$?"
-		else
-			RC=0
-		fi
-		if [ "$RC" -eq 0 ] ; then
-			echo_info "$(gettext "Finding Nagios group") :" "$NAGIOS_GROUP"
-			return 0
-		fi
-	fi
-	# Try to find nagios user/group from nagios.cfg file.
-	# If not, we ask...
-	find_group_nagios
-
-	if [ "$?" -eq 0 ] ; then 
+	local message=$1
+	local default=$2
+	local val_ref=$3
+	local res="not_define"
+	local first=0
+	if [ -n "$MONITORINGENGINE_INIT_SCRIPT" -a -x "$MONITORINGENGINE_INIT_SCRIPT" ]; then
+		log "INFO" "$(gettext "Use default variable") : $MONITORINGENGINE_INIT_SCRIPT"
 		return 0
 	fi
-
-	echo_failure "$(gettext "Nagios Group not found")" "$fail"
-	echo -e "$(gettext "Have you create you nagios group ? use this command")"
-	echo -e "groupadd $NAGIOS_GROUP \n"
-	echo -e "$(gettext "If you want to force a nagios group name, use (FORCE_)NAGIOS_GROUP variable(s) in a template file and try 'bash install.sh -f file'")"
-	clean_and_exit 1
+	while [ ! -x "$res" ]; do
+		[ $first -eq 1 ] && echo_passed "$(gettext "$res is not executable.")" "$critical"
+		echo -e "\n$message"
+		echo -en "> "	
+		read res
+		if [ -z "$res" ]; then
+			$res="not_define"
+		fi
+		first=1
+	done
+	eval $val_ref=$res
+	return 0
 }
 
 #----
 ## Define where is a nagios init script
 ## Find in list of chose and request if not found
 ## @Globals	NAGIOS_INIT_SCRIPT, DEFAULT_NAGIOS_INIT_SCRIPT, INIT_D
+## @TODO Change pour monitoring
 #----
 function check_nagios_init_script()
 {
@@ -2043,6 +1860,57 @@ function check_group_apache()
 	return 0
 }
 
+#----
+## Ask for centreon user
+## @Globals	CENTREON_USER, DEFAULT_CENTREON_USER
+#----
+function check_centreon_user()
+{
+	if [ -z "${CENTREON_USER}" ]; then
+		answer_with_createuser "$(gettext "Centreon user")" "$DEFAULT_CENTREON_USER" "CENTREON_USER"
+	fi
+	log "INFO" "$(gettext "Centreon user") : $CENTREON_USER"
+	return 0
+}
+
+#----
+## Ask for centreon user, and create it if not exists
+## @Globals	CENTREON_GROUP, DEFAULT_CENTREON_GROUP
+#----
+function check_centreon_group()
+{
+	if [ -z "${CENTREON_GROUP}" ]; then
+		answer_with_creategroup "$(gettext "Centreon group")" "$DEFAULT_CENTREON_GROUP" "CENTREON_GROUP"
+	fi
+	log "INFO" "$(gettext "Centreon group") : $CENTREON_GROUP"
+	return 0
+}
+
+#----
+## Ask for centreon user, and create it if not exists
+## @Globals	MONITORINGENGINE_USER
+#----
+function check_engine_user()
+{
+	if [ -z "${MONITORINGENGINE_USER}" ]; then
+		answer_with_testuser "$(gettext "Monitoring engine user")" "NO_DEFAULT" "MONITORINGENGINE_USER"
+	fi
+	log "INFO" "$(gettext "Monitoring engine user") : $MONITORINGENGINE_USER"
+	return 0
+}
+
+#----
+## Ask for centreon user, and create it if not exists
+## @Globals	BROKER_USER
+#----
+function check_broker_user()
+{
+	if [ -z "${BROKER_USER}" ]; then
+		answer_with_testuser_optional "$(gettext "Broker user")" "NO_DEFAULT" "BROKER_USER"
+	fi
+	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
+	return 0
+}
 
 #----
 ## Copy Source directory on temporary working directory
@@ -2367,4 +2235,50 @@ function check_result() {
 		echo_failure "$message" "$fail"
 	fi
 	return 0
+}
+
+#----
+## Add a group to a user
+## @param	user name
+## @param	group name
+## @Globals	fail
+## @return 0 	 end
+## @return 1 	 fail
+#----
+function add_group() {
+	local user=$1
+	local group=$2
+	if [ -z "$user" -o -z "$group" ]; then
+		echo_failure "$(gettext "Add group $group to user $user")" "$fail"
+		return 1
+	fi
+	usermod -a -G $group $user &>/dev/null
+	local ret=$?
+	check_result $ret "$(gettext "Add group $group to user $user")"
+	return $ret
+}
+
+#----
+## Get the primary group of a user
+## @param	user name
+## @param	variable to set a result
+## @return 1	fail
+## @return 0	end
+#----
+function get_primary_group() {
+	local user=$1
+	local var_ref=$2
+	local group_name=$(id -ng "$user" 2>/dev/null)
+	if [ -z "$group_name" ]; then
+		return 1
+	fi
+	eval $var_ref=$group_name
+	return 0
+}
+
+function check_rrd_right() {
+	if [ -d "${CENTSTORAGE_RRD}" ]; then
+		${CHOWN} -R ${CENTREON_USER}:${CENTREON_GROUP} "${CENTSTORAGE_RRD}"
+		${CHMOD} -R g+w "${CENTSTORAGE_RRD}"
+	fi
 }

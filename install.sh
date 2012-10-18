@@ -360,6 +360,14 @@ if [ "$PROCESS_CENTREON_WWW" -eq 1 ] ; then
 		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentWeb.conf"
 
 		. $inst_upgrade_dir/instCentWeb.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+			[ -n "$NAGIOS_BINARY" ] && MONITORINGENGINE_BINARY=$NAGIOS_BINARY
+			[ -n "$NAGIOS_INIT_SCRIPT" ] && MONITORINGENGINE_INIT_SCRIPT=$NAGIOS_INIT_SCRIPT
+		fi
 	fi
 	. $INSTALL_DIR/CentWeb.sh
 fi
@@ -370,6 +378,11 @@ if [ "$PROCESS_CENTSTORAGE" -eq 1 ] ; then
 		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentStorage.conf"
 
 		. $inst_upgrade_dir/instCentStorage.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+		fi
 	fi
 	. $INSTALL_DIR/CentStorage.sh
 fi
@@ -380,6 +393,12 @@ if [ "$PROCESS_CENTCORE" -eq 1 ] ; then
 		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentCore.conf"
 
 		. $inst_upgrade_dir/instCentCore.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+		fi
 	fi
 	. $INSTALL_DIR/CentCore.sh
 fi
@@ -390,6 +409,13 @@ if [ "$PROCESS_CENTREON_PLUGINS" -eq 1 ] ; then
 		log "INFO" "$(gettext "Load variables:") $inst_upgrade_dir/instCentPlugins.conf"
 
 		. $inst_upgrade_dir/instCentPlugins.conf
+		if [ -n "$NAGIOS_USER" ]; then
+			echo_info "$(gettext "Convert variables for upgrade:")"
+			MONITORINGENGINE_USER=$NAGIOS_USER
+			[ -n "$NAGIOS_GROUP" ] && MONITORINGENGINE_GROUP=$NAGIOS_GROUP
+			[ -n "$NAGIOS_ETC" ] && MONITORINGENGINE_ETC=$NAGIOS_ETC
+			[ -n "$NAGIOS_PLUGIN" ] && PLUGIN_DIR=$NAGIOS_PLUGIN
+		fi
 	fi
 	. $INSTALL_DIR/CentPlugins.sh
 fi

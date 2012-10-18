@@ -53,7 +53,7 @@ use vars qw($centrapmanager_daemon $centrapmanager_log_debug $centrapmanager_sle
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
 use vars qw($etc $NAGIOSUSER);
 
-$NAGIOSUSER = '@NAGIOS_USER@';
+$NAGIOSUSER = '@MONITORINGENGINE_USER@';
 
 use POSIX qw(strftime);
 eval "use HTML::Entities";
