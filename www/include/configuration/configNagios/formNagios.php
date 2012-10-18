@@ -685,7 +685,8 @@
 		"enable_embedded_perl" => '2',
 		"use_embedded_perl_implicitly" => '2',
 		'action' => '1',
-		'daemon_dumps_core' => '0'
+		'daemon_dumps_core' => '0', 
+		'event_broker_options' => '-1'
 		));
 
 	$form->addElement('hidden', 'nagios_id');
@@ -704,11 +705,11 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 
 	$form->addRule('nagios_name', _("Compulsory Name"), 'required');
-        $form->addRule('cfg_file', _("Required Field"), 'required');
+    $form->addRule('cfg_file', _("Required Field"), 'required');
 	$form->addRule('nagios_comment', _("Required Field"), 'required');
 	$form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
-
+	
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;"._("Required fields"));
 
 	/*
@@ -726,14 +727,12 @@
 	} else if ($o == "c")	{
 		# Modify a nagios information
 		$subC = $form->addElement('submit', 'submitC', _("Save"));
-#		$res = $form->addElement('reset', 'reset', _("Reset"));
 		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
 
 		$form->setDefaults($nagios);
 	} else if ($o == "a")	{
 		# Add a nagios information
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
-#		$res = $form->addElement('reset', 'reset', _("Reset"));
 		$res = $form->addElement('reset', 'reset', _("Reset"), array("onClick"=>"javascript:resetBroker('".$o."')"));
 
 	}

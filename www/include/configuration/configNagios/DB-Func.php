@@ -322,7 +322,7 @@
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "'".htmlentities($ret["admin_pager"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "'".htmlentities($ret["nagios_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
         isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"] != NULL ? $rq .= "'".$ret["nagios_activate"]["nagios_activate"]."'," : $rq .= "'0',";
-        isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
+        isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "'".htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8")."', " : $rq .= "'-1', ";
         isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "'".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "'2', ";
         isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "'".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."', " : $rq .= "'2', ";
 		isset($ret["translate_passive_host_checks"]["translate_passive_host_checks"]) && $ret["translate_passive_host_checks"]["translate_passive_host_checks"] != 2 ? $rq .= "'".$ret["translate_passive_host_checks"]["translate_passive_host_checks"]."', " : $rq .= "'2', ";
@@ -499,7 +499,7 @@
         isset($ret["admin_email"]) && $ret["admin_email"] != NULL ? $rq .= "admin_email = '".htmlentities($ret["admin_email"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "admin_email = NULL, ";
         isset($ret["admin_pager"]) && $ret["admin_pager"] != NULL ? $rq .= "admin_pager = '".htmlentities($ret["admin_pager"], ENT_QUOTES, "UTF-8")."', " : $rq .= "admin_pager = NULL, ";
         isset($ret["nagios_comment"]) && $ret["nagios_comment"] != NULL ? $rq .= "nagios_comment = '".htmlentities($ret["nagios_comment"], ENT_QUOTES, "UTF-8")."', " : $rq .= "nagios_comment = NULL, ";
-		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "event_broker_options = '".htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8")."', " : $rq .= "event_broker_options = NULL, ";
+		isset($ret["event_broker_options"]) && $ret["event_broker_options"] != NULL ? $rq .= "event_broker_options = '".htmlentities($ret["event_broker_options"], ENT_QUOTES, "UTF-8")."', " : $rq .= "event_broker_options = '-1', ";
 		isset($ret["enable_embedded_perl"]["enable_embedded_perl"]) && $ret["enable_embedded_perl"]["enable_embedded_perl"] != 2 ? $rq .= "enable_embedded_perl   = '".$ret["enable_embedded_perl"]["enable_embedded_perl"]."',  " : $rq .= "enable_embedded_perl   = '2', ";
 		isset($ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]) && $ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"] != 2 ? $rq .= "use_embedded_perl_implicitly   = '".$ret["use_embedded_perl_implicitly"]["use_embedded_perl_implicitly"]."',  " : $rq .= "use_embedded_perl_implicitly   = '2', ";
 		isset($ret["debug_file"]) && $ret["debug_file"] != NULL ? $rq .= "debug_file = '".htmlentities($ret["debug_file"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "debug_file = NULL, ";
