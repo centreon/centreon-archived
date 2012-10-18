@@ -37,6 +37,11 @@
  */
 
 	/*
+	 * Connect to MySQL
+	 */
+	$pearDBO = new CentreonDB("centstorage");
+
+	/*
 	 * Get interval_lenth value
 	 */
 	$interval_length = 60;
