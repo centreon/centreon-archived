@@ -43,19 +43,12 @@ $_SESSION['step'] = STEP_NUMBER;
 require_once '../steps/functions.php';
 $template = getTemplate('../steps/templates');
 
-$tmpfname = tempnam("../..", "");
-@unlink($tmpfname);
-@rename(str_replace('step_upgrade', '', getcwd()), realpath("../..")."/".basename($tmpfname) );
-
-$title = _('Upgrade finished');
-$contents = sprintf(_('Congratulations, you have successfully upgraded to Centreon version <b>%s</b>.'), $_SESSION['CURRENT_VERSION']);
-
-session_destroy();
+$title = _('Release notes');
+$contents = "<textarea cols='100' rows='30' readonly>".file_get_contents('../RELEASENOTES')."</textarea>";
 
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
 $template->assign('content', $contents);
-$template->assign('finish', 1);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>

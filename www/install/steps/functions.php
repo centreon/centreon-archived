@@ -168,6 +168,7 @@ function exitProcess($id, $result, $msg) {
  * @param string $current
  * @param string $next
  * @param string $msg | error message
+ * @return void
  */
 function exitUpgradeProcess($result, $current, $next, $msg) {
     echo '{
