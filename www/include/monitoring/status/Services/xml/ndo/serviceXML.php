@@ -234,7 +234,7 @@
 
 	$where = " no_h.objecttype_id = 1
                    AND no_h.object_id = nhs.host_object_id
-                   AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "no_h.name1 = no_s.name1 AND no_h.instance_id = no_s.instance_id AND no_s.objecttype_id = 2 AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
+                   AND " . $where_unhandled_host . $where_host_poller . $where_host_meta . $where_hg . $where_host_host_filter . "no_h.name1 = no_s.name1 AND no_h.instance_id = no_s.instance_id AND no_s.is_active = 1 AND no_s.objecttype_id = 2 AND nss.service_object_id = no_s.object_id AND " . $obj->ndoPrefix . "instances.instance_id = no_s.instance_id" . $where_acl_append . $where_acl . $rq_state . $where_service_service_append . $where_service_service . $where_service_output_append . $where_service_output;
 
         if ($criticality_id) {
             $where .= " AND no_s.object_id = cvs.object_id
