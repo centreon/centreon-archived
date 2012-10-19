@@ -36,13 +36,14 @@
  *
  */
 
+session_start();
 require_once '@CENTREON_ETC@/centreon.conf.php';
 require_once $centreon_path.'/www/class/centreonDB.class.php';
 require_once '../../steps/functions.php';
 
 $current = $_POST['current'];
 $next = $_POST['next'];
-$result = 0;
+$status = 0;
 
 /**
  * Variables for upgrade scripts
@@ -50,12 +51,36 @@ $result = 0;
 $pearDB = new CentreonDB();
 $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
 $row = $res->fetchRow();
-if ($row['value'] == 'broker') {
+$isBroker = false;
+if (isset($row['value']) && $row['value'] == 'broker') {
+    $isBroker = true;
     $pearDBNdo = new CentreonDB('centstorage');
 } else {
     $pearDBNdo = new CentreonDB('ndo');
 }
 $pearDBO = new CentreonDB('centstorage');
+
+/**
+ * Upgrade storage sql
+ */
+$storageSql = '../../sql/centstorage/Update-CSTG-'.$current.'_to_'.$next.'.sql';
+if (is_file($storageSql)) {
+    $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-'.$current.'_to_'.$next);
+    if ("0" != $result) {
+        exitUpgradeProcess(1, $current, $next, $result);
+    }
+}
+
+/**
+ * Upgrade utils sql
+ */
+$utilsSql = '../../sql/brocker/Update-NDO-'.$current.'_to_'.$next.'.sql';
+if (is_file($utilsSql) && $isBroker == false) {
+    $result = splitQueries($utilsSql, ';', $pearDBNdo, '../../tmp/Update-NDO-'.$current.'_to_'.$next);
+    if ("0" != $result) {
+        exitUpgradeProcess(1, $current, $next, $result);
+    }
+}
 
 /**
  * Pre upgrade PHP
@@ -70,34 +95,9 @@ if (is_file($prePhp)) {
  */
 $confSql = '../../sql/centreon/Update-DB-'.$current.'_to_'.$next.'.sql';
 if (is_file($confSql)) {    
-    try {
-        splitQueries($confSql, ';', $pearDB);
-    } catch (Exception $e) {
-        exitUpgradeProcess(1, $current, $next, $e->getMessage());
-    }
-}
-
-/**
- * Upgrade storage sql
- */
-$storageSql = '../../sql/centstorage/Update-CSTG-'.$current.'_to_'.$next.'.sql';
-if (is_file($storageSql)) {
-    try {
-        splitQueries($storageSql, ';', $pearDB);
-    } catch (Exception $e) {
-        exitUpgradeProcess(1, $current, $next, $e->getMessage());
-    }
-}
-
-/**
- * Upgrade utils sql
- */
-$utilsSql = '../../sql/brocker/Update-NDO-'.$current.'_to_'.$next.'.sql';
-if (is_file($utilsSql)) {
-    try {
-        splitQueries($utilsSql, ';', $pearDB);
-    } catch (Exception $e) {
-        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+    $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-'.$current.'_to_'.$next);
+    if ("0" != $result) {
+        exitUpgradeProcess(1, $current, $next, $result);
     }
 }
 
@@ -122,5 +122,5 @@ if ($handle = opendir('../../sql/centreon')) {
     closedir($handle);
 }
 $_SESSION['CURRENT_VERSION'] = $current;
-$okMsg = '<span style="color:#10CA31;">OK</span>';
-exitUpgradeProcess($result, $current, $next, $okMsg);
+$okMsg = "<span style='color:#10CA31;'>OK</span>";
+exitUpgradeProcess($status, $current, $next, $okMsg);

@@ -51,13 +51,13 @@ if (false === mysql_query("CREATE DATABASE ".$_SESSION['STORAGE_DB'])) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
 mysql_select_db($_SESSION['STORAGE_DB']);
-if (false == splitQueries('../../createTablesCentstorage.sql')) {
-    $error = mysql_error();
-    exitProcess(PROCESS_ID, 1, $error);
+$result = splitQueries('../../createTablesCentstorage.sql', ';', null, '../../tmp/createTablesCentstorage');
+if ("0" != $result) {
+    exitProcess(PROCESS_ID, 1, $result);
 }
-if (false == splitQueries('../../installBroker.sql')) {
-    $error = mysql_error();
-    exitProcess(PROCESS_ID, 1, $error);
+$result = splitQueries('../../installBroker.sql', ';', null, '../../tmp/installBroker');
+if ("0" != $result) {
+    exitProcess(PROCESS_ID, 1, $result);
 }
 
 exitProcess(PROCESS_ID, 0, "OK");

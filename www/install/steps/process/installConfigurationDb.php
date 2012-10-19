@@ -60,8 +60,8 @@ if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB'])) {
  * Create tables
  */
 mysql_select_db($_SESSION['CONFIGURATION_DB']);
-if (false == splitQueries('../../createTables.sql')) {
-    $error = mysql_error();
-    exitProcess(PROCESS_ID, 1, $error);
+$result = splitQueries('../../createTables.sql', ';', null, '../../tmp/createTables');
+if ("0" != $result) {
+    exitProcess(PROCESS_ID, 1, $result);
 }
 exitProcess(PROCESS_ID, 0, "OK");

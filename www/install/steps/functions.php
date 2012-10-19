@@ -1,5 +1,18 @@
 <?php
 /**
+ * Checks if line is sql comment
+ * 
+ * @param string $str
+ * @return bool
+ */
+function isSqlComment($str) {
+    if (substr(trim($str), 0, 2) == "--") {
+        return true;
+    }
+    return false;
+}
+
+/**
  * Get template
  *  
  * @param string $dir directory of templates
@@ -58,41 +71,61 @@ function replaceInstallationMacros($query) {
  * @param string $file
  * @param string $delimiter 
  * @param CentreonDB $connector
- * @return boolean
+ * @param string $tmpFile | $tmpFile will store the number of executed queries sql script can be resumed from last failure
+ * @return string | returns "0" if everything is ok, or returns error message
  */
-function splitQueries($file, $delimiter = ';', $connector = null) {
+function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "") {
     set_time_limit(0);
+    $count = 0;
+    $start = 0;
+    $fileName = basename($file);
+    if (is_file($tmpFile)) {
+        $start = file_get_contents($tmpFile);
+    }
     if (is_file($file) === true) {
         $file = fopen($file, 'r');
         if (is_resource($file) === true)
         {
             $query = array();
+            $line = 0;
             while (feof($file) === false) {
-                $query[] = fgets($file);
+                $line++;
+                $currentLine = fgets($file);
+                if (false == isSqlComment($currentLine)) {
+                    $query[] = $currentLine;
+                }
                 if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
                     $query = trim(implode('', $query));
                     $query = replaceInstallationMacros($query);
-                    if (is_null($connector)) {
-                        if (mysql_query($query) === false) {
-                            fclose($file);
-                            return false;
+                    $count++;
+                    if ($count > $start) {
+                        if (is_null($connector)) {
+                            if (mysql_query($query) === false) {
+                                fclose($file);
+                                return "$fileName Line $line:".mysql_error();
+                            }
+                        } else {
+                            $res = $connector->query($query);
+                            if (PEAR::isError($res)) {
+                                return "$fileName Line $line:".$res->getMessage();
+                            }
                         }
-                    } else {
-                        $connector->query($query);
+                        while (ob_get_level() > 0) {
+                            ob_end_flush();
+                        }
+                        flush();
+                        file_put_contents($tmpFile, $count);
                     }
-                    while (ob_get_level() > 0) {
-                        ob_end_flush();
-                    }
-                    flush();
                 }
                 if (is_string($query) === true) {
                     $query = array();
                 }
             }
-            return fclose($file);
+            fclose($file);
+            return "0";
         }
     }
-    return false;
+    return _('File not found');
 }
 
 /**
@@ -165,5 +198,26 @@ function getParamLines($varPath, $objectType) {
     }
     $lines = explode("\n", $contents);
     return $lines;
+}
+
+/**
+ * Set session variables
+ * 
+ * @param array $conf_centreon
+ * @return void
+ */
+function setSessionVariables($conf_centreon) {
+    $_SESSION['INSTALL_DIR_CENTREON'] = $conf_centreon['centreon_dir'];
+    $_SESSION['CENTREON_ETC'] = $conf_centreon['centreon_etc'];
+    $_SESSION['BIN_MAIL'] = $conf_centreon['mail'];
+    $_SESSION['MONITORINGENGINE_USER'] = $conf_centreon['monitoring_user'];
+    $_SESSION['MONITORINGENGINE_GROUP'] = $conf_centreon['monitoring_group'];
+    $_SESSION['MONITORINGENGINE_ETC'] = $conf_centreon['monitoring_etc'];
+    $_SESSION['MONITORINGENGINE_PLUGIN'] = $conf_centreon['plugin_dir'];
+    $_SESSION['CENTREON_LOG'] = $conf_centreon['centreon_log'];
+    $_SESSION['CENTREON_RRD_DIR'] = $conf_centreon['centreon_dir_rrd'];
+    $_SESSION['MONITORING_INIT_SCRIPT'] = $conf_centreon['monitoring_init_script'];
+    $_SESSION['MONITORING_BINARY'] = $conf_centreon['monitoring_binary'];
+    $_SESSION['CENTREON_VARLIB'] = $conf_centreon['centreon_varlib'];
 }
 ?>

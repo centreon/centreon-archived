@@ -12,8 +12,8 @@ INSERT INTO auth_ressource (ar_id, ar_type, ar_enable, ar_order) VALUES (1, 'lda
 --
 -- Contraintes pour la table `auth_ressource_info`
 --
-ALTER TABLE `auth_ressource_info`
-  ADD CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE;
+-- ALTER TABLE `auth_ressource_info`
+--  ADD CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE;
 
 DELETE FROM topology_JS WHERE id_page = 60904;
 

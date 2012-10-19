@@ -1,5 +1,5 @@
 
-ALTER TABLE `cfg_nagios` DROP `broker_module`;
+-- ALTER TABLE `cfg_nagios` DROP `broker_module`;
 
 alter table contact add contact_enable_notifications enum('0','1') default '0' after contact_oreon;
 alter table contact add contact_template_id int(11) default null after contact_enable_notifications;
@@ -343,7 +343,8 @@ UPDATE `options` SET `value` = 'ndo' WHERE `key` = 'broker' AND `value` = 'Ndo';
 -- 2.3-RC1
 
 ALTER TABLE nagios_server ADD COLUMN centreonbroker_module_path VARCHAR(255) DEFAULT NULL AFTER centreonbroker_cfg_path;
-ALTER TABLE `cfg_centreonbroker` ADD COLUMN config_filename VARCHAR(255) NOT NULL AFTER config_name;
+-- ALTER TABLE `cfg_centreonbroker` ADD COLUMN config_filename VARCHAR(255) NOT NULL AFTER config_name;
+
 --
 -- Structure de la table `cb_field`
 --
@@ -775,8 +776,8 @@ UPDATE  `cb_field` SET  `fieldtype` =  'password' WHERE  `cb_field_id` = 9;
 --
 -- Insert DB Port for Centreon Broker Configuration
 --
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (14, 18, 1, 5);
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (16, 18, 1, 3);
+-- INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (14, 18, 1, 5);
+-- INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (16, 18, 1, 3);
 
 --
 -- Update default information for Centreon Broker configuration in poller
@@ -817,8 +818,8 @@ UPDATE `cb_type_field_relation` SET `order_display` = '6' WHERE `cb_type_field_r
 -- 
 -- Insert new field for Centreon Broker correlation
 --
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (22, 30, 1, 2);
+-- INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (30, 'retention', 'Retention File', 'File where correlation state will be stored during correlation engine restart', 'text', NULL);
+-- INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (22, 30, 1, 2);
 
 -- ALTER TABLE `giv_graphs_template` ADD `unit_exponent` tinyint(6) NULL AFTER scaled ;
 

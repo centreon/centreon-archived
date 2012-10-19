@@ -50,19 +50,9 @@ if (is_file('../install.conf.php')) {
     $content = sprintf("<p>%s%s</p>",
                   _('You are about to upgrade Centreon.'),
                   _('The entire process should take around ten minutes.'));
+    $content .= sprintf("<p>%s</p>", _('It is strongly recommended to make a backup of your databases before going any further.'));
     require_once '../install.conf.php';
-    $_SESSION['INSTALL_DIR_CENTREON'] = $conf_centreon['centreon_dir'];
-    $_SESSION['CENTREON_ETC'] = $conf_centreon['centreon_etc'];
-    $_SESSION['BIN_MAIL'] = $conf_centreon['mail'];
-    $_SESSION['MONITORINGENGINE_USER'] = $conf_centreon['monitoring_user'];
-    $_SESSION['MONITORINGENGINE_GROUP'] = $conf_centreon['monitoring_group'];
-    $_SESSION['MONITORINGENGINE_ETC'] = $conf_centreon['monitoring_etc'];
-    $_SESSION['MONITORINGENGINE_PLUGIN'] = $conf_centreon['plugin_dir'];
-    $_SESSION['CENTREON_LOG'] = $conf_centreon['centreon_log'];
-    $_SESSION['CENTREON_RRD_DIR'] = $conf_centreon['centreon_dir_rrd'];
-    $_SESSION['MONITORING_INIT_SCRIPT'] = $conf_centreon['monitoring_init_script'];
-    $_SESSION['MONITORING_BINARY'] = $conf_centreon['monitoring_binary'];
-    $_SESSION['CENTREON_VARLIB'] = $conf_centreon['centreon_varlib'];
+    setSessionVariables($conf_centreon);
 } else {
     $status = 1;
     $content = sprintf("<p class='required'>%s</p>", _('Configuration file not found.'));

@@ -114,7 +114,7 @@ function nextStep(current, next) {
     doProcess(true, './step_upgrade/process/process_step'+step+'.php', {'current':current,'next':next}, function(response) {
         var data = jQuery.parseJSON(response);
         jQuery('td[name='+replaceDot(current)+']').html(data['msg']);
-        if (data['result'] == 0) {
+        if (data['result'] == "0") {
             if (data['next']) {
                 nextStep(data['current'], data['next']);
             } else {

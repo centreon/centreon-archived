@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,48 +37,18 @@
  *
  */
 
-	include_once ("../class/centreonSession.class.php");
-	include_once ("DB-Func.php");
-	CentreonSession::start();
-	ini_set("track_errors",true);
-	if (file_exists("install.conf.php")) {
-	   include_once ("install.conf.php");
-	}
-	// Pear Modules Management
-	if (file_exists("pear_module.conf.php")) {
-	   include_once ("pear_module.conf.php");
-	}
+include_once ("../class/centreonSession.class.php");
+include_once ("DB-Func.php");
+CentreonSession::start();
+ini_set("track_errors", true);
+if (file_exists("install.conf.php")) {
+    include_once ("install.conf.php");
+}
+// Pear Modules Management
+if (file_exists("pear_module.conf.php")) {
+    include_once ("pear_module.conf.php");
+}
 
-	$DEBUG = 0;
-	$msg = NULL;
-	$return_false = NULL;
-
-    if (isset($_POST["step"]) && $_POST["step"] == 2 && isset($_POST["Restart"]))
-         $_POST["step"] = NULL;
-	if (isset($_POST["step"]) && $_POST["step"] == 4 && isset($_POST["Recheck"]))
-		 $_POST["step"] = 3;
-	if (isset($_POST["step"]) && $_POST["step"] == 5 && isset($_POST["Recheck"]))
-		 $_POST["step"] = 4;
-	if (isset($_POST["step"]) && $_POST["step"] == 7 && isset($_POST["Recheck"]))
-		 $_POST["step"] = 6;
-	if (isset($_POST["step"]) && $_POST["step"] == 10 && isset($_POST["Recheck"]))
-		 $_POST["step"] = 9;
-
-	if (isset($_POST["goto"]) && !strcmp($_POST["goto"], "Back"))
-		 $_POST["step"] -= 2;
-	if (isset($_POST["step"]) && $_POST["step"] == 6 && isset($_POST["pwdOreonDB"]) && strcmp($_POST["pwdOreonDB"], $_POST["pwdOreonDB2"])){
-		$_POST["step"] = 5;
-		$passwd_error = "Password not confirmed correctly.";
-	}
-	if (isset($_POST["step"]) && $_POST["step"] == 6 && isset($_POST["pwdOreonDB"]) && !strcmp($_POST["pwdOreonDB"], "")){
-		$_POST["step"] = 5;
-		$passwd_error = "Sorry: Centreon user database password acces cannot be empty.";
-	}
-	if (isset($_POST["step"]) && $_POST["step"] == 7 && isset($_POST["oreonpasswd"])  && strcmp($_POST["oreonpasswd"], $_POST["oreonpasswd2"])){
-		$_POST["step"] = 6;
-		$passwd_error = "Password not confirmed correctly.";
-	}
-
-        require_once './steps/index.php';
-        exit;
+require_once './steps/index.php';
+exit;
 ?>

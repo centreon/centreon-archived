@@ -52,10 +52,10 @@ if (false === mysql_query("CREATE DATABASE ".$_SESSION['UTILS_DB'])) {
 }
 mysql_select_db($_SESSION['UTILS_DB']);
 mysql_query('BEGIN');
-if (false == splitQueries('../../createNDODB.sql')) {
-    $error = mysql_error();
+$result = splitQueries('../../createNDODB.sql', ';', null, '../../tmp/createNDODB');
+if ("0" != $result) {
     mysql_query('ROLLBACK');
-    exitProcess(PROCESS_ID, 1, $error);
+    exitProcess(PROCESS_ID, 1, $result);
 }
 mysql_query('COMMIT');
 

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,22 +37,22 @@
  *
  */
 
-	/*
-	 * configuration
-	 */
-	include_once ("@CENTREON_ETC@/centreon.conf.php");
-	include_once ("./step_upgrade/functions.php");
-	include_once ("../class/centreonSession.class.php");
+/*
+ * configuration
+ */
+include_once ("@CENTREON_ETC@/centreon.conf.php");
+include_once ("./step_upgrade/functions.php");
+include_once ("../class/centreonSession.class.php");
 
-	CentreonSession::start();
+CentreonSession::start();
 
-	/*
-	 * Pear Modules Management
-	 */
-	if (file_exists("pear_module.conf.php"))
-		include_once ("pear_module.conf.php");
+/*
+ * Pear Modules Management
+ */
+if (file_exists("pear_module.conf.php")) {
+    include_once ("pear_module.conf.php");
+}
 
-	$DEBUG = 0;
-        require_once './step_upgrade/index.php';
-        exit;
+require_once './step_upgrade/index.php';
+exit;
 ?>
