@@ -5,8 +5,6 @@ ALTER TABLE `connector` MODIFY `command_line` VARCHAR(255) CHARACTER SET utf8 CO
 UPDATE `connector` SET `command_line` = '$USER3$/centreon_connector_perl' WHERE `command_line` = '$USER2$/centreon_connector_perl';
 UPDATE `connector` SET `command_line` = '$USER3$/centreon_connector_ssh' WHERE `command_line` = '$USER2$/centreon_connector_ssh';
 
-UPDATE `informations` SET `value` = '2.4.0-RC3' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC2' LIMIT 1;
-
 UPDATE cb_field SET description = 'Port to listen on (empty host) or to connect to (with host filled).' WHERE fieldname = 'port';
 UPDATE cb_field SET description = 'IP address or hostname of the host to connect to (leave blank for listening mode).' WHERE fieldname = 'host';
 UPDATE cb_field SET description = 'Trusted CA''s certificate.' WHERE fieldname = 'ca_certificate';
@@ -24,3 +22,5 @@ UPDATE cb_field SET description = 'Status RRD Directory, for example /var/lib/ce
 UPDATE cb_field SET description = 'Target DBMS.' WHERE fieldname = 'db_type';
 UPDATE cb_field SET description = 'Interval Length in seconds.' WHERE fieldname = 'interval';
 UPDATE cb_field SET description = 'RRD storage duration in seconds.' WHERE fieldname = 'length';
+
+UPDATE `informations` SET `value` = '2.4.0-RC3' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC2' LIMIT 1;

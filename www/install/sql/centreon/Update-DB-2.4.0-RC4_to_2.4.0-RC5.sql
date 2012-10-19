@@ -1,10 +1,4 @@
 --
--- Update meta infotmation about Centreon
---
-
-UPDATE `informations` SET `value` = '2.4.0-RC5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC4' LIMIT 1;
-
---
 -- Adds new fields to `cfg_cgi`
 --
 
@@ -31,3 +25,9 @@ UPDATE `topology_JS` SET `id_page` = 61704 WHERE `id_page` = 61104 AND `o` IS NU
 SET FOREIGN_KEY_CHECKS = 1;
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
+
+--
+-- Update meta information about Centreon
+--
+
+UPDATE `informations` SET `value` = '2.4.0-RC5' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC4' LIMIT 1;

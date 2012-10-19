@@ -165,3 +165,8 @@ table.StyleDottedHr th {
 	color: #ff2222;
 	font-weight: bold;
 	}
+        
+#troubleshoot {
+    color: #ff2222;
+    font-weight: normal;
+}

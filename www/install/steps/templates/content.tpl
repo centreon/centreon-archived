@@ -20,6 +20,7 @@
         {if ($step-1 && !$blockPreview)}
         <input class='button' type='button' id='previous' value='Back' onClick='jumpTo({$step-1});'/>
         {/if}
+        <input class='button' type='button' id='refresh' value='Refresh' onClick='jumpTo({$step});'/>
         {if !$finish}
         <input class='button' type='button' id='next' value='Next' onClick='if (validation() == true) jumpTo({$step+1});'/>
         {else}

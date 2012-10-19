@@ -47,7 +47,6 @@ $template = getTemplate('../steps/templates');
 include_once $centreon_path . "/www/class/centreonDB.class.php";
 
 $db = new CentreonDB();
-$dbstorage = new CentreonDB('centstorage');
 
 $res = $db->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");
 $row = $res->fetchRow();
@@ -55,7 +54,7 @@ $current = $row['value'];
 $_SESSION['CURRENT_VERSION'] = $current;
 
 $title = _('Installation');
-$contents = _('Currently upgrading database... please do not interrupt this process.<br/><br/>');
+$contents = _('<p>Currently upgrading database... please do not interrupt this process.</p>');
 $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
                 <thead>
                     <tr>
@@ -66,6 +65,11 @@ $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' clas
                 <tbody id='step_contents'>
                 </tbody>
               </table>";
+
+$troubleshootTxt1 = _('You seem to be having trouble with your upgrade.');
+$troubleshootTxt2 = _('You may refer to the line that causes problem in order to find out more about the issue.');
+$troubleshootTxt3 = _('But do not edit the sql script unless you know what you are doing. Refresh this page when the problem is fixed.');
+$contents .= sprintf('<br/><p id="troubleshoot" style="display:none;">%s<br/>%s<br/>%s</p>', $troubleshootTxt1, $troubleshootTxt2, $troubleshootTxt3);
 
 $next = '';
 if ($handle = opendir('../sql/centreon')) {
@@ -115,6 +119,7 @@ function nextStep(current, next) {
         var data = jQuery.parseJSON(response);
         jQuery('td[name='+replaceDot(current)+']').html(data['msg']);
         if (data['result'] == "0") {
+            jQuery('#troubleshoot').hide();
             if (data['next']) {
                 nextStep(data['current'], data['next']);
             } else {
@@ -122,7 +127,8 @@ function nextStep(current, next) {
                 result = true;
             }
         } else {
-            jQuery('#previous').show();            
+            jQuery('#troubleshoot').show();
+            jQuery('#refresh').show();
         }
     }); 
 }
