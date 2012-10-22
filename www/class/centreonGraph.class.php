@@ -810,8 +810,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
                                     $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."=".$this->vname[$tm["metric"]].",".$cf. " ";
                                     if (($name == "min" || $name == "max") &&
                                         (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])) {
-                                            $displayformat = "%7.0lf";
-                                        }
+                                        $displayformat = "%7.0lf";
                                     } else {
                                         $displayformat = "%7.2lf";
                                     }
