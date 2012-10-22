@@ -2,7 +2,7 @@
 # File Added by Centreon
 #
 
-$mysql_host = "--ADDRESS--";
+$mysql_host = "--ADDRESS--:--DBPORT--";
 $mysql_user = "--DBUSER--";
 $mysql_passwd = '--DBPASS--';
 $mysql_database_oreon = "--CONFDB--";

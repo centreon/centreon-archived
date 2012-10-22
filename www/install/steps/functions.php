@@ -45,7 +45,11 @@ function myConnect() {
     if (isset($_SESSION['ADDRESS']) && $_SESSION['ADDRESS']) {
         $host = $_SESSION['ADDRESS'];
     }
-    return mysql_connect($host, 'root', $pass);
+    $port = "3306";
+    if (isset($_SESSION['DB_PORT']) && $_SESSION['DB_PORT']) {
+        $port = $_SESSION['DB_PORT'];
+    }
+    return mysql_connect($host.':'.$port, 'root', $pass);
 }
 
 /**

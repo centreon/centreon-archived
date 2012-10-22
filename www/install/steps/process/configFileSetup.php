@@ -53,14 +53,16 @@ $patterns = array('/--ADDRESS--/',
                                '/--DBPASS--/',
                                '/--CONFDB--/',
                                '/--STORAGEDB--/',
-                               '/--CENTREONDIR--/');
+                               '/--CENTREONDIR--/',
+                               '/--DBPORT--/');
 
 $replacements = array($host,
                                $_SESSION['DB_USER'],
                                $_SESSION['DB_PASS'],
                                $_SESSION['CONFIGURATION_DB'],
                                $_SESSION['STORAGE_DB'],
-                               $_SESSION['INSTALL_DIR_CENTREON']);
+                               $_SESSION['INSTALL_DIR_CENTREON'],
+                               $_SESSION['DB_PORT']);
 
 /**
  * centreon.conf.php

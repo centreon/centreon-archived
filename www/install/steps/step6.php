@@ -42,6 +42,7 @@ DEFINE('DEFAULT_CONF_NAME', 'centreon');
 DEFINE('DEFAULT_STORAGE_NAME', 'centreon_storage');
 DEFINE('DEFAULT_UTILS_NAME', 'centreon_status');
 DEFINE('DEFAULT_DB_USER', 'centreon');
+DEFINE('DEFAULT_PORT', '3306');
 
 $_SESSION['step'] = STEP_NUMBER;
 
@@ -50,6 +51,7 @@ $template = getTemplate('./templates');
 $title = _('Database information');
 
 $defaults = array('ADDRESS' => '', 
+                'DB_PORT' => DEFAULT_PORT,
                 'root_password' => '', 
                 'CONFIGURATION_DB' => DEFAULT_CONF_NAME, 
                 'STORAGE_DB' => DEFAULT_STORAGE_NAME, 
@@ -76,6 +78,13 @@ $contents = "
             <td class='formlabel'>"._('Database Host Address (default: localhost)')."</td>
             <td class='formvalue'>
                 <input type='text' name='ADDRESS' value='".$defaults['ADDRESS']."' />
+                <label class='field_msg'></label>
+            </td>
+        </tr>
+        <tr>
+            <td class='formlabel'>"._('Database Port (default: 3306)')."</td>
+            <td class='formvalue'>
+                <input type='text' name='DB_PORT' value='".$defaults['DB_PORT']."' />
                 <label class='field_msg'></label>
             </td>
         </tr>

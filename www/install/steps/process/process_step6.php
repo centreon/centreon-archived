@@ -29,6 +29,10 @@ if (!$strError) {
             $dbHost = "localhost";
         }
         $_SESSION['DB_HOST'] = $dbHost;
+        
+        if ($_SESSION['DB_PORT'] == "") {
+            $_SESSION['DB_PORT'] = "3306";
+        }
     }
     mysql_close($link);
 }

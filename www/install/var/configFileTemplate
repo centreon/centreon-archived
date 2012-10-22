@@ -22,6 +22,7 @@ $conf_centreon['user'] = "--DBUSER--";
 $conf_centreon['password'] = "--DBPASS--";
 $conf_centreon['db'] = "--CONFDB--";
 $conf_centreon['dbcstg'] = "--STORAGEDB--";
+$conf_centreon['port'] = "--DBPORT--";
 
 
 /* path to classes */
