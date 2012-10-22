@@ -52,3 +52,8 @@ $template->assign('content', $contents);
 $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
+<script type='text/javascript'>
+function validation() {
+    return true;
+}
+</script>
