@@ -187,6 +187,7 @@
 	$form->addElement('checkbox', 'ds_minmax_int', _('Round the min and max'));
 	$form->addElement('checkbox', 'ds_average', _("Print Average"));
 	$form->addElement('checkbox', 'ds_last', _("Print Last Value"));
+	$form->addElement('checkbox', 'ds_total', _("Print Total Value"));
 	$form->addElement('checkbox', 'ds_invert', _("Invert"));
 	$form->addElement('checkbox', 'default_tpl1', _("Default Centreon Graph Template"));
 	$form->addElement('select', 'ds_tickness', _("Thickness"), array("1"=>"1", "2"=>"2", "3"=>"3"));

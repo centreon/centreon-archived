@@ -567,7 +567,7 @@ class CentreonGraph	{
 							/** *******************************************
 							 * Get default info in default template
 							 */
-							$DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+							$DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_total, ds_tickness FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
 							if ($DBRESULT3->numRows()) {
 								foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
 									$ds[$key] = $ds_val;
@@ -799,34 +799,27 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 				$arg .= "\"";
 				$this->addArgument($arg);
 
-				if ($tm["ds_last"]){
-					$arg = "GPRINT:".$this->vname[$tm["metric"]].":LAST:\"Last\:%7.2lf".($this->gprintScaleOption);
-					$tm["ds_min"] || $tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
-					$this->addArgument($arg);
-				}
-				if ($tm["ds_min"]){
-					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MIN:\"Min\:";
-					if (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int']) {
-					    $arg .= "%7.0lf".($this->gprintScaleOption);
-				    } else {
-					    $arg .= "%7.2lf".($this->gprintScaleOption);
-					}
-					$tm["ds_max"] || $tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
-					$this->addArgument($arg);
-				}
-				if ($tm["ds_max"]){
-					$arg = "GPRINT:".$this->vname[$tm["metric"]].":MAX:\"Max\:";
-				    if (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int']) {
-					    $arg .= "%7.0lf".($this->gprintScaleOption);
-				    } else {
-					    $arg .= "%7.2lf".($this->gprintScaleOption);
-					}
-					$tm["ds_average"] ? $arg .= "\"" : $arg .= "\\l\" ";
-					$this->addArgument($arg);
-				}
-				if ($tm["ds_average"]){
-					$this->addArgument("GPRINT:".$this->vname[$tm["metric"]].":AVERAGE:\"Average\:%7.2lf".($this->gprintScaleOption)."\\l\"");
-				}
+                                $vdefs = "";
+                                $prints = "";
+                                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM", 
+                                               "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
+                                    if (!$tm["ds_" . $name]) {
+                                        continue;
+                                    }
+                                    $dispname = ucfirst($cf);
+                                    $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."=".$this->vname[$tm["metric"]].",".$cf. " ";
+                                    if (($name == "min" || $name == "max") &&
+                                        (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])) {
+                                            $displayformat = "%7.0lf";
+                                        }
+                                    } else {
+                                        $displayformat = "%7.2lf";
+                                    }
+                                    $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\"".$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
+                                }
+                                $this->addArgument($vdefs);
+                                $this->addArgument($prints . "COMMENT:\"\\l\"");
+
 				if ($this->onecurve) {
 					if (isset($tm["warn"]) && !empty($tm["warn"]) && $tm["warn"] != 0) {
 						$this->addArgument("HRULE:".$tm["warn"].$tm["ds_color_area_warn"].":\"Warning  \: ".$this->humanReadable($tm["warn"], $tm["unit"])."\\l\" ");

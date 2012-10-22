@@ -1435,6 +1435,7 @@ CREATE TABLE `giv_components_template` (
   `ds_minmax_int` enum('0','1') DEFAULT NULL,
   `ds_average` enum('0','1') DEFAULT NULL,
   `ds_last` enum('0','1') DEFAULT NULL,
+  `ds_total` enum('0','1') DEFAULT NULL,
   `ds_tickness` int(11) DEFAULT NULL,
   `ds_transparency` varchar(254) DEFAULT NULL,
   `ds_invert` enum('0','1') DEFAULT NULL,
