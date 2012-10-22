@@ -1,0 +1,7 @@
+# Configuration for /etc/init.d/snmptt
+
+# If run snmptt at startup default: NO
+RUN_AT_STARTUP="NO"
+
+# Configuration file for SNMPTT
+SNMPTT_INI_FILE="@SNMPTT_INI_FILE@"

@@ -23,6 +23,7 @@ locate_plugindir
 ## Locate centreon etc_dir
 locate_centreon_etcdir
 locate_snmp_etcdir
+locate_init_d
 locate_snmptt_bindir
 locate_centpluginstraps_bindir
 
@@ -42,6 +43,16 @@ mkdir -p $TMP_DIR/final/snmptrapd
 mkdir -p $TMP_DIR/work/snmptt
 mkdir -p $TMP_DIR/final/snmptt
 
+# Prepare init.d
+DISTRIB=""
+find_OS "DISTRIB"
+if [ "$DISTRIB" = "DEBIAN" ]; then
+	cp -f $BASE_DIR/snmptt/initd/debian/snmptt.init.d $TMP_DIR/src
+	cp -f $BASE_DIR/snmptt/initd/debian/snmptt.default $TMP_DIR/src
+else
+	cp -f $BASE_DIR/snmptt/initd/redhat/snmptt.init.d $TMP_DIR/src
+fi
+
 ## Change Macro in working dir
 log "INFO" "$(gettext "Change macros for ")centFillTrapDB, centGenSnmpttConfFile, centTrapHandler-2.x, centTrapHandlerForPoller-2.x"
 flg_error=0
@@ -56,9 +67,30 @@ for FILE in  $TMP_DIR/src/bin/centFillTrapDB \
 done
 check_result $flg_error "$(gettext "Change macros for CentPluginsTraps")"
 
+## Change macro for init scripts
+log "INFO" "$(gettext "Change macros for ")init scripts"
+flg_error=0
+${SED} -e 's|@SNMPTT_BINDIR@|'"$SNMPTT_BINDIR"'|g' \
+	-e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
+	"$TMP_DIR/src/snmptt.init.d" > "$TMP_DIR/work/snmptt.init.d"
+[ $? -ne 0 ] && flg_error=1
+if [ "$DISTRIB" = "DEBIAN" ]; then
+	${SED} -e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
+		-e 's|"NO"|"YES"|g' \
+		"$TMP_DIR/src/snmptt.default" > "$TMP_DIR/work/snmptt.default"
+	[ $? -ne 0 ] && flg_error=1
+fi
+check_result $flg_error "$(gettext "Change macros for init scripts")"
+
 ## Copy in final dir
 log "INFO" "$(gettext "Copying Traps binaries in final directory")"
 cp -f $TMP_DIR/work/bin/* $TMP_DIR/final/bin >> $LOG_FILE 2>&1
+
+## Copy init scripts in final dir
+cp $TMP_DIR/work/snmptt.init.d $TMP_DIR/final/snmptt.init.d
+if [ "$DISTRIB" = "DEBIAN" ]; then
+	cp $TMP_DIR/work/snmptt.default $TMP_DIR/final/snmptt.default
+fi
 
 ## Install the plugins traps binaries
 log "INFO" "$(gettext "Installing the plugins Traps binaries")"
@@ -85,6 +117,13 @@ if [ -e "$SNMP_ETC/centreon_traps/snmptt.ini" ] ; then
 	mv $SNMP_ETC/centreon_traps/snmptt.ini \
 		$SNMP_ETC/centreon_traps/snmptt.ini.bak-centreon
 fi
+
+# Backup snmptt init if exists
+if [ -e "$INIT_D/snmptt" ]; then
+	log "INFO" "$(gettext "Backup") : $INIT_D/snmptt"
+	mv $INIT_D/snmptt $INIT_D/snmptt.bak
+fi
+
 # Backup snmp.conf if exist
 if [ -e "$SNMP_ETC/snmp.conf" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMP_ETC/snmp.conf"
@@ -97,7 +136,14 @@ if [ -e "$SNMPTT_BINDIR/snmptt" ] ; then
 	mv $SNMPTT_BINDIR/snmptt $SNMPTT_BINDIR/snmptt.bak-centreon
 fi
 
-# Backup snmptt if exist
+# Backup snmptthandler if exist
+if [ -e "$SNMPTT_BINDIR/snmptthandler" ]; then
+	log "INFO" "$(gettext "Backup") : $SNMPTT_BINDIR/snmptthandler"
+	mv $SNMPTT_BINDIR/snmptthandler \
+		$SNMPTT_BINDIR/snmptthandler.bak-centreon
+fi
+
+# Backup snmpttconvertmib if exist
 if [ -e "$SNMPTT_BINDIR/snmpttconvertmib" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMPTT_BINDIR/snmpttconvertmib"
 	mv $SNMPTT_BINDIR/snmpttconvertmib \
@@ -130,9 +176,25 @@ cp $TMP_DIR/src/snmptrapd/snmp.conf \
 	$TMP_DIR/final/snmptrapd/snmp.conf >> $LOG_FILE 2>&1
 cp $TMP_DIR/src/snmptt/snmptt \
 	$TMP_DIR/final/snmptt/snmptt >> $LOG_FILE 2>&1
+cp $TMP_DIR/src/snmptt/snmptthandler \
+	$TMP_DIR/final/snmptt/snmptthandler >> $LOG_FILE 2>&1
 cp $TMP_DIR/src/snmptt/snmpttconvertmib \
 	$TMP_DIR/final/snmptt/snmpttconvertmib >> $LOG_FILE 2>&1
 
+## Install init scripts
+log "INFO" "$(gettext "SNMPTT init script installed")"
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+	$TMP_DIR/final/snmptt.init.d \
+	$INIT_D/snmptt >> $LOG_FILE 2>&1
+check_result $? "$(gettext "SNMPTT init script installed")"
+if [ "$DISTRIB" = "DEBIAN" ]; then
+	log "INFO" "$(gettext "SNMPTT default script installed")"
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+		$TMP_DIR/final/snmptt.default \
+		/etc/default/snmptt >> $LOG_FILE 2>&1
+	check_result $? "$(gettext "SNMPTT default script installed")"
+fi
+install_init_service "snmptt" | tee -a $LOG_FILE
 
 ## Install all config file
 log "INFO" "$(gettext "Install") : snmptrapd.conf"
@@ -158,6 +220,12 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	$TMP_DIR/final/snmptt/snmptt \
 	$SNMPTT_BINDIR/snmptt >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install") : snmptt"
+
+log "INFO" "$(gettext "Install") : snmptthandler"
+$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+	$TMP_DIR/final/snmptt/snmptthandler \
+	$SNMPTT_BINDIR/snmptthandler >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install") : snmptthandler"
 
 log "INFO" "$(gettext "Install") : snmpttconvertmib"
 $INSTALL_DIR/cinstall $cinstall_opts -m 755 \

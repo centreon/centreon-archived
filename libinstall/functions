@@ -672,6 +672,16 @@ function locate_monitoringengine_etc()
 	log "INFO" "MONITORINGENGINE_ETC: $MONITORINGENGINE_ETC"
 }
 
+function locate_monitoringengine_log()
+{
+	if [ -z "$MONITORINGENGINE_LOG" ]; then
+		answer_with_testdir "$(gettext "Monitoring engine log directory")" "NO_DEFAULT" "MONITORINGENGINE_LOG"
+	fi
+	MONITORINGENGINE_LOG=`trim ${MONITORINGENGINE_LOG%/}`
+	export MONITORINGENGINE_LOG
+	log "INFO" "MONITORINGENGINE_LOG: $MONITORINGENGINE_LOG"
+}
+
 function locate_broker_etc()
 {
 	if [ -z "$BROKER_ETC" ]; then
@@ -1327,6 +1337,8 @@ function prepare_sudo_config() {
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -s *
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
+	# Snmptt restart
+	CENTREON   ALL = NOPASSWD: /etc/init.d/snmptt restart
 	# CentStorage Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
 	# CentStorage stop
@@ -1480,6 +1492,7 @@ function createConfFile()
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
 \$conf_centreon['monitoring_init_script'] = "$MONITORINGENGINE_INIT_SCRIPT";
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
+\$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
 
 __EOT__
@@ -1529,6 +1542,7 @@ function createCentreonInstallConf() {
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
 	MONITORINGENGINE_INIT_SCRIPT=$MONITORINGENGINE_INIT_SCRIPT
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
+	MONITORINGENGINE_LOG=$MONITORINGENGINE_LOG
 	__EOT__
 
 	echo_success "Create $CENTREON_ETC/instCentWeb.conf " "OK"

@@ -59,12 +59,14 @@ check_engine_user
 ## Ask for monitoring broker user
 check_broker_user
 ## Ask for plugins directory
+locate_monitoringengine_log
 locate_plugindir
 
 add_group "$WEB_USER" "$CENTREON_GROUP"
 add_group "$MONITORINGENGINE_USER" "$CENTREON_GROUP"
 get_primary_group "$MONITORINGENGINE_USER" "MONITORINGENGINE_GROUP"
 add_group "$WEB_USER" "$MONITORINGENGINE_GROUP"
+add_group "$CENTREON_USER" "$MONITORINGENGINE_GROUP"
 
 ## Config Sudo
 # I think this process move on CentCore install...

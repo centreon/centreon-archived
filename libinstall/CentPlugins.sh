@@ -49,7 +49,8 @@ for FILE in `ls $TMP_DIR/src/plugins/src/check*centreon*` \
 	$TMP_DIR/src/plugins/src/submit_service_check_result; do
 
 	# NAGIOS_ETC / NAGIOS_PLUGINS for compatibility
-	${SED} -e 's|@NAGIOS_VAR@|'"$NAGIOS_VAR"'|g' \
+	${SED} -e 's|@NAGIOS_VAR@|'"$MONITORINGENGINE_LOG"'|g' \
+		-e 's|@MONITORINGENGINE_LOG@|'"$MONITORINGENGINE_LOG"'|g' \
 		-e 's|@INSTALL_DIR_NAGIOS@|'"$INSTALL_DIR_NAGIOS"'|g' \
 		-e 's|@MONITORINGENGINE_ETC@|'"$MONITORINGENGINE_ETC"'|g' \
 		-e 's|@NAGIOS_ETC@|'"$MONITORINGENGINE_ETC"'|g' \
