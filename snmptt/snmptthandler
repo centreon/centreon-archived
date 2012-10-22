@@ -1,0 +1,278 @@
+#!/usr/bin/perl
+#
+# SNMPTTHANDLER v1.3
+#
+# Copyright 2002-2007 Alex Burger
+# alex_b@users.sourceforge.net
+# 8/26/2002
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#
+##############################################################################
+#
+# http://www.sourceforge.net/projects/snmptt
+#
+# This script is a snmp trap handler for use with the NET-SNMP / UCD-SNMP 
+# snmptrapd program and SNMPTT.
+#
+# The script is called by defining a 'traphandle' in snmptrapd.conf.  
+# For example:
+#
+# traphandle default /sbin/snmptthandler
+# 
+# SNMPTRAPD feeds details about the trap to the launched program's standard
+# input in the following format (see snmptrapd.conf man page for a complete
+# descriptipon)
+#
+# HOSTNAME: 	The name of the host in question  that  sent the  trap
+# IPADDRESS: 	The IP address of the  host  that  sent  the trap
+# VARBINDS: 	A  list  of  variable bindings that describe the trap and 
+# 		the variables enclosed  in  it.  
+#
+# SNMPTTHANDLER dumps the received traps into a directory to be processed
+# by the SNMPTT daemon.
+# 
+##############################################################################
+use strict;
+
+# Process command line arguments
+
+use Getopt::Long;
+use Time::HiRes qw(gettimeofday);
+
+my $version = '';
+my $debug = '';
+my $help = '';
+my $ini = '';
+my $debugfile = '';
+
+GetOptions 	('version' => \$version, 
+		'debug:i' => \$debug,
+		'debugfile=s' => \$debugfile,
+		'help' => \$help,
+		'ini=s' => \$ini);
+if ($version)
+{
+	&showversion;
+	exit(0);
+}
+
+if ($help)
+{
+my $USAGE = qq/Usage:
+    snmptthandler [<options>] 
+Options:
+    --debug=n                            Set debug level (1 or 2)
+    --debugfile=filename                 Set debug output file
+    --help                               Display this message
+    --ini=filename                       Set configuration file to load
+    --version                            Display author and version information
+/;
+
+	&showversion;
+	print $USAGE;
+
+	exit(0);
+}
+
+my $DEBUGGING;
+my $DEBUGGING_FILE;
+my $debugcmdline;
+my $debugfilecmdline;
+
+if ($debug >= 1)
+{
+	$DEBUGGING = 1;
+	$debugcmdline = 1
+}
+
+if ($debugfile ne '') 
+{
+	$DEBUGGING_FILE = $debugfile;	# commandline overpowers snmptt script
+	$debugfilecmdline = 1;
+}
+
+##############################################################################
+#
+# Load config file start
+# 
+# For Linux / Unix, try /etc/snmp/snmptt.ini first, /etc/snmptt.ini second.
+#
+# For Windows, try %SystemRoot%\snmptt.ini only.
+#
+my $configfile;
+
+if ($ini ne '')
+{
+  $configfile = $ini;
+}
+else
+{	
+ 	if ($^O ne "MSWin32")
+	{
+	  $configfile = '/etc/snmp/snmptt.ini';
+	  if( open( CONFIG, '/etc/snmp/snmptt.ini' ) )
+	  {
+	    $configfile = '/etc/snmp/snmptt.ini';
+	    close CONFIG;
+	  }
+	  elsif ( open( CONFIG, '/etc/snmptt.ini' ) )
+	  {
+	    $configfile = '/etc/snmptt.ini';
+	    close CONFIG;
+	  }
+	  elsif ( open( CONFIG, '/etc/snmp/centreon_traps/snmptt.ini' ) )
+          {
+            $configfile = '/etc/snmp/centreon_traps/snmptt.ini';
+            close CONFIG;
+          }
+	}
+	else {
+	  $configfile = $ENV{'SystemRoot'}."\\snmptt.ini";
+	}
+}
+
+my $spool_directory;
+&loadsnmpttini;
+
+##############################################################################
+# Pull in passed SNMP info from snmptrapd via STDIN and place in the array @tempvar
+
+# Create file in spool directory based on current time
+my ($s, $usec) = gettimeofday;
+
+# Pad the numbers with 0's to make sure they are all the same length.  Sometimes the
+# usec is shorter than 6.
+my $s_pad = sprintf("%09d",$s);
+my $usec_pad = sprintf("%06d",$usec);
+
+if ($DEBUGGING >= 1)
+{
+	if ($DEBUGGING_FILE ne '') 
+	{
+		open DEBUGFILE, ">>$DEBUGGING_FILE"
+			or warn "Could not open debug output file ($!)";
+	
+		select DEBUGFILE;	# Change default output to debug file
+	}
+	
+	# Print out time
+	print "SNMPTTHANDLER started: ",scalar(localtime),"\n\n";
+	print "s = $s, usec = $usec\n";
+	print "s_pad = $s_pad, usec_pad = $usec_pad\n\n";
+	print "Data received:\n\n";
+}
+
+my $spoolfile = $spool_directory.'#snmptt-trap-'.$s_pad.$usec_pad;
+
+unless (open SPOOL, ">$spoolfile")
+{
+	if ($DEBUGGING >= 1)
+	{
+		print "Could not write to file file $spoolfile!  Trap will be lost!\n";
+	}
+	die "Could not write to file $spoolfile!  Trap will be lost!\n";
+}
+
+
+print SPOOL time()."\n";
+
+while (defined(my $line = <>))
+{
+	print SPOOL $line;
+	
+	if ($DEBUGGING >= 1)
+	{
+		# Print out item passed from snmptrapd
+		print $line."\n";
+	}
+
+}
+
+##############################################################################	
+
+sub showversion
+{
+	printf "\nSNMPTTHANDLER v1.2\n";
+	printf "(c) 2002-2007 Alex Burger\n\n";
+}
+
+##############################################################################
+
+sub loadsnmpttini {
+
+	##############################################################################
+	# 
+	# Load config file start
+	# 
+	use Config::IniFiles;
+	my $cfg;
+
+	#
+	##############################################################################
+
+	if( open( CONFIG, $configfile ) ) {
+	  close CONFIG;
+	  $cfg = new Config::IniFiles( -file => $configfile);
+	}
+	else
+	{
+	  if ($DEBUGGING >= 1) {
+	  	print "Config file ($configfile) could not be loaded\n";
+	  }
+	  warn "Config file ($configfile) could not be loaded\n";
+	  exit(1);
+	}
+	
+	if (! $cfg)
+	{
+	  if ($DEBUGGING >= 1) {
+		  print "Error in config file - please check the syntax in the config file\n";
+	  }
+	  exit(1);
+	}
+	
+	# DaemonMode
+	$spool_directory = $cfg->val('DaemonMode', 'spool_directory');
+	
+	# Debugging
+	if ($debugcmdline == 0) {
+	  $DEBUGGING = $cfg->val('Debugging', 'DEBUGGING');
+	}
+	if ($debugfilecmdline == 0) {
+	  $DEBUGGING_FILE = $cfg->val('Debugging', 'DEBUGGING_FILE_HANDLER');
+	}
+	
+	$cfg->Delete;
+	
+	# 
+	# Defaults Start
+	# 
+	if (! defined ($spool_directory)) { $spool_directory = ''} ;
+	if (! defined ($DEBUGGING)) { $DEBUGGING = 0} ;
+	if (! defined ($DEBUGGING_FILE)) { $DEBUGGING_FILE = ''} ;
+	#
+	# Defaults End
+	# 
+
+	
+	# print "Config file loaded\n";
+	
+	# 
+	# Load config file end
+	# 
+	##############################################################################
+}
+
