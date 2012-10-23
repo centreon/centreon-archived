@@ -1,7 +1,7 @@
 <?php
 /**
  * Checks if line is sql comment
- * 
+ *
  * @param string $str
  * @return bool
  */
@@ -14,7 +14,7 @@ function isSqlComment($str) {
 
 /**
  * Get template
- *  
+ *
  * @param string $dir directory of templates
  * @return Smarty
  */
@@ -33,7 +33,7 @@ function getTemplate($dir) {
 
 /**
  * Connect to database with user root
- * 
+ *
  * @return mixed
  */
 function myConnect() {
@@ -54,7 +54,7 @@ function myConnect() {
 
 /**
  * Replace macros
- * 
+ *
  * @param string $query
  * @return string
  */
@@ -71,9 +71,9 @@ function replaceInstallationMacros($query) {
 
 /**
  * Split queries
- * 
+ *
  * @param string $file
- * @param string $delimiter 
+ * @param string $delimiter
  * @param CentreonDB $connector
  * @param string $tmpFile | $tmpFile will store the number of executed queries sql script can be resumed from last failure
  * @return string | returns "0" if everything is ok, or returns error message
@@ -83,7 +83,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
     $count = 0;
     $start = 0;
     $fileName = basename($file);
-    if (is_file($tmpFile)) {
+    if ($tmpFile != '' && is_file($tmpFile)) {
         $start = file_get_contents($tmpFile);
     }
     if (is_file($file) === true) {
@@ -118,7 +118,9 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                             ob_end_flush();
                         }
                         flush();
-                        file_put_contents($tmpFile, $count);
+                        if ($tmpFile != '') {
+                            file_put_contents($tmpFile, $count);
+                        }
                     }
                 }
                 if (is_string($query) === true) {
@@ -134,7 +136,7 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
 
 /**
  * Import file, mainly INSERT clauses
- * 
+ *
  * @param string $file
  * @return void
  */
@@ -150,7 +152,7 @@ function importFile($file) {
 
 /**
  * Exit process
- * 
+ *
  * @param string $id | name of the process
  * @param int $result | 0 = ok, 1 = nok
  * @param string $msg | error message
@@ -167,7 +169,7 @@ function exitProcess($id, $result, $msg) {
 
 /**
  * Exit upgrade process
- * 
+ *
  * @param int $result | 0 = ok, 1 = nok
  * @param string $current
  * @param string $next
@@ -186,7 +188,7 @@ function exitUpgradeProcess($result, $current, $next, $msg) {
 
 /**
  * Get param lines from file
- * 
+ *
  * @param string $varPath
  * @param string $objectType
  * @return array
@@ -194,7 +196,7 @@ function exitUpgradeProcess($result, $current, $next, $msg) {
 function getParamLines($varPath, $objectType) {
     $contents = "";
     if ($handle = opendir($varPath)) {
-        while (false !== ($object = readdir($handle))) {        
+        while (false !== ($object = readdir($handle))) {
             if ($object == $objectType) {
                 $contents = file_get_contents($varPath.'/'.$object);
             }
@@ -207,7 +209,7 @@ function getParamLines($varPath, $objectType) {
 
 /**
  * Set session variables
- * 
+ *
  * @param array $conf_centreon
  * @return void
  */
