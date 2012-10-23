@@ -121,6 +121,7 @@ $template->display('content.tpl');
                     jQuery("#next").show();
                 }
             } else {
+                jQuery("#previous").show();
                 jQuery("#refresh").show();
                 jQuery('#'+data['id']).html(data['msg']);
             }
