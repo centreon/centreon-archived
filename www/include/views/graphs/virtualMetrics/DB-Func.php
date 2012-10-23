@@ -251,7 +251,10 @@ function enableVirtualMetricInDB($vmetric_id = null) {
         return 0;
     }
     foreach ($v_ena as $pkey => $v_id) {
-        if (checkRRDGraphData($v_id)) {
+        list($rc, $output) = checkRRDGraphData($v_id);
+        if ($rc) {
+            $error = preg_replace('/^ERROR:\s*/', '', $output);
+            throw new Exception("Wrong RPN syntax (RRDtool said: $error)");
             return 0;
         }
         $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='$v_id';");

@@ -243,20 +243,27 @@
 	$valid = false;
 	if ($form->validate())	{
 		$vmetricObj = $form->getElement('vmetric_id');
-		if ($form->getSubmitValue("submitA"))
-			$vmetricObj->setValue(insertVirtualMetricInDB());
-		else if ($form->getSubmitValue("submitC"))
-			updateVirtualMetricInDB($vmetricObj->getValue());
-		$o = "w";
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&vmetric_id=".$vmetricObj->getValue()."'"));
-		$form->freeze();
-		$valid = true;
+        try {
+            if ($form->getSubmitValue("submitA"))
+                $vmetricObj->setValue(insertVirtualMetricInDB());
+            else if ($form->getSubmitValue("submitC"))
+                updateVirtualMetricInDB($vmetricObj->getValue());
+            $o = "w";
+            $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&vmetric_id=".$vmetricObj->getValue()."'"));
+            $form->freeze();
+            $valid = true;
+        } catch (Exception $e) {
+            $error = $e->getMessage();
+        }
 	}
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once("listVirtualMetrics.php");
-	else	{
-		#Apply a template definition
+	else {
+        if (isset($error)) {
+            print "<p style='text-align: center'><span class='msg'>$error</span></p>";
+        }
+		// Apply a template definition
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
