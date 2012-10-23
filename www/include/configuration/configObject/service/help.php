@@ -35,7 +35,7 @@ $help["first_notification_delay"] = dgettext("help", "Define the number of \"tim
 $help["host_templates"] = dgettext("help", "Specify one or multiple host templates, that should be linked to this template. A service, that uses this service template, will complete the missing host relation and result in a full service definition.");
 $help["host_name"] = dgettext("help", "Specify the host(s) that this service \"runs\" on or is associated with.");
 $help["hostgroup_name"] = dgettext("help", "Specify the hostgroup(s) that this service \"runs\" on or is associated with. One or more hostgroup(s) may be used instead of, or in addition to, specifying hosts.");
-$help["servicegroups"] = dgettext("help", "This directive is used to identify the short name(s) of the servicegroup(s) that the service belongs to. This directive may be used as an alternative to using the members directive in servicegroup definitions.");
+$help["servicegroups"] = dgettext("help", "This directive is used to identify the short name(s) of the servicegroup(s) that the service belongs to. This directive may be used as an alternative to using the members directive in servicegroup definitions. If multiple hosts are linked to service, this directive will be ignored. Instead, use the Service group form to define this kind of services.");
 $help["snmptraps"] = dgettext("help", "Specify the relation of known SNMP traps to state changes of this service.");
 
 /*
