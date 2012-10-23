@@ -806,15 +806,17 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
                                     if (!$tm["ds_" . $name]) {
                                         continue;
                                     }
-                                    $dispname = ucfirst($cf);
-                                    $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."=".$this->vname[$tm["metric"]].",".$cf. " ";
+                                    $dispname = ucfirst($name);
+                                    $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."="
+                                      .$this->vname[$tm["metric"]].",".$cf. " ";
                                     if (($name == "min" || $name == "max") &&
                                         (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])) {
                                         $displayformat = "%7.0lf";
                                     } else {
                                         $displayformat = "%7.2lf";
                                     }
-                                    $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\"".$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
+                                    $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\""
+                                      .$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
                                 }
                                 $this->addArgument($vdefs);
                                 $this->addArgument($prints . "COMMENT:\"\\l\"");
