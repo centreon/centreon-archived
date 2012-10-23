@@ -35,52 +35,49 @@
  * SVN : $Id: $
  *
  */
-	if (!isset($oreon))
-		exit;
+if (!isset($oreon))
+    exit;
 
-	function checkRRDGraphData($v_id = null, $force = 0) {
-		if (!isset($v_id)) return;
+function checkRRDGraphData($v_id = null, $force = 0) {
+    if (!isset($v_id)) return;
+    
+    global $pearDB;
+    /* Check if already Valid */
+    
+    $l_pqy = $pearDB->query("SELECT vmetric_id, def_type FROM virtual_metrics WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );");
+    if ($l_pqy->numRows() == 1) {
+        /**
+         * Create XML Request Objects
+         */
+        $obj = new CentreonGraph(session_id(), NULL, 0, 1);
 
-		global $pearDB;
-		/* Check if already Valid */
+        /**
+         * We check only one curve
+         **/
+        $obj->onecurve = true;
+        $obj->checkcurve = true;
 
-		$l_pqy = $pearDB->query("SELECT vmetric_id, def_type FROM virtual_metrics WHERE vmetric_id = '".$v_id."' AND ( ck_state <> '1' OR ck_state IS NULL );");
-		/* There is only one metric_id */
-		if ( $l_pqy->numRows() == 1 ) {
+        $obj->init();
+        /**
+         * Init Curve list
+         */
+        $obj->setMetricList("v$v_id");
+        $obj->initCurveList();
 
-        		/**
-        		 * Create XML Request Objects
-        		 */
-        		$obj = new CentreonGraph(session_id(), NULL, 0, 1);
+        /**
+         * Create Legend
+         */
+        $obj->createLegend();
 
-			/**
-			 * We check only one curve
-			 **/
-        		$obj->onecurve = true;
-			$obj->checkcurve = true;
+        /**
+         * Display Images Binary Data
+         */
+        exec($obj->displayImageFlow(), $result, $rc);
 
-        		$obj->init();
-			/**
-			 * Init Curve list
-			 */
-			$obj->setMetricList("v".$v_id);
-			$obj->initCurveList();
-
-			/**
-			 * Create Legende
-			 */
-			$obj->createLegend();
-
-			/**
-			 * Display Images Binary Data
-			 */
-			exec($obj->displayImageFlow(), $result, $rc);
-                        if ( $rc == 0 )
-                                $p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `ck_state` = '1' WHERE `vmetric_id` ='".$v_id."';");
-                        else
-                                $p_qy  = $pearDB->query("UPDATE `virtual_metrics` SET `ck_state` = '2' WHERE `vmetric_id` ='".$v_id."';");
-                        return $rc;
-                } else
-                        return 0;
-	}
+        $ckstate = (!$rc) ? '1' : '2';
+        $pearDB->query("UPDATE `virtual_metrics` SET `ck_state` = '$ckstate' WHERE `vmetric_id` ='$v_id';");
+        return $rc;
+    }
+    return 0;
+}
 ?>
