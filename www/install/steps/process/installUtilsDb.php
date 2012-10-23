@@ -47,7 +47,7 @@ if (false === $link) {
 if (!isset($_SESSION['UTILS_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find utils database. Session probably expired.'));
 }
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['UTILS_DB'])) {
+if (false === mysql_query("CREATE DATABASE ".$_SESSION['UTILS_DB']) && !is_file('../../tmp/createNDODB')) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
 mysql_select_db($_SESSION['UTILS_DB']);

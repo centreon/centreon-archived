@@ -109,6 +109,7 @@ $template->display('content.tpl');
      */
     function validation() {
        var result = false;
+       jQuery('label[class=field_msg]').html('');
         doProcess(false, './steps/process/process_step'+step+'.php', jQuery('#form_step'+step).serialize(), function(data) {
             if (data == 0) {
                 result = true;

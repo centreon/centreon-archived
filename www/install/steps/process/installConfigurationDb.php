@@ -52,7 +52,7 @@ if (false === $link) {
 if (!isset($_SESSION['CONFIGURATION_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find configuration database. Session probably expired.'));
 }
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB'])) {
+if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !is_file('../../tmp/createTables')) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
 

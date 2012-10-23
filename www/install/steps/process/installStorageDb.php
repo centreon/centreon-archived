@@ -47,7 +47,7 @@ if (false === $link) {
 if (!isset($_SESSION['STORAGE_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find storage database. Session probably expired.'));
 }
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['STORAGE_DB'])) {
+if (false === mysql_query("CREATE DATABASE ".$_SESSION['STORAGE_DB']) && !is_file('../../tmp/createTablesCentstorage')) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
 mysql_select_db($_SESSION['STORAGE_DB']);
