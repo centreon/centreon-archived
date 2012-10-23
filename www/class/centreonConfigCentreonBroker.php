@@ -679,7 +679,7 @@ class CentreonConfigCentreonBroker
         }
         $query = "SELECT `" . $s_column . "` FROM `" . $s_table . "`";
         if (isset($s_column_key) && isset($s_key)) {
-            $query .= " WHERE `" . $s_column_key . `" = '" . $s_key . "'";
+            $query .= " WHERE `" . $s_column_key . "` = '" . $s_key . "'";
         }
 
         /*
