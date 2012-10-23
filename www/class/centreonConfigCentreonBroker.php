@@ -647,7 +647,7 @@ class CentreonConfigCentreonBroker
         /*
          * Parse string
          */
-        $values = explode(':', $string);
+        $configs = explode(':', $string);
         foreach ($configs as $config) {
             list($key, $value) = explode('=', $config);
             switch ($key) {
@@ -677,9 +677,9 @@ class CentreonConfigCentreonBroker
         if (!isset($s_table) || !isset($s_column)) {
             return false;
         }
-        $query = "SELECT " . $s_column . " FROM " . $s_table;
+        $query = "SELECT `" . $s_column . "` FROM `" . $s_table . "`";
         if (isset($s_column_key) && isset($s_key)) {
-            $query .= " WHERE " . $s_column_key . " = '" . $s_key . "'";
+            $query .= " WHERE `" . $s_column_key . `" = '" . $s_key . "'";
         }
 
         /*
