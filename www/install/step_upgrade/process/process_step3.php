@@ -55,11 +55,11 @@ try {
     $isBroker = false;
     if (isset($row['value']) && $row['value'] == 'broker') {
         $isBroker = true;
-        $pearDBNdo = new CentreonDB('centstorage');
+        $pearDBNdo = new CentreonDB('centstorage', 3, true);
     } else {
-        $pearDBNdo = new CentreonDB('ndo');
+        $pearDBNdo = new CentreonDB('ndo', 3, true);
     }
-    $pearDBO = new CentreonDB('centstorage');
+    $pearDBO = new CentreonDB('centstorage', 3, true);
 } catch (Exception $e) {
     exitUpgradeProcess(1, $current, $next, $e->getMessage());
 }
