@@ -75,6 +75,15 @@
 	    return true;
 	}
 
+	function rrdcached_has_option($values) {
+	    if (isset($values[0]['rrdcached_enable']) && $values[0]['rrdcached_enable'] == 1) {
+	        if (trim($values[1]) == '' && trim($values[2]) == '') {
+	            return false;
+	        }
+	    }
+	    return true;
+	}
+
 	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
 	while ($opt = $DBRESULT->fetchRow()) {
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
@@ -166,8 +175,11 @@
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 
+	$form->registerRule('rrdcached_has_option', 'callback', 'rrdcached_has_option');
 	$form->registerRule('rrdcached_valid', 'callback', 'rrdcached_valid');
+	$form->addRule(array('rrdcached_enable', 'rrdcached_port', 'rrdcached_unix_path'), _('The rrdcached configuration must have a option.'), 'rrdcached_has_option');
 	$form->addRule(array('rrdcached_port', 'rrdcached_unix_path'), _('Only one option must be set.'), 'rrdcached_valid');
+	$form->addRule('rrdcached_port', _('The port must be a numeric'), 'numeric');
 
 	$form->addRule('rrdtool_path_bin', _("Can't execute binary"), 'is_executable_binary');
 	$form->addRule('oreon_rrdbase_path', _("Can't write in directory"), 'is_writable_path');
