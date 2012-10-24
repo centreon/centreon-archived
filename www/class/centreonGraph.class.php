@@ -612,6 +612,9 @@ class CentreonGraph	{
 
 					if (strcmp($metric["unit_name"], "")) {
 						$this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
+                        if (isset($this->metrics[$metric["metric_id"]]["metric_legend"])) {
+                            $this->metrics[$metric["metric_id"]]["metric_legend"] .= " (".$metric["unit_name"].") ";
+                        }
 					}
 
 					$this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
@@ -799,28 +802,28 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 				$arg .= "\"";
 				$this->addArgument($arg);
 
-                                $vdefs = "";
-                                $prints = "";
-                                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM", 
-                                               "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
-                                    if (!$tm["ds_" . $name]) {
-                                        continue;
-                                    }
-                                    $dispname = ucfirst($name);
-                                    $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."="
-                                      .$this->vname[$tm["metric"]].",".$cf. " ";
-                                    if (($name == "min" || $name == "max") &&
-                                        (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])) {
-                                        $displayformat = "%7.0lf";
-                                    } else {
-                                        $displayformat = "%7.2lf";
-                                    }
-                                    $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\""
-                                      .$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
-                                }
-                                $this->addArgument($vdefs);
-                                $this->addArgument($prints . "COMMENT:\"\\l\"");
-
+                $vdefs = "";
+                $prints = "";
+                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM", 
+                               "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
+                    if (!$tm["ds_" . $name]) {
+                        continue;
+                    }
+                    $dispname = ucfirst($name);
+                    $vdefs .= "VDEF:".$this->vname[$tm["metric"]].$dispname."="
+                        .$this->vname[$tm["metric"]].",".$cf. " ";
+                    if (($name == "min" || $name == "max") &&
+                        (isset($tm['ds_minmax_int']) && $tm['ds_minmax_int'])) {
+                        $displayformat = "%7.0lf";
+                    } else {
+                        $displayformat = "%7.2lf";
+                    }
+                    $prints .= "GPRINT:".$this->vname[$tm["metric"]].$dispname.":\""
+                        .$dispname."\:".$displayformat.($this->gprintScaleOption)."\" ";
+                }
+                $this->addArgument($vdefs);
+                $this->addArgument($prints . "COMMENT:\"\\l\"");
+                
 				if ($this->onecurve) {
 					if (isset($tm["warn"]) && !empty($tm["warn"]) && $tm["warn"] != 0) {
 						$this->addArgument("HRULE:".$tm["warn"].$tm["ds_color_area_warn"].":\"Warning  \: ".$this->humanReadable($tm["warn"], $tm["unit"])."\\l\" ");

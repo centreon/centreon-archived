@@ -157,7 +157,7 @@
 			$ret["ds_color_area"] = $ret["ds_color_line"];
 
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
-				" `ds_color_line` , `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_minmax_int`, ds_average` , `ds_last` , `ds_total`, `ds_tickness` , `ds_transparency`, `ds_invert`," .
+				" `ds_color_line` , `ds_color_area` , `ds_color_area_warn` , `ds_color_area_crit` , `ds_filled` , `ds_max` , `ds_min` , `ds_minmax_int`, `ds_average` , `ds_last` , `ds_total`, `ds_tickness` , `ds_transparency`, `ds_invert`," .
 				" `ds_legend` , `ds_jumpline` , `ds_stack`, `default_tpl1`, `comment` ) ";
 		$rq .= "VALUES ( NULL, ";
 		if ( $ret["index_id"] != NULL ) {
@@ -175,7 +175,7 @@
 		isset($ret["ds_name"]) && $ret["ds_name"] != NULL ? $rq .= "'".$ret["ds_name"]."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_line"]) && $ret["ds_color_line"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_line"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area"]) && $ret["ds_color_area"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ds_color_area_warn"]) && $ret["ds_color_area_warn"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area_wrn"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_color_area_warn"]) && $ret["ds_color_area_warn"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area_warn"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_color_area_crit"]) && $ret["ds_color_area_crit"] != NULL ? $rq .= "'".htmlentities($ret["ds_color_area_crit"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -192,8 +192,7 @@
 		isset($ret["ds_stack"]) && $ret["ds_stack"] != NULL ? $rq .= "'".htmlentities($ret["ds_stack"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["default_tpl1"]) && $ret["default_tpl1"] != NULL ? $rq .= "'".$ret["default_tpl1"]."', ": $rq .= "NULL, ";
 		isset($ret["comment"]) && $ret["comment"] != NULL ? $rq .= "'".htmlentities($ret["comment"], ENT_QUOTES, "UTF-8")."'": $rq .= "NULL";
-		$rq .= ")";
-fwrite($fh, $rq);
+		$rq .= ");";
 		$DBRESULT = $pearDB->query($rq);
 		defaultOreonGraph();
 		$DBRESULT = $pearDB->query("SELECT MAX(compo_id) FROM giv_components_template");
