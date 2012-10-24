@@ -212,6 +212,8 @@
 ?>
 <script type='text/javascript'>
 var _keyPrefix;
+var _originalo = '<?php echo $o;?>';
+
 jQuery(function() {
     preInit();
 });
@@ -221,15 +223,16 @@ function preInit()
 	_keyPrefix = '<?php echo $keyPrefix;?>';
 	_sid = '<?php echo $sid?>';
 	_tm = <?php echo $tM?>;
-	filterStatus(document.getElementById('statusFilter').value);
+	filterStatus(document.getElementById('statusFilter').value, 1);
 }
 
-function filterStatus(value)
+function filterStatus(value, isInit)
 {
-	if (value) {
+	_o = _originalo;
+        if (value) {
 		_o = _keyPrefix + '_' + value;
-	} else {
-		_o = '<?php echo $o;?>';
+	} else if (!isInit && _o != 'hpb'){
+		_o = _keyPrefix;
 	}
 	window.clearTimeout(_timeoutID);
 	initM(_tm, _sid, _o);
