@@ -60,16 +60,16 @@ class CentreonDB
 	protected $debug;
 
 	/**
-	 *  Constructor only accepts 1 parameter which can be :
-	 *  - centreon or NULL
-	 *  - centstorage
-	 *  - ndo
-	 *
+         * Constructor
+         * 
+	 * @param string $db | centreon, centstorage, or ndo
+         * @param int $retry
+         * @param bool $silent | when silent is set to false, it will display an HTML error msg, otherwise it will throw an Exception
 	 * @return void
 	 */
-    public function __construct($db = "centreon", $retry = 3)
+    public function __construct($db = "centreon", $retry = 3, $silent = false)
     {
-		try {
+        try {
             include("@CENTREON_ETC@/centreon.conf.php");
             //include("/etc/centreon/centreon.conf.php");
     		require_once $centreon_path."/www/class/centreonLog.class.php";
@@ -116,11 +116,15 @@ class CentreonDB
     		$this->debug = 1;
 		}
 		catch (Exception $e) {
-		    $this->displayConnectionErrorPage($e->getMessage());
+		    if (false === $silent) {
+                        $this->displayConnectionErrorPage($e->getMessage());
+                    } else {
+                        throw new Exception($e->getMessage());
+                    }
 		}
     }
 
-	/**
+    /**
      * Display error page
      *
      * @access protected
@@ -224,23 +228,24 @@ class CentreonDB
      * estrablish DB connector
      *
      * @access protected
-	 * @return	void
+     * @return void
      */
-	protected function connect()
-	{
-    	$this->db = DB::connect($this->dsn, $this->options);
-		$i = 0;
-		while (PEAR::isError($this->db) && ($i < $this->retry)) {
-			$this->db = DB::connect($this->dsn, $this->options);
-			$i++;
-		}
-		if ($i == $this->retry) {
-			if ($this->debug)
-				$this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
-			$this->displayConnectionErrorPage();
-		} else {
-			$this->db->setFetchMode(DB_FETCHMODE_ASSOC);
-		}
+    protected function connect()
+    {
+        $this->db = DB::connect($this->dsn, $this->options);
+        $i = 0;
+	while (PEAR::isError($this->db) && ($i < $this->retry)) {
+            $this->db = DB::connect($this->dsn, $this->options);
+            $i++;
+        }
+	if ($i == $this->retry) {
+            if ($this->debug) {
+                $this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
+            }
+            throw new Exception('Connection could not be established');
+	} else {
+            $this->db->setFetchMode(DB_FETCHMODE_ASSOC);
+	}
     }
 
 	/**

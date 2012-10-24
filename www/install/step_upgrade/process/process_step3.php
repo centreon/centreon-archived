@@ -48,17 +48,21 @@ $status = 0;
 /**
  * Variables for upgrade scripts
  */
-$pearDB = new CentreonDB();
-$res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
-$row = $res->fetchRow();
-$isBroker = false;
-if (isset($row['value']) && $row['value'] == 'broker') {
-    $isBroker = true;
-    $pearDBNdo = new CentreonDB('centstorage');
-} else {
-    $pearDBNdo = new CentreonDB('ndo');
+try {
+    $pearDB = new CentreonDB();
+    $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+    $row = $res->fetchRow();
+    $isBroker = false;
+    if (isset($row['value']) && $row['value'] == 'broker') {
+        $isBroker = true;
+        $pearDBNdo = new CentreonDB('centstorage');
+    } else {
+        $pearDBNdo = new CentreonDB('ndo');
+    }
+    $pearDBO = new CentreonDB('centstorage');
+} catch (Exception $e) {
+    exitUpgradeProcess(1, $current, $next, $e->getMessage());
 }
-$pearDBO = new CentreonDB('centstorage');
 
 /**
  * Upgrade storage sql
