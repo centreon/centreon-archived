@@ -281,16 +281,16 @@ class CentreonConfigCentreonBroker
             /*
              *  If get information for read-only in database
              */
-            if (!is_null($field['value']) && $field['value'] === false) {
+            if (!is_null($field['value']) && $field['value'] !== false) {
                 $elementType = 'hidden';
                 $roValue = $this->getInfoDb($field['value']);
-                $field['value'] = 'DB[' . $field['value'] . ']';
+                $field['value'] = $roValue;
                 if (is_array($roValue)) {
-                    $qf->addElement('select', $tag . '_' . $formId . '_' . $field['fieldname'], _($field['displayname']), $roValue);
+                    $qf->addElement('select', $elementName, _($field['displayname']), $roValue);
                 } else {
-                    $qf->addElement('text', $tag . '_' . $formId . '_' . $field['fieldname'] , _($field['displayname']), $this->attrText);
+                    $qf->addElement('text', $elementName, _($field['displayname']), $this->attrText);
                 }
-                $qf->freeze($roElementName);
+                $qf->freeze($elementName);
             }
 
             /*
@@ -310,7 +310,7 @@ class CentreonConfigCentreonBroker
             /*
              * Defaults values
              */
-            if (!is_null($field['value']) && $field['value'] === false) {
+            if (!is_null($field['value']) && $field['value'] !== false) {
                 if ($field['fieldtype'] != 'radio') {
                     $qf->setDefaults(array($elementName => $field['value']));
                 } else {

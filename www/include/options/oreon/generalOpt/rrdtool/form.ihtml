@@ -26,8 +26,13 @@
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.watermark_title}</td></tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_watermark_font">{$form.rrdtool_watermark_font.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_font.html}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_watermark_font_size">{$form.rrdtool_watermark_fontsize.label}</td><td class="FormRowValue">{$form.rrdtool_watermark_fontsize.html}&nbsp;px</td></tr>
-	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.rrdcached_title}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_enable">{$form.rrdcached_enable.label}</td><td class="FormRowValue">{$form.rrdcached_enable.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_port">{$form.rrdcached_port.label}</td><td class="FormRowValue">{$form.rrdcached_port.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_rrdcached_unix_path">{$form.rrdcached_unix_path.label}</td><td class="FormRowValue">{$form.rrdcached_unix_path.html}</td></tr>
+	
+	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 </table>
 {if !$valid}
 	<div id="validForm">
@@ -40,4 +45,26 @@
 {/if}
 {$form.hidden}
 </form>
+<script type="text/javascript">
+{literal}
+function toggleRrdcached(radio) {
+	var elPort = document.getElementsByName('rrdcached_port')[0];
+	var elUnixPath = document.getElementsByName('rrdcached_unix_path')[0];
+	if (radio.value == 0) {
+		elPort.value = '';
+		elUnixPath.value = '';
+		elPort.disabled = true;
+		elUnixPath.disabled = true;
+	} else {
+		elPort.disabled = false;
+		elUnixPath.disabled = false;
+	}
+}
+
+Event.observe(window, 'load', function() {
+	var checkedEl = $$('input:checked[type="radio"][name="rrdcached_enable[rrdcached_enable]"]')[0];
+	toggleRrdcached(checkedEl);
+});
+{/literal}
+</script>
 {$helptext}

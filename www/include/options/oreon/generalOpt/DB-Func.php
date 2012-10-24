@@ -301,6 +301,10 @@
 		updateOption($pearDB, "rrdtool_legend_font", isset($ret["rrdtool_legend_font"]) && $ret["rrdtool_legend_font"] != NULL ? htmlentities($ret["rrdtool_legend_font"], ENT_QUOTES, "UTF-8") : "NULL");
 		updateOption($pearDB, "rrdtool_legend_fontsize", isset($ret["rrdtool_legend_fontsize"]) && $ret["rrdtool_legend_fontsize"] != NULL ? htmlentities($ret["rrdtool_legend_fontsize"], ENT_QUOTES, "UTF-8") : "NULL");
 
+		updateOption($pearDB, "rrdcached_enable", isset($ret['rrdcached_enable']['rrdcached_enable']) ? $ret['rrdcached_enable']['rrdcached_enable'] : '0');
+		updateOption($pearDB, "rrdcached_port", isset($ret['rrdcached_port']) ? $ret['rrdcached_port'] : '');
+		updateOption($pearDB, "rrdcached_unix_path", isset($ret['rrdcached_unix_path']) ? htmlentities($ret['rrdcached_unix_path'], ENT_QUOTES, "UTF-8") : '');
+
 		$oreon->initOptGen($pearDB);
 	}
 

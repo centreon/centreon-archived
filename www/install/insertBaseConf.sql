@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.4.0-RC6');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.4.0-RC5');
 
 --
 -- Contenu de la table `contact`
@@ -710,9 +710,11 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (10, 'db_name', 'DB name', 'Database name.', 'text', NULL),
 (11, 'path', 'File path', 'Path to the file.', 'text', NULL),
 (12, 'protocol', 'Serialization Protocol', 'Serialization protocol.', 'select', NULL),
-(13, 'metrics_path', 'Metrics RRD Directory', 'Metrics RRD Directory, for example /var/lib/centreon/metrics', 'text', NULL),
-(14, 'status_path', 'Status RRD Directory', 'Status RRD Directory, for example /var/lib/centreon/status', 'text', NULL),
+(13, 'metrics_path', 'Metrics RRD Directory', 'Metrics RRD Directory, for example /var/lib/centreon/metrics', 'text', 'D=centreon_storage:T=config:C=RRDdatabase_path:CK=id:K=1'),
+(14, 'status_path', 'Status RRD Directory', 'Status RRD Directory, for example /var/lib/centreon/status', 'text', 'D=centreon_storage:T=config:C=RRDdatabase_status_path:CK=id:K=1'),
 (15, 'db_type', 'DB type', 'Target DBMS.', 'select', NULL),
+(16, 'interval', 'Interval Length', 'Interval Length in seconds.', 'int', 'T=options:C=value:CK=key:K=interval_length'),
+(17, 'length', 'RRD Length', 'RRD storage duration in seconds.', 'int', 'D=centreon_storage:T=config:C=len_storage_rrd:CK=id:K=1'),
 (18, 'db_port', 'DB Port', 'Port on which the DB server listens', 'int', NULL),
 (19, 'name', 'Name of the logger', 'For a file logger this is the path to the file. For a standard logger, one of ''stdout'' or ''stderr''.', 'text', NULL),
 (20, 'config', 'Configuration messages', 'Enable or not configuration messages logging.', 'radio', NULL),
@@ -730,7 +732,9 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (32, 'buffering_timeout', 'Buffering Timeout', 'Time in seconds to wait before launching failover.', 'int', NULL),
 (33, 'fifo', 'File for Centeron Broker statistics', 'File where Centreon Broker statistics will be stored', 'text', NULL),
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
-(35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL);
+(35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
+(36, 'path', 'Unix socket', 'The Unix socket to use to communicate with rrdcached', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
+(37, 'port', 'TCP port', 'The port od TCP socket to use to communicate with rrdcached', 'int', 'T=options:C=value:CK=key:K=rrdcached_port');
 
 --
 -- Contenu de la table `cb_list`
@@ -835,8 +839,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (11, 12, 1, 2),
 (12, 11, 1, 1),
 (12, 12, 1, 2),
-(13, 1, 0, 4),
-(13, 11, 0, 3),
+(13, 36, 0, 4),
+(13, 37, 0, 3),
 (13, 13, 1, 1),
 (13, 14, 1, 2),
 (14, 7, 1, 4),
@@ -845,6 +849,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (14, 9, 1, 7),
 (14, 10, 1, 8),
 (14, 15, 1, 3),
+(14, 16, 1, 1),
+(14, 17, 1, 2),
 (15, 11, 1, 1),
 (15, 12, 1, 2),
 (16, 7, 1, 2),
