@@ -8,8 +8,10 @@
 		<td><input type='text' name='host_search' id='host_search'></td>
 		<td>{$form.statusFilter.label}:</td>
 		<td>{$form.statusFilter.html}</td>
-                <td>{$form.criticality.label}:</td>
-		<td>{$form.criticality.html}</td>
+                {if $criticalityUsed}
+                    <td>{$form.criticality.label}:</td>
+                    <td>{$form.criticality.html}</td>
+                {/if}
 		{if $poller_listing}
 		<td>{$pollerStr}:</td>
 		<td><span id="instance_selected"></span></td>

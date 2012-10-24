@@ -10,8 +10,10 @@
 		<td><input type='text' name='search' id='input_search'></td>
 		<td>{$form.statusFilter.label}:</td>
 		<td>{$form.statusFilter.html}</td>
-                <td>{$form.criticality.label}:</td>
-		<td>{$form.criticality.html}</td>
+                {if $criticalityUsed}
+                    <td>{$form.criticality.label}:</td>
+                    <td>{$form.criticality.html}</td>
+                {/if}
                 <td>{$outputStr}:</td>
 		<td><input type='text' name='output_search' id='output_search'></td>	    
                 {if $poller_listing}

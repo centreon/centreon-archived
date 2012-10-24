@@ -272,8 +272,10 @@
 	$tpl->assign('serviceStr', _('Service'));
 	$tpl->assign('outputStr', _('Output'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
-    $tpl->assign('pollerStr', _('Poller'));
+        $tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('hgStr', _('Hostgroup'));
+        $criticality = new CentreonCriticality($pearDB);
+        $tpl->assign('criticalityUsed', count($criticality->getList()));
 	$tpl->assign('form', $renderer->toArray());
 	$tpl->display("service.ihtml");
 ?>

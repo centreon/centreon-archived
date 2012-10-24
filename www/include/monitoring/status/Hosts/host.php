@@ -204,7 +204,8 @@
 	$tpl->assign('pollerStr', _('Poller'));
 	$tpl->assign('poller_listing', $oreon->user->access->checkAction('poller_listing'));
 	$tpl->assign('hgStr', _('Hostgroup'));
-
+        $criticality = new CentreonCriticality($pearDB);
+        $tpl->assign('criticalityUsed', count($criticality->getList()));
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 	$tpl->assign('form', $renderer->toArray());
