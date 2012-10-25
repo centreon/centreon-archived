@@ -282,7 +282,7 @@ class CentreonConfigCentreonBroker
              *  If get information for read-only in database
              */
             if (!is_null($field['value']) && $field['value'] !== false) {
-                $elementType = 'hidden';
+                $elementType = null;
                 $roValue = $this->getInfoDb($field['value']);
                 $field['value'] = $roValue;
                 if (is_array($roValue)) {
@@ -509,6 +509,19 @@ class CentreonConfigCentreonBroker
         $forms = array();
         foreach (array_keys($formsInfos) as $key) {
             $qf = $this->quickFormById($formsInfos[$key]['blockId'], $page, $key);
+            /*
+             * Replace loaded configuration with defaults external values
+             */
+            list($tagId , $typeId) = explode('_', $formsInfos[$key]['blockId']);
+            $tag = $this->getTagName($tagId);
+            $fields = $this->getBlockInfos($typeId);
+            foreach ($fields as $field) {
+                if (!is_null($field['value']) && $field['value'] != false) {
+                    $elementName = $tag . '[' . $key . '][' . $field['fieldname'] . ']';
+                    unset($formsInfos[$key]['defaults'][$elementName]); // = $this->getInfoDb($field['value']);
+                }
+            }
+
             $qf->setDefaults($formsInfos[$key]['defaults']);
             $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
             $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
@@ -644,6 +657,7 @@ class CentreonConfigCentreonBroker
          * Default values
          */
         $s_db = "centreon";
+        $s_rpn = null;
         /*
          * Parse string
          */
@@ -668,6 +682,9 @@ class CentreonConfigCentreonBroker
                     break;
                 case 'CK':
                     $s_column_key = $value;
+                    break;
+                case 'RPN':
+                    $s_rpn = $value;
                     break;
             }
         }
@@ -698,12 +715,67 @@ class CentreonConfigCentreonBroker
         }
         $infos = array();
         while ($row = $res->fetchRow()) {
-            $infos[] = $row[$s_column];
+            $val = $row[$s_column];
+            if (!is_null($s_rpn)) {
+                $val = $this->rpnCalc($s_rpn, $val);
+            }
+            $infos[] = $val;
+
         }
         if (count($infos) == 1) {
             return $infos[0];
         }
         return $infos;
+    }
+
+    /**
+     * Apply a simple RPN operation
+     *
+     * The rpn operation begin by the value
+     *
+     * @param string $rpn The rpn operation
+     * @param int $val The value for apply
+     * @return The value with rpn apply or the value is errors
+     */
+    private function rpnCalc($rpn, $val)
+    {
+        if (!is_numeric($val)) {
+            return $val;
+        }
+        try {
+            $val = array_reduce(
+                preg_split('/\s+/', $val . ' ' . $rpn),
+                array($this, 'rpnOperation'),
+                array()
+            );
+            return $val[0];
+        } catch (InvalidArgumentException $e) {
+            return $val;
+        }
+    }
+
+    /**
+     * Apply the operator
+     *
+     * @param array $result List of numerics
+     * @param mixed $item Current item
+     * @throws InvalidArgumentException
+     * @return array
+     */
+    private function rpnOperation(&$result, $item)
+    {
+        if (in_array($item, array('+', '-', '*', '/'))) {
+            if ($result < 2) {
+                throw new InvalidArgumentException('Not enough arguments to apply operator');
+            }
+            list($a, $b) = array_splice($result, count($result) - 2, 2);
+            $result[] = eval("return $a $item $b;");
+        } elseif (is_numeric($item)) {
+            $result[] = $item;
+        } else {
+            throw new InvalidArgumentException('Unrecognized symbol ' . $item);
+        }
+        return $result;
     }
 }
 ?>
