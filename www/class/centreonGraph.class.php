@@ -508,6 +508,7 @@ class CentreonGraph	{
 		/* Merge all metrics */
 		$mmetrics = array_merge($this->rmetrics, $this->vmetrics);
         $DBRESULT->free();
+        $this->listMetricsId = array();
 
 		foreach ($mmetrics as $key => $metric) {
 
@@ -517,6 +518,11 @@ class CentreonGraph	{
 			if ($this->CheckDBAvailability($metric["metric_id"])) {
 
 				$this->_log("found metric ".$metric["metric_id"]);
+
+				/*
+				 * List of id metrics for rrdcached
+				 */
+				$this->listMetricsId[] = $metric["metric_id"];
 
 				if ( isset($this->metricsEnabled) && count($this->metricsEnabled) && !in_array($metric["metric_id"], $this->metricsEnabled) ) {
 					if ( isset($metric["need"]) ) {
@@ -804,7 +810,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 
                 $vdefs = "";
                 $prints = "";
-                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM", 
+                foreach (array("last" => "LAST", "min" => "MINIMUM", "max" => "MAXIMUM",
                                "average" => "AVERAGE", "total" => "TOTAL") as $name => $cf) {
                     if (!$tm["ds_" . $name]) {
                         continue;
@@ -823,7 +829,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
                 }
                 $this->addArgument($vdefs);
                 $this->addArgument($prints . "COMMENT:\"\\l\"");
-                
+
 				if ($this->onecurve) {
 					if (isset($tm["warn"]) && !empty($tm["warn"]) && $tm["warn"] != 0) {
 						$this->addArgument("HRULE:".$tm["warn"].$tm["ds_color_area_warn"].":\"Warning  \: ".$this->humanReadable($tm["warn"], $tm["unit"])."\\l\" ");
@@ -1186,6 +1192,8 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
         /* Force no compress for image */
 		$this->setHeaders(false);
 
+		$this->flushRrdcached($this->listMetricsId);
+
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
 		if ($this->_flag == 0 && $this->GMT->used() ) {
@@ -1513,6 +1521,71 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 		return 1;
 	}
 
+	/**
+	 * Flush metrics in rrdcached
+	 *
+	 * @param array $metricsId The list of metrics
+	 * @return bool
+	 */
+	private function flushRrdcached($metricsId) {
+	    if (!isset($this->general_opt['rrdcached_enable'])
+	        || $this->general_opt['rrdcached_enable'] == 0) {
+	        return true;
+	    }
+	    /*
+	     * Connect to rrdcached
+	     */
+        if (isset($this->general_opt['rrdcached_port'])
+            && trim($this->general_opt['rrdcached_port']) != '') {
+            $sock = @fsockopen('127.0.0.1', trim($this->general_opt['rrdcached_port']));
+            if ($sock === false) {
+                return false;
+            }
+        } elseif (isset($this->general_opt['rrdcached_unix_path'])
+            && trim($this->general_opt['rrdcached_unix_path']) != '') {
+            $sock = @fsockopen('unix://' . trim($this->general_opt['rrdcached_unix_path']));
+        } else {
+            return false;
+        }
+        /*
+         * Run batch mode
+         */
+        if (false === fputs($sock, "BATCH\n")) {
+            @fclose($sock);
+            return false;
+        }
+        if (false === fgets($sock)) {
+            @fclose($sock);
+            return false;
+        }
+        /*
+         * Run flushs
+         */
+        foreach ($metricsId as $metricId) {
+            $cmd = 'FLUSH ' . $this->dbPath . $metricId . '.rrd';
+            if (false === fputs($sock, $cmd . "\n")) {
+                @fclose($sock);
+                return false;
+            }
+        }
+        /*
+         * Execute commands
+         */
+	    if (false === fputs($sock, ".\n")) {
+            @fclose($sock);
+            return false;
+        }
+        if (false === fgets($sock)) {
+            @fclose($sock);
+            return false;
+        }
+        /*
+         * Send close
+         */
+	    fputs($sock, "QUIT\n");
+        @fclose($sock);
+        return true;
+	}
 }
 
 ?>
