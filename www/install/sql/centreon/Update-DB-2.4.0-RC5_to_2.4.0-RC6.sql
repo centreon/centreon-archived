@@ -32,6 +32,15 @@ INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_
 (24, 23, 1, 5),
 (24, 24, 1, 6);
 
+-- Add check replication for failover in Centreon Broker
+INSERT INTO cb_field (cb_field_id, fieldname, displayname, description, fieldtype, external) VALUES
+(39, 'check_replication', 'Check replication', 'Before update intormations in database, valid if replication is uptodate.', 'radio', NULL);
+INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES
+(1, 39, 'no');
+INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_display) VALUES
+(14, 39, 0, 11),
+(16, 39, 0, 8);
+
 -- Add suport for random colors in curves
 ALTER TABLE `giv_components_template` ADD `ds_color_line_mode` ENUM('0', '1') DEFAULT '0' AFTER `ds_color_line`;
 ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;
