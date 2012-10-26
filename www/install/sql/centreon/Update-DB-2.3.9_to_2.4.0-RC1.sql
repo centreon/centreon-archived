@@ -261,6 +261,91 @@ CREATE TABLE IF NOT EXISTS `cfg_resource_instance_relations` (
 ALTER TABLE  `cfg_cgi` ADD  `instance_id` INT( 11 ) NULL AFTER  `cgi_name`;
 ALTER TABLE  `cfg_cgi` ADD CONSTRAINT `fk_cgi_instance_id` FOREIGN KEY (`instance_id`) REFERENCES `nagios_server` (`id`) ON DELETE SET NULL;
 
+-- 
+-- Clone the active cgi configuration for each active poller instance and link them together
+-- 
+INSERT INTO `cfg_cgi`(
+    `cfg_cgi`.`cgi_name`,
+    `cfg_cgi`.`instance_id`,
+    `cfg_cgi`.`main_config_file`,
+    `cfg_cgi`.`physical_html_path`,
+    `cfg_cgi`.`url_html_path`,
+    `cfg_cgi`.`nagios_check_command`,
+    `cfg_cgi`.`use_authentication`,
+    `cfg_cgi`.`default_user_name`,
+    `cfg_cgi`.`authorized_for_system_information`,
+    `cfg_cgi`.`authorized_for_system_commands`,
+    `cfg_cgi`.`authorized_for_configuration_information`,
+    `cfg_cgi`.`authorized_for_all_hosts`,
+    `cfg_cgi`.`authorized_for_all_host_commands`,
+    `cfg_cgi`.`authorized_for_all_services`,
+    `cfg_cgi`.`authorized_for_all_service_commands`,
+    `cfg_cgi`.`statusmap_background_image`,
+    `cfg_cgi`.`default_statusmap_layout`,
+    `cfg_cgi`.`statuswrl_include`,
+    `cfg_cgi`.`default_statuswrl_layout`,
+    `cfg_cgi`.`refresh_rate`,
+    `cfg_cgi`.`host_unreachable_sound`,
+    `cfg_cgi`.`host_down_sound`,
+    `cfg_cgi`.`service_critical_sound`,
+    `cfg_cgi`.`service_warning_sound`,
+    `cfg_cgi`.`service_unknown_sound`,
+    `cfg_cgi`.`ping_syntax`,
+    `cfg_cgi`.`cgi_comment`,
+    `cfg_cgi`.`cgi_activate`
+) SELECT
+    CONCAT(`cfg_cgi`.`cgi_name`, '_', `nagios_server`.`name`),
+    `nagios_server`.`id` `instance_id`,
+    `cfg_cgi`.`main_config_file`,
+    `cfg_cgi`.`physical_html_path`,
+    `cfg_cgi`.`url_html_path`,
+    `cfg_cgi`.`nagios_check_command`,
+    `cfg_cgi`.`use_authentication`,
+    `cfg_cgi`.`default_user_name`,
+    `cfg_cgi`.`authorized_for_system_information`,
+    `cfg_cgi`.`authorized_for_system_commands`,
+    `cfg_cgi`.`authorized_for_configuration_information`,
+    `cfg_cgi`.`authorized_for_all_hosts`,
+    `cfg_cgi`.`authorized_for_all_host_commands`,
+    `cfg_cgi`.`authorized_for_all_services`,
+    `cfg_cgi`.`authorized_for_all_service_commands`,
+    `cfg_cgi`.`statusmap_background_image`,
+    `cfg_cgi`.`default_statusmap_layout`,
+    `cfg_cgi`.`statuswrl_include`,
+    `cfg_cgi`.`default_statuswrl_layout`,
+    `cfg_cgi`.`refresh_rate`,
+    `cfg_cgi`.`host_unreachable_sound`,
+    `cfg_cgi`.`host_down_sound`,
+    `cfg_cgi`.`service_critical_sound`,
+    `cfg_cgi`.`service_warning_sound`,
+    `cfg_cgi`.`service_unknown_sound`,
+    `cfg_cgi`.`ping_syntax`,
+    `cfg_cgi`.`cgi_comment`,
+    `cfg_cgi`.`cgi_activate`
+FROM
+    `cfg_cgi`
+JOIN
+    `nagios_server`
+ON
+    1=1
+WHERE
+    `cfg_cgi`.`cgi_activate` = '1' AND
+    `nagios_server`.`ns_activate` = '1'
+ORDER BY
+    `cfg_cgi`.`cgi_id` ASC;
+
+-- 
+-- This is a continuation of the last query; It deletes the original cgi configuration entry because now it is orphane (poller)
+-- 
+DELETE FROM
+    `cfg_cgi`
+WHERE
+    `cfg_cgi`.`cgi_activate` = '1'
+ORDER BY
+    `cfg_cgi`.`cgi_id` ASC
+LIMIT
+    1;
+
 INSERT INTO `options` (`key`, `value`) VALUES ('cengine_path_connectors','@CENTREON_ENGINE_CONNECTORS@/');
 UPDATE  `options` SET  `value` =  'CENGINE' WHERE CONVERT(  `options`.`key` USING utf8 ) =  'monitoring_engine' AND CONVERT(  `options`.`value` USING utf8 ) =  'NAGIOS' LIMIT 1 ;
 UPDATE `informations` SET `value` = '2.4.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.3.x' LIMIT 1;
