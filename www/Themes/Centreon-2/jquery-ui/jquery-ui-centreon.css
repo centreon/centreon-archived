@@ -5,12 +5,12 @@
 .column_2 { width: 50%; float: left; padding-bottom: 0px; }
 .column_3 { width: 33%; float: left; padding-bottom: 0px; }
 .portlet { margin: 0 1em 1em 0; overflow: hidden; }
-.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.2em; cursor: move ; }
+.portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.5em; padding-top: 0.3em; cursor: move ; }
 .portlet-header .ui-icon { float: right; cursor: pointer}
 .ui-sortable-placeholder { border: 1px dotted black; visibility: visible !important; height: 50px !important; }
 .ui-sortable-placeholder { visibility: hidden; }
 .portlet-content { 
-	padding: 0.4em;
+	padding: 0.2em;
 	width: 100%;
 	border: none;
 }
