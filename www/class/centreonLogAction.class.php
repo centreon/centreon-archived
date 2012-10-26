@@ -55,12 +55,12 @@ class CentreonLogAction {
  		global $pearDBO;
 
  		$query = "INSERT INTO `log_action_modification` (field_name, field_value, action_log_id) VALUES ";
+        $append = "";
  		foreach ($fields as $key => $value) {
- 			$query .= "('".CentreonDB::escape($key)."', '".CentreonDB::escape($value)."', '".$logId."'), ";
- 		}
- 		$query[strlen($query)-2] = " "; //removes the last coma
+ 			$query .= "('".CentreonDB::escape($key)."', '".CentreonDB::escape($value)."', '".$logId."')";
+            $append = ", ";
+        }
  		$DBRESULT = $pearDBO->query($query);
- 		unset($DBRESULT);
  	}
 
 	/*
@@ -89,7 +89,6 @@ class CentreonLogAction {
 		$DBRESULT = $pearDB->query("SELECT contact_name FROM `contact` WHERE contact_id = '$id' LIMIT 1");
 		while ($data = $DBRESULT->fetchRow())
 			$name = $data["contact_name"];
-		unset($data);
 		$DBRESULT->free();
 		return $name;
 	}
@@ -128,42 +127,25 @@ class CentreonLogAction {
 		$list_modifications = array();
 		$ref = array();
 		$i = 0;
-		$j = 0;
-		$first_ref_flag = 0;
 
-		$DBRESULT = $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER  BY action_log_date ASC");
+		$DBRESULT = $pearDBO->query("SELECT action_log_id, action_log_date, action_type FROM log_action WHERE object_id = '".$id."' AND object_type = '".$object_type."' ORDER BY action_log_date ASC");
 
 		while ($row = $DBRESULT->fetchRow()) {
 			$DBRESULT2 = $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");
 			while ($field = $DBRESULT2->fetchRow()) {
-				if (($row["action_type"] == "mc" || $row["action_type"] == "a" || $row["action_type"] == "c") && (!$first_ref_flag || $first_ref_flag == $field["action_log_id"])) {
-					$ref[$field["field_name"]] = $field["field_value"];
-					$first_ref_flag = $field["action_log_id"];
-
-					$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
-					$list_modifications[$i]["field_name"] = $field["field_name"];
-					$list_modifications[$i]["field_value_before"] = "";//$field["field_value"];
-					$list_modifications[$i]["field_value_after"] = $field["field_value"];
-					$j++;
-				} else {
-					foreach ($ref as $key => $value) {
-						if (!isset($ref[$field["field_name"]])) {
-							$list_modifications[$i]["field_value_before"] = "";
-							$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
-							$list_modifications[$i]["field_name"] = $field["field_name"];
-							$list_modifications[$i]["field_value_after"] = $field["field_value"];
-							$ref[$field["field_name"]] = $field["field_value"];
-						} else if (($field["field_name"] == $key) && ($field["field_value"] != $value)) {
-							$list_modifications[$i]["field_value_before"] = $value;
-							$list_modifications[$i]["action_log_id"] = $field["action_log_id"];
-							$list_modifications[$i]["field_name"] = $field["field_name"];
-							$list_modifications[$i]["field_value_after"] = $field["field_value"];
-							$ref[$key] = $field["field_value"];
-						}
-					}
-				}
-				$i++;
-				$DBRESULT->free();
+				if (!isset($ref[$field["field_name"]])) {
+                    $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
+                    $list_modifications[$i]["field_name"] = $field["field_name"];
+                    $list_modifications[$i]["field_value_before"] = "";//$field["field_value"];
+                    $list_modifications[$i]["field_value_after"] = $field["field_value"];
+                } else if ($ref[$field["field_name"]] != $field["field_value"]) {
+                    $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
+                    $list_modifications[$i]["field_name"] = $field["field_name"];
+                    $list_modifications[$i]["field_value_before"] = $ref[$field["field_name"]];
+                    $list_modifications[$i]["field_value_after"] = $field["field_value"];
+                }
+                $ref[$field["field_name"]] = $field["field_value"];
+                $i++;
 			}
 		}
 		return $list_modifications;

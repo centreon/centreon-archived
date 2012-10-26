@@ -115,12 +115,6 @@
 	$tpl->assign("objNameLabel", _("Object name : "));
 	$tpl->assign("noModifLabel", _("No modification was made."));
 
-	if (isset($listAction))
-		$tpl->assign("action", $listAction);
-	if (isset($listModification))
-		$tpl->assign("modification", $listModification);
-
-
 	$objects_type_tab = array();
 	$objects_type_tab = $oreon->CentreonLogAction->listObjecttype();
 	$options = "";
@@ -138,7 +132,7 @@
 	$tabz_obj_id = array();
 
 	if ($searchO || $searchU || !is_null($otype)) {
-		$query = "SELECT DISTINCT object_name, object_id, object_type FROM log_action ";
+		$query = "SELECT object_id, object_type, GROUP_CONCAT(DISTINCT object_name) as obj_name FROM log_action ";
 		$where_flag = 1;
 		if ($searchO) {
 			if ($where_flag)  {
@@ -167,16 +161,16 @@
 				$query .= " AND ";
 			$query .= " object_type = '".$objects_type_tab[$otype]."' ";
 		}
-		$query .= " ORDER BY object_type, object_name";
+		$query .= "  GROUP BY object_id ORDER BY object_type, obj_name";
 		$DBRESULT = $pearDBO->query($query);
 
 		while ($res = $DBRESULT->fetchRow()) {
 			if ($res['object_id']) {
-				$res['object_name'] = str_replace('#S#', "/", $res["object_name"]);
-				$res['object_name'] = str_replace('#BS#', "\\", $res["object_name"]);
+				$res['obj_name'] = str_replace('#S#', "/", $res["obj_name"]);
+				$res['obj_name'] = str_replace('#BS#', "\\", $res["obj_name"]);
 				$tabz_obj_id[] = $res['object_id'];
 				$tabz_obj_type[] = $res['object_type'];
-				$tabz_obj_name[] = $res['object_name'];
+				$tabz_obj_name[] = $res['obj_name'];
 			}
 		}
 	}
@@ -198,9 +192,9 @@
 	$tpl->assign('tabz_obj_id', $tabz_obj_id);
 	$tpl->assign('type_id', $otype);
 	$tpl->assign('p', $p);
-	if (isset($_POST['searchO']) || isset($_POST['searchU']) || isset($_POST['otype']) || !isset($_GET['object_id']))
+	if (isset($_POST['searchO']) || isset($_POST['searchU']) || isset($_POST['otype']) || !isset($_GET['object_id'])) {
 		$tpl->display("viewLogs.ihtml");
-	else {
+	} else {
 		$listAction = array();
         $listAction = $oreon->CentreonLogAction->listAction($_GET['object_id'], $_GET['object_type']);
         $listModification = array();

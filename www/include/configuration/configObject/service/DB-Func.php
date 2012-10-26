@@ -277,7 +277,7 @@
 			$DBRESULT = $pearDB->query("UPDATE service SET service_activate = '1' WHERE service_id = '".$key."'");
 			$DBRESULT2 = $pearDB->query("SELECT service_description FROM `service` WHERE service_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "enable");
+			$centreon->CentreonLogAction->insertLog("service", $key, $row['service_description'], "enable");
 		}
 	}
 
@@ -294,7 +294,7 @@
 			$DBRESULT = $pearDB->query("UPDATE service SET service_activate = '0' WHERE service_id = '".$key."'");
 			$DBRESULT2 = $pearDB->query("SELECT service_description FROM `service` WHERE service_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT2->fetchRow();
-			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $row['service_description']), "disable");
+			$centreon->CentreonLogAction->insertLog("service", $key, $row['service_description'], "disable");
 		}
 	}
 
@@ -309,7 +309,7 @@
 			}
 			$DBRESULT3 = $pearDB->query("SELECT service_description FROM `service` WHERE `service_id` = '".$key."' LIMIT 1");
 			$svcname = $DBRESULT3->fetchRow();
-			$centreon->CentreonLogAction->insertLog("service", $key, getHostServiceCombo($key, $svcname['service_description']), "d");
+			$centreon->CentreonLogAction->insertLog("service", $key, $svcname['service_description'], "d");
 			$DBRESULT = $pearDB->query("DELETE FROM service WHERE service_id = '".$key."'");
 			$DBRESULT = $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".$key."'");
 			$DBRESULT = $pearDB->query("DELETE FROM contact_service_relation WHERE service_service_id = '".$key."'");
@@ -569,7 +569,7 @@
 							if ($DBRES->numRows()) {
 								$row2 = $DBRES->fetchRow();
 								$description = $row2['service_description'];
-								$centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], getHostServiceCombo($maxId["MAX(service_id)"], $description), "a", $fields);
+								$centreon->CentreonLogAction->insertLog("service", $maxId["MAX(service_id)"], $description, "a", $fields);
 							}
 						}
 					}
@@ -732,7 +732,7 @@
 		updateServiceCategories($service_id, $ret);
 		$centreon->user->access->updateACL();
 		$fields = $tmp_fields['fields'];
-		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, CentreonDB::escape($fields["service_description"])), "a", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, $fields["service_description"], "a", $fields);
 		return ($service_id);
 	}
 
@@ -993,7 +993,6 @@
 		if (isset($ret["service_traps"])) {
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
 		}
-		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id["MAX(service_id)"], CentreonDB::escape($ret["service_description"])), "a", $fields);
 		return (array("service_id" => $service_id["MAX(service_id)"], "fields" => $fields));
 	}
 
@@ -1222,7 +1221,7 @@
 		$fields["service_traps"] = "";
 		if (isset($ret["service_traps"]))
 			$fields["service_traps"] = implode(",", $ret["service_traps"]);
-		$centreon->CentreonLogAction->insertLog("service", $service_id["MAX(service_id)"], getHostServiceCombo($service_id, CentreonDB::escape($ret["service_description"])), "c", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, $ret["service_description"], "c", $fields);
 		$centreon->user->access->updateACL();
 	}
 
@@ -1464,7 +1463,7 @@
                     setServiceCriticality($service_id, $ret['criticality_id']);
                 }
                 
-		$centreon->CentreonLogAction->insertLog("service", $service_id, getHostServiceCombo($service_id, getMyServiceName($service_id), ENT_QUOTES, "UTF-8"), "mc", $fields);
+		$centreon->CentreonLogAction->insertLog("service", $service_id, getMyServiceName($service_id), "mc", $fields);
 	}
 
 	/*
