@@ -24,6 +24,7 @@
 			<td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_localisation}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_hasChanged}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_pid}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_startTime}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_lastUpdateTime}</td>
@@ -38,10 +39,11 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_ip_address}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_running}</td>
+			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal} style='background-color:#{if $elemArr[elem].RowMenu_is_runningFlag}00FF00;{else}FF0000{/if}'{/if}>{$elemArr[elem].RowMenu_is_running}</td>
+			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal} style='background-color:#{if $elemArr[elem].RowMenu_hasChangedFlag}F7D507;{else}00FF00{/if}'{/if}>{$elemArr[elem].RowMenu_hasChanged}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_pid}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_startTime}</td>
-			<td class="ListColCenter">{$elemArr[elem].RowMenu_lastUpdateTime}</td>
+			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal == 1} style='background-color:#{if $elemArr[elem].RowMenu_lastUpdateTimeFlag}F7D507;{/if}'{/if}>{$elemArr[elem].RowMenu_lastUpdateTime}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_version}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_is_default}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_status}</td>

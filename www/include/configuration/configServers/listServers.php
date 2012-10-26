@@ -62,16 +62,18 @@
 
 	$LCASearch = "";
 	if (isset($search)) {
-		$LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
+	  $LCASearch = " WHERE name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
 	}
 
 	/*
 	 * nagios servers comes from DB
 	 */
 	$nagios_servers = array();
-	$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` ORDER BY name");
+	$nagios_restart = array();
+	$DBRESULT = $pearDB->query("SELECT id, name, last_restart FROM `nagios_server` ORDER BY name");
 	while ($nagios_server = $DBRESULT->fetchRow()) {
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
+		$nagios_restart[$nagios_server["id"]] = $nagios_server["last_restart"];
 	}
 	$DBRESULT->free();
 
@@ -134,6 +136,7 @@
 	$tpl->assign("headerMenu_ip_address", _("IP Address"));
 	$tpl->assign("headerMenu_localisation", _("Localhost"));
 	$tpl->assign("headerMenu_is_running", _("Is running ?"));
+	$tpl->assign("headerMenu_hasChanged", _("Conf Changed"));
 	$tpl->assign("headerMenu_pid", _("PID"));
 	$tpl->assign("headerMenu_version", _("Version"));
 	$tpl->assign("headerMenu_startTime", _("Start time"));
@@ -148,7 +151,7 @@
 	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
-	$rows = $pearDB->numberRows();
+	$rows = $DBRESULT->numRows();
 
 	include("./include/common/checkPagination.php");
 
@@ -172,21 +175,46 @@
 			$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		}
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
+		
+		if (!isset($nagiosInfo[$config["name"]]["is_currently_running"])) {
+		  $nagiosInfo[$config["name"]]["is_currently_running"] = 0;
+		}
+
+		/* 
+		 * Manage flag for changes
+		 */
+		$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
+
+		/*
+                 * Manage flag for update time
+                 */
+		$lastUpdateTimeFlag = 0;
+		if (!isset($nagiosInfo[$config["name"]]["last_alive"])) {
+		  $lastUpdateTimeFlag = 0;
+		} else if (time() - $nagiosInfo[$config["name"]]["last_alive"] > 10 * 60) {
+		  $lastUpdateTimeFlag = 1;
+		}
+
 		$elemArr[$i] = array(
-						"MenuClass" => "list_".$style,
-						"RowMenu_select" => $selectedElements->toHtml(),
-						"RowMenu_name" => $config["name"],
-						"RowMenu_ip_address" => $config["ns_ip_address"],
-						"RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
-						"RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
-						"RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
-						"RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
-						"RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
-						"RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
-						"RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["name"]]["last_alive"]) && $nagiosInfo[$config["name"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["last_alive"]) : "-",
-						"RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
-						"RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_options" => $moptions);
+				     "MenuClass" => "list_".$style,
+				     "RowMenu_select" => $selectedElements->toHtml(),
+				     "RowMenu_name" => $config["name"],
+				     "RowMenu_ip_address" => $config["ns_ip_address"],
+				     "RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
+				     "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
+				     "RowMenu_is_running" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? _("Yes") : _("No"),
+				     "RowMenu_is_runningFlag" => $nagiosInfo[$config["name"]]["is_currently_running"],
+				     "RowMenu_is_default" => $config["is_default"] ? _("Yes") : _("No"),
+				     "RowMenu_hasChanged" => $hasChanged ? _("Yes") : _("No"),
+				     "RowMenu_hasChangedFlag" => $hasChanged,
+				     "RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
+				     "RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
+				     "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["name"]]["last_alive"]) && $nagiosInfo[$config["name"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["last_alive"]) : "-",
+				     "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag, 
+				     "RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
+				     "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
+				     "RowMenu_statusVal" => $config["ns_activate"],
+				     "RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);

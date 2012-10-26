@@ -180,4 +180,26 @@
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT = $pearDB->query($rq);
 	}
+	
+	/**
+	 * 
+	 * Enter description here ...
+	 * @param unknown_type $poller_id
+	 * @param unknown_type $last_restart
+	 * @return number
+	 */
+	function checkChangeState($poller_id, $last_restart) {
+		global $pearDB, $pearDBO;
+		 
+		if (!isset($last_restart)) {
+			return 0;
+		}
+	
+		$request = "SELECT * FROM log_action WHERE action_log_date > $last_restart AND ((object_type = 'host' AND object_id IN (SELECT host_host_id FROM centreon.ns_host_relation WHERE nagios_server_id = '$poller_id')) OR (object_type = 'service') AND object_id IN (SELECT service_service_id FROM centreon.ns_host_relation nhr, centreon.host_service_relation hsr WHERE nagios_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id))";
+		$DBRESULT = $pearDBO->query($request);
+		if ($DBRESULT->numRows()) {
+			return 1;
+		}
+		return 0;
+	}
 ?>
