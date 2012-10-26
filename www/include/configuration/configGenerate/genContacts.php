@@ -65,10 +65,10 @@
 			 */
 			$str .= "define contact{\n";
 			if ($contact["contact_name"]) {
-				$str .= print_line("alias", $contact["contact_name"]);
+				$str .= print_line("contact_name", $contact["contact_name"]);
 			}
 			if ($contact["contact_alias"]) {
-			    $str .= print_line("contact_name", $contact["contact_alias"]);
+			    $str .= print_line("alias", $contact["contact_alias"]);
 			}
 
 			/*
