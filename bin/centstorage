@@ -222,28 +222,6 @@ sub getPerfDataFile() {
 # Move perfdata file to tmp file 
 ########################################
 
-sub movePerfDataFile($$){
-    my $PERFDATA = $_[0];
-    my $flag_bckp = $_[1];
-    my $PERFDATA_src = $PERFDATA;
-
-    if ($flag_bckp == 1) {
-        $PERFDATA_src = $PERFDATA . ".bckp";
-    }
-    if (move($PERFDATA_src, $PERFDATA."_read")){
-	# Erase old perfdata file.
-	if ($flag_bckp == 0) {
-	    `echo "# New File " > $PERFDATA`;
-	}
-	undef($PERFDATA);
-	return(1);
-    } else {
-	writeLogFile("Cannot copy $PERFDATA file : $!");
-	undef($PERFDATA);
-	return (0);
-    }
-}
-
 sub copyTruncatePerfDataFile($$) {
     my $PERFDATA = $_[0];
     my $flag_bckp = $_[1];
@@ -251,6 +229,11 @@ sub copyTruncatePerfDataFile($$) {
     
     if ($flag_bckp == 1) {
         $PERFDATA_src = $PERFDATA . ".bckp";
+        if (move($PERFDATA_src, $PERFDATA."_read")) {
+            return 1;
+        }
+        writeLogFile("Cannot copy $PERFDATA file : $!");
+        return 0;
     }
     if (!open(FD_SRC, "+<" . $PERFDATA_src)) {
     	writeLogFile("Cannot read/write the $PERFDATA file : $!");
