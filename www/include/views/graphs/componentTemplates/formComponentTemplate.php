@@ -173,7 +173,7 @@
 		$form->addElement('text', $l_dsColor, $l_dCData["label"],  $attColText);
 
 		$attColAreaR = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;");
-		$attColAreaW = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;", "onclick"=>"popup_color_picker('$l_dsColor','".$l_dCData["label"]."');");
+		$attColAreaW = array("style"=>"width:50px; height:15px; background-color: ".$l_hxColor."; border-width:0px; padding-bottom:2px;");
 		$form->addElement('button', $l_dsColor.'_color', "", $attColAreaW);
 		$form->addElement('button', $l_dsColor.'_read', "", $attColAreaR);
 	}
@@ -220,6 +220,16 @@
 
 	}
 
+    function color_line_enabled($values) {
+        if (isset($values[0]['ds_color_line_mode']) && $values[0]['ds_color_line_mode'] == '1') {
+            return true;
+        }
+        if (!isset($values[1]) || $values[1] == '') {
+            return false;
+        }
+        return true;
+    }
+
 	/*
 	 * Form Rules
 	 */
@@ -231,7 +241,12 @@
 	$form->addRule('ds_name', _("Required Field"), 'required');
 	$form->addRule('name', _("Name already in use for this Host/Service"), 'existName');
 	$form->addRule('ds_name', _("Data Source already in use for this Host/Service"), 'existDs');
-	$form->addRule('ds_color_line', _("Required Field"), 'required');
+    $color_mode[] = HTML_QuickForm::createElement('radio', 'ds_color_line_mode', null, _("Random"), '1');
+    $color_mode[] = HTML_QuickForm::createElement('radio', 'ds_color_line_mode', null, _("Manual"), '0');
+    $form->addGroup($color_mode, 'ds_color_line_mode', _("Color line mode"));
+    $form->registerRule('color_line_enabled', 'callback', 'color_line_enabled');
+    $form->addRule(array('ds_color_line_mode', 'ds_color_line'), 
+                   _("Required Field"), 'color_line_enabled');
 
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
@@ -261,7 +276,7 @@
 		 */
 		$subA = $form->addElement('submit', 'submitA', _("Save"));
 		$res = $form->addElement('reset', 'reset', _("Reset"),array("onClick"=>"javascript:resetLists(0,0)"));
-		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_area_warn" => "#F8C706", "ds_color_area_crit" => "#F91E05", "ds_color_line" => "#0000FF", "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
+		$form->setDefaults(array("ds_color_area" => "#FFFFFF", "ds_color_area_warn" => "#F8C706", "ds_color_area_crit" => "#F91E05", "ds_color_line" => "#0000FF", "ds_color_line_mode" => '0', "ds_transparency" => "80", "ds_average" => true, "ds_last" => true));
 	}
 	if ($o == "c" || $o == "a") {
 ?>

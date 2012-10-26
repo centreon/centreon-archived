@@ -40,7 +40,14 @@
 	<tr class="list_two">
 		<td class="FormRowField"><img class="helpTooltip" name="tip_line_color">{$form.ds_color_line.label}</td>
 		{if $o == "a" || $o == "c"}
-			<td id="td_ds_color_line" class="FormRowValue"">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}</td>
+			<td id="td_ds_color_line" class="FormRowValue">
+                {$form.ds_color_line_mode.html}<br/>
+                <span class="pull-left">{$form.ds_color_line.html}&nbsp;&nbsp;{$form.ds_color_line_color.html}</span>
+                <label>
+                    <span style="margin-left: 5px" class="pull-left">{$form.ds_random_color_line.html}</span>
+                    {$form.ds_random_color_line.label}
+                </label>
+            </td>
 		{/if}
 		{if $o == "w"}
 			<td id="td_ds_color_line" class="FormRowValue" style="font-size: 11px; font-family: Courier New;">{$form.ds_color_line_read.html}</td>
@@ -95,3 +102,31 @@
 {$form.hidden}
 </form>
 {$helptext}
+<script type="text/javascript">
+{literal}
+function activate_color_selection(e) {
+    var $this = jQuery(this);
+
+    if (jQuery('input[name="compo_id"]').attr('value') == '1' && $this.attr('value') == '0') {
+        jQuery('input:radio[name*="ds_color_line_mode"]:nth(0)').attr('checked', true);
+        return;
+    }
+
+    if ($this.attr('value') == '1') {
+        jQuery('input[name="ds_color_line"]').attr('disabled', '');
+        jQuery('input[name="ds_color_line_color"]').attr('disabled', '');
+    } else {
+        jQuery('input[name="ds_color_line"]').removeAttr('disabled');
+        jQuery('input[name="ds_color_line_color"]').removeAttr('disabled');
+    }
+}
+
+jQuery(document).ready(function() {
+    jQuery('input[name="ds_color_line_color"]').click(function(e) {
+        popup_color_picker('ds_color_line', 'Line color');
+    });
+    jQuery('input[name*="ds_color_line_mode"]').click(activate_color_selection);
+    activate_color_selection.apply(jQuery('input[name*="ds_color_line_mode"]:checked'));
+});
+{/literal}
+</script>

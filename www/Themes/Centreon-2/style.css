@@ -435,3 +435,7 @@ form label { margin-left: 3px; }
 .helpTooltip {padding-right:3px;}
 
 p.oreonbutton input {padding:0px 15px;}
+
+.pull-left {
+    float: left;
+}

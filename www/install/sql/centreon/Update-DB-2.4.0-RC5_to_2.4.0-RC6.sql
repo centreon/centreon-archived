@@ -32,7 +32,10 @@ INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_
 (24, 23, 1, 5),
 (24, 24, 1, 6);
 
+-- Add suport for random colors in curves
+ALTER TABLE `giv_components_template` ADD `ds_color_line_mode` ENUM('0', '1') DEFAULT '0' AFTER `ds_color_line`;
+ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;
+UPDATE `giv_components_template` SET `ds_color_line_mode` = '1' WHERE ds_name LIKE 'Default_DS%';
+
 
 UPDATE `informations` SET `value` = '2.4.0-RC6' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC5' LIMIT 1;
-
-ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;

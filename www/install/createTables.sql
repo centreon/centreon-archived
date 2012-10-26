@@ -1425,6 +1425,7 @@ CREATE TABLE `giv_components_template` (
   `ds_order` int(11) DEFAULT NULL,
   `ds_hidecurve` enum('0','1') DEFAULT NULL,
   `ds_name` varchar(200) DEFAULT NULL,
+  `ds_color_line_mode` enum('0','1') DEFAULT '0',
   `ds_color_line` varchar(255) DEFAULT NULL,
   `ds_color_area` varchar(255) DEFAULT NULL,
   `ds_color_area_warn` varchar(14) DEFAULT NULL,
