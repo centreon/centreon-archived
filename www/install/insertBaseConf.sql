@@ -691,7 +691,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (20, 'Compressor', 'compressor', 11),
 (21, 'Failover', 'failover', 12),
 (22, 'Correlation', 'correlation', 13),
-(23, 'Statistics', 'stats', 14);
+(23, 'Statistics', 'stats', 14),
+(24, 'Monitoring', 'monitoring', 9);
 
 --
 -- Contenu de la table `cb_field`
@@ -815,7 +816,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (3, 18, 0),
 (3, 19, 0),
 (4, 22, 1),
-(5, 23, 1);
+(5, 23, 1),
+(3, 24, 0);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -890,7 +892,13 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (16, 35, 0, 8),
 (14, 34, 0, 9),
 (14, 35, 0, 10),
-(17, 38, 0, 7);
+(17, 38, 0, 7),
+(24, 19, 1, 1),
+(24, 20, 1, 2),
+(24, 21, 1, 3),
+(24, 22, 1, 4),
+(24, 23, 1, 5),
+(24, 24, 1, 6);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
