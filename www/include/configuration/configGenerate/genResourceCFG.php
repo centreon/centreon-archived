@@ -50,14 +50,16 @@
 								AND cr.`resource_activate` = '1'");
 	$str = NULL;
 	while ($DBRESULTource = $DBRESULT->fetchRow())	{
-		$ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
-		if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
-			$comment = array();
-			$comment = explode("\n", $DBRESULTource["resource_comment"]);
-			foreach ($comment as $cmt)
-				$str .= "# ".$cmt."\n";
-		}
-		$str .= $DBRESULTource["resource_name"]."=".$DBRESULTource["resource_line"]."\n";
+		if (isset($DBRESULTource["resource_line"]) && $DBRESULTource["resource_line"]) {
+                    $ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
+                    if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
+                            $comment = array();
+                            $comment = explode("\n", $DBRESULTource["resource_comment"]);
+                            foreach ($comment as $cmt)
+                                    $str .= "# ".$cmt."\n";
+                    }
+                    $str .= $DBRESULTource["resource_name"]."=".$DBRESULTource["resource_line"]."\n";
+                }
 	}
 	$str .= "\n";
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/resource.cfg");
