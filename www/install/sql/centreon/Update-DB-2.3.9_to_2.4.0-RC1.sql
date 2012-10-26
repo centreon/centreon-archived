@@ -286,6 +286,12 @@ ALTER TABLE `giv_components_template` ADD `ds_minmax_int` ENUM('0', '1') DEFAULT
 
 INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
 (NULL, '$USER3$', '@CENTREON_ENGINE_CONNECTORS@', 'path to the connectors', '1');
+
+--
+-- Adding all combinations between all old resources and pollers in order to keep the same functionality as in Centreon 2.3.9
+--
+INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id`) SELECT `cfg_resource`.`resource_id`, `nagios_server`.`id` FROM `cfg_resource` JOIN `nagios_server` ON 1=1;
+
 --
 -- Adding connectors structure
 --
