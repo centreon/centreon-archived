@@ -133,7 +133,7 @@ class CentreonLogAction {
 		while ($row = $DBRESULT->fetchRow()) {
 			$DBRESULT2 = $pearDBO->query("SELECT action_log_id,field_name,field_value FROM `log_action_modification` WHERE action_log_id='".$row['action_log_id']."'");
 			while ($field = $DBRESULT2->fetchRow()) {
-				if (!isset($ref[$field["field_name"]])) {
+				if (!isset($ref[$field["field_name"]]) && $field["field_value"] != "") {
                     $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = "";//$field["field_value"];
