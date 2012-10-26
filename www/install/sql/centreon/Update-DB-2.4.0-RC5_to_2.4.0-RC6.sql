@@ -13,6 +13,12 @@ INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_
 (13, 36, 0, 3),
 (13, 37, 0, 4);
 
+-- Add informations for Centreon Broker max_size log
+INSERT INTO cb_field (cb_field_id, fieldname, displayname, description, fieldtype, external) VALUES
+(38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL);
+INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_display) VALUES
+(17, 38, 0, 7);
+
 UPDATE `informations` SET `value` = '2.4.0-RC6' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC5' LIMIT 1;
 
 ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;

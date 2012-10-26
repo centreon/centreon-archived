@@ -734,7 +734,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (34, 'queries_per_transaction', 'Maximum queries per transaction', 'The maximum queries per transaction before commit.', 'int', NULL),
 (35, 'read_timeout', 'Transaction commit timeout', 'The transaction timeout before running commit.', 'int', NULL),
 (36, 'path', 'Unix socket', 'The Unix socket to use to communicate with rrdcached', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
-(37, 'port', 'TCP port', 'The port od TCP socket to use to communicate with rrdcached', 'int', 'T=options:C=value:CK=key:K=rrdcached_port');
+(37, 'port', 'TCP port', 'The port od TCP socket to use to communicate with rrdcached', 'int', 'T=options:C=value:CK=key:K=rrdcached_port'),
+(38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -888,7 +889,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (16, 34, 0, 7),
 (16, 35, 0, 8),
 (14, 34, 0, 9),
-(14, 35, 0, 10);
+(14, 35, 0, 10),
+(17, 38, 0, 7);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
