@@ -790,11 +790,12 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 			}
 
 			if (!$this->checkcurve) {
-				if (isset($tm["metric_legend"])) {
-					$arg .= $tm["metric_legend"];
+				if (isset($tm["legend"])) {
+					$arg .= html_entity_decode($tm["legend"], ENT_COMPAT | ENT_HTML401, 'UTF-8');
 				} else {
-					$arg .= $tm["legend"];
+					$arg .= $tm["metric_legend"];
 				}
+                $this->_log($arg);
 
 				for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
 					$arg .= " ";
@@ -1179,33 +1180,32 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 	 *
 	 * Enter description here ...
 	 */
-	public function displayImageFlow()
-	{
+	public function displayImageFlow() {
 		$commandLine = "";
 
 		/*
 		 * Send header
 		 */
-
+        
         /* Force no compress for image */
 		$this->setHeaders(false);
-
+        
 		$this->flushRrdcached($this->listMetricsId);
-
+        
 		$commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
 		if ($this->_flag == 0 && $this->GMT->used() ) {
-				$this->setRRDOption("start", $this->GMT->getUTCDate($this->_RRDoptions["start"]) );
-				$this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
+            $this->setRRDOption("start", $this->GMT->getUTCDate($this->_RRDoptions["start"]) );
+            $this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
 		}
 		if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000
-		&& $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000) {
+            && $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000) {
 			if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 10368000 - (86400*7))
 				$this->setRRDOption("x-grid", "DAY:1:DAY:7:DAY:7:0:%d/%m");
 			else
 				$this->setRRDOption("x-grid", "DAY:7:DAY:7:DAY:14:0:%d/%m");
 		}
-
+        
 		foreach ($this->_RRDoptions as $key => $value) {
 			$commandLine .= "--".$key;
 			if (isset($value)) {
@@ -1237,14 +1237,14 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 		$commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
 		if ($this->GMT->used())
 			$commandLine = "export TZ='CMT".$this->GMT->getMyGMTForRRD()."' ; ".$commandLine;
-
+        
 		$this->_log($commandLine);
 		/*
 		 * Send Binary Data
 		 */
 		if (!$this->checkcurve) {
 			$fp = popen($commandLine." 2>&1"  , 'r');
-			if (isset($fp) && $fp ) {
+			if (isset($fp) && $fp) {
 				$str ='';
 				while (!feof ($fp)) {
 		  			$buffer = fgets($fp, 4096);
