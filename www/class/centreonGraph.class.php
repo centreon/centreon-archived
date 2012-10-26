@@ -605,7 +605,7 @@ class CentreonGraph {
                     }
 
                     if (isset($ds_data["ds_legend"]) && strlen($ds_data["ds_legend"]) > 0 ) {
-                        $this->metrics[$metric["metric_id"]]["legend"] = $ds_data["ds_legend"];
+                        $this->metrics[$metric["metric_id"]]["legend"] = html_entity_decode($ds_data["ds_legend"], ENT_COMPAT, 'UTF-8');
                     } else {
                         if (!isset($ds_data["ds_name"]) || !preg_match('/DS/', $ds_data["ds_name"], $matches)){
                             $this->metrics[$metric["metric_id"]]["legend"] = $this->cleanupDsName($metric["metric_name"], true);
@@ -614,14 +614,11 @@ class CentreonGraph {
                         }
                     }
 
-                    if (strcmp($metric["unit_name"], "")) {
-                        $this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].") ";
-                        if (isset($this->metrics[$metric["metric_id"]]["metric_legend"])) {
-                            $this->metrics[$metric["metric_id"]]["metric_legend"] .= " (".$metric["unit_name"].") ";
-                        }
+                    if ($metric["unit_name"] != "") {
+                        $this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].")";
                     }
 
-                    $this->metrics[$metric["metric_id"]]["legend_len"] = strlen($this->metrics[$metric["metric_id"]]["legend"]);
+                    $this->metrics[$metric["metric_id"]]["legend_len"] = mb_strlen($this->metrics[$metric["metric_id"]]["legend"], 'UTF-8');
                     $this->metrics[$metric["metric_id"]]["stack"] = (isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0);
                     if ($this->onecurve) {
                         if (isset($metric["warn"]) && $metric["warn"] != 0) {
@@ -689,8 +686,7 @@ class CentreonGraph {
                     $l_CMP = ",GT,";
                     if (isset($tm["ds_invert"]) && $tm["ds_invert"]) {
                         /* Switching RRD options lower-limit & upper-limit */
-                        if ($this->onecurve && isset($this->_RRDoptions["lower-limit"]) && $this->_RRDoptions["lower-limit"] && isset($this->_RRDoptions["uppe\
-r-limit"]) && $this->_RRDoptions["upper-limit"])
+                        if ($this->onecurve && isset($this->_RRDoptions["lower-limit"]) && $this->_RRDoptions["lower-limit"] && isset($this->_RRDoptions["upper-limit"]) && $this->_RRDoptions["upper-limit"])
                             $this->switchRRDLimitOption($this->_RRDoptions["lower-limit"],$this->_RRDoptions["upper-limit"]);
                         $this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
                         if (isset($tm["warn"]) && $tm["warn"] != 0)
@@ -790,14 +786,8 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
             }
 
             if (!$this->checkcurve) {
-                if (isset($tm["legend"])) {
-                    $arg .= html_entity_decode($tm["legend"], ENT_COMPAT, 'UTF-8');
-                } else {
-                    $arg .= $tm["metric_legend"];
-                }
-                $this->_log($arg);
-
-                for ($i = $tm["legend_len"]; $i != $this->longer + 1; $i++) {
+                $arg .= $tm["legend"];
+                for ($i = $tm["legend_len"]; $i <= $this->longer; $i++) {
                     $arg .= " ";
                 }
                 // Add 2 more spaces if display only legend is set

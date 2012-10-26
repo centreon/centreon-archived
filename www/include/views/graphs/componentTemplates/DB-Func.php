@@ -153,7 +153,7 @@
 		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
 			noDefaultOreonGraph();
 
-		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
+		if ((isset($ret["ds_filled"]) && $ret["ds_filled"] == 1) && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
 			$ret["ds_color_area"] = $ret["ds_color_line"];
 
 		$rq = "INSERT INTO `giv_components_template` ( `compo_id` , `host_id`, `service_id`, `name` , `ds_order` , `ds_hidecurve` , `ds_name` , " .
