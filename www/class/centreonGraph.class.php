@@ -791,7 +791,7 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 
 			if (!$this->checkcurve) {
 				if (isset($tm["legend"])) {
-					$arg .= html_entity_decode($tm["legend"], ENT_COMPAT | ENT_HTML401, 'UTF-8');
+					$arg .= html_entity_decode($tm["legend"], ENT_COMPAT, 'UTF-8');
 				} else {
 					$arg .= $tm["metric_legend"];
 				}
@@ -1348,13 +1348,14 @@ r-limit"]) && $this->_RRDoptions["upper-limit"])
 	 * @param unknown_type $a
 	 * @param unknown_type $b
 	 */
-	private function _cmpmultiple($a, $b)
-	{
-		if ($a["ds_order"]<$b["ds_order"])
-			return -1;
-		else if ($a["ds_order"]>$b["ds_order"])
-			return 1;
-		return strnatcasecmp($a["legend"] ? $a["legend"] : null, $b["legend"] ? $b["legend"] : null);
+	private function _cmpmultiple($a, $b) {
+        if (isset($a["ds_order"]) && isset($b["ds_order"])) {
+            if ($a["ds_order"]<$b["ds_order"])
+                return -1;
+            else if ($a["ds_order"]>$b["ds_order"])
+                return 1;
+        }
+        return strnatcasecmp($a["legend"] ? $a["legend"] : null, $b["legend"] ? $b["legend"] : null);
 	}
 
 	/**
