@@ -109,6 +109,10 @@
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
+				<td>Antoine Nguyen</td>
+			</tr>
+			<tr>
+				<td>&nbsp;</td>
 				<td>Laurent Pinsivy</td>
 			</tr>
 			<tr>
@@ -137,67 +141,67 @@
 			<img src="./img/Paris-Business.jpg" alt="Logo Join Community">
 		</div>
 		<br/><br/><br/><br/><br/><br/><br/>
-		<div style="text-align:left;">
+		<div style="margin-top:90px;text-align:left;width:100%;">
 			<table width="80%">
-				<thead><h3><b><?php echo _("Contributors"); ?> :</b></h3></thead>
+				<thead><h3 style='text-align:left;'><b><?php echo _("Contributors"); ?> :</b></h3><br /></thead>
 				<tr>
-					<td>Marisa Belijar</td>
+					<td style='padding-left:25px;'>Marisa Belijar</td>
 					<td>Tobias Boehnert</td>
 				</tr>
 				<tr>
-					<td>Duy-Huan BUI</td>
+					<td style='padding-left:25px;'>Duy-Huan BUI</td>
 					<td>Gaetan Lucas de Couville</td>
 				</tr>
 				<tr>
-					<td>Vincent Carpentier</td>
+					<td style='padding-left:25px;'>Vincent Carpentier</td>
 					<td>Christoph Ziemann</td>
 				</tr>
 				<tr>
-					<td>Jean Marc Grisar</td>
+					<td style='padding-left:25px;'>Jean Marc Grisar</td>
 					<td>Florin Grosu</td>
 				</tr>
 				<tr>
-					<td>Luiz Gustavo Costa</td>
+					<td style='padding-left:25px;'>Luiz Gustavo Costa</td>
 					<td>guigui2607</td>
 				</tr>
 				<tr>
-					<td>Thomas Fisher</td>
+					<td style='padding-left:25px;'>Thomas Fisher</td>
 					<td>Jean Gabes</td>
 				</tr>
 				<tr>
-					<td>Jay Lopez</td>
+					<td style='padding-left:25px;'>Jay Lopez</td>
 					<td>Jan Kuipers</td>
 				</tr>
 				<tr>
-					<td>Ira Janssen</td>
+					<td style='padding-left:25px;'>Ira Janssen</td>
 					<td>Thomas Johansen</td>
 				</tr>
 				<tr>
-					<td>Peeters Jan</td>
+					<td style='padding-left:25px;'>Peeters Jan</td>
 					<td>Jan Kuipers</td>
 				</tr>
 				<tr>
-					<td>Danil Makeyev</td>
+					<td style='padding-left:25px;'>Danil Makeyev</td>
 					<td>Camille N&eacute;ron</td>
 				</tr>
 				<tr>
-					<td>Maxime Peccoux</td>
+					<td style='padding-left:25px;'>Maxime Peccoux</td>
 					<td>Patrick Proy</td>
 				</tr>
 				<tr>
-					<td>Joerg Steinlechner</td>
+					<td style='padding-left:25px;'>Joerg Steinlechner</td>
 					<td>Silvio Rodrigo Damasceno de Souza</td>
 				</tr>
 				<tr>
-					<td>Thierry Van Acker</td>
+					<td style='padding-left:25px;'>Thierry Van Acker</td>
 					<td>Felix Zingel</td>
 				</tr>
 				<tr>
-					<td>Massimiliano Ziccardi</td>
+					<td style='padding-left:25px;'>Massimiliano Ziccardi</td>
 					<td></td>
 				</tr>
 				<tr>
-					<td colspan="2"><?php print _("And the others..."); ?></td>
+					<td colspan="2" style='padding-left:25px;'><br /><?php print _("And the others..."); ?></td>
 				</tr>
 			</table>
 		</div>
