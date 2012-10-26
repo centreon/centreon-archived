@@ -37,5 +37,4 @@ ALTER TABLE `giv_components_template` ADD `ds_color_line_mode` ENUM('0', '1') DE
 ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;
 UPDATE `giv_components_template` SET `ds_color_line_mode` = '1' WHERE ds_name LIKE 'Default_DS%';
 
-
 UPDATE `informations` SET `value` = '2.4.0-RC6' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC5' LIMIT 1;

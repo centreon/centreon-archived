@@ -1936,28 +1936,30 @@
 
 	}
 
-	# For massive change. incremental mode
+    // For massive change. incremental mode
 	function updateHostNotifs_MC($host_id = null)	{
 		if (!$host_id) return;
 		global $form;
 		global $pearDB;
 
-		$rq = "SELECT * FROM host ";
+		$rq = "SELECT host_notification_options FROM host ";
 		$rq .= "WHERE host_id = '".$host_id."' LIMIT 1";
-		$DBRESULT =& $pearDB->query($rq);
-		$host = array();
+		$DBRESULT = $pearDB->query($rq);
 		$host = array_map("myDecode", $DBRESULT->fetchRow());
 
 		$ret = $form->getSubmitValue("host_notifOpts");
+        if (!isset($ret) || !$ret) {
+            return;
+        }
 
-		isset($host["host_notification_options"]) && $ret != NULL ? $temp = $host["host_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
-
-		if (isset($temp) && $temp != NULL) {
-		    $rq = "UPDATE host SET " ;
-			$rq .= "host_notification_options = '". trim ($temp ,',')."' ";
-			$rq .= "WHERE host_id = '".$host_id."'";
-			$DBRESULT =& $pearDB->query($rq);
-		}
+        $temp = (isset($host["host_notification_options"])) 
+            ? $host["host_notification_options"] . "," . implode(",", array_keys($ret))
+            : implode(",", array_keys($ret));
+        
+        $rq = "UPDATE host SET " ;
+        $rq .= "host_notification_options = '". trim($temp, ',') . "' ";
+        $rq .= "WHERE host_id = '".$host_id."'";
+        $pearDB->query($rq);
 	}
 
 
