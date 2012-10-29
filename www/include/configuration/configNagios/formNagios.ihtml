@@ -281,4 +281,24 @@
 	{$form.hidden}
 </form>
 {$helptext}
-
+{literal}
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery('input[name=event_broker_options]').change(function(e) {
+        var $this = jQuery(this);
+        if ($this.attr('value') != '-1') {
+            if (!jQuery('#broker_options_warning').length) {
+                $this.after(jQuery("<div/>", {
+                    id: 'broker_options_warning',
+                    html: '{/literal}{$BrokerOptionsWarning}{literal}',
+                    style: 'color: #FF0000'
+                }));
+            }
+        } else {
+            jQuery('#broker_options_warning').remove();
+        }
+    });
+    jQuery('input[name=event_broker_options]').trigger('change');
+});
+</script>
+{/literal}

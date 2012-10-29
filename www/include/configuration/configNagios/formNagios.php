@@ -812,6 +812,8 @@
 		$tpl->assign("Seconds", _("seconds"));
 		$tpl->assign("Minutes", _("minutes"));
 		$tpl->assign("Bytes", _("bytes"));
+        $tpl->assign("BrokerOptionsWarning", 
+                     _("Warning: this value can be dangerous, use -1 if you have any doubt."));
 		$tpl->display("formNagios.ihtml");
 	}
 	?>
