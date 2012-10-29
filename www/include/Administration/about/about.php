@@ -63,6 +63,10 @@
 		</table>
 		<br><br><h3><b><?php echo _("Developers"); ?> :</b></h3><br />
 		<table>
+            <tr>
+				<td width="25">&nbsp;</td>
+				<td>Lionel Assepo</td>
+			</tr>
 			<tr>
 				<td width="25">&nbsp;</td>
 				<td>Maximilien Bersoult</td>
@@ -126,6 +130,10 @@
 			<tr>
 				<td>&nbsp;</td>
 				<td>Cedric Temple</td>
+			</tr>
+            <tr>
+				<td>&nbsp;</td>
+				<td>Alexandru Vilau</td>
 			</tr>
 			<tr>
 				<td>&nbsp;</td>
@@ -201,7 +209,10 @@
 					<td></td>
 				</tr>
 				<tr>
-					<td colspan="2" style='padding-left:25px;'><br /><?php print _("And the others..."); ?></td>
+					<td colspan="2" style='padding-left:25px;'>
+                        <br /><?php print _("And many others..."); ?><br />
+                        <?php print _("You can see the full list by visiting the Centreon's Forge"); ?>
+                    </td>
 				</tr>
 			</table>
 		</div>
