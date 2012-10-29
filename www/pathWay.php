@@ -102,7 +102,7 @@
 			$new_url = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 			$tabPath[$new_url["topology_page"]] = array();
-			$tabPath[$new_url["topology_page"]]["name"] = _($tab["topology_name"]);
+			$tabPath[$new_url["topology_page"]]["name"] = _($new_url["topology_name"]);
 			$tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
 			$tabPath[$new_url["topology_page"]]["page"] = $new_url["topology_page"];
 			$page = $new_url["topology_page"];
@@ -111,8 +111,8 @@
 		}
 		
 	/**
-         * Not displaying two entries in a row having the same name
-         */
+     * Not displaying two entries in a row having the same name
+     */
 	$tmpLastTabKeyAndName = null;
         foreach ($tabPath as $pageNumber => $tabInPath) {
             if($tmpLastTabKeyAndName && $tabInPath['name'] === $tmpLastTabKeyAndName['name']){
