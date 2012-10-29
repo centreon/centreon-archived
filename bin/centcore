@@ -97,7 +97,7 @@ my $cfg;
 
 sub init_config {
     my $file = $_[0];
-    my $type = $_[0];
+    my $type = $_[1];
     
     unless (my $return = do $file) {
         writeLogFile("couldn't parse $file: $@") if $@;
@@ -105,6 +105,7 @@ sub init_config {
         writeLogFile("couldn't run $file") unless $return;
         if ($type == 1) {
             writeLogFile("Quit program");
+            exit(1);
         }
     }
 }
@@ -117,6 +118,9 @@ sub catch_zap {
 sub catch_reload {
     writeLogFile("Receiving order to reload...");
     init_config("@CENTREON_ETC@/conf.pm", 0);
+    open my $centcore_fh, '>>', $LOG;
+    open STDOUT, '>&', $centcore_fh;
+    open STDERR, '>&', $centcore_fh;
 }
 
 init_config("@CENTREON_ETC@/conf.pm", 1);

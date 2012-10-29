@@ -61,6 +61,7 @@ my %tabProc;
 $tabProc{'parser'} = 0;
 $tabProc{'synchro'} = 0;
 $tabProc{'rebuild'} = 0;
+my $centstorage_fh;
 
 my $timeout_stop = 50;
 
@@ -97,17 +98,32 @@ sub writeLogFile($){
     close LOG or warn $!;
 }
 
+sub init_config {
+    my $file = $_[0];
+    my $type = $_[1];
+
+    unless (my $return = do $file) {
+        writeLogFile("couldn't parse $file: $@") if $@;
+        writeLogFile("couldn't do $file: $!") unless defined $return;
+        writeLogFile("couldn't run $file") unless $return;
+        if ($type == 1) {
+            writeLogFile("Quit program");
+            exit(1);
+        }
+    }
+}
+
 sub catch_zap_int {
     writeLogFile("$$ Receiving order to stop...");
     
     if ($tabProc{'parser'}) {
-	writeLogFile("Send INT signal to parser sub process...");
-	kill('INT', $tabProc{'parser'})	
+        writeLogFile("Send INT signal to parser sub process...");
+        kill('INT', $tabProc{'parser'})	
     }
     
     if ($tabProc{'rebuild'}) {
-    	writeLogFile("Send INT signal to rebuild sub process...");
-	kill('INT', $tabProc{'rebuild'});
+        writeLogFile("Send INT signal to rebuild sub process...");
+        kill('INT', $tabProc{'rebuild'});
     }
 }
 
@@ -117,18 +133,29 @@ sub catch_zap_term {
     writeLogFile("$$ Receiving order to stop...");
     if ($tabProc{'parser'}) {
         writeLogFile("Send TERM signal to parser sub process...");
-	kill('TERM', $tabProc{'parser'});	
+        kill('TERM', $tabProc{'parser'});	
     }
 
     if ($tabProc{'rebuild'}) {
         writeLogFile("Send TERM signal to rebuild sub process...");
-	kill('TERM', $tabProc{'rebuild'});
+        kill('TERM', $tabProc{'rebuild'});
     }
+}
+
+sub catch_reload {
+    writeLogFile("Receiving order to reload...");
+    init_config("@CENTREON_ETC@/conf.pm", 0);
+    open $centstorage_fh, '>>', $LOG;
+    open STDOUT, '>&', $centstorage_fh;
+    open STDERR, '>&', $centstorage_fh;
 }
 
 # Set signals
 $SIG{INT}   = \&catch_zap;
 $SIG{TERM}  = \&catch_zap_term;
+$SIG{HUP}   = \&catch_reload;
+
+init_config("@CENTREON_ETC@/conf.pm", 1);
 
 # require different files
 require $installedPath."lib/misc.pm";
@@ -903,7 +930,7 @@ sub REAPER {
 # Check Program State
 checkProgramStatus();
 
-open my $centstorage_fh, '>>', $LOG;
+open $centstorage_fh, '>>', $LOG;
 open STDOUT, '>&', $centstorage_fh;
 open STDERR, '>&', $centstorage_fh;
 $SIG{CHLD} = \&REAPER;
