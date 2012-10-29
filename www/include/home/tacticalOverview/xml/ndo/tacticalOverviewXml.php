@@ -407,36 +407,36 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, ht.address, ht.icon_image, i.instance_name " .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht, " .$ndo_base_prefix."instances i " .
-				" WHERE obj.object_id = stat.service_object_id" .
-		        " AND obj.instance_id = i.instance_id " .
-				" AND stat.service_object_id = svc.service_object_id" .
-				" AND obj.name1 = ht.display_name" .
-				" AND stat.current_state > 0" .
-                                " AND stat.state_type = 1" .
-				" AND stat.problem_has_been_acknowledged = 0" .
-				" AND stat.scheduled_downtime_depth = 0" .
-				" AND obj.is_active = 1" .
-				" AND obj.name1 NOT LIKE '_Module_%' " .
-				" AND obj.name1 = centreon_acl.host_name ".
-				" AND obj.name2 = centreon_acl.service_description " .
-				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-				" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image, svc.notes, svc.notes_url, svc.action_url " .
+					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix."hoststatus hstat " .
+					" WHERE obj.object_id = stat.service_object_id" .
+					" AND stat.service_object_id = svc.service_object_id" .
+					" AND stat.current_state > 0" .
+					" AND stat.problem_has_been_acknowledged = 0" .
+					" AND stat.scheduled_downtime_depth = 0" .
+					" AND ht.host_object_id = hstat.host_object_id".
+					" AND hstat.scheduled_downtime_depth = 0".
+					" AND svc.host_object_id = ht.host_object_id AND ht.host_object_id = hstat.host_object_id AND hstat.scheduled_downtime_depth = 0" .
+					" AND obj.is_active = 1" .
+					" AND obj.name1 NOT LIKE '_Module_%' " .
+					" AND obj.name1 = centreon_acl.host_name ".
+					" AND obj.name2 = centreon_acl.service_description " .
+					" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+					" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	} else {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, ht.address, ht.icon_image, i.instance_name " .
-				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix . "instances i ".
-				" WHERE obj.object_id = stat.service_object_id" .
-		        " AND obj.instance_id = i.instance_id " .
-				" AND stat.service_object_id = svc.service_object_id" .
-				" AND obj.name1 = ht.display_name" .
-				" AND stat.current_state > 0" .
-                                " AND stat.state_type = 1" .
-				" AND stat.problem_has_been_acknowledged = 0" .
-		        " AND stat.scheduled_downtime_depth = 0" .
-				" AND obj.is_active = 1" .
-				" AND obj.name1 NOT LIKE '_Module_%' " .
-				" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image, svc.notes, svc.notes_url, svc.action_url " .
+					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix."hoststatus hstat " .
+					" WHERE obj.object_id = stat.service_object_id" .
+					" AND stat.service_object_id = svc.service_object_id" .
+					" AND stat.current_state > 0" .
+					" AND stat.problem_has_been_acknowledged = 0" .
+			        " AND stat.scheduled_downtime_depth = 0" .
+			        " AND ht.host_object_id = hstat.host_object_id".
+					" AND hstat.scheduled_downtime_depth = 0".
+					" AND svc.host_object_id = ht.host_object_id AND ht.host_object_id = hstat.host_object_id AND hstat.scheduled_downtime_depth = 0" .
+					" AND obj.is_active = 1" .
+					" AND obj.name1 NOT LIKE '_Module_%' " .
+					" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	}
 	$resNdo1 = $dbb->query($rq1);
 
