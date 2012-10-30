@@ -121,7 +121,7 @@ try {
     if ($is_running == 0) {
         $DBRESULT = $pearDB->query("UPDATE cron_operation SET running = '1', time_launch = '" . time() . "' WHERE id = '$appID'");
     } else {
-        if ($nbProc <= 1) {
+        if ($nbProc <= 2) {
             $errorMessage = "According to DB another instance of centAcl.php is already running and I found " . $nbProc . " process...\n";
             $errorMessage .= "Executing query: UPDATE cron_operation SET running = 0 WHERE id =  '$appID'";
             $pearDB->query("UPDATE cron_operation SET running = '0' WHERE id = '$appID'");
