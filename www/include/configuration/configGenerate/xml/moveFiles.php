@@ -122,7 +122,6 @@ try {
         	copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
         }
     }
-    $msg_copy = array();
 
     /*
      * Copy correlation file
@@ -147,22 +146,23 @@ try {
     foreach ($tab_server as $host) {
         if (isset($poller) && ($poller == 0 || $poller == $host['id'])) {
             if (isset($host['localhost']) && $host['localhost'] == 1) {
-                $msg_copy[$host["id"]] = "";
+                /*
+                 * Check if monitoring engine's configuration directory existss
+                 */
                 if (!is_dir($oreon->Nagioscfg["cfg_dir"])) {
-                    $msg_copy[$host["id"]] .= sprintf(_("Monitoring Engine config directory %s does not exist!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
+                    throw new Exception(sprintf(_("Could not find configuration directory '%s' for monitoring engine '%s'. Please check it's path or create it"), $oreon->Nagioscfg["cfg_dir"], $host['name']));
                 }
-                if (!is_writable($oreon->Nagioscfg["cfg_dir"])) {
-                    $msg_copy[$host["id"]] .= sprintf(_("Monitoring Engine config directory %s is not writable for webserver's user!")."<br>", $oreon->Nagioscfg["cfg_dir"]);
-                }
-                foreach (glob($nagiosCFGPath.$host["id"]."/*.cfg") as $filename) {
-                    $bool = @copy($filename, rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename));
-                    $filename = array_pop(explode("/", $filename));
-                    if (!$bool) {
-                        throw new Exception("Could not copy files");
+                /*
+                 * Copy monitoring engine's configuration files
+                 */
+                foreach (glob($nagiosCFGPath . $host["id"] . "/*.cfg") as $filename) {
+                    $succeded = @copy($filename, rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename));
+                    if (!$succeded) {
+                        throw new Exception(sprintf(_("Could not write to file '%s' for monitoring engine '%s'. Please add writing permissions for the webserver's user"), basename($filename), $host['name']));
                     }
                 }
                 /*
-                 * Centreon Broker
+                 * Centreon Broker configuration
                  */
                 $listBrokerFile = glob($centreonBrokerPath . $host['id'] . "/*.xml");
                 if (count($listBrokerFile) > 0) {
@@ -170,27 +170,16 @@ try {
                     if (!is_null($centreonBrokerDirCfg)) {
                         if (!is_dir($centreonBrokerDirCfg)) {
                             if (!mkdir($centreonBrokerDirCfg, 0755)) {
-                                $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s does not exist and could not be created!") . "<br>", $centreonBrokerDirCfg);
+                                throw new Exception(sprintf(_("Centreon Broker's configuration directory '%s' does not exist and could not be created for monitoring engine '%s'. Please check it's path or create it"), $centreonBrokerDirCfg, $host['name']));
                             }
                         }
-                        if (!is_writable($centreonBrokerDirCfg)) {
-                            $msg_copy[$host['id']] .= sprintf(_("Centreon Broker config directory %s is not writable for webserver's user!") . "<br>", $centreonBrokerDirCfg);
-                        } else {
-                            foreach ($listBrokerFile as $fileCfg) {
-                                $bool = @copy($fileCfg, rtrim($centreonBrokerDirCfg, "/") . '/' . basename($fileCfg));
-                                $filename = array_pop(explode("/", $fileCfg));
-                                if (!$bool) {
-                                    throw new Exception("Could not copy files");
-                                }
+                        foreach ($listBrokerFile as $fileCfg) {
+                            $succeded = @copy($fileCfg, rtrim($centreonBrokerDirCfg, "/") . '/' . basename($fileCfg));
+                            if (!$succeded) {
+                                throw new Exception(sprintf(_("Could not write to Centreon Broker's configuration file '%s' for monitoring engine '%s'. Please add writing permissions for the webserver's user"), basename($fileCfg), $host['name']));
                             }
                         }
                     }
-                }
-
-                if (strlen($msg_copy[$host["id"]])) {
-                    $msg_copy[$host["id"]] = "<table border=0 width=300>".$msg_copy[$host["id"]]."</table>";
-                } else {
-                    $msg_copy[$host["id"]] .= _("<br><b>Centreon : </b>All configuration files copied with success.");
                 }
             } else {
                 passthru("echo 'SENDCFGFILE:".$host['id']."' >> $centcore_pipe", $return);
