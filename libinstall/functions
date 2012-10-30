@@ -685,11 +685,21 @@ function locate_monitoringengine_log()
 function locate_broker_etc()
 {
 	if [ -z "$BROKER_ETC" ]; then
-		answer_with_testdir "$(gettext "Broker etc")" "NO_DEFAULT" "BROKER_ETC"
+		answer_with_testdir "$(gettext "Where is the configuration directory for broker module ?")" "NO_DEFAULT" "BROKER_ETC"
 	fi
 	BROKER_ETC=`trim ${BROKER_ETC%/}`
 	export BROKER_ETC
 	log "INFO" "BROKER_ETC: $BROKER_ETC"
+}
+
+function locate_broker_init_script()
+{
+	if [ -z "$BROKER_INIT_SCRIPT" ]; then
+		answer_with_testfile "$(gettext "Where is the init script for broker module daemon ?")" "NO_DEFAULT" "BROKER_INIT_SCRIPT"
+	fi
+	BROKER_INIT_SCRIPT=`trim ${BROKER_INIT_SCRIPT}`
+	export BROKER_INIT_SCRIPT
+	log "INFO" "BROKER_INIT_SCRIPT: $BROKER_INIT_SCRIPT"
 }
 
 #----
@@ -1315,6 +1325,7 @@ function prepare_sudo_config() {
 	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "Monitoring engine binary" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
+	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
 	[ -z "$INIT_D" ] && locate_init_d
 	# Prepare sudo.conf
 	
@@ -1323,16 +1334,16 @@ function prepare_sudo_config() {
 	#Add by CENTREON installation script
 	User_Alias      CENTREON=$WEB_USER,$CENTREON_USER
 	Defaults:CENTREON !requiretty
-	# Nagios Restart
+	# Monitoring engine Restart
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* restart
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT restart
-	# Nagios reload
+	# Monitoring engine reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
-	# Nagios test config
+	# Monitoring engine test config
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -v *
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *
-	# Nagios test for optim config
+	# Monitoring engine test for optim config
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -s *
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -s *
 	# Snmptrapd Restart
@@ -1345,10 +1356,22 @@ function prepare_sudo_config() {
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage stop
 	# CentStorage start
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage start
-	## END: CENTREON SUDO 
-
 	__EOT__
+	
+	if [ -n "$BROKER_INIT_SCRIPT" ]; then
+		${CAT} <<- __EOT__ > $directory/centreon.sudo
+		# Broker engine Restart
+		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT* restart
+		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT restart
+		# Broker engine reload
+		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT* reload
+		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT reload
+		__EOT__
+	fi
 
+	echo "## END: CENTREON SUDO" >> $directory/centreon.sudo
+	echo "" >> $directory/centreon.sudo
+	
 
 	if [ -e $directory/centreon.sudo ] ; then 
 		return 0
@@ -1487,6 +1510,7 @@ function createConfFile()
 \$conf_centreon['broker_user'] = "$BROKER_USER";
 \$conf_centreon['broker_group'] = "$BROKER_GROUP";
 \$conf_centreon['broker_etc'] = "$BROKER_ETC";
+\$conf_centreon['broker_init_script'] = "$BROKER_INIT_SCRIPT";
 \$conf_centreon['monitoring_user'] = "$MONITORINGENGINE_USER";
 \$conf_centreon['monitoring_group'] = "$MONITORINGENGINE_GROUP";
 \$conf_centreon['monitoring_etc'] = "$MONITORINGENGINE_ETC";
@@ -1539,6 +1563,7 @@ function createCentreonInstallConf() {
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	BROKER_ETC=$BROKER_ETC
 	BROKER_USER=$BROKER_USER
+	BROKER_INIT_SCRIPT=$BROKER_INIT_SCRIPT
 	MONITORINGENGINE_ETC=$MONITORINGENGINE_ETC
 	MONITORINGENGINE_INIT_SCRIPT=$MONITORINGENGINE_INIT_SCRIPT
 	MONITORINGENGINE_BINARY=$MONITORINGENGINE_BINARY
