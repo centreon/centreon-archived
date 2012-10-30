@@ -113,13 +113,17 @@
 			}
 		} else if ($_POST["o"] == "ed" && isset($_POST["select"])){
 			$selected = $_POST["select"];
+			$listMetricsToDelete = array();
 			foreach ($selected as $key => $value){
-				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE  `index_id` = '".$key."'");
+				$DBRESULT = $pearDBO->query("SELECT metric_id FROM metrics WHERE  `index_id` = '".$key."'");
 				while ($metrics = $DBRESULT->fetchRow()){
-					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
+				    $listMetricsToDelete[] = $metrics['metric_id'];
 				}
-				$DBRESULT = $pearDBO->query("DELETE FROM index_data WHERE `id` = '".$key."'");
-				$pearDB->query("DELETE FROM ods_view_details WHERE index_id = " . $pearDB->escape($key));
+			}
+			$listMetricsToDelete = array_unique($listMetricsToDelete);
+			if (count($listMetricsToDelete) > 0) {
+    			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
+    			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
 			}
 		} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
@@ -155,7 +159,7 @@
 			$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
 		}
 	}
-	
+
 	$search_string = "";
 	if ($searchH != "" || $searchS != "") {
 		$search_string = " WHERE ";

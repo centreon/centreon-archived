@@ -52,13 +52,18 @@
 			}
 		} else if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed"){
 			$selected = $_POST["select"];
-			foreach ($selected as $key => $value){
+			$listMetricsId = array_keys($selected);
+			if (count($listMetricsId) > 0) {
+    			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+    			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+		    }
+			/*foreach ($selected as $key => $value){
 				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
 				while ($metrics = $DBRESULT->fetchRow()){
 					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
 					$pearDB->query("DELETE FROM ods_view_details WHERE metric_id = " . $pearDB->escape($metrics['metric_id']));
 				}
-			}
+			}*/
 		} else if ($_POST["o1"] == "hg" || $_POST["o2"] == "hg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
@@ -96,7 +101,7 @@
 	if (isset($search) && $search)
 		$search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
 
-	$DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM metrics WHERE index_id = '".$_GET["index_id"]."'");
+	$DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM metrics WHERE to_delete = 0 AND index_id = '".$_GET["index_id"]."'");
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
 
@@ -105,7 +110,7 @@
 	$yesOrNo = array(NULL => "No", 0 => "No", 1 => "Yes", 2 => "Rebuilding");
 	$rrd_dst = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
 
-	$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$_GET["index_id"]."' ORDER BY metric_name");
+	$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE to_delete = 0 AND index_id = '".$_GET["index_id"]."' ORDER BY metric_name");
 	unset($data);
 	for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++){
 		$metric = array();
