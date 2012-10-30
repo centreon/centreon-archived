@@ -50,4 +50,6 @@ UPDATE `giv_components_template` SET `ds_color_line_mode` = '1', `ds_color_line`
 ALTER TABLE `index_data` ADD `to_delete` INT(1) DEFAULT 0;
 ALTER TABLE `metrics` ADD `to_delete` INT(1) DEFAULT 0;
 
+UPDATE `command` SET `enable_shell` = 1 WHERE `command_type` = 1;
+
 UPDATE `informations` SET `value` = '2.4.0-RC6' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC5' LIMIT 1;
