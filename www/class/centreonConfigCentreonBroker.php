@@ -231,8 +231,11 @@ class CentreonConfigCentreonBroker
 
         $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
 
-        $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), $this->attrText);
-        $qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
+        $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), array_merge($this->attrText, array(
+            'id' => $tag . '[' . $formId . '][name]',
+            'class' => 'v_required'
+        )));
+        //$qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
 
         $type = $this->getTypeShortname($typeId);
         $qf->addElement('hidden', $tag . '[' . $formId . '][type]');
@@ -294,17 +297,20 @@ class CentreonConfigCentreonBroker
             }
 
             /*
+             * Add required informations
+             */
+            if ($field['required'] && is_null($field['value'])) {
+                $elementAttr = array_merge($this->attrText, array(
+                    'id' => $elementName,
+                    'class' => 'v_required'
+                ));
+            }
+
+            /*
              * Add elements
              */
             if (!is_null($elementType)) {
                 $qf->addElement($elementType, $elementName, _($field['displayname']), $elementAttr);
-            }
-
-            /*
-             * If required
-             */
-            if ($field['required'] && is_null($field['value'])) {
-                $qf->addRule($elementName, _($field['displayname']), 'required');
             }
 
             /*

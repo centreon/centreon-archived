@@ -39,7 +39,7 @@
 	if (!isset($oreon)) {
 		exit();
 	}
-	
+
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 	/*
@@ -63,7 +63,7 @@
 	/*
 	 * Form begin
 	 */
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+	$form = new HTML_QuickForm('Form', 'post', "?p=".$p, '', array('onsubmit' => 'return formValidate()'));
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add a Centreon-Broker Configuration"));
 	} else if ($o == "c") {
@@ -90,9 +90,9 @@
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
 	$form->addGroup($status, 'activate', _("Status"), '&nbsp;');
-	
+
 	$tags = $cbObj->getTags();
-	
+
 	$tabs = array();
 	foreach ($tags as $tagId => $tag) {
 	     $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _("Add"), 'nb' => 0, 'blocks' => $cbObj->getListConfigBlock($tagId), 'forms' => array());

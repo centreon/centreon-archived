@@ -15,7 +15,7 @@
 <tr class="{$classEl}">
   <td class="FormRowField">
   	<img class="helpTooltip" name="{$element.name}" />
-  	{$element.label}
+  	<label for="{$element.name}">{$element.label}</label>
   </td>
   <td class="FormRowValue">{$element.html}</td>
 </tr>
