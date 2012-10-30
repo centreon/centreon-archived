@@ -43,7 +43,7 @@
         require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
         $criticality = new CentreonCriticality($pearDB);
-        
+
 	/*
 	 * Build cache for CG
 	 */
@@ -133,7 +133,7 @@
         while ($critRow = $critRes->fetchRow()) {
             $critCache[$critRow['service_id']] = $critRow['criticality_id'];
         }
-        
+
 	$cacheSVCTpl = intCmdParam($pearDB);
 
 	/*
@@ -147,6 +147,8 @@
 	 */
         $svcMethod = new CentreonService($pearDB);
 	$str = "";
+	$indexToAdd = array();
+	$listIndexData = getListIndexData($instanceId);
 	if ($oreon->CentreonGMT->used() == 1) {
 		foreach ($hostGenerated as $host_id => $host_name) {
 			$svcList = getMyHostActiveServices($host_id);
@@ -181,7 +183,7 @@
 
                                 /*
                                  * Criticality level
-                                 */                                
+                                 */
                                 if (isset($critCache[$service['service_id']])) {
                                     $critData = $criticality->getData($critCache[$service['service_id']]);
                                     if (!is_null($critData)) {
@@ -189,12 +191,12 @@
                                         $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
                                     }
                                 }
-                                
+
 				/*
                                  * Write service_id
                                  */
-                                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);                                
-                                
+                                $strTMP .= print_line("_SERVICE_ID", $service["service_id"]);
+
 				/*
 				 * Template Model Relation
 				 */
@@ -370,6 +372,21 @@
 
 				unset($parent);
 				unset($strTMPTemp);
+
+				/*
+				 * Generate index data
+				 */
+				$relLink = $host_id . "_" . $svc_id;
+				if (isset($listIndexData[$relLink])) {
+				    $listIndexData[$relLink]['status'] = true;
+				} else {
+				    $indexToAdd[] = array(
+				        'host_id' => $host_id,
+				        'host_name' => $host_name,
+				        'service_id' => $svc_id,
+				        'service_description' => $svc_name
+				    );
+				}
 			}
 		}
 
@@ -473,7 +490,7 @@
 
                                 /*
                                  * Criticality level
-                                 */                                
+                                 */
                                 if (isset($critCache[$service['service_id']])) {
                                     $critData = $criticality->getData($critCache[$service['service_id']]);
                                     if (!is_null($critData)) {
@@ -481,7 +498,7 @@
                                         $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
                                     }
                                 }
-                                
+
 				/*
 				 * Template Model Relation
 				 */
@@ -692,17 +709,90 @@
 				unset($parent);
 				unset($strTMPTemp);
 			}
+
+
+			$tmpListHost = array();
+			if (isset($serviceRelation[$service["service_id"]]["h"])) {
+			    foreach ($serviceRelation[$service["service_id"]]["h"] as $host_id => $host_name) {
+    			    $tmpListHost[] = array(
+    			        'host_id' => $host_id,
+    			        'host_name' => $host_name
+    			    );
+			    }
+			}
+		    if (isset($serviceRelation[$service["service_id"]]["hg"])) {
+			    foreach ($serviceRelation[$service["service_id"]]["hg"] as $hg_id => $hg_name) {
+			        $querygetHostByHgId = "SELECT h.host_id, h.host_name
+			        	FROM host h, hostgroup_relation hg
+			        	WHERE hg.host_host_id = h.host_id
+			        		AND hg.hostgroup_hg_id = " . $hg_id;
+			        $res = $pearDB->query($querygetHostByHgId);
+			        if (!PEAR::isError($res)) {
+			            while ($row = $res->fetchRow()) {
+            			    $tmpListHost[] = array(
+            			        'host_id' => $row['host_id'],
+            			        'host_name' => $row['host_name']
+            			    );
+			            }
+			        }
+			    }
+			}
+			$tmpListHost = array_unique($tmpListHost);
+			/*
+			 * Generate index data
+			 */
+			foreach ($tmpListHost as $host) {
+			    $host_id = $host['host_id'];
+			    $host_name = $host['host_name'];
+			    $relLink = $host_id . "_" . $service['service_id'];
+    			if (isset($listIndexData[$relLink])) {
+    			    $listIndexData[$relLink]['status'] = true;
+    			} else {
+    			    $indexToAdd[] = array(
+    			        'host_id' => $host_id,
+    			        'host_name' => $host_name,
+    			        'service_id' => $service['service_id'],
+    			        'service_description' => $service["service_description"]
+    			    );
+    			}
+			}
+			unset($tmpListHost);
 		}
 		unset($serviceRelation);
 	}
+
+	/* Change the index data informations */
+	$listIndexToDelete = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToDelete'));
+	$listIndexToKeep = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToKeep'));
+
+	if (count($listIndexToDelete) > 0) {
+    	$queryIndexToDelete = "UPDATE index_data
+    		SET to_delete = 1
+    		WHERE id IN (" . join(', ', $listIndexToDelete) . ")";
+    	$pearDBO->query($queryIndexToDelete);
+	}
+	if (count($listIndexToKeep) > 0) {
+    	$queryIndexToKeep = "UPDATE index_data
+    		SET to_delete = 0
+    		WHERE id IN (" . join(', ', $listIndexToKeep) . ")";
+    	$pearDBO->query($queryIndexToKeep);
+	}
+
+	$queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete)
+		VALUES (%d, '%s', %d, '%s', 0)";
+	foreach ($indexToAdd as $index) {
+	    $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
+	    $pearDBO->query($queryAddIndexToExec);
+	}
+	/* End change the index data informations */
 
 
 	unset($service);
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/services.cfg");
 	fclose($handle);
-	
+
 	setFileMod($nagiosCFGPath.$tab['id']."/services.cfg");
-	
+
 	$DBRESULT->free();
 	unset($str);
 	unset($i);

@@ -727,4 +727,60 @@ Modified for Oreon by Christophe Coraboeuf
 	    $row = $res->fetchRow();
 	    return $row['id'];
 	}
+
+	function getListIndexData($poller_id)
+	{
+	    global $pearDB, $pearDBO;
+
+	    $queryGetHost = "SELECT host_host_id
+	    	FROM ns_host_relation
+	    	WHERE nagios_server_id = " . $poller_id;
+	    $res = $pearDB->query($queryGetHost);
+	    if (PEAR::isError($res)) {
+	        throw new Exception('Bad query');
+	    }
+	    if ($res->numRows() == 0) {
+	        return array();
+	    }
+
+	    $listHost = array();
+	    while ($row = $res->fetchRow()) {
+	        $listHost[] = $row['host_host_id'];
+	    }
+
+	    $queryGetRelation = "SELECT id, host_id, service_id
+	    	FROM index_data
+	    	WHERE host_id IN (" . join(', ', $listHost) . ")";
+	    $res = $pearDBO->query($queryGetRelation);
+	    if (PEAR::isError($res)) {
+	        throw new Exception('Bad query');
+	    }
+	    $listRelation = array();
+	    while ($row = $res->fetchRow()) {
+	        $relationTag = $row['host_id'] . '_' . $row['service_id'];
+	        $listRelation[$relationTag] = array(
+	            'id' => $row['id'],
+	            'status' => false
+	        );
+	    }
+	    return $listRelation;
+	}
+
+	function getIndexToDelete($infos) {
+	    if ($infos['status'] === false) {
+	        return true;
+	    }
+	    return false;
+	}
+
+	function getIndexToKeep($infos) {
+	    if ($infos['status'] === true) {
+	        return true;
+	    }
+	    return false;
+	}
+
+	function getIndexesId($infos) {
+	    return $infos['id'];
+	}
 ?>

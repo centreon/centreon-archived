@@ -140,6 +140,7 @@ CREATE TABLE IF NOT EXISTS `index_data` (
   `trashed` enum('0','1') default '0',
   `must_be_rebuild` enum('0','1','2') default '0',
   `storage_type` enum('0','1','2') default '2',
+  `to_delete` int(1) default 0,
   PRIMARY KEY  (`id`),
   UNIQUE `host_service_unique_id` (`host_id`, `service_id`),
   KEY `host_name` (`host_name`),
@@ -310,6 +311,7 @@ CREATE TABLE IF NOT EXISTS `metrics` (
   `min` float default NULL,
   `max` float default NULL,
   `locked` enum('0','1') default NULL,
+  `to_delete` int(1) default 0,
   PRIMARY KEY  (`metric_id`),
   UNIQUE (`index_id`, `metric_name`),
   KEY `index` (`index_id`)

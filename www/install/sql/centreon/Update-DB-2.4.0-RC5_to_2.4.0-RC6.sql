@@ -46,4 +46,8 @@ ALTER TABLE `giv_components_template` ADD `ds_color_line_mode` ENUM('0', '1') DE
 ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;
 UPDATE `giv_components_template` SET `ds_color_line_mode` = '1', `ds_color_line` = '' WHERE `name` LIKE 'Default_DS%';
 
+-- Add informations for delete index_data or metrics
+ALTER TABLE `index_data` ADD `to_delete` INT(1) DEFAULT 0;
+ALTER TABLE `metrics` ADD `to_delete` INT(1) DEFAULT 0;
+
 UPDATE `informations` SET `value` = '2.4.0-RC6' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC5' LIMIT 1;

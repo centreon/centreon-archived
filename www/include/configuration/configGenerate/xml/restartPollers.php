@@ -141,7 +141,7 @@ try {
       	/*
          * Restart
          */
-        shell_exec("sudo " . $data['value'] . " restart");
+        shell_exec("sudo " . $data['value'] . " reload");
     }
     $DBRESULTN->free();
     unset($data);
