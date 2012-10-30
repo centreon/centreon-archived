@@ -55,7 +55,7 @@ INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_ex
 INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(96, 'check_centreon_cpu', '$USER1$/check_centreon_snmp_cpu -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -c $ARG1$ -w $ARG2$', '!80!90', 2, 5, NULL);
 INSERT INTO `command` (`command_id`, `command_name`, `command_line`, `command_example`, `command_type`, `graph_id`, `cmd_cat_id`) VALUES(97, 'check_centreon_memory', '$USER1$/check_centreon_snmp_memory -H $HOSTADDRESS$ -v $_HOSTSNMPVERSION$ -C $_HOSTSNMPCOMMUNITY$ -w 80 -c 90', '', 2, 4, NULL);
 
-UPDATE `command` SET `enable_shell` = 1 WHERE `command_type` = 1;
+UPDATE `command` SET `enable_shell` = 1 WHERE `command_id` IN (35,36,37,38);
 
 --
 -- table `command_arg_description`
