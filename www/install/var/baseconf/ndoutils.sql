@@ -5,3 +5,4 @@ INSERT INTO `cfg_ndo2db` (`id`, `description`, `ndo2db_user`, `ndo2db_group`, `l
 INSERT INTO `cfg_ndomod` (`id`, `description`, `local`, `ns_nagios_server`, `instance_name`, `output_type`, `output`, `tcp_port`, `output_buffer_items`, `buffer_file`, `file_rotation_interval`, `file_rotation_command`, `file_rotation_timeout`, `reconnect_interval`, `reconnect_warning_interval`, `data_processing_options`, `config_output_options`, `activate`) VALUES(1, 'Central-mod', NULL, 1, 'Central', 'tcpsocket', '127.0.0.1', '5668', 5000, NULL, 14400, NULL, 60, 15, 900, -1, 3, '1');
 
 INSERT INTO `options` (`key`, `value`) VALUES ('broker', 'ndo');
+INSERT INTO `options` (`key`, `value`) VALUES ('centstorage', '1');

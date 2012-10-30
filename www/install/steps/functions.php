@@ -227,5 +227,6 @@ function setSessionVariables($conf_centreon) {
     $_SESSION['MONITORING_BINARY'] = $conf_centreon['monitoring_binary'];
     $_SESSION['CENTREON_VARLIB'] = $conf_centreon['centreon_varlib'];
     $_SESSION['MONITORING_VAR_LOG'] = $conf_centreon['monitoring_varlog'];
+    $_SESSION['BROKER_INIT_SCRIPT'] = $conf_centreon['broker_init_script'];
 }
 ?>
