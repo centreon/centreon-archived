@@ -178,6 +178,7 @@
 	} elseif ($o == "h_unhandled") {
 	    $keyPrefix = "h_unhandled";
 	    unset($statusList["up"]);
+            unset($statusList["pending"]);
 	} elseif (preg_match("/h_([a-z]+)/", $o, $matches)) {
 	    if (isset($matches[1])) {
             $keyPrefix = "h";

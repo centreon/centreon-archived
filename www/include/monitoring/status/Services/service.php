@@ -246,6 +246,7 @@
 	} elseif ($o == "svc_unhandled") {
 	    $keyPrefix = "svc_unhandled";
 	    unset($statusList["ok"]);
+            unset($statusList["pending"]);
 	} elseif (preg_match("/svc_([a-z]+)/", $o, $matches)) {
         if (isset($matches[1])) {
             $keyPrefix = "svc";
