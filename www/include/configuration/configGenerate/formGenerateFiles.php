@@ -504,12 +504,16 @@ function moveFiles()
 						displayStatusMessage(response.responseXML);
 						displayDetails(response.responseXML);
 						displayPhpErrorMsg('move', response.responseXML);
-						if (restartOption) {
-							updateProgress(67);
-							restartPollers();
+						if (isError(response.responseXML) == "1") {
+                                                    abortProgress();
+                                                    return null;
+						}
+                                                if (restartOption) {
+                                                    updateProgress(67);
+                                                    restartPollers();
 						} else {
-							updateProgress(100);
-							exportBtn.disabled = false;
+                                                    updateProgress(100);
+                                                    exportBtn.disabled = false;
 						}
 		}
 	});
@@ -529,11 +533,15 @@ function restartPollers()
 						mode: restartMode
 					},
 		onSuccess: function (response) {
-						displayStatusMessage(response.responseXML);
-						displayDetails(response.responseXML);
-						displayPhpErrorMsg('restart', response.responseXML);
-						updateProgress(100);
-						exportBtn.disabled = false;
+                                                displayStatusMessage(response.responseXML);
+                                                displayDetails(response.responseXML);
+                                                displayPhpErrorMsg('restart', response.responseXML);
+                                                if (isError(response.responseXML) == "1") {
+                                                    abortProgress();
+                                                    return null;
+						}
+                                                updateProgress(100);
+                                                exportBtn.disabled = false;
 		}
 	});
 }

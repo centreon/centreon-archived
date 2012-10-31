@@ -38,6 +38,8 @@
 
 ini_set("display_errors", "Off");
 require_once "@CENTREON_ETC@/centreon.conf.php";
+define('STATUS_OK', 0);
+define('STATUS_NOK', 1);
 
 if (!isset($_POST['poller']) || !isset($_POST['mode']) || !isset($_POST['sid'])) {
     exit;
@@ -195,9 +197,11 @@ try {
     }
     $xml->startElement("response");
     $xml->writeElement("status", "<b><font color='green'>OK</font></b>");
+    $xml->writeElement("statuscode", STATUS_OK);
 } catch (Exception $e) {
     $xml->startElement("response");
     $xml->writeElement("status", "<b><font color='red'>NOK</font></b>");
+    $xml->writeElement("statuscode", STATUS_NOK);
     $xml->writeElement("error", $e->getMessage());
 }
 /* Restore default error handler */
