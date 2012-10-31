@@ -3,22 +3,22 @@
 # Copyright 2005-2011 MERETHIS
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
 # GPL Licence 2.0.
-# 
+#
 # This program is free software; you can redistribute it and/or modify it under 
 # the terms of the GNU General Public License as published by the Free Software 
 # Foundation ; either version 2 of the License.
-# 
+#
 # This program is distributed in the hope that it will be useful, but WITHOUT ANY
 # WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
 # PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU General Public License along with 
 # this program; if not, see <http://www.gnu.org/licenses>.
-# 
+#
 # Linking this program statically or dynamically with other modules is making a 
 # combined work based on this program. Thus, the terms and conditions of the GNU 
 # General Public License cover the whole combination.
-# 
+#
 # As a special exception, the copyright holders of this program give MERETHIS 
 # permission to link this program with independent modules to produce an executable, 
 # regardless of the license terms of these independent modules, and to copy and 
@@ -28,24 +28,24 @@
 # derived from this program. If you modify this program, you may extend this 
 # exception to your version of the program, but you are not obliged to do so. If you
 # do not wish to do so, delete this exception statement from your version.
-# 
+#
 # For more information : contact@centreon.com
-# 
+#
 # SVN : $URL$
 # SVN : $Id$
 #
 ####################################################################################
 
-# Message type 
+# Message type
 # 0 -> Service Alerts
 # 1 -> Host Alerts
 # 2 -> Service notification
 # 3 -> Host Notification
 # 4 -> All nagios Warning
 # 5 -> All logs
-# 6 -> Service Current State  
+# 6 -> Service Current State
 # 7 -> Host Current State
-# 8 -> Service Initial State  
+# 8 -> Service Initial State
 # 9 -> Host Initial State
 # 10 -> Service Acknowledgement
 # 11 -> Host Acknowledgement
@@ -56,133 +56,115 @@ use DBI;
 use File::stat;
 use Getopt::Long;
 use POSIX;
-
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $opt_p $data $LOG $timeLaunch);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon 
+            $mysql_database_ods $opt_h $opt_a $opt_p $data $LOG $timeLaunch);
 
 require "@CENTREON_ETC@/conf.pm";
 
-# Define Var lib dir
+# Globals
 my $VarLib = "@CENTREON_VARLIB@";
 $LOG = "@CENTREON_LOG@/logAnalyser.log";
-
-## Init Date
-my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
-
-# Write logs in a file.
-sub writeLogFile($){
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
-    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-   
-   	# Add initial 0 if value is under 10
-    $hour = "0".$hour if ($hour < 10);
-    $min = "0".$min if ($min < 10);
-    $sec = "0".$sec if ($sec < 10);
-   	
-    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
-    close LOG or warn $!;
-}
-
-# Init MySQL Connexion
-my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0}) or die $DBI::errstr;
-
-# Init MySQL Connexion
-my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0}) or die $DBI::errstr;
-
-# ##############################
-# Lock in MySQL
-my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyser'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-}
-$data = $sth->fetchrow_hashref();
-
-########################
-# Check if is db layer 
-# is centreon broker
-########################
-my $dbLayer = $dbhoreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
-if (!$dbLayer->execute()) {
-	die "Error:" . $dbLayer->errstr . "\n";
-}
-my $dataLayer = $dbLayer->fetchrow_hashref();
-if ($dataLayer->{'value'} eq "broker") {
-	$dbLayer->finish();
-	exit;
-}
-$dbLayer->finish();
-
-my $sthbis;
-my $appID;
-$timeLaunch = time();
-if (defined($data->{'id'})) {
-    if (!defined($data->{"running"}) || $data->{"running"} == 0) {
-        $appID = $data->{"id"};
-        $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
-        if (!$sthbis->execute) {
-            die "Error:" . $sthbis->errstr . "\n";
-        }
-    } else {
-        writeLogFile("logAnalyser already running...");
-        exit(1);
-    }
-} else {
-    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyser', '1', '1')");
-    if (!$sthbis->execute) {
-        die "Error:" . $sthbis->errstr . "\n";
-    }
-}
-
-
-Getopt::Long::Configure('bundling');
-GetOptions("h" => \$opt_h, "help" => \$opt_h,
-           "a" => \$opt_a, "archives" => \$opt_a,
-		   "p=s" => \$opt_p, "poller" => \$opt_p);
-
-if ($opt_h) {
-    print " Usage : $0 :\n";
-    print "    -a (--archives) load data from log archives to database\n";
-	print "    -p (--poller <value>) load data from log archives to database from specific poller ID\n";
-    print "    -h (--help) show help\n";
-    exit(0);
-}
-
-if (defined($opt_p)) {
-	if ($opt_p =~ m/\d+/) {
-		my $sth = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$opt_p."'");
-		if (!$sth->execute) {
-			die "Error:" . $sth->errstr . "\n";
-		}
-		my $result = $sth->rows();
-		$sth->finish();
-		if ($result ne 1) {
-			writeLogFile("Invalid poller ID 1");
-			exit (1);
-		}
-	} else {
-		writeLogFile("Invalid poller ID");
-		exit (1);
-	}
-}
-
-# Get conf Data
-my $sth_config = $dbh->prepare("SELECT `archive_log`, `archive_retention`, `nagios_log_file`  FROM `config`");
-if (!$sth_config->execute) {
-	die "Error:" . $sth_config->errstr . "\n";
-}
-$data = $sth_config->fetchrow_hashref();
-$sth_config->finish();
-
+my ($dbh, $dbhoreon) = (undef, undef);
+my $appID = undef;
 my $msg_type5_disabled = 0;
 my $cpt = 0;
 my $ctime = 0;
 my $last_line_read;
 my $flag_position_file;
+my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = gmtime(time);
+my $timeLaunch = time();
+my $retention = undef;
 
+# Write logs in a file.
+sub writeLogFile($){
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
+
+   	# Add initial 0 if value is under 10
+    $hour = "0$hour" if ($hour < 10);
+    $min = "0$min" if ($min < 10);
+    $sec = "0$sec" if ($sec < 10);
+
+    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
+    close LOG or warn $!;
+}
+
+=head2 set_lock($dbcon)
+
+Activate the lock in database.
+
+=cut
+sub set_lock($) {
+  my ($dbconn) = @_;
+  my $sth = $dbconn->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyser'");
+  if (!$sth->execute) {
+    die "Error:" . $sth->errstr . "\n";
+  }
+  my $data = $sth->fetchrow_hashref();
+  my ($appID, $sthbis) = undef;
+
+  if (defined($data->{'id'})) {
+    if (!defined($data->{"running"}) || $data->{"running"} == 0) {
+      $appID = $data->{"id"};
+      $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
+      if (!$sthbis->execute) {
+        die "Error:" . $sthbis->errstr . "\n";
+      }
+      return $appID;
+    }
+    writeLogFile("logAnalyser already running...");
+    exit 1;
+  }
+  $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyser', '1', '1')");
+  if (!$sthbis->execute) {
+    die "Error:" . $sthbis->errstr . "\n";
+  }
+  return $appID;
+}
+
+=head2 unset_lock($dbconn, $appID)
+
+Deactivate the lock in database.
+
+=cut
+sub unset_lock {
+  my ($dbconn, $appID) = @_;
+  my $sth = $dbconn->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . (time() - $timeLaunch) . "' WHERE id = '$appID'");
+
+  if (!$sth->execute()) {
+    die "Error:" . $sth->errstr . "\n";
+  }
+}
+
+=head2 clean_exit()
+
+Enforce a proper exit in every case.
+
+=cut
+sub clean_exit {
+  my $code = shift || 0;
+
+  if (defined $dbhoreon) {
+    unset_lock($dbhoreon, $appID);
+    $dbhoreon->disconnect();
+  }
+  if (defined $dbh) {
+    $dbh->disconnect();
+  }
+  exit $code;
+}
+
+=head2 clear_flag_position_file($instance)
+
+
+
+=cut
 sub clear_flag_position_file($) {
-	my $instance = $_[0];
+    my ($instance) = @_;
 
 	if (-f "$VarLib/log/$instance/.flag_position") {
-		unlink("$VarLib/log/$instance/.flag_position") or writeLogFile("Cannot delete file '$VarLib/log/$instance/.flag_position' $!");
+		unlink("$VarLib/log/$instance/.flag_position")
+            or writeLogFile("Cannot delete file '$VarLib/log/$instance/.flag_position' $!");
 	}
 }
 
@@ -190,15 +172,14 @@ sub write_flag_position_file {
 	if (!open(FILE, "> ".$flag_position_file)){
 		writeLogFile("Cannot open file : $flag_position_file (WRITE) $!");
 		return;
-	} else {
-		print FILE $cpt;
-		close(FILE);
 	}
+    print FILE $cpt;
+    close(FILE);
 }
 
 sub insert_quit($$) {
 	my $sql_error = $_[0];
-        my $instance = $_[1];
+    my $instance = $_[1];
 
 	writeLogFile($sql_error);
 
@@ -217,18 +198,16 @@ sub parseFile ($$) {
 	my $logFile = $_[0];
 	my $lastCTime = 0;
 	my $CTime = 0;
-	
     my $historyFile = "$VarLib/log/$instance/.history";
-    $flag_position_file = "$VarLib/log/$instance/.flag_position";    
- 
+
+    $flag_position_file = "$VarLib/log/$instance/.flag_position";
     if (!-f "$VarLib/log/") {
         mkdir("$VarLib/log/");
     }
 
     if (!-f "$VarLib/log/$instance") {
         mkdir("$VarLib/log/$instance");
-    } 
-     
+    }
     # Get History Flag
    	if (!open(FILE, $historyFile)){
 		writeLogFile("Cannot open file : $historyFile (READ)");
@@ -286,7 +265,7 @@ sub parseFile ($$) {
 					$last_line_read =~ s/\n//g;
 				}
 				close(FILE);
-    			}
+            }
 		}
 	}
         
@@ -439,11 +418,8 @@ sub parseFile ($$) {
     	print FILE $CTime."\n";
     	close(FILE);
     }
-    
     return $cpt;
 }
-
-my $retention = $data->{'archive_retention'};
 
 sub parseArchive($$) {
     my ($instance, $localhost) = @_;
@@ -518,76 +494,114 @@ sub parseLogFile($$) {
     clear_flag_position_file($instance);
 }
 
-exit() if (!$data->{'archive_log'});
+=head1 MAIN
 
-my $sth2 = $dbhoreon->prepare("SELECT `id`, `name`, `localhost` FROM `nagios_server` WHERE `ns_activate` = 1");
-if (!$sth2->execute) {
-    die "Error:" . $sth2->errstr . "\n";
-} else { 
-	my $flag = 0;
-	my $res ;
-	
-	if (defined($opt_p)) {
-		$res = $dbh->do("UPDATE `instance` SET `log_flag` = '0' WHERE `instance_id` = '".$opt_p."'");
-		if (!defined($res)) {die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";};
-		clear_flag_position_file($opt_p);		
+Program starts here.
 
-		$res = $dbh->do("DELETE FROM `log` WHERE instance = '".$opt_p."'");
-		writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));	   
-		parseArchive($opt_p, '0');
-	} else {
-		while (my $ns_server = $sth2->fetchrow_hashref()) {
-			my $sth1 = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
-			if (!$sth1->execute) {
-				die "Error:" . $sth1->errstr . "\n";
-			}
-			if (!$sth1->rows()){
-				my $sthinsert = $dbh->prepare("INSERT INTO `instance` (`instance_id` , `instance_name` , `log_flag`) VALUES ('".$ns_server->{'id'}."', '".$ns_server->{'name'}."', '0');");
-				if (!$sthinsert->execute) {
-					die "Error:" . $sthinsert->errstr . "\n";
-				}
-				$sthinsert->finish();			
-			} else {
-				my $sthupdate = $dbh->prepare("UPDATE `instance` SET `instance_name` = '".$ns_server->{'name'}."' WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
-				if (!$sthupdate->execute) {
-					die "Error:" . $sthupdate->errstr . "\n";
-				}
-				$sthupdate->finish();			
-			}
-			$sth1->finish();
-			
-			if ($opt_a) {
-				# Empty line counter
-				$res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
-				if (!defined($res)) {
-					die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";
-				}
-				
-				if (!$flag) {
-					$res = $dbh->do("TRUNCATE TABLE `log`");
-					writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));	   
-					$flag = 1;
-				}
-				clear_flag_position_file($ns_server->{'id'});		
-				parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
-			} else {
-				parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
-			}
-		}
-	}
+=cut
+
+Getopt::Long::Configure('bundling');
+GetOptions("h" => \$opt_h, "help" => \$opt_h,
+           "a" => \$opt_a, "archives" => \$opt_a,
+		   "p=s" => \$opt_p, "poller" => \$opt_p);
+
+if ($opt_h) {
+    print " Usage : $0 :\n";
+    print "    -a (--archives) load data from log archives to database\n";
+	print "    -p (--poller <value>) load data from log archives to database from specific poller ID\n";
+    print "    -h (--help) show help\n";
+    exit 0;
+}
+
+# Init MySQL connections
+$dbh = DBI->connect("DBI:mysql:database=$mysql_database_ods;host=$mysql_host", 
+                    $mysql_user, $mysql_passwd, {'RaiseError' => 0}) or die $DBI::errstr;
+$dbhoreon = DBI->connect("DBI:mysql:database=$mysql_database_oreon;host=$mysql_host", 
+                         $mysql_user, $mysql_passwd, {'RaiseError' => 0}) or die $DBI::errstr;
+
+$appID = set_lock($dbhoreon);
+
+$SIG{__DIE__} = \&clean_exit;
+
+# Check if is db layer is centreon broker
+my $dbLayer = $dbhoreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+if (!$dbLayer->execute()) {
+    die "Error:" . $dbLayer->errstr . "\n";
+}
+my $dataLayer = $dbLayer->fetchrow_hashref();
+if ($dataLayer->{'value'} eq "broker") {
+    $dbLayer->finish();
+    clean_exit();
+}
+$dbLayer->finish();
+
+# Get conf Data
+my $sth_config = $dbh->prepare("SELECT `archive_log`, `archive_retention`, `nagios_log_file`  FROM `config`");
+if (!$sth_config->execute) {
+	die "Error:" . $sth_config->errstr . "\n";
+}
+$data = $sth_config->fetchrow_hashref();
+$sth_config->finish();
+clean_exit(1) if (!$data->{'archive_log'});
+
+$retention = $data->{'archive_retention'};
+
+my $res;
+
+if (defined($opt_p)) {
+    $res = $dbh->do("UPDATE `instance` SET `log_flag` = '0' WHERE `instance_id` = '$opt_p'");
+    if (!defined($res)) { 
+        die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";
+    };
+    clear_flag_position_file($opt_p);
+
+    $res = $dbh->do("DELETE FROM `log` WHERE instance = '".$opt_p."'");
+    writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));
+    parseArchive($opt_p, '0');
+} else {
+    my $flag = 0;
+    my $sth2 = $dbhoreon->prepare("SELECT `id`, `name`, `localhost` FROM `nagios_server` WHERE `ns_activate` = 1");
+
+    if (!$sth2->execute) {
+        die "Error:" . $sth2->errstr . "\n";
+    }
+    while (my $ns_server = $sth2->fetchrow_hashref()) {
+        my $sth1 = $dbh->prepare("SELECT `instance_name` FROM `instance` WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
+        if (!$sth1->execute) {
+            die "Error:" . $sth1->errstr . "\n";
+        }
+        if (!$sth1->rows()) {
+            my $sthinsert = $dbh->prepare("INSERT INTO `instance` (`instance_id` , `instance_name` , `log_flag`) VALUES ('".$ns_server->{'id'}."', '".$ns_server->{'name'}."', '0');");
+            if (!$sthinsert->execute) {
+                die "Error:" . $sthinsert->errstr . "\n";
+            }
+            $sthinsert->finish();
+        } else {
+            my $sthupdate = $dbh->prepare("UPDATE `instance` SET `instance_name` = '".$ns_server->{'name'}."' WHERE `instance_id` = '".$ns_server->{'id'}."' LIMIT 1");
+            if (!$sthupdate->execute) {
+                die "Error:" . $sthupdate->errstr . "\n";
+            }
+            $sthupdate->finish();
+        }
+        $sth1->finish();
+        if ($opt_a) {
+            # Empty line counter
+            $res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
+            if (!defined($res)) {
+                die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";
+            }
+            if (!$flag) {
+                $res = $dbh->do("TRUNCATE TABLE `log`");
+                writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));
+                $flag = 1;
+            }
+            clear_flag_position_file($ns_server->{'id'});		
+            parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
+        } else {
+            parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
+        }
+    }
     $sth2->finish();
 }
 
-# Remove Lock
-if ($appID) {
-	$sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . (time() - $timeLaunch) . "' WHERE id = '$appID'");
-	if (!$sth->execute()) {
-	    die "Error:" . $sth->errstr . "\n";
-	}
-	undef($appID);
-}
-
-$dbh->disconnect();
-$dbhoreon->disconnect();
-
-exit;
+clean_exit();
