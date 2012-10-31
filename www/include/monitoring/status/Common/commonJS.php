@@ -759,6 +759,7 @@ function set_limit(limit)	{
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
 	_var = "sid=<?php echo $sid; ?>&limit="+limit+"&url=<?php echo $url; ?>";
 	xhrM.send(_var);
+        jQuery('input[name=limit]').val(limit);
 }
 
 function set_search(search)	{
