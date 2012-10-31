@@ -152,6 +152,11 @@
 			if (isset($contact["contact_address6"]) && $contact["contact_address6"])
 				$str .= print_line("address6", $contact["contact_address6"]);
 
+                        if (isset($contact["contact_enable_notifications"])) {
+                            $str .= print_line('host_notifications_enabled', $contact['contact_enable_notifications']);
+                            $str .= print_line('service_notifications_enabled', $contact['contact_enable_notifications']);
+                        }
+                        
 			/*
 			 * Template
 			 */

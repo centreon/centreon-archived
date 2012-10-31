@@ -47,7 +47,7 @@
 	$queryGetTemplateContact = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias,
 			contact_host_notification_options, contact_service_notification_options, contact_email, contact_pager,
 			contact_address1, contact_address2, contact_address3, contact_address4, contact_address5, contact_address6,
-			contact_comment
+			contact_comment, contact_enable_notifications
 		FROM contact
 		WHERE contact_register = 0 AND contact_activate = '1'";
 	$res = $pearDB->query($queryGetTemplateContact);
@@ -185,7 +185,12 @@
 			if (isset($contact["contact_address6"]) && $contact["contact_address6"]) { 
 				$str .= print_line("address6", $contact["contact_address6"]);
 			}
-			
+			if (isset($contact["contact_enable_notifications"])) {
+                            $str .= print_line('host_notifications_enabled', $contact['contact_enable_notifications']);
+                            $str .= print_line('service_notifications_enabled', $contact['contact_enable_notifications']);
+                        }
+                        
+                        
 			/*
 			 * Set register = 0 for template
 			 */
