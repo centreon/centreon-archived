@@ -41,6 +41,13 @@ INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_
 (14, 39, 0, 11),
 (16, 39, 0, 8);
 
+-- Add interval check for rebuild metrics
+INSERT INTO cb_field (cb_field_id, fieldname, displayname, description, fieldtype, external) VALUES
+(40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL);
+INSERT INTO cb_type_field_relation (cb_type_id, cb_field_id, is_required, order_display) VALUES
+(14, 40, 0, 12);
+
+
 -- Add suport for random colors in curves
 ALTER TABLE `giv_components_template` ADD `ds_color_line_mode` ENUM('0', '1') DEFAULT '0' AFTER `ds_color_line`;
 ALTER TABLE `giv_components_template` ADD `ds_total` ENUM('0', '1') DEFAULT '0' AFTER `ds_last`;

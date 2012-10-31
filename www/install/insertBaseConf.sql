@@ -733,7 +733,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (36, 'path', 'Unix socket', 'The Unix socket to use to communicate with rrdcached', 'text', 'T=options:C=value:CK=key:K=rrdcached_unix_path'),
 (37, 'port', 'TCP port', 'The port od TCP socket to use to communicate with rrdcached', 'int', 'T=options:C=value:CK=key:K=rrdcached_port'),
 (38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL),
-(39, 'check_replication', 'Check replication', 'Before update intormations in database, valid if replication is uptodate.', 'radio', NULL);
+(39, 'check_replication', 'Check replication', 'Before update intormations in database, valid if replication is uptodate.', 'radio', NULL),
+(40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -898,7 +899,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (24, 23, 1, 5),
 (24, 24, 1, 6),
 (14, 39, 0, 11),
-(16, 39, 0, 8);
+(16, 39, 0, 8),
+(14, 40, 0, 12);
 
 --
 -- Contenu de la table `widget_parameters_field_type`
