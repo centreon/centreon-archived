@@ -44,9 +44,9 @@
 	 * Connect to MySQL
 	 */
 	$pearDBO = new CentreonDB("centstorage");
-	
+
 	require_once $centreon_path . "/www/class/centreonXML.class.php";
-	
+
 	$dir_conf = $centreonBrokerPath . '/' . $tab['id'];
 
 	if (!is_dir($dir_conf) && is_writable($centreonBrokerPath)) {
@@ -69,28 +69,28 @@
 	        $centreonBrokerModulePath = trim($row['centreonbroker_module_path']);
 	    }
 	}
-	
+
 	/*
 	 * Get Interval
 	 */
-	$interval_length = 60;
+	/*$interval_length = 60;
 	$query = "SELECT * FROM options WHERE `key` = 'interval_length'";
 	$res = $pearDB->query($query);
 	if (false === PEAR::isError($res) && $res->numRows() == 1) {
 		$row = $res->fetchRow();
 		$interval_length = $row["value"];
-	}
-	
+	}*/
+
 	/*
 	 * Get Len RRD Retention
 	 */
-	$len_storage_rrd = 180 * 24 * 60 * 60;
+	/*$len_storage_rrd = 180 * 24 * 60 * 60;
 	$query = "SELECT len_storage_rrd FROM config";
 	$res = $pearDBO->query($query);
 	if (false === PEAR::isError($res) && $res->numRows() == 1) {
 		$row = $res->fetchRow();
 		$len_storage_rrd = (int)$row["len_storage_rrd"] * 24 * 60 * 60;
-	}
+	}*/
 
 	/*
 	 * Init Broker configuration object
@@ -102,6 +102,8 @@
 		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
 
 	$res = $pearDB->query($query);
+
+	$blocks = array();
     if (false === PEAR::isError($res) && $res->numRows()) {
 	    $ns_name = null;
 	    while ($row = $res->fetchRow()) {
@@ -114,7 +116,38 @@
 	        if (is_null($ns_name)) {
 	            $ns_name = $row['name'];
 	        }
+	        if ($row['config_key'] == 'blockId') {
+	            if (false === isset($blocks[$row['config_value']])) {
+	                $blocks[$row['config_value']] = array();
+	            }
+	            $blocks[$row['config_value']][] = array(
+	                'filename' => $filename,
+	                'config_group' => $row['config_group'],
+	                'config_group_id' => $row['config_group_id']
+	            );
+	        }
 	        $files[$filename][$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
+	    }
+
+	    /*
+	     * Replace globals values
+	     */
+	    file_put_contents('/tmp/debug.gen', '');
+	    foreach ($blocks as $blockId => $block) {
+	        list($tagId, $typeId) = explode('_', $blockId);
+            $fields = $cbObj->getBlockInfos($typeId);
+            foreach ($fields as $field) {
+                if (!is_null($field['value'])) {
+                    file_put_contents('/tmp/debug.gen', $field['fieldname'] . "\n", FILE_APPEND);
+                    $default = $cbObj->getInfoDb($field['value']);
+                    if (trim($default) != '') {
+                        foreach ($block as $infos) {
+                            file_put_contents('/tmp/debug.gen', "Change to default " . $field['fieldname'] . " " . $default . "\n", FILE_APPEND);
+                            $files[$infos['filename']][$infos['config_group']][$infos['config_group_id']][$field['fieldname']] = $default;
+                        }
+                    }
+                }
+            }
 	    }
 
     	/*
@@ -141,20 +174,12 @@
         	            $fileXml->startElement($group);
         	            foreach ($infos as $key => $value) {
         	                if (trim($value) != '' && $key != 'blockId') {
-        	                    if ($key != 'length' && $key != 'interval') {
-	        	                	$fileXml->writeElement($key, $value);
-	        	                    if ($key == "type") {
-			 							$type = $value;
-					   				}
-        	                    }
+        	                	$fileXml->writeElement($key, $value);
+        	                    if ($key == "type") {
+		 							$type = $value;
+				   				}
         	            	}
         	            }
-
-        	            if ($group == "output" && $type == 'storage') {
-        	            	$fileXml->writeElement("length", $len_storage_rrd);
-        	            	$fileXml->writeElement("interval", $interval_length);
-        	            }
-        	            
         	            $fileXml->endElement();
         	        }
     	        }

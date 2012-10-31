@@ -299,8 +299,8 @@ class CentreonConfigCentreonBroker
             /*
              * Add required informations
              */
-            if ($field['required'] && is_null($field['value'])) {
-                $elementAttr = array_merge($this->attrText, array(
+            if ($field['required'] && is_null($field['value']) && $elementType != 'select') {
+                $elementAttr = array_merge($elementAttr, array(
                     'id' => $elementName,
                     'class' => 'v_required'
                 ));
@@ -690,7 +690,7 @@ class CentreonConfigCentreonBroker
      * @param string $string The string for get information
      * @return mixed Information
      */
-    private function getInfoDb($string)
+    public function getInfoDb($string)
     {
         global $pearDBO;
 
