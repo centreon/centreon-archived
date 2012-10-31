@@ -93,6 +93,7 @@ try {
     require_once $centreon_path . "www/class/centreonSession.class.php";
     require_once $centreon_path . "www/class/centreon.class.php";
     require_once $centreon_path . "www/class/centreonXML.class.php";
+    require_once $centreon_path . "www/class/centreonBroker.class.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -135,18 +136,12 @@ try {
     }
 
     /*
-     * Get broker init script
+     * Restart broker
      */
-    $DBRESULTN = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'broker_correlator_script'");
-    $data = $DBRESULTN->fetchRow();
-    if (isset($data['value']) && trim($data['value']) != '') {
-      	/*
-         * Restart
-         */
-        shell_exec("sudo " . $data['value'] . " reload");
+    $brk = new CentreonBroker($pearDB);
+    if ($brk->getName() == 'broker') {
+        $brk->reload();
     }
-    $DBRESULTN->free();
-    unset($data);
 
     foreach ($tab_server as $host) {
     	if ($ret["restart_mode"] == 1) {

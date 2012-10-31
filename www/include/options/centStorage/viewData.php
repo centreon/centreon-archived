@@ -43,6 +43,7 @@
 	include("./include/common/autoNumLimit.php");
 
 	require_once './class/centreonDuration.class.php';
+        require_once './class/centreonBroker.class.php';
 	include_once("./include/monitoring/common-Func.php");
 
 	/*
@@ -124,6 +125,10 @@
 			if (count($listMetricsToDelete) > 0) {
     			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
     			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
+                        $brk = new CentreonBroker($pearDB);
+                        if ($brk->getBroker() == 'broker') {
+                            $brk->reload();
+                        }
 			}
 		} else if ($_POST["o"] == "hg" && isset($_POST["select"])){
 			$selected = $_POST["select"];

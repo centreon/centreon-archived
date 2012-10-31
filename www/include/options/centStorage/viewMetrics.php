@@ -39,6 +39,8 @@
 	if (!isset($oreon))
 		exit();
 
+        require_once './class/centreonBroker.class.php';
+        
 	if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
 		if ((defined($_POST["o1"]) && $_POST["o1"] == "rg") || (defined($_POST["o2"]) && $_POST["o2"] == "rg")){
 			$selected = $_POST["select"];
@@ -56,6 +58,10 @@
 			if (count($listMetricsId) > 0) {
     			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
     			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
+                        $brk = new CentreonBroker($pearDB);
+                        if ($brk->getBroker() == 'broker') {
+                            $brk->reload();
+                        }
 		    }
 			/*foreach ($selected as $key => $value){
 				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
