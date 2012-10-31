@@ -39,10 +39,10 @@
 				{/foreach}</select>&nbsp;<a id="add_{$tab.id}" href="javascript:addInfo('{$tab.id}')"><img src="./img/icones/16x16/navigate_plus.gif" />&nbsp;{$tab.link}</a></td></tr>
 			</tbody>
 			{foreach from=$tab.forms item=formBlock name=formForeach}
-				{assign var="posBlock" value=$smarty.foreach.formForeach.index}
-				{assign var="posBlock" value=$posBlock+1}
+				{assign var="posAbs" value=$smarty.foreach.formForeach.index}
+				{assign var="posBlock" value=$posAbs+1}
 			<tbody id="{$tab.id}_{$posBlock}">
-				{include file='blockConfig.ihtml' tagBlock=$tab.id posBlock=$posBlock formBlock=$formBlock}
+				{include file='blockConfig.ihtml' tagBlock=$tab.id posBlock=$posBlock formBlock=$formBlock helps=$tab.helps[$posAbs]}
 			</tbody>
 			{/foreach}
 		</table>

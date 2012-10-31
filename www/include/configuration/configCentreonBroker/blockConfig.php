@@ -63,8 +63,8 @@
 	list($tagId, $typeId) = explode('_', $id);
 	$typeName = $cbObj->getTypeName($typeId);
 	$fields = $cbObj->getBlockInfos($typeId);
-	$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));;
-	$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));;
+	$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
+	$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
 	foreach ($fields as $field) {
 	    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
 	}

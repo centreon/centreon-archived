@@ -595,6 +595,41 @@ class CentreonConfigCentreonBroker
     }
 
     /**
+     * Get helps message for forms
+     *
+     * @param int $config_id The configuration id
+     * @param string $tag The tag of configuration
+     * @return array The list of helps order by position in page
+     */
+    public function getHelps($config_id, $tag)
+    {
+        $query = "SELECT config_value
+        	FROM cfg_centreonbroker_info
+        	WHERE config_id = %d AND config_group = '%s'
+        	AND config_key = 'blockId'
+        	ORDER BY config_group_id";
+        $res = $this->db->query(sprintf($query, $config_id, $tag));
+        if (PEAR::isError($res)) {
+            return array();
+        }
+        $helps = array();
+        $pos = 1;
+        while ($row = $res->fetchRow()) {
+            list($tagId, $typeId) = explode('_', $row['config_value']);
+            $fields = $this->getBlockInfos($typeId);
+            $help = array();
+            $help[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
+        	$help[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
+        	foreach ($fields as $field) {
+        	    $help[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
+        	}
+        	$helps[] = $help;
+        	$pos++;
+        }
+        return $helps;
+    }
+
+    /**
      * Get the list of values for a select or radio
      *
      * @param int $fieldId The field ID
