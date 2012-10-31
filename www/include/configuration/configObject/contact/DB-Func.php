@@ -697,7 +697,11 @@
 			$rq .= "contact_address6 = '".$ret["contact_address6"]."', ";
 			$fields["contact_address6"] = $ret["contact_address6"];
 		}
-
+                if (isset($ret['contact_template_id']) && $ret['contact_template_id']) {
+                        $rq .= "contact_template_id = ".$pearDB->escape($ret['contact_template_id']).", ";
+                        $fields['contact_template_id'] = $ret['contact_template_id'];
+                }
+                
 		/*
 		 * Delete last ',' in request
 		 */
