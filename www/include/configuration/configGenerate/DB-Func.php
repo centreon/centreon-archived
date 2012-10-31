@@ -304,7 +304,7 @@
 		 * Contact
 		 */
 		$contact = array();
-		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_enable_notifications = '1' AND contact_activate = '1'");
+		$DBRESULT = $pearDB->query("SELECT contact_id FROM contact WHERE contact_activate = '1'");
 		while ($contact = $DBRESULT->fetchRow()) {
 			$cctEnb[$contact["contact_id"]] = 1;
 			unset($contact);
