@@ -139,7 +139,7 @@ try {
      * Restart broker
      */
     $brk = new CentreonBroker($pearDB);
-    if ($brk->getName() == 'broker') {
+    if ($brk->getBroker() == 'broker') {
         $brk->reload();
     }
 
