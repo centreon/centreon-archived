@@ -48,10 +48,13 @@ class CentreonWidgetParamsConnectorHost extends CentreonWidgetParamsList
 
         if (!isset($tab)) {
             $query = "SELECT host_id, host_name
-            		  FROM host
-            		  WHERE host_activate = '1'
-            		  AND host_register = '1'
-            		  ORDER BY host_name";
+                      FROM host
+            	      WHERE host_activate = '1'
+            	      AND host_register = '1' ";
+            $query .= $this->acl->queryBuilder('AND', 
+                                               'host_id',
+                                               $this->acl->getHostsString('ID', $this->monitoringDb));
+            $query .= " ORDER BY host_name";
             $res = $this->db->query($query);
             $tab = array(null => null);
             while ($row = $res->fetchRow()) {

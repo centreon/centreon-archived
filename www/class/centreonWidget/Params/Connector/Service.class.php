@@ -61,7 +61,7 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
                 $svcTab = $this->getServiceIds($hostId);
             }
             $this->quickform->addElement('select',
-										 'param_'.$params['parameter_id'],
+                                         'param_'.$params['parameter_id'],
                                          $params['parameter_name'],
                                          $svcTab);
         }
@@ -75,17 +75,23 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
      */
     protected function getServiceIds($hostId)
     {
+        $aclString = $this->acl->queryBuilder('AND', 
+                                         's.service_id',
+                                         $this->acl->getServicesString('ID', $this->monitoringDb));
         $sql = "SELECT service_id, service_description
         		FROM service s, host_service_relation hsr
         		WHERE hsr.host_host_id = " . $this->db->escape($hostId) . "
-        		AND hsr.service_service_id = s.service_id
-        		UNION
-        		SELECT service_id, service_description
+        		AND hsr.service_service_id = s.service_id ";
+        $sql .= $aclString;
+        $sql .= " UNION ";
+        $sql .= " SELECT service_id, service_description
         		FROM service s, host_service_relation hsr, hostgroup_relation hgr
         		WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
         		AND hgr.host_host_id = ".$this->db->escape($hostId)."
-        		AND hsr.service_service_id = s.service_id
-        		ORDER BY service_description";
+        		AND hsr.service_service_id = s.service_id ";
+        $sql .= $aclString;
+        $sql .= " ORDER BY service_description ";
+        echo $sql;
         $res = $this->db->query($sql);
         $tab = array();
         while ($row = $res->fetchRow()) {
@@ -100,10 +106,13 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
 
         if (!isset($tab)) {
             $query = "SELECT host_id, host_name
-            		  FROM host
-            		  WHERE host_activate = '1'
-            		  AND host_register = '1'
-            		  ORDER BY host_name";
+                      FROM host
+            	      WHERE host_activate = '1'
+            	      AND host_register = '1' ";
+            $query .= $this->acl->queryBuilder('AND', 
+                                               'host_id',
+                                               $this->acl->getHostsString('ID', $this->monitoringDb));
+            $query .= " ORDER BY host_name";
             $res = $this->db->query($query);
             $tab = array(null => null);
             while ($row = $res->fetchRow()) {
