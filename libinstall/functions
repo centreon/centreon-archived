@@ -1359,7 +1359,7 @@ function prepare_sudo_config() {
 	__EOT__
 	
 	if [ -n "$BROKER_INIT_SCRIPT" ]; then
-		${CAT} <<- __EOT__ > $directory/centreon.sudo
+		${CAT} <<- __EOT__ >> $directory/centreon.sudo
 		# Broker engine Restart
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT* restart
 		CENTREON   ALL = NOPASSWD: $BROKER_INIT_SCRIPT restart
