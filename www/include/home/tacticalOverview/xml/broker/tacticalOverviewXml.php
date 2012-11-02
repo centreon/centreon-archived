@@ -49,6 +49,8 @@
     require_once $centreon_path . 'www/class/centreonDuration.class.php';
     require_once $centreon_path . 'www/class/centreonLang.class.php';
     require_once $centreon_path . 'www/class/centreonInstance.class.php';
+    include_once $centreon_path . "www/class/centreonCriticality.class.php";
+    require_once $centreon_path . "www/class/centreonMedia.class.php";
 
 	session_start();
 
@@ -61,6 +63,8 @@
 	$dbb 	= new CentreonDB("centstorage");
     $centreon = $_SESSION['centreon'];
 
+    $criticality = new CentreonCriticality($db);
+    $media = new CentreonMedia($db);
     $instanceObj = new CentreonInstance($db);
 
     $centreonLang = new CentreonLang($centreon_path, $centreon);
@@ -85,6 +89,9 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($db);
+    
+    //get criticality list
+    $criticalityList = $criticality->getList();
 
 	// Get Status Globals for hosts
 	$rq1 = 	" SELECT count(state), state" .
@@ -106,15 +113,17 @@
 
 	// Get Hosts Problems
 	$rq1 = 	" SELECT DISTINCT h.host_id, h.name, h.notes, h.notes_url, h.action_url, h.state, h.last_check, h.output, h.icon_image, h.address, h.last_state_change AS lsc, i.name as instance_name " .
-			" FROM hosts h, instances i " .
-			" WHERE h.enabled = 1 " .
-                        " AND h.state_type = 1 " .
-                        " AND h.instance_id = i.instance_id " .
+			" FROM hosts h, instances i," .
+            " (hosts nh LEFT JOIN hosts_hosts_parents hph".
+            " ON hph.parent_id = nh.host_id)".
+			" WHERE h.enabled = 1" .
+            " AND h.state_type = 1" .
+            " AND h.instance_id = i.instance_id" .
 			$centreon->user->access->queryBuilder("AND", "h.host_id", $acl_host_id_list) .
 			" AND h.state <> 0" .
 			" AND h.acknowledged = 0" .
 			" AND h.scheduled_downtime_depth = 0" .
-			" AND h.name NOT LIKE '_Module_%' " .
+			" AND h.name NOT LIKE '_Module_%'" .
 			" ORDER by h.state LIMIT ". $hostLimit;
 	$resNdoHosts = $dbb->query($rq1);
 
@@ -133,6 +142,7 @@
 
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
+    $tab_hostcriticality[$nbhostpb] = "";
     $tab_hostprobstate[$nbhostpb] = "";
     $tab_hostnotesurl[$nbhostpb] = "";
     $tab_hostnotes[$nbhostpb] = "";
@@ -146,6 +156,7 @@
 
     while ($ndo = $resNdoHosts->fetchRow()) {
 	    $tab_hostprobname[$nbhostpb] = $ndo["name"];
+        
         $tab_hostprobstate[$nbhostpb] = $ndo["state"];
         $tab_hostnotesurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
         $tab_hostnotesurl[$nbhostpb] = str_replace("\$INSTANCEADDRESS\$",
@@ -162,6 +173,20 @@
     	$tab_hostprobip[$nbhostpb] = $ndo["address"];
     	$tab_hosticone[$nbhostpb] = $ndo["icon_image"];
     	$tab_hostobjectid[$nbhostpb] = $ndo['host_id'];
+        
+        // Check if host has criticality
+        $rqCriticality = "SELECT cvs.value as criticality ".
+                         "FROM customvariables cvs ".
+                         "WHERE cvs.object_id = '".$ndo['host_id']."' ".
+                         "AND cvs.name='CRITICALITY_LEVEL'";
+        
+        $resCriticality = $dbb->query($rqCriticality);
+        while ($crit = $resCriticality->fetchRow()){
+            $infoC = $criticality->getData($crit["criticality"]);
+            if (isset($infoC))
+                $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+        }
+        
 		$nbhostpb++;
 	}
 	$resNdoHosts->free();
@@ -367,24 +392,24 @@
 	 */
 	if (!$is_admin) {
 		$rq2 = 	" SELECT count(s.state), s.state" .
-			" FROM services s, hosts h, centreon_acl " .
-			" WHERE h.host_id = s.host_id".
-			" AND h.name NOT LIKE '_Module_%' ".
-			" AND s.host_id = centreon_acl.host_id ".
-			" AND s.service_id = centreon_acl.service_id " .
-			" AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
-			" AND s.enabled = 1 ".
-                        " AND s.state_type = 1 ".
-                        " AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
+                " FROM services s, hosts h, centreon_acl " .
+                " WHERE h.host_id = s.host_id".
+                " AND h.name NOT LIKE '_Module_%' ".
+                " AND s.host_id = centreon_acl.host_id ".
+                " AND s.service_id = centreon_acl.service_id " .
+                " AND centreon_acl.group_id IN (".$acl_access_group_list.") ".
+                " AND s.enabled = 1 ".
+                " AND s.state_type = 1 ".
+                " AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
 	}
 	else {
 		$rq2 = 	" SELECT count(s.state), s.state" .
-			" FROM services s, hosts h" .
-			" WHERE h.host_id = s.host_id".
-			" AND h.name NOT LIKE '_Module_%' ".
-			" AND s.enabled = 1 ".
-                        " AND s.state_type = 1 ".
-                        " AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
+                " FROM services s, hosts h" .
+                " WHERE h.host_id = s.host_id".
+                " AND h.name NOT LIKE '_Module_%' ".
+                " AND s.enabled = 1 ".
+                " AND s.state_type = 1 ".
+                " AND s.active_checks = '0' GROUP BY s.state ORDER BY s.state";
 	}
 	$resNdo2 = $dbb->query($rq2);
 
@@ -406,36 +431,37 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name " .
-                        " FROM services s, hosts h, centreon_acl, instances i " .
-			" WHERE h.host_id = s.host_id " .
-		        " AND h.instance_id = i.instance_id " .
-			" AND s.state > 0" .
-			" AND s.acknowledged = 0" .
-			" AND s.scheduled_downtime_depth = 0" .
-			" AND s.enabled = 1" .
-                        " AND s.state_type = 1 " .
-			" AND h.enabled = 1" .
-			" AND h.name NOT LIKE '_Module_%' " .
-			" AND s.host_id = centreon_acl.host_id ".
-			" AND s.service_id = centreon_acl.service_id " .
-			" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-			" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name" .
+                " FROM services s, hosts h, centreon_acl, instances i," .
+                " WHERE h.host_id = s.host_id " .
+                " AND h.instance_id = i.instance_id " .
+                " AND s.state > 0" .
+                " AND s.acknowledged = 0" .
+                " AND s.scheduled_downtime_depth = 0" .
+                " AND s.enabled = 1" .
+                " AND s.state_type = 1 " .
+                " AND h.enabled = 1" .
+                " AND h.name NOT LIKE '_Module_%' " .
+                " AND s.host_id = centreon_acl.host_id ".
+                " AND s.service_id = centreon_acl.service_id " .
+                " AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+                " ORDER BY FIELD(s.state,2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	} else {
-		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name " .
-                        " FROM services s, hosts h, instances i " .
-			" WHERE h.host_id = s.host_id " .
+		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name" .
+                " FROM hosts h, centreon_acl, instances i, services s" .
+                " WHERE h.host_id = s.host_id " .
 		        " AND h.instance_id = i.instance_id " .
-			" AND s.state > 0" .
-			" AND s.acknowledged = 0" .
+                " AND s.state > 0" .
+                " AND s.acknowledged = 0" .
 		        " AND s.scheduled_downtime_depth = 0" .
-			" AND s.enabled = 1".
-                        " AND s.state_type = 1".
-			" AND h.enabled = 1" .
-			" AND h.name NOT LIKE '_Module_%' " .
-			" ORDER BY FIELD(s.state, 2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
+                " AND s.enabled = 1".
+                " AND s.state_type = 1".
+                " AND h.enabled = 1" .
+                " AND h.name NOT LIKE '_Module_%' " .
+                " ORDER BY FIELD(s.state,2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	}
 
+    
 	$j = 0;
 	$tab_hostname[$j] = "";
 	$tab_svcname[$j] = "";
@@ -466,6 +492,9 @@
                         '/\$hosticon\$/i',
 	                '/\$INSTANCENAME\$/i');
     $resNdo1 = $dbb->query($rq1);
+    
+    file_put_contents('/tmp/dump1.txt', $rq1);
+    
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;
 
@@ -477,6 +506,7 @@
 		if ($is_unhandled) {
 			$tab_hostname[$j] = $ndo["name"];
 			$tab_svcname[$j] = $ndo["description"];
+            
 			$tab_state[$j] = $ndo["state"];
 			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
 			$tab_notes_url[$j] = str_replace("\$INSTANCEADDRESS\$",
@@ -497,6 +527,22 @@
 			$tab_icone[$j] = $ndo["icon_image"];
 			$tab_objectid[$j] = $ndo['host_id'] . "_" . $ndo['service_id'];
 			$tab_hobjectid[$j] = $ndo['host_id'];
+            
+            // Check if service has criticality
+            $rqCriticality = "SELECT cvs.value as criticality ".
+                             "FROM customvariables cvs ".
+                             "WHERE cvs.host_id = '".$ndo['host_id']."' ".
+                             "AND cvs.service_id = '".$ndo['service_id']."' ".
+                             "AND cvs.name='CRITICALITY_LEVEL'";
+
+            file_put_contents('/tmp/requestCriticality.txt', $rqCriticality);
+            $resCriticality = $dbb->query($rqCriticality);
+            while ($crit = $resCriticality->fetchRow()){
+                $infoC = $criticality->getData($crit["criticality"]);
+                if (isset($infoC))
+                    $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+            }
+            
 			$j++;
 		}
 	}
@@ -575,6 +621,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
+        $xml->writeElement('hostcriticality', $tab_hostcriticality[$key]);
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
 	    $xml->writeElement('host_actionurl',$tab_hostactionurl[$key]);
@@ -607,6 +654,7 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
+        $xml->writeElement('servicecriticality', $tab_svccriticality);
 	    $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
 	    $xml->writeElement('notes',$tab_notes[$key]);
@@ -692,6 +740,7 @@
 	$xml->writeElement("str_no_unhandled", _("No unhandled service problem"));
 	$xml->writeElement("str_hostname", _("Host Name"));
 	$xml->writeElement("str_servicename", _("Service Name"));
+    $xml->writeElement("str_criticality", _("C"));
 	$xml->writeElement("str_status", _("Status"));
 	$xml->writeElement("str_lastcheck", _("Last Check"));
 	$xml->writeElement("str_duration", _("Duration"));
@@ -705,7 +754,8 @@
 	$xml->writeElement("str_hostprobunhandled", sprintf(_("Unhandled Host problems (last %s)"), $hostLimit));
 	$xml->writeElement("str_hostprobno_unhandled", _("No unhandled host problem"));
 	$xml->writeElement("str_hostprobhostname", _("Host Name"));
-	$xml->writeElement("str_hostprobstatus", _("Status"));
+	$xml->writeElement("str_hostprobcriticality", _("C"));
+    $xml->writeElement("str_hostprobstatus", _("Status"));
 	$xml->writeElement("str_hostproblastcheck", _("Last Check"));
 	$xml->writeElement("str_hostprobduration", _("Duration"));
 	$xml->writeElement("str_hostproboutput", _("Status Output"));

@@ -49,6 +49,8 @@
     require_once $centreon_path . 'www/class/centreonDuration.class.php';
     require_once $centreon_path . 'www/class/centreonLang.class.php';
     require_once $centreon_path . 'www/class/centreonInstance.class.php';
+    require_once $centreon_path . "www/class/centreonCriticality.class.php";
+    require_once $centreon_path . "www/class/centreonMedia.class.php";
 
 	session_start();
 
@@ -61,6 +63,8 @@
 	$dbb 	= new CentreonDB("ndo");
     $centreon = $_SESSION['centreon'];
 
+    $criticality = new CentreonCriticality($db);
+    $media = new CentreonMedia($db);
     $instanceObj = new CentreonInstance($db);
 
     $centreonLang = new CentreonLang($centreon_path, $centreon);
@@ -77,6 +81,9 @@
     if (isset($centreon->optGen['tactical_service_limit'])) {
         $svcLimit = $centreon->optGen['tactical_service_limit'];
     }
+    
+    //get criticality list
+    $criticalityList = $criticality->getList();
 
 	$acl_host_name_list = $centreon->user->access->getHostsString("NAME", $dbb);
 	$acl_access_group_list = $centreon->user->access->getAccessGroupsString();
@@ -106,22 +113,26 @@
 	$resNdo1->free();
 
 	// Get Hosts Problems
-	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , h.notes, h.notes_url, h.action_url, hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc, i.instance_name " .
-			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h, " . $ndo_base_prefix."instances i " .
-			" WHERE obj.object_id = hs.host_object_id".
+	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , h.notes, h.notes_url, h.action_url, hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc, i.instance_name ".
+			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h, " . $ndo_base_prefix."instances i ".
+			", (" . $ndo_base_prefix."hosts nh ".
+            " LEFT JOIN " . $ndo_base_prefix . "host_parenthosts hph ".
+            " ON hph.parent_host_object_id = nh.host_object_id) ".
+            " WHERE obj.object_id = hs.host_object_id".
 	        " AND obj.instance_id = i.instance_id " .
 			" AND obj.object_id = h.host_object_id" .
 			" AND obj.is_active = 1 " .
 			$centreon->user->access->queryBuilder("AND", "obj.name1", $acl_host_name_list) .
 			" AND hs.current_state <> 0" .
 			" AND hs.problem_has_been_acknowledged = 0" .
-                        " AND hs.state_type = 1" .
+            " AND hs.state_type = 1" .
 			" AND hs.scheduled_downtime_depth = 0" .
 			" ORDER by hs.current_state LIMIT " . $hostLimit;
 	$resNdoHosts = $dbb->query($rq1);
-
+    
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
+    $tab_hostcriticality[$nbhostpb] = "";
     $tab_hostprobstate[$nbhostpb] = "";
     $tab_hostnotesurl[$nbhostpb] = "";
     $tab_hostnotes[$nbhostpb] = "";
@@ -148,7 +159,6 @@
 
 
     while ($ndo = $resNdoHosts->fetchRow()) {
-	    $tab_hostprobname[$nbhostpb] = $ndo["name1"];
         $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
         $tab_hostnotesurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
         $tab_hostnotesurl[$nbhostpb] = str_replace("\$INSTANCEADDRESS\$",
@@ -165,6 +175,19 @@
     	$tab_hostprobip[$nbhostpb] = $ndo["address"];
     	$tab_hosticone[$nbhostpb] = $ndo["icon_image"];
     	$tab_hostobjectid[$nbhostpb] = $ndo['host_object_id'];
+        
+        // Check if host has criticality
+        $rqCriticality = "SELECT cvs.varvalue as criticality ".
+                         "FROM nagios_customvariablestatus cvs ".
+                         "WHERE cvs.object_id = '".$ndo['host_object_id']."' ".
+                         "AND cvs.varname='CRITICALITY_LEVEL'";
+        
+        $resCriticality = $dbb->query($rqCriticality);
+        while ($crit = $resCriticality->fetchRow()){
+            $infoC = $criticality->getData($crit["criticality"]);
+            if (isset($infoC))
+                $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+        }
 		$nbhostpb++;
 	}
 	$resNdoHosts->free();
@@ -178,7 +201,7 @@
 			" WHERE ".$ndo_base_prefix."servicestatus.service_object_id = ".$ndo_base_prefix."services.service_object_id" .
 			" AND ".$ndo_base_prefix."services.host_object_id = " . $ndo_base_prefix . "hoststatus.host_object_id" .
 			" AND ".$ndo_base_prefix."hoststatus.host_object_id = " . $ndo_base_prefix . "objects.object_id" .
-                        " AND ".$ndo_base_prefix."hoststatus.state_type = 1" .
+            " AND ".$ndo_base_prefix."hoststatus.state_type = 1" .
 			" AND ".$ndo_base_prefix."objects.is_active = 1 " .
 			$centreon->user->access->queryBuilder("AND", $ndo_base_prefix."objects.name1", $acl_host_name_list) .
 			" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' " .
@@ -305,7 +328,7 @@
 				" AND nss.current_state > 0 GROUP BY nss.service_object_id";
 	}
 	$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
-
+    
 	$resNdo1 = $dbb->query($rq2);
 	while($ndo = $resNdo1->fetchRow())	{
 		if ($ndo["current_state"] != 0) {
@@ -348,6 +371,7 @@
                                 " AND ".$ndo_base_prefix."servicestatus.state_type = 1 " .
 				" AND ".$ndo_base_prefix."objects.name1 NOT LIKE '_Module_%' ";
 	}
+    
 	$resNdo1 = $dbb->query($rq1);
 
 	$svcAckDt = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
@@ -407,42 +431,44 @@
 	 * Get problem table
 	 */
 	if (!$is_admin) {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image, svc.notes, svc.notes_url, svc.action_url " .
-					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix."hoststatus hstat " .
-					" WHERE obj.object_id = stat.service_object_id" .
-					" AND stat.service_object_id = svc.service_object_id" .
-					" AND stat.current_state > 0" .
-					" AND stat.problem_has_been_acknowledged = 0" .
-					" AND stat.scheduled_downtime_depth = 0" .
-					" AND ht.host_object_id = hstat.host_object_id".
-					" AND hstat.scheduled_downtime_depth = 0".
-					" AND svc.host_object_id = ht.host_object_id AND ht.host_object_id = hstat.host_object_id AND hstat.scheduled_downtime_depth = 0" .
-					" AND obj.is_active = 1" .
-					" AND obj.name1 NOT LIKE '_Module_%' " .
-					" AND obj.name1 = centreon_acl.host_name ".
-					" AND obj.name2 = centreon_acl.service_description " .
-					" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
-					" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, ht.address, ht.icon_image, i.instance_name " .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, centreon_acl," . $ndo_base_prefix . "hosts ht, " .$ndo_base_prefix."instances i " .
+                " WHERE obj.object_id = stat.service_object_id" .
+		        " AND obj.instance_id = i.instance_id " .
+				" AND stat.service_object_id = svc.service_object_id" .
+				" AND obj.name1 = ht.display_name" .
+				" AND stat.current_state > 0" .
+                " AND stat.state_type = 1" .
+				" AND stat.problem_has_been_acknowledged = 0" .
+				" AND stat.scheduled_downtime_depth = 0" .
+				" AND obj.is_active = 1" .
+				" AND obj.name1 NOT LIKE '_Module_%' " .
+				" AND obj.name1 = centreon_acl.host_name ".
+				" AND obj.name2 = centreon_acl.service_description " .
+				" AND centreon_acl.group_id IN (".$acl_access_group_list.") " .
+				" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	} else {
-		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, svc.host_object_id, ht.address, ht.icon_image, svc.notes, svc.notes_url, svc.action_url " .
-					" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix."hoststatus hstat " .
-					" WHERE obj.object_id = stat.service_object_id" .
-					" AND stat.service_object_id = svc.service_object_id" .
-					" AND stat.current_state > 0" .
-					" AND stat.problem_has_been_acknowledged = 0" .
-			        " AND stat.scheduled_downtime_depth = 0" .
-			        " AND ht.host_object_id = hstat.host_object_id".
-					" AND hstat.scheduled_downtime_depth = 0".
-					" AND svc.host_object_id = ht.host_object_id AND ht.host_object_id = hstat.host_object_id AND hstat.scheduled_downtime_depth = 0" .
-					" AND obj.is_active = 1" .
-					" AND obj.name1 NOT LIKE '_Module_%' " .
-					" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
+		$rq1 = 	" SELECT distinct obj.name1, ht.host_object_id, svc.service_object_id, obj.name2, svc.notes, svc.notes_url, svc.action_url, stat.current_state, unix_timestamp(stat.last_check) as last_check, stat.output, unix_timestamp(stat.last_state_change) as last_state_change, ht.address, ht.icon_image, i.instance_name " .
+				" FROM ".$ndo_base_prefix."objects obj, ".$ndo_base_prefix."servicestatus stat, " . $ndo_base_prefix . "services svc, " . $ndo_base_prefix . "hosts ht, " . $ndo_base_prefix . "instances i ".
+                " WHERE obj.object_id = stat.service_object_id" .
+		        " AND obj.instance_id = i.instance_id " .
+				" AND stat.service_object_id = svc.service_object_id" .
+				" AND obj.name1 = ht.display_name" .
+				" AND stat.current_state > 0" .
+                " AND stat.state_type = 1" .
+				" AND stat.problem_has_been_acknowledged = 0" .
+		        " AND stat.scheduled_downtime_depth = 0" .
+				" AND obj.is_active = 1" .
+				" AND obj.name1 NOT LIKE '_Module_%' " .
+				" ORDER BY FIELD(stat.current_state, 2,1,3), last_state_change DESC, obj.name1 LIMIT " . $svcLimit;
 	}
+    
 	$resNdo1 = $dbb->query($rq1);
 
 	$j = 0;
 	$tab_hostname[$j] = "";
 	$tab_svcname[$j] = "";
+    $tab_svccriticality[$j] = "";
 	$tab_state[$j] = "";
 	$tab_notes_url[$j] = "";
 	$tab_notes[$j] = "";
@@ -481,6 +507,7 @@
 		if ($is_unhandled) {
 			$tab_hostname[$j] = $ndo["name1"];
 			$tab_svcname[$j] = $ndo["name2"];
+            
 			$tab_state[$j] = $ndo["current_state"];
 			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
 			$tab_notes_url[$j] = str_replace("\$INSTANCEADDRESS\$",
@@ -502,6 +529,19 @@
 			$tab_icone[$j] = $ndo["icon_image"];
 			$tab_objectid[$j] = $ndo['service_object_id'];
 			$tab_hobjectid[$j] = $ndo['host_object_id'];
+            
+            // Check if service has criticality
+            $rqCriticality = "SELECT cvs.varvalue as criticality ".
+                             "FROM nagios_customvariablestatus cvs ".
+                             "WHERE cvs.object_id = '".$ndo['host_object_id']."' ".
+                             "AND cvs.varname='CRITICALITY_LEVEL'";
+
+            $resCriticality = $dbb->query($rqCriticality);
+            while ($crit = $resCriticality->fetchRow()){
+                $infoC = $criticality->getData($crit["criticality"]);
+                if (isset($infoC))
+                    $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+            }
 			$j++;
 		}
 	}
@@ -580,6 +620,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
+        $xml->writeElement('hostcriticality', $tab_hostcriticality[$key]);
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
 	    $xml->writeElement('host_actionurl',$tab_hostactionurl[$key]);
@@ -612,7 +653,8 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
-	    $xml->writeElement('servicename', $val, false);
+	    $xml->writeElement('servicecriticality', $tab_svccriticality);
+        $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
 	    $xml->writeElement('notes_url', $tab_notes_url[$key]);
 	    $xml->writeElement('notes', $tab_notes[$key]);
@@ -696,6 +738,7 @@
 	$xml->writeElement("str_no_unhandled", _("No unhandled service problem"));
 	$xml->writeElement("str_hostname", _("Host Name"));
 	$xml->writeElement("str_servicename", _("Service Name"));
+    $xml->writeElement("str_criticality", _("C"));
 	$xml->writeElement("str_status", _("Status"));
 	$xml->writeElement("str_lastcheck", _("Last Check"));
 	$xml->writeElement("str_duration", _("Duration"));
@@ -709,6 +752,7 @@
 	$xml->writeElement("str_hostprobunhandled", sprintf(_("Unhandled Host problems (last %s)"), $hostLimit));
 	$xml->writeElement("str_hostprobno_unhandled", _("No unhandled host problem"));
 	$xml->writeElement("str_hostprobhostname", _("Host Name"));
+    $xml->writeElement("str_hostprobcriticality", _("C"));
 	$xml->writeElement("str_hostprobstatus", _("Status"));
 	$xml->writeElement("str_hostproblastcheck", _("Last Check"));
 	$xml->writeElement("str_hostprobduration", _("Duration"));
