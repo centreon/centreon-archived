@@ -493,8 +493,6 @@
 	                '/\$INSTANCENAME\$/i');
     $resNdo1 = $dbb->query($rq1);
     
-    file_put_contents('/tmp/dump1.txt', $rq1);
-    
 	while ($ndo = $resNdo1->fetchRow()){
 		$is_unhandled = 1;
 
@@ -534,8 +532,7 @@
                              "WHERE cvs.host_id = '".$ndo['host_id']."' ".
                              "AND cvs.service_id = '".$ndo['service_id']."' ".
                              "AND cvs.name='CRITICALITY_LEVEL'";
-
-            file_put_contents('/tmp/requestCriticality.txt', $rqCriticality);
+            
             $resCriticality = $dbb->query($rqCriticality);
             while ($crit = $resCriticality->fetchRow()){
                 $infoC = $criticality->getData($crit["criticality"]);
