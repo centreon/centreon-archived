@@ -159,6 +159,7 @@
 
 
     while ($ndo = $resNdoHosts->fetchRow()) {
+        $tab_hostprobname[$nbhostpb] = $ndo["name1"];
         $tab_hostprobstate[$nbhostpb] = $ndo["current_state"];
         $tab_hostnotesurl[$nbhostpb] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
         $tab_hostnotesurl[$nbhostpb] = str_replace("\$INSTANCEADDRESS\$",
