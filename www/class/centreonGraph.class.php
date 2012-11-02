@@ -1184,10 +1184,6 @@ class CentreonGraph {
         
         $commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
-        if ($this->_flag == 0 && $this->GMT->used() ) {
-            $this->setRRDOption("start", $this->GMT->getUTCDate($this->_RRDoptions["start"]) );
-            $this->setRRDOption("end",   $this->GMT->getUTCDate($this->_RRDoptions["end"]) );
-        }
         if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000
             && $this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 12960000) {
             if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] < 10368000 - (86400*7))
