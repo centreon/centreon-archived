@@ -699,7 +699,11 @@
 									<xsl:attribute name='class'>ListColCenter</xsl:attribute>
 									<xsl:attribute name='style'>white-space: nowrap;font-weight:bold;</xsl:attribute>
 									<xsl:attribute name='align'>center</xsl:attribute>
-									<xsl:value-of select='servicecriticality'/>
+                                    <xsl:element name='img'>
+                                        <xsl:attribute name='src'>
+                                            <xsl:value-of select='servicecriticality'/>
+                                        </xsl:attribute>
+                                    </xsl:element>
 								</xsl:element>
 								<td class="ListColLeft" style="white-space:nowrap;">
 									<xsl:if test='icon != ""'>

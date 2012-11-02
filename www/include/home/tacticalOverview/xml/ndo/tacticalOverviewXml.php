@@ -181,7 +181,7 @@
         $rqCriticality = "SELECT cvs.varvalue as criticality ".
                          "FROM nagios_customvariablestatus cvs ".
                          "WHERE cvs.object_id = '".$ndo['host_object_id']."' ".
-                         "AND cvs.varname='CRITICALITY_LEVEL'";
+                         "AND cvs.varname='CRITICALITY_ID'";
         
         $resCriticality = $dbb->query($rqCriticality);
         while ($crit = $resCriticality->fetchRow()){
@@ -535,7 +535,7 @@
             $rqCriticality = "SELECT cvs.varvalue as criticality ".
                              "FROM nagios_customvariablestatus cvs ".
                              "WHERE cvs.object_id = '".$ndo['host_object_id']."' ".
-                             "AND cvs.varname='CRITICALITY_LEVEL'";
+                             "AND cvs.varname='CRITICALITY_ID'";
 
             $resCriticality = $dbb->query($rqCriticality);
             while ($crit = $resCriticality->fetchRow()){

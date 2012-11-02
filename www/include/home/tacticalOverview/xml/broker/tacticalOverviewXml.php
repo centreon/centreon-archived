@@ -178,7 +178,7 @@
         $rqCriticality = "SELECT cvs.value as criticality ".
                          "FROM customvariables cvs ".
                          "WHERE cvs.host_id = '".$ndo['host_id']."' ".
-                         "AND cvs.name='CRITICALITY_LEVEL'";
+                         "AND cvs.name='CRITICALITY_ID'";
         
         $resCriticality = $dbb->query($rqCriticality);
         while ($crit = $resCriticality->fetchRow()){
@@ -530,9 +530,8 @@
             // Check if service has criticality
             $rqCriticality = "SELECT cvs.value as criticality ".
                              "FROM customvariables cvs ".
-                             "WHERE cvs.host_id = '".$ndo['host_id']."' ".
-                             "AND cvs.service_id = '".$ndo['service_id']."' ".
-                             "AND cvs.name='CRITICALITY_LEVEL'";
+                             "WHERE cvs.service_id = '".$ndo['service_id']."' ".
+                             "AND cvs.name='CRITICALITY_ID'";
             
             $resCriticality = $dbb->query($rqCriticality);
             while ($crit = $resCriticality->fetchRow()){
@@ -652,7 +651,7 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
-        $xml->writeElement('servicecriticality', $tab_svccriticality);
+        $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
 	    $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
 	    $xml->writeElement('notes',$tab_notes[$key]);
