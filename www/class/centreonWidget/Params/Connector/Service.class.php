@@ -91,7 +91,6 @@ class CentreonWidgetParamsConnectorService extends CentreonWidgetParamsList
         		AND hsr.service_service_id = s.service_id ";
         $sql .= $aclString;
         $sql .= " ORDER BY service_description ";
-        echo $sql;
         $res = $this->db->query($sql);
         $tab = array();
         while ($row = $res->fetchRow()) {
