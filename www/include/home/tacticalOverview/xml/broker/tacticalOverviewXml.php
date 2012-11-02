@@ -464,6 +464,7 @@
     
 	$j = 0;
 	$tab_hostname[$j] = "";
+    $tab_svccriticality[$j] = "";
 	$tab_svcname[$j] = "";
 	$tab_state[$j] = "";
 	$tab_notes_url[$j] = "";
