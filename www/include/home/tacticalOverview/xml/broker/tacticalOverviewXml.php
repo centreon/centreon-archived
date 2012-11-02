@@ -177,7 +177,7 @@
         // Check if host has criticality
         $rqCriticality = "SELECT cvs.value as criticality ".
                          "FROM customvariables cvs ".
-                         "WHERE cvs.object_id = '".$ndo['host_id']."' ".
+                         "WHERE cvs.host_id = '".$ndo['host_id']."' ".
                          "AND cvs.name='CRITICALITY_LEVEL'";
         
         $resCriticality = $dbb->query($rqCriticality);
