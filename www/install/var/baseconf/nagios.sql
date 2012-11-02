@@ -12,5 +12,5 @@ INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `re
 
 INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id` ) VALUES (1, 1);
 
-INSERT INTO `options` (`key`, `value`) VALUES ('nagios_path_img','@NAGIOS_IMG@/');
+INSERT INTO `options` (`key`, `value`) VALUES ('nagios_path_img','@NAGIOS_IMG@');
 INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_engine','NAGIOS');
