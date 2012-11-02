@@ -77,7 +77,7 @@
 	/*
 	 * Correlation engine
 	 */
-	$form->addElement('text', 'broker_correlator_script', _("Start script for Correlator Engine"), $attrsText);
+	$form->addElement('text', 'broker_correlator_script', _("Start script for broker daemon"), $attrsText);
 
 	/*
 	 * Tactical Overview form

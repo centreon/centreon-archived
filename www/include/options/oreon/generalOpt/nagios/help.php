@@ -21,7 +21,7 @@ $help['tip_broker_engine_used_by_centreon'] = dgettext('help', 'Broker module us
  * Correlation Engine
  */
 
-$help['tip_start_script_for_correlator_engine'] = dgettext('help', 'Init script for Correlation Engine. Only compatible with Centreon Engine.');
+$help['tip_start_script_for_correlator_engine'] = dgettext('help', 'Init script for broker daemon.');
 
 /**
  * Mailer path
