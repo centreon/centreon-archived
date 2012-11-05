@@ -1529,13 +1529,9 @@
 
 	function host_has_one_or_more_GraphService($host_id, $search=0){
 		global $pearDBO, $lca, $is_admin;
-
-        if ($search !== 0)
-            $services = getMyHostServices($host_id, $search);
-        else
-            $services = getMyHostServices($host_id);
         
-        //var_dump($services);
+        $services = getMyHostServices($host_id, $search);
+        
 		foreach ($services as $svc_id => $svc_name)
 			if (service_has_graph($host_id, $svc_id) && ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id]))))
 				return true;
