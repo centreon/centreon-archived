@@ -654,7 +654,7 @@
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
         $xml->startElement('unhandledServices');
-	    $xml->writeElement('servicecriticality', $tab_svccriticality);
+	    $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
         $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
 	    $xml->writeElement('notes_url', $tab_notes_url[$key]);
