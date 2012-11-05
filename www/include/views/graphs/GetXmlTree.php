@@ -220,7 +220,7 @@
 			 */
 			$hosts = getMyHostGroupHosts($id, $search, 0);
 			foreach ($hosts as $host) {
-				if (host_has_one_or_more_GraphService($host)) {
+				if (host_has_one_or_more_GraphService($host, $search_service)) {
 					if ($is_admin || (!$is_admin && isset($lca["LcaHost"]) && isset($lca["LcaHost"][$host]))) {
 				        $buffer->startElement("item");
 				        $buffer->writeAttribute("child", "1");

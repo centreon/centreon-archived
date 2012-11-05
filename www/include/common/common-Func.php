@@ -1013,7 +1013,7 @@
 		return NULL;
 	}
 
-	function getMyHostServices($host_id = NULL)	{
+	function getMyHostServices($host_id = NULL, $search = 0)	{
 		global $pearDB;
 
 		if (!$host_id)
@@ -1024,8 +1024,12 @@
 		/*
 		 * Get Services attached to hosts
 		 */
-		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
-		while ($elem = $DBRESULT->fetchRow())	{
+        if ($search !== 0)
+            $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id AND service_description LIKE '%".$search."%'");
+        else
+            $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr WHERE hsr.host_host_id = '".$host_id."' AND hsr.service_service_id = service_id");
+		
+        while ($elem = $DBRESULT->fetchRow())	{
 			$hSvs[$elem["service_id"]] = html_entity_decode(db2str($elem["service_description"]), ENT_QUOTES, "UTF-8");
 		}
 		$DBRESULT->free();
@@ -1523,10 +1527,15 @@
 		return false;
 	}
 
-	function host_has_one_or_more_GraphService($host_id){
+	function host_has_one_or_more_GraphService($host_id, $search=0){
 		global $pearDBO, $lca, $is_admin;
 
-		$services = getMyHostServices($host_id);
+        if ($search !== 0)
+            $services = getMyHostServices($host_id, $search);
+        else
+            $services = getMyHostServices($host_id);
+        
+        //var_dump($services);
 		foreach ($services as $svc_id => $svc_name)
 			if (service_has_graph($host_id, $svc_id) && ($is_admin || (!$is_admin && isset($lca["LcaHost"][$host_id][$svc_id]))))
 				return true;
