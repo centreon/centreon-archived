@@ -134,15 +134,15 @@ sub send_command {
 ## GET HOSTNAME FROM IP ADDRESS
 #
 sub get_hostinfos($$$) {
-    my @host;
+    my %host = ();
 
-    my $sth = $_[0]->prepare("SELECT host_name FROM host WHERE host_address='$_[1]' OR host_address='$_[2]'");
+    my $sth = $_[0]->prepare("SELECT host_id, host_name FROM host WHERE host_address='$_[1]' OR host_address='$_[2]'");
     $sth->execute();
-    while (my $temp = $sth->fetchrow_array()) {
-        $host[scalar(@host)] = $temp;
+    while (my ($host_id, $host_name) = $sth->fetchrow_array()) {
+        $host{$host_id} = $host_name;
     }
     $sth->finish();
-    return @host;
+    return %host;
 }
 
 ###############################
@@ -238,37 +238,29 @@ sub getServicesIncludeTemplate($$$$) {
 # GET SERVICE DESCRIPTION
 #
 sub getServiceInformations($$$)	{
-
-    my $sth = $_[0]->prepare("SELECT `host_id` FROM `host` WHERE `host_name` = '$_[2]'");
-    $sth->execute();
-    my $host_id = $sth->fetchrow_array();
-    if (!defined($host_id)) {
-        exit();
-    }
-    $sth->finish();
     
-    $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment`, `traps_args` FROM `traps` WHERE `traps_oid` = '$_[1]'");
+    my $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment`, `traps_args` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
     my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output) = $sth->fetchrow_array();
-    exit if (!defined $trap_id);
+    return(undef) if (!defined $trap_id);
     $sth->finish();
 
     ######################################################
     # getting all "services by host" for given host
     my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id FROM service s, host_service_relation h";
-    $st_query .= " where  s.service_id = h.service_service_id and h.host_host_id='$host_id'";
+    $st_query .= " where  s.service_id = h.service_service_id and h.host_host_id='$_[2]'";
     my $sth_st = $_[0]->prepare($st_query); 
-    my @service = getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id);
+    my @service = getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id);
     $sth_st->finish;
 
     ######################################################
     # getting all "services by hostgroup" for given host
     my $query_hostgroup_services = "SELECT s.service_id, service_description, service_template_model_stm_id FROM hostgroup_relation hgr,  service s, host_service_relation hsr";
-    $query_hostgroup_services .= " WHERE hgr.host_host_id = '".$host_id."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id";
+    $query_hostgroup_services .= " WHERE hgr.host_host_id = '".$_[2]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id";
     $query_hostgroup_services .= " AND s.service_id = hsr.service_service_id";
     $sth_st = $_[0]->prepare($query_hostgroup_services);
     $sth_st->execute();
-    @service = (@service, getServicesIncludeTemplate($_[0], $sth_st, $host_id, $trap_id));
+    @service = (@service, getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id));
     $sth_st->finish;
 
     return $trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, \@service;
@@ -460,48 +452,51 @@ sub getTrapsInfos($$$) {
     
     my $status;
 
-    my @host = get_hostinfos($dbh, $ip, $hostname);
-    foreach (@host) {
-	my $this_host = $_;
-	my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = getServiceInformations($dbh, $oid, $_);
-	my @servicename = @{$ref_servicename};
+    my %host = get_hostinfos($dbh, $ip, $hostname);
+    foreach my $host_id (keys %host) {
+        my $this_host = $host{$host_id};
+        my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = getServiceInformations($dbh, $oid, $host_id);
+        if (!defined($trap_id)) {
+            return ;
+        }
+        my @servicename = @{$ref_servicename};
 	
-	foreach (@servicename) {
-	    my $this_service = $_;
+        foreach (@servicename) {
+            my $this_service = $_;
 
-	    if ($centrapmanager_log_debug >= 2) {
-            logit("Trap found on service \'$this_service\' for host \'$this_host\'.", "DD");
-	    }
+            if ($centrapmanager_log_debug >= 2) {
+                logit("Trap found on service \'$this_service\' for host \'$this_host\'.", "DD");
+            }
 
-	    my $datetime = `date +%s`;
-	    chomp($datetime);
+            my $datetime = `date +%s`;
+            chomp($datetime);
 
-        $traps_output = substitute_string($traps_output);
+            $traps_output = substitute_string($traps_output);
 
-	    ######################################################################
-	    # Advanced matching rules
-	    if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-            $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $traps_output, $datetime, $status);
-	    }
+            ######################################################################
+            # Advanced matching rules
+            if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
+                $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $traps_output, $datetime, $status);
+            }
 
-	    #####################################################################
-	    # Submit value to passive service
-	    if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-            submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_output);
-	    }
+            #####################################################################
+            # Submit value to passive service
+            if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
+                submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_output);
+            }
 
-	    ######################################################################
-	    # Force service execution with external command
-	    if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
-            forceCheck($dbh, $this_host, $this_service, $datetime);
-	    }
+            ######################################################################
+            # Force service execution with external command
+            if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
+                forceCheck($dbh, $this_host, $this_service, $datetime);
+            }
 	    
-	    ######################################################################
-	    # Execute special command
-	    if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-            executeCommand($traps_execution_command, $this_host, $ip, $hostname, $traps_output, $datetime, $status);
-	    }
-	}
+            ######################################################################
+            # Execute special command
+            if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
+                executeCommand($traps_execution_command, $this_host, $ip, $hostname, $traps_output, $datetime, $status);
+            }
+        }
     }
 }
 
