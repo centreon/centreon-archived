@@ -143,6 +143,14 @@
 				<td>&nbsp;</td>
 				<td>Remi Werquin</td>
 			</tr>
+            <tr>
+				<td width="25">&nbsp;</td>
+				<td>Lionel Assepo</td>
+			</tr>
+            <tr>
+				<td width="25">&nbsp;</td>
+				<td>Alexandru Vilau</td>
+			</tr>
 		</table>
 		</div>
 		<div style="padding-left: 30px;">
