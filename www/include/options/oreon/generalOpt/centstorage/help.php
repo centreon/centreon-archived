@@ -54,3 +54,9 @@ $help['tip_logs_retention_duration'] = dgettext('help', 'Retention duration of l
  */
 
 $help['tip_reporting_retention'] = dgettext('help', 'Retention duration of reporting data.');
+
+/**
+ * Audit Logs
+ */
+
+$help['tip_audit_log_option'] = dgettext('help', 'Enable/Disable logging of all modifications in Centreon');

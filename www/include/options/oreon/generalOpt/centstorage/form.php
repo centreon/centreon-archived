@@ -91,6 +91,7 @@
 	$form->addElement('header', 'Drop', _("Drop possibility after parsing performance data"));
 	$form->addElement('header', 'logs', _("Logs Integration Properties"));
 	$form->addElement('header', 'reporting', _("Dashboard Integration Properties"));
+    $form->addElement('header', 'audit', _("Audit log activation"));
 
 	/*
 	 * inputs declaration
@@ -111,6 +112,7 @@
 	$form->addElement('checkbox', 'archive_log', _("Archive logs of monitoring engine"));
 	$form->addElement('text', 'archive_retention', _("Logs retention duration"), $attrsText2);
 	$form->addElement('text', 'reporting_retention', _("Reporting retention duration (dashboard)"), $attrsText2);
+    $form->addElement('checkbox', 'audit_log_option', _("Enable/Disable audit logs"), $attrsText2);
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

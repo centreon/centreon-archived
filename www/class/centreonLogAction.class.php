@@ -69,14 +69,22 @@ class CentreonLogAction {
  	function insertLog($object_type, $object_id, $object_name, $action_type, $fields = null)
  	{
  		global $pearDBO;
- 		$now = time();
- 		$str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('".$now."', '".$object_type."', '".$object_id."', '".$object_name."', '".$action_type."', '".$this->logUser->user_id."')";
- 		$DBRESULT = $pearDBO->query($str_query);
+        
+        // Check if audit log option is activated
+        $optLogs = $pearDBO->query("SELECT audit_log_option FROM `config`");
+        $auditLog = $optLogs->fetchRow();
+        
+        if (($auditLog) && ($auditLog['audit_log_option'] == '1'))
+        {
+            $now = time();
+            $str_query = "INSERT INTO `log_action` (action_log_date, object_type, object_id, object_name, action_type, log_contact_id) VALUES ('".$now."', '".$object_type."', '".$object_id."', '".$object_name."', '".$action_type."', '".$this->logUser->user_id."')";
+            $DBRESULT = $pearDBO->query($str_query);
 
- 		$DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
-		$logId = $DBRESULT2->fetchRow();
-		if ($fields)
-			$this->insertFieldsNameValue($logId["MAX(action_log_id)"], $fields);
+            $DBRESULT2 = $pearDBO->query("SELECT MAX(action_log_id) FROM `log_action`");
+            $logId = $DBRESULT2->fetchRow();
+            if ($fields)
+                $this->insertFieldsNameValue($logId["MAX(action_log_id)"], $fields);
+        }
  	}
 
  	/*

@@ -313,6 +313,8 @@
 
 		$ret = array();
 		$ret = $form->getSubmitValues();
+        if (!isset($ret["audit_log_option"]))
+			$ret["audit_log_option"] = '0';
 		if (!isset($ret["len_storage_rrd"]))
 			$ret["len_storage_rrd"] = 1;
 		if (!isset($ret["len_storage_mysql"]))
@@ -340,6 +342,7 @@
 				`archive_log` = '".$ret["archive_log"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`reporting_retention` = '".$ret["reporting_retention"]."',
+                `audit_log_option` = '".$ret["audit_log_option"]."',
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT = $pearDBO->query($rq);
 

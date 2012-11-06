@@ -31,6 +31,7 @@ CREATE TABLE IF NOT EXISTS `config` (
   `reporting_retention` int(11) default '365',
   `nagios_log_file` varchar(255) default NULL,
   `last_line_read` int(11) default '31',
+  `audit_log_option` enum('0','1') NOT NULL default '1',
   PRIMARY KEY  (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 ;
 
