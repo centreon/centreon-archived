@@ -81,7 +81,7 @@ sub getDownTime {
 			" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
 			" ORDER BY `name1` ASC, `actual_start_time` ASC, `actual_end_time` ASC";
 	} elsif ($dbLayer eq "broker") {
-		$query = "SELECT h.name as name1, s.description as name2, " .
+		$query = "SELECT DISTINCT h.name as name1, s.description as name2, " .
 				 "d.start_time, d.end_time " .
 				 "FROM `hosts` h, `downtimes` d " .
 				 "LEFT JOIN services s ON s.service_id = d.service_id " .
