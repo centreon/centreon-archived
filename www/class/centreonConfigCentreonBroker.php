@@ -786,8 +786,7 @@ class CentreonConfigCentreonBroker
         try {
             $val = array_reduce(
                 preg_split('/\s+/', $val . ' ' . $rpn),
-                array($this, 'rpnOperation'),
-                array()
+                array($this, 'rpnOperation')
             );
             return $val[0];
         } catch (InvalidArgumentException $e) {
@@ -803,14 +802,16 @@ class CentreonConfigCentreonBroker
      * @throws InvalidArgumentException
      * @return array
      */
-    private function rpnOperation(&$result, $item)
+    private function rpnOperation($result, $item)
     {
         if (in_array($item, array('+', '-', '*', '/'))) {
-            if ($result < 2) {
+            if (count($result) < 2) {
                 throw new InvalidArgumentException('Not enough arguments to apply operator');
             }
-            list($a, $b) = array_splice($result, count($result) - 2, 2);
-            $result[] = eval("return $a $item $b;");
+            $a = $result[0];
+            $b = $result[1];
+            $result = array();
+            $result[0] = eval("return $a $item $b;");
         } elseif (is_numeric($item)) {
             $result[] = $item;
         } else {
