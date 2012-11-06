@@ -711,7 +711,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (14, 'status_path', 'Status RRD Directory', 'Status RRD Directory, for example /var/lib/centreon/status', 'text', 'D=centreon_storage:T=config:C=RRDdatabase_status_path:CK=id:K=1'),
 (15, 'db_type', 'DB type', 'Target DBMS.', 'select', NULL),
 (16, 'interval', 'Interval Length', 'Interval Length in seconds.', 'int', 'T=options:C=value:CK=key:K=interval_length'),
-(17, 'length', 'RRD Length', 'RRD storage duration in seconds.', 'int', 'D=centreon_storage:T=config:C=len_storage_rrd:CK=id:K=1'),
+(17, 'length', 'RRD Length', 'RRD storage duration in seconds.', 'int', 'D=centreon_storage:T=config:C=len_storage_rrd:RPN=86400 *:CK=id:K=1'),
 (18, 'db_port', 'DB Port', 'Port on which the DB server listens', 'int', NULL),
 (19, 'name', 'Name of the logger', 'For a file logger this is the path to the file. For a standard logger, one of ''stdout'' or ''stderr''.', 'text', NULL),
 (20, 'config', 'Configuration messages', 'Enable or not configuration messages logging.', 'radio', NULL),

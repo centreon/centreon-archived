@@ -71,28 +71,6 @@
 	}
 
 	/*
-	 * Get Interval
-	 */
-	/*$interval_length = 60;
-	$query = "SELECT * FROM options WHERE `key` = 'interval_length'";
-	$res = $pearDB->query($query);
-	if (false === PEAR::isError($res) && $res->numRows() == 1) {
-		$row = $res->fetchRow();
-		$interval_length = $row["value"];
-	}*/
-
-	/*
-	 * Get Len RRD Retention
-	 */
-	/*$len_storage_rrd = 180 * 24 * 60 * 60;
-	$query = "SELECT len_storage_rrd FROM config";
-	$res = $pearDBO->query($query);
-	if (false === PEAR::isError($res) && $res->numRows() == 1) {
-		$row = $res->fetchRow();
-		$len_storage_rrd = (int)$row["len_storage_rrd"] * 24 * 60 * 60;
-	}*/
-
-	/*
 	 * Init Broker configuration object
 	 */
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
@@ -132,17 +110,14 @@
 	    /*
 	     * Replace globals values
 	     */
-	    file_put_contents('/tmp/debug.gen', '');
 	    foreach ($blocks as $blockId => $block) {
 	        list($tagId, $typeId) = explode('_', $blockId);
             $fields = $cbObj->getBlockInfos($typeId);
             foreach ($fields as $field) {
                 if (!is_null($field['value'])) {
-                    file_put_contents('/tmp/debug.gen', $field['fieldname'] . "\n", FILE_APPEND);
                     $default = $cbObj->getInfoDb($field['value']);
                     if (trim($default) != '') {
                         foreach ($block as $infos) {
-                            file_put_contents('/tmp/debug.gen', "Change to default " . $field['fieldname'] . " " . $default . "\n", FILE_APPEND);
                             $files[$infos['filename']][$infos['config_group']][$infos['config_group_id']][$field['fieldname']] = $default;
                         }
                     }

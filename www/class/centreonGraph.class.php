@@ -1491,7 +1491,7 @@ class CentreonGraph {
      */
     private function _log($message) {
         if ($this->general_opt['debug_rrdtool'])
-            error_log("[" . date("d/m/Y H:s") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
+            error_log("[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
     }
 
     /**
