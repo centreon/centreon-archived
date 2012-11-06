@@ -196,7 +196,7 @@
 ?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script type="text/javascript">
-    var gmt = <?php echo $userGmt;?>;
+    var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
     var currentMicroTime = <?php echo $currentServerMicroTime;?>;
 	var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
