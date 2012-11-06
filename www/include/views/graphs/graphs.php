@@ -299,18 +299,18 @@ function form2ctime(dpart, tpart) {
         // tpart : HH:mm
         var dparts = dpart.split("/");
         var tparts = tpart.split(":");
-        return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime();
+        return new Date(dparts[2], dparts[0]-1, dparts[1], tparts[0], tparts[1], 0).getTime() - (new Date().getTimezoneOffset() * 60 * 1000);
 }
 
 function ctime2date(ctime) {
-        var date = new Date(ctime);
+        var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
         return date.getMonth()+1 + "/" + date.getDate() + "/" + date.getFullYear();
 }
 
 function ctime2time(ctime) {
 	var _zero_hour = '';
 	var _zero_min = '';
-        var date = new Date(ctime);
+    var date = new Date(ctime + (new Date().getTimezoneOffset() * 60 * 1000));
 	if (date.getHours() <= 9) { _zero_hour = '0'; }
 	if (date.getMinutes() <= 9) { _zero_min = '0'; }
         return _zero_hour + date.getHours() + ":" + _zero_min + date.getMinutes();
