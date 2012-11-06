@@ -318,6 +318,9 @@ sub CheckMySQLConnexion() {
             sleep(2);	    
             $con = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
         }
+        if ($stop == 0) {
+        	return;
+        }
     }
 }
 
