@@ -886,7 +886,7 @@
 
 
 	function insertHostGroupCFG($tmpConf = array(), $opt)	{
-		global $nbr, $oreon, $debug_nagios_import, $debug_path;
+		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		/*
 		 * REquire Hostgroups tools
