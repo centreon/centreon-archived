@@ -1155,7 +1155,7 @@ class CentreonGraph {
      * Enter description here ...
      * @param unknown_type $encoding
      */
-    public function setHeaders($encoding)
+    public function setHeaders($encoding, $content_length=false)
     {
         header("Content-Type: image/png");
         header("Content-Transfer-Encoding: binary");
@@ -1163,6 +1163,9 @@ class CentreonGraph {
 
         if ($this->compress && $encoding) {
             header('Content-Encoding: '.$encoding);
+        }
+        if ($content_length != false) {
+            header("Content-Length: " . $content_length);
         }
     }
 
@@ -1176,9 +1179,6 @@ class CentreonGraph {
         /*
          * Send header
          */
-        
-        /* Force no compress for image */
-        $this->setHeaders(false);
         
         $this->flushRrdcached($this->listMetricsId);
         
@@ -1236,6 +1236,8 @@ class CentreonGraph {
                     $buffer = fgets($fp, 4096);
                     $str = $str . $buffer ;
                 }
+                /* Force no compress for image */
+                $this->setHeaders(false, strlen($str));
                 print $str;
             }
         } else {
