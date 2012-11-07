@@ -810,11 +810,11 @@ var func_displayIMG = function(event) {
 
         var elements = $(this).id.split('-');
         var NewImageAlt = 'graph popup' + '&index=' + elements[0] + '&time=<?php print time(); ?>';
+        jQuery('.img_volante').html('<img style="display: none" src="' + 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0] + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
         NewImage.onload = function(){
-                jQuery('.img_volante').html('<img style="display: none" src="' + encodeURI(this.src) + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, 25);
-                jQuery('.img_volante img').fadeIn(1000);
+                jQuery('.img_volante').stop(true, true).animate({width: this.width, height: this.height, top: (jQuery(window).height() / 2) - (this.height / 2)}, 25);
+                jQuery('.img_volante img').stop(true, true).fadeIn(1000);
                 <?php } else { ?>
                 jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
                 jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (this.height / 2));
@@ -823,10 +823,9 @@ var func_displayIMG = function(event) {
         };
         NewImage.src = 'include/views/graphs/generateGraphs/generateImage.php?session_id='+ _sid +'&index='+ elements[0];
         if (NewImage.complete) {
-                jQuery('.img_volante').html('<img style="display: none" src="' + NewImage.src + '" alt="' + NewImageAlt + '" title="' + NewImageAlt + '" />');
                 <?php   if ($centreon->user->get_js_effects() > 0) { ?>
-                jQuery('.img_volante').animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
-                jQuery('.img_volante img').fadeIn(1000);
+                jQuery('.img_volante').stop(true, true).animate({width: NewImage.width, height: NewImage.height, top: (jQuery(window).height() / 2) - (NewImage.height / 2)}, 25);
+                jQuery('.img_volante img').stop(true, true).fadeIn(1000);
                 <?php } else { ?>
                 jQuery('.img_volante').css('left', jQuery('.img_volante').attr('left'));
                 jQuery('.img_volante').css('top', (jQuery(window).height() / 2) - (NewImage.height / 2));
