@@ -57,7 +57,7 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon 
-            $mysql_database_ods $opt_h $opt_a $opt_p $data $LOG $timeLaunch);
+            $mysql_database_ods $opt_h $opt_a $opt_p $opt_s $data $LOG $timeLaunch);
 
 require "@CENTREON_ETC@/conf.pm";
 
@@ -421,12 +421,18 @@ sub parseFile ($$) {
     return $cpt;
 }
 
-sub parseArchive($$) {
-    my ($instance, $localhost) = @_;
+=head2 parseArchive($instance, $localhost, $startdate)
 
+
+
+=cut
+sub parseArchive($$$) {
+    my ($instance, $localhost, $startdate) = @_;
     my $archives;
+
     if ($localhost){
-		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '".$_[0]."' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = '1' AND `cfg_nagios`.`nagios_activate` = '1'");
+		my $sth = $dbhoreon->prepare("SELECT `log_archive_path` FROM `cfg_nagios`, `nagios_server` 
+                                      WHERE `nagios_server_id` = '$instance' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = '1' AND `cfg_nagios`.`nagios_activate` = '1'");
 		if (!$sth->execute()) {
 		    die "Error:" . $sth->errstr . "\n";
 		}
@@ -440,7 +446,14 @@ sub parseArchive($$) {
     $archives .= "/" if (!($archives =~ /\/$/));
 
     my @log_files = split /\s/,`ls $archives`;
-    my $last_log = time() - ($retention * 24 * 60 * 60);
+    my $last_log = undef;
+
+    if (!defined $startdate) {
+        $last_log = time() - ($retention * 24 * 60 * 60);
+    } else {
+        $startdate =~ s|-|/|g;
+        $last_log = int(`date -d $startdate +%s`);
+    }
     foreach (@log_files) {
 		$_ =~ /nagios\-([0-9\-]+).log/;
 		my @time = split /\-/, $1;
@@ -460,10 +473,10 @@ sub parseArchive($$) {
 sub parseLogFile($$) {
     # Get parameters
     my ($instance, $localhost) = @_;
-
     my $LOG_FILE;
+
     if ($localhost){
-		my $sth = $dbhoreon->prepare("SELECT `log_file` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '".$_[0]."' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = '1' AND `cfg_nagios`.`nagios_activate` = '1'");
+		my $sth = $dbhoreon->prepare("SELECT `log_file` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '$instance' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = '1' AND `cfg_nagios`.`nagios_activate` = '1'");
 		if (!$sth->execute()) {
 			die "Error:" . $sth->errstr . "\n";
 		}
@@ -503,14 +516,23 @@ Program starts here.
 Getopt::Long::Configure('bundling');
 GetOptions("h" => \$opt_h, "help" => \$opt_h,
            "a" => \$opt_a, "archives" => \$opt_a,
-		   "p=s" => \$opt_p, "poller" => \$opt_p);
+		   "p=s" => \$opt_p, "poller" => \$opt_p,
+           "s=s" => \$opt_s, "startdate" => \$opt_s);
 
 if ($opt_h) {
     print " Usage : $0 :\n";
     print "    -a (--archives) load data from log archives to database\n";
 	print "    -p (--poller <value>) load data from log archives to database from specific poller ID\n";
+    print "    -s (--startdate <mm-dd-yyyy>) when parsing archives, start from a specific day\n";
     print "    -h (--help) show help\n";
     exit 0;
+}
+
+if (defined $opt_s) {
+    if ($opt_s !~ m/\d{2}-\d{2}-\d{4}/) {
+        print "Invalid start date provided\n";
+        exit 1;
+    }
 }
 
 # Init MySQL connections
@@ -555,9 +577,9 @@ if (defined($opt_p)) {
     };
     clear_flag_position_file($opt_p);
 
-    $res = $dbh->do("DELETE FROM `log` WHERE instance = '".$opt_p."'");
+    $res = $dbh->do("DELETE FROM `log` WHERE instance = '$opt_p'");
     writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));
-    parseArchive($opt_p, '0');
+    parseArchive($opt_p, '0', $opt_s);
 } else {
     my $flag = 0;
     my $sth2 = $dbhoreon->prepare("SELECT `id`, `name`, `localhost` FROM `nagios_server` WHERE `ns_activate` = 1");
@@ -595,8 +617,8 @@ if (defined($opt_p)) {
                 writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));
                 $flag = 1;
             }
-            clear_flag_position_file($ns_server->{'id'});		
-            parseArchive($ns_server->{'id'}, $ns_server->{'localhost'});
+            clear_flag_position_file($ns_server->{'id'});
+            parseArchive($ns_server->{'id'}, $ns_server->{'localhost'}, $opt_s);
         } else {
             parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
         }
