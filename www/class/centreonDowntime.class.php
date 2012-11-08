@@ -312,9 +312,26 @@ class CentreonDowntime
 					$clause = ' AND dtr.hg_hg_id = hg.hg_id';
 					break;
 				case 'svc':
-					$name = ', s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name';
-					$table = ', downtime_service_relation dtr, service s, host h, host_service_relation hsr';
-					$clause = ' AND dtr.service_service_id = s.service_id AND hsr.service_service_id = s.service_id AND hsr.host_host_id = h.host_id AND h.host_id = dtr.host_host_id';
+					$query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name
+								FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, service s, host h, host_service_relation hsr
+								WHERE 
+									dtp.dt_id = dtr.dt_id AND 
+									dtp.dt_id = dt.dt_id AND 
+									dtr.service_service_id = s.service_id AND 
+									hsr.service_service_id = s.service_id AND 
+									hsr.host_host_id = h.host_id AND
+									h.host_id = dtr.host_host_id
+								UNION 
+								SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration, s.service_description as obj_name, dtr.service_service_id as obj_id, h.host_name as host_name
+								FROM downtime_period dtp, downtime dt, downtime_service_relation dtr, service s, host h, hostgroup_relation hgr, host_service_relation hsr
+								WHERE
+									dtp.dt_id = dtr.dt_id AND 
+									dtp.dt_id = dt.dt_id AND 
+									dtr.host_host_id = h.host_id AND
+									hsr.hostgroup_hg_id = hgr.hostgroup_hg_id AND
+									hgr.host_host_id = h.host_id AND
+									s.service_id = hsr.service_service_id AND			
+									dtr.service_service_id = s.service_id";
 					break;
 				case 'svcgrp':
 					$name = ', sg.sg_name as obj_name, dtr.sg_sg_id as obj_id';
@@ -326,9 +343,11 @@ class CentreonDowntime
 					$table = '';
 					$clause = '';
 			}
-			$query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration" . $name . "
-				FROM downtime_period dtp, downtime dt" . $table . "
-				WHERE  dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id" . $clause;
+			if ($type != "svc") {
+				$query = "SELECT dt.dt_id, dt.dt_activate, dtp.dtp_start_time, dtp.dtp_end_time, dtp.dtp_day_of_week, dtp.dtp_month_cycle, dtp.dtp_day_of_month, dtp.dtp_fixed, dtp.dtp_duration" . $name . "
+					FROM downtime_period dtp, downtime dt" . $table . "
+					WHERE  dtp.dt_id = dtr.dt_id AND dtp.dt_id = dt.dt_id" . $clause;
+			}
 			$res = $this->db->query($query);
 			if (false === PEAR::isError($res)) {
 				while ($row = $res->fetchRow()) {
