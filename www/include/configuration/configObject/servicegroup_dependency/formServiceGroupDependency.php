@@ -115,6 +115,7 @@
 	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
 	$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
+	$form->setDefaults(array('inherits_parent'=>'1'));
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok"), array('id' => 'sOk', 'onClick' => 'uncheckAllS(this);'));

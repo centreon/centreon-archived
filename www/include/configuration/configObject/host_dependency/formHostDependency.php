@@ -133,10 +133,12 @@
 	$form->addElement('header', 'information', _("Information"));
 	$form->addElement('text', 'dep_name', _("Name"), $attrsText);
 	$form->addElement('text', 'dep_description', _("Description"), $attrsText);
+	
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'inherits_parent', null, _("No"), '0');
 	$form->addGroup($tab, 'inherits_parent', _("Parent relationship"), '&nbsp;');
+	$form->setDefaults(array('inherits_parent'=>'1'));
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('checkbox', 'o', '&nbsp;', _("Ok/Up"), array('id' => 'hUp', 'onClick' => 'uncheckAllH(this);'));
