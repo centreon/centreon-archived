@@ -48,7 +48,7 @@
 			</xsl:element>
 		</td>
                 <xsl:if test = "//i/use_criticality = 1">
-                    <td class="ListColLeft" style="white-space:nowrap;">
+                    <td class="ListColCenter" style="white-space:nowrap;">
                     <xsl:if test = "hci = 1">
                         <xsl:element name="img">
                             <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
