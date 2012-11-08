@@ -164,7 +164,8 @@
 						d.started as was_started, h.name as host_name, s.description as service_description " . $extrafields .
 					"FROM downtimes d, services s, hosts h " .
 					"WHERE d.service_id  = s.service_id " .
-					"AND s.host_id = h.host_id ";
+					"AND s.host_id = h.host_id " . 
+					"AND d.host_id = h.host_id ";
             if (!$view_all) {
                 $request .= "AND d.cancelled = 0 ";
             }
@@ -183,7 +184,8 @@
 					"WHERE d.service_id  = s.service_id " .
 					"AND s.host_id = h.host_id " .
 			        "AND h.host_id = a.host_id " .
-			        "AND a.service_id = s.service_id ";
+			        "AND a.service_id = s.service_id " . 
+					"AND d.host_id = h.host_id ";
 		    if (!$view_all) {
                 $request .= "AND d.cancelled = 0 ";
             }
