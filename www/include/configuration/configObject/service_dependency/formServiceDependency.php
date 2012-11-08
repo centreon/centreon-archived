@@ -111,7 +111,6 @@
 	/*
 	 * Services comes from DB -> Store in $hServices Array
 	 */
-
 	$hServices = array();
 	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
 	while ($elem = $DBRESULT->fetchRow())	{
@@ -186,7 +185,7 @@
 	 * Sort 2 Host Service Dependencies
 	 */
 	$hostFilter = array(null => null,
-	                    0    => sprintf('__%s__', _('ALL')));
+	                    0    => sprintf('%s', _('All ressources')));
     $hostList = array();
     $query = "SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name ";
     $res = $pearDB->query($query);
