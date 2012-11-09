@@ -248,8 +248,8 @@
 					hcolor = bckcolor.substr(1,6);
 				}
 			}
-			Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title: " . _('Pick a color') . ", width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
-}
+			Modalbox.show('./include/common/javascript/color_picker_mb.php?name='+name, { title: '" . _('Pick a color') . "', width: width, height: height , afterLoad: function(){cp_init(t, hcolor);} });
+                }
 	</script>
     "
     );
