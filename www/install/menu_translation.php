@@ -150,6 +150,10 @@ echo _("Performance Info");
 echo _("Process Info");
 echo _("Process Control");
 echo _("System Information");
+echo _("Broker Statistics");
+echo _("Custom Views");
+echo _("Monitoring Engines");
+echo _("Extra");
 
 /* List select on Administration -> Log */
 
