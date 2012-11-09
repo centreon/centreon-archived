@@ -122,11 +122,11 @@ function activate_color_selection(e) {
 }
 
 jQuery(document).ready(function() {
-    jQuery('input[name="ds_color_line_color"]').click(function(e) {
-        popup_color_picker('ds_color_line', 'Line color');
-    });
-    jQuery('input[name*="ds_color_line_mode"]').click(activate_color_selection);
-    activate_color_selection.apply(jQuery('input[name*="ds_color_line_mode"]:checked'));
+   jQuery('input[name$="_color"]').click(function(e) {
+       popup_color_picker(jQuery(this).attr('name').replace(/_color$/g, ''), 'Line color');
+   });
+   jQuery('input[name$="_color"]').click(activate_color_selection);
+   activate_color_selection.apply(jQuery('input[name$="_color"]:checked'));
 });
 {/literal}
 </script>
