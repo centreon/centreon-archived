@@ -11,7 +11,9 @@ CentOS
 
 In CentOS and RHEL5, following packages are not included in standard
 repositories. To install pre-requisites, you need to add *RPM Forge*
-repository. On 32-bits::
+repository. 
+
+On 32-bits::
 
   # wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
   # wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt

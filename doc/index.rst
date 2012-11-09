@@ -11,7 +11,7 @@ all the infrastructures and applications comprising your information
 system.
 
 * `Demo <http://demo.centreon.com>`_
-* `Downloads <http://www.centreon.com/Content-Download/donwload-centreon>`_
+* :ref:`downloads`
 * `Screenshots <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
 
 
