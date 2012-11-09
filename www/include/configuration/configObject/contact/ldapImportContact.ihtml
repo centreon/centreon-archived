@@ -13,7 +13,7 @@
 		-->
 		<tr class='list_one'>
 			<td class='FormRowField'>{$ldapServers}</td>
-			<td class='FormRowValue'>{$ldapServerList}</td>
+			<td class='FormRowValue'>{$ldapConfList}</td>
 		</tr>
 		<tr class="list_two" style="text-align: center;"><td class="FormRowField" colspan="4" style="text-align: center;" >{$form.ldap_search_button.html}</td></tr>
 	</table>

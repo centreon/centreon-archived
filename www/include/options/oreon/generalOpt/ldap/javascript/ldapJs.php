@@ -42,10 +42,10 @@ function mk_paginationFF(){}
 function set_header_title(){}
 
 var nextRowId;
-var counter = '<?php echo $maxArId;?>';
-var nbOfInitialRows = 0;
+var counter = '<?php echo $maxHostId;?>';
+var nbOfInitialRows = '<?php echo $nbOfInitialRows; ?>';
 var o = '<?php echo $o;?>';
-
+var arId = '<?php echo $arId;?>';
 var templates;
 
 /*
@@ -58,34 +58,34 @@ function transformForm()
     var addrXML;
     var addrXSL;
 
-    nbOfInitialRows = '<?php echo $nbOfInitialRows; ?>';
-
     var params = '?sid=' + sid;
 
-	if (o == 'w') {
-    	proc = new Transformation();
-    	addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
-    	addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
-    	proc.setXml(addrXML);
-    	proc.setXslt(addrXSL);
-    	proc.transform("dynamicDiv");
+    if (o == 'w') {
+        params = params+'&arId='+arId;
+        proc = new Transformation();
+        addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
+        addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
+        proc.setXml(addrXML);
+        proc.setXslt(addrXSL);
+        proc.transform("dynamicDiv");
         o = 0;
-	} else if (o == 'ldap') {
-    	proc = new Transformation();
-    	addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
-    	addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
-    	proc.setXml(addrXML);
-    	proc.setXslt(addrXSL);
-    	proc.transform("dynamicDiv");
+    } else if (o == 'ldap') {
+        params = params+'&arId='+arId;
+        proc = new Transformation();
+        addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
+        addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
+        proc.setXml(addrXML);
+        proc.setXslt(addrXSL);
+        proc.transform("dynamicDiv");
         o = 0;
     } else {
-    	params = params + '&id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
+        params = params + '&id=' + counter + '&nbOfInitialRows=' + nbOfInitialRows;
         proc = new Transformation();
-    	addrXML = './include/options/oreon/generalOpt/ldap/xml/additionalRowXml.php' + params;
-    	addrXSL = './include/options/oreon/generalOpt/ldap/xsl/additionalRow.xsl';
-    	proc.setXml(addrXML);
-    	proc.setXslt(addrXSL);
-    	proc.transform(nextRowId);
+        addrXML = './include/options/oreon/generalOpt/ldap/xml/additionalRowXml.php' + params;
+        addrXSL = './include/options/oreon/generalOpt/ldap/xsl/additionalRow.xsl';
+        proc.setXml(addrXML);
+        proc.setXslt(addrXSL);
+        proc.transform(nextRowId);
     }
 }
 
@@ -170,10 +170,10 @@ function initParams() {
  * Function is called when the '+' button is pressed
  */
 function addNewHost() {
-    counter++;
     nbOfInitialRows++;
-    nextRowId = 'additionalRow_' + counter;
+    nextRowId = 'additionalRow_' + nbOfInitialRows;
     transformForm();
+    counter++;
 }
 
 /*
@@ -197,50 +197,48 @@ function initTemplates() {
 	ldapTemplates = new Array();
 
 	ldapTemplates['Posix'] = new Array();
-	ldapTemplates['Posix']['ldap_user_filter'] = '(&(uid=%s)(objectClass=inetOrgPerson))';
-	ldapTemplates['Posix']['ldap_user_uid_attr'] = 'uid';
-	ldapTemplates['Posix']['ldap_user_group'] = '';
-	ldapTemplates['Posix']['ldap_user_name'] = 'cn';
-	ldapTemplates['Posix']['ldap_user_firstname'] = 'givenname';
-	ldapTemplates['Posix']['ldap_user_lastname'] = 'sn';
-	ldapTemplates['Posix']['ldap_user_email'] = 'mail';
-	ldapTemplates['Posix']['ldap_user_pager'] = 'mobile';
-	ldapTemplates['Posix']['ldap_group_filter'] = '(&(cn=%s)(objectClass=groupOfNames))';
-	ldapTemplates['Posix']['ldap_group_gid_attr'] = 'cn';
-	ldapTemplates['Posix']['ldap_group_member'] = 'member';
+	ldapTemplates['Posix']['user_filter'] = '(&(uid=%s)(objectClass=inetOrgPerson))';
+	ldapTemplates['Posix']['alias'] = 'uid';
+	ldapTemplates['Posix']['user_group'] = '';
+	ldapTemplates['Posix']['user_name'] = 'cn';
+	ldapTemplates['Posix']['user_firstname'] = 'givenname';
+	ldapTemplates['Posix']['user_lastname'] = 'sn';
+	ldapTemplates['Posix']['user_email'] = 'mail';
+	ldapTemplates['Posix']['user_pager'] = 'mobile';
+	ldapTemplates['Posix']['group_filter'] = '(&(cn=%s)(objectClass=groupOfNames))';
+	ldapTemplates['Posix']['group_name'] = 'cn';
+	ldapTemplates['Posix']['group_member'] = 'member';
 
 	ldapTemplates['Active Directory'] = new Array();
-	ldapTemplates['Active Directory']['ldap_user_filter'] = '(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368))';
-	ldapTemplates['Active Directory']['ldap_user_uid_attr'] = 'samaccountname';
-	ldapTemplates['Active Directory']['ldap_user_group'] = 'memberOf';
-	ldapTemplates['Active Directory']['ldap_user_name'] = 'name';
-	ldapTemplates['Active Directory']['ldap_user_firstname'] = 'givenname';
-	ldapTemplates['Active Directory']['ldap_user_lastname'] = 'sn';
-	ldapTemplates['Active Directory']['ldap_user_email'] = 'mail';
-	ldapTemplates['Active Directory']['ldap_user_pager'] = 'mobile';
-	ldapTemplates['Active Directory']['ldap_group_filter'] = '(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456))';
-	ldapTemplates['Active Directory']['ldap_group_gid_attr'] = 'samaccountname';
-	ldapTemplates['Active Directory']['ldap_group_member'] = 'member';
+	ldapTemplates['Active Directory']['user_filter'] = '(&(samAccountName=%s)(objectClass=user)(samAccountType=805306368))';
+	ldapTemplates['Active Directory']['alias'] = 'samaccountname';
+	ldapTemplates['Active Directory']['user_group'] = 'memberOf';
+	ldapTemplates['Active Directory']['user_name'] = 'name';
+	ldapTemplates['Active Directory']['user_firstname'] = 'givenname';
+	ldapTemplates['Active Directory']['user_lastname'] = 'sn';
+	ldapTemplates['Active Directory']['user_email'] = 'mail';
+	ldapTemplates['Active Directory']['user_pager'] = 'mobile';
+	ldapTemplates['Active Directory']['group_filter'] = '(&(samAccountName=%s)(objectClass=group)(samAccountType=268435456))';
+	ldapTemplates['Active Directory']['group_name'] = 'samaccountname';
+	ldapTemplates['Active Directory']['group_member'] = 'member';
 }
 
 /*
  * Apply template is called from the template selectbox
  */
-function applyTemplate(templateValue, id) {
-	$$('input[name^=ldapHosts['+id+']]').each(function(el) {
-		key = el.getAttribute('name');
-		key.sub(/ldapHosts\[(\d+)\]\[(\w+)\]/, function(match) {
-			var attr = match[2];
+function applyTemplate(templateValue) {	
+    $$('input[type^=text]').each(function(el) {
+        key = el.getAttribute('name');	
+        var attr = key;
 
-			if (typeof(ldapTemplates[templateValue]) != 'undefined') {
-				if (typeof(ldapTemplates[templateValue][attr]) != 'undefined') {
-					el.setValue(ldapTemplates[templateValue][attr]);
-				}
-			}
-		});
-	});
+        if (typeof(ldapTemplates[templateValue]) != 'undefined') {
+            if (typeof(ldapTemplates[templateValue][attr]) != 'undefined') {
+                el.setValue(ldapTemplates[templateValue][attr]);
+            }
+        }
+    });
 }
-
-
-Event.observe(window, "load", function() { initParams(); });
+Event.observe(window, "load", function() { 
+    initParams();
+});
 </script>

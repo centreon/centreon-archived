@@ -42,15 +42,15 @@ function LdapSearch(){
 	_ldap_search_timeout=encodeURIComponent(document.getElementsByName('ldap_search_timeout')[0].value);
 	_ldap_search_limit=encodeURIComponent(document.getElementsByName('ldap_search_limit')[0].value);
 */
-	var serverList = '';
-	$$('input[name^=ldapServer]').each(function(el) {
+	var confList = '';
+	$$('input[name^=ldapConf]').each(function(el) {
 		if (el.checked) {
 			key = el.getAttribute('name');
-			key.sub(/ldapServer\[(\d+)\]/, function(match) {
-				if (serverList != '') {
-					serverList += ',';
+			key.sub(/ldapConf\[(\d+)\]/, function(match) {
+				if (confList != '') {
+                                    confList += ',';
 				}
-				serverList += match[1];
+				confList += match[1];
 			});
 		}
 	});	
@@ -58,8 +58,7 @@ function LdapSearch(){
 
 	xhrM.open("POST",_addrSearchM ,true);
 	xhrM.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	//xhrM.send("ldap_search_filter="+_ldap_search_filter+"&ldap_base_dn="+_ldap_base_dn+"&ldap_search_timeout="+_ldap_search_timeout +"&ldap_search_limit="+_ldap_search_limit);
-	xhrM.send("serverList="+serverList);	
+	xhrM.send("confList="+confList);	
 	
 	document.getElementById('ldap_search_result_output').innerHTML = "<img src='./img/icones/16x16/spinner_blue.gif'>" ;
 
@@ -150,6 +149,7 @@ function LdapSearch(){
 					var htd = document.createElement('td');					
 					htd.appendChild(document.createTextNode(info.getAttribute('server')));
 					htd.setAttribute('colspan', '8')
+                                        htd.setAttribute('style', 'text-align:left');
 					htr.appendChild(htd);
 					_tbody.appendChild(htr);
 					serverName = info.getAttribute('server');					
@@ -224,6 +224,11 @@ function LdapSearch(){
 	  				cbx.name = "contact_select[select]["+i+"]";
 	  				cbx.value = i;
 
+                                        var arId = document.createElement("input");
+                                        arId.type = 'hidden';
+                                        arId.name = 'contact_select[ar_id]['+i+']';
+                                        arId.value = info.getAttribute('ar_id');
+
 	  				var h_dn = document.createElement("input");
 	  				h_dn.type = "hidden";
 	  				h_dn.id = "user_dn"+i;
@@ -266,8 +271,8 @@ function LdapSearch(){
 	  				h_pager.name = "contact_select[contact_pager]["+i+"]";
 	  				h_pager.value = _pager;
 
-
 					_td0.appendChild(cbx);
+                                        _td0.appendChild(arId);
 					_td1.appendChild(document.createTextNode(_dn));
 					_td1.appendChild(h_dn);
 					_td2.appendChild(document.createTextNode(_uid));

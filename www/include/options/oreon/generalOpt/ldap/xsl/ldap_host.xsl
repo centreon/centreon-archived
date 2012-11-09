@@ -38,7 +38,8 @@
 				            </xsl:element>
 				            <xsl:for-each select="inputs/input">
 				            	<xsl:element name="tr">
-									<xsl:element name="td"><xsl:value-of select='label'/></xsl:element>
+                                                    <xsl:attribute name='class'><xsl:value-of select='class'/></xsl:attribute>
+                                                                        <xsl:element name="td"><xsl:value-of select='label'/></xsl:element>
 									<xsl:element name="td">
 										<xsl:choose>
 											<xsl:when test="type = 'select'">

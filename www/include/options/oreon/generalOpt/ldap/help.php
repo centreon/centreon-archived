@@ -4,6 +4,8 @@ $help = array();
 /*
  * LDAP Informations
  */
+$help['ar_name'] = dgettext('help', 'Name of configuration');
+$help['ar_description'] = dgettext('help', 'Short description of configuration');
 $help['ldap_auth_enable'] = dgettext('help', 'Enable LDAP authentification');
 $help['ldap_store_password'] = dgettext('help', 'Whether or not the password should be stored in database');
 $help['ldap_auto_import'] = dgettext('help', 'Can connect with LDAP without import');
@@ -15,45 +17,21 @@ $help['ldap_dns_use_domain'] = dgettext('help', 'Set the domain for search the s
 $help['ldap_search_limit'] = dgettext('help', 'Search size limit');
 $help['ldap_search_timeout'] = dgettext('help', 'Search timeout');
 
-/*
- * LDAP configuration
- */
-$longString =
-'<b>' ._('Bind user'). '</b><br/>' . _('User DN for connect to LDAP in read only') . '<br/><br/>' .
-'<b>' ._('Bind password'). '</b><br/>' . _('Password for connect to LDAP in read only') . '<br/><br/>' .
-'<b>' ._('Protocol version'). '</b><br/>' . _('The version protocol for connect to LDAP<br/>Use version 3 for Active Directory') . '<br/><br/>' .
-'<b>' ._('Search user base DN'). '</b><br/>' . _('The base DN for search users') . '<br/><br/>' .
-'<b>' ._('Search group base DN'). '</b><br/>' . _('The base DN for search groups') . '<br/><br/>' .
-'<b>' ._('User filter'). '</b><br/>' . _('The LDAP search filter for users<br/>Use %s in filter. The %s will replaced by login in autologin or * in LDAP import') . '<br/><br/>' .
-'<b>' ._('Group filter'). '</b><br/>' . _('The LDAP search filter for groups<br/>Use %s in filter. The %s will replaced by group name in autologin or * in contactgroup field') . '<br/><br/>' .
-'<b>' ._('Login attribute'). '</b><br/>' . _('The login attribute<br/>In Centreon : Alias / Login') . '<br/><br/>' .
-'<b>' ._('User group attribute'). '</b><br/>' . _('The group attribute for user') . '<br/><br/>' .
-'<b>' ._('User displayname attribute'). '</b><br/>' . _('The user name<br/>In Centreon : Full Name') . '<br/><br/>' .
-'<b>' ._('User firstname attribute'). '</b><br/>' . _('The user firstname<br/>In Centreon : givenname') . '<br/><br/>' .
-'<b>' ._('User lastname attribute'). '</b><br/>' . _('The user lastname<br/>In Centreon : sn') . '<br/><br/>' .
-'<b>' ._('User email attribute'). '</b><br/>' . _('The user email<br/>In Centreon : Email') . '<br/><br/>' .
-'<b>' ._('User pager attribute'). '</b><br/>' . _('The user pager<br/>In Centreon : Pager') . '<br/><br/>' .
-'<b>' ._('Group attribute'). '</b><br/>' . _('The group name<br/>In Centreon : Contact Group Name') . '<br/><br/>' .
-'<b>' ._('Group member attribute'). '</b><br/>' . _('The LDAP attribute for relation between group and user');
-
-$help['ldapConf'] = dgettext('help', $longString);
-/*
-$help['addNewHost'] = dgettext('help', $longString);
-$help['ldap_binduser'] = dgettext('help', 'User DN for connect to LDAP in read only');
-$help['ldap_bindpass'] = dgettext('help', 'Password for connect to LDAP in read only');
-$help['ldap_version_protocol'] = dgettext('help', 'The version protocol for connect to LDAP<br/>Use version 3 for Active Directory');
+$help['ldapConf'] = dgettext('help', _('Ldap server. Failover will take place if multiple servers are defined.'));
+$help['bind_dn'] = dgettext('help', 'User DN for connect to LDAP in read only');
+$help['bind_pass'] = dgettext('help', 'Password for connect to LDAP in read only');
+$help['protocol_version'] = dgettext('help', 'The version protocol for connect to LDAP<br/>Use version 3 for Active Directory');
 $help['ldap_template'] = dgettext('help', 'Template for LDAP attribute');
-$help['ldap_user_basedn'] = dgettext('help', 'The base DN for search users');
-$help['ldap_group_basedn'] = dgettext('help', 'The base DN for search groups');
-$help['ldap_user_filter'] = dgettext('help', 'The LDAP search filter for users<br/>Use %s in filter. The %s will replaced by login in autologin or * in LDAP import');
-$help['ldap_group_filter'] = dgettext('help', 'The LDAP search filter for groups<br/>Use %s in filter. The %s will replaced by group name in autologin or * in contactgroup field');
-$help['ldap_user_uid_attr'] = dgettext('help', 'The login attribute<br/>In Centreon : Alias / Login');
-$help['ldap_user_group'] = dgettext('help', 'The group attribute for user');
-$help['ldap_user_name'] = dgettext('help', 'The user name<br/>In Centreon : Full Name');
-$help['ldap_user_firstname'] = dgettext('help', 'The user firstname<br/>In Centreon : givenname');
-$help['ldap_user_lastname'] = dgettext('help', 'The user lastname<br/>In Centreon : sn');
-$help['ldap_user_email'] = dgettext('help', 'The user email<br/>In Centreon : Email');
-$help['ldap_user_pager'] = dgettext('help', 'The user pager<br/>In Centreon : Pager');
-$help['ldap_group_gid_attr'] = dgettext('help', 'The group name<br/>In Centreon : Contact Group Name');
-$help['ldap_group_member'] = dgettext('help', 'The LDAP attribute for relation between group and user');
-*/
+$help['user_base_search'] = dgettext('help', 'The base DN for search users');
+$help['group_base_search'] = dgettext('help', 'The base DN for search groups');
+$help['user_filter'] = dgettext('help', 'The LDAP search filter for users<br/>Use %s in filter. The %s will replaced by login in autologin or * in LDAP import');
+$help['group_filter'] = dgettext('help', 'The LDAP search filter for groups<br/>Use %s in filter. The %s will replaced by group name in autologin or * in contactgroup field');
+$help['alias'] = dgettext('help', 'The login attribute<br/>In Centreon : Alias / Login');
+$help['user_group'] = dgettext('help', 'The group attribute for user');
+$help['user_name'] = dgettext('help', 'The user name<br/>In Centreon : Full Name');
+$help['user_firstname'] = dgettext('help', 'The user firstname<br/>In Centreon : givenname');
+$help['user_lastname'] = dgettext('help', 'The user lastname<br/>In Centreon : sn');
+$help['user_email'] = dgettext('help', 'The user email<br/>In Centreon : Email');
+$help['user_pager'] = dgettext('help', 'The user pager<br/>In Centreon : Pager');
+$help['group_name'] = dgettext('help', 'The group name<br/>In Centreon : Contact Group Name');
+$help['group_member'] = dgettext('help', 'The LDAP attribute for relation between group and user');

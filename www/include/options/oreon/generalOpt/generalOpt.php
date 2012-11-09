@@ -75,7 +75,7 @@
 			require_once $path."rrdtool/form.php" ; 
 			break;
 		case "ldap" : 
-			require_once $path."ldap/form.php" ; 
+			require_once $path."ldap/ldap.php" ; 
 			break;
 		case "debug" : 
 			require_once $path."debug/form.php" ; 

@@ -158,9 +158,9 @@ try {
         /*
          * Connect to LDAP Server
          */
-        $ldapConn = new CentreonLDAP($pearDB, null);
         while ($ldaprow = $ldapres->fetchRow()) {
-            $connectionResult = $ldapConn->connect(null, $ldaprow['ar_id']);
+            $ldapConn = new CentreonLDAP($pearDB, null, $ldaprow['ar_id']);
+            $connectionResult = $ldapConn->connect();
             if (false != $connectionResult) {
                 $listGroup = array();
                 $res = $pearDB->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");

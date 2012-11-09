@@ -41,12 +41,6 @@
 
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
 
-	$DBRESULT = $pearDB->query("SELECT * FROM `options`");
-	while ($res = $DBRESULT->fetchRow()) {
-		$ldap_auth[$res["key"]] = html_entity_decode($res["value"]);
-	}
-	$DBRESULT->free();
-
 	$attrsText 	= array("size"=>"80");
 	$attrsText2	= array("size"=>"5");
 
@@ -92,45 +86,32 @@
 	$tpl->assign('ldap_search_filter_help_title', _("Filter Examples"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ContactAjaxLDAP/ajaxLdapSearch.js"></script>');
 
-	$query = "SELECT i.ar_id, i.ari_value
-			  FROM auth_ressource_info i, auth_ressource ar
-			  WHERE i.ari_name = 'host'
-			  AND i.ar_id = ar.ar_id
-			  ORDER BY ar.ar_order";
+	$query = "SELECT ar_id, ar_name
+                  FROM auth_ressource
+                  ORDER BY ar_name";
 	$res = $pearDB->query($query);
-	$ldapServerList = "";
+	$ldapConfList = "";
 	while ($row = $res->fetchRow()) {
-	    $ldapServerList .= "<input type='checkbox' name='ldapServer[".$row['ar_id']."]'/> " . $row['ari_value'] . "<br/>";
+	    $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/> " . $row['ar_name'] . "<br/>";
 	}
-
 
 
 	/*
 	 * Just watch a contact information
 	 */
 	if ($o == "li")	{
-	    /*
-	     * Get information from template
-	     */
-	    $ldapAdmin = new CentreonLdapAdmin($pearDB);
-	    $tmpOptions = $ldapAdmin->getTemplate();
-	    $ldap_auth['ldap_base_dn'] = $tmpOptions['user_base_search'];
-	    $ldap_auth['ldap_search_filter'] = sprintf($tmpOptions['user_filter'], '*');
-		$subA = $form->addElement('submit', 'submitA', _("Import"));
-		$form->setDefaults($ldap_auth);
+            $subA = $form->addElement('submit', 'submitA', _("Import"));
 	}
 
 	$valid = false;
 	if ($form->validate())	{
-		if (isset($_POST["contact_select"]["select"]) ) {
-			if ($form->getSubmitValue("submitA")) {
-			    $ldap = new CentreonLdap($pearDB);
-			    $ldap->connect();
-				insertLdapContactInDB($ldap, $_POST["contact_select"]);
-			}
+            if (isset($_POST["contact_select"]["select"]) ) {
+                if ($form->getSubmitValue("submitA")) {
+                    insertLdapContactInDB($_POST["contact_select"]);
 		}
-		$form->freeze();
-		$valid = true;
+            }
+            $form->freeze();
+            $valid = true;
 	}
 
 	$action = $form->getSubmitValue("action");
@@ -144,7 +125,7 @@
 		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 		$form->accept($renderer);
 		$tpl->assign('ldapServers', _('Import from LDAP servers'));
-		$tpl->assign('ldapServerList', $ldapServerList);
+		$tpl->assign('ldapConfList', $ldapConfList);
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->display("ldapImportContact.ihtml");

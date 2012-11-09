@@ -860,59 +860,78 @@
 		}
 	}
 
-	function insertLdapContactInDB($ldap, $tmpContacts = array())	{
+	function insertLdapContactInDB($tmpContacts = array())	{
 		global $nbr, $oreon, $pearDB;
 		$tmpConf = array();
-
-		foreach ($tmpContacts["select"] as $select_key=>$select_value) {
-			$tmpContacts["contact_name"][$select_key] = str_replace(array(" ", ","), array("_", "_"), $tmpContacts["contact_name"][$select_key]);
-			if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key]))	{
-				$tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
-				$tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
-				$tmpConf["contact_email"] = $tmpContacts["contact_email"][$select_key];
-				$tmpConf["contact_pager"] = $tmpContacts["contact_pager"][$select_key];
-				$tmpConf["contact_oreon"]["contact_oreon"] = "0";
-				$tmpConf["contact_admin"]["contact_admin"] = "0";
-				$tmpConf["contact_type_msg"] = "txt";
-				$tmpConf["contact_lang"] = "en_US";
-				$tmpConf["contact_auth_type"] = "ldap";
-				$tmpConf["contact_ldap_dn"] = $tmpContacts["dn"][$select_key];;
-				$tmpConf["contact_activate"]["contact_activate"] = "1";
-				$tmpConf["contact_comment"] = "Ldap Import - " .  date("d/m/Y - H:i:s", time());
-				$tmpConf["contact_location"] = "0";
-				$tmpConf["contact_register"] = "1";
-				insertContactInDB($tmpConf);
-				unset($tmpConf);
+                $ldapInstances = array();
+                $contactTemplates = array();
+		foreach ($tmpContacts["select"] as $select_key => $select_value) {
+                        $tmpContacts["contact_name"][$select_key] = str_replace(array(" ", ","), array("_", "_"), $tmpContacts["contact_name"][$select_key]);
+			$arId = $tmpContacts["ar_id"][$select_key];
+                        if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key]))	{
+                            $tmpConf["contact_name"] = $tmpContacts["contact_name"][$select_key];
+                            $tmpConf["contact_alias"] = $tmpContacts["contact_alias"][$select_key];
+                            $tmpConf["contact_email"] = $tmpContacts["contact_email"][$select_key];
+                            $tmpConf["contact_pager"] = $tmpContacts["contact_pager"][$select_key];
+                            $tmpConf["contact_oreon"]["contact_oreon"] = "0";
+                            $tmpConf["contact_admin"]["contact_admin"] = "0";
+                            $tmpConf["contact_type_msg"] = "txt";
+                            $tmpConf["contact_lang"] = "en_US";
+                            $tmpConf["contact_auth_type"] = "ldap";
+                            $tmpConf["contact_ldap_dn"] = $tmpContacts["dn"][$select_key];;
+                            $tmpConf["contact_activate"]["contact_activate"] = "1";
+                            $tmpConf["contact_comment"] = "Ldap Import - " .  date("d/m/Y - H:i:s", time());
+                            $tmpConf["contact_location"] = "0";
+                            $tmpConf["contact_register"] = "1";
+                            insertContactInDB($tmpConf);
+                            unset($tmpConf);
 			}
 			/*
-             * Get the contact_id
-             */
-            $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $tmpContacts["dn"][$select_key] ."'";
-            $res = $pearDB->query($query);
-            if (PEAR::isError($res)) {
-                return false;
-            }
-            $row = $res->fetchRow();
-            $contact_id = $row['contact_id'];
-            $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
-            if (count($listGroup) > 0) {
-                $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join("','", $listGroup) . "')";
-                $res = $pearDB->query($query);
-                if (PEAR::isError($res)) {
-                    return false;
-                }
-                /*
-                 * Insert the relation between contact and contact group
-                 */
-                while ($row = $res->fetchRow()) {
-                    $query = "INSERT INTO contactgroup_contact_relation
-                						(contactgroup_cg_id, contact_contact_id)
-                					VALUES (" . $row['cg_id'] . ", " . $contact_id . ")";
-                    $pearDB->query($query);
-                }
-            }
-		}
-		return true;
+                         * Get the contact_id
+                         */
+                        $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $tmpContacts["dn"][$select_key] ."'";
+                        $res = $pearDB->query($query);
+                        if (PEAR::isError($res)) {
+                            return false;
+                        }
+                        $row = $res->fetchRow();
+                        $contact_id = $row['contact_id'];
+                        
+                        if (!isset($ldapInstances[$arId])) {
+                            $ldapInstances[$arId] = new CentreonLDAP($pearDB, null, $arId);
+                            $ldapAdmin = new CentreonLDAPAdmin($pearDB);
+                            $ldap = $ldapInstances[$arId];
+                            $opt = $ldapAdmin->getGeneralOptions($arId);
+                            if (isset($opt['ldap_contact_tmpl']) && $opt['ldap_contact_tmpl']) {
+                                $contactTemplates[$arId] = $opt['ldap_contact_tmpl'];
+                            }
+                        } else {
+                            $ldap = $ldapInstances[$arId];
+                        }
+                        $sqlUpdate = "UPDATE contact SET ar_id = ".$pearDB->escape($arId)." %s  WHERE contact_id = ".$contact_id;
+                        $tmplSql = "";
+                        if (isset($contactTemplates[$arId])) {
+                            $tmplSql = ", contact_template_id = " . $pearDB->escape($contactTemplates[$arId]);
+                        }
+                        $pearDB->query(sprintf($sqlUpdate, $tmplSql));
+                        $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
+                        if (count($listGroup) > 0) {
+                            $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join("','", $listGroup) . "')";
+                            $res = $pearDB->query($query);
+                            if (PEAR::isError($res)) {
+                                return false;
+                            }
+                            /*
+                             * Insert the relation between contact and contact group
+                             */
+                            while ($row = $res->fetchRow()) {
+                                $query = "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id)
+                                          VALUES (" . $row['cg_id'] . ", " . $contact_id . ")";
+                                $pearDB->query($query);
+                            }
+                        }
+                    }
+                    return true;
 	}
 
 	/**
