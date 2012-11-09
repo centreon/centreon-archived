@@ -143,7 +143,7 @@
 		isset($graph[$nameColor]) ?	$codeColor = $graph[$nameColor] : $codeColor = NULL;
 		$attrsText3 	= array("value"=>$codeColor,"size"=>"8","maxlength"=>"7");
 		$attrsText4 	= array("style"=>"width:50px; height:18px; background-color:".$codeColor."; border-color:".$codeColor.";");
-		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','$nameLang');");
+		$attrsText5 	= array("onclick"=>"popup_color_picker('$nameColor','".addslashes($nameLang)."');");
 
 		$form->addElement('text', $nameColor, $nameLang,  $attrsText3);
 		$form->addElement('button', $nameColor.'_color', "", $attrsText4);
