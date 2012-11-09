@@ -47,7 +47,7 @@
         if (function_exists("filter_var")){
                 $name = filter_var($_GET["name"], FILTER_SANITIZE_SPECIAL_CHARS);
         } else {
-                $name = filter_get($_GET["name"]);
+                $name = htmlentities($_GET["name"], ENT_QUOTES, "UTF-8");
         }
 
 	$l_slice = 100;
