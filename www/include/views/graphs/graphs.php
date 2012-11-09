@@ -40,7 +40,15 @@
 		exit();
 
 	$gmtObj = new CentreonGMT($pearDB);
-	$currentServerMicroTime = time() * 1000;
+    /**
+     * Notice that this timestamp is actually the server's time and not the UNIX time
+     * In the future this behaviour should be changed and UNIX timestamps should be used
+     * 
+     * date('Z') is the offset in seconds between the server's time and UTC
+     * The problem remains that on some servers that do not use UTC based timezone, leap seconds are taken in
+     * considerations while all other dates are in comparison wirh GMT so there will be an offset of some seconds
+     */
+	$currentServerMicroTime = time() * 1000 + date('Z') * 1000;
 	$userGmt = 0;
 	$useGmt = 0;
 	if ($gmtObj->checkGMTStatus($pearDB)) {
@@ -354,7 +362,7 @@ function nextPeriod() {
         if (document.FormPeriod.period.value) {
                 var now = currentMicroTime;
                 period = document.FormPeriod.period.value * 1000;
-                end = now + period;
+                end = now;
         } else {
                 end   = form2ctime(document.FormPeriod.EndDate.value, document.FormPeriod.EndTime.value);
                 start = form2ctime(document.FormPeriod.StartDate.value, document.FormPeriod.StartTime.value);
