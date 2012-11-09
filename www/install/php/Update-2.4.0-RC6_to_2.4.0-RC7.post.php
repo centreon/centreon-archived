@@ -35,6 +35,7 @@
  */
 
 if (isset($pearDB)) {
+    $pearDB->query("DELETE FROM `auth_ressource` WHERE `ar_id` NOT IN (SELECT DISTINCT ar_id FROM auth_ressource_info)");
     $res = $pearDB->query("SELECT `value` FROM  `options` WHERE `key` = 'ldap_auth_enable'");
     $row = $res->fetchRow();
     // LDAP is enabled, we can proceed with the migration
