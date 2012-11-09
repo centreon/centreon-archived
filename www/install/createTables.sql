@@ -269,9 +269,10 @@ CREATE TABLE `acl_topology_relations` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_ressource` (
   `ar_id` int(11) NOT NULL AUTO_INCREMENT,
+  `ar_name` VARCHAR (255) NOT NULL DEFAULT 'Default',  
+  `ar_description` VARCHAR (255) NOT NULL DEFAULT 'Default description',
   `ar_type` varchar(50) NOT NULL,
   `ar_enable` enum('0','1') DEFAULT '0',
-  `ar_order` int(3) DEFAULT '0',
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -284,6 +285,23 @@ CREATE TABLE `auth_ressource_info` (
   PRIMARY KEY (`ar_id`,`ari_name`),
   CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_ressource_host` (
+    `ldap_host_id` INT(11) NOT NULL AUTO_INCREMENT,
+    `auth_ressource_id` INT(11) NOT NULL,
+    `host_address` VARCHAR(255) NOT NULL,
+    `host_port` INT(11) NOT NULL,
+    `use_ssl` TINYINT NULL DEFAULT 0,
+    `use_tls` TINYINT NULL DEFAULT 0,
+    `host_order` TINYINT NOT NULL DEFAULT 1,
+    PRIMARY KEY (`ldap_host_id`),
+    CONSTRAINT `fk_auth_ressource_id`
+    FOREIGN KEY (`auth_ressource_id`)
+    REFERENCES `auth_ressource` (`ar_id`)
+    ON DELETE CASCADE
+) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -800,6 +818,7 @@ CREATE TABLE `contact` (
   `contact_activate` enum('0','1') DEFAULT NULL,
   `contact_auth_type` varchar(255) DEFAULT '',
   `contact_ldap_dn` text,
+  `ar_id` int(11) DEFAULT NULL,
   `contact_acl_group_list` varchar(255) DEFAULT NULL,
   `contact_autologin_key` varchar(255) DEFAULT NULL,
   `contact_charset` varchar(255) DEFAULT NULL,
@@ -812,7 +831,8 @@ CREATE TABLE `contact` (
   KEY `tmpl_index` (`contact_template_id`),
   CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`timeperiod_tp_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
-  CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contact_template_id`) REFERENCES `contact` (`contact_id`) ON DELETE SET NULL
+  CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contact_template_id`) REFERENCES `contact` (`contact_id`) ON DELETE SET NULL,
+  CONSTRAINT `fk_ar_id` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE SET NULL,
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
