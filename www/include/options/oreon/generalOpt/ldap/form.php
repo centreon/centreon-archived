@@ -127,6 +127,9 @@ $form->addElement('text', 'group_filter', _("Group filter"), $attrsText);
 $form->addElement('text', 'group_name', _("Group attribute"), $attrsText);
 $form->addElement('text', 'group_member', _("Group member attribute"), $attrsText);
 
+$form->addRule('ar_name', _("Compulsory field"), 'required');
+$form->addRule('ar_description', _("Compulsory field"), 'required');
+
 $form->addElement('hidden', 'gopt_id');
 $redirect = $form->addElement('hidden', 'o');
 $redirect->setValue($o);
@@ -201,24 +204,26 @@ require_once $path . 'ldap/javascript/ldapJs.php';
 
 $valid = false;
 $filterValid = true;
+$allHostsOk = true;
 if ($form->validate()) {
     $values = $form->getSubmitValues();
+    
     /*
      * Test is filter string is validate
      */
+    if (false === CentreonLDAP::validateFilterPattern($values['user_filter'])) {
+        $filterValid = false;
+    }
+
     if (isset($_POST['ldapHosts'])) {
         foreach ($_POST['ldapHosts'] as $ldapHost) {
-            foreach ($ldapHost as $k => $v) {
-                if ($k == 'ldap_user_filter' || $k == 'ldap_group_filter') {
-                    if (false === CentreonLDAP::validateFilterPattern($v)) {
-                        $filterValid = false;
-                    }
-                }
+            if ($ldapHost['hostname'] == '' || $ldapHost['port'] == '') {
+                $allHostsOk = false;
             }
         }
     }
-
-    if ($filterValid) {
+    
+    if ($filterValid && $allHostsOk) {
         if (!isset($values['ldap_contact_tmpl'])) {
             $values['ldap_contact_tmpl'] = "";
         }
@@ -277,6 +282,8 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("Impossible to validate, one or more field is incorrect") . "</div>");
 } elseif (false === $filterValid) {
     print("<div class='msg' align='center'>" . _("Bad ldap filter : missing %s pattern. Check user or group filter") . "</div>");
+} elseif (false === $allHostsOk) {
+    print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
 }
 
 $form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap'"));
