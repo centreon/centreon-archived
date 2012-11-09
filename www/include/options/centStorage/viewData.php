@@ -124,6 +124,7 @@
 			$listMetricsToDelete = array_unique($listMetricsToDelete);
 			if (count($listMetricsToDelete) > 0) {
     			$pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
+                        $pearDBO->query("UPDATE index_data SET to_delete = 1 WHERE id IN (" . join(', ', array_keys($selected)) . ")");
     			$pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsToDelete) . ")");
                         $brk = new CentreonBroker($pearDB);
                         if ($brk->getBroker() == 'broker') {
