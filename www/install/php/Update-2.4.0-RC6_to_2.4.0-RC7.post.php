@@ -68,7 +68,7 @@ if (isset($pearDB)) {
                 $sql = "INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order)
                             VALUES (".$arId.", '".$hData['host']."', '".$hData['port']."', '".$hData['use_ssl']."', '".$hData['use_tls']."', $i)";
                 $pearDB->query($sql);
-                $pearDB->query("DELETE FROM auth_ressource_info WHERE `key` IN ('host', 'port', 'use_ssl', 'use_tls') AND ar_id = $arId");
+                $pearDB->query("DELETE FROM auth_ressource_info WHERE `ari_name` IN ('host', 'port', 'use_ssl', 'use_tls') AND ar_id = $arId");
                 foreach ($data as $k => $v) {
                     $pearDB->query("INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) 
                                     VALUES (".$arId.", '".$k."', '".$v."')");
