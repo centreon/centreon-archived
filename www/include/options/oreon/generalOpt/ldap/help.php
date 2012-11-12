@@ -17,7 +17,9 @@ $help['ldap_dns_use_domain'] = dgettext('help', 'Set the domain for search the s
 $help['ldap_search_limit'] = dgettext('help', 'Search size limit');
 $help['ldap_search_timeout'] = dgettext('help', 'Search timeout');
 
-$help['ldapConf'] = dgettext('help', _('Ldap server. Failover will take place if multiple servers are defined.'));
+$help['ldapConf'] = dgettext('help', _('Ldap server. Failover will take place if multiple servers are defined.').
+                                    '<br/>'._('If TLS is enabled, make sure to configure the certificate requirements on the ldap.conf file and restart your web server.')
+                            );
 $help['bind_dn'] = dgettext('help', 'User DN for connect to LDAP in read only');
 $help['bind_pass'] = dgettext('help', 'Password for connect to LDAP in read only');
 $help['protocol_version'] = dgettext('help', 'The version protocol for connect to LDAP<br/>Use version 3 for Active Directory');
