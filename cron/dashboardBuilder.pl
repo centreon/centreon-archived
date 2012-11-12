@@ -84,8 +84,8 @@ sub print_usage () {
     print "      [-h||--help]        Prints program help\n";
     print "      [-l|--lock]         Verify if the program was already run for the current day\n";
     print "      [-r|--rebuild]      Rebuild completely the reporting\n";
-    print "      [-s|--start-period] (optionnal) The reporting rebuild period starts at the indicated date. Example: 2011-09-11\n";
-    print "      [-e|--end-period]   (optionnal) The reporting rebuild period ends at the indicated date. Example: 2011-09-12\n";
+    print "      [-s|--start-period] (optionnal) The reporting rebuild period starts at the indicated date. Example: 2011-09-20\n";
+    print "      [-e|--end-period]   (optionnal) The reporting rebuild period ends at the indicated date. Example: 2011-09-21\n";
     print "      [--host-only]       (optionnal) Rebuild only reporting for hosts\n";
     print "      [--service-only]    (optionnal) Rebuild only reporting for services\n";
     exit;
