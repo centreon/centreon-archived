@@ -76,9 +76,18 @@ sub insertHostStats {
 							" `UPnbEvent`,".
 							" `DOWNnbEvent`,".
 							" `UNREACHABLEnbEvent`,".
-							" `date_start`, `date_end`) VALUES (";
+							" `date_start`, `date_end`) VALUES ";
+	my $query_end = "";
+	my $firstHost = 1;
+	my $count = 0;
+	my $sth;
 	while (my ($key, $value) = each %$names) {
-		my $query_end = $key.",";
+		if ($firstHost == 1) {
+			$firstHost = 0;
+		} else {
+			$query_end .= ",";
+		}
+		$query_end .= "(".$key.",";
 		if (defined($stateDurations->{$key})) {
 			my $stats = $stateDurations->{$key};
 			my @tab = @$stats;
@@ -86,10 +95,19 @@ sub insertHostStats {
 				 $query_end .= $_.",";
 			}
 			$query_end .= $start.",".$end.")";
-		}else {
+		} else {
 			$query_end .= "0,0,0,0,".$dayDuration.",0,0,0,".$start.",".$end.")";
 		}
-		my $sth = $centstorage->query($query_start.$query_end);
+		$count++;
+		if ($count == 5000) {
+			$sth = $centstorage->query($query_start.$query_end);		
+			$firstHost = 1;
+			$query_end = "";
+			$count = 0;
+		}
+	}
+	if ($count) {
+		$sth = $centstorage->query($query_start.$query_end);
 	}
 }
 
@@ -113,10 +131,19 @@ sub insertServiceStats {
 							" `WARNINGnbEvent`,".
 							" `CRITICALnbEvent`,".
 							" `UNKNOWNnbEvent`,".
-							" `date_start`, `date_end`) VALUES (";
+							" `date_start`, `date_end`) VALUES ";
+	my $query_end = "";
+        my $firstService = 1;
+	my $count = 0;
+        my $sth;
 	while (my ($key, $value) = each %$names) {
+		if ($firstService == 1) {
+                        $firstService = 0;
+                } else {
+                        $query_end .= ",";
+                }
 		my ($host_id, $service_id) = split(";;", $key);
-		my $query_end = $host_id.",".$service_id.",";
+		$query_end .= "(".$host_id.",".$service_id.",";
 		if (defined($stateDurations->{$key})) {
 			my $stats = $stateDurations->{$key};
 			my @tab = @$stats;
@@ -125,11 +152,20 @@ sub insertServiceStats {
 			}
 			$query_end .= $start.",".$end.")";
 			
-		}else {
+		} else {
 			$query_end .= "0,0,0,0,0,".$dayDuration.",0,0,0,0,".$start.",".$end.")";
 		}
-		my $sth = $centstorage->query($query_start.$query_end);
+		$count++;
+		if ($count == 5000) {
+                        $sth = $centstorage->query($query_start.$query_end);
+                        $firstService = 1;
+                        $query_end = "";
+                        $count = 0;
+                }
 	}
+	if ($count) {
+                $sth = $centstorage->query($query_start.$query_end);
+        }	
 }
 
 # Truncate service dashboard stats table
