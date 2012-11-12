@@ -197,11 +197,6 @@
 			{/if}
 			</td></tr>
 		{/if}
-		
-		{if $msg.perfparse}
-			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/data_down.gif'>&nbsp;&nbsp;{$form.header.purge_policy}</td></tr>
-			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="TODO"> {$form.purge_policy_id.label}</td><td class="FormRowValue">{$form.purge_policy_id.html}</td></tr>
-		{/if}
 	 </table>
 </div>
 <div id='tab4' class='tab'>
