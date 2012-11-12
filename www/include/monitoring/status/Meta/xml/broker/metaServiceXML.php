@@ -50,6 +50,7 @@
 	include_once($centreon_path."www/class/centreonACL.class.php");
 	include_once($centreon_path."www/class/centreonXML.class.php");
 	include_once($centreon_path."www/class/centreonDB.class.php");
+	include_once($centreon_path."www/class/centreonGMT.class.php");
 	include_once $centreon_path."www/include/monitoring/status/Common/common-Func.php";
 	include_once($centreon_path."www/include/common/common-Func.php");
 
@@ -221,6 +222,12 @@
 		$DBRESULT = $pearDB->query("SELECT `meta_name` FROM  `meta_service` WHERE `meta_id` = '$id'");
 		$dataMeta = $DBRESULT->fetchRow();
 		$DBRESULT->free();
+        
+        /**
+         * Preparing CentreonGMT class for transforming dates
+         */
+        $gmtManager = new CentreonGMT($pearDB);
+        $gmtManager->getMyGMTFromSession($sid, $pearDB);
 
 		$buffer->startElement("l");
 		$buffer->writeAttribute("class", $class);
@@ -247,8 +254,8 @@
 		$buffer->writeElement("ha", $ndo["acknowledged"]);
 		$buffer->writeElement("hae", $ndo["active_checks"]);
         $buffer->writeElement("hpe", $ndo["passive_checks"]);
-        $buffer->writeElement("nc", date($date_time_format_status, $ndo["next_check"]));
-        $buffer->writeElement("lc", date($date_time_format_status, $ndo["last_check"]));
+        $buffer->writeElement("nc", $gmtManager->getDate($date_time_format_status, $ndo["next_check"]));
+        $buffer->writeElement("lc", $gmtManager->getDate($date_time_format_status, $ndo["last_check"]));
 		$buffer->writeElement("d", $duration);
 		$buffer->endElement();
 	}
