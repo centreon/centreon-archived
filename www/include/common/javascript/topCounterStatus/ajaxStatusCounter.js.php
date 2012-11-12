@@ -53,7 +53,7 @@ function getXhrC(){
 	return xhrC;
 }
 
-function reloadStatusCounter(_relaod_time, _sid) {
+function reloadStatusCounter(_reload_time, _sid) {
 
 	_form=document.getElementById('AjaxBankBasic');
 	_version=_form.version.value;
@@ -222,9 +222,9 @@ function reloadStatusCounter(_relaod_time, _sid) {
 
 	xhrC.open("POST",_adrrsearchC,true);
 	xhrC.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
-	xhrC.send("sid="+_sid+"&version="+_version+"&session_expire="+(_relaod_time/1000));
+	xhrC.send("sid="+_sid+"&version="+_version+"&session_expire="+(_reload_time/1000));
 	//setQuickTip();
-	setTimeout('reloadStatusCounter("'+ _relaod_time +'","'+ _sid +'")', _relaod_time);
+	setTimeout('reloadStatusCounter("'+ _reload_time +'","'+ _sid +'")', _reload_time);
 }
 
 function setQuickTip() {
