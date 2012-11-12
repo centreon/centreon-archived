@@ -195,11 +195,6 @@
 		else
 			$end = $_GET["end"];
 
-		if ($CentreonGMT->used()) {
-		    $start  = $CentreonGMT->getUTCDate($start);
-		    $end    = $CentreonGMT->getUTCDate($end);
-		}
-
 		/*
 		 * Begin Command Line
 		 */
@@ -270,8 +265,8 @@
 		 * Add Timezone for current user.
 		 */
 
-                if ($CentreonGMT->used())
-			$command_line = "export TZ='CMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
+        if ($CentreonGMT->used())
+            $command_line = "export TZ='GMT".$CentreonGMT->getMyGMTForRRD()."' ; ".$command_line;
 
 		$command_line = escape_command("$command_line");
 
