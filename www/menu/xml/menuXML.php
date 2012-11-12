@@ -131,7 +131,7 @@
 
 	$rq = "SELECT * " .
 			"FROM topology " .
-			"WHERE topology_parent = '".$_GET["menu"]."' " .$access->queryBuilder("AND", "topology_page", $topoStr) .
+			"WHERE topology_parent = '".$pearDB->escape($_GET["menu"])."' " .$access->queryBuilder("AND", "topology_page", $topoStr) .
 			"AND topology_show = '1' " .
 			"ORDER BY topology_group, topology_order";
 	$DBRESULT = $pearDB->query($rq);
