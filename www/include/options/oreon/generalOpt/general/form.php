@@ -79,7 +79,7 @@
 	$form->addElement('text', 'AjaxTimeReloadMonitoring', _("Refresh Interval for monitoring"), $attrsText2);
 	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', _("First Refresh delay for statistics"), $attrsText2);
 	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', _("First Refresh delay for monitoring"), $attrsText2);
-	$form->addElement('text', 'gmt', _("Default timezone"), $attrsText2);
+	$form->addElement('text', 'gmt', _("Default host timezone"), $attrsText2);
 	$form->addElement('text', 'batch_cache_path', _("Cache path"), $attrsText);
 
 	$templates = array();
