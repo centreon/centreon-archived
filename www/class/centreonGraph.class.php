@@ -1221,8 +1221,13 @@ class CentreonGraph {
         }
 
         $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
-        if ($this->GMT->used())
-            $commandLine = "export TZ='CMT".$this->GMT->getMyGMTForRRD()."' ; ".$commandLine;
+        if ($this->GMT->used()){
+            $offset = -1 * ($this->GMT->getMyGMT() + date('Z') / 60 / 60);
+            if($offset > 0){
+                $offset = '+' . $offset;
+            }
+            $commandLine = "export TZ='GMT" . $offset . "' ; " . $commandLine;
+        }
         
         $this->_log($commandLine);
         /*
