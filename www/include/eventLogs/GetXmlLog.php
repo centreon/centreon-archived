@@ -42,7 +42,7 @@
 	 * XML tag
 	 */
 	stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml") ? header("Content-type: application/xhtml+xml") : header("Content-type: text/xml");
-
+    header('Content-Disposition: attachment; filename="eventLogs-' . time() . '.xml"');
 	/** ****************************
 	 * Include configurations files
 	 */
