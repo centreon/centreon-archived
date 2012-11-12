@@ -55,15 +55,16 @@
  	 */
  	public function __construct($centreon_path, $centreon = null)
  	{
-		if (isset($centreon)) {
-			$this->_lang = $centreon->user->lang;
-			$this->_charset = $centreon->user->charset;
-		} else {
-			$this->_lang = "en_US";
-			$this->_charset = "UTF-8";
-		}
-		$this->_path = $centreon_path;
-		$this->setCharsetList();
+            $this->_lang = "en_US";
+            $this->_charset = "UTF-8";	
+            if (!is_null($centreon) && isset($centreon->user->lang)) {
+                $this->_lang = $centreon->user->lang;
+            }
+            if (!is_null($centreon) && isset($centreon->user->charset)) {
+                $this->_charset = $centreon->user->charset;
+            }
+            $this->_path = $centreon_path;
+            $this->setCharsetList();
  	}
 
  	/**
