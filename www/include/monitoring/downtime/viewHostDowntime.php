@@ -68,11 +68,25 @@
 
 	if (isset($_POST["view_all"]))
 		$view_all = 1;
-	else if (isset($_GET["view_all"]))
+	else if (isset($_GET["view_all"]) && !isset($_POST["SearchB"]))
 		$view_all = 1;
 	else
 		$view_all = 0;
 
+	if (isset($_POST["view_downtime_cycle"]))
+		$view_downtime_cycle = 1;
+	else if (isset($_GET["view_downtime_cycle"]) && !isset($_POST["SearchB"]))
+		$view_downtime_cycle = 1;
+	else
+		$view_downtime_cycle = 0;
+	
+	if (isset($_POST["search_author"]))
+		$search_author = $_POST["search_author"];
+	else if (isset($_GET["search_author"]) && !isset($_POST["SearchB"]))
+		$search_author = $_GET["search_author"];
+	else
+		$search_author = NULL;
+		
 	/*
 	 * Init GMT class
 	 */
@@ -132,6 +146,8 @@
 		$request .= (isset($host_name) && $host_name != "" ? " AND obj.name1 LIKE '%$host_name%'" : "") .
 				(isset($search_output) && $search_output != "" ? " AND dtm.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
+				(isset($search_author) && $search_author != "" ? " AND dtm.author_name LIKE '%$search_author%'" : "") .
+		   		(isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND dtm.comment_data NOT LIKE '%Downtime cycle%' " : "") .
 				"AND obj.object_id = dtm.object_id " .
 				$centreon->user->access->queryBuilder("AND", "obj.name1", $hostStr) .
 				(isset($view_all) && $view_all == 0 ? "AND dtm.scheduled_end_time > '".date("Y-m-d G:i:s", time())."' " : "") .
@@ -160,6 +176,8 @@
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
 				$centreon->user->access->queryBuilder("AND", "h.name", $hostStr) .
+           		(isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+        		(isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
 				(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
 				"ORDER BY d.start_time DESC " .
 				"LIMIT ".$num * $limit.", ".$limit;
@@ -240,10 +258,14 @@
 	$tpl->assign("user", _("Users"));
 	$tpl->assign('Hostgroup', _("Hostgroup"));
 	$tpl->assign('Search', _("Search"));
-	$tpl->assign("ViewAll", _("Show finished downtime"));
+	$tpl->assign("ViewAll", _("Display Finished Downtime"));
+	$tpl->assign("ViewDowntimeCycle", _("Display Downtime Cycle"));
+	$tpl->assign("Author", _("Author"));
 	$tpl->assign("search_output", $search_output);
 	$tpl->assign('search_host', $host_name);
 	$tpl->assign('view_all', $view_all);
+	$tpl->assign('view_downtime_cycle', $view_downtime_cycle);
+	$tpl->assign('search_author', $search_author);
 
 	/**
 	 * Get Hostgroups

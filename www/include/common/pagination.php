@@ -112,6 +112,13 @@
 	if (isset($_REQUEST['view_all'])) {
 	    $url_var .= "&view_all=" . $_REQUEST['view_all'];
 	}
+	
+	if (isset($_REQUEST['view_downtime_cycle'])) {
+		$url_var .= "&view_downtime_cycle=" . $_REQUEST['view_downtime_cycle'];
+	}
+	if (isset($_REQUEST['search_author'])) {
+	    $url_var .= "&search_author=" . $_REQUEST['search_author'];
+	}
 
 	/* Fix for status in service configuration */
 	if (isset($_REQUEST['status'])) {

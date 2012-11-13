@@ -5,7 +5,14 @@
 	<tr>
 		<td>{$Host}: <input type='text' name='search_host' value="{$search_host}" /></td>
 		<td>&nbsp;&nbsp;{$Output}: <input type='text' name='search_output' value="{$search_output}" /></td>
+		<td>&nbsp;&nbsp;{$Author}: <input type='text' name='search_author' value="{$search_author}" /></td>
+	</tr>
+</table>
+<br />
+<table class="ajaxOption">
+	<tr>
 		<td>&nbsp;&nbsp;{$ViewAll}: <input type='checkbox' name='view_all' {if $view_all == '1'}checked{/if} /></td>
+		<td>&nbsp;&nbsp;{$ViewDowntimeCycle}: <input type='checkbox' name='view_downtime_cycle' {if $view_downtime_cycle == '1'}checked{/if} /></td>
 	    <td><input type='submit' name='SearchB' value='{$Search}' /></td>
 	</tr>
 </table>
