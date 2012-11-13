@@ -84,6 +84,7 @@
 	$donwtime_activate[] = HTML_QuickForm::createElement('radio', 'downtime_activate', null, _("No"), '0');
 	$form->addGroup($donwtime_activate, 'downtime_activate', _("Enable"), '&nbsp;');
 	$form->setDefaults(array('downtime_activate' => '1'));
+	
 	$page = $form->addElement('hidden', 'p');
 	$page->setValue($p);
 	$redirect = $form->addElement('hidden', 'o');
@@ -132,13 +133,16 @@
 	$svcs = array();
 	if (isset($id) && $id != 0) {
 	    $query = "SELECT s.service_id, s.service_description, h.host_name, h.host_id
-	    	FROM service s, host h, host_service_relation hsr, downtime_service_relation dsr
-	    	WHERE h.host_id = hsr.host_host_id AND s.service_id = hsr.service_service_id AND dsr.dt_id = " . $id ." AND dsr.host_host_id = h.host_id AND dsr.service_service_id = s.service_id
+	    	FROM service s, host h, downtime_service_relation dsr
+	    	WHERE 
+	    		dsr.dt_id = " . $id ." AND 
+	    		dsr.host_host_id = h.host_id AND 
+	    		dsr.service_service_id = s.service_id
 	    	ORDER BY h.host_name, s.service_description";
 	    $DBRESULT = $pearDB->query($query);
 	    while ($svc = $DBRESULT->fetchRow()) {
 	        $svc_id = $svc['host_id'] . '-' . $svc['service_id'];
-	        $svc_name = $svc['host_name'] . '-' . $svc['service_description'];
+	        $svc_name = $svc['host_name'] . '/' . $svc['service_description'];
 	        $svcs[$svc_id] = $svc_name;
 	    }
 	}
