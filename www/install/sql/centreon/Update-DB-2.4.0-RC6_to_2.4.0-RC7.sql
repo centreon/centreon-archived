@@ -23,4 +23,7 @@ ALTER TABLE `auth_ressource` ADD COLUMN `ar_description` VARCHAR (255) NOT NULL 
 ALTER TABLE `contact` ADD COLUMN `ar_id` INT (11) DEFAULT NULL AFTER `contact_ldap_dn`;
 ALTER TABLE `contact` ADD CONSTRAINT `fk_ar_id` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE SET NULL;
 
+-- Remove all logAnalyser entries to ensure only one will exist
+DELETE FROM `cron_operation` WHERE `name` = 'logAnalyser';
+
 UPDATE `informations` SET `value` = '2.4.0-RC7' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC6' LIMIT 1;
