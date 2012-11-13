@@ -40,8 +40,10 @@
      * Init Command Cache
      *
      * @param CentreonDB $DB
+     * @param int $pollerId
+     * @return array
      */
-    function intCmdParam($DB)
+    function intCmdParam($DB, $pollerId)
     {
         $cache = array('tpl' => array(), 'svc' => array());
 
@@ -53,7 +55,22 @@
         $DBRESULT->free();
 
         $i = 0;
-        $DBRESULT =& $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg FROM service ORDER BY service_register ASC");
+        $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg 
+                                 FROM service s, host_service_relation hsr, ns_host_relation nhr
+                                 WHERE s.service_id = hsr.service_service_id
+                                 AND hsr.host_host_id = nhr.host_host_id
+                                 AND nhr.nagios_server_id = ".$DB->escape($pollerId)."
+                                 UNION
+                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg 
+                                 FROM service s, host_service_relation hsr, ns_host_relation nhr, hostgroup_relation hgr
+                                 WHERE s.service_id = hsr.service_service_id
+                                 AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+                                 AND hgr.host_host_id = nhr.host_host_id
+                                 AND nhr.nagios_server_id = ".$DB->escape($pollerId)."
+                                 UNION
+                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg 
+                                 FROM service s
+                                 WHERE service_register = '0'");
         while ($data = $DBRESULT->fetchRow()) {
             if ($data["service_register"] == 1) {
                 if ($data["command_command_id_arg"] && !$data["command_command_id"]){

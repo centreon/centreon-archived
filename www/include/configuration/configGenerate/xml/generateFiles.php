@@ -239,7 +239,7 @@ try {
             require $path."genEscalations.php";
             require $path."genDependencies.php";
             require $path."centreon_pm.php";
-
+            
             if ($tab['localhost']) {
                 $flag_localhost = $tab['localhost'];
                 
