@@ -77,8 +77,8 @@ function printDebug($xml)
         $msg_debug[$host['id']] = "";
         $i = 0;
         foreach ($lines as $line) {
-            if (strncmp($line, "Processing object config file", strlen("Processing object config file")) && $i
-            && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org")))
+            if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
+                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))) 
             $msg_debug[$host['id']] .= $line . "<br>";
             $i++;
         }
