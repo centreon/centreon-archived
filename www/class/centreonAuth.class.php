@@ -105,7 +105,7 @@ class CentreonAuth {
             if ($row['ari_name'] == 'ldap_auto_import') {
                 $this->ldap_auto_import[$row['ari_id']] = $row['ari_value'];
             } elseif ($row['ari_name'] == 'ldap_store_password') {
-                $this->ldap_store_password[$row['ari_id']] = $row['ari_value'];
+                $this->ldap_store_password[$row['ar_id']] = $row['ari_value'];
             }
         }
         $this->checkUser($username, $password);
