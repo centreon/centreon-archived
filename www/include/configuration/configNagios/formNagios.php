@@ -279,8 +279,6 @@
 
 	$nagTab = array();
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'log_initial_states', null, _("Yes"), '1');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'log_initial_states', null, _("No"), '0');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'log_initial_states', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'log_initial_states', _("Initial State Logging Option"), '&nbsp;');
 
 	$nagTab = array();
@@ -650,7 +648,7 @@
 		"log_service_retries" => '2',
 		"log_host_retries" => '2',
 		"log_event_handlers" => '2',
-		"log_initial_states" => '0',
+		"log_initial_states" => '1',
 		"log_external_commands" => '1',
 		"log_passive_checks" => '1',
 		"inter_check_delay_method" => 's',
@@ -814,7 +812,9 @@
 		$tpl->assign("Bytes", _("bytes"));
         $tpl->assign("BrokerOptionsWarning", 
                      _("Warning: this value can be dangerous, use -1 if you have any doubt."));
-		$tpl->display("formNagios.ihtml");
+        $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
+        $tpl->display("formNagios.ihtml");
+		
 	}
 	?>
 <script type="text/javascript">
