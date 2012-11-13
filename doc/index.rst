@@ -22,6 +22,7 @@ Contents:
 
    installation/index
    user/index
+   extending/index
 
 
 Indices and tables

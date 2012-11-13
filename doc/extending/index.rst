@@ -1,0 +1,7 @@
+##################
+Extending Centreon
+##################
+
+.. toctree::
+
+   widgets
