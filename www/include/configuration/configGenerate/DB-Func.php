@@ -535,8 +535,7 @@
 	function create_file($filename, $name, $header = true)	{
 		$oldumask = umask(0113);
 		if (!$handle = fopen($filename, 'w')) {
-	    	echo _("Can't access to needed file").$filename;
-	    	exit;
+            throw new RuntimeException('Cannot open file "' . $filename . '"');
 		}
 		umask($oldumask);
 		$header ? print_header($handle, $name) : NULL;
@@ -546,8 +545,7 @@
 	// write data into the file
 	function write_in_file($handle, $content, $filename)	{
 		if (strcmp($content, "") && !fwrite($handle, $content)) {
-			echo _("Can't access to needed file")." ".$filename;
-			exit();
+            throw new RuntimeException('Cannot write to file "' . $filename . '"');
 		}
 	}
 
