@@ -206,14 +206,14 @@
 				$request .= " AND s.state != '0' ";
 			}
 		} else {
-			$request .= " AND s.state != '0'";
+			$request .= " AND (s.state != 0 AND s.state != 4) ";
 		}
 		$request .= " AND s.state_type = 1";
 		$request .= " AND s.acknowledged = 0";
 		$request .= " AND s.scheduled_downtime_depth = 0";
 		$request .= " AND h.acknowledged = 0 AND h.scheduled_downtime_depth = 0 ";
 	} else if ($o == "svcpb") {
-		$request .= " AND s.state != 0";
+		$request .= " AND s.state != 0 AND s.state != 4 ";
 	} else if ($o == "svc_ok") {
 		$request .= " AND s.state = 0";
 	} else if ($o == "svc_warning") {

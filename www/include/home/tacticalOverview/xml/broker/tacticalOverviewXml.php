@@ -120,7 +120,8 @@
             " AND h.state_type = 1" .
             " AND h.instance_id = i.instance_id" .
 			$centreon->user->access->queryBuilder("AND", "h.host_id", $acl_host_id_list) .
-			" AND h.state <> 0" .
+			" AND h.state != 0" .
+			" AND h.state != 4" .
 			" AND h.acknowledged = 0" .
 			" AND h.scheduled_downtime_depth = 0" .
 			" AND h.name NOT LIKE '_Module_%'" .
@@ -313,7 +314,7 @@
 			" AND s.enabled = 1 " .
                         " AND s.state_type = 1 ".
 			" AND s.acknowledged = 0" .
-			" AND s.state > 0 GROUP BY s.service_id";
+			" AND s.state != 0 AND s.state != 4 GROUP BY s.service_id";
 	} else {
 		$rq2 = 	" SELECT s.state, s.host_id".
 			" FROM services s, hosts h " .
@@ -322,7 +323,7 @@
 			" AND s.enabled = 1 " .
                         " AND s.state_type = 1 ".
 			" AND s.acknowledged = 0" .
-			" AND s.state > 0 GROUP BY s.service_id";
+			" AND s.state != 0 AND s.state != 4 GROUP BY s.service_id";
 	}
 	$onPbHost = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0);
 
@@ -435,7 +436,8 @@
                 " FROM services s, hosts h, centreon_acl, instances i," .
                 " WHERE h.host_id = s.host_id " .
                 " AND h.instance_id = i.instance_id " .
-                " AND s.state > 0" .
+                " AND s.state != 0" .
+                " AND s.state != 4" .
                 " AND s.acknowledged = 0" .
                 " AND s.scheduled_downtime_depth = 0" .
                 " AND s.enabled = 1" .
@@ -451,7 +453,8 @@
                 " FROM hosts h, centreon_acl, instances i, services s" .
                 " WHERE h.host_id = s.host_id " .
 		        " AND h.instance_id = i.instance_id " .
-                " AND s.state > 0" .
+                " AND s.state != 0" .
+				" AND s.state != 4" .
                 " AND s.acknowledged = 0" .
 		        " AND s.scheduled_downtime_depth = 0" .
                 " AND s.enabled = 1".
@@ -666,19 +669,17 @@
 	    $xml->writeElement('hid', $tab_hobjectid[$key]);
 	    $xml->writeElement('domId', $tab_hobjectid[$key] . "_" . $domId);
 	    $xml->writeElement('class', $style);
+	    
 	    if ($tab_state[$key] == 1) {
 	        $xml->writeElement('state', _('Warning'));
 	        $xml->writeElement('bgcolor', $general_opt['color_warning']);
-	    }
-	    elseif ($tab_state[$key] == 2) {
+	    } elseif ($tab_state[$key] == 2) {
 	        $xml->writeElement('state', _('Critical'));
 	        $xml->writeElement('bgcolor', $general_opt['color_critical']);
-	    }
-	    elseif ($tab_state[$key] == 3) {
+	    } elseif ($tab_state[$key] == 3) {
 	        $xml->writeElement('state', _('Unknown'));
 	        $xml->writeElement('bgcolor', $general_opt['color_unknown']);
-	    }
-	    elseif ($tab_state[$key] == 4) {
+	    } elseif ($tab_state[$key] == 4) {
 	        $xml->writeElement('state', _('Pending'));
 	        $xml->writeElement('bgcolor', $general_opt['color_pending']);
 	    }

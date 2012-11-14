@@ -105,7 +105,7 @@
 	if ($o == "svcgrid_pb" || $o == "svcOV_pb" || $o == "svcSum_pb" || $o == "svcgrid_ack_0" || $o == "svcOV_ack_0" || $o == "svcSum_ack_0") {
 		$rq1 .= " AND hosts.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.state != 0 AND s.enabled = 1)";
+				" WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 	}
 	if ($o == "svcgrid_ack_1" || $o == "svcOV_ack_1" || $o == "svcSum_ack_1") {
 		$rq1 .= " AND hosts.host_id IN (" .

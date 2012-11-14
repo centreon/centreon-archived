@@ -158,7 +158,7 @@
             $rq1 .= " AND (h.name LIKE '%" . $search . "%' OR h.alias LIKE '%" . $search . "%' OR h.address LIKE '%" . $search . "%') ";
 	}
 	if ($o == "hpb") {
-            $rq1 .= " AND h.state != 0 ";
+            $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
 	} elseif ($o == "h_up") {
             $rq1 .= " AND h.state = 0 ";
 	} elseif ($o == "h_down") {
@@ -180,7 +180,7 @@
                 $rq1 .= " AND h.state = 4 ";
 			}
 	    } else {
-	        $rq1 .= " AND h.state != 0 ";
+	        $rq1 .= " AND (h.state != 0 AND h.state != 4) ";
 	    }
         $rq1 .= " AND h.state_type = '1'";
         $rq1 .= " AND h.acknowledged = 0";

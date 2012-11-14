@@ -99,7 +99,7 @@
 	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
 		$rq1 .= " AND h.host_id IN (" .
 				" SELECT s.host_id FROM services s " .
-				" WHERE s.state != 0 AND s.enabled = 1)";
+				" WHERE s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 	}
 	if ($o == "svcSumHG_ack_0") {
 		$rq1 .=	" AND h.host_id IN (" .
