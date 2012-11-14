@@ -153,6 +153,7 @@
 	
 	# Form Rules
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
+	$form->addRule('description', _("Compulsory Name"), 'required');
 	
 	#End of form definition
 	
