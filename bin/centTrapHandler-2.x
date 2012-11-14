@@ -57,14 +57,14 @@ if ($@) {
 ###############################
 # Init 
 
-$cmdFile = "/var/lib/centreon/centcore.cmd";
-$etc = "/etc/centreon/";
+$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+$etc = "@CENTREON_ETC@";
 
 # Timeout for write in cmd in seconds
 $TIMEOUT = 10;
 
 # Define Log File
-$LOG = "/var/log/centreon/centTrapHandler.log";
+$LOG = "@CENTREON_VARLOG@/centTrapHandler.log";
 
 # Configure Debug status
 $debug = 0;
