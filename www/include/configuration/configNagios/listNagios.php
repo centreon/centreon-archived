@@ -121,18 +121,6 @@
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 
-	$interval = -42;
-	foreach ($elemArr as $tab) {
-		if ($interval == -42)
-			$interval = $tab["RowMenu_interval"];
-		else {
-			if ($interval != $tab["RowMenu_interval"]) {
-				$tpl->assign("msg_interval", _("Be careful: the interval lenght is different between your pollers! This can lead to difficulties in configuring your services."));
-				break;
-			}
-		}
-	}
-
 	$tpl->assign("elemArr", $elemArr);
 
 	/*
