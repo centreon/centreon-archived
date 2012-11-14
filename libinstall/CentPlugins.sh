@@ -74,13 +74,14 @@ chown -R $CENTREON_USER:$CENTREON_GROUP $TMP_DIR/final/plugins/Centreon
 ## Install the plugins
 log "INFO" "$(gettext "Installing the plugins")"
 $INSTALL_DIR/cinstall $cinstall_opts \
+    -u $CENTREON_USER -g $MONITORINGENGINE_GROUP \
 	-m 755 -p $TMP_DIR/final/plugins \
 	$TMP_DIR/final/plugins/* $PLUGIN_DIR >> $LOG_FILE 2>&1
 	
 check_result $? "$(gettext "Installing the plugins")"
 
 ## change right for a specific file
-$INSTALL_DIR/cinstall -f $cinstall_opts -g $NAGIOS_GROUP \
+$INSTALL_DIR/cinstall -f $cinstall_opts -g $MONITORINGENGINE_GROUP \
 	-m 664 $TMP_DIR/final/plugins/centreon.conf \
 	$PLUGIN_DIR/centreon.conf >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Change right on") centreon.conf"
