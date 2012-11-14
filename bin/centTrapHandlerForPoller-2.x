@@ -241,7 +241,7 @@ sub getServiceInformations($$$)	{
                     'trap_status' => $row->{'traps_status'},
                     'traps_submit_result_enable' => $row->{'traps_submit_result_enable'},
                     'traps_execution_command' => $row->{'traps_execution_command'},
-                    'traps_reschedule_svc_enable' => $row->{'traps_reschedule_svc_enable1'},
+                    'traps_reschedule_svc_enable' => $row->{'traps_reschedule_svc_enable'},
                     'traps_execution_command_enable' => $row->{'traps_execution_command_enable'},
                     'traps_advanced_treatment' => $row->{'traps_advanced_treatment'},
                     'traps_args' => $row->{'traps_args'});
@@ -321,12 +321,34 @@ sub forceCheck($$$$) {
 #######################################
 ## Submit result via external command
 #
-sub submitResult($$$$$$$) {
-    my ($dbh, $this_host, $this_service, $datetime, $status, $arguments_line, $cmdFileUnused) = @_;
+sub submitResult($$$$$$$$$$) {
+    my ($dbh, $this_host, $this_service, $ip, $hostname, $datetime, $status, $output, $cmdFile, $ref_macros) = @_;
     my $result;
 
+    my @macros = @{$ref_macros};
+
+    ##########################
+    # Replace Args
+    #$output = replaceArgs($output, \@macros);
+    # Repalce OID
+    #$output = replaceOID($output, \@macros);
+    
+    ##########################
+    # REPLACE special Chars
+    if ($htmlentities == 1) {
+	$output = decode_entities($output);
+    } else {
+	$output =~ s/\&quot\;/\"/g;
+	$output =~ s/\&#039\;\&#039\;/"/g;
+    }
+    $output =~ s/\@HOSTNAME\@/$this_host/g;
+    $output =~ s/\@HOSTADDRESS\@/$ip/g;
+    $output =~ s/\@HOSTADDRESS2\@/$hostname/g;
+    $output =~ s/\@SERVICEDESC\@/$this_service/g;
+    $output =~ s/\@TIME\@/$datetime/g;
+
     # No matching rules
-    my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line\" >> $cmdFile'";
+    my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
     $result = send_command($submit);
 
     logit("SUBMIT: Force service status via passive check update", "II");
@@ -347,6 +369,8 @@ sub replaceOID($$) {
 
     my $x = 1;
     my $oid = "";
+    my $star = "";
+    my $pstar = "";
     foreach (@macros) {
 	if (defined($macros[$x])) {
 	    $oid = $OIDTable[$x];
@@ -354,9 +378,26 @@ sub replaceOID($$) {
 		logit("REPLACE OID: $str => /\@\{".$oid."\}/".$macros[$x]."/", "DD");
 	    }
 	    $str =~ s/\@\{$oid\}/$macros[$x]/g;
+
+	    if ($star ne "") {
+		$star .= " ";
+		$pstar .= " ";
+	    }
+
+	    # Replace specific value from SNMPTT.
+	    $star .= $macros[$x];
+	    $pstar .= $oid.":".$macros[$x];
 	    $x++;
 	}
     }
+    $str =~ s/\$\*/$star/g;
+    $str =~ s/\$\+\*/$pstar/g;
+
+    if ($debug) {
+	logit("REPLACE OID: $star => /\$\*/".$star."/", "DD");
+	logit("REPLACE OID: $star => /\$\+\*/".$pstar."/", "DD");
+    }
+    
     return $str;
 }
 
@@ -385,8 +426,8 @@ sub replaceArgs($$) {
 #######################################
 ## Check Advanced Matching Rules
 #
-sub checkMatchingRules($$$$$$$$$) {
-    my ($dbh, $trap_id, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
+sub checkMatchingRules($$$$$$$$$$) {
+    my ($dbh, $trap_id, $this_host, $service_description, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
 
     my @macros = @{$ref_macros};
     
@@ -429,6 +470,7 @@ sub checkMatchingRules($$$$$$$$$) {
 	$tmoString =~ s/\@HOSTNAME\@/$this_host/g;
 	$tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
 	$tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
+	$tmoString =~ s/\@SERVICEDESC\@/$service_description/g;
 	$tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
 	$tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
 	$tmoString =~ s/\@TIME\@/$datetime/g;
@@ -448,8 +490,8 @@ sub checkMatchingRules($$$$$$$$$) {
 ################################
 ## Execute a specific command
 #
-sub executeCommand($$$$$$$$) {
-    my ($traps_execution_command, $this_host, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
+sub executeCommand($$$$$$$$$) {
+    my ($traps_execution_command, $this_host, $service_description, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
     
     my @macros = @{$ref_macros};
 
@@ -473,8 +515,9 @@ sub executeCommand($$$$$$$$) {
 	$traps_execution_command =~ s/\&#039\;/'/g;
     }
     $traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
-    $traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
-    $traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
+    $traps_execution_command =~ s/\@HOSTADDRESS\@/$ip/g;
+    $traps_execution_command =~ s/\@HOSTADDRESS2\@/$hostname/g;
+    $traps_execution_command =~ s/\@SERVICEDESC\@/$service_description/g;
     $traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
     $traps_execution_command =~ s/\@OUTPUT\@/$arguments_line/g;
     $traps_execution_command =~ s/\@STATUS\@/$status/g;
@@ -517,7 +560,6 @@ sub getTrapsInfos($$$$$) {
     my $arguments_line = shift;
     my $allargs = shift;
     
-    my $status;
     my @macros;
 
     # Remove SNMPTT Separator
@@ -573,13 +615,13 @@ sub getTrapsInfos($$$$$) {
 		######################################################################
 		# Advanced matching rules
 		if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-		    $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
+		    $status = checkMatchingRules($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
 		}
 		
 		#####################################################################
 		# Submit value to passive service
 		if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-		    submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_args, $cmdFile);
+		    submitResult($dbh, $this_host, $this_service, $ip, $hostname, $datetime, $status, $traps_args, $cmdFile, \@macros);
 		}
 		
 		######################################################################
@@ -591,7 +633,7 @@ sub getTrapsInfos($$$$$) {
 		######################################################################
 		# Execute special command
 		if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-		    executeCommand($traps_execution_command, $this_host, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
+		    executeCommand($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
 		}
 	    }
 	}
@@ -613,6 +655,7 @@ sub myDie($) {
 #
 
 if ($debug) {
+    logit("======================================", "DD");
     logit("centTrapHandler launched....", "DD");
     logit("PID: $$", "DD");
 }
