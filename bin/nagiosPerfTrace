@@ -373,6 +373,8 @@ sub get_poller()	{
 			die "Error:" . $cfg_item->errstr . "\n";
 	    }
 	    $cfg_result = $cfg_item->fetchrow_hashref();
+        next if !defined $cfg_result->{cfg_dir};
+
 	    $cfg_dir = $cfg_result->{'cfg_dir'};
 	    $cfg_dir =~ s!/\$!!g;
 	    if ($cfg_dir eq '') {
