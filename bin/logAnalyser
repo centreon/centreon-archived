@@ -421,6 +421,18 @@ sub parseFile ($$) {
     return $cpt;
 }
 
+=head2 date_to_time($date)
+
+Convert $date to a timestamp.
+
+=cut
+sub date_to_time($) {
+    my $date = shift;
+
+    $date =~ s|-|/|g;
+    return int(`date -d $date +%s`);
+}
+
 =head2 parseArchive($instance, $localhost, $startdate)
 
 
@@ -451,8 +463,7 @@ sub parseArchive($$$) {
     if (!defined $startdate) {
         $last_log = time() - ($retention * 24 * 60 * 60);
     } else {
-        $startdate =~ s|-|/|g;
-        $last_log = int(`date -d $startdate +%s`);
+        $last_log = date_to_time($startdate);
     }
     foreach (@log_files) {
 		$_ =~ /nagios\-([0-9\-]+).log/;
@@ -460,6 +471,7 @@ sub parseArchive($$$) {
 		my $temp = $time[0]."/".$time[1]."/".$time[2];
 		$temp = `date -d $temp +%s`;
 		if ($temp > $last_log) {
+            print "Parsing log file: $_\n";
 		    if (!(-r $archives.$_)) {
 				writeLogFile("Error : cannot read file $archives$_");
 		    } else {
@@ -608,13 +620,19 @@ if (defined($opt_p)) {
         $sth1->finish();
         if ($opt_a) {
             # Empty line counter
-            $res = $dbh->do("UPDATE `instance` SET `log_flag` = '0'");
+            $res = $dbh->do("UPDATE `instance` SET `log_flag` = '0' WHERE `instance_id` = $ns_server->{id}");
             if (!defined($res)) {
                 die "SQL UPDATE Error : UPDATE `instance` SET `log_flag` = '0'\n";
             }
             if (!$flag) {
-                $res = $dbh->do("TRUNCATE TABLE `log`");
-                writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));
+                if (!defined $opt_s) {
+                    $res = $dbh->do("TRUNCATE TABLE `log`");
+                    writeLogFile("SQL INSERT ERROR :TRUNCATE TABLE `log`") if (!defined($res));
+                } else {
+                    my $limit = date_to_time($opt_s);
+                    $res = $dbh->do("DELETE FROM `log` WHERE `ctime` >= $limit");
+                    writeLogFile("SQL ERROR: DELETE FROM `log`") if !defined($res);
+                }
                 $flag = 1;
             }
             clear_flag_position_file($ns_server->{'id'});
