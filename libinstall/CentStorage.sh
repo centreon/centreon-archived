@@ -258,6 +258,11 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTSTORAGE_BINDIR/nagiosPerfTrace >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install nagiosPerfTrace")"
 
+if [ -f "$CENTREON_LOG/nagiosPerfTrace.log" ]; then
+    log "INFO" "$(gettext "Applying proper permissions to nagiosPerfTrace.log file")"
+    $CHOWN $CENTREON_USER:$CENTREON_GROUP $CENTREON_LOG/nagiosPerfTrace.log
+fi
+
 #echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
 
 ## purgeLogs
