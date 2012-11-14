@@ -209,67 +209,72 @@
 
 	$inactivInstance = "";
 
-	$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
-				"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
-				"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id AND ".$obj->ndoPrefix."instances.instance_name IN ($pollerList)";
-	$DBRESULT = $obj->DBNdo->query($request);
-	while ($ndo = $DBRESULT->fetchRow()) {
-		/*
-		 * Running
-		 */
-		if ($status != 2 && ($ndo["is_currently_running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 5))) {
-			$status = 1;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
+	if ($pollerList != "") {
+		$request = 	"SELECT UNIX_TIMESTAMP(`status_update_time`) AS last_update, `is_currently_running`, instance_name, ".$obj->ndoPrefix."instances.instance_id " .
+					"FROM `".$obj->ndoPrefix."programstatus`, ".$obj->ndoPrefix."instances " .
+					"WHERE ".$obj->ndoPrefix."programstatus.instance_id = ".$obj->ndoPrefix."instances.instance_id AND ".$obj->ndoPrefix."instances.instance_name IN ($pollerList)";
+		$DBRESULT = $obj->DBNdo->query($request);
+		while ($ndo = $DBRESULT->fetchRow()) {
+			/*
+			 * Running
+			 */
+			if ($status != 2 && ($ndo["is_currently_running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 5))) {
+				$status = 1;
+				if ($pollerListInError != "") {
+					$pollerListInError .= ", ";
+				}
+				$pollerListInError .= $ndo["instance_name"];
 			}
-			$pollerListInError .= $ndo["instance_name"];
-		}
-		if ($ndo["is_currently_running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 4)) {
-			$status = 2;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
+			if ($ndo["is_currently_running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 4)) {
+				$status = 2;
+				if ($pollerListInError != "") {
+					$pollerListInError .= ", ";
+				}
+				$pollerListInError .= $ndo["instance_name"];
 			}
-			$pollerListInError .= $ndo["instance_name"];
+			/*
+			 * Activity
+			 */
+			if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
+				$activity = 2;
+				if ($inactivInstance != "") {
+	            	$inactivInstance .= ",";
+	            }
+	            $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+			} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
+				$activity = 1;
+				if ($inactivInstance != "") {
+	            	$inactivInstance .= ",";
+	            }
+	            $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+			}
+	
 		}
-		/*
-		 * Activity
-		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
-			$activity = 2;
-			if ($inactivInstance != "") {
-            	$inactivInstance .= ",";
-            }
-            $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
-		} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
-			$activity = 1;
-			if ($inactivInstance != "") {
-            	$inactivInstance .= ",";
-            }
-            $inactivInstance .= $ndo["instance_name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+		$DBRESULT->free();
+		$error = "Pollers $pollerListInError not running.";
+	
+		$request = 	"SELECT stat_value, i.instance_id, instance_name " .
+					"FROM `nagios_stats` ns, instance i " .
+					"WHERE ns.stat_label = 'Service Check Latency' " .
+					"	AND ns.stat_key LIKE 'Average' " .
+					"	AND ns.instance_id = i.instance_id" .
+					"	AND i.instance_name IN ($pollerList)";
+		$DBRESULT = $obj->DBC->query($request);
+		while ($ndo = $DBRESULT->fetchRow()) {
+			if ($latency != 2 && $ndo["stat_value"] >= 60) {
+				$latency = 1;
+			}
+			if ($ndo["stat_value"] >= 120) {
+				$latency = 2;
+			}
 		}
-
+		$DBRESULT->free();
+		unset($ndo);
+	} else {
+		$pollerListInError = "";
+		$inactivInstance = "";
 	}
-	$DBRESULT->free();
-	$error = "Pollers $pollerListInError not running.";
-
-	$request = 	"SELECT stat_value, i.instance_id, instance_name " .
-				"FROM `nagios_stats` ns, instance i " .
-				"WHERE ns.stat_label = 'Service Check Latency' " .
-				"	AND ns.stat_key LIKE 'Average' " .
-				"	AND ns.instance_id = i.instance_id" .
-				"	AND i.instance_name IN ($pollerList)";
-	$DBRESULT = $obj->DBC->query($request);
-	while ($ndo = $DBRESULT->fetchRow()) {
-		if ($latency != 2 && $ndo["stat_value"] >= 60) {
-			$latency = 1;
-		}
-		if ($ndo["stat_value"] >= 120) {
-			$latency = 2;
-		}
-	}
-	$DBRESULT->free();
-	unset($ndo);
-
+	
 	/* ********************************************
 	 * Error Messages
 	 */

@@ -40,7 +40,7 @@
 
 	$debug = 0;
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+	include_once "/etc/centreon/centreon.conf.php";
 
 	require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
     require_once $centreon_path . 'www/class/centreonLang.class.php';
@@ -212,68 +212,75 @@
 	 */
 	$timeUnit = $minInterval * $intervalLength;
 
-	$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id " .
-				"FROM instances " .
-				"WHERE name IN ($pollerList)";
-	$DBRESULT = $obj->DBC->query($request);
-	$inactivInstance = "";
-	while ($ndo = $DBRESULT->fetchRow()) {
-		/*
-		 * Running
-		 */
-		if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 5))) {
-			$status = 1;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
+	if ($pollerList != "") {
+		$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id " .
+					"FROM instances " .
+					"WHERE name IN ($pollerList)";
+		$DBRESULT = $obj->DBC->query($request);
+		$inactivInstance = "";
+		while ($ndo = $DBRESULT->fetchRow()) {
+			/*
+			 * Running
+			 */
+			if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 5))) {
+				$status = 1;
+				if ($pollerListInError != "") {
+					$pollerListInError .= ", ";
+				}
+				$pollerListInError .= $ndo["name"];
 			}
-			$pollerListInError .= $ndo["name"];
-		}
-		if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 2)) {
-			$status = 2;
-			if ($pollerListInError != "") {
-				$pollerListInError .= ", ";
+			if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit / 2)) {
+				$status = 2;
+				if ($pollerListInError != "") {
+					$pollerListInError .= ", ";
+				}
+				$pollerListInError .= $ndo["name"];
 			}
-			$pollerListInError .= $ndo["name"];
+			/*
+			 * Activity
+			 */
+			if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
+				$activity = 2;
+				if ($inactivInstance != "") {
+	            	$inactivInstance .= ",";
+	            }
+	            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+			} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
+				$activity = 1;
+				if ($inactivInstance != "") {
+	            	$inactivInstance .= ",";
+	            }
+	            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+			}
+	
 		}
-		/*
-		 * Activity
-		 */
-		if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
-			$activity = 2;
-			if ($inactivInstance != "") {
-            	$inactivInstance .= ",";
-            }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
-		} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
-			$activity = 1;
-			if ($inactivInstance != "") {
-            	$inactivInstance .= ",";
-            }
-            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+		$DBRESULT->free();
+	
+		$error = "Pollers $pollerListInError not running.";
+		
+		$request = 	"SELECT stat_value, i.instance_id, name " .
+						"FROM `nagios_stats` ns, instances i " .
+						"WHERE ns.stat_label = 'Service Check Latency' " .
+						"	AND ns.stat_key LIKE 'Average' " .
+						"	AND ns.instance_id = i.instance_id" .
+						"	AND i.name IN ($pollerList)";
+		$DBRESULT = $obj->DBC->query($request);
+		while ($ndo = $DBRESULT->fetchRow()) {
+			if ($latency != 2 && $ndo["stat_value"] >= 60) {
+				$latency = 1;
+			}
+			if ($ndo["stat_value"] >= 120) {
+				$latency = 2;
+			}
 		}
-
+		$DBRESULT->free();
+		unset($ndo);
+		
+	} else {
+		$pollerListInError = "";
+		$inactivInstance = "";
 	}
-	$DBRESULT->free();
-	$error = "Pollers $pollerListInError not running.";
-
-	$request = 	"SELECT stat_value, i.instance_id, name " .
-				"FROM `nagios_stats` ns, instances i " .
-				"WHERE ns.stat_label = 'Service Check Latency' " .
-				"	AND ns.stat_key LIKE 'Average' " .
-				"	AND ns.instance_id = i.instance_id" .
-				"	AND i.name IN ($pollerList)";
-	$DBRESULT = $obj->DBC->query($request);
-	while ($ndo = $DBRESULT->fetchRow()) {
-		if ($latency != 2 && $ndo["stat_value"] >= 60) {
-			$latency = 1;
-		}
-		if ($ndo["stat_value"] >= 120) {
-			$latency = 2;
-		}
-	}
-	$DBRESULT->free();
-	unset($ndo);
-
+	
 	/* ********************************************
 	 * Error Messages
 	 */
