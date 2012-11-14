@@ -5,6 +5,7 @@
     compress
     delaycompress
     notifempty
+    missingok
 }
 
 @CENTREON_LOG@/error*.log {
@@ -14,4 +15,5 @@
     rotate 1
     ifempty
     nocreate
+    missingok
 } 
