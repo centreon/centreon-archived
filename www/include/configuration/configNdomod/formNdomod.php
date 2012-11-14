@@ -119,8 +119,11 @@
 								"config_output_options"=>'3',
 								"activate"=>'1'));
 	} else {
-		$form->setDefaults($cfg_ndomod);
-	}	
+		if (isset($cfg_ndomod)) {
+			$form->setDefaults($cfg_ndomod);
+		}
+	}
+		
 	$form->addElement('hidden', 'id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
