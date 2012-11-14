@@ -557,16 +557,6 @@ sub cleanOIDMacros($) {
 }
 
 #######################################
-## Replase Macro 
-#
-sub replaceMacroValues($$$$$$$$$) {
-    my ($output, $this_host, $service_description, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
-    
-    return 
-}
-
-
-#######################################
 ## GET HOSTNAME AND SERVICE DESCRIPTION
 #
 sub getTrapsInfos($$$$$) {
