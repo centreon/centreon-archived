@@ -56,10 +56,14 @@ class CentreonLogAction {
 
  		$query = "INSERT INTO `log_action_modification` (field_name, field_value, action_log_id) VALUES ";
         $append = "";
+        $count = 0;
  		foreach ($fields as $key => $value) {
+			if ($count) {
+				$query .= ",";
+			}
  			$query .= "('".CentreonDB::escape($key)."', '".CentreonDB::escape($value)."', '".$logId."')";
-            $append = ", ";
-        }
+        	$count++;
+ 		}
  		$DBRESULT = $pearDBO->query($query);
  	}
 
