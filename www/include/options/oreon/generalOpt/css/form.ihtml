@@ -13,7 +13,7 @@
 		{/section}
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
-	<div id="validForm">
+	<div id="validForm" class="oreonbutton">
 		<input type=submit value="{$submitTitle}">
 	</div>
 <input type=hidden name=p value={$p}>

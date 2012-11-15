@@ -9,11 +9,11 @@
 		<tr class="list_one"><td class="FormRowField" colspan="2" align="center">{$form.dayList.label}: &nbsp;&nbsp;&nbsp;&nbsp; {$form.dayList.html}</td></tr>
 	</table>
 	{if !$valid}
-		<div id="validForm">
+		<div id="validForm" class="oreonbutton">
 			<p>{$form.submitC.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
 		</div>
 	{else}
-		<div id="validForm">
+		<div id="validForm" class="oreonbutton">
 			<p>{$form.change.html}</p>
 		</div>
 	{/if}
