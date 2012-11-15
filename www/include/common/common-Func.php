@@ -1546,23 +1546,40 @@
 
 	function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca) {
 		global $pearDBO, $access, $servicestr;
+                static $hostHasGraph = array();
 
 		if (isset($hgHgCache[$hg_id]) && count($hgHgCache[$hg_id]))
 			return true;
 
 		if (isset($hgHCache) && isset($hgHCache[$hg_id])) {
-			foreach ($hgHCache[$hg_id] as $host_id => $enable) {
-				if (isset($lca["LcaHost"][$host_id]) || $is_admin) {
-					if ($is_admin) {
-						return true;
-					} else {
-						$DBRESULT2 = $pearDBO->query("SELECT service_id FROM index_data WHERE index_data.host_id = '".$host_id."' AND service_id IN ($servicestr)");
-						while ($flag = $DBRESULT2->fetchRow()) {
-							return true;
-						}
-					}
-				}
-			}
+                    if ($is_admin && count($hgHCache[$hg_id])) {
+                        return true;
+                    } elseif (!$is_admin) {
+                        $hostIdString = "";
+                        foreach ($hgHCache[$hg_id] as $host_id => $enable) {
+                            if (isset($hostHasGraph[$host_id])) {
+                                return true;
+                            }
+                            if ($hostIdString) {
+                                $hostIdString .= ",";
+                            }
+                            if (isset($lca["LcaHost"][$host_id])) {
+                                $hostIdString .= $host_id;
+                            }
+                        }
+                        if ($hostIdString) {
+                            $DBRESULT2 = $pearDBO->query("SELECT DISTINCT host_id
+                                                          FROM index_data 
+                                                          WHERE host_id IN ($hostIdString)
+                                                          AND service_id IN ($servicestr)");
+                            $result = false;
+                            while ($row = $DBRESULT2->fetchRow()) {
+                                $hostHasGraph[$row['host_id']] = true;
+                                $result = true;
+                            }
+                            return $result;
+                        }
+                    }
 		}
 		return false;
 	}
