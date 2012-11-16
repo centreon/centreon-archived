@@ -173,7 +173,7 @@ class CentreonLDAP {
             ldap_set_option($this->_ds, LDAP_OPT_PROTOCOL_VERSION, $protocol_version);
             if (isset($ldap['info']['use_tls']) && $ldap['info']['use_tls'] == 1) {
                 $this->_debug("LDAP Connect : use tls");
-                ldap_start_tls($this->_ds);
+                @ldap_start_tls($this->_ds);
             }
             restore_error_handler();
             $this->_ldap = $ldap;
