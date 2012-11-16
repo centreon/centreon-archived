@@ -54,10 +54,13 @@ if (isset($_GET["akey"]) && isset($_GET['username'])) {
     						   	AND `contact_activate` = '1'
     						   	AND `contact_autologin_key` = '".$pearDB->escape($_GET["akey"])."' LIMIT 1");
     if ($DBRESULT->numRows()) {
-        $res = $DBRESULT->fetchRow();
+        $row = $DBRESULT->fetchRow();
         session_start();
         $_GET["session_id"] = session_id();
-        $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$res["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+        $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".session_id()."'");
+        if (!$res->numRows()) {
+            $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+        }        
     } else {
         /**
          * Return silently in case autologinKey was invalid.
