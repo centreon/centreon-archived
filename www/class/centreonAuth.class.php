@@ -103,7 +103,7 @@ class CentreonAuth {
         $res = $pearDB->query($query);
         while ($row = $res->fetchRow()) {
             if ($row['ari_name'] == 'ldap_auto_import') {
-                $this->ldap_auto_import[$row['ari_id']] = $row['ari_value'];
+                $this->ldap_auto_import[$row['ar_id']] = $row['ari_value'];
             } elseif ($row['ari_name'] == 'ldap_store_password') {
                 $this->ldap_store_password[$row['ar_id']] = $row['ari_value'];
             }
