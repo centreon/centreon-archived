@@ -1560,22 +1560,26 @@
                             if (isset($hostHasGraph[$host_id])) {
                                 return true;
                             }
-                            if ($hostIdString) {
-                                $hostIdString .= ",";
-                            }
                             if (isset($lca["LcaHost"][$host_id])) {
+                                if ($hostIdString) {
+                                    $hostIdString .= ",";
+                                }
                                 $hostIdString .= $host_id;
                             }
                         }
                         if ($hostIdString) {
-                            $DBRESULT2 = $pearDBO->query("SELECT DISTINCT host_id
+                            $DBRESULT2 = $pearDBO->query("SELECT host_id, service_id
                                                           FROM index_data 
-                                                          WHERE host_id IN ($hostIdString)
-                                                          AND service_id IN ($servicestr)");
+                                                          WHERE host_id IN ($hostIdString)");
                             $result = false;
                             while ($row = $DBRESULT2->fetchRow()) {
-                                $hostHasGraph[$row['host_id']] = true;
-                                $result = true;
+                                if (isset($hostHasGraph[$row['host_id']])) {
+                                    continue;
+                                }
+                                if (strpos($servicestr, "'".$row['service_id']."'")) {
+                                    $hostHasGraph[$row['host_id']] = true;
+                                    $result = true;
+                                }
                             }
                             return $result;
                         }
