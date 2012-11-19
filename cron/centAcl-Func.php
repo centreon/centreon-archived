@@ -319,14 +319,13 @@
 					}
 				}
 			}
-		}
-		else if (hostIsAuthorized($host_id, $groupstr)){
-			$tab_services = $tab_svc;
-			if ($svc_SG) {
-				foreach ($svc_SG as $key => $value) {
-					$tab_services[$key] = $value;
-				}
-			}
+		} else {
+                    $tab_services = $tab_svc;
+                    if ($svc_SG) {
+                        foreach ($svc_SG as $key => $value) {
+                            $tab_services[$key] = $value;
+                        }
+                    }
 		}
 		return $tab_services;
 	}

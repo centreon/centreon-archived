@@ -534,7 +534,7 @@ try {
                     unset($Host[$host_id]);
                 }
             }
-
+            
             /*
              * Give Authorized Categories
              */
@@ -543,9 +543,60 @@ try {
             $Host = getFilteredPollers($Host, $acl_group_id, $res2['acl_res_id']);
 
             /*
+             * get all Service groups
+             */
+            $sgReq = "SELECT host_name, host_id, service_description, service_id 
+                      FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
+                      WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
+		      AND host.host_id = servicegroup_relation.host_host_id
+		      AND service.service_id = servicegroup_relation.service_service_id
+		      AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
+                      AND service_activate = '1'
+		      UNION
+                      SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`, `hostgroup`, `hostgroup_relation`
+		      WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
+		      AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
+                      AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id
+		      AND hostgroup_relation.host_host_id = host.host_id
+                      AND service.service_id = servicegroup_relation.service_service_id
+		      AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
+		      AND service_activate = '1'";
+            $DBRESULT3 = $pearDB->query($sgReq);
+            $sgElem = array();
+            $tmpH = array();
+            if ($DBRESULT3->numRows()) {
+                while ($h = $DBRESULT3->fetchRow()) {
+                    if (!isset($tabElem[$h["host_name"]])) {
+                        $sgElem[$h["host_name"]] = array();
+                        $tmpH[$h['host_id']] = $h['host_name'];
+                    }
+                    $sgElem[$h["host_name"]][$h["service_description"]] = $h["host_id"] . "," . $h["service_id"];
+                }
+            }
+            $DBRESULT3->free();
+            
+            foreach ($tmpH as $key => $value) {
+                $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
+                foreach ($tab as $desc => $id) {
+                    if (isset($sgElem[$value][$desc])) {
+                        if (!isset($tabElem[$value])) {
+                            $tabElem[$value] = array();
+                        }
+                        $tabElem[$value][$desc] = $key . "," . $id;
+                    }
+                }
+                unset($tab);
+            }
+            unset($tmpH);
+            unset($sgElem);
+            
+            /*
              * Initialize and first filter
              */
-            foreach ($Host as $key => $value) {
+            foreach ($Host as $key => $value) {         
+                if (isset($tabElem[$value])) {
+                    continue;
+                }
                 $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
                 if (!isset($tabElem[$value])) {
                     $tabElem[$value] = array();
@@ -555,37 +606,6 @@ try {
                 }
                 unset($tab);
             }
-
-            /*
-             * get all Service groups
-             */
-            $sgReq = "SELECT tb.* FROM
-    					 	(SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`
-						 	 WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
-						 	 AND host.host_id = servicegroup_relation.host_host_id
-						 	 AND service.service_id = servicegroup_relation.service_service_id
-						 	 AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
-						 	 AND service_activate = '1'
-						  UNION
-						  	SELECT host_name, host_id, service_description, service_id FROM `acl_resources_sg_relations`, `servicegroup_relation`, `host`, `service`, `hostgroup`, `hostgroup_relation`
-						 	 WHERE acl_res_id = '" . $res2["acl_res_id"] . "'
-						 	 AND hostgroup.hg_id = servicegroup_relation.hostgroup_hg_id
-						 	 AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id
-						 	 AND hostgroup_relation.host_host_id = host.host_id
-						 	 AND service.service_id = servicegroup_relation.service_service_id
-						 	 AND servicegroup_relation.servicegroup_sg_id = acl_resources_sg_relations.sg_id
-						 	 AND service_activate = '1') tb";
-            $DBRESULT3 = & $pearDB->query($sgReq);
-            if ($DBRESULT3->numRows()) {
-                while ($h = $DBRESULT3->fetchRow()) {
-                    if (!isset($tabElem[$h["host_name"]])) {
-                        $tabElem[$h["host_name"]] = array();
-                    }
-                    $tabElem[$h["host_name"]][$h["service_description"]] = $h["host_id"] . "," . $h["service_id"];
-                }
-            }
-            $DBRESULT3->free();
-
             unset($Host);
 
             /* ------------------------------------------------------------------
