@@ -593,10 +593,7 @@ try {
             /*
              * Initialize and first filter
              */
-            foreach ($Host as $key => $value) {         
-                if (isset($tabElem[$value])) {
-                    continue;
-                }
+            foreach ($Host as $key => $value) {
                 $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
                 if (!isset($tabElem[$value])) {
                     $tabElem[$value] = array();
