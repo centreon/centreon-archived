@@ -578,7 +578,7 @@ try {
             foreach ($tmpH as $key => $value) {
                 $tab = getAuthorizedServicesHost($key, $acl_group_id, $res2["acl_res_id"], $authorizedCategories);
                 foreach ($tab as $desc => $id) {
-                    if (isset($sgElem[$value][$desc])) {
+                    if (isset($sgElem[$value]) && isset($sgElem[$value][$desc])) {
                         if (!isset($tabElem[$value])) {
                             $tabElem[$value] = array();
                         }
