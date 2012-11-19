@@ -566,7 +566,7 @@ try {
             $tmpH = array();
             if ($DBRESULT3->numRows()) {
                 while ($h = $DBRESULT3->fetchRow()) {
-                    if (!isset($tabElem[$h["host_name"]])) {
+                    if (!isset($sgElem[$h["host_name"]])) {
                         $sgElem[$h["host_name"]] = array();
                         $tmpH[$h['host_id']] = $h['host_name'];
                     }
