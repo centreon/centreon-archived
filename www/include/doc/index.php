@@ -46,7 +46,7 @@
 <div id="EnginesListArea" style="font-size: 18px;">
     <ul id="EnginesList" style="padding-left: 40px;">
         <li class="EnginesDoc" id="CengineDoc">
-            <a href="http://documentation.centreon.com/01-centreon/centreon_engine/documentation/documentation" target="_blank">Centreon Engine</a>
+            <a href="http://documentation.centreon.com/01-centreon/centreon_engine/documentation" target="_blank">Centreon Engine</a>
         </li>
         <li class="EnginesDoc" id="IcingaDoc">
             <a href="http://docs.icinga.org/latest/en/" target="_blank">Icinga</a>
