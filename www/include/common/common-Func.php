@@ -1561,14 +1561,14 @@
          */
 	function SGIsNotEmpty($sg_id, $access = null){
 		global $pearDBO, $pearDBndo;
-		$data = getMyServiceGroupServices($sg_id);
+		
+                $data = getMyServiceGroupServices($sg_id);
                 if (is_null($access) || $access->admin) {
                     return count($data);
                 }
-                $svcIds = $access->getServicesString("ID", $pearDBndo);
+                $svcIds = $access->getHostServiceIds($pearDBndo);
                 foreach ($data as $key => $value) {
-                    list($hostId, $serviceId) = explode('_', $key);
-                    if (false !== strpos($svcIds, "'".$serviceId."'")) {
+                    if (false !== strpos($svcIds, "'".$key."'")) {
                         return 1;
                     }
                 }
