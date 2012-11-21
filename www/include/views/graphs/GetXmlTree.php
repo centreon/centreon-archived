@@ -241,7 +241,7 @@
 			/**
 			 * Send Service/host list for a SG
 			 */
-			$data = getMyServiceGroupActivateServices($id);
+			$data = getMyServiceGroupActivateServices($id, $access);
 			foreach ($data as $key => $value){
 				$tab_value = preg_split("/\_/", $key);
 				$host_name = $hostCache[$tab_value[0]];
@@ -307,8 +307,8 @@
 				$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM servicegroup ORDER BY `sg_name`");
 			while ($SG = $DBRESULT->fetchRow()){
 			    $i++;
-				if (SGIsNotEmpty($SG["sg_id"])) {
-			        if ($is_admin || (isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))) {
+				if (SGIsNotEmpty($SG["sg_id"], $access)) {
+                                    if ($is_admin || (isset($lcaSG) && isset($lcaSG[$SG["sg_id"]]))) {
 			        	$buffer->startElement("item");
 				        $buffer->writeAttribute("child", "1");
 				        $buffer->writeAttribute("id", "ST_".$SG["sg_id"]);
@@ -317,7 +317,7 @@
 				        $buffer->writeAttribute("im1", "../16x16/clients.gif");
 				        $buffer->writeAttribute("im2", "../16x16/clients.gif");
 				        $buffer->endElement();
-					}
+                                    }
 				}
 			}
 			$DBRESULT->free();

@@ -774,7 +774,7 @@
 		return NULL;
 	}
 
-	function getMyServiceGroupServices($sg_id = NULL)	{
+	function getMyServiceGroupServices($sg_id = NULL) {
 		global $pearDB;
 		if (!$sg_id)
 			return;
@@ -812,30 +812,44 @@
 		return $svs;
 	}
 
-	function getMyServiceGroupActivateServices($sg_id = NULL)	{
-		global $pearDB;
+	function getMyServiceGroupActivateServices($sg_id = null, $access = null) {
+		global $pearDB, $pearDBndo;
 
 		if (!$sg_id) {
 			return;
 		}
-
 		$svs = array();
-        $res = $pearDB->query("(SELECT service_description, service_id, host_host_id, host_name " .
-							  "FROM servicegroup_relation, service, host " .
-							  "WHERE servicegroup_sg_id = '".$sg_id."' " .
-                              "AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-                              "AND service.service_id = servicegroup_relation.service_service_id " .
-                              "AND servicegroup_relation.host_host_id = host.host_id " .
-                              "AND servicegroup_relation.host_host_id IS NOT NULL " .
-                              "AND service.service_activate = '1')" .
-                              " UNION " .
-                              "(" .
-							  "SELECT service_description, service_id, h.host_id as host_host_id, host_name FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h WHERE servicegroup_sg_id = '" . $sg_id . "' AND service.service_id = servicegroup_relation.service_service_id AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id AND servicegroup_relation.hostgroup_hg_id IS NOT NULL AND service.service_activate = '1' AND hgr.hostgroup_hg_id = hostgroup.hg_id AND hgr.host_host_id = h.host_id"  .
-                              ") ORDER BY host_name, service_description");
-        while ($row = $res->fetchRow()) {
-            $svs[$row['host_host_id'] . '_' . $row['service_id']] = $row['service_description'] . ':::' . $row['host_name'];
-        }
-		return $svs;
+                $res = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name
+				      FROM servicegroup_relation, service, host
+				      WHERE servicegroup_sg_id = '".$sg_id."'
+                                      AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id
+                                      AND service.service_id = servicegroup_relation.service_service_id
+                                      AND servicegroup_relation.host_host_id = host.host_id 
+                                      AND servicegroup_relation.host_host_id IS NOT NULL
+                                      AND service.service_activate = '1'
+                                      UNION
+                                      SELECT service_description, service_id, h.host_id as host_host_id, host_name
+                                      FROM servicegroup_relation, service, hostgroup, hostgroup_relation hgr, host h 
+                                      WHERE servicegroup_sg_id = '" . $sg_id . "' 
+                                      AND service.service_id = servicegroup_relation.service_service_id 
+                                      AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id
+                                      AND servicegroup_relation.hostgroup_hg_id IS NOT NULL
+                                      AND service.service_activate = '1'
+                                      AND hgr.hostgroup_hg_id = hostgroup.hg_id
+                                      AND hgr.host_host_id = h.host_id
+                                      ORDER BY host_name, service_description");
+                while ($row = $res->fetchRow()) {
+                    $svs[$row['host_host_id'] . '_' . $row['service_id']] = $row['service_description'] . ':::' . $row['host_name'];
+                }
+                if (!is_null($access) && !$access->admin) {
+                    $svcIds = $access->getHostServiceIds($pearDBndo);
+                    foreach ($svs as $key => $value) {
+                        if (false === strpos($svcIds, "'".$key."'")) {
+                            unset($svs[$key]);
+                        }
+                    }
+                }
+                return $svs;
 	}
 
 	#
@@ -1538,10 +1552,27 @@
 		return false;
 	}
 
-	function SGIsNotEmpty($sg_id){
-		global $pearDBO;
+        /**
+         * Checks if SG has services
+         * 
+         * @param int $sg_id
+         * @param Centreon_ACL $access | instance of user's acl
+         * @return int
+         */
+	function SGIsNotEmpty($sg_id, $access = null){
+		global $pearDBO, $pearDBndo;
 		$data = getMyServiceGroupServices($sg_id);
-		return count($data);
+                if (is_null($access) || $access->admin) {
+                    return count($data);
+                }
+                $svcIds = $access->getServicesString("ID", $pearDBndo);
+                foreach ($data as $key => $value) {
+                    list($hostId, $serviceId) = explode('_', $key);
+                    if (false !== strpos($svcIds, "'".$serviceId."'")) {
+                        return 1;
+                    }
+                }
+                return 0;
 	}
 
 	function HG_has_one_or_more_host($hg_id, $hgHCache, $hgHgCache, $is_admin, $lca) {
@@ -1576,7 +1607,7 @@
                                 if (isset($hostHasGraph[$row['host_id']])) {
                                     continue;
                                 }
-                                if (strpos($servicestr, "'".$row['service_id']."'")) {
+                                if (false !== strpos($servicestr, "'".$row['service_id']."'")) {
                                     $hostHasGraph[$row['host_id']] = true;
                                     $result = true;
                                 }

@@ -815,6 +815,34 @@ class CentreonACL
  		return $string;
  	}
 
+        /**
+         * Get authorized host service ids
+         * 
+         * @param $db CentreonDB
+         * @return string | return id combinations like '14_26' (hostId_serviceId)
+         */
+        public function getHostServiceIds($db) {
+            $this->checkUpdateACL();
+            $groupIds = array_keys($this->accessGroups);
+            $string = "";
+            if (count($groupIds)) {
+                $query = "SELECT DISTINCT host_id, service_id
+                          FROM centreon_acl
+ 		    	  WHERE group_id IN (".implode(',', $groupIds).")";
+                $res = $db->query($query);
+                while ($row = $res->fetchRow()) {
+                    if ($string != "") {
+                        $string .= ", ";
+                    }
+                    $string .= "'".$row['host_id']."_".$row['service_id']."'"; 
+ 		}
+            }
+            if ($string == "") {
+                $string = "''";
+            }
+            return $string;
+        }
+        
  	/*
  	 *  Actions Getter
  	 */
