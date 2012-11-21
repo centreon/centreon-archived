@@ -40,13 +40,39 @@ if (!isset($oreon)) {
     exit();
 }
 
+$monitoring_engines = 
+    array("CENGINE" => array("name" => "Centreon Engine", 
+                             "nagios_bin" => "/usr/sbin/centengine",
+                             "nagiostats_bin" => "/usr/sbin/centenginestats",
+                             "init_script" => "/etc/init.d/centengine",
+                             "nagios_perfdata" => "/var/log/centreon-engine/service-perfdata"),
+          "ICINGA" => array("name" => "Icinga",
+                            "nagios_bin" => "",
+                            "nagiostats_bin" => "",
+                            "init_script" => "",
+                            "nagios_perfdata" => ""),
+          "NAGIOS" => array("name" => "Nagios", 
+                            "nagios_bin" => "/usr/sbin/nagios",
+                            "nagiostats_bin" => "/usr/sbin/nagiostats",
+                            "init_script" => "/etc/init.d/nagios",
+                            "nagios_perfdata" => "/var/log/nagios/service-perfdata"),
+          "SHINKEN" => array("name" => "Shinken",
+                             "nagios_bin" => "",
+                             "nagiostats_bin" => "",
+                             "init_script" => "",
+                             "nagios_perfdata" => ""),
+          );
+
+function monitoring_engine_names($me) {
+    return $me["name"];
+}
+
 /*
  * Database retrieve information for Nagios
  */
 $nagios = array();
 if (($o == "c" || $o == "w") && $server_id) {
-    $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '".$server_id."' LIMIT 1");
-    # Set base value
+    $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->free();
 }
@@ -85,7 +111,7 @@ $form->addElement('header', 'SSH_Informations', _("SSH Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
 $form->addElement('header', 'SNMPTT', _("SNMPTT Traps Collector"));
-$form->addElement('select', 'monitoring_engine', _("Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
+$form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitoring_engine_names", $monitoring_engines));
 
 /*
  * Nagios Configuration basic information
@@ -133,21 +159,21 @@ $form->addElement('text', 'init_script_snmptt', _("SNMPTT init script path"), $a
  * Set Default Values
  */
 if (isset($_GET["o"]) && $_GET["o"] == 'a'){
+    $me = $monitoring_engines[$centreon->optGen["monitoring_engine"]];
     $form->setDefaults(array(
     "name" => '',
     "localhost" => '0',
     "ns_ip_address" => "127.0.0.1",
-    "nagios_bin" => "/usr/sbin/nagios",
-    "nagiostats_bin" => "/usr/bin/nagiostats",
-    "monitoring_engine"  =>  $centreon->optGen["monitoring_engine"],
-    "init_script" => "/etc/init.d/nagios",
+    "nagios_bin" => $me["nagios_bin"],
+    "nagiostats_bin" => $me["nagiostats_bin"],
+    "monitoring_engine"  => $centreon->optGen["monitoring_engine"],
+    "init_script" => $me["init_script"],
     "ns_activate" => '1',
     "is_default"  =>  '0',
     "ssh_port"  =>  '22',
     "ssh_private_key"  =>  '~/.ssh/rsa.id',
-    "nagios_perfdata"  =>  "/var/log/nagios/service-perfdata",
+    "nagios_perfdata"  => $me["nagios_perfdata"],
     "centreonbroker_cfg_path" => "/etc/centreon/broker",
-    "init_script" => "/etc/init.d/snmptt",
     "init_script_snmptt" => isset($centreon->optGen["init_script_snmptt"]) ? $centreon->optGen["init_script_snmptt"] : ''));
 } else {
     if (isset($cfg_server)) {
@@ -202,9 +228,9 @@ if ($form->validate())  {
     $o = NULL;
     $valid = true;
 }
-if ($valid)
+if ($valid) {
     require_once($path."listServers.php");
-else    {
+} else {
     /*
      * Apply a template definition
      */
@@ -214,6 +240,7 @@ else    {
     $form->accept($renderer);
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
+    $tpl->assign('engines', $monitoring_engines);
 
     include_once("help.php");
 
