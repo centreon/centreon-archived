@@ -1,3 +1,5 @@
-===== Centreon 2.4.0-RC5 =====
-Monitoring interval length is now a global parameter to be set in Administration > Options > Monitoring
-Make sure that the value is properly configured
+=====
+Centreon 2.4.0-RC5
+=====
+- Monitoring interval length is now a global parameter to be set in Administration > Options > Monitoring
+- Make sure that the value is properly configured

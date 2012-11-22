@@ -44,7 +44,12 @@ require_once '../steps/functions.php';
 $template = getTemplate('../steps/templates');
 
 $title = _('Release notes');
-$contents = "<textarea cols='100' rows='30' readonly>".file_get_contents('../RELEASENOTES')."</textarea>";
+
+if (is_file('../RELEASENOTES.html')) {
+    $contents = "<div id='releasenotes'></div>";
+} else {
+    $contents = "<textarea cols='100' rows='30' readonly>".file_get_contents('../RELEASENOTES')."</textarea>";
+}
 
 $template->assign('step', STEP_NUMBER);
 $template->assign('title', $title);
@@ -53,6 +58,10 @@ $template->assign('blockPreview', 1);
 $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
+jQuery(function() {
+    jQuery('releasenotes').load('../RELEASENOTES.html'); 
+});
+
 function validation() {
     return true;
 }
