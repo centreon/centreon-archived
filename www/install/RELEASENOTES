@@ -1,5 +1,9 @@
 ==================
+Centreon 2.4.0-RC7
+==================
+- It is now possible to have multiple LDAP configurations; make sure that all your LDAP parameters have been correctly migrated
+
+==================
 Centreon 2.4.0-RC5
 ==================
-- Monitoring interval length is now a global parameter to be set in Administration > Options > Monitoring
-- Make sure that the value is properly configured
+- Monitoring interval length is now a global parameter to be set in Administration > Options > Monitoring; make sure that the value is properly configured
