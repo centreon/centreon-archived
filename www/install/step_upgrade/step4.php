@@ -59,7 +59,7 @@ $template->display('content.tpl');
 ?>
 <script type='text/javascript'>
 jQuery(function() {
-    jQuery('releasenotes').load('../RELEASENOTES.html'); 
+    jQuery('#releasenotes').load('RELEASENOTES.html'); 
 });
 
 function validation() {
