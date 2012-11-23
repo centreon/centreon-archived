@@ -52,6 +52,13 @@ if (false === $link) {
 if (!isset($_SESSION['CONFIGURATION_DB'])) {
     exitProcess(PROCESS_ID, 1, _('Could not find configuration database. Session probably expired.'));
 }
+// checks for innodb engine
+$res = mysql_query("SHOW VARIABLES LIKE 'innodb_file_per_table'");
+$row = mysql_fetch_assoc($res);
+mysql_free_result($res);
+if (strtolower($row['Value']) == 'off') {
+    exitProcess(PROCESS_ID, 1, _('Add innodb_file_per_table=1 in my.cnf file and restart MySQL Server.'));
+}
 if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !is_file('../../tmp/createTables')) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
