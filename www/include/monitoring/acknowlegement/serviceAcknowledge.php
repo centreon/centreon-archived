@@ -48,7 +48,7 @@
 	if ($broker == "ndo") {
 	    $pearDBndo = new CentreonDB("ndo");
 	} elseif ($broker == "broker") {
-        $pearDBndo = new CentreonDB("broker");
+            $pearDBndo = new CentreonDB("broker");
 	}
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
@@ -71,29 +71,6 @@
 	 * HOST LCA
 	 */
 	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]))){
-
-		/*
-		 * Fetch default values for form
-		 */
-		$user_params = get_user_param($oreon->user->user_id, $pearDB);
-
-		if (!isset($user_params["ack_sticky"]))
-			$user_params["ack_sticky"] = 1;
-
-		if (!isset($user_params["ack_notify"]))
-			$user_params["ack_notify"] = 0;
-
-		if (!isset($user_params["ack_persistent"]))
-			$user_params["ack_persistent"] = 1;
-
-		if (!isset($user_params["force_active"]))
-			$user_params["force_active"] = 1;
-
-		$sticky = $user_params["ack_sticky"];
-		$notify = $user_params["ack_notify"];
-		$persistent = $user_params["ack_persistent"];
-		$force_check = $user_params["force_check"];
-
 		## Form begin
 		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=$host_name&service_description=$service_description");
 		$form->addElement('header', 'title', _("Acknowledge a Service"));

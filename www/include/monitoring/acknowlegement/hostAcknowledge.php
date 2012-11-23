@@ -51,7 +51,7 @@
 	if ($broker == "ndo") {
 	    $pearDBndo = new CentreonDB("ndo");
 	} elseif ($broker == "broker") {
-        $pearDBndo = new CentreonDB("broker");
+            $pearDBndo = new CentreonDB("broker");
 	}
 
 	isset($_GET["host_name"]) 	? $host_name = htmlentities($_GET["host_name"], ENT_QUOTES, "UTF-8") : $host_name = NULL;
@@ -70,29 +70,6 @@
 		$lcaHostByName = $oreon->user->access->getHostServicesName($pearDBndo);
 
 	if ($is_admin || (isset($lcaHostByName[$host_name]))) {
-
-		/*
-		 * Fetch default values for form
-		 */
-		$user_params = get_user_param($oreon->user->user_id, $pearDB);
-
-		if (!isset($user_params["ack_sticky"]))
-			$user_params["ack_sticky"] = 1;
-
-		if (!isset($user_params["ack_notify"]))
-			$user_params["ack_notify"] = 1;
-
-		if (!isset($user_params["ack_persistent"]))
-			$user_params["ack_persistent"] = 1;
-
-		if (!isset($user_params["ack_services"]))
-			$user_params["ack_services"] = 1;
-
-		$sticky = $user_params["ack_sticky"];
-		$notify = $user_params["ack_notify"];
-		$persistent = $user_params["ack_persistent"];
-		$ack_services = $user_params["ack_services"];
-
 		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=$host_name");
 
 		$form->addElement('header', 'title', _("Acknowledge a host"));
