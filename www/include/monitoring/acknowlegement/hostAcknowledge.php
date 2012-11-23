@@ -104,16 +104,24 @@
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 
 		$ckbx[] = $form->addElement('checkbox', 'notify', _("Notify"));
-		$ckbx[0]->setChecked($notify);
+                if (isset($oreon->optGen['monitoring_ack_notify']) && $oreon->optGen['monitoring_ack_notify']) {
+                    $ckbx[0]->setChecked(true);
+                }
 
 		$ckbx1[] = $form->addElement('checkbox', 'persistent', _("Persistent"));
-		$ckbx1[0]->setChecked($persistent);
+                if (isset($oreon->optGen['monitoring_ack_persistent']) && $oreon->optGen['monitoring_ack_persistent']) {
+                    $ckbx1[0]->setChecked(true);
+                }
 
 		$ckbx2[] = $form->addElement('checkbox', 'ackhostservice', _("Acknowledge services attached to hosts"));
-		$ckbx2[0]->setChecked($ack_services);
+                if (isset($oreon->optGen['monitoring_ack_svc']) && $oreon->optGen['monitoring_ack_svc']) {
+                    $ckbx2[0]->setChecked(true);
+                }
 
 		$ckbx3[] = $form->addElement('checkbox', 'sticky', _("Sticky"));
-		$ckbx3[0]->setChecked($sticky);
+                if (isset($oreon->optGen['monitoring_ack_sticky']) && $oreon->optGen['monitoring_ack_sticky']) {
+                    $ckbx3[0]->setChecked(true);
+                }
 
 		$form->addElement('hidden', 'host_name', $host_name);
 		$form->addElement('hidden', 'author', $oreon->user->get_alias());

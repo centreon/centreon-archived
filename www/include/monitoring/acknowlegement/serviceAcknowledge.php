@@ -108,16 +108,24 @@
 		$tpl->assign('authoralias', $oreon->user->get_alias());
 
 		$ckbx[] = $form->addElement('checkbox', 'notify', _("notify"));
-		$ckbx[0]->setChecked($notify);
+                if (isset($oreon->optGen['monitoring_ack_notify']) && $oreon->optGen['monitoring_ack_notify']) {
+                    $ckbx[0]->setChecked(true);
+                }
 
 		$ckbx1[] = $form->addElement('checkbox', 'sticky', _("sticky"));
-		$ckbx1[0]->setChecked($sticky);
+                if (isset($oreon->optGen['monitoring_ack_sticky']) && $oreon->optGen['monitoring_ack_sticky']) {
+                    $ckbx1[0]->setChecked(true);
+                }
 
 		$ckbx2[] = $form->addElement('checkbox', 'persistent', _("persistent"));
-		$ckbx2[0]->setChecked($persistent);
+                if (isset($oreon->optGen['monitoring_ack_persistent']) && $oreon->optGen['monitoring_ack_persistent']) {
+                    $ckbx2[0]->setChecked(true);
+                }
 
 		$ckbx3[] = $form->addElement('checkbox', 'force_check', _("Force active check"));
-		$ckbx3[0]->setChecked($force_check);
+                if (isset($oreon->optGen['monitoring_ack_active_checks']) && $oreon->optGen['monitoring_ack_active_checks']) {
+                    $ckbx3[0]->setChecked(true);
+                }
 
 		$form->addElement('hidden', 'host_name', $host_name);
 		$form->addElement('hidden', 'service_description', $service_description);
