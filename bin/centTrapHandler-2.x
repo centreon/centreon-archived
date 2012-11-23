@@ -43,9 +43,10 @@ use strict;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
-use vars qw($cmdFile $etc $TIMEOUT $LOG $NAGIOSUSER @OIDTable);
+use vars qw($cmdFile $etc $TIMEOUT $LOG $CENTREON_USER @OIDTable);
+use vars qw($instance_mode);
 
-$NAGIOSUSER = 'nagios';
+$CENTREON_USER = '@CENTREON_USER@';
 
 eval "use HTML::Entities";
 if ($@) {
@@ -57,8 +58,11 @@ if ($@) {
 ###############################
 # Init 
 
-$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+# Configuration file
 $etc = "@CENTREON_ETC@";
+
+# Basic value
+$instance_mode = "central";
 
 # Timeout for write in cmd in seconds
 $TIMEOUT = 10;
@@ -72,6 +76,16 @@ $debug = 0;
 ###############################
 # require config file
 require $etc."/conf.pm";
+
+###############################
+# Check mode
+if ($instance_mode eq "central") {
+	$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+} elsif ($instance_mode eq "poller") {
+	$cmdFile = "@NAGIOS_VARLOG@/rw/nagios.cmd";
+} else {
+	myDie("Don't know server instance type: $instance_mode");
+}
 
 ###############################
 ## Write into Log File
@@ -307,17 +321,23 @@ sub forceCheck($$$$) {
     my ($dbh, $this_host, $this_service, $datetime) = @_;
     my $result;
 
-    my $id = get_hostNagiosServerID($dbh, $this_host);
-    if (defined($id) && $id != 0) {
-	my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
-	$result = send_command($submit);
+	if ($instance_mode eq "central") {
+		my $id = get_hostNagiosServerID($dbh, $this_host);
+		if (defined($id) && $id != 0) {
+			my $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
+			$result = send_command($submit);
+		}
+		undef($id);
+	} else {
+		 my $submit = "su -l $CENTREON_USER -c '/bin/echo \"[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
+    	$result = send_command($submit);
+	}
 	
+	# Log action
 	logit("FORCE: Reschedule linked service", "II");
-	logit("FORCE: Launched command: $submit", "II");
-	
+	logit("FORCE: Launched command: $submit", "II") if (isset($submit));
+
 	undef($submit);
-    }
-    undef($id);
     return $result;
 }
 
@@ -331,18 +351,12 @@ sub submitResult($$$$$$$$$$) {
     my @macros = @{$ref_macros};
 
     ##########################
-    # Replace Args
-    #$output = replaceArgs($output, \@macros);
-    # Repalce OID
-    #$output = replaceOID($output, \@macros);
-    
-    ##########################
     # REPLACE special Chars
     if ($htmlentities == 1) {
-	$output = decode_entities($output);
+		$output = decode_entities($output);
     } else {
-	$output =~ s/\&quot\;/\"/g;
-	$output =~ s/\&#039\;\&#039\;/"/g;
+		$output =~ s/\&quot\;/\"/g;
+		$output =~ s/\&#039\;\&#039\;/"/g;
     }
     $output =~ s/\@HOSTNAME\@/$this_host/g;
     $output =~ s/\@HOSTADDRESS\@/$ip/g;
@@ -351,17 +365,22 @@ sub submitResult($$$$$$$$$$) {
     $output =~ s/\@TIME\@/$datetime/g;
 
     # No matching rules
-    my $id = get_hostNagiosServerID($dbh, $this_host);
-    if (defined($id) && $id != 0) {
-	my $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
-	$result = send_command($submit);
+    if ($instance_mode eq "central") {
+	    my $id = get_hostNagiosServerID($dbh, $this_host);
+	    if (defined($id) && $id != 0) {
+			my $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
+			$result = send_command($submit);    
+    	}
+	    undef($id);
+    } else {
+	    my $submit = "su -l $CENTREON_USER -c '/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
+	    $result = send_command($submit);
+    }
 	
 	logit("SUBMIT: Force service status via passive check update", "II");
-	logit("SUBMIT: Launched command: $submit", "II");
+	logit("SUBMIT: Launched command: $submit", "II") if (isset($submit));
 	
 	undef($submit);
-    }
-    undef($id);
     return $result;
 }
 
