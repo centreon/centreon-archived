@@ -71,7 +71,7 @@ class CentreonDB
     {
         try {
             include("@CENTREON_ETC@/centreon.conf.php");
-            //include("/etc/centreon/centreon.conf.php");
+            
     		require_once $centreon_path."/www/class/centreonLog.class.php";
     		$this->log = new CentreonLog();
 
@@ -138,12 +138,23 @@ class CentreonDB
         echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
               <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
                 <head>
+                <style type="text/css">
+                       div.Error{background-color:#fa6f6c;border:1px #AEAEAE solid;width: 500px;}
+                       div.Error{border-radius:4px;}
+                       div.Error{padding: 15px;}
+                       a, div.Error{font-family:"Bitstream Vera Sans", arial, Tahoma, "Sans serif";font-weight: bold;}
+                </style>
                 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
                 <title>Centreon</title>
               </head>
                 <body>
-                  <img src="./img/centreon.gif" alt="Centreon"/><br/>
-                  <b>' . $msg . '</b>
+                  <center>
+                  <div style="padding-top:150px;padding-bottom:50px;">
+                        <img src="./img/centreon.gif" alt="Centreon"/><br/>
+                  </div>
+                  <div class="Error">' . $msg . '</div>
+                  <div style="padding: 50px;"><a href="#" onclick="location.reload();">Refresh Here</a></div>
+                  </center>
                 </body>
               </html>';
 		exit;
@@ -242,7 +253,7 @@ class CentreonDB
             if ($this->debug) {
                 $this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
             }
-            throw new Exception('Connection could not be established');
+            throw new Exception('Database Error: Could not connect to database. <br />Please contact your administrator.');
 	} else {
             $this->db->setFetchMode(DB_FETCHMODE_ASSOC);
 	}
