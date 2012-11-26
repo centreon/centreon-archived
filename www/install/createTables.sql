@@ -1706,6 +1706,7 @@ CREATE TABLE `meta_service` (
   `notification_options` varchar(255) DEFAULT NULL,
   `notifications_enabled` enum('0','1','2') DEFAULT NULL,
   `calcul_type` enum('SOM','AVE','MIN','MAX') DEFAULT NULL,
+  `data_source_type` tinyint(3) NOT NULL DEFAULT '0',
   `meta_select_mode` enum('1','2') DEFAULT '1',
   `regexp_str` varchar(254) DEFAULT NULL,
   `metric` varchar(255) DEFAULT NULL,

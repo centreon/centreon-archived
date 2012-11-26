@@ -6,6 +6,7 @@ $help["display"] = dgettext("help", "Optional format string used for displaying 
 $help["warning"] = dgettext("help", "Absolute value for warning level (low threshold).");
 $help["critical"] = dgettext("help", "Absolute value for critical level (low threshold).");
 $help["calcul_type"] = dgettext("help", "Function to be applied to calculate the meta service status.");
+$help["data_source_type"] = dgettext("help", "Data source type of the meta service.");
 $help["select_mode"] = dgettext("help", "Selection mode for services to be considered for this meta service. In service list mode, mark selected services in the options on meta service list. In SQL matching mode, specify a search string to be used in an SQL query.");
 $help["regexp"] = dgettext("help", "Search string to be used in a SQL LIKE query for service selection.");
 $help["metric"] = dgettext("help", "Select the metric to measure for meta service status.");

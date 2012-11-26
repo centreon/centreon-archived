@@ -26,4 +26,7 @@ ALTER TABLE `contact` ADD CONSTRAINT `fk_ar_id` FOREIGN KEY (`ar_id`) REFERENCES
 -- Remove all logAnalyser entries to ensure only one will exist
 DELETE FROM `cron_operation` WHERE `name` = 'logAnalyser';
 
+-- Meta service compliant with new perfdata syntax
+ALTER TABLE `meta_service` ADD COLUMN `data_source_type` TINYINT (3) NOT NULL DEFAULT '0' AFTER `calcul_type`;
+
 UPDATE `informations` SET `value` = '2.4.0-RC7' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC6' LIMIT 1;

@@ -45,10 +45,10 @@
 	$ms = array();
 	if (($o == "c" || $o == "w") && $meta_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
-		# Set base value
+		// Set base value
 		$ms = array_map("myDecode", $DBRESULT->fetchRow());
 
-		# Set Service Notification Options
+		// Set Service Notification Options
 		$tmp = explode(',', $ms["notification_options"]);
 		foreach ($tmp as $key => $value)
 			$ms["ms_notifOpts"][trim($value)] = 1;
@@ -121,6 +121,11 @@
 	 */
 	$calType = array("AVE"=>_("Average"), "SOM"=>_("Sum"), "MIN"=>_("Min"), "MAX"=>_("Max"));
 
+        /*
+         * Data source type
+         */
+        $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");        
+        
 	/*
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
@@ -160,6 +165,7 @@
 	$form->addElement('text', 'warning', _("Warning Level"), $attrsText2);
 	$form->addElement('text', 'critical', _("Critical Level"), $attrsText2);
 	$form->addElement('select', 'calcul_type', _("Calculation Type"), $calType);
+        $form->addElement('select', 'data_source_type', _('Data Source Type'), $dsType);
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'meta_select_mode', null, _("Service List"), '1');

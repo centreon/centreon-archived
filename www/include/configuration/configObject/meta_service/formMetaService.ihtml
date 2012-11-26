@@ -17,9 +17,10 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="warning"> {$form.warning.label}</td><td class="FormRowValue">{$form.warning.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="critical"> {$form.critical.label}</td><td class="FormRowValue">{$form.critical.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="calcul_type"> {$form.calcul_type.label}</td><td class="FormRowValue">{$form.calcul_type.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="select_mode"> {$form.meta_select_mode.label}</td><td class="FormRowValue">{$form.meta_select_mode.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="regexp"> {$form.regexp_str.label}</td><td class="FormRowValue">{$form.regexp_str.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="metric"> {$form.metric.label}</td><td class="FormRowValue">{$form.metric.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="data_source_type"> {$form.data_source_type.label}</td><td class="FormRowValue">{$form.data_source_type.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="select_mode"> {$form.meta_select_mode.label}</td><td class="FormRowValue">{$form.meta_select_mode.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="regexp"> {$form.regexp_str.label}</td><td class="FormRowValue">{$form.regexp_str.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="metric"> {$form.metric.label}</td><td class="FormRowValue">{$form.metric.html}</td></tr>
 
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;&nbsp;{$form.header.check}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_period"> {$form.check_period.label}</td><td class="FormRowValue">{$form.check_period.html}</td></tr>

@@ -202,7 +202,7 @@
 		}
 		$rq = "INSERT INTO meta_service " .
 				"(meta_name, meta_display, check_period, max_check_attempts, normal_check_interval, retry_check_interval, notification_interval, " .
-				"notification_period, notification_options, notifications_enabled, calcul_type, meta_select_mode, regexp_str, metric, warning, critical, " .
+				"notification_period, notification_options, notifications_enabled, calcul_type, data_source_type, meta_select_mode, regexp_str, metric, warning, critical, " .
 				"graph_id, meta_comment, meta_activate) " .
 				"VALUES ( ";
 				isset($ret["meta_name"]) && $ret["meta_name"] != NULL ? $rq .= "'".htmlentities($ret["meta_name"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
@@ -216,6 +216,7 @@
 				isset($ret["ms_notifOpts"]) && $ret["ms_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["ms_notifOpts"]))."', " : $rq .= "NULL, ";
 				isset($ret["notifications_enabled"]["notifications_enabled"]) && $ret["notifications_enabled"]["notifications_enabled"] != 2 ? $rq .= "'".$ret["notifications_enabled"]["notifications_enabled"]."', " : $rq .= "'2', ";
 				isset($ret["calcul_type"]) ? $rq .= "'".$ret["calcul_type"]."', " : $rq .= "NULL, ";
+                                isset($ret["data_source_type"]) ? $rq .= "'".$ret["data_source_type"]."', " : $rq .= "0, ";
 				isset($ret["meta_select_mode"]["meta_select_mode"]) ? $rq .= "'".$ret["meta_select_mode"]["meta_select_mode"]."', " : $rq .= "NULL, ";
 				isset($ret["regexp_str"]) && $ret["regexp_str"] != NULL ? $rq .= "'".htmlentities($ret["regexp_str"])."', " : $rq .= "NULL, ";
 				isset($ret["metric"]) && $ret["metric"] != NULL ? $rq .= "'".htmlentities($ret["metric"])."', " : $rq .= "NULL, ";
@@ -263,6 +264,8 @@
 		$ret["notifications_enabled"]["notifications_enabled"] != 2 ? $rq .= "'".$ret["notifications_enabled"]["notifications_enabled"]."', " : $rq .= "'2', ";
 		$rq .= "calcul_type = ";
 		$ret["calcul_type"] ? $rq .= "'".$ret["calcul_type"]."', " : $rq .= "NULL, ";
+                $rq .= "data_source_type = ";
+		$ret["data_source_type"] ? $rq .= "'".$ret["data_source_type"]."', " : $rq .= "0, ";
 		$rq .= "meta_select_mode = ";
 		$ret["meta_select_mode"]["meta_select_mode"] != NULL ? $rq .= "'".$ret["meta_select_mode"]["meta_select_mode"]."', " : $rq .= "NULL, ";
 		$rq .= "regexp_str = ";
