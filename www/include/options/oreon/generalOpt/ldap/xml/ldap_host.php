@@ -37,6 +37,8 @@
  *
  */
 
+ini_set('display_errors', 'Off');
+
 include_once("@CENTREON_ETC@/centreon.conf.php");
 //include_once("/etc/centreon/centreon.conf.php");
 

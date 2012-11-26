@@ -37,6 +37,8 @@
  *
  */
 
+ini_set('display_errors', 'Off');
+
 if (!isset($_GET['id'])) {
     exit;
 }
