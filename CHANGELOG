@@ -1,3 +1,84 @@
+## Centreon 2.3.9
+
+Bug : No CSV extraction when system is not using NDO
+Bug : It was impossible to import media file packages (.tgz or .zip) when using PHP 5.1
+Bug : Removed hardcoded paths of CGI configuration which were used during installation
+Bug : It is now mandatory to specify a "%s" pattern in the LDAP search filter
+Bug : Host category relations are also kept when duplicating a host
+Bug : Event logs were displaying inconsistent information depending on filter combination.
+Bug : Soft states were displayed in the Tactical overview page. Only hard states matter now.
+Bug : Monitoring console used to crash when some host group names contained " or ' characters
+Bug : ACL menu access overridden
+Bug : Graph split option is applied in some cases, although it is not supposed to
+
+## Centreon 2.3.8
+
+Bug : ACL SQL query problem
+Bug : ACL engine does not handle multiple resource rules per access group
+
+## Centreon 2.3.7
+
+Enhancement : prevent users from entering reserved macros
+Bug : fix duplicate entries(x4) in service monitoring console
+Bug : fix Internet explorer 7/8 problem with command argument fields in service configuration form
+Bug : possibility to escape the "!" character in argument definitions 
+Bug : fix notification problems that causes \n to be replaced with #BR#
+Bug : fix downtime info in overlay window
+Bug : fix logAnalyser lock system
+Bug : fix log data console when using Centreon Broker
+Bug : fix service by hostgroup summary monitoring console 
+
+## Centreon 2.3.6
+
+Bug: fix typo in upgrade sql script
+
+## Centreon 2.3.5
+
+Bug: add possibility to start nagios from Administration > status
+Bug: fix problem to edit a service linked to and HG from the service details page. 
+Bug: remove old files for broker when removing it
+Bug: fix problem with nagios stats graphs
+Bug: nagiosPerfTrace running problems
+Bug: fix problems in service categories with special chars
+Bug: meta service : parsing error 
+Bug: fix problem with host downtime
+Bug: pagination error in host and service downtime
+Bug: avoid to block SSH/SCP connexion in centcore
+Bug: solved problem with the backup file in centstorage
+Bug: centreon-broker is now default engine 
+Bug: generation of servicegroup dependancies failed
+Bug: retreive status_file parameters in nagios.cfg
+
+
+## Centreon 2.3.4
+
+Enhancement: Add more help in LDAP form
+Enhancement: Improvement arround the broker integration
+Enhancement: Improve configuration Import system
+Enhancement: Improve color management for curve in graphs
+Enhancement: Improve vitual metrics management
+Bug : Fix problems with recurrent downtimes
+Bug : Fix problems with LDAP auth and Auto import of Users
+Bug : Fix problems with LDAP and Special chars
+Bug : Fix problem with status bar and poller state
+Bug : Fix problem with special chars in meta services
+Bug : Fix problem when user want to modify image in media
+Bug : Fix problem with auto increment id in ndo database
+Bug : Remove problem with ACL table : remove useless id 
+Bug : Various improvement in parsing of data in centstorage 
+
+## Centreon 2.3.3
+Bug #2769: Centreon Broker - inverted verbosity level
+Bug #2762: Graphs - "scale to max" problem
+Bug #2757: N/A Poller version
+Bug #2756: Reporting dashboard displays incorrect data
+Bug #2705: $ARG$ type arguments are not checked on service template forms
+Bug #2621: Fixes host/hostgroup ACL on tree selector (Views > Graphs)
+Bug #2615: Service Details and HostDetails show a blank screen (when user is not allowed to view resource)
+Bug #2600: Changes confusing text on Centreon web installation
+Bug #2783: Centreon Broker - ACL not working on Host Monitoring page
+Bug #2784: Light vulnerability on Configuration Command
+
 ## Centreon 2.3.0-RC3
 
 Fixes
