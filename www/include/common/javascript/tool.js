@@ -125,23 +125,19 @@ function toggleDisplay(id)
 
 function checkUncheckAll(theElement)
 {
-	var theForm = theElement.form, z = 0;
-    
-	for (z=0; z<theForm.length;z++) {
-		if (theForm[z].type == 'checkbox' && theForm[z].disabled == '0'){
-            if (theElement.checked && !theForm[z].checked) { 
-            	theForm[z].checked = true; 
-        		if (typeof(_selectedElem) != 'undefined') { 
-            	    putInSelectedElem(theForm[z].id); 
-                } 
-            } else if (!theElement.checked && theForm[z].checked) { 
-                theForm[z].checked = false; 
-                if (typeof(_selectedElem) != 'undefined') { 
-                    removeFromSelectedElem(theForm[z].id); 
-                } 
-            } 
-		}
-    }
+    jQuery(theElement).parents('tr').nextAll().find('input[type=checkbox]').each(function() {
+        if (theElement.checked && !jQuery(this).attr('checked')) {
+            jQuery(this).attr('checked',true);
+            if (typeof(_selectedElem) != 'undefined') {
+                putInSelectedElem(jQuery(this).attr('id'));
+            }
+        } else if (!theElement.checked && jQuery(this).attr('checked')) {
+            jQuery(this).attr('checked', false);
+            if (typeof(_selectedElem) != 'undefined') {
+                removeFromSelectedElem(jQuery(this).attr('id'));
+            }
+        }
+    });
 }
 
 function DisplayHidden(id)
