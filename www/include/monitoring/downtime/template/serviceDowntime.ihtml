@@ -21,36 +21,39 @@
 <hidden name="p" value='{$p}'>	
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
-	<td>{if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}</td>
-	{php}
-	   include('./include/common/pagination.php');
-	{/php}
+            <td class="ListColFooterLeft" align="left">
+                    <select name="o1" onChange="javascript: doAction(this, this.value); return true;">
+                        <option value=0></option>
+                        <option value="cs">{$cancel}</option>
+                        <option value="ds">{$delete}</option>
+                    </select>
+                    {if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
+            </td>
+            <td>
+                {php}
+                include('./include/common/pagination.php');
+                {/php}
+            </td>
 	</tr>
 </table>
 <table class="ListTable">
-	<tr class='ListHeader'>
-	<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;{$dtm_service_downtime}</td>		
-</tr>
-</table>
-<br />	
-{if $nb_downtime_svc}	
-<table class="ListTable">
-	<tr class='ListHeader'>
-		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-		<td class="ListColHeaderCenter">{$dtm_host_name}</td>
-		<td class="ListColHeaderCenter">{$dtm_service_descr}</td>
-		<td class="ListColHeaderCenter">{$dtm_start_time}</td>
-		<td class="ListColHeaderCenter">{$dtm_end_time}</td>
-		<td class="ListColHeaderCenter">{$dtm_duration}</td>
-		<td class="ListColHeaderCenter">{$dtm_author}</td>
-		<td class="ListColHeaderCenter">{$dtm_comment}</td>
-		<td class="ListColHeaderCenter">{$dtm_started}</td>
-		<td class="ListColHeaderCenter">{$dtm_fixed}</td>
-		{if $view_all == '1'}
-			<td class="ListColHeaderCenter">{$dtm_service_cancelled}</td>
-			<td class="ListColHeaderCenter">{$dtm_service_actual_end}</td>
-		{/if}
-	</tr>
+    <tr class='ListHeader'>
+        <td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+	<td class="ListColHeaderCenter">{$dtm_host_name}</td>
+	<td class="ListColHeaderCenter">{$dtm_service_descr}</td>
+	<td class="ListColHeaderCenter">{$dtm_start_time}</td>
+	<td class="ListColHeaderCenter">{$dtm_end_time}</td>
+	<td class="ListColHeaderCenter">{$dtm_duration}</td>
+	<td class="ListColHeaderCenter">{$dtm_author}</td>
+	<td class="ListColHeaderCenter">{$dtm_comment}</td>
+	<td class="ListColHeaderCenter">{$dtm_started}</td>
+	<td class="ListColHeaderCenter">{$dtm_fixed}</td>
+	{if $view_all == '1'}
+            <td class="ListColHeaderCenter">{$dtm_service_cancelled}</td>
+            <td class="ListColHeaderCenter">{$dtm_service_actual_end}</td>
+	{/if}
+    </tr>
+    {if $nb_downtime_svc}
 	{foreach item=tds from=$tab_downtime_svc}
 	<tr class={cycle values="list_two, list_one"}>
 		<td class="ListColPicker"><input type="checkbox" name='select[{$tds.host_name};{$tds.internal_downtime_id}]'></td>
@@ -69,32 +72,36 @@
 		{/if}
 	</tr>
 	{/foreach}
-	<tr>
-		<td class="ListColFooterLeft" align="left" colspan="2">
-			<select name="o" onChange="javascript: doAction(this, this.value); return true;">
-				<option value=0></option>
-				<option value="cs">{$cancel}</option>
-				<option value="ds">{$delete}</option>
-			</select>
-		</td>
-		{if $view_all == '1'}
-			<td class="ListColFooterCenter" colspan="9">&nbsp;</td>
-		{else}		
-			<td class="ListColFooterCenter" colspan="7">&nbsp;</td>
-		{/if}
-		<td class="ListColFooterRight" align="right">&nbsp;</td>
-	</tr>	
-</table>	
-{else}
-<center><b>{$no_svc_dtm}</b></center>
-{/if}
+    {else}
+        <tr>
+            {if $view_all == '1'}
+                {assign var='nbcol' value=12}
+            {else}
+                {assign var='nbcol' value=10}
+            {/if}
+            <td colspan={$nbcol} style='text-align:center;'>
+                <b>{$no_svc_dtm}</b>
+            </td>
+        </tr>
+    {/if}
+</table>
 <table class="ToolbarTable">
-	<tr class="ToolbarTR">
+    <tr class="ToolbarTR">
+        <td class="ListColFooterLeft" align="left">
+                <select name="o2" onChange="javascript: doAction(this, this.value); return true;">
+                    <option value=0></option>
+                    <option value="cs">{$cancel}</option>
+                    <option value="ds">{$delete}</option>
+                </select>
+        </td>
+        <td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}
-</tr>
+        </td>
+    </tr>
 </table>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
+<input type='hidden' name='o'>
 {$form.hidden}	
 </form>

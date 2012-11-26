@@ -19,19 +19,21 @@
 <br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
-	<td>{if $msgh}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}</td>
-	{php}
-	   include('./include/common/pagination.php');
-	{/php}
+            <td class="ListColFooterLeft" align="left">
+                    <select name="o1" onChange="javascript: doAction(this, this.value); return true;">
+                        <option value=0></option>
+                        <option value="ch">{$cancel}</option>
+                        <option value="dh">{$delete}</option>
+                    </select>
+                    {if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
+            </td>
+            <td>
+                {php}
+                include('./include/common/pagination.php');
+                {/php}
+            </td>
 	</tr>
 </table>
-<table class="ListTable">
-	<tr class='ListHeader'>			
-		<td>&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$dtm_host_downtime}</td>		
-	</tr>
-</table>
-<br />
-{if $nb_downtime_host}
 <table class="ListTable">
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
@@ -48,49 +50,52 @@
 			<td class="ListColHeaderCenter">{$dtm_host_actual_end}</td>
 		{/if}
 	</tr>
-	{foreach item=tdh from=$tab_downtime_host}
-	<tr class={cycle values="list_two, list_one"}>
-		<td class="ListColPicker"><input type="checkbox" name='select[{$tdh.host_name};{$tdh.internal_downtime_id}]'></td>
-		<td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tdh.host_name_link}'>{$tdh.host_name}</a></td>
-		<td class="ListColCenter" width="120">{$tdh.scheduled_start_time}</td>
-		<td class="ListColCenter" width="120">{$tdh.scheduled_end_time}</td>
-		<td class="ListColRight" width="60">{$tdh.duration} {$secondes}</td>
-		<td class="ListColCenter" width="110">{$tdh.author_name}</td>
-		<td class="ListColLeft">{$tdh.comment_data}</td>
-		<td class="ListColCenter" width="30">{$tdh.was_started}</td>
-		<td class="ListColCenter" width="50">{$tdh.is_fixed}</td>
-		{if $view_all == '1'}
-			<td class="ListColCenter" width="50">{$tdh.was_cancelled}</td>
-			<td class="ListColRight" width="50">{$tdh.actual_end_time}</td>
-		{/if}
-	</tr>
-	{/foreach}
-	<tr>
-		<td class="ListColFooterLeft" align="left" colspan="2">
-			<select name="o" onChange="javascript: doAction(this, this.value); return true;">
-				<option value=0></option>
-				<option value="ch">{$cancel}</option>
-				<option value="dh">{$delete}</option>
-			</select>
-		</td>
-		{if $view_all == '1'}
-			<td class="ListColFooterCenter" colspan="8">&nbsp;</td>
-		{else}
-			<td class="ListColFooterCenter" colspan="6">&nbsp;</td>
-		{/if}
-		<td class="ListColFooterRight" align="right">&nbsp;</td>
-	</tr>		
-</table>	
-{else}
-<center><b>{$no_host_dtm}</b></center>
-{/if}
+        {if $nb_downtime_host}
+            {foreach item=tdh from=$tab_downtime_host}
+            <tr class={cycle values="list_two, list_one"}>
+                    <td class="ListColPicker"><input type="checkbox" name='select[{$tdh.host_name};{$tdh.internal_downtime_id}]'></td>
+                    <td class="ListColLeft" width="150"><a href='./main.php?p=201&o=hd&host_name={$tdh.host_name_link}'>{$tdh.host_name}</a></td>
+                    <td class="ListColCenter" width="120">{$tdh.scheduled_start_time}</td>
+                    <td class="ListColCenter" width="120">{$tdh.scheduled_end_time}</td>
+                    <td class="ListColRight" width="60">{$tdh.duration} {$secondes}</td>
+                    <td class="ListColCenter" width="110">{$tdh.author_name}</td>
+                    <td class="ListColLeft">{$tdh.comment_data}</td>
+                    <td class="ListColCenter" width="30">{$tdh.was_started}</td>
+                    <td class="ListColCenter" width="50">{$tdh.is_fixed}</td>
+                    {if $view_all == '1'}
+                            <td class="ListColCenter" width="50">{$tdh.was_cancelled}</td>
+                            <td class="ListColRight" width="50">{$tdh.actual_end_time}</td>
+                    {/if}
+            </tr>
+            {/foreach}
+        {else}
+            {if $view_all == '1'}
+                {assign var='nbcol' value=11}
+            {else}
+                {assign var='nbcol' value=9}
+            {/if}
+            <td colspan={$nbcol} style='text-align:center;'>
+                <b>{$no_host_dtm}</b>
+            </td>
+        {/if}
+</table>
 <table class="ToolbarTable">
-	<tr class="ToolbarTR">
+    <tr class="ToolbarTR">
+        <td class="ListColFooterLeft" align="left">
+                <select name="o2" onChange="javascript: doAction(this, this.value); return true;">
+                    <option value=0></option>
+                    <option value="ch">{$cancel}</option>
+                    <option value="dh">{$delete}</option>
+                </select>
+        </td>
+        <td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}
-</tr>
+        </td>
+    </tr>
 </table>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
+<input type='hidden' name='o'>
 {$form.hidden}
 </form>

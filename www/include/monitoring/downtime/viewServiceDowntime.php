@@ -320,9 +320,10 @@ msgArr['ds'] = '<?php echo addslashes(_("Do you confirm the deletion ?")); ?>';
 
 function doAction(slt, act) {
 	if (confirm(msgArr[act])) {
-		document.form.submit();
+            jQuery('input[name=o]').attr('value', act);
+            document.form.submit();
 	} else {
-		slt.value = 0;
+            slt.value = 0;
 	}
 }
 </script>
