@@ -62,6 +62,8 @@ For ndo2db:
 .. image:: /_static/images/user/ndo2dbconf_1.png
    :align: center
 
+
+
 .. image:: /_static/images/user/ndo2dbconf_2.png
    :align: center
 

@@ -36,7 +36,9 @@ Your widget must contain one mandatory file named **configs.xml** at its root.
 Configuration file
 ******************
 
-This is the XML configuration file of our Dummy widget::
+This is the XML configuration file of our Dummy widget:
+
+.. code-block:: xml
 
   <configs>
         <title>Dummy</title>
@@ -189,8 +191,11 @@ Code
 
 Now, let's see how you could retrieve the parameter values in your PHP code.
 
-*widgets/dummy/index.php*::
+*widgets/dummy/index.php*:
 
+.. sourcecode:: php
+
+  <?php
   // required classes
   require_once "/etc/centreon/centreon.conf.php";
   require_once $centreon_path . "www/class/centreon.class.php";
@@ -214,6 +219,7 @@ Now, let's see how you could retrieve the parameter values in your PHP code.
   $preferences = $widget->getWidgetPreferences($_GET['widgetId']);
   // print the retrieved preferences
   print_r($preferences);
+  ?>
 
 The result::
 

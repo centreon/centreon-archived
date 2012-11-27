@@ -8,12 +8,7 @@ Welcome to Centreon's documentation!
 
 Centreon is an Open Source software package that lets you supervise
 all the infrastructures and applications comprising your information
-system.
-
-* `Demo <http://demo.centreon.com>`_
-* :ref:`downloads`
-* `Screenshots <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
-
+system. 
 
 Contents:
 
@@ -24,6 +19,10 @@ Contents:
    user/index
    extending/index
 
+Additional online resource:
+
+* `Demo <http://demo.centreon.com>`_
+* `Screenshots <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
 
 Indices and tables
 ==================
