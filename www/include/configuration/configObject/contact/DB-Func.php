@@ -377,7 +377,7 @@
 		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= ")";
-
+		
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(contact_id) FROM contact");
 		$contact_id = $DBRESULT->fetchRow();
@@ -536,6 +536,7 @@
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".$ret["contact_address6"]."' ": $rq .= "NULL ";
 
 		$rq .= "WHERE contact_id = '".$contact_id."'";
+		
 		$DBRESULT = $pearDB->query($rq);
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $contact_id == $oreon->user->get_id()) {
 			$oreon->user->set_lang($ret["contact_lang"]);
@@ -573,8 +574,10 @@
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
 		if (isset($ret["contact_location"]))
 			$fields["contact_location"] = $ret["contact_location"];
-		$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
-		$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
+		if (isset($ret["contact_hostNotifCmds"]))
+			$fields["contact_hostNotifCmds"] = implode(",", $ret["contact_hostNotifCmds"]);
+		if (isset($ret["contact_svNotifCmds"]))
+			$fields["contact_svNotifCmds"] = implode(",", $ret["contact_svNotifCmds"]);
 		if (isset($ret["contact_cgNotif"]))
 			$fields["contact_cgNotif"] = implode(",", $ret["contact_cgNotif"]);
 		$fields["contact_address1"] = $ret["contact_address1"];

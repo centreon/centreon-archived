@@ -314,8 +314,9 @@
 	$GMTList = $CentreonGMT->getGMTList();
 	$form->addElement('select', 'contact_location', _("Timezone / Location"), $GMTList);
 	$form->setDefaults(array('contact_location' => '0'));
-	if (!isset($cct["contact_location"]))
+	if (!isset($cct["contact_location"])) {
 		$cct["contact_location"] = 0;
+	}
 	unset($GMTList);
 
 	if ($o != "mc") {
@@ -342,9 +343,10 @@
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("Yes"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("No"), '0');
+	$tab[] = HTML_QuickForm::createElement('radio', 'contact_enable_notifications', null, _("Default"), '2');
 	$form->addGroup($tab, 'contact_enable_notifications', _("Enable Notifications"), '&nbsp;');
 	if ($o != "mc") {
-	    $form->setDefaults(array('contact_enable_notifications' => '0'));
+	    $form->setDefaults(array('contact_enable_notifications' => '2'));
 	}
 
 	/** ******************************
@@ -454,16 +456,19 @@
 		$form->addRule('contact_lang', _("Required Field"), 'required');
 		$form->addRule('contact_admin', _("Required Field"), 'required');
 		$form->addRule('contact_auth_type', _("Required Field"), 'required');
-
-		if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) && $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1) {
-			$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
-			$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
-			$form->addRule('contact_hostNotifOpts', _("Compulsory Option"), 'required');
-			$form->addRule('contact_svNotifOpts', _("Compulsory Option"), 'required');
-			$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
-			$form->addRule('contact_svNotifCmds', _("Compulsory Command"), 'required');
+		
+		if (isset($ret["contact_enable_notifications"]["contact_enable_notifications"]) 
+			&& $ret["contact_enable_notifications"]["contact_enable_notifications"] == 1) {
+			if (isset($ret["contact_template_id"]) && $ret["contact_template_id"] == '') {
+				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+				$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
+				$form->addRule('contact_hostNotifOpts', _("Compulsory Option"), 'required');
+				$form->addRule('contact_svNotifOpts', _("Compulsory Option"), 'required');
+				$form->addRule('contact_hostNotifCmds', _("Compulsory Command"), 'required');
+				$form->addRule('contact_svNotifCmds', _("Compulsory Command"), 'required');
+			}
 		}
-
+		
 		$form->addRule(array('contact_passwd', 'contact_passwd2'), _("Passwords do not match"), 'compare');
 		$form->registerRule('exist', 'callback', 'testContactExistence');
 		$form->addRule('contact_name', "<font style='color: red;'>*</font>&nbsp;" . _("Contact already exists"), 'exist');
