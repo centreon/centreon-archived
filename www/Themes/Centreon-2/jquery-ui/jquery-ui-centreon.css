@@ -24,3 +24,4 @@
 .ui-tabs .ui-tabs-panel { display: block; border-width: 0; padding: 1em 0.4em; background: none; }
 
 .ui-button-text-icon-primary .ui-button-text, .ui-button-text-icons .ui-button-text { padding: .1em 1em .1em 2.1em; }
+#globalView {padding-bottom:10px;}

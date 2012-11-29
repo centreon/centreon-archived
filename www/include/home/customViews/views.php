@@ -69,6 +69,7 @@ try {
     $ownership = $viewObj->checkOwnership($viewId);
     $widgets = array();
     $columnClass = "column_1";
+    $widgetNumber = 0;
     if ($viewId) {
         $columnClass = $viewObj->getLayout($viewId);
         $widgets = $widgetObj->getWidgetsFromViewId($viewId);
@@ -79,11 +80,15 @@ try {
             } else {
                 $widgets[$widgetId]['column'] = 0;
             }
+            $widgetNumber++;
         }
         $template->assign("columnClass", $columnClass);
         $template->assign("widgets", $widgets);
     }
+    $template->assign("widgetNumber", $widgetNumber);
     $template->assign("view_id", $viewId);
+    $template->assign("error_msg", _("No widget configured in this view. Please add a new widget with the \"Add widget\" button."));
+    
     $template->display($columnClass.".ihtml");
 } catch (CentreonWidgetException $e) {
     echo $e->getMessage() . "<br/>";

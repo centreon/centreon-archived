@@ -9,11 +9,19 @@
 		<button class='setRotate'></button>			
 	</div>
 	<img id='toggleActionBar' src='./img/icones/7x7/sort_asc.gif' style='bottom: 10px; position: relative; float: right; right: 3px;'>
-	<div id="tabs">
+	{if $empty == 1}
+	<div id="tabs" style='margin-top:5px;padding-right:5px;'>
+		<div>	
+			<center><div style='padding:100px;'><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'><b>{$msg}</b></div></center>
+		</div>
+	</div>
+	{else}
+	<div id="tabs" style='margin-top:5px;'>
 		<ul>
 			{foreach name=viewId item=view from=$views}
 				<li><span class="ui-icon ui-icon-{$view.icon}" style="float:left;"></span><a href="./include/home/customViews/views.php?currentView={$view.custom_view_id}">{$view.name}</a></li>			
 			{/foreach}
 		</ul>
 	</div>
+	{/if}
 </div>

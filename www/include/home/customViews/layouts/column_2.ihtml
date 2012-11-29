@@ -1,4 +1,5 @@
 <div class='viewBody'>
+	{if $widgetNumber != 0}
 	<div class="widgetBody column_2">
 		{foreach name=widgetId item=widget from=$widgets}		
 			{if $widget.column == 0 || $widget.column > 1}
@@ -25,4 +26,7 @@
 		{/foreach}
 		<div class='portlet invisible-portlet'></div>
 	</div>
+	{else}
+		<div><center><div style='padding:100px;'><img src='./img/icones/16x16/help_button.png' style='padding-right:5px;'><b>{$error_msg}</b></div></center></div>
+	{/if}
 </div>

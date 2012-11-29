@@ -39,10 +39,14 @@ try {
     $db = new CentreonDB();
     $viewObj = new CentreonCustomView($centreon, $db);
 
-    /**
+    /*
 	 * Smarty
 	 */
     $path = "./include/home/customViews/";
+    
+    /*
+     * Smarty INIT
+     */
     $template = new Smarty();
     $template = initSmartyTpl($path, $template, "./");
 
@@ -58,7 +62,7 @@ try {
     $indexTab = array(0 => -1);
 
     foreach ($views as $key => $val) {
-        $indexTab[$key] = $i;
+    	$indexTab[$key] = $i;
         $i++;
         if (!$viewObj->checkPermission($key)) {
             $views[$key]['icon'] = "locked";
@@ -66,8 +70,11 @@ try {
             $views[$key]['icon'] = "unlocked";
         }
     }
-
+        
     $template->assign('views', $views);
+    $template->assign('empty', $i);
+    $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
+    
     $template->display("index.ihtml");
 } catch (CentreonCustomViewException $e) {
     echo $e->getMessage() . "<br/>";
