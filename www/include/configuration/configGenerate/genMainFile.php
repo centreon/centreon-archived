@@ -37,19 +37,14 @@
  */
 
 	/*
-	 * Connect to MySQL
-	 */
-	$pearDBO = new CentreonDB("centstorage");
-
-	/*
 	 * Get interval_lenth value
 	 */
 	$interval_length = 60;
 	$query = "SELECT * FROM options WHERE `key` LIKE 'interval_length'";
-	$res = $pearDBO->query($query);
+	$res = $pearDB->query($query);
 	if (false === PEAR::isError($res) && $res->numRows() == 1) {
 		$row = $res->fetchRow();
-		$interval_length = (int)$row['interval_length'];
+		$interval_length = (int)$row['value'];
 		$nagios["interval_length"] = $interval_length;
 	}
 
@@ -57,8 +52,8 @@
 	 * Update all interval_length value for each poller.
 	 */
 	$query = "UPDATE cfg_nagios SET interval_length = '".$interval_length."'";
-	$res = $pearDBO->query($query);
-	if (false === PEAR::isError($res)) {
+	$res = $pearDB->query($query);
+	if (PEAR::isError($res) == true) {
 		print "Cannot update interval_length informations. Please check SQL logs.\n<br>";
 	}
 	

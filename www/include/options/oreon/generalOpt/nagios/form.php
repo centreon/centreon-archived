@@ -120,10 +120,13 @@
 	/*
 	 * Form Rules
 	 */
-
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";
+	}
+	
+	function isNum($value) {
+		return is_numeric($value);
 	}
 
 	$form->applyFilter('__ALL__', 'myTrim');
@@ -131,19 +134,22 @@
 	$form->applyFilter('nagios_path_img', 'slash');
 	$form->applyFilter('nagios_path_plugins', 'slash');
 	$form->applyFilter('cengine_path_connectors', 'slash');
-
+	
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
 	$form->registerRule('is_writable_path', 'callback', 'is_writable_path');
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
+	$form->registerRule('isNum', 'callback', 'isNum');
 
 	$form->addRule('nagios_path_img', _("The directory isn't valid"), 'is_valid_path_images');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
 	$form->addRule('nagios_path_plugins', _("The directory isn't valid"), 'is_valid_path');
 	$form->addRule('tactical_refresh_interval', _("Refresh interval must be numeric"), 'numeric');
 
+	$form->addRule('interval_length', _("This value must be a numerical value."), 'isNum');
+	
 	/*
 	 * Smarty template Init
 	 */
