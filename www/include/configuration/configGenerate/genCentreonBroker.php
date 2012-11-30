@@ -56,7 +56,8 @@
 	$ns_id = $tab['id'];
 
 	$files = array();
-
+        $eventQueueMaxSize = array();
+        
 	/*
 	 * Get the module path for the nagios_server
 	 */
@@ -75,7 +76,7 @@
 	 */
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-	$query = "SELECT cs.config_filename, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name
+	$query = "SELECT cs.config_filename, cs.event_queue_max_size, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name
 		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
 		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
 
@@ -105,6 +106,7 @@
 	            );
 	        }
 	        $files[$filename][$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
+                $eventQueueMaxSize[$filename] = $row['event_queue_max_size'];
 	    }
 
 	    /*
@@ -143,6 +145,10 @@
     	        $fileXml->writeElement('module_directory', $centreonBrokerModulePath);
     	    }
 
+            if (isset($eventQueueMaxSize[$filename])) {
+                $fileXml->writeElement('event_queue_max_size', $eventQueueMaxSize[$filename]);
+            }
+            
     	    foreach ($groups as $group => $listInfos) {
     	        if (count($listInfos) > 0) {
         	        foreach ($listInfos as $key2 => $infos) {

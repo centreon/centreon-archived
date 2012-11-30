@@ -646,7 +646,8 @@ INSERT INTO `cb_tag` (`cb_tag_id`, `tagname`) VALUES
 (2, 'input'),
 (3, 'logger'),
 (1, 'output'),
-(5, 'stats');
+(5, 'stats'),
+(6, 'temporary');
 
 --
 -- Contenu de la table `cb_module`
@@ -666,7 +667,9 @@ INSERT INTO `cb_module` (`cb_module_id`, `name`, `libname`, `loading_pos`, `is_b
 (11, 'Compression', 'compression.so', 60, 0, 1),
 (12, 'Failover', NULL, NULL, 0, 1),
 (13, 'Correlation', 'correlation.so', 20, 0, 1),
-(14, 'Statistics', 'stats.so', 5, 0, 1);
+(14, 'Statistics', 'stats.so', 5, 0, 1),
+(15, 'Temporary', NULL, NULL, 0, 1);
+
 
 --
 -- Contenu de la table `cb_type`
@@ -688,7 +691,8 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 (21, 'Failover', 'failover', 12),
 (22, 'Correlation', 'correlation', 13),
 (23, 'Statistics', 'stats', 14),
-(24, 'Monitoring', 'monitoring', 9);
+(24, 'Monitoring', 'monitoring', 9),
+(25, 'File', 'file', 15);
 
 --
 -- Contenu de la table `cb_field`
@@ -816,7 +820,8 @@ INSERT INTO `cb_tag_type_relation` (`cb_tag_id`, `cb_type_id`, `cb_type_uniq`) V
 (3, 19, 0),
 (4, 22, 1),
 (5, 23, 1),
-(3, 24, 0);
+(3, 24, 0),
+(6, 25, 1);
 
 --
 -- Contenu de la table `cb_type_field_relation`
@@ -900,7 +905,12 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (24, 24, 1, 6),
 (14, 39, 0, 11),
 (16, 39, 0, 8),
-(14, 40, 0, 12);
+(14, 40, 0, 12),
+(25, 11, 1, 1),
+(25, 12, 1, 2),
+(25, 25, 1, 3),
+(25, 26, 0, 4),
+(25, 27, 0, 5);
 
 --
 -- Contenu de la table `widget_parameters_field_type`

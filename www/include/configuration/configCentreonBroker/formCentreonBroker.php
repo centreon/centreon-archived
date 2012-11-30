@@ -86,6 +86,8 @@
 	$form->addElement('text', 'name', _("Name"), $attrsText);
 	$form->addElement('text', 'filename', _("Config file name"), $attrsText);
 	$form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
+        $form->addElement('text', 'event_queue_max_size', _('Event Queue Max Size'), $attrsText);
+        
 	$status = array();
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 	$status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
@@ -131,6 +133,7 @@
 	 * Form Rules
 	 */
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
+        $form->addRule('event_queue_max_size', _('Value must be numeric'), 'numeric');
 
 	if ($o == "w")	{
 		if ($centreon->user->access->page($p) != 2) {

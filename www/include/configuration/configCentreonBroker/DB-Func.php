@@ -94,22 +94,26 @@
 	function getCentreonBrokerInformation($id) {
 	    global $pearDB;
 
-	    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id;
+	    $query = "SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size
+                      FROM cfg_centreonbroker 
+                      WHERE config_id = " . $id;
 	    $res = $pearDB->query($query);
 	    if (PEAR::isError($res)) {
 	        return array(
         		"name" => '',
-	            "filename" => '',
-        		"activate" => '1'
+	                "filename" => '',
+        		"activate" => '1',
+                        "event_queue_max_size" => ''
     		);
 	    }
 	    $row = $res->fetchRow();
 	    return array(
 	    		"id" => $id,
         		"name" => $row['config_name'],
-	            "filename" => $row['config_filename'],
+	                "filename" => $row['config_filename'],
         		"activate" =>  $row['config_activate'],
-	            "ns_nagios_server" => $row['ns_nagios_server']
+	                "ns_nagios_server" => $row['ns_nagios_server'],
+                        "event_queue_max_size" => $row['event_queue_max_size']
 	    );
 	}
 
@@ -125,7 +129,8 @@
 
 			$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-			$DBRESULT = $pearDB->query("SELECT config_name, config_filename, config_activate, ns_nagios_server FROM cfg_centreonbroker WHERE config_id = " . $id);
+			$DBRESULT = $pearDB->query("SELECT config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size
+                                                    FROM cfg_centreonbroker WHERE config_id = " . $id);
 			$row = $DBRESULT->fetchRow();
 			$DBRESULT->free();
 
@@ -135,6 +140,7 @@
 			$values = array();
 			$values['activate']['activate'] = '0';
 			$values['ns_nagios_server'] = $row['ns_nagios_server'];
+                        $values['event_queue_max_size'] = $row['event_queue_max_size'];
 			$query = "SELECT config_key, config_value, config_group, config_group_id
 				FROM cfg_centreonbroker_info
 				WHERE config_id = " . $id;

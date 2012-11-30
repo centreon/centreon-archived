@@ -25,6 +25,7 @@
 			<tr class="list_two"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField">{$form.activate.label}</td><td class="FormRowValue">{$form.activate.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField">{$form.ns_nagios_server.label}</td><td class="FormRowValue">{$form.ns_nagios_server.html}</td></tr>
+                        <tr class="list_one"><td class="FormRowField">{$form.event_queue_max_size.label}</td><td class="FormRowValue">{$form.event_queue_max_size.html}</td></tr>
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		</table>
 	</div>

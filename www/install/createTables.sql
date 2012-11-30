@@ -421,6 +421,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_filename` varchar(255) NOT NULL,
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
+  `event_queue_max_size` int(11) DEFAULT 50000,
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

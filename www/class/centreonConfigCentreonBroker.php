@@ -394,8 +394,12 @@ class CentreonConfigCentreonBroker
     	/*
 	     * Insert the Centreon Broker configuration
 	     */
-	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, config_activate, ns_nagios_server)
-	    	VALUES ('" . $values['name'] . "', '" . $values['filename'] . "', '" . $values['activate']['activate'] . "', " . $values['ns_nagios_server'] . ")";
+	    $query = "INSERT INTO cfg_centreonbroker (config_name, config_filename, config_activate, ns_nagios_server, event_queue_max_size) VALUES (
+                            '" . $this->db->escape($values['name']) . "', 
+                            '" . $this->db->escape($values['filename']) . "', 
+                            '" . $this->db->escape($values['activate']['activate']) . "',
+                            " . $this->db->escape($values['ns_nagios_server']) . ", 
+                            ".$this->db->escape((int)$values['event_queue_max_size']).")";
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
 	    }
@@ -425,8 +429,12 @@ class CentreonConfigCentreonBroker
         /*
 	     * Insert the Centreon Broker configuration
 	     */
-	    $query = "UPDATE cfg_centreonbroker
-	    	SET config_name = '" . $values['name'] . "', config_filename = '" . $values['filename'] . "', config_activate = '" . $values['activate']['activate'] . "', ns_nagios_server = " . $values['ns_nagios_server'] . "
+	    $query = "UPDATE cfg_centreonbroker SET 
+                config_name = '" . $this->db->escape($values['name']) . "', 
+                config_filename = '" . $this->db->escape($values['filename']) . "', 
+                config_activate = '" . $this->db->escape($values['activate']['activate']) . "', 
+                ns_nagios_server = " . $this->db->escape($values['ns_nagios_server']) . ",
+                event_queue_max_size = ".(int)$this->db->escape($values['event_queue_max_size'])."
 	    	WHERE config_id = " . $id;
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
