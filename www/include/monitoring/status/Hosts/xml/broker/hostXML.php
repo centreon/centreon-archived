@@ -175,8 +175,7 @@
 				$rq1 .= " AND h.state = 1 ";
 			} elseif (isset($matches[1]) && $matches[1] == 'unreachable') {
                 $rq1 .= " AND h.state = 2 ";
-			}
-            elseif (isset($matches[1]) && $matches[1] == 'pending') {
+			} elseif (isset($matches[1]) && $matches[1] == 'pending') {
                 $rq1 .= " AND h.state = 4 ";
 			}
 	    } else {
