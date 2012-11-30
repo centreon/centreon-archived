@@ -50,6 +50,15 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (25, 26, 0, 4),
 (25, 27, 0, 5);
 
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) 
+VALUES (41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL);
+
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+(11, 41, 1, 3),
+(17, 41, 1, 7),
+(25, 41, 1, 6);
+
+
 ALTER TABLE `cfg_centreonbroker` ADD COLUMN `event_queue_max_size` INT (11) DEFAULT 50000 AFTER `ns_nagios_server`;
 
 UPDATE `informations` SET `value` = '2.4.0-RC7' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC6' LIMIT 1;
