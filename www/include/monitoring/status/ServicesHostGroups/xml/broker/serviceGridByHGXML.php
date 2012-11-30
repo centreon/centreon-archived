@@ -106,12 +106,12 @@
 	if ($o == "svcOVHG_ack_0") {
 		$rq1 .= 	" AND h.host_id IN (" .
 					" SELECT s.host_id FROM services s " .
-					" WHERE s.acknowledged = 0 AND s.state != 0 AND s.enabled = 1)";
+					" WHERE s.acknowledged = 0 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 	}
 	if ($o == "svcOVHG_ack_1"){
 		$rq1 .= 	" AND h.host_id IN (" .
 					" SELECT s.host_id FROM services s " .
-					" WHERE s.acknowledged = 1 AND s.state != 0 AND s.enabled = 1)";
+					" WHERE s.acknowledged = 1 AND s.state != 0 AND s.state != 4 AND s.enabled = 1)";
 	}
 	if ($search != "") {
 		$rq1 .= " AND h.name like '%" . $search . "%' ";
@@ -157,7 +157,7 @@
 			 " AND s.enabled = '1' ";
 	$rq1 .= $obj->access->queryBuilder("AND", "h.name", "centreon_acl.host_name") . $obj->access->queryBuilder("AND","s.description", "centreon_acl.service_description") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr);
 	if ($o == "svcgrid_pb" || $o == "svcOVHG_pb" || $o == "svcgrid_ack_0" || $o == "svcOVHG_ack_0") {
-		$rq1 .= " AND s.state != 0 ";
+		$rq1 .= " AND s.state != 0 AND s.state != 4 ";
 	}
 	if ($o == "svcgrid_ack_1" || $o == "svcOVHG_ack_1") {
 		$rq1 .= "AND s.acknowledged = 1";

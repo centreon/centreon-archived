@@ -103,7 +103,7 @@
 		$rq1 .= " AND s.state != 0 AND s.state != 4 " ;
 	}
 	if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
-		$rq1 .= " AND s.state != 0 AND s.acknowledged = 0" ;
+		$rq1 .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0" ;
 	}
 	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
 		$rq1 .= " AND s.acknowledged = '1'";
@@ -145,10 +145,10 @@
 			$rq1 .= " AND h.instance_id = ".$instance;
 		}
 		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
-			$rq1 .= " AND s.state != 0" ;
+			$rq1 .= " AND s.state != 0 AND s.state != 4" ;
 		}
 		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
-			$rq1 .= " AND s.state != 0 AND s.acknowledged = 0" ;
+			$rq1 .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0" ;
 		}
 		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
 			$rq1 .= " AND s.service_id IN (" .
