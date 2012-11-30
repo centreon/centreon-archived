@@ -4,6 +4,7 @@
 .column_1 { width: 100%; float: left; padding-bottom: 0px; }
 .column_2 { width: 50%; float: left; padding-bottom: 0px; }
 .column_3 { width: 33%; float: left; padding-bottom: 0px; }
+.column_3_last { width: 34%; float: left; padding-bottom: 0px; }
 .portlet { margin: 0 0.2em 0.7em 0.2em; overflow: hidden; }
 .portlet-header { margin: 0.3em; padding-bottom: 4px; padding-left: 0.5em; padding-top: 0.3em; cursor: move ; }
 .portlet-header .ui-icon { float: right; cursor: pointer}
