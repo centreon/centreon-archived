@@ -755,7 +755,6 @@
 	$form->addRule('nagios_name', _("Compulsory Name"), 'required');
     $form->addRule('cfg_file', _("Required Field"), 'required');
 	$form->addRule('nagios_comment', _("Required Field"), 'required');
-	$form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
 	
 	/*
@@ -763,12 +762,15 @@
 	 */
 	$ret = $form->getSubmitValues();
 	
-	for ($i = 0; isset($ret["in_broker_$i"]) ; $i++) {
-		;
+	for ($i = 0, $brokerOptValidate = 0; isset($ret["in_broker_$i"]) ; $i++) {
+		if ($ret["in_broker_$i"] != "") {
+			$brokerOptValidate++;
+		}
 	}
-	if ($i) {
-		$form->addRule('event_broker_options', _("This value must be a numerical value."), 'isNum');
+	if ($brokerOptValidate) {
+		$form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
 	}	
+	$form->addRule('event_broker_options', _("This value must be a numerical value."), 'isNum');
 	
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;"._("Required fields"));
 
