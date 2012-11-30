@@ -225,8 +225,12 @@
 		$fields["dep_name"] = htmlentities($ret["dep_name"], ENT_QUOTES, "UTF-8");
 		$fields["dep_description"] = htmlentities($ret["dep_description"], ENT_QUOTES, "UTF-8");
 		$fields["inherits_parent"] = $ret["inherits_parent"]["inherits_parent"];
-		$fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
-		$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
+		if (isset($ret["execution_failure_criteria"])) {
+			$fields["execution_failure_criteria"] = implode(",", array_keys($ret["execution_failure_criteria"]));
+		}
+		if (isset($ret["notification_failure_criteria"])) {
+			$fields["notification_failure_criteria"] = implode(",", array_keys($ret["notification_failure_criteria"]));
+		}
 		$fields["dep_comment"] = htmlentities($ret["dep_comment"], ENT_QUOTES, "UTF-8");
 		$fields["dep_hSvPar"] = "";
 		if (isset($ret["dep_hSvPar"])) {
