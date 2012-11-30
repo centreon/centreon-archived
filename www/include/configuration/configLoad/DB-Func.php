@@ -216,13 +216,6 @@
 		$DBRESULT = $pearDB->query($rq);
 	}
 
-	function deletePerfparseCFG()	{
-		global $pearDB;
-		$rq = "DELETE FROM cfg_perfparse; ";
-		$DBRESULT = $pearDB->query($rq);
-
-	}
-
 	function insertCFG(& $buf, & $ret)	{
 		$typeDef = NULL;
 		global $nbr,$oreon,$debug_nagios_import,$debug_path, $pearDB;
@@ -1444,7 +1437,6 @@
 		deleteResourceCFG();
 		deleteNagiosCFG();
 		deleteCgiCFG();
-		deletePerfparseCFG();
 	}
 
 ?>

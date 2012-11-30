@@ -857,7 +857,7 @@
 		$res = $form->addElement('reset', 'reset', _("Reset"));
 	}
 
-	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0/*, "perfparse"=>$oreon->optGen["perfparse_installed"]*/));
+	$tpl->assign('msg', array ("nagios"=>$oreon->user->get_version(), "tpl"=>0));
 	$tpl->assign('min', $min);
 	$tpl->assign("sort1", _("Host Configuration"));
 	$tpl->assign("sort2", _("Relations"));

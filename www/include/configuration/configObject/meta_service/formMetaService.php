@@ -62,9 +62,6 @@
 		$DBRESULT->free();
 	}
 
-	/*
-	 * Perfparse Metric comes from DB -> Store in $metrics Array
-	 */
 	require_once("./class/centreonDB.class.php");
 	$pearDBO = new CentreonDB("centstorage");
 
