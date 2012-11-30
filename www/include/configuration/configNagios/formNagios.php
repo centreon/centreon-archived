@@ -736,12 +736,18 @@
 	$redirect->setValue($o);
 
 	function slash($elem = NULL)	{
-		if ($elem)
+		if ($elem) {
 			return rtrim($elem, "/")."/";
+		}
+	}
+	
+	function isNum($value) {
+		return is_numeric($value);
 	}
 
 	$form->registerRule('exist', 'callback', 'testExistence');
-
+	$form->registerRule('isNum', 'callback', 'isNum');
+	
 	$form->applyFilter('cfg_dir', 'slash');
 	$form->applyFilter('log_archive_path', 'slash');
 	$form->applyFilter('__ALL__', 'myTrim');
@@ -751,6 +757,18 @@
 	$form->addRule('nagios_comment', _("Required Field"), 'required');
 	$form->addRule('event_broker_options', _("Broker need options to be loaded"), 'required');
 	$form->addRule('nagios_name', _("Name is already in use"), 'exist');
+	
+	/*
+	 * Get Values
+	 */
+	$ret = $form->getSubmitValues();
+	
+	for ($i = 0; isset($ret["in_broker_$i"]) ; $i++) {
+		;
+	}
+	if ($i) {
+		$form->addRule('event_broker_options', _("This value must be a numerical value."), 'isNum');
+	}	
 	
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;"._("Required fields"));
 
