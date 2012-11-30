@@ -213,11 +213,13 @@
 			$hs_id = $sql_qy->fetchRow();
 			$sql_qy->free();
 		}
-		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"])
+		if (isset($ret["default_tpl1"]) && $ret["default_tpl1"]) {
 			noDefaultOreonGraph();
+		}
 
-		if ($ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"])))
+		if (isset($ret["ds_filled"]) && $ret["ds_filled"] == 1 && ($ret["ds_color_area"] == "" || !isset($ret["ds_color_area"]))) {
 			$ret["ds_color_area"] = $ret["ds_color_line"];
+		}
 
 		$rq = "UPDATE giv_components_template ";
 		$rq .= "SET `host_id` = ";
