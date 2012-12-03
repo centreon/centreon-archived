@@ -61,8 +61,10 @@
 	 */
 	$objBroker = new CentreonBroker($pearDB);
 	if ($objBroker->getBroker() == "ndo") {
-		$pearDBndo 	= new CentreonDB("ndo");
-	}
+            $pearDBndo = new CentreonDB("ndo");
+	} else {
+            $pearDBndo = new CentreonDB('centstorage');
+        }
 
 
 	/*
@@ -98,10 +100,10 @@
 		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
 		$session = $DBRESULT->fetchRow();
 		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices(($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 
-		$hoststr = $access->getHostsString("ID", ($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
-		$servicestr = $access->getServicesString("ID", ($objBroker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+		$hoststr = $access->getHostsString("ID", $pearDBndo);
+		$servicestr = $access->getServicesString("ID", $pearDBndo);
 	} else {
 		exit();
 	}
