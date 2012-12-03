@@ -3,7 +3,7 @@
 <form {$form.attributes}>
 	<div>
 	<ul id="mainnav">
-		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1');">{$sort1}</a></li>
+		<li class="a" id='c1'><a href="#" onclick="javascript:montre('1'); changeTab('1');">{$sort1}</a></li>
 		{foreach from=$tabs item=tab name=tabForeach}
 		<li class="b" id='c{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}'><a href="#" onclick="javascript:montre('{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');changeTab('tab{math equation="x + y" x=$smarty.foreach.tabForeach.index y=2}');">{$tab.id|capitalize}</a></li>
 		{/foreach}
