@@ -219,6 +219,8 @@
 	}
 	$tpl->assign("elemArr", $elemArr);
 
+	$tpl->assign("notice", _("Only services and hosts are taken in account in order to calculate this status. If you modify a template, it won't tell you the configuration had changed."));
+	
 	/*
 	 * Different messages we put in the template
 	 */
