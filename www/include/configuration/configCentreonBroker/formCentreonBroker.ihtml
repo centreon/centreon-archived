@@ -130,6 +130,7 @@ function addInfo(type) {
     				if (response.status == 200) {
 	    				infos.incrementPos(type);
 	    				checkTypeValidity('block_' + type);
+                                        jQuery("#"+id_name).centreonValidate();
     				}
     			}
     		}
@@ -140,6 +141,7 @@ function deleteRow(type, id) {
 	var row_name = type + '_' + id;
 	var parent = document.getElementById(type);
 	var delEl = document.getElementById(row_name);
+        jQuery("#"+row_name).find('input').qtip('destroy');
 	parent.removeChild(delEl);
 	checkTypeValidity("block_" + type);
 }
