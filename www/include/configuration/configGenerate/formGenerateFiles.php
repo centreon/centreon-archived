@@ -82,7 +82,7 @@ $form->addElement('select', 'host', _("Poller"), $tab_nagios_server, array("id" 
 
 $form->addElement('checkbox', 'comment', _("Include Comments"), null, array('id' => 'ncomment'));
 
-$form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug', 'onClick' => 'javascript:debugCb(this.checked);'));
+$form->addElement('checkbox', 'debug', _("Run monitoring engine debug (-v)"), null, array('id' => 'ndebug'));
 $form->setDefaults(array('debug' => '1'));
 
 $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, array('id' => 'ngen'));
@@ -146,6 +146,7 @@ $tpl->display("formGenerateFiles.ihtml");
     var msgTab = new Array();
     msgTab['start'] = "<?php echo _("Preparing environment"); ?>";
     msgTab['gen'] = "<?php echo _("Generating files"); ?>";
+    msgTab['debug'] = "<?php echo _("Running debug mode"); ?>";
     msgTab['move'] = "<?php echo _("Moving files"); ?>";
     msgTab['restart'] = "<?php echo _("Restarting engine"); ?>";
     msgTab['abort'] = "<?php echo _("Aborted."); ?>";
@@ -194,7 +195,7 @@ $tpl->display("formGenerateFiles.ihtml");
         initEnvironment();
         if (selectedPoller != "-1") {
             updateProgress(10);
-            if (generateOption) {
+            if (generateOption || debugOption) {
                 generateFiles();
             } else if (moveOption) {
                 moveFiles();
@@ -233,14 +234,19 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function generateFiles()
     {
-        $('consoleContent').insert(msgTab['gen'] + "... ");
+        if (debugOption && !generateOption) {
+            $('consoleContent').insert(msgTab['debug'] + '... ');
+        } else {
+            $('consoleContent').insert(msgTab['gen'] + "... ");
+        }
         new Ajax.Request('./include/configuration/configGenerate/xml/generateFiles.php', {
             method: 'post',
             parameters: {
                 sid: session_id,
                 poller: selectedPoller,
                 comment: commentOption,
-                debug: debugOption
+                debug: debugOption,
+                generate: generateOption
             },
             onSuccess: function (response) {
                 displayStatusMessage(response.responseXML);
@@ -460,11 +466,5 @@ $tpl->display("formGenerateFiles.ihtml");
     {
         $('consoleContent').insert(msgTab['abort']);
         exportBtn.disabled = false;
-    }
-    
-    function debugCb(checked) {
-        if (checked) {
-            $('ngen').checked = checked;
-        }
     }
 </script>

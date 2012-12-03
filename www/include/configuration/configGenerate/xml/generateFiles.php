@@ -163,6 +163,7 @@ $DebugPath = "filesGeneration/nagiosCFG/";
 $poller = $_POST['poller'];
 $comment = ($_POST['comment'] == "true") ? 1 : 0;
 $debug = ($_POST['debug'] == "true") ? 1 : 0;
+$generate = ($_POST['generate'] == "true") ? 1 : 0;
 
 $ret = array();
 $ret['host'] = $poller;
@@ -208,86 +209,87 @@ try {
     /*
      * Request id and host type.
      */
-    $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
-    while ($tab = $DBRESULT_Servers->fetchRow()){
-        if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
-            $pollerID = $tab['id'];
-            unset($DBRESULT2);
-            if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN" &&
-            $tab['localhost']) {
-                require $path . "genShinkenBroker.php";
-            }
-            require $path."genCGICFG.php";
-            require $path."genNagiosCFG.php";
-            require $path."genNdomod.php";
-            require $path."genNdo2db.php";
-            require $path."genCentreonBroker.php";
-            require $path."genNagiosCFG-DEBUG.php";
-            require $path."genResourceCFG.php";
-            require $path."genTimeperiods.php";
-            require $path."genCommands.php";
-            require $path."genConnectors.php";
-            require $path."genContacts.php";
-            require $path."genContactTemplates.php";
-            require $path."genContactGroups.php";
-            require $path."genHosts.php";
-            require $path."genHostTemplates.php";
-            require $path."genHostGroups.php";
-            require $path."genServiceTemplates.php";
-            require $path."genServices.php";
-            require $path."genServiceGroups.php";
-            require $path."genEscalations.php";
-            require $path."genDependencies.php";
-            require $path."centreon_pm.php";
-            
-            if ($tab['localhost']) {
-                $flag_localhost = $tab['localhost'];
-                
-                /*
-                 * Meta Services Generation
-                 */
-                if ($files = glob($path . "metaService/*.php")) {
-                    foreach ($files as $filename) {
-                        include $filename;
-                    }
+    if ($generate) {
+        $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+        while ($tab = $DBRESULT_Servers->fetchRow()){
+            if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
+                $pollerID = $tab['id'];
+                unset($DBRESULT2);
+                if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "SHINKEN" &&
+                $tab['localhost']) {
+                    require $path . "genShinkenBroker.php";
                 }
-            }
+                require $path."genCGICFG.php";
+                require $path."genNagiosCFG.php";
+                require $path."genNdomod.php";
+                require $path."genNdo2db.php";
+                require $path."genCentreonBroker.php";
+                require $path."genNagiosCFG-DEBUG.php";
+                require $path."genResourceCFG.php";
+                require $path."genTimeperiods.php";
+                require $path."genCommands.php";
+                require $path."genConnectors.php";
+                require $path."genContacts.php";
+                require $path."genContactTemplates.php";
+                require $path."genContactGroups.php";
+                require $path."genHosts.php";
+                require $path."genHostTemplates.php";
+                require $path."genHostGroups.php";
+                require $path."genServiceTemplates.php";
+                require $path."genServices.php";
+                require $path."genServiceGroups.php";
+                require $path."genEscalations.php";
+                require $path."genDependencies.php";
+                require $path."centreon_pm.php";
 
-            /*
-             * Module Generation
-             */
-            foreach ($oreon->modules as $key => $value) {
-                $addModule = true;
-                if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
-                    $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
-                    if ($module_license_validity == false)
-                        $addModule = false;
-                }
-                
-                if ($addModule) {
-                    if ($value["gen"] && $files = glob($centreon_path . "www/modules/".$key."/generate_files/*.php")) {
-                        foreach ($files as $filename)
+                if ($tab['localhost']) {
+                    $flag_localhost = $tab['localhost'];
+
+                    /*
+                    * Meta Services Generation
+                    */
+                    if ($files = glob($path . "metaService/*.php")) {
+                        foreach ($files as $filename) {
                             include $filename;
+                        }
                     }
                 }
-            }
 
-            unset($generatedHG);
-            unset($generatedSG);
-            unset($generatedS);
+                /*
+                * Module Generation
+                */
+                foreach ($oreon->modules as $key => $value) {
+                    $addModule = true;
+                    if (function_exists('zend_loader_enabled') && (zend_loader_file_encoded() == true)) {
+                        $module_license_validity = zend_loader_install_license ($centreon_path . "www/modules/".$key."license/merethis_lic.zl", true);
+                        if ($module_license_validity == false)
+                            $addModule = false;
+                    }
+
+                    if ($addModule) {
+                        if ($value["gen"] && $files = glob($centreon_path . "www/modules/".$key."/generate_files/*.php")) {
+                            foreach ($files as $filename)
+                                include $filename;
+                        }
+                    }
+                }
+
+                unset($generatedHG);
+                unset($generatedSG);
+                unset($generatedS);
+            }
+        }
+        /*
+        * Generate correlation file
+        */
+        $brokerObj = new CentreonConfigCentreonBroker($pearDB);
+        $correlationPath = $brokerObj->getCorrelationFile();
+        $localId = getLocalhostId();
+        if (false !== $correlationPath && false !== $localId) {
+            $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
+            generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $pearDB);
         }
     }
-    /*
-     * Generate correlation file
-     */
-    $brokerObj = new CentreonConfigCentreonBroker($pearDB);
-    $correlationPath = $brokerObj->getCorrelationFile();
-    $localId = getLocalhostId();
-    if (false !== $correlationPath && false !== $localId) {
-        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
-        generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $pearDB);
-    }
-
 
     $statusMsg = $okMsg;
     $statusCode = 0;
