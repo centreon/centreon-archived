@@ -155,7 +155,10 @@
 	    return true;
 	},
 	number: function(el) {
-	    var $this = $(this);
+	    if (el.val() == '') {
+                return true;
+            }
+            var $this = $(this);
 	    if (/\d+/.test(el.val())) {
 	        return true;
 	    }

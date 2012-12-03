@@ -45,7 +45,7 @@ class CentreonConfigCentreonBroker
 {
     private $db;
     private $attrText = array("size"=>"30");
-    private $attrInt = array("size"=>"10");
+    private $attrInt = array("size"=>"10", "class" => "v_number");
 
     private $tagsCache = null;
     private $typesCache = null;
