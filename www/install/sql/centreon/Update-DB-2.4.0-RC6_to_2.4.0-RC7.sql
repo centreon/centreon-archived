@@ -55,7 +55,6 @@ VALUES (41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int',
 
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
 (11, 41, 1, 3),
-(17, 41, 1, 7),
 (25, 41, 1, 6);
 
 

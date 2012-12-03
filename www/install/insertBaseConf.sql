@@ -874,7 +874,6 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (17, 22, 1, 4),
 (17, 23, 1, 5),
 (17, 24, 1, 6),
-(17, 41, 1, 7),
 (18, 19, 1, 1),
 (18, 20, 1, 2),
 (18, 21, 1, 3),
