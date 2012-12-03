@@ -162,7 +162,6 @@ function insertVirtualMetric() {
     $DBRESULT = $pearDB->query("SELECT MAX(vmetric_id) FROM virtual_metrics");
     $vmetric_id = $DBRESULT->fetchRow();
     $vmetric_id = $vmetric_id["MAX(vmetric_id)"];
-    enableVirtualMetricInDB($vmetric_id);
     return $vmetric_id;
 }
 
@@ -255,7 +254,6 @@ function enableVirtualMetricInDB($vmetric_id = null) {
         if ($rc) {
             $error = preg_replace('/^ERROR:\s*/', '', $output);
             throw new Exception("Wrong RPN syntax (RRDtool said: $error)");
-            return 0;
         }
         $pearDB->query("UPDATE `virtual_metrics` SET `vmetric_activate` = '1' WHERE `vmetric_id` ='$v_id';");
     }

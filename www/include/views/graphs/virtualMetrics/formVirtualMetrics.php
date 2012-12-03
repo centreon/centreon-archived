@@ -54,7 +54,11 @@
 	## Database retrieve information
 	#
 	$vmetric = array();
-	if (($o == "c" || $o == "w") && $vmetric_id)	{
+    if ($o == "a" && isset($_POST['vmetric_id']) && $_POST['vmetric_id'] != '') {
+        $vmetric_id = $_POST['vmetric_id'];
+        $o = "c";
+    }
+    if (($o == "c" || $o == "w") && $vmetric_id)	{
 		$p_qy = $pearDB->query("SELECT *, hidden vhidden FROM virtual_metrics WHERE vmetric_id = '".$vmetric_id."' LIMIT 1");
 		# Set base value
 		$vmetric = array_map("myDecode", $p_qy->fetchRow());
@@ -243,17 +247,27 @@
 	$valid = false;
 	if ($form->validate())	{
 		$vmetricObj = $form->getElement('vmetric_id');
-        try {
-            if ($form->getSubmitValue("submitA"))
-                $vmetricObj->setValue(insertVirtualMetricInDB());
-            else if ($form->getSubmitValue("submitC"))
+        if ($o == "a") {
+            $vmetric_id = insertVirtualMetricInDB();
+            $vmetricObj->setValue($vmetric_id);
+            try {
+                enableVirtualMetricInDB($vmetric_id);
+            } catch (Exception $e) {
+                $error = $e->getMessage();
+            }
+        } else if ($o == "c") {
+            try {
                 updateVirtualMetricInDB($vmetricObj->getValue());
+            } catch (Exception $e) {
+                $error = $e->getMessage();
+            }
+        }
+        if (!isset($error)) {
             $o = "w";
-            $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&vmetric_id=".$vmetricObj->getValue()."'"));
+            $form->addElement("button", "change", _("Modify"), 
+                              array("onClick"=>"javascript:window.location.href='?p=$p&o=c&vmetric_id=".$vmetricObj->getValue()."'"));
             $form->freeze();
             $valid = true;
-        } catch (Exception $e) {
-            $error = $e->getMessage();
         }
 	}
 	$action = $form->getSubmitValue("action");
