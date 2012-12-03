@@ -11,6 +11,7 @@ $mysql_database_ods = "--STORAGEDB--";
 # Central or Poller ?
 $instance_mode = "--INSTANCEMODE--";
 
-$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
+# Centreon Centcore Command File
+$cmdFile = "--CENTREON_VARLIB--/centcore.cmd";
 
 1;
