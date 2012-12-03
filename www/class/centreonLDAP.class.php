@@ -117,13 +117,13 @@ class CentreonLDAP {
             $row = $dbresult->fetchRow();
             $dbresult->free();
             if ($row && trim($row['ari_value']) != '') {
-                $dns_query .= $row['ari_value'];
+                $dns_query .= "." . $row['ari_value'];
             }
             $list = dns_get_record($dns_query, DNS_SRV);
             foreach ($list as $entry) {
                 $ldap = array();
                 $ldap['host'] = $entry['target'];
-                $ldap['id'] = 0;
+                $ldap['id'] = $arId;
                 $ldap['info'] = $this->_getInfoUseDnsConnect();
                 $ldap['info']['port'] = $entry['port'];
                 $ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($arId));
@@ -137,7 +137,7 @@ class CentreonLDAP {
             while ($row = $dbresult->fetchRow()) {
                 $ldap = array();
                 $ldap['host'] = $row['host_address'];
-                $ldap['id'] = $row['ldap_host_id'];
+                $ldap['id'] = $arId;
                 $ldap['info'] = $this->_getInfoConnect($row['ldap_host_id']);
                 $ldap['info'] = array_merge($ldap['info'], $this->_getBindInfo($arId));
                 $this->_ldapHosts[] = $ldap;
@@ -530,10 +530,9 @@ class CentreonLDAP {
             $ldapHostId = $this->_linkId;
         }
         $dbresult = $this->_db->query("SELECT ari_name, ari_value
-                                       FROM auth_ressource_info ari, auth_ressource_host arh
+                                       FROM auth_ressource_info ari
                                        WHERE ari_name IN ('user_filter', 'user_base_search', 'alias', 'user_group', 'user_name', 'user_email', 'user_pager', 'user_firstname', 'user_lastname', 'group_filter', 'group_base_search', 'group_name', 'group_member')
-                                       AND ari.ar_id = arh.auth_ressource_id 
-                                       AND arh.ldap_host_id = " . $ldapHostId);
+                                       AND ari.ar_id = " . $ldapHostId);
         $user = array();
         $group = array();
         while ($row = $dbresult->fetchRow()) {
