@@ -604,8 +604,9 @@ class CentreonGraph {
                         }
                     }
 
+                    $escaped_chars_nb = 0;
                     if (isset($ds_data["ds_legend"]) && strlen($ds_data["ds_legend"]) > 0 ) {
-                        $this->metrics[$metric["metric_id"]]["legend"] = html_entity_decode($ds_data["ds_legend"], ENT_COMPAT, 'UTF-8');
+                        $this->metrics[$metric["metric_id"]]["legend"] = str_replace('"', '\"', html_entity_decode($ds_data["ds_legend"], ENT_COMPAT, 'UTF-8'), $escaped_chars_nb);
                     } else {
                         if (!isset($ds_data["ds_name"]) || !preg_match('/DS/', $ds_data["ds_name"], $matches)){
                             $this->metrics[$metric["metric_id"]]["legend"] = $this->cleanupDsName($metric["metric_name"], true);
@@ -618,7 +619,7 @@ class CentreonGraph {
                         $this->metrics[$metric["metric_id"]]["legend"] .= " (".$metric["unit_name"].")";
                     }
 
-                    $this->metrics[$metric["metric_id"]]["legend_len"] = mb_strlen($this->metrics[$metric["metric_id"]]["legend"], 'UTF-8');
+                    $this->metrics[$metric["metric_id"]]["legend_len"] = mb_strlen($this->metrics[$metric["metric_id"]]["legend"], 'UTF-8') - $escaped_chars_nb;
                     $this->metrics[$metric["metric_id"]]["stack"] = (isset($ds_data["ds_stack"]) && $ds_data["ds_stack"] ? $ds_data["ds_stack"] : 0);
                     if ($this->onecurve) {
                         if (isset($metric["warn"]) && $metric["warn"] != 0) {
