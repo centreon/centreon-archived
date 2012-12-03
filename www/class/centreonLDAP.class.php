@@ -116,13 +116,13 @@ class CentreonLDAP {
                                            AND ar_id = ".$this->_db->escape($arId));
             $row = $dbresult->fetchRow();
             $dbresult->free();
-            if ($row && trim($row['value']) != '') {
-                $dns_query .= $row['value'];
+            if ($row && trim($row['ari_value']) != '') {
+                $dns_query .= $row['ari_value'];
             }
             $list = dns_get_record($dns_query, DNS_SRV);
             foreach ($list as $entry) {
                 $ldap = array();
-                $ldap['host'] = $entry['host'];
+                $ldap['host'] = $entry['target'];
                 $ldap['id'] = 0;
                 $ldap['info'] = $this->_getInfoUseDnsConnect();
                 $ldap['info']['port'] = $entry['port'];
