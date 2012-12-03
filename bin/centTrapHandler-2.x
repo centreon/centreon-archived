@@ -78,12 +78,8 @@ $debug = 0;
 require $etc."/conf.pm";
 
 ###############################
-# Check mode
-if ($instance_mode eq "central") {
-	$cmdFile = "@CENTREON_VARLIB@/centcore.cmd";
-} elsif ($instance_mode eq "poller") {
-	$cmdFile = "@NAGIOS_VARLOG@/rw/nagios.cmd";
-} else {
+# Check instance mode
+if ($instance_mode nq "central" && $instance_mode eq "poller") {
 	myDie("Don't know server instance type: $instance_mode");
 }
 
