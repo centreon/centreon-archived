@@ -97,9 +97,9 @@
 	 * Contact list
 	 */
 	if ($search) {
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin  FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin, contact_register FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin, contact_register FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT = $pearDB->query($rq);
 
@@ -111,7 +111,10 @@
 	 * Different style between each lines
 	 */
 	$style = "one";
-
+	$contactTypeIcone = array(1 => "./img/icones/16x16/guard.gif", 2 => "./img/icones/16x16/user1.gif", 3 => "./img/icones/16x16/user1_information.png");
+	$contactTypeIconeTitle = array(1 => _("User is administrateur."), 2 => _("User is simple user."), 3 => _("This is a contact template."));
+	
+	
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
@@ -128,9 +131,23 @@
 		$moptions .= "&nbsp;&nbsp;&nbsp;";
 		$moptions .= "<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$contact['contact_id']."]'></input>";
 
+		$contact_type = 0;
+		if ($contact["contact_register"]) {
+			if ($contact["contact_admin"] == 1) {
+				$contact_type = 1;
+			} else {
+				$contact_type = 2;
+			}
+		} else {
+			$contact_type = 3;
+		}
+		
 		$elemArr[$i] = array("MenuClass" => "list_".$style,
 						"RowMenu_select" => $selectedElements->toHtml(),
 						"RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
+						"RowMenu_ico" => isset($contactTypeIcone[$contact_type]) ? $contactTypeIcone[$contact_type] : "",
+						"RowMenu_ico_title" => isset($contactTypeIconeTitle[$contact_type]) ? $contactTypeIconeTitle[$contact_type] : "",
+						"RowMenu_type" => $contact_type,
 						"RowMenu_link" => "?p=".$p."&o=c&contact_id=".$contact['contact_id'],
 						"RowMenu_desc" => html_entity_decode($contact["contact_alias"], ENT_QUOTES, "UTF-8"),
 						"RowMenu_email" => $contact["contact_email"],

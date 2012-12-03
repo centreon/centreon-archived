@@ -36,7 +36,7 @@
 		{section name=elem loop=$elemArr}
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
-			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
+			<td class="ListColLeft"><img src='{$elemArr[elem].RowMenu_ico}' title='{$elemArr[elem].RowMenu_ico_title}' style='padding-right:10px;'><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_email}</td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_hostNotif}</td>
