@@ -23,6 +23,7 @@ $help["service_notification_commands"] = dgettext("help", "Define one ore more c
 
 $help["ldap_dn"] = dgettext("help", "Enter the LDAP Distinguished Name (DN) which identifies this user.");
 
+$help["ldap_group"] = dgettext("help", "LDAP groups of user, for informative purpose.");
 
 /*
  * Centreon specific authentication
