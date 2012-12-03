@@ -80,8 +80,8 @@ $ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', n
 $ldapAutoImport[] = HTML_QuickForm::createElement('radio', 'ldap_auto_import', null, _("No"), '0');
 $form->addGroup($ldapAutoImport, 'ldap_auto_import', _("Auto import users"), '&nbsp;');
 
-$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("Yes"), '1', array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false);"));
-$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("No"), '0', array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true);"));
+$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("Yes"), '1', array('id' => 'ldap_srv_dns_y', 'onclick' => "toggleParams(false, false);"));
+$ldapUseDns[] = HTML_QuickForm::createElement('radio', 'ldap_srv_dns', null, _("No"), '0', array('id' => 'ldap_srv_dns_n', 'onclick' => "toggleParams(true, false);"));
 $form->addGroup($ldapUseDns, 'ldap_srv_dns', _("Use service DNS"), '&nbsp;');
 
 $ldapDnsUseSsl[] = HTML_QuickForm::createElement('radio', 'ldap_dns_use_ssl', null, _("Yes"), '1');

@@ -60,16 +60,7 @@ function transformForm()
 
     var params = '?sid=' + sid;
 
-    if (o == 'w') {
-        params = params+'&arId='+arId;
-        proc = new Transformation();
-        addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
-        addrXSL = './include/options/oreon/generalOpt/ldap/xsl/ldap_host.xsl';
-        proc.setXml(addrXML);
-        proc.setXslt(addrXSL);
-        proc.transform("dynamicDiv");
-        o = 0;
-    } else if (o == 'ldap') {
+    if (o == 'w' || o == 'ldap') {
         params = params+'&arId='+arId;
         proc = new Transformation();
         addrXML = './include/options/oreon/generalOpt/ldap/xml/ldap_host.php' + params;
@@ -92,24 +83,28 @@ function transformForm()
 /*
  * called when the use _dns is to set at no is clicked
  */
-function toggleParams(checkValue) {
+function toggleParams(checkValue, isInit) {
     if (checkValue == true) {
-        transformForm();
         Effect.Fade('ldap_dns_use_ssl', { duration : 0 });
         Effect.Fade('ldap_dns_use_tls', { duration : 0 });
-        Effect.Fade('ldap_dns_use_domain', { duration : 0 });
-        Effect.Appear('dynamicDiv', { duration : 0 });
+        Effect.Fade('ldap_dns_use_domain', { duration : 0 });        
+        Effect.Appear('ldap_header_tr', { duration : 0 });        
+        Effect.Appear('ldap_tr', { duration : 0 });
     } else {
-        Effect.Fade('dynamicDiv', { duration : 0 });
+        Effect.Fade('ldap_header_tr', { duration : 0 });
+        Effect.Fade('ldap_tr', { duration : 0 });
         if (document.getElementById('ldap_dns_use_ssl')) {
-        	Effect.Appear('ldap_dns_use_ssl', { duration : 0 });
-		}
-		if (document.getElementById('ldap_dns_use_tls')) {
-        	Effect.Appear('ldap_dns_use_tls', { duration : 0 });
-		}
-		if (document.getElementById('ldap_dns_use_domain')) {
-        	Effect.Appear('ldap_dns_use_domain', { duration : 0 });
-		}
+            Effect.Appear('ldap_dns_use_ssl', { duration : 0 });
+        }
+	if (document.getElementById('ldap_dns_use_tls')) {
+            Effect.Appear('ldap_dns_use_tls', { duration : 0 });
+	}
+	if (document.getElementById('ldap_dns_use_domain')) {
+            Effect.Appear('ldap_dns_use_domain', { duration : 0 });
+	}
+    }
+    if (isInit == true) {
+        transformForm();
     }
 }
 
@@ -118,7 +113,7 @@ function toggleParams(checkValue) {
  */
 function toggleCustom(select) {
 	if (typeof(select) == 'undefined' || typeof(select.selectedIndex) == 'undefined') {
-		return null;
+                return null;
 	}
 	value = select.options[select.selectedIndex].value;
 	if (value == 0) {
@@ -154,16 +149,14 @@ function toggleCustom(select) {
 function initParams() {
 	initTemplates();
 	if (document.getElementById('ldap_srv_dns_n')) {
-		var noDns = false;
-		if (document.getElementById('ldap_srv_dns_n').type == 'radio') {
-			if (document.getElementById('ldap_srv_dns_n').checked) {
-				noDns = true;
-			}
+            var noDns = false;
+            if (document.getElementById('ldap_srv_dns_n').type == 'radio') {
+                if (document.getElementById('ldap_srv_dns_n').checked) {
+                    noDns = true;
 		}
-    	toggleParams(noDns);
+            }
 	}
-
-	//toggleCustom(document.getElementById('ldap_template'));
+        toggleParams(noDns, true);
 }
 
 /*
