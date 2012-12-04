@@ -191,8 +191,8 @@
 	 */
 	function checkChangeState($poller_id, $last_restart) {
 		global $pearDB, $pearDBO, $conf_centreon;
-		 
-		if (!isset($last_restart)) {
+		
+		if (!isset($last_restart) || $last_restart == "") {
 			return 0;
 		}
 	
