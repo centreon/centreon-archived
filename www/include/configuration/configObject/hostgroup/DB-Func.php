@@ -137,7 +137,9 @@
 					$val ? $val .= ($value2!=NULL?(", '".$value2."'"):", NULL") : $val .= ($value2!=NULL?("'".$value2."'"):"NULL");
 					if ($key2 != "hg_id")
 						$fields[$key2] = $value2;
-					$fields["hg_name"] = $hg_name;
+					if (isset($fields["hg_name"])) {
+						$fields["hg_name"] = $hg_name;
+					}
 				}
 				if (testHostGroupExistence($hg_name))	{
 					$val ? $rq = "INSERT INTO hostgroup VALUES (".$val.")" : $rq = null;
