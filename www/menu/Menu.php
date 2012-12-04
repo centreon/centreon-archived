@@ -193,6 +193,7 @@
 
 		$prefix .= $_SERVER["SERVER_NAME"];
 		$prefix .= str_replace("main.php", "index.php", $_SERVER["REQUEST_URI"]);
+                $prefix = preg_replace('/\?p=\d+/', '', $prefix);
 		$prefix .= "?";
 
 		$tpl->assign("autoLoginUrl", $prefix.$autoLoginUrl);
