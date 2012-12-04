@@ -50,6 +50,13 @@ try {
     }
     $centreon = $_SESSION['centreon'];
     $db = new CentreonDB();
+    $locale = $centreon->user->get_lang();
+	putenv("LANG=$locale");
+	setlocale(LC_ALL, $locale);
+	bindtextdomain("messages",  $centreon_path . "www/locale/");;
+	bind_textdomain_codeset("messages", "UTF-8");
+	textdomain("messages");
+    
     if (CentreonSession::checkSession(session_id(), $db) == 0) {
         throw new Exception('Invalid session');
     }
