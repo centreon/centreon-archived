@@ -38,19 +38,20 @@
 
   	$etc = "@CENTREON_ETC@";
 
-	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install'))
+        clearstatcache(true, "$etc/centreon.conf.php");
+	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
 		header("Location: ./install/setup.php");
-	else if (file_exists("$etc/centreon.conf.php") && is_dir('install'))
+        } elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
 		header("Location: ./install/upgrade.php");
-	else {
-		if (file_exists("$etc/centreon.conf.php")){
-			require_once ("$etc/centreon.conf.php");
-			$freeze = 0;
-		} else {
-			$freeze = 1;
-			require_once ("../centreon.conf.php");
-			$msg = _("You have to move centreon configuration file from temporary directory to final directory");
-		}
+        } else {            
+            if (file_exists("$etc/centreon.conf.php")){
+                require_once ("$etc/centreon.conf.php");
+                $freeze = 0;
+            } else {
+                $freeze = 1;
+                require_once ("../centreon.conf.php");
+                $msg = _("You have to move centreon configuration file from temporary directory to final directory");
+            }
 	}
 
 	require_once "$classdir/centreon.class.php";
