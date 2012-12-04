@@ -64,6 +64,11 @@ $interval = 300;
 $heartbeatFactor = 10;
 $heartbeat = $interval * $heartbeatFactor;
 
+################################
+# Declare function
+sub myDie($);
+sub updateProgramFlag();
+
 # ##############################
 # Lock in MySQL
 my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'nagiosPerfTrace'");
