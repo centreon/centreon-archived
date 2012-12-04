@@ -55,11 +55,11 @@
 	 */
 	$form->addElement('header', 'options', _("LDAP Servers"));
 	/*
-	$form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText);
 	$form->addElement('text', 'ldap_base_dn', _("LDAP Base DN"), $attrsText);
 	$form->addElement('text', 'ldap_search_timeout', _("LDAP search timeout"), $attrsText2);
 	$form->addElement('text', 'ldap_search_limit', _("LDAP Search Size Limit"), $attrsText2);
 	*/
+        $form->addElement('text', 'ldap_search_filter', _("Search Filter"), $attrsText);
 	$form->addElement('header', 'result', _("Search Result"));
 	$form->addElement('header', 'ldap_search_result_output', _("Result"));
 
@@ -86,13 +86,18 @@
 	$tpl->assign('ldap_search_filter_help_title', _("Filter Examples"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/ContactAjaxLDAP/ajaxLdapSearch.js"></script>');
 
-	$query = "SELECT ar_id, ar_name
-                  FROM auth_ressource
+	$query = "SELECT ar.ar_id, ar_name, REPLACE(ari_value, '%s', '*') as filter
+                  FROM auth_ressource ar
+                  LEFT JOIN auth_ressource_info ari ON ari.ar_id = ar.ar_id
+                  WHERE ari.ari_name = 'user_filter'
                   ORDER BY ar_name";
 	$res = $pearDB->query($query);
 	$ldapConfList = "";
 	while ($row = $res->fetchRow()) {
-	    $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/> " . $row['ar_name'] . "<br/>";
+	    $ldapConfList .= "<input type='checkbox' name='ldapConf[".$row['ar_id']."]'/> " . $row['ar_name'];
+            $ldapConfList .= "<br/>";
+            $ldapConfList .= _('Filter'). ": <input size='80' type='text' value='".$row['filter']."' name='ldap_search_filter[".$row['ar_id']."]'/>";
+            $ldapConfList .= "<br/><br/>";
 	}
 
 

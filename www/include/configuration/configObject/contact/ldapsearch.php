@@ -59,6 +59,11 @@ if (!isset($_POST['confList']) || !strlen($_POST['confList'])) {
 }
 $confList = $_POST['confList'];
 
+$ldap_search_filters = array();
+if (isset($_POST['ldap_search_filter'])) {
+    $ldap_search_filters = $_POST['ldap_search_filter'];
+}
+
 global $buffer;
 $pearDB = new CentreonDB();
 
@@ -131,6 +136,10 @@ foreach ($ids as $arId) {
             }
         }
 
+        if (isset($ldap_search_filters[$arId]) && $ldap_search_filters[$arId]) {
+            $ldap_search_filter = $ldap_search_filters[$arId];
+        }
+        
         $searchResult = $ldap->search($ldap_search_filter, $ldap_base_dn, $ldap_search_limit, $ldap_search_timeout);
         $number_returned = count($searchResult);
         if ($number_returned) {
