@@ -51,7 +51,7 @@ $dbUser = $_SESSION['DB_USER'];
 $dbPass = $_SESSION['DB_PASS'];
 $host = "localhost";
 if ($_SESSION['ADDRESS']) {
-    $host = $_SESSION['ADDRESS'];
+	$host = $_SERVER['SERVER_ADDR'];
 }
 $query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
 if (false === mysql_query(sprintf($query, $_SESSION['CONFIGURATION_DB']))) {
