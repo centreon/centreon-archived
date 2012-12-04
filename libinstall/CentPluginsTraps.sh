@@ -54,12 +54,11 @@ else
 fi
 
 ## Change Macro in working dir
-log "INFO" "$(gettext "Change macros for ")centFillTrapDB, centGenSnmpttConfFile, centTrapHandler-2.x, centTrapHandlerForPoller-2.x"
+log "INFO" "$(gettext "Change macros for ")centFillTrapDB, centGenSnmpttConfFile, centTrapHandler-2.x"
 flg_error=0
 for FILE in  $TMP_DIR/src/bin/centFillTrapDB \
 	$TMP_DIR/src/bin/centGenSnmpttConfFile \
-	$TMP_DIR/src/bin/centTrapHandler-2.x \
-	$TMP_DIR/src/bin/centTrapHandlerForPoller-2.x; do
+	$TMP_DIR/src/bin/centTrapHandler-2.x \; do
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		"$FILE" > "$TMP_DIR/work/bin/`basename $FILE`"

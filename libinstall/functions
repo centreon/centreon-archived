@@ -1418,7 +1418,7 @@ function configureSUDO(){
 	prepare_sudo_config "$dir_conf"
 
 	# Try to detect old configuration
-	sudo=`${GREP} -e "[CO][ER][NE][TO][RN]" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
+	sudo=`${GREP} -e "CENTREON SUDO" $SUDO_FILE > /dev/null 2>&1 ; echo $?`
 	if [ $sudo -eq 1 ]; then
     		echo_info "$(gettext "Your sudo is not configured")"
 		
