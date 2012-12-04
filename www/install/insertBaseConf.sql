@@ -724,7 +724,7 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (23, 'info', 'Informational messages', 'Enable or not informational messages logging.', 'radio', NULL),
 (24, 'level', 'Logging level', 'How much messages must be logged.', 'select', NULL),
 (25, 'compression', 'Compression (zlib)', 'Enable or not data stream compression.', 'radio', NULL),
-(26, 'compression_level', 'Compression level', 'Ranges from 1 (no compression) to 9 (best compression). -1 is the default', 'int', NULL),
+(26, 'compression_level', 'Compression level', 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)', 'int', NULL),
 (27, 'compression_buffer', 'Compression buffer size', 'The higher the buffer size is, the best compression. This however increase data streaming latency. Use with caution.', 'int', NULL),
 (28, 'failover', 'Failover Name', 'Name of the input or output object that will act as failover.', 'text', NULL),
 (29, 'file', 'Correlation File', 'Path to the correlation file which holds host, services, dependencies and parenting definitions.', 'text', NULL),

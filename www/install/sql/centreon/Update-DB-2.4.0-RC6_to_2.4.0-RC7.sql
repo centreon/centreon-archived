@@ -62,4 +62,6 @@ ALTER TABLE `cfg_centreonbroker` ADD COLUMN `event_queue_max_size` INT (11) DEFA
 
 UPDATE `cb_field` SET `displayname` = 'Replication enabled', `description` = 'When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.' WHERE `fieldname` = 'check_replication';
 
+UPDATE `cb_field` SET `description` = 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)' WHERE `fieldname` = 'compression_level';
+
 UPDATE `informations` SET `value` = '2.4.0-RC7' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC6' LIMIT 1;
