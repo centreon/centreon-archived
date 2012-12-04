@@ -188,6 +188,7 @@ $redirect->setValue($o);
  * Form Rules
  */
 $form->addRule('nagios_name', _("Name is already in use"), 'exist');
+$form->addRule('nagios_name', _("The name of the poller is mandatory"), 'required');
 
 /*
  * Smarty template Init
