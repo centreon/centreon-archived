@@ -72,7 +72,8 @@ if (isset($pearDB)) {
                 $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'bind_pass', '" . $row['value'] . "')";
                 break;
             case 'ldap_search_filter':
-                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'user_filter', '" . $row['value'] . "')";
+                $user_filter = str_replace(array('&amp;', '*'), array('&', '%s'), $row['value']);
+                $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (2, 'user_filter', '" . $user_filter . "')";
                 break;
             case 'ldap_protocol_version':
                 $queries[] = "INSERT INTO auth_ressource_info (ar_id, ari_name, ari_value) VALUES (1, 'protocol_version', '" . $row['value'] . "')";
