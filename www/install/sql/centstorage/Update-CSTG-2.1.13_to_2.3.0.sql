@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS `centreon_acl` (
 
 ALTER TABLE `metrics` ADD `data_source_type` ENUM( '0', '1', '2', '3' ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '0' AFTER `metric_name` ;
 
---- Replace special some chars in metrics name
+-- Replace special some chars in metrics name
 UPDATE metrics SET metric_name = REPLACE(metric_name, '#S#', '/');
 UPDATE metrics SET metric_name = REPLACE(metric_name, '#P#', '%');
 UPDATE metrics SET metric_name = REPLACE(metric_name, '#BS#', '\\');
