@@ -18,7 +18,7 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="is_default"> {$form.is_default.label}</td><td class="FormRowValue">{$form.is_default.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/lock.gif'>&nbsp;&nbsp;{$form.header.SSH_Informations}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ssh_port"> {$form.ssh_port.label}</td><td class="FormRowValue">{$form.ssh_port.html}</td></tr>
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/nagios.gif'>&nbsp;&nbsp;{$form.header.Nagios_Informations}</td></tr>
+		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.Nagios_Informations}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="monitoring_engine"> {$form.monitoring_engine.label}</td><td class="FormRowValue">{$form.monitoring_engine.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="init_script"> {$form.init_script.label}</td><td class="FormRowValue">{$form.init_script.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_bin"> {$form.nagios_bin.label}</td><td class="FormRowValue">{$form.nagios_bin.html}</td></tr>
