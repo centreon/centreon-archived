@@ -60,7 +60,8 @@ class CentreonUser	{
 	var $access;
 	var $log;
 	var $userCrypted;
-
+        protected $token;
+        
 	# User LCA
 	# Array with elements ID for loop test
 	var $lcaTopo;
@@ -78,6 +79,7 @@ class CentreonUser	{
 		$this->lang = $user["contact_lang"];
 		$this->charset = "UTF-8";
 		$this->passwd = $user["contact_passwd"];
+                $this->token = $user['contact_autologin_key'];
 		$this->admin = $user["contact_admin"];
 		$this->version = 3;
 	  	$this->gmt = $user["contact_location"];
@@ -272,5 +274,24 @@ class CentreonUser	{
       }
       return null;
   }
-} /* end class User */
+  
+  /**
+   * Get token
+   * 
+   * @return string
+   */
+  public function getToken() {
+      return $this->token;
+  }
+  
+  /**
+   * Set token
+   * 
+   * @param string $token
+   * @return void
+   */
+  public function setToken($token) {
+      $this->token = $token;
+  }
+}
 ?>

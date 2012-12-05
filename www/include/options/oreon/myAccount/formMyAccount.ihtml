@@ -16,10 +16,14 @@
 		<tr class="list_two"><td class="FormRowField">{$form.contact_alias.label}</td><td class="FormRowValue">{$form.contact_alias.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_email.label}</td><td class="FormRowValue">{$form.contact_email.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_pager.label}</td><td class="FormRowValue">{$form.contact_pager.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_passwd.label}</td><td class="FormRowValue">{$form.contact_passwd.html} {$form.contact_gen_passwd.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.contact_passwd2.label}</td><td class="FormRowValue">{$form.contact_passwd2.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
+		<tr class="list_one">
+			<td class="FormRowField">{$form.contact_autologin_key.label}</td>
+			<td class="FormRowValue">{$form.contact_autologin_key.html} {$form.contact_gen_akey.html}</td>
+		</tr>
+                <tr class="list_two"><td class="FormRowField">{$form.contact_lang.label}</td><td class="FormRowValue">{$form.contact_lang.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField">{$form.contact_js_effects.label}</td><td class="FormRowValue">{$form.contact_js_effects.html}</td></tr>
 		{if $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}

@@ -152,11 +152,16 @@
 		isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
 		$passwordG ? $password = $passwordG : $password = $passwordP;
 
+                $token = "";
+                if (isset($_REQUEST['token']) && $_REQUEST['token']) {
+                    $token = $_REQUEST['token'];
+                }
+                
 	    if (!isset($encryptType)) {
 	    	$encryptType = 1;
 	    }
 
-	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType);
+	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token);
 
 	    if ($centreonAuth->passwdOk == 1) {
 
