@@ -60,7 +60,7 @@ function getCentreonBrokerModulesList()
         return $list;
     }
     while ($row = $res->fetchRow()) {
-        $file = sprintf('%02d', $row['loading_pos']) . '-' . $row['libname'];
+        $file = $row['libname'];
         $list[$file] = $row['name'];
     }
     return $list;
@@ -88,7 +88,7 @@ function parseStatsFile($statfile)
             if (strncmp('module ', $line, 7) == 0) {
                 $lineBlock = 'module';
                 list($tag, $module) = explode(' ', $line);
-                $baseModuleFile = basename($module);
+                $baseModuleFile = preg_replace('/^[0-9]+\-/', '', basename($module));
                 if (isset($listModules[$baseModuleFile])) {
                     $moduleName = $listModules[$baseModuleFile];
                 } else {
@@ -207,6 +207,7 @@ $lang['last connection success'] = _('Last connection success');
 $lang['input'] = _('Input');
 $lang['output'] = _('Output');
 $lang['failover'] = _('Failover');
+$lang['queued_events'] = _('Queued events');
 
 $tpl->assign('lang', $lang);
 $tpl->assign('poller_name', $pollerName);
