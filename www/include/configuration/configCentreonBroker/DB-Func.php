@@ -39,6 +39,31 @@
     if (!isset($oreon)) {
         exit();
     }
+    
+    /**
+    *
+    * Test broker file config existance
+    * @param $name
+    */
+    function testExistence ($name = NULL)	{
+    	global $pearDB, $form;
+    	
+    	$id = NULL;
+    	
+    	if (isset($form)){
+    		$id = $form->getSubmitValue('id');
+    	}
+    	
+    	$DBRESULT = $pearDB->query("SELECT config_name, config_id FROM `cfg_centreonbroker` WHERE `config_name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
+    	$ndomod = $DBRESULT->fetchRow();
+    	if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] == $id) {
+    		return true;
+    	} else if ($DBRESULT->numRows() >= 1 && $ndomod["config_id"] != $id) {
+    		return false;
+    	} else {
+    		return true;
+    	}
+    }
 
     /**
      * Enable a Centreon Broker configuration
