@@ -381,8 +381,10 @@ sub get_poller()    {
                 myDie "Error:" . $cfg_item->errstr . "\n";
             }
             $cfg_result = $cfg_item->fetchrow_hashref();
-            next if !defined $cfg_result->{cfg_dir};
-
+            if (!defined $cfg_result->{cfg_dir}) {
+                print "Missing monitoring engine configuration file, skipping poller.\n";
+                next;
+            }
             $cfg_dir = $cfg_result->{'cfg_dir'};
             $cfg_dir =~ s!/\$!!g;
             if ($cfg_dir eq '') {
@@ -412,7 +414,6 @@ sub get_poller()    {
                 next;
             }
             check_dir($id);
-        
             # Update Database 
             rrd_process($nagiostats, $is_localhost, $must_update_ds, $id);
         }
