@@ -2,6 +2,8 @@
 #
 # Cron Configuration for Centreon
 #
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
 # rewrite file with new cron line
 CRONTAB_EXEC_USER=""
 
