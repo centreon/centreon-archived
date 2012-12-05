@@ -230,9 +230,9 @@ sub getBrokerStats($) {
         return ;
     }
     while (my $data = $sth2->fetchrow_hashref()) {
-	$port = checkSSHPort($poller_id);
 	
 	$server_info = getServerConfig($poller_id);
+	$port = checkSSHPort($server_info->{'ssh_port'});
 	
 	# Copy the stat file into a buffer
 	my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'cat \"".$data->{'config_value'}."\" >> $statPipe'\n";
