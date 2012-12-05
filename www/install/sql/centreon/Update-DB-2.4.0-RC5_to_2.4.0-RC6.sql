@@ -58,4 +58,8 @@ WHERE `command_type` = 1
 AND `command_name` IN ('host-notify-by-email','service-notify-by-email','host-notify-by-epager','service-notify-by-epager')
 AND `command_line` LIKE '%|%';
 
+-- Help messages modification
+UPDATE cb_field SET description='The Unix socket used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.' WHERE cb_field_id=36;
+UPDATE cb_field SET description='The TCP port used to communicate with rrdcached. This is a global option, go to Administration > Options > RRDTool to modify it.' WHERE cb_field_id=37;
+
 UPDATE `informations` SET `value` = '2.4.0-RC6' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC5' LIMIT 1;
