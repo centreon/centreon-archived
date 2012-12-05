@@ -62,6 +62,15 @@ check_broker_user
 locate_monitoringengine_log
 locate_plugindir
 
+## Add default value for centreon engine connector
+if [ -z "$CENTREON_ENGINE_CONNECTORS" ]; then
+	if [ "$(uname -i)" = "x86_64" ]; then
+		CENTREON_ENGINE_CONNECTORS="/usr/lib64/centreon-connector"
+	else
+		CENTREON_ENGINE_CONNECTORS="/usr/lib/centreon-connector"
+	fi
+fi
+
 add_group "$WEB_USER" "$CENTREON_GROUP"
 add_group "$MONITORINGENGINE_USER" "$CENTREON_GROUP"
 get_primary_group "$MONITORINGENGINE_USER" "MONITORINGENGINE_GROUP"
