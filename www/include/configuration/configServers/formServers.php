@@ -187,6 +187,7 @@ $redirect->setValue($o);
 /*
  * Form Rules
  */
+$form->registerRule('exist', 'callback', 'testExistence');
 $form->addRule('name', _("Name is already in use"), 'exist');
 $form->addRule('name', _("The name of the poller is mandatory"), 'required');
 
