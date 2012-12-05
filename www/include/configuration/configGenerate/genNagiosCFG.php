@@ -45,16 +45,18 @@
 	 * Get all information for nagios.cfg for this poller
 	 */
 	$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' AND `nagios_server_id` = '".$tab['id']."' LIMIT 1");
-	$nagios = $DBRESULT->fetchRow();
-	$DBRESULT->free();
-    $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/".$nagios['cfg_file'];
-    unset($nagios['cfg_file']);
-    
+	if ($DBRESULT->numRows()) {
+		$nagios = $DBRESULT->fetchRow();
+		$DBRESULT->free();
+	    $nagiosCFGFile = $nagiosCFGPath.$tab['id']."/".$nagios['cfg_file'];
+	    unset($nagios['cfg_file']);
+	} else {
+		throw new RuntimeException('No main file available for this poller. Please add one main file in Configuration > Monitoring Engines > Main.cfg.');
+	}    
 	/*
 	 * Create file
 	 */
     $handle = create_file($nagiosCFGFile, $oreon->user->get_name());
-    //unlink($oldNagiosCFGFile);
 
 	/*
 	 * Get broker module informations
