@@ -10,12 +10,12 @@
     
     <div id='tab1' class='tab'>
         <table class="ListTable">
-            <tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}&nbsp;&nbsp;{$connectorsWarning}</td></tr>
+            <tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/exchange.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
             <tr class="list_lvl_1"><td class="ListColLvl1_name"  colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.information}</td></tr>
-            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_name"> {$form.connector_name.label}</td><td class="FormRowValue">{$form.connector_name.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="connector_name"> {$form.connector_name.label}</td><td class="FormRowValue">{$form.connector_name.html}</td></tr>
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_description"> {$form.connector_description.label}</td><td class="FormRowValue">{$form.connector_description.html}</td></tr>
             <tr class="list_one">
-                <td class="FormRowField"><img class="helpTooltip" name="command_line_help"> {$form.command_line.label}</td>
+                <td class="FormRowField"><img class="helpTooltip" name="command_line"> {$form.command_line.label}</td>
                 <td>
                     <table border="0">
                         <tr>
@@ -56,4 +56,4 @@
 	{/if}
 	</div>
 	{$form.hidden}
-</form>
+</form>{$helptext}

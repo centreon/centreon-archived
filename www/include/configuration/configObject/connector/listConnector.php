@@ -136,7 +136,6 @@ try
     
     $tpl->assign("elemArr", $elemArr);
     $tpl->assign('p', $p);
-    $tpl->assign("connectorsWarning", '<span style="color: #FF0000">[Works only in Centreon Engine 1.3]</span>');
     $tpl->assign('connectorsList', $connectorsList);
     $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);	

@@ -114,7 +114,7 @@ try
     
     $form = new HTML_QuickForm('Form', 'post', "?p=".$p);
     
-    
+    $form->addElement('header', 'information', _('General information'));
     if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Connector"));
 	else if ($o == "c")
@@ -198,9 +198,16 @@ try
         $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
         $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
         $form->accept($renderer);
-        $tpl->assign("connectorsWarning", '<span style="color: #FF0000">[Works only in Centreon Engine 1.3]</span>');
         $tpl->assign('form', $renderer->toArray());
         $tpl->assign('o', $o);
+        $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
         $tpl->display("formConnector.ihtml");
     }
 }

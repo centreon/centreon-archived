@@ -1,9 +1,4 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
-
-<table class="ListTable">
-    <tr><td class="ListColHeaderCenter">{$connectorsWarning}</td></tr>
-</table>
-
 <form name='form' method='POST'>
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
