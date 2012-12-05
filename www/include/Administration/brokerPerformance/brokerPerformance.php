@@ -69,9 +69,8 @@ function getCentreonBrokerModulesList()
 function parseStatsFile($statfile)
 {
     $fieldDate = array('last event at', 'last connection attempt', 'last connection success');
-    $listModules = getCentreonBrokerModulesList();
-    $stat = stat($statfile);
-    $lastmodif = date('Y-m-d H:i:s', $stat[9]);
+    $listModules = getCentreonBrokerModulesList();   
+    $lastmodif = date('Y-m-d H:i:s', filemtime($statfile));
     $fd = fopen($statfile, 'r');
     $lineBlock = null;
     $failover = null;
@@ -196,7 +195,7 @@ $tpl->assign('form', $renderer->toArray());
  */
 $lang = array();
 $lang['modules'] = _('Modules');
-$lang['updated'] = _('Updated');
+$lang['updated'] = _('Last update');
 $lang['loaded'] = _('Loaded');
 $lang['state'] = _('State');
 $lang['peers'] = _('Peers');

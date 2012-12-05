@@ -68,10 +68,14 @@
 <div>
  	<table class="ListTable">
  		<tr class="ListHeader">
-	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$poller_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}&nbsp;{$perf_info.lastmodif}</span></td>
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$poller_name}</td>
 	 	</tr>
                 {foreach from=$perf_info_array item=perf_info key=conf_name}
-	 	<tr><td class='list_lvl_1' colspan='2'>{$conf_name}</td></tr>
+	 	<tr>
+                    <td class='list_lvl_1' colspan='2'>
+                        {$conf_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}:&nbsp;{$perf_info.lastmodif}</span>
+                    </td>
+                </tr>
                 <tr>
                     {if $perf_err.conf_name}
                     <td style="vertical-align: top; font-weight: bold;" colspan="2">{$perf_err.conf_name}</td>
