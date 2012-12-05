@@ -70,8 +70,13 @@
  		<tr class="ListHeader">
 	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$poller_name}&nbsp;<span class="broker_stats_lastmodif">{$lang.updated}&nbsp;{$perf_info.lastmodif}</span></td>
 	 	</tr>
-	 	<tr>
-	 		<td style="vertical-align: top;">
+                {foreach from=$perf_info_array item=perf_info key=conf_name}
+	 	<tr><td class='list_lvl_1' colspan='2'>{$conf_name}</td></tr>
+                <tr>
+                    {if $perf_err.conf_name}
+                    <td style="vertical-align: top; font-weight: bold;" colspan="2">{$perf_err.conf_name}</td>
+                    {else}
+                    <td style="vertical-align: top;">
 	 		<div id="modules" class="broker_stats">
 	 		<p class="title">{$lang.modules}</p>
 	 		<ul class="module_list">{foreach from=$perf_info.modules key=m_name item=m_status}
@@ -98,8 +103,11 @@
 	 		{/if}
 	 		</div>
 	 		</div>
-	 		{/foreach}</td>
+	 		{/foreach}
+                    </td>
+                    {/if}
 	 	</tr>
+                {/foreach}
 	 </table>
 </div>
 {/if}

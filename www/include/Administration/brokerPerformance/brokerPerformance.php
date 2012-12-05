@@ -220,7 +220,7 @@ if ($oreon->broker->getBroker() == 'broker') {
     /*
      * Get the stats file name
      */
-    $queryStatName = 'SELECT cbi.config_value
+    $queryStatName = 'SELECT cbi.config_value, cb.config_name
     	    	FROM cfg_centreonbroker_info as cbi, cfg_centreonbroker as cb
     	    	WHERE cb.config_id = cbi.config_id
     	    		AND cbi.config_group = "stats"
@@ -230,20 +230,24 @@ if ($oreon->broker->getBroker() == 'broker') {
     if (PEAR::isError($res)) {
         $tpl->assign('msg_err', _('Error in getting stats filename'));
     } else {
-        $row = $res->fetchRow();
-        if (is_null($row)) {
-            $tpl->assign('msg_err', _('No statistics file defined for this poller'));
-        } else {
+        if (!$res->numRows()) {
+             $tpl->assign('msg_err', _('No statistics file defined for this poller'));
+        }
+        $perf_info = array();
+        $perf_err = array();
+        while ($row = $res->fetchRow()) {
             $statsfile = $row['config_value'];
             if ($defaultPoller != $selectedPoller) {
                 $statsfile = '@CENTREON_VARLIB@/broker-stats/broker-stats-' . $selectedPoller . '.dat';
             }
             if (!file_exists($statsfile) || !is_readable($statsfile)) {
-                $tpl->assign('msg_err', _('Cannot open statistics file'));
+                $perf_err[$row['config_name']] = _('Cannot open statistics file');
             } else {
-                $tpl->assign('perf_info', parseStatsFile($statsfile));
+                $perf_info[$row['config_name']] = parseStatsFile($statsfile);
             }
         }
+        $tpl->assign('perf_err', $perf_err);
+        $tpl->assign('perf_info_array', $perf_info);
     }
 } else {
     $tpl->assign('msg_err', _('Performance broker page work only with Centreon Broker.'));
