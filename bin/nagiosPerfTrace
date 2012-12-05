@@ -42,8 +42,8 @@ use RRDs;
 use DBI;
 
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data $appID $beginTime $VarLib);
-use vars qw($interval $heartbeat $number $heartbeatFactor);
-use vars qw($global_cmd_buffer $global_active_service_latency $global_active_service_execution $global_active_service_last $global_services_states $global_active_host_latency $global_active_host_execution $global_active_host_last $global_hosts_states);
+use vars qw($interval $heartbeat $number $heartbeatFactor $dbh $dbhoreon);
+use vars qw($global_cmd_buffer $global_active_service_latency $global_active_service_execution $global_active_service_last $global_services_states $global_active_host_latency $global_active_host_execution $global_active_host_last $global_hosts_states $timeLaunch);
 
 # Define Dynamique Paths
 require "@CENTREON_ETC@/conf.pm";
@@ -52,9 +52,33 @@ $VarLib = "@CENTREON_VARLIB@/";
 # SSH options
 my $sshOptions = "-o ConnectTimeout=5 -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
 
+=head2 clean_exit()
+
+Enforce a proper exit in every case.
+
+=cut
+sub clean_exit {
+    my $errorMessage = shift;
+    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
+
+    print "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec -  $errorMessage";
+
+    if (defined $dbhoreon) {
+	unset_lock($dbhoreon, $appID);
+	$dbhoreon->disconnect();
+    }
+    if (defined $dbh) {
+	$dbh->disconnect();
+    }
+    exit 0;
+}
+
+# Configure signal
+$SIG{__DIE__} = \&clean_exit;
+
 # MySQL Connecion 
-my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
-my $dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
+$dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
+$dbhoreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 
 # Get Time Launch
 $beginTime = time();
@@ -63,43 +87,64 @@ $beginTime = time();
 $interval = 300;
 $heartbeatFactor = 10;
 $heartbeat = $interval * $heartbeatFactor;
+$timeLaunch = time();
 
-################################
-# Declare function
-sub myDie($);
-sub updateProgramFlag();
+=head2 set_lock($dbcon)
 
-# ##############################
-# Lock in MySQL
-my $sth = $dbhoreon->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'nagiosPerfTrace'");
-if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-}
-$data = $sth->fetchrow_hashref();
+Activate the lock in database.
 
-my $sthbis;
-if (defined($data->{'id'})) {
-    if (!defined($data->{"running"}) || $data->{"running"} == 0) {
-        $appID = $data->{"id"};
-        $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".$beginTime."' WHERE id = '$appID'");
-        if (!$sthbis->execute) {
-            die "Error: " . $sthbis->errstr . "\n";
-        }   
-    } else {
-        exit(1);
+=cut
+sub set_lock($) {
+    my ($dbconn) = @_;
+    my $sth = $dbconn->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'nagiosPerfTrace'");
+    if (!$sth->execute) {
+	die "Error:" . $sth->errstr . "\n";
     }
-} else {
-    my $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('nagiosPerfTrace', '1', '1')");
+    my $data = $sth->fetchrow_hashref();
+    my ($appID, $sthbis) = undef;
+
+    if (defined($data->{'id'})) {
+	if (!defined($data->{"running"}) || $data->{"running"} == 0) {
+	    $appID = $data->{"id"};
+	    $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
+	    if (!$sthbis->execute) {
+		die "Error:" . $sthbis->errstr . "\n";
+	    }
+	    return $appID;
+	}
+	writeLogFile("logAnalyser already running...");
+	exit 1;
+    }
+    $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('nagiosPerfTrace', '1', '1')");
     if (!$sthbis->execute) {
-        die "Error: " . $sthbis->errstr . "\n";
+	die "Error:" . $sthbis->errstr . "\n";
+    }
+    return $appID;
+	     }
+
+=head2 unset_lock($dbconn, $appID)
+
+Deactivate the lock in database.
+
+=cut
+sub unset_lock {
+    my ($dbconn, $appID) = @_;
+    my $sth = $dbconn->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . (time() - $timeLaunch) . "' WHERE id = '$appID'");
+
+    if (!$sth->execute()) {
+	die "Error:" . $sth->errstr . "\n";
     }
 }
 
 #####################################
+# Push lock
+$appID = set_lock($dbhoreon);
+
+#####################################
 # Get interval
-$sth = $dbh->prepare("SELECT len_storage_rrd FROM config");
+my $sth = $dbh->prepare("SELECT len_storage_rrd FROM config");
 if (!$sth->execute) {
-    myDie "Error:" . $sth->errstr . "\n";
+    die "Error:" . $sth->errstr . "\n";
 }
 $data = $sth->fetchrow_hashref();
 if ($data->{'len_storage_rrd'}) {
@@ -107,18 +152,12 @@ if ($data->{'len_storage_rrd'}) {
 } else {
     $number = 365 * 24 * 60 * 60 / $interval;
 }
+$sth->finish();
 undef($data);
 ####################################
 
 my $global_prefix = "$VarLib/nagios-perf/";
 my $tmp_prefix;
-
-sub myDie($) {
-    my ($string) = @_;
-    
-    updateProgramFlag();
-    die($string);
-}
 
 sub trim($) {
     my $string = shift;
@@ -333,13 +372,13 @@ sub rrd_process {
 sub check_dir($) {
     my ($nagios_id) = @_;
     my $str;
-    
+
     if (!-e $global_prefix . "perfmon-" . $nagios_id){
         system("mkdir " . $global_prefix . "perfmon-" . $nagios_id);
         system("chown @CENTREON_USER@:@CENTREON_GROUP@ " . $global_prefix . "perfmon-" . $nagios_id);
         system("chmod 775 " . $global_prefix . "perfmon-" . $nagios_id);
     }
-    
+
     $tmp_prefix = $global_prefix . "perfmon-" . $nagios_id;
     $global_cmd_buffer = $tmp_prefix . "/nagios_cmd_buffer.rrd";
     $global_active_service_latency = $tmp_prefix . "/nagios_active_service_latency.rrd";
@@ -353,9 +392,6 @@ sub check_dir($) {
 }
 
 sub get_poller()    {
-    use vars qw ($mysql_host $mysql_user $mysql_passwd $mysql_database_oreon $mysql_database_ods);
-    require("@CENTREON_ETC@/conf.pm");
-
     my $item;
     my $id;
     my $ip;
@@ -370,15 +406,14 @@ sub get_poller()    {
     my $must_update_ds;
     my $dataDir = "$VarLib/log/";
 
-    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 1});
-    if (defined($dbh)){
-        $item = $dbh->prepare("SELECT id, ssh_port, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
-        if (!$item->execute) {myDie "Error:" . $item->errstr . "\n";}
+    if (defined($dbhoreon)){
+        $item = $dbhoreon->prepare("SELECT id, ssh_port, ns_ip_address, localhost, nagiostats_bin FROM nagios_server WHERE ns_activate = 1");
+        if (!$item->execute) {die "Error:" . $item->errstr . "\n";}
         while (($id, $ssh_port, $ip, $is_localhost, $nagiostats_bin) = $item->fetchrow_array()) {
             $must_update_ds = 0;
-            $cfg_item = $dbh->prepare("SELECT cfg_dir, cfg_file FROM cfg_nagios WHERE nagios_server_id = " . $id . " AND nagios_activate = '1'");
+            $cfg_item = $dbhoreon->prepare("SELECT cfg_dir, cfg_file FROM cfg_nagios WHERE nagios_server_id = " . $id . " AND nagios_activate = '1'");
             if (!$cfg_item->execute) {
-                myDie "Error:" . $cfg_item->errstr . "\n";
+                die "Error:" . $cfg_item->errstr . "\n";
             }
             $cfg_result = $cfg_item->fetchrow_hashref();
             if (!defined $cfg_result->{cfg_dir}) {
@@ -388,9 +423,9 @@ sub get_poller()    {
             $cfg_dir = $cfg_result->{'cfg_dir'};
             $cfg_dir =~ s!/\$!!g;
             if ($cfg_dir eq '') {
-                myDie "Error: The Monitoring engine configuration dir is empty.";
+                die "Error: The Monitoring engine configuration dir is empty.";
             } elsif ($cfg_result->{'cfg_file'} eq '') {
-                myDie "Error: The Monitoring engine configuration filename is empty.";
+                die "Error: The Monitoring engine configuration filename is empty.";
             }
             if ($is_localhost){
                 $nagiostats = `$nagiostats_bin -c $cfg_dir/$cfg_result->{'cfg_file'}`;
@@ -429,17 +464,6 @@ if (!-e $global_prefix){
 }
 
 get_poller();
-updateProgramFlag();
-
-###############################
-# Remove Lock
-sub updateProgramFlag() {
-    $sth = $dbhoreon->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '".(time()- $beginTime )."' WHERE id = '$appID'");
-    if (!$sth->execute()) {
-        die "Error:" . $sth->errstr . "\n";
-    }
-    undef($appID);
-}
-###############################
+clean_exit();
 
 __END__
