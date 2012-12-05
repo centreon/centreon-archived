@@ -64,11 +64,11 @@ sub clean_exit {
     print "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec -  $errorMessage";
 
     if (defined $dbhoreon) {
-	unset_lock($dbhoreon, $appID);
-	$dbhoreon->disconnect();
+        unset_lock($dbhoreon, $appID);
+        $dbhoreon->disconnect();
     }
     if (defined $dbh) {
-	$dbh->disconnect();
+        $dbh->disconnect();
     }
     exit 0;
 }

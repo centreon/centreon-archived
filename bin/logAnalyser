@@ -57,7 +57,7 @@ use File::stat;
 use Getopt::Long;
 use POSIX;
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon 
-            $mysql_database_ods $opt_h $opt_a $opt_p $opt_s $data $LOG $timeLaunch);
+            $mysql_database_ods $opt_h $opt_a $opt_p $opt_s $data $LOG);
 
 require "@CENTREON_ETC@/conf.pm";
 
@@ -95,31 +95,31 @@ Activate the lock in database.
 
 =cut
 sub set_lock($) {
-  my ($dbconn) = @_;
-  my $sth = $dbconn->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyser'");
-  if (!$sth->execute) {
-    die "Error:" . $sth->errstr . "\n";
-  }
-  my $data = $sth->fetchrow_hashref();
-  my ($appID, $sthbis) = undef;
-
-  if (defined($data->{'id'})) {
-    if (!defined($data->{"running"}) || $data->{"running"} == 0) {
-      $appID = $data->{"id"};
-      $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
-      if (!$sthbis->execute) {
-        die "Error:" . $sthbis->errstr . "\n";
-      }
-      return $appID;
+    my ($dbconn) = @_;
+    my $sth = $dbconn->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyser'");
+    if (!$sth->execute) {
+        die "Error:" . $sth->errstr . "\n";
     }
-    writeLogFile("logAnalyser already running...");
-    exit 1;
-  }
-  $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyser', '1', '1')");
-  if (!$sthbis->execute) {
-    die "Error:" . $sthbis->errstr . "\n";
-  }
-  return $appID;
+    my $data = $sth->fetchrow_hashref();
+    my ($appID, $sthbis) = undef;
+
+    if (defined($data->{'id'})) {
+        if (!defined($data->{"running"}) || $data->{"running"} == 0) {
+            $appID = $data->{"id"};
+            $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
+            if (!$sthbis->execute) {
+                die "Error:" . $sthbis->errstr . "\n";
+            }
+            return $appID;
+        }
+        writeLogFile("logAnalyser already running...");
+        exit 1;
+    }
+    $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('logAnalyser', '1', '1')");
+    if (!$sthbis->execute) {
+        die "Error:" . $sthbis->errstr . "\n";
+    }
+    return $appID;
 }
 
 =head2 unset_lock($dbconn, $appID)
@@ -128,12 +128,12 @@ Deactivate the lock in database.
 
 =cut
 sub unset_lock {
-  my ($dbconn, $appID) = @_;
-  my $sth = $dbconn->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . (time() - $timeLaunch) . "' WHERE id = '$appID'");
+    my ($dbconn, $appID) = @_;
+    my $sth = $dbconn->prepare("UPDATE cron_operation SET running = '0', last_execution_time = '" . (time() - $timeLaunch) . "' WHERE id = '$appID'");
 
-  if (!$sth->execute()) {
-    die "Error:" . $sth->errstr . "\n";
-  }
+    if (!$sth->execute()) {
+        die "Error:" . $sth->errstr . "\n";
+    }
 }
 
 =head2 clean_exit()
@@ -142,16 +142,19 @@ Enforce a proper exit in every case.
 
 =cut
 sub clean_exit {
-  my $code = shift || 0;
+    my $message = shift;
+    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time());
 
-  if (defined $dbhoreon) {
-    unset_lock($dbhoreon, $appID);
-    $dbhoreon->disconnect();
-  }
-  if (defined $dbh) {
-    $dbh->disconnect();
-  }
-  exit $code;
+    print "$mday/" . ($mon + 1) . "/" . ($year + 1900) . " $hour:$min:$sec -  $message";
+
+    if (defined $dbhoreon) {
+        unset_lock($dbhoreon, $appID);
+        $dbhoreon->disconnect();
+    }
+    if (defined $dbh) {
+        $dbh->disconnect();
+    }
+    exit 0;
 }
 
 =head2 clear_flag_position_file($instance)
@@ -547,15 +550,14 @@ if (defined $opt_s) {
     }
 }
 
+$SIG{__DIE__} = \&clean_exit;
+
 # Init MySQL connections
 $dbh = DBI->connect("DBI:mysql:database=$mysql_database_ods;host=$mysql_host", 
-                    $mysql_user, $mysql_passwd, {'RaiseError' => 0}) or die $DBI::errstr;
+                    $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 $dbhoreon = DBI->connect("DBI:mysql:database=$mysql_database_oreon;host=$mysql_host", 
-                         $mysql_user, $mysql_passwd, {'RaiseError' => 0}) or die $DBI::errstr;
-
+                         $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 $appID = set_lock($dbhoreon);
-
-$SIG{__DIE__} = \&clean_exit;
 
 # Check if is db layer is centreon broker
 my $dbLayer = $dbhoreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
@@ -576,7 +578,7 @@ if (!$sth_config->execute) {
 }
 $data = $sth_config->fetchrow_hashref();
 $sth_config->finish();
-clean_exit(1) if (!$data->{'archive_log'});
+clean_exit() if (!$data->{'archive_log'});
 
 $retention = $data->{'archive_retention'};
 
