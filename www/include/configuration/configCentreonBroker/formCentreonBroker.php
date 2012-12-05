@@ -135,6 +135,7 @@
 	$form->registerRule('exist', 'callback', 'testExistence');
 	$form->addRule('name', _("Mandatory name"), 'required');
 	$form->addRule('name', _("Name is already in use"), 'exist');
+	$form->addRule('filename', _("Mandatory filename"), 'required');
     $form->addRule('event_queue_max_size', _('Value must be numeric'), 'numeric');
 
 	if ($o == "w")	{

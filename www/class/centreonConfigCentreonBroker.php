@@ -399,7 +399,7 @@ class CentreonConfigCentreonBroker
                             '" . $this->db->escape($values['filename']) . "', 
                             '" . $this->db->escape($values['activate']['activate']) . "',
                             " . $this->db->escape($values['ns_nagios_server']) . ", 
-                            ".$this->db->escape((int)$values['event_queue_max_size']).")";
+                            ".$this->db->escape((int)$this->checkEventMaxQueueSizeValue($values['event_queue_max_size'])).")";
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
 	    }
@@ -434,7 +434,7 @@ class CentreonConfigCentreonBroker
                 config_filename = '" . $this->db->escape($values['filename']) . "', 
                 config_activate = '" . $this->db->escape($values['activate']['activate']) . "', 
                 ns_nagios_server = " . $this->db->escape($values['ns_nagios_server']) . ",
-                event_queue_max_size = ".(int)$this->db->escape($values['event_queue_max_size'])."
+                event_queue_max_size = ".(int)$this->db->escape($this->checkEventMaxQueueSizeValue($values['event_queue_max_size']))."
 	    	WHERE config_id = " . $id;
 	    if (PEAR::isError($this->db->query($query))) {
 	        return false;
@@ -826,6 +826,24 @@ class CentreonConfigCentreonBroker
             throw new InvalidArgumentException('Unrecognized symbol ' . $item);
         }
         return $result;
+    }
+    
+    /**
+     * Check event max queue size value
+     * 
+     * if the value is too small, centreon broker will spend time
+     * to write information directly to hard drive. So we prefer to 
+     * use more memory in order to avoid IO.
+     * 
+     * @param int maximum number of event in the queue
+     * @return int maximum number of event in the queue
+     * 
+     */
+    private function checkEventMaxQueueSizeValue($value) {
+		if (!isset($value) || $value == "" || $value < 50000) {
+			$value = 50000;
+		}
+    	return $value;
     }
 }
 ?>
