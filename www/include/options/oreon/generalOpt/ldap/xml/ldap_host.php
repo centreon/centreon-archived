@@ -42,6 +42,7 @@ ini_set('display_errors', 'Off');
 include_once("@CENTREON_ETC@/centreon.conf.php");
 //include_once("/etc/centreon/centreon.conf.php");
 
+require_once $centreon_path . "/www/class/centreon.class.php";
 require_once $centreon_path . "/www/class/centreonDB.class.php";
 require_once $centreon_path . "/www/class/centreonXML.class.php";
 require_once $centreon_path . "/www/class/centreonLang.class.php";
