@@ -146,7 +146,7 @@ class CentreonLogAction {
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = "";//$field["field_value"];
                     $list_modifications[$i]["field_value_after"] = $field["field_value"];
-                } else if ($ref[$field["field_name"]] != $field["field_value"]) {
+                } else if (isset($ref[$field["field_name"]]) && $ref[$field["field_name"]] != $field["field_value"]) {
                     $list_modifications[$i]["action_log_id"] = $field["action_log_id"];
                     $list_modifications[$i]["field_name"] = $field["field_name"];
                     $list_modifications[$i]["field_value_before"] = $ref[$field["field_name"]];
