@@ -41,54 +41,105 @@
  */
 include "@CENTREON_ETC@/centreon.conf.php";
 
-require_once "$centreon_path/www/class/centreonGraph.class.php";
-require_once "$centreon_path/www/class/centreonDB.class.php";
+require_once $centreon_path . '/www/class/centreon.class.php';
+require_once $centreon_path . '/www/class/centreonACL.class.php';
+require_once $centreon_path . '/www/class/centreonGraph.class.php';
+require_once $centreon_path . '/www/class/centreonDB.class.php';
+require_once $centreon_path . '/www/class/centreonBroker.class.php';
+
+
+$pearDB = new CentreonDB();
+
+$mySessionId = isset($_GET['session_id']) ? $_GET['session_id'] : '' ;
 
 /**
- * Check if autlogin key is passed, if so create a session for the user if it not exist
+ * Checks for token
  */
-if (isset($_GET["akey"]) && isset($_GET['username'])) {
-    $pearDB = new CentreonDB();
+if ((isset($_GET["token"]) || isset($_GET["akey"])) && isset($_GET['username'])) {    
+    $token = isset($_GET['token']) ? $_GET['token'] : $_GET['akey'];
     $DBRESULT = $pearDB->query("SELECT * FROM `contact`
-    						    WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
-    						   	AND `contact_activate` = '1'
-    						   	AND `contact_autologin_key` = '".$pearDB->escape($_GET["akey"])."' LIMIT 1");
+    				WHERE `contact_alias` = '".$pearDB->escape($_GET["username"])."'
+    				AND `contact_activate` = '1'
+    				AND `contact_autologin_key` = '".$token."' LIMIT 1");
     if ($DBRESULT->numRows()) {
         $row = $DBRESULT->fetchRow();
         session_start();
-        $_GET["session_id"] = session_id();
-        $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".session_id()."'");
+        $mySessionId = session_id();
+        $res = $pearDB->query("SELECT session_id FROM session WHERE session_id = '".$mySessionId."'");
         if (!$res->numRows()) {
-            $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
+            $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".$mySessionId."', '".$row["contact_id"]."', '', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
         }        
     } else {
-        /**
-         * Return silently in case autologinKey was invalid.
-         */
-        exit;
+        die('Invalid token');
     }
 
 }
 
+$index = isset($_GET['index']) ? $_GET['index'] : 0;
+
 if (isset($_GET["hostname"]) && isset($_GET["service"])) {
     $pearDBO = new CentreonDB("centstorage");
     $DBRESULT = $pearDBO->query("SELECT `id`
-    							 FROM index_data
-    							 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
-    							 AND service_description = '".$pearDB->escape($_GET["service"])."'
-    							 LIMIT 1");
+                                 FROM index_data
+    				 WHERE host_name = '".$pearDB->escape($_GET["hostname"])."'
+    				 AND service_description = '".$pearDB->escape($_GET["service"])."'
+    				 LIMIT 1");
     if ($DBRESULT->numRows()) {
         $res = $DBRESULT->fetchRow();
-        $_GET["index"] = $res["id"];
+        $index = $res["id"];
     } else {
-        $_GET["index"] = 0;
+        die('Resource not found');
+    }
+}
+
+$sql = "SELECT c.contact_id, c.contact_admin 
+        FROM session s, contact c
+        WHERE s.session_id = '".$mySessionId."'
+        AND s.user_id = c.contact_id 
+        LIMIT 1";
+$res = $pearDB->query($sql);
+if (!$res->numRows()) {
+    die('Unknown user');
+}
+
+$row = $res->fetchRow();
+$isAdmin = $row['contact_admin'];
+$contactId = $row['contact_id'];
+
+if (!$isAdmin) {
+    $acl = new CentreonACL($contactId, $isAdmin);
+    $brokerObj = new CentreonBroker($pearDB);
+    if ($brokerObj->getBroker() == 'broker') {
+        $dbmon = new CentreonDB('centstorage');
+    } else {
+        $dbmon = new CentreonDB('ndo');
+    }
+    $dbstorage = new CentreonDB('centstorage');
+    $aclGroups = $acl->getAccessGroupsString();
+    $sql = "SELECT host_id, service_id FROM index_data WHERE id = " .$pearDB->escape($index);
+    $res = $dbstorage->query($sql);
+    if (!$res->numRows()) {
+        die('Graph not found');
+    }    
+    $row = $res->fetchRow();
+    unset($res);
+    $hostId = $row['host_id'];
+    $serviceId = $row['service_id'];
+    $sql = "SELECT service_id 
+            FROM centreon_acl 
+            WHERE host_id = $hostId
+            AND service_id = $serviceId
+            AND group_id IN ($aclGroups)";
+    $res = $dbmon->query($sql);
+    if (!$res->numRows()) {
+        die('Access denied');
     }
 }
 
 /**
  * Create XML Request Objects
  */
-$obj = new CentreonGraph($_GET["session_id"], $_GET["index"], 0, 1);
+$obj = new CentreonGraph($mySessionId, $index, 0, 1);
 
 if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
     ;
