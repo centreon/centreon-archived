@@ -129,7 +129,7 @@
 		}
 		$strEval .= print_line("register", "1");
 		$svc_id = getMetaServiceId($pearDB, 'meta_'.$meta['meta_id']);
-		$strEval .= print_line("_SERVICE_ID", $srv_id);
+		$strEval .= print_line("_SERVICE_ID", $svc_id);
 		$strEval .= "\t}\n\n";
 
 		$str .= $strEval;
