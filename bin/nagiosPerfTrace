@@ -112,7 +112,7 @@ sub set_lock($) {
 	    }
 	    return $appID;
 	}
-	writeLogFile("logAnalyser already running...");
+	writeLogFile("nagiosPerfTrace already running...");
 	exit 1;
     }
     $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('nagiosPerfTrace', '1', '1')");
