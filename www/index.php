@@ -41,10 +41,11 @@
         clearstatcache(true, "$etc/centreon.conf.php");
 	if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
 		header("Location: ./install/setup.php");
+		return;
         } elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
         	require_once ("$etc/centreon.conf.php");
 		header("Location: ./install/upgrade.php");
-        } else {            
+        } else {
             if (file_exists("$etc/centreon.conf.php")){
                 require_once ("$etc/centreon.conf.php");
                 $freeze = 0;
@@ -157,7 +158,7 @@
                 if (isset($_REQUEST['token']) && $_REQUEST['token']) {
                     $token = $_REQUEST['token'];
                 }
-                
+
 	    if (!isset($encryptType)) {
 	    	$encryptType = 1;
 	    }
