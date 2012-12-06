@@ -34,6 +34,11 @@
  *
  */
 
+/*
+ * Already handled in sql script (revision r13623)
+ */
+
+/*
 if (isset($pearDB)) {
     $query = "SELECT id FROM nagios_server";
     $res = $pearDB->query($query);
@@ -54,5 +59,5 @@ if (isset($pearDB)) {
     if ($str2 != "") {
         $pearDB->query($str . $str2);
     }
-}
+}*/
 ?>
