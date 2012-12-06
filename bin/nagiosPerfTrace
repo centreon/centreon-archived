@@ -104,15 +104,18 @@ sub set_lock($) {
     my ($appID, $sthbis) = undef;
 
     if (defined($data->{'id'})) {
-	if (!defined($data->{"running"}) || $data->{"running"} == 0) {
+	if (!defined($data->{"running"}) || $data->{"running"} eq 0) {
 	    $appID = $data->{"id"};
 	    $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
 	    if (!$sthbis->execute) {
 		die "Error:" . $sthbis->errstr . "\n";
 	    }
+	    $sthbis->finish();
 	    return $appID;
 	}
-	writeLogFile("nagiosPerfTrace already running...");
+	$sth->finish();
+	$dbhoreon->disconnect();
+	print("nagiosPerfTrace already running...");
 	exit 1;
     }
     $sthbis = $dbhoreon->prepare("INSERT INTO cron_operation (name, system, activate) VALUES ('nagiosPerfTrace', '1', '1')");
