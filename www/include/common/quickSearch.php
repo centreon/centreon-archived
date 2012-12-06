@@ -145,7 +145,7 @@
 	$tpl->assign('form_search', $renderer->toArray());
 	$tpl->assign('p', $p);
 	$tpl->assign("displayHSOptions", $displayHSOptions);
-	$tpl->assign("cleanSearch", _("Resert filters"));
+	$tpl->assign("cleanSearch", _("Reset filters"));
 	if (isset($FlagSearchService) && $FlagSearchService) {
 		$tpl->assign("FlagSearchService", $FlagSearchService);
 	}
