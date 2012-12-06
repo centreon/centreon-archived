@@ -54,7 +54,7 @@
 			return NULL;
 		$tab_svc = array();
 
-		$DBRESULT = $pearDBO->query("SELECT `service_id`, `service_description` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `hidden` = '0' AND `trashed` = '0' ORDER BY `service_description`");
+		$DBRESULT = $pearDBO->query("SELECT `service_id`, `service_description` FROM `index_data`, `metrics` WHERE metrics.index_id = index_data.id AND `host_id` = '".$host_id."' AND index_data.`hidden` = '0' AND index_data.`trashed` = '0' ORDER BY `service_description`");
 		while ($row = $DBRESULT->fetchRow())
 			$tab_svc[$row["service_id"]] = $row['service_description'];
 		return $tab_svc;
@@ -64,7 +64,7 @@
 		global $pearDBO;
 
 		$tab = array();
-		$DBRESULT = $pearDBO->query("SELECT `host_id` FROM `index_data` WHERE `hidden` = '0' AND `trashed` = '0' ORDER BY `host_name`");
+		$DBRESULT = $pearDBO->query("SELECT `host_id` FROM `index_data`, `metrics` WHERE metrics.index_id = index_data.id AND index_data.`hidden` = '0' AND index_data.`trashed` = '0' ORDER BY `host_name`");
 		while ($row = $DBRESULT->fetchRow()) {
 			$tab[$row["host_id"]] = 1;
 		}
@@ -77,7 +77,7 @@
 			return NULL;
 		$tab_svc = array();
 
-		$DBRESULT = $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND `hidden` = '0' AND `trashed` = '0'");
+		$DBRESULT = $pearDBO->query("SELECT `service_id` FROM `index_data` WHERE `host_id` = '".$host_id."' AND `service_id` = '".$service_id."' AND index_data.`hidden` = '0' AND `trashed` = '0'");
 		$num_row = $DBRESULT->numRows();
 		$DBRESULT->free();
 		return $num_row;
