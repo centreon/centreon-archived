@@ -110,7 +110,7 @@ if (isset($pearDB)) {
     if (PEAR::isError($pearDB->query($query))) {
         return false;
     }
-    if ($errors) {
+    if (isset($errors) && $errors) {
         return false;
     }
 }
