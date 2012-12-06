@@ -1714,9 +1714,16 @@
 			return 0;
 		$DBRESULT = $pearDB->query("SELECT `id` FROM nagios_server, ns_host_relation, host WHERE host.host_name = '$host_name' AND host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
 		$nagios_server = $DBRESULT->fetchRow();
-		if (isset($nagios_server['id']))
-			return $nagios_server['id'];
-		return 0;
+		if (isset($nagios_server['id'])) {
+                    return $nagios_server['id'];
+                }
+		$sql = "SELECT id FROM nagios_server WHERE localhost = '1' LIMIT 1";
+                $res = $pearDB->query($sql);
+                if ($res->numRows()) {
+                    $row = $res->fetchRow();
+                    return $row['id'];
+                }
+                return 0;
 	}
 
 	function check_session($sid, $pearDB){
