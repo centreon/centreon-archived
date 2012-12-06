@@ -55,20 +55,20 @@
         $DBRESULT->free();
 
         $i = 0;
-        $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg 
+        $DBRESULT = $DB->query("SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
                                  FROM service s, host_service_relation hsr, ns_host_relation nhr
                                  WHERE s.service_id = hsr.service_service_id
                                  AND hsr.host_host_id = nhr.host_host_id
                                  AND nhr.nagios_server_id = ".$DB->escape($pollerId)."
                                  UNION
-                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg 
+                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
                                  FROM service s, host_service_relation hsr, ns_host_relation nhr, hostgroup_relation hgr
                                  WHERE s.service_id = hsr.service_service_id
                                  AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
                                  AND hgr.host_host_id = nhr.host_host_id
                                  AND nhr.nagios_server_id = ".$DB->escape($pollerId)."
                                  UNION
-                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg 
+                                 SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
                                  FROM service s
                                  WHERE service_register = '0'");
         while ($data = $DBRESULT->fetchRow()) {
@@ -743,13 +743,19 @@ Modified for Oreon by Christophe Coraboeuf
 	    return $row['id'];
 	}
 
-	function getListIndexData($poller_id)
+	function getListIndexData($poller_id, $services = true)
 	{
 	    global $pearDB, $pearDBO;
 
 	    $queryGetHost = "SELECT host_host_id
-	    	FROM ns_host_relation
-	    	WHERE nagios_server_id = " . $poller_id;
+	    	FROM ns_host_relation, host
+	    	WHERE nagios_server_id = " . $poller_id . "
+	    		AND host_host_id = host_id";
+	    if ($services) {
+	        $queryGetHost .= " AND  host_name != '_Module_Meta'";
+	    } else {
+	        $queryGetHost .= " AND  host_name = '_Module_Meta'";
+	    }
 	    $res = $pearDB->query($queryGetHost);
 	    if (PEAR::isError($res)) {
 	        throw new Exception('Bad query');
