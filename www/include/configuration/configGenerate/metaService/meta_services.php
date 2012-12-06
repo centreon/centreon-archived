@@ -142,7 +142,7 @@
 		    $listIndexData[$relLink]['status'] = true;
 		} else {
 		    $indexToAdd[] = array(
-		        'host_id' => $host_id,
+		        'host_id' => $metaHostId,
 		        'host_name' => '_Module_Meta',
 		        'service_id' => $svc_id,
 		        'service_description' => 'meta_'.$meta['meta_id']
