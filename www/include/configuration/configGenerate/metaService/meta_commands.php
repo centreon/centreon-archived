@@ -38,12 +38,17 @@
  	if (!isset($oreon))
  		exit();
  	
+        $legacy = "";
+        if (isset($oreon->optGen['centstorage']) && $oreon->optGen['centstorage']) {
+            $legacy = "--legacy";
+        }
+        
 	$str = NULL;
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_commands.cfg", $oreon->user->get_name());
 	
 	$str = "define command{\n";
-	$str .= print_line("command_name", "check_meta");
-	$str .= print_line("command_line", $oreon->optGen["nagios_path_plugins"]."check_meta_service -i \$ARG1\$");
+	$str .= print_line("command_name", "check_meta");        
+	$str .= print_line("command_line", $oreon->optGen["nagios_path_plugins"]."check_meta_service -i \$ARG1\$ $legacy");
 	$str .= "}\n\n";
 	
 	$str .= "define command{\n";
