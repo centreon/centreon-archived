@@ -494,7 +494,8 @@
 		 * Get Service Graph index
 		 */
 		if (!isset($graphs[$data["host_id"]]) || !isset($graphs[$data["host_id"]][$data["service_id"]])) {
-			$request2 = "SELECT service_id, id FROM index_data WHERE host_id = '".$data["host_id"]."' AND service_id = '".$data["service_id"]."'";
+			$request2 = "SELECT service_id, id FROM index_data, metrics WHERE metrics.index_id = index_data.id AND host_id = '".$data["host_id"]."' AND service_id = '".$data["service_id"]."' AND index_data.hidden = '0'";
+			print $request2;
 			$DBRESULT2 = $obj->DBC->query($request2);
 			while ($dataG = $DBRESULT2->fetchRow()) {
 				if (!isset($graphs[$data["host_id"]])) {
