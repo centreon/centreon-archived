@@ -1,5 +1,7 @@
-<?php 
-session_start();
+<?php
+if (strlen(session_id()) < 1) {
+    session_start();
+}
 $step = 1;
 if (isset($_SESSION['step'])) {
     $step = $_SESSION['step'];
@@ -23,7 +25,7 @@ if (isset($_SESSION['step'])) {
 
         /**
         * Go back to previous page
-        * 
+        *
         * @param int stepNumber
         * @return void
         */
@@ -33,7 +35,7 @@ if (isset($_SESSION['step'])) {
 
         /**
         * Do background process
-        * 
+        *
         * @param boolean async
         * @param string url
         * @param array data
