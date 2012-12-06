@@ -68,8 +68,13 @@ $contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' clas
 
 $troubleshootTxt1 = _('You seem to be having trouble with your upgrade.');
 $troubleshootTxt2 = _('You may refer to the line that causes problem in order to find out more about the issue.');
-$troubleshootTxt3 = _('But do not edit the sql script unless you know what you are doing. Refresh this page when the problem is fixed.');
-$contents .= sprintf('<br/><p id="troubleshoot" style="display:none;">%s<br/>%s<br/>%s</p>', $troubleshootTxt1, $troubleshootTxt2, $troubleshootTxt3);
+$troubleshootTxt3 = sprintf(_('The SQL files are located in %s'), $centreon_path.'www/install/sql/');
+$troubleshootTxt4 = _('But do not edit the SQL files unless you know what you are doing. Refresh this page when the problem is fixed.');
+$contents .= sprintf('<br/><p id="troubleshoot" style="display:none;">%s<br/>%s<br/>%s<br/>%s</p>',
+                     $troubleshootTxt1,
+                     $troubleshootTxt2,
+                     $troubleshootTxt3,
+                     $troubleshootTxt4);
 
 $next = '';
 if ($handle = opendir('../sql/centreon')) {
