@@ -55,17 +55,15 @@
 }
 </style>
 {/literal}
-{if $msg_err}
-<div class="update" style='text-align:center;'>
-{$msg_err}
-</div>
-{else}
 <form {$form.attributes}>
 <table class="ajaxOption">
 	<tr><td>&nbsp;&nbsp;<b>{$form.pollers.label}</b>&nbsp;&nbsp;{$form.pollers.html}</td></tr>
 </table>
 </form>
 <div>
+{if $msg_err}
+	<div class="update" style='text-align:center;'>{$msg_err}</div>
+{else}
  	<table class="ListTable">
  		<tr class="ListHeader">
 	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/gauge.gif'>&nbsp;{$poller_name}</td>
@@ -113,8 +111,8 @@
 	 	</tr>
                 {/foreach}
 	 </table>
-</div>
 {/if}
+</div>
 <script type="text/javascript" src="./include/common/javascript/jquery/jquery.js"></script>
 {literal}
 <script type="text/javascript">
