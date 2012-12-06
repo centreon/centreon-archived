@@ -44,7 +44,10 @@ sub CheckMySQLDrain(){
     # Get services by hosts
     my $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL ");
     if (!$sth2->execute) {
-	writeLogFile("Error in Drain function 2 : " . $sth2->errstr . "\n");
+        writeLogFile("Error in Drain function 2 : " . $sth2->errstr . "\n");
+        $con_oreon->disconnect();
+        $con_ods->disconnect();
+        return -1;
     }
     while ($data = $sth2->fetchrow_hashref()){
 	$srv_list{$data->{'host_host_id'} ."_". $data->{'service_service_id'}} = 1;
@@ -56,7 +59,10 @@ sub CheckMySQLDrain(){
     # Get service by Hostgroups
     $sth2 = $con_oreon->prepare("SELECT hostgroup_hg_id, service_service_id FROM host_service_relation WHERE hostgroup_hg_id IS NOT NULL ");
     if (!$sth2->execute) {
-	writeLogFile("Error in Drain function 2 : " . $sth2->errstr);
+        writeLogFile("Error in Drain function 2 : " . $sth2->errstr);
+        $con_oreon->disconnect();
+        $con_ods->disconnect();
+        return -1;
     }
     while ($data = $sth2->fetchrow_hashref()){
 	$sth3 = $con_oreon->prepare("SELECT * FROM hostgroup_relation WHERE hostgroup_hg_id = '".$data->{'hostgroup_hg_id'}."'");
