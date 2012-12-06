@@ -184,17 +184,15 @@
                     $tpl->assign("autoLoginEnable", 0);
                 }
                 if ($centreon->user->getToken()) {
-                    $autoLoginUrl = "p=$p&o=$o&min=$min&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
+                    $autoLoginUrl = "&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
                     $prefix = '';
                     if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
                             $prefix .= "http://";
                     } else {
                             $prefix .= "https://";
                     }
-                    $prefix .= $_SERVER["SERVER_NAME"];
-                    $prefix .= str_replace("main.php", "index.php", $_SERVER["REQUEST_URI"]);
-                    $prefix = preg_replace('/\?p=\d+/', '', $prefix);
-                    $prefix .= "?";
+                    $prefix .= $_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+                    $prefix = str_replace("main.php", "index.php", $prefix);
                     $msg = _("Right Click here to add an autologin link directly to your bookmarks");
                     $tpl->assign("autoLoginUrl", $prefix.$autoLoginUrl);
                 } else {
