@@ -56,7 +56,7 @@
 </style>
 {/literal}
 {if $msg_err}
-<div class="err">
+<div class="update" style='text-align:center;'>
 {$msg_err}
 </div>
 {else}
