@@ -193,7 +193,7 @@ if ($arId) {
 $maxHostId = 1;
 if ($arId) {
     $query = "SELECT MAX(ldap_host_id) as cnt FROM auth_ressource_host WHERE auth_ressource_id = " . $pearDB->escape($arId);
-    $res = $pearDB->query($query);    
+    $res = $pearDB->query($query);
     if ($res->numRows()) {
         $row = $res->fetchRow();
         $maxHostId = $row['cnt'];
@@ -207,7 +207,7 @@ $filterValid = true;
 $allHostsOk = true;
 if ($form->validate()) {
     $values = $form->getSubmitValues();
-    
+
     /*
      * Test is filter string is validate
      */
@@ -222,7 +222,7 @@ if ($form->validate()) {
             }
         }
     }
-    
+
     if ($filterValid && $allHostsOk) {
         if (!isset($values['ldap_contact_tmpl'])) {
             $values['ldap_contact_tmpl'] = "";
@@ -245,8 +245,8 @@ if ($form->validate()) {
                 }
             }
             if (count($hostOld)) {
-                $query = "DELETE FROM auth_ressource_host 
-                        WHERE auth_ressource_id = ".$pearDB->escape($values['ar_id'])." 
+                $query = "DELETE FROM auth_ressource_host
+                        WHERE auth_ressource_id = ".$pearDB->escape($values['ar_id'])."
                         AND ldap_host_id NOT IN (" . join(', ', $hostOld) . ")";
                 $pearDB->query($query);
             }
@@ -286,7 +286,7 @@ if (!$form->validate() && isset($_POST["gopt_id"])) {
     print("<div class='msg' align='center'>" . _("Invalid LDAP Host parameters") . "</div>");
 }
 
-$form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap'"));
+$form->addElement("button", "change", _("Modify"), array("onClick" => "javascript:window.location.href='?p=" . $p . "&o=ldap&ar_id=" . $arId ."'"));
 
 /*
  * Prepare help texts
