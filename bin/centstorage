@@ -629,7 +629,7 @@ sub replaceMetricSpecialChar($){
     $metric_name =~ s/\#S\#/slash\_/g;
     $metric_name =~ s/\#BS\#/bslash\_/g;
     $metric_name =~ s/\#P\#/pct\_/g;
-    #$metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
+    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
     return $metric_name;
 }
 
@@ -639,8 +639,6 @@ sub replaceMetricSpecialChar($){
 sub createRRDDatabase($$$$$$$){
     my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd, $data_source_type) = @_;
     
-    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
-
     RRDs::create($RRDdatabase_path.$metric_id.".rrd", "-b ".$begin, "-s ".$interval, "DS:".substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$rrd_dst[$data_source_type].":".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".($my_len_storage_rrd / 12));
     my $ERR = RRDs::error;
     if( $ERR) {
@@ -657,8 +655,6 @@ sub createRRDDatabase($$$$$$$){
 #
 sub tuneRRDDatabase($$$$){
     my ($RRDdatabase_path, $metric_id ,$metric_name, $interval_hb) = @_;
-
-    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
 
     RRDs::tune($RRDdatabase_path.$metric_id.".rrd", "-h", substr(replaceMetricSpecialChar($metric_name), 0, 19).":".$interval_hb);
     my $ERR = RRDs::error;
@@ -680,8 +676,6 @@ sub removeOldRRDDatabase($$$$) {
 
 sub updateRRDDatabase($$$$$$){
     my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value, $data_source_type) = @_;
-
-    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
     
     $value =~ s/\,/\./g;
     if ( $data_source_type == 0 ) {
@@ -703,9 +697,7 @@ sub updateRRDDatabase($$$$$$){
 
 sub updateRRDDatabaseForRebuild($$$$$$){
     my ($RRDdatabase_path, $metric_id, $metric_name, $ctime, $value, $data_source_type) = @_;
-    
-    $metric_name =~ s/[^0-9_\-a-zA-Z]/-/g;
-    
+        
     $value =~ s/\,/\./g;
     if ( $data_source_type == 0 ) {
         RRDs::update ($RRDdatabase_path.$metric_id.".rrd" , "--template", substr(replaceMetricSpecialChar($metric_name), 0, 19), $ctime.":".sprintf("%e", $value));
