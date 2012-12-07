@@ -34,7 +34,9 @@ if (!$strError) {
             $_SESSION['DB_PORT'] = "3306";
         }
     }
-    mysql_close($link);
+    if ($link) {
+        mysql_close($link);
+    }
 }
 
 if (isset($_POST['UTILS_DB'])) {
