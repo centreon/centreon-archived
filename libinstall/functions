@@ -1518,6 +1518,7 @@ function createConfFile()
 \$conf_centreon['monitoring_binary'] = "$MONITORINGENGINE_BINARY";
 \$conf_centreon['monitoring_varlog'] = "$MONITORINGENGINE_LOG";
 \$conf_centreon['plugin_dir'] = "$PLUGIN_DIR";
+\$conf_centreon['centreon_engine_connectors'] = "$CENTREON_ENGINE_CONNECTORS";
 
 __EOT__
 
