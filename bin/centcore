@@ -218,10 +218,17 @@ sub GetAllNagiosServerPerfData(){
 sub getBrokerStats($) {
     my ($poller_id) = @_;
     my $port = "";
-    my $statPipe = "/tmp/broker-stats.dat";
-    my $destFile = '$VARLIB/broker-stats/';
+    my $statPipe = "/tmp/.centreon-broker-stats.dat";
+    my $destFile = $VARLIB."/broker-stats";
     my $server_info;
-    
+
+    # Check Cache directory
+    if (!-d $destFile) {
+	writeLogFile("Create data directory for broker-stats: $destFile");
+	mkpath($destFile);
+    }
+
+    # Check MySQL Configuration 
     CheckMySQLConnexion();
 
     my $sth2 = $con->prepare("SELECT cbi.config_value FROM cfg_centreonbroker_info as cbi, cfg_centreonbroker as cb WHERE cb.config_id = cbi.config_id AND cbi.config_group = 'stats' AND cbi.config_key = 'fifo' AND cb.ns_nagios_server = '".$poller_id."'");
@@ -230,29 +237,24 @@ sub getBrokerStats($) {
         return ;
     }
     while (my $data = $sth2->fetchrow_hashref()) {
-	
+
+	# Get poller Configuration
 	$server_info = getServerConfig($poller_id);
 	$port = checkSSHPort($server_info->{'ssh_port'});
-	
+
 	# Copy the stat file into a buffer
-	my $cmd = "$ssh -q ".$server_info->{'ns_ip_address'}." -p $port 'cat \"".$data->{'config_value'}."\" >> $statPipe'\n";
-	my $stdout = `$cmd`;
+	my $stdout = `$ssh -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
 	if (defined($stdout) && $stdout){
 	    writeLogFile("Result : $stdout\n");
 	}
 
-	if (!-d $destFile) {
-	    mkpath($destFile);
-	}
-	
 	# Get the stats file
-	$stdout = `$scp -P $port ".$server_info->{'ns_ip_address'}.":$statPipe ".$destFile."broker-stats-".$poller_id.".dat 2>> /dev/null`;
+	$stdout = `$scp -P $port $server_info->{'ns_ip_address'}:$statPipe $destFile/broker-stats-$poller_id.dat >> /dev/null`;
         if (defined($stdout) && $stdout){
             writeLogFile("Result : $stdout\n");
         }
-
     }
-    $con->disconnect();
+    return;
 }
 
 # -------------------
