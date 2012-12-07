@@ -43,7 +43,7 @@ use strict;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
-use vars qw($cmdFile $etc $TIMEOUT $LOG $CENTREON_USER @OIDTable);
+use vars qw($cmdFile $etc $TIMEOUT $LOG $LOGDIR $CENTREON_USER @OIDTable);
 use vars qw($instance_mode);
 
 $CENTREON_USER = '@CENTREON_USER@';
@@ -69,18 +69,31 @@ $TIMEOUT = 10;
 
 # Define Log File
 $LOG = "@CENTREON_VARLOG@/centTrapHandler.log";
+$LOGDIR = "@CENTREON_VARLOG@";
 
 # Configure Debug status
 $debug = 0;
 
 ###############################
 # require config file
-require $etc."/conf.pm";
+if (-e $etc."/conf.pm") {
+    require $etc."/conf.pm";
+} else {
+    # Default configuration
+    $mysql_host = "localhost";
+    $mysql_user = "centreon_user";
+    $mysql_passwd = 'centreon_passwd';
+    $mysql_database_oreon = "centreon";
+    $mysql_database_ods = "centreon_storage";
+    $instance_mode = "central";
+}
 
-###############################
-# Check instance mode
-if ($instance_mode nq "central" && $instance_mode eq "poller") {
-	myDie("Don't know server instance type: $instance_mode");
+####################################
+## GenerateError
+#
+sub myDie($) {
+    logit($_[0], "EE");
+    exit(1);
 }
 
 ###############################
@@ -119,7 +132,7 @@ sub send_command {
 #
 sub get_hostinfos($$$) {
     my @host;
-
+    
     my $sth = $_[0]->prepare("SELECT host_name FROM host WHERE host_address='$_[1]' OR host_address='$_[2]'");
     $sth->execute();
     while (my $temp = $sth->fetchrow_array()) {
@@ -174,7 +187,7 @@ sub getServicesIncludeTemplate($$$$) {
     my ($dbh, $sth_st, $host_id, $trap_id) = @_;
     my @service;
     $sth_st->execute();
-    
+
     while (my @temp = $sth_st->fetchrow_array()) {
 	my $tr_query = "SELECT `traps_id` FROM `traps_service_relation` WHERE `service_id` = '".$temp[0]."' AND `traps_id` = '".$trap_id."'";
 	my $sth_st3 = $dbh->prepare($tr_query);
@@ -316,24 +329,25 @@ sub replaceMacros($) {
 sub forceCheck($$$$) {
     my ($dbh, $this_host, $this_service, $datetime) = @_;
     my $result;
+    my $submit;
 
-	if ($instance_mode eq "central") {
-		my $id = get_hostNagiosServerID($dbh, $this_host);
-		if (defined($id) && $id != 0) {
-			my $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
-			$result = send_command($submit);
-		}
-		undef($id);
-	} else {
-		 my $submit = "su -l $CENTREON_USER -c '/bin/echo \"[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
-    	$result = send_command($submit);
+    if ($instance_mode eq "central") {
+	my $id = get_hostNagiosServerID($dbh, $this_host);
+	if (defined($id) && $id != 0) {
+	    $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
+	    $result = send_command($submit);
 	}
-	
-	# Log action
-	logit("FORCE: Reschedule linked service", "II");
-	logit("FORCE: Launched command: $submit", "II") if (isset($submit));
+	undef($id);
+    } else {
+	$submit = "su -l $CENTREON_USER -c '/bin/echo \"[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
+    	$result = send_command($submit);
+    }
 
-	undef($submit);
+    # Log action
+    logit("FORCE: Reschedule linked service", "II");
+    logit("FORCE: Launched command: $submit", "II") if (isset($submit));
+
+    undef($submit);
     return $result;
 }
 
@@ -343,16 +357,17 @@ sub forceCheck($$$$) {
 sub submitResult($$$$$$$$$$) {
     my ($dbh, $this_host, $this_service, $ip, $hostname, $datetime, $status, $output, $cmdFile, $ref_macros) = @_;
     my $result;
+    my $submit;
 
     my @macros = @{$ref_macros};
 
     ##########################
     # REPLACE special Chars
     if ($htmlentities == 1) {
-		$output = decode_entities($output);
+	$output = decode_entities($output);
     } else {
-		$output =~ s/\&quot\;/\"/g;
-		$output =~ s/\&#039\;\&#039\;/"/g;
+	$output =~ s/\&quot\;/\"/g;
+	$output =~ s/\&#039\;\&#039\;/"/g;
     }
     $output =~ s/\@HOSTNAME\@/$this_host/g;
     $output =~ s/\@HOSTADDRESS\@/$ip/g;
@@ -362,21 +377,21 @@ sub submitResult($$$$$$$$$$) {
 
     # No matching rules
     if ($instance_mode eq "central") {
-	    my $id = get_hostNagiosServerID($dbh, $this_host);
-	    if (defined($id) && $id != 0) {
-			my $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
-			$result = send_command($submit);    
+	my $id = get_hostNagiosServerID($dbh, $this_host);
+	if (defined($id) && $id != 0) {
+	    $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
+	    $result = send_command($submit);    
     	}
-	    undef($id);
+	undef($id);
     } else {
-	    my $submit = "su -l $CENTREON_USER -c '/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
-	    $result = send_command($submit);
+	$submit = "su -l $CENTREON_USER -c '/bin/echo \"[$datetime] PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$output\" >> $cmdFile'";
+	$result = send_command($submit);
     }
-	
-	logit("SUBMIT: Force service status via passive check update", "II");
-	logit("SUBMIT: Launched command: $submit", "II") if (isset($submit));
-	
-	undef($submit);
+
+    logit("SUBMIT: Force service status via passive check update", "II");
+    logit("SUBMIT: Launched command: $submit", "II") if (isset($submit));
+
+    undef($submit);
     return $result;
 }
 
@@ -418,7 +433,7 @@ sub replaceOID($$) {
 	logit("REPLACE OID: $star => /\$\*/".$star."/", "DD");
 	logit("REPLACE OID: $star => /\$\+\*/".$pstar."/", "DD");
     }
-    
+
     return $str;
 }
 
@@ -451,7 +466,7 @@ sub checkMatchingRules($$$$$$$$$$) {
     my ($dbh, $trap_id, $this_host, $service_description, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
 
     my @macros = @{$ref_macros};
-    
+
     # Check matching options 
     my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
     $sth->execute();
@@ -513,7 +528,7 @@ sub checkMatchingRules($$$$$$$$$$) {
 #
 sub executeCommand($$$$$$$$$) {
     my ($traps_execution_command, $this_host, $service_description, $ip, $hostname, $arguments_line, $datetime, $status, $ref_macros) = @_;
-    
+
     my @macros = @{$ref_macros};
 
     my $x = 1;
@@ -525,7 +540,7 @@ sub executeCommand($$$$$$$$$) {
     }
 
     $traps_execution_command = replaceOID($traps_execution_command, \@macros);
-    
+
     ##########################
     # REPLACE MACROS
     if ($htmlentities == 1) {
@@ -549,7 +564,7 @@ sub executeCommand($$$$$$$$$) {
     if ($traps_execution_command) {
 	logit("EXEC: Launch specific command", "II");
 	logit("EXEC: Launched command: $traps_execution_command", "II");
-	
+
 	my $output = `$traps_execution_command`;
 	if ($?) {
 	    logit("EXEC: Execution error: $!", "EE");
@@ -580,7 +595,7 @@ sub getTrapsInfos($$$$$) {
     my $oid = shift;
     my $arguments_line = shift;
     my $allargs = shift;
-    
+
     my @macros;
 
     # Remove SNMPTT Separator
@@ -613,44 +628,44 @@ sub getTrapsInfos($$$$$) {
 	    ##########################
 	    # REPLACE ARGS	
 	    @macros = replaceMacros($allargs);
-	    
+
 	    foreach (@servicename) {
 		my $this_service = $_;
-		
+
 		if ($debug) {
 		    logit("Trap found on service \'$this_service\' for host \'$this_host\'.", "DD");
 		}
-		
+
 		my $datetime = `date +%s`;
 		chomp($datetime);
-		
+
 		##########################
 		# Replace Args
 		$traps_args = replaceArgs($traps_args, \@macros);
 		# Repalce OID
 		$traps_args = replaceOID($traps_args, \@macros);
-		
+
 		# Clean unknown OID.
 		$traps_args = cleanOIDMacros($traps_args);
-		
+
 		######################################################################
 		# Advanced matching rules
 		if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
 		    $status = checkMatchingRules($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_args, $datetime, $status, \@macros);
 		}
-		
+
 		#####################################################################
 		# Submit value to passive service
 		if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
 		    submitResult($dbh, $this_host, $this_service, $ip, $hostname, $datetime, $status, $traps_args, $cmdFile, \@macros);
 		}
-		
+
 		######################################################################
 		# Force service execution with external command
 		if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
 		    forceCheck($dbh, $this_host, $this_service, $datetime);
 		}
-		
+
 		######################################################################
 		# Execute special command
 		if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
@@ -663,12 +678,44 @@ sub getTrapsInfos($$$$$) {
     exit;
 }
 
-####################################
-## GenerateError
-#
-sub myDie($) {
-    logit($_[0], "EE");
-    exit(1);
+sub checkState() {
+    my $status = 0;
+    my $msg;
+
+    # Check Configuraion file.
+    if (!-e $etc."/conf.pm") {
+	$status = 1;
+	$msg = " - Configuration File $etc/conf.pm is not available : KO";
+    } else {
+	$msg = " - Configuration File $etc/conf.pm is available : OK";
+    }
+    print $msg . "\n";
+    logit($msg, "II");
+    
+    # Check MySQL Connexion for Centreon
+    eval{my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, 
+				{'RaiseError' => 0, 'PrintError' => 0})};
+    if ($DBI::errstr) {
+	$status = 1;
+	$msg = " - MySQL connection to Centreon database is KO\n";
+	$msg .= "     => error: ".$DBI::errstr;
+    } else {
+	$msg = " - MySQL connection to Centreon database is OK";
+    }
+    print $msg . "\n";
+    logit($msg, "II");
+    
+    # Check VARLIB Directory
+    if (!-d $LOGDIR) {
+	$status = 1;
+	$msg = " - Log directory is not ready. Please create $LOGDIR : KO";
+    } else {
+	$msg = " - Log directory is ready : OK";
+    }
+    print $msg . "\n";
+    logit($msg, "II");
+
+    exit($status);
 }
 
 #########################################################
@@ -681,16 +728,31 @@ if ($debug) {
     logit("PID: $$", "DD");
 }
 
+###############################
+# Check instance mode
+if ($instance_mode ne "central" && $instance_mode ne "poller") {
+    myDie("Don't know server instance type: $instance_mode");
+}
+
+###############################
+# Manage Options
 if (scalar(@ARGV)) {
-    my ($ip, $hostname, $oid, $arguments, $allArgs) = @ARGV;
-    if ($debug) {
-	logit("Param: HOSTNAME -> $hostname", "DD");
-	logit("Param: IP -> $ip", "DD");
-	logit("Param: OID -> $oid", "DD");
-	logit("Param: Output -> $arguments", "DD");
-	logit("Param: ARGS -> $allArgs", "DD");
+    my $argNumber = $#ARGV+1;
+
+    if ($argNumber == 1) {
+	logit("Mode verbose", "II");
+	checkState();
+    } elsif ($argNumber == 5) {
+	my ($ip, $hostname, $oid, $arguments, $allArgs) = @ARGV;
+	if ($debug) {
+	    logit("Param: HOSTNAME -> $hostname", "DD");
+	    logit("Param: IP -> $ip", "DD");
+	    logit("Param: OID -> $oid", "DD");
+	    logit("Param: Output -> $arguments", "DD");
+	    logit("Param: ARGS -> $allArgs", "DD");
+	}
+	getTrapsInfos($ip, $hostname, $oid, $arguments, $allArgs);
     }
-    getTrapsInfos($ip, $hostname, $oid, $arguments, $allArgs);
 } else {
     print "Error: No parameters received.";
     logit("Error: No parameters received.", "EE");
