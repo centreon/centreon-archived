@@ -158,10 +158,12 @@ function importFile($file) {
  * @param string $msg | error message
  */
 function exitProcess($id, $result, $msg) {
+    $msg = str_replace('"', '\"', $msg);
+    $msg = str_replace('\\', '\\\\', $msg);
     echo '{
         "id" : "'.$id.'",
         "result" : "'.$result.'",
-        "msg" : "'.addslashes($msg).'"
+        "msg" : "'.$msg.'"
         }';
     @mysql_close();
     exit;
@@ -177,6 +179,8 @@ function exitProcess($id, $result, $msg) {
  * @return void
  */
 function exitUpgradeProcess($result, $current, $next, $msg) {
+    $msg = str_replace('"', '\"', $msg);
+    $msg = str_replace('\\', '\\\\', $msg);
     echo '{
         "result" : "'.$result.'",
         "current" : "'.$current.'",
