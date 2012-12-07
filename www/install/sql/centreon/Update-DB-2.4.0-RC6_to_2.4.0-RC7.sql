@@ -57,6 +57,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (11, 41, 0, 3),
 (25, 41, 0, 6);
 
+ALTER TABLE `connector` MODIFY `command_line` VARCHAR(512) CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 ALTER TABLE `cfg_centreonbroker` ADD COLUMN `event_queue_max_size` INT (11) DEFAULT 50000 AFTER `ns_nagios_server`;
 

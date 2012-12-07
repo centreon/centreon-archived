@@ -779,7 +779,7 @@ CREATE TABLE `connector` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `description` varchar(255) DEFAULT NULL,
-  `command_line` text,
+  `command_line` varchar(512) NOT NULL,
   `enabled` int(1) unsigned NOT NULL DEFAULT '1',
   `created` int(10) unsigned NOT NULL,
   `modified` int(10) unsigned NOT NULL,
