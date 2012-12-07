@@ -88,7 +88,7 @@ check_result $? "$(gettext "Change right on") centreon.conf"
 
 log "INFO" "$(gettext "Install temporary directory for plugins") : $CENTPLUGINS_TMP"
 $INSTALL_DIR/cinstall $cinstall_opts \
-	-u $CENTREON_USER -g $CENTREON_GROUP -d 755 -v \
+	-u $CENTREON_USER -g $CENTREON_GROUP -d 775 -v \
 	$CENTPLUGINS_TMP >> $LOG_FILE 2>&1
 echo_success "$(gettext "CentPlugins is installed")"
 

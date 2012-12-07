@@ -232,6 +232,7 @@ if [ -z "$BROKER_USER" ]; then
 else
 	get_primary_group "$BROKER_USER" "BROKER_GROUP"
 	add_group "$WEB_USER" "$BROKER_GROUP"
+	add_group "$MONITORINGENGINE_USER" "$BROKER_GROUP"
 	add_group "$BROKER_USER" "$CENTREON_GROUP"
 fi
 if [ "$MONITORINGENGINE_ETC" != "$BROKER_ETC" ]; then
