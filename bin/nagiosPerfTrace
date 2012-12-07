@@ -467,6 +467,6 @@ if (!-e $global_prefix){
 }
 
 get_poller();
-clean_exit("Successfully operated.");
+clean_exit("Successfully operated.\n");
 
 __END__
