@@ -161,7 +161,7 @@ function exitProcess($id, $result, $msg) {
     echo '{
         "id" : "'.$id.'",
         "result" : "'.$result.'",
-        "msg" : "'.$msg.'"
+        "msg" : "'.addslashes($msg).'"
         }';
     @mysql_close();
     exit;

@@ -123,7 +123,7 @@ $template->display('content.tpl');
             } else {
                 jQuery("#previous").show();
                 jQuery("#refresh").show();
-                jQuery('#'+data['id']).html(data['msg']);
+                jQuery('#'+data['id']).html('<span style="color:#F8C706;">'+data['msg']+'</span>');
             }
        }); 
     }
