@@ -683,7 +683,7 @@
 				<td>
 					<table class="tactical_light_table">
 						<tr style="font-weight:bold;" class="tactical_light_header">
-                            <td align='center'><xsl:value-of select='//main/str_criticality'/></td>
+                            <td align='center' style="width:20px;"><xsl:value-of select='//main/str_criticality'/></td>
 							<td align='center'><xsl:value-of select='//main/str_hostname'/></td>
 							<td align='center' colspan="2"><xsl:value-of select='//main/str_servicename'/></td>
 							<td align='center'><xsl:value-of select='//main/str_status'/></td>
@@ -703,6 +703,8 @@
                                         <xsl:attribute name='src'>
                                             <xsl:value-of select='servicecriticality'/>
                                         </xsl:attribute>
+                                        <xsl:attribute name='width'>16</xsl:attribute>
+                                        <xsl:attribute name='height'>16</xsl:attribute>
                                     </xsl:element>
 								</xsl:element>
 								<td class="ListColLeft" style="white-space:nowrap;">
