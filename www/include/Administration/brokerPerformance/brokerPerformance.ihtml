@@ -6,7 +6,7 @@
 }
 
 .broker_stats .informations {
-	display: none;
+	display: block;
 }
 
 .broker_stats {
