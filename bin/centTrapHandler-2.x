@@ -43,7 +43,7 @@ use strict;
 use DBI;
 
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
-use vars qw($cmdFile $etc $TIMEOUT $LOG $LOGDIR $CENTREON_USER @OIDTable);
+use vars qw($cmdFile $etc $TIMEOUT $LOG $LOGDIR $LIBDIR $CENTREON_USER @OIDTable);
 use vars qw($instance_mode);
 
 $CENTREON_USER = '@CENTREON_USER@';
