@@ -15,116 +15,66 @@ repository.
 
 On 32-bits::
 
-  # wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
-  # wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
+  $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.i386.rpm
+  $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
 On 64-bits::
 
-  # wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
-  # wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
+  $ wget http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.1-1.el5.rf.x86_64.rpm
+  $ wget http://dag.wieers.com/rpm/packages/RPM-GPG-KEY.dag.txt
 
-Use your favourite editor to open "RPM-GPG-KEY.dag.txt", and remove
+Use your favourite editor to open *RPM-GPG-KEY.dag.txt*, and remove
 the first few lines. The file should start with::
 
   "-----BEGIN PGP PUBLIC KEY BLOCK-----"
 
 Then, execute the following::
 
-  # rpm --import RPM-GPG-KEY.dag.txt
-  # rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
+  $ rpm --import RPM-GPG-KEY.dag.txt
+  $ rpm -Uvh rpmforge-release-0.5.1-1.el5.rf.i386.rpm
 
-============== =============================================================================
-Program groups Commands
-============== =============================================================================
-Updates        ::
+Now, you're ready to install the prerequisites::
 
-                 yum update
-                 yum upgrade
+  $ yum update
+  $ yum upgrade
+  $ yum install httpd gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD \
+      openssl-devel perl-DBD-MySQL mysql-server mysql-devel php php-mysql php-gd php-ldap php-xml php-mbstring \
+      perl-Config-IniFiles perl-DBI perl-DBD-MySQL rrdtool perl-rrdtool perl-Crypt-DES perl-Digest-SHA1 \
+      perl-Digest-HMAC net-snmp-utils perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs php-snmp \
+      dmidecode lm_sensors perl-Net-SNMP net-snmp-perl fping cpp gcc gcc-c++ libstdc++ glib2-devel \
+      php-pear
 
-Apache2        ::
+Additionnal commands are required to configure the environment properly::
 
-                 yum install httpd 
-                 usermod -U apache
+  $ usermod -U apache
+  $ pear channel-update pear.php.net
 
-GD modules     ::
+If you can't access the Internet directly but throught a proxy, run the following::
 
-                 yum install gd fontconfig-devel libjpeg-devel libpng-devel gd-devel perl-GD
+  $ pear config-set http_proxy http://my_proxy.com:port
 
-MySQL          ::
+And finally::
 
-                 yum install openssl-devel perl-DBD-MySQL mysql-server mysql-devel
-
-PHP            ::
-
-                 yum install php php-mysql php-gd php-ldap php-xml php-mbstring
-
-Perl modules   ::
-
-                 yum install perl-Config-IniFiles perl-DBI perl-DBD-MySQL
-
-RRDTools       ::
-
-                 yum install rrdtool perl-rrdtool
-
-SNMP           ::
-
-                 yum install perl-Crypt-DES perl-Digest-SHA1 perl-Digest-HMAC net-snmp-utils
-                 yum install perl-Socket6 perl-IO-Socket-INET6 net-snmp net-snmp-libs 
-                 yum install php-snmp dmidecode lm_sensors perl-Net-SNMP net-snmp-perl
-
-Misc           ::
-
-                 yum install fping cpp gcc gcc-c++ libstdc++ glib2-devel
-
-PEAR           Installation::
-
-                 yum install php-pear
-
-               Configuration::
-
-                 pear channel-update pear.php.net
-
-               Using a proxy with PEAR::
-
-                 pear config-set http_proxy http://my_proxy.com:port
-
-               Update Pear package::
-
-                 pear upgrade-all
-
-============== =============================================================================
+  $ pear upgrade-all 
 
 Debian / Ubuntu
 ===============
 
-================================ ==================================================================================================================
-Program groups                   Command
-================================ ==================================================================================================================
-System base                      ::
+Install the following prerequisites::
 
-                                   apt-get install sudo tofrodos bsd-mailx lsb-release
+  $ apt-get install sudo tofrodos bsd-mailx lsb-release mysql-server libmysqlclient15-dev \
+      apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd \
+      rrdtool librrds-perl libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl \
+      libdigest-sha1-perl libgd-gd2-perl snmp snmpd libnet-snmp-perl libsnmp-perl
 
-Database server                  ::
+To finish, you must install SNMP mibs. Due to a licensing issue, those
+mibs are not available by default on Debian. To add them, first edit
+the */etc/apt/sources.list* file and add the ``non-free`` category.
 
-                                   apt-get install mysql-server libmysqlclient15-dev
+Then, run the following commands::
 
-WebServer and PHP 5 installation ::
-
-                                   apt-get install apache2 apache2-mpm-prefork php5 php5-mysql php-pear php5-ldap php5-snmp php5-gd
-
-RRDTools                         ::
-
-                                   apt-get install rrdtool librrds-perl
-
-Perl modules                     ::
-
-                                   apt-get install libconfig-inifiles-perl libcrypt-des-perl libdigest-hmac-perl libdigest-sha1-perl libgd-gd2-perl
-
-SNMP                             ::
-
-                                   apt-get install snmp snmpd libnet-snmp-perl libsnmp-perl
-
-================================ ==================================================================================================================
+  $ apt-get update
+  $ apt-get install snmp-mibs-installer
 
 Suse
 ====
@@ -132,44 +82,13 @@ Suse
 Packages
 --------
 
-=================== ==========================================================================
-Program groups      Command
-=================== ==========================================================================
-Compilers           ::
+Install the following prerequisites::
 
-                     yast -i gcc gcc-c++ make automake
-
-Web server and PHP5 ::
-
-                      yast -i apache2
-                      yast -i php5 php5-mysql apache2-mod_php5 php5-pear php5-ldap php5-snmp
-                      yast -i php5-gd php5-soap php5-posix php5-gettext php5-mbstring
-
-MySQL               ::
-
-                      yast -i mysql libmysqlclient-devel perl-DBD-mysql mysql-community-server
-
-RRDTools            ::
-
-                      yast -i rrdtool
-
-Perl                ::
-
-                      yast -i perl-Config-IniFiles
-
-SNMP                ::
-
-                      yast -i net-snmp perl-Net-SNMP perl-SNMP
-
-GD modules          ::
-
-                      yast -i gd libjpeg-devel libpng-devel fontconfig-devel freetype2-devel
-
-Misc                ::
-
-                      yast -i sudo mailx fping iputils dos2unix cron dejavu
-                      
-=================== ==========================================================================
+  $ yast -i gcc gcc-c++ make automake apache2 php5 php5-mysql apache2-mod_php5 php5-pear \
+      php5-ldap php5-snmp php5-gd php5-soap php5-posix php5-gettext php5-mbstring mysql \
+      libmysqlclient-devel perl-DBD-mysql mysql-community-server rrdtool perl-Config-IniFiles \
+      net-snmp perl-Net-SNMP perl-SNMP gd libjpeg-devel libpng-devel fontconfig-devel \
+      freetype2-devel sudo mailx fping iputils dos2unix cron dejavu
 
 Configuring MIME types
 ----------------------
@@ -198,6 +117,10 @@ You may choose between Nagios and Centreon Engine as scheduling engine.
 
 Centreon Engine
 ===============
+
+First, install Nagios plugins::
+
+  $ apt-get install nagios-plugins
 
 .. note::
 
