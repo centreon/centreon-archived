@@ -65,4 +65,55 @@ UPDATE `cb_field` SET `displayname` = 'Replication enabled', `description` = 'Wh
 
 UPDATE `cb_field` SET `description` = 'Ranges from 0 (no compression) to 9 (best compression). Default is -1 (zlib compression)' WHERE `fieldname` = 'compression_level';
 
+
+-- update case on cb_type
+
+UPDATE `cb_type` SET `type_name` = 'Local server socket' WHERE `type_name` = 'Local Server Socket';
+
+UPDATE `cb_type` SET `type_name` = 'RRD file generator' WHERE `type_name` = 'RRD File Generator';
+
+UPDATE `cb_type` SET `type_name` = 'Perfdata generator (Centreon Storage)' WHERE `type_name` = 'Perfdata Generator (Centreon Storage)';
+
+UPDATE `cb_type` SET `type_name` = 'Local client socket' WHERE `type_name` = 'Local Client Socket';
+
+UPDATE `cb_type` SET `type_name` = 'Broker SQL database' WHERE `type_name` = 'Broker SQL Database';
+
+
+-- update case on cb_field.displayname
+
+UPDATE `cb_field` SET `displayname` = 'Serialization protocol' WHERE `displayname` = 'Serialization Protocol';
+
+UPDATE `cb_field` SET `displayname` = 'RRD file directory for metrics' WHERE `displayname` = 'Metrics RRD Directory';
+
+UPDATE `cb_field` SET `displayname` = 'RRD file directory for statuses' WHERE `displayname` = 'Status RRD Directory';
+
+UPDATE `cb_field` SET `displayname` = 'Interval length' WHERE `displayname` = 'Interval Length';
+
+UPDATE `cb_field` SET `displayname` = 'RRD length' WHERE `displayname` = 'RRD Length';
+
+UPDATE `cb_field` SET `displayname` = 'DB port' WHERE `displayname` = 'DB Port';
+
+UPDATE `cb_field` SET `displayname` = 'Failover name' WHERE `displayname` = 'Failover Name';
+
+UPDATE `cb_field` SET `displayname` = 'Correlation file' WHERE `displayname` = 'Correlation File';
+
+UPDATE `cb_field` SET `displayname` = 'Retention file' WHERE `displayname` = 'Retention File';
+
+UPDATE `cb_field` SET `displayname` = 'Retry interval' WHERE `displayname` = 'Retry Interval';
+
+UPDATE `cb_field` SET `displayname` = 'Buffering timeout' WHERE `displayname` = 'Buffering Timeout';
+
+-- update case on cb_field.description
+
+UPDATE `cb_field` SET `description` = 'Database user.' WHERE `description` = 'User for connect to database';
+
+UPDATE `cb_field` SET `description` = 'Password of database user.' WHERE `description` = 'Used password for connect to the database.';
+
+UPDATE `cb_field` SET `description` = 'RRD file directory, for example /var/lib/centreon/metrics' WHERE `description` = 'Metrics RRD Directory, for example /var/lib/centreon/metrics';
+
+UPDATE `cb_field` SET `description` = 'RRD file directory, for example /var/lib/centreon/status' WHERE `description` = 'Status RRD Directory, for example /var/lib/centreon/status';
+
+UPDATE `cb_field` SET `description` = 'Interval length in seconds.' WHERE `description` = 'Interval Length in seconds.';
+
+
 UPDATE `informations` SET `value` = '2.4.0-RC7' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC6' LIMIT 1;

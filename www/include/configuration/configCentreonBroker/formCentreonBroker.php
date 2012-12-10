@@ -81,12 +81,12 @@ $tpl = initSmartyTpl($path, $tpl);
 /*
  * TAB 1 - General informations
  */
-$tpl->assign('centreonbroker_configuration', _("Centreon-Broker Informations"));
-$form->addElement('header', 'information', _("Centreon-Broker configuration"));
+$tpl->assign('centreonbroker_configuration', _("Centreon Broker information"));
+$form->addElement('header', 'information', _("Centreon Broker configuration"));
 $form->addElement('text', 'name', _("Name"), $attrsText);
 $form->addElement('text', 'filename', _("Config file name"), $attrsText);
 $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
-    $form->addElement('text', 'event_queue_max_size', _('Event Queue Max Size'), $attrsText);
+    $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
     
 $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
