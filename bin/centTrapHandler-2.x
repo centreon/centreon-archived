@@ -70,6 +70,7 @@ $TIMEOUT = 10;
 # Define Log File
 $LOG = "@CENTREON_VARLOG@/centTrapHandler.log";
 $LOGDIR = "@CENTREON_VARLOG@";
+$LIBDIR = "@CENTREON_VARLIB@";
 
 # Configure Debug status
 $debug = 0;
@@ -86,6 +87,10 @@ if (-e $etc."/conf.pm") {
     $mysql_database_oreon = "centreon";
     $mysql_database_ods = "centreon_storage";
     $instance_mode = "central";
+}
+
+if (!defined($cmdFile)) {
+	$cmdFile = $LIBDIR."/centcore.cmd";
 }
 
 ####################################
@@ -389,7 +394,7 @@ sub submitResult($$$$$$$$$$) {
     }
 
     logit("SUBMIT: Force service status via passive check update", "II");
-    logit("SUBMIT: Launched command: $submit", "II") if (isset($submit));
+    logit("SUBMIT: Launched command: $submit", "II") if (defined($submit));
 
     undef($submit);
     return $result;
