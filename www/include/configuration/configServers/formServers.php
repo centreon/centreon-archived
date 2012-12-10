@@ -173,7 +173,8 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     "ssh_port"  =>  '22',
     "ssh_private_key"  =>  '~/.ssh/rsa.id',
     "nagios_perfdata"  => $me["nagios_perfdata"],
-    "centreonbroker_cfg_path" => "/etc/centreon/broker",
+    "centreonbroker_cfg_path" => "/etc/centreon-broker",
+    "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
     "init_script_snmptt" => isset($centreon->optGen["init_script_snmptt"]) ? $centreon->optGen["init_script_snmptt"] : ''));
 } else {
     if (isset($cfg_server)) {
