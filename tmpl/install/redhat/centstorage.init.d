@@ -49,6 +49,7 @@ start() {
 	else
 		daemon --user $user ''$binary' "'$config_file'" > /dev/null 2>&1 &'
 	fi
+	sleep 2
 	pid=$(pidofproc $binary)
 	RETVAL=$?
 	echo $pid > $pidfile
