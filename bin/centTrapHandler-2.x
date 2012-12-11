@@ -58,6 +58,10 @@ if ($@) {
 ###############################
 # Init 
 
+# Paths
+$LOGDIR = "@CENTREON_VARLOG@";
+$LIBDIR = "@CENTREON_VARLIB@";
+
 # Configuration file
 $etc = "@CENTREON_ETC@";
 
@@ -68,9 +72,7 @@ $instance_mode = "central";
 $TIMEOUT = 10;
 
 # Define Log File
-$LOG = "@CENTREON_VARLOG@/centTrapHandler.log";
-$LOGDIR = "@CENTREON_VARLOG@";
-$LIBDIR = "@CENTREON_VARLIB@";
+$LOG = "$LOGDIR/centTrapHandler.log";
 
 # Configure Debug status
 $debug = 0;
