@@ -144,11 +144,13 @@
 			(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
 		if (!$is_admin) {
 			$rq2 .=	" AND h.name = acl.host_name AND s.description = acl.service_description ";
+            $rq2 .=	" AND acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " ;
 		}
 		$rq2 .= " AND c.expires = '0' ";
                 $rq2 .= " AND (SELECT count(internal_id) FROM comments c2 WHERE c.internal_id = c2.internal_id AND c2.deletion_time <> 0) = 0 ";
                 $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 
+                
 		$DBRESULT = $pearDBO->query($rq2);
 		$rows = $pearDBO->numberRows();
 		for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
