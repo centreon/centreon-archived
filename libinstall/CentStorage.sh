@@ -240,6 +240,24 @@ check_result $?  "$(gettext "Install logAnalyser")"
 
 #echo_success "$(gettext "Set logAnalyser properties")" "$ok"
 
+## logAnalyser-cbroker
+log "INFO" "$(gettext "Change macros for logAnalyser-cbroker")"
+${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+        -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	$TMP_DIR/src/bin/logAnalyser-cbroker > $TMP_DIR/work/bin/logAnalyser-cbroker
+check_result $? "$(gettext "Change macros for logAnalyser-cbroker")"
+
+cp $TMP_DIR/work/bin/logAnalyser-cbroker $TMP_DIR/final/bin/logAnalyser-cbroker >> $LOG_FILE 2>&1
+log "INFO" "$(gettext "Install logAnalyser-cbroker")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
+	$TMP_DIR/final/bin/logAnalyser-cbroker \
+	$CENTSTORAGE_BINDIR/logAnalyser-cbroker >> $LOG_FILE 2>&1
+check_result $?  "$(gettext "Install logAnalyser-cbroker")"
+
+#echo_success "$(gettext "Set logAnalyser-cbroker properties")" "$ok"
+
 ## nagiosPerfTrace
 log "INFO" "$(gettext "Change macros for nagiosPerfTrace")"
 ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
