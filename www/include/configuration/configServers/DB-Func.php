@@ -114,6 +114,7 @@
 
 	function insertServerInDB ()	{
 		$id = insertServer();
+		addUserRessource($id);
 		return ($id);
 	}
 
@@ -144,6 +145,29 @@
 		$ndomod_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 		return ($ndomod_id["MAX(id)"]);
+	}
+
+	function addUserRessource($serverId) {
+	    global $pearDB;
+	    $queryInsert = "INSERT INTO cfg_resource_instance_relations
+	    	(resource_id, instance_id)
+	    	VALUES (%s, %s)";
+	    $queryGetResources = "SELECT resource_id, resource_name
+	    	FROM cfg_resource
+	    	ORDER BY resource_id";
+	    $res = $pearDB->query($queryGetResources);
+	    if (PEAR::isError($res)) {
+	        return false;
+	    }
+	    $isInsert = array();
+	    while ($row = $res->fetchRow()) {
+	        if (!in_array($row['resource_name'], $isInsert)) {
+	            $isInsert[] = $row['resource_name'];
+	            $query = sprintf($queryInsert, $row['resource_id'], $serverId);
+	            $pearDB->query($query);
+	        }
+	    }
+	    return true;
 	}
 
 	function updateServer($id = null)	{
@@ -180,10 +204,10 @@
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT = $pearDB->query($rq);
 	}
-	
+
 	/**
-	 * 
-	 * Check if a service or an host has been 
+	 *
+	 * Check if a service or an host has been
 	 * changed for a specific poller.
 	 * @param unknown_type $poller_id
 	 * @param unknown_type $last_restart
@@ -191,25 +215,25 @@
 	 */
 	function checkChangeState($poller_id, $last_restart) {
 		global $pearDB, $pearDBO, $conf_centreon;
-		
+
 		if (!isset($last_restart) || $last_restart == "") {
 			return 0;
 		}
-	
-		$request = "SELECT * 
-						FROM log_action 
-						WHERE 
-							action_log_date > $last_restart AND 
-							((object_type = 'host' AND 
+
+		$request = "SELECT *
+						FROM log_action
+						WHERE
+							action_log_date > $last_restart AND
+							((object_type = 'host' AND
 							object_id IN (
-								SELECT host_host_id 
-								FROM ".$conf_centreon['db'].".ns_host_relation 
+								SELECT host_host_id
+								FROM ".$conf_centreon['db'].".ns_host_relation
 								WHERE nagios_server_id = '$poller_id'
-							)) OR 
-							(object_type = 'service') AND 
+							)) OR
+							(object_type = 'service') AND
 							object_id IN (
-								SELECT service_service_id 
-								FROM ".$conf_centreon['db'].".ns_host_relation nhr, ".$conf_centreon['db'].".host_service_relation hsr 
+								SELECT service_service_id
+								FROM ".$conf_centreon['db'].".ns_host_relation nhr, ".$conf_centreon['db'].".host_service_relation hsr
 								WHERE nagios_server_id = '$poller_id' AND hsr.host_host_id = nhr.host_host_id
 						))";
 		$DBRESULT = $pearDBO->query($request);
