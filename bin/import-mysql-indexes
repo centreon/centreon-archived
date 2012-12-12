@@ -1,0 +1,330 @@
+#!/usr/bin/env php
+<?php
+$help = "NAME
+    import-mysql-indexes - MySQL indexes import tool
+
+DESCRIPTION
+    This script ensures the existence of all indexes exported with export-mysql-indexes
+
+SYNOPSIS
+    import-mysql-indexes hostname dbname username {password | ''} < dbnameIndexes.json
+
+IMPORTANT
+    The process usually takes several minutes BUT if your database is big the
+    process may take up to 2 hours in case no index exists. 
+
+AUTHOR
+    Merethis
+";
+
+if ($argc !== 5) {
+    echo $help;
+    exit(1);
+}
+
+/* Naming parameters */
+$hostname = $argv[1];
+$dbname = $argv[2];
+$username = $argv[3];
+$password = $argv[4];
+
+error_reporting(-1);
+
+try {
+    $data = @file_get_contents("php://stdin");
+    if (!$data) {
+        echo "Cannot read stdin\n";
+        exit(1);
+    }
+
+    $indexes = json_decode($data, true);
+
+    if (!$indexes) {
+        echo "Something went wrong while reading stdin [bad JSON file]\n";
+        exit(1);
+    }
+    if (!is_array($indexes)) {
+        echo "Huston, we have a problem! JSON file contains no array\n";
+        exit(1);
+    }
+
+    $conn = new PDO('mysql:host=' . $hostname . ';dbname=' . $dbname, $username, $password);
+    /* Class defined at the end of this file */
+    $importer = new MysqlIndexImporter($conn, $indexes, $dbname);
+    $importer->import();
+    $exitCode = 0;
+    foreach ($importer->getLogs() as $log) {
+        if (!$log['success']) {
+            $exitCode = 1;
+        }
+        echo '[' . date('Y-m-d H:i:s', $log['time']) . ']' . ($log['success'] ? ' OK ' : ' NOK ') . $log['message'];
+    }
+} catch (Exception $e) {
+    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+    exit(1);
+}
+
+/* Returning exit code */
+exit($exitCode);
+
+/**
+ * Used to import a formatted array containing database indexes for multiple
+ * tables into a MySQL database
+ */
+class MysqlIndexImporter
+{
+    /**
+     * Database connection
+     * @var PDO
+     */
+    public $connection;
+
+    /**
+     * An array containing database indexes
+     * Format:
+     *  array(
+     *       array(
+     *          'tableName' => string $tableName,
+     *          'indexName' => string $indexName,
+     *          'unique'    => bool $unique,
+     *          'columns'   => array(
+     *              'columnName' => int $length,
+     *              ...
+     *          )
+     *      ),
+     *      ...
+     *  )
+     * @var array 
+     */
+    public $indexes = array();
+
+    /**
+     * Database name used for select statements in information_schema MySQL database
+     * @var string
+     */
+    public $dbname;
+
+    /**
+     * Array of logs
+     * Format:
+     *  array(
+     *      array(
+     *          'success' => bool $success
+     *          'time' => int $timestamp,
+     *          'message' => string $message
+     *      ),
+     *      ...
+     *  )
+     * @var array
+     */
+    protected $logs = array();
+
+    /**
+     * One instance per database
+     * @param PDO $connection Database connection
+     * @param array $indexes Contains list of database indexes
+     * @param string $dbname Database name
+     * @throws InvalidArgumentException In case arguments incompatible
+     */
+    public function __construct(PDO $connection, array $indexes, $dbname)
+    {
+        if (!is_string($dbname)) {
+            throw new InvalidArgumentException('Database name must be string');
+        }
+        $this->connection = $connection;
+        $this->indexes = $indexes;
+        $this->dbname = $dbname;
+    }
+
+    /**
+     * Ensures that all provided indexes exist in the database
+     */
+    public function import()
+    {
+        /* Looping on all indexes in the source array */
+        foreach ($this->indexes as $index) {
+            /* Retrieving all index columns in destination database */
+            $stmt = $this->connection->prepare("SELECT
+                                                    *
+                                                FROM
+                                                    information_schema.STATISTICS
+                                                WHERE
+                                                    TABLE_SCHEMA = ? AND
+                                                    TABLE_NAME = ? AND
+                                                    INDEX_NAME = ?
+                                                ORDER BY
+                                                    SEQ_IN_INDEX ASC");
+            if (!$stmt) {
+                $this->logs[] = array(
+                    'success' => false,
+                    'time' => time(),
+                    'message' => "Cannot prepare statement to select indexes from table '{$index['tableName']}'"
+                );
+                continue;
+            }
+
+            if (!$stmt->execute(array($this->dbname, $index['tableName'], $index['indexName']))) {
+                $this->logs[] = array(
+                    'success' => false,
+                    'time' => time(),
+                    'message' => "Cannot execute select statement for indexes from table '{$index['tableName']}'"
+                );
+                continue;
+            }
+
+            $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            /* If no column then index does not exist */
+            if (!count($columns)) {
+                $this->createIndexFromStructure($index);
+                continue;
+            }
+            /* If no column count differs then index is different */
+            if (count($index['columns']) !== count($columns)) {
+                $this->recreateIndexFromStructure($index);
+                continue;
+            }
+
+            $i = 0;
+            /**
+             * Looping through all collumns of the index to search if there
+             * are any differences
+             */
+            foreach ($index['columns']as $columnName => $columnLength) {
+                /**
+                 * This is normally done once per index but since mysql stores 
+                 * indexes in a redundant way just to be sure we check the 
+                 * uniqueness for every column.
+                 */
+                if ($index['unique'] xor !$columns[$i]['NON_UNIQUE']) {
+                    $this->recreateIndexFromStructure($index);
+                    break;
+                }
+                /* In case column name differs */
+                if ($columnName !== $columns[$i]['COLUMN_NAME']) {
+                    $this->recreateIndexFromStructure($index);
+                    break;
+                }
+                /* In case column length differs */
+                if ($columnLength !== $columns[$i]['SUB_PART']) {
+                    $this->recreateIndexFromStructure($index);
+                    break;
+                }
+                ++$i;
+            }
+        }
+    }
+
+    /**
+     * Drops an index from the database
+     * @param array $index Only "indexName' key used
+     */
+    public function dropIndex($index)
+    {
+        if ($index['indexName'] === 'PRIMARY') {
+            $query = "ALTER TABLE `{$index['tableName']}` DROP PRIMARY KEY";
+        } else {
+            $query = "ALTER TABLE `{$index['tableName']}` DROP KEY `{$index['indexName']}`";
+        }
+
+        $result = $this->connection->exec($query);
+
+        if ($result === false) {
+            $error = $this->connection->errorInfo();
+            $this->logs[] = array(
+                'success' => false,
+                'time' => time(),
+                'message' => "An error occured while trying to drop index '{$index['indexName']}' for table '{$index['tableName']}: " . $error[2]
+            );
+            return false;
+        }
+        $this->logs[] = array(
+            'success' => true,
+            'time' => time(),
+            'message' => "Successfully dropped index '{$index['indexName']}' for table '{$index['tableName']}'; $result rows affected\n"
+        );
+        return true;
+    }
+
+    /**
+     * Creates an index in the database
+     * @param array $index
+     */
+    public function createIndexFromStructure($index)
+    {
+        $keyPart = self::getIndexTypeSqlPart($index);
+        /**
+         * Building columns part
+         */
+        $columnParts = array();
+        foreach ($index['columns'] as $columnName => $columnLength) {
+            if ($columnLength) {
+                $length = ' (' . (int) $columnLength . ')';
+            } else {
+                $length = '';
+            }
+            $columnParts[] = '`' . $columnName . '`' . $length;
+        }
+        $columnPart = '(' . implode(', ', $columnParts) . ')';
+
+        $result = $this->connection->exec("ALTER TABLE `{$index['tableName']}` ADD $keyPart KEY `{$index['indexName']}` $columnPart");
+
+        if ($result === false) {
+            $error = $this->connection->errorInfo();
+            $this->logs[] = array(
+                'success' => false,
+                'time' => time(),
+                'message' => "An error occured while trying to create index '{$index['indexName']}' $columnPart for table '{$index['tableName']}: " . $error[2]
+            );
+            return false;
+        }
+        $this->logs[] = array(
+            'success' => true,
+            'time' => time(),
+            'message' => "Successfully created index '{$index['indexName']}' $columnPart for table '{$index['tableName']}'; $result rows affected\n"
+        );
+        return true;
+    }
+
+    /**
+     * Drops and creates index as defined in $index
+     * @param array $index
+     */
+    public function recreateIndexFromStructure($index)
+    {
+        /**
+         * Any scenarios when a dropped index cannot be recreated?
+         * Are transacrions needed?
+         */
+        if ($this->dropIndex($index)) {
+            $this->createIndexFromStructure($index);
+        }
+    }
+
+    /**
+     * Gets index type sql part from $index
+     * @param array $index
+     * @return string
+     */
+    protected static function getIndexTypeSqlPart($index)
+    {
+        $keyType = '';
+        if ($index['unique']) {
+            $keyType = 'UNIQUE';
+        }
+        if ($index['indexName'] === 'PRIMARY') {
+            $keyType = 'PRIMARY';
+        }
+        return $keyType;
+    }
+
+    /**
+     * Returns errors messages
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+}

@@ -1,0 +1,75 @@
+#!/usr/bin/env php
+<?php
+$help = "NAME
+    export-mysql-indexes - MySQL indexes export tool
+
+DESCRIPTION
+    This script exports all indexes in a database in JSON format. To be used with import-mysql-indexes
+
+SYNOPSIS
+    export-mysql-indexes hostname dbname username {password | ''} > dbnameIndexes.json
+
+AUTHOR
+    Merethis
+";
+
+if ($argc !== 5) {
+    echo $help;
+    exit(1);
+}
+
+/* Naming parameters */
+$hostname = $argv[1];
+$dbname = $argv[2];
+$username = $argv[3];
+$password = $argv[4];
+
+error_reporting(-1);
+
+try {
+    $conn = new PDO('mysql:host=' . $hostname . ';dbname=' . $dbname, $username, $password);
+    $indexesStmt = $conn->query(" SELECT
+                                        *
+                                    FROM
+                                        information_schema.STATISTICS
+                                    WHERE
+                                        TABLE_SCHEMA = '$dbname' /* AND
+                                        INDEX_NAME <> 'PRIMARY' */
+                                    ORDER BY
+                                        TABLE_NAME ASC,
+                                        INDEX_NAME ASC,
+                                        SEQ_IN_INDEX ASC");
+    if (!$indexesStmt)
+        throw new Exception('Cannot select indexes');
+
+    $indexColumns = $indexesStmt->fetchAll(PDO::FETCH_ASSOC);
+    $indexesForExport = array();
+    $lastIndexNameWithTableNamePrefix = null;
+    $currentIndex = null;
+
+    foreach ($indexColumns as $indexColumn) {
+        /* Checking if this column belongs to the same index as last one */
+        if ($indexColumn['TABLE_NAME'] . '/' . $indexColumn['INDEX_NAME'] !== $lastIndexNameWithTableNamePrefix) {
+            if ($currentIndex) {
+                $indexesForExport[] = $currentIndex;
+            }
+            $currentIndex = array(
+                'tableName' => $indexColumn['TABLE_NAME'],
+                'indexName' => $indexColumn['INDEX_NAME'],
+                'unique' => $indexColumn['NON_UNIQUE'] ? false : true,
+                'columns' => array()
+            );
+        }
+        /* Pushing column name and length */
+        $currentIndex['columns'][$indexColumn['COLUMN_NAME']] = $indexColumn['SUB_PART'];
+        /* Saving last index's name preceeded by the table name to ensure uniqueness */
+        $lastIndexNameWithTableNamePrefix = $indexColumn['TABLE_NAME'] . '/' . $indexColumn['INDEX_NAME'];
+    }
+    /* Pushing last index */
+    $indexesForExport[] = $currentIndex;
+    /* Printing the JSON file */
+    echo json_encode($indexesForExport);
+} catch (Exception $e) {
+    echo 'Something went wrong: ' . $e->getMessage() . "\n";
+    exit(1);
+}
