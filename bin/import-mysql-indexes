@@ -11,7 +11,7 @@ SYNOPSIS
 
 IMPORTANT
     The process usually takes several minutes BUT if your database is big the
-    process may take up to 2 hours in case no index exists. 
+    process may take up to 2 hours in case no index exists.
 
 AUTHOR
     Merethis
@@ -29,6 +29,7 @@ $username = $argv[3];
 $password = $argv[4];
 
 error_reporting(-1);
+date_default_timezone_set(@date_default_timezone_get());
 
 try {
     $data = @file_get_contents("php://stdin");
@@ -37,7 +38,16 @@ try {
         exit(1);
     }
 
-    $indexes = json_decode($data, true);
+    if (!function_exists('json_decode')) {
+        if (!(@include 'Services/JSON.php') || !class_exists('Services_JSON')) {
+            echo "Please insstall Services_JSON pear package\n    pear install Services_JSON-1.0.3\n";
+            exit(1);
+        }
+        $json = new Services_JSON();
+        $indexes = $json->decode($data);
+    } else {
+        $indexes = json_decode($data);
+    }
 
     if (!$indexes) {
         echo "Something went wrong while reading stdin [bad JSON file]\n";
@@ -57,7 +67,7 @@ try {
         if (!$log['success']) {
             $exitCode = 1;
         }
-        echo '[' . date('Y-m-d H:i:s', $log['time']) . ']' . ($log['success'] ? ' OK ' : ' NOK ') . $log['message'];
+        echo '[' . date('Y-m-d H:i:s', $log['time']) . ']' . ($log['success'] ? ' OK ' : ' NOK ') . $log['message'] . "\n";
     }
 } catch (Exception $e) {
     echo 'Something went wrong: ' . $e->getMessage() . "\n";
@@ -83,15 +93,18 @@ class MysqlIndexImporter
      * An array containing database indexes
      * Format:
      *  array(
-     *       array(
+     *       stdClass{
      *          'tableName' => string $tableName,
      *          'indexName' => string $indexName,
      *          'unique'    => bool $unique,
      *          'columns'   => array(
-     *              'columnName' => int $length,
+     *              stdClass{
+     *                  'name' => string $name,
+     *                  'length' => int $length
+     *              },
      *              ...
      *          )
-     *      ),
+     *      },
      *      ...
      *  )
      * @var array 
@@ -141,10 +154,8 @@ class MysqlIndexImporter
      */
     public function import()
     {
-        /* Looping on all indexes in the source array */
-        foreach ($this->indexes as $index) {
-            /* Retrieving all index columns in destination database */
-            $stmt = $this->connection->prepare("SELECT
+        /* Retrieving all index columns in destination database */
+        $stmt = $this->connection->prepare("SELECT
                                                     *
                                                 FROM
                                                     information_schema.STATISTICS
@@ -154,20 +165,17 @@ class MysqlIndexImporter
                                                     INDEX_NAME = ?
                                                 ORDER BY
                                                     SEQ_IN_INDEX ASC");
-            if (!$stmt) {
-                $this->logs[] = array(
-                    'success' => false,
-                    'time' => time(),
-                    'message' => "Cannot prepare statement to select indexes from table '{$index['tableName']}'"
-                );
-                continue;
-            }
+        if (!$stmt) {
+            throw new Exception("Cannot prepare statement to select indexes");
+        }
 
-            if (!$stmt->execute(array($this->dbname, $index['tableName'], $index['indexName']))) {
+        /* Looping on all indexes in the source array */
+        foreach ($this->indexes as $index) {
+            if (!$stmt->execute(array($this->dbname, $index->tableName, $index->indexName))) {
                 $this->logs[] = array(
                     'success' => false,
                     'time' => time(),
-                    'message' => "Cannot execute select statement for indexes from table '{$index['tableName']}'"
+                    'message' => "Cannot execute select statement for index '{$index->indexName}' from table '{$index->tableName}'"
                 );
                 continue;
             }
@@ -180,7 +188,7 @@ class MysqlIndexImporter
                 continue;
             }
             /* If no column count differs then index is different */
-            if (count($index['columns']) !== count($columns)) {
+            if (count($index->columns) !== count($columns)) {
                 $this->recreateIndexFromStructure($index);
                 continue;
             }
@@ -190,23 +198,23 @@ class MysqlIndexImporter
              * Looping through all collumns of the index to search if there
              * are any differences
              */
-            foreach ($index['columns']as $columnName => $columnLength) {
+            foreach ($index->columns as $column) {
                 /**
                  * This is normally done once per index but since mysql stores 
                  * indexes in a redundant way just to be sure we check the 
                  * uniqueness for every column.
                  */
-                if ($index['unique'] xor !$columns[$i]['NON_UNIQUE']) {
+                if ($index->unique xor !$columns[$i]['NON_UNIQUE']) {
                     $this->recreateIndexFromStructure($index);
                     break;
                 }
                 /* In case column name differs */
-                if ($columnName !== $columns[$i]['COLUMN_NAME']) {
+                if ($column->name !== $columns[$i]['COLUMN_NAME']) {
                     $this->recreateIndexFromStructure($index);
                     break;
                 }
                 /* In case column length differs */
-                if ($columnLength !== $columns[$i]['SUB_PART']) {
+                if ($column->length !== $columns[$i]['SUB_PART']) {
                     $this->recreateIndexFromStructure($index);
                     break;
                 }
@@ -221,10 +229,10 @@ class MysqlIndexImporter
      */
     public function dropIndex($index)
     {
-        if ($index['indexName'] === 'PRIMARY') {
-            $query = "ALTER TABLE `{$index['tableName']}` DROP PRIMARY KEY";
+        if ($index->indexName === 'PRIMARY') {
+            $query = "ALTER TABLE `{$index->tableName}` DROP PRIMARY KEY";
         } else {
-            $query = "ALTER TABLE `{$index['tableName']}` DROP KEY `{$index['indexName']}`";
+            $query = "ALTER TABLE `{$index->tableName}` DROP KEY `{$index->indexName}`";
         }
 
         $result = $this->connection->exec($query);
@@ -234,14 +242,14 @@ class MysqlIndexImporter
             $this->logs[] = array(
                 'success' => false,
                 'time' => time(),
-                'message' => "Failed to drop index '{$index['indexName']}' for table '{$index['tableName']}: " . $error[2]
+                'message' => "Failed to drop index '{$index->indexName}' for table '{$index->tableName}: " . $error[2]
             );
             return false;
         }
         $this->logs[] = array(
             'success' => true,
             'time' => time(),
-            'message' => "Successfully dropped index '{$index['indexName']}' for table '{$index['tableName']}'; $result rows affected\n"
+            'message' => "Successfully dropped index '{$index->indexName}' for table '{$index->tableName}'; $result rows affected"
         );
         return true;
     }
@@ -252,36 +260,54 @@ class MysqlIndexImporter
      */
     public function createIndexFromStructure($index)
     {
-        $keyPart = self::getIndexTypeSqlPart($index);
+        $keyPart = '';
+        if ($index->unique) {
+            $keyPart = 'UNIQUE';
+        }
+        if ($index->indexName === 'PRIMARY') {
+            $keyPart = 'PRIMARY';
+        }
+
         /**
          * Building columns part
          */
         $columnParts = array();
-        foreach ($index['columns'] as $columnName => $columnLength) {
-            if ($columnLength) {
-                $length = ' (' . (int) $columnLength . ')';
+        foreach ($index->columns as $column) {
+            if ($column->length) {
+                $length = ' (' . (int) $column->length . ')';
             } else {
                 $length = '';
             }
-            $columnParts[] = '`' . $columnName . '`' . $length;
+            $columnParts[] = '`' . $column->name . '`' . $length;
         }
         $columnPart = '(' . implode(', ', $columnParts) . ')';
 
-        $result = $this->connection->exec("ALTER TABLE `{$index['tableName']}` ADD $keyPart KEY `{$index['indexName']}` $columnPart");
+        $result = $this->connection->exec("ALTER TABLE `{$index->tableName}` ADD $keyPart KEY `{$index->indexName}` $columnPart");
+
+        /**
+         * Hinting index type in logs
+         */
+        $indexTypeText = '';
+        if ($index->unique) {
+            $indexTypeText = 'unique ';
+        }
+        if ($index->indexName === 'PRIMARY') {
+            $indexTypeText = 'primary ';
+        }
 
         if ($result === false) {
             $error = $this->connection->errorInfo();
             $this->logs[] = array(
                 'success' => false,
                 'time' => time(),
-                'message' => "Failed to create index '{$index['indexName']}' $columnPart for table '{$index['tableName']}: " . $error[2]
+                'message' => "Failed to create {$indexTypeText}index '{$index->indexName}' $columnPart for table '{$index->tableName}': " . $error[2]
             );
             return false;
         }
         $this->logs[] = array(
             'success' => true,
             'time' => time(),
-            'message' => "Successfully created index '{$index['indexName']}' $columnPart for table '{$index['tableName']}'; $result rows affected\n"
+            'message' => "Successfully created {$indexTypeText}index '{$index->indexName}' $columnPart for table '{$index->tableName}'; $result rows affected"
         );
         return true;
     }
@@ -299,23 +325,6 @@ class MysqlIndexImporter
         if ($this->dropIndex($index)) {
             $this->createIndexFromStructure($index);
         }
-    }
-
-    /**
-     * Gets index type sql part from $index
-     * @param array $index
-     * @return string
-     */
-    protected static function getIndexTypeSqlPart($index)
-    {
-        $keyType = '';
-        if ($index['unique']) {
-            $keyType = 'UNIQUE';
-        }
-        if ($index['indexName'] === 'PRIMARY') {
-            $keyType = 'PRIMARY';
-        }
-        return $keyType;
     }
 
     /**
