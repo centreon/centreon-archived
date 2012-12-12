@@ -234,7 +234,7 @@ class MysqlIndexImporter
             $this->logs[] = array(
                 'success' => false,
                 'time' => time(),
-                'message' => "An error occured while trying to drop index '{$index['indexName']}' for table '{$index['tableName']}: " . $error[2]
+                'message' => "Failed to drop index '{$index['indexName']}' for table '{$index['tableName']}: " . $error[2]
             );
             return false;
         }
@@ -274,7 +274,7 @@ class MysqlIndexImporter
             $this->logs[] = array(
                 'success' => false,
                 'time' => time(),
-                'message' => "An error occured while trying to create index '{$index['indexName']}' $columnPart for table '{$index['tableName']}: " . $error[2]
+                'message' => "Failed to create index '{$index['indexName']}' $columnPart for table '{$index['tableName']}: " . $error[2]
             );
             return false;
         }
