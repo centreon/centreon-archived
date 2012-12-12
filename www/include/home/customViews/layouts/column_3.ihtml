@@ -26,7 +26,7 @@
 		{/foreach}
 		<div class='portlet invisible-portlet'></div>
 	</div>
-	<div class="widgetBody column_3_last">	
+	<div class="widgetBody  column_3" style='width: 34%;'>	
 		{foreach name=widgetId item=widget from=$widgets}		
 			{if $widget.column == 2}
 			<div class="portlet" name="portlet_{$widget.widget_id}" style="overflow: hidden;">
