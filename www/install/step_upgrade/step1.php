@@ -55,7 +55,7 @@ if (is_file('../install.conf.php')) {
     setSessionVariables($conf_centreon);
 } else {
     $status = 1;
-    $content = sprintf("<p class='required'>%s</p>", _('Configuration file not found.'));
+    $content = sprintf("<p class='required'>%s (install.conf.php)</p>", _('Configuration file not found.'));
 }
 
 $template->assign('step', STEP_NUMBER);
