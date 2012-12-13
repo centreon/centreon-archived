@@ -341,7 +341,7 @@
 
 			if ($type == "HS"){
 				$tab_tmp = preg_split("/\_/", $real_id);
-				$DBRESULT2 = $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE `trashed` = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
+				$DBRESULT2 = $pearDBO->query("SELECT i.id, i.service_id, i.service_description, i.host_name FROM index_data i, metrics m WHERE i.id = m.index_id AND i.trashed = '0' AND i.host_id = '".$tab_tmp[2]."' AND i.service_id = '".$tab_tmp[1]."'");
 				$svc_id = $DBRESULT2->fetchRow();
 				$template_id = getDefaultGraph($svc_id["service_id"], 1);
 				$DBRESULT2 = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
@@ -351,7 +351,7 @@
 			}
 			if ($type == "MS"){
 				$other_services = array();
-				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND service_description = 'meta_".$id."' ORDER BY service_description");
+				$DBRESULT2 = $pearDBO->query("SELECT id, service_description FROM index_data i, metrics m WHERE i.id = m.index_id AND i.trashed = '0' AND i.service_description = 'meta_".$id."' ORDER BY i.service_description");
 				if ($svc_id = $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
@@ -378,7 +378,7 @@
 			 */
 			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index."'  AND `hidden` = '0' ORDER BY `metric_name`");
 			/* Find host,service link to index */
-			$dbindd = $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
+			$dbindd = $pearDBO->query("SELECT host_id, service_id FROM index_data i, metrics m WHERE i.id = m.index_id AND id = '".$svc_id["id"]."'");
 			$indd = $dbindd->fetchRow();
 			$dbindd->free();
 			while ($metrics_ret = $DBRESULT2->fetchRow()){
@@ -547,7 +547,7 @@
 
 			if ($type == "SS"){
 				$tab_tmp = preg_split("/\_/", $openid);
-				$DBRESULT2 = $pearDBO->query("SELECT id, service_id, service_description, host_name FROM index_data WHERE `trashed` = '0' AND host_id = '".$tab_tmp[2]."' AND service_id = '".$tab_tmp[1]."'");
+				$DBRESULT2 = $pearDBO->query("SELECT i.id, i.service_id, i.service_description, i.host_name FROM index_data i, metrics m WHERE i.id = m.index_id AND i.trashed = '0' AND i.host_id = '".$tab_tmp[2]."' AND i.service_id = '".$tab_tmp[1]."'");
 				$svc_id = $DBRESULT2->fetchRow();
 				$DBRESULT2->free();
 
@@ -560,7 +560,7 @@
 			}
 			if ($type == "SM"){
 				$other_services = array();
-				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND service_description = 'meta_".$id."' ORDER BY service_description");
+				$DBRESULT2 = $pearDBO->query("SELECT id, service_description FROM index_data i, metrics m WHERE i.id = m.index_id AND i.trashed = '0' AND service_description = 'meta_".$id."' ORDER BY service_description");
 				if ($svc_id = $DBRESULT2->fetchRow()){
 					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
 						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
@@ -593,7 +593,7 @@
 			 */
 			$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$svc_id["id"]."' AND hidden = '0' ORDER BY `metric_name`");
 			/* Find host,service link to index */
-			$dbindd = $pearDBO->query("SELECT host_id, service_id FROM index_data WHERE id = '".$svc_id["id"]."'");
+			$dbindd = $pearDBO->query("SELECT host_id, service_id FROM index_data i, metrics m WHERE i.id = m.index_id AND id = '".$svc_id["id"]."'");
 			$indd = $dbindd->fetchRow();
 			$dbindd->free();
 			while ($metrics_ret = $DBRESULT2->fetchRow()){

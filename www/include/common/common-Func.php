@@ -1527,13 +1527,14 @@
 
 	function service_has_graph($host, $service){
 		global $pearDBO;
+		
 		if (is_numeric($host) && is_numeric($service)){
-			$DBRESULT = $pearDBO->query("SELECT * FROM `index_data` WHERE host_id = '".$host."' AND service_id = '".$service."'");
+			$DBRESULT = $pearDBO->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_id = '".$host."' AND i.service_id = '".$service."'");
 			if($DBRESULT->numRows() > 0)
 				return true;
 		}
 		if (!is_numeric($host) && !is_numeric($service)){
-			$DBRESULT = $pearDBO->query("SELECT * FROM `index_data` WHERE host_name = '".$host."' AND service_description = '".$service."'");
+			$DBRESULT = $pearDBO->query("SELECT i.* FROM index_data i, metrics m WHERE i.id = m.index_id AND i.host_name = '".$host."' AND i.service_description = '".$service."'");
 
 			if($DBRESULT->numRows() > 0)
 				return true;
