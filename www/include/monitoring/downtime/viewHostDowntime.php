@@ -175,6 +175,7 @@
 				(isset($search_output) && $search_output != "" ? " AND d.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
+        		"AND h.enabled = 1 " .
 				$centreon->user->access->queryBuilder("AND", "h.name", $hostStr) .
            		(isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
         		(isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
