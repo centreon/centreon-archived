@@ -411,7 +411,10 @@
 	$cctActivation[] = HTML_QuickForm::createElement('radio', 'contact_activate', null, _("Disabled"), '0');
 	$form->addGroup($cctActivation, 'contact_activate', _("Status"), '&nbsp;');
 	$form->setDefaults(array('contact_activate' => '1'));
-
+	if ($o == "c" && $centreon->user->get_id() == $cct["contact_id"]) {
+		$form->freeze('contact_activate');
+	}
+	
 	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Yes"), '0', array('onclick' => 'switchTemplate(true);'));
 	$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("No"), '1', array('onclick' => 'switchTemplate(false);'));
 	$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
