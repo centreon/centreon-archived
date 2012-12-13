@@ -29,6 +29,7 @@ CREATE TABLE `acknowledgements` (
   UNIQUE KEY `entry_time` (`entry_time`,`host_id`,`service_id`),
   KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
+  KEY `entry_time_2` (`entry_time`),
   CONSTRAINT `acknowledgements_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `acknowledgements_ibfk_2` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -115,6 +116,7 @@ CREATE TABLE `downtimes` (
   UNIQUE KEY `entry_time` (`entry_time`,`host_id`,`service_id`),
   KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
+  KEY `entry_time_2` (`entry_time`),
   CONSTRAINT `downtimes_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE,
   CONSTRAINT `downtimes_ibfk_2` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -422,6 +424,7 @@ CREATE TABLE `issues` (
   `end_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`issue_id`),
   UNIQUE KEY `host_id` (`host_id`,`service_id`,`start_time`),
+  KEY `start_time` (`start_time`),
   CONSTRAINT `issues_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -473,7 +476,9 @@ CREATE TABLE `logs` (
   KEY `instance_name` (`instance_name`),
   KEY `ctime` (`ctime`),
   KEY `rq1` (`host_id`,`service_id`,`msg_type`,`status`,`ctime`),
-  KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`)
+  KEY `rq2` (`host_id`,`msg_type`,`status`,`ctime`),
+  KEY `host_id` (`host_id`,`service_id`,`msg_type`,`ctime`,`status`),
+  KEY `host_id_2` (`host_id`,`msg_type`,`ctime`,`status`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -652,6 +657,7 @@ CREATE TABLE `services` (
   `state_type` smallint(6) DEFAULT NULL,
   `volatile` tinyint(1) DEFAULT NULL,
   UNIQUE KEY `host_id` (`host_id`,`service_id`),
+  KEY `service_id` (`service_id`),
   CONSTRAINT `services_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
