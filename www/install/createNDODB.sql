@@ -39,7 +39,8 @@ CREATE TABLE `nagios_acknowledgements` (
   `is_sticky` smallint(6) NOT NULL DEFAULT '0',
   `persistent_comment` smallint(6) NOT NULL DEFAULT '0',
   `notify_contacts` smallint(6) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`acknowledgement_id`)
+  PRIMARY KEY (`acknowledgement_id`),
+  KEY `entry_time` (`entry_time`,`object_id`,`acknowledgement_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Current and historical host and service acknowledgements';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
