@@ -737,6 +737,23 @@ function locate_centreon_etcdir() {
 }
 
 #----
+## Define where is Centreon bin directory
+## @Globals	CENTREON_BINDIR, DEFAULT_CENTREON_BINDIR
+#----
+function locate_centreon_bindir() {
+	if [ -z "$CENTREON_BINDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your Centreon binaries directory")" "$DEFAULT_CENTREON_BINDIR" "CENTREON_BINDIR"
+		echo_success "$(gettext "Path" ) $CENTREON_BINDIR" "$ok"
+	elif [ ! -d "$CENTREON_BINDIR" -a "$silent_install" -eq 1 ] ; then
+		mkdir -p "$CENTREON_BINDIR"
+		log "INFO" "$(gettext "Create") $CENTREON_BINDIR"
+	fi
+	CENTREON_BINDIR=`trim ${CENTREON_BINDIR%/}`
+	export CENTREON_BINDIR
+	log "INFO" "CENTREON_BINDIR: $CENTREON_BINDIR"
+}
+
+#----
 ## Define where is centreon install directory 
 ## @Globals	INSTALL_DIR_CENTREON, DEFAULT_INSTALL_DIR_CENTREON
 #----
@@ -1552,6 +1569,7 @@ function createCentreonInstallConf() {
 	PEAR_PATH=$PEAR_PATH
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
+	CENTREON_BINDIR=$CENTREON_BINDIR
 	CENTREON_GENDIR=$CENTREON_GENDIR
 	CENTREON_VARLIB=$CENTREON_VARLIB	
 	CENTREON_GROUP=$CENTREON_GROUP

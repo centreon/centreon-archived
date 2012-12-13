@@ -31,6 +31,7 @@ locate_centreon_installdir
 ## locate or create Centreon log dir
 locate_centreon_logdir
 locate_centreon_etcdir
+locate_centreon_bindir
 locate_centreon_generationdir
 locate_centreon_varlib
 locate_centpluginstraps_bindir
@@ -409,6 +410,35 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	-m 644 \
 	$TMP_DIR/final/centreon.logrotate $LOGROTATE_D/centreon >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install Centreon logrotate.d file")"
+
+## Install binaries for check indexes
+log "INFO" "$(gettext "Prepare export-mysql-indexes")"
+cp $TMP_DIR/src/bin/export-mysql-indexes \
+	$TMP_DIR/work/bin/export-mysql-indexes >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/work/bin/export-mysql-indexes \
+	$TMP_DIR/final/bin/export-mysql-indexes >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare export-mysql-indexes")"
+
+log "INFO" "$(gettext "Install export-mysql-indexes")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/export-mysql-indexes \
+	$CENTREON_BINDIR/export-mysql-indexes >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install export-mysql-indexes")"
+
+log "INFO" "$(gettext "Prepare import-mysql-indexes")"
+cp $TMP_DIR/src/bin/import-mysql-indexes \
+	$TMP_DIR/work/bin/import-mysql-indexes >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/work/bin/import-mysql-indexes \
+	$TMP_DIR/final/bin/import-mysql-indexes >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare import-mysql-indexes")"
+
+log "INFO" "$(gettext "Install import-mysql-indexes")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/import-mysql-indexes \
+	$CENTREON_BINDIR/import-mysql-indexes >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install import-mysql-indexes")"
 
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
