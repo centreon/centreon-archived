@@ -17,7 +17,6 @@
 _debug = 0;
 _nb = 0;
 
-<!-- Début
 // ********************************************
 // Récupération de paramètre d'une requête HTTP
 // ou récupération des données d'un formulaire.

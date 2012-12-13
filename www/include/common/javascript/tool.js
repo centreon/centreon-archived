@@ -15,9 +15,6 @@
  */
 // JavaScript Document
 
-<!-- Begin
-
-
 function checkItem(element, toCheck)
 {
 	if (element.type == 'checkbox') {
