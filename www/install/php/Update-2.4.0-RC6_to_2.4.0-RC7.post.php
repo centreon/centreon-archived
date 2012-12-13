@@ -86,5 +86,23 @@ if (isset($pearDB)) {
         $pearDB->query("DELETE FROM `options` WHERE `key` LIKE 'ldap\_%' AND `key` <> 'ldap_auth_enable' AND `key` <> 'ldap_last_acl_update'");
         $pearDB->query("DELETE FROM `auth_ressource` WHERE `ar_enable` = '0'");
     }
+    
+    /*
+     * Checks if enable_perfdata_sync exists
+     */
+    $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'enable_perfdata_sync'");
+    if (!$res->numRows()) {
+        $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '1')");
+    }
+    unset($res);
+    
+    /*
+     * Checks if enable_logs_sync exists
+     */
+    $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'enable_logs_sync'");
+    if (!$res->numRows()) {
+        $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('enable_logs_sync', '1')");
+    }
+    unset($res);
 }
 ?>

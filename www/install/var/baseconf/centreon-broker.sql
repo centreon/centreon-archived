@@ -218,6 +218,9 @@ INSERT INTO `options` (`key`, `value`) VALUES ('broker', 'broker');
 INSERT INTO `options` (`key`, `value`) VALUES ('centstorage', '0');
 INSERT INTO `options` (`key`, `value`) VALUES ('broker_correlator_script', '@BROKER_INIT_SCRIPT@');
 
+INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '0');
+INSERT INTO `options` (`key`, `value`) VALUES ('enable_logs_sync', '0');
+
 UPDATE `nagios_server` SET `centreonbroker_cfg_path` = '@CENTREONBROKER_ETC@' WHERE `id` = 1;
 UPDATE `nagios_server` SET `centreonbroker_module_path` = '@CENTREONBROKER_LIB@' WHERE `id` = 1;
 

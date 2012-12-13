@@ -6,3 +6,6 @@ INSERT INTO `cfg_ndomod` (`id`, `description`, `local`, `ns_nagios_server`, `ins
 
 INSERT INTO `options` (`key`, `value`) VALUES ('broker', 'ndo');
 INSERT INTO `options` (`key`, `value`) VALUES ('centstorage', '1');
+
+INSERT INTO `options` (`key`, `value`) VALUES ('enable_perfdata_sync', '1');
+INSERT INTO `options` (`key`, `value`) VALUES ('enable_logs_sync', '1');
