@@ -606,7 +606,7 @@ CREATE TABLE `nagios_hosts` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `nagios_hoststatus` (
-  `hoststatus_id` int(11) NOT NULL AUTO_INCREMENT,
+  `hoststatus_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `instance_id` smallint(6) NOT NULL DEFAULT '0',
   `host_object_id` int(11) NOT NULL DEFAULT '0',
   `status_update_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
@@ -1016,7 +1016,7 @@ CREATE TABLE `nagios_services` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `nagios_servicestatus` (
-  `servicestatus_id` int(11) NOT NULL AUTO_INCREMENT,
+  `servicestatus_id` bigint(20) NOT NULL AUTO_INCREMENT,
   `instance_id` smallint(6) NOT NULL DEFAULT '0',
   `service_object_id` int(11) NOT NULL DEFAULT '0',
   `status_update_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
