@@ -35,9 +35,15 @@
  * SVN : $Id$
  *
  */
-	if (!isset ($oreon))
-		exit ();
+	if (!isset($oreon)) {
+		exit (); 
+	}
 
+	/**
+	 *
+	 * Test that a contact doesn't exists
+	 * @param $name
+	 */
 	function testContactExistence ($name = NULL)	{
 		global $pearDB, $form, $oreon;
 
@@ -58,6 +64,11 @@
 			return true;
 	}
 
+	/**
+	 *
+	 * Test that alias is not use
+	 * @param $alias
+	 */
 	function testAliasExistence ($alias = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
@@ -80,21 +91,28 @@
 	 * Check if a least one contact is enable
 	 */
 	function keepOneContactAtLeast($ct_id = null) {
-		global $pearDB, $form;
+		global $pearDB, $form, $centreon;
 
 		if (!isset($contact_id)) {
 			$contact_id = $ct_id;
 		} else if (isset($_GET["contact_id"])) {
-			$contact_id = $_GET["contact_id"];
+			$contact_id = htmlentities($_GET["contact_id"], ENT_QUOTES, "UTF-8");;
 		} else {
 			$contact_id = $form->getSubmitValue('contact_id');
 		}
+		
+		if (isset($form)) {
+			$cct_oreon = $form->getSubmitValue('contact_oreon');
+			$cct_activate = $form->getSubmitValue('contact_activate');
+		} else {
+			$cct_oreon = 0;
+			$cct_activate = 0;
+		}
 
-		(isset($form)) ? $cct_oreon = $form->getSubmitValue('contact_oreon') : $cct_oreon["contact_oreon"] = 0;
-		$cct_oreon = $cct_oreon["contact_oreon"];
-		(isset($form)) ? $cct_activate = $form->getSubmitValue('contact_activate') : $cct_activate["contact_activate"] = 0;
-		$cct_activate = $cct_activate["contact_activate"];
-
+		if ($contact_id == $centreon->user->get_id()) {
+			return false;
+		}
+		
 		/*
 		 * Get activated contacts
 		 */
@@ -150,8 +168,8 @@
 		}
 
 		foreach ($contact_arr as $key => $value) {
-			if (keepOneContactAtLeast($value)) {
-				$DBRESULT = $pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$key."'");
+			if (keepOneContactAtLeast($key)) {
+				$pearDB->query("UPDATE contact SET contact_activate = '0' WHERE contact_id = '".$key."'");
 				$DBRESULT2 = $pearDB->query("SELECT contact_name FROM `contact` WHERE `contact_id` = '".$key."' LIMIT 1");
 				$row = $DBRESULT2->fetchRow();
 				$oreon->CentreonLogAction->insertLog("contact", $key, $row['contact_name'], "disable");

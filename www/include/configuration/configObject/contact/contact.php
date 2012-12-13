@@ -36,8 +36,9 @@
  *
  */
 
-	if (!isset ($oreon))
+	if (!isset($oreon)) {
 		exit ();
+	}
 
 	isset($_GET["contact_id"]) ? $cG = $_GET["contact_id"] : $cG = NULL;
 	isset($_POST["contact_id"]) ? $cP = $_POST["contact_id"] : $cP = NULL;
@@ -51,22 +52,29 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
+	/*
+	 * Pear library
+	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	/*
+	 * Path to the configuration dir
+	 */
 	$path = "./include/configuration/configObject/contact/";
 
-	#PHP functions
+	/*
+	 * PHP functions
+	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
 	/* Set the real page */
-	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
+	if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 		$p = $ret['topology_page'];
-
+	}
+	
 	switch ($o)	{
 		case "li" : require_once($path."ldapImportContact.php"); break; # LDAP import form	# Wistof
 		case "mc" : require_once($path."formContact.php"); break; # Massive Change
@@ -82,4 +90,5 @@
 		case "dn" : require_once $path.'displayNotification.php'; break;
 		default : require_once($path."listContact.php"); break;
 	}
+	
 ?>
