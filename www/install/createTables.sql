@@ -269,11 +269,26 @@ CREATE TABLE `acl_topology_relations` (
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `auth_ressource` (
   `ar_id` int(11) NOT NULL AUTO_INCREMENT,
-  `ar_name` VARCHAR (255) NOT NULL DEFAULT 'Default',  
-  `ar_description` VARCHAR (255) NOT NULL DEFAULT 'Default description',
+  `ar_name` varchar(255) NOT NULL DEFAULT 'Default',
+  `ar_description` varchar(255) NOT NULL DEFAULT 'Default description',
   `ar_type` varchar(50) NOT NULL,
   `ar_enable` enum('0','1') DEFAULT '0',
   PRIMARY KEY (`ar_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `auth_ressource_host` (
+  `ldap_host_id` int(11) NOT NULL AUTO_INCREMENT,
+  `auth_ressource_id` int(11) NOT NULL,
+  `host_address` varchar(255) NOT NULL,
+  `host_port` int(11) NOT NULL,
+  `use_ssl` tinyint(4) DEFAULT '0',
+  `use_tls` tinyint(4) DEFAULT '0',
+  `host_order` tinyint(4) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`ldap_host_id`),
+  KEY `fk_auth_ressource_id` (`auth_ressource_id`),
+  CONSTRAINT `fk_auth_ressource_id` FOREIGN KEY (`auth_ressource_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -285,23 +300,6 @@ CREATE TABLE `auth_ressource_info` (
   PRIMARY KEY (`ar_id`,`ari_name`),
   CONSTRAINT `auth_ressource_info_ibfk_1` FOREIGN KEY (`ar_id`) REFERENCES `auth_ressource` (`ar_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `auth_ressource_host` (
-    `ldap_host_id` INT(11) NOT NULL AUTO_INCREMENT,
-    `auth_ressource_id` INT(11) NOT NULL,
-    `host_address` VARCHAR(255) NOT NULL,
-    `host_port` INT(11) NOT NULL,
-    `use_ssl` TINYINT NULL DEFAULT 0,
-    `use_tls` TINYINT NULL DEFAULT 0,
-    `host_order` TINYINT NOT NULL DEFAULT 1,
-    PRIMARY KEY (`ldap_host_id`),
-    CONSTRAINT `fk_auth_ressource_id`
-    FOREIGN KEY (`auth_ressource_id`)
-    REFERENCES `auth_ressource` (`ar_id`)
-    ON DELETE CASCADE
-) ENGINE = INNODB CHARACTER SET utf8 COLLATE utf8_general_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -421,7 +419,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_filename` varchar(255) NOT NULL,
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
-  `event_queue_max_size` int(11) DEFAULT 50000,
+  `event_queue_max_size` int(11) DEFAULT '50000',
   PRIMARY KEY (`config_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -830,6 +828,7 @@ CREATE TABLE `contact` (
   KEY `tp1_index` (`timeperiod_tp_id`),
   KEY `tp2_index` (`timeperiod_tp_id2`),
   KEY `tmpl_index` (`contact_template_id`),
+  KEY `fk_ar_id` (`ar_id`),
   CONSTRAINT `contact_ibfk_1` FOREIGN KEY (`timeperiod_tp_id`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   CONSTRAINT `contact_ibfk_2` FOREIGN KEY (`timeperiod_tp_id2`) REFERENCES `timeperiod` (`tp_id`) ON DELETE SET NULL,
   CONSTRAINT `contact_ibfk_3` FOREIGN KEY (`contact_template_id`) REFERENCES `contact` (`contact_id`) ON DELETE SET NULL,
