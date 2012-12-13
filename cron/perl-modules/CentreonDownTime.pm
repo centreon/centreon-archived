@@ -248,8 +248,11 @@ sub splitUpdateEventDownTime {
 	if ($start < $end && scalar(@events)) {
 		my @tab = ($start, $end, 0);
 		$events[scalar(@events)] = \@tab;
-	}else {
+	} else {
 		$updateTime = $end;
+        if (scalar(@events) && $end > $events[0][0]) {
+            $updateTime = $events[0][0];
+        }
 	}
 	return ($updateTime, \@events);
 }
