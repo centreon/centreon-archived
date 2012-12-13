@@ -115,5 +115,6 @@ UPDATE `cb_field` SET `description` = 'RRD file directory, for example /var/lib/
 
 UPDATE `cb_field` SET `description` = 'Interval length in seconds.' WHERE `description` = 'Interval Length in seconds.';
 
+ALTER TABLE `connector` MODIFY `name` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 
 UPDATE `informations` SET `value` = '2.4.0-RC7' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.0-RC6' LIMIT 1;
