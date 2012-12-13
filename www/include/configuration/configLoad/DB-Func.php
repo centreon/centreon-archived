@@ -1303,6 +1303,9 @@
 
 		$tmpConf["service_activate"]["service_activate"] = "1";
 		$tmpConf["service_comment"] = date("d/m/Y - H:i:s", time());
+		if ((!isset($tmpConf["service_description"]) || $tmpConf["service_description"] == '') && isset($tmpConf["name"]) && $tmpConf["name"] != '') {
+			$tmpConf["service_description"] = $tmpConf["name"];
+		}
 		if (isset($tmpConf["service_description"]) && testServiceTemplateExistence($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
 		//if (isset($tmpConf["service_description"]) /*&& !serviceExists($tmpConf["service_description"]) */)	{
 			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
