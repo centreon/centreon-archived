@@ -72,14 +72,14 @@ sub getDownTime {
 	
 	if ($dbLayer eq "ndo") {
 		$query = "SELECT `name1`, `name2`,".
-				" UNIX_TIMESTAMP(`actual_start_time`) as start_time,".
+				" UNIX_TIMESTAMP(`scheduled_start_time`) as start_time,".
 				" UNIX_TIMESTAMP(`actual_end_time`) as end_time".
 			" FROM `nagios_downtimehistory` d, `nagios_objects` o".
 			" WHERE o.`object_id` = d.`object_id` AND o.`objecttype_id` = '".$type."'".
 			" AND was_started = 1".
-			" AND UNIX_TIMESTAMP(`actual_start_time`) < ".$end.
+			" AND UNIX_TIMESTAMP(`scheduled_start_time`) < ".$end.
 			" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
-			" ORDER BY `name1` ASC, `actual_start_time` ASC, `actual_end_time` ASC";
+			" ORDER BY `name1` ASC, `scheduled_start_time` ASC, `actual_end_time` ASC";
 	} elsif ($dbLayer eq "broker") {
 		$query = "SELECT DISTINCT h.name as name1, s.description as name2, " .
 				 "d.start_time, d.end_time " .
