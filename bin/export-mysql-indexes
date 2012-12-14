@@ -7,40 +7,84 @@ DESCRIPTION
     This script exports all indexes in a database in JSON format. To be used with import-mysql-indexes
 
 SYNOPSIS
-    export-mysql-indexes hostname dbname username {password | ''} > dbnameIndexes.json
+    export-mysql-indexes host dbname username {password | ''} > dbnameIndexes.json
+
+NOTES
+    Some PHP builds no not support long options. Use the short options in this case.
 
 AUTHOR
     Merethis
 ";
 
-if ($argc !== 5) {
+error_reporting(-1);
+
+$options = (getopt('h:d:u:p:He:', array(
+            'host:',
+            'dbname:',
+            'username:',
+            'password:',
+            'help',
+            'exclude:'
+        )));
+
+/* In case help options */
+if (isset($options['help']) || isset($options['H'])) {
+    echo $help;
+    exit;
+}
+
+/* Figuring out options */
+$host = isset($options['h']) ? $options['h'] : (isset($options['host']) ? $options['host'] : '127.0.0.1');
+$host = is_array($host) ? end($host) : $host;
+$dbname = isset($options['d']) ? $options['d'] : (isset($options['dbname']) ? $options['dbname'] : false);
+$dbname = is_array($dbname) ? end($dbname) : $dbname;
+$username = isset($options['u']) ? $options['u'] : (isset($options['username']) ? $options['username'] : (isset($_SERVER['LOGNAME']) ? $_SERVER['LOGNAME'] : false));
+$username = is_array($username) ? end($username) : $username;
+$password = isset($options['p']) ? $options['p'] : (isset($options['password']) ? $options['password'] : '');
+$password = is_array($password) ? end($password) : $password;
+$excludedTables = isset($options['e']) ? $options['e'] : (isset($options['exclude']) ? $options['exclude'] : array());
+$excludedTables = is_array($excludedTables) ? $excludedTables : array($excludedTables);
+
+if ($dbname === false) {
+    echo "Error: No database specified\n";
+    echo $help;
+    exit(1);
+}
+if ($username === false) {
+    echo "Error: No username specified\n";
     echo $help;
     exit(1);
 }
 
-/* Naming parameters */
-$hostname = $argv[1];
-$dbname = $argv[2];
-$username = $argv[3];
-$password = $argv[4];
-
-error_reporting(-1);
+function quote(&$element)
+{
+    $element = '\'' . $element . '\'';
+}
 
 try {
-    $conn = new PDO('mysql:host=' . $hostname . ';dbname=' . $dbname, $username, $password);
-    $indexesStmt = $conn->query(" SELECT
+    $conn = new PDO('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
+    if (count($excludedTables)) {
+        array_walk($excludedTables, 'quote');
+        $excludedTablesPart = 'AND TABLE_NAME NOT IN(' . implode(', ', $excludedTables) . ')';
+    } else {
+        $excludedTablesPart = '';
+    }
+    $indexesStmt = $conn->query($q = " SELECT
                                         *
                                     FROM
                                         information_schema.STATISTICS
                                     WHERE
-                                        TABLE_SCHEMA = '$dbname' /* AND
-                                        INDEX_NAME <> 'PRIMARY' */
+                                        TABLE_SCHEMA = '$dbname'
+                                        /* AND INDEX_NAME <> 'PRIMARY' */
+                                        $excludedTablesPart
                                     ORDER BY
                                         TABLE_NAME ASC,
                                         INDEX_NAME ASC,
                                         SEQ_IN_INDEX ASC");
-    if (!$indexesStmt)
-        throw new Exception('Cannot select indexes');
+    if (!$indexesStmt) {
+        $error = $conn->errorInfo();
+        throw new Exception('Cannot select indexes: ' . $error[2]);
+    }
 
     $indexColumns = $indexesStmt->fetchAll(PDO::FETCH_ASSOC);
     $indexesForExport = array();
