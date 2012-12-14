@@ -665,7 +665,7 @@ function locate_monitoringengine_binary()
 function locate_monitoringengine_etc()
 {
 	if [ -z "$MONITORINGENGINE_ETC" ]; then
-		answer_with_testdir "$(gettext "Monitoring engine etc")" "NO_DEFAULT" "MONITORINGENGINE_ETC"
+		answer_with_testdir "$(gettext "What is the Monitoring engine configuration directory ?")" "NO_DEFAULT" "MONITORINGENGINE_ETC"
 	fi
 	MONITORINGENGINE_ETC=`trim ${MONITORINGENGINE_ETC%/}`
 	export MONITORINGENGINE_ETC
@@ -675,7 +675,7 @@ function locate_monitoringengine_etc()
 function locate_monitoringengine_log()
 {
 	if [ -z "$MONITORINGENGINE_LOG" ]; then
-		answer_with_testdir "$(gettext "Monitoring engine log directory")" "NO_DEFAULT" "MONITORINGENGINE_LOG"
+		answer_with_testdir "$(gettext "What is the Monitoring engine log directory ?")" "NO_DEFAULT" "MONITORINGENGINE_LOG"
 	fi
 	MONITORINGENGINE_LOG=`trim ${MONITORINGENGINE_LOG%/}`
 	export MONITORINGENGINE_LOG
@@ -1337,9 +1337,9 @@ function prepare_sudo_config() {
 
     	locate_sudo
 	# Find Monitoring Engine Init Script
-	locate_monitoringengine_init_script "Monitoring engine init.d script" "NO_DEFAULT" "MONITORINGENGINE_INIT_SCRIPT"
+	locate_monitoringengine_init_script "$(gettext "What is the Monitoring engine init.d script ?")" "NO_DEFAULT" "MONITORINGENGINE_INIT_SCRIPT"
 	# find nagios binary if not define
-	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "Monitoring engine binary" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
+	[ -z "$MONITORINGENGINE_BINARY" ] && locate_monitoringengine_binary "$(gettext "What is the Monitoring engine binary ?")" "NO_DEFAULT" "MONITORINGENGINE_BINARY"
 	[ -z "$MONITORINGENGINE_ETC" ] && locate_monitoringengine_etc
 	[ -z "$BROKER_ETC" ] && locate_broker_etc
 	[ -z "$BROKER_INIT_SCRIPT" ] && locate_broker_init_script
@@ -1932,7 +1932,7 @@ function check_group_apache()
 function check_centreon_user()
 {
 	if [ -z "${CENTREON_USER}" ]; then
-		answer_with_createuser "$(gettext "Centreon user")" "$DEFAULT_CENTREON_USER" "CENTREON_USER"
+		answer_with_createuser "$(gettext "What is the Centreon user ?") [$DEFAULT_CENTREON_USER]" "$DEFAULT_CENTREON_USER" "CENTREON_USER"
 	fi
 	log "INFO" "$(gettext "Centreon user") : $CENTREON_USER"
 	return 0
@@ -1945,7 +1945,7 @@ function check_centreon_user()
 function check_centreon_group()
 {
 	if [ -z "${CENTREON_GROUP}" ]; then
-		answer_with_creategroup "$(gettext "Centreon group")" "$DEFAULT_CENTREON_GROUP" "CENTREON_GROUP"
+		answer_with_creategroup "$(gettext "What is the Centreon group ?") [$DEFAULT_CENTREON_GROUP]" "$DEFAULT_CENTREON_GROUP" "CENTREON_GROUP"
 	fi
 	log "INFO" "$(gettext "Centreon group") : $CENTREON_GROUP"
 	return 0
@@ -1958,7 +1958,7 @@ function check_centreon_group()
 function check_engine_user()
 {
 	if [ -z "${MONITORINGENGINE_USER}" ]; then
-		answer_with_testuser "$(gettext "Monitoring engine user")" "NO_DEFAULT" "MONITORINGENGINE_USER"
+		answer_with_testuser "$(gettext "What is the Monitoring engine user ?")" "NO_DEFAULT" "MONITORINGENGINE_USER"
 	fi
 	log "INFO" "$(gettext "Monitoring engine user") : $MONITORINGENGINE_USER"
 	return 0
@@ -1971,7 +1971,7 @@ function check_engine_user()
 function check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
-		answer_with_testuser_optional "$(gettext "Broker user")" "NO_DEFAULT" "BROKER_USER"
+		answer_with_testuser_optional "$(gettext "What is the Broker user ?)")" "NO_DEFAULT" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
 	return 0

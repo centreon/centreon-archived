@@ -123,8 +123,10 @@ cp -Rf $TMP_DIR/src/www $TMP_DIR/final
 cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 
 ## Create temporary directory
+mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
 mkdir -p $TMP_DIR/work/www/install >> "$LOG_FILE" 2>&1
 mkdir -p $TMP_DIR/work/cron/reporting >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/final/bin >> $LOG_FILE 2>&1
 mkdir -p $TMP_DIR/final/cron/reporting >> "$LOG_FILE" 2>&1
 mkdir -p $TMP_DIR/final/libinstall >> "$LOG_FILE" 2>&1
 
