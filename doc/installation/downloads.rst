@@ -8,23 +8,26 @@ Downloads
 Formats
 *******
 
-Usually, free software from Merethis comes in three different maners:
+Generally speaking, Open Source softwares by Merethis are provided in three possible formats:
 
-* binary RPM packages (recommanded)
+* binary RPM packages (recommended)
 * tarballs with sources
 * Subversion git/repository
 
-RPM packages are the best manner to get Merethis products. You don't
+RPM packages are the best format you can get as you would not
 have to worry about compilation and installation, everything is
 already made by Merethis' experts.
 
-If you're platform is not currently supported by RPMs you might
+If your platform is not currently supported by RPMs you might
 consider using tarball sources which are always provided for stable
-release. However compilation has to be done by hand which can be
-sometimes tricky.
+release. However, compilation has to be done manually and it can be
+cumbersome in some situations.
 
-The last method is for developer or beta-testers only. No official
-support is provided on such software as they usually are in-progress.
+The latter of these formats is for developers or beta-testers only. No official
+support is provided on them as they are most likely still under development.
+
+
+.. _download_web_src:
 
 ************
 Centreon Web

@@ -109,70 +109,37 @@ Save the file and restart apache::
 
   /etc/init.d/apache2 restart
 
-*********
-Scheduler
-*********
+******************
+Monitoring engine
+******************
 
-You may choose between Nagios and Centreon Engine as scheduling engine.
+Centreon is compatible with the following monitoring engines:
 
-Centreon Engine
-===============
+* :ref:`Centreon Engine <centreon-engine:user_installation_using_sources>`
+* `Nagios <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_
+* `Icinga <http://docs.icinga.org/latest/en/>`_
 
-First, install Nagios plugins::
+Install one of these engines before going futher and make sure to install the `Nagios plugins <http://nagios.sourceforge.net/docs/3_0/quickstart.html>`_.
 
-  $ apt-get install nagios-plugins
 
-.. note::
-
-   FIXME : ajouter des permaliens vers les docs des deux moteurs
-
-Nagios
-======
-
-=================  ======================================
- Distribution       Command                                
-=================  ======================================
- CentOS             ``yum install nagios``
- Debian / Ubuntu    ``apt-get install nagios3``
- OpenSuse           ``yast -i nagios``        
-=================  ======================================
-
-``nagios`` user will need a shell::
-
-  usermod -s /bin/sh nagios
-
-*************
+**************
 Broker module
-*************
+**************
 
-You may choose between NDOUtils and Centreon Broker as broker module.
+Centreon is compatible with the following broker modules:
 
-Centreon Broker
-===============
+* :ref:`Centreon Broker <centreon-broker:user_installation_using_sources>`
+* `NDOUtils <http://nagios.sourceforge.net/docs/ndoutils/NDOUtils.pdf>`_
 
-.. note::
+Install one of these broker modules before going further.
 
-   FIXME : ajouter des permaliens vers les docs
-
-NDOUtils
-========
-
-=============  ==========================================
-Distribution   Command line
-=============  ==========================================
-Ubuntu/Debian  ``apt-get install ndoutils-nagios3-mysql``
-
-CentOS         ``yum install ndoutils-mysql``
-
-OpenSuse       ``yast -i ndoutils``
-=============  ==========================================
 
 ********
 Centreon
 ********
 
-Download the newest Centreon package from the website:
-`<http://www.centreon.com/Content-Download/donwload-centreon-monitoring-tools>`_.
+Download the newest Centreon package :ref:`here <download_web_src>`.
+
 
 Shell Installation
 ==================
