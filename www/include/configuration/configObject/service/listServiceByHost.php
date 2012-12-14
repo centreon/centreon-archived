@@ -112,8 +112,6 @@
 	 */
 	$host_method = new CentreonHost($pearDB);
 	$service_method = new CentreonService($pearDB);
-    /*$hostGroup_handler = new CentreonHostgroups($pearDB);
-    echo '<pre>'; var_dump($hostGroup_handler->getHostgroupsList($pearDB)); echo '</pre>';*/
 
     /**
      * Get
@@ -131,13 +129,18 @@
     $searchH_SQL = '';
     $searchH_GET = '';
     $tmp_search_h = '';
-	if (isset($_GET['search_h']) && $_GET['search_h'] != '') {
+    
+	if (isset($_GET['search_h'])) {
 		$tmp_search_h = $_GET['search_h'];
+        $oreon->svc_host_search = $tmp_search_h;
 	}
-	if (isset($_POST["searchH"]) && $_POST["searchH"] != '') {
+	elseif (isset($_POST["searchH"])) {
 		$tmp_search_h = $_POST["searchH"];
+        $oreon->svc_host_search = $tmp_search_h;
 	}
-
+    elseif (isset($oreon->svc_host_search) && $oreon->svc_host_search != '')
+        $tmp_search_h = $oreon->svc_host_search;
+    
 	if ($tmp_search_h != '') {
         $searchH = $tmp_search_h;
        	$searchH_GET = $tmp_search_h;
@@ -150,11 +153,15 @@
     $tmp_search_s = '';
 	if (isset($_GET['search_s']) && $_GET['search_s'] != '') {
 		$tmp_search_s = $_GET['search_s'];
+        $oreon->svc_svc_search = $tmp_search_s;
 	}
-	if (isset($_POST["searchS"]) && $_POST["searchS"] != '') {
+	elseif (isset($_POST["searchS"]) && $_POST["searchS"] != '') {
 		$tmp_search_s = $_POST["searchS"];
+        $oreon->svc_svc_search = $tmp_search_s;
 	}
-	
+    elseif (isset($oreon->svc_svc_search))
+		$tmp_search_s = $oreon->svc_svc_search;
+    
 	if ($tmp_search_s != '') {
         $searchS = $tmp_search_s;
 	$searchS_GET = $tmp_search_s;
@@ -200,7 +207,7 @@
 					((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                     ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
 					"ORDER BY host.host_name, service_description LIMIT " . $num * $limit . ", " . $limit;
-
+    
 	$DBRESULT = $pearDB->query($rq);
     $rows = $pearDB->numberRows();
 
