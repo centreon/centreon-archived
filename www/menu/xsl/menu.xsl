@@ -14,7 +14,9 @@
 		<li>
 			<xsl:element name="div">
 				<xsl:attribute name="style">			
-					background-image: url('<xsl:value-of select="Menu1ClassImg"/>');
+					<xsl:if test="Menu1ClassImg != ''">
+                                        background-image: url('<xsl:value-of select="Menu1ClassImg"/>');
+                                        </xsl:if>
 					background-position:top right;
 					background-repeat:repeat-x;
 				</xsl:attribute>
