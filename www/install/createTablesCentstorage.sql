@@ -135,28 +135,6 @@ LOCK TABLES `data_stats_yearly` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `hoststateevents` (
-  `hoststateevent_id` int(11) NOT NULL AUTO_INCREMENT,
-  `end_time` int(11) DEFAULT NULL,
-  `host_id` int(11) NOT NULL,
-  `start_time` int(11) NOT NULL,
-  `state` tinyint(11) NOT NULL,
-  `last_update` tinyint(4) NOT NULL DEFAULT '0',
-  `in_downtime` tinyint(4) NOT NULL,
-  `ack_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`hoststateevent_id`),
-  UNIQUE KEY `host_id` (`host_id`,`start_time`),
-  KEY `start_time` (`start_time`),
-  KEY `end_time` (`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `hoststateevents` WRITE;
-/*!40000 ALTER TABLE `hoststateevents` DISABLE KEYS */;
-/*!40000 ALTER TABLE `hoststateevents` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `index_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `host_name` varchar(255) DEFAULT NULL,
