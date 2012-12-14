@@ -7,34 +7,86 @@ DESCRIPTION
     This script ensures the existence of all indexes exported with export-mysql-indexes
 
 SYNOPSIS
-    import-mysql-indexes hostname dbname username {password | ''} < dbnameIndexes.json
+    import-mysql-indexes [OPTION]... -d DATABASENAME
 
-IMPORTANT
+OPTIONS
+    -d, --dbname DATABASENAME
+        The name of the database to import to.
+
+    -e, --exclude TABLENAME
+        Excludes specified table from import. If you want to specify multiple
+        tables you can use this option multiple times.
+
+    -h, --help
+        Displays this help manual.
+
+    -H, --host HOSTNAME
+        Connect to MySQL server on a host different than localhost.
+
+    -i, --input FILENAME
+        Read from a JSON file instead of standard input.
+
+    -p, --password PASSWORD
+        Database password. If not specified attempting to connect without a
+        password.
+
+    -u, --username USERNAME
+        Specify username for the database connection. By default system username
+        is used.
+
+NOTES
     The process usually takes several minutes BUT if your database is big the
-    process may take up to 2 hours in case no index exists.
+    process may take up to 2 hours in case no index exists. Make sure you have
+    enough free space on the disk
 
 AUTHOR
     Merethis
 ";
 
-if ($argc !== 5) {
-    echo $help;
-    exit(1);
-}
-
-/* Naming parameters */
-$hostname = $argv[1];
-$dbname = $argv[2];
-$username = $argv[3];
-$password = $argv[4];
+$getHelp = "
+To get help type:
+    import-mysql-indexes --help
+";
 
 error_reporting(-1);
 date_default_timezone_set(@date_default_timezone_get());
 
+$options = (getopt('h:d:u:p:He:i:', array(
+            'host:',
+            'dbname:',
+            'username:',
+            'password:',
+            'help',
+            'exclude:',
+            'input:'
+        )));
+
+/* In case help options */
+if (isset($options['help']) || isset($options['h'])) {
+    echo $help;
+    exit;
+}
+
+/* Figuring out options */
+$host = isset($options['H']) ? $options['H'] : (isset($options['host']) ? $options['host'] : '127.0.0.1');
+$host = is_array($host) ? end($host) : $host;
+$dbname = isset($options['d']) ? $options['d'] : (isset($options['dbname']) ? $options['dbname'] : false);
+$dbname = is_array($dbname) ? end($dbname) : $dbname;
+$username = isset($options['u']) ? $options['u'] : (isset($options['username']) ? $options['username'] : (isset($_SERVER['LOGNAME']) ? $_SERVER['LOGNAME'] : false));
+$username = is_array($username) ? end($username) : $username;
+$password = isset($options['p']) ? $options['p'] : (isset($options['password']) ? $options['password'] : '');
+$password = is_array($password) ? end($password) : $password;
+$excludedTables = isset($options['e']) ? $options['e'] : (isset($options['exclude']) ? $options['exclude'] : array());
+$excludedTables = is_array($excludedTables) ? $excludedTables : array($excludedTables);
+$input = isset($options['i']) ? $options['i'] : (isset($options['input']) ? $options['input'] : false);
+$input = is_array($input) ? end($input) : $input;
+
 try {
-    $data = @file_get_contents("php://stdin");
+
+    $data = @file_get_contents($input ? $input : 'php://stdin');
+
     if (!$data) {
-        echo "Cannot read stdin\n";
+        echo "Cannot read input\n";
         exit(1);
     }
 
@@ -58,9 +110,10 @@ try {
         exit(1);
     }
 
-    $conn = new PDO('mysql:host=' . $hostname . ';dbname=' . $dbname, $username, $password);
+    $conn = new PDO('mysql:host=' . $host . ';dbname=' . $dbname, $username, $password);
     /* Class defined at the end of this file */
     $importer = new MysqlIndexImporter($conn, $indexes, $dbname);
+    $importer->setExcludedTables($excludedTables);
     $importer->import();
     $exitCode = 0;
     foreach ($importer->getLogs() as $log) {
@@ -88,6 +141,12 @@ class MysqlIndexImporter
      * @var PDO
      */
     public $connection;
+
+    /**
+     * Array of string containing table names to exclude
+     * @var array 
+     */
+    public $excludedTables;
 
     /**
      * An array containing database indexes
@@ -171,6 +230,9 @@ class MysqlIndexImporter
 
         /* Looping on all indexes in the source array */
         foreach ($this->indexes as $index) {
+            if (in_array($index->tableName, $this->excludedTables)) {
+                continue;
+            }
             if (!$stmt->execute(array($this->dbname, $index->tableName, $index->indexName))) {
                 $this->logs[] = array(
                     'success' => false,
@@ -325,6 +387,19 @@ class MysqlIndexImporter
         if ($this->dropIndex($index)) {
             $this->createIndexFromStructure($index);
         }
+    }
+
+    /**
+     * Sets the list of tables to be excluded from import
+     * @param array $excludedTables
+     * @throws InvalidArgumentException
+     */
+    public function setExcludedTables($excludedTables)
+    {
+        if (!is_array($excludedTables)) {
+            throw new InvalidArgumentException('List of tables to be excluded should be an array of strings');
+        }
+        $this->excludedTables = $excludedTables;
     }
 
     /**
