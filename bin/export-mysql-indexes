@@ -12,29 +12,29 @@ SYNOPSIS
 
 OPTIONS
     -d, --dbname DATABASENAME
-        The name of the database
+        The name of the database to export.
 
     -e, --exclude TABLENAME
         Excludes specified table from export. If you want to specify multiple
-        tables you can use this option multiple times
+        tables you can use this option multiple times.
 
     -h, --help
-        Displays this help manual
+        Displays this help manual.
 
     -H, --host HOSTNAME
         Connect to MySQL server on a host different than localhost.
 
-    -u, --username USERNAME
-        Specify username for the database connection. By default system username
-        is used.
+    -o, --output FILENAME
+        Write the JSON string to a file instead of printing it on the standart
+        output.
 
     -p, --password PASSWORD
         Database password. If not specified attempting to connect without a
-        password
-        
-    -o, --output FILENAME
-        Write the JSON string to a file instead of printing it on the standart
-        output
+        password.
+
+    -u, --username USERNAME
+        Specify username for the database connection. By default system username
+        is used.
 
 NOTES
     Some PHP builds no not support long options. Use the short options in this
@@ -163,7 +163,7 @@ try {
 
     if ($output) {
         $success = @file_put_contents($output, $outputString);
-        if(!$success){
+        if (!$success) {
             echo "Cannot write to file '$output'. Make sure you have write permissions";
             exit(1);
         }
