@@ -32,6 +32,7 @@ locate_centreon_installdir
 locate_centreon_logdir
 locate_centreon_etcdir
 locate_centreon_bindir
+locate_centreon_datadir
 locate_centreon_generationdir
 locate_centreon_varlib
 locate_centpluginstraps_bindir
@@ -126,9 +127,11 @@ cp -Rf $TMP_DIR/src/GPL_LIB $TMP_DIR/final
 mkdir -p $TMP_DIR/work/bin >> $LOG_FILE 2>&1
 mkdir -p $TMP_DIR/work/www/install >> "$LOG_FILE" 2>&1
 mkdir -p $TMP_DIR/work/cron/reporting >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/work/data >> "$LOG_FILE" 2>&1
 mkdir -p $TMP_DIR/final/bin >> $LOG_FILE 2>&1
 mkdir -p $TMP_DIR/final/cron/reporting >> "$LOG_FILE" 2>&1
 mkdir -p $TMP_DIR/final/libinstall >> "$LOG_FILE" 2>&1
+mkdir -p $TMP_DIR/final/data >> "$LOG_FILE" 2>&1
 
 ## Install Centreon doc (nagios doc)
 #$INSTALL_DIR/cinstall $cinstall_opts \
@@ -441,6 +444,21 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/final/bin/import-mysql-indexes \
 	$CENTREON_BINDIR/import-mysql-indexes >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install import-mysql-indexes")"
+
+## Install indexes schema
+log "INFO" "$(gettext "Prepare indexes schema")"
+cp $TMP_DIR/src/dbschema/* \
+	$TMP_DIR/work/data/ >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/work/data/* \
+	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare indexes schema")"
+
+log "INFO" "$(gettext "Install indexes schema")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 644 \
+	$TMP_DIR/final/data/* \
+	$CENTREON_DATADIR/ >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install indexes schema")"
 
 ## Prepare to install all pear modules needed.
 # use check_pear.php script

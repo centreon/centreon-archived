@@ -754,6 +754,23 @@ function locate_centreon_bindir() {
 }
 
 #----
+## Define where is Centreon data informations directory
+## @Globals	CENTREON_DATADIR, DEFAULT_CENTREON_DATADIR
+#----
+function locate_centreon_datadir() {
+	if [ -z "$CENTREON_DATADIR" ]; then
+		answer_with_createdir "$(gettext "Where is your Centreon data informations directory")" "$DEFAULT_CENTREON_DATADIR" "CENTREON_DATADIR"
+		echo_success "$(gettext "Path" ) $CENTREON_DATADIR" "$ok"
+	elif [ ! -d "$CENTREON_DATADIR" -a "$silent_install" -eq 1 ]; then
+		mkdir -p "$CENTREON_DATADIR"
+		log "INFO" "$(gettext "Create") $CENTREON_DATADIR"
+	fi
+	CENTREON_DATADIR=`trim ${CENTREON_DATADIR%/}`
+	export CENTREON_DATADIR
+	log "INFO" "CENTREON_DATADIR: $CENTREON_DATADIR"
+}
+
+#----
 ## Define where is centreon install directory 
 ## @Globals	INSTALL_DIR_CENTREON, DEFAULT_INSTALL_DIR_CENTREON
 #----
@@ -1570,6 +1587,7 @@ function createCentreonInstallConf() {
 	CENTREON_LOG=$CENTREON_LOG
 	CENTREON_ETC=$CENTREON_ETC
 	CENTREON_BINDIR=$CENTREON_BINDIR
+	CENTREON_DATADIR=$CENTREON_DATADIR
 	CENTREON_GENDIR=$CENTREON_GENDIR
 	CENTREON_VARLIB=$CENTREON_VARLIB	
 	CENTREON_GROUP=$CENTREON_GROUP
@@ -1971,7 +1989,7 @@ function check_engine_user()
 function check_broker_user()
 {
 	if [ -z "${BROKER_USER}" ]; then
-		answer_with_testuser_optional "$(gettext "What is the Broker user ?)")" "NO_DEFAULT" "BROKER_USER"
+		answer_with_testuser_optional "$(gettext "What is the Broker user ?")" "NO_DEFAULT" "BROKER_USER"
 	fi
 	log "INFO" "$(gettext "Broker user") : $BROKER_USER"
 	return 0
