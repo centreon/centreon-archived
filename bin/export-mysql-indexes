@@ -18,11 +18,11 @@ OPTIONS
         Excludes specified table from export. If you want to specify multiple
         tables you can use this option multiple times
 
-    -h, --host HOSTNAME
-        Connect to MySQL server on a host different than localhost.
-
-    -H, --help
+    -h, --help
         Displays this help manual
+
+    -H, --host HOSTNAME
+        Connect to MySQL server on a host different than localhost.
 
     -u, --username USERNAME
         Specify username for the database connection. By default system username
@@ -62,13 +62,13 @@ $options = (getopt('h:d:u:p:He:o:', array(
         )));
 
 /* In case help options */
-if (isset($options['help']) || isset($options['H'])) {
+if (isset($options['help']) || isset($options['h'])) {
     echo $help;
     exit;
 }
 
 /* Figuring out options */
-$host = isset($options['h']) ? $options['h'] : (isset($options['host']) ? $options['host'] : '127.0.0.1');
+$host = isset($options['H']) ? $options['H'] : (isset($options['host']) ? $options['host'] : '127.0.0.1');
 $host = is_array($host) ? end($host) : $host;
 $dbname = isset($options['d']) ? $options['d'] : (isset($options['dbname']) ? $options['dbname'] : false);
 $dbname = is_array($dbname) ? end($dbname) : $dbname;
