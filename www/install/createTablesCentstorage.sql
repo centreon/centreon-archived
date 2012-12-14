@@ -403,29 +403,6 @@ LOCK TABLES `rebuild` WRITE;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `servicestateevents` (
-  `servicestateevent_id` int(11) NOT NULL AUTO_INCREMENT,
-  `end_time` int(11) DEFAULT NULL,
-  `host_id` int(11) NOT NULL,
-  `service_id` int(11) DEFAULT NULL,
-  `start_time` int(11) NOT NULL,
-  `state` tinyint(11) NOT NULL,
-  `last_update` tinyint(4) NOT NULL DEFAULT '0',
-  `in_downtime` tinyint(4) NOT NULL,
-  `ack_time` int(11) DEFAULT NULL,
-  PRIMARY KEY (`servicestateevent_id`),
-  UNIQUE KEY `host_id` (`host_id`,`service_id`,`start_time`),
-  KEY `start_time` (`start_time`),
-  KEY `end_time` (`end_time`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
-LOCK TABLES `servicestateevents` WRITE;
-/*!40000 ALTER TABLE `servicestateevents` DISABLE KEYS */;
-/*!40000 ALTER TABLE `servicestateevents` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `statistics` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `ctime` int(11) DEFAULT NULL,
