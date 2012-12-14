@@ -4,27 +4,61 @@ $help = "NAME
     export-mysql-indexes - MySQL indexes export tool
 
 DESCRIPTION
-    This script exports all indexes in a database in JSON format. To be used with import-mysql-indexes
+    This script exports all indexes in a database in JSON format. To be used
+    with import-mysql-indexes
 
 SYNOPSIS
-    export-mysql-indexes host dbname username {password | ''} > dbnameIndexes.json
+    export-mysql-indexes [OPTION]... -d DATABASENAME
+
+OPTIONS
+    -d, --dbname DATABASENAME
+        The name of the database
+
+    -e, --exclude TABLENAME
+        Excludes specified table from export. If you want to specify multiple
+        tables you can use this option multiple times
+
+    -h, --host HOSTNAME
+        Connect to MySQL server on a host different than localhost.
+
+    -H, --help
+        Displays this help manual
+
+    -u, --username USERNAME
+        Specify username for the database connection. By default system username
+        is used.
+
+    -p, --password PASSWORD
+        Database password. If not specified attempting to connect without a
+        password
+        
+    -o, --output FILENAME
+        Write the JSON string to a file instead of printing it on the standart
+        output
 
 NOTES
-    Some PHP builds no not support long options. Use the short options in this case.
+    Some PHP builds no not support long options. Use the short options in this
+    case.
 
 AUTHOR
     Merethis
 ";
 
+$getHelp = "
+To get help type:
+    export-mysql-indexes --help
+";
+
 error_reporting(-1);
 
-$options = (getopt('h:d:u:p:He:', array(
+$options = (getopt('h:d:u:p:He:o:', array(
             'host:',
             'dbname:',
             'username:',
             'password:',
             'help',
-            'exclude:'
+            'exclude:',
+            'output:'
         )));
 
 /* In case help options */
@@ -44,15 +78,17 @@ $password = isset($options['p']) ? $options['p'] : (isset($options['password']) 
 $password = is_array($password) ? end($password) : $password;
 $excludedTables = isset($options['e']) ? $options['e'] : (isset($options['exclude']) ? $options['exclude'] : array());
 $excludedTables = is_array($excludedTables) ? $excludedTables : array($excludedTables);
+$output = isset($options['o']) ? $options['o'] : (isset($options['output']) ? $options['output'] : false);
+$output = is_array($output) ? end($output) : $output;
 
 if ($dbname === false) {
-    echo "Error: No database specified\n";
-    echo $help;
+    echo "Error: No database specified. Use -d DATABASENAME option to specify it\n";
+    echo $getHelp;
     exit(1);
 }
 if ($username === false) {
-    echo "Error: No username specified\n";
-    echo $help;
+    echo "Error: No username specified. Use -u USERNAME to specify it\n";
+    echo $getHelp;
     exit(1);
 }
 
@@ -120,12 +156,21 @@ try {
             exit(1);
         }
         $json = new Services_JSON();
-        $output = $json->encode($indexesForExport);
+        $outputString = $json->encode($indexesForExport);
     } else {
-        $output = json_encode($indexesForExport);
+        $outputString = json_encode($indexesForExport);
     }
 
-    echo $output;
+    if ($output) {
+        $success = @file_put_contents($output, $outputString);
+        if(!$success){
+            echo "Cannot write to file '$output'. Make sure you have write permissions";
+            exit(1);
+        }
+    } else {
+        echo $outputString;
+        exit;
+    }
 } catch (Exception $e) {
     echo 'Something went wrong: ' . $e->getMessage() . "\n";
     exit(1);
