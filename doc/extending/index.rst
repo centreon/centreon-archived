@@ -4,4 +4,4 @@ Extending Centreon
 
 .. toctree::
 
-   widgets
+   widgets/index
