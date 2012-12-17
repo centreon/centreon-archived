@@ -151,11 +151,11 @@
     $searchS_SQL = '';
     $searchS_GET = '';
     $tmp_search_s = '';
-	if (isset($_GET['search_s']) && $_GET['search_s'] != '') {
+	if (isset($_GET['search_s'])) {
 		$tmp_search_s = $_GET['search_s'];
         $oreon->svc_svc_search = $tmp_search_s;
 	}
-	elseif (isset($_POST["searchS"]) && $_POST["searchS"] != '') {
+	elseif (isset($_POST["searchS"])) {
 		$tmp_search_s = $_POST["searchS"];
         $oreon->svc_svc_search = $tmp_search_s;
 	}
