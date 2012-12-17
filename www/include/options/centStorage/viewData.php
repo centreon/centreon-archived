@@ -168,29 +168,22 @@
 
 	$search_string = "";
 	if ($searchH != "" || $searchS != "") {
-		$search_string = " WHERE ";
-
 		if ($searchH != ""){
-			$search_string .= " `host_name` LIKE '%".htmlentities($searchH, ENT_QUOTES, 'UTF-8')."%' ";
+			$search_string .= " AND i.host_name LIKE '%".htmlentities($searchH, ENT_QUOTES, 'UTF-8')."%' ";
 		}
 		if ($searchS != "") {
-			if ($search_string != " WHERE ") {
-				$search_string .= " AND ";
-			}
-			$search_string .= " `service_description` LIKE '%".htmlentities($searchS, ENT_QUOTES, 'UTF-8')."%' ";
+			$search_string .= " AND i.service_description LIKE '%".htmlentities($searchS, ENT_QUOTES, 'UTF-8')."%' ";
 		}
 	}
-
-	$DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM `index_data` $search_string");
-	$tmp = $DBRESULT->fetchRow();
-	$rows = $tmp["COUNT(*)"];
 
 	$tab_class = array("0" => "list_one", "1" => "list_two");
 	$storage_type = array(0 => "RRDTool", 2 => "RRDTool & MySQL");
 	$yesOrNo = array(0 => "No", 1 => "Yes", 2 => "Rebuilding");
 
 	$data = array();
-	$DBRESULT = $pearDBO->query("SELECT * FROM `index_data` $search_string ORDER BY `host_name`, `service_description` LIMIT ".$num * $limit.", $limit");
+	$DBRESULT = $pearDBO->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT i.* FROM index_data i, metrics m WHERE i.id = m.index_id $search_string ORDER BY host_name, service_description LIMIT ".$num * $limit.", $limit");
+	$rows = $pearDBO->numberRows();
+	
 	for ($i = 0; $index_data = $DBRESULT->fetchRow(); $i++) {
 		$DBRESULT2 = $pearDBO->query("SELECT * FROM metrics WHERE index_id = '".$index_data["id"]."'");
 		$metric = "";
@@ -204,12 +197,8 @@
 			}
 		}
 		$index_data["metrics_name"] = $metric;
-		$index_data["service_description"] = str_replace("#S#", "/", $index_data["service_description"]);
-		$index_data["service_description"] = str_replace("#BS#", "\\", $index_data["service_description"]);
 		$index_data["service_description"] = "<a href='./main.php?p=5010602&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
-		$index_data["metrics_name"] = str_replace("#S#", "/", $index_data["metrics_name"]);
-		$index_data["metrics_name"] = str_replace("#BS#", "\\", $index_data["metrics_name"]);
-
+		
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
 	    if (!isset($instance) || ($instance == 0 && $instance == "")) {
 		    $index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
