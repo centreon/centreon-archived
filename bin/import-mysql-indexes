@@ -4,43 +4,56 @@ $help = "NAME
     import-mysql-indexes - MySQL indexes import tool
 
 DESCRIPTION
-    This script ensures the existence of all indexes exported with export-mysql-indexes
+    This script ensures the existence of all indexes exported with
+    export-mysql-indexes
 
 SYNOPSIS
     import-mysql-indexes [OPTION]... -d DATABASENAME
 
 OPTIONS
     -d, --dbname DATABASENAME
-        The name of the database to import to.
+        The name of the database to import to
 
     -e, --exclude TABLENAME
         Excludes specified table from import. If you want to specify multiple
-        tables you can use this option multiple times.
+        tables you can use this option multiple times
 
     -h, --help
-        Displays this help manual.
+        Displays this help manual
 
     -H, --host HOSTNAME
-        Connect to MySQL server on a host different than localhost.
+        Connect to MySQL server on a host different than localhost. Hostname or
+        IP address accepted
+
+    -s, --sync
+        Unless you use this option your database is not synchronized. This
+        option actually ensures the existence of indexes fron the JSON file by
+        creating missing indexes. If an index already exists but it is not
+        identical with the one in the JSON file (i.e. columns are not in the
+        same order), it is dropped and recreated
+        
+        If this option is not used differences are printed
 
     -i, --input FILENAME
-        Read from a JSON file instead of standard input.
+        Read from a JSON file instead of standard input
 
     -p, --password PASSWORD
         Database password. If not specified attempting to connect without a
-        password.
+        password
 
     -u, --username USERNAME
         Specify username for the database connection. By default system username
-        is used.
+        is used. On some systens the username cannot be determined. In this case
+        use this option
 
 NOTES
-    The process usually takes several minutes BUT if your database is big the
-    process may take up to 2 hours in case no index exists. Make sure you have
-    enough free space on the disk
+    The process usually takes several minutes BUT if your database contains a
+    lot of data and no index exists the process may take up to 2 hours. Make
+    sure you have enough free space on the disk because indexes may take up a
+    lot of stace
 
 AUTHOR
-    Merethis
+    Merethis (Alexandru Vilau)
 ";
 
 $getHelp = "
@@ -51,14 +64,15 @@ To get help type:
 error_reporting(-1);
 date_default_timezone_set(@date_default_timezone_get());
 
-$options = (getopt('h:d:u:p:He:i:', array(
+$options = (getopt('h:d:u:p:He:i:s', array(
             'host:',
             'dbname:',
             'username:',
             'password:',
             'help',
             'exclude:',
-            'input:'
+            'input:',
+            'sync'
         )));
 
 /* In case help options */
@@ -67,19 +81,37 @@ if (isset($options['help']) || isset($options['h'])) {
     exit;
 }
 
-/* Figuring out options */
+/* Figuring out user options */
 $host = isset($options['H']) ? $options['H'] : (isset($options['host']) ? $options['host'] : '127.0.0.1');
 $host = is_array($host) ? end($host) : $host;
+
 $dbname = isset($options['d']) ? $options['d'] : (isset($options['dbname']) ? $options['dbname'] : false);
 $dbname = is_array($dbname) ? end($dbname) : $dbname;
+
 $username = isset($options['u']) ? $options['u'] : (isset($options['username']) ? $options['username'] : (isset($_SERVER['LOGNAME']) ? $_SERVER['LOGNAME'] : false));
 $username = is_array($username) ? end($username) : $username;
+
 $password = isset($options['p']) ? $options['p'] : (isset($options['password']) ? $options['password'] : '');
 $password = is_array($password) ? end($password) : $password;
+
 $excludedTables = isset($options['e']) ? $options['e'] : (isset($options['exclude']) ? $options['exclude'] : array());
 $excludedTables = is_array($excludedTables) ? $excludedTables : array($excludedTables);
+
 $input = isset($options['i']) ? $options['i'] : (isset($options['input']) ? $options['input'] : false);
 $input = is_array($input) ? end($input) : $input;
+
+$sync = isset($options['s']) ? true : (isset($options['sync']) ? true : false);
+
+if ($dbname === false) {
+    echo "Error: No database name specified. Use -d option to specify it\n";
+    echo $getHelp;
+    exit(1);
+}
+if ($username === false) {
+    echo "Error: No username specified. Use -u to specify it\n";
+    echo $getHelp;
+    exit(1);
+}
 
 try {
 
@@ -92,7 +124,7 @@ try {
 
     if (!function_exists('json_decode')) {
         if (!(@include 'Services/JSON.php') || !class_exists('Services_JSON')) {
-            echo "Please insstall Services_JSON pear package\n    pear install Services_JSON-1.0.3\n";
+            echo "Please insstall Services_JSON pear package\n    pear install Services_JSON\n";
             exit(1);
         }
         $json = new Services_JSON();
@@ -102,9 +134,10 @@ try {
     }
 
     if (!$indexes) {
-        echo "Something went wrong while reading stdin [bad JSON file]\n";
+        echo "Something went wrong while parsing stdin. Bad JSON file\n";
         exit(1);
     }
+
     if (!is_array($indexes)) {
         echo "Huston, we have a problem! JSON file contains no array\n";
         exit(1);
@@ -114,13 +147,29 @@ try {
     /* Class defined at the end of this file */
     $importer = new MysqlIndexImporter($conn, $indexes, $dbname);
     $importer->setExcludedTables($excludedTables);
+    $importer->setSync($sync);
     $importer->import();
     $exitCode = 0;
-    foreach ($importer->getLogs() as $log) {
-        if (!$log['success']) {
-            $exitCode = 1;
+
+    $differences = false;
+    if (!$sync) {
+        foreach ($importer->getDifferences() as $diff) {
+            echo $diff . "\n";
+            $differences = true;
         }
-        echo '[' . date('Y-m-d H:i:s', $log['time']) . ']' . ($log['success'] ? ' OK ' : ' NOK ') . $log['message'] . "\n";
+
+        if ($differences) {
+            echo "\nUse --sync option to sync indexes\n";
+        } else {
+            echo "No differences detected\n";
+        }
+    } else {
+        foreach ($importer->getLogs() as $log) {
+            if (!$log['success']) {
+                $exitCode = 1;
+            }
+            echo '[' . date('Y-m-d H:i:s', $log['time']) . ']' . ($log['success'] ? ' OK ' : ' NOK ') . $log['message'] . "\n";
+        }
     }
 } catch (Exception $e) {
     echo 'Something went wrong: ' . $e->getMessage() . "\n";
@@ -143,10 +192,22 @@ class MysqlIndexImporter
     public $connection;
 
     /**
+     * Database name used for select statements in information_schema MySQL database
+     * @var string
+     */
+    public $dbname;
+
+    /**
+     * Used to store differences between indexes
+     * @var string[]
+     */
+    protected $differences = array();
+
+    /**
      * Array of string containing table names to exclude
      * @var array 
      */
-    public $excludedTables;
+    protected $excludedTables;
 
     /**
      * An array containing database indexes
@@ -171,12 +232,6 @@ class MysqlIndexImporter
     public $indexes = array();
 
     /**
-     * Database name used for select statements in information_schema MySQL database
-     * @var string
-     */
-    public $dbname;
-
-    /**
      * Array of logs
      * Format:
      *  array(
@@ -190,6 +245,12 @@ class MysqlIndexImporter
      * @var array
      */
     protected $logs = array();
+
+    /**
+     * Only if this property is true database is altered as a safety measure
+     * @var bool 
+     */
+    protected $sync = false;
 
     /**
      * One instance per database
@@ -246,12 +307,20 @@ class MysqlIndexImporter
 
             /* If no column then index does not exist */
             if (!count($columns)) {
-                $this->createIndexFromStructure($index);
+                if ($this->sync) {
+                    $this->createIndexFromStructure($index);
+                } else {
+                    $this->registerDifference($index, $columns);
+                }
                 continue;
             }
             /* If no column count differs then index is different */
             if (count($index->columns) !== count($columns)) {
-                $this->recreateIndexFromStructure($index);
+                if ($this->sync) {
+                    $this->recreateIndexFromStructure($index);
+                } else {
+                    $this->registerDifference($index, $columns);
+                }
                 continue;
             }
 
@@ -267,17 +336,29 @@ class MysqlIndexImporter
                  * uniqueness for every column.
                  */
                 if ($index->unique xor !$columns[$i]['NON_UNIQUE']) {
-                    $this->recreateIndexFromStructure($index);
+                    if ($this->sync) {
+                        $this->recreateIndexFromStructure($index);
+                    } else {
+                        $this->registerDifference($index, $columns);
+                    }
                     break;
                 }
                 /* In case column name differs */
                 if ($column->name !== $columns[$i]['COLUMN_NAME']) {
-                    $this->recreateIndexFromStructure($index);
+                    if ($this->sync) {
+                        $this->recreateIndexFromStructure($index);
+                    } else {
+                        $this->registerDifference($index, $columns);
+                    }
                     break;
                 }
                 /* In case column length differs */
                 if ($column->length !== $columns[$i]['SUB_PART']) {
-                    $this->recreateIndexFromStructure($index);
+                    if ($this->sync) {
+                        $this->recreateIndexFromStructure($index);
+                    } else {
+                        $this->registerDifference($index, $columns);
+                    }
                     break;
                 }
                 ++$i;
@@ -390,6 +471,67 @@ class MysqlIndexImporter
     }
 
     /**
+     * Registers a difference as a string to be displayed for the end user
+     * @param stdClass $indexStructure
+     * @param array $databaseIndexColumns
+     * @return type
+     */
+    protected function registerDifference($indexStructure, $databaseIndexColumns)
+    {
+        /* Making string with column names in order for source */
+        $leftColumnParts = array();
+        foreach ($indexStructure->columns as $column) {
+            if ($column->length) {
+                $length = ' (' . (int) $column->length . ')';
+            } else {
+                $length = '';
+            }
+            $leftColumnParts[] = '`' . $column->name . '`' . $length;
+        }
+
+        /* In case index does not exist no need to go further */
+        if (count($databaseIndexColumns) === 0) {
+            $this->differences[] = 'Missing: ' . (!$indexStructure->unique ? 'UNIQUE ' : '') . 'INDEX \'' . $indexStructure->tableName . '\'.\'' . $indexStructure->indexName . '\'(' . implode(', ', $leftColumnParts) . ')';
+            return;
+        }
+
+        /* Making string with column names in order for destination */
+        $rightColumnParts = array();
+        foreach ($databaseIndexColumns as $databaseIndexColumn) {
+            if ($databaseIndexColumn['SUB_PART']) {
+                $length = ' (' . (int) $databaseIndexColumn['SUB_PART'] . ')';
+            } else {
+                $length = '';
+            }
+            $rightColumnParts[] = '`' . $databaseIndexColumn['COLUMN_NAME'] . '`' . $length;
+        }
+
+        /* Getting first index column to access rendundant data */
+        $firstColumn = reset($databaseIndexColumns);
+
+        /* Adding difference text */
+        $this->differences[] = 'Difference: ' . (!$firstColumn['NON_UNIQUE'] ? 'UNIQUE ' : '') . 'INDEX \'' . $indexStructure->tableName . '\'.\'' . $indexStructure->indexName . '\'(' . implode(', ', $rightColumnParts) . ') should be ' . ($indexStructure->unique ? 'UNIQUE ' : '') . 'INDEX(' . implode(', ', $leftColumnParts) . ')';
+    }
+
+    /**
+     * Getter for differences array
+     * @return array
+     */
+    public function getDifferences()
+    {
+        return $this->differences;
+    }
+
+    /**
+     * Setter for sync option
+     * @param bool $sync
+     */
+    public function setSync($sync)
+    {
+        $this->sync = (bool) $sync;
+    }
+
+    /**
      * Sets the list of tables to be excluded from import
      * @param array $excludedTables
      * @throws InvalidArgumentException
@@ -403,7 +545,7 @@ class MysqlIndexImporter
     }
 
     /**
-     * Returns errors messages
+     * Returns error messages
      * @return array
      */
     public function getLogs()

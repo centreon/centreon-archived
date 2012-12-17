@@ -41,7 +41,7 @@ NOTES
     case.
 
 AUTHOR
-    Merethis
+    Merethis (Alexandru Vilau)
 ";
 
 $getHelp = "
@@ -82,12 +82,12 @@ $output = isset($options['o']) ? $options['o'] : (isset($options['output']) ? $o
 $output = is_array($output) ? end($output) : $output;
 
 if ($dbname === false) {
-    echo "Error: No database specified. Use -d DATABASENAME option to specify it\n";
+    echo "Error: No database name specified. Use -d option to specify it\n";
     echo $getHelp;
     exit(1);
 }
 if ($username === false) {
-    echo "Error: No username specified. Use -u USERNAME to specify it\n";
+    echo "Error: No username specified. Use -u to specify it\n";
     echo $getHelp;
     exit(1);
 }
@@ -152,7 +152,7 @@ try {
     $indexesForExport[] = $currentIndex;
     if (!function_exists('json_encode')) {
         if (!(@include 'Services/JSON.php') || !class_exists('Services_JSON')) {
-            echo "Please insstall Services_JSON pear package\n    pear install Services_JSON-1.0.3\n";
+            echo "Please insstall Services_JSON pear package\n    pear install Services_JSON\n";
             exit(1);
         }
         $json = new Services_JSON();
