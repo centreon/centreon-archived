@@ -180,9 +180,10 @@
 		}
 	}
 	print "check_session();";
-	print "\n});\n</script>\n";
+	print "\n});\n";
 
 ?>
+</script>
 <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
 <body>
