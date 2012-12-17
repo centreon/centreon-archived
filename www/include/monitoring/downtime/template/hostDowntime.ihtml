@@ -19,19 +19,17 @@
 <br/>
 <table class="ToolbarTable">
 	<tr class="ToolbarTR">
-            <td class="ListColFooterLeft" align="left">
+            <td class="Toolbar_TDSelectAction_Top">
                     <select name="o1" onChange="javascript: doAction(this, this.value); return true;">
                         <option value=0></option>
                         <option value="ch">{$cancel}</option>
                         <option value="dh">{$delete}</option>
                     </select>
-                    {if $msgs}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgs.addL}">{$msgs.addT}</a>{/if}
-            </td>
-            <td>
-                {php}
-                include('./include/common/pagination.php');
-                {/php}
-            </td>
+                    {if $msgh}<img src='./img/icones/16x16/navigate_plus.gif'>&nbsp;<a href="{$msgh.addL}">{$msgh.addT}</a>{/if}
+            </td>            
+            {php}
+            include('./include/common/pagination.php');
+            {/php}
 	</tr>
 </table>
 <table class="ListTable">
@@ -81,18 +79,16 @@
 </table>
 <table class="ToolbarTable">
     <tr class="ToolbarTR">
-        <td class="ListColFooterLeft" align="left">
+        <td class="Toolbar_TDSelectAction_Bottom">
                 <select name="o2" onChange="javascript: doAction(this, this.value); return true;">
                     <option value=0></option>
                     <option value="ch">{$cancel}</option>
                     <option value="dh">{$delete}</option>
                 </select>
         </td>
-        <td>
 	{php}
 	   include('./include/common/pagination.php');
 	{/php}
-        </td>
     </tr>
 </table>
 <input type='hidden' id='limit' name='limit' value='{$limit}'>
