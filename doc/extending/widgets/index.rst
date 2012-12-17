@@ -1,0 +1,8 @@
+#######
+Widgets
+#######
+
+.. toctree::
+
+   install
+   howtowrite
