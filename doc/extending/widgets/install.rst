@@ -1,3 +1,5 @@
+.. _widget_installation:
+
 ============
 Installation
 ============
@@ -23,11 +25,36 @@ Then, you need to log in the Centreon web UI and go to [Administration] > [Modul
 
 .. image:: /_static/images/extending/widgets/install.png
    :align: center
+   :width: 750px
+
+
+At last, click on the Install button:
+
+.. image:: /_static/images/extending/widgets/install_btn.png
+   :align: center
+
+
+Your widget is now ready to be used!
+
 
 *******
 Upgrade
 *******
 
+The upgrade process is similar to the installation process, but you will see the *upgrade* button instead:
+
+.. image:: /_static/images/extending/widgets/upgrade_btn.png
+   :align: center
+
+
 **************
 Uninstallation
 **************
+
+To uninstall a widget, click on this button:
+
+.. image:: /_static/images/extending/widgets/uninstall_btn.png
+   :align: center
+
+.. warning::
+   Uninstalling a widget will also remove it from all the custom views, do it with caution as widget preferences will not be saved!
