@@ -155,7 +155,7 @@ sub identify_metric($$$$$$$){
 			 } else {
 				# Update with good metric name
 				my $sth2 = $con_ods->prepare("UPDATE `metrics` SET `metric_name` = " . $con_ods->quote($metric_name) . " WHERE `index_id` = '".$_[1]."' AND `metric_name` = " . $con_ods->quote($metric_name_mod));
-				if (!$sth2->execute()) { return error_thrown(2, "Error : " . $sth1->errstr); }
+				if (!$sth2->execute()) { return error_thrown(2, "Error : " . $sth2->errstr); }
 			 }
 		    }
 		    my $metric = $sth1->fetchrow_hashref();
