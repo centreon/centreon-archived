@@ -1,1 +1,2287 @@
-[{"tableName":"centreon_acl","indexName":"group_id_by_id","unique":false,"columns":[{"name":"group_id","length":null},{"name":"host_id","length":null},{"name":"service_id","length":null}]},{"tableName":"centreon_acl","indexName":"group_id_by_name","unique":false,"columns":[{"name":"group_id","length":null},{"name":"host_name","length":"70"},{"name":"service_description","length":"120"}]},{"tableName":"centreon_acl","indexName":"group_id_for_host","unique":false,"columns":[{"name":"group_id","length":null},{"name":"host_name","length":"70"}]},{"tableName":"centreon_acl","indexName":"host_name","unique":false,"columns":[{"name":"host_name","length":null}]},{"tableName":"centreon_acl","indexName":"service_description","unique":false,"columns":[{"name":"service_description","length":null}]},{"tableName":"nagios_acknowledgements","indexName":"entry_time","unique":false,"columns":[{"name":"entry_time","length":null},{"name":"object_id","length":null},{"name":"acknowledgement_type","length":null}]},{"tableName":"nagios_acknowledgements","indexName":"PRIMARY","unique":true,"columns":[{"name":"acknowledgement_id","length":null}]},{"tableName":"nagios_commands","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"object_id","length":null},{"name":"config_type","length":null}]},{"tableName":"nagios_commands","indexName":"PRIMARY","unique":true,"columns":[{"name":"command_id","length":null}]},{"tableName":"nagios_commenthistory","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"comment_time","length":null},{"name":"internal_comment_id","length":null}]},{"tableName":"nagios_commenthistory","indexName":"PRIMARY","unique":true,"columns":[{"name":"commenthistory_id","length":null}]},{"tableName":"nagios_comments","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"comment_time","length":null},{"name":"internal_comment_id","length":null}]},{"tableName":"nagios_comments","indexName":"PRIMARY","unique":true,"columns":[{"name":"comment_id","length":null}]},{"tableName":"nagios_configfiles","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"configfile_type","length":null},{"name":"configfile_path","length":null}]},{"tableName":"nagios_configfiles","indexName":"PRIMARY","unique":true,"columns":[{"name":"configfile_id","length":null}]},{"tableName":"nagios_configfilevariables","indexName":"PRIMARY","unique":true,"columns":[{"name":"configfilevariable_id","length":null}]},{"tableName":"nagios_conninfo","indexName":"PRIMARY","unique":true,"columns":[{"name":"conninfo_id","length":null}]},{"tableName":"nagios_contactgroups","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"contactgroup_object_id","length":null}]},{"tableName":"nagios_contactgroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"contactgroup_id","length":null}]},{"tableName":"nagios_contactgroup_members","indexName":"instance_id","unique":true,"columns":[{"name":"contactgroup_id","length":null},{"name":"contact_object_id","length":null}]},{"tableName":"nagios_contactgroup_members","indexName":"PRIMARY","unique":true,"columns":[{"name":"contactgroup_member_id","length":null}]},{"tableName":"nagios_contactnotificationmethods","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"contactnotification_id","length":null},{"name":"start_time","length":null},{"name":"start_time_usec","length":null}]},{"tableName":"nagios_contactnotificationmethods","indexName":"PRIMARY","unique":true,"columns":[{"name":"contactnotificationmethod_id","length":null}]},{"tableName":"nagios_contactnotifications","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"contact_object_id","length":null},{"name":"start_time","length":null},{"name":"start_time_usec","length":null}]},{"tableName":"nagios_contactnotifications","indexName":"PRIMARY","unique":true,"columns":[{"name":"contactnotification_id","length":null}]},{"tableName":"nagios_contacts","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"contact_object_id","length":null}]},{"tableName":"nagios_contacts","indexName":"PRIMARY","unique":true,"columns":[{"name":"contact_id","length":null}]},{"tableName":"nagios_contactstatus","indexName":"contact_object_id","unique":true,"columns":[{"name":"contact_object_id","length":null}]},{"tableName":"nagios_contactstatus","indexName":"PRIMARY","unique":true,"columns":[{"name":"contactstatus_id","length":null}]},{"tableName":"nagios_contact_addresses","indexName":"contact_id","unique":true,"columns":[{"name":"contact_id","length":null},{"name":"address_number","length":null}]},{"tableName":"nagios_contact_addresses","indexName":"PRIMARY","unique":true,"columns":[{"name":"contact_address_id","length":null}]},{"tableName":"nagios_contact_notificationcommands","indexName":"contact_id","unique":true,"columns":[{"name":"contact_id","length":null},{"name":"notification_type","length":null},{"name":"command_object_id","length":null},{"name":"command_args","length":null}]},{"tableName":"nagios_contact_notificationcommands","indexName":"PRIMARY","unique":true,"columns":[{"name":"contact_notificationcommand_id","length":null}]},{"tableName":"nagios_customvariables","indexName":"object_id_2","unique":true,"columns":[{"name":"object_id","length":null},{"name":"config_type","length":null},{"name":"varname","length":null}]},{"tableName":"nagios_customvariables","indexName":"PRIMARY","unique":true,"columns":[{"name":"customvariable_id","length":null}]},{"tableName":"nagios_customvariables","indexName":"varname","unique":false,"columns":[{"name":"varname","length":null}]},{"tableName":"nagios_customvariablestatus","indexName":"object_id_2","unique":true,"columns":[{"name":"object_id","length":null},{"name":"varname","length":null}]},{"tableName":"nagios_customvariablestatus","indexName":"PRIMARY","unique":true,"columns":[{"name":"customvariablestatus_id","length":null}]},{"tableName":"nagios_customvariablestatus","indexName":"varname","unique":false,"columns":[{"name":"varname","length":null}]},{"tableName":"nagios_downtimehistory","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"object_id","length":null},{"name":"entry_time","length":null},{"name":"internal_downtime_id","length":null}]},{"tableName":"nagios_downtimehistory","indexName":"PRIMARY","unique":true,"columns":[{"name":"downtimehistory_id","length":null}]},{"tableName":"nagios_eventhandlers","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"object_id","length":null},{"name":"start_time","length":null},{"name":"start_time_usec","length":null}]},{"tableName":"nagios_eventhandlers","indexName":"PRIMARY","unique":true,"columns":[{"name":"eventhandler_id","length":null}]},{"tableName":"nagios_externalcommands","indexName":"PRIMARY","unique":true,"columns":[{"name":"externalcommand_id","length":null}]},{"tableName":"nagios_flappinghistory","indexName":"PRIMARY","unique":true,"columns":[{"name":"flappinghistory_id","length":null}]},{"tableName":"nagios_hostchecks","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"host_object_id","length":null},{"name":"start_time","length":null},{"name":"start_time_usec","length":null}]},{"tableName":"nagios_hostchecks","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostcheck_id","length":null}]},{"tableName":"nagios_hostdependencies","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"host_object_id","length":null},{"name":"dependent_host_object_id","length":null},{"name":"dependency_type","length":null},{"name":"inherits_parent","length":null},{"name":"fail_on_up","length":null},{"name":"fail_on_down","length":null},{"name":"fail_on_unreachable","length":null}]},{"tableName":"nagios_hostdependencies","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostdependency_id","length":null}]},{"tableName":"nagios_hostescalations","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"host_object_id","length":null},{"name":"timeperiod_object_id","length":null},{"name":"first_notification","length":null},{"name":"last_notification","length":null}]},{"tableName":"nagios_hostescalations","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostescalation_id","length":null}]},{"tableName":"nagios_hostescalation_contactgroups","indexName":"instance_id","unique":true,"columns":[{"name":"hostescalation_id","length":null},{"name":"contactgroup_object_id","length":null}]},{"tableName":"nagios_hostescalation_contactgroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostescalation_contactgroup_id","length":null}]},{"tableName":"nagios_hostescalation_contacts","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"hostescalation_id","length":null},{"name":"contact_object_id","length":null}]},{"tableName":"nagios_hostescalation_contacts","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostescalation_contact_id","length":null}]},{"tableName":"nagios_hostgroups","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"hostgroup_object_id","length":null}]},{"tableName":"nagios_hostgroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostgroup_id","length":null}]},{"tableName":"nagios_hostgroup_members","indexName":"instance_id","unique":true,"columns":[{"name":"hostgroup_id","length":null},{"name":"host_object_id","length":null}]},{"tableName":"nagios_hostgroup_members","indexName":"PRIMARY","unique":true,"columns":[{"name":"hostgroup_member_id","length":null}]},{"tableName":"nagios_hosts","indexName":"display_name","unique":false,"columns":[{"name":"display_name","length":null}]},{"tableName":"nagios_hosts","indexName":"host_object_id","unique":false,"columns":[{"name":"host_object_id","length":null}]},{"tableName":"nagios_hosts","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"host_object_id","length":null}]},{"tableName":"nagios_hosts","indexName":"PRIMARY","unique":true,"columns":[{"name":"host_id","length":null}]},{"tableName":"nagios_hoststatus","indexName":"active_checks_enabled","unique":false,"columns":[{"name":"active_checks_enabled","length":null}]},{"tableName":"nagios_hoststatus","indexName":"check_type","unique":false,"columns":[{"name":"check_type","length":null}]},{"tableName":"nagios_hoststatus","indexName":"current_state","unique":false,"columns":[{"name":"current_state","length":null}]},{"tableName":"nagios_hoststatus","indexName":"event_handler_enabled","unique":false,"columns":[{"name":"event_handler_enabled","length":null}]},{"tableName":"nagios_hoststatus","indexName":"execution_time","unique":false,"columns":[{"name":"execution_time","length":null}]},{"tableName":"nagios_hoststatus","indexName":"flap_detection_enabled","unique":false,"columns":[{"name":"flap_detection_enabled","length":null}]},{"tableName":"nagios_hoststatus","indexName":"instance_id","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_hoststatus","indexName":"is_flapping","unique":false,"columns":[{"name":"is_flapping","length":null}]},{"tableName":"nagios_hoststatus","indexName":"last_state_change","unique":false,"columns":[{"name":"last_state_change","length":null}]},{"tableName":"nagios_hoststatus","indexName":"latency","unique":false,"columns":[{"name":"latency","length":null}]},{"tableName":"nagios_hoststatus","indexName":"notifications_enabled","unique":false,"columns":[{"name":"notifications_enabled","length":null}]},{"tableName":"nagios_hoststatus","indexName":"object_id","unique":true,"columns":[{"name":"host_object_id","length":null}]},{"tableName":"nagios_hoststatus","indexName":"passive_checks_enabled","unique":false,"columns":[{"name":"passive_checks_enabled","length":null}]},{"tableName":"nagios_hoststatus","indexName":"percent_state_change","unique":false,"columns":[{"name":"percent_state_change","length":null}]},{"tableName":"nagios_hoststatus","indexName":"PRIMARY","unique":true,"columns":[{"name":"hoststatus_id","length":null}]},{"tableName":"nagios_hoststatus","indexName":"problem_has_been_acknowledged","unique":false,"columns":[{"name":"problem_has_been_acknowledged","length":null}]},{"tableName":"nagios_hoststatus","indexName":"scheduled_downtime_depth","unique":false,"columns":[{"name":"scheduled_downtime_depth","length":null}]},{"tableName":"nagios_hoststatus","indexName":"state_type","unique":false,"columns":[{"name":"state_type","length":null}]},{"tableName":"nagios_hoststatus","indexName":"status_update_time","unique":false,"columns":[{"name":"status_update_time","length":null}]},{"tableName":"nagios_host_contactgroups","indexName":"instance_id","unique":true,"columns":[{"name":"host_id","length":null},{"name":"contactgroup_object_id","length":null}]},{"tableName":"nagios_host_contactgroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"host_contactgroup_id","length":null}]},{"tableName":"nagios_host_contacts","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"host_id","length":null},{"name":"contact_object_id","length":null}]},{"tableName":"nagios_host_contacts","indexName":"PRIMARY","unique":true,"columns":[{"name":"host_contact_id","length":null}]},{"tableName":"nagios_host_parenthosts","indexName":"instance_id","unique":true,"columns":[{"name":"host_id","length":null},{"name":"parent_host_object_id","length":null}]},{"tableName":"nagios_host_parenthosts","indexName":"PRIMARY","unique":true,"columns":[{"name":"host_parenthost_id","length":null}]},{"tableName":"nagios_instances","indexName":"PRIMARY","unique":true,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_logentries","indexName":"PRIMARY","unique":true,"columns":[{"name":"logentry_id","length":null}]},{"tableName":"nagios_notifications","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"object_id","length":null},{"name":"start_time","length":null},{"name":"start_time_usec","length":null}]},{"tableName":"nagios_notifications","indexName":"PRIMARY","unique":true,"columns":[{"name":"notification_id","length":null}]},{"tableName":"nagios_objects","indexName":"name1","unique":false,"columns":[{"name":"name1","length":null}]},{"tableName":"nagios_objects","indexName":"objecttype_id","unique":false,"columns":[{"name":"objecttype_id","length":null},{"name":"name1","length":null},{"name":"name2","length":null}]},{"tableName":"nagios_objects","indexName":"object_id","unique":false,"columns":[{"name":"object_id","length":null},{"name":"name1","length":null},{"name":"is_active","length":null}]},{"tableName":"nagios_objects","indexName":"PRIMARY","unique":true,"columns":[{"name":"object_id","length":null}]},{"tableName":"nagios_processevents","indexName":"PRIMARY","unique":true,"columns":[{"name":"processevent_id","length":null}]},{"tableName":"nagios_programstatus","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_programstatus","indexName":"PRIMARY","unique":true,"columns":[{"name":"programstatus_id","length":null}]},{"tableName":"nagios_runtimevariables","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"varname","length":null}]},{"tableName":"nagios_runtimevariables","indexName":"PRIMARY","unique":true,"columns":[{"name":"runtimevariable_id","length":null}]},{"tableName":"nagios_scheduleddowntime","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"object_id","length":null},{"name":"entry_time","length":null},{"name":"internal_downtime_id","length":null}]},{"tableName":"nagios_scheduleddowntime","indexName":"PRIMARY","unique":true,"columns":[{"name":"scheduleddowntime_id","length":null}]},{"tableName":"nagios_servicechecks","indexName":"instance_id","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_servicechecks","indexName":"PRIMARY","unique":true,"columns":[{"name":"servicecheck_id","length":null}]},{"tableName":"nagios_servicechecks","indexName":"service_object_id","unique":false,"columns":[{"name":"service_object_id","length":null}]},{"tableName":"nagios_servicechecks","indexName":"start_time","unique":false,"columns":[{"name":"start_time","length":null}]},{"tableName":"nagios_servicedependencies","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"service_object_id","length":null},{"name":"dependent_service_object_id","length":null},{"name":"dependency_type","length":null},{"name":"inherits_parent","length":null},{"name":"fail_on_ok","length":null},{"name":"fail_on_warning","length":null},{"name":"fail_on_unknown","length":null},{"name":"fail_on_critical","length":null}]},{"tableName":"nagios_servicedependencies","indexName":"PRIMARY","unique":true,"columns":[{"name":"servicedependency_id","length":null}]},{"tableName":"nagios_serviceescalations","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"service_object_id","length":null},{"name":"timeperiod_object_id","length":null},{"name":"first_notification","length":null},{"name":"last_notification","length":null}]},{"tableName":"nagios_serviceescalations","indexName":"PRIMARY","unique":true,"columns":[{"name":"serviceescalation_id","length":null}]},{"tableName":"nagios_serviceescalation_contactgroups","indexName":"instance_id","unique":true,"columns":[{"name":"serviceescalation_id","length":null},{"name":"contactgroup_object_id","length":null}]},{"tableName":"nagios_serviceescalation_contactgroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"serviceescalation_contactgroup_id","length":null}]},{"tableName":"nagios_serviceescalation_contacts","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"serviceescalation_id","length":null},{"name":"contact_object_id","length":null}]},{"tableName":"nagios_serviceescalation_contacts","indexName":"PRIMARY","unique":true,"columns":[{"name":"serviceescalation_contact_id","length":null}]},{"tableName":"nagios_servicegroups","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"servicegroup_object_id","length":null}]},{"tableName":"nagios_servicegroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"servicegroup_id","length":null}]},{"tableName":"nagios_servicegroup_members","indexName":"instance_id","unique":true,"columns":[{"name":"servicegroup_id","length":null},{"name":"service_object_id","length":null}]},{"tableName":"nagios_servicegroup_members","indexName":"PRIMARY","unique":true,"columns":[{"name":"servicegroup_member_id","length":null}]},{"tableName":"nagios_services","indexName":"host_object_id","unique":false,"columns":[{"name":"host_object_id","length":null}]},{"tableName":"nagios_services","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"service_object_id","length":null}]},{"tableName":"nagios_services","indexName":"PRIMARY","unique":true,"columns":[{"name":"service_id","length":null}]},{"tableName":"nagios_services","indexName":"service_object_id","unique":false,"columns":[{"name":"service_object_id","length":null}]},{"tableName":"nagios_servicestatus","indexName":"active_checks_enabled","unique":false,"columns":[{"name":"active_checks_enabled","length":null}]},{"tableName":"nagios_servicestatus","indexName":"check_type","unique":false,"columns":[{"name":"check_type","length":null}]},{"tableName":"nagios_servicestatus","indexName":"current_state","unique":false,"columns":[{"name":"current_state","length":null}]},{"tableName":"nagios_servicestatus","indexName":"event_handler_enabled","unique":false,"columns":[{"name":"event_handler_enabled","length":null}]},{"tableName":"nagios_servicestatus","indexName":"execution_time","unique":false,"columns":[{"name":"execution_time","length":null}]},{"tableName":"nagios_servicestatus","indexName":"flap_detection_enabled","unique":false,"columns":[{"name":"flap_detection_enabled","length":null}]},{"tableName":"nagios_servicestatus","indexName":"instance_id","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_servicestatus","indexName":"is_flapping","unique":false,"columns":[{"name":"is_flapping","length":null}]},{"tableName":"nagios_servicestatus","indexName":"last_state_change","unique":false,"columns":[{"name":"last_state_change","length":null}]},{"tableName":"nagios_servicestatus","indexName":"latency","unique":false,"columns":[{"name":"latency","length":null}]},{"tableName":"nagios_servicestatus","indexName":"notifications_enabled","unique":false,"columns":[{"name":"notifications_enabled","length":null}]},{"tableName":"nagios_servicestatus","indexName":"object_id","unique":true,"columns":[{"name":"service_object_id","length":null}]},{"tableName":"nagios_servicestatus","indexName":"passive_checks_enabled","unique":false,"columns":[{"name":"passive_checks_enabled","length":null}]},{"tableName":"nagios_servicestatus","indexName":"percent_state_change","unique":false,"columns":[{"name":"percent_state_change","length":null}]},{"tableName":"nagios_servicestatus","indexName":"PRIMARY","unique":true,"columns":[{"name":"servicestatus_id","length":null}]},{"tableName":"nagios_servicestatus","indexName":"problem_has_been_acknowledged","unique":false,"columns":[{"name":"problem_has_been_acknowledged","length":null}]},{"tableName":"nagios_servicestatus","indexName":"scheduled_downtime_depth","unique":false,"columns":[{"name":"scheduled_downtime_depth","length":null}]},{"tableName":"nagios_servicestatus","indexName":"service_object_id","unique":false,"columns":[{"name":"service_object_id","length":null},{"name":"current_state","length":null},{"name":"state_type","length":null},{"name":"problem_has_been_acknowledged","length":null},{"name":"scheduled_downtime_depth","length":null}]},{"tableName":"nagios_servicestatus","indexName":"service_object_id_2","unique":false,"columns":[{"name":"service_object_id","length":null},{"name":"current_state","length":null}]},{"tableName":"nagios_servicestatus","indexName":"state_type","unique":false,"columns":[{"name":"state_type","length":null}]},{"tableName":"nagios_servicestatus","indexName":"status_update_time","unique":false,"columns":[{"name":"status_update_time","length":null}]},{"tableName":"nagios_service_contactgroups","indexName":"instance_id","unique":true,"columns":[{"name":"service_id","length":null},{"name":"contactgroup_object_id","length":null}]},{"tableName":"nagios_service_contactgroups","indexName":"PRIMARY","unique":true,"columns":[{"name":"service_contactgroup_id","length":null}]},{"tableName":"nagios_service_contacts","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"service_id","length":null},{"name":"contact_object_id","length":null}]},{"tableName":"nagios_service_contacts","indexName":"PRIMARY","unique":true,"columns":[{"name":"service_contact_id","length":null}]},{"tableName":"nagios_statehistory","indexName":"PRIMARY","unique":true,"columns":[{"name":"statehistory_id","length":null}]},{"tableName":"nagios_systemcommands","indexName":"instance_id","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_systemcommands","indexName":"PRIMARY","unique":true,"columns":[{"name":"systemcommand_id","length":null}]},{"tableName":"nagios_systemcommands","indexName":"start_time","unique":false,"columns":[{"name":"start_time","length":null}]},{"tableName":"nagios_timedeventqueue","indexName":"event_type","unique":false,"columns":[{"name":"event_type","length":null}]},{"tableName":"nagios_timedeventqueue","indexName":"instance_id","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_timedeventqueue","indexName":"instance_id_2","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_timedeventqueue","indexName":"object_id","unique":false,"columns":[{"name":"object_id","length":null}]},{"tableName":"nagios_timedeventqueue","indexName":"PRIMARY","unique":true,"columns":[{"name":"timedeventqueue_id","length":null}]},{"tableName":"nagios_timedeventqueue","indexName":"scheduled_time","unique":false,"columns":[{"name":"scheduled_time","length":null}]},{"tableName":"nagios_timedevents","indexName":"event_type","unique":false,"columns":[{"name":"event_type","length":null}]},{"tableName":"nagios_timedevents","indexName":"instance_id","unique":false,"columns":[{"name":"instance_id","length":null}]},{"tableName":"nagios_timedevents","indexName":"object_id","unique":false,"columns":[{"name":"object_id","length":null}]},{"tableName":"nagios_timedevents","indexName":"PRIMARY","unique":true,"columns":[{"name":"timedevent_id","length":null}]},{"tableName":"nagios_timedevents","indexName":"scheduled_time","unique":false,"columns":[{"name":"scheduled_time","length":null}]},{"tableName":"nagios_timeperiods","indexName":"instance_id","unique":true,"columns":[{"name":"instance_id","length":null},{"name":"config_type","length":null},{"name":"timeperiod_object_id","length":null}]},{"tableName":"nagios_timeperiods","indexName":"PRIMARY","unique":true,"columns":[{"name":"timeperiod_id","length":null}]},{"tableName":"nagios_timeperiod_timeranges","indexName":"instance_id","unique":true,"columns":[{"name":"timeperiod_id","length":null},{"name":"day","length":null},{"name":"start_sec","length":null},{"name":"end_sec","length":null}]},{"tableName":"nagios_timeperiod_timeranges","indexName":"PRIMARY","unique":true,"columns":[{"name":"timeperiod_timerange_id","length":null}]}]
+[
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "group_id"
+            },
+            {
+                "length": null,
+                "name": "host_id"
+            },
+            {
+                "length": null,
+                "name": "service_id"
+            }
+        ],
+        "indexName": "group_id_by_id",
+        "tableName": "centreon_acl",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "group_id"
+            },
+            {
+                "length": "70",
+                "name": "host_name"
+            },
+            {
+                "length": "120",
+                "name": "service_description"
+            }
+        ],
+        "indexName": "group_id_by_name",
+        "tableName": "centreon_acl",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "group_id"
+            },
+            {
+                "length": "70",
+                "name": "host_name"
+            }
+        ],
+        "indexName": "group_id_for_host",
+        "tableName": "centreon_acl",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_name"
+            }
+        ],
+        "indexName": "host_name",
+        "tableName": "centreon_acl",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_description"
+            }
+        ],
+        "indexName": "service_description",
+        "tableName": "centreon_acl",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "entry_time"
+            },
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "acknowledgement_type"
+            }
+        ],
+        "indexName": "entry_time",
+        "tableName": "nagios_acknowledgements",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "acknowledgement_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_acknowledgements",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_commands",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "command_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_commands",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "comment_time"
+            },
+            {
+                "length": null,
+                "name": "internal_comment_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_commenthistory",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "commenthistory_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_commenthistory",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "comment_time"
+            },
+            {
+                "length": null,
+                "name": "internal_comment_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_comments",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "comment_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_comments",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "configfile_type"
+            },
+            {
+                "length": null,
+                "name": "configfile_path"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_configfiles",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "configfile_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_configfiles",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "configfilevariable_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_configfilevariables",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "conninfo_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_conninfo",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "contactgroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contactgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contactgroup_id"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_contactgroup_members",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contactgroup_member_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contactgroup_members",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "contactnotification_id"
+            },
+            {
+                "length": null,
+                "name": "start_time"
+            },
+            {
+                "length": null,
+                "name": "start_time_usec"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_contactnotificationmethods",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contactnotificationmethod_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contactnotificationmethods",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            },
+            {
+                "length": null,
+                "name": "start_time"
+            },
+            {
+                "length": null,
+                "name": "start_time_usec"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_contactnotifications",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contactnotification_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contactnotifications",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contact_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "contact_object_id",
+        "tableName": "nagios_contactstatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contactstatus_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contactstatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contact_id"
+            },
+            {
+                "length": null,
+                "name": "address_number"
+            }
+        ],
+        "indexName": "contact_id",
+        "tableName": "nagios_contact_addresses",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contact_address_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contact_addresses",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contact_id"
+            },
+            {
+                "length": null,
+                "name": "notification_type"
+            },
+            {
+                "length": null,
+                "name": "command_object_id"
+            },
+            {
+                "length": null,
+                "name": "command_args"
+            }
+        ],
+        "indexName": "contact_id",
+        "tableName": "nagios_contact_notificationcommands",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "contact_notificationcommand_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_contact_notificationcommands",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "varname"
+            }
+        ],
+        "indexName": "object_id_2",
+        "tableName": "nagios_customvariables",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "customvariable_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_customvariables",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "varname"
+            }
+        ],
+        "indexName": "varname",
+        "tableName": "nagios_customvariables",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "varname"
+            }
+        ],
+        "indexName": "object_id_2",
+        "tableName": "nagios_customvariablestatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "customvariablestatus_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_customvariablestatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "varname"
+            }
+        ],
+        "indexName": "varname",
+        "tableName": "nagios_customvariablestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "entry_time"
+            },
+            {
+                "length": null,
+                "name": "internal_downtime_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_downtimehistory",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "downtimehistory_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_downtimehistory",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "start_time"
+            },
+            {
+                "length": null,
+                "name": "start_time_usec"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_eventhandlers",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "eventhandler_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_eventhandlers",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "externalcommand_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_externalcommands",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "flappinghistory_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_flappinghistory",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "host_object_id"
+            },
+            {
+                "length": null,
+                "name": "start_time"
+            },
+            {
+                "length": null,
+                "name": "start_time_usec"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostchecks",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostcheck_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostchecks",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "host_object_id"
+            },
+            {
+                "length": null,
+                "name": "dependent_host_object_id"
+            },
+            {
+                "length": null,
+                "name": "dependency_type"
+            },
+            {
+                "length": null,
+                "name": "inherits_parent"
+            },
+            {
+                "length": null,
+                "name": "fail_on_up"
+            },
+            {
+                "length": null,
+                "name": "fail_on_down"
+            },
+            {
+                "length": null,
+                "name": "fail_on_unreachable"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostdependencies",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostdependency_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostdependencies",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "host_object_id"
+            },
+            {
+                "length": null,
+                "name": "timeperiod_object_id"
+            },
+            {
+                "length": null,
+                "name": "first_notification"
+            },
+            {
+                "length": null,
+                "name": "last_notification"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostescalations",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostescalation_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostescalations",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostescalation_id"
+            },
+            {
+                "length": null,
+                "name": "contactgroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostescalation_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostescalation_contactgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostescalation_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "hostescalation_id"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostescalation_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostescalation_contact_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostescalation_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "hostgroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostgroup_id"
+            },
+            {
+                "length": null,
+                "name": "host_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hostgroup_members",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hostgroup_member_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hostgroup_members",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "display_name"
+            }
+        ],
+        "indexName": "display_name",
+        "tableName": "nagios_hosts",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_object_id"
+            }
+        ],
+        "indexName": "host_object_id",
+        "tableName": "nagios_hosts",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "host_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hosts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hosts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "active_checks_enabled"
+            }
+        ],
+        "indexName": "active_checks_enabled",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "check_type"
+            }
+        ],
+        "indexName": "check_type",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "current_state"
+            }
+        ],
+        "indexName": "current_state",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "event_handler_enabled"
+            }
+        ],
+        "indexName": "event_handler_enabled",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "execution_time"
+            }
+        ],
+        "indexName": "execution_time",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "flap_detection_enabled"
+            }
+        ],
+        "indexName": "flap_detection_enabled",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "is_flapping"
+            }
+        ],
+        "indexName": "is_flapping",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "last_state_change"
+            }
+        ],
+        "indexName": "last_state_change",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "latency"
+            }
+        ],
+        "indexName": "latency",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "notifications_enabled"
+            }
+        ],
+        "indexName": "notifications_enabled",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_object_id"
+            }
+        ],
+        "indexName": "object_id",
+        "tableName": "nagios_hoststatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "passive_checks_enabled"
+            }
+        ],
+        "indexName": "passive_checks_enabled",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "percent_state_change"
+            }
+        ],
+        "indexName": "percent_state_change",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "hoststatus_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_hoststatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "problem_has_been_acknowledged"
+            }
+        ],
+        "indexName": "problem_has_been_acknowledged",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "scheduled_downtime_depth"
+            }
+        ],
+        "indexName": "scheduled_downtime_depth",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "state_type"
+            }
+        ],
+        "indexName": "state_type",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "status_update_time"
+            }
+        ],
+        "indexName": "status_update_time",
+        "tableName": "nagios_hoststatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_id"
+            },
+            {
+                "length": null,
+                "name": "contactgroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_host_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_contactgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_host_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "host_id"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_host_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_contact_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_host_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_id"
+            },
+            {
+                "length": null,
+                "name": "parent_host_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_host_parenthosts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_parenthost_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_host_parenthosts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_instances",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "logentry_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_logentries",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "start_time"
+            },
+            {
+                "length": null,
+                "name": "start_time_usec"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_notifications",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "notification_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_notifications",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "name1"
+            }
+        ],
+        "indexName": "name1",
+        "tableName": "nagios_objects",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "objecttype_id"
+            },
+            {
+                "length": null,
+                "name": "name1"
+            },
+            {
+                "length": null,
+                "name": "name2"
+            }
+        ],
+        "indexName": "objecttype_id",
+        "tableName": "nagios_objects",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "name1"
+            },
+            {
+                "length": null,
+                "name": "is_active"
+            }
+        ],
+        "indexName": "object_id",
+        "tableName": "nagios_objects",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "object_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_objects",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "processevent_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_processevents",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_programstatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "programstatus_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_programstatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "varname"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_runtimevariables",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "runtimevariable_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_runtimevariables",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "object_id"
+            },
+            {
+                "length": null,
+                "name": "entry_time"
+            },
+            {
+                "length": null,
+                "name": "internal_downtime_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_scheduleddowntime",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "scheduleddowntime_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_scheduleddowntime",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_servicechecks",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "servicecheck_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_servicechecks",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_object_id"
+            }
+        ],
+        "indexName": "service_object_id",
+        "tableName": "nagios_servicechecks",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "start_time"
+            }
+        ],
+        "indexName": "start_time",
+        "tableName": "nagios_servicechecks",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "service_object_id"
+            },
+            {
+                "length": null,
+                "name": "dependent_service_object_id"
+            },
+            {
+                "length": null,
+                "name": "dependency_type"
+            },
+            {
+                "length": null,
+                "name": "inherits_parent"
+            },
+            {
+                "length": null,
+                "name": "fail_on_ok"
+            },
+            {
+                "length": null,
+                "name": "fail_on_warning"
+            },
+            {
+                "length": null,
+                "name": "fail_on_unknown"
+            },
+            {
+                "length": null,
+                "name": "fail_on_critical"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_servicedependencies",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "servicedependency_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_servicedependencies",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "service_object_id"
+            },
+            {
+                "length": null,
+                "name": "timeperiod_object_id"
+            },
+            {
+                "length": null,
+                "name": "first_notification"
+            },
+            {
+                "length": null,
+                "name": "last_notification"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_serviceescalations",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "serviceescalation_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_serviceescalations",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "serviceescalation_id"
+            },
+            {
+                "length": null,
+                "name": "contactgroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_serviceescalation_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "serviceescalation_contactgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_serviceescalation_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "serviceescalation_id"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_serviceescalation_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "serviceescalation_contact_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_serviceescalation_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "servicegroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_servicegroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "servicegroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_servicegroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "servicegroup_id"
+            },
+            {
+                "length": null,
+                "name": "service_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_servicegroup_members",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "servicegroup_member_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_servicegroup_members",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_object_id"
+            }
+        ],
+        "indexName": "host_object_id",
+        "tableName": "nagios_services",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "service_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_services",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_services",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_object_id"
+            }
+        ],
+        "indexName": "service_object_id",
+        "tableName": "nagios_services",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "active_checks_enabled"
+            }
+        ],
+        "indexName": "active_checks_enabled",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "check_type"
+            }
+        ],
+        "indexName": "check_type",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "current_state"
+            }
+        ],
+        "indexName": "current_state",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "event_handler_enabled"
+            }
+        ],
+        "indexName": "event_handler_enabled",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "execution_time"
+            }
+        ],
+        "indexName": "execution_time",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "flap_detection_enabled"
+            }
+        ],
+        "indexName": "flap_detection_enabled",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "is_flapping"
+            }
+        ],
+        "indexName": "is_flapping",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "last_state_change"
+            }
+        ],
+        "indexName": "last_state_change",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "latency"
+            }
+        ],
+        "indexName": "latency",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "notifications_enabled"
+            }
+        ],
+        "indexName": "notifications_enabled",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_object_id"
+            }
+        ],
+        "indexName": "object_id",
+        "tableName": "nagios_servicestatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "passive_checks_enabled"
+            }
+        ],
+        "indexName": "passive_checks_enabled",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "percent_state_change"
+            }
+        ],
+        "indexName": "percent_state_change",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "servicestatus_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_servicestatus",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "problem_has_been_acknowledged"
+            }
+        ],
+        "indexName": "problem_has_been_acknowledged",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "scheduled_downtime_depth"
+            }
+        ],
+        "indexName": "scheduled_downtime_depth",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_object_id"
+            },
+            {
+                "length": null,
+                "name": "current_state"
+            },
+            {
+                "length": null,
+                "name": "state_type"
+            },
+            {
+                "length": null,
+                "name": "problem_has_been_acknowledged"
+            },
+            {
+                "length": null,
+                "name": "scheduled_downtime_depth"
+            }
+        ],
+        "indexName": "service_object_id",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_object_id"
+            },
+            {
+                "length": null,
+                "name": "current_state"
+            }
+        ],
+        "indexName": "service_object_id_2",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "state_type"
+            }
+        ],
+        "indexName": "state_type",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "status_update_time"
+            }
+        ],
+        "indexName": "status_update_time",
+        "tableName": "nagios_servicestatus",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_id"
+            },
+            {
+                "length": null,
+                "name": "contactgroup_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_service_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_contactgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_service_contactgroups",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "service_id"
+            },
+            {
+                "length": null,
+                "name": "contact_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_service_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "service_contact_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_service_contacts",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "statehistory_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_statehistory",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_systemcommands",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "systemcommand_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_systemcommands",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "start_time"
+            }
+        ],
+        "indexName": "start_time",
+        "tableName": "nagios_systemcommands",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "event_type"
+            }
+        ],
+        "indexName": "event_type",
+        "tableName": "nagios_timedeventqueue",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_timedeventqueue",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id_2",
+        "tableName": "nagios_timedeventqueue",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "object_id"
+            }
+        ],
+        "indexName": "object_id",
+        "tableName": "nagios_timedeventqueue",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "timedeventqueue_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_timedeventqueue",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "scheduled_time"
+            }
+        ],
+        "indexName": "scheduled_time",
+        "tableName": "nagios_timedeventqueue",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "event_type"
+            }
+        ],
+        "indexName": "event_type",
+        "tableName": "nagios_timedevents",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_timedevents",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "object_id"
+            }
+        ],
+        "indexName": "object_id",
+        "tableName": "nagios_timedevents",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "timedevent_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_timedevents",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "scheduled_time"
+            }
+        ],
+        "indexName": "scheduled_time",
+        "tableName": "nagios_timedevents",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "instance_id"
+            },
+            {
+                "length": null,
+                "name": "config_type"
+            },
+            {
+                "length": null,
+                "name": "timeperiod_object_id"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_timeperiods",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "timeperiod_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_timeperiods",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "timeperiod_id"
+            },
+            {
+                "length": null,
+                "name": "day"
+            },
+            {
+                "length": null,
+                "name": "start_sec"
+            },
+            {
+                "length": null,
+                "name": "end_sec"
+            }
+        ],
+        "indexName": "instance_id",
+        "tableName": "nagios_timeperiod_timeranges",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "timeperiod_timerange_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "nagios_timeperiod_timeranges",
+        "unique": true
+    }
+]
