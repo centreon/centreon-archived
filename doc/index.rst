@@ -16,6 +16,7 @@ Contents:
    :maxdepth: 2
 
    installation/index
+   upgrade/index
    user/index
    extending/index
 
