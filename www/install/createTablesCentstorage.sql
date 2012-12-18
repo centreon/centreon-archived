@@ -386,21 +386,7 @@ LOCK TABLES `nagios_stats` WRITE;
 /*!40000 ALTER TABLE `nagios_stats` DISABLE KEYS */;
 /*!40000 ALTER TABLE `nagios_stats` ENABLE KEYS */;
 UNLOCK TABLES;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `rebuild` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `index_id` int(11) DEFAULT NULL,
-  `status` int(11) DEFAULT NULL,
-  `centreon_instance` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
-LOCK TABLES `rebuild` WRITE;
-/*!40000 ALTER TABLE `rebuild` DISABLE KEYS */;
-/*!40000 ALTER TABLE `rebuild` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `statistics` (

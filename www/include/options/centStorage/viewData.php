@@ -69,8 +69,6 @@
 	require_once("./include/common/common-Func.php");
 	require_once("./class/centreonDB.class.php");
 
-	global $instance;
-
 	/*
 	 * Prepare search engine
 	 */
@@ -97,20 +95,12 @@
 		if ($_POST["o"] == "rg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				if (isset($instance) && $instance != 0) {
-					$DBRESULT = $pearDBO->query("INSERT INTO rebuild (index_id, status, centreon_instance) VALUES ('".$key."', 1, '".$instance."')");
-				} else {
-					$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
-				}
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 			}
 		} else if ($_POST["o"] == "nrg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
-				if (isset($instance) && $instance != 0) {
-					$DBRESULT = $pearDBO->query("INSERT INTO rebuild (index_id, status, centreon_instance) VALUES ('".$key."', 1, '".$instance."')");
-				} else {
-					$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
-				}
+				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE id = '".$key."' AND `must_be_rebuild` = '1'");
 			}
 		} else if ($_POST["o"] == "ed" && isset($_POST["select"])){
 			$selected = $_POST["select"];
@@ -159,11 +149,7 @@
 	}
 
 	if (isset($_POST["o"]) && $_POST["o"] == "rb" && isset($_POST["id"])){
-		if (isset($instance) && $instance != 0) {
-			$DBRESULT = $pearDBO->query("INSERT INTO rebuild (index_id, status, centreon_instance) VALUES ('".$key."', 2, '".$instance."')");
-		} else {
-			$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
-		}
+		$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".htmlentities($_POST["id"], ENT_QUOTES, 'UTF-8')."'");
 	}
 
 	$search_string = "";
@@ -200,17 +186,13 @@
 		$index_data["service_description"] = "<a href='./main.php?p=5010602&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
 		
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
-	    if (!isset($instance) || ($instance == 0 && $instance == "")) {
-		    $index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+		$query = "SELECT * FROM rebuild WHERE centreon_instance = '$instance' AND index_id = '".$index_data["id"]."' LIMIT 1";
+		$DBRESULT_Status = $pearDBO->query($query);
+		$statusdata = $DBRESULT_Status->fetchRow();
+		if (isset($statusdata["status"])) {
+		    $index_data["must_be_rebuild"] = $yesOrNo[$statusdata["status"]];
 		} else {
-		    $query = "SELECT * FROM rebuild WHERE centreon_instance = '$instance' AND index_id = '".$index_data["id"]."' LIMIT 1";
-		    $DBRESULT_Status = $pearDBO->query($query);
-		    $statusdata = $DBRESULT_Status->fetchRow();
-		    if (isset($statusdata["status"])) {
-		        $index_data["must_be_rebuild"] = $yesOrNo[$statusdata["status"]];
-		    } else {
-		        $index_data["must_be_rebuild"] = $yesOrNo[0];
-		    }
+		    $index_data["must_be_rebuild"] = $yesOrNo[0];
 		}
 		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
 		$index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
