@@ -2,6 +2,8 @@
 Advanced
 ========
 
-**********************
-Distributed Monitoring
-**********************
+.. toctree::
+
+   advanced/autologin
+   advanced/ldap
+   
