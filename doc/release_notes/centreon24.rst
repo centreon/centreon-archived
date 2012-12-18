@@ -83,3 +83,6 @@ Supported data source types
 *Centreon Broker* now supports all of the RRDtool data source types
 (COUNTER, GAUGE, DERIVE and ABSOLUTE). This support will not be added
 to *Centstorage* as it will soon be replaced by *Centreon Broker*.
+
+See the :ref:`Centreon Broker documentation <centreon-broker:graphic_types>` to learn how you can
+convert your existing plugins.

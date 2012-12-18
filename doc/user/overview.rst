@@ -21,8 +21,7 @@ A basic schema is quite simple:
    checks on an interval basis. Centreon Engine is very similar to
    Nagios (almost 100% compatible) but provide much more
    performance. Documentation about Centreon Engine and its advantages
-   is available at :ref:`Centreon Engine Reference Manual
-   <01-centreon/centreon_engine/documentation>`.
+   is available at :ref:`Centreon Engine Reference Manual <centreon-engine:top>`.
 
 #. Centreon Engine does not export the information it has by
    default. This needs to be done through an additional software
@@ -31,8 +30,7 @@ A basic schema is quite simple:
    Broker is very similar to NDOUtils but provide much more features
    (authentication, compression, encryption, ...) and
    performance. :ref:`Centreon Broker Reference Manual
-   <01-centreon/centreon_broker/documentation>` is available for more
-   information.
+   <centreon-broker:top>` is available for more information.
 
 #. Database is exploited back by Centreon Web to provide tables and
    charts about the current (or past) state of the monitored
