@@ -37,17 +37,30 @@ Store LDAP password                                Whether or not user passwords
                                                    they log in. This could act as a fallback system if necessary
 
 Auto import users                                  Whether the users will be automatically imported into the
-                                                   Centreon database on connection
+                                                   Centreon database on connection.
+
+                                                   The users does not be imported before login.
 
 LDAP search size limit                             Maximum number of entries that Centreon will retrieve on lookup
+
                                                    For better performances, it is best to keep this number as low
                                                    as possible.
 
+                                                   This option is used in ``Import users manually``
+
 LDAP search timeout                                Timeout on LDAP search (in seconds)
 
-Contact template                                   Imported users will be tied to this contact template
+Contact template                                   Imported users will be tied to this contact template.
 
-Use service DNS                                    When enabled, Centreon will look for LDAP servers based on DNS
+                                                   This template is use only to extend Monitoring engine contact
+                                                   for notification.
+
+Use service DNS                                    When enabled, Centreon will look for LDAP servers based on DNS.
+
+                                                   For looking, the list of servers registred in DNS, you can use
+                                                   the command::
+                                                     dig _ldap._tcp.<domain.tld> SRV
+                                       
 ================================================== ================================================================
 
 
@@ -61,7 +74,8 @@ Click on the ``Add a new LDAP server`` link to declare a new LDAP server.
 ================================================== ================================================================
 Parameter                                          Description
 ================================================== ================================================================
-Host name                                          Host address of the LDAP server
+Host name                                          Host address of the LDAP server, can be a hostname or a ip
+                                                   address.
 
 Port                                               Port used by LDAP
 
@@ -75,8 +89,7 @@ Order                                              Priority order, used in case 
 
 
 .. note::
-  Failover works only if the LDAP servers have the same structure
-
+   Failover works only if the LDAP servers have the same three structure
 
 Information regarding the structure of the LDAP server(s):
 
@@ -103,7 +116,7 @@ Select the LDAP server to scan and hit the ``Search`` button. The search should 
    :align: center
 
 .. note::
-  When looking for a specific user, it is best to edit the search filter
+   When looking for a specific user, it is best to edit the search filter
 
 Select the user(s) to import and hit the ``Import`` button. You should now see the new users in the contact list:
 
@@ -121,3 +134,17 @@ When LDAP is enabled in Centreon, you will see new contact groups appear in the 
    :align: center
 
 For more information regarding the ACL mechanism of Centreon, refer to this :ref:`section <acl>`.
+
+This groups are availabled in Notification contact group.
+
+.. image:: /_static/images/user/advanced/ldap_conf_9.png
+   :align: center
+
+This options is availabled in :
+
+* Host
+* Host template
+* Service by host
+* Services by host group
+* Service template
+* Escalations options
