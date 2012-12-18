@@ -140,7 +140,7 @@ based on their LDAP groups.
 
 For more information regarding the ACL mechanism of Centreon, refer to this :ref:`section <acl>`.
 
-These groups are availabled in Notification contact group.
+These groups are availabled in Notification contact group as well.
 
 .. image:: /_static/images/user/advanced/ldap_conf_9.png
    :align: center
