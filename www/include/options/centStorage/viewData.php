@@ -39,11 +39,8 @@
 	if (!isset($oreon)) {
 		exit();
 	}
-
-	include("./include/common/autoNumLimit.php");
-
 	require_once './class/centreonDuration.class.php';
-        require_once './class/centreonBroker.class.php';
+    require_once './class/centreonBroker.class.php';
 	include_once("./include/monitoring/common-Func.php");
 
 	/*
@@ -69,6 +66,7 @@
 	require_once("./include/common/common-Func.php");
 	require_once("./class/centreonDB.class.php");
 
+    include("./include/common/autoNumLimit.php");
 	/*
 	 * Prepare search engine
 	 */
