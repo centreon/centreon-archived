@@ -195,7 +195,7 @@
 	 * Host/service list
 	 */
 
-	$rq = 	"SELECT SQL_CALC_FOUND_ROWS esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
+	$rq_body = 	"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 			"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 			"sv.service_retry_check_interval, sv.service_max_check_attempts " .
 			"FROM service sv, host" .
@@ -206,11 +206,15 @@
 					"AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
 					((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                     ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
-					"ORDER BY host.host_name, service_description LIMIT " . $num * $limit . ", " . $limit;
+					"ORDER BY host.host_name, service_description";
     
-	$DBRESULT = $pearDB->query($rq);
+	$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS " . $rq_body . " LIMIT " . $num * $limit . ", " . $limit);
     $rows = $pearDB->numberRows();
 
+    if (!($DBRESULT->numRows())) {
+        $DBRESULT = $pearDB->query("SELECT " . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
+    }
+    
     include("./include/common/checkPagination.php");    
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
