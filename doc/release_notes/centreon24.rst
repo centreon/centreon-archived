@@ -91,8 +91,9 @@ Centcore options
 ----------------
 
 Two parameters have been added into the ``Administration`` > ``Options`` > ``Monitoring`` page:
- * Enable Perfdata Synchronisation (Centcore)
- * Enable Logs Synchronisation (Centcore)
+
+* Enable Perfdata Synchronisation (Centcore)
+* Enable Logs Synchronisation (Centcore)
 
 For performance issues, these options must be disabled if your monitoring system is running
 with Centreon Broker.
