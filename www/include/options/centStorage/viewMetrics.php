@@ -42,17 +42,7 @@
         require_once './class/centreonBroker.class.php';
         
 	if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"])){
-		if ((defined($_POST["o1"]) && $_POST["o1"] == "rg") || (defined($_POST["o2"]) && $_POST["o2"] == "rg")){
-			$selected = $_POST["select"];
-			foreach ($selected as $key => $value){
-				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
-			}
-		} else if ((defined($_POST["o1"]) && $_POST["o1"] == "nrg") || (defined($_POST["o2"]) && $_POST["o2"] == "nrg")){
-			$selected = $_POST["select"];
-			foreach ($selected as $key => $value){
-				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '0' WHERE `id` = '".$key."' AND `must_be_rebuild` = '1'");
-			}
-		} else if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed"){
+		if ($_POST["o1"] == "ed" || $_POST["o2"] == "ed"){
 			$selected = $_POST["select"];
 			$listMetricsId = array_keys($selected);
 			if (count($listMetricsId) > 0) {
@@ -160,50 +150,42 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1) {" .
+				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 4 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 4) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 5 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex == 5) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 6) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 8) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 9) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	$attrs2 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1) {" .
+				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._('Do you confirm the deletion ?')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the deletion ?')."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 4 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 4) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 5 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex == 5) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 6) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 8) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 9) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
+	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 = $form->getElement('o1');
