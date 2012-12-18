@@ -13,14 +13,23 @@ Custom views
 ============
 
 This new page enables users to make their own views with various
-widgets and they are able to share their personalised views with their
+widgets and they are able to share their custom views with their
 colleagues!
 
 See the :ref:`user guide <widgets_user_guide>` to learn more about
-this great feature.
+this feature.
+
 
 Support for multiple LDAP servers
 =================================
+
+The LDAP authentication system is much more robust than before.
+Indeed, it is now possible to have :ref:`multiple LDAP configurations <ldap>` on
+top of the failover system. The LDAP import form will let you choose the
+LDAP server to import from.
+
+Make sure that all your LDAP parameters are correctly imported after an upgrade.
+
 
 New *autologin* mechanism
 =========================
