@@ -49,8 +49,8 @@ OPTIONS
 NOTES
     The process usually takes several minutes BUT if your database contains a
     lot of data and no index exists the process may take up to 2 hours. Make
-    sure you have enough free space on the disk because indexes may take up a
-    lot of stace
+    sure you have enough free space on the disk because indexes may require a
+    lot of space
 
 AUTHOR
     Merethis (Alexandru Vilau)
@@ -64,7 +64,7 @@ To get help type:
 error_reporting(-1);
 date_default_timezone_set(@date_default_timezone_get());
 
-$options = (getopt('h:d:u:p:He:i:s', array(
+$options = (getopt('hd:u:p:He:i:s', array(
             'host:',
             'dbname:',
             'username:',

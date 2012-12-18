@@ -51,7 +51,7 @@ To get help type:
 
 error_reporting(-1);
 
-$options = (getopt('h:d:u:p:He:o:', array(
+$options = (getopt('hd:u:p:He:o:', array(
             'host:',
             'dbname:',
             'username:',
