@@ -15,8 +15,8 @@ and the event broker module (Centreon Broker or NDOUtils). All you
 need to do right after a fresh installation is export your configuration files, then reload your
 monitoring engine and the monitoring system should be up and running!
 
-This version offers the possibility to define the :ref:`connectors <centreon-engine:obj_def_connector>` for Centreon Engine. Obviously,
-you do not need to configure these connectors if you are still using Nagios.
+This version offers the possibility to define the :ref:`connectors <centreon-engine:obj_def_connector>` 
+for Centreon Engine. Obviously, you do not need to configure these connectors if you are still using Nagios.
 
 It's been said that Centreon Broker can be cumbersome to configure, especially if you are not
 familiar with its functioning. Centreon 2.4 offers a configuration wizard now!
@@ -87,6 +87,31 @@ it. If you currently use this feature, we recommend upgrading to the
 new one as soon as you can.
 
 
+Centcore options
+----------------
+
+Two parameters have been added into the ``Administration`` > ``Options`` > ``Monitoring`` page:
+ * Enable Perfdata Synchronisation (Centcore)
+ * Enable Logs Synchronisation (Centcore)
+
+For performance issues, these options must be disabled if your monitoring system is running
+with Centreon Broker.
+
+
+Resource.cfg and CGI.cfg
+------------------------
+
+The resource and CGI configuration objects are now specific to each monitoring poller. The
+values of $USERx$ macros can be different from one poller to another.
+
+
+Interval length
+---------------
+
+The ``interval_length`` is now a global parameter that you have to set in ``Administration`` > ``Options`` 
+> ``Monitoring``, although it should be left at ``60 seconds`` in most cases.
+
+
 Centstorage
 ===========
 
@@ -99,3 +124,4 @@ to *Centstorage* as it will soon be replaced by *Centreon Broker*.
 
 See the :ref:`Centreon Broker documentation <centreon-broker:graphic_types>` to learn how you can
 convert your existing plugins.
+
