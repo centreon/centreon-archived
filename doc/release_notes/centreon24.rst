@@ -12,6 +12,13 @@ Better integration with Centreon Engine and Centreon Broker
 Custom views
 ============
 
+This new page enables users to make their own views with various
+widgets and they are able to share their personalised views with their
+colleagues!
+
+See the :ref:`user guide <widgets_user_guide>` to learn more about
+this great feature.
+
 Support for multiple LDAP servers
 =================================
 
@@ -43,9 +50,10 @@ Web interface
 Autologin
 ---------
 
-A :ref:`autologin` has been added in Centreon 2.4. More secured than
-the previous one, it will soon replace it. If you currently use this
-feature, we recommend upgrading to the new one as soon as you can.
+A :ref:`new autologin mechanism <autologin>` has been added in
+Centreon 2.4. More secured than the previous one, it will soon replace
+it. If you currently use this feature, we recommend upgrading to the
+new one as soon as you can.
 
 
 Centstorage

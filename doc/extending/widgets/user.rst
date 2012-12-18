@@ -1,3 +1,5 @@
+.. _widgets_user_guide:
+
 ==========
 User guide
 ==========
@@ -75,7 +77,6 @@ Delete view
 
 This cannot be undone, so be sure that other users do not need a view before discarding it.
 
-
 **********
 Add widget
 **********
@@ -90,7 +91,6 @@ Select the type of widget to add into the view and give it a name.
 
 For more information regarding the installation of a widget, refer to this :ref:`guide <widget_installation>`.
 
-
 ********
 Rotation
 ********
@@ -99,7 +99,6 @@ Rotation
    :align: center
 
 When rotation mode is enabled, views will switch from one to another automatically every *x* seconds.
-
 
 .. image:: /_static/images/extending/widgets/rotation.png
    :align: center

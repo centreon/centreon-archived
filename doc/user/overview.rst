@@ -13,9 +13,8 @@ A basic schema is quite simple:
 #. Users are connected to Centreon Web. This software has two core
    features. First it helps users configure their monitoring
    infrastructure and choose what to monitor. The second part is
-   explained in 4). Its documentation of Centreon Web is available at
-   :ref:`Centreon Web Reference Manual
-   <01-centreon/centreon_web/documentation>`.
+   explained in 4). The documentation of Centreon Web is available 
+   :ref:`here <user_guide>`.
 
 #. Centreon Web send configuration orders to Centreon Engine which is
    the monitoring engine itself. Centreon Engine will run configured
