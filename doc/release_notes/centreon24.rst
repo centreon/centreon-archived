@@ -9,6 +9,19 @@ What's new
 Better integration with Centreon Engine and Centreon Broker
 ===========================================================
 
+The :ref:`installation <centreon_install>` process has been reviewed: 
+it is now possible to specify the monitoring engine (Centreon Engine or Nagios) 
+and the event broker module (Centreon Broker or NDOUtils). All you
+need to do right after a fresh installation is export your configuration files, then reload your
+monitoring engine and the monitoring system should be up and running!
+
+This version offers the possibility to define the :ref:`connectors <centreon-engine:obj_def_connector>` for Centreon Engine. Obviously,
+you do not need to configure these connectors if you are still using Nagios.
+
+It's been said that Centreon Broker can be cumbersome to configure, especially if you are not
+familiar with its functioning. Centreon 2.4 offers a configuration wizard now!
+
+
 Custom views
 ============
 

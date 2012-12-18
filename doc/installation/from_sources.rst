@@ -1,3 +1,5 @@
+.. _centreon_install:
+
 =============
 Using sources
 =============
