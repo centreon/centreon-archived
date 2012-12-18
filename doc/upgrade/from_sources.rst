@@ -120,7 +120,7 @@ The path to binaries for Centreon Web::
 
 The path for extra data for Centreon Web::
 
-  Where is your Centreon data informations directory
+  Where is your Centreon data information directory
   default to [/usr/local/centreon/data]
   > 
   
