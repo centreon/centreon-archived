@@ -39,6 +39,12 @@ this version. Now using randomly generated keys, it allows you to
 access specific pages without beeing prompted for a username and a
 password.
 
+Database indexes verification tool
+==================================
+
+If you upgrade from an old version of Centreon, now you can :ref:`check the
+existence of all database indexes <synchronizing-indexes>` to ensure maximum performance
+
 ***************
 Important notes
 ***************
