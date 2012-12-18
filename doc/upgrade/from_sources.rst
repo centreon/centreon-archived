@@ -1,4 +1,5 @@
 .. _upgrade_from_sources:
+
 ============
 From sources
 ============
@@ -7,7 +8,7 @@ From sources
 
   Before upgrading Centreon, please make a database backup.
 
-In order to upgrade Centreon from sources, :ref:`download <download>` the
+In order to upgrade Centreon from sources, :ref:`download <downloads>` the
 latest Centreon package.
 
 ******************

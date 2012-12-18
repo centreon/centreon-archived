@@ -1,11 +1,12 @@
 .. _upgrade_from_packages:
+
 =============
 From packages
 =============
 
 .. warning::
 
-  Before upgrading Centreon, please make a database backup.
+   Before upgrading Centreon, please make a database backup.
 
 ********************************************
 Upgrade from Centreon version prior to 2.4.0

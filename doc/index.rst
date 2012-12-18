@@ -20,6 +20,7 @@ Contents:
    upgrade/index
    user/index
    extending/index
+   faq/index
 
 Additional online resource:
 

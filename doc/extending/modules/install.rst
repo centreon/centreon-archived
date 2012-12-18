@@ -1,4 +1,4 @@
-.. _widget_installation:
+.. _module_installation:
 
 ============
 Installation

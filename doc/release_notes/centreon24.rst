@@ -6,8 +6,8 @@ Centreon 2.4
 What's new
 **********
 
-Better integration Centreon Engine and Centreon Broker
-======================================================
+Better integration with Centreon Engine and Centreon Broker
+===========================================================
 
 Custom views
 ============
