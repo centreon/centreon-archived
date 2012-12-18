@@ -15,6 +15,7 @@ binary=@CENTSTORAGE_BINDIR@/centstorage
 servicename=$(basename "$0")
 user=@CENTREON_USER@
 timeout=60
+start_timeout=5
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid
 
@@ -49,28 +50,45 @@ start() {
 	else
 		daemon --user $user ''$binary' "'$config_file'" > /dev/null 2>&1 &'
 	fi
-	sleep 2
-	pid=$(pidofproc $binary)
-	RETVAL=$?
-	echo $pid > $pidfile
+
+	i=0
+	while : ; do
+		if [ "$i" -gt $start_timeout ] ; then
+			failure $"service not launched"
+			echo
+			return 1
+		fi
+		pid=$(pidofproc $binary)
+		if [ -n "$pid" ] ; then
+			echo $pid > $pidfile
+			break
+		fi
+		sleep 1
+		i=$(($i + 1))
+	done
+	success $"service launched"
 	echo
-	return $RETVAL
+	return 0
 }
 
 stop() {
 	echo -n $"Stopping $servicename: "
-        if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
-                killproc -d $timeout "$binary"
-        else
-                killproc -p "$pidfile" -d $timeout "$binary"
-        fi
-        RETVAL=$?
-        echo
-        return $RETVAL
+	if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
+		killproc -d $timeout "$binary"
+	else
+		killproc -p "$pidfile" -d $timeout "$binary"
+	fi
+	RETVAL=$?
+	echo
+	return $RETVAL
 }	
 
 rhstatus() {
-	status -p "$pidfile" "$binary"
+	if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
+		status "$binary"
+	else
+		status -p "$pidfile" "$binary"
+	fi
 }	
 
 restart() {
@@ -80,10 +98,14 @@ restart() {
 
 reload() {
 	echo -n $"Reloading $servicename daemon configuration: "
-        killproc -p "$pidfile" "$binary" -HUP
-        RETVAL=$?
-        echo
-        return $RETVAL
+	if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
+		killproc "$binary" -HUP
+	else
+		killproc -p "$pidfile" "$binary" -HUP
+	fi
+    RETVAL=$?
+    echo
+    return $RETVAL
 }	
 
 case "$1" in
