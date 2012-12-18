@@ -21,6 +21,7 @@ Contents:
    user/index
    extending/index
    faq/index
+   exploitation/index
 
 Additional online resource:
 
