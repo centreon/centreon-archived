@@ -89,7 +89,7 @@ Order                                              Priority order, used in case 
 
 
 .. note::
-   Failover works only if the LDAP servers have the same three structure
+   Failover works only if the LDAP servers have the same tree structure
 
 Information regarding the structure of the LDAP server(s):
 
