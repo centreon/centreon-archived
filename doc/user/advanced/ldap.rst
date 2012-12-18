@@ -39,7 +39,8 @@ Store LDAP password                                Whether or not user passwords
 Auto import users                                  Whether the users will be automatically imported into the
                                                    Centreon database on connection.
 
-                                                   The users does not be imported before login.
+                                                   When enabled, users do not need to be imported before 
+                                                   manually before logging in.
 
 LDAP search size limit                             Maximum number of entries that Centreon will retrieve on lookup
 
@@ -52,14 +53,15 @@ LDAP search timeout                                Timeout on LDAP search (in se
 
 Contact template                                   Imported users will be tied to this contact template.
 
-                                                   This template is use only to extend Monitoring engine contact
+                                                   This template is used only to extend Monitoring engine contact
                                                    for notification.
 
 Use service DNS                                    When enabled, Centreon will look for LDAP servers based on DNS.
 
-                                                   For looking, the list of servers registred in DNS, you can use
+                                                   In order to see the list of servers that are registed in DNS,
                                                    the command::
-                                                     dig _ldap._tcp.<domain.tld> SRV
+                                                   
+						     dig _ldap._tcp.<domain.tld> SRV
                                        
 ================================================== ================================================================
 
@@ -74,7 +76,7 @@ Click on the ``Add a new LDAP server`` link to declare a new LDAP server.
 ================================================== ================================================================
 Parameter                                          Description
 ================================================== ================================================================
-Host name                                          Host address of the LDAP server, can be a hostname or a ip
+Host name                                          Host address of the LDAP server, it can be a hostname or an IP
                                                    address.
 
 Port                                               Port used by LDAP
@@ -83,7 +85,7 @@ SSL                                                Whether SSL is enabled
 
 TLS                                                Whether TLS is enabled
 
-Order                                              Priority order, used in case of failover (requires one or more
+Order                                              Priority order, used in case of failover (requires two or more
                                                    LDAP servers)
 ================================================== ================================================================
 
@@ -128,19 +130,22 @@ Select the user(s) to import and hit the ``Import`` button. You should now see t
 LDAP virtual contact groups
 ***************************
 
-When LDAP is enabled in Centreon, you will see new contact groups appear in the form of ``ACL access group``. These contact groups are the same as the ones that are found during the LDAP search. Linking these groups to the ACL access groups will apply global ACL rules on the freshly imported users, based on their LDAP groups.
+When LDAP is enabled in Centreon, you will see new contact groups appear in the form of ``ACL access group``. 
+These contact groups are the same as the ones that are found during the LDAP search. 
+Linking these groups to the ACL access groups will apply global ACL rules on the freshly imported users, 
+based on their LDAP groups.
 
 .. image:: /_static/images/user/advanced/ldap_conf_8.png
    :align: center
 
 For more information regarding the ACL mechanism of Centreon, refer to this :ref:`section <acl>`.
 
-This groups are availabled in Notification contact group.
+These groups are availabled in Notification contact group.
 
 .. image:: /_static/images/user/advanced/ldap_conf_9.png
    :align: center
 
-This options is availabled in :
+These options are availabled in:
 
 * Host
 * Host template
