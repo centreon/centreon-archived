@@ -171,7 +171,7 @@ here. Otherwise, go back to [Step 01] and install the prerequisites::
   #                         Centreon (www.centreon.com)                         #
   #                          Thanks for using Centreon                          #
   #                                                                             #
-  #                                    v2.3                                     #
+  #                                    v2.4.0                                   #
   #                                                                             #
   #                              infos@centreon.com                             #
   #                                                                             #
@@ -213,21 +213,27 @@ License agreement
 Main components
 ---------------
 
-Answer [y] to all::
+Answer [y] to all
 
-  Do you want to install Centreon Web Front
+::
+
+  ------------------------------------------------------------------------
+  	    Please choose what you want to install
+  ------------------------------------------------------------------------
+
+  Do you want to install : Centreon Web Front
   [y/n], default to [n]:
   > y
 
-  Do you want to install Centreon CentCore
+  Do you want to install : Centreon CentCore
   [y/n], default to [n]:
   > y
 
-  Do you want to install Centreon Nagios Plugins
+  Do you want to install : Centreon Nagios Plugins
   [y/n], default to [n]:
   > y
 
-  Do you want to install Centreon Snmp Traps process
+  Do you want to install : Centreon Snmp Traps process
   [y/n], default to [n]:
   > y
 
@@ -242,7 +248,7 @@ Installation paths
 
   Where is your Centreon directory?
   default to [/usr/local/centreon]
-  >/usr/share/centreon
+  > /usr/share/centreon
 
 ::
 
@@ -255,7 +261,7 @@ Installation paths
 
   Where is your Centreon log directory
   default to [/usr/local/centreon/log/]
-  >/var/log/centreon
+  > /var/log/centreon
 
   Do you want me to create this directory ? [/var/log/centreon/]
   [y/n], default to [n]:
@@ -273,9 +279,26 @@ Installation paths
   > y
   Path /etc/centreon                                         OK
 
+  Where is your Centreon binaries directory
+  default to [/usr/local/centreon/bin]
+  > /usr/share/centreon/bin
+
+  Do you want me to create this directory ? [/usr/share/centreon/bin]
+  [y/n], default to [n]:
+  > y
+  Path /usr/share/centreon/bin                               OK
+
+  Where is your Centreon data information directory
+  default to [/usr/local/centreon/data]
+  > /usr/share/centreon/data 
+
+  Do you want me to create this directory ? [/usr/share/centreon/data]
+  [y/n], default to [n]:
+  > y
+
   Where is your Centreon generation_files directory?
   default to [/usr/local/centreon/]
-  >/usr/share/centreon
+  > /usr/share/centreon
   Path /usr/share/centreon/                                  OK
 
   Where is your Centreon variable library directory?
@@ -285,15 +308,11 @@ Installation paths
   Do you want me to create this directory ? [/var/lib/centreon]
   [y/n], default to [n]:
   > y
-  Path /var/lib/centreon                  
+  Path /var/lib/centreon                                     OK
 
   Where is your CentPlugins Traps binary
   default to [/usr/local/centreon/bin]
-  >/usr/share/centreon/bin
-
-  Do you want me to create this directory ? [/usr/share/centreon/bin]
-  [y/n], default to [n]:
-  > y
+  > /usr/share/centreon/bin
   Path /usr/share/centreon/bin                               OK
 
 The RRDs.pm package can be located elsewhere. In order to locate it, run this in another terminal::
@@ -312,81 +331,83 @@ The RRDs.pm package can be located elsewhere. In order to locate it, run this in
   Path /usr/lib/perl5                                        OK
   /usr/bin/rrdtool                                           OK
   /usr/bin/mail                                              OK
-
-The PEAR.php file can be located elsewhere. In order to locate it, run this in another terminal::
-
-  updatedb
-  locate PEAR.php
-
-::
-
-  Where is PEAR [PEAR.php]
-  default to [/usr/share/php/PEAR.php]
-  >
-
-::
-
-  Path /usr/share/php                                        OK
-
-  Where is installed Nagios ?
-  default to [/usr/local/nagios]
-  >/usr/share/nagios
-  Path /usr/share/nagios                                     OK
-
-On Debian: /usr/share/nagios3/
-
-::
-
-  Where is your nagios config directory
-  default to [/usr/local/nagios/etc]
-  >/etc/nagios
-  Path /etc/nagios                                           OK
-
-On Debian: /etc/nagios3/
-
-::
-
-  Where is your Nagios var directory ?
-  default to [/usr/local/nagios/var]
-  >/var/log/nagios
-  Path /var/log/nagios                                       OK
-
-On Debian: /var/log/nagios3/
-
-::
-
-  Where is your Nagios plugins (libexec) directory ?
-  default to [/usr/local/nagios/libexec]
-  >/usr/lib/nagios/plugins/
-  Path /usr/lib/nagios/plugins                               OK
-  /usr/sbin/nagios                                           OK
-
-  Where is your Nagios image directory ?
-  default to [/usr/local/nagios/share/images/logos]
-  >/usr/share/nagios/images/logos
-  Path /usr/share/nagios/images/logos                        OK
-
-On Debian: /usr/share/nagios3/htdocs/images/logos/
-
-::
-
-  /usr/sbin/nagiostats                                       OK
-  p1_file : /usr/local/nagios/bin/p1.pl                      OK
   /usr/bin/php                                               OK
   /usr/bin/perl                                              OK
-  Finding Apache group :                                     www-data
-  Finding Apache user :                                      www-data
-  Finding Nagios user :                                      nagios
-  Finding Nagios group :                                     nagios
+  Finding Apache user :                                      apache
+  Finding Apache group :                                     apache
+
+
+Centreon user and group
+-----------------------
+
+The group of Centreon applications: This group is used for access rights
+between monitoring applications::
+
+  What is the Centreon group ? [centreon]
+  default to [centreon]
+  > 
+
+  What is the Centreon user ? [centreon]
+  default to [centreon]
+  > 
+
+
+Monitoring user
+---------------
+
+User that will be used for running the monitoring engine
+
+If you are using Centreon Engine::
+
+  What is the Monitoring engine user ?
+  > centreon-engine
+
+If you are using Nagios::
+
+  What is the Monitoring engine user ?
+  > nagios
+
+User that will be used for running the broker daemon:
+
+If you are using Centreon Broker::
+
+  What is the Broker user ? (optional)
+  > centreon-broker
+
+If you are using NDOUtils::
+  
+  What is the Broker user ? (optional)
+  > nagios
+
+
+Monitoring log directory
+------------------------
+
+If you are using Centreon Engine::
+
+  What is the Monitoring engine log directory ?
+  > /var/log/centreon-engine
+
+If you are using Nagios::
+
+  What is the Monitoring engine log directory ?
+  > /var/log/nagios
+
+
+Plugin path
+-----------
 
 ::
 
-  Where is your NDO ndomod binary ?
-  default to [/usr/sbin/ndomod.o]
-  >/usr/lib/nagios/brokers/ndomod.o
-  /usr/lib/nagios/brokers/ndomod.o                           OK
+  Where is your monitoring plugins (libexec) directory ?
+  default to [/usr/lib/nagios/plugins]
+  >
+  Path /usr/lib/nagios/plugins                               OK
+  Add group centreon to user apache                          OK
+  Add group centreon to user centreon-engine                 OK
+  Add group centreon-engine to user apache                   OK
+  Add group centreon-engine to user centreon                 OK
 
-On Debian: /usr/lib/ndoutils/ndomod-mysql-3x.o
 
 Sudo configuration
 ------------------
@@ -394,35 +415,74 @@ Sudo configuration
 ::
 
   ------------------------------------------------------------------------
-          Configure Sudo
+  	  Configure Sudo
   ------------------------------------------------------------------------
 
   Where is sudo configuration file
   default to [/etc/sudoers]
-  >
+  > 
   /etc/sudoers                                               OK
-  Nagios init script                                         OK
-  Your sudo is not configured
 
-  Do you want me to configure your sudo ? (WARNING)
+
+If you are using Centreon Engine::
+
+  What is the Monitoring engine init.d script ?
+  > /etc/init.d/centengine
+
+  What is the Monitoring engine binary ?
+  > /usr/sbin/centengine
+
+  What is the Monitoring engine configuration directory ?
+  > /etc/centreon-engine
+
+If you are using Nagios ::
+
+  What is the Monitoring engine init.d script ?
+  > /etc/init.d/nagios
+
+  What is the Monitoring engine binary ?
+  > /usr/sbin/nagios
+
+  What is the Monitoring engine configuration directory ?
+  > /etc/nagios
+
+If you are using Centreon Broker::
+
+  Where is the configuration directory for broker module ?
+  > /etc/centreon-broker
+
+  Where is the init script for broker module daemon ?
+  > /etc/init.d/cbd
+
+If you are using NDOUtils::
+  
+  Where is the configuration directory for broker module ?
+  > /etc/nagios
+
+  Where is the init script for broker module daemon ?
+  > /etc/init.d/ndo2db
+
+
+Sudo configuration::
+  Do you want me to reconfigure your sudo ? (WARNING) 
   [y/n], default to [n]:
-  > y
+  >  y
   Configuring Sudo                                           OK
+
 
 Apache configuration
 --------------------
 
 ::
-
+ 
   ------------------------------------------------------------------------
-         Configure Apache server
+    	  Configure Apache server
   ------------------------------------------------------------------------
 
   Do you want to add Centreon Apache sub configuration file ?
   [y/n], default to [n]:
   > y
-  Backup Centreon Apache configuration completed
-  Create '/etc/apache2/conf.d/centreon.conf'                 OK
+  Create '/etc/httpd/conf.d/centreon.conf'                   OK
   Configuring Apache                                         OK
 
   Do you want to reload your Apache ?
@@ -430,16 +490,21 @@ Apache configuration
   > y
   Reloading Apache service                                   OK
   Preparing Centreon temporary files
-  Change right on /usr/local/centreon/log                    OK
+  Change right on /var/log/centreon                          OK
   Change right on /etc/centreon                              OK
-  Change right on /usr/local/nagios/share/images/logos       OK
-  Install nagios documentation                               OK
   Change macros for insertBaseConf.sql                       OK
+  Change macros for sql update files                         OK
   Change macros for php files                                OK
-  Change right on /usr/local/nagios/etc                      OK
+  Change right on /usr/local/etc                             OK
+  Add group centreon to user apache                          OK
+  Add group centreon to user centreon-engine                 OK
+  Add group centreon to user centreon                        OK
   Copy CentWeb in system directory
   Install CentWeb (web front of centreon)                    OK
+  Change right for install directory
+  Change right for install directory                         OK
   Install libraries                                          OK
+  Write right to Smarty Cache                                OK
   Copying libinstall                                         OK
   Change macros for centreon.cron                            OK
   Install Centreon cron.d file                               OK
@@ -450,12 +515,18 @@ Apache configuration
   Install cron directory                                     OK
   Change right for eventReportBuilder.pl                     OK
   Change right for dashboardBuilder.pl                       OK
+  Change macros for centreon.logrotate                       OK
+  Install Centreon logrotate.d file                          OK
+  Prepare export-mysql-indexes                               OK
+  Install export-mysql-indexes                               OK
+  Prepare import-mysql-indexes                               OK
+  Install import-mysql-indexes                               OK
+  Prepare indexes schema                                     OK
+  Install indexes schema                                     OK
+
 
 Pear module installation
 ------------------------
-
-The first check will probably show you NOK messages that refer to
-outdated modules.
 
 ::
 
@@ -463,73 +534,30 @@ outdated modules.
   Pear Modules
   ------------------------------------------------------------------------
   Check PEAR modules
-  PEAR                            1.4.9       1.6.1          OK
-  DB                              1.7.6                      NOK
-  DB_DataObject                   1.8.4                      NOK
-  DB_DataObject_FormBuilder       1.0.0RC4                   NOK
-  MDB2                            2.0.0                      NOK
-  Date                            1.4.6                      NOK
-  HTML_Common                     1.2.2                      NOK
-  HTML_QuickForm                  3.2.5                      NOK
-  HTML_QuickForm_advmultiselect   1.1.0                      NOK
-  HTML_Table                      1.6.1                      NOK
-  Archive_Tar                     1.1         1.3.2          OK
-  Auth_SASL                       1.0.1                      NOK
-  Console_Getopt                  1.2         1.2.3          OK
-  Net_SMTP                        1.2.8                      NOK
-  Net_Socket                      1.0.1                      NOK
-  Net_Traceroute                  0.21                       NOK
-  Net_Ping                        2.4.1                      NOK
-  Validate                        0.6.2                      NOK
-  XML_RPC                         1.4.5                      NOK
-  SOAP                            0.10.1                     NOK
-  Log                             1.9.11                     NOK
-
-Accept the installation and upgrade of the required PEAR modules::
-
-  Do you want me to install/upgrade your PEAR modules
-  [y/n], default to [y]:
-
-Now everything should be OK::
-
-  Installing PEAR modules
-  DB                              1.7.6       1.7.13         OK
-  DB_DataObject                   1.8.4       1.8.12         OK
-  DB_DataObject_FormBuilder       1.0.0RC4    1.0.0          OK
-  MDB2                            2.0.0       2.4.1          OK
-  HTML_QuickForm_advmultiselect   1.1.0       1.5.1          OK
-  HTML_Table                      1.6.1       1.8.2          OK
-  Auth_SASL                       1.0.1       1.0.3          OK
-  Net_SMTP                        1.2.8       1.3.3          OK
-  Net_Traceroute                  0.21        0.21.1         OK
-  Net_Ping                        2.4.1       2.4.4          OK
-  Validate                        0.6.2       0.8.2          OK
-  XML_RPC                         1.4.5       1.5.2          OK
-  SOAP                            0.10.1      0.12.0         OK
-  Log                             1.9.11      1.11.5         OK
-  Check PEAR modules
-  PEAR                            1.4.9       1.6.1          OK
-  DB                              1.7.6       1.7.13         OK
-  DB_DataObject                   1.8.4       1.8.12         OK
-  DB_DataObject_FormBuilder       1.0.0RC4    1.0.0          OK
+  PEAR                            1.4.9       1.9.4          OK
+  DB                              1.7.6       1.7.14         OK
+  DB_DataObject                   1.8.4       1.10.0         OK
+  DB_DataObject_FormBuilder       1.0.0RC4    1.0.2          OK
   MDB2                            2.0.0       2.4.1          OK
   Date                            1.4.6       1.4.7          OK
   HTML_Common                     1.2.2       1.2.5          OK
-  HTML_QuickForm                  3.2.5       3.2.11         OK
+  HTML_QuickForm                  3.2.5       3.2.13         OK
   HTML_QuickForm_advmultiselect   1.1.0       1.5.1          OK
-  HTML_Table                      1.6.1       1.8.2          OK
-  Archive_Tar                     1.1         1.3.2          OK
-  Auth_SASL                       1.0.1       1.0.3          OK
-  Console_Getopt                  1.2         1.2.3          OK
-  Net_SMTP                        1.2.8       1.3.3          OK
-  Net_Socket                      1.0.1       1.0.9          OK
-  Net_Traceroute                  0.21        0.21.1         OK
-  Net_Ping                        2.4.1       2.4.4          OK
-  Validate                        0.6.2       0.8.2          OK
-  XML_RPC                         1.4.5       1.5.2          OK
-  SOAP                            0.10.1      0.12.0         OK
-  Log                             1.9.11      1.11.5         OK
+  HTML_Table                      1.6.1       1.8.3          OK
+  Archive_Tar                     1.1         1.3.1          OK
+  Auth_SASL                       1.0.1       1.0.6          OK
+  Console_Getopt                  1.2         1.2            OK
+  Net_SMTP                        1.2.8       1.6.1          OK
+  Net_Socket                      1.0.1       1.0.10         OK
+  Net_Traceroute                  0.21        0.21.3         OK
+  Net_Ping                        2.4.1       2.4.5          OK
+  Validate                        0.6.2       0.8.5          OK
+  XML_RPC                         1.4.5       1.5.5          OK
+  SOAP                            0.10.1      0.13.0         OK
+  Log                             1.9.11      1.12.7         OK
+  Archive_Zip                     0.1.2       0.1.2          OK
   All PEAR modules                                           OK
+
 
 Configuration file installation
 -------------------------------
@@ -537,23 +565,20 @@ Configuration file installation
 ::
 
   ------------------------------------------------------------------------
-                  Centreon Post Install
+  		  Centreon Post Install
   ------------------------------------------------------------------------
-  Create /usr/local/centreon/www/install/install.conf.php    OK
+  Create /usr/share/centreon/www/install/install.conf.php    OK
   Create /etc/centreon/instCentWeb.conf                      OK
+
+
 
 Centstorage installation
 ------------------------
 
-.. note::
-
-   Centstorage stop process will **fail**, for centstorage is not even
-   started at this point, there is no need to worry about it.
-
 ::
 
   ------------------------------------------------------------------------
-          Start CentStorage Installation
+  	  Start CentStorage Installation
   ------------------------------------------------------------------------
 
   Where is your Centreon Run Dir directory?
@@ -567,15 +592,13 @@ Centstorage installation
 
   Where is your CentStorage binary directory
   default to [/usr/share/centreon/bin]
-  >
+  > 
   Path /usr/share/centreon/bin                               OK
 
   Where is your CentStorage RRD directory
   default to [/var/lib/centreon]
-  >
+  > 
   Path /var/lib/centreon                                     OK
-  Finding Nagios group :                                     nagios
-  Finding Nagios user :                                      nagios
   Preparing Centreon temporary files
   /tmp/centreon-setup exists, it will be moved...
   install www/install/createTablesCentstorage.sql            OK
@@ -595,11 +618,10 @@ Centstorage installation
   Do you want me to install CentStorage run level ?
   [y/n], default to [n]:
   > y
-  Stopping centreon data collector Collector : centstorage
-  Waiting for centstorage to exit . done.
-  CentStorage stop                                           FAIL
   Change macros for logAnalyser                              OK
   Install logAnalyser                                        OK
+  Change macros for logAnalyser-cbroker                      OK
+  Install logAnalyser-cbroker                                OK
   Change macros for nagiosPerfTrace                          OK
   Install nagiosPerfTrace                                    OK
   Change macros for purgeLogs                                OK
@@ -610,7 +632,10 @@ Centstorage installation
   Install centreonPurge.sh                                   OK
   Change macros for centstorage.cron                         OK
   Install CentStorage cron                                   OK
+  Change macros for centstorage.logrotate                    OK
+  Install Centreon Storage logrotate.d file                  OK
   Create /etc/centreon/instCentStorage.conf                  OK
+
 
 Centcore installation
 ---------------------
@@ -618,23 +643,23 @@ Centcore installation
 ::
 
   ------------------------------------------------------------------------
-          Start CentCore Installation
+  	  Start CentCore Installation
   ------------------------------------------------------------------------
 
   Where is your CentCore binary directory
   default to [/usr/share/centreon/bin]
-  >
+  > 
   Path /usr/share/centreon/bin                               OK
   /usr/bin/ssh                                               OK
   /usr/bin/scp                                               OK
-  Finding Nagios group :                                     nagios
-  Finding Nagios user :                                      nagios
   Preparing Centreon temporary files
   /tmp/centreon-setup exists, it will be moved...
   Change CentCore Macro                                      OK
   Copy CentCore in binary directory                          OK
   Change right : /var/run/centreon                           OK
   Change right : /var/lib/centreon                           OK
+  Change macros for centcore.logrotate                       OK
+  Install Centreon Core logrotate.d file                     OK
   Replace CentCore init script Macro                         OK
 
   Do you want me to install CentCore init script ?
@@ -647,25 +672,24 @@ Centcore installation
   > y
   Create /etc/centreon/instCentCore.conf                     OK
 
+
 Plugin installation
 -------------------
 
 ::
 
   ------------------------------------------------------------------------
-         Start CentPlugins Installation
+  	  Start CentPlugins Installation
   ------------------------------------------------------------------------
 
   Where is your CentPlugins lib directory
   default to [/var/lib/centreon/centplugins]
-  >
+  > 
 
   Do you want me to create this directory ? [/var/lib/centreon/centplugins]
   [y/n], default to [n]:
   > y
   Path /var/lib/centreon/centplugins                         OK
-  Finding Nagios user :                                      nagios
-  Finding Nagios group :                                     nagios
   Preparing Centreon temporary files
   /tmp/centreon-setup exists, it will be moved...
   Change macros for CentPlugins                              OK
@@ -674,34 +698,35 @@ Plugin installation
   CentPlugins is installed
 
   ------------------------------------------------------------------------
-          Start CentPlugins Traps Installation
+   	  Start CentPlugins Traps Installation
   ------------------------------------------------------------------------
 
   Where is your SNMP configuration directory
   default to [/etc/snmp]
-  >
+  > 
   /etc/snmp                                                  OK
 
   Where is your SNMPTT binaries directory
   default to [/usr/local/centreon/bin/]
-  >/usr/share/centreon/bin
-  /usr/share/centreon/bin/                                   OK
-  Finding Nagios group :                                     nagios
-  Finding Apache user :                                      www-data
+  > /usr/share/centreon/bin
+  /usr/share/centreon/bin                                    OK
+  Finding Apache user :                                      apache
   Preparing Centreon temporary files
   /tmp/centreon-setup exists, it will be moved...
   Change macros for CentPluginsTraps                         OK
+  Change macros for init scripts                             OK
   Installing the plugins Trap binaries                       OK
-  Backup all your snmp files                                 OK
   Change macros for snmptrapd.conf                           OK
   Change macros for snmptt.ini                               OK
+  SNMPTT init script installed                               OK
   Install : snmptrapd.conf                                   OK
   Install : snmp.conf                                        OK
   Install : snmptt.ini                                       OK
   Install : snmptt                                           OK
+  Install : snmptthandler                                    OK
   Install : snmpttconvertmib                                 OK
-  Generate SNMPTT configuration                              OK
   Create /etc/centreon/instCentPlugins.conf                  OK
+
 
 End
 ---
@@ -710,8 +735,8 @@ End
 
   ###############################################################################
   #                                                                             #
-  #                 Go to the URL : http://your-server/centreon/                #
-  #                            to finish the setup                              #
+  #                 Go to the URL : http://localhost.localdomain/centreon/      #
+  #                   	     to finish the setup                                #
   #                                                                             #
   #                  Report bugs at http://forge.centreon.com                   #
   #                                                                             #
@@ -722,12 +747,13 @@ End
   #                                                                             #
   ###############################################################################
 
+  
 Web Installation
 ================
 
 .. note::
 
-   Make sure your Apache and MySQL servers are up and running before
+   Make sure that your Apache and MySQL servers are up and running before
    going any further.
 
 Open your favorite web browser and go to:::
@@ -739,66 +765,77 @@ You should see the following page:
 .. image:: /_static/images/installation/setup_1.png
    :align: center
 
-Accept the license:
+Press ``Next``:
 
 .. image:: /_static/images/installation/setup_2.png
    :align: center
 
-Leave the default settings:
+If there is any missing package, install them first then click on the ``Refresh`` button. Click on the ``Next`` button once everything is ``OK``
 
-.. image:: /_static/images/installation/setup_3.png
+
+.. image:: /_static/images/installation/setup_3_1.png
    :align: center
 
-If Step 01 went well, everything should be OK:
+Select your monitoring engine.
 
+Depending on the chosen monitoring engine, you will be asked to enter some specific parameters.
 
+Case of Centreon Engine:
+
+.. image:: /_static/images/installation/setup_3_2.png
+   :align: center
+
+Case of Nagios:
+
+.. image:: /_static/images/installation/setup_3_3.png
+   :align: center
+
+Click on the ``Next`` button when all parameters are filled.
 
 .. image:: /_static/images/installation/setup_4.png
    :align: center
 
-Pear modules must be up to date:
+Select your event broker module.
+
+Depending on the chosen module, you will be asked to enter some specific parameters. 
+
+Case of Centreon Broker:
+
+.. image:: /_static/images/installation/setup_4_2.png
+   :align: center
+
+Case of NDOUtils:
+
+.. image:: /_static/images/installation/setup_4_3.png
+   :align: center
+
+Click on the ``Next`` button when all parameters are filled.
 
 .. image:: /_static/images/installation/setup_5.png
    :align: center
 
-Fill the MySQL access information, filling the password should be
-enough. However, if your MySQL database is located in a remote server,
-specify the IP address at *Database Location*
+Fill the form with your information. Make sure to remember your password as it will be used for logging in. Click on the ``Next`` button.
+
 
 .. image:: /_static/images/installation/setup_6.png
    :align: center
 
-If the MySQL access information is correct, everything should be OK at this point
+Fill the form with information regarding your database setup and credentials that will be used for connection. Click on the ``Next`` button.
 
 .. image:: /_static/images/installation/setup_7.png
    :align: center
 
-Fill the first administrator login information.
+The database structure will be installed during this process. Everything should pass and display ``OK``.
+
+.. note::
+  You can be asked to add the ``innodb_file_per_table=1`` parameter in the MySQL configuration file.
+
+Click on the ``Next`` button.
 
 .. image:: /_static/images/installation/setup_8.png
    :align: center
 
-You can choose to enable the LDAP authenticataion or you can enable it later.
-
-..  image:: /_static/images/installation/setup_9.png
-   :align: center
-
-Creation of configuration files:
-
-.. image:: /_static/images/installation/setup10.png
-   :align: center
-
-Check up of MySQL table creation:
-
-.. image:: /_static/images/installation/setup_11.png
-   :align: center
-
-Finish the web installation by clicking on the button:
-
-.. image:: /_static/images/installation/setup_12.png
-   :align: center
-
-The installation is done, you should see the login screen:
+The installation is now finished, click on the ``Finish`` button, you will be redirected to the login screen:
 
 .. image:: /_static/images/installation/login.png
    :align: center
