@@ -22,10 +22,13 @@ this great feature.
 Support for multiple LDAP servers
 =================================
 
-.. _autologin:
-
 New *autologin* mechanism
 =========================
+
+A better :ref:`autologin <autologin>` mechanism has been introduced in
+this version. Now using randomly generated keys, it allows you to
+access specific pages without beeing prompted for a username and a
+password.
 
 ***************
 Important notes

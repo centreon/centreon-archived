@@ -1,3 +1,5 @@
+.. _autologin:
+
 =========
 Autologin
 =========
