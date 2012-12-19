@@ -98,33 +98,34 @@ the scheduler. Or, you could just set the permissions like this::
 Starting the broker
 *******************
 
-Debian
-======
+Centreon Broker
+===============
 
-Edit the file::
+.. note::
 
-  vim /etc/default/ndoutils
+   Debian users, edit the */etc/defaults/cbd* file and set the
+   ``RUN_AT_STARTUP`` variable to **YES**.
 
-Change the line::
+Execute the init script as follow::
 
-  ENABLE_NDOUTILS=0
+  $ /etc/init.d/cbd start
 
-To::
+NDOUtils
+========
 
-  ENABLE_NDOUTILS=1
+.. note::
 
-Start the broker
-================
+   Debian users, edit the */etc/defaults/ndoutils* file and set the
+   ``ENABLE_NDOUTILS`` variable to **1**.
 
-::
+Execute the init script as follow::
 
-  /etc/init.d/ndo2db start
+  $ /etc/init.d/ndo2db start
 
-********************
 Starting centstorage
-********************
+--------------------
 
-Centstorage is used for generating RRD graphs::
+Centstorage is used for generating RRD graphics::
 
   /etc/init.d/centstorage start
 
