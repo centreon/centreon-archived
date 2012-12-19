@@ -123,7 +123,7 @@
                 )
             );
             if (false === $cBroker->insertConfig($configuration)) {
-                $msgErr[] = _('Error in insert central-module configuration');
+                $msgErr[] = _('Error while insertint central-module configuration');
             }
             break;
         case 'central_with_poller':
@@ -221,7 +221,7 @@
                 )
             );
             if (false === $cBroker->insertConfig($configuration)) {
-                $msgErr[] = _('Error in insert central-module configuration');
+                $msgErr[] = _('Error while inserting central-module configuration');
                 break;
             }
             $configuration = array(
@@ -284,7 +284,7 @@
                 )
             );
             if (false === $cBroker->insertConfig($configuration)) {
-                $msgErr[] = _('Error in insert central-module configuration');
+                $msgErr[] = _('Error while inserting central-module configuration');
             }
             break;
         case 'poller':
@@ -348,7 +348,7 @@
                 )
             );
             if (false === $cBroker->insertConfig($configuration)) {
-                $msgErr[] = _('Error in insert central-module configuration');
+                $msgErr[] = _('Error while inserting central-module configuration');
             }
             break;
         default:

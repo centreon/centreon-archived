@@ -77,7 +77,7 @@
         if (count($requester) != 0) {
             $lang['central_configuration_without_poller'] = _('Central without poller configuration');
             $lang['requester'] = _('Requester');
-            $lang['informations'] = _('Informations');
+            $lang['informations'] = _('Information');
             $lang['configuration_name'] = _('Configuration name');
             $lang['additional_daemon'] = _('Additional daemon');
             $lang['none'] = _('None');
@@ -85,7 +85,7 @@
             $tpl->assign('requester_id', $requester['id']);
             $page = 'step2_central_without_poller.ihtml';
         } else {
-            $tpl->assign('strerr', _('Error for getting the localhost requester.'));
+            $tpl->assign('strerr', _('Error while getting the local requester.'));
             $page = 'error.ihtml';
         }
     } elseif ($wizard->getValue(1, 'configtype') == 'central_with_poller') {
@@ -93,14 +93,14 @@
         if (count($requester) != 0) {
             $lang['central_configuration_with_poller'] = _('Central with poller configuration');
             $lang['requester'] = _('Requester');
-            $lang['informations'] = _('Informations');
+            $lang['informations'] = _('Information');
             $lang['prefix_configuration_name'] = _('Prefix configuration name');
             $lang['additional_daemon'] = _('Additional daemon');
             $tpl->assign('requester', $requester['name']);
             $tpl->assign('requester_id', $requester['id']);
             $page = 'step2_central_with_poller.ihtml';
         } else {
-            $tpl->assign('strerr', _('Error for getting the localhost requester.'));
+            $tpl->assign('strerr', _('Error while getting the local requester.'));
             $page = 'error.ihtml';
         }
     } elseif ($wizard->getValue(1, 'configtype') == 'poller') {
@@ -110,7 +110,7 @@
             $page = 'error.ihtml';
         } else {
             $lang['requester'] = _('Requester');
-            $lang['informations'] = _('Informations');
+            $lang['informations'] = _('Information');
             $lang['configuration_name'] = _('Configuration name');
             $lang['central_address'] = _('Central address');
             $lang['additional_daemon'] = _('Additional daemon');

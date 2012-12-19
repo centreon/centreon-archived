@@ -100,7 +100,7 @@
         include $path . 'wizard/save.php';
         if (count($msgErr) > 0) {
             $page = 'error.ihtml';
-            $tpl->assign('strerr', _('Error in save configuration.'));
+            $tpl->assign('strerr', _('Error while saving configuration.'));
         } else {
             $page = 'finish.ihtml';
             $lang['configuration_saved'] = _('Configuration saved.');
@@ -108,17 +108,18 @@
     } else {
         switch ($step) {
             case 1:
-                $lang['welcome'] = _('Welcome for Centreon Broker configuration:');
-                $lang['central_configuration_without_poller'] = _('Central without poller configuration');
-                $lang['central_configuration_with_poller'] = _('Central with pollers configuration');
-                $lang['poller_configuration'] = _('Poller configuration');
+                $lang['welcome'] = _('Welcome to Centreon Broker configuration');
+                $lang['steptext'] = _('Choose a configuration template:');
+                $lang['central_configuration_without_poller'] = _('Central without poller');
+                $lang['central_configuration_with_poller'] = _('Central with pollers');
+                $lang['poller_configuration'] = _('Simple poller');
                 $page = 'step1.ihtml';
                 break;
             case 2:
                 include $path . 'wizard/step2.php';
                 break;
             default:
-                $tpl->assign('strerr', "The step does'nt exists.");
+                $tpl->assign('strerr', "The step doesn't exist.");
                 $page = 'error.ihtml';
                 break;
         }
