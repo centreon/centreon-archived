@@ -11,6 +11,6 @@ $help["command_type"] = dgettext("help", "Define the type of the command. The ty
 $help["graph_template"] = dgettext("help", "The optional definition of a graph template will be used as default graph template, when no other is specified.");
 $help["arg_description"] = dgettext("help", "The argument description provided here will be displayed instead of the technical names like ARGn.");
 $help["command_comment"] = dgettext("help", "Comments regarding the command.");
-$help["connectors"] = dgettext("help", "Connectors are run in background and execute specific commands without the need to execute a binary, thus enhancing performance. This feature is available in Centreon Engine (> 1.3)");
+$help["connectors"] = dgettext("help", "Connectors are run in background and execute specific commands without the need to execute a binary, thus enhancing performance. This feature is available in Centreon Engine (>= 1.3)");
 ?>
 
