@@ -52,7 +52,7 @@ Export and Restart
 .. image:: /_static/images/user/nagios_restart.png
    :align: center
 
-This is what you should get in your nagios log file::
+This is what you should get in your Centreon Engine log file::
 
   $ tailf /var/log/centreon-engine/centengine.log
   [1355929880] Centreon Engine 1.3.0 starting ... (PID=17466)
@@ -67,6 +67,14 @@ This is what you should get in your nagios log file::
   [1355929880] INITIAL SERVICE STATE: Centreon-Server;Load;OK;HARD;1;
   [1355929880] INITIAL SERVICE STATE: Centreon-Server;Memory;OK;HARD;1;
   [1355929880] INITIAL SERVICE STATE: Centreon-Server;Ping;OK;HARD;1;
+
+.. warning::
+
+   The external command module **must be** initialized successfully else
+   Centreon can not execute commands.
+
+   The broker module **must be** initialized successfully, else datas are not
+   send to database.
 
 Or this is what you should get in your nagios log file::
 
@@ -83,6 +91,11 @@ Or this is what you should get in your nagios log file::
   [1322143481] INITIAL SERVICE STATE: Centreon-Server;Load;OK;HARD;1;(null)
   [1322143481] INITIAL SERVICE STATE: Centreon-Server;Memory;OK;HARD;1;(null)
   [1322143481] INITIAL SERVICE STATE: Centreon-Server;Ping;OK;HARD;1;(null)
+
+.. warning::
+
+   The broker module **must be** initialized successfully, else there are not
+   data send to database.
 
 Also, at the top of your web page, you should see the following display:
 
