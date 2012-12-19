@@ -69,7 +69,7 @@ Communication with pollers
 --------------------------
 
 The default system user used by *Centcore* to communicate with pollers
-has changed from ``nagios`` to ``centron``.
+has changed from ``nagios`` to ``centreon``.
 
 .. warning::
 
