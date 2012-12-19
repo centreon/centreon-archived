@@ -9,7 +9,7 @@ and how to get notified when problems arise.
    :maxdepth: 2
 
    basics/commands
-   basics/notification_commands
+   basics/connectors
    basics/contacts
    basics/hosts
    basics/services

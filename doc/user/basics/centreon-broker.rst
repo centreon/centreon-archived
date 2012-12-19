@@ -16,7 +16,7 @@ Three choices are available.
    :align: center
 
 *********************************
-Configuration with only a central
+Configuration with a central only
 *********************************
 
 .. image:: /_static/images/user/basics/centreon_broker_wizard_01_schema.png
