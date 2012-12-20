@@ -24,23 +24,23 @@ The essential elements your module's directory must contain are presented below 
 **[conf.php]\***::
   
   // Short module's name. Must be equal to your module's directory name
-  $module_conf['dummy'][[name]] = "dummy"; 
+  $module_conf['dummy']['name'] = "dummy"; 
   // Full module's name
-  $module_conf['dummy'][[rname]] = "Dummy Module";
+  $module_conf['dummy']['rname'] = "Dummy Module";
   // Module's version
-  $module_conf['dummy'][[mod_release]] = "2.0"; 
+  $module_conf['dummy']['mod_release'] = "2.0"; 
   // Additional information
-  $module_conf['dummy'][[infos]] = "First of all"; 
+  $module_conf['dummy']['infos'] = "First of all"; 
   // Allow your module to be uninstalled
-  $module_conf['dummy'][[is_removeable]] = "1"; 
+  $module_conf['dummy']['is_removeable'] = "1"; 
   // Module author's name
-  $module_conf['dummy'][[author]] = "Centreon Team"; 
+  $module_conf['dummy']['author'] = "Centreon Team"; 
   // 1: the module executes an SQL file for installation and/or uninstallation
   // 0: the module doesn't execute any SQL file
-  $module_conf['dummy'][[sql_files]] = "1"; 
+  $module_conf['dummy']['sql_files'] = "1"; 
   // 1: the module executes a PHP file for installation and/or uninstallation
   // 0: the module doesn't execute any SQL file
-  $module_conf['dummy'][[php_files]] = "1"; 
+  $module_conf['dummy']['php_files'] = "1"; 
 
 **[infos > infos.txt]**
 
