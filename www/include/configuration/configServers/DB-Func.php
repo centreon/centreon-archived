@@ -101,6 +101,21 @@
 				if (testExistence($server_name))	{
 					$val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
 					$DBRESULT = $pearDB->query($rq);
+					$queryGetId = 'SELECT id
+						FROM nagios_server
+						WHERE name = "' . $server_name . '"';
+					$res = $pearDB->query($queryGetId);
+					if (false === PEAR::isError($res)) {
+					    if ($res->numRows() > 0) {
+					        $row = $res->fetchRow();
+					        $queryRel = 'INSERT INTO cfg_resource_instance_relations
+					        	(resource_id, instance_id)
+					        	SELECT b.resource_id, ' . $row['id'] . '
+					        		FROM cfg_resource_instance_relations as b
+					        		WHERE b.instance_id = ' . $key;
+					        $pearDB->query($queryRel);
+					    }
+					}
 				}
 			}
 		}
