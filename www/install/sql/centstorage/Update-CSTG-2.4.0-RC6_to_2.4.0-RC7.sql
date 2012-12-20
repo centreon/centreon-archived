@@ -2,4 +2,4 @@
 ALTER TABLE  `config` ADD  `audit_log_option` ENUM(  '0',  '1' ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT  '1';
 
 -- Old 'rebuild'
-DROP TABLE `rebuild`;
+DROP TABLE IF EXISTS `rebuild`;
