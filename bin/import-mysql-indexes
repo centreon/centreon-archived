@@ -491,7 +491,7 @@ class MysqlIndexImporter
 
         /* In case index does not exist no need to go further */
         if (count($databaseIndexColumns) === 0) {
-            $this->differences[] = 'Missing: ' . (!$indexStructure->unique ? 'UNIQUE ' : '') . 'INDEX \'' . $indexStructure->tableName . '\'.\'' . $indexStructure->indexName . '\'(' . implode(', ', $leftColumnParts) . ')';
+            $this->differences[] = 'Missing: ' . ($indexStructure->unique ? 'UNIQUE ' : '') . 'INDEX \'' . $indexStructure->tableName . '\'.\'' . $indexStructure->indexName . '\'(' . implode(', ', $leftColumnParts) . ')';
             return;
         }
 
