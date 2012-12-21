@@ -107,7 +107,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2011 <a href="mailto:infos@centreon.com">Centreon</a></td>
+				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2013 <a href="mailto:infos@centreon.com">Centreon</a></td>
 			</tr>
 		</table>
 	</div>
