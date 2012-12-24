@@ -78,8 +78,8 @@ Run the commands::
 
   $ yum install centreon-poller-nagios
 
-Base configuration of poller
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Base configuration of pollers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The communication between a central server and a poller server is by SSH.
 

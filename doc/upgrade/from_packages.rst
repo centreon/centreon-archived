@@ -41,6 +41,9 @@ Run the commands::
   $ yum install centreon-base-config-nagios centreon
   $ yum update
 
+After this upgrade, you can connect to Centreon for finish upgrade.
+The steps of web upgrade is :ref:`here <upgrade_web>`.
+
 Upgrade a poller
 ----------------
 
@@ -65,6 +68,25 @@ Run the commands::
 .. warning::
    If the snmptt package is installed, you must remove it and install the
    package centreon-snmptt.
+
+Base configuration of pollers
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. warning::
+   The user for communication between a central server and a poller change in
+   version 2.4.0. Change from nagios user to centreon user.
+
+You must exchange ssh keys this hosts.
+
+If you have not a ssh private on the central for user centreon::
+
+  $ su - centreon
+  $ ssh-keygen -t rsa
+
+You copy this key into the poller::
+
+  $ ssh-copy-id centreon@your_poller_ip
+
 
 ********************************************
 Upgrade from version Centreon 2.4.0 or after
