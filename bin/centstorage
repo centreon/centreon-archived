@@ -118,7 +118,7 @@ sub catch_zap_int {
     
     if ($tabProc{'parser'}) {
         writeLogFile("Send INT signal to parser sub process...");
-        kill('INT', $tabProc{'parser'})	
+        kill('INT', $tabProc{'parser'});
     }
     
     if ($tabProc{'rebuild'}) {
