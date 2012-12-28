@@ -48,9 +48,9 @@
 	 * Build cache for CG
 	 */
 	$cgSCache = array();
-	$DBRESULT = $pearDB->query("SELECT csr.service_service_id, cg.cg_id, cg.cg_name 
-                                    FROM contactgroup_service_relation csr, contactgroup cg 
-                                    WHERE csr.contactgroup_cg_id = cg.cg_id 
+	$DBRESULT = $pearDB->query("SELECT csr.service_service_id, cg.cg_id, cg.cg_name
+                                    FROM contactgroup_service_relation csr, contactgroup cg
+                                    WHERE csr.contactgroup_cg_id = cg.cg_id
                                     AND cg.cg_activate = '1'");
 	while ($cg = $DBRESULT->fetchRow()) {
 		if (!isset($cgSCache[$cg["service_service_id"]]))
@@ -111,13 +111,13 @@
 	 * Create ESI Cache
 	 */
 	$esiCache = array();
-	$DBRESULT3 = $pearDB->query("SELECT esi.* 
+	$DBRESULT3 = $pearDB->query("SELECT esi.*
                                      FROM extended_service_information esi, host_service_relation hsr, ns_host_relation nhr
                                      WHERE esi.service_service_id = hsr.service_service_id
                                      AND hsr.host_host_id = nhr.host_host_id
                                      AND nhr.nagios_server_id = ".$pearDB->escape($tab['id']) . "
                                      UNION
-                                     SELECT esi.* 
+                                     SELECT esi.*
                                      FROM extended_service_information esi, host_service_relation hsr, ns_host_relation nhr, hostgroup_relation hgr
                                      WHERE esi.service_service_id = hsr.service_service_id
                                      AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
@@ -415,12 +415,12 @@
 		 * Create Service relation buffer
 		 */
 		$serviceRelation = array();
-		$DBRESULT2 = $pearDB->query("SELECT nhr.host_host_id as host_id, NULL as hg_id, service_service_id as service_id 
-                                             FROM host_service_relation hsr, ns_host_relation nhr 
+		$DBRESULT2 = $pearDB->query("SELECT nhr.host_host_id as host_id, NULL as hg_id, service_service_id as service_id
+                                             FROM host_service_relation hsr, ns_host_relation nhr
                                              WHERE hsr.host_host_id = nhr.host_host_id
                                              AND nhr.nagios_server_id = ".$pearDB->escape($tab['id'])."
                                              UNION
-                                             SELECT NULL as host_id, hgr.hostgroup_hg_id as hg_id, service_service_id as service_id 
+                                             SELECT NULL as host_id, hgr.hostgroup_hg_id as hg_id, service_service_id as service_id
                                              FROM host_service_relation hsr, ns_host_relation nhr, hostgroup_relation hgr
                                              WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
                                              AND hgr.host_host_id = nhr.host_host_id
@@ -444,21 +444,21 @@
 		}
 		$DBRESULT2->free();
 
-		$DBRESULT = $pearDB->query("SELECT s.* 
+		$DBRESULT = $pearDB->query("SELECT s.*
                                             FROM service s, host_service_relation hsr, ns_host_relation ns
                                             WHERE hsr.host_host_id = ns.host_host_id
                                             AND ns.nagios_server_id = ".$pearDB->escape($tab['id'])."
                                             AND hsr.service_service_id = s.service_id
-                                            AND s.`service_activate` = '1' 
-                                            AND s.`service_register` = '1' 
+                                            AND s.`service_activate` = '1'
+                                            AND s.`service_register` = '1'
                                             UNION
-                                            SELECT s.* 
+                                            SELECT s.*
                                             FROM service s, host_service_relation hsr, hostgroup_relation hgr, ns_host_relation ns
                                             WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
                                             AND hgr.host_host_id = ns.host_host_id
                                             AND ns.nagios_server_id = ".$pearDB->escape($tab['id'])."
                                             AND hsr.service_service_id = s.service_id
-                                            AND s.`service_activate` = '1' 
+                                            AND s.`service_activate` = '1'
                                             AND s.`service_register` = '1'
                                             ORDER BY `service_description`");
 		$service = array();
@@ -777,7 +777,9 @@
 			        }
 			    }
 			}
+			$tmpListHost = array_map('serialize', $tmpListHost);
 			$tmpListHost = array_unique($tmpListHost);
+			$tmpListHost = array_map('unserialize', $tmpListHost);
 			/*
 			 * Generate index data
 			 */
