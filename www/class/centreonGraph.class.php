@@ -269,7 +269,7 @@ class CentreonGraph {
         } else {
             $newDsName = str_replace(array("/","\\", "%"), array("slash_", "bslash_", "pct_"), $dsname);
         }
-        $newDsName = preg_replace("/[^a-zA-Z0-9-_]/", "-", $newDsName);
+        $newDsName = preg_replace("/[^\w\-_]/", "-", $newDsName);
         return $newDsName;
     }
 
@@ -609,7 +609,7 @@ class CentreonGraph {
                         $this->metrics[$metric["metric_id"]]["legend"] = str_replace('"', '\"', html_entity_decode($ds_data["ds_legend"], ENT_COMPAT, 'UTF-8'), $escaped_chars_nb);
                     } else {
                         if (!isset($ds_data["ds_name"]) || !preg_match('/DS/', $ds_data["ds_name"], $matches)){
-                            $this->metrics[$metric["metric_id"]]["legend"] = $this->cleanupDsName($metric["metric_name"], true);
+                            $this->metrics[$metric["metric_id"]]["legend"] = $this->cleanupDsNameForLegend($metric["metric_name"], true);
                         } else {
                             $this->metrics[$metric["metric_id"]]["legend"] = (isset($ds_data["ds_name"]) ? $ds_data["ds_name"] : "");
                         }
