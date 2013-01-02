@@ -360,6 +360,10 @@
 									$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host."' AND service_id = '".$key."'");
 								}
 							}
+						} else {
+						    $pearDB->query('DELETE FROM servicegroup_relation
+    					    	WHERE hostgroup_hg_id != ' . $relation['hostgroup_hg_id'] . '
+    					    		AND service_service_id = ' . $key);
 						}
 						$lap++;
 					}
@@ -371,6 +375,10 @@
 						if ($sv_id)	{
 							$DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$relation["host_host_id"]."' AND service_id = '".$key."'");
 						}
+					} else {
+					    $pearDB->query('DELETE FROM servicegroup_relation
+					    	WHERE host_host_id != ' . $relation['host_host_id'] . '
+					    		AND service_service_id = ' . $key);
 					}
 					$lap++;
 				}
@@ -552,15 +560,15 @@
                                                         /*
                                                          * Criticality
                                                          */
-                                                        $sql = "SELECT criticality_id 
-                                                                FROM criticality_resource_relations 
+                                                        $sql = "SELECT criticality_id
+                                                                FROM criticality_resource_relations
                                                                 WHERE service_id = ".$pearDB->escape($key);
                                                         $res = $pearDB->query($sql);
                                                         if ($res->numRows()) {
                                                             $cr = $res->fetchRow();
                                                             setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
                                                         }
-                                                        
+
 							/*
 							 *  get svc desc
 							 */
@@ -830,11 +838,11 @@
 	 			}
 	 		}
 		}
-                
+
                 if (isset($ret['criticality_id'])) {
                     setServiceCriticality($service_id['MAX(service_id)'], $ret['criticality_id']);
                 }
-                
+
 		if (isset($ret["service_template_model_stm_id"])) {
 		    $fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
 		}
@@ -1150,11 +1158,11 @@
 	 			}
 	 		}
 		}
-                
+
                 if (isset($ret['criticality_id'])) {
                     setServiceCriticality($service_id, $ret['criticality_id']);
                 }
-                
+
 		$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
 		$fields["command_command_id"] = $ret["command_command_id"];
 		$fields["timeperiod_tp_id"] = $ret["timeperiod_tp_id"];
@@ -1234,7 +1242,7 @@
 
 		$ret = array();
 		$ret = $form->getSubmitValues();
-        
+
         if (isset($ret["sg_name"])) {
             $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
         }
@@ -1458,11 +1466,11 @@
 	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
 	 		}
 		}
-                
+
                 if (isset($ret['criticality_id']) && $ret['criticality_id']) {
                     setServiceCriticality($service_id, $ret['criticality_id']);
                 }
-                
+
 		$centreon->CentreonLogAction->insertLog("service", $service_id, getMyServiceName($service_id), "mc", $fields);
 	}
 
@@ -1552,11 +1560,11 @@
 		$service = array_map("myDecodeService", $DBRESULT->fetchRow());
 
 		$ret = $form->getSubmitValue("service_notifOpts");
-        
+
         if(is_array($ret)){
             isset($service["service_notification_options"]) && $service["service_notification_options"] != NULL ? $temp = $service["service_notification_options"] . ",". implode(",", array_keys($ret)) : $tmp = implode(",", array_keys($ret)) ;
         }
-        
+
 		if (isset($temp) && $temp != NULL) {
 		    $rq = "UPDATE service SET " ;
 			$rq .= "service_notification_options = '". trim ($temp ,',')."' ";
@@ -1733,11 +1741,11 @@
                 }
 		global $form;
 		global $pearDB;
-                
+
                 /**
                  * If service is linked to multiple hosts, we can't go through this process
                  */
-                $sql = "SELECT COUNT(service_service_id) as nb 
+                $sql = "SELECT COUNT(service_service_id) as nb
                         FROM host_service_relation
                         WHERE service_service_id = ".$pearDB->escape($service_id);
                 $res = $pearDB->query($sql);
@@ -1745,7 +1753,7 @@
                 if ($row['nb'] > 1) {
                     return null;
                 }
-                
+
 		$rq = "DELETE FROM servicegroup_relation ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT = $pearDB->query($rq);
@@ -2093,20 +2101,20 @@
 			$DBRESULT = $pearDB->query($rq);
 		}
 	}
-        
+
         /**
          * Inserts criticality relations
-         * 
+         *
          * @param int $serviceId
          * @param int $criticalityId
-         * @return void 
+         * @return void
          */
         function setServiceCriticality($serviceId, $criticalityId) {
             global $pearDB;
-            
+
             $pearDB->query("DELETE FROM criticality_resource_relations WHERE service_id = " . $pearDB->escape($serviceId));
             if ($criticalityId) {
-                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, service_id) 
+                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, service_id)
                                 VALUES (".$pearDB->escape($criticalityId).", ".$pearDB->escape($serviceId).")");
             }
         }
