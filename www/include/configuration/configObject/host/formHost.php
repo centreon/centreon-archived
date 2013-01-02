@@ -127,7 +127,7 @@
 			$host["nagios_server_id"][$i] = $ns["nagios_server_id"];
 		$DBRESULT->free();
 		unset($ns);
-                
+
                 /*
                  * Set criticality
                  */
@@ -702,7 +702,7 @@
 	$form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
         /*
-         * Criticality 
+         * Criticality
          */
         $criticality = new CentreonCriticality($pearDB);
         $critList = $criticality->getList();
@@ -711,7 +711,7 @@
             $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
         }
         $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
-        
+
 	/*
 	 * Sort 5 - Macros - Nagios 3
 	 */
@@ -774,8 +774,9 @@
 	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
 	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
 
-            $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
-            $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+        $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
+        $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+        $form->addRule('host_address', _("Compulsory Address"), 'required');
 
 		/*
 		 * If we are using a Template, no need to check the value, we hope there are in the Template
@@ -794,7 +795,6 @@
 			}
 			if (!$ok_flag) {
 				$form->addRule('host_alias', _("Compulsory Alias"), 'required');
-				$form->addRule('host_address', _("Compulsory Address"), 'required');
 				$form->addRule('host_max_check_attempts', _("Required Field"), 'required');
 				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
 
