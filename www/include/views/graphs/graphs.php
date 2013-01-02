@@ -584,9 +584,13 @@ function nextPeriod() {
         var end = parseInt((img_url.start * 1000) + ((coords.x2 - margeLeftGraph) * period / ($(img_name).width - margeLeftGraph - margeRightGraph)));
 
         if (useGmt) {
-        	start += gmt * 60 * 60 * 1000;
-        	end += gmt * 60 * 60 * 1000;
+            start += gmt * 60 * 60 * 1000;
+            end += gmt * 60 * 60 * 1000;
         }
+        //@todo: this is a quick & dirty fix for countering ctime2date()
+        gmtSec = new Date().getTimezoneOffset() * 60 * 1000 * -1;
+        start += gmtSec;
+        end += gmtSec;
 
         var id = img_name.split('__')[0];
         id = id.replace('HS_', 'SS_');
