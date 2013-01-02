@@ -14,30 +14,30 @@ Installation
 Monitoring Engine
 =================
 
-You can use a monitoring engine compatible to Nagios.
+You need to have a Nagios compliant monitoring engine installed on your system.
 
-For install Centreon Engine as monitoring engine, see
+For more information regarding the installation of Centreon Engine, refer to
 :ref:`this documentation <centreon-engine:_user_installation_using_sources>`.
 
 Broker module
 =============
 
-Broker module supported by Centreon is NDOUtils and Centreon Broker.
+The broker modules that are supported by Centreon are NDOUtils and Centreon Broker.
 
-For install Centreon Broker as broker module, see
+For more information regarding the installation of Centreon Broker, refer to
 :ref:`this documentation <centreon-broker:_user_installation>`.
 
 Web User Interface
 ==================
 
-You can find the way to install the Centreon WebUI :ref:`here <install>`.
+You can find information regarding the installation of the Centreon Web UI :ref:`here <install>`.
 
 *******************
-Starting monitoring
+Starting to monitor
 *******************
 
 This is the most exciting part where you will start monitoring your
-very first host and services! You will need to export your
+very first hosts and services! You will need to export your
 configuration files and restart the scheduler:
 
 Login to Centreon
@@ -70,11 +70,11 @@ This is what you should get in your Centreon Engine log file::
 
 .. warning::
 
-   The external command module **must be** initialized successfully else
-   Centreon can not execute commands.
+   The external command module **must be** initialized successfully, otherwise
+   Centreon will not be able to execute external commands.
 
-   The broker module **must be** initialized successfully, else datas are not
-   send to database.
+   The broker module **must be** initialized successfully, otherwise data will not
+   be inserted into database.
 
 Or this is what you should get in your nagios log file::
 
@@ -105,12 +105,14 @@ Also, at the top of your web page, you should see the following display:
 If the top of your web page does not display this information, read the next
 section.
 
-******************
-Things to validate
-******************
+**************
+Quick check up
+**************
 
-Validate services running
-=========================
+Running services
+================
+
+Make sure that all of the following services are running:
 
 Checking CentCore::
 

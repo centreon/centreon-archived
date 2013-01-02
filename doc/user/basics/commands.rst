@@ -82,4 +82,4 @@ an email to the contact with the **mail** binary:
 .. image:: /_static/images/user/notif_cmd_2.png
    :align: center
 
-See the definition of the available options :ref:`upper <command_args_ref>`.
+The :ref:`parameters <command_args_ref>` are the same as the check commands'.

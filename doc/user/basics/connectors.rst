@@ -32,5 +32,5 @@ Using a connector
 =================
 
 Defined connectors are not used by default. Each command can be
-configured to use a connector, see the :ref:`commands` chapter for
+configured to use a connector, read the :ref:`commands` chapter for
 more information.
