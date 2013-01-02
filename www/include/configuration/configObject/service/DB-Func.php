@@ -1742,18 +1742,6 @@
 		global $form;
 		global $pearDB;
 
-                /**
-                 * If service is linked to multiple hosts, we can't go through this process
-                 */
-                $sql = "SELECT COUNT(service_service_id) as nb
-                        FROM host_service_relation
-                        WHERE service_service_id = ".$pearDB->escape($service_id);
-                $res = $pearDB->query($sql);
-                $row = $res->fetchRow();
-                if ($row['nb'] > 1) {
-                    return null;
-                }
-
 		$rq = "DELETE FROM servicegroup_relation ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT = $pearDB->query($rq);

@@ -512,21 +512,28 @@
 		$form->setDefaults(array('mc_mod_Pars'=>'0'));
 	}
 
+        $sgReadOnly = false;
 	if ($form_service_type == "BYHOST") {
-    	$ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
-    	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-    	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-    	$ams3->setElementTemplate($eTemplate);
-    	echo $ams3->getElementJs(false);
+            $ams3 = $form->addElement('advmultiselect', 'service_hPars', array(_("Linked with Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect_big, SORT_ASC);
+            $ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+            $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+            $ams3->setElementTemplate($eTemplate);
+            echo $ams3->getElementJs(false);
+            if (isset($service['service_hPars']) && count($service['service_hPars']) > 1) {
+                $sgReadOnly = true;
+            }
 	}
 
 	if ($form_service_type == "BYHOSTGROUP") {
-    	$ams3 = $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
-    	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
-    	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
-    	$ams3->setElementTemplate($eTemplate);
-    	echo $ams3->getElementJs(false);
-    }
+            $ams3 = $form->addElement('advmultiselect', 'service_hgPars', array(_("Linked with Host Groups"), _("Available"), _("Selected")), $hgs, $attrsAdvSelect, SORT_ASC);
+            $ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+            $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+            $ams3->setElementTemplate($eTemplate);
+            echo $ams3->getElementJs(false);
+            if (isset($service['service_hgPars']) && count($service['service_hgPars']) > 1) {
+                $sgReadOnly = true;
+            }
+        }
 
 	# Service relations
 	$form->addElement('header', 'links', _("Relations"));
@@ -541,6 +548,9 @@
 	$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams3->setElementTemplate($eTemplate);
+        if ($sgReadOnly === true) {
+            $ams3->freeze();
+        }
 	echo $ams3->getElementJs(false);
 
 	$form->addElement('header', 'traps', _("SNMP Traps"));
