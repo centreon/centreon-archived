@@ -69,8 +69,10 @@ Run the commands::
    If the snmptt package is installed, you must remove it and install the
    package centreon-snmptt.
 
-Base configuration of pollers
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+.. _pollers_basic_conf:
+
+Pollers basic configuration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. warning::
    The user for communication between a central server and a poller 
@@ -86,7 +88,6 @@ If you do not have an SSH private key on the central for user centreon::
 Copy this key onto the poller::
 
   $ ssh-copy-id centreon@your_poller_ip
-
 
 ********************************************
 Upgrade from version Centreon 2.4.0 or after

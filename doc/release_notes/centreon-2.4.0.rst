@@ -69,11 +69,8 @@ Communication with pollers
 --------------------------
 
 The default system user used by *Centcore* to communicate with pollers
-has changed from ``nagios`` to ``centreon``.
-
-.. warning::
-
-   Faire référence à la doc. de mise à jour pour traiter ce cas
+has changed from ``nagios`` to ``centreon``. See
+:ref:`pollers_basic_conf` for more information.
 
 
 Plugins
