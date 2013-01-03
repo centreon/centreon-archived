@@ -40,40 +40,54 @@ sub CheckMySQLDrain(){
 
     # Connecte MySQL To centreon and centstorage
 	CheckMySQLConnexion();
+    
+    # Delete entry flaged with 'to_delete' = 1
+    my $sth2 = $con_oreon->prepare("SELECT value FROM options WHERE `key` LIKE 'broker'");
+    if (!$sth2->execute()) {
+        writeLogFile("Can't get broker mode : " . $sth2->errstr . "\n");
+    } else {
+        $data = $sth2->fetchrow_hashref();
+        if ($data->{'value'} eq "ndo") {
+            $con_ods->do("DELETE FROM metrics WHERE index_id IN (SELECT id FROM index_data WHERE to_delete = '1')");
+            $con_ods->do("DELETE FROM index_data WHERE to_delete = '1'");
+            $con_ods->do("DELETE FROM metrics WHERE to_delete = '1'");
+        }
+        undef($data);
+    }
 
     # Get services by hosts
-    my $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL ");
-    if (!$sth2->execute) {
+    $sth2 = $con_oreon->prepare("SELECT service_service_id, host_host_id FROM host_service_relation WHERE hostgroup_hg_id IS NULL");
+    if (!$sth2->execute()) {
         writeLogFile("Error in Drain function 2 : " . $sth2->errstr . "\n");
         $con_oreon->disconnect();
         $con_ods->disconnect();
         return -1;
     }
     while ($data = $sth2->fetchrow_hashref()){
-	$srv_list{$data->{'host_host_id'} ."_". $data->{'service_service_id'}} = 1;
+        $srv_list{$data->{'host_host_id'} ."_". $data->{'service_service_id'}} = 1;
     }
     $sth2->finish();
     undef($data);
     undef($sth2);
 
     # Get service by Hostgroups
-    $sth2 = $con_oreon->prepare("SELECT hostgroup_hg_id, service_service_id FROM host_service_relation WHERE hostgroup_hg_id IS NOT NULL ");
-    if (!$sth2->execute) {
+    $sth2 = $con_oreon->prepare("SELECT hostgroup_hg_id, service_service_id FROM host_service_relation WHERE hostgroup_hg_id IS NOT NULL");
+    if (!$sth2->execute()) {
         writeLogFile("Error in Drain function 2 : " . $sth2->errstr);
         $con_oreon->disconnect();
         $con_ods->disconnect();
         return -1;
     }
     while ($data = $sth2->fetchrow_hashref()){
-	$sth3 = $con_oreon->prepare("SELECT * FROM hostgroup_relation WHERE hostgroup_hg_id = '".$data->{'hostgroup_hg_id'}."'");
-	if (!$sth3->execute) {
-	    writeLogFile("Error in Drain function 2 : " . $sth2->errstr);
-	}
-	while ($data_hg = $sth3->fetchrow_hashref()){
-	    $srv_list{$data_hg->{'host_host_id'} ."_". $data->{'service_service_id'}} = 1;		
-	}
-	$sth3->finish();
-	undef($sth3);
+        $sth3 = $con_oreon->prepare("SELECT * FROM hostgroup_relation WHERE hostgroup_hg_id = '".$data->{'hostgroup_hg_id'}."'");
+        if (!$sth3->execute()) {
+            writeLogFile("Error in Drain function 2 : " . $sth2->errstr);
+        }
+        while ($data_hg = $sth3->fetchrow_hashref()){
+            $srv_list{$data_hg->{'host_host_id'} ."_". $data->{'service_service_id'}} = 1;		
+        }
+        $sth3->finish();
+        undef($sth3);
     }
     $sth2->finish();
     undef($data);
@@ -81,45 +95,45 @@ sub CheckMySQLDrain(){
     undef($data_hg);
 
     my $flg = 0;
-    my $sth;
-    $sth = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` NOT LIKE '_Module_%'");
-    if (!$sth->execute) {
-	writeLogFile("Error in Drain function 3 : " . $sth->errstr);
+    my $sth = $con_ods->prepare("SELECT host_id, service_id FROM index_data WHERE `host_name` NOT LIKE '_Module_%'");
+    if (!$sth->execute()) {
+        writeLogFile("Error in Drain function 3 : " . $sth->errstr);
     } else {
-	while ($data = $sth->fetchrow_hashref()) {
-	    if ($data->{'service_id'} && $data->{'host_id'} && !defined($srv_list{$data->{'host_id'}."_".$data->{'service_id'}})){
-		my $data_svc;
-		my $t = 0;
-		my $sth1 = $con_ods->prepare("SELECT metric_id FROM index_data, metrics WHERE index_data.host_id = '".$data->{'host_id'}."' AND index_data.service_id = '".$data->{'service_id'}."' AND metrics.index_id = index_data.id");
-		if (!$sth1->execute) {
-		    writeLogFile("Error in Drain function 3 : " . $sth1->errstr);
-		}
-		while ($data_svc = $sth1->fetchrow_hashref()) {
-		    # Add Metric to delete in buffer
-		    $sth2 = $con_ods->prepare("DELETE FROM metrics WHERE metric_id = '".$data_svc->{'metric_id'}."'");	
-		    if (!$sth2->execute) {
-			writeLogFile("Error when deleting Metrics for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." m : ".$data_svc->{'metric_id'}." : " . $sth2->errstr);
-		    }
-		    $sth2->finish();
-		    undef($sth2);
-		    $t++;
-		}
-
-		if ($t){
-		    $sth2 = $con_ods->prepare("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'");
-		    if (!$sth2->execute) {
-			writeLogFile("Error when index for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." :" . $sth2->errstr);
-		    }
-		    $sth2->finish();
-		}
-		undef($sth2);
-		undef($data_svc);
-	    }
-	}
+        while ($data = $sth->fetchrow_hashref()) {
+            if ($data->{'service_id'} && $data->{'host_id'} && !defined($srv_list{$data->{'host_id'}."_".$data->{'service_id'}})){
+                my $data_svc;
+                my $t = 0;
+                my $sth1 = $con_ods->prepare("SELECT metric_id FROM index_data, metrics WHERE index_data.host_id = '".$data->{'host_id'}."' AND index_data.service_id = '".$data->{'service_id'}."' AND metrics.index_id = index_data.id");
+                if (!$sth1->execute()) {
+                    writeLogFile("Error in Drain function 3 : " . $sth1->errstr);
+                }
+                while ($data_svc = $sth1->fetchrow_hashref()) {
+                    # Add Metric to delete in buffer
+                    $sth2 = $con_ods->prepare("DELETE FROM metrics WHERE metric_id = '".$data_svc->{'metric_id'}."'");	
+                    if (!$sth2->execute()) {
+                        writeLogFile("Error when deleting Metrics for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." m : ".$data_svc->{'metric_id'}." : " . $sth2->errstr);
+                    }
+                    $sth2->finish();
+                    undef($sth2);
+                    $t++;
+                }
+                
+                if ($t){
+                    $sth2 = $con_ods->prepare("DELETE FROM index_data WHERE `service_id` = '".$data->{'service_id'}."' AND host_id = '".$data->{'host_id'}."'");
+                    if (!$sth2->execute) {
+                        writeLogFile("Error when index for host ".$data->{'host_id'}." and svc ".$data->{'service_id'}." :" . $sth2->errstr);
+                    }
+                    $sth2->finish();
+                }
+                undef($sth2);
+                undef($data_svc);
+            }
+        }
     }
-
+    
     $sth->finish();
     undef($sth);
+    undef($sth1);
     undef($sth2);
     undef(%srv_list);
     undef($data);
