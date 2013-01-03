@@ -495,6 +495,30 @@ sub GetPerfData($){
     }
 }
 
+##
+# Checks if rotation occured,
+#
+sub checkRotation($$$$$) {
+   my $instanceId = $_[0];
+   my $lastUpdate = $_[1];
+   my $remoteConnection = $_[2];
+   my $localLogFile = $_[3];
+   my $port = $_[4];
+
+   my $archivePath = getNagiosConfigurationField($instanceId, 'log_archive_path');
+   my $getLastCmd = 'echo "$(find '.$archivePath.' -type f -exec stat -c "%Z:%n" {} \; | sort | tail -1)"';
+   my $check_cmd = "$ssh -p $port -q $remoteConnection '".$getLastCmd."'";
+   my $result = `$check_cmd`;
+   $result =~ /(\d+):(.+)/;
+   my $updateTime = $1;
+   my $fileName = $2;
+   if ($updateTime > $lastUpdate) {
+       my $cmd = "$scp -P $port $remoteConnection:$fileName $localLogFile.rotate > /dev/null";
+       `$cmd`;
+       writeLogFile("Info: copied rotated file for instance $instanceId");
+   }
+}
+
 ##################################
 ## Get Log files on the specific 
 ## poller
@@ -536,6 +560,8 @@ sub GetLogFile($){
             my $cmd = $localDir.".nagios.log.flag";
             my $value = `cat $cmd`;
             $value =~ s/\n//g;
+
+            checkRotation($id, $value, $distantconnexion, $locallogfile, $log);
 
             # Check update 
             my $check_cmd = "$ssh -p $port -q $distantconnexion 'stat  -c \'STAT_RESULT=%Y\' $distantlogfile'";

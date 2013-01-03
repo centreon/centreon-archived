@@ -504,6 +504,12 @@ sub parseLogFile($$) {
         $sth->finish();
     } else {
         $LOG_FILE = "$VarLib/log/$instance/nagios.log";
+        my $ROTATE_FILE = $LOG_FILE.".rotate";
+        if (-e $ROTATE_FILE) {
+            writeLogFile("Info: Parsing rotated file for instance $instance\n");
+            parseFile($ROTATE_FILE, $instance);
+            unlink($ROTATE_FILE);
+        }
     }
 
     # Parse -> 
