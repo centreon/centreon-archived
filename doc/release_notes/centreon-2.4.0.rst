@@ -75,6 +75,18 @@ has changed from ``nagios`` to ``centreon``.
 
    Faire référence à la doc. de mise à jour pour traiter ce cas
 
+
+Plugins
+-------
+
+For better performances, we advise you to use ``check_icmp`` 
+instead of ``check_ping`` if you are in an IPv4 network, that is
+(check_icmp is not yet compatible with IPv6). Switching from ``check_ping`` to
+``check_icmp`` should be quite simple as the plugins take the same parameters.
+All you have to do is change the check commands: ``check_centreon_ping``, 
+``check_host_alive`` and all the commands that call ``check_ping``.
+
+
 Web interface
 =============
 
