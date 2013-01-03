@@ -561,7 +561,7 @@ sub GetLogFile($){
             my $value = `cat $cmd`;
             $value =~ s/\n//g;
 
-            checkRotation($id, $value, $distantconnexion, $locallogfile, $log);
+            checkRotation($id, $value, $distantconnexion, $locallogfile, $port);
 
             # Check update 
             my $check_cmd = "$ssh -p $port -q $distantconnexion 'stat  -c \'STAT_RESULT=%Y\' $distantlogfile'";
