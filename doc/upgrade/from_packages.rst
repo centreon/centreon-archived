@@ -14,7 +14,7 @@ Upgrade from Centreon version prior to 2.4.0
 
 The RPM structure has changed between Centreon 2.3.x and Centreon 2.4.0.
 
-In order to upgrade Centreon, you must choose between two base templates :
+In order to upgrade Centreon, you must choose between two base templates:
 ``Centreon Engine and Centreon Broker`` or ``Nagios and Ndo2db``.
 
 This choice is based on your monitoring engine.
@@ -23,7 +23,7 @@ This choice is based on your monitoring engine.
 Upgrade a central server
 ------------------------
 
-This part is to upgrade a central server.
+This part covers the upgrade procedure of a central server.
 
 Upgrade with Centreon Engine
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -41,13 +41,13 @@ Run the commands::
   $ yum install centreon-base-config-nagios centreon
   $ yum update
 
-After this upgrade, you can connect to Centreon for finish upgrade.
-The steps of web upgrade is :ref:`here <upgrade_web>`.
+After this upgrade, you can connect to Centreon to finish the upgrade.
+The steps of web upgrade are described :ref:`here <upgrade_web>`.
 
 Upgrade a poller
 ----------------
 
-This part is to upgrade pollers.
+This part covers the upgrade procedure of remote pollers.
 
 Upgrade with Centreon Engine
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -73,17 +73,17 @@ Base configuration of pollers
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. warning::
-   The user for communication between a central server and a poller change in
-   version 2.4.0. Change from nagios user to centreon user.
+   The user for communication between a central server and a poller 
+   changed since version 2.4.0, it is now ``centreon`` instead of ``nagios``.
 
-You must exchange ssh keys this hosts.
+You must exchange ssh keys between the hosts.
 
-If you have not a ssh private on the central for user centreon::
+If you do not have an SSH private key on the central for user centreon::
 
   $ su - centreon
   $ ssh-keygen -t rsa
 
-You copy this key into the poller::
+Copy this key onto the poller::
 
   $ ssh-copy-id centreon@your_poller_ip
 
