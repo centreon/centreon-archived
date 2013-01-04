@@ -47,7 +47,7 @@
 		<div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
-					<td align='center' class='copyRight'><a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | Copyright &copy; 2004-2012 <a href="http://www.merethis.com">Merethis</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?></td>
+					<td align='center' class='copyRight'><a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | Copyright &copy; 2004-2013 <a href="http://www.merethis.com">Merethis</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?></td>
 				</tr>
 			</table>
 		</div>
