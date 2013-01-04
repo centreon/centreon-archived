@@ -96,6 +96,14 @@ it. If you currently use this feature, we recommend upgrading to the
 new one as soon as you can.
 
 
+Centreon Broker init script
+---------------------------
+
+If you are using *Centreon Broker*, make sure to fill the *Start script for broker daemon* 
+parameter in ``Administration`` > ``Options`` > ``Monitoring``. RRD graphs cannot be rebuilt
+if this parameter is omitted!
+
+
 Centcore options
 ----------------
 
