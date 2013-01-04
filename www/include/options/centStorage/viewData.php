@@ -189,6 +189,7 @@
 		
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
 		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
+        $index_data["to_delete"] = $yesOrNo[$index_data["to_delete"]];
 		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
 		$index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
 
@@ -236,7 +237,7 @@
 				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Delete graphs"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	$attrs2 = array(
@@ -256,7 +257,7 @@
 				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Empty all Service Data"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
+	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "rg"=>_("Rebuild RRD Database"), "nrg"=>_("Stop rebuilding RRD Databases"), "ed"=>_("Delete graphs"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 = $form->getElement('o1');
@@ -278,6 +279,7 @@
 	$tpl->assign("Service", _("Service"));
 	$tpl->assign("Metrics", _("Metrics"));
 	$tpl->assign("RebuildWaiting", _("Rebuild Waiting"));
+    $tpl->assign("Delete", _("Delete"));
 	$tpl->assign("Hidden", _("Hidden"));
 	$tpl->assign("Locked", _("Locked"));
 	$tpl->assign("StorageType", _("Storage Type"));

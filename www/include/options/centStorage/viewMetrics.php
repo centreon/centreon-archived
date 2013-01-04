@@ -165,7 +165,7 @@
 				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ed"=>_("Delete graphs"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
 	$form->setDefaults(array('o1' => NULL));
 
 	$attrs2 = array(
@@ -185,7 +185,7 @@
 				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ed"=>_("Empty all Service Data"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
+	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ed"=>_("Delete graphs"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 = $form->getElement('o1');

@@ -29,6 +29,7 @@
 	 		<td class="ListColCenter">{$Service}</td>
 	 		<td class="ListColCenter">{$Metrics}</td>
 	 		<td class="ListColCenter">{$RebuildWaiting}</td>
+			<td class="ListColCenter">{$Delete}</td>
 	 		<td class="ListColCenter">{$Hidden}</td>
 	 		<td class="ListColCenter">{$Locked}</td>
 	 		<td class="ListColCenter">{$StorageType}</td>
@@ -41,6 +42,7 @@
 	 		<td class="ListColLeft">{$d.service_description}</td>
 	 		<td class="ListColCenter">{$d.metrics_name}</td>
 	 		<td class="ListColCenter">{$d.must_be_rebuild}</td>
+			<td class="ListColCenter">{$d.to_delete}</td>
 	 		<td class="ListColCenter">{$d.hidden}</td>
 	 		<td class="ListColCenter">{$d.locked}</td>
 	 		<td class="ListColCenter">{$d.storage_type}</td>
