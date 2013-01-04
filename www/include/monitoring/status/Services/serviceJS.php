@@ -282,7 +282,7 @@ var _criticality_id = 0;
 			return 1;
 		} else {
 			for (keyz in _selectedElem) {
-				if (keyz == _selectedElem[keyz]) {
+				if ((keyz == _selectedElem[keyz]) && (document.getElementById(decodeURIComponent(keyz)))) {
 					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
 				}
 			}
