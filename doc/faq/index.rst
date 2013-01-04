@@ -79,3 +79,6 @@ The cbd rrd daemon must be running::
 
   $ /etc/init.d/cbd status
    * cbd_central-rrd is running
+
+Make sure to have the *Start script for broker daemon* parameter filled in 
+``Administration`` > ``Options`` > ``Monitoring``.
