@@ -95,6 +95,10 @@
 			foreach ($selected as $key => $value){
 				$DBRESULT = $pearDBO->query("UPDATE index_data SET `must_be_rebuild` = '1' WHERE id = '".$key."'");
 			}
+            $brk = new CentreonBroker($pearDB);
+            if ($brk->getBroker() == 'broker') {
+                $brk->reload();
+            }
 		} else if ($_POST["o"] == "nrg" && isset($_POST["select"])){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
