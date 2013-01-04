@@ -184,7 +184,7 @@
 		$index_data["service_description"] = "<a href='./main.php?p=5010602&o=msvc&index_id=".$index_data["id"]."'>".$index_data["service_description"]."</a>";
 		
 		$index_data["storage_type"] = $storage_type[$index_data["storage_type"]];
-		$index_data["must_be_rebuild"] = $yesOrNo[0];
+		$index_data["must_be_rebuild"] = $yesOrNo[$index_data["must_be_rebuild"]];
 		$index_data["trashed"] = $yesOrNo[$index_data["trashed"]];
 		$index_data["hidden"] = $yesOrNo[$index_data["hidden"]];
 
