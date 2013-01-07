@@ -17,7 +17,7 @@ Prerequisites
 In order to use RPM from the CES repository, you have to install the
 appropriate repo file. Run the following command as privileged user::
 
-  $ wget http://yum.centreon.com/standard/ces-standard-2.2.repo -O /etc/yum.repos.d/ces-standard-2.2.repo
+  $ wget http://yum.centreon.com/standard/2.2/ces-standard.repo -O /etc/yum.repos.d/ces-standard.repo
 
 The repo file is now installed.
 
