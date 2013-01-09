@@ -1,3 +1,1145 @@
+## Centreon 2.4.0
+
+Enhancements
+============
+#4041: Footer must be update for 2013
+#4008: Centreon allows to disable front-end access for all administrators
+#3989: logAnalyser for table 'logs'
+#3986: New page to list connector.
+#3984: Add rules in broker config form
+#3982: Daemon core dumps work only with nagios.
+#3980: Refactoring text for centreon-broker configuration.
+#3974: Clean button meaning
+#3964: New field for sql module
+#3963: New field for file module.
+#3955: "New broker configuration, add temporary endpoint."
+#3946: Add warning on installer if innodb engine on MySQL is not well configured
+#3940: Merge centTrapHandler and centTrapHandlerForPoller
+#3938: Add another button in order to delete a downtime
+#3933: [new poller] Wrong values when selecting a monitoring engine
+#3918: Add Service description as a macro in centTrapHandler
+#3917: Check log files rights during install process
+#3913: Pending status is non-ok or ok ?
+#3909: Set Correct options by default when user add a new main file
+#3908: Widget display are not fully optimize
+#3907: Improve Downtime page in order to add filters
+#3903: Release Widgets API Documentation
+#3900: "Change ""Default timezone"" to ""Default host timezone"" in  Administration -> Options"
+#3895: Better name for reload time in ajaxStatusCounter.js.php
+#3889: formPurgePolicy.php still used ?
+#3884: Ability to specify a start date when parsing log archives
+#3882: Optimize Configuration Files Export
+#3880: dashboardbuilder consumes too much resources for MySQL
+#3879: Change Documentation For Centreon 2.4.
+#3851: Some ACL constraints aren't matched with Custom Views
+#3847: New Broker parameter for the graph rebuild: rebuild_check_interval
+#3835: Open links to monitoring engine documentation in new tabs
+#3830: Audit logs option: active
+#3828: Improve Poller Listing
+#3827: Add support for random colors in curves
+#3826: "Add Field ""check_replication"" for broker configuration"
+#3823: Align blocks in Centreon -> About
+#3815: Print total value in legend
+#3802: Alert for event_broker_options not equal to -1
+#3801: Broker stats add problem
+#3798: Broker configuration form must check mandatory parameters
+#3797: Use a global value for interval lenght
+#3796: event_broker_options can not be NULL
+#3794: Move parameter rrd_retention from broker to general options form
+#3793: Move parameter interval_lenght from broker to general options form
+#3788: [Virtual metrics] Add comment when error
+#3725: Rename Sheduling Engine => Monitoring Engine in Centreon menus
+#3722: Port centTrapHandler changes into  centTrapHandlerForPoller 
+#3709: Installation script update
+#3680: Bug checkbox nagios.cfg
+#3673: Broker : handle rrdcached configuration parameters
+#3661: Centreon Broker 'monitoring' logging type
+#3660: max_size for Broker logger
+#3625: Empty help field for some tabs in  Administration > ACL > Ressources Access menu
+#3624: DELETE SNMPTT section in  Administration > Options > SNMP
+#3584: Possibility to translate all string
+#3568: New criticity object
+#3565: Modify web installer for new features
+#3556: [centcore] Reload configuration file
+#3544: Add possibility to configure centcore behavior from GUI
+#3543: Add possibility to get traps parameters by OID
+#3542: Add Logs into CentTrapHandler
+#3531: Integration of Broker's stats module
+#3529: Intégration des transactions (broker) dans Centreon
+#3521: Engine Integration: add connector class for managing connectors
+#3520: Engine Integration: add connectors compatibility to configuration generation routine
+#3519: Engine Integration: update database for using Centreon Engine connectors
+#3518: Update links and message on step.php files
+#3508: Add possibility to get Monitoring Engine type and version
+#3506: Engine Integration: modify command configuration page
+#3505: Engine Integration: add connectors management pages
+#3492: Add help tooltips for all form fields
+#3489: Add pollers with Centreon Broker
+#3488: Centreon Broker in Central with pollers
+#3487: Create base wizard for Centreon Broker
+#3486: Centreon Broker in Central without pollers
+#3471: "Remove ""IP Address / DNS"" field in host massive change form"
+#3454: Add wizards for Centreon Broker
+#3452: Different system username on pollers and centreon || Nom d'utilisateur système différent sur les pollers et sur le centreon
+#3443: Centreon must remove old reporting datas
+#3440: centTrapHandler-2.x stop if first trap definition doesn't have external command
+#3418: "Replace ""Nagios"" to ""scheduler"" in Centreon"
+#3411: Checkup system for modules
+#3389: [monitoring] popup display
+#3351: Possibility to link host categories to host from host configuration form
+#3303: "[censtorage] cleanup, perf optimization"
+#3227: macro @TRAPNAME@ for external command in CentTrapHandler
+#3178: Update LDAP users' profiles on login action
+#3144: "[centstorage] processus manage, stop, zombie"
+#2991: Configure Connectors in Centreon
+#2983: Possiblity to handle multiple ldap/ad servers with different structures
+#2980: C-Engine as Default Engine list
+#2978: LDAP : new option for storing password in database
+#2822: Customized Centreon / Tactical Overview
+#2668: contact form - contact template labels
+#2630: Ajout de la possibilité de personnaliser le resource.cfg et cgi.cfg par poller
+#2502: disabled services show up too
+#2398: Include DNS resolving in host configuration page
+#2250: Autorefresh new added Host/Service Downtimes
+#2234: Configuration> Nagios> Snmp traps to Configuration> snmptt
+#2196: Sync SNMPTrap files to nagios satellite
+#2170: Class CentreonACL update
+#2143: Add logrotate entry for logs
+#1995: Context-aware help in Administration
+#1994: Context-aware  help in graphs configuration
+#1962: [EN] Add hostgroup filter in Configuration / Services | [FR] Ajout d'un filtre par hostgroup dans la partie configuration / services
+#1871: New options in Nagios 3.2
+#1856: Alert user when he try to move one host on another poller and if host parent are on old poller
+#1853: Possibility to view configuration when not authorised to modify it
+#1761: Ajout de plusieurs accès LDAP
+#1735: Création de metric de type 'virtuel' : manipulation des options CDEF et VDEF de RRDTOOL
+#1734: Unreachable Hosts and linked services no more considerated as Unhandled
+#1730: Another Snmptraps optimization
+#1617: SNMP Traps registration
+#4041: Footer must be update for 2013
+#4008: Centreon allows to disable front-end access for all administrators
+#3989: logAnalyser for table 'logs'
+#3986: New page to list connector.
+#3984: Add rules in broker config form
+#3982: Daemon core dumps work only with nagios.
+#3980: Refactoring text for centreon-broker configuration.
+#3974: Clean button meaning
+#3964: New field for sql module
+#3963: New field for file module.
+#3955: "New broker configuration, add temporary endpoint."
+#3946: Add warning on installer if innodb engine on MySQL is not well configured
+#3940: Merge centTrapHandler and centTrapHandlerForPoller
+#3938: Add another button in order to delete a downtime
+#3933: [new poller] Wrong values when selecting a monitoring engine
+#3918: Add Service description as a macro in centTrapHandler
+#3917: Check log files rights during install process
+#3913: Pending status is non-ok or ok ?
+#3909: Set Correct options by default when user add a new main file
+#3908: Widget display are not fully optimize
+#3907: Improve Downtime page in order to add filters
+#3903: Release Widgets API Documentation
+#3900: "Change ""Default timezone"" to ""Default host timezone"" in  Administration -> Options"
+#3895: Better name for reload time in ajaxStatusCounter.js.php
+#3889: formPurgePolicy.php still used ?
+#3884: Ability to specify a start date when parsing log archives
+#3882: Optimize Configuration Files Export
+#3880: dashboardbuilder consumes too much resources for MySQL
+#3879: Change Documentation For Centreon 2.4.
+#3851: Some ACL constraints aren't matched with Custom Views
+#3847: New Broker parameter for the graph rebuild: rebuild_check_interval
+#3835: Open links to monitoring engine documentation in new tabs
+#3830: Audit logs option: active
+#3828: Improve Poller Listing
+#3827: Add support for random colors in curves
+#3826: "Add Field ""check_replication"" for broker configuration"
+#3823: Align blocks in Centreon -> About
+#3815: Print total value in legend
+#3802: Alert for event_broker_options not equal to -1
+#3801: Broker stats add problem
+#3798: Broker configuration form must check mandatory parameters
+#3797: Use a global value for interval lenght
+#3796: event_broker_options can not be NULL
+#3794: Move parameter rrd_retention from broker to general options form
+#3793: Move parameter interval_lenght from broker to general options form
+#3788: [Virtual metrics] Add comment when error
+#3725: Rename Sheduling Engine => Monitoring Engine in Centreon menus
+#3722: Port centTrapHandler changes into  centTrapHandlerForPoller 
+#3709: Installation script update
+#3680: Bug checkbox nagios.cfg
+#3673: Broker : handle rrdcached configuration parameters
+#3661: Centreon Broker 'monitoring' logging type
+#3660: max_size for Broker logger
+#3625: Empty help field for some tabs in  Administration > ACL > Ressources Access menu
+#3624: DELETE SNMPTT section in  Administration > Options > SNMP
+#3584: Possibility to translate all string
+#3568: New criticity object
+#3565: Modify web installer for new features
+#3556: [centcore] Reload configuration file
+#3544: Add possibility to configure centcore behavior from GUI
+#3543: Add possibility to get traps parameters by OID
+#3542: Add Logs into CentTrapHandler
+#3531: Integration of Broker's stats module
+#3529: Intégration des transactions (broker) dans Centreon
+#3521: Engine Integration: add connector class for managing connectors
+#3520: Engine Integration: add connectors compatibility to configuration generation routine
+#3519: Engine Integration: update database for using Centreon Engine connectors
+#3518: Update links and message on step.php files
+#3508: Add possibility to get Monitoring Engine type and version
+#3506: Engine Integration: modify command configuration page
+#3505: Engine Integration: add connectors management pages
+#3492: Add help tooltips for all form fields
+#3489: Add pollers with Centreon Broker
+#3488: Centreon Broker in Central with pollers
+#3487: Create base wizard for Centreon Broker
+#3486: Centreon Broker in Central without pollers
+#3471: "Remove ""IP Address / DNS"" field in host massive change form"
+#3454: Add wizards for Centreon Broker
+#3452: Different system username on pollers and centreon || Nom d'utilisateur système différent sur les pollers et sur le centreon
+#3443: Centreon must remove old reporting datas
+#3440: centTrapHandler-2.x stop if first trap definition doesn't have external command
+#3418: "Replace ""Nagios"" to ""scheduler"" in Centreon"
+#3411: Checkup system for modules
+#3389: [monitoring] popup display
+#3351: Possibility to link host categories to host from host configuration form
+#3303: "[censtorage] cleanup, perf optimization"
+#3227: macro @TRAPNAME@ for external command in CentTrapHandler
+#3178: Update LDAP users' profiles on login action
+#3144: "[centstorage] processus manage, stop, zombie"
+#2991: Configure Connectors in Centreon
+#2983: Possiblity to handle multiple ldap/ad servers with different structures
+#2980: C-Engine as Default Engine list
+#2978: LDAP : new option for storing password in database
+#2822: Customized Centreon / Tactical Overview
+#2668: contact form - contact template labels
+#2630: Ajout de la possibilité de personnaliser le resource.cfg et cgi.cfg par poller
+#2502: disabled services show up too
+#2398: Include DNS resolving in host configuration page
+#2250: Autorefresh new added Host/Service Downtimes
+#2234: Configuration> Nagios> Snmp traps to Configuration> snmptt
+#2196: Sync SNMPTrap files to nagios satellite
+#2170: Class CentreonACL update
+#2143: Add logrotate entry for logs
+#1995: Context-aware help in Administration
+#1994: Context-aware  help in graphs configuration
+#1962: [EN] Add hostgroup filter in Configuration / Services | [FR] Ajout d'un filtre par hostgroup dans la partie configuration / services
+#1871: New options in Nagios 3.2
+#1856: Alert user when he try to move one host on another poller and if host parent are on old poller
+#1853: Possibility to view configuration when not authorised to modify it
+#1761: Ajout de plusieurs accès LDAP
+#1735: Création de metric de type 'virtuel' : manipulation des options CDEF et VDEF de RRDTOOL
+#1734: Unreachable Hosts and linked services no more considerated as Unhandled
+#1730: Another Snmptraps optimization
+#1617: SNMP Traps registration
+#4041: Footer must be update for 2013
+#4008: Centreon allows to disable front-end access for all administrators
+#3989: logAnalyser for table 'logs'
+#3986: New page to list connector.
+#3984: Add rules in broker config form
+#3982: Daemon core dumps work only with nagios.
+#3980: Refactoring text for centreon-broker configuration.
+#3974: Clean button meaning
+#3964: New field for sql module
+#3963: New field for file module.
+#3955: "New broker configuration, add temporary endpoint."
+#3946: Add warning on installer if innodb engine on MySQL is not well configured
+#3940: Merge centTrapHandler and centTrapHandlerForPoller
+#3938: Add another button in order to delete a downtime
+#3933: [new poller] Wrong values when selecting a monitoring engine
+#3918: Add Service description as a macro in centTrapHandler
+#3917: Check log files rights during install process
+#3913: Pending status is non-ok or ok ?
+#3909: Set Correct options by default when user add a new main file
+#3908: Widget display are not fully optimize
+#3907: Improve Downtime page in order to add filters
+#3903: Release Widgets API Documentation
+#3900: "Change ""Default timezone"" to ""Default host timezone"" in  Administration -> Options"
+#3895: Better name for reload time in ajaxStatusCounter.js.php
+#3889: formPurgePolicy.php still used ?
+#3884: Ability to specify a start date when parsing log archives
+#3882: Optimize Configuration Files Export
+#3880: dashboardbuilder consumes too much resources for MySQL
+#3879: Change Documentation For Centreon 2.4.
+#3851: Some ACL constraints aren't matched with Custom Views
+#3847: New Broker parameter for the graph rebuild: rebuild_check_interval
+#3835: Open links to monitoring engine documentation in new tabs
+#3830: Audit logs option: active
+#3828: Improve Poller Listing
+#3827: Add support for random colors in curves
+#3826: "Add Field ""check_replication"" for broker configuration"
+#3823: Align blocks in Centreon -> About
+#3815: Print total value in legend
+#3802: Alert for event_broker_options not equal to -1
+#3801: Broker stats add problem
+#3798: Broker configuration form must check mandatory parameters
+#3797: Use a global value for interval lenght
+#3796: event_broker_options can not be NULL
+#3794: Move parameter rrd_retention from broker to general options form
+#3793: Move parameter interval_lenght from broker to general options form
+#3788: [Virtual metrics] Add comment when error
+#3725: Rename Sheduling Engine => Monitoring Engine in Centreon menus
+#3722: Port centTrapHandler changes into  centTrapHandlerForPoller 
+#3709: Installation script update
+#3680: Bug checkbox nagios.cfg
+#3673: Broker : handle rrdcached configuration parameters
+#3661: Centreon Broker 'monitoring' logging type
+#3660: max_size for Broker logger
+#3625: Empty help field for some tabs in  Administration > ACL > Ressources Access menu
+#3624: DELETE SNMPTT section in  Administration > Options > SNMP
+#3584: Possibility to translate all string
+#3568: New criticity object
+#3565: Modify web installer for new features
+#3556: [centcore] Reload configuration file
+#3544: Add possibility to configure centcore behavior from GUI
+#3543: Add possibility to get traps parameters by OID
+#3542: Add Logs into CentTrapHandler
+#3531: Integration of Broker's stats module
+#3529: Intégration des transactions (broker) dans Centreon
+#3521: Engine Integration: add connector class for managing connectors
+#3520: Engine Integration: add connectors compatibility to configuration generation routine
+#3519: Engine Integration: update database for using Centreon Engine connectors
+#3518: Update links and message on step.php files
+#3508: Add possibility to get Monitoring Engine type and version
+#3506: Engine Integration: modify command configuration page
+#3505: Engine Integration: add connectors management pages
+#3492: Add help tooltips for all form fields
+#3489: Add pollers with Centreon Broker
+#3488: Centreon Broker in Central with pollers
+#3487: Create base wizard for Centreon Broker
+#3486: Centreon Broker in Central without pollers
+#3471: "Remove ""IP Address / DNS"" field in host massive change form"
+#3454: Add wizards for Centreon Broker
+#3452: Different system username on pollers and centreon || Nom d'utilisateur système différent sur les pollers et sur le centreon
+#3443: Centreon must remove old reporting datas
+#3440: centTrapHandler-2.x stop if first trap definition doesn't have external command
+#3418: "Replace ""Nagios"" to ""scheduler"" in Centreon"
+#3411: Checkup system for modules
+#3389: [monitoring] popup display
+#3351: Possibility to link host categories to host from host configuration form
+#3303: "[censtorage] cleanup, perf optimization"
+#3227: macro @TRAPNAME@ for external command in CentTrapHandler
+#3178: Update LDAP users' profiles on login action
+#3144: "[centstorage] processus manage, stop, zombie"
+#2991: Configure Connectors in Centreon
+#2983: Possiblity to handle multiple ldap/ad servers with different structures
+#2980: C-Engine as Default Engine list
+#2978: LDAP : new option for storing password in database
+#2822: Customized Centreon / Tactical Overview
+#2668: contact form - contact template labels
+#2630: Ajout de la possibilité de personnaliser le resource.cfg et cgi.cfg par poller
+#2502: disabled services show up too
+#2398: Include DNS resolving in host configuration page
+#2250: Autorefresh new added Host/Service Downtimes
+#2234: Configuration> Nagios> Snmp traps to Configuration> snmptt
+#2196: Sync SNMPTrap files to nagios satellite
+#2170: Class CentreonACL update
+#2143: Add logrotate entry for logs
+#1995: Context-aware help in Administration
+#1994: Context-aware  help in graphs configuration
+#1962: [EN] Add hostgroup filter in Configuration / Services | [FR] Ajout d'un filtre par hostgroup dans la partie configuration / services
+#1871: New options in Nagios 3.2
+#1856: Alert user when he try to move one host on another poller and if host parent are on old poller
+#1853: Possibility to view configuration when not authorised to modify it
+#1761: Ajout de plusieurs accès LDAP
+#1735: Création de metric de type 'virtuel' : manipulation des options CDEF et VDEF de RRDTOOL
+#1734: Unreachable Hosts and linked services no more considerated as Unhandled
+#1730: Another Snmptraps optimization
+#1617: SNMP Traps registration
+
+Bug fixes
+=========
+#4042: Unexpected ack behavior
+#4031: Hôte sans adresse IP
+#4030: index data not created for multiple services
+#4029: redémarrage du service broker lors de la génération de la configuration
+#4027: servicegroup relation duplicated on service detach
+#4025: centcore
+#4023: Missing resources on duplicate monitoring engine.
+#4018: Downtime listing forms are broken
+#4017: [rrd rebuild] Can't rebuild a single metric of a service
+#4014: External commands can be sent multiple times
+#4013: Search function in Configuration > Services
+#4011: Centcore Options
+#4004: ACL are not applied on comments in Monitoring > Services > Comments
+#4003: Reporting > Dashboard > incorrect values for scheduled downtime 
+#4001: Add poller wrong path
+#3997: Centcore PID
+#3994: Monitoring pages and graph icon (centreon-broker)
+#3992: "autologin, graph and ACL"
+#3985: "Get broker statistic, ssh failed."
+#3981: "Broker configuration, compresion level."
+#3979: Poller name empty
+#3977: Menu ACL link empty
+#3975: autologin link weird behaviour
+#3969: Monitoring engines pages
+#3966: nagiosPerfTrace and lock system
+#3962: Databases not created during the php phase setup
+#3960: "Virtual Metrics created, but should not because there is an error in RPN function"
+#3953: error install.sh on upgrade
+#3949: "error ""Could not find macro $USER1$"" while testing plugin"
+#3947: Impossible de paramétrer un serveur LDAP
+#3944: "COUNTER & Centreon-Broker, 2.4, meta-services => KO"
+#3943: Default acknowledgment options are not used in service details page
+#3932: [ACL] views -> graph tree view
+#3930: PHP notice during upgrade
+#3929: no poller in configuration-->centreon menu
+#3928: error DB-Func.php
+#3927: Undefined variable: classdir in /usr/share/centreon/www/index.php on line 56
+#3922: One session created per Export API call ? 
+#3920: Tree view takes too long to load when ACL is involved
+#3919: Logrotate warning
+#3916: Problem with monitoring engine statistics
+#3911: Initiale State logging option must be enabled for the dashboard module
+#3910: Internet Explorer menu dissapears
+#3906: No error when trying to generate configuration for a poller without main.cfg
+#3902: double entry for logAnalyser in DB
+#3896: Add force download HTTP header when exporting event logs to XML
+#3894: Missing help definition in componentTemplates/help.php
+#3892: Graph navigation not working properly when server's timezone is not GMT/UTC
+#3888: Fix problem with service by HG in downtime view
+#3887: DowntimeManager.php do not manager service by hostgroups
+#3886: "field ""Inherits Parent"" are always not set when we add a dependancy"
+#3885: Unable to configure dependancy based on service by hostgroup
+#3883: Can't fill admin e-mail field with «root@local*»
+#3878: Centcore cannot exit when MySQL DB is down
+#3877: Unable to set recurrent downtines to a service link to a hostgroup
+#3875: Graph navigation not working properly when timezone management is enabled
+#3873: Invalid *RRD length* option when generating broker configuration
+#3872: Graphs loaded twice when hovering over the graphs icon in services monitoring page
+#3870: JavaScript parse error with time zones if user timezone offset is null
+#3865: Graph data not positioned correctly on monitoring engines statistics graphs when timezone management is enabled
+#3864: Graph data not positioned correctly on all graphs when timezone management is enabled
+#3862: inheritance between contact and contact template
+#3860: Massive change on contacts template doesn't work
+#3859: contacts are not generated
+#3855: No help in Centreon Broker configuration when display existing configuration
+#3853: incorrect limit service in monitoring
+#3844: Centreon is restarting monitoring engine even when configuration files can't be moved
+#3843: Pending filter on Unhandled Problems view dosn't work.
+#3842: Cannot set ACL rules on hidden pages
+#3840: Problem with locks in centAcl.php
+#3837: Running logAnalyser -h blocks next execution of the process
+#3834: Wrong rights on centreon plugins
+#3831: Curve legend name not applied
+#3829: Correct Centreon audit logs
+#3821: Update centreon 2.4 : cgi is orphan
+#3820: RRDTOOL graphs unit display
+#3819: Monitoring status filter - incorrect default value
+#3816: Some graph are not displayed after upgrade (2.1.6->2.3.9)
+#3814: [centAcl] Exist
+#3809: Files Generating crash
+#3808: wrong path in process-service-perfdata plugin
+#3807: check centstorage status during install process
+#3806: Centcore error log : Cannot restart SNMPTT for poller 
+#3795: Menu with popup activated doesn't work as expected
+#3787: [Virtual metrics] Are not enable at creation
+#3784: Service group membership being messed up after editing service
+#3780: Some search results in Views > Graphs shows hosts with no services
+#3779: CentStorage default script installed FAIL
+#3778: centcore.default not found on Debian during install process
+#3775: PHP errors when changing host templates
+#3769: "Disable, TopCounter Service and Service Monitoring"
+#3761: Resources not assigned to a poller
+#3752: Differences in database schema between an update and a fresh install
+#3750: Message error not handle when move files
+#3728: Bug with Split Components
+#3726: Update Documentation Link to centreon-engine one
+#3724: Event log order
+#3702: Erreur sur le nombre de service acquitté avec Centreon 2.3.9 et Centreon-Broker dans Tactical Overview
+#3697: Centcore does not check if engine configuration file is enabled...
+#3691: ACL: Services categories doesn't make restriction on services groups
+#3690: "centstorage initscript, using a new tool not install by default on debian"
+#3689: "Installer, Centreon Connectors directory not created"
+#3685: Errors in insertBaseConf.sql
+#3675: "Criticality is not saved in ""Monitoring "" filters"
+#3674: Pear-DB not necessary for Centreon
+#3670: Hostgroup filter not working properly in Monitoring -> Hosts -> host Groups 
+#3667: Invalid label for status_file.
+#3663: LDAP import not working for more than one checked user
+#3657: Meta Service n'affiche pas son graphique
+#3650: No possibility to enable/desable virtual metrics
+#3649: Incorrect log file for virtual metrics debug
+#3648: Unable to change curves color
+#3642: Monitoring Engine Statistics doesn't work with Centreon Engine
+#3639: Mistake in purgeLogs cron 
+#3620: Hostgroup filter not working properly in Service Summary/Grid pages
+#3615: Bug avec IE7/8
+#3614: Pagination into configuration
+#3613: filter on host into service configuration.
+#3596: Wrong redirection with char # in hostnames
+#3594: Renamed poller shows not running
+#3593: Bad value for Centreon directory 
+#3592: service detail page with centreon broker is slow
+#3590: Too many informations in table 'log'
+#3587: Add full description for CB field in database
+#3586: Wrong syntax for MySQL in insertBaseConf.sql script
+#3585: Column cfg_file is missing on cfg_nagios table
+#3572: "[Centreon] bad label in "" Monitoring > Event Logs"""
+#3571: Broken image in host/service ext info tab
+#3569: Skip deprecated/ignored fields when generating configuration files for Centreon Engine
+#3563: Links for export buttons next to graphs do not pass the correct parameters to the data export script
+#3562: Pending states in Tactical Overview
+#3558: "Parsing failed when testing ""nagios"" configuration with Centreon Engine"
+#3555: Monitoring / Hostgroups / Services Status : wrong numbers ?
+#3553: Apache error logs - 2.3.8
+#3550: Graphs metric box is not fully grey
+#3549: Meta Services metrics order
+#3540: Code execution MIB Upload
+#3539: Error on SNMP-Disk-C
+#3537: Html page not well formed: DB not connected
+#3534: Traduction : chaines intraduisibles + pb d'encoding
+#3530: Hostgroup filter not working properly in Service Summary/Grid pages
+#3507: Engine Integration: add possibility to enable shell for specifics commands
+#3504: Unable to install Centreon on RHEL 6
+#3503: JS typo
+#3498: Bad use of field last_execution_time in logAnalyzer
+#3482: Génération des fichiers
+#3481: Creating new curves - List of known metrics
+#3475: Menu tree incorrect for serviceand host details page
+#3474: Nagios default option in new create nagios.cfg
+#3472: Images Directory should not require in monitoring form
+#3467: Supervision > Services  : page blanche
+#3463: Modification par un administrateur d'un contact issue d'un groupe LDAP
+#3462: Probleme indentation fichier centreon-purge.log
+#3451: Suppression des commentaires impossibles
+#3448: Forbidden links displayed
+#3442: [logAnalyser] Date in log and lock system
+#3438: Affichage configuration / services
+#3427: CSS problem when action-url is provided 
+#3422: "Ne peut pas afficher les services"" Pending"""
+#3397: Affichage de la description du groupe d'hôtes à la place de son nom
+#3363: [Events log] Bug error_log 
+#3357: probleme script logAnalyzer after update centreon
+#3353: Host Downtime cannot be deleted.
+#3310: LDAP - users import
+#3279: problem with plugins in /tmp during install
+#3265: [graph] Special metrics and broker
+#3230: [centreon] curve's labels do not support non-us characters
+#3201: Configuration breadcrumb not update.
+#3198: [ACL] User template and contact group : doesn't woking together
+#3163: Configuration>Nagios>Export ne prend pas en compte les modules de Centreon Broker
+#3161: Bug affichage Supervision -> Hotes
+#3153: [centstorage] perfdata name and special character
+#3124: ACL Ignored in Configuration > Commands > Checks
+#3121: Wrong database name for centreon-broker default config
+#3082: Ordre des personnes connectés (vu uniquement que par les administrateurs)
+#2913: Centreon 2.3.3 Unable to view event logs
+#2911: New metric not visible
+#2905: possibilité d'afficher des graphiques alors que pas de graphiques générés
+#2835: Bad name in perfdata
+#2800: CSV timestamp only in Unixtime @ Views -> Graphs
+#2779: "Centstorage, bad handle of specials chars in perfdata"
+#2717: Enhancement #2105 does not work
+#2680: sql injection detection too restrictive/naive code
+#2656: Double compte admin lors de l'installation
+#2454: Monitoring -> Hosts -> Host Groups : show more hosts groups than the user have rights
+#2382: everything at the GUI is duplicated?
+#2327: Monitoring Services Mouseover Popup: bottom not visible
+#2209: Centstorage overwrites service-perfdata with performance data from the poller
+#2164: Génération des statistiques Nagios
+#2158: Bug lors de mise à jour
+#2059: Hosts without service are not listed on the monitoring page
+#1904: Pending services not shown
+#1878: Problem when using \t  in Service Performance Data File Template
+#1834: Host overview doesn't sort IP Addresses not naturally
+#1583: Meta Service Problem
+#1512: Suppression commentaire dans page monitoring
+#1469: Errors when adding menu items with entry in toplevel menu
+#1388: HostGroup SNMP Version don't generate nagios config entries
+#4042: Unexpected ack behavior
+#4031: Hôte sans adresse IP
+#4030: index data not created for multiple services
+#4029: redémarrage du service broker lors de la génération de la configuration
+#4027: servicegroup relation duplicated on service detach
+#4025: centcore
+#4023: Missing resources on duplicate monitoring engine.
+#4018: Downtime listing forms are broken
+#4017: [rrd rebuild] Can't rebuild a single metric of a service
+#4014: External commands can be sent multiple times
+#4013: Search function in Configuration > Services
+#4011: Centcore Options
+#4004: ACL are not applied on comments in Monitoring > Services > Comments
+#4003: Reporting > Dashboard > incorrect values for scheduled downtime 
+#4001: Add poller wrong path
+#3997: Centcore PID
+#3994: Monitoring pages and graph icon (centreon-broker)
+#3992: "autologin, graph and ACL"
+#3985: "Get broker statistic, ssh failed."
+#3981: "Broker configuration, compresion level."
+#3979: Poller name empty
+#3977: Menu ACL link empty
+#3975: autologin link weird behaviour
+#3969: Monitoring engines pages
+#3966: nagiosPerfTrace and lock system
+#3962: Databases not created during the php phase setup
+#3960: "Virtual Metrics created, but should not because there is an error in RPN function"
+#3953: error install.sh on upgrade
+#3949: "error ""Could not find macro $USER1$"" while testing plugin"
+#3947: Impossible de paramétrer un serveur LDAP
+#3944: "COUNTER & Centreon-Broker, 2.4, meta-services => KO"
+#3943: Default acknowledgment options are not used in service details page
+#3932: [ACL] views -> graph tree view
+#3930: PHP notice during upgrade
+#3929: no poller in configuration-->centreon menu
+#3928: error DB-Func.php
+#3927: Undefined variable: classdir in /usr/share/centreon/www/index.php on line 56
+#3922: One session created per Export API call ? 
+#3920: Tree view takes too long to load when ACL is involved
+#3919: Logrotate warning
+#3916: Problem with monitoring engine statistics
+#3911: Initiale State logging option must be enabled for the dashboard module
+#3910: Internet Explorer menu dissapears
+#3906: No error when trying to generate configuration for a poller without main.cfg
+#3902: double entry for logAnalyser in DB
+#3896: Add force download HTTP header when exporting event logs to XML
+#3894: Missing help definition in componentTemplates/help.php
+#3892: Graph navigation not working properly when server's timezone is not GMT/UTC
+#3888: Fix problem with service by HG in downtime view
+#3887: DowntimeManager.php do not manager service by hostgroups
+#3886: "field ""Inherits Parent"" are always not set when we add a dependancy"
+#3885: Unable to configure dependancy based on service by hostgroup
+#3883: Can't fill admin e-mail field with «root@local*»
+#3878: Centcore cannot exit when MySQL DB is down
+#3877: Unable to set recurrent downtines to a service link to a hostgroup
+#3875: Graph navigation not working properly when timezone management is enabled
+#3873: Invalid *RRD length* option when generating broker configuration
+#3872: Graphs loaded twice when hovering over the graphs icon in services monitoring page
+#3870: JavaScript parse error with time zones if user timezone offset is null
+#3865: Graph data not positioned correctly on monitoring engines statistics graphs when timezone management is enabled
+#3864: Graph data not positioned correctly on all graphs when timezone management is enabled
+#3862: inheritance between contact and contact template
+#3860: Massive change on contacts template doesn't work
+#3859: contacts are not generated
+#3855: No help in Centreon Broker configuration when display existing configuration
+#3853: incorrect limit service in monitoring
+#3844: Centreon is restarting monitoring engine even when configuration files can't be moved
+#3843: Pending filter on Unhandled Problems view dosn't work.
+#3842: Cannot set ACL rules on hidden pages
+#3840: Problem with locks in centAcl.php
+#3837: Running logAnalyser -h blocks next execution of the process
+#3834: Wrong rights on centreon plugins
+#3831: Curve legend name not applied
+#3829: Correct Centreon audit logs
+#3821: Update centreon 2.4 : cgi is orphan
+#3820: RRDTOOL graphs unit display
+#3819: Monitoring status filter - incorrect default value
+#3816: Some graph are not displayed after upgrade (2.1.6->2.3.9)
+#3814: [centAcl] Exist
+#3809: Files Generating crash
+#3808: wrong path in process-service-perfdata plugin
+#3807: check centstorage status during install process
+#3806: Centcore error log : Cannot restart SNMPTT for poller 
+#3795: Menu with popup activated doesn't work as expected
+#3787: [Virtual metrics] Are not enable at creation
+#3784: Service group membership being messed up after editing service
+#3780: Some search results in Views > Graphs shows hosts with no services
+#3779: CentStorage default script installed FAIL
+#3778: centcore.default not found on Debian during install process
+#3775: PHP errors when changing host templates
+#3769: "Disable, TopCounter Service and Service Monitoring"
+#3761: Resources not assigned to a poller
+#3752: Differences in database schema between an update and a fresh install
+#3750: Message error not handle when move files
+#3728: Bug with Split Components
+#3726: Update Documentation Link to centreon-engine one
+#3724: Event log order
+#3702: Erreur sur le nombre de service acquitté avec Centreon 2.3.9 et Centreon-Broker dans Tactical Overview
+#3697: Centcore does not check if engine configuration file is enabled...
+#3691: ACL: Services categories doesn't make restriction on services groups
+#3690: "centstorage initscript, using a new tool not install by default on debian"
+#3689: "Installer, Centreon Connectors directory not created"
+#3685: Errors in insertBaseConf.sql
+#3675: "Criticality is not saved in ""Monitoring "" filters"
+#3674: Pear-DB not necessary for Centreon
+#3670: Hostgroup filter not working properly in Monitoring -> Hosts -> host Groups 
+#3667: Invalid label for status_file.
+#3663: LDAP import not working for more than one checked user
+#3657: Meta Service n'affiche pas son graphique
+#3650: No possibility to enable/desable virtual metrics
+#3649: Incorrect log file for virtual metrics debug
+#3648: Unable to change curves color
+#3642: Monitoring Engine Statistics doesn't work with Centreon Engine
+#3639: Mistake in purgeLogs cron 
+#3620: Hostgroup filter not working properly in Service Summary/Grid pages
+#3615: Bug avec IE7/8
+#3614: Pagination into configuration
+#3613: filter on host into service configuration.
+#3596: Wrong redirection with char # in hostnames
+#3594: Renamed poller shows not running
+#3593: Bad value for Centreon directory 
+#3592: service detail page with centreon broker is slow
+#3590: Too many informations in table 'log'
+#3587: Add full description for CB field in database
+#3586: Wrong syntax for MySQL in insertBaseConf.sql script
+#3585: Column cfg_file is missing on cfg_nagios table
+#3572: "[Centreon] bad label in "" Monitoring > Event Logs"""
+#3571: Broken image in host/service ext info tab
+#3569: Skip deprecated/ignored fields when generating configuration files for Centreon Engine
+#3563: Links for export buttons next to graphs do not pass the correct parameters to the data export script
+#3562: Pending states in Tactical Overview
+#3558: "Parsing failed when testing ""nagios"" configuration with Centreon Engine"
+#3555: Monitoring / Hostgroups / Services Status : wrong numbers ?
+#3553: Apache error logs - 2.3.8
+#3550: Graphs metric box is not fully grey
+#3549: Meta Services metrics order
+#3540: Code execution MIB Upload
+#3539: Error on SNMP-Disk-C
+#3537: Html page not well formed: DB not connected
+#3534: Traduction : chaines intraduisibles + pb d'encoding
+#3530: Hostgroup filter not working properly in Service Summary/Grid pages
+#3507: Engine Integration: add possibility to enable shell for specifics commands
+#3504: Unable to install Centreon on RHEL 6
+#3503: JS typo
+#3498: Bad use of field last_execution_time in logAnalyzer
+#3482: Génération des fichiers
+#3481: Creating new curves - List of known metrics
+#3475: Menu tree incorrect for serviceand host details page
+#3474: Nagios default option in new create nagios.cfg
+#3472: Images Directory should not require in monitoring form
+#3467: Supervision > Services  : page blanche
+#3463: Modification par un administrateur d'un contact issue d'un groupe LDAP
+#3462: Probleme indentation fichier centreon-purge.log
+#3451: Suppression des commentaires impossibles
+#3448: Forbidden links displayed
+#3442: [logAnalyser] Date in log and lock system
+#3438: Affichage configuration / services
+#3427: CSS problem when action-url is provided 
+#3422: "Ne peut pas afficher les services"" Pending"""
+#3397: Affichage de la description du groupe d'hôtes à la place de son nom
+#3363: [Events log] Bug error_log 
+#3357: probleme script logAnalyzer after update centreon
+#3353: Host Downtime cannot be deleted.
+#3310: LDAP - users import
+#3279: problem with plugins in /tmp during install
+#3265: [graph] Special metrics and broker
+#3230: [centreon] curve's labels do not support non-us characters
+#3201: Configuration breadcrumb not update.
+#3198: [ACL] User template and contact group : doesn't woking together
+#3163: Configuration>Nagios>Export ne prend pas en compte les modules de Centreon Broker
+#3161: Bug affichage Supervision -> Hotes
+#3153: [centstorage] perfdata name and special character
+#3124: ACL Ignored in Configuration > Commands > Checks
+#3121: Wrong database name for centreon-broker default config
+#3082: Ordre des personnes connectés (vu uniquement que par les administrateurs)
+#2913: Centreon 2.3.3 Unable to view event logs
+#2911: New metric not visible
+#2905: possibilité d'afficher des graphiques alors que pas de graphiques générés
+#2835: Bad name in perfdata
+#2800: CSV timestamp only in Unixtime @ Views -> Graphs
+#2779: "Centstorage, bad handle of specials chars in perfdata"
+#2717: Enhancement #2105 does not work
+#2680: sql injection detection too restrictive/naive code
+#2656: Double compte admin lors de l'installation
+#2454: Monitoring -> Hosts -> Host Groups : show more hosts groups than the user have rights
+#2382: everything at the GUI is duplicated?
+#2327: Monitoring Services Mouseover Popup: bottom not visible
+#2209: Centstorage overwrites service-perfdata with performance data from the poller
+#2164: Génération des statistiques Nagios
+#2158: Bug lors de mise à jour
+#2059: Hosts without service are not listed on the monitoring page
+#1904: Pending services not shown
+#1878: Problem when using \t  in Service Performance Data File Template
+#1834: Host overview doesn't sort IP Addresses not naturally
+#1583: Meta Service Problem
+#1512: Suppression commentaire dans page monitoring
+#1469: Errors when adding menu items with entry in toplevel menu
+#1388: HostGroup SNMP Version don't generate nagios config entries
+#4042: Unexpected ack behavior
+#4031: Hôte sans adresse IP
+#4030: index data not created for multiple services
+#4029: redémarrage du service broker lors de la génération de la configuration
+#4027: servicegroup relation duplicated on service detach
+#4025: centcore
+#4023: Missing resources on duplicate monitoring engine.
+#4018: Downtime listing forms are broken
+#4017: [rrd rebuild] Can't rebuild a single metric of a service
+#4014: External commands can be sent multiple times
+#4013: Search function in Configuration > Services
+#4011: Centcore Options
+#4004: ACL are not applied on comments in Monitoring > Services > Comments
+#4003: Reporting > Dashboard > incorrect values for scheduled downtime 
+#4001: Add poller wrong path
+#3997: Centcore PID
+#3994: Monitoring pages and graph icon (centreon-broker)
+#3992: "autologin, graph and ACL"
+#3985: "Get broker statistic, ssh failed."
+#3981: "Broker configuration, compresion level."
+#3979: Poller name empty
+#3977: Menu ACL link empty
+#3975: autologin link weird behaviour
+#3969: Monitoring engines pages
+#3966: nagiosPerfTrace and lock system
+#3962: Databases not created during the php phase setup
+#3960: "Virtual Metrics created, but should not because there is an error in RPN function"
+#3953: error install.sh on upgrade
+#3949: "error ""Could not find macro $USER1$"" while testing plugin"
+#3947: Impossible de paramétrer un serveur LDAP
+#3944: "COUNTER & Centreon-Broker, 2.4, meta-services => KO"
+#3943: Default acknowledgment options are not used in service details page
+#3932: [ACL] views -> graph tree view
+#3930: PHP notice during upgrade
+#3929: no poller in configuration-->centreon menu
+#3928: error DB-Func.php
+#3927: Undefined variable: classdir in /usr/share/centreon/www/index.php on line 56
+#3922: One session created per Export API call ? 
+#3920: Tree view takes too long to load when ACL is involved
+#3919: Logrotate warning
+#3916: Problem with monitoring engine statistics
+#3911: Initiale State logging option must be enabled for the dashboard module
+#3910: Internet Explorer menu dissapears
+#3906: No error when trying to generate configuration for a poller without main.cfg
+#3902: double entry for logAnalyser in DB
+#3896: Add force download HTTP header when exporting event logs to XML
+#3894: Missing help definition in componentTemplates/help.php
+#3892: Graph navigation not working properly when server's timezone is not GMT/UTC
+#3888: Fix problem with service by HG in downtime view
+#3887: DowntimeManager.php do not manager service by hostgroups
+#3886: "field ""Inherits Parent"" are always not set when we add a dependancy"
+#3885: Unable to configure dependancy based on service by hostgroup
+#3883: Can't fill admin e-mail field with «root@local*»
+#3878: Centcore cannot exit when MySQL DB is down
+#3877: Unable to set recurrent downtines to a service link to a hostgroup
+#3875: Graph navigation not working properly when timezone management is enabled
+#3873: Invalid *RRD length* option when generating broker configuration
+#3872: Graphs loaded twice when hovering over the graphs icon in services monitoring page
+#3870: JavaScript parse error with time zones if user timezone offset is null
+#3865: Graph data not positioned correctly on monitoring engines statistics graphs when timezone management is enabled
+#3864: Graph data not positioned correctly on all graphs when timezone management is enabled
+#3862: inheritance between contact and contact template
+#3860: Massive change on contacts template doesn't work
+#3859: contacts are not generated
+#3855: No help in Centreon Broker configuration when display existing configuration
+#3853: incorrect limit service in monitoring
+#3844: Centreon is restarting monitoring engine even when configuration files can't be moved
+#3843: Pending filter on Unhandled Problems view dosn't work.
+#3842: Cannot set ACL rules on hidden pages
+#3840: Problem with locks in centAcl.php
+#3837: Running logAnalyser -h blocks next execution of the process
+#3834: Wrong rights on centreon plugins
+#3831: Curve legend name not applied
+#3829: Correct Centreon audit logs
+#3821: Update centreon 2.4 : cgi is orphan
+#3820: RRDTOOL graphs unit display
+#3819: Monitoring status filter - incorrect default value
+#3816: Some graph are not displayed after upgrade (2.1.6->2.3.9)
+#3814: [centAcl] Exist
+#3809: Files Generating crash
+#3808: wrong path in process-service-perfdata plugin
+#3807: check centstorage status during install process
+#3806: Centcore error log : Cannot restart SNMPTT for poller 
+#3795: Menu with popup activated doesn't work as expected
+#3787: [Virtual metrics] Are not enable at creation
+#3784: Service group membership being messed up after editing service
+#3780: Some search results in Views > Graphs shows hosts with no services
+#3779: CentStorage default script installed FAIL
+#3778: centcore.default not found on Debian during install process
+#3775: PHP errors when changing host templates
+#3769: "Disable, TopCounter Service and Service Monitoring"
+#3761: Resources not assigned to a poller
+#3752: Differences in database schema between an update and a fresh install
+#3750: Message error not handle when move files
+#3728: Bug with Split Components
+#3726: Update Documentation Link to centreon-engine one
+#3724: Event log order
+#3702: Erreur sur le nombre de service acquitté avec Centreon 2.3.9 et Centreon-Broker dans Tactical Overview
+#3697: Centcore does not check if engine configuration file is enabled...
+#3691: ACL: Services categories doesn't make restriction on services groups
+#3690: "centstorage initscript, using a new tool not install by default on debian"
+#3689: "Installer, Centreon Connectors directory not created"
+#3685: Errors in insertBaseConf.sql
+#3675: "Criticality is not saved in ""Monitoring "" filters"
+#3674: Pear-DB not necessary for Centreon
+#3670: Hostgroup filter not working properly in Monitoring -> Hosts -> host Groups 
+#3667: Invalid label for status_file.
+#3663: LDAP import not working for more than one checked user
+#3657: Meta Service n'affiche pas son graphique
+#3650: No possibility to enable/desable virtual metrics
+#3649: Incorrect log file for virtual metrics debug
+#3648: Unable to change curves color
+#3642: Monitoring Engine Statistics doesn't work with Centreon Engine
+#3639: Mistake in purgeLogs cron 
+#3620: Hostgroup filter not working properly in Service Summary/Grid pages
+#3615: Bug avec IE7/8
+#3614: Pagination into configuration
+#3613: filter on host into service configuration.
+#3596: Wrong redirection with char # in hostnames
+#3594: Renamed poller shows not running
+#3593: Bad value for Centreon directory 
+#3592: service detail page with centreon broker is slow
+#3590: Too many informations in table 'log'
+#3587: Add full description for CB field in database
+#3586: Wrong syntax for MySQL in insertBaseConf.sql script
+#3585: Column cfg_file is missing on cfg_nagios table
+#3572: "[Centreon] bad label in "" Monitoring > Event Logs"""
+#3571: Broken image in host/service ext info tab
+#3569: Skip deprecated/ignored fields when generating configuration files for Centreon Engine
+#3563: Links for export buttons next to graphs do not pass the correct parameters to the data export script
+#3562: Pending states in Tactical Overview
+#3558: "Parsing failed when testing ""nagios"" configuration with Centreon Engine"
+#3555: Monitoring / Hostgroups / Services Status : wrong numbers ?
+#3553: Apache error logs - 2.3.8
+#3550: Graphs metric box is not fully grey
+#3549: Meta Services metrics order
+#3540: Code execution MIB Upload
+#3539: Error on SNMP-Disk-C
+#3537: Html page not well formed: DB not connected
+#3534: Traduction : chaines intraduisibles + pb d'encoding
+#3530: Hostgroup filter not working properly in Service Summary/Grid pages
+#3507: Engine Integration: add possibility to enable shell for specifics commands
+#3504: Unable to install Centreon on RHEL 6
+#3503: JS typo
+#3498: Bad use of field last_execution_time in logAnalyzer
+#3482: Génération des fichiers
+#3481: Creating new curves - List of known metrics
+#3475: Menu tree incorrect for serviceand host details page
+#3474: Nagios default option in new create nagios.cfg
+#3472: Images Directory should not require in monitoring form
+#3467: Supervision > Services  : page blanche
+#3463: Modification par un administrateur d'un contact issue d'un groupe LDAP
+#3462: Probleme indentation fichier centreon-purge.log
+#3451: Suppression des commentaires impossibles
+#3448: Forbidden links displayed
+#3442: [logAnalyser] Date in log and lock system
+#3438: Affichage configuration / services
+#3427: CSS problem when action-url is provided 
+#3422: "Ne peut pas afficher les services"" Pending"""
+#3397: Affichage de la description du groupe d'hôtes à la place de son nom
+#3363: [Events log] Bug error_log 
+#3357: probleme script logAnalyzer after update centreon
+#3353: Host Downtime cannot be deleted.
+#3310: LDAP - users import
+#3279: problem with plugins in /tmp during install
+#3265: [graph] Special metrics and broker
+#3230: [centreon] curve's labels do not support non-us characters
+#3201: Configuration breadcrumb not update.
+#3198: [ACL] User template and contact group : doesn't woking together
+#3163: Configuration>Nagios>Export ne prend pas en compte les modules de Centreon Broker
+#3161: Bug affichage Supervision -> Hotes
+#3153: [centstorage] perfdata name and special character
+#3124: ACL Ignored in Configuration > Commands > Checks
+#3121: Wrong database name for centreon-broker default config
+#3082: Ordre des personnes connectés (vu uniquement que par les administrateurs)
+#2913: Centreon 2.3.3 Unable to view event logs
+#2911: New metric not visible
+#2905: possibilité d'afficher des graphiques alors que pas de graphiques générés
+#2835: Bad name in perfdata
+#2800: CSV timestamp only in Unixtime @ Views -> Graphs
+#2779: "Centstorage, bad handle of specials chars in perfdata"
+#2717: Enhancement #2105 does not work
+#2680: sql injection detection too restrictive/naive code
+#2656: Double compte admin lors de l'installation
+#2454: Monitoring -> Hosts -> Host Groups : show more hosts groups than the user have rights
+#2382: everything at the GUI is duplicated?
+#2327: Monitoring Services Mouseover Popup: bottom not visible
+#2209: Centstorage overwrites service-perfdata with performance data from the poller
+#2164: Génération des statistiques Nagios
+#2158: Bug lors de mise à jour
+#2059: Hosts without service are not listed on the monitoring page
+#1904: Pending services not shown
+#1878: Problem when using \t  in Service Performance Data File Template
+#1834: Host overview doesn't sort IP Addresses not naturally
+#1583: Meta Service Problem
+#1512: Suppression commentaire dans page monitoring
+#1469: Errors when adding menu items with entry in toplevel menu
+#1388: HostGroup SNMP Version don't generate nagios config entries
+#4042: Unexpected ack behavior
+#4031: Hôte sans adresse IP
+#4030: index data not created for multiple services
+#4029: redémarrage du service broker lors de la génération de la configuration
+#4027: servicegroup relation duplicated on service detach
+#4025: centcore
+#4023: Missing resources on duplicate monitoring engine.
+#4018: Downtime listing forms are broken
+#4017: [rrd rebuild] Can't rebuild a single metric of a service
+#4014: External commands can be sent multiple times
+#4013: Search function in Configuration > Services
+#4011: Centcore Options
+#4004: ACL are not applied on comments in Monitoring > Services > Comments
+#4003: Reporting > Dashboard > incorrect values for scheduled downtime 
+#4001: Add poller wrong path
+#3997: Centcore PID
+#3994: Monitoring pages and graph icon (centreon-broker)
+#3992: "autologin, graph and ACL"
+#3985: "Get broker statistic, ssh failed."
+#3981: "Broker configuration, compresion level."
+#3979: Poller name empty
+#3977: Menu ACL link empty
+#3975: autologin link weird behaviour
+#3969: Monitoring engines pages
+#3966: nagiosPerfTrace and lock system
+#3962: Databases not created during the php phase setup
+#3960: "Virtual Metrics created, but should not because there is an error in RPN function"
+#3953: error install.sh on upgrade
+#3949: "error ""Could not find macro $USER1$"" while testing plugin"
+#3947: Impossible de paramétrer un serveur LDAP
+#3944: "COUNTER & Centreon-Broker, 2.4, meta-services => KO"
+#3943: Default acknowledgment options are not used in service details page
+#3932: [ACL] views -> graph tree view
+#3930: PHP notice during upgrade
+#3929: no poller in configuration-->centreon menu
+#3928: error DB-Func.php
+#3927: Undefined variable: classdir in /usr/share/centreon/www/index.php on line 56
+#3922: One session created per Export API call ? 
+#3920: Tree view takes too long to load when ACL is involved
+#3919: Logrotate warning
+#3916: Problem with monitoring engine statistics
+#3911: Initiale State logging option must be enabled for the dashboard module
+#3910: Internet Explorer menu dissapears
+#3906: No error when trying to generate configuration for a poller without main.cfg
+#3902: double entry for logAnalyser in DB
+#3896: Add force download HTTP header when exporting event logs to XML
+#3894: Missing help definition in componentTemplates/help.php
+#3892: Graph navigation not working properly when server's timezone is not GMT/UTC
+#3888: Fix problem with service by HG in downtime view
+#3887: DowntimeManager.php do not manager service by hostgroups
+#3886: "field ""Inherits Parent"" are always not set when we add a dependancy"
+#3885: Unable to configure dependancy based on service by hostgroup
+#3883: Can't fill admin e-mail field with «root@local*»
+#3878: Centcore cannot exit when MySQL DB is down
+#3877: Unable to set recurrent downtines to a service link to a hostgroup
+#3875: Graph navigation not working properly when timezone management is enabled
+#3873: Invalid *RRD length* option when generating broker configuration
+#3872: Graphs loaded twice when hovering over the graphs icon in services monitoring page
+#3870: JavaScript parse error with time zones if user timezone offset is null
+#3865: Graph data not positioned correctly on monitoring engines statistics graphs when timezone management is enabled
+#3864: Graph data not positioned correctly on all graphs when timezone management is enabled
+#3862: inheritance between contact and contact template
+#3860: Massive change on contacts template doesn't work
+#3859: contacts are not generated
+#3855: No help in Centreon Broker configuration when display existing configuration
+#3853: incorrect limit service in monitoring
+#3844: Centreon is restarting monitoring engine even when configuration files can't be moved
+#3843: Pending filter on Unhandled Problems view dosn't work.
+#3842: Cannot set ACL rules on hidden pages
+#3840: Problem with locks in centAcl.php
+#3837: Running logAnalyser -h blocks next execution of the process
+#3834: Wrong rights on centreon plugins
+#3831: Curve legend name not applied
+#3829: Correct Centreon audit logs
+#3821: Update centreon 2.4 : cgi is orphan
+#3820: RRDTOOL graphs unit display
+#3819: Monitoring status filter - incorrect default value
+#3816: Some graph are not displayed after upgrade (2.1.6->2.3.9)
+#3814: [centAcl] Exist
+#3809: Files Generating crash
+#3808: wrong path in process-service-perfdata plugin
+#3807: check centstorage status during install process
+#3806: Centcore error log : Cannot restart SNMPTT for poller 
+#3795: Menu with popup activated doesn't work as expected
+#3787: [Virtual metrics] Are not enable at creation
+#3784: Service group membership being messed up after editing service
+#3780: Some search results in Views > Graphs shows hosts with no services
+#3779: CentStorage default script installed FAIL
+#3778: centcore.default not found on Debian during install process
+#3775: PHP errors when changing host templates
+#3769: "Disable, TopCounter Service and Service Monitoring"
+#3761: Resources not assigned to a poller
+#3752: Differences in database schema between an update and a fresh install
+#3750: Message error not handle when move files
+#3728: Bug with Split Components
+#3726: Update Documentation Link to centreon-engine one
+#3724: Event log order
+#3702: Erreur sur le nombre de service acquitté avec Centreon 2.3.9 et Centreon-Broker dans Tactical Overview
+#3697: Centcore does not check if engine configuration file is enabled...
+#3691: ACL: Services categories doesn't make restriction on services groups
+#3690: "centstorage initscript, using a new tool not install by default on debian"
+#3689: "Installer, Centreon Connectors directory not created"
+#3685: Errors in insertBaseConf.sql
+#3675: "Criticality is not saved in ""Monitoring "" filters"
+#3674: Pear-DB not necessary for Centreon
+#3670: Hostgroup filter not working properly in Monitoring -> Hosts -> host Groups 
+#3667: Invalid label for status_file.
+#3663: LDAP import not working for more than one checked user
+#3657: Meta Service n'affiche pas son graphique
+#3650: No possibility to enable/desable virtual metrics
+#3649: Incorrect log file for virtual metrics debug
+#3648: Unable to change curves color
+#3642: Monitoring Engine Statistics doesn't work with Centreon Engine
+#3639: Mistake in purgeLogs cron 
+#3620: Hostgroup filter not working properly in Service Summary/Grid pages
+#3615: Bug avec IE7/8
+#3614: Pagination into configuration
+#3613: filter on host into service configuration.
+#3596: Wrong redirection with char # in hostnames
+#3594: Renamed poller shows not running
+#3593: Bad value for Centreon directory 
+#3592: service detail page with centreon broker is slow
+#3590: Too many informations in table 'log'
+#3587: Add full description for CB field in database
+#3586: Wrong syntax for MySQL in insertBaseConf.sql script
+#3585: Column cfg_file is missing on cfg_nagios table
+#3572: "[Centreon] bad label in "" Monitoring > Event Logs"""
+#3571: Broken image in host/service ext info tab
+#3569: Skip deprecated/ignored fields when generating configuration files for Centreon Engine
+#3563: Links for export buttons next to graphs do not pass the correct parameters to the data export script
+#3562: Pending states in Tactical Overview
+#3558: "Parsing failed when testing ""nagios"" configuration with Centreon Engine"
+#3555: Monitoring / Hostgroups / Services Status : wrong numbers ?
+#3553: Apache error logs - 2.3.8
+#3550: Graphs metric box is not fully grey
+#3549: Meta Services metrics order
+#3540: Code execution MIB Upload
+#3539: Error on SNMP-Disk-C
+#3537: Html page not well formed: DB not connected
+#3534: Traduction : chaines intraduisibles + pb d'encoding
+#3530: Hostgroup filter not working properly in Service Summary/Grid pages
+#3507: Engine Integration: add possibility to enable shell for specifics commands
+#3504: Unable to install Centreon on RHEL 6
+#3503: JS typo
+#3498: Bad use of field last_execution_time in logAnalyzer
+#3482: Génération des fichiers
+#3481: Creating new curves - List of known metrics
+#3475: Menu tree incorrect for serviceand host details page
+#3474: Nagios default option in new create nagios.cfg
+#3472: Images Directory should not require in monitoring form
+#3467: Supervision > Services  : page blanche
+#3463: Modification par un administrateur d'un contact issue d'un groupe LDAP
+#3462: Probleme indentation fichier centreon-purge.log
+#3451: Suppression des commentaires impossibles
+#3448: Forbidden links displayed
+#3442: [logAnalyser] Date in log and lock system
+#3438: Affichage configuration / services
+#3427: CSS problem when action-url is provided 
+#3422: "Ne peut pas afficher les services"" Pending"""
+#3397: Affichage de la description du groupe d'hôtes à la place de son nom
+#3363: [Events log] Bug error_log 
+#3357: probleme script logAnalyzer after update centreon
+#3353: Host Downtime cannot be deleted.
+#3310: LDAP - users import
+#3279: problem with plugins in /tmp during install
+#3265: [graph] Special metrics and broker
+#3230: [centreon] curve's labels do not support non-us characters
+#3201: Configuration breadcrumb not update.
+#3198: [ACL] User template and contact group : doesn't woking together
+#3163: Configuration>Nagios>Export ne prend pas en compte les modules de Centreon Broker
+#3161: Bug affichage Supervision -> Hotes
+#3153: [centstorage] perfdata name and special character
+#3124: ACL Ignored in Configuration > Commands > Checks
+#3121: Wrong database name for centreon-broker default config
+#3082: Ordre des personnes connectés (vu uniquement que par les administrateurs)
+#2913: Centreon 2.3.3 Unable to view event logs
+#2911: New metric not visible
+#2905: possibilité d'afficher des graphiques alors que pas de graphiques générés
+#2835: Bad name in perfdata
+#2800: CSV timestamp only in Unixtime @ Views -> Graphs
+#2779: "Centstorage, bad handle of specials chars in perfdata"
+#2717: Enhancement #2105 does not work
+#2680: sql injection detection too restrictive/naive code
+#2656: Double compte admin lors de l'installation
+#2454: Monitoring -> Hosts -> Host Groups : show more hosts groups than the user have rights
+#2382: everything at the GUI is duplicated?
+#2327: Monitoring Services Mouseover Popup: bottom not visible
+#2209: Centstorage overwrites service-perfdata with performance data from the poller
+#2164: Génération des statistiques Nagios
+#2158: Bug lors de mise à jour
+#2059: Hosts without service are not listed on the monitoring page
+#1904: Pending services not shown
+#1878: Problem when using \t  in Service Performance Data File Template
+#1834: Host overview doesn't sort IP Addresses not naturally
+#1583: Meta Service Problem
+#1512: Suppression commentaire dans page monitoring
+#1469: Errors when adding menu items with entry in toplevel menu
+#1388: HostGroup SNMP Version don't generate nagios config entries
+
 ## Centreon 2.3.9
 
 Bug : No CSV extraction when system is not using NDO
