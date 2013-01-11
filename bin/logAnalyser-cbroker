@@ -65,6 +65,23 @@ require "@CENTREON_ETC@/conf.pm";
 my $VarLib = "@CENTREON_VARLIB@";
 $LOG = "@CENTREON_LOG@/logAnalyser-cbroker.log";
 
+my %svc_status_code = (
+    "OK"       => 0,
+    "WARNING"  => 1,
+    "CRITICAL" => 2,
+    "UNKNOWN"  => 3
+);
+my %host_status_code = (
+    "UP"            => 0,
+    "DOWN"          => 1,
+    "UNREACHABLE"   => 2,
+    "PENDING"       => 4
+);
+my %type_code = (
+    "SOFT" => 0,
+    "HARD" => 1
+);
+
 my ($dbh, $dbhoreon) = (undef, undef);
 my $appID = undef;
 my $msg_type5_disabled = 0;
@@ -155,7 +172,7 @@ sub parseFile($$) {
             $tab[5] =~ s/\\/\\\\/g; 
             $tab[5] =~ s/\'/\\\'/g;
 	    next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
-            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance_name`, `host_id`, `service_id`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."', '".$instance_name."', '" . $cache_host{$tab[0]} . "', '" . $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance_name`, `host_id`, `service_id`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '". $svc_status_code{$tab[2]} ."', '". $type_code{$tab[3]} ."','".$tab[4]."','".$tab[5]."', '".$instance_name."', '" . $cache_host{$tab[0]} . "', '" . $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -167,7 +184,7 @@ sub parseFile($$) {
             $tab[4] =~ s/\'/\\\'/g;
             }
 	    next if (!defined($cache_host{$tab[0]}));
-            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance_name`, `host_id`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."', '".$instance_name."', '" . $cache_host{$tab[0]} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance_name`, `host_id`) VALUES ('1', '$ctime', '".$tab[0]."', '". $host_status_code{$tab[1]} ."', '". $type_code{$tab[2]} ."','".$tab[3]."','".$tab[4]."', '".$instance_name."', '" . $cache_host{$tab[0]} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -183,7 +200,7 @@ sub parseFile($$) {
                 $tab[5] = "";
             }
 	    next if (!defined($cache_host_service{$tab[1] . ":" . $tab[2]}->{'service_id'}));
-            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance_name`, `host_id`, `service_id`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance_name."', '" . $cache_host{$tab[1]} . "', '" .  $cache_host_service{$tab[1] . ":" . $tab[2]}->{'service_id'} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance_name`, `host_id`, `service_id`) VALUES ('2', '$ctime', '".$tab[1]."', '".$tab[2]."', '". $svc_status_code{$tab[3]} ."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance_name."', '" . $cache_host{$tab[1]} . "', '" .  $cache_host_service{$tab[1] . ":" . $tab[2]}->{'service_id'} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -195,7 +212,7 @@ sub parseFile($$) {
                 $tab[4] = "";
             }
 	    next if (!defined($cache_host{$tab[1]}));
-            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance_name`, `host_id`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."', '".$instance_name."', '" .  $cache_host{$tab[1]} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance_name`, `host_id`) VALUES ('3', '$ctime', '".$tab[0]."','".$tab[1]."', '". $host_status_code{$tab[2]} ."', '".$tab[3]."','".$tab[4]."', '".$instance_name."', '" .  $cache_host{$tab[1]} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -203,7 +220,7 @@ sub parseFile($$) {
             $tab[0] =~ s/\\/\\\\/g;
                     $tab[0] =~ s/\'/\\\'/g;
 	    next if (!defined($cache_host{$tab[0]}));
-            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance_name`, `host_id`) VALUES ('7', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance_name."', '" .  $cache_host{$tab[0]} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance_name`, `host_id`) VALUES ('7', '$ctime', '".$tab[0]."', '". $host_status_code{$tab[1]} ."', '". $type_code{$tab[2]} ."', '".$instance_name."', '" .  $cache_host{$tab[0]} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -213,7 +230,7 @@ sub parseFile($$) {
             $tab[1] =~ s/\\/\\\\/g;
                     $tab[1] =~ s/\'/\\\'/g;
 	    next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
-            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance_name`, `host_id`, `service_id`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance_name."', '" .  $cache_host{$tab[0]} . "', '" . $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance_name`, `host_id`, `service_id`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '". $svc_status_code{$tab[2]} ."', '". $type_code{$tab[3]} ."', '".$instance_name."', '" .  $cache_host{$tab[0]} . "', '" . $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -221,7 +238,7 @@ sub parseFile($$) {
             $tab[0] =~ s/\\/\\\\/g;
                     $tab[0] =~ s/\'/\\\'/g;
 	    next if (!defined($cache_host{$tab[0]}));
-            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance_name`, `host_id`) VALUES ('9', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance_name."', '" . $cache_host{$tab[0]} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance_name`, `host_id`) VALUES ('9', '$ctime', '".$tab[0]."', '". $host_status_code{$tab[1]} ."', '". $type_code{$tab[2]} ."', '".$instance_name."', '" . $cache_host{$tab[0]} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
@@ -231,7 +248,7 @@ sub parseFile($$) {
             $tab[1] =~ s/\\/\\\\/g;
                     $tab[1] =~ s/\'/\\\'/g;
 	    next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
-            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance_name`, `host_id`, `service_id`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance_name."', '" . $cache_host{$tab[0]} . "', '" . $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'} . "')";
+            my $rq = "INSERT INTO `logs` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance_name`, `host_id`, `service_id`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '". $svc_status_code{$tab[2]} ."', '". $type_code{$tab[3]} ."', '".$instance_name."', '" . $cache_host{$tab[0]} . "', '" . $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'} . "')";
             my $res = $dbh->do($rq) or die("SQL INSERT ERROR :" . $dbh->errstr . "\n");
         } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
             $ctime = $1;
