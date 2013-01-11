@@ -12,7 +12,7 @@ Generally speaking, Open Source softwares by Merethis are provided in three poss
 
 * binary RPM packages (recommended)
 * tarballs with sources
-* Subversion git/repository
+* git repository
 
 RPM packages are the best format you can get as you would not
 have to worry about compilation and installation, everything is
@@ -35,7 +35,7 @@ Centreon Web
 
 Tarballs: `<http://www.centreon.com/Content-Download/donwload-centreon>`_
 
-Subversion: `<http://svn.centreon.com/trunk/centreon>`_
+git: `<http://git.centreon.com/centreon.git>`_
 
 ***************
 Centreon Engine
@@ -51,7 +51,7 @@ Centreon Broker
 
 Tarballs: `<http://www.centreon.com/Content-Download/download-centreon-broker-centreon>`_
 
-Subversion: `<http://svn.modules.centreon.com/centreon-broker/trunk>`_
+git: `<http://git.centreon.com/centreon-broker.git>`_
 
 ***********************
 Centreon Connector Perl
