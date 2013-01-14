@@ -70,7 +70,8 @@
                                  UNION
                                  SELECT service_id, service_register, service_template_model_stm_id, command_command_id, command_command_id_arg
                                  FROM service s
-                                 WHERE service_register = '0'");
+                                 WHERE service_register = '0'
+                                 ORDER BY service_register, service_template_model_stm_id");
         while ($data = $DBRESULT->fetchRow()) {
             if ($data["service_register"] == 1) {
                 if ($data["command_command_id_arg"] && !$data["command_command_id"]){
