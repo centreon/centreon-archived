@@ -186,7 +186,7 @@ function setDisabledRowStyle(img)
  * Synchronize input fields that bear the same name
  * 
  * @param string name
- * @param val int
+ * @param mixed val
  * @return void
  */
 function syncInputField(name, val) {
