@@ -123,7 +123,7 @@
                 )
             );
             if (false === $cBroker->insertConfig($configuration)) {
-                $msgErr[] = _('Error while insertint central-module configuration');
+                $msgErr[] = _('Error while inserting central-module configuration');
             }
             break;
         case 'central_with_poller':
