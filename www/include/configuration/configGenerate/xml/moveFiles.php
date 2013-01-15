@@ -127,7 +127,7 @@ try {
             if (file_exists($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"]))  {
                 $copyResult = @copy($centreon_path."www/img/media/".$images["dir_alias"]."/".$images["img_path"], $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]);
                 if ($copyResult == false) {
-                    throw new Exception(sprintf(_('Could not copy file %s', $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"])));
+                    throw new Exception(sprintf(_('Could not copy file %s'), $oreon->optGen["nagios_path_img"]."/".$images["dir_alias"]."/".$images["img_path"]));
                 }
             }
         }
