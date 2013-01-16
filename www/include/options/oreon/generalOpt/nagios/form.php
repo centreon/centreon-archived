@@ -206,7 +206,7 @@
 	$tpl->assign('o', $o);
 	$tpl->assign("genOpt_nagios_version", _("Monitoring Engine"));
 	$tpl->assign("genOpt_dbLayer", _("Monitoring database layer"));
-	$tpl->assign("genOpt_Correlation_script", _("Correlation Engine"));
+	$tpl->assign("genOpt_Correlation_script", _("Centreon Broker"));
 	$tpl->assign("genOpt_nagios_direstory", _("Engine Directories"));
 	$tpl->assign("tacticalOverviewOptions", _("Tactical Overview"));
 	$tpl->assign("genOpt_mailer_path", _("Mailer path"));
