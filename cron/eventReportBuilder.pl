@@ -145,7 +145,7 @@ sub initVars {
 	# Getting centstatus database name
 	$dbLayer = getDbLayer();
 	if ($dbLayer eq "ndo") {
-		my $sth = $centreon->query("SELECT db_name, db_host, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+		my $sth = $centreon->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
 		if (my $row = $sth->fetchrow_hashref()) {
 			#connecting to censtatus
 			$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $row->{'db_host'}, $row->{'db_user'}, $row->{'db_pass'}, $row->{'db_port'});
