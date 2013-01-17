@@ -414,7 +414,7 @@
         }
 
         $type = $tab_tmp[0];
-        if ($type == "HG" && isset($lca["LcaHostGroup"][$id])){
+        if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)){
             # Get hosts from hostgroups
             $hosts = getMyHostGroupHosts($id);
             foreach ($hosts as $h_id) {
@@ -424,7 +424,7 @@
                     $tab_svc[$host_name] = $lca["LcaHost"][$h_id];
                 }
             }
-        } else if ($type == 'ST' && isset($lca["LcaSG"][$id])){
+        } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
             $services = getMyServiceGroupServices($id);
             foreach ($services as $svc_id => $svc_name) {
                 $tab_tmp = preg_split("/\_/", $svc_id);
