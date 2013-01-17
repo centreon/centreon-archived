@@ -573,7 +573,7 @@ if (!$dbLayer->execute()) {
 my $dataLayer = $dbLayer->fetchrow_hashref();
 if ($dataLayer->{'value'} eq "broker") {
     $dbLayer->finish();
-    clean_exit("This script is only suitable for NDO.");
+    clean_exit("This script is only suitable for NDO.\n");
 }
 $dbLayer->finish();
 
@@ -584,7 +584,7 @@ if (!$sth_config->execute) {
 }
 $data = $sth_config->fetchrow_hashref();
 $sth_config->finish();
-clean_exit("No configuration found in DB.") if (!$data->{'archive_log'});
+clean_exit("No configuration found in DB.\n") if (!$data->{'archive_log'});
 
 $retention = $data->{'archive_retention'};
 
@@ -652,4 +652,4 @@ if (defined($opt_p)) {
     $sth2->finish();
 }
 
-clean_exit("Done.");
+clean_exit("Done.\n");
