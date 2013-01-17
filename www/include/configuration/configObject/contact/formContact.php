@@ -159,7 +159,7 @@
 	$cg = new CentreonContactgroup($pearDB);
 	$notifCgs = $cg->getListContactgroup(false);
 
-	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap' && isset($cct['ar_id'])) {
+	if ($oreon->optGen['ldap_auth_enable'] == 1 && $cct['contact_auth_type'] == 'ldap' && isset($cct['ar_id']) && $cct['ar_id']) {
 	    $ldap = new CentreonLDAP($pearDB, null, $cct['ar_id']);
 	    if (false !== $ldap->connect()) {
 	        $cgLdap = $ldap->listGroupsForUser($cct['contact_ldap_dn']);
