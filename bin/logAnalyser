@@ -93,24 +93,28 @@ sub writeLogFile($){
 
 Activate the lock in database.
 
+Return the unique identifier of this application and the previous
+launch time.
+
 =cut
 sub set_lock($) {
     my ($dbconn) = @_;
-    my $sth = $dbconn->prepare("SELECT id, running FROM cron_operation WHERE name LIKE 'logAnalyser'");
+    my $sth = $dbconn->prepare("SELECT id, running, time_launch FROM cron_operation WHERE name LIKE 'logAnalyser'");
     if (!$sth->execute) {
         die "Error:" . $sth->errstr . "\n";
     }
     my $data = $sth->fetchrow_hashref();
-    my ($appID, $sthbis) = undef;
+    my ($appID, $sthbis, $last_launch_time) = undef;
 
     if (defined($data->{'id'})) {
         if (!defined($data->{"running"}) || $data->{"running"} == 0) {
             $appID = $data->{"id"};
+            $last_time_launch = $data->{time_launch};
             $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
             if (!$sthbis->execute) {
                 die "Error:" . $sthbis->errstr . "\n";
             }
-            return $appID;
+            return ($appID, int($last_launch_time));
         }
         writeLogFile("logAnalyser already running...");
         exit 1;
@@ -119,7 +123,7 @@ sub set_lock($) {
     if (!$sthbis->execute) {
         die "Error:" . $sthbis->errstr . "\n";
     }
-    return $appID;
+    return ($appID, $timeLaunch);
 }
 
 =head2 unset_lock($dbconn, $appID)
@@ -436,6 +440,17 @@ sub date_to_time($) {
     return int(`date -d $date +%s`);
 }
 
+=head2 time_to_date($timestamp)
+
+Convert $timestamp to a human readable date.
+
+=cut
+sub time_to_date($) {
+    my $timestamp = shift;
+
+    return `date -d \@$timestamp +%m-%d-%Y`;
+}
+
 =head2 parseArchive($instance, $localhost, $startdate)
 
 
@@ -485,23 +500,33 @@ sub parseArchive($$$) {
     }
 }
 
-sub parseLogFile($$) {
+sub parseLogFile($$$) {
     # Get parameters
-    my ($instance, $localhost) = @_;
-    my $LOG_FILE;
+    my ($instance, $localhost, $previous_launch_time) = @_;
+    my ($LOG_FILE, $archivepath);
 
     if ($localhost){
-        my $sth = $dbhoreon->prepare("SELECT `log_file` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '$instance' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = '1' AND `cfg_nagios`.`nagios_activate` = '1'");
+        my $sth = $dbhoreon->prepare("SELECT `log_file`, `log_archive_path` FROM `cfg_nagios`, `nagios_server` WHERE `nagios_server_id` = '$instance' AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id` AND `nagios_server`.`ns_activate` = '1' AND `cfg_nagios`.`nagios_activate` = '1'");
         if (!$sth->execute()) {
             die "Error:" . $sth->errstr . "\n";
         }
         $data = $sth->fetchrow_hashref();
         $LOG_FILE = $data->{'log_file'};
+        $archivepath = $data->{log_archive_path};
+        $archivepath .= "/" if (!($archivepath =~ /\/$/));
         if (!(-r $LOG_FILE)) {
             writeLogFile("Error : cannot open $LOG_FILE");
             exit(0);
         }
         $sth->finish();
+        my $archname = "$archivepath/nagios-" . time_to_date($previous_launch_time) . ".log";
+        if (-f $archname) {
+            my $st = stat($archname);
+            if ($st->mtime > $previous_launch_time) {
+                writeLogFile("Info: Parsing rotated file for instance $instance\n");
+                parseFile($archname, $instance);
+            }
+        }
     } else {
         $LOG_FILE = "$VarLib/log/$instance/nagios.log";
         my $ROTATE_FILE = $LOG_FILE.".rotate";
@@ -558,12 +583,14 @@ if (defined $opt_s) {
 
 $SIG{__DIE__} = \&clean_exit;
 
+my $previous_launch_time;
+
 # Init MySQL connections
 $dbh = DBI->connect("DBI:mysql:database=$mysql_database_ods;host=$mysql_host", 
                     $mysql_user, $mysql_passwd, {'RaiseError' => 1});
 $dbhoreon = DBI->connect("DBI:mysql:database=$mysql_database_oreon;host=$mysql_host", 
                          $mysql_user, $mysql_passwd, {'RaiseError' => 1});
-$appID = set_lock($dbhoreon);
+($appID, $previous_launch_time) = set_lock($dbhoreon);
 
 # Check if is db layer is centreon broker
 my $dbLayer = $dbhoreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
@@ -646,7 +673,7 @@ if (defined($opt_p)) {
             clear_flag_position_file($ns_server->{'id'});
             parseArchive($ns_server->{'id'}, $ns_server->{'localhost'}, $opt_s);
         } else {
-            parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'});
+            parseLogFile($ns_server->{'id'}, $ns_server->{'localhost'}, $previous_launch_time);
         }
     }
     $sth2->finish();
