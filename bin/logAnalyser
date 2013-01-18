@@ -447,8 +447,9 @@ Convert $timestamp to a human readable date.
 =cut
 sub time_to_date($) {
     my $timestamp = shift;
+    chomp(my $result = `date -d \@$timestamp +%m-%d-%Y`);
 
-    return `date -d \@$timestamp +%m-%d-%Y`;
+    return $result;
 }
 
 =head2 parseArchive($instance, $localhost, $startdate)
