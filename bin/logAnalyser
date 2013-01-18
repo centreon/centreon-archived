@@ -196,7 +196,7 @@ sub insert_quit($$) {
         write_flag_position_file();
         writeLogFile("SQL UPDATE Error:" . $dbh->errstr);
     }
-    exit 1;
+    clean_exit("Error: $sql_error.\n");
 }
 
 # Parsing nagios.log
@@ -516,8 +516,8 @@ sub parseLogFile($$$) {
         $archivepath = $data->{log_archive_path};
         $archivepath .= "/" if (!($archivepath =~ /\/$/));
         if (!(-r $LOG_FILE)) {
-            writeLogFile("Error : cannot open $LOG_FILE");
-            exit(0);
+            writeLogFile("Error: cannot open $LOG_FILE");
+            die "Error: failed to open $LOG_FILE.\n";
         }
         $sth->finish();
         my $archname = "$archivepath/nagios-" . time_to_date($previous_launch_time) . ".log";
