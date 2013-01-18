@@ -31,8 +31,8 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
+ * SVN : $URL: http://svn.centreon.com/tags/centreon-2.4.0/www/include/eventLogs/GetXmlLog.php $
+ * SVN : $Id: GetXmlLog.php 13739 2012-11-12 09:27:33Z avilau $
  *
  */
 
@@ -135,9 +135,7 @@
 	$is_admin = isUserAdmin($sid);
 	if (isset($sid) && $sid){
 		$access = new CentreonAcl($contact_id, $is_admin);
-		$lca = array("LcaHost" => $access->getHostServicesName(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO)), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
-		$lcaSTR = $access->getHostsString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
-		$servicestr = $access->getServicesString("NAME", ($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO));
+		$lca = array("LcaHost" => $access->getHostServices(($oreon->broker->getBroker() == "ndo" ? $pearDBndo : $pearDBO), null, 1), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
 	}
 
 	(isset($_GET["num"])) ? $num = htmlentities($_GET["num"]) : $num = "0";
@@ -166,45 +164,6 @@
 	(isset($_GET["search_S"])) ? set_user_param($contact_id, $pearDB, "search_S", htmlentities($_GET["search_S"])) : $search_S = "VIDE";
 	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = "";
 	(isset($_GET["export"])) ? $export = htmlentities($_GET["export"], ENT_QUOTES, "UTF-8") : $export = 0;
-
-	/* *********************************************************
-	 * Cache informations
-	 */
-
-	/** *******************************************
-	 * Create hostCahe
-	 */
-	$hostCache = array();
-	$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
-	while ($data = $DBRESULT->fetchRow()) {
-		$hostCache[$data["host_id"]] = $data["host_name"];
-		$hostCacheName[$data["host_name"]] = $data["host_id"];
-	}
-	$DBRESULT->free();
-	unset($data);
-
-	/** *******************************************
-	 * Create serviceCahe
-	 */
-	function setServiceCache($pearDB) {
-		$serviceCache = array();
-		$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
-		while ($data = $DBRESULT->fetchRow())
-			$serviceCache[$data["service_id"]] = $data["service_description"];
-		$DBRESULT->free();
-		unset($data);
-		return $serviceCache;
-	}
-
-	/** *******************************************
-	 * Create hgCahe
-	 */
-	$hgCache = array();
-	$DBRESULT = $pearDB->query("SELECT /* SQL_CACHE */ hg_id, hg_name FROM hostgroup");
-	while ($data = $DBRESULT->fetchRow())
-		$hgCache[$data["hg_id"]] = $data["hg_name"];
-	$DBRESULT->free();
-	unset($data);
 
 	$start = 0;
     $end = 0;
@@ -437,244 +396,135 @@
 	}
 
 
-	$multi = 1;
+    $tab_id = preg_split("/\,/", $openid);
+    $tab_host_name = array();
+    $tab_svc = array();
 
-	/*
-	 * If multi checked
-	 */
-	if ($multi == 1) {
-		$tab_id = preg_split("/\,/", $openid);
-		$tab_host_name = array();
-		$tab_svc = array();
-		/*
-		 * prepare tab with host and svc
-		 */
-		$strSG = "";
-		$tab_SG = array();
-		$flag_already_call = 0;
+    foreach ($tab_id as $openid) {
+        $tab_tmp = preg_split("/\_/", $openid);
+        $id = "";
+        $hostId = "";
+        if (isset($tab_tmp[1]))
+            $id = $tab_tmp[1];
+        if (isset($tab_tmp[2])) {
+            $hostId = $tab_tmp[2];
+        }
+        if ($id == "") {
+            continue;
+        }
 
-		foreach ($tab_id as $openid) {
-			$tab_tmp = preg_split("/\_/", $openid);
-			if (isset($tab_tmp[1]))
-				$id = $tab_tmp[1];
-			if (isset($tab_tmp[2])) {
-			    $hostId = $tab_tmp[2];
-			}
-			$type = $tab_tmp[0];
-			if ($type == "HG" && isset($id)){
-				$hosts = getMyHostGroupHosts($id);
-				foreach ($hosts as $h_id) {
-					$host_name = getMyHostName($h_id);
-					if ((isset($lca["LcaHost"][$host_name]) && !$is_admin) || $is_admin) {
-						$tab_host_name[] = $host_name;
-						$tab_svc[$host_name] = getMyHostActiveServices($h_id, $search_service);
-					}
-				}
-			} else if ($type == 'ST'){
-				$services = getMyServiceGroupServices($id);
-				foreach ($services as $svc_id => $svc_name)	{
-					$tab_tmp = preg_split("/\_/", $svc_id);
-					$tab = preg_split("/\:/", $svc_name);
-                    $host_name = $tab[3];
-                    $svc_name = $tab[0];
-                    if ((($is_admin) || (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name])))) {
-                            $tab_SG[$flag_already_call] = array("h" => $host_name, "s" => $svc_name);
-                            $flag_already_call++;
-                    }
-                    unset($tab);
-                    unset($host_name);
-				}
-			} else if ($type == "HH") {
-				$host_name = getMyHostName($id);
-				$tab_host_name[] = $host_name;
-				$tmp_tab = getMyHostActiveServices($id, $search_service);
-				foreach ($tmp_tab as $key => $value) {
-					if ((!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$value])) || $is_admin) {
-						$tab_svc[$host_name][$key] = $value;
-					}
-				}
-			} else if ($type == "HS") {
-				/**
-				 * Check service cache
-				 */
-				if (!isset($serviceCache)) {
-					$serviceCache = setServiceCache($pearDB);
-				}
+        $type = $tab_tmp[0];
+        if ($type == "HG" && (isset($lca["LcaHostGroup"][$id]) || $is_admin)){
+            # Get hosts from hostgroups
+            $hosts = getMyHostGroupHosts($id);
+            foreach ($hosts as $h_id) {
+                if (isset($lca["LcaHost"][$h_id])) {
+                    $host_name = getMyHostName($h_id);
+                    $tab_host_name[] = $host_name;
+                    $tab_svc[$host_name] = $lca["LcaHost"][$h_id];
+                }
+            }
+        } else if ($type == 'ST' && (isset($lca["LcaSG"][$id]) || $is_admin)){
+            $services = getMyServiceGroupServices($id);
+            foreach ($services as $svc_id => $svc_name) {
+                $tab_tmp = preg_split("/\_/", $svc_id);
+                $tmp_host_id = $tab_tmp[0];
+                $tmp_service_id = $tab_tmp[1];
+                $tab = preg_split("/\:/", $svc_name);
+                            $host_name = $tab[3];
+                if (isset($lca["LcaHost"][$tmp_host_id][$tmp_service_id])) {
+                    $tab_svc[$host_name][$tmp_service_id] = $lca["LcaHost"][$tmp_host_id][$tmp_service_id];
+                }
+            }
+        } else if ($type == "HH" && isset($lca["LcaHost"][$id])) {
+            $host_name = getMyHostName($id);
+            $tab_host_name[] = $host_name;
+            $tab_svc[$host_name] = $lca["LcaHost"][$id];
+        } else if ($type == "HS" && isset($lca["LcaHost"][$hostId][$id])) {
+            $host_name = getMyHostName($hostId);
+            $tab_svc[$host_name][$id] = $lca["LcaHost"][$hostId][$id];
+        } else if ($type == "MS") {
+            $tab_svc["_Module_Meta"][$id] = "meta_".$id;
+        }
+    }
 
-				/*
-				 * Host Informations
-				 */
-				if (isset($hostId) && isset($hostCache[$hostId])) {
-			        $host_name = $hostCache[$hostId];
-			        $tab_host_name[] = $host_name;
-				} else {
-					if (isset($hostCache[getMyHostIDService($id)])) {
-				  		$host_name = $hostCache[getMyHostIDService($id)];
-						$tab_host_name[] = $host_name;
-					}
-				}
-			    /*
-			     * Servie informations
-			     */
-				$service_description = "";
-				if (isset($serviceCache) && isset($serviceCache[$id])) {
-				    $service_description = $serviceCache[$id];
-				}
+    $req = "SELECT SQL_CALC_FOUND_ROWS * FROM `".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")."` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
 
-				if (isset($host_name) && (!$is_admin && isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$service_description])) || $is_admin) {
-					$tab_svc[$host_name][$id] = $service_description;
-				}
+    /*
+        * Add Host
+        */
+        $str_unitH = "";
+    $str_unitH_append = "";
 
-				unset($host_name);
-				unset($service_description);
-			} else if ($type == "MS") {
-				if ($id != 0) {
-					$tab_svc["_Module_Meta"][$id] = "meta_".$id;
-				}
-			}
-		}
+        foreach ($tab_host_name as $host_name ) {
+            $str_unitH .= $str_unitH_append . "'$host_name'";
+            $str_unitH_append = ", ";
+        }
+    if ($str_unitH != "") {
+        $str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
+    }
 
-		$req = "SELECT * FROM `".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")."` WHERE `ctime` > '$start' AND `ctime` <= '$end' $msg_req";
+    /*
+     * Add services
+     */
+    $flag = 0;
+    $str_unitSVC = "";
+    if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
+        $req_append = "";
+        foreach ($tab_svc as $host_name => $services) {
+            $str = "";
+            $str_append = "";
+            foreach ($services as $svc_id => $svc_name) {
+                $str .= $str_append . "'$svc_name'";
+                $str_append = ", ";
+            }
+            if ($str != "") {
+                $str_unitSVC .= $req_append . " (`host_name` = '".$host_name."' AND `service_description` IN ($str)) ";
+                $req_append = " OR";
+            }
+        }
+        if ($str_unitH != "" && $str_unitSVC != "") {
+            $str_unitSVC = " OR " . $str_unitSVC;
+        }
+    }
+    if ($str_unitH != "" || $str_unitSVC != "") {
+        $req .= " AND (".$str_unitH.$str_unitSVC.")";
+    }
+    if ($str_unitH  == "" && $str_unitSVC == "" && !isset($_GET['export'])) {
+        $req = "";
+    }
 
-		/*
-		 * Add Host
-		 */
-		$str_unitH_flag = 0;
-		$str_unitH = "";
-
-		foreach ($tab_host_name as $host_name ) {
-			if ($str_unitH != "") {
-				$str_unitH .= ", ";
-			}
-			$str_unitH .= "'$host_name'";
-		}
-
-		if ($str_unitH != "") {
-			$str_unitH = "(`host_name` IN ($str_unitH) AND service_description IS NULL)";
-		}
-
-		/*
-		 * Add services
-		 */
-		$flag = 0;
-		$str_unitSVC = "";
-		if (count($tab_svc) > 0 && ($ok == 'true' || $warning == 'true' || $critical == 'true' || $unknown == 'true')) {
-			foreach ($tab_svc as $host_name => $services) {
-				$str = "";
-				foreach ($services as $svc_id => $svc_name) {
-					if ((isset($lca["LcaHost"][$host_name]) && isset($lca["LcaHost"][$host_name][$svc_name])) || $is_admin) {
-						if ($str != "")
-							$str .= ",";
-						$str .= "'$svc_name'";
-					}
-				}
-				if ($str != "") {
-					($flag == 1 || $str_unitH != "") ? $str_unitSVC .= "OR" : NULL;
-					$str_unitSVC .= " (`host_name` = '".$host_name."' AND `service_description` IN ($str)) ";
-					$flag = 1;
-				}
-			}
-		}
-		if (count($tab_SG) > 0) {
-			foreach ($tab_SG as $SG){
-				($flag == 1 || $str_unitH != "") ? $str_unitSVC .= "OR" : NULL;
-				$str_unitSVC .= " (`host_name` = '".$SG["h"]."' AND `service_description` = '".$SG["s"]."') ";
-				$flag = 1;
-			}
-		}
-		if ($str_unitH || $str_unitSVC) {
-			$req .= " AND (".$str_unitH.$str_unitSVC.")";
-		}
-		if ($str_unitH  == "" && $str_unitSVC == "" && !isset($_GET['export'])) {
-			$req = "";
-		}
-
-	} else {
-
-		/*
-		 * only click on one element
-		 */
-		$id = substr($openid, 3, strlen($openid));
-		$type = substr($openid, 0, 2);
-		if ($type == "HG"){
-			$hosts = getMyHostGroupHosts($id);
-			$tab_host_name= array();
-			foreach ($hosts as $h_id)	{
-				$host_name = getMyHostName($h_id);
-				array_push ($tab_host_name, "'".$host_name."'");
-			}
-			$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` IN (".implode(",", $tab_host_name).") ";
-			if ($error  == 'true' || $notification == 'true')
-				$req .= ' OR `host_name` is null';
-			$req .= ")";
-		} else if($type == "HH") {
-			$host_name = getMyHostName($id);
-			$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."' ";
-			if ($error  == 'true' || $notification == 'true')
-				$req .= ' OR `host_name` is null';
-			$req .= ")";
-		} else if($type == "HS") {
-			$service_description = getMyServiceName($id);
-			$host_id = getMyHostActivateService($id, $search_service);
-			$host_name = getMyHostName($host_id);
-
-			$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req AND (`host_name` like '".$host_name."'";
-			if ($error  == 'true' || $notification == 'true')
-				$req .= ' OR `host_name` is null';
-			$req .= ")";
-			$req .= " AND (`service_description` like '".$service_description."' ";
-			$req .= ") ";
-		} if ($type == "MS") {
-			if ($id != 0) {
-				$other_services = array();
-				$DBRESULT2 = $pearDBO->query("SELECT * FROM index_data WHERE `trashed` = '0' AND special = '1' AND service_description = 'meta_".$id."' ORDER BY service_description");
-				if ($svc_id = $DBRESULT2->fetchRow()) {
-					if (preg_match("/meta_([0-9]*)/", $svc_id["service_description"], $matches)){
-						$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
-						$meta = $DBRESULT_meta->fetchRow();
-						$DBRESULT_meta->free();
-						$svc_id["service_description"] = $meta["meta_name"];
-					}
-					$svc_id[$svc_id["id"]] = $svc_id["service_description"];
-				}
-				$DBRESULT2->free();
-			}
-		} else {
-			if ($is_admin) {
-				$req = "SELECT * FROM ".($oreon->broker->getBroker() == "ndo" ? "log" : "logs")." WHERE ctime > '$start' AND ctime <= '$end' $msg_req";
-			}
-		}
-	}
 
 	/*
 	 * calculate size before limit for pagination
 	 */
 
 	if (isset($req) && $req) {
+
 		/*
 		 * Add Suffix for order
 		 */
 		$req .= $suffix_order;
 
-		$lstart = 0;
-		$DBRESULT = $pearDBO->query($req);
-		$rows = $DBRESULT->numrows();
-		if (($num * $limit) > $rows)
-			$num = round($rows / $limit) - 1;
-		$lstart = $num * $limit;
+        if ($num < 0)
+            $num = 0;
 
-		if ($lstart <= 0)
-			$lstart = 0;
+        if (isset($csv_flag) && ($csv_flag == 1)) {
+                $DBRESULT = $pearDBO->query($req . " LIMIT 0,64000"); //limit a little less than 2^16 which is excel maximum number of lines
+        } else {
+                $DBRESULT = $pearDBO->query($req . " LIMIT " . $num * $limit . ", " . $limit);
+        }
+        $rows = $pearDBO->numberRows();
+
+        if (!($DBRESULT->numRows()) && ($num != 0)) {
+                $DBRESULT = $pearDBO->query($req . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
+        }
+
+        require_once $centreon_path . "www/include/common/checkPagination.php";
 
 		/*
 		 * pagination
 		 */
-		$page_max = ceil($rows / $limit);
-		if ($num > $page_max && $rows)
-			$num = $page_max - 1;
-
-		if ($num < 0)
-			$num = 0;
 
 		$pageArr = array();
 		$istart = 0;
@@ -701,10 +551,6 @@
 				$buffer->endElement();
 			}
 		}
-		$num_page = 0;
-
-		if ($num > 0 && $num < $rows)
-			$num_page= $num * $limit;
 
 		$prev = $num - 1;
 		$next = $num + 1;
@@ -762,13 +608,6 @@
 		/*
 		 * Full Request
 		 */
-	    if (isset($csv_flag) && ($csv_flag == 1))
-	    	$req .= " LIMIT 0,64000"; //limit a little less than 2^16 which is excel maximum number of lines
-	    else
-	    	$req .= " LIMIT $lstart,$limit";
-
-		$DBRESULT = $pearDBO->query($req);
-
 		$cpts = 0;
 		while ($log = $DBRESULT->fetchRow()) {
 			$buffer->startElement("line");

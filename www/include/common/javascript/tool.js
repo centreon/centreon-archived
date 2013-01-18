@@ -181,4 +181,16 @@ function setDisabledRowStyle(img)
 	});
 }
 
+        
+/**
+ * Synchronize input fields that bear the same name
+ * 
+ * @param string name
+ * @param mixed val
+ * @return void
+ */
+function syncInputField(name, val) {
+    jQuery("input[name='"+name+"']").val(val);
+}
+
 //  End -->

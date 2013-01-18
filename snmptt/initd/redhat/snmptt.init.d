@@ -26,10 +26,11 @@
 OPTIONS="--daemon --ini=@SNMPTT_INI_FILE@"
 RETVAL=0
 prog="snmptt"
+DAEMON=@SNMPTT_BINDIR@/snmptt
 
 start() {
 	echo -n $"Starting $prog: "
-        daemon /usr/bin/snmptt $OPTIONS
+        daemon ${DAEMON} $OPTIONS
 	RETVAL=$?
 	echo
 	touch /var/lock/subsys/snmptt
@@ -38,7 +39,7 @@ start() {
 
 stop() {
 	echo -n $"Stopping $prog: "
-	killproc /usr/bin/snmptt 2>/dev/null
+	killproc ${DAEMON} 2>/dev/null
 	RETVAL=$?
 	echo
 	rm -f /var/lock/subsys/snmptt
