@@ -109,7 +109,7 @@ sub set_lock($) {
     if (defined($data->{'id'})) {
         if (!defined($data->{"running"}) || $data->{"running"} == 0) {
             $appID = $data->{"id"};
-            $last_time_launch = $data->{time_launch};
+            $last_launch_time = $data->{time_launch};
             $sthbis = $dbhoreon->prepare("UPDATE cron_operation SET running = '1', time_launch = '".time()."' WHERE id = '$appID'");
             if (!$sthbis->execute) {
                 die "Error:" . $sthbis->errstr . "\n";
