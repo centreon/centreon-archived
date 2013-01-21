@@ -1293,17 +1293,6 @@
         "columns": [
             {
                 "length": null,
-                "name": "id"
-            }
-        ],
-        "indexName": "PRIMARY",
-        "tableName": "rebuild",
-        "unique": true
-    },
-    {
-        "columns": [
-            {
-                "length": null,
                 "name": "instance_id"
             }
         ],
