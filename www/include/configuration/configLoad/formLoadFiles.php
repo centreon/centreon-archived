@@ -61,6 +61,7 @@
 	#
 	$attrSelect = array("style" => "width: 100px;");
 	$attrsTextarea 	= array("rows"=>"12", "cols"=>"90");
+        $attrsText = array("size"=>"30");
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
 	$form->addElement('header', 'title', _("Monitoring Engine configuration upload"));
@@ -92,6 +93,8 @@
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("main.cfg"), 'nagios');
+        $tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("ndo2db.cfg"), 'ndo2db');
+        $tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("ndomod.cfg"), 'ndomod');
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("cgi.cfg"), 'cgi');
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("resource.cfg"), 'res');
 	$tab[] = HTML_QuickForm::createElement('radio', 'Type', null, _("Template based method file"), 'cfg');
@@ -114,6 +117,15 @@
 	$tab[] = HTML_QuickForm::createElement('radio', 'group_update_behavior', null, _("Replace"), '0');
 	$form->addGroup($tab, 'group_update_behavior', _("Group member update behavior"), '&nbsp;');
 	$form->setDefaults(array('group_update_behavior' => '0'));
+
+        $tab = array();
+        $tab[] = HTML_QuickForm::createElement('radio', 'duplication_behavior', null, _("Create new object with prefix"), '1');
+        $tab[] = HTML_QuickForm::createElement('radio', 'duplication_behavior', null, _("Replace existing ones"), '0');
+        $form->addGroup($tab, 'duplication_behavior', _("Behavior on duplicate names"), '&nbsp;');
+        $form->setDefaults(array('duplication_behavior' => '0'));
+
+        $form->addElement('text', 'prefix', _('Prefix'), $attrsText);
+        $form->setDefaults(array('prefix' => 'new_'));
 
 	$form->addElement('header', 'result', _("Result"));
 	$tab = array();
@@ -168,28 +180,46 @@
 			$buf = explode("\n", $ret["manualDef"]);
 		}
 		# Enum Object Types
-		if ($buf)	{
-
+		if ($buf) {
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : File Type ". $ret["Type"]["Type"] ."\n", 3, $debug_path."cfgimport.log");
 
+                        $registeredEntries = " "._('Entries are registered')."<br/>";
 			switch ($ret["Type"]["Type"])	{
 				case "nagios" :
 					if ($ret["del"]["del"])
 						deleteNagiosCFG();
 					if (insertNagiosCFG($buf))
-						$msg .= "1 "._("Entries are registered")."<br />";
+						$msg .= "1".$registeredEntries;
 					break;
+                                case "ndo2db" :
+                                        if (isset($_REQUEST['host'])) {
+                                            if (insertNdo2dbCfg($_REQUEST['host'], $tab_nagios_server[$_REQUEST['host']], $buf, $pearDB)) {
+                                                $msg .= "1".$registeredEntries;
+                                            } else {
+                                                $msg .= _("Could not import ndo2db")."<br/>";
+                                            }
+                                        }
+                                        break;
+                                case "ndomod" :
+                                        if  (isset($_REQUEST['host'])) {
+                                            if (insertNdomodCfg($_REQUEST['host'], $tab_nagios_server[$_REQUEST['host']], $buf, $pearDB)) {
+                                                $msg .= "1".$registeredEntries;
+                                            } else {
+                                                $msg .= _("Could not import ndomod")."<br/>";
+                                            }
+                                        }
+                                        break;
 				case "cgi" :
 					if ($ret["del"]["del"])
 						deleteCgiCFG();
-					if (insertCgiCFG($buf))
-						$msg .= "1 "._("Entries are registered")."<br />";
+					if (insertCgiCFG($buf, $_REQUEST['host'], $pearDB))
+						$msg .= "1".$registeredEntries;
 					break;
 				case "res" :
 					if ($ret["del"]["del"])
 						deleteResourceCFG();
-					$msg .= insertResourceCFG($buf)." "._("Entries are registered")."<br />";
+					$msg .= insertResourceCFG($buf, $_REQUEST['host'], $pearDB).$registeredEntries;
 					break;
 				case "cfg" :
 					if ($ret["del"]["del"]) {
@@ -224,6 +254,8 @@
 	if ($msg)
 		$tpl->assign('msg', $msg);
 
+        $tpl->assign('import_behavior', _('Import behavior'));
+        
 	#
 	##Apply a template definition
 	#

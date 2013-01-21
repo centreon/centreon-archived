@@ -174,14 +174,18 @@
 		updateTimeperiod($tp_id);
 	}
 
-	function updateTimeperiod($tp_id)	{
+	function updateTimeperiod($tp_id, $params = array()) {
 		global $form, $pearDB, $oreon;
 
 		if (!$tp_id) {
 			return;
 		}
 		$ret = array();
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+                    $ret = $params;
+                } else {
+		    $ret = $form->getSubmitValues();
+                }
 
 		$ret["tp_name"] = $oreon->checkIllegalChar($ret["tp_name"]);
 
@@ -349,4 +353,22 @@
 			}
 		}
 	}
+
+        /**
+         * Get time period id by name
+         *
+         * @param string $name
+         * @return int
+         */
+        function getTimeperiodIdByName($name) {
+            global $pearDB;
+
+            $id = 0;
+            $res = $pearDB->query("SELECT tp_id FROM timeperiod WHERE tp_name = '".$pearDB->escape($name)."'");
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $id = $row['tp_id'];
+            }
+            return $id;
+        }
 ?>
