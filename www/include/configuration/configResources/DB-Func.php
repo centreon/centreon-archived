@@ -39,7 +39,7 @@
 	if (!isset($oreon))
 		exit();
 
-	function testExistence ($name = null)	{
+	function testExistence ($name = null, $instanceId = null) {
 		global $pearDB, $form;
 
 		$id = 0;
@@ -47,7 +47,9 @@
 		if (isset($form)) {
 			$id = $form->getSubmitValue('resource_id');
 			$instances = $form->getSubmitValue('instance_id');
-		}
+		} elseif (!is_null($instanceId) && $instanceId) {
+                    $instances = array($instanceId);
+                }
 		if (!count($instances)) {
 		    return true;
 		}
@@ -148,12 +150,16 @@
 		return ($resource_id["MAX(resource_id)"]);
 	}
 
-	function insertInstanceRelations($resourceId) {
+	function insertInstanceRelations($resourceId, $instanceId = null) {
         global $form, $pearDB;
 
         $pearDB->query("DELETE FROM cfg_resource_instance_relations WHERE resource_id = " . $pearDB->escape($resourceId));
         $query = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ";
-        $instances = $form->getSubmitValue('instance_id');
+        if (!is_null($instanceId)) {
+            $instances = array($instanceId);
+        } else {
+            $instances = $form->getSubmitValue('instance_id');
+        }
         $query2 = "";
         foreach ($instances as $instanceId) {
             if ($query2 != "") {

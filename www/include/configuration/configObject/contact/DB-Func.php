@@ -1018,4 +1018,21 @@
 		}
 	}
 
+        /**
+         * Get contact ID by name
+         *
+         * @param string $name
+         * @return int
+         */
+        function getContactIdByName($name) {
+            global $pearDB;
+
+            $id = 0;
+            $res = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name = '".$pearDB->escape($name)."'");
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $id = $row['contact_id'];
+            }
+            return $id;
+        }
 ?>

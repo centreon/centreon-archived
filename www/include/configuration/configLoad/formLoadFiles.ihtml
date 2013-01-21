@@ -29,6 +29,9 @@
 		</tr>
 		<tr class="list_one"><td class="FormRowField">{$form.filename.label}</td><td class="FormRowValue">{$form.filename.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.manualDef.label}</td><td class="FormRowValue">{$form.manualDef.html}</td></tr>
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$import_behavior}</td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.duplication_behavior.label}</td><td class="FormRowValue">{$form.duplication_behavior.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField">{$form.prefix.label}</td><td class="FormRowValue">{$form.prefix.html}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.group_update_behavior.label}</td><td class="FormRowValue">{$form.group_update_behavior.html}</td></tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/breakpoint_run.gif'>&nbsp;&nbsp;{$form.header.result}</td></tr>	 	
 		<tr class="list_one"><td class="FormRowField">{$form.debug.label}</td><td class="FormRowValue">{$form.debug.html}</td></tr>
