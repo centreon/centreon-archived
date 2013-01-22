@@ -190,7 +190,14 @@
 		return false;
 	}
 
-	function testServiceTemplateExistence ($name = null)
+        /**
+         * Test service template existence
+         *
+         * @param string $name
+         * @param bool $returnId | whether function will return an id instead of boolean
+         * @return mixed
+         */
+	function testServiceTemplateExistence ($name = null, $returnId = false)
 	{
 		global $pearDB, $form, $centreon;
 
@@ -222,13 +229,27 @@
 		}
 	}
 
-	function testServiceExistence ($name = null, $hPars = array(), $hgPars = array())
+        /**
+         * Test service existence
+         *
+         * @param string $name
+         * @param array $hPars
+         * @param array $hgPars
+         * @param bool $returnId | whether function will return an id instead of boolean
+         * @param array $params
+         * @return mixed
+         */
+	function testServiceExistence ($name = null, $hPars = array(), $hgPars = array(), $returnId = false, $params = array())
 	{
 		global $pearDB, $centreon;
 		global $form;
 		$id = null;
 		if (isset($form) && !count($hPars) && !count($hgPars))	{
-			$arr = $form->getSubmitValues();
+                        if (count($params)) {
+                            $arr = $params;
+                        } else {
+			    $arr = $form->getSubmitValues();
+                        }
 			if (isset($arr["service_id"])) {
 				$id = $arr["service_id"];
 			}
@@ -248,7 +269,7 @@
 			$service = $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
-				return false;
+			    return (false == $returnId) ? false : $service['service_id'];
 			}
 			$DBRESULT->free();
 		}
@@ -257,12 +278,27 @@
 			$service = $DBRESULT->fetchRow();
 			#Duplicate entry
 			if ($DBRESULT->numRows() >= 1 && $service["service_id"] != $id) {
-				return false;
+                            return (false == $returnId) ? false : $service['service_id'];
 			}
 			$DBRESULT->free();
 		}
-		return true;
+		return (false == $returnId) ? true : 0;
 	}
+
+        /**
+         * Get service id by combination of host or hostgroup relations
+         *
+         * @param string $serviceDescription
+         * @param array $hPars
+         * @param array $hgPars
+         * @return int
+         */
+        function getServiceIdByCombination($serviceDescription, $hPars = array(), $hgPars = array(), $params = array()) {
+            if (!count($hPars) && !count($hgPars)) {                
+                return testServiceTemplateExistence($serviceDescription, true);
+            }
+            return testServiceExistence($serviceDescription, $hPars, $hgPars, true, $params);
+        }
 
 	function enableServiceInDB ($service_id = null, $service_arr = array())
 	{
@@ -326,7 +362,8 @@ function divideGroupedServiceInDB($service_id = null, $service_arr = array(), $t
     
     if ($service_id) {
         $service_arr = array($service_id => "1");
-    }    
+    }
+    
     
     foreach ($service_arr as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT count(host_host_id) as nbHost, count(hostgroup_hg_id) as nbHG FROM host_service_relation WHERE service_service_id = '".$key."'");
@@ -400,8 +437,7 @@ function divideHostsToHost($service_id) {
     }
 }
 
-
-	function multipleServiceInDB($services = array(), $nbrDup = array(), $host = null, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array())
+	function multipleServiceInDB($services = array(), $nbrDup = array(), $host = null, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array(), $params = array())
 	{
 		global $pearDB, $centreon;
 
@@ -437,7 +473,7 @@ function divideHostsToHost($service_id) {
 				if (!count($hgPars)) {
 					$hgPars = getMyServiceHostGroups($key);
 				}
-				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars)) ||
+				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
 				    (!$row["service_register"] && testServiceTemplateExistence($service_description))) {
 					$hPars = array();
 					$hgPars = array();
@@ -602,7 +638,7 @@ function divideHostsToHost($service_id) {
 		return ($maxId["MAX(service_id)"]);
 	}
 
-	function updateServiceInDB ($service_id = null, $from_MC = false)
+	function updateServiceInDB ($service_id = null, $from_MC = false, $params = array())
 	{
 		global $form;
 
@@ -610,12 +646,16 @@ function divideHostsToHost($service_id) {
 			return;
 		}
 
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+		    $ret = $params;
+                } else {
+                    $ret = $form->getSubmitValues();
+                }
 
 		if ($from_MC) {
 			updateService_MC($service_id);
 		} else {
-			updateService($service_id, $from_MC);
+			updateService($service_id, $from_MC, $params);
 		}
 		# Function for updating cg
 		# 1 - MC with deletion of existing cg
@@ -687,11 +727,11 @@ function divideHostsToHost($service_id) {
 		# 2 - MC with addition of new host/hg parent
 		# 3 - Normal update
 		if (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && $ret["mc_mod_Pars"]["mc_mod_Pars"]) {
-			updateServiceHost($service_id);
+			updateServiceHost($service_id, $params);
 		} elseif (isset($ret["mc_mod_Pars"]["mc_mod_Pars"]) && !$ret["mc_mod_Pars"]["mc_mod_Pars"]) {
 			updateServiceHost_MC($service_id);
 		} else {
-			updateServiceHost($service_id);
+			updateServiceHost($service_id, $params);
 		}
 
 		# Function for updating sg
@@ -766,7 +806,7 @@ function divideHostsToHost($service_id) {
 		$service = new CentreonService($pearDB);
 
 		if (!count($ret)) {
-			$ret = $form->getSubmitValues();
+		    $ret = $form->getSubmitValues();
 		}
 
 		$ret["service_description"] = $service->checkIllegalChar($ret["service_description"]);
@@ -1053,18 +1093,23 @@ function divideHostsToHost($service_id) {
 	 * Update service informations
 	 * @param $service_id
 	 * @param $from_MC
+         * @param array $params
 	 */
-	function updateService($service_id = null, $from_MC = false)	{
+	function updateService($service_id = null, $from_MC = false, $params = array()) {
 		global $form, $pearDB, $centreon;
 
 		if (!$service_id) {
-			return;
+		    return;
 		}
 
 		$service = new CentreonService($pearDB);
 
 		$ret = array();
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+                    $ret = $params;
+                } else {
+		    $ret = $form->getSubmitValues();
+                }
 
 		if (isset($ret['sg_name'])) {
 		    $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
@@ -1248,7 +1293,7 @@ function divideHostsToHost($service_id) {
 		$centreon->user->access->updateACL();
 	}
 
-	function updateService_MC($service_id = null)	{
+	function updateService_MC($service_id = null, $params = array()) {
 		if (!$service_id)
 			return;
 		global $form, $pearDB, $centreon;
@@ -1256,7 +1301,11 @@ function divideHostsToHost($service_id) {
 		$service = new CentreonService($pearDB);
 
 		$ret = array();
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+                    $ret = $params;
+                } else {
+		    $ret = $form->getSubmitValues();
+                }
 
         if (isset($ret["sg_name"])) {
             $ret["sg_name"] = $centreon->checkIllegalChar($ret["sg_name"]);
@@ -2041,10 +2090,14 @@ function divideHostsToHost($service_id) {
 		$DBRESULT = $pearDB->query($rq);
 	}
 
-	function updateServiceExtInfos_MC($service_id = null)	{
+	function updateServiceExtInfos_MC($service_id = null, $params = array()) {
 		if (!$service_id) return;
 		global $form, $pearDB;
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+                    $ret = $params;
+                } else {
+		    $ret = $form->getSubmitValues();
+                }
 		$rq = "UPDATE extended_service_information SET ";
 		if (isset($ret["esi_notes"]) && $ret["esi_notes"] != NULL) $rq .= "esi_notes = '".CentreonDB::escape($ret["esi_notes"])."', ";
 		if (isset($ret["esi_notes_url"]) && $ret["esi_notes_url"] != NULL) $rq .= "esi_notes_url = '".CentreonDB::escape($ret["esi_notes_url"])."', ";

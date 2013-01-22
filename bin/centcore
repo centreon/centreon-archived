@@ -512,7 +512,7 @@ sub checkRotation($$$$$) {
    $result =~ /(\d+):(.+)/;
    my $updateTime = $1;
    my $fileName = $2;
-   if ($updateTime > $lastUpdate) {
+   if (defined($updateTime) && defined($lastUpdate) && $updateTime > $lastUpdate) {
        my $cmd = "$scp -P $port $remoteConnection:$fileName $localLogFile.rotate > /dev/null";
        `$cmd`;
        writeLogFile("Info: copied rotated file for instance $instanceId");
