@@ -36,6 +36,21 @@
  *
  */
 
+define('DAY_SECS', 86400);
+
+/* RRD retention cache*/
+$retentionCache = array();
+$serviceRetention = array();
+$retentionRes = $pearDB->query("SELECT host_host_id as id, MAX(hg_rrd_retention) as retention
+                                FROM hostgroup, hostgroup_relation
+                                WHERE hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id
+                                GROUP BY host_host_id");
+while ($row = $retentionRes->fetchRow()) {
+    if (!isset($retentionCache[$row['id']])) {
+        $retentionCache[$row['id']] = $row['retention'] * DAY_SECS;
+    }
+}
+
 /* Change index data info */
 $indexToAdd = array();
 $listIndexData = getListIndexData();
@@ -67,6 +82,11 @@ while ($hostSvcRow = $hostSvcRes->fetchRow()) {
                               'host_name' => $hostSvcRow['host_name'],
                               'service_description' => $hostSvcRow['service_description']);
     }
+
+    $host_id = $hostSvcRow['host_id'];
+    if (isset($retentionCache[$host_id])) {
+        $serviceRetention[$retentionCache[$host_id]] = $host_id.';'.$hostSvcRow['service_id'];
+    }
 }
 if ($hostSvc != "") {
     $pearDBO->query("UPDATE index_data
@@ -79,4 +99,18 @@ VALUES (%d, '%s', %d, '%s', 0)";
 foreach ($indexToAdd as $index) {
     $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
     $pearDBO->query($queryAddIndexToExec);
+}
+
+$pearDBO->query('UPDATE index_data SET rrd_retention = NULL');
+foreach ($serviceRetention as $retentionValue => $retention) {
+    $combostr = "";
+    foreach ($retention as $hostServiceCombo) {
+        if ($combostr != "") {
+            $combostr .= ", ";
+        }
+        $combostr .= "'".$pearDBO->escape($hostServiceCombo)."'";
+    }
+    if ($combostr != "") {
+        $pearDBO->query('UPDATE index_data SET rrd_retention = '.$pearDBO->escape($retentionValue).' WHERE CONCAT(host_id, ";", service_id) IN ('.$combostr.')');
+    }
 }
