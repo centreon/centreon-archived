@@ -63,7 +63,4 @@ if (false === mysql_query(sprintf($query, $_SESSION['STORAGE_DB']))) {
 if (false === mysql_query(sprintf($query, $_SESSION['UTILS_DB']))) {
     exitProcess(PROCESS_ID, 1, mysql_error());
 }
-if (false === mysql_query('FLUSH PRIVILEGES')) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
 exitProcess(PROCESS_ID, 0, "OK");
