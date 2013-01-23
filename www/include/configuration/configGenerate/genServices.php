@@ -42,6 +42,8 @@
 	require_once ($centreon_path . "/www/class/centreonService.class.php");
         require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
+        define('DAY_SECS', 86400);
+
         $criticality = new CentreonCriticality($pearDB);
 
 	/*
@@ -148,6 +150,21 @@
             $critCache[$critRow['service_id']] = $critRow['criticality_id'];
         }
 
+        /*
+         * RRD retention cache
+         */
+        $retentionCache = array();
+        $serviceRetention = array();
+        $retentionRes = $pearDB->query("SELECT host_host_id as id, MAX(hg_rrd_retention) as retention
+                                        FROM hostgroup, hostgroup_relation
+                                        WHERE hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id
+                                        GROUP BY host_host_id");
+        while ($row = $retentionRes->fetchRow()) {
+            if (!isset($retentionCache[$row['id']])) {
+                $retentionCache[$row['id']] = $row['retention'] * DAY_SECS;
+            }
+        }
+
 	$cacheSVCTpl = intCmdParam($pearDB, $tab['id']);
 
 	/*
@@ -193,6 +210,13 @@
 				$strTMP .= "define service{\n";
 				$strTMP .= print_line("host_name", $host_name);
 				$strTMP .= print_line("service_description", convertServiceSpecialChar($service["service_description"]));
+
+                                /*
+                                 * RRD retention
+                                 */
+                                if (isset($retentionCache[$host_id])) {
+                                    $serviceRetention[$retentionCache[$host_id]][] = $host_id.';'.$svc_id;
+                                }
 
                                 /*
                                  * Criticality level
@@ -787,16 +811,19 @@
 			    $host_id = $host['host_id'];
 			    $host_name = $host['host_name'];
 			    $relLink = $host_id . "_" . $service['service_id'];
-    			if (isset($listIndexData[$relLink])) {
-    			    $listIndexData[$relLink]['status'] = true;
-    			} else {
-    			    $indexToAdd[] = array(
-    			        'host_id' => $host_id,
-    			        'host_name' => $host_name,
-    			        'service_id' => $service['service_id'],
-    			        'service_description' => $service["service_description"]
-    			    );
-    			}
+    			    if (isset($listIndexData[$relLink])) {
+    			        $listIndexData[$relLink]['status'] = true;
+    			    } else {
+    			        $indexToAdd[] = array(
+    			            'host_id' => $host_id,
+    			            'host_name' => $host_name,
+    			            'service_id' => $service['service_id'],
+    			            'service_description' => $service["service_description"]
+    			        );
+    			    }
+                            if (isset($retentionCache[$host_id])) {
+                                $serviceRetention[$retentionCache[$host_id]][] = $host_id.';'.$service['service_id'];
+                            }
 			}
 			unset($tmpListHost);
 		}
@@ -826,6 +853,24 @@
 	    $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
 	    $pearDBO->query($queryAddIndexToExec);
 	}
+
+       
+        $pearDBO->query('UPDATE index_data SET rrd_retention = NULL');
+        foreach ($serviceRetention as $retentionValue => $retention) {
+            $combostr = "";
+            foreach ($retention as $hostServiceCombo) {
+                if ($combostr != "") {
+                    $combostr .= ", ";
+                }
+                $combostr .= "'".$pearDBO->escape($hostServiceCombo)."'";
+            }
+            if ($combostr != "") {
+                $pearDBO->query('UPDATE index_data 
+                                 SET rrd_retention = '.$pearDBO->escape($retentionValue).' 
+                                 WHERE CONCAT(host_id, ";", service_id) IN ('.$combostr.')');
+            }
+        }
+ 
 	/* End change the index data informations */
 
 

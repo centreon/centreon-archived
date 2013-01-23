@@ -26,8 +26,9 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="statusmap_image"> {$form.hg_map_icon_image.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hg_map_icon_image.html}</p></td></tr>
 		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.hg_activate.label}</td><td class="FormRowValue">{$form.hg_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.hg_comment.label}</td><td class="FormRowValue">{$form.hg_comment.html}</td></tr>		
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hg_rrd_retention"> {$form.hg_rrd_retention.label}</td><td class="FormRowValue">{$form.hg_rrd_retention.html} {$days}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hg_comment"> {$form.hg_comment.label}</td><td class="FormRowValue">{$form.hg_comment.html}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="hg_activate"> {$form.hg_activate.label}</td><td class="FormRowValue">{$form.hg_activate.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}
