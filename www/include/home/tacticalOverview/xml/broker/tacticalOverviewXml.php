@@ -89,15 +89,12 @@
 
 	$ndo_base_prefix = getNDOPrefix();
 	$general_opt = getStatusColor($db);
-    
-    //get criticality list
-    $criticalityList = $criticality->getList();
 
 	// Get Status Globals for hosts
 	$rq1 = 	" SELECT count(state), state" .
 			" FROM hosts " .
 			" WHERE enabled = 1 " .
-                        " AND state_type = 1 " .
+            " AND state_type = 1 " .
 			$centreon->user->access->queryBuilder("AND", "host_id", $acl_host_id_list) .
 			" AND name NOT LIKE '_Module_%' " .
 			" GROUP BY state " .
@@ -144,6 +141,7 @@
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
     $tab_hostcriticality[$nbhostpb] = "";
+    $availableHostCriticalities = 0;
     $tab_hostprobstate[$nbhostpb] = "";
     $tab_hostnotesurl[$nbhostpb] = "";
     $tab_hostnotes[$nbhostpb] = "";
@@ -185,7 +183,10 @@
         while ($crit = $resCriticality->fetchRow()){
             $infoC = $criticality->getData($crit["criticality"]);
             if (isset($infoC))
+            {
+                $availableHostCriticalities = 1;
                 $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+            }
         }
         
 		$nbhostpb++;
@@ -468,6 +469,7 @@
 	$j = 0;
 	$tab_hostname[$j] = "";
     $tab_svccriticality[$j] = "";
+    $availableSvcCriticalities = 0;
 	$tab_svcname[$j] = "";
 	$tab_state[$j] = "";
 	$tab_notes_url[$j] = "";
@@ -540,7 +542,10 @@
             while ($crit = $resCriticality->fetchRow()){
                 $infoC = $criticality->getData($crit["criticality"]);
                 if (isset($infoC))
+                {
+                    $availableSvcCriticalities = 1;
                     $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+                }  
             }
             
 			$j++;
@@ -552,6 +557,8 @@
 	$xml = new CentreonXML();
 	$xml->startElement('root');
 
+    $xml->writeElement('availableSvcCriticalities', $availableSvcCriticalities);
+    $xml->writeElement('availableHostCriticalities', $availableHostCriticalities);
 	$xml->writeElement('nbHostPb', $nbhostpb);
 	$xml->writeElement('nbSvcPb', $nb_pb);
 	if (is_array($general_opt)) {
