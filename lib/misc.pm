@@ -82,11 +82,22 @@ sub getRRDdatabase_status_path(){
 	return $RRDdatabase_status_path;
 }
 
-sub getLenStorageDB(){
+sub getLenStorageDB($){
 	my $data;
 	my $len_storage_rrd;
+        my $index = $_[0];
+        my $sth2;
 
-	my $sth2 = $con_ods->prepare("SELECT len_storage_rrd FROM config");
+        $sth2 = $con_ods->prepare("SELECT rrd_retention FROM index_data WHERE id = ".$index);        
+        if (!$sth2->execute()) {
+                writeLogFile("Error - rrd_retention : " . $sth2->errstr . "\n");
+        }
+        $data = $sth2->fetchrow_hashref();
+        if (defined($data->{'rrd_retention'}) && $data->{'rrd_retention'}) {
+            return $data->{'rrd_retention'};
+        }
+
+ 	$sth2 = $con_ods->prepare("SELECT len_storage_rrd FROM config");
 	if (!$sth2->execute()) {
 		writeLogFile("Error - len_storage_rrd : " . $sth2->errstr . "\n");
 	}

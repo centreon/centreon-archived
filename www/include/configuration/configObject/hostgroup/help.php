@@ -15,6 +15,8 @@ $help["icon_image"] = dgettext("help", "Define the image that should be associat
 $help["icon_image_alt"] = dgettext("help", "Define an optional string that is used in the alternative description of the icon image.");
 $help["statusmap_image"] = dgettext("help", "Define an image that should be associated with this host group in the statusmap CGI in monitoring engine. You can choose a JPEG, PNG, and GIF image. The GD2 image format is preferred, as other image formats must be converted first when the statusmap image is generated. The image will look best if it is 40x40 pixels in size.");
 
-
+$help['hg_rrd_retention'] = dgettext("help", "RRD retention duration of all the services that are in this host group. If service is in multiple host groups, the highest retention value will be used.");
+$help['hg_comment'] = dgettext("help", "Comments on this host group.");
+$help['hg_activate'] = dgettext("help", "Whether this host group is enabled.");
 ?>
 
