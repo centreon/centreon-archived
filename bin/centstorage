@@ -606,7 +606,7 @@ sub updateServiceState($$$$$$) {
 	    $interval = getServiceCheckIntervalWithSVCid($index) * getIntervalLenght();
 	    my $interval_hb = $interval * 10;
 
-	    $nb_value = getLenStorageDB() / $interval;
+	    $nb_value = getLenStorageDB($index) / $interval;
 	    
 	    createRRDDatabase($rrdtoolDBPath, $index, $begin, $interval, "status", $nb_value, 0);
 	    tuneRRDDatabase($rrdtoolDBPath, $index, "status", $interval_hb);
@@ -734,7 +734,6 @@ sub CheckRebuild(){
     # Rebuild database
     $RRDdatabase_path = getRRDdatabase_path();
     $RRDdatabase_status_path = getRRDdatabase_status_path();
-    $len_storage_rrd = getLenStorageDB();
 
     my $sth2 = $con_ods->prepare("SELECT id, service_id, host_name, service_description FROM index_data WHERE `must_be_rebuild` = '1'");
     writeLogFile("Error when getting service id who must be rebuild : ".$sth2->errstr."") if (!$sth2->execute);
@@ -742,6 +741,8 @@ sub CheckRebuild(){
     	if (!$stop) {
             last;
         }
+
+        $len_storage_rrd = getLenStorageDB($svc_mst_be_rbld->{'id'});
 
 	my $sth = $con_ods->prepare("UPDATE index_data SET `must_be_rebuild` = '2' WHERE id = '".$svc_mst_be_rbld->{'id'}."'");
 	writeLogFile("Error when getting perfdata file : " . $sth->errstr . "") if (!$sth->execute);
