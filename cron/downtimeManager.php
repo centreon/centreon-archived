@@ -164,27 +164,16 @@
 	$list = $downtime->getDowntime();
 
 	/*
-	 * Get the list of scheduled donwtime
-	 */
-	$downtime_scheduled = $downtime->getSchedDowntime();
-
-	/*
 	 * Template for external command by object type
 	 */
 	$ext_cmd_add['host'][] = '[%u] SCHEDULE_HOST_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
 	$ext_cmd_add['host'][] = '[%u] SCHEDULE_HOST_SVC_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
 	$ext_cmd_del['host'][] = '[%u] DEL_HOST_DOWNTIME;%u';
-	/*$ext_cmd_add['hostgrp'][] = '[%u] SCHEDULE_HOSTGROUP_HOST_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
-	$ext_cmd_add['hostgrp'][] = '[%u] SCHEDULE_HOSTGROUP_SVC_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
-	$ext_cmd_del['hostgrp'][] = '[%u] DEL_HOST_DOWNTIME;%u';
-	$ext_cmd_del['hostgrp'][] = '[%u] DEL_SVC_DOWNTIME;%u';*/
 	$ext_cmd_add['svc'][] = '[%u] SCHEDULE_SVC_DOWNTIME;%s;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
 	$ext_cmd_del['svc'][] = '[%u] DEL_SVC_DOWNTIME;%u';
-	/*$ext_cmd_add['svcgrp'][] = '[%u] SCHEDULE_SVCGROUP_SVC_DOWNTIME;%s;%u;%u;%u;0;%u;Downtime cycle;[Downtime cycle #%u]';
-	$ext_cmd_del['svcgrp'][] = '[%u] DEL_HOST_DOWNTIME;%u';
-	$ext_cmd_del['svcgrp'][] = '[%u] DEL_SVC_DOWNTIME;%u';*/
 
 	// @todo factorize
+    $existingDowntime = array();
 	foreach ($list as $type => $periods) {
 		foreach ($periods as $period) {
 			switch ($type) {
@@ -197,17 +186,22 @@
 							if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 								foreach ($ext_cmd_add['host'] as $cmd) {
 									$cmd = sprintf($cmd, time(), $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-									sendCommand($pearDB, $period['obj_id'], $cmd);
+                                    if (!in_array($cmd, $existingDowntime)) {
+                                        sendCommand($pearDB, $period['obj_id'], $cmd);
+                                        $existingDowntime[] = $cmd;
+                                    }
 								}
 							} elseif ($period['dt_activate'] == 0 && count($listSchedDt) != 0) {
 								foreach ($listSchedDt as $schelDt) {
 									if ($schelDt['downtime_type'] == 1) {
 										$cmd = sprintf('[%u] DEL_HOST_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-										sendCommand($pearDB, $period['obj_id'], $cmd);
 									} else if ($schelDt['downtime_type'] == 2) {
 										$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-										sendCommand($pearDB, $period['obj_id'], $cmd);
 									}
+                                    if (!in_array($cmd, $existingDowntime)) {
+                                        sendCommand($pearDB, $period['obj_id'], $cmd);
+                                        $existingDowntime[] = $cmd;
+                                    }
 								}
 							}
 						}
@@ -217,7 +211,6 @@
 					$hg = new CentreonHostgroups($pearDB);
 					$hostClass = new CentreonHost($pearDB);
 					$hostlist = $hg->getHostGroupHosts($period['obj_id']);
-					//if ($gmt->used()) {
 					foreach ($hostlist as $host) {
 						$currentHostDate = $gmt->getHostCurrentDatetime($host, 'U');
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
@@ -227,31 +220,27 @@
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['host'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $hostClass->getHostName($host), $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-										sendCommand($pearDB, $host, $cmd);
+										if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								} else if ($period['dt_activate'] == 0 && count($listSchedDt) != 0) {
 									foreach ($listSchedDt as $schelDt) {
 										if ($schelDt['downtime_type'] == 1) {
 											$cmd = sprintf('[%u] DEL_HOST_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $host, $cmd);
 										} else if ($schelDt['downtime_type'] == 2) {
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $host, $cmd);
 										}
+                                        if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								}
 							}
 						}
 					}
-					/*} else {
-						$dts = $downtime->doSchedule($period['dt_id'], time(), $delay);
-						foreach ($dts as $dt) {
-							foreach ($ext_cmd_add['hostgrp'] as $cmd) {
-								$cmd = sprintf($cmd, time(), $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-								sendCommand($pearDB, $host, $cmd);
-							}
-						}
-					}*/
 					break;
 				case 'svc':
 					$hostClass = new CentreonHost($pearDB);
@@ -265,17 +254,22 @@
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-										sendCommand($pearDB, $hid, $cmd);
+										if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								} else if ($period['dt_activate'] == 0 && count($listSchedDt) != 0) {
 									foreach ($listSchedDt as $schelDt) {
 										if ($schelDt['downtime_type'] == 1) {
 											$cmd = sprintf('[%u] DEL_HOST_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $hid, $cmd);
 										} else if ($schelDt['downtime_type'] == 2) {
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $hid, $cmd);
 										}
+                                        if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								}
 							}
@@ -288,17 +282,22 @@
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-										sendCommand($pearDB, $hid, $cmd);
+										if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								} else if ($period['dt_activate'] == 0 && count($listSchedDt) != 0) {
 									foreach ($listSchedDt as $schelDt) {
 										if ($schelDt['downtime_type'] == 1) {
 											$cmd = sprintf('[%u] DEL_HOST_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $hid, $cmd);
 										} else if ($schelDt['downtime_type'] == 2) {
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $hid, $cmd);
 										}
+                                        if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								}
 							}
@@ -324,17 +323,22 @@
 								if ($period['dt_activate'] == 1 && count($listSchedDt) == 0) {
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $host_name, $service_name, $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
-										sendCommand($pearDB, $service[0], $cmd);
+										if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								} else if ($period['dt_activate'] == 0 && count($listSchedDt) != 0) {
 									foreach ($listSchedDt as $schelDt) {
 										if ($schelDt['downtime_type'] == 1) {
 											$cmd = sprintf('[%u] DEL_HOST_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $service['host_host_id'], $cmd);
 										} else if ($schelDt['downtime_type'] == 2) {
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
-											sendCommand($pearDB, $service[0], $cmd);
 										}
+                                        if (!in_array($cmd, $existingDowntime)) {
+                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            $existingDowntime[] = $cmd;
+                                        }
 									}
 								}
 							}
