@@ -70,9 +70,9 @@
 
 	$includeTP = array();
 	$excludeTP = array();
-	$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod");
+	$DBRESULT = $pearDB->query("SELECT tp_name, tp_id FROM timeperiod WHERE tp_id != '". $tp_id ."'");
 	while ($data = $DBRESULT->fetchRow()) {
-		if ($o != "a" || $tp_id != $data["tp_id"]) {
+		if ($o != "a") {
 			$excludeTP[$data["tp_id"]] = $data["tp_name"];
 			$includeTP[$data["tp_id"]] = $data["tp_name"];
 		}
