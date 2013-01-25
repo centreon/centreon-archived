@@ -88,7 +88,7 @@
         			$(frames).width($(frames).width() + data.frameWidth);
         			$('<div/>', {
         				id: 'c-wiz-step-' + data.step,
-        				class: 'frame'
+        				'class': 'frame'
         			}).appendTo(frames);
         		}
         		$.ajax({
@@ -204,7 +204,7 @@
                 		    $(frames).width($(frames).width() + data.frameWidth);
                 		    var newdiv = $('<div/>', {
                 		        id: 'c-wiz-step-' + data.step,
-                		        class: 'frame'
+                		        'class': 'frame'
                 		    }).appendTo(frames);
                 		}
                 		newdiv.html(html);

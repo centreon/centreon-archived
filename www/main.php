@@ -260,13 +260,14 @@
 			$centreon->historyLimit[$url] = $_POST["limit"];
 	}
 
-	print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
-	print "<!-- Footer -->";
+	
 
 	/*
 	 * Display Footer
 	 */
 	if (!$min) {
+        print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
+        print "<!-- Footer -->";
 		include_once "footer.php";
 	}
 ?>
