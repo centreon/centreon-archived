@@ -246,7 +246,9 @@
 			<td>
 				<table class="tactical_light_table">
 					<tr style="font-weight:bold;" class="tactical_light_header">
-                        <td align='center'><xsl:value-of select='//main/str_hostprobcriticality'/></td>
+                        <xsl:if test="availableHostCriticalities &gt; 0">
+                            <td align='center'><xsl:value-of select='//main/str_hostprobcriticality'/></td>
+                        </xsl:if>
 						<td align='center' colspan="2"><xsl:value-of select='//main/str_hostprobhostname'/></td>
 						<td align='center'><xsl:value-of select='//main/str_hostprobstatus'/></td>
 						<td align='center'><xsl:value-of select='//main/str_hostprobip'/></td>
@@ -257,16 +259,20 @@
 					<xsl:for-each select='//root/unhandledHosts'>
 					<xsl:element name='tr'>
 						<xsl:attribute name='class'><xsl:value-of select='class'/></xsl:attribute>
-                        <xsl:element name='td'>
-                            <xsl:attribute name='class'>ListColCenter</xsl:attribute>
-                            <xsl:attribute name='align'>center</xsl:attribute>
-                            <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;</xsl:attribute>
-                            <xsl:element name='img'>
-                                <xsl:attribute name='src'>
-                                    <xsl:value-of select='hostcriticality'/>
-                                </xsl:attribute>
+                        <xsl:if test="//root/availableHostCriticalities &gt; 0">
+                            <xsl:element name='td'>
+                                <xsl:attribute name='class'>ListColCenter</xsl:attribute>
+                                <xsl:attribute name='align'>center</xsl:attribute>
+                                <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;</xsl:attribute>
+                                <xsl:element name='img'>
+                                    <xsl:attribute name='src'>
+                                        <xsl:value-of select='hostcriticality'/>
+                                    </xsl:attribute>
+                                    <xsl:attribute name='width'>16</xsl:attribute>
+									<xsl:attribute name='height'>16</xsl:attribute>
+                                </xsl:element>
                             </xsl:element>
-						</xsl:element>
+                        </xsl:if>
 						<xsl:element name='td'>
 							<xsl:attribute name='class'>ListColLeft</xsl:attribute>
 							<xsl:attribute name='style'>white-space:nowrap;</xsl:attribute>
@@ -683,7 +689,9 @@
 				<td>
 					<table class="tactical_light_table">
 						<tr style="font-weight:bold;" class="tactical_light_header">
-                            <td align='center' style="width:20px;"><xsl:value-of select='//main/str_criticality'/></td>
+                            <xsl:if test="availableSvcCriticalities &gt; 0">
+                                <td align='center' style="width:20px;"><xsl:value-of select='//main/str_criticality'/></td>
+                            </xsl:if>
 							<td align='center'><xsl:value-of select='//main/str_hostname'/></td>
 							<td align='center' colspan="2"><xsl:value-of select='//main/str_servicename'/></td>
 							<td align='center'><xsl:value-of select='//main/str_status'/></td>
@@ -695,18 +703,20 @@
 						<xsl:for-each select='//root/unhandledServices'>						
 							<xsl:element name='tr'>
 								<xsl:attribute name='class'><xsl:value-of select='class'/></xsl:attribute>
-                                <xsl:element name='td'>
-									<xsl:attribute name='class'>ListColCenter</xsl:attribute>
-									<xsl:attribute name='style'>white-space: nowrap;font-weight:bold;</xsl:attribute>
-									<xsl:attribute name='align'>center</xsl:attribute>
-                                    <xsl:element name='img'>
-                                        <xsl:attribute name='src'>
-                                            <xsl:value-of select='servicecriticality'/>
-                                        </xsl:attribute>
-                                        <xsl:attribute name='width'>16</xsl:attribute>
-                                        <xsl:attribute name='height'>16</xsl:attribute>
+                                <xsl:if test="//root/availableSvcCriticalities &gt; 0">
+                                    <xsl:element name='td'>
+                                        <xsl:attribute name='class'>ListColCenter</xsl:attribute>
+                                        <xsl:attribute name='style'>white-space: nowrap;font-weight:bold;</xsl:attribute>
+                                        <xsl:attribute name='align'>center</xsl:attribute>
+                                        <xsl:element name='img'>
+                                            <xsl:attribute name='src'>
+                                                <xsl:value-of select='servicecriticality'/>
+                                            </xsl:attribute>
+                                            <xsl:attribute name='width'>16</xsl:attribute>
+                                            <xsl:attribute name='height'>16</xsl:attribute>
+                                        </xsl:element>
                                     </xsl:element>
-								</xsl:element>
+                                </xsl:if>
 								<td class="ListColLeft" style="white-space:nowrap;">
 									<xsl:if test='icon != ""'>
 										<xsl:element name='img'>
