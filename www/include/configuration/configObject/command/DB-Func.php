@@ -141,17 +141,21 @@
 		updateCommand($cmd_id);
 	}
 
-	function updateCommand($cmd_id = null)
+	function updateCommand($cmd_id = null, $params = array())
 	{
 		global $form, $pearDB, $oreon;
 
 
 		if (!$cmd_id) {
-			return;
+		    return;
 		}
 
 		$ret = array();
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+                    $ret = $params;
+                } else {
+		    $ret = $form->getSubmitValues();
+                }
 		//set_magic_quotes_runtime(1);
 
 		$ret["command_name"] = $oreon->checkIllegalChar($ret["command_name"]);
@@ -342,4 +346,22 @@
 		$data = $DBRESULT->fetchRow();
 		return $data['number'];
 	}
+
+        /**
+         * Get command ID by name
+         * 
+         * @param string $name
+         * @return int
+         */
+        function getCommandIdByName($name) {
+            global $pearDB;
+
+            $id = 0;
+            $res = $pearDB->query("SELECT command_id FROM command WHERE command_name = '".$pearDB->escape($name)."'");
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $id = $row['command_id'];
+            }
+            return $id;
+        }
 ?>

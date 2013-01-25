@@ -96,8 +96,10 @@ sub updateRRDDB($$$$$$$$) {
 	    $interval_hb = $interval * 10;
 
 	    # Caclulate number of value 
-	    $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
-
+            $nb_value = getLenStorageDB($_[1]);
+            if ($nb_value == 0) {
+                $nb_value =  $_[5] * 24 * 60 * 60 / $interval;
+            }
 	    createRRDDatabase($_[0], $_[1], $begin, $interval, $_[6], $nb_value, $_[7]);
 	    tuneRRDDatabase($_[0], $_[1], $_[6], $interval_hb);
 	    updateRRDDatabase($_[0], $_[1], $_[6], $_[2], $_[3], $_[7]);

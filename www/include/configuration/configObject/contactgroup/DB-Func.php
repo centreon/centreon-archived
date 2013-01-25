@@ -169,19 +169,23 @@
 		return ($cg_id["MAX(cg_id)"]);
 	}
 
-	function updateContactGroupInDB ($cg_id = NULL)	{
+	function updateContactGroupInDB ($cg_id = NULL, $params = array()) {
 		if (!$cg_id)
 			return;
-		updateContactGroup($cg_id);
-		updateContactGroupContacts($cg_id);
+		updateContactGroup($cg_id, $params);
+		updateContactGroupContacts($cg_id, $params);
 	}
 
-	function updateContactGroup($cg_id = null)	{
+	function updateContactGroup($cg_id = null, $params = array()) {
 		global $form, $pearDB, $oreon;
 		if (!$cg_id)
 			return;
 		$ret = array();
-		$ret = $form->getSubmitValues();
+                if (count($params)) {
+                    $ret = $params;
+                } else {
+		    $ret = $form->getSubmitValues();
+                }
 
 		$ret["cg_name"] = $oreon->checkIllegalChar($ret["cg_name"]);
 
@@ -201,7 +205,7 @@
 		$oreon->CentreonLogAction->insertLog("contactgroup", $cg_id, htmlentities($ret["cg_name"], ENT_QUOTES, "UTF-8"), "c", $fields);
 	}
 
-	function updateContactGroupContacts($cg_id, $ret = array())	{
+	function updateContactGroupContacts($cg_id, $ret = array()) {
 		global $form, $pearDB;
 		if (!$cg_id)
 			return;
@@ -219,4 +223,22 @@
 			$DBRESULT = $pearDB->query($rq);
 		}
 	}
+
+        /**
+         * Get contact group id by name
+         *
+         * @param string $name
+         * @return int
+         */
+        function getContactGroupIdByName($name) {
+            global $pearDB;
+
+            $id = 0;
+            $res = $pearDB->query("SELECT cg_id FROM contactgroup WHERE cg_name = '".$pearDB->escape($name)."'");
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $id = $row['cg_id'];
+            }
+            return $id;
+        }
 ?>

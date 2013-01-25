@@ -1640,6 +1640,7 @@ CREATE TABLE `hostgroup` (
   `hg_action_url` varchar(255) DEFAULT NULL,
   `hg_icon_image` int(11) DEFAULT NULL,
   `hg_map_icon_image` int(11) DEFAULT NULL,
+  `hg_rrd_retention` int(11) DEFAULT NULL,
   `hg_comment` text,
   `hg_activate` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`hg_id`),

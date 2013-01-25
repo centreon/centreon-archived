@@ -36,7 +36,6 @@
  *
  */
 
-
     /**
      * Checks whether or not a reserved macro is used
      *
@@ -90,7 +89,130 @@
 		$DBRESULT = $pearDB->query($rq);
 	}
 
-	function insertResourceCFG(& $buf)	{
+        /**
+         * Used for building sql query string 
+         * for field and values
+         *
+         * @param string $txt
+         * @param array $parameters | accepted parameters
+         * @param CentreonDB $db
+         * @return array
+         */
+        function buildFieldsAndValues($txt, $parameters, $db) {
+            $fieldStr = "";
+            $valueStr = "";
+            foreach ($txt as $line) {
+                if (preg_match("/^[ \t]*([0-9a-zA-Z\_]+)[ \t]*=[ \t]*(.+)/", $line, $matches)) {
+                    if (in_array($matches[1], $parameters)) {
+                        if ($fieldStr != "") {
+                            $fieldStr .= ", ";
+                        }
+                        if ($valueStr != "") {
+                            $valueStr .= ", ";
+                        }
+                        $fieldStr .= $matches[1];
+                        $valueStr .= "'".$db->escape($matches[2])."'";
+                    }
+                }
+            }
+            return array($fieldStr, $valueStr);
+        }
+
+        /**
+         * Insert ndo2db cfg
+         * 
+         * @param int $pollerId
+         * @param string $pollerName
+         * @param string $txt
+         * @param CentreonDB $db
+         * @return int | return 1 if entry is correctly inserted/updated
+         */
+        function insertNdo2dbCfg($pollerId, $pollerName, $txt, $db) {
+            $sql = "SELECT id, description 
+                    FROM cfg_ndo2db 
+                    WHERE activate = '1' 
+                    AND ns_nagios_server = " . $db->escape($pollerId);
+            $res = $db->query($sql);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $pollerName = $row['description'];
+                $oldId = $row['id'];
+            }
+            $parameters = array('ndo2db_user', 'ndo2db_group', 'socket_type', 'socket_name',
+                                'tcp_port', 'db_servertype', 'db_host', 'db_name', 'db_port', 
+                                'db_prefix', 'db_user', 'db_pass', 'max_timedevents_age',
+                                'max_systemcommands_age', 'max_servicechecks_age', 'max_hostchecks_age',
+                                'max_eventhandlers_age');
+            $insertSql = "INSERT INTO cfg_ndo2db (%s) VALUES (%s)";
+            list($fieldStr, $valueStr) = buildFieldsAndValues($txt, $parameters, $db); 
+            if ($valueStr && $fieldStr) {
+               $fieldStr .= ", description, ns_nagios_server, activate";
+               $valueStr .= ", '".$db->escape($pollerName)."', ".$db->escape($pollerId).", '1'";
+               try {
+                   $db->query(sprintf($insertSql, $fieldStr, $valueStr));
+               } catch (Exception $e) {
+                   return 0;
+               }
+               if (isset($oldId)) {
+                   $db->query("DELETE FROM cfg_ndo2db WHERE id = ".$db->escape($oldId));
+                   return 1;
+               } 
+            }
+            return 0;
+        }
+
+        /**
+         * Insert ndomod cfg
+         * 
+         * @param int $pollerId
+         * @param string $pollerName
+         * @param string $txt
+         * @param CentreonDB $db
+         * @return void
+         */
+        function insertNdomodCfg($pollerId, $pollerName, $txt, $db) {
+            $sql = "SELECT id, description 
+                    FROM cfg_ndomod
+                    WHERE activate = '1' 
+                    AND ns_nagios_server = " . $db->escape($pollerId);
+            $res = $db->query($sql);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $pollerName = $row['description'];
+                $oldId = $row['id'];
+            }
+            $parameters = array('instance_name', 'output_type', 'output', 'tcp_port',
+                                'output_buffer_items', 'buffer_file', 'file_rotation_interval', 
+                                'file_rotation_command', 'file_rotation_timeout',
+                                'reconnect_interval', 'reconnect_warning_interval',
+                                'data_processing_options', 'config_output_options');
+            $insertSql = "INSERT INTO cfg_ndomod (%s) VALUES (%s)";
+            list($fieldStr, $valueStr) = buildFieldsAndValues($txt, $parameters, $db);
+            if ($valueStr && $fieldStr) {
+               $fieldStr .= ", description, ns_nagios_server, activate";
+               $valueStr .= ", '".$db->escape($pollerName)."', ".$db->escape($pollerId).", '1'";
+               try {
+                   $db->query(sprintf($insertSql, $fieldStr, $valueStr));
+               } catch (Exception $e) {
+                   return 0;
+               }
+               if (isset($oldId)) {
+                   $db->query("DELETE FROM cfg_ndomod WHERE id = ".$db->escape($oldId));
+                   return 1;
+               }
+            }
+            return 0;
+        }
+
+        /**
+         * Insert resource configuration
+         *
+         * @param string $buf
+         * @param mixed $pollerId
+         * @param CentreonDB $db
+         * @return int
+         */
+	function insertResourceCFG($buf, $pollerId = null, $db)	{
 		global $oreon, $debug_nagios_import, $debug_path;
 
 		$i = 0;
@@ -110,8 +232,15 @@
 				$resCFG["resource_comment"] = trim($regs[1])." ".date("d/m/Y - H:i:s", time());
 				# Add in db
 				require_once("./include/configuration/configResources/DB-Func.php");
-				if (testExistence($resCFG["resource_name"]) && insertResource($resCFG))
-					$i++;
+                                $db->query("DELETE FROM cfg_resource_instance_relations 
+                                            WHERE instance_id = ".$db->escape($pollerId)."
+                                            AND resource_id IN (SELECT resource_id 
+                                                               FROM cfg_resource
+                                                               WHERE resource_name = '".$db->escape($resCFG['resource_name'])."')");
+                                if ($resId = insertResource($resCFG)) {
+                                    insertInstanceRelations($resId, $pollerId);
+				    $i++;
+                                }
 			}
 			unset($regs);
 		}
@@ -186,8 +315,19 @@
 		$DBRESULT = $pearDB->query($rq);
 	}
 
-	function insertCgiCFG(& $buf)	{
+        /**
+         * Insert CGI configuration
+         *
+         * @param string $buf
+         * @param mixed $pollerId
+         * @param CentreonDB $db
+         * @return bool
+         */
+	function insertCgiCFG($buf, $pollerId = null, $db = null) {
 		$cgiCFG = array();
+                if (!is_null($pollerId)) {
+                    $cgiCFG['instance_id'] = $pollerId;
+                }
 		$flag = false;
 		# Fill with buffer value
 		foreach ($buf as $str)	{
@@ -198,16 +338,18 @@
 		}
 		# Add Oreon comment
 		if ($cgiCFG)	{
-			$cgiCFG["cgi_activate"]["cgi_activate"] = "0";
+			$cgiCFG["cgi_activate"]["cgi_activate"] = "1";
 			$cgiCFG["cgi_name"] = "cgi.cfg ".date("d m Y - H:i:s", time());
 			$cgiCFG["cgi_comment"] = "cgi.cfg ".date("d/m/Y - H:i:s", time());
 		}
 		# Add in db
 		require_once("./include/configuration/configCGI/DB-Func.php");
-		if (insertCGIInDB($cgiCFG))
-			return true;
-		else
-			return false;
+                $db->query("DELETE FROM cfg_cgi WHERE instance_id = " . $db->escape($pollerId));
+		if (insertCGIInDB($cgiCFG)) {
+		    return true;
+                } else {
+		    return false;
+                }
 	}
 
 	function deleteCgiCFG()	{
@@ -223,6 +365,10 @@
 		$tmpConf = array();
 		$get = false;
 		$regexp = "/^[ \t]*(.[^ \t#]+)[ \t]+((\\\;|[^;])+)/";
+                $prefix = null;
+                if ((1 == $ret['duplication_behavior']['duplication_behavior']) && $ret['prefix']) {
+                    $prefix = $ret['prefix'];
+                }
 
 		/*
 		 * Fill with buffer value
@@ -234,8 +380,8 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "command": insertCommandCFG($tmpConf, $ret); break;
-					case "timeperiod": insertTimePeriodCFG($tmpConf); break;
+					case "command": insertCommandCFG($tmpConf, $ret, $prefix); break;
+					case "timeperiod": insertTimePeriodCFG($tmpConf, $prefix); break;
 					default :; break;
 				}
 				$get = false;
@@ -262,24 +408,24 @@
 
 		reset($buf);
 		foreach ($buf as $str)	{
-			$regs = array();
-			if (preg_match("/}/", $str) && $get)	{
-			    if (isset($tmpConf['alias']) && isset($tmpConf['contact_name'])) {
-                    $swap = $tmpConf['alias'];
-                    $tmpConf['alias'] = $tmpConf['contact_name'];
-                    $tmpConf['contact_name'] = $swap;
-				}
-			    insertContactCFG($tmpConf);
-				$get = false;
-				$tmpConf = array();
-			}
-			if (preg_match("/^[ \t]*define contact[ \t]*{/", $str, $def))
-				$get = true;
-			else if ($get)	{
-				if (preg_match($regexp, $str, $regs))
-					$tmpConf[$regs[1]] = trim($regs[2]);
-			}
-			unset($regs);
+		    $regs = array();
+		    if (preg_match("/}/", $str) && $get) {
+		        /*if (isset($tmpConf['alias']) && isset($tmpConf['contact_name'])) {
+                            $swap = $tmpConf['alias'];
+                            $tmpConf['alias'] = $tmpConf['contact_name'];
+                            $tmpConf['contact_name'] = $swap;
+			}*/
+			insertContactCFG($tmpConf, $prefix);
+			$get = false;
+			$tmpConf = array();
+		    }
+		    if (preg_match("/^[ \t]*define contact[ \t]*{/", $str, $def))
+		        $get = true;
+		    elseif ($get) {
+		        if (preg_match($regexp, $str, $regs))
+			    $tmpConf[$regs[1]] = trim($regs[2]);
+		    }
+		    unset($regs);
 		}
 		/*
 		 * Turn 3 -> Contact Groups
@@ -290,7 +436,7 @@
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
-				insertContactGroupCFG($tmpConf);
+				insertContactGroupCFG($tmpConf, $prefix);
 				$get = false;
 				$tmpConf = array();
 			}
@@ -315,12 +461,7 @@
 		foreach ($buf as $str)	{
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
-				$useTpl = insertHostCFG($tmpConf);
-
-				if (isset($tmpConf["host_name"]) && !hostExists($tmpConf["host_name"]))	{
-					$rq = "INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".getMyHostID($tmpConf["host_name"])."', '".$_POST['host']."')";
-					$DBRESULT = $pearDB->query($rq);
-				}
+				$useTpl = insertHostCFG($tmpConf, $prefix);
 				$useTpls[$useTpl[0]] = $useTpl[1];
 				isset($useTpl[2]) ? $parentsTMP[$useTpl[0]] = $useTpl[2] : NULL;
 				$get = false;
@@ -359,7 +500,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "hostgroup": insertHostGroupCFG($tmpConf, $ret); break;
+					case "hostgroup": insertHostGroupCFG($tmpConf, $ret, $prefix); break;
 					case "hostextinfo": insertHostExtInfoCFG($tmpConf); break;
 					default :; break;
 				}
@@ -392,7 +533,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "service": $useTpl = insertServiceCFG($tmpConf); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
+					case "service": $useTpl = insertServiceCFG($tmpConf, $prefix); count($useTpl) ? $useTpls[$useTpl[0]] = $useTpl[1] : NULL; break;
 					case "hostdependency": insertHostDependencyCFG($tmpConf); break;
 					case "serviceextinfo": insertServiceExtInfoCFG($tmpConf); break;
 				}
@@ -430,7 +571,7 @@
 			$regs = array();
 			if (preg_match("/}/", $str) && $get)	{
 				switch ($typeDef)	{
-					case "servicegroup": insertServiceGroupCFG($tmpConf, $ret);  break;
+					case "servicegroup": insertServiceGroupCFG($tmpConf, $ret, $prefix);  break;
 					default :; break;
 				}
 				$get = false;
@@ -477,17 +618,24 @@
 		return $nbr;
 	}
 
-	function insertContactCFG($tmpConf = array())	{
+        /**
+         * Insert contact
+         *
+         * @param array $tmpConf
+         * @param string $prefix
+         * @return bool
+         */
+	function insertContactCFG($tmpConf = array(), $prefix = null) {
 		global $nbr;
 		global $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/contact/DB-Func.php");
-		if (isset($tmpConf["contact_name"]) && testContactExistence($tmpConf["contact_name"]))	{
+		if (isset($tmpConf["contact_name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactCFG : ". $tmpConf["contact_name"] ."\n", 3, $debug_path."cfgimport.log");
-
-			foreach ($tmpConf as $key=>$value)
+                        $bkpConf = $tmpConf;
+			foreach ($tmpConf as $key=>$value) {
 				switch($key)	{
 					case "alias" : $tmpConf["contact_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
 					case "host_notification_options" : $tmpConf["contact_hostNotifOpts"] = array_flip(explode(",", $tmpConf[$key])); unset ($tmpConf[$key]); break;
@@ -521,6 +669,7 @@
 						unset ($tmpConf[$key]);
 						break;
 				}
+                        }
 			$tmpConf["contact_oreon"]["contact_oreon"] = "0";
 			$tmpConf["contact_admin"]["contact_admin"] = "0";
 			$tmpConf["contact_type_msg"] = "txt";
@@ -528,25 +677,38 @@
 			$tmpConf["contact_activate"]["contact_activate"] = "1";
 			$tmpConf["contact_comment"] = date("d/m/Y - H:i:s", time());
 			$tmpConf["contact_enable_notifications"]["contact_enable_notifications"] = "1";
-			insertContactInDB($tmpConf);
+                        if (testContactExistence($tmpConf["contact_name"])) {
+			    insertContactInDB($tmpConf);
+                        } else {
+                            if (!is_null($prefix)) {
+                                $bkpConf['contact_name'] = $prefix.$bkpConf['contact_name'];
+                                return insertContactCFG($bkpConf, $prefix);
+                            } else {
+                                updateContact(getContactIdByName($tmpConf['contact_name']), $tmpConf);
+                            }
+                        }
 			$nbr["cct"] += 1;
 			return true;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactCFG : ". $tmpConf["contact_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
 
-	function insertContactGroupCFG($tmpConf = array())	{
+        /**
+         * Insert contact group
+         *
+         * @param array $tmpConf
+         * @param string $prefix
+         * @return bool
+         */
+	function insertContactGroupCFG($tmpConf = array(), $prefix = null) {
 		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		require_once("./include/configuration/configObject/contactgroup/DB-Func.php");
 
-		if (isset($tmpConf["contactgroup_name"]) && testContactGroupExistence($tmpConf["contactgroup_name"]))	{
+		if (isset($tmpConf["contactgroup_name"]))	{
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactGroupCFG : ". $tmpConf["contactgroup_name"] ."\n", 3, $debug_path."cfgimport.log");
-
+                        $bkpConf = $tmpConf;
 			foreach ($tmpConf as $key=>$value)
 				switch($key)	{
 					case "contactgroup_name" : $tmpConf["cg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -563,17 +725,30 @@
 				}
 			$tmpConf["cg_activate"]["cg_activate"] = "1";
 			$tmpConf["cg_comment"] = date("d/m/Y - H:i:s", time());
-			insertContactGroupInDB($tmpConf);
+                        if (testContactGroupExistence($bkpConf["contactgroup_name"])) {
+			    insertContactGroupInDB($tmpConf);
+                        } else {
+                            if (!is_null($prefix)) {
+                                $bkpConf['contactgroup_name'] = $prefix.$bkpConf['contactgroup_name'];
+                                return insertContactGroupCFG($bkpConf, $prefix);
+                            } else {
+                               updateContactGroupInDB(getContactGroupIdByName($tmpConf['cg_name']), $tmpConf);
+                            }
+                        }
 			$nbr["cg"] += 1;
 			return true;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertContactGroupCFG : ". $tmpConf["contactgroup_name"] ." already exist. Skip !\n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
 
-	function insertHostCFG($tmpConf = array())	{
+        /**
+         * Insert host
+         *
+         * @param array $tmpConf
+         * @param string $prefix
+         * @return void
+         */
+	function insertHostCFG($tmpConf = array(), $prefix = null) {
 		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		$use = NULL;
@@ -592,6 +767,7 @@
 		$tmpConf["ehi_2d_coords"] = NULL;
 		$tmpConf["ehi_3d_coords"] = NULL;
 		$extendedInfo = array();
+                $bkpConf = $tmpConf;
 		foreach ($tmpConf as $key => $value)	{
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]);
@@ -748,17 +924,32 @@
 		$tmpConf["dupSvTplAssoc"] = array("dupSvTplAssoc" => 1);
 
 		if ($tmpConf["host_register"]["host_register"] == 1) {
-			if (!hostExists($tmpConf['host_name'])) {
-				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
-			} else {
-				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
-			}
+		    if (!hostExists($tmpConf['host_name'])) {
+		        $useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
+                        if ($useTpl[0]) {
+                            $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) 
+                                            VALUES ('".$pearDB->escape($useTpl[0])."', '".$pearDB->escape($_POST['host'])."')");
+                        }
+
+		    } else {
+                        if (!is_null($prefix)) {
+                            $bkpConf['host_name'] = $prefix.$bkpConf['host_name'];
+                            return insertHostCFG($bkpConf, $prefix);
+                        } else {
+		            $useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
+                        }
+		    }
 		} else {
-			if (!hostTemplateExists($tmpConf['host_name'])) {
-				$useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
-			} else {
-				$useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
-			}
+		    if (!hostTemplateExists($tmpConf['host_name'])) {
+		        $useTpl[0] = insertHostInDB($tmpConf, $macro_on_demand);
+		    } else {
+                        if (!is_null($prefix)) {
+                            $bkpConf['host_name'] = $prefix.$bkpConf['host_name'];
+                            return insertHostCFG($bkpConf, $prefix);
+                        } else {
+		            $useTpl[0] = updateHostInDB(getMyHostID($tmpConf['host_name']), false, $tmpConf);
+                        }
+		    }
 		}
 
 	    if (isset($tmpConf['host_name']) && count($extendedInfo)) {
@@ -878,7 +1069,15 @@
 	}
 
 
-	function insertHostGroupCFG($tmpConf = array(), $opt)	{
+        /**
+         * Insert host group configuration
+         *
+         * @param array $tmpConf
+         * @param array $opt
+         * @param string $prefix
+         * @return bool
+         */
+	function insertHostGroupCFG($tmpConf = array(), $opt, $prefix = null) {
 		global $nbr, $oreon, $pearDB, $debug_nagios_import, $debug_path;
 
 		/*
@@ -889,6 +1088,7 @@
 		if (isset($tmpConf["hostgroup_name"])) {
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ."  \n", 3, $debug_path."cfgimport.log");
+                        $bkpConf = $tmpConf;
 			foreach ($tmpConf as $key => $value) {
 				switch($key) {
 					case "hostgroup_name" : $tmpConf["hg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
@@ -917,21 +1117,23 @@
 			$tmpConf["hg_comment"] = date("d/m/Y - H:i:s", time());
 
 			$res = $pearDB->query("SELECT hg_id FROM hostgroup WHERE hg_name = '".$pearDB->escape($tmpConf["hg_name"])."'");
-		    if (!$res->numRows())	{
-		        insertHostGroupInDB($tmpConf);
-            } else {
-                $row = $res->fetchRow();
-                $increment = false;
-                if (isset($opt['group_update_behavior']['group_update_behavior']) && $opt['group_update_behavior']['group_update_behavior']) {
-                    $increment = true;
-                }
-                updateHostGroupInDB($row['hg_id'], $tmpConf, $increment);
-            }
+		        if (!$res->numRows())	{
+		            insertHostGroupInDB($tmpConf);
+                        } else {
+                            if (!is_null($prefix)) {
+                                $bkpConf["hostgroup_name"] = $prefix.$bkpConf["hostgroup_name"];
+                                return insertHostGroupCFG($bkpConf, $opt, $prefix);
+                            } else {
+                                $row = $res->fetchRow();
+                                $increment = false;
+                                if (isset($opt['group_update_behavior']['group_update_behavior']) && $opt['group_update_behavior']['group_update_behavior']) {
+                                    $increment = true;
+                                }
+                                updateHostGroupInDB($row['hg_id'], $tmpConf, $increment);
+                            }
+                        }
 			$nbr["hg"] += 1;
 			return true;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertHostGroupCFG : ". $tmpConf["hostgroup_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
 		}
 		return false;
 	}
@@ -1148,7 +1350,14 @@
 		return true;
 	}
 
-	function insertServiceCFG($tmpConf = array())	{
+        /**
+         * Insert service configuration
+         *
+         * @param array $tmpConf
+         * @param string $prefix
+         * @return array
+         */
+	function insertServiceCFG($tmpConf = array(), $prefix = null) {
 		$use = NULL;
 		$rrd_host = NULL;
 		$rrd_service = NULL;
@@ -1162,6 +1371,7 @@
 		$cpt_tpl = 0;
 		$tab_link_tpl = array();
 		$counter = 0;
+                $bkpConf = $tmpConf;
 		foreach ($tmpConf as $key => $value){
 			switch($key)	{
 				case "use" : $use = trim($tmpConf[$key]); unset ($tmpConf[$key]); break;
@@ -1315,123 +1525,174 @@
 				$useTpl[1] = $use;
 				$nbr["sv"] += 1;
 				# Add link with host template
-				if (isset($tab_link_tpl))
-					foreach ($tab_link_tpl as $tkey => $tvalue){
-						foreach ($tvalue as $template_link_name) {
-							$host_host_id = getMyHostID($template_link_name);
-							if ($host_host_id) {
-								$DBRESULT_TEMP = $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
-							}
-						}
+				if (isset($tab_link_tpl)) {
+				    foreach ($tab_link_tpl as $tkey => $tvalue) {
+				        foreach ($tvalue as $template_link_name) {
+					    $host_host_id = getMyHostID($template_link_name);
+					    if ($host_host_id) {
+					        $DBRESULT_TEMP = $pearDB->query("INSERT INTO `host_service_relation` (`host_host_id`, `service_service_id`) VALUES ('".$host_host_id."', '".$useTpl[0]."')");
+					    }
 					}
+				    }
+                                }
 			}
 		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ."  already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
+                    if (!is_null($prefix)) {
+                        $bkpConf["service_description"] = $prefix.$bkpConf["service_description"];
+                        return insertServiceCFG($bkpConf, $prefix);
+                    } else {
+                        updateServiceInDB(getServiceIdByCombination($tmpConf['service_description'], $tmpConf['service_hPars'], $tmpConf['service_hgPars'], $tmpConf), false, $tmpConf);
+                    }
 		}
 		return $useTpl;
 	}
 
-	function insertServiceGroupCFG($tmpConf = array(), $opt)	{
-		global $nbr;
-		global $oreon;
-		global $debug_nagios_import;
-		global $debug_path;
-		global $pearDB;
+        /**
+         * Insert service group configuration
+         *
+         * @param array $tmpConf
+         * @param array $opt
+         * @param string $prefix
+         * @return bool
+         */
+	function insertServiceGroupCFG($tmpConf = array(), $opt, $prefix = null) {
+	    global $nbr;
+	    global $oreon;
+	    global $debug_nagios_import;
+	    global $debug_path;
+	    global $pearDB;
 
-		require_once("./include/configuration/configObject/servicegroup/DB-Func.php");
-		if (isset($tmpConf["servicegroup_name"])) {
-		    foreach ($tmpConf as $key=>$value) {
-                switch($key) {
-                    case "servicegroup_name" : $tmpConf["sg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-                    case "alias" : $tmpConf["sg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-                    case "members" :
-                        $sg_servicesTMP = explode(",", $tmpConf[$key]);
-                        for ($i = 0, $j = 0; $i < count($sg_servicesTMP); $i += 2)	{
-                            $tmpConf["sg_hServices"][$j] = getMyHostID(trim($sg_servicesTMP[$i]))."-".getMyServiceID(trim($sg_servicesTMP[$i+1]), getMyHostID(trim($sg_servicesTMP[$i])));
-                            $j++;
+	    require_once("./include/configuration/configObject/servicegroup/DB-Func.php");
+	    if (isset($tmpConf["servicegroup_name"])) {
+                $bkpConf = $tmpConf;
+	        foreach ($tmpConf as $key=>$value) {
+                    switch($key) {
+                        case "servicegroup_name" : $tmpConf["sg_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                        case "alias" : $tmpConf["sg_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                        case "members" :
+                            $sg_servicesTMP = explode(",", $tmpConf[$key]);
+                            for ($i = 0, $j = 0; $i < count($sg_servicesTMP); $i += 2)	{
+                                $tmpConf["sg_hServices"][$j] = getMyHostID(trim($sg_servicesTMP[$i]))."-".getMyServiceID(trim($sg_servicesTMP[$i+1]), getMyHostID(trim($sg_servicesTMP[$i])));
+                                $j++;
+                            }
+    			    unset ($tmpConf[$key]);
+    			    break;
+                    }
+                }
+                $tmpConf["sg_activate"]["sg_activate"] = "1";
+                $tmpConf["sg_comment"] = date("d/m/Y - H:i:s", time());
+                $res = $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".$pearDB->escape($tmpConf["sg_name"])."'");
+                if (!$res->numRows())    {
+                    if ($debug_nagios_import == 1) {
+                        error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
+    		    }
+    		    insertServiceGroupInDB($tmpConf);
+                } else {
+                    if (!is_null($prefix)) {
+                        $bkpConf['servicegroup_name'] = $prefix.$bkpConf['servicegroup_name'];
+                        return insertServiceGroupCFG($bkpConf, $opt, $prefix);
+                    } else {
+                        $row = $res->fetchRow();
+                        $increment = false;
+                        if (isset($opt['group_update_behavior']['group_update_behavior']) && $opt['group_update_behavior']['group_update_behavior']) {
+                            $increment = true;
                         }
-    					unset ($tmpConf[$key]);
-    					break;
+                        updateServiceGroupInDB($row['sg_id'], $tmpConf, $increment);
+                    }
                 }
+                $nbr["sg"] += 1;
+                return true;
             }
-            $tmpConf["sg_activate"]["sg_activate"] = "1";
-            $tmpConf["sg_comment"] = date("d/m/Y - H:i:s", time());
-            $res = $pearDB->query("SELECT sg_id FROM servicegroup WHERE sg_name = '".$pearDB->escape($tmpConf["sg_name"])."'");
-		    if (!$res->numRows())	{
-    			if ($debug_nagios_import == 1) {
-                    error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
-    			}
-    			insertServiceGroupInDB($tmpConf);
-            } else {
-                if ($debug_nagios_import == 1) {
-                    error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceGroupCFG : ". $tmpConf["sg_name"]."\n", 3, $debug_path."cfgimport.log");
-    			}
-                $row = $res->fetchRow();
-                $increment = false;
-                if (isset($opt['group_update_behavior']['group_update_behavior']) && $opt['group_update_behavior']['group_update_behavior']) {
-                    $increment = true;
-                }
-                updateServiceGroupInDB($row['sg_id'], $tmpConf, $increment);
-            }
-            $nbr["sg"] += 1;
-            return true;
-		}
-		return false;
+	    return false;
 	}
 
-	function insertTimePeriodCFG($tmpConf = array())	{
+        /**
+         * Insert time period configuration
+         *
+         * @param array $tmpConf
+         * @param string $prefix
+         * @return bool
+         */
+	function insertTimePeriodCFG($tmpConf = array(), $prefix = null) {
 		global $nbr;
 		global $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/timeperiod/DB-Func.php");
-		if (isset($tmpConf["timeperiod_name"]) && testTPExistence($tmpConf["timeperiod_name"]))	{
-			foreach ($tmpConf as $key=>$value)
-				switch($key)	{
-					case "timeperiod_name" : $tmpConf["tp_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "alias" : $tmpConf["tp_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "sunday" : $tmpConf["tp_sunday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "monday" : $tmpConf["tp_monday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "tuesday" : $tmpConf["tp_tuesday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "wednesday" : $tmpConf["tp_wednesday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "thursday" : $tmpConf["tp_thursday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "friday" : $tmpConf["tp_friday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-					case "saturday" : $tmpConf["tp_saturday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
-				}
+		if (isset($tmpConf["timeperiod_name"]))	{
+                    $bkpConf = $tmpConf;
+                    foreach ($tmpConf as $key=>$value) {
+                        switch($key) {
+                            case "timeperiod_name" : $tmpConf["tp_name"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "alias" : $tmpConf["tp_alias"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "sunday" : $tmpConf["tp_sunday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "monday" : $tmpConf["tp_monday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "tuesday" : $tmpConf["tp_tuesday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "wednesday" : $tmpConf["tp_wednesday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "thursday" : $tmpConf["tp_thursday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "friday" : $tmpConf["tp_friday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                            case "saturday" : $tmpConf["tp_saturday"] = $tmpConf[$key]; unset ($tmpConf[$key]); break;
+                        }
+                    }
+                    $days = array('sunday', 'monday', 'tuesday', 'wednesday',
+                                  'thursday', 'friday', 'saturday');
+                    foreach ($days as $day) {
+                        if (!isset($tmpConf['tp_'.$day])) {
+                            $tmpConf['tp_'.$day] = '';
+                        }
+                    }
+                    if (testTPExistence($bkpConf["timeperiod_name"])) {
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertTimePeriodCFG : ". $tmpConf["tp_name"] ."\nalias-> ". $tmpConf["tp_alias"] ."\ncommand_line -> "  . $tmpConf["command_line"]."\n", 3, $debug_path."cfgimport.log");
 			insertTimeperiodInDB($tmpConf);
 			$nbr["tp"] += 1;
 			return true;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertTimePeriodCFG : ". $tmpConf["tp_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
-
-		}
-		return false;
+                    } else {
+                        if (!is_null($prefix)) {
+                            $bkpConf['timeperiod_name'] = $prefix.$bkpConf['timeperiod_name'];
+                            return insertTimePeriodCFG($bkpConf, $prefix);
+                        } elseif ($debug_nagios_import == 1) {
+                            updateTimeperiod(getTimeperiodIdByName($tmpConf['tp_name']), $tmpConf);
+                        }
+                    }
+	     }
+	     return false;
 	}
 
-	function insertCommandCFG($tmpConf = array(), $ret = array())	{
+        /**
+         * Insert command configuration
+         *
+         * @param array $tmpConf
+         * @param array $ret
+         * @param string $prefix
+         * @return bool
+         */
+	function insertCommandCFG($tmpConf = array(), $ret = array(), $prefix = null) {
 		global $nbr;
 		global $oreon;
 		global $debug_nagios_import;
 		global $debug_path;
 		require_once("./include/configuration/configObject/command/DB-Func.php");
 
-		if (isset($tmpConf["command_name"]) && testCmdExistence($tmpConf["command_name"]))	{
+		if (isset($tmpConf["command_name"])) {
+                        $bkpConf = $tmpConf;
 			$tmpConf["command_type"]["command_type"] = $ret["cmdType"]["cmdType"];
 			$tmpConf["command_example"] = NULL;
 			if ($debug_nagios_import == 1)
 				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCommandCFG : ". $tmpConf["command_name"] ."\ncommand_type-> ". $tmpConf["command_type"]["command_type"] ."\ncommand_line -> "  . $tmpConf["command_line"]."\n", 3, $debug_path."cfgimport.log");
-			insertCommandInDB($tmpConf);
+                        if (testCmdExistence($tmpConf["command_name"])) {
+			    insertCommandInDB($tmpConf);
+                        } else {
+                            if (!is_null($prefix)) {
+                                $bkpConf['command_name'] = $prefix.$bkpConf['command_name'];
+                                return insertCommandCFG($bkpConf, $ret, $prefix);
+                            } else {
+                                updateCommand(getCommandIdByName($tmpConf['command_name']), $tmpConf);
+                            }
+                        }
 			$nbr["cmd"] += 1;
 			return true;
-		} else {
-			if ($debug_nagios_import == 1)
-				error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertCommandCFG : ". $tmpConf["command_name"] ." already exist. Skip ! \n", 3, $debug_path."cfgimport.log");
 		}
-
 		return false;
 	}
 
