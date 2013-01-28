@@ -437,7 +437,6 @@ function divideHostsToHost($service_id) {
     }
 }
 
-
 	function multipleServiceInDB($services = array(), $nbrDup = array(), $host = null, $descKey = 1, $hostgroup = NULL, $hPars = array(), $hgPars = array(), $params = array())
 	{
 		global $pearDB, $centreon;
