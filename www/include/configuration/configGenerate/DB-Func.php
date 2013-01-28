@@ -744,19 +744,24 @@ Modified for Oreon by Christophe Coraboeuf
 	    return $row['id'];
 	}
 
-	function getListIndexData($poller_id, $services = true)
+	function getListIndexData($poller_id = null, $services = true)
 	{
 	    global $pearDB, $pearDBO;
 
-	    $queryGetHost = "SELECT host_host_id
-	    	FROM ns_host_relation, host
-	    	WHERE nagios_server_id = " . $poller_id . "
-	    		AND host_host_id = host_id";
-	    if ($services) {
-	        $queryGetHost .= " AND  host_name != '_Module_Meta'";
-	    } else {
-	        $queryGetHost .= " AND  host_name = '_Module_Meta'";
-	    }
+            if (!is_null($poller_id)) {
+	        $queryGetHost = "SELECT host_host_id
+	    	                 FROM ns_host_relation, host
+                   	    	 WHERE nagios_server_id = " . $poller_id . "
+	    		         AND host_host_id = host_id";
+	        if ($services) {
+	            $queryGetHost .= " AND  host_name != '_Module_Meta'";
+	        } else {
+	            $queryGetHost .= " AND  host_name = '_Module_Meta'";
+	        }
+            } else {
+                $queryGetHost = "SELECT DISTINCT host_host_id
+                                 FROM ns_host_relation";
+            }
 	    $res = $pearDB->query($queryGetHost);
 	    if (PEAR::isError($res)) {
 	        throw new Exception('Bad query');
