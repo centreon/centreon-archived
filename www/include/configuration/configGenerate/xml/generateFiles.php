@@ -211,6 +211,7 @@ try {
      */
     if ($generate) {
         $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+        $listIndexData = getListIndexData();
         while ($tab = $DBRESULT_Servers->fetchRow()){
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
                 $pollerID = $tab['id'];
