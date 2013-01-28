@@ -162,7 +162,9 @@
         $svcMethod = new CentreonService($pearDB);
 	$str = "";
 	$indexToAdd = array();
-	$listIndexData = getListIndexData($instanceId);
+        if (!isset($listIndexData)) {
+	    $listIndexData = getListIndexData();
+        }
 	if ($oreon->CentreonGMT->used() == 1) {
 		foreach ($hostGenerated as $host_id => $host_name) {
 			$svcList = getMyHostActiveServices($host_id);
