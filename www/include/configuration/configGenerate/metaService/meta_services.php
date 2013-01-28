@@ -76,8 +76,8 @@
 
 	# Prepare Index Data
 	$indexToAdd = array();
-	$listIndexData = getListIndexData($instanceId, false);
-	# Get host id for host Meta
+	
+        # Get host id for host Meta
 	$metaHostId = getMetaHostId($pearDB);
 
 	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
