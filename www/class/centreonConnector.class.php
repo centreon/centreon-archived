@@ -284,10 +284,11 @@ class CentreonConnector
      * @param boolean $onlyEnabled
      * @param int|boolean $page When false all connectors are returned
      * @param int $perPage Ignored if $page == false
+     * @param boolean $usedByCommand
      * @throws InvalidArgumentException
      * @throws RuntimeException
      */
-    public function getList($onlyEnabled = true, $page = false, $perPage = 30)
+    public function getList($onlyEnabled = true, $page = false, $perPage = 30, $usedByCommand = false)
     {
         /**
          * Checking parameters
@@ -306,34 +307,36 @@ class CentreonConnector
              * Calculating offset
              */
             $offset = $page * $perPage;
-            $restrictSql = "LIMIT $perPage OFFSET $offset";
+            $restrictSql = " LIMIT $perPage OFFSET $offset";
         }
 
+        $sql = "SELECT 
+                    `id`,
+                    `name`,
+                    `description`,
+                    `command_line`,
+                    `enabled`,
+                    `created`,
+                    `modified`
+                FROM
+                    `connector`";
+        $whereClauses = array();
         if ($onlyEnabled) {
-            $connectorsResult = $this->dbConnection->query("SELECT
-                                                                `id`,
-                                                                `name`,
-                                                                `description`,
-                                                                `command_line`,
-                                                                `enabled`,
-                                                                `created`,
-                                                                `modified`
-                                                             FROM
-                                                                `connector`
-                                                             WHERE
-                                                                `enabled` = 1 " . $restrictSql);
-        } else {
-            $connectorsResult = $this->dbConnection->query("SELECT
-                                                                `id`,
-                                                                `name`,
-                                                                `description`,
-                                                                `command_line`,
-                                                                `enabled`,
-                                                                `created`,
-                                                                `modified`
-                                                             FROM
-                                                                `connector` " . $restrictSql);
+            $whereClauses[] = " `enabled` = 1 ";
         }
+        if ($usedByCommand) {
+            $whereClauses[] = " `id` IN (SELECT DISTINCT `connector_id` FROM `command`) ";
+        }
+        foreach ($whereClauses as $i => $clause) {
+            if (!$i) {
+                $sql .= " WHERE ";
+            } else {
+                $sql .= " AND ";
+            }
+            $sql .= $clause;
+        }
+        $sql .= $restrictSql;
+        $connectorsResult = $this->dbConnection->query($sql);
 
         if (PEAR::isError($connectorsResult)) {
             throw new RuntimeException('Cannot select connectors');
