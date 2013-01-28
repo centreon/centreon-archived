@@ -57,7 +57,7 @@
 	$str .= print_line("command_line", $cmd);
 	$str .= "}\n\n";
 	
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_commands.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, 'UTF-8'), $nagiosCFGPath.$tab['id']."/meta_commands.cfg");
 	fclose($handle);	
 	unset($res);
 	unset($str);	

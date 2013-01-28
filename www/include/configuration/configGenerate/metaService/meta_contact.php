@@ -66,7 +66,7 @@
 		$str .= print_line("email", "meta_contact_email");
 		$str .= "}\n\n";
 	}
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_contact.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, 'UTF-8'), $nagiosCFGPath.$tab['id']."/meta_contact.cfg");
 	fclose($handle);
 	unset($str);
 ?>

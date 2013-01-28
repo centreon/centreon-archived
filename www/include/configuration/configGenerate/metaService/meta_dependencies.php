@@ -87,7 +87,7 @@
 	}
 	unset($dependency);
 	$DBRESULT->free();
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_dependencies.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, 'UTF-8'), $nagiosCFGPath.$tab['id']."/meta_dependencies.cfg");
 	fclose($handle);
 	unset($str);
 ?>
