@@ -113,7 +113,7 @@
 						 AND localhost = '1'
 						 LIMIT 1)");
 	}
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_hosts.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, 'UTF-8'), $nagiosCFGPath.$tab['id']."/meta_hosts.cfg");
 	fclose($handle);
 	unset($str);
 ?>
