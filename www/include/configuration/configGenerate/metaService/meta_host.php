@@ -85,7 +85,8 @@
 	$nb = $DBRESULT->numRows();
 
 	if ($nb) {
-		$str .= "define host{\n";
+		$hostId = getMetaHostId($pearDB);
+                $str .= "define host{\n";
 		$str .= print_line("host_name", "_Module_Meta");
 		$str .= print_line("alias", "Meta Service Calculate Module For Centreon");
 		$str .= print_line("address", "127.0.0.1");
@@ -101,7 +102,7 @@
 		$str .= print_line("notification_period", "meta_timeperiod");
 		$str .= print_line("notification_options", "d");
 		$str .= print_line("notifications_enabled", "0");
-		$str .= print_line("_HOST_ID", getMetaHostId($pearDB));
+		$str .= print_line("_HOST_ID", $hostId);
 		$str .= print_line("register", "1");
 		$str .= "\t}\n\n";
 		$pearDB->query("DELETE FROM ns_host_relation WHERE host_host_id = " . $pearDB->escape($hostId));
