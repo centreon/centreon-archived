@@ -23,7 +23,7 @@ fi
 [ -r /etc/default/${PKGNAME} ] && . /etc/default/${PKGNAME}
 
 # Load the VERBOSE setting and other rcS variables
-[ -f /etc/default/rcS ] && . /etc/default/rcS
+[ -f /etc/init/vars.sh ] && . /etc/init/vars.sh
 
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.0-6) to ensure that this file is present.
