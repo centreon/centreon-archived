@@ -72,7 +72,7 @@ class CentreonAuth {
 
     /**
      * Constructor
-     * 
+     *
      * @param string $username
      * @param string $password
      * @param int $autologin
@@ -87,7 +87,7 @@ class CentreonAuth {
 
         $this->cryptPossibilities = array('MD5', 'SHA1');
         $this->CentreonLog = $CentreonLog;
-        $this->login = $username;        
+        $this->login = $username;
         $this->password = $password;
         $this->pearDB = $pearDB;
         $this->autologin = $autologin;
@@ -95,8 +95,8 @@ class CentreonAuth {
         $this->debug = $this->getLogFlag();
         $this->ldap_auto_import = array();
         $this->ldap_store_password = array();
-        
-        $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name 
+
+        $query = "SELECT ar.ar_id, ari.ari_value, ari.ari_name
                   FROM auth_ressource_info ari, auth_ressource ar
                   WHERE ari_name IN ('ldap_auto_import', 'ldap_store_password')
                   AND ari.ar_id = ar.ar_id
@@ -111,10 +111,10 @@ class CentreonAuth {
         }
         $this->checkUser($username, $password, $token);
     }
-    
+
     /**
      * Log enabled
-     * 
+     *
      * @return int
      */
     private function getLogFlag() {
@@ -128,12 +128,12 @@ class CentreonAuth {
 
     /**
      * Check if password is ok
-     * 
+     *
      * @param string $password
      * @param string $token
      * @return void
      */
-    private function checkPassword($password, $token) {
+    private function checkPassword($password, $token = "") {
         global $centreon_path;
 
         if ((strlen($password) == 0 || $password == "") && $token == "") {
@@ -157,7 +157,7 @@ class CentreonAuth {
                 }
                 $authResources[$index] = $row['ar_id'];
             }
-            
+
             foreach ($authResources as $arId) {
                 if ($this->passwdOk == 1) {
                     break;
@@ -194,7 +194,7 @@ class CentreonAuth {
                 $this->passwdOk = 0;
             }
         }
-        
+
         /**
          * LDAP - fallback
          */
@@ -213,7 +213,7 @@ class CentreonAuth {
 
     /**
      * Check user password
-     * 
+     *
      * @param string $username
      * @param string $password
      * @param string $token
@@ -222,7 +222,7 @@ class CentreonAuth {
     private function checkUser($username, $password, $token) {
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
-        } else {            
+        } else {
             $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE MD5(contact_alias) = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         }
         if ($DBRESULT->numRows()) {
