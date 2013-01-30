@@ -212,6 +212,7 @@ try {
     if ($generate) {
         $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
         $pearDBO = new CentreonDB('centstorage');
+        $indexToAdd = array();
         $listIndexData = getListIndexData();
         while ($tab = $DBRESULT_Servers->fetchRow()){
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
@@ -281,6 +282,42 @@ try {
                 unset($generatedS);
             }
         }
+
+        /* Change the index data informations */
+        $hostSvcSql = "SELECT CONCAT(host_host_id, ';', service_service_id) as hostsvc
+                       FROM host_service_relation hsr, host h
+                       WHERE hsr.host_host_id IS NOT NULL
+                       AND hsr.host_host_id = h.host_id
+                       AND h.host_activate = '1'
+                       UNION
+                       SELECT CONCAT(hgr.host_host_id, ';', hsr.service_service_id)
+                       FROM host_service_relation hsr, hostgroup_relation hgr, host h
+                       WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
+                       AND hgr.host_host_id = h.host_id
+                       AND h.host_activate = '1'";
+        $hostSvcRes = $pearDB->query($hostSvcSql);
+        $hostSvc = "";
+        while ($hostSvcRow = $hostSvcRes->fetchRow()) {
+            if ($hostSvc != "") {
+                $hostSvc .= ",";
+            }
+            $hostSvc .= "'".$hostSvcRow['hostsvc']."'";
+        }
+        if ($hostSvc != "") {
+            $pearDBO->query("UPDATE index_data 
+                             SET to_delete = 1 
+                             WHERE host_name NOT LIKE '_Module_%'
+                             AND CONCAT(host_id, ';', service_id) NOT IN (".$hostSvc.")");
+        }
+
+        $queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete)
+                VALUES (%d, '%s', %d, '%s', 0)";
+        foreach ($indexToAdd as $index) {
+            $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
+            $pearDBO->query($queryAddIndexToExec);
+        }
+        /* End change the index data informations */
+
         /*
         * Generate correlation file
         */
