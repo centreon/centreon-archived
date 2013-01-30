@@ -212,6 +212,7 @@ try {
     if ($generate) {
         $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
         $pearDBO = new CentreonDB('centstorage');
+        $indexToAdd = array();
         $listIndexData = getListIndexData();
         while ($tab = $DBRESULT_Servers->fetchRow()){
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
@@ -281,6 +282,32 @@ try {
                 unset($generatedS);
             }
         }
+
+        /* Change the index data informations */
+        $listIndexToDelete = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToDelete'));
+        $listIndexToKeep = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToKeep'));
+
+        if (count($listIndexToDelete) > 0) {
+            $queryIndexToDelete = "UPDATE index_data
+                SET to_delete = 1
+                WHERE id IN (" . join(', ', $listIndexToDelete) . ")";
+            $pearDBO->query($queryIndexToDelete);
+        }
+        if (count($listIndexToKeep) > 0) {
+            $queryIndexToKeep = "UPDATE index_data
+                SET to_delete = 0
+                WHERE id IN (" . join(', ', $listIndexToKeep) . ")";
+            $pearDBO->query($queryIndexToKeep);
+        }
+
+        $queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete)
+                VALUES (%d, '%s', %d, '%s', 0)";
+        foreach ($indexToAdd as $index) {
+            $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
+            $pearDBO->query($queryAddIndexToExec);
+        }
+        /* End change the index data informations */
+
         /*
         * Generate correlation file
         */
