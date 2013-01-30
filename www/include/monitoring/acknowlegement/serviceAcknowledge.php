@@ -48,7 +48,7 @@
 	if ($broker == "ndo") {
 	    $pearDBndo = new CentreonDB("ndo");
 	} elseif ($broker == "broker") {
-            $pearDBndo = new CentreonDB("broker");
+            $pearDBndo = $pearDBO;
 	}
 
 	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
