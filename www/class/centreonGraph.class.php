@@ -246,7 +246,7 @@ class CentreonGraph {
                 $odsm[$vmilist] = 1;
             }
             $DBRESULT->free();
-            
+
             foreach ($odsm as $mid => $val) {
                 if (!isset($metrics_cache[$mid])) {
                     $DBRESULT = $this->DB->query("INSERT INTO `ods_view_details` (`metric_id`, `contact_id`, `all_user`, `index_id`) VALUES ('".$mid."', '".$this->user_id."', '0', '".$this->index."');");
@@ -517,7 +517,7 @@ class CentreonGraph {
             if ($this->CheckDBAvailability($metric["metric_id"])) {
 
                 $this->_log("found metric ".$metric["metric_id"]);
-                
+
                 /*
                  * List of id metrics for rrdcached
                  */
@@ -580,7 +580,7 @@ class CentreonGraph {
                             }
                             $DBRESULT3->free();
                             $ds_data = $ds;
-                        }                        
+                        }
                     }
 
                     if ($ds_data["ds_color_line_mode"] == '1') {
@@ -1180,9 +1180,9 @@ class CentreonGraph {
         /*
          * Send header
          */
-        
+
         $this->flushRrdcached($this->listMetricsId);
-        
+
         $commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
 
         if (isset($this->_RRDoptions["end"]) && isset($this->_RRDoptions["start"])) {
@@ -1194,7 +1194,7 @@ class CentreonGraph {
                     $this->setRRDOption("x-grid", "DAY:7:DAY:7:DAY:14:0:%d/%m");
             }
         }
-        
+
         foreach ($this->_RRDoptions as $key => $value) {
             $commandLine .= "--".$key;
             if (isset($value)) {
@@ -1231,7 +1231,7 @@ class CentreonGraph {
             }
             $commandLine = "export TZ='GMT" . $offset . "' ; " . $commandLine;
         }
-        
+
         $this->_log($commandLine);
         /*
          * Send Binary Data
@@ -1351,7 +1351,7 @@ class CentreonGraph {
             else if ($a["ds_order"]>$b["ds_order"])
                 return 1;
         }
-        return strnatcasecmp((isset($a["legend"]) && $a["legend"]) ? $a["legend"] : null, 
+        return strnatcasecmp((isset($a["legend"]) && $a["legend"]) ? $a["legend"] : null,
                              (isset($b["legend"]) && $b["legend"]) ? $b["legend"] : null);
     }
 
@@ -1531,16 +1531,22 @@ class CentreonGraph {
         /*
          * Connect to rrdcached
          */
+        $errno = 0;
+        $errstr = '';
         if (isset($this->general_opt['rrdcached_port'])
             && trim($this->general_opt['rrdcached_port']) != '') {
-            $sock = @fsockopen('127.0.0.1', trim($this->general_opt['rrdcached_port']));
+            $sock = @fsockopen('127.0.0.1', trim($this->general_opt['rrdcached_port']), $errno, $errstr);
             if ($sock === false) {
                 return false;
             }
         } elseif (isset($this->general_opt['rrdcached_unix_path'])
             && trim($this->general_opt['rrdcached_unix_path']) != '') {
-            $sock = @fsockopen('unix://' . trim($this->general_opt['rrdcached_unix_path']));
+            $sock = @fsockopen('unix://' . trim($this->general_opt['rrdcached_unix_path']), $errno, $errstr);
         } else {
+            return false;
+        }
+        if (false === $sock) {
+            // @todo log the error
             return false;
         }
         /*
@@ -1558,7 +1564,8 @@ class CentreonGraph {
          * Run flushs
          */
         foreach ($metricsId as $metricId) {
-            $cmd = 'FLUSH ' . $this->dbPath . $metricId . '.rrd';
+            $fullpath = realpath($this->dbPath . $metricId . '.rrd');
+            $cmd = 'FLUSH ' . $fullpath;
             if (false === fputs($sock, $cmd . "\n")) {
                 @fclose($sock);
                 return false;
