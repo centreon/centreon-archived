@@ -237,7 +237,6 @@ class CentreonAuthLDAP {
                     $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
                 }
             }
-            file_put_contents('/tmp/debug',print_r($this->contactInfos, true)."\n\n",FILE_APPEND);
             if (isset($this->contactInfos['contact_id'])) {
                 /*
                  * Update the user dn and extended informations for user
