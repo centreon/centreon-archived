@@ -88,9 +88,7 @@
     }
 
     if (isset($_POST['values'])) {
-        file_put_contents('/tmp/wizard', var_export($wizard, true));
         $wizard->addValues($step - 1, $_POST['values']);
-        file_put_contents('/tmp/wizard', var_export($wizard, true), FILE_APPEND);
         $_SESSION['wizard'][$name][$uuid] = serialize($wizard);
     }
 
