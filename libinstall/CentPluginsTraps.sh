@@ -60,6 +60,8 @@ for FILE in  $TMP_DIR/src/bin/centFillTrapDB \
 	$TMP_DIR/src/bin/centGenSnmpttConfFile \
 	$TMP_DIR/src/bin/centTrapHandler-2.x; do
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+		-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
+		-e 's|@CENTREON_VARLOG@|'"$CENTREON_LOG"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		"$FILE" > "$TMP_DIR/work/bin/`basename $FILE`"
 	[ $? -ne 0 ] && flg_error=1
@@ -231,6 +233,10 @@ $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
 	$TMP_DIR/final/snmptt/snmpttconvertmib \
 	$SNMPTT_BINDIR/snmpttconvertmib >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install") : snmpttconvertmib"
+
+log "INFO" "$(gettext "Install") : spool directory"
+$INSTALL_DIR/cinstall $cinstall_opts -d 775 \
+	/var/spool/snmptt
 
 if [ -f $CENTREON_ETC/conf.pm ] ; then 
 	log "INFO" "$(gettext "Generate SNMPTT configuration")"
