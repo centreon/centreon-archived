@@ -46,5 +46,5 @@ $help['tip_watermark_font_size'] = dgettext('help', 'Font size of watermarks.');
  * RRDCached Properties
  */
 $help['tip_rrdcached_enable'] = dgettext('help', 'Enable the rrdcached for Centreon. This option is valid only with Centreon Broker');
-$help['tip_rrdcached_port'] = dgettext('help', 'Port for communicate with rrdcached');
-$help['tip_rrdcached_unix_path'] = dgettext('help', 'The path to unix socket for communicate with rrdcached');
+$help['tip_rrdcached_port'] = dgettext('help', 'Port for communicating with rrdcached');
+$help['tip_rrdcached_unix_path'] = dgettext('help', 'The absolute path to unix socket for communicating with rrdcached');
