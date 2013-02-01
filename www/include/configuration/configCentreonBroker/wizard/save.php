@@ -50,12 +50,12 @@
         case 'central_without_poller':
             $configuration = array(
                 'name' => $wizard->getValue(2, 'configname'),
-                'filename' => 'central-module.xml',
+                'filename' => 'central-broker.xml',
                 'activate' => array('activate' => 0),
                 'ns_nagios_server' => $wizard->getValue(2, 'requester_id'),
                 'logger' => array(
                     array (
-                        'name' => '/var/log/centreon-broker/central-module.log',
+                        'name' => '/var/log/centreon-broker/central-broker-master.log',
                         'config' => array ('config' => 'yes'),
                         'debug' => array ('debug' => 'no'),
                         'error' => array ('error' => 'yes'),
@@ -69,7 +69,7 @@
                     array (
                         'name' => 'Storage',
                         'db_type' => 'mysql',
-                        'failover' => '',
+                        'failover' => 'Storage-failover',
                         'db_host' => $conf_centreon['hostCentstorage'],
                         'retry_interval' => '',
                         'buffering_timeout' => '',
@@ -82,11 +82,24 @@
                         'type' => 'sql',
                         'blockId' => '1_16',
                     ),
+                    array(
+                        'name' => 'Storage-failover',
+                        'failover' => '',
+                        'path' => '/var/lib/centreon-broker/central-broker-sql-master.retention',
+                        'retry_interval' => '',
+                        'buffering_timeout' => '',
+                        'protocol' => 'ndo',
+                        'compression' => array ('compression' => 'no'),
+                        'compression_level' => '',
+                        'compression_buffer' => '',
+                        'type' => 'file',
+                        'blockId' => '1_11'
+                    ),
                     array (
                         'name' => 'PerfData',
                         'interval' => '300',
                         'length' => '15552000',
-                        'failover' => '',
+                        'failover' => 'PerfData-failover',
                         'retry_interval' => '',
                         'buffering_timeout' => '',
                         'db_type' => 'mysql',
@@ -99,6 +112,19 @@
                         'read_timeout' => '5',
                         'type' => 'storage',
                         'blockId' => '1_14',
+                    ),
+                    array(
+                        'name' => 'PerfData-failover',
+                        'failover' => '',
+                        'path' => '/var/lib/centreon-broker/central-broker-perfdata-master.retention',
+                        'retry_interval' => '',
+                        'buffering_timeout' => '',
+                        'protocol' => 'ndo',
+                        'compression' => array ('compression' => 'no'),
+                        'compression_level' => '',
+                        'compression_buffer' => '',
+                        'type' => 'file',
+                        'blockId' => '1_11'
                     ),
                     array (
                         'name' => 'RRD',
@@ -167,7 +193,7 @@
                     array (
                         'name' => 'Storage',
                         'db_type' => 'mysql',
-                        'failover' => '',
+                        'failover' => 'Storage-failover',
                         'db_host' => $conf_centreon['hostCentstorage'],
                         'retry_interval' => '',
                         'buffering_timeout' => '',
@@ -180,11 +206,24 @@
                         'type' => 'sql',
                         'blockId' => '1_16',
                     ),
+                    array(
+                        'name' => 'Storage-failover',
+                        'failover' => '',
+                        'path' => '/var/lib/centreon-broker/central-broker-sql-cbd.retention',
+                        'retry_interval' => '',
+                        'buffering_timeout' => '',
+                        'protocol' => 'ndo',
+                        'compression' => array ('compression' => 'no'),
+                        'compression_level' => '',
+                        'compression_buffer' => '',
+                        'type' => 'file',
+                        'blockId' => '1_11'
+                    ),
                     array (
                         'name' => 'PerfData',
                         'interval' => '300',
                         'length' => '15552000',
-                        'failover' => '',
+                        'failover' => 'PerfData-failover',
                         'retry_interval' => '',
                         'buffering_timeout' => '',
                         'db_type' => 'mysql',
@@ -197,6 +236,19 @@
                         'read_timeout' => '5',
                         'type' => 'storage',
                         'blockId' => '1_14',
+                    ),
+                    array(
+                        'name' => 'PerfData-failover',
+                        'failover' => '',
+                        'path' => '/var/lib/centreon-broker/central-broker-perfdata-cbd.retention',
+                        'retry_interval' => '',
+                        'buffering_timeout' => '',
+                        'protocol' => 'ndo',
+                        'compression' => array ('compression' => 'no'),
+                        'compression_level' => '',
+                        'compression_buffer' => '',
+                        'type' => 'file',
+                        'blockId' => '1_11'
                     ),
                     array (
                         'name' => 'RRD',

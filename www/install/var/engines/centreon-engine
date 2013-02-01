@@ -8,3 +8,4 @@ CENTREON_ENGINE_STATS_BINARY;Centreon Engine Stats binary;1;1;/usr/sbin/centengi
 MONITORING_VAR_LIB;Centreon Engine var lib directory;1;0;/var/lib/centreon-engine
 CENTREON_ENGINE_CONNECTORS;Centreon Engine Connector path;0;0;/usr/lib64/centreon-connector
 CENTREON_ENGINE_LIB;Centreon Engine Library (*.so) directory;1;0;/usr/lib64/centreon-engine
+EMBEDDED_PERL;Embedded Perl initialisation file;0;1;/usr/sbin/p1.pl

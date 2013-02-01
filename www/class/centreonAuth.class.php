@@ -103,7 +103,7 @@ class CentreonAuth {
                   AND ar.ar_enable = '1'";
         $res = $pearDB->query($query);
         while ($row = $res->fetchRow()) {
-            if ($row['ari_name'] == 'ldap_auto_import') {
+            if ($row['ari_name'] == 'ldap_auto_import' && $row['ari_value']) {
                 $this->ldap_auto_import[$row['ar_id']] = $row['ari_value'];
             } elseif ($row['ari_name'] == 'ldap_store_password') {
                 $this->ldap_store_password[$row['ar_id']] = $row['ari_value'];
@@ -131,9 +131,10 @@ class CentreonAuth {
      *
      * @param string $password
      * @param string $token
+     * @param boolean $autoimport
      * @return void
      */
-    private function checkPassword($password, $token = "") {
+    private function checkPassword($password, $token = "", $autoimport = false) {
         global $centreon_path;
 
         if ((strlen($password) == 0 || $password == "") && $token == "") {
@@ -159,6 +160,9 @@ class CentreonAuth {
             }
 
             foreach ($authResources as $arId) {
+                if ($autoimport && !isset($this->ldap_auto_import[$arId])) {
+                    break;
+                }
                 if ($this->passwdOk == 1) {
                     break;
                 }
@@ -257,7 +261,7 @@ class CentreonAuth {
              */
             $this->userInfos['contact_alias'] = $username;
             $this->userInfos['contact_auth_type'] = "ldap";
-            $this->checkPassword($password);
+            $this->checkPassword($password, "", true);
             /*
              * Reset userInfos with imported informations
              */

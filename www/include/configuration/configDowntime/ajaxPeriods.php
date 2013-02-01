@@ -56,7 +56,11 @@
 	$downtime = new CentreonDowntime($pearDB);
 
 	require_once $path . 'json.php';
-	$periods = $downtime->getPeriods($id);
+    if ($id == 0) {
+        $periods = array();
+    } else {
+        $periods = $downtime->getPeriods($id);
+    }
 	$json = new Services_JSON();
 	print $json->encode($periods);
 ?>
