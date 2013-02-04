@@ -36,7 +36,8 @@
 #
 ####################################################################################
 
-sudo /etc/init.d/centstorage stop
+sudo /etc/init.d/centstorage stop &>/dev/null
+echo "CentStorage is stopped" >> @CENTREON_LOG@/centreon-purge.log
 
 # Wait a little 
 sleep 10
@@ -51,6 +52,7 @@ sleep 10
 # Wait a little 
 sleep 10
 
-sudo /etc/init.d/centstorage start
+sudo /etc/init.d/centstorage start &>/dev/null
+echo "CentStorage is started" >> @CENTREON_LOG@/centreon-purge.log
 
 exit 0
