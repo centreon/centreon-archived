@@ -771,7 +771,9 @@ class CentreonConfigCentreonBroker
             $infos[] = $val;
 
         }
-        if (count($infos) == 1) {
+        if (count($infos) == 0) {
+            return "";
+        } else if (count($infos) == 1) {
             return $infos[0];
         }
         return $infos;
