@@ -124,6 +124,10 @@
 	 */
 	$obj->XML->startElement("reponse");
 	if ($data = $DBRESULT->fetchRow()) {
+        /* Split the plugin_output */
+        $outputLines = explode("\n", $data['output']);
+        $pluginShortOuput = $outputLines[0];
+
 		$duration = "";
 		if ($data["last_state_change"] > 0) {
 			$duration = CentreonDuration::toString(time() - $data["last_state_change"]);
@@ -153,7 +157,7 @@
 		$obj->XML->writeElement("current_state_name", _("Host Status"), 0);
 		$obj->XML->startElement("plugin_output");
 		$obj->XML->writeAttribute("name", _("Status Information"));
-		$obj->XML->text($data["output"], 0);
+		$obj->XML->text($pluginShortOuput, 0);
 		$obj->XML->endElement();
 		$obj->XML->writeElement("performance_data", $data["perfdata"]);
 		$obj->XML->writeElement("performance_data_name", _("Performance Data"), 0);
