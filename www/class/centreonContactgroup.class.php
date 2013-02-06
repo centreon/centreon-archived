@@ -152,6 +152,13 @@ class CentreonContactgroup
             return 0;
         }
         $row = $res->fetchRow();
+        /*
+         * Reset ldap build cache time
+         */
+        $queryCacheLdap = 'UPDATE options
+            SET `value` = 0
+            WHERE `key` = "ldap_last_acl_update"';
+        $this->db->query($queryCacheLdap);
         return $row['cg_id'];
     }
 
