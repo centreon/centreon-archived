@@ -174,6 +174,7 @@
     	$tab_hostobjectid[$nbhostpb] = $ndo['host_id'];
         
         // Check if host has criticality
+        $tab_hostcriticality[$nbhostpb] = '';
         $rqCriticality = "SELECT cvs.value as criticality ".
                          "FROM customvariables cvs ".
                          "WHERE cvs.host_id = '".$ndo['host_id']."' ".
@@ -533,6 +534,7 @@
 			$tab_hobjectid[$j] = $ndo['host_id'];
             
             // Check if service has criticality
+            $tab_svccriticality[$j] = '';
             $rqCriticality = "SELECT cvs.value as criticality ".
                              "FROM customvariables cvs ".
                              "WHERE cvs.service_id = '".$ndo['service_id']."' ".
@@ -545,7 +547,7 @@
                 {
                     $availableSvcCriticalities = 1;
                     $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
-                }  
+                }
             }
             
 			$j++;
