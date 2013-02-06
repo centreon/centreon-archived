@@ -154,7 +154,8 @@
 	    $services = preg_split("/\,/", $_POST["svc_id"]);
 		foreach ($services as $str) {
 			$buf_svc = preg_split("/\;/", $str);
-			$id .= "HS_" . getMyServiceID($buf_svc[1], getMyHostID($buf_svc[0])).",";
+            $lhost_id = getMyHostID($buf_svc[0]);
+			$id .= "HS_" . getMyServiceID($buf_svc[1], $lhost_id)."_" . $lhost_id . ",";
 		}
 	}
 
@@ -169,7 +170,8 @@
 			$tab_svcs = explode(",", $id_svc);
 			foreach ($tab_svcs as $svc){
 				$tmp = explode(";", $svc);
-				$id .= "HS_" . getMyServiceID($tmp[1], getMyHostID($tmp[0])).",";
+                 $lhost_id = getMyHostID($tmp[0]);
+				$id .= "HS_" . getMyServiceID($tmp[1], $lhost_id)."_" . $lhost_id . ",";
 			}
 		}
 	} else {

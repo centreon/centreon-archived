@@ -51,9 +51,9 @@ use vars qw($centrapmanager_daemon $centrapmanager_log_debug $centrapmanager_sle
         $centrapmanager_logfile $centrapmanager_cmd_timeout $centrapmanager_seperator
         $centrapmanager_cmdFile);
 use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
-use vars qw($etc $NAGIOSUSER);
+use vars qw($etc $CENTREON_USER);
 
-$NAGIOSUSER = '@MONITORINGENGINE_USER@';
+$CENTREON_USER = '@CENTREON_USER@';
 
 use POSIX qw(strftime);
 eval "use HTML::Entities";
@@ -277,10 +277,10 @@ sub forceCheck($$$$) {
     if (defined($id) && $id != 0) {
         my $submit;
         
-        if ($whoami eq $NAGIOSUSER) {
+        if ($whoami eq $CENTREON_USER) {
             $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
         } else {
-            $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
+            $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
         }
         $result = send_command($submit);
 	
@@ -295,29 +295,27 @@ sub forceCheck($$$$) {
 ## Submit result via external command
 #
 sub submitResult($$$$$$) {
-    my ($dbh, $this_host, $this_service, $datetime, $status, $arguments_line) = @_;
+    my ($dbh, $this_host, $this_service, $datetime, $status, $traps_output) = @_;
     my $result;
 
     # No matching rules
     my $id = get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
-        my $str = "PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$arguments_line";
+        my $str = "PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$traps_output";
 
         my $submit;
-        if ($whoami eq $NAGIOSUSER) {
+        if ($whoami eq $CENTREON_USER) {
             $str =~ s/"/\\"/g;
             $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> $cmdFile";
         } else {
             $str =~ s/'/'\\''/g;
             $str =~ s/"/\\"/g;
-            $submit = "su -l $NAGIOSUSER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> $cmdFile'";
+            $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> $cmdFile'";
         }
         $result = send_command($submit);
 	
         logit("SUBMIT: Force service status via passive check update", "II");
         logit("SUBMIT: Launched command: $submit", "II");
-	
-        undef($submit);
     }
     return $result;
 }
@@ -347,8 +345,8 @@ sub substitute_string {
 #######################################
 ## Check Advanced Matching Rules
 #
-sub checkMatchingRules($$$$$$$$) {
-    my ($dbh, $trap_id, $this_host, $ip, $hostname, $arguments_line, $datetime, $status) = @_;
+sub checkMatchingRules($$$$$$$$$) {
+    my ($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status) = @_;
     
     # Check matching options 
     my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
@@ -384,8 +382,9 @@ sub checkMatchingRules($$$$$$$$) {
         $tmoString =~ s/\@HOSTNAME\@/$this_host/g;
         $tmoString =~ s/\@HOSTADDRESS\@/$ip/g;
         $tmoString =~ s/\@HOSTADDRESS2\@/$hostname/g;
-        $tmoString =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-        $tmoString =~ s/\@OUTPUT\@/$arguments_line/g;
+        $tmoString =~ s/\@SERVICEDESC\@/$this_service/g;
+        $tmoString =~ s/\@TRAPOUTPUT\@/$traps_output/g;
+        $tmoString =~ s/\@OUTPUT\@/$traps_output/g;
         $tmoString =~ s/\@TIME\@/$datetime/g;
 
         # Integrate OID Matching		    
@@ -403,8 +402,8 @@ sub checkMatchingRules($$$$$$$$) {
 ################################
 ## Execute a specific command
 #
-sub executeCommand($$$$$$$) {
-    my ($traps_execution_command, $this_host, $ip, $hostname, $arguments_line, $datetime, $status) = @_;
+sub executeCommand($$$$$$$$) {
+    my ($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status) = @_;
     
     $traps_execution_command = substitute_string($traps_execution_command);
     
@@ -420,8 +419,9 @@ sub executeCommand($$$$$$$) {
     $traps_execution_command =~ s/\@HOSTNAME\@/$this_host/g;
     $traps_execution_command =~ s/\@HOSTADDRESS\@/$_[1]/g;
     $traps_execution_command =~ s/\@HOSTADDRESS2\@/$_[2]/g;
-    $traps_execution_command =~ s/\@TRAPOUTPUT\@/$arguments_line/g;
-    $traps_execution_command =~ s/\@OUTPUT\@/$arguments_line/g;
+    $traps_execution_command =~ s/\@SERVICEDESC\@/$this_service/g;
+    $traps_execution_command =~ s/\@TRAPOUTPUT\@/$traps_output/g;
+    $traps_execution_command =~ s/\@OUTPUT\@/$traps_output/g;
     $traps_execution_command =~ s/\@STATUS\@/$status/g;
     $traps_execution_command =~ s/\@TIME\@/$datetime/g;
 
@@ -476,7 +476,7 @@ sub getTrapsInfos($$$) {
             ######################################################################
             # Advanced matching rules
             if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-                $status = checkMatchingRules($dbh, $trap_id, $this_host, $ip, $hostname, $traps_output, $datetime, $status);
+                $status = checkMatchingRules($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
             }
 
             #####################################################################
@@ -494,7 +494,7 @@ sub getTrapsInfos($$$) {
             ######################################################################
             # Execute special command
             if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-                executeCommand($traps_execution_command, $this_host, $ip, $hostname, $traps_output, $datetime, $status);
+                executeCommand($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
             }
         }
     }
