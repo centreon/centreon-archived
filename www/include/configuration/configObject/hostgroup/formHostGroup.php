@@ -179,7 +179,7 @@
 	/*
 	 * Further informations
 	 */
-        $form->addElement('text', 'hg_rrd_retention', 'RRD retention', array('size' => 5));
+
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
@@ -290,7 +290,6 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 		$tpl->assign('topdoc', _("Documentation"));
-                $tpl->assign('days', _('days'));
 		$tpl->display("formHostGroup.ihtml");
 	}
 ?>
