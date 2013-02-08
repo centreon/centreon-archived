@@ -407,7 +407,7 @@
 		$obj->XML->writeElement("cs", 	_($obj->statusService[$data["state"]]), false);
 		$obj->XML->writeElement("po", 	$pluginShortOuput);
 		$obj->XML->writeElement("ca", 	$data["current_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
-                if ($data['criticality'] && isset($critCache[$data['service_id']])) {
+                if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
                     $obj->XML->writeElement("hci", 1); // has criticality
                     $critData = $criticality->getData($critCache[$data['service_id']]);
                     $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
