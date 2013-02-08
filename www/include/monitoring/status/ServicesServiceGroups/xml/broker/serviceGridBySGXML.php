@@ -92,7 +92,10 @@
 	
 	$rq1_select1 = "SELECT SQL_CALC_FOUND_ROWS h.host_id ";
 	$rq1_from1 = " FROM servicegroups sg, services_servicegroups sgm, services s, hosts h WHERE ";
-	$rq1_search1 = $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+	$rq1_search1 = $obj->access->queryBuilder("", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+    if ($rq1_search1 != "") {
+        $rq1_search1 .= " AND ";
+    }
 	$rq1 = "";
 	$rq1 .= " h.host_id = s.host_id ";
 	if ($search != ""){
