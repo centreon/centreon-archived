@@ -87,16 +87,20 @@
 	/** **********************************************
 	 * Prepare pagination
 	 */
-	$rq1 = "SELECT DISTINCT h.name as host_name, sg.alias, sg.name AS sg_name".
-		" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ".
-		" WHERE s.service_id = sgm.service_id".
-		" AND s.host_id = sgm.host_id" .
-		" AND s.host_id = h.host_id" .
-		" AND sgm.servicegroup_id = sg.servicegroup_id" .
-		" AND s.enabled = 1 ";
 
-	$rq1 .= $obj->access->queryBuilder("AND", "sg.name", $obj->access->getServiceGroupsString("NAME"));
-	$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+	# We can'use 'group_concat' because of size lim (and we need two field in services: state and description)
+	
+	$rq1_select1 = "SELECT SQL_CALC_FOUND_ROWS h.host_id ";
+	$rq1_from1 = " FROM servicegroups sg, services_servicegroups sgm, services s, hosts h WHERE ";
+	$rq1_search1 = $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+	$rq1 = "";
+	$rq1 .= " h.host_id = s.host_id ";
+	if ($search != ""){
+		$rq1 .= " AND h.name like '%" . $search . "%' ";
+	}
+        $rq1 .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
+
+	$rq1 .= " AND s.enabled = 1 AND s.service_id = sgm.service_id AND sgm.servicegroup_id = sg.servicegroup_id";
 
 	if ($instance != -1) {
 		$rq1 .= " AND h.instance_id = ".$instance;
@@ -110,125 +114,30 @@
 	if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
 		$rq1 .= " AND s.acknowledged = '1'";
 	}
-	if ($search != ""){
-		$rq1 .= " AND h.name like '%" . $search . "%' ";
-	}
-	$DBRESULT = $obj->DBC->query($rq1);
-	$numRows = 0;
-	$tabString = "";
-	while ($row = $DBRESULT->fetchRow()) {
-		$numRows++;
-		if ($tabString != "") {
-			$tabString .= ",";
-		}
-		$tabString .= "'".$row['host_name']."'";
-	}
-	unset($row);
-	$DBRESULT->free();
 
-	if ($numRows) {
+	$rq1_group = " GROUP BY h.name";
+	
+	if ($sort_type == "host_state") {
+    	    $rq1_order = " ORDER BY sg.name, h.state $order, h.name, s.description";
+        } else {
+	    $rq1_order = " ORDER BY sg.name, h.name $order, s.description";
+        }
+	$rq1_limit = " LIMIT ".($num * $limit).",".$limit;
 
-		/** ******************************************
-		 * Get all informations
-		 */
-		$rq1 = 	"SELECT SQL_CALC_FOUND_ROWS DISTINCT sg.alias, sg.name as sg_name, h.name as host_name".
-				" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h ".
-				" WHERE s.service_id = sgm.service_id" .
-				" AND h.host_id = s.host_id" .
-				" AND sgm.host_id = s.host_id" .
-				" AND sgm.servicegroup_id = sg.servicegroup_id" .
-				" AND s.enabled = '1' ";
 
-		$rq1 .= $obj->access->queryBuilder("AND", "sg.name", $obj->access->getServiceGroupsString("NAME"));
-		$rq1 .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
-		$rq1 .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
+	$DBRESULT = $obj->DBC->query($rq1_select1 . $rq1_from1 . $rq1_search1 . $rq1 . $rq1_group . $rq1_order . $rq1_limit);
+	$numRows = $obj->DBC->numberRows();
 
-		if ($instance != -1) {
-			$rq1 .= " AND h.instance_id = ".$instance;
+	if ($numRows > 0) {
+		$rq1_search2 = " h.host_id IN (";
+		$rq1_append = "";
+		while ($tab = $DBRESULT->fetchRow()) {
+			$rq1_search2 .= $rq1_append . $tab['host_id'];
+			$rq1_append = ", ";
 		}
-		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
-			$rq1 .= " AND s.state != 0 AND s.state != 4" ;
-		}
-		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
-			$rq1 .= " AND s.state != 0 AND s.state != 4 AND s.acknowledged = 0" ;
-		}
-		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
-			$rq1 .= " AND s.service_id IN (" .
-				" SELECT s.service_id FROM services s " .
-				" WHERE s.acknowledged = 1" .
-				")";
-		}
-		if ($search != ""){
-			$rq1 .= " AND h.name like '%" . $search . "%' ";
-		}
-		$rq1 .= " ORDER BY sg.name, host_name " . $order;
-		$rq1 .= " LIMIT ".($num * $limit).",".$limit;
-
-		$DBRESULT_PAGINATION = $obj->DBC->query($rq1);
-		$host_table = array();
-		$sg_table = array();
-		while ($row = $DBRESULT_PAGINATION->fetchRow()) {
-		    $host_table[$row["host_name"]] = $row["host_name"];
-			if (!isset($sg_table[$row["sg_name"]])) {
-            	$sg_table[$row["sg_name"]] = array();
-			}
-        	$sg_table[$row["sg_name"]][$row["host_name"]] = $row["host_name"];
-		}
-		$DBRESULT_PAGINATION->free();
-
-		/** *****************************************
-		 * Create Host list string
-		 */
-		$hostList = "";
-		foreach ($host_table as $host_name) {
-			if ($hostList != "")
-			   $hostList .= ",";
-			$hostList .= "'".$host_name."'";
-		}
-		if ($hostList == "") {
-		    $hostList = "''";
-		}
-
-		/** *****************************************
-		 * Prepare Finale Request
-		 */
-		$rq1 =	"SELECT sg.alias, sg.name as sg_name, h.name as host_name, s.description as service_description, sgm.servicegroup_id, sgm.service_id, " .
-				"s.state, h.icon_image, h.host_id, h.state AS host_state ".
-				" FROM servicegroups sg, services_servicegroups sgm, services s, hosts h".
-				" WHERE sgm.servicegroup_id = sg.servicegroup_id " .
-				" AND s.service_id = sgm.service_id" .
-				" AND s.host_id = sgm.host_id" .
-				" AND s.host_id = h.host_id" .
-				" AND h.name IN ($hostList)" .
-				" AND s.enabled = '1' ";
-
-        $rq1 .= $obj->access->queryBuilder("AND", "sg.name", $obj->access->getServiceGroupsString("NAME"));
-        $rq1 .= $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
-        $rq1 .= $obj->access->queryBuilder("AND", "s.service_id", $obj->access->getServicesString("ID", $obj->DBC));
-
-		if ($instance != -1) {
-			$rq1 .= " AND h.instance_id = ".$instance;
-		}
-		if ($o == "svcgridSG_pb" || $o == "svcOVSG_pb") {
-			$rq1 .= " AND s.state != 0" ;
-		}
-		if ($o == "svcgridSG_ack_0" || $o == "svcOVSG_ack_0") {
-			$rq1 .= " AND s.state != 0 AND s.acknowledged = 0" ;
-		}
-		if ($o == "svcgridSG_ack_1" || $o == "svcOVSG_ack_1") {
-			$rq1 .= " AND s.service_id IN (" .
-				" SELECT s.service_id FROM services s " .
-				" WHERE s.acknowledged = '1'" .
-				")";
-		}
-		if ($search != "") {
-			$rq1 .= " AND h.name like '%" . $search . "%' ";
-		}
-		if ($sort_type == "host_state") {
-			$rq1 .= " ORDER BY sg.name, host_state $order, host_name, service_description ";
-		} else {
-			$rq1 .= " ORDER BY sg.name, host_name $order, service_description ";
-		}
+		$rq1_search2 .= ") AND ";
+	} else {
+		$rq1_search2 = "";
 	}
 
 	/** ***************************************************
@@ -246,6 +155,9 @@
 	($o == "svcOVSG") ? $obj->XML->writeElement("s", "1")  : $obj->XML->writeElement("s", "0");
 	$obj->XML->endElement();
 
+	$rq1_select2 = "SELECT SQL_CALC_FOUND_ROWS h.name as host_name, h.state as host_state, h.icon_image, h.host_id, sg.alias, sg.name AS sg_name, s.state, s.description, s.service_id ";
+	$DBRESULT = $obj->DBC->query($rq1_select2 . $rq1_from1 . $rq1_search2 . $rq1 . $rq1_order);
+
 	$ct = 0;
 	$flag = 0;
 
@@ -253,52 +165,49 @@
 	$h = "";
 	$flag = 0;
 	$count = 0;
-	$DBRESULT = $obj->DBC->query($rq1);
 	while ($tab = $DBRESULT->fetchRow()) {
-		if (isset($sg_table[$tab["sg_name"]]) && isset($sg_table[$tab["sg_name"]][$tab["host_name"]]) && isset($host_table[$tab["host_name"]])) {
-			if ($sg != $tab["sg_name"]) {
-				$flag = 0;
-				if ($sg != "") {
-					$obj->XML->endElement();
-					$obj->XML->endElement();
-				}
-				$sg = $tab["sg_name"];
-				$h = "";
-				$obj->XML->startElement("sg");
-				$obj->XML->writeElement("sgn", $tab["sg_name"]);
-				$obj->XML->writeElement("o", $ct);
+		if ($sg != $tab["sg_name"]) {
+			$flag = 0;
+			if ($sg != "") {
+				$obj->XML->endElement();
+				$obj->XML->endElement();
 			}
-			$ct++;
-
-			if ($h != $tab["host_name"]) {
-				if ($h != "" && $flag) {
-					$obj->XML->endElement();
-				}
-				$flag = 1;
-				$h = $tab["host_name"];
-				$hs = $tab["host_state"];
-				$obj->XML->startElement("h");
-				$obj->XML->writeAttribute("class", $obj->getNextLineClass());
-				$obj->XML->writeElement("hn", $tab["host_name"], false);
-				if ($tab["icon_image"]) {
-					$obj->XML->writeElement("hico", $tab["icon_image"]);
-				} else {
-					$obj->XML->writeElement("hico", "none");
-				}
-				$obj->XML->writeElement("hnl", urlencode($tab["host_name"]));
-				$obj->XML->writeElement("hid", $tab["host_id"]);
-				$obj->XML->writeElement("hcount", $count);
-				$obj->XML->writeElement("hs", _($obj->statusHost[$tab["host_state"]]));
-				$obj->XML->writeElement("hc", $obj->colorHost[$tab["host_state"]]);
-				$count++;
-			}
-			$obj->XML->startElement("svc");
-			$obj->XML->writeElement("sn", $tab["service_description"]);
-			$obj->XML->writeElement("snl", urlencode($tab["service_description"]));
-			$obj->XML->writeElement("sc", $obj->colorService[$tab["state"]]);
-			$obj->XML->writeElement("svc_id", $svcObj->getServiceId($tab['service_description'], $tab['host_name']));
-			$obj->XML->endElement();
+			$sg = $tab["sg_name"];
+			$h = "";
+			$obj->XML->startElement("sg");
+			$obj->XML->writeElement("sgn", $tab["sg_name"]);
+			$obj->XML->writeElement("o", $ct);
 		}
+		$ct++;
+
+		if ($h != $tab["host_name"]) {
+			if ($h != "" && $flag) {
+				$obj->XML->endElement();
+			}
+			$flag = 1;
+			$h = $tab["host_name"];
+			$hs = $tab["host_state"];
+			$obj->XML->startElement("h");
+			$obj->XML->writeAttribute("class", $obj->getNextLineClass());
+			$obj->XML->writeElement("hn", $tab["host_name"], false);
+			if ($tab["icon_image"]) {
+				$obj->XML->writeElement("hico", $tab["icon_image"]);
+			} else {
+				$obj->XML->writeElement("hico", "none");
+			}
+			$obj->XML->writeElement("hnl", urlencode($tab["host_name"]));
+			$obj->XML->writeElement("hid", $tab["host_id"]);
+			$obj->XML->writeElement("hcount", $count);
+			$obj->XML->writeElement("hs", _($obj->statusHost[$tab["host_state"]]));
+			$obj->XML->writeElement("hc", $obj->colorHost[$tab["host_state"]]);
+			$count++;
+		}
+		$obj->XML->startElement("svc");
+		$obj->XML->writeElement("sn", $tab['description']);
+		$obj->XML->writeElement("snl", urlencode($tab['description']));
+		$obj->XML->writeElement("sc", $obj->colorService[$tab['state']]);
+		$obj->XML->writeElement("svc_id", $tab['service_id']);
+		$obj->XML->endElement();
 	}
 	$DBRESULT->free();
 	if ($sg != "") {
