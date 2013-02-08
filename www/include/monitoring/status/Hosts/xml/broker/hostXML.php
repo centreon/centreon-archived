@@ -326,7 +326,7 @@
         $obj->XML->writeElement("hpe", 	$ndo["passive_checks"]);
         $obj->XML->writeElement("ne", 	$ndo["notify"]);
         $obj->XML->writeElement("tr", 	$ndo["check_attempt"]."/".$ndo["max_check_attempts"]." (".$obj->stateType[$ndo["state_type"]].")");
-        if ($ndo['criticality'] && isset($critCache[$ndo['host_id']])) {
+        if (isset($ndo['criticality']) && $ndo['criticality'] != '' && isset($critCache[$ndo['host_id']])) {
             $obj->XML->writeElement("hci", 1); // has criticality
             $critData = $criticality->getData($critCache[$ndo['host_id']]);                    
             $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
