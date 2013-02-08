@@ -90,7 +90,10 @@
 	
 	$rq1_select1 = "SELECT SQL_CALC_FOUND_ROWS h.host_id ";
 	$rq1_from1 = " FROM servicegroups sg, services_servicegroups sgm, services s, hosts h WHERE ";
-	$rq1_search1 = $obj->access->queryBuilder("AND", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+	$rq1_search1 = $obj->access->queryBuilder("", "h.host_id", $obj->access->getHostsString("ID", $obj->DBC));
+    if ($rq1_search1 != "") {
+        $rq1_search1 .= " AND ";
+    }
 	$rq1 = "";
 	$rq1 .= " h.host_id = s.host_id ";
 	if ($search != ""){
@@ -219,15 +222,15 @@
 		$obj->XML->startElement("h");
 		$obj->XML->writeAttribute("class", $obj->getNextLineClass());
 		$obj->XML->writeElement("hn", $h);
-		$obj->XML->writeElement("hid", $host_id);
-		if ($tab["icon_image"]) {
-			$obj->XML->writeElement("hico", $tab["icon_image"]);
+		$obj->XML->writeElement("hid", $hid);
+		if ($hic) {
+			$obj->XML->writeElement("hico", $hic);
 		} else {
 			$obj->XML->writeElement("hico", "none");
 		}
 		$obj->XML->writeElement("hnl", urlencode($h));
 		$obj->XML->writeElement("hs", _($obj->statusHost[$hs]));
-		$obj->XML->writeElement("hid", $tab["host_id"]);
+		$obj->XML->writeElement("hid", $hid);
 		$obj->XML->writeElement("hc", $obj->colorHost[$hs]);
 		$obj->XML->writeElement("sk", $nb_service[0]);
 		$obj->XML->writeElement("sw", $nb_service[1]);
