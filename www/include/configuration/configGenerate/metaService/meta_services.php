@@ -74,9 +74,6 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_services.cfg", $oreon->user->get_name());
 	$str = NULL;
 
-	# Prepare Index Data
-	$indexToAdd = array();
-	
         # Get host id for host Meta
 	$metaHostId = getMetaHostId($pearDB);
 
