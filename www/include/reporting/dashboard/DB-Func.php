@@ -543,53 +543,13 @@
 	 * Returns all activated services from a servicegroup including services by host and services by hostgroup
 	 */
 	function getServiceGroupActivateServices($sg_id = NULL)	{
-		global $pearDB, $pearDBndo, $oreon;
+		global $oreon;
 
 		if (!$sg_id)
 			return;
 
-		/*
-		 * ServiceGroups by host
-		 */
-		$svs = array();
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id, host_host_id, host_name " .
-									"FROM servicegroup_relation, service, host " .
-									"WHERE servicegroup_sg_id = '".$sg_id."' " .
-									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-									"AND service.service_id = servicegroup_relation.service_service_id " .
-									"AND servicegroup_relation.host_host_id = host.host_id " .
-									"AND servicegroup_relation.host_host_id IS NOT NULL " .
-									//$oreon->user->access->queryBuilder("AND", "service.service_id", $oreon->user->access->getServicesString("ID", $pearDBndo)) .
-									"AND service.service_activate = '1' ".
-									" ORDER BY LOWER(`host_name`), LOWER(`service_description`)");
-		while ($elem = $DBRESULT->fetchRow())	{
-			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
-			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-			$svs[$elem["host_host_id"]."_".$elem["service_id"]] = $elem["host_name"] . ":::" . $elem["service_description"];
-		}
-
-		/*
-		 * ServiceGroups by hostGroups
-		 */
-		$DBRESULT = $pearDB->query("SELECT service_description, service_id, hostgroup_hg_id, hg_name " .
-									"FROM servicegroup_relation, service, hostgroup " .
-									"WHERE servicegroup_sg_id = '".$sg_id."' " .
-									"AND servicegroup_relation.servicegroup_sg_id = servicegroup_sg_id " .
-									"AND service.service_id = servicegroup_relation.service_service_id " .
-									"AND servicegroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
-									"AND servicegroup_relation.hostgroup_hg_id IS NOT NULL " .
-									"AND service.service_activate = '1' ".
-									" ORDER BY LOWER(`service_description`)");
-		while ($elem = $DBRESULT->fetchRow())	{
-			$elem["service_description"] = str_replace('#S#', "/", $elem["service_description"]);
-			$elem["service_description"] = str_replace('#BS#', "\\", $elem["service_description"]);
-			$hosts = getMyHostGroupHostsForReporting($elem["hostgroup_hg_id"]);
-			foreach ($hosts as $key => $value) {
-				$svs[$key."_".$elem["service_id"]] =  $value. ":::" . $elem["service_description"];
-			}
-		}
-		$DBRESULT->free();
-		return $svs;
+		$svs = $oreon->user->access->getServiceServiceGroupAclConf($sg_id, $oreon->broker->getBroker());
+        return $svs;
 	}
 
 
@@ -683,27 +643,11 @@
 	 * Get all servicesgroup with at least one service
 	 */
 	 function getAllServicesgroupsForReporting($search = NULL) {
-		global $pearDB, $oreon;
+		global $oreon;
 
-		$searchSTR = "";
-		if ($search != "")
-			$searchSTR = " sg_name LIKE '%$search%' AND ";
-
-		$sgStr = $oreon->user->access->getServiceGroupsString();
-
-		$sg = array("NULL" => "");
-		$query = 	"SELECT `sg_name`, `sg_id` FROM `servicegroup` ".
-					"WHERE $searchSTR `sg_id` IN (SELECT `servicegroup_sg_id` FROM `servicegroup_relation`) ".
-						$oreon->user->access->queryBuilder("AND", "sg_id", $sgStr) .
-					"ORDER BY LOWER(`sg_name`)";
-		$DBRESULT = $pearDB->query($query);
-		while ($elem = $DBRESULT->fetchRow()) {
-			$sg[$elem["sg_id"]] = $elem["sg_name"];
-		}
-		$DBRESULT->free();
-		unset($elem);
-
-		return $sg;
+        $sg_array = array("NULL" => "");
+        $sg_array += $oreon->user->access->getServiceGroupAclConf($search, $oreon->broker->getBroker());
+        return $sg_array;
 	}
 
 	/*

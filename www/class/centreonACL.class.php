@@ -1137,5 +1137,125 @@ class CentreonACL
  		    }
  		}
 	}
+    
+    /**
+    * Get DB Name
+    */
+    private function getNameDBAcl($broker=null)
+    {
+        global $pearDB, $conf_centreon;
+
+        if ($broker == 'broker') {
+            return $conf_centreon["dbcstg"];
+        }
+
+        $res = $pearDB->query("SELECT db_name FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+        if (PEAR::isError($res)) {
+            return null;
+        }
+
+        if (!$res->numRows()) {
+                //'No broker connection found'
+            return null;
+        }
+
+        $row = $res->fetchRow();
+        return $row['db_name'];
+    }
+    
+    /**
+    * Get ServiceGroup from ACL and configuration DB
+    */
+    public function getServiceGroupAclConf($search = null, $broker=null)
+    {
+        global $pearDB;
+
+        $sg = array();
+        $db_name_acl = $this->getNameDBAcl($broker);
+        if (is_null($db_name_acl) || $db_name_acl == "") {
+            return $sg;
+        }
+
+        $searchSTR = "";
+        if ($this->admin) {
+            if ($search != "") {
+                    $searchSTR = " sg_name LIKE '%$search%' AND ";
+            }
+            $query = "SELECT sg_name, sg_id FROM servicegroup ".
+                     " WHERE $searchSTR sg_activate = '1' ".
+                     " ORDER BY LOWER(sg_name)";
+        } else {
+            if ($search != "") {
+                    $searchSTR = " AND sg_name LIKE '%$search%' ";
+            }
+            $groupIds = array_keys($this->accessGroups);
+            $query = "(SELECT servicegroup.sg_id, servicegroup.sg_name FROM $db_name_acl.centreon_acl, hostgroup_relation, servicegroup_relation, servicegroup " .
+                     " WHERE $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
+                     " AND $db_name_acl.centreon_acl.host_id = hostgroup_relation.host_host_id " .
+                     " AND hostgroup_relation.hostgroup_hg_id = servicegroup_relation.hostgroup_hg_id " .
+                     " AND servicegroup_relation.service_service_id = $db_name_acl.centreon_acl.service_id " .
+                     " AND servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id $searchSTR" .
+                     ") UNION ALL (" .
+                     " SELECT servicegroup.sg_id, servicegroup.sg_name FROM $db_name_acl.centreon_acl, servicegroup_relation, servicegroup " .
+                     " WHERE $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
+                     " AND $db_name_acl.centreon_acl.host_id = servicegroup_relation.host_host_id AND $db_name_acl.centreon_acl.service_id = servicegroup_relation.service_service_id " .
+                     " AND servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id $searchSTR)" .
+                     " ORDER BY LOWER(sg_name)";
+        }
+        $res = $pearDB->query($query);
+        if (PEAR::isError($res)) {
+           return $sg;
+        }
+        while ($elem = $res->fetchRow()) {
+            # Double, triple is not a problem
+            $sg[$elem["sg_id"]] = $elem["sg_name"];
+        }
+        return $sg;
+    }
+    
+    /**
+    * Get Services in servicesgroups from ACL and configuration DB
+    */
+    public function getServiceServiceGroupAclConf($sg_id, $broker=null)
+    {
+        global $pearDB;
+
+        $services = array();
+        $db_name_acl = $this->getNameDBAcl($broker);
+        if (is_null($db_name_acl) || $db_name_acl == "") {
+            return $services;
+        }
+        $from_acl = "";
+        $where_acl = "";
+        if (!$this->admin) {
+            $groupIds = array_keys($this->accessGroups);
+            $from_acl = ", $db_name_acl.centreon_acl";
+            $where_acl = " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") AND $db_name_acl.centreon_acl.host_id = host.host_id AND $db_name_acl.centreon_acl.service_id = service.service_id";
+        }
+        $query = "(SELECT service.service_description, service.service_id, host.host_id, host.host_name FROM servicegroup, servicegroup_relation, service, host $from_acl" .
+                 " WHERE servicegroup.sg_id = '$sg_id'" .
+                 " AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id" .
+                 " AND servicegroup_relation.service_service_id = service.service_id" .
+                 " AND servicegroup_relation.host_host_id = host.host_id" .
+                 " $where_acl" .
+                 ") UNION ALL (" .
+                 " SELECT service.service_description, service.service_id, host.host_id, host.host_name FROM servicegroup, servicegroup_relation, hostgroup_relation, service, host $from_acl" .
+                 " WHERE servicegroup.sg_id = '$sg_id'" .
+                 " AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id" .
+                 " AND servicegroup_relation.hostgroup_hg_id = hostgroup_relation.hostgroup_hg_id" .
+                 " AND hostgroup_relation.host_host_id = host.host_id" .
+                 " AND servicegroup_relation.service_service_id = service.service_id" .
+                 " $where_acl)" .
+                 " ORDER BY LOWER(host_name), LOWER(service_description)";
+        $res = $pearDB->query($query);
+        if (PEAR::isError($res)) {
+           return $services;
+        }
+        while ($elem = $res->fetchRow()) {
+            # Double, triple is not a problem
+            $services[$elem["host_id"]."_".$elem["service_id"]] = $elem["host_name"] . ":::" . $elem["service_description"];
+        }
+        return $services;
+    }
 }
 ?>
