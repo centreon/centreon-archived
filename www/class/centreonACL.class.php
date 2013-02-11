@@ -1257,5 +1257,81 @@ class CentreonACL
         }
         return $services;
     }
+    
+    public function getHostAclConf($search = null, $broker=null)
+    {
+        global $pearDB;
+
+        $hosts = array();
+        $db_name_acl = $this->getNameDBAcl($broker);
+        if (is_null($db_name_acl) || $db_name_acl == "") {
+            return $hosts;
+        }
+
+        $searchSTR = "";
+        if ($this->admin) {
+            if ($search != "") {
+                $searchSTR = "(host.host_name LIKE '%$search%' OR host.host_alias LIKE '%$search%') AND";
+            }
+            $query = "SELECT host_id, host_name FROM host ".
+                     " WHERE $searchSTR host_activate = '1' AND host_register = '1'".
+                     " ORDER BY LOWER(host.host_name)";
+        } else {
+            if ($search != "") {
+                $searchSTR = " AND (host.host_name LIKE '%$search%' OR host.host_alias LIKE '%$search%')";
+            }
+            $groupIds = array_keys($this->accessGroups);
+            $query = "SELECT host.host_id, host.host_name FROM host, $db_name_acl.centreon_acl ".
+                     " WHERE $searchSTR host.host_activate = '1' AND host.host_register = '1' ".
+                     " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
+                     " AND $db_name_acl.centreon_acl.host_id = host.host_id".
+                     " ORDER BY LOWER(host.host_name)";
+        }
+        $res = $pearDB->query($query);
+        if (PEAR::isError($res)) {
+               return $hosts;
+        }
+        while ($elem = $res->fetchRow()) {
+            # Double, triple is not a problem
+            $hosts[$elem["host_id"]] = $elem["host_name"];
+        }
+        return $hosts;
+    }
+    
+    public function getHostServiceAclConf($host_id, $broker=null) {
+        global $pearDB;
+
+        $services = array();
+        $db_name_acl = $this->getNameDBAcl($broker);
+        if (is_null($db_name_acl) || $db_name_acl == "")
+            return $services;
+
+        if ($this->admin) {
+            $query = "(SELECT service_id, service_description FROM host_service_relation hsr, host h, service s " .
+                      " WHERE h.host_id = '" . $host_id . "' AND h.host_activate = '1' AND h.host_register = '1' " .
+                      " AND h.host_id = hsr.host_host_id " .
+                      " AND hsr.service_service_id = s.service_id " .
+                      " AND s.service_activate = '1' " .
+                      ") UNION ALL (" .
+                      "SELECT service_id, service_description FROM host h, hostgroup_relation hgr, service, host_service_relation hsr" .
+                      " WHERE h.host_id = '" . $host_id . "' AND h.host_activate = '1' AND h.host_register = '1' " .
+                      " AND h.host_id = hgr.host_host_id " .
+                      " AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id" .
+                      " AND hsr.service_service_id = service.service_id" .
+                      ") ORDER BY service_description";
+        } else {
+            $query = "SELECT service_id, service_description FROM $db_name_acl.centreon_acl WHERE $db_name_acl.centreon_acl.host_id = '" . $host_id . "' AND $db_name_acl.centreon_acl.group_id IN (" . $this->getAccessGroupsString() . ") ORDER BY service_description";
+        }
+        $res = $pearDB->query($query);
+        if (PEAR::isError($res)) {
+           return $services;
+        }
+        while ($elem = $res->fetchRow()) {
+            # Double, triple is not a problem. Avoid NULL (host can be ACL withtout services)
+            if ($elem["service_id"] != '')
+                $services[$elem["service_id"]] = $elem["service_description"];
+        }
+        return $services;
+}
 }
 ?>

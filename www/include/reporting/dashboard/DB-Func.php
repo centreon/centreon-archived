@@ -41,35 +41,11 @@
 	 * Get all hosts from DB
 	 */
 	function getAllHostsForReporting($is_admin, $lcaHoststr, $search = NULL) {
-		global $pearDB;
+		global $oreon;
 
-		/*
-		 * ACL
-		 */
-		$lcaSTR = "";
-		if (!$is_admin){
-			$lcaSTR = " AND host_id IN (".$lcaHoststr.") ";
-		}
-
-		/*
-		 * Search
-		 */
-		$searchSTR = "";
-		if ($search != "")
-			$searchSTR = " AND (`host_name` LIKE '%$search%' OR `host_alias` LIKE '%$search%')";
-
-		/*
-		 * request
-		 */
-		$hosts = array("NULL" => "");
-		$DBRESULT = $pearDB->query("SELECT host_name, host_id FROM host WHERE host_activate = '1' $lcaSTR $searchSTR AND host_register = '1' ORDER BY LOWER(LOWER(host_name))");
-		while ($row = $DBRESULT->fetchRow()) {
-			if (!isset($lca) || isset($lca["LcaHost"][$row['host_name']]))
-				$hosts[$row["host_id"]] = $row["host_name"];
-		}
-		$DBRESULT->free();
-		unset($row);
-		return $hosts;
+        $hosts = array("NULL" => "");
+        $hosts += $oreon->user->access->getHostAclConf($search, $oreon->broker->getBroker());
+        return $hosts;
 	}
 
 	/*
@@ -262,18 +238,17 @@
 		/*
 		 * Getting authorized services
 		 */
-		$services_ids = $oreon->user->access->getHostServices(($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo), $host_id);
-		asort($services_ids);
+        $services_ids = $oreon->user->access->getHostServiceAclConf($host_id, $oreon->broker->getBroker());
 		$svcStr = "";
-		if (count($services_ids)) {
+		if (count($services_ids) > 0) {
 				foreach ($services_ids as $id => $description){
 					if ($svcStr)
 						$svcStr .= ", ";
 					$svcStr .= $id;
 				}
-			}
-		else
-			$svcStr = "''";
+        } else {
+            return ($hostServiceStats);
+        }
 		$status = array("OK", "WARNING", "CRITICAL", "UNKNOWN", "UNDETERMINED", "MAINTENANCE");
 
 		/* initialising all host services stats to 0 */
