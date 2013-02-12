@@ -227,7 +227,7 @@
 	 * Return a table a (which reference is given in parameter) that contains stats on services for a given host defined by $host_id
 	 */
 	function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod){
-		global $oreon;
+		global $oreon, $pearDBO;
 
 		$hostServiceStats = array();
 		$services_ids = array();
