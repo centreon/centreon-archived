@@ -155,7 +155,7 @@
 	 * and alerts (the sum of alerts of all hosts from hostgroup) for given hostgroup defined by $hostgroup_id
 	 */
 	function getLogInDbForHostGroup($hostgroup_id, $start_date, $end_date, $reportTimePeriod){
-		global $pearDBO, $pearDBndo, $oreon;
+		global $oreon;
 
 		$hostStatsLabels = getHostStatsValueName();
 
@@ -163,8 +163,10 @@
 		foreach ($hostStatsLabels as $name)
 			$hostgroupStats["average"][$name] = 0;
 
-
-		$hosts_id = $oreon->user->access->getHostgroupHosts($hostgroup_id, ($oreon->broker->getBroker() == "broker" ? $pearDBO : $pearDBndo));
+        $hosts_id = $oreon->user->access->getHostHostGroupAclConf($hostgroup_id, $oreon->broker->getBroker());
+        if (count($hosts_id) == 0) {
+            return $hostgroupStats;
+        }
 
 		/* get availability stats for each host */
 		$count = 0;
@@ -225,12 +227,7 @@
 	 * Return a table a (which reference is given in parameter) that contains stats on services for a given host defined by $host_id
 	 */
 	function getLogInDbForHostSVC($host_id, $start_date, $end_date, $reportTimePeriod){
-		global $pearDBO;
-		global $pearDB;
-		global $pearDBndo;
-		global $is_admin;
 		global $oreon;
-		global $lcaSvcstr;
 
 		$hostServiceStats = array();
 		$services_ids = array();
@@ -569,23 +566,11 @@
 	 * Get all hostgroups linked with at least one host
 	 */
 	function getAllHostgroupsForReporting($is_admin, $lcaHostGroupstr, $search = NULL){
-		global $pearDB, $lcaHoststr, $oreon;
+		global $oreon;
 
-		$hgs = array("NULL" => "");
-
-		$searchSTR = "";
-		if ($search != "")
-			$searchSTR = " hg_name LIKE '%$search%' AND ";
-
-		$query = 	"SELECT DISTINCT * " .
-					"FROM `hostgroup` " .
-					"WHERE $searchSTR hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation ".$oreon->user->access->queryBuilder("WHERE", "host_host_id", $lcaHoststr).") " .
-						$oreon->user->access->queryBuilder("AND", "hg_id", $lcaHostGroupstr) .
-					"ORDER BY LOWER(`hg_name`)";
-		$DBRESULT = $pearDB->query($query);
-		while ($hg = $DBRESULT->fetchRow())
-			$hgs[$hg["hg_id"]] = $hg["hg_name"];
-		return $hgs;
+        $hgs = array("NULL" => "");
+        $hgs += $oreon->user->access->getHostGroupAclConf($search, $oreon->broker->getBroker());
+        return $hgs;
 	}
 
 	/*
