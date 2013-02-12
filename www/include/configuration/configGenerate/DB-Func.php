@@ -744,6 +744,12 @@ Modified for Oreon by Christophe Coraboeuf
 	    return $row['id'];
 	}
 
+    /**
+     * getListIndexData
+     *
+     * @return array
+     * @throws Exception
+     */
 	function getListIndexData()
 	{
 	    global $pearDB, $pearDBO;
@@ -757,11 +763,8 @@ Modified for Oreon by Christophe Coraboeuf
 	    }
 	    $listRelation = array();
 	    while ($row = $res->fetchRow()) {
-	        $relationTag = $row['host_id'] . '_' . $row['service_id'];
-	        $listRelation[$relationTag] = array(
-	            'id' => $row['id'],
-	            'status' => false
-	        );
+            $id = $row['host_id'].';'.$row['service_id'];
+            $listRelation[$id] = true;
 	    }
 	    return $listRelation;
 	}

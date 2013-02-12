@@ -383,21 +383,6 @@
 
 				unset($parent);
 				unset($strTMPTemp);
-
-				/*
-				 * Generate index data
-				 */
-				$relLink = $host_id . "_" . $svc_id;
-				if (isset($listIndexData[$relLink])) {
-				    $listIndexData[$relLink]['status'] = true;
-				} else {
-				    $indexToAdd[] = array(
-				        'host_id' => $host_id,
-				        'host_name' => $host_name,
-				        'service_id' => $svc_id,
-				        'service_description' => $svc_name
-				    );
-				}
 			}
 		}
 
@@ -775,28 +760,6 @@
 			        }
 			    }
 			}
-			$tmpListHost = array_map('serialize', $tmpListHost);
-			$tmpListHost = array_unique($tmpListHost);
-			$tmpListHost = array_map('unserialize', $tmpListHost);
-			/*
-			 * Generate index data
-			 */
-			foreach ($tmpListHost as $host) {
-			    $host_id = $host['host_id'];
-			    $host_name = $host['host_name'];
-			    $relLink = $host_id . "_" . $service['service_id'];
-    			if (isset($listIndexData[$relLink])) {
-    			    $listIndexData[$relLink]['status'] = true;
-    			} else {
-    			    $indexToAdd[] = array(
-    			        'host_id' => $host_id,
-    			        'host_name' => $host_name,
-    			        'service_id' => $service['service_id'],
-    			        'service_description' => $service["service_description"]
-    			    );
-    			}
-			}
-			unset($tmpListHost);
 		}
 		unset($serviceRelation);
 	}
