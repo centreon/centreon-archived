@@ -447,17 +447,14 @@
 				$serviceGroupStats[$host_service_id][$name] = 0;
 			}
 			$servicesStats = array();
-			$res = preg_split("/\_/", $host_service_id);
-			$servicesStats = getLogInDbForOneSVC($res[0], $res[1], $start_date, $end_date, $reportTimePeriod);
+			$servicesStats = getLogInDbForOneSVC($host_service_name['host_id'], $host_service_name['service_id'], $start_date, $end_date, $reportTimePeriod);
 
 			if (isset($servicesStats)) {
 				$serviceGroupStats[$host_service_id] = $servicesStats;
-				$res = preg_split("/\_/", $host_service_id);
-				$serviceGroupStats[$host_service_id]["HOST_ID"] = $res[0];
-				$serviceGroupStats[$host_service_id]["SERVICE_ID"] = $res[1];
-				$res = preg_split("/\:\:\:/", $host_service_name);
-				$serviceGroupStats[$host_service_id]["HOST_NAME"] = $res[0];
-				$serviceGroupStats[$host_service_id]["SERVICE_DESC"] = $res[1];
+				$serviceGroupStats[$host_service_id]["HOST_ID"] = $host_service_name['host_id'];
+				$serviceGroupStats[$host_service_id]["SERVICE_ID"] = $host_service_name['service_id'];
+				$serviceGroupStats[$host_service_id]["HOST_NAME"] = $host_service_name['host_name'];
+				$serviceGroupStats[$host_service_id]["SERVICE_DESC"] = $host_service_name['service_description'];
 				foreach ($serviceStatsLabels as $name)
 					$serviceGroupStats["average"][$name] += $servicesStats[$name];
 			}
@@ -592,29 +589,6 @@
 	}
 
 	/*
-	 * Get all hosts from hostgroup
-	 */
-	function getMyHostGroupHostsForReporting($hg_id = NULL)	{
-		global $pearDB, $is_admin, $lcaHoststr;
-
-		if (!$hg_id)
-			return;
-
-		$lcaStr = "";
-		if (!$is_admin && $lcaHoststr != "")
-			$lcaStr = " AND host_id IN (".$lcaHoststr.") ";
-
-		$hosts = array();
-		$DBRESULT = $pearDB->query("SELECT hgr.host_host_id, h.host_name FROM hostgroup_relation hgr, host h ".
-									" WHERE hgr.hostgroup_hg_id = '".$hg_id."' AND h.host_id = hgr.host_host_id ".$lcaStr." ORDER by LOWER(h.host_name)");
-		while ($elem = $DBRESULT->fetchRow())
-			$hosts[$elem["host_host_id"]] = $elem["host_name"];
-		$DBRESULT->free();
-		unset($elem);
-		return $hosts;
-	}
-
-	/*
 	 * Get all servicesgroup with at least one service
 	 */
 	 function getAllServicesgroupsForReporting($search = NULL) {
@@ -665,86 +639,5 @@
 			return ($row["sg_name"]);
 		$DBRESULT->free();
 		return "undefined";
-	}
-
-	function getHostServices($host_id = NULL)	{
-		global $pearDB, $is_admin;
-		if (!$host_id)
-			return;
-
-		$hSvs = array();
-		$svcStr = "";
-		$lcaStr = "";
-		if (!$is_admin) {
-		 	$groups 	= getGroupListofUser($pearDB);
-			$groupstr 	= groupsListStr($groups);
-			$services_ids = getAuthorizedServicesHost($host_id, $groupstr);
-			if (count($services_ids)) {
-				foreach ($services_ids as $id){
-					if ($svcStr)
-						$svcStr .= ", ";
-					$svcStr .= $id;
-				}
-				$lcaStr = " AND `service_id` IN (".$svcStr.") ";
-			}
-		}
-		$DBRESULT = $pearDB->query(" SELECT `service_id`, `service_description` ".
-						" FROM `service`, `host_service_relation` hsr".
-						" WHERE hsr.`host_host_id` = '".$host_id."' ".$lcaStr." AND hsr.service_service_id = service_id ".
-						" AND service_activate = '1' ORDER BY LOWER(`service_description`)");
-		while ($elem = $DBRESULT->fetchRow())	{
-			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
-			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
-			$hSvs[$elem["service_id"]] = html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
-		}
-		$DBRESULT->free();
-		// Uncomment following lines if you want to see services that are now disabled
-		/*
-		$DBRESULT = $pearDB->query("SELECT service_id, service_description FROM service, host_service_relation hsr" .
-				" WHERE hsr.host_host_id = '".$host_id."' " .
-				" AND service_id = hsr.service_service_id");
-		while ($elem = $DBRESULT->fetchRow()){
-			$elem["service_description"] = str_replace('#S#', '/', $elem["service_description"]);
-			$elem["service_description"] = str_replace('#BS#', '\\', $elem["service_description"]);
-			$hSvs[$elem["service_id"]]	= html_entity_decode($elem["service_description"], ENT_QUOTES, "UTF-8");
-		}
-		$DBRESULT->free();
-		*/
-		asort($hSvs);
-		return $hSvs;
-	}
-
-	function getHostsFromHostgroup($hg_id) {
-		global $pearDB, $is_admin;
-
-		$hosts = array();
-		$DBRESULT = $pearDB->query("SELECT host.host_id, host.host_name FROM `host`, `hostgroup_relation`".
-									" WHERE host.host_id = hostgroup_relation.host_host_id ".
-											" AND hostgroup_relation.hostgroup_hg_id = '".$hg_id."' ".
-									" ORDER BY LOWER(`host_name`)");
-		while ($row = $DBRESULT->fetchRow())
-			$hosts[$row["host_id"]] = $row["host_name"];
-		$DBRESULT->free();
-		if (!$is_admin) {
-			$groups = getGroupListofUser($pearDB);
-			$str 	= groupsListStr($groups);
-			$condition = "";
-			if ($str != "")
-				$condition = " WHERE acl_group_id IN (".$str.")";
-			$DBRESULT = $pearDB->query("SELECT acl_res_id FROM acl_res_group_relations $condition");
-			while ($row = $DBRESULT->fetchRow()){
-				$DBRESULT2 = $pearDB->query("SELECT host_id FROM `host`, `acl_resources_hostex_relations` ".
-											" WHERE acl_res_id = '".$row["acl_res_id"]."' AND host.host_id = acl_resources_hostex_relations.host_host_id");
-		  		if ($DBRESULT2->numRows()) {
-			  		while ($row2 = $DBRESULT2->fetchRow()) {
-						if (isset($hosts[$row2["host_id"]])) {
-							unset($hosts[$row2["host_id"]]);
-						}
-			  		}
-		  		}
-				unset($DBRESULT2);
-			}
-		}
-		return $hosts;
 	}
 ?>
