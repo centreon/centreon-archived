@@ -1228,6 +1228,7 @@ class CentreonACL
             if ($search != "") {
 				$searchSTR = " sg_name LIKE '%$search%' AND ";
 			}
+            $empty_exists = "";
 			if (!is_null($sg_empty)) {
 				$empty_exists = 'AND EXISTS (SELECT * FROM servicegroup_relation WHERE (servicegroup_relation.servicegroup_sg_id = servicegroup.sg_id AND servicegroup_relation.service_service_id IS NOT NULL))';
 			}
@@ -1333,6 +1334,7 @@ class CentreonACL
             if ($search != "") {
 				$searchSTR = "(host.host_name LIKE '%$search%' OR host.host_alias LIKE '%$search%') AND";
 			}
+            $empty_exists = "";
 			if (!is_null($host_empty)) {
 				$empty_exists = 'AND EXISTS (SELECT * FROM host_service_relation, hostgroup_relation WHERE (host_service_relation.host_host_id = host.host_id AND host_service_relation.service_service_id IS NOT NULL) OR (host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id AND host_service_relation.service_service_id IS NOT NULL))';
 			}
@@ -1399,6 +1401,103 @@ class CentreonACL
         }
 		$services = $this->constructResult($res, $options);
 		return $services;
+	}
+    
+    /**
+	 * Get HostGroup from ACL and configuration DB
+	 */
+	public function getHostGroupAclConf($search = null, $broker=null, $options=null, $hg_empty=null)
+	{
+		global $pearDB;
+
+		$hg = array();
+		$db_name_acl = $this->getNameDBAcl($broker);
+		if (is_null($db_name_acl) || $db_name_acl == "") {
+			return $hg;
+		}
+		if (is_null($options)) {
+			$options = array('order' => array('LOWER(hg_name)'),
+					 'fields' => array('hg_id', 'hg_name'),
+					 'keys' => array('hg_id'),
+					 'keys_separator' => '',
+					 'get_row' => 'hg_name');
+		}
+		$request = $this->constructRequest($options);
+		$searchSTR = "";
+		if ($this->admin) {
+			if ($search != "") {
+				$searchSTR = " hg_name LIKE '%$search%' AND ";
+			}
+			$empty_exists = "";
+			if (!is_null($hg_empty)) {
+				$empty_exists = 'AND EXISTS (SELECT * FROM hostgroup_relation WHERE (hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup_relation.host_host_id IS NOT NULL))';
+			}
+			# We should check if host is activate (maybe)
+			$query = "SELECT " . $request['fields'] . " FROM hostgroup ".
+				 " WHERE $searchSTR hg_activate = '1' $empty_exists".
+				 $request['order'];
+		} else {
+			if ($search != "") {
+				$searchSTR = " hg_name LIKE '%$search%' AND ";
+			}
+			# Cant manage empty hostgroup with ACLs. We'll have a problem with acl for conf...
+			$groupIds = array_keys($this->accessGroups);
+			$query = " SELECT " . $request['fields'] . " FROM hostgroup, hostgroup_relation, $db_name_acl.centreon_acl" .
+                                 " WHERE $searchSTR hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
+				 " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
+                                 " AND $db_name_acl.centreon_acl.host_id = hostgroup_relation.host_host_id " .
+				 $request['order'];
+		}
+		$res = $pearDB->query($query);
+		if (PEAR::isError($res)) {
+			return $hg;
+		}
+		$hg = $this->constructResult($res, $options);
+		return $hg;
+	}
+
+	public function getHostHostGroupAclConf($hg_id, $broker=null, $options=null)
+	{
+		global $pearDB;
+
+		$hg = array();
+		$db_name_acl = $this->getNameDBAcl($broker);
+		if (is_null($db_name_acl) || $db_name_acl == "") {
+			return $hg;
+		}
+		if (is_null($options)) {
+			$options = array('order' => array('LOWER(host_name)'),
+					 'fields' => array('host_id', 'host_name'),
+					 'keys' => array('host_id'),
+					 'keys_separator' => '',
+					 'get_row' => 'host_name');
+		}
+		$request = $this->constructRequest($options);
+		$searchSTR = "";
+		if ($this->admin) {
+			$searchSTR = " hg_id = '$hg_id' AND ";
+			# We should check if host is activate (maybe)
+			$query = "SELECT " . $request['fields'] . " FROM hostgroup, hostgroup_relation, host ".
+				 " WHERE $searchSTR hg_activate = '1' ".
+				 " AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id ".
+				 " AND hostgroup_relation.host_host_id = host.host_id ".
+				 $request['order'];
+		} else {
+			$searchSTR = " hg_id = '$hg_id' AND ";
+			# Cant manage empty hostgroup with ACLs. We'll have a problem with acl for conf...
+			$groupIds = array_keys($this->accessGroups);
+			$query = " SELECT " . $request['fields'] . " FROM hostgroup, hostgroup_relation, $db_name_acl.centreon_acl" .
+                                 " WHERE $searchSTR hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id " .
+				 " AND $db_name_acl.centreon_acl.group_id IN (" . implode(',', $groupIds) . ") " .
+                                 " AND $db_name_acl.centreon_acl.host_id = hostgroup_relation.host_host_id " .
+				 $request['order'];
+		}
+		$res = $pearDB->query($query);
+		if (PEAR::isError($res)) {
+			return $hg;
+		}
+		$hg = $this->constructResult($res, $options);
+		return $hg;
 	}
 }
 ?>

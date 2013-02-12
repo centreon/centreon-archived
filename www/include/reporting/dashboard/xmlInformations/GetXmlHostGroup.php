@@ -72,28 +72,20 @@
 			$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
 		}
 		
-		$str = "";
-		$DBRESULT = $pearDB->query("SELECT host_host_id FROM `hostgroup_relation` WHERE `hostgroup_hg_id` = '" . $_GET["id"] ."'");
-		while ($hg = $DBRESULT->fetchRow()) {
-			if ($str != "")
-				$str .= ", ";
-			$str .= $hg["host_host_id"]; 
+		$hosts_id = $oreon->user->access->getHostHostGroupAclConf($_GET["id"], $oreon->broker->getBroker());
+        if (count($hosts_id) > 0) {
+            $rq = 'SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, ' .
+                    'avg( `UPTimeScheduled` ) as "UPTimeScheduled", '.
+                    'avg( `DOWNTimeScheduled` ) as "DOWNTimeScheduled", ' .
+                    'avg( `UNREACHABLETimeScheduled` ) as "UNREACHABLETimeScheduled", ' .
+                    'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
+                    'FROM `log_archive_host` WHERE `host_id` IN (' . implode(',', array_keys($hosts_id)) . ') GROUP BY date_end, date_start ORDER BY date_start desc';
+            $DBRESULT = $pearDBO->query($rq);
+            while ($row = $DBRESULT->fetchRow()) {
+                fillBuffer($statesTab, $row, $color);
+            }
+            $DBRESULT->free();
 		}
-		unset($hg);
-		$DBRESULT->free();
-		
-		$rq = 'SELECT `date_start`, `date_end`, sum(`UPnbEvent`) as UPnbEvent, sum(`DOWNnbEvent`) as DOWNnbEvent, sum(`UNREACHABLEnbEvent`) as UNREACHABLEnbEvent, ' .
-				'avg( `UPTimeScheduled` ) as "UPTimeScheduled", '.
-				'avg( `DOWNTimeScheduled` ) as "DOWNTimeScheduled", ' .
-				'avg( `UNREACHABLETimeScheduled` ) as "UNREACHABLETimeScheduled", ' .
-				'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
-				'FROM `log_archive_host` WHERE `host_id` IN ('.$str.') GROUP BY date_end, date_start ORDER BY date_start desc';
-		$DBRESULT = $pearDBO->query($rq);
-		while ($row = $DBRESULT->fetchRow()) {
-			fillBuffer($statesTab, $row, $color);
-		}
-		$DBRESULT->free();
-		
 	} else	{
 		$buffer->writeElement("error", "error");
 	}
