@@ -280,7 +280,7 @@
 		isset($ret["hg_comment"]) && $ret["hg_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hg_comment"])."', " : $rq .= "NULL, ";
 		$rq .= "hg_activate = ";
 		isset($ret["hg_activate"]["hg_activate"]) && $ret["hg_activate"]["hg_activate"] != NULL ? $rq .= "'".$ret["hg_activate"]["hg_activate"]."'" : $rq .= "NULL ";
-		$rq .= "WHERE hg_id = '".$hg_id."'";
+		$rq .= " WHERE hg_id = '".$hg_id."'";
 		$DBRESULT = $pearDB->query($rq);
 
 		$fields["hg_name"] = CentreonDB::escape($ret["hg_name"]);

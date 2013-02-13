@@ -41,9 +41,10 @@
 	 *
 	 * @param CentreonDB $db
 	 * @param string $metaName
+     * @param int $metaHostId
 	 * @return int
 	 */
-	function getMetaServiceId($db, $metaName)
+	function getMetaServiceId($db, $metaName, $metaHostId = null)
 	{
         try {
     	    $query = "SELECT service_id FROM service WHERE service_register = '2' AND service_description = '".$db->escape($metaName)."'";
@@ -65,6 +66,9 @@
             if (!isset($sid)) {
                 throw new Exception('Service id of Meta Module could not be found');
             }
+            /* That's for compatibility purpose */
+            $db->query("DELETE FROM host_service_relation WHERE host_host_id = ".$db->escape($metaHostId)." AND service_service_id = ".$db->escape($sid));
+            $db->query("INSERT INTO host_service_relation (host_host_id, service_service_id) VALUES (".$db->escape($metaHostId).", ".$db->escape($sid).")");
             return $sid;
         } catch (Exception $e) {
             echo $e->getMessage() . "<br/>";
@@ -74,10 +78,7 @@
 	$handle = create_file($nagiosCFGPath.$tab['id']."/meta_services.cfg", $oreon->user->get_name());
 	$str = NULL;
 
-	# Prepare Index Data
-	$indexToAdd = array();
-	$listIndexData = getListIndexData($instanceId, false);
-	# Get host id for host Meta
+        # Get host id for host Meta
 	$metaHostId = getMetaHostId($pearDB);
 
 	$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_activate = '1'");
@@ -128,54 +129,14 @@
 			$strEval .= print_line("contact_groups", $strTemp);
 		}
 		$strEval .= print_line("register", "1");
-		$svc_id = getMetaServiceId($pearDB, 'meta_'.$meta['meta_id']);
+		$svc_id = getMetaServiceId($pearDB, 'meta_'.$meta['meta_id'], $metaHostId);
 		$strEval .= print_line("_SERVICE_ID", $svc_id);
 		$strEval .= "\t}\n\n";
 
 		$str .= $strEval;
-
-		/*
-		 * Generate index data
-		 */
-		$relLink = $metaHostId . "_" . $svc_id;
-		if (isset($listIndexData[$relLink])) {
-		    $listIndexData[$relLink]['status'] = true;
-		} else {
-		    $indexToAdd[] = array(
-		        'host_id' => $metaHostId,
-		        'host_name' => '_Module_Meta',
-		        'service_id' => $svc_id,
-		        'service_description' => 'meta_'.$meta['meta_id']
-		    );
-		}
 	}
 
-	/* Change the index data informations */
-	$listIndexToDelete = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToDelete'));
-	$listIndexToKeep = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToKeep'));
-
-	if (count($listIndexToDelete) > 0) {
-    	$queryIndexToDelete = "UPDATE index_data
-    		SET to_delete = 1
-    		WHERE id IN (" . join(', ', $listIndexToDelete) . ")";
-    	$pearDBO->query($queryIndexToDelete);
-	}
-	if (count($listIndexToKeep) > 0) {
-    	$queryIndexToKeep = "UPDATE index_data
-    		SET to_delete = 0
-    		WHERE id IN (" . join(', ', $listIndexToKeep) . ")";
-    	$pearDBO->query($queryIndexToKeep);
-	}
-
-	$queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete)
-		VALUES (%d, '%s', %d, '%s', 0)";
-	foreach ($indexToAdd as $index) {
-	    $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
-	    $pearDBO->query($queryAddIndexToExec);
-	}
-	/* End change the index data informations */
-
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_services.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, 'UTF-8'), $nagiosCFGPath.$tab['id']."/meta_services.cfg");
 	fclose($handle);
 	unset($str);
 	unset($meta);

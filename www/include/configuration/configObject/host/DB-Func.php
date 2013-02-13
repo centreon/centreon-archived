@@ -51,26 +51,23 @@
          */
         function testPollerDep($instanceId) {
             global $pearDB, $form;
-                        
+            
             $hostId = $form->getSubmitValue('host_id');
-            if (!$hostId) {
+            $hostParents = $form->getSubmitValue('host_parents');
+            
+            if (!$hostId || (!isset($hostParents))) {
                 return true;
             }
+            
             $query = "SELECT COUNT(*) as nb
                       FROM host_hostparent_relation hhr, ns_host_relation nhr 
                       WHERE hhr.host_parent_hp_id = nhr.host_host_id
                       AND hhr.host_host_id = ".$pearDB->escape($hostId)."
                       AND nhr.nagios_server_id != ".$pearDB->escape($instanceId);
-            $res = $pearDB->query($query);
-            $row = $res->fetchRow();
-            if ($row['nb']) {
-                return false;
-            }
-             $query = "SELECT COUNT(*) as nb
-                      FROM host_hostparent_relation hhr, ns_host_relation nhr 
-                      WHERE hhr.host_host_id = nhr.host_host_id
-                      AND hhr.host_parent_hp_id = ".$pearDB->escape($hostId)."
-                      AND nhr.nagios_server_id != ".$pearDB->escape($instanceId);
+            
+            if (isset($hostParents))
+                $query .= " AND host_parent_hp_id IN (".implode(',', $hostParents).")";
+            
             $res = $pearDB->query($query);
             $row = $res->fetchRow();
             if ($row['nb']) {

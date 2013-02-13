@@ -455,7 +455,7 @@
 		$obj->XML->writeElement("cs", 	_($obj->statusService[$ndo["service_current_state"]]), false);
 		$obj->XML->writeElement("po", 	$ndo["service_output"]);
 		$obj->XML->writeElement("ca", 	$ndo["service_current_check_attempt"]."/".get_service_config_type($ndo['service_object_id'], "service_max_check_attempts")." (".$obj->stateType[$ndo["service_state_type"]].")");
-                if ($ndo['criticality'] && isset($critCache[$ndo['service_object_id']])) {
+                if (isset($ndo['criticality']) && $ndo['criticality'] != '' && isset($critCache[$ndo['service_object_id']])) {
                     $obj->XML->writeElement("hci", 1); // has criticality
                     $critData = $criticality->getData($critCache[$ndo['service_object_id']]);
                     $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));

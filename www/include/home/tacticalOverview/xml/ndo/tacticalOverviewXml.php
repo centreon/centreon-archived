@@ -81,9 +81,6 @@
     if (isset($centreon->optGen['tactical_service_limit'])) {
         $svcLimit = $centreon->optGen['tactical_service_limit'];
     }
-    
-    //get criticality list
-    $criticalityList = $criticality->getList();
 
 	$acl_host_name_list = $centreon->user->access->getHostsString("NAME", $dbb);
 	$acl_access_group_list = $centreon->user->access->getAccessGroupsString();
@@ -133,6 +130,7 @@
 	$nbhostpb = 0;
     $tab_hostprobname[$nbhostpb] = "";
     $tab_hostcriticality[$nbhostpb] = "";
+    $availableHostCriticalities = 0;
     $tab_hostprobstate[$nbhostpb] = "";
     $tab_hostnotesurl[$nbhostpb] = "";
     $tab_hostnotes[$nbhostpb] = "";
@@ -184,16 +182,20 @@
                          "AND cvs.varname='CRITICALITY_ID'";
         
         $resCriticality = $dbb->query($rqCriticality);
+        
         while ($crit = $resCriticality->fetchRow()){
             $infoC = $criticality->getData($crit["criticality"]);
             if (isset($infoC))
+            {
+                $availableHostCriticalities = 1;
                 $tab_hostcriticality[$nbhostpb] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+            }
         }
 		$nbhostpb++;
 	}
 	$resNdoHosts->free();
-
-	$hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3]);
+    
+    $hostUnhand = array(0=>$hostStatus[0], 1=>$hostStatus[1], 2=>$hostStatus[2], 3=>$hostStatus[3]);
 	/*
 	 * Get the id's of problem hosts
 	*/
@@ -470,6 +472,7 @@
 	$tab_hostname[$j] = "";
 	$tab_svcname[$j] = "";
     $tab_svccriticality[$j] = "";
+    $availableSvcCriticalities = 0;
 	$tab_state[$j] = "";
 	$tab_notes_url[$j] = "";
 	$tab_notes[$j] = "";
@@ -541,7 +544,10 @@
             while ($crit = $resCriticality->fetchRow()){
                 $infoC = $criticality->getData($crit["criticality"]);
                 if (isset($infoC))
+                {
+                    $availableSvcCriticalities = 1;
                     $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+                }
             }
 			$j++;
 		}
@@ -552,6 +558,8 @@
 	$xml = new CentreonXML();
 	$xml->startElement('root');
 
+    $xml->writeElement('availableSvcCriticalities', $availableSvcCriticalities);
+    $xml->writeElement('availableHostCriticalities', $availableHostCriticalities);
 	$xml->writeElement('nbHostPb', $nbhostpb);
 	$xml->writeElement('nbSvcPb', $nb_pb);
 	if (is_array($general_opt)) {

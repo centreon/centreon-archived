@@ -43,6 +43,51 @@
     require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
+    /*
+     * Validate function for all host is in the same instances
+     */
+    function childSameInstance() {
+        global $form;
+
+        $instanceId = $form->getElementValue('nagios_server_id');
+        if (is_array($instanceId)) {
+            $instanceId = $instanceId[0];
+        }
+        $listChild = $form->getElementValue('host_childs');
+        if (count($listChild) == 0) {
+            return true;
+        }
+        return allInSameInstance($listChild, $instanceId);
+    }
+
+    function parentSameInstance() {
+        global $form;
+
+        $instanceId = $form->getElementValue('nagios_server_id');
+        if (is_array($instanceId)) {
+            $instanceId = $instanceId[0];
+        }
+        $listChild = $form->getElementValue('host_parents');
+        if (count($listChild) == 0) {
+            return true;
+        }
+        return allInSameInstance($listChild, $instanceId);
+    }
+
+    function allInSameInstance($hosts, $instanceId) {
+        global $pearDB;
+
+        $query = 'SELECT host_host_id FROM ns_host_relation
+            WHERE nagios_server_id != ' . $instanceId . '
+            AND host_host_id IN (' . join(', ', $hosts) .')';
+        $res = $pearDB->query($query);
+        if ($res->numRows() > 0) {
+            return false;
+        }
+        return true;
+    }
+
+
 	/*
 	 * Database retrieve information for Host
 	 */
@@ -299,6 +344,10 @@
 	$TemplateValues = array();
 
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+
+    $form->registerRule('validate_childs', 'function', 'childSameInstance');
+    $form->registerRule('validate_parents', 'function', 'parentSameInstance');
+
 	if ($o == "a")
 		$form->addElement('header', 'title', _("Add a Host"));
 	else if ($o == "c")
@@ -764,6 +813,8 @@
 	if ($o != "mc")	{
 		$form->applyFilter('host_name', 'myReplace');
 		$form->addRule('host_name', _("Compulsory Name"), 'required');
+        $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
+        $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
 		/*
 		 * Test existence
 		 */

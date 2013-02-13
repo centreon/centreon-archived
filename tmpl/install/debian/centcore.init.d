@@ -5,6 +5,8 @@
 # Required-Stop:	$local_fs $network
 # Default-Start:	2 3 4 5
 # Default-Stop:		0 1 6
+# Should-Start:		mysql
+# Should-Stop:
 # Short-Description:	Start daemon centcore at boot
 # Description:		Enable service provided CentCore : Manage pollers
 ### END INIT INFO
@@ -23,7 +25,7 @@ fi
 [ -r /etc/default/${PKGNAME} ] && . /etc/default/${PKGNAME}
 
 # Load the VERBOSE setting and other rcS variables
-[ -f /etc/default/rcS ] && . /etc/default/rcS
+[ -f /etc/init/vars.sh ] && . /etc/init/vars.sh
 
 # Define LSB log_* functions.
 # Depend on lsb-base (>= 3.0-6) to ensure that this file is present.

@@ -157,7 +157,7 @@
 	$rrdcachedEnable[] = HTML_QuickForm::createElement('radio', 'rrdcached_enable', null, _("No"), '0', $attrEnable);
 	$form->addGroup($rrdcachedEnable, 'rrdcached_enable', _("Enable RRDCached"), '&nbsp;');
 	$form->addElement('text', 'rrdcached_port', _('TCP Port'), $attrsText2);
-	$form->addElement('text', 'rrdcached_unix_path', _('UNIX Socket'), $attrsText);
+	$form->addElement('text', 'rrdcached_unix_path', _('UNIX Socket path'), $attrsText);
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');

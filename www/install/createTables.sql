@@ -909,6 +909,7 @@ CREATE TABLE `contactgroup` (
   `cg_activate` enum('0','1') DEFAULT NULL,
   `cg_type` varchar(10) DEFAULT 'local',
   `cg_ldap_dn` varchar(255) DEFAULT NULL,
+  `ar_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`cg_id`),
   KEY `name_index` (`cg_name`),
   KEY `alias_index` (`cg_alias`)

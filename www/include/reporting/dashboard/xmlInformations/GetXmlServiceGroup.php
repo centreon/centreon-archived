@@ -39,6 +39,7 @@
 	require_once "@CENTREON_ETC@/centreon.conf.php";
 	
 	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
+    require_once $centreon_path."www/include/reporting/dashboard/DB-Func.php";
 	require_once $centreon_path."www/class/centreonDuration.class.php";
 	require_once $centreon_path."www/class/centreonXML.class.php";
 	require_once $centreon_path."www/class/centreonDB.class.php";
@@ -67,30 +68,30 @@
 			$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
 		}
 		
-		$str = "";
-		$DBRESULT = $pearDB->query("SELECT `service_service_id` FROM `servicegroup_relation` WHERE `servicegroup_sg_id` = '".$_GET["id"]."'");
-		while ($sg = $DBRESULT->fetchRow()) {
-			if ($str != "")
-				$str .= ", ";
-			$str .= $sg["service_service_id"]; 
+		$services = getServiceGroupActivateServices($_GET["id"]);
+        if (count($services) > 0) {
+            $host_ids = array();
+            $service_ids = array();
+            foreach ($services as $host_service_id => $host_service_name) {
+                $res = explode("_", $host_service_id);
+                $host_ids[$res[0]] = 1;
+                $service_ids[$res[1]] = 1;
+            }
+
+            $request =  'SELECT ' .
+                            'date_start, date_end, OKnbEvent, CRITICALnbEvent, WARNINGnbEvent, UNKNOWNnbEvent, ' .
+                            'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
+                            'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
+                            'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
+                            'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
+                            'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
+                            'FROM `log_archive_service` WHERE `host_id` IN (' . implode(',', array_keys($host_ids)) . ') AND `service_id` IN (' . implode(',', array_keys($service_ids)) . ') group by date_end, date_start order by date_start desc';
+            $res = $pearDBO->query($request);
+            while ($row = $res->fetchRow()) {
+                fillBuffer($statesTab, $row, $color);
+            }
+            $DBRESULT->free();
 		}
-		unset($sg);
-		$DBRESULT->free();
-	
-		$request =  'SELECT ' .
-					'date_start, date_end, OKnbEvent, CRITICALnbEvent, WARNINGnbEvent, UNKNOWNnbEvent, ' .
-					'avg( `OKTimeScheduled` ) as "OKTimeScheduled", ' .
-					'avg( `WARNINGTimeScheduled` ) as "WARNINGTimeScheduled", ' .
-					'avg( `UNKNOWNTimeScheduled` ) as "UNKNOWNTimeScheduled", ' .
-					'avg( `CRITICALTimeScheduled` ) as "CRITICALTimeScheduled", ' .
-					'avg( `UNDETERMINEDTimeScheduled` ) as "UNDETERMINEDTimeScheduled" ' .
-					'FROM `log_archive_service` WHERE `service_id` IN ('.$str.') group by date_end, date_start order by date_start desc';
-		$res = $pearDBO->query($request);
-		while ($row = $res->fetchRow()) {
-			fillBuffer($statesTab, $row, $color);
-		}
-		$DBRESULT->free();
-		
 	} else {
 		$buffer->writeElement("error", "error");		
 	}

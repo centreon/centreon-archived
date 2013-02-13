@@ -161,8 +161,6 @@
 	 */
         $svcMethod = new CentreonService($pearDB);
 	$str = "";
-	$indexToAdd = array();
-	$listIndexData = getListIndexData($instanceId);
 	if ($oreon->CentreonGMT->used() == 1) {
 		foreach ($hostGenerated as $host_id => $host_name) {
 			$svcList = getMyHostActiveServices($host_id);
@@ -385,21 +383,6 @@
 
 				unset($parent);
 				unset($strTMPTemp);
-
-				/*
-				 * Generate index data
-				 */
-				$relLink = $host_id . "_" . $svc_id;
-				if (isset($listIndexData[$relLink])) {
-				    $listIndexData[$relLink]['status'] = true;
-				} else {
-				    $indexToAdd[] = array(
-				        'host_id' => $host_id,
-				        'host_name' => $host_name,
-				        'service_id' => $svc_id,
-				        'service_description' => $svc_name
-				    );
-				}
 			}
 		}
 
@@ -777,57 +760,9 @@
 			        }
 			    }
 			}
-			$tmpListHost = array_map('serialize', $tmpListHost);
-			$tmpListHost = array_unique($tmpListHost);
-			$tmpListHost = array_map('unserialize', $tmpListHost);
-			/*
-			 * Generate index data
-			 */
-			foreach ($tmpListHost as $host) {
-			    $host_id = $host['host_id'];
-			    $host_name = $host['host_name'];
-			    $relLink = $host_id . "_" . $service['service_id'];
-    			if (isset($listIndexData[$relLink])) {
-    			    $listIndexData[$relLink]['status'] = true;
-    			} else {
-    			    $indexToAdd[] = array(
-    			        'host_id' => $host_id,
-    			        'host_name' => $host_name,
-    			        'service_id' => $service['service_id'],
-    			        'service_description' => $service["service_description"]
-    			    );
-    			}
-			}
-			unset($tmpListHost);
 		}
 		unset($serviceRelation);
 	}
-
-	/* Change the index data informations */
-	$listIndexToDelete = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToDelete'));
-	$listIndexToKeep = array_map('getIndexesId', array_filter($listIndexData, 'getIndexToKeep'));
-
-	if (count($listIndexToDelete) > 0) {
-    	$queryIndexToDelete = "UPDATE index_data
-    		SET to_delete = 1
-    		WHERE id IN (" . join(', ', $listIndexToDelete) . ")";
-    	$pearDBO->query($queryIndexToDelete);
-	}
-	if (count($listIndexToKeep) > 0) {
-    	$queryIndexToKeep = "UPDATE index_data
-    		SET to_delete = 0
-    		WHERE id IN (" . join(', ', $listIndexToKeep) . ")";
-    	$pearDBO->query($queryIndexToKeep);
-	}
-
-	$queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete)
-		VALUES (%d, '%s', %d, '%s', 0)";
-	foreach ($indexToAdd as $index) {
-	    $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
-	    $pearDBO->query($queryAddIndexToExec);
-	}
-	/* End change the index data informations */
-
 
 	unset($service);
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/services.cfg");

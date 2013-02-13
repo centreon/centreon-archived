@@ -161,7 +161,7 @@
 		$sgs[$sg["sg_id"]] = $sg["sg_name"];
 	}
 	$DBRESULT->free();
-	$am_svcgroup = $form->addElement('advmultiselect', 'svcgroup_relation', array(_("Linked with Serfvice Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect_big, SORT_ASC);
+	$am_svcgroup = $form->addElement('advmultiselect', 'svcgroup_relation', array(_("Linked with Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect_big, SORT_ASC);
 	$am_svcgroup->setButtonAttributes('add', array('value' =>  _("Add")));
 	$am_svcgroup->setButtonAttributes('remove', array('value' => _("Remove")));
 	$am_svcgroup->setElementTemplate($eTemplate);

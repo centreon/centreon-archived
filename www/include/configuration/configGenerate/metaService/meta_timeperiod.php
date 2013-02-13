@@ -52,7 +52,7 @@
 	$str .= print_line("friday", "00:00-24:00");
 	$str .= print_line("saturday", "00:00-24:00");
 	$str .= "}\n\n";
-	write_in_file($handle, $str, $nagiosCFGPath.$tab['id']."/meta_timeperiod.cfg");
+	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, 'UTF-8'), $nagiosCFGPath.$tab['id']."/meta_timeperiod.cfg");
 	fclose($handle);
 	unset($str);
 ?>

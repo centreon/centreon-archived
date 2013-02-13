@@ -214,7 +214,7 @@ class CentreonAuthLDAP {
             /*
              * Replace space by underscore
              */
-            $userDisplay = str_replace(' ', '_', $userDisplay);
+            $userDisplay = str_replace(array(' ', ','), '_', $userDisplay);
             $userEmail = "NULL";
             if (isset($userInfos[$this->ldap->getAttrName('user', 'email')]) && trim($userInfos[$this->ldap->getAttrName('user', 'email')]) != '') {
                 if (is_array($userInfos[$this->ldap->getAttrName('user', 'email')])) {
@@ -237,7 +237,6 @@ class CentreonAuthLDAP {
                     $userPager = "'" . $userInfos[$this->ldap->getAttrName('user', 'pager')] . "'";
                 }
             }
-            file_put_contents('/tmp/debug',print_r($this->contactInfos, true)."\n\n",FILE_APPEND);
             if (isset($this->contactInfos['contact_id'])) {
                 /*
                  * Update the user dn and extended informations for user

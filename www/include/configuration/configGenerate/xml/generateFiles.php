@@ -78,7 +78,7 @@ function printDebug($xml)
         $i = 0;
         foreach ($lines as $line) {
             if (strncmp($line, "Processing object config file", strlen("Processing object config file"))
-                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org"))) 
+                && strncmp($line, "Website: http://www.nagios.org", strlen("Website: http://www.nagios.org")))
             $msg_debug[$host['id']] .= $line . "<br>";
             $i++;
         }
@@ -211,6 +211,7 @@ try {
      */
     if ($generate) {
         $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
+        $pearDBO = new CentreonDB('centstorage');
         while ($tab = $DBRESULT_Servers->fetchRow()){
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
                 $pollerID = $tab['id'];
@@ -279,6 +280,9 @@ try {
                 unset($generatedS);
             }
         }
+
+        require_once $path."genIndexData.php";
+
         /*
         * Generate correlation file
         */
@@ -320,7 +324,7 @@ foreach ($generatePhpErrors as $error) {
     }/* else {
         $errmsg = '<p><span style="color: orange;">Warning</span><span style="margin-left: 5px;">' . $error[1] . '</span></p>';
     }*/
-    
+
 }
 $xml->endElement();
 

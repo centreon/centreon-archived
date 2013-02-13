@@ -46,7 +46,7 @@
     {
         require_once $centreon_path . 'www/class/centreonConnector.class.php';
         $connectorObj = new CentreonConnector($pearDB);
-        $connectorList = $connectorObj->getList();
+        $connectorList = $connectorObj->getList(true, false, 0, true);
         
         /**
          * Define preg arguments

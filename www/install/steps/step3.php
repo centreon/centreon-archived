@@ -85,7 +85,7 @@ $contents = "
             </tr>
         </thead>
         <tbody id='engineParams'></tbody>
-        <table>
+        </table>
     </form>    
 ";
 
