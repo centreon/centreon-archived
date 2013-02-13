@@ -34,7 +34,7 @@
 			 		<td class="FormHeader"><img src='./img/icones/16x16/component_green.gif'>&nbsp;&nbsp;{$form.header.status}</td>
 			 	</tr>
 			 	<tr class="list_two_fixe">
-			 		<td class="ListColLvl1_name">{$msg_restart[$key]}</td>
+			 		<td class="ListColLvl1_name">{$msg_generate[$key]}</td>
 			 	</tr>
 			 </table>
 		 </div>
