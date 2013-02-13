@@ -247,7 +247,9 @@
 				<table class="tactical_light_table">
 					<tr style="font-weight:bold;" class="tactical_light_header">
                         <xsl:if test="availableHostCriticalities &gt; 0">
-                            <td align='center'><xsl:value-of select='//main/str_hostprobcriticality'/></td>
+                            <td align='center' style="width:24px;">
+                                <xsl:value-of select='//main/str_hostprobcriticality'/>
+                            </td>
                         </xsl:if>
 						<td align='center' colspan="2"><xsl:value-of select='//main/str_hostprobhostname'/></td>
 						<td align='center'><xsl:value-of select='//main/str_hostprobstatus'/></td>
@@ -263,7 +265,7 @@
                             <xsl:element name='td'>
                                 <xsl:attribute name='class'>ListColCenter</xsl:attribute>
                                 <xsl:attribute name='align'>center</xsl:attribute>
-                                <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;</xsl:attribute>
+                                <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;width:24px;</xsl:attribute>
                                 <xsl:element name='img'>
                                     <xsl:attribute name='src'>
                                         <xsl:value-of select='hostcriticality'/>
@@ -690,7 +692,10 @@
 					<table class="tactical_light_table">
 						<tr style="font-weight:bold;" class="tactical_light_header">
                             <xsl:if test="availableSvcCriticalities &gt; 0">
-                                <td align='center' style="width:20px;"><xsl:value-of select='//main/str_criticality'/></td>
+                                <td align='center'>
+                                    <xsl:attribute name='style'>width:24px;</xsl:attribute>
+                                    <xsl:value-of select='//main/str_criticality'/>
+                                </td>
                             </xsl:if>
 							<td align='center'><xsl:value-of select='//main/str_hostname'/></td>
 							<td align='center' colspan="2"><xsl:value-of select='//main/str_servicename'/></td>
@@ -706,7 +711,7 @@
                                 <xsl:if test="//root/availableSvcCriticalities &gt; 0">
                                     <xsl:element name='td'>
                                         <xsl:attribute name='class'>ListColCenter</xsl:attribute>
-                                        <xsl:attribute name='style'>white-space: nowrap;font-weight:bold;</xsl:attribute>
+                                        <xsl:attribute name='style'>white-space: nowrap;font-weight:bold;width:24px;</xsl:attribute>
                                         <xsl:attribute name='align'>center</xsl:attribute>
                                         <xsl:element name='img'>
                                             <xsl:attribute name='src'>
