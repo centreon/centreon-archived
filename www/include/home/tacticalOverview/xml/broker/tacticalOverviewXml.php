@@ -452,7 +452,7 @@
                 " ORDER BY FIELD(s.state,2,1,3), s.last_state_change DESC, h.name LIMIT " . $svcLimit;
 	} else {
 		$rq1 = 	" SELECT DISTINCT h.name, s.host_id, s.service_id, s.description, s.notes, s.notes_url, s.action_url, s.state, s.last_check as last_check, s.output, s.last_state_change as last_state_change, h.address, h.icon_image, i.name as instance_name" .
-                " FROM hosts h, centreon_acl, instances i, services s" .
+                " FROM hosts h, instances i, services s" .
                 " WHERE h.host_id = s.host_id " .
 		        " AND h.instance_id = i.instance_id " .
                 " AND s.state != 0" .

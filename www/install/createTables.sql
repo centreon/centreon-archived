@@ -1790,6 +1790,7 @@ CREATE TABLE `nagios_server` (
   `nagios_perfdata` varchar(255) DEFAULT NULL,
   `centreonbroker_cfg_path` varchar(255) DEFAULT NULL,
   `centreonbroker_module_path` varchar(255) DEFAULT NULL,
+  `centreonconnector_path` varchar(255) DEFAULT NULL,
   `ssh_port` int(11) DEFAULT NULL,
   `ssh_private_key` varchar(255) DEFAULT NULL,
   `init_script_snmptt` varchar(255) DEFAULT NULL,
