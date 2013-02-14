@@ -6,7 +6,7 @@
 	<tr class='ListHeader'>
 		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
                 <xsl:if test = "//i/use_criticality = 1">
-                    <td class="ListColHeaderCenter" style="white-space:nowrap;" id="criticality_id"></td>
+                    <td class="ListColHeaderCenter" style="white-space:nowrap;width:17px;" id="criticality_id"></td>
                 </xsl:if>
 		<td colspan="2" class="ListColHeaderCenter" style="white-space:nowrap;" id="host_name"></td>
 		<td class="ListColHeaderCenter" style="white-space:nowrap;" id="current_state"></td>
@@ -51,7 +51,7 @@
 		</xsl:element>
 		</td>
                 <xsl:if test = "//i/use_criticality = 1">
-                    <td class="ListColCenter" style="white-space:nowrap;">
+                    <td class="ListColCenter" style="white-space:nowrap;width:17px;">
                     <xsl:if test = "hci = 1">
                         <xsl:element name="img">
                             <xsl:attribute name="src">img/media/<xsl:value-of select="ci"/></xsl:attribute>
