@@ -41,42 +41,53 @@
         mkdir($nagiosCFGPath.$tab['id']."/");
     
 	$fileHandler = create_file($nagiosCFGPath.$tab['id']."/connectors.cfg", $oreon->user->get_name());
-    
+
     if ($tab['monitoring_engine'] == 'CENGINE')
     {
-        require_once $centreon_path . 'www/class/centreonConnector.class.php';
-        $connectorObj = new CentreonConnector($pearDB);
-        $connectorList = $connectorObj->getList(true, false, 0, true);
-        
-        /**
-         * Define preg arguments
-         */
-       $slashesOri = array('/#BR#/',
-                           '/#T#/',
-                           '/#R#/',
-                           '/#S#/',
-                           '/#BS#/',
-                           '/#P#/');
-       $slashesRep = array("\\n",
-                           "\\t",
-                           "\\r",
-                           "/",
-                           "\\",
-                           "|");
-        
-        $str = "";
-        foreach($connectorList as $connector)
-        {
-            $connector['command_line'] = trim(preg_replace($slashesOri, $slashesRep, $connector['command_line']));
-            $str .= "define connector{\n";
-            $str .= print_line('connector_name', $connector['name']);
-            $str .= print_line('connector_line', $connector['command_line']);
-            $str .= "}\n\n";
+        /* Getting base path for connectors */
+        $queryGetPath = 'SELECT centreonconnector_path
+            FROM nagios_server
+            WHERE id = ' . $tab['id'];
+        $res = $pearDB->query($queryGetPath);
+        $row = $res->fetchRow();
+        if ($row['centreonconnector_path'] != '') {
+            $connector_basepath = preg_replace('!/$!', '', $row['centreonconnector_path']);
+
+            require_once $centreon_path . 'www/class/centreonConnector.class.php';
+            $connectorObj = new CentreonConnector($pearDB);
+            $connectorList = $connectorObj->getList(true, false, 0, true);
+            
+            /**
+             * Define preg arguments
+             */
+           $slashesOri = array('/#BR#/',
+                               '/#T#/',
+                               '/#R#/',
+                               '/#S#/',
+                               '/#BS#/',
+                               '/#P#/');
+           $slashesRep = array("\\n",
+                               "\\t",
+                               "\\r",
+                               "/",
+                               "\\",
+                               "|");
+            
+            $str = "";
+            foreach($connectorList as $connector)
+            {
+                $connector['command_line'] = $connector_basepath . '/' . $connector['command_line'];
+                $connector['command_line'] = trim(preg_replace($slashesOri, $slashesRep, $connector['command_line']));
+                $str .= "define connector{\n";
+                $str .= print_line('connector_name', $connector['name']);
+                $str .= print_line('connector_line', $connector['command_line']);
+                $str .= "}\n\n";
+            }
         }
     }
-    
+        
     write_in_file($fileHandler, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/connectors.cfg");
-	fclose($fileHandler);
-	setFileMod($nagiosCFGPath.$tab['id']."/connectors.cfg");
+    fclose($fileHandler);
+    setFileMod($nagiosCFGPath.$tab['id']."/connectors.cfg");
 
 ?>

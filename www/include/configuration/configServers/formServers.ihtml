@@ -26,7 +26,9 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="nagios_perfdata"> {$form.nagios_perfdata.label}</td><td class="FormRowValue">{$form.nagios_perfdata.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.CentreonBroker}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_cfg_path"> {$form.centreonbroker_cfg_path.label}</td><td class="FormRowValue">{$form.centreonbroker_cfg_path.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="centreonbroker_module_path"> {$form.centreonbroker_module_path.label}</td><td class="FormRowValue">{$form.centreonbroker_module_path.html}</td></tr>
+        <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.CentreonConnector}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="centreonconnector_path"> {$form.centreonconnector_path.label}</td><td class="FormRowValue">{$form.centreonconnector_path.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.SNMPTT}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="snmptt_init_script"> {$form.init_script_snmptt.label}</td><td class="FormRowValue">{$form.init_script_snmptt.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.Misc}</td></tr>

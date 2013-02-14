@@ -151,6 +151,12 @@ $form->addElement('text', 'centreonbroker_cfg_path', _("Centreon Broker configur
 $form->addElement('text', 'centreonbroker_module_path', _("Centreon Broker modules path"), $attrsText2);
 
 /*
+ * Centreon Connector
+ */
+$form->addElement('header', 'CentreonConnector', _("Centreon Connector"));
+$form->addElement('text', 'centreonconnector_path', _("Centreon Connector path"), $attrsText2);
+
+/*
  * SNMPTT
  */
 $form->addElement('text', 'init_script_snmptt', _("SNMPTT init script path"), $attrsText2);

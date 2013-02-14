@@ -13,5 +13,6 @@ $help['nagiostats_bin'] = dgettext("help", "Path of stats binary of the schedule
 $help['nagios_perfdata'] = dgettext("help", "Perfdata script");
 $help['centreonbroker_cfg_path'] = dgettext("help", "Path of the configuration file for Centreon Broker");
 $help['centreonbroker_module_path'] = dgettext("help", "Path with modules for Centreon Broker");
+$help['centreonconnector_path'] = dgettext("help", "Path with Centreon Connector binaries");
 $help['ns_activate'] = dgettext("help", "Enable or disable poller");
 ?>
