@@ -400,7 +400,7 @@ function divideHostGroupsToHostGroup($service_id) {
 
     $DBRESULT3 = $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation WHERE service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL");
     while ($data = $DBRESULT3->fetchRow()) {
-        $sv_id = multipleServiceInDB(array($service_id=>"1"), array($service_id=>"1"), null, 0, $data["hostgroup_hg_id"], array(), array(), "divide");        
+        $sv_id = multipleServiceInDB(array($service_id=>"1"), array($service_id=>"1"), null, 0, $data["hostgroup_hg_id"], array(), array());
         $hosts = getMyHostGroupHosts($data["hostgroup_hg_id"]);
         foreach ($hosts as $host_id) {
             $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host_id."' AND service_id = '".$service_id."'");
@@ -418,7 +418,7 @@ function divideHostGroupsToHost($service_id) {
         $hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
         
         foreach ($hosts as $host_id) {
-            $sv_id = multipleServiceInDB(array($service_id=>"1"), array($service_id=>"1"), $host_id, 0, null, array(), array($relation["hostgroup_hg_id"] => null), "divide");
+            $sv_id = multipleServiceInDB(array($service_id=>"1"), array($service_id=>"1"), $host_id, 0, null, array(), array($relation["hostgroup_hg_id"] => null));
             $DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host_id."' AND service_id = '".$service_id."'");
             setHostChangeFlag($pearDB, $host_id, null);                            
         }
@@ -431,7 +431,7 @@ function divideHostsToHost($service_id) {
     
     $DBRESULT = $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$service_id."'");
     while ($relation = $DBRESULT->fetchRow()) {
-        $sv_id = multipleServiceInDB(array($service_id => "1"), array($service_id => "1"), $relation["host_host_id"], 0, null, array(), array($relation["hostgroup_hg_id"] => null), "divide");
+        $sv_id = multipleServiceInDB(array($service_id => "1"), array($service_id => "1"), $relation["host_host_id"], 0, null, array(), array($relation["hostgroup_hg_id"] => null));
         $DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$relation["host_host_id"]."' AND service_id = '".$service_id."'");
         setHostChangeFlag($pearDB, $relation["host_host_id"], null);
     }
@@ -467,12 +467,14 @@ function divideHostsToHost($service_id) {
 						$fields["service_description"] = $service_description;
 					}
 				}
+
 				if (!count($hPars)) {
 					$hPars = getMyServiceHosts($key);
 				}
 				if (!count($hgPars)) {
 					$hgPars = getMyServiceHostGroups($key);
 				}
+
 				if (($row["service_register"] && testServiceExistence($service_description, $hPars, $hgPars, $params)) ||
 				    (!$row["service_register"] && testServiceTemplateExistence($service_description))) {
 					$hPars = array();
@@ -571,7 +573,7 @@ function divideHostsToHost($service_id) {
 							 * Extended information duplication
 							 */
 							$DBRESULT = $pearDB->query("SELECT * FROM extended_service_information WHERE service_service_id = '".$key."'");
-							while($esi = $DBRESULT->fetchRow())	{
+							while ($esi = $DBRESULT->fetchRow())	{
 								$val = null;
 								$esi["service_service_id"] = $maxId["MAX(service_id)"];
 								$esi["esi_id"] = null;
@@ -583,8 +585,9 @@ function divideHostsToHost($service_id) {
 									$fields[$key2] = $value2;
 								}
 							}
+
 							/*
-							 *  on demand macros
+							 * On demand macros
 							 */
 							$mTpRq1 = "SELECT * FROM `on_demand_macro_service` WHERE `svc_svc_id` ='".$key."'";
 						 	$DBRESULT3 = $pearDB->query($mTpRq1);
@@ -598,7 +601,7 @@ function divideHostsToHost($service_id) {
 							}
 
 							/*
-							 *  Service categories
+							 * Service categories
 							 */
 							$mTpRq1 = "SELECT * FROM `service_categories_relation` WHERE `service_service_id` = '".$key."'";
 						 	$DBRESULT3 = $pearDB->query($mTpRq1);
@@ -608,18 +611,18 @@ function divideHostsToHost($service_id) {
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							}
 
-                                                        /*
-                                                         * Criticality
-                                                         */
-                                                        $sql = "SELECT criticality_id
-                                                                FROM criticality_resource_relations
-                                                                WHERE service_id = ".$pearDB->escape($key);
-                                                        $res = $pearDB->query($sql);
-                                                        if ($res->numRows()) {
-                                                            $cr = $res->fetchRow();
-                                                            setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
-                                                        }
-
+                            /*
+                             * Criticality
+                             */
+                            $sql = "SELECT criticality_id 
+                                        FROM criticality_resource_relations
+                                        WHERE service_id = ".$pearDB->escape($key);
+                            $res = $pearDB->query($sql);
+                            if ($res->numRows()) {
+                                $cr = $res->fetchRow();
+                                setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
+                            }
+                            
 							/*
 							 *  get svc desc
 							 */
