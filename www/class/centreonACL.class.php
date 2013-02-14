@@ -159,31 +159,34 @@ class CentreonACL
             $this->loadParentTemplates();
  		}
 
- 		$query = "SELECT acl.acl_group_id, acl.acl_group_name " .
- 				"FROM acl_groups acl, acl_group_contacts_relations agcr " .
- 				"WHERE acl.acl_group_id = agcr.acl_group_id " .
- 				"AND agcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
- 				"AND acl.acl_group_activate = '1' " .
-                "ORDER BY acl.acl_group_name ASC";
- 		$DBRESULT = $pearDB->query($query);
- 		while ($row = $DBRESULT->fetchRow()) {
- 			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
- 		}
- 		$DBRESULT->free();
+        if (count($this->parentTemplates) != 0)
+        {
+            $query = "SELECT acl.acl_group_id, acl.acl_group_name " .
+                    "FROM acl_groups acl, acl_group_contacts_relations agcr " .
+                    "WHERE acl.acl_group_id = agcr.acl_group_id " .
+                    "AND agcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
+                    "AND acl.acl_group_activate = '1' " .
+                    "ORDER BY acl.acl_group_name ASC";
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
+            }
+            $DBRESULT->free();
 
- 		$query = "SELECT acl.acl_group_id, acl.acl_group_name " .
- 				"FROM acl_groups acl, acl_group_contactgroups_relations agcgr, contactgroup_contact_relation cgcr " .
- 				"WHERE acl.acl_group_id = agcgr.acl_group_id " .
- 				"AND cgcr.contactgroup_cg_id = agcgr.cg_cg_id " .
- 				"AND cgcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
- 				"AND acl.acl_group_activate = '1' " .
-                "ORDER BY acl.acl_group_name ASC";
+            $query = "SELECT acl.acl_group_id, acl.acl_group_name " .
+                    "FROM acl_groups acl, acl_group_contactgroups_relations agcgr, contactgroup_contact_relation cgcr " .
+                    "WHERE acl.acl_group_id = agcgr.acl_group_id " .
+                    "AND cgcr.contactgroup_cg_id = agcgr.cg_cg_id " .
+                    "AND cgcr.contact_contact_id IN (" . join(', ', $this->parentTemplates) . ") " .
+                    "AND acl.acl_group_activate = '1' " .
+                    "ORDER BY acl.acl_group_name ASC";
 
- 		$DBRESULT = $pearDB->query($query);
- 		while ($row = $DBRESULT->fetchRow()) {
- 			$this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
- 		}
- 		$DBRESULT->free();
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $this->accessGroups[$row['acl_group_id']] = $row['acl_group_name'];
+            }
+            $DBRESULT->free();
+        }
  	}
 
  	/*
