@@ -94,7 +94,7 @@ class CentreonAuthLDAP {
      */
     private function getLogFlag() {
         global $pearDB;
-        
+
         $res = $pearDB->query("SELECT value FROM options WHERE `key` = 'debug_ldap_import'");
         $data = $res->fetchRow();
         if (isset($data["value"])) {
@@ -143,9 +143,9 @@ class CentreonAuthLDAP {
                 case 0:
                     if ($this->debug)
                         $this->CentreonLog->insertLog(3, "LDAP AUTH : OK, let's go ! ");
-                    //if ($newUser) {
-                    $this->updateUserDn();
-                    //}
+                    if (false == $this->updateUserDn()) {
+                        return 0;
+                    }
                     return 1;
                     break;
                 case 2:
@@ -261,10 +261,11 @@ class CentreonAuthLDAP {
                 /*
                  * Find the template ID
                  */
-                $query = "SELECT ari_value 
-                          FROM `auth_ressource_info` 
-                          WHERE `ari_name` = 'ldap_contact_tmpl' 
-                          AND ar_id = ".$this->pearDB->escape($this->arId);
+                $query = "SELECT ari_value
+                          FROM `auth_ressource_info` a, `contact` c
+                          WHERE a.`ari_name` = 'ldap_contact_tmpl'
+                          AND a.ar_id = ".$this->pearDB->escape($this->arId)."
+                          AND a.ari_value = c.contact_id";
                 $res = $this->pearDB->query($query);
                 $row = $res->fetchRow();
                 if (!isset($row['ari_value']) || !$row['ari_value']) {
