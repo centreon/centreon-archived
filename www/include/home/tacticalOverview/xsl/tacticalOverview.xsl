@@ -247,7 +247,7 @@
 				<table class="tactical_light_table">
 					<tr style="font-weight:bold;" class="tactical_light_header">
                         <xsl:if test="availableHostCriticalities &gt; 0">
-                            <td align='center' style="width:24px;">
+                            <td align='center' style="width:17px;">
                                 <xsl:value-of select='//main/str_hostprobcriticality'/>
                             </td>
                         </xsl:if>
@@ -265,7 +265,7 @@
                             <xsl:element name='td'>
                                 <xsl:attribute name='class'>ListColCenter</xsl:attribute>
                                 <xsl:attribute name='align'>center</xsl:attribute>
-                                <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;width:24px;</xsl:attribute>
+                                <xsl:attribute name='style'>font-weight:bold;white-space:nowrap;width:17px;</xsl:attribute>
                                 <xsl:element name='img'>
                                     <xsl:attribute name='src'>
                                         <xsl:value-of select='hostcriticality'/>
@@ -693,7 +693,7 @@
 						<tr style="font-weight:bold;" class="tactical_light_header">
                             <xsl:if test="availableSvcCriticalities &gt; 0">
                                 <td align='center'>
-                                    <xsl:attribute name='style'>width:24px;</xsl:attribute>
+                                    <xsl:attribute name='style'>width:17px;</xsl:attribute>
                                     <xsl:value-of select='//main/str_criticality'/>
                                 </td>
                             </xsl:if>
@@ -711,7 +711,7 @@
                                 <xsl:if test="//root/availableSvcCriticalities &gt; 0">
                                     <xsl:element name='td'>
                                         <xsl:attribute name='class'>ListColCenter</xsl:attribute>
-                                        <xsl:attribute name='style'>white-space: nowrap;font-weight:bold;width:24px;</xsl:attribute>
+                                        <xsl:attribute name='style'>white-space: nowrap;font-weight:bold;width:17px;</xsl:attribute>
                                         <xsl:attribute name='align'>center</xsl:attribute>
                                         <xsl:element name='img'>
                                             <xsl:attribute name='src'>
