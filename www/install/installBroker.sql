@@ -289,6 +289,7 @@ CREATE TABLE `hosts` (
   `statusmap_image` varchar(255) DEFAULT NULL,
   UNIQUE KEY `host_id` (`host_id`),
   KEY `instance_id` (`instance_id`),
+  KEY `host_name` (`name`),
   CONSTRAINT `hosts_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -658,6 +659,7 @@ CREATE TABLE `services` (
   `volatile` tinyint(1) DEFAULT NULL,
   UNIQUE KEY `host_id` (`host_id`,`service_id`),
   KEY `service_id` (`service_id`),
+  KEY `service_description` (`description`),
   CONSTRAINT `services_ibfk_1` FOREIGN KEY (`host_id`) REFERENCES `hosts` (`host_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
