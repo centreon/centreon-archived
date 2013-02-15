@@ -140,15 +140,9 @@
 			}
 			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
 				$stdout = "";
-                if (!isset($msg_generate[$ret['host']])) {
-                    $msg_generate[$ret['host']] = "";
-                }
-	            if (!isset($msg_generate)) {
-	                $msg_generate = array();
-	            }
 				/* even if we generate files for a remote server, we push snmptt config files on the local server */
 	            $stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-	            $msg_generate[$ret['host']] .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
+	            $msg_generate .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
 			}
 
 			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"]) {
