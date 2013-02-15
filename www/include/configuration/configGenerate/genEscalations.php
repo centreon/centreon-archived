@@ -260,8 +260,8 @@
 				}
 			}
 			unset($escalation);
-			$DBRESULT->free();
 		}
+        $DBRESULT->free();
 	} else {
 		$DBRESULT =& $pearDB->query("SELECT DISTINCT esc.*
 								     FROM escalation_hostgroup_relation ehgr, escalation esc, hostgroup_relation hgr, ns_host_relation nhr
@@ -586,9 +586,9 @@
 	 */
 	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/escalations.cfg");
 	fclose($handle);
-	
+
 	setFileMod($nagiosCFGPath.$tab['id']."/escalations.cfg");
-	
+
 	unset($str);
 	unset($i);
 ?>
