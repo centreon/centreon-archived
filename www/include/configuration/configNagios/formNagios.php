@@ -342,9 +342,7 @@
 	 * Aggressive host checking
 	 */
 	$nagTab = array();
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("Yes"), '1');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("No"), '0');
-	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_aggressive_host_checking', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'use_aggressive_host_checking', _("Aggressive Host Checks"), '&nbsp;');
 
 	/* *****************************************************
@@ -879,6 +877,7 @@
         $tpl->assign("BrokerOptionsWarning", 
                      _("Warning: this value can be dangerous, use -1 if you have any doubt."));
         $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
+        $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
         $tpl->display("formNagios.ihtml");
 		
 	}
