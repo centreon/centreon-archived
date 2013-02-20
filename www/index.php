@@ -36,6 +36,8 @@
  *
  */
 
+    ini_set('display_errors', 'Off');
+
   	$etc = "@CENTREON_ETC@";
 
         clearstatcache(true, "$etc/centreon.conf.php");

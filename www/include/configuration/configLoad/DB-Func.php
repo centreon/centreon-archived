@@ -1415,9 +1415,12 @@
 					$cmd = explode("!", trim($tmpConf[$key]));
 					$cmd_name = array_shift($cmd);
 					$tmpConf["command_command_id"] = getMyCommandID($cmd_name);
-					if (!$tmpConf["command_command_id"])
+                    if (!$tmpConf["command_command_id"]) {
+                        if ($debug_nagios_import && $cmd_name != '') {
+                            error_log("[" . date("d/m/Y H:s") ."] Nagios Import : Warning no check command found for service " . $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
+                        }
 						unset($tmpConf["command_command_id"]);
-					else if (strstr($cmd_name, "check_graph"))
+                    } else if (strstr($cmd_name, "check_graph"))
 						$rrd_service = array_pop($cmd);
 					if (isset($tmpConf["command_command_id"]) && count($cmd))
 						$tmpConf["command_command_id_arg"] = "!".implode("!", $cmd);
