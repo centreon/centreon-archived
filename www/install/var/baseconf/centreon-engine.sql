@@ -10,7 +10,7 @@ VALUES (1, '@CENTREON_ENGINE_LIB@/externalcmd.so');
 INSERT INTO `cfg_resource` (`resource_id`, `resource_name`, `resource_line`, `resource_comment`, `resource_activate`) VALUES
 (1, '$USER1$', '@MONITORINGENGINE_PLUGIN@', 'path to the plugins', '1');
 
-INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id` ) VALUES (1, 1), (2, 1);
+INSERT INTO `cfg_resource_instance_relations` (`resource_id`, `instance_id` ) VALUES (1, 1);
 
 INSERT INTO `options` (`key`, `value`) VALUES ('cengine_path_connectors','@CENTREON_ENGINE_CONNECTORS@/');
 INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_engine','CENGINE');

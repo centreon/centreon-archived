@@ -82,7 +82,6 @@ INSERT INTO `acl_topology_relations` (`agt_id`, `topology_topology_id`, `acl_top
 (76, 46, 2, 1),
 (77, 61, 2, 1),
 (78, 62, 2, 1),
-(79, 63, 2, 1),
 (80, 47, 2, 1),
 (81, 64, 2, 1),
 (82, 65, 2, 1),
