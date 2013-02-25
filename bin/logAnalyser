@@ -519,7 +519,8 @@ sub parseLogFile($$$) {
             die "Error: failed to open $LOG_FILE.\n";
         }
         $sth->finish();
-        my $archname = "$archivepath/nagios-" . time_to_date($timeLaunch) . ".log";
+        my @now = localtime();
+        my $archname = "$archivepath/nagios-" . time_to_date($timeLaunch) . "-$now[2].log";
         if (-f $archname) {
             my $st = stat($archname);
             if ($st->mtime > $previous_launch_time) {

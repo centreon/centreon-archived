@@ -179,7 +179,7 @@
 	/*
 	 * Further informations
 	 */
-
+    $form->addElement('text', 'hg_rrd_retention', 'RRD retention', array('size' => 5));
 	$form->addElement('header', 'furtherInfos', _("Additional Information"));
 	$form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
@@ -288,6 +288,7 @@
 		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 		$form->accept($renderer);
 		$tpl->assign('form', $renderer->toArray());
+        $tpl->assign('days', _('days'));
 		$tpl->assign('o', $o);
 		$tpl->assign('topdoc', _("Documentation"));
 		$tpl->display("formHostGroup.ihtml");

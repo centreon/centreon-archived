@@ -179,10 +179,9 @@
 		    echo "}";
 		}
 	}
-	print "check_session();";
-	print "\n});\n";
-
-?>
+    ?>
+        check_session();
+    });
 </script>
 <script src="./include/common/javascript/xslt.js" type="text/javascript"></script>
 </head>
