@@ -399,7 +399,7 @@ class CentreonACL
 					$count ? $ACL = "topology_id IN ($str_topo) AND " : $ACL = "";
 					unset($DBRESULT);
 
-					$DBRESULT = $pearDB->query("SELECT topology_page, topology_id FROM topology WHERE $ACL topology_page IS NOT NULL");
+					$DBRESULT = $pearDB->query("SELECT topology_page, topology_id FROM topology FORCE INDEX (`PRIMARY`) WHERE $ACL topology_page IS NOT NULL");
 					while ($topo_page = $DBRESULT->fetchRow()) {
 						$this->topology[$topo_page["topology_page"]] = $tmp_topo_page[$topo_page["topology_id"]];
 					}
