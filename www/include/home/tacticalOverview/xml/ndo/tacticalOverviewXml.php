@@ -112,9 +112,6 @@
 	// Get Hosts Problems
 	$rq1 = 	" SELECT DISTINCT hs.host_object_id, obj.name1 , h.notes, h.notes_url, h.action_url, hs.current_state, unix_timestamp(hs.last_check) AS last_check, hs.output, h.icon_image, h.address, unix_timestamp(hs.last_state_change) AS lsc, i.instance_name ".
 			" FROM ".$ndo_base_prefix."hoststatus hs, ".$ndo_base_prefix."objects obj,  ".$ndo_base_prefix."hosts h, " . $ndo_base_prefix."instances i ".
-			", (" . $ndo_base_prefix."hosts nh ".
-            " LEFT JOIN " . $ndo_base_prefix . "host_parenthosts hph ".
-            " ON hph.parent_host_object_id = nh.host_object_id) ".
             " WHERE obj.object_id = hs.host_object_id".
 	        " AND obj.instance_id = i.instance_id " .
 			" AND obj.object_id = h.host_object_id" .

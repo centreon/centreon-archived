@@ -151,7 +151,7 @@
 	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
-	$rows = $DBRESULT->numRows();
+	$rows = $pearDB->numberRows();
 
 	include("./include/common/checkPagination.php");
 
@@ -175,12 +175,12 @@
 			$moptions .= "<a href='main.php?p=".$p."&server_id=".$config['id']."&o=s&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_next.gif' border='0' alt='"._("Enabled")."'></a>&nbsp;&nbsp;";
 		}
 		$moptions .= "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input onKeypress=\"if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;\" maxlength=\"3\" size=\"3\" value='1' style=\"margin-bottom:0px;\" name='dupNbr[".$config['id']."]'></input>";
-		
+
 		if (!isset($nagiosInfo[$config["name"]]["is_currently_running"])) {
 		  $nagiosInfo[$config["name"]]["is_currently_running"] = 0;
 		}
 
-		/* 
+		/*
 		 * Manage flag for changes
 		 */
 		$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
@@ -210,7 +210,7 @@
 				     "RowMenu_version" => (isset($nagiosInfo[$config["name"]]["version"]) ? $nagiosInfo[$config["name"]]["version"] : _("N/A")),
 				     "RowMenu_startTime" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["program_start_time"]) : "-",
 				     "RowMenu_lastUpdateTime" => (isset($nagiosInfo[$config["name"]]["last_alive"]) && $nagiosInfo[$config["name"]]["last_alive"]) ? $centreonGMT->getDate(_("d/m/Y H:i:s"), $nagiosInfo[$config["name"]]["last_alive"]) : "-",
-				     "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag, 
+				     "RowMenu_lastUpdateTimeFlag" => $lastUpdateTimeFlag,
 				     "RowMenu_pid" => (isset($nagiosInfo[$config["name"]]["is_currently_running"]) && $nagiosInfo[$config["name"]]["is_currently_running"] == 1) ? $nagiosInfo[$config["name"]]["process_id"] : "-",
 				     "RowMenu_status" => $config["ns_activate"] ? _("Enabled") : _("Disabled"),
 				     "RowMenu_statusVal" => $config["ns_activate"],
@@ -220,7 +220,7 @@
 	$tpl->assign("elemArr", $elemArr);
 
 	$tpl->assign("notice", _("Only services and hosts are taken in account in order to calculate this status. If you modify a template, it won't tell you the configuration had changed."));
-	
+
 	/*
 	 * Different messages we put in the template
 	 */
