@@ -133,22 +133,20 @@
 		}
 		unset($data);
 	} else {
-		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
+		$rq2 =	"SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, c.service_id, h.name AS host_name, s.description AS service_description " .
 				"FROM comments c, hosts h, services s ";
-		if (!$is_admin) {
-			$rq2 .=	", centreon_acl acl ";
+		$rq2 .=	"WHERE c.host_id = h.host_id AND c.service_id = s.service_id ";
+		$rq2 .= " AND c.expires = '0' ";
+        $rq2 .= " AND (SELECT count(internal_id) FROM comments c2 WHERE c.internal_id = c2.internal_id AND c2.deletion_time <> 0) = 0 ";
+        if (!$is_admin) {
+            $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE s.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
 		}
-		$rq2 .=	"WHERE s.description <> '' AND c.host_id = h.host_id AND c.service_id = s.service_id AND c.host_id = s.host_id  " .
-			(isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
+        
+        $rq2 .= (isset($search_service) && $search_service != "" ? " AND s.description LIKE '%$search_service%'" : "") .
 			(isset($host_name) && $host_name != "" ? " AND h.name LIKE '%$host_name%'" : "") .
 			(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%$search_output%'" : "");
-		if (!$is_admin) {
-			$rq2 .=	" AND h.name = acl.host_name AND s.description = acl.service_description ";
-            $rq2 .=	" AND acl.group_id IN (".$oreon->user->access->getAccessGroupsString().") " ;
-		}
-		$rq2 .= " AND c.expires = '0' ";
-                $rq2 .= " AND (SELECT count(internal_id) FROM comments c2 WHERE c.internal_id = c2.internal_id AND c2.deletion_time <> 0) = 0 ";
-                $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
+        
+        $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;
 
                 
 		$DBRESULT = $pearDBO->query($rq2);

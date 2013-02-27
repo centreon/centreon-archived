@@ -283,10 +283,9 @@
                                   AND s.description = '".$pearDBO->escape($svc_description)."' 
                                   AND h.host_id = cmt.host_id 
                                   AND s.service_id = cmt.service_id 
-                                  AND h.host_id = s.host_id 
                                   AND cmt.expires = 0 
                                   AND (SELECT count(internal_id) FROM comments cmt2 WHERE cmt.internal_id = cmt2.internal_id AND cmt2.deletion_time <> 0) = 0
-                                  ORDER BY cmt.entry_time";
+                                  ORDER BY cmt.entry_time DESC";
 			$DBRESULT = $pearDBO->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
 				$tabCommentServices[$i] = $data;
