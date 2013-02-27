@@ -164,7 +164,7 @@
 		$DBRESULT_NDO->free();
 		unset($data);
 	} else {
-        $request =	"SELECT SQL_CALC_FOUND_ROWS DISTINCT d.internal_id as internal_downtime_id, d.entry_time, " .
+        $request =	"SELECT SQL_CALC_FOUND_ROWS d.internal_id as internal_downtime_id, d.entry_time, " .
 				"d.duration, d.author as author_name, d.comment_data, d.fixed as is_fixed, d.start_time AS scheduled_start_time, ".
 				"d.end_time as scheduled_end_time, h.name as host_name, d.started as was_started " . $extrafields .
 				"FROM downtimes d, hosts h " .
@@ -175,13 +175,16 @@
 				(isset($search_output) && $search_output != "" ? " AND d.comment_data LIKE '%$search_output%'" : "") .
 				(isset($hostgroup) && $hostgroup != 0 ? " AND dtm.object_id = mb.host_object_id AND mb.hostgroup_id = $hostgroup " : "") .
 				"AND d.host_id = h.host_id " .
-        		"AND h.enabled = 1 " .
-				$centreon->user->access->queryBuilder("AND", "h.name", $hostStr) .
-           		(isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
-        		(isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
-				(isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
-				"ORDER BY d.start_time DESC " .
-				"LIMIT ".$num * $limit.", ".$limit;
+        		"AND h.enabled = 1 ";
+        if (!$is_admin) {
+            $request .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE d.host_id = centreon_acl.host_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
+        }
+		$request .= $centreon->user->access->queryBuilder("AND", "h.name", $hostStr) .
+           		    (isset($view_downtime_cycle) && $view_downtime_cycle == 0 ? " AND d.comment_data NOT LIKE '%Downtime cycle%' " : "") .
+        		    (isset($search_author) && $search_author != "" ? " AND d.author LIKE '%$search_author%'" : "") .
+				    (isset($view_all) && $view_all == 0 ? "AND d.end_time > '".time()."' " : "") .
+				    "ORDER BY d.start_time DESC " .
+				    "LIMIT ".$num * $limit.", ".$limit;
 		$DBRESULT_NDO = $pearDBndo->query($request);
 		$tab_downtime_host = array();
 		for ($i = 0; $data = $DBRESULT_NDO->fetchRow(); $i++){
