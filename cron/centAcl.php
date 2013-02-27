@@ -57,7 +57,7 @@ function programExit($msg) {
 }
 
 $nbProc = exec('ps -o args -p $(pidof -c -o $$ -o $PPID -o %PPID -x php || echo 1000000) | grep centAcl.php | wc -l');
-if ((int) $nbProc > 2) {
+if ((int) $nbProc > 0) {
     programExit("More than one centAcl.php process currently running. Going to exit...");
 }
 
