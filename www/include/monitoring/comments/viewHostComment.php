@@ -127,23 +127,20 @@
                    }
                    unset($data);
 	} else {
-		$rq2 = "SELECT SQL_CALC_FOUND_ROWS DISTINCT c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, h.name as host_name " .
+		$rq2 = "SELECT SQL_CALC_FOUND_ROWS c.internal_id AS internal_comment_id, c.entry_time, author AS author_name, c.data AS comment_data, c.persistent AS is_persistent, c.host_id, h.name as host_name " .
                        "FROM comments c, hosts h ";
                 $rq2 .= ($hostgroup ? ", hosts_hostgroups hgm, hostgroups hg " : "");
+		$rq2 .=	"WHERE c.host_id = h.host_id AND c.service_id IS NULL  ";
 		if (!$is_admin) {
-			$rq2 .=	", centreon_acl acl ";
+            $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE c.host_id = centreon_acl.host_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
 		}
-		$rq2 .=	"WHERE c.service_id IS NULL AND c.host_id = h.host_id " .
-                (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%".$pearDBO->escape($host_name)."%'" : "") .
-		(isset($search_output) && $search_output != "" ? " AND c.data LIKE '%".$pearDBO->escape($search_output)."%'" : "");
-                if ($hostgroup) {
-                    $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id
-                              AND hg.name = '".$pearDBO->escape($hostgroup)."'
-                              AND hgm.host_id = c.host_id ";
-                }
-		if (!$is_admin) {
-                    $rq2 .= " AND h.name = acl.host_name ";
-		}
+        $rq2 .= (isset($host_name) && $host_name != "" ? " AND h.name LIKE '%".$pearDBO->escape($host_name)."%'" : "") .
+                (isset($search_output) && $search_output != "" ? " AND c.data LIKE '%".$pearDBO->escape($search_output)."%'" : "");
+        if ($hostgroup) {
+             $rq2 .= " AND hgm.hostgroup_id = hg.hostgroup_id
+                       AND hg.name = '".$pearDBO->escape($hostgroup)."'
+                       AND hgm.host_id = c.host_id ";
+        }
 		$rq2 .= " AND c.expires = '0' ";
                 $rq2 .= " AND (SELECT count(internal_id) FROM comments c2 WHERE c.internal_id = c2.internal_id AND c2.deletion_time <> 0) = 0 ";
                 $rq2 .= " ORDER BY entry_time DESC LIMIT ".$num * $limit.", ".$limit;

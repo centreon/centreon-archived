@@ -534,7 +534,7 @@
             // Check if service has criticality
             $rqCriticality = "SELECT cvs.varvalue as criticality ".
                              "FROM nagios_customvariablestatus cvs ".
-                             "WHERE cvs.object_id = '".$ndo['host_object_id']."' ".
+                             "WHERE cvs.object_id = '".$ndo['service_object_id']."' ".
                              "AND cvs.varname='CRITICALITY_ID'";
 
             $resCriticality = $dbb->query($rqCriticality);
