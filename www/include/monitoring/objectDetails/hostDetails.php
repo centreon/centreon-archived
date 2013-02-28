@@ -305,7 +305,7 @@
                                   AND h.host_id = cmt.host_id 
                                   AND cmt.service_id IS NULL 
                                   AND cmt.expires = 0 
-                                  AND (SELECT count(internal_id) FROM comments cmt2 WHERE cmt.internal_id = cmt2.internal_id AND cmt2.deletion_time <> 0) = 0
+                                  AND (cmt.deletion_time IS NULL OR cmt.deletion_time = 0)
                                   ORDER BY cmt.entry_time DESC";
 			$DBRESULT = $pearDBO->query($rq2);
 			for ($i = 0; $data = $DBRESULT->fetchRow(); $i++){
