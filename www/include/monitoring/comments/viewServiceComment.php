@@ -137,7 +137,7 @@
 				"FROM comments c, hosts h, services s ";
 		$rq2 .=	"WHERE c.host_id = h.host_id AND c.service_id = s.service_id ";
 		$rq2 .= " AND c.expires = '0' ";
-        $rq2 .= " AND (SELECT count(internal_id) FROM comments c2 WHERE c.internal_id = c2.internal_id AND c2.deletion_time <> 0) = 0 ";
+        $rq2 .= " AND (c.deletion_time IS NULL OR c.deletion_time = 0) ";
         if (!$is_admin) {
             $rq2 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE s.host_id = centreon_acl.host_id AND s.service_id = centreon_acl.service_id AND group_id IN (" . $oreon->user->access->getAccessGroupsString() . ")) ";
 		}
