@@ -68,6 +68,7 @@ $gopt[$data['key']] = myDecode($data['key']);
 
 !isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
 !isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
+!isset($_GET["strict"]) ? $hostSearchStrict = 0 : $hostSearchStrict = 1;
 
 if ($o == "svcpb" || $o == "svc_unhandled") {
     if (!isset($_GET["sort_type"])) {
