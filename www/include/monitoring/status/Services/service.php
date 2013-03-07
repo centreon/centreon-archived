@@ -107,8 +107,11 @@ $tab_class = array("0" => "list_one", "1" => "list_two");
 $rows = 10;
 
 if (isset($_REQUEST['hg'])) {
-    print $_REQUEST['hg'];
     $_SESSION['monitoring_default_hostgroups'] = $_REQUEST['hg'];
+} else {
+    if (isset($_GET["hostgroup"]) && $_GET["hostgroup"]) {
+        $_SESSION['monitoring_default_hostgroups'] = $_GET['hostgroup'];
+    }
 }
 
 include_once("./include/monitoring/status/Common/default_poller.php");
