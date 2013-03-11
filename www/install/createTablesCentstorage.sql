@@ -173,6 +173,7 @@ CREATE TABLE `instance` (
   `instance_alias` varchar(254) DEFAULT NULL,
   `log_flag` int(11) DEFAULT NULL,
   `log_md5` varchar(255) DEFAULT NULL,
+  `last_ctime` int(11) DEFAULT 0,
   PRIMARY KEY (`instance_id`),
   UNIQUE KEY `instance_name` (`instance_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

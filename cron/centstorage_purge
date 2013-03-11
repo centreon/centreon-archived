@@ -1,0 +1,8 @@
+#!/usr/bin/env perl
+
+use warnings;
+use FindBin qw($Bin);
+use lib "$Bin/../lib/perl";
+use centreon::script::centstorage_purge;
+
+centreon::script::centstorage_purge->new()->run();

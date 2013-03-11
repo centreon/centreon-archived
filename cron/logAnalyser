@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+use warnings;
+use FindBin qw($Bin);
+use lib "$Bin/../lib/perl";
+use centreon::script::logAnalyser;
+
+$SIG{__DIE__} = sub {
+    my $error = shift;
+
+    print "Error: $error";
+    exit 1;
+};
+
+centreon::script::logAnalyser->new()->run();
