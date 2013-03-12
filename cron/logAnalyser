@@ -5,11 +5,52 @@ use FindBin qw($Bin);
 use lib "$Bin/../lib/perl";
 use centreon::script::logAnalyser;
 
-$SIG{__DIE__} = sub {
-    my $error = shift;
-
-    print "Error: $error";
-    exit 1;
-};
-
 centreon::script::logAnalyser->new()->run();
+
+__END__
+
+=head1 NAME
+
+logAnalyser - a simple script to load nagios log into a database.
+
+=head1 SYNOPSIS
+
+logAnalyser [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-a|--archives>
+
+Load data from log archives to database.
+
+=item B<-p|--poller <value>>
+
+Load data from log archives to database from a specific
+poller. <value> corresponds to the poller identifier.
+
+=item B<-s|--startdate <mm-dd-yyyy>>
+
+When parsing archives, start from a specific day.
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--logfile>
+
+Write log messages into this file instead of the standard output.
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<logAnalyser> will read nagios log files to load their content into a
+database.
+
+=cut

@@ -464,3 +464,11 @@ EOQ
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+    sample - Using GetOpt::Long and Pod::Usage
+
+=cut

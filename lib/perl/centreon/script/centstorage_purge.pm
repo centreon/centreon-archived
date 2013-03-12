@@ -16,6 +16,11 @@ sub new {
 
     bless $self, $class;
     $self->{broker} = "ndo";
+    return $self;
+}
+
+sub read_config {
+    my $self = shift;
     my ($status, $sth) = $self->{csdb}->query(<<"EOQ");
 SELECT len_storage_mysql,archive_retention,reporting_retention
 FROM config
@@ -28,13 +33,14 @@ SELECT `value` FROM `options` WHERE `key` = 'broker'
 EOQ
     die "Failed to retrieve the broker type from database" if $status == -1;
     $self->{broker} = $sth->fetchrow_hashref()->{value};
-    return $self;
 }
 
 sub run {
     my $self = shift;
 
     $self->SUPER::run();
+    $self->read_config();
+
     if (defined $self->{config}->{len_storage_mysql} && 
         $self->{config}->{len_storage_mysql} != 0) {
         my $delete_limit = time() - 60 * 60 * 24 * $self->{config}->{len_storage_mysql};
@@ -78,29 +84,3 @@ sub run {
 
 1;
 
-__END__
-
-=head1 NAME
-
-centstorage_purge - purge centstorage database
-
-=head1 SYNOPSIS
-
-centstorage_purge [options]
-
-=head1 OPTIONS
-
-=over 8
-
-=item B<-help>
-
-Print a brief help message and exits.
-
-=back
-
-=head1 DESCRIPTION
-
-B<This program> will read the given input file(s) and do something
-useful with the contents thereof.
-
-=cut

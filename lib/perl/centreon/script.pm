@@ -2,6 +2,7 @@ package centreon::script;
 
 use strict;
 use warnings;
+use FindBin;
 use Getopt::Long;
 use Pod::Usage;
 use centreon::logger;
@@ -9,6 +10,12 @@ use centreon::db;
 use centreon::lock;
 
 use vars qw($centreon_config);
+
+$SIG{__DIE__} = sub {
+    my $error = shift;
+    print "Error: $error";
+    exit 1;
+};
 
 sub new {
     my ($class, $name, %options) = @_;
@@ -83,7 +90,7 @@ sub parse_options {
 
     Getopt::Long::Configure('bundling');
     die "Command line error" if !GetOptions(%{$self->{options}});
-    pod2usage(1) if $self->{help};
+    pod2usage(-exitval => 1, -input => $FindBin::Bin . "/" . $FindBin::Script) if $self->{help};
     require $self->{config_file};
     $self->{centreon_config} = $centreon_config;
 }
