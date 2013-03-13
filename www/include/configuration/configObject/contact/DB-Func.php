@@ -36,7 +36,7 @@
  *
  */
 	if (!isset($oreon)) {
-		exit (); 
+		exit ();
 	}
 
 	/**
@@ -100,7 +100,7 @@
 		} else {
 			$contact_id = $form->getSubmitValue('contact_id');
 		}
-		
+
 		if (isset($form)) {
 			$cct_oreon = $form->getSubmitValue('contact_oreon');
 			$cct_activate = $form->getSubmitValue('contact_activate');
@@ -112,7 +112,7 @@
 		if ($contact_id == $centreon->user->get_id()) {
 			return false;
 		}
-		
+
 		/*
 		 * Get activated contacts
 		 */
@@ -395,7 +395,7 @@
 		isset($ret["contact_address5"]) && $ret["contact_address5"] != NULL ? $rq .= "'".htmlentities($ret["contact_address5"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".htmlentities($ret["contact_address6"], ENT_QUOTES, "UTF-8")."' ": $rq .= "NULL ";
 		$rq .= ")";
-		
+
 		$DBRESULT = $pearDB->query($rq);
 		$DBRESULT = $pearDB->query("SELECT MAX(contact_id) FROM contact");
 		$contact_id = $DBRESULT->fetchRow();
@@ -554,7 +554,7 @@
 		isset($ret["contact_address6"]) && $ret["contact_address6"] != NULL ? $rq .= "'".$ret["contact_address6"]."' ": $rq .= "NULL ";
 
 		$rq .= "WHERE contact_id = '".$contact_id."'";
-		
+
 		$DBRESULT = $pearDB->query($rq);
 		if (isset($ret["contact_lang"]) && $ret["contact_lang"] != NULL && $contact_id == $oreon->user->get_id()) {
 			$oreon->user->set_lang($ret["contact_lang"]);
@@ -722,7 +722,7 @@
                         $rq .= "contact_template_id = ".$pearDB->escape($ret['contact_template_id']).", ";
                         $fields['contact_template_id'] = $ret['contact_template_id'];
                 }
-                
+
 		/*
 		 * Delete last ',' in request
 		 */
@@ -842,10 +842,12 @@
 					FROM contactgroup
 					WHERE cg_type = 'local')";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["contact_cgNotif"]))
+
+		if (isset($ret["contact_cgNotif"])) {
 			$ret = $ret["contact_cgNotif"];
-		else
-			$ret = $form->getSubmitValue("contact_cgNotif");
+        } else {
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'contact_cgNotif');
+        }
 		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contactgroup_contact_relation ";
 			$rq .= "(contact_contact_id, contactgroup_cg_id) ";
@@ -917,7 +919,7 @@
                         }
                         $row = $res->fetchRow();
                         $contact_id = $row['contact_id'];
-                        
+
                         if (!isset($ldapInstances[$arId])) {
                             $ldapInstances[$arId] = new CentreonLDAP($pearDB, null, $arId);
                             $ldapAdmin = new CentreonLDAPAdmin($pearDB);

@@ -74,6 +74,19 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 
+    $acl = $oreon->user->access;
+    $serverString = $acl->getPollerString();
+    $allowedResourceConf = array();
+    if ($serverString != "''") {
+        $sql = "SELECT resource_id
+                FROM cfg_resource_instance_relations
+                WHERE instance_id IN (".$serverString.")";
+                $res = $pearDB->query($sql);
+        while ($row = $res->fetchRow()) {
+            $allowedResourceConf[$row['resource_id']] = true;
+        }
+    }
+
 	switch ($o)	{
 		case "a" :
 			/*

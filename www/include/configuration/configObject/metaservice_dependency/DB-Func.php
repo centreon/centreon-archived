@@ -180,7 +180,7 @@
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("dep_msParents");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'dep_msParents');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO dependency_metaserviceParent_relation ";
 			$rq .= "(dependency_dep_id, meta_service_meta_id) ";
@@ -198,7 +198,7 @@
 		$rq .= "WHERE dependency_dep_id = '".$dep_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("dep_msChilds");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'dep_msChilds');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO dependency_metaserviceChild_relation ";
 			$rq .= "(dependency_dep_id, meta_service_meta_id) ";

@@ -38,11 +38,11 @@
 
  	ini_set("display_errors", "Off");
  	if (defined("E_DEPRECATED")) {
- 	    ini_set("error_reporting", E_ALL ^ E_DEPRECATED);    
+ 	    ini_set("error_reporting", E_ALL ^ E_DEPRECATED);
  	} else {
  	    ini_set("error_reporting", E_ALL);
  	}
-    
+
 
 	/*
 	 * Define Local Functions
@@ -104,7 +104,7 @@
 	 */
 	$url = "";
 	if (!isset($_GET["doc"])){
-		$acl_page = $centreon->user->access->page($p);
+		$acl_page = $centreon->user->access->page($p, true);
 		if ($acl_page == 1 || $acl_page == 2) {
 			if ($redirect["topology_page"] < 100){
 				$ret = get_child($redirect["topology_page"], $centreon->user->access->topologyStr);
@@ -260,7 +260,7 @@
 			$centreon->historyLimit[$url] = $_POST["limit"];
 	}
 
-	
+
 
 	/*
 	 * Display Footer

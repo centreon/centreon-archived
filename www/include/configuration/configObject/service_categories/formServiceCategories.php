@@ -39,6 +39,16 @@
 	if (!isset($oreon))
 		exit();
 
+    if (!$oreon->user->admin) {
+        if ($sc_id && $scString != "''" && false === strpos($scString, "'".$sc_id."'")) {
+            $msg = new CentreonMsg();
+            $msg->setImage("./img/icones/16x16/warning.gif");
+            $msg->setTextStyle("bold");
+            $msg->setText(_('You are not allowed to access this service category'));
+            return null;
+        }
+    }
+
 	/*
 	 * Database retrieve information for Contact
 	 */
@@ -136,6 +146,10 @@
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);
+    if (!$oreon->user->admin) {
+        $ams1->setPersistantFreeze(true);
+        $ams1->freeze();
+    }
 	echo $ams1->getElementJs(false);
 
 	$sc_activate[] = HTML_QuickForm::createElement('radio', 'sc_activate', null, _("Enabled"), '1');
@@ -204,7 +218,7 @@
 		 */
 		if ($centreon->user->access->page($p) != 2)
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&sc_id=".$sc_id."'"));
-	    $form->setDefaults($cct);
+	    $form->setDefaults($sc);
 		$form->freeze();
 	} else if ($o == "c")	{
 		/*

@@ -40,9 +40,29 @@
 	## Database retrieve information for Dependency
 	#
 
+        /* hosts */
+        $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
+                                                                               'keys'    => array('host_id'),
+                                                                               'get_row' => 'host_name',
+                                                                               'order'   => array('host.host_name')));
+        
+        /* services */
+        if (!$oreon->user->admin) {
+            $hServices = array();
+            $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
+                                    CONCAT(host_name, ' / ', service_description) as v
+                    FROM $dbmon.centreon_acl 
+                    WHERE group_id IN (".$acl->getAccessGroupsString().")";
+            $res = $pearDB->query($sql);
+            while ($row = $res->fetchRow()) {
+                $hServices[$row['k']] = $row['v'];
+            }
+        }
+
 	$dep = array();
 	$childServices = array();
-	if (($o == "c" || $o == "w") && $dep_id)	{
+        $initialValues = array();
+	if (($o == "c" || $o == "w") && $dep_id) {
 		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
 		// Set base value
@@ -63,32 +83,45 @@
 		// Set Host Parents
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostParent_relation WHERE dependency_dep_id = '".$dep_id."'");
 		for($i = 0; $hostP = $DBRESULT->fetchRow(); $i++) {
-			$dep["dep_hostParents"][$i] = $hostP["host_host_id"];
+                    if (!$oreon->user->admin && !isset($hosts[$hostP['host_host_id']])) {
+                        $initialValues['dep_hostParents'][] = $hostP["host_host_id"];
+                    } else {
+                        $dep["dep_hostParents"][$i] = $hostP["host_host_id"];
+                    }
 		}
 		$DBRESULT->free();
 
 		// Set Host Children
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM dependency_hostChild_relation WHERE dependency_dep_id = '".$dep_id."'");
 		for($i = 0; $hostC = $DBRESULT->fetchRow(); $i++) {
-			$dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
+                    if (!$oreon->user->admin && !isset($hosts[$hostC['host_host_id']])) {
+                        $initialValues['dep_hostParents'][] = $hostC["host_host_id"];
+                    } else {
+                        $dep["dep_hostChilds"][$i] = $hostC["host_host_id"];
+                    }
 		}
 		$DBRESULT->free();
 
-        // Set Service Children
-	    $query = "SELECT host_id, host_name, service_id, service_description
+                // Set Service Children
+                $query = "SELECT host_id, host_name, service_id, service_description
     		  	  FROM service s, dependency_serviceChild_relation cr, host h
     		  	  WHERE s.service_id = cr.service_service_id
     		  	  AND cr.host_host_id = h.host_id
     		  	  AND cr.dependency_dep_id = "  . $pearDB->escape($dep_id);
-        $res = $pearDB->query($query);
-        $i = 0;
-        while ($row = $res->fetchRow()) {
-            $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-            $childServices[$row["host_id"]."_".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-            $dep['dep_hSvChi'][$i] = $row["host_id"]."_".$row['service_id'];
-            $i++;
-        }
-	}
+                $res = $pearDB->query($query);
+                $i = 0;
+                while ($row = $res->fetchRow()) {
+                    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+                    $key = $row["host_id"]."_".$row['service_id'];
+                    if (!$oreon->user->admin && !isset($hServices[$key])) {
+                        $initialValues['dep_hSvChi'][] = $key;
+                    } else {
+                        $childServices[$key] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
+                        $dep['dep_hSvChi'][$i] = $key;
+                        $i++;
+                    }
+                }
+         }
 
 	/*
 	 *  Database retrieve information for differents elements list we need on the page
@@ -97,15 +130,8 @@
 	/*
 	 * Host comes from DB -> Store in $hosts Array
 	 */
-	$hosts = array();
 	$hostFilter = array(null => null,
-	                    0    => sprintf('__%s__', _('ALL')));
-	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while($host = $DBRESULT->fetchRow()) {
-		$hosts[$host["host_id"]] = $host["host_name"];
-		$hostFilter[$host["host_id"]] = $host["host_name"];
-	}
-	$DBRESULT->free();
+	                    0    => sprintf('__%s__', _('ALL'))) + $hosts;
 
 	/*
 	 * Var information to format the element
@@ -187,6 +213,9 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+        $init = $form->addElement('hidden', 'initialValues');
+        $init->setValue(serialize($initialValues));
+        
 	/*
 	 * Form Rules
 	 */

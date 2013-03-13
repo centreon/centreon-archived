@@ -73,6 +73,10 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 	
+        $acl = $oreon->user->access;
+        $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
+        $hgstring = CentreonUtils::toStringWithQuotes($hgs);
+        
 	switch ($o)	{
 		case "a" : require_once($path."formHostGroupDependency.php"); break; #Add a Dependency
 		case "w" : require_once($path."formHostGroupDependency.php"); break; #Watch a Dependency

@@ -42,23 +42,19 @@ if (!isset($oreon))
 /*
  *  Get Poller List
  */
-$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
-$n = $DBRESULT->numRows();
+$acl = $oreon->user->access;
+$tab_nagios_server = $acl->getPollerAclConf(array('get_row'    => 'name',
+                                                  'order'      => array('name'),
+                                                  'keys'       => array('id'),
+                                                  'conditions' => array('ns_activate' => 1)));
+$n = count($tab_nagios_server);
 
 /*
  * Display null option
  */
 if ($n > 1) {
-    $tab_nagios_server = array(-1 => "");
+    $tab_nagios_server[-1] = "";
 }
-
-/*
- * Display all servers list
- */
-for ($i = 0; $nagios = $DBRESULT->fetchRow(); $i++) {
-    $tab_nagios_server[$nagios['id']] = $nagios['name'];
-}
-$DBRESULT->free();
 
 /*
  * Display all server options
@@ -66,6 +62,8 @@ $DBRESULT->free();
 if ($n > 1) {
     $tab_nagios_server[0] = _("All Pollers");
 }
+
+ksort($tab_nagios_server);
 
 /*
  * Form begin

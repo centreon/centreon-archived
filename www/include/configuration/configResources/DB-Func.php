@@ -155,10 +155,11 @@
 
         $pearDB->query("DELETE FROM cfg_resource_instance_relations WHERE resource_id = " . $pearDB->escape($resourceId));
         $query = "INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) VALUES ";
+
         if (!is_null($instanceId)) {
             $instances = array($instanceId);
         } else {
-            $instances = $form->getSubmitValue('instance_id');
+            $instances = CentreonUtils::mergeWithInitialValues($form, 'instance_id');
         }
         $query2 = "";
         foreach ($instances as $instanceId) {

@@ -43,17 +43,16 @@ if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debu
     exit;
 }
 
-function printDebug($xml)
+function printDebug($xml, $tabs)
 {
-    global $pearDB, $ret, $nagiosCFGPath;
+    global $pearDB, $ret, $nagiosCFGPath, $oreon;
 
     $DBRESULT_Servers = $pearDB->query("SELECT `nagios_bin` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
     $nagios_bin = $DBRESULT_Servers->fetchRow();
     $DBRESULT_Servers->free();
     $msg_debug = array();
     $tab_server = array();
-    $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
-    while ($tab = $DBRESULT_Servers->fetchRow()) {
+    foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
@@ -176,8 +175,10 @@ require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $centreon_path . "www/class/centreonSession.class.php";
 require_once $centreon_path . "www/class/centreon.class.php";
 require_once $centreon_path . "www/class/centreonXML.class.php";
-require_once $centreon_path . "/www/class/centreonConfigCentreonBroker.php";
-require_once $centreon_path . '/www/include/configuration/configGenerate/genCentreonBrokerCorrelation.php';
+require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";
+require_once $centreon_path . "www/class/centreonUser.class.php";
+require_once $centreon_path . "www/class/centreonACL.class.php";
+require_once $centreon_path . 'www/include/configuration/configGenerate/genCentreonBrokerCorrelation.php';
 
 session_start();
 if ($_POST['sid'] != session_id()) {
@@ -210,9 +211,12 @@ try {
      * Request id and host type.
      */
     if ($generate) {
-        $DBRESULT_Servers = $pearDB->query("SELECT `id`, `localhost`, `monitoring_engine` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name`");
         $pearDBO = new CentreonDB('centstorage');
-        while ($tab = $DBRESULT_Servers->fetchRow()){
+        $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('id', 'name', 'localhost', 'monitoring_engine'),
+                                                             'order'      => array('name'),
+                                                             'keys'       => array('id'),
+                                                             'conditions' => array('ns_activate' => '1')));
+        foreach ($tabs as $tab){
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
                 $pollerID = $tab['id'];
                 unset($DBRESULT2);
@@ -298,7 +302,7 @@ try {
     $statusMsg = $okMsg;
     $statusCode = 0;
     if ($debug) {
-        $statusCode = printDebug($xml);
+        $statusCode = printDebug($xml, $tabs);
     }
     if ($statusCode == 1) {
         $statusMsg = $nokMsg;

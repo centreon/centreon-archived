@@ -57,8 +57,10 @@ class CentreonContactgroup
      * Get the list of contactgroups with his id, or his name for a ldap groups if is not sync in database
      *
      * @param bool $withLdap if include LDAP group
+     * @param bool $dbOnly | will not return ldap groups that are not stored in db
+     * @return array
      */
-    public function getListContactgroup($withLdap = false)
+    public function getListContactgroup($withLdap = false, $dbOnly = false)
     {
         /* Contactgroup from database */
         $contactgroups = array();
@@ -86,7 +88,7 @@ class CentreonContactgroup
     	    $ldapEnable = false;
     	}
 
-    	if ($withLdap && $ldapEnable) {
+    	if ($withLdap && $ldapEnable && $dbOnly === false) {
             $query = "SELECT ar_id, ar_name FROM auth_ressource WHERE ar_enable = '1'";
             $ldapres = $this->db->query($query);
 

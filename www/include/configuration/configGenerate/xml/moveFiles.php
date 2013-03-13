@@ -92,7 +92,9 @@ try {
     require_once $centreon_path . "www/class/centreonSession.class.php";
     require_once $centreon_path . "www/class/centreon.class.php";
     require_once $centreon_path . "www/class/centreonXML.class.php";
-    require_once $centreon_path . "/www/class/centreonConfigCentreonBroker.php";
+    require_once $centreon_path . "www/class/centreonACL.class.php";
+    require_once $centreon_path . "www/class/centreonUser.class.php";
+    require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";
 
     session_start();
     if ($_POST['sid'] != session_id()) {
@@ -146,8 +148,11 @@ try {
 
 
     $tab_server = array();
-    $DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `name` ASC");
-    while ($tab = $DBRESULT_Servers->fetchRow()) {
+    $tabs = $oreon->user->access->getPollerAclConf(array('fields'     => array('name', 'id', 'localhost'),
+                                                         'order'      => array('name'),
+                                                         'conditions' => array('ns_activate' => '1'),
+                                                         'keys'       => array('id')));
+    foreach ($tabs as $tab) {
         if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }

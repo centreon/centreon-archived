@@ -288,7 +288,7 @@
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("esc_cgs");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_cgs');
 		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
 		    if (!is_numeric($ret[$i])) {
@@ -315,7 +315,7 @@
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("esc_hosts");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hosts');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO escalation_host_relation ";
 			$rq .= "(escalation_esc_id, host_host_id) ";
@@ -333,7 +333,7 @@
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("esc_hgs");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hgs');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO escalation_hostgroup_relation ";
 			$rq .= "(escalation_esc_id, hostgroup_hg_id) ";
@@ -351,7 +351,7 @@
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("esc_sgs");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_sgs');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO escalation_servicegroup_relation ";
 			$rq .= "(escalation_esc_id, servicegroup_sg_id) ";
@@ -369,7 +369,7 @@
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("esc_hServices");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_hServices');
 		for($i = 0; $i < count($ret); $i++)	{
 			$exp = explode("_", $ret[$i]);
 			if (count($exp) == 2)	{
@@ -390,7 +390,7 @@
 		$rq .= "WHERE escalation_esc_id = '".$esc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 		$ret = array();
-		$ret = $form->getSubmitValue("esc_metas");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'esc_metas');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO escalation_meta_service_relation ";
 			$rq .= "(escalation_esc_id, meta_service_meta_id) ";

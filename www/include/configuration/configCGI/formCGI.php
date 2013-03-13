@@ -38,6 +38,15 @@
 
     require_once $centreon_path . "www/class/centreonInstance.class.php";
 
+    if (!$oreon->user->admin && isset($cgi_id)
+        && count($allowedCgiConf) && !isset($allowedCgiConf[$cgi_id])) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this object configuration'));
+        return null;
+    }
+
 	$cgi = array();
 	if (($o == "c" || $o == "w") && $cgi_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM cfg_cgi WHERE cgi_id = '".$cgi_id."' LIMIT 1");
@@ -74,9 +83,10 @@
 	$form->addElement('header', 'information', _("General Information"));
 	$form->addElement('text', 'cgi_name', _("CGI File Name"), $attrsText);
 
-
-    $instanceObj = new CentreonInstance($pearDB);
-    $instances = $instanceObj->getInstances();
+    $instances = $acl->getPollerAclConf(array('fields'  => array('id', 'name'),
+                                              'keys'    => array('id'),
+                                              'get_row' => 'name',
+                                              'order'   => array('name')));
     $instances[0] = null;
     asort($instances);
 	$form->addElement('select', 'instance_id', 'Instance', $instances);
