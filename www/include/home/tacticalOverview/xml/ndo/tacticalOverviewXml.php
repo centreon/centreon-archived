@@ -468,8 +468,8 @@
 	$j = 0;
 	$tab_hostname[$j] = "";
 	$tab_svcname[$j] = "";
-    $tab_svccriticality[$j] = "";
-    $availableSvcCriticalities = 0;
+        $tab_svccriticality[$j] = "";
+        $availableSvcCriticalities = 0;
 	$tab_state[$j] = "";
 	$tab_notes_url[$j] = "";
 	$tab_notes[$j] = "";
@@ -498,56 +498,55 @@
 	                    '/\$INSTANCENAME\$/i');
 
 	while ($ndo = $resNdo1->fetchRow()){
-		$is_unhandled = 1;
+            $is_unhandled = 1;
 
-		for ($i = 0; $i < $pbCount && $is_unhandled; $i++){
-			if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
-				$is_unhandled = 0;
-		}
-
-		if ($is_unhandled) {
-			$tab_hostname[$j] = $ndo["name1"];
-			$tab_svcname[$j] = $ndo["name2"];
-            
-			$tab_state[$j] = $ndo["current_state"];
-			$tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
-			$tab_notes_url[$j] = str_replace("\$INSTANCEADDRESS\$",
-			                                 $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
-			                                 $tab_notes_url[$j]);
-			$tab_notes[$j] = preg_replace($tab_macros,$ndo,$ndo["notes"]);
-			$tab_action_url[$j] = preg_replace($tab_macros,$ndo,$ndo["action_url"]);
-			$tab_action_url[$j] = str_replace("\$INSTANCEADDRESS\$",
-			                                 $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
-			                                 $tab_action_url[$j]);
-			$tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
-			$tab_ip[$j] = $ndo["address"];
-			if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
-	    		$tab_duration[$j] = CentreonDuration::toString(time() - $ndo["last_state_change"]);
-			} else if ($ndo["last_state_change"] > 0) {
-				$tab_duration[$j] = " - ";
-			}
-			$tab_output[$j] = $ndo["output"];
-			$tab_icone[$j] = $ndo["icon_image"];
-			$tab_objectid[$j] = $ndo['service_object_id'];
-			$tab_hobjectid[$j] = $ndo['host_object_id'];
-            
-            // Check if service has criticality
-            $rqCriticality = "SELECT cvs.varvalue as criticality ".
-                             "FROM nagios_customvariablestatus cvs ".
-                             "WHERE cvs.object_id = '".$ndo['service_object_id']."' ".
-                             "AND cvs.varname='CRITICALITY_ID'";
-
-            $resCriticality = $dbb->query($rqCriticality);
-            while ($crit = $resCriticality->fetchRow()){
-                $infoC = $criticality->getData($crit["criticality"]);
-                if (isset($infoC))
-                {
-                    $availableSvcCriticalities = 1;
-                    $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
-                }
+            for ($i = 0; $i < $pbCount && $is_unhandled; $i++){
+                if (isset($hostPb[$i]) && ($hostPb[$i] == $ndo["host_object_id"]))
+                    $is_unhandled = 0;
             }
-			$j++;
-		}
+
+            if ($is_unhandled) {
+                $tab_hostname[$j] = $ndo["name1"];
+                $tab_svcname[$j] = $ndo["name2"];
+
+                $tab_state[$j] = $ndo["current_state"];
+                $tab_notes_url[$j] = preg_replace($tab_macros,$ndo,$ndo["notes_url"]);
+                $tab_notes_url[$j] = str_replace("\$INSTANCEADDRESS\$",
+                                                 $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
+                                                 $tab_notes_url[$j]);
+                $tab_notes[$j] = preg_replace($tab_macros,$ndo,$ndo["notes"]);
+                $tab_action_url[$j] = preg_replace($tab_macros,$ndo,$ndo["action_url"]);
+                $tab_action_url[$j] = str_replace("\$INSTANCEADDRESS\$",
+                                                 $instanceObj->getParam($ndo['instance_name'], "ns_ip_address"),
+                                                 $tab_action_url[$j]);
+                $tab_last[$j] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
+                $tab_ip[$j] = $ndo["address"];
+                if ($ndo["last_state_change"] > 0 && time() > $ndo["last_state_change"]) {
+                    $tab_duration[$j] = CentreonDuration::toString(time() - $ndo["last_state_change"]);
+                } else if ($ndo["last_state_change"] > 0) {
+                    $tab_duration[$j] = " - ";
+                }
+                $tab_output[$j] = $ndo["output"];
+                $tab_icone[$j] = $ndo["icon_image"];
+                $tab_objectid[$j] = $ndo['service_object_id'];
+                $tab_hobjectid[$j] = $ndo['host_object_id'];
+
+                // Check if service has criticality
+                $rqCriticality = "SELECT cvs.varvalue as criticality ".
+                                 "FROM nagios_customvariablestatus cvs ".
+                                 "WHERE cvs.object_id = '".$ndo['service_object_id']."' ".
+                                 "AND cvs.varname='CRITICALITY_ID'";
+
+                $resCriticality = $dbb->query($rqCriticality);
+                while ($crit = $resCriticality->fetchRow()){
+                    $infoC = $criticality->getData($crit["criticality"]);
+                    if (isset($infoC)){
+                        $availableSvcCriticalities = 1;
+                        $tab_svccriticality[$j] = './img/media/'.$media->getFilename($infoC["icon_id"]);
+                    }
+                }
+                $j++;
+            }
 	}
 	$resNdo1->free();
 	$nb_pb = $j;
@@ -626,7 +625,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
-        $xml->writeElement('hostcriticality', $tab_hostcriticality[$key]);
+            $xml->writeElement('hostcriticality', isset($tab_hostcriticality[$key])) ? $tab_hostcriticality[$key] : "";
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
 	    $xml->writeElement('host_actionurl',$tab_hostactionurl[$key]);
@@ -658,9 +657,9 @@
 	foreach($tab_svcname as $key => $val) {
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
-        $xml->startElement('unhandledServices');
-	    $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
-        $xml->writeElement('servicename', $val, false);
+            $xml->startElement('unhandledServices');
+            $xml->writeElement('servicecriticality', isset($tab_svccriticality[$key])) ? $tab_svccriticality[$key] : "";
+            $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('hostname', $tab_hostname[$key], false);
 	    $xml->writeElement('notes_url', $tab_notes_url[$key]);
 	    $xml->writeElement('notes', $tab_notes[$key]);

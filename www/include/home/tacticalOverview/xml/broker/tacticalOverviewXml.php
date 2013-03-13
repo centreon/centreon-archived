@@ -630,7 +630,7 @@
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
 	    $xml->startElement('unhandledHosts');
 	    $xml->writeElement('hostname', $val, false);
-        $xml->writeElement('hostcriticality', $tab_hostcriticality[$key]);
+            $xml->writeElement('hostcriticality', isset($tab_hostcriticality[$key])) ? $tab_hostcriticality[$key] : "";
 	    $xml->writeElement('host_notesurl',$tab_hostnotesurl[$key]);
 	    $xml->writeElement('host_notes',$tab_hostnotes[$key]);
 	    $xml->writeElement('host_actionurl',$tab_hostactionurl[$key]);
@@ -662,8 +662,8 @@
 	foreach($tab_svcname as $key => $val) {
 	    $domId++;
 	    $style = ($style == 'list_two') ? 'list_one' : 'list_two';
-        $xml->startElement('unhandledServices');
-        $xml->writeElement('servicecriticality', $tab_svccriticality[$key]);
+            $xml->startElement('unhandledServices');
+            $xml->writeElement('servicecriticality', isset($tab_svccriticality[$key])) ? $tab_svccriticality[$key] : "";
 	    $xml->writeElement('servicename', $val, false);
 	    $xml->writeElement('notes_url',$tab_notes_url[$key]);
 	    $xml->writeElement('notes',$tab_notes[$key]);
