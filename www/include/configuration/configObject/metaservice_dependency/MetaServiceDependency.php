@@ -67,6 +67,9 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 	
+        $acl = $oreon->user->access;
+        $metastr = $acl->getMetaServiceString();
+        
 	switch ($o)	{
 		case "a" : require_once($path."formMetaServiceDependency.php"); break; #Add a Meta Service
 		case "w" : require_once($path."formMetaServiceDependency.php"); break; #Watch a Meta Service

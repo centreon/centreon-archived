@@ -3,7 +3,9 @@
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 			<td class="Toolbar_TDSelectAction_Top">
+                {if $mode_access == "w"}
 				{$msg.options}{$form.o1.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}">{$msg.addT}</a>
+                {/if}
 			</td>
 			<input name="p" value="{$p}" type="hidden">
 			{php}

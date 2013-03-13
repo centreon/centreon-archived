@@ -46,28 +46,28 @@
 
         /**
          * Quickform rule that checks whether or not monitoring server can be set
-         * 
+         *
          * @return bool
          */
         function testPollerDep($instanceId) {
             global $pearDB, $form;
-            
+
             $hostId = $form->getSubmitValue('host_id');
             $hostParents = $form->getSubmitValue('host_parents');
-            
+
             if (!$hostId || (!isset($hostParents))) {
                 return true;
             }
-            
+
             $query = "SELECT COUNT(*) as nb
-                      FROM host_hostparent_relation hhr, ns_host_relation nhr 
+                      FROM host_hostparent_relation hhr, ns_host_relation nhr
                       WHERE hhr.host_parent_hp_id = nhr.host_host_id
                       AND hhr.host_host_id = ".$pearDB->escape($hostId)."
                       AND nhr.nagios_server_id != ".$pearDB->escape($instanceId);
-            
+
             if (isset($hostParents))
                 $query .= " AND host_parent_hp_id IN (".implode(',', $hostParents).")";
-            
+
             $res = $pearDB->query($query);
             $row = $res->fetchRow();
             if ($row['nb']) {
@@ -75,7 +75,7 @@
             }
             return true;
         }
-        
+
  	/**
  	 * Quickform rule that checks whether or not reserved macro are used
  	 *
@@ -438,12 +438,12 @@
                         $DBRESULT3 = $pearDB->query($request);
 
 						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
-                                                
+
                                                 /*
                                                  * Criticality
                                                  */
-                                                $sql = "SELECT criticality_id 
-                                                        FROM criticality_resource_relations 
+                                                $sql = "SELECT criticality_id
+                                                        FROM criticality_resource_relations
                                                         WHERE host_id = ".$pearDB->escape($key);
                                                 $res = $pearDB->query($sql);
                                                 if ($res->numRows()) {
@@ -578,7 +578,7 @@
 			updateHostHostGroup_MC($host_id);
 		else
 			updateHostHostGroup($host_id);
-                
+
 		# Function for updating host hc
 		# 1 - MC with deletion of existing hc
 		# 2 - MC with addition of new hc
@@ -793,7 +793,22 @@
                 if (isset($ret['criticality_id'])) {
                     setHostCriticality($host_id['MAX(host_id)'], $ret['criticality_id']);
                 }
-                
+
+                if (isset($ret['acl_groups']) && count($ret['acl_groups'])) {
+                    $sql = "INSERT INTO acl_resources_host_relations (acl_res_id, host_host_id) VALUES ";
+                    $first = true;
+                    foreach ($ret['acl_groups'] as $groupId) {
+                        if (!$first) {
+                            $sql .= ", ";
+                        } else {
+                            $first = false;
+                        }
+                        $sql .= "(".$pearDB->escape($groupId).", ".$pearDB->escape($host_id['MAX(host_id)']).")";
+                    }
+                    if (!$first) {
+                        $pearDB->query($sql);
+                    }
+                }
 		/*
 		 *  Logs
 		 */
@@ -912,6 +927,7 @@
 		if (isset($ret["nagios_server_id"]))
 			$fields["nagios_server_id"] = $ret["nagios_server_id"];
 		$centreon->CentreonLogAction->insertLog("host", $host_id["MAX(host_id)"], CentreonDB::escape($ret["host_name"]), "a", $fields);
+
 		return ($host_id["MAX(host_id)"]);
 	}
 
@@ -1261,7 +1277,7 @@
                 if (isset($ret['criticality_id'])) {
                     setHostCriticality($host_id, $ret['criticality_id']);
                 }
-                
+
 		/*
 		 *  Logs
 		 */
@@ -1620,7 +1636,7 @@
                 if (isset($ret['criticality_id']) && $ret['criticality_id']) {
                     setHostCriticality($host_id, $ret['criticality_id']);
                 }
-                
+
 		if (isset($ret["ehi_notes"]) && $ret["ehi_notes"] != NULL)
 			$fields["ehi_notes"] = CentreonDB::escape($ret["ehi_notes"]);
 		if (isset($ret["ehi_notes_url"]) && $ret["ehi_notes_url"] != NULL)
@@ -1662,11 +1678,13 @@
 		global $form, $pearDB;
 		$rq = "DELETE FROM host_hostparent_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
-		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["host_parents"]))
-			$ret = $ret["host_parents"];
-		else
-			$ret = $form->getSubmitValue("host_parents");
+        $DBRESULT = $pearDB->query($rq);
+
+        if (isset($ret["host_parents"])) {
+            $ret = $ret["host_parents"];
+        } else {
+            $ret = CentreonUtils::mergeWithInitialValues($form, 'host_parents');
+        }
 		for ($i = 0; $i < count($ret); $i++)	{
 		    if (isset($ret[$i]) && $ret[$i] != $host_id && $ret[$i] != "") {
 				$rq = "INSERT INTO host_hostparent_relation ";
@@ -1708,8 +1726,9 @@
 		$rq = "DELETE FROM host_hostparent_relation ";
 		$rq .= "WHERE host_parent_hp_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		$ret = array();
-		$ret = $form->getSubmitValue("host_childs");
+
+        	$ret = array();
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'host_childs');
 		for($i = 0; $i < count($ret); $i++)	{
 		    if (isset($ret[$i]) && $ret[$i] != $host_id && $ret[$i] != "") {
     			$rq = "INSERT INTO host_hostparent_relation ";
@@ -1814,7 +1833,8 @@
 		$rq = "DELETE FROM contactgroup_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		isset($ret["host_cgs"]) ? $ret = $ret["host_cgs"] : $ret = $form->getSubmitValue("host_cgs");
+
+		$ret = isset($ret["host_cgs"]) ? $ret["host_cgs"] : CentreonUtils::mergeWithInitialValues($form, 'host_cgs');
 		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
 		    if (!is_numeric($ret[$i])) {
@@ -1844,7 +1864,8 @@
 		$rq = "DELETE FROM contact_host_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		isset($ret["host_cs"]) ? $ret = $ret["host_cs"] : $ret = $form->getSubmitValue("host_cs");
+        
+		$ret = isset($ret["host_cs"]) ? $ret["host_cs"] : CentreonUtils::mergeWithInitialValues($form, 'host_cs');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO contact_host_relation ";
 			$rq .= "(host_host_id, contact_id) ";
@@ -1949,10 +1970,10 @@
             return;
         }
 
-        $temp = (isset($host["host_notification_options"])) 
+        $temp = (isset($host["host_notification_options"]))
             ? $host["host_notification_options"] . "," . implode(",", array_keys($ret))
             : implode(",", array_keys($ret));
-        
+
         $rq = "UPDATE host SET " ;
         $rq .= "host_notification_options = '". trim($temp, ',') . "' ";
         $rq .= "WHERE host_id = '".$host_id."'";
@@ -2141,7 +2162,7 @@
 			}
 		}
 	}
-        
+
 	function updateHostHostCategory($host_id, $ret = array())	{
 		global $form, $pearDB;
 
@@ -2151,7 +2172,8 @@
 		$rq = "DELETE FROM hostcategories_relation ";
 		$rq .= "WHERE host_host_id = '".$host_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		isset($ret["host_hcs"]) ? $ret = $ret["host_hcs"] : $ret = $form->getSubmitValue("host_hcs");
+
+       		$ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : CentreonUtils::mergeWithInitialValues($form, 'host_hcs');
 		$hcsNEW = array();
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO hostcategories_relation ";
@@ -2365,20 +2387,20 @@
 			$DBRESULT = $pearDB->query("INSERT INTO `ns_host_relation` (`host_host_id`, `nagios_server_id`) VALUES ('".$host_id."', '".$ret."')");
 		}
 	}
-        
+
         /**
          * Inserts criticality relations
-         * 
+         *
          * @param int $hostId
          * @param int $criticalityId
-         * @return void 
+         * @return void
          */
         function setHostCriticality($hostId, $criticalityId) {
             global $pearDB;
-            
+
             $pearDB->query("DELETE FROM criticality_resource_relations WHERE host_id = " . $pearDB->escape($hostId));
             if ($criticalityId) {
-                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, host_id) 
+                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, host_id)
                                 VALUES (".$pearDB->escape($criticalityId).", ".$pearDB->escape($hostId).")");
             }
         }

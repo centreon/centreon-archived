@@ -38,11 +38,12 @@
 
  	if (!isset($oreon))
  		exit();
-
+        
 	#
 	## Database retrieve information for Dependency
 	#
 	$dep = array();
+        $initialValues = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
@@ -61,25 +62,26 @@
 
 		# Set HostGroup Parents
 		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $hgP = $DBRESULT->fetchRow(); $i++)
-			$dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
+		for($i = 0; $hgP = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && !isset($hgs[$hgP['hostgroup_hg_id']])) {
+                        $initialValues['dep_hgParents'][] = $hgP["hostgroup_hg_id"];
+                    } else {
+                        $dep["dep_hgParents"][$i] = $hgP["hostgroup_hg_id"];
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set HostGroup Childs
 		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM dependency_hostgroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for($i = 0; $hgC = $DBRESULT->fetchRow(); $i++)
-			$dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
+		for($i = 0; $hgC = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && !isset($hgs[$hgC['hostgroup_hg_id']])) {
+                        $initialValues['dep_hgChilds'][] = $hgC["hostgroup_hg_id"];
+                    } else {
+                        $dep["dep_hgChilds"][$i] = $hgC["hostgroup_hg_id"];
+                    }
+                }
 		$DBRESULT->free();
 	}
-	#
-	## Database retrieve information for differents elements list we need on the page
-	#
-	# HostGroup comes from DB -> Store in $hgs Array
-	$hgs = array();
-	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while ($hg = $DBRESULT->fetchRow())
-		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	$DBRESULT->free();
 
 	/*
 	 * Var information to format the element
@@ -154,6 +156,9 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+        $init = $form->addElement('hidden', 'initialValues');
+        $init->setValue(serialize($initialValues));
+        
 	/*
 	 * Form Rules
 	 */

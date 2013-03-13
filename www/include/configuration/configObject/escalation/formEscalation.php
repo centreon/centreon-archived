@@ -42,10 +42,43 @@
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
+        /* hosts */
+        $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
+                                                                            'keys'    => array('host_id'),
+                                                                            'get_row' => 'host_name',
+                                                                            'order'   => array('host.host_name')));
+        
+        /* services */
+        if (!$oreon->user->admin) {
+            $hServices = array();
+            $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
+                                    CONCAT(host_name, ' / ', service_description) as v
+                    FROM $dbmon.centreon_acl 
+                    WHERE group_id IN (".$acl->getAccessGroupsString().")";
+            $res = $pearDB->query($sql);
+            while ($row = $res->fetchRow()) {
+                $hServices[$row['k']] = $row['v'];
+            }
+        }
+        
+        /* notification contact groups */
+        $notifCgs = array();
+        $cg = new CentreonContactgroup($pearDB);
+        if ($oreon->user->admin) {
+            $notifCgs = $cg->getListContactgroup(true);
+        } else {
+            $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
+                                                        'get_row' => 'cg_name',
+                                                        'keys'    => array('cg_id'),
+                                                        'order'   => array('cg_name')));
+            $cgLdap = $cg->getListContactgroup(true, true);
+            $notifCgs = array_intersect_key($cgLdap, $cgAcl);
+        }
+        
 	/*
 	 * Database retrieve information for Escalation
 	 */
-
+        $initialValues = array();
 	$esc = array();
 	if (($o == "c" || $o == "w") && $esc_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM escalation WHERE esc_id = '".$esc_id."' LIMIT 1");
@@ -65,38 +98,69 @@
 
 		# Set Host Groups relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT hostgroup_hg_id FROM escalation_hostgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $hg = $DBRESULT->fetchRow(); $i++)
-			$esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
+		for($i = 0; $hg = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && false === strpos($hgString, "'".$hg['hostgroup_hg_id']."'")) {
+                        $initialValues['esc_hgs'][] = $hg["hostgroup_hg_id"];
+                    } else {
+                        $esc["esc_hgs"][$i] = $hg["hostgroup_hg_id"];
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set Service Groups relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM escalation_servicegroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $sg = $DBRESULT->fetchRow(); $i++)
-			$esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
+		for($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && false === strpos($sgString, "'".$sg['servicegroup_sg_id']."'")) {
+                        $initialValues['esc_sgs'][] = $sg["servicegroup_sg_id"];
+                    } else {
+                        $esc["esc_sgs"][$i] = $sg["servicegroup_sg_id"];
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set Host relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM escalation_host_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++)
-			$esc["esc_hosts"][$i] = $host["host_host_id"];
+		for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && !isset($hosts[$host['host_host_id']])) {
+                        $initialValues['esc_hosts'][] = $host['host_host_id'];
+                    } else {
+                        $esc["esc_hosts"][$i] = $host["host_host_id"];
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set Meta Service
 		$DBRESULT = $pearDB->query("SELECT DISTINCT emsr.meta_service_meta_id FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $metas = $DBRESULT->fetchRow(); $i++)
-			$esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
+		for($i = 0; $metas = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && false === strpos($acl->getMetaServiceString(), "'".$metas['meta_service_meta_id']."'")) {
+                        $initialValues['esc_metas'][] = $metas['meta_service_meta_id'];
+                    } else {
+                        $esc["esc_metas"][$i] = $metas["meta_service_meta_id"];
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set Host Service
 		$DBRESULT = $pearDB->query("SELECT DISTINCT * FROM escalation_service_relation esr WHERE esr.escalation_esc_id = '".$esc_id."'");
-		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++)
-			$esc["esc_hServices"][$i] = $services["host_host_id"]."_".$services["service_service_id"];
+		for ($i = 0; $services = $DBRESULT->fetchRow(); $i++) {
+                    $key = $services["host_host_id"]."_".$services["service_service_id"];
+                    if (!$oreon->user->admin && !isset($hServices[$key])) {
+                        $initialValues['esc_hServices'][] = $key;
+                    } else {
+                        $esc["esc_hServices"][$i] = $key;
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set Contact Groups relations
 		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM escalation_contactgroup_relation WHERE escalation_esc_id = '".$esc_id."'");
-		for($i = 0; $cg = $DBRESULT->fetchRow(); $i++)
-			$esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
+		for($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
+                    if (!isset($oreon->user->admin) && !isset($notifCgs[$cg['contactgroup_cg_id']])) {
+                        $initialValues["esc_cgs"][] = $cg["contactgroup_cg_id"];
+                    } else {
+                        $esc["esc_cgs"][$i] = $cg["contactgroup_cg_id"];
+                    }
+                }
 		$DBRESULT->free();
 	}
 
@@ -104,21 +168,6 @@
 	/*
 	 * Database retrieve information for differents elements list we need on the page
 	 */
-
-	# Host Groups comes from DB -> Store in $hgs Array
-	$hgs = array();
-	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while($hg = $DBRESULT->fetchRow())
-		$hgs[$hg["hg_id"]] = $hg["hg_name"];
-	$DBRESULT->free();
-
-	#
-	# Service Groups comes from DB -> Store in $sgs Array
-	$sgs = array();
-	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while($sg = $DBRESULT->fetchRow())
-		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	$DBRESULT->free();
 
 	#
 	# Host comes from DB -> Store in $hosts Array
@@ -129,21 +178,26 @@
 	$DBRESULT->free();
 	#
 	# Services comes from DB -> Store in $hServices Array
-	$hServices = array();
-	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($elem = $DBRESULT->fetchRow())	{
-		$services = getMyHostServices($elem["host_id"]);
-		foreach ($services as $key=>$index)	{
-			$index = str_replace('#S#', "/", $index);
-			$index = str_replace('#BS#', "\\", $index);
-			$hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
-		}
-	}
-	$DBRESULT->free();
+	if (!isset($hServices)) {
+            $hServices = array();
+            $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+            while ($elem = $DBRESULT->fetchRow())	{
+                    $services = getMyHostServices($elem["host_id"]);
+                    foreach ($services as $key=>$index)	{
+                            $index = str_replace('#S#', "/", $index);
+                            $index = str_replace('#BS#', "\\", $index);
+                            $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
+                    }
+            }
+            $DBRESULT->free();
+        }
 
 	# Meta Services comes from DB -> Store in $metas Array
 	$metas = array();
-	$DBRESULT = $pearDB->query("SELECT meta_id, meta_name FROM meta_service ORDER BY meta_name");
+	$DBRESULT = $pearDB->query("SELECT meta_id, meta_name 
+                                    FROM meta_service ".
+                                    $acl->queryBuilder("WHERE", "meta_id", $acl->getMetaServiceString()).
+                                   " ORDER BY meta_name");
 	while ($meta = $DBRESULT->fetchRow())
 		$metas[$meta["meta_id"]] = $meta["meta_name"];
 	$DBRESULT->free();
@@ -277,7 +331,10 @@
 	$form->addElement('hidden', 'esc_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
-
+        
+        $init = $form->addElement('hidden', 'initialValues');
+        $init->setValue(serialize($initialValues));
+        
 	#
 	## Form Rules
 	#

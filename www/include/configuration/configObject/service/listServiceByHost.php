@@ -119,7 +119,11 @@
     $hostgroupsTab = array();
 	$hostgroupsFilter = "<option value='0'></option>";
 	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name, hg_alias, hg_activate FROM hostgroup WHERE hg_id NOT IN (SELECT hg_child_id FROM hostgroup_hg_relation) AND hg_activate='1' ORDER BY hg_name");
-	while ($hgrp = $DBRESULT->fetchRow()) {
+    $hglist = $acl->getHostGroupAclConf(null, null, array('fields'  => array('hg_id', 'hg_name'),
+                                                          'keys'    => array('hg_id'),
+                                                          'order'   => array('hg_name')
+                                                         ));
+	foreach ($hglist as $hgrp) {
         $hostgroupsTab[$hgrp["hg_id"]] = $hgrp["hg_name"];
         $hostgroupsFilter .= "<option value='".$hgrp["hg_id"]."'".(($hgrp["hg_id"] == $hostgroups) ? " selected" : "").">".$hgrp["hg_name"]."</option>";
 	}
@@ -129,7 +133,7 @@
     $searchH_SQL = '';
     $searchH_GET = '';
     $tmp_search_h = '';
-    
+
 	if (isset($_GET['search_h'])) {
 		$tmp_search_h = $_GET['search_h'];
         $oreon->svc_host_search = $tmp_search_h;
@@ -140,11 +144,11 @@
 	}
     elseif (isset($oreon->svc_host_search) && $oreon->svc_host_search != '')
         $tmp_search_h = $oreon->svc_host_search;
-    
+
 	if ($tmp_search_h != '') {
         $searchH = $tmp_search_h;
        	$searchH_GET = $tmp_search_h;
-       	$searchH_SQL = "AND (host_name LIKE '%". CentreonDB::escape($tmp_search_h) ."%' OR host_alias LIKE '%". CentreonDB::escape($tmp_search_h) ."%' OR host_address LIKE '%". CentreonDB::escape($tmp_search_h) ."%')";
+       	$searchH_SQL = "AND (host.host_name LIKE '%". $pearDB->escape($tmp_search_h) ."%' OR host_alias LIKE '%". $pearDB->escape($tmp_search_h) ."%' OR host_address LIKE '%". $pearDB->escape($tmp_search_h) ."%')";
 	}
 
     $searchS = '';
@@ -161,11 +165,11 @@
 	}
     elseif (isset($oreon->svc_svc_search))
 		$tmp_search_s = $oreon->svc_svc_search;
-    
+
 	if ($tmp_search_s != '') {
         $searchS = $tmp_search_s;
 	$searchS_GET = $tmp_search_s;
-        $searchS_SQL = "AND (sv.service_alias LIKE '%" . CentreonDB::escape($tmp_search_s) . "%' OR sv.service_description LIKE '%" . CentreonDB::escape($tmp_search_s) . "%')";
+        $searchS_SQL = "AND (sv.service_alias LIKE '%" . $pearDB->escape($tmp_search_s) . "%' OR sv.service_description LIKE '%" . $pearDB->escape($tmp_search_s) . "%')";
 	}
 
 	include("./include/common/autoNumLimit.php");
@@ -191,31 +195,41 @@
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
+    $aclfilter = "";
+    $distinct = "";
+    if (!$oreon->user->admin) {
+        $aclfilter = " AND host.host_id = acl.host_id
+                       AND acl.service_id = sv.service_id
+                       AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        $distinct = " DISTINCT ";
+    }
+
 	/*
 	 * Host/service list
 	 */
-
 	$rq_body = 	"esi.esi_icon_image, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, " .
 			"host.host_id, host.host_name, host.host_template_model_htm_id, sv.service_normal_check_interval, " .
 			"sv.service_retry_check_interval, sv.service_max_check_attempts " .
 			"FROM service sv, host" .
             ((isset($hostgroups) && $hostgroups) ? ", hostgroup_relation hogr, " : ", ") .
+            ($oreon->user->admin ? "" : $acldbname.".centreon_acl acl, ").
             "host_service_relation hsr " .
 	        "LEFT JOIN extended_service_information esi ON esi.service_service_id = hsr.service_service_id " .
 			"WHERE host.host_register = '1' $searchH_SQL AND host.host_id = hsr.host_host_id AND hsr.service_service_id = sv.service_id " .
 					"AND sv.service_register = '1' $searchS_SQL $sqlFilterCase " .
 					((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") .
                     ((isset($hostgroups) && $hostgroups) ? " AND hogr.hostgroup_hg_id = '$hostgroups' AND hogr.host_host_id = host.host_id " : "") .
+                    $aclfilter .
 					"ORDER BY host.host_name, service_description";
-    
-	$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS " . $rq_body . " LIMIT " . $num * $limit . ", " . $limit);
+
+	$DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS " . $distinct . $rq_body . " LIMIT " . $num * $limit . ", " . $limit);
     $rows = $pearDB->numberRows();
 
     if (!($DBRESULT->numRows())) {
-        $DBRESULT = $pearDB->query("SELECT " . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
+        $DBRESULT = $pearDB->query("SELECT " . $distinct . $rq_body . " LIMIT " . (floor($rows / $limit) * $limit) . ", " . $limit);
     }
-    
-    include("./include/common/checkPagination.php");    
+
+    include("./include/common/checkPagination.php");
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
 	/**

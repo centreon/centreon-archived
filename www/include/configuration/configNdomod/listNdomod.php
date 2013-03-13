@@ -50,7 +50,18 @@
 	if (isset($search) && $search)
 		$SearchTool = " WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ";
 
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `cfg_ndomod` $SearchTool");
+
+    $aclCond = "";
+    if (!$oreon->user->admin && count($allowedNdomod)) {
+        if (isset($search) && $search) {
+            $aclCond = " AND ";
+        } else {
+            $aclCond = " WHERE ";
+        }
+        $aclCond .= "id IN (".implode(',', array_keys($allowedNdomod)).") ";
+    }
+
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `cfg_ndomod` $SearchTool $aclCond");
 
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -89,9 +100,10 @@
 	/*
 	 * Nagios list
 	 */
-
-
-	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate, output_type FROM cfg_ndomod $SearchTool ORDER BY description LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT id, description, instance_name, ns_nagios_server, activate, output_type
+           FROM cfg_ndomod $SearchTool $aclCond
+           ORDER BY description
+           LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);

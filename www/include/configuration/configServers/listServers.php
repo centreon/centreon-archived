@@ -70,12 +70,12 @@
 	 */
 	$nagios_servers = array();
 	$nagios_restart = array();
-	$DBRESULT = $pearDB->query("SELECT id, name, last_restart FROM `nagios_server` ORDER BY name");
-	while ($nagios_server = $DBRESULT->fetchRow()) {
+	foreach ($serverResult as $nagios_server) {
 		$nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 		$nagios_restart[$nagios_server["id"]] = $nagios_server["last_restart"];
 	}
-	$DBRESULT->free();
+
+    $pollerstring = implode(',', array_keys($nagios_servers));
 
 	/*
 	 * Get information info RTM
@@ -148,7 +148,11 @@
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default FROM `nagios_server` $LCASearch ORDER BY name LIMIT ".$num * $limit.", ".$limit;
+	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
+           FROM `nagios_server` $LCASearch ".
+           $oreon->user->access->queryBuilder($LCASearch ? 'AND' : 'WHERE', 'id', $pollerstring).
+           " ORDER BY name
+           LIMIT ".$num * $limit.", ".$limit;
 	$DBRESULT = $pearDB->query($rq);
 
 	$rows = $pearDB->numberRows();

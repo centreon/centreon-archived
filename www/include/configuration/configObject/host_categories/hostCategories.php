@@ -69,10 +69,16 @@
 	 */
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
-	
+
 	/* Set the real page */
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
+
+    $acl = $oreon->user->access;
+    $dbmon = $oreon->broker->getBroker() == 'broker' ? new CentreonDB('centstorage') : new CentreonDB('ndo');
+    $aclDbName = $acl->getNameDBAcl($oreon->broker->getBroker());
+    $hcString = $acl->getHostCategoriesString();
+    $hoststring = $acl->getHostsString('ID', $dbmon);
 
 	switch ($o)	{
 		case "a" :

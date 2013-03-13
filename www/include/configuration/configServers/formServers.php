@@ -40,8 +40,18 @@ if (!isset($oreon)) {
     exit();
 }
 
-$monitoring_engines = 
-    array("CENGINE" => array("name" => "Centreon Engine", 
+if (!$oreon->user->admin && $server_id  && count($serverResult)) {
+    if (!isset($serverResult[$server_id])) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this monitoring instance'));
+        return null;
+    }
+}
+
+$monitoring_engines =
+    array("CENGINE" => array("name" => "Centreon Engine",
                              "nagios_bin" => "/usr/sbin/centengine",
                              "nagiostats_bin" => "/usr/sbin/centenginestats",
                              "init_script" => "/etc/init.d/centengine",
@@ -51,7 +61,7 @@ $monitoring_engines =
                             "nagiostats_bin" => "",
                             "init_script" => "",
                             "nagios_perfdata" => ""),
-          "NAGIOS" => array("name" => "Nagios", 
+          "NAGIOS" => array("name" => "Nagios",
                             "nagios_bin" => "/usr/sbin/nagios",
                             "nagiostats_bin" => "/usr/sbin/nagiostats",
                             "init_script" => "/etc/init.d/nagios",

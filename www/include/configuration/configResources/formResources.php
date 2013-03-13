@@ -36,6 +36,22 @@
  *
  */
 
+    if (!$oreon->user->admin && isset($resource_id)
+        && count($allowedResourceConf) && !isset($allowedResourceConf[$resource_id])) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this object configuration'));
+        return null;
+    }
+
+    $initialValues = array();
+
+    $instances = $acl->getPollerAclConf(array('fields' => array('id', 'name'),
+                                              'keys'   => array('id'),
+                                              'get_row' => 'name',
+                                              'order'   => array('name')));
+
 	/**
 	 * Database retrieve information for Resources CFG
 	 */
@@ -50,6 +66,11 @@
 							   FROM cfg_resource_instance_relations
 							   WHERE resource_id = " . $pearDB->escape($resource_id));
 		while ($row = $res->fetchRow()) {
+            if (!$oreon->user->admin
+                && $pollerString != "''"
+                && false === strpos($pollerString, "'".$row['instance_id']."'")) {
+                $initialValues['instance_id'][] = $row['instance_id'];
+            }
 		    $rs['instance_id'][] = $row['instance_id'];
 		}
 	}
@@ -84,8 +105,6 @@
 	$form->addElement('text', 'resource_name', _("Resource Name"), $attrsText);
 	$form->addElement('text', 'resource_line', _("MACRO Expression"), $attrsText);
 
-	$instanceObj = new CentreonInstance($pearDB);
-	$instances = $instanceObj->getInstances();
 	$ams1 = $form->addElement('advmultiselect', 'instance_id', array(_("Linked Instances"), _("Available"), _("Selected")), $instances, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
@@ -111,6 +130,9 @@
 	$form->addElement('hidden', 'resource_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
 
 	/**
 	 * Form definition

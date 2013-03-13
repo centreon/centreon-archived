@@ -51,10 +51,18 @@
 	 * Search
 	 */
 	$SearchTool = NULL;
-	if (isset($search) && $search)
-		$SearchTool = " WHERE (hc_name LIKE '%".CentreonDB::escape($search)."%' OR hc_alias LIKE '%".CentreonDB::escape($search)."%')";
+	if (isset($search) && $search) {
+		$SearchTool = " WHERE (hc_name LIKE '%".$pearDB->escape($search)."%' OR hc_alias LIKE '%".$pearDB->escape($search)."%')";
+    }
 
-	$request = "SELECT COUNT(*) FROM hostcategories $SearchTool";
+    $hcFilter = "";
+    if (!$oreon->user->admin && $hcString != "''") {
+        $hcFilter = $acl->queryBuilder(is_null($SearchTool) ? 'WHERE' : 'AND',
+                                       'hc_id',
+                                       $hcString);
+    }
+
+	$request = "SELECT COUNT(*) FROM hostcategories $SearchTool $hcFilter";
 
 	$DBRESULT = $pearDB->query($request);
 	$tmp = $DBRESULT->fetchRow();
@@ -86,8 +94,7 @@
 	/*
 	 * Hostgroup list
 	 */
-
-	$rq = "SELECT hc_id, hc_name, hc_alias, hc_activate FROM hostcategories $SearchTool ORDER BY hc_name LIMIT ".$num * $limit .", $limit";
+    $rq = "SELECT hc_id, hc_name, hc_alias, hc_activate FROM hostcategories $SearchTool $hcFilter ORDER BY hc_name LIMIT ".$num * $limit .", $limit";
 	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
@@ -120,14 +127,30 @@
 		$nbrhostgroupAct = array();
 		$nbrhostgroupDeact = array();
 
-		$rq = "SELECT COUNT(*) as nbr FROM hostcategories_relation hcr, host WHERE hostcategories_hc_id = '".$hc['hc_id']."' AND host.host_id = hcr.host_host_id AND host.host_register = '1' AND host.host_activate = '1'";
+        $aclFrom = "";
+        $aclCond = "";
+        if (!$oreon->user->admin) {
+            $aclFrom = ", $aclDbName.centreon_acl acl ";
+            $aclCond = " AND h.host_id = acl.host_id
+                         AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        }
+		$rq = "SELECT h.host_id, h.host_activate
+               FROM hostcategories_relation hcr, host h $aclFrom
+               WHERE hostcategories_hc_id = '".$hc['hc_id']."'
+               AND h.host_id = hcr.host_host_id $aclCond
+               AND h.host_register = '1' ";
 		$DBRESULT2 = $pearDB->query($rq);
-		$nbrhostAct = $DBRESULT2->fetchRow();
-
-		$rq = "SELECT COUNT(*) as nbr FROM hostcategories_relation hcr, host WHERE hostcategories_hc_id = '".$hc['hc_id']."' AND host.host_id = hcr.host_host_id AND host.host_register = '1' AND host.host_activate = '0'";
-		$DBRESULT2 = $pearDB->query($rq);
-		$nbrhostDeact = $DBRESULT2->fetchRow();
-
+        $nbrhostActArr = array();
+        $nbrhostDeactArr = array();
+        while ($row = $DBRESULT2->fetchRow()) {
+            if ($row['host_activate']) {
+                $nbrhostActArr[$row['host_id']] = true;
+            } else {
+                $nbrhostDeactArr[$row['host_id']] = true;
+            }
+        }
+		$nbrhostAct = count($nbrhostActArr);
+		$nbrhostDeact = count($nbrhostDeactArr);
 
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
 						"RowMenu_select"=>$selectedElements->toHtml(),
@@ -135,8 +158,8 @@
 						"RowMenu_link"=>"?p=".$p."&o=c&hc_id=".$hc['hc_id'],
 						"RowMenu_desc"=>$hc["hc_alias"],
 						"RowMenu_status"=>$hc["hc_activate"] ? _("Enabled") : _("Disabled"),
-						"RowMenu_hostAct"=>$nbrhostAct["nbr"],
-						"RowMenu_hostDeact"=>$nbrhostDeact["nbr"],
+						"RowMenu_hostAct"=>$nbrhostAct,
+						"RowMenu_hostDeact"=>$nbrhostDeact,
 						"RowMenu_options"=>$moptions);
 		/*
 		 * Switch color line

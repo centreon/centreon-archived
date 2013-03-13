@@ -47,42 +47,39 @@
 	 */
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-    
+
     $connectorObj = new CentreonConnector($pearDB);
-    
-    if(isset($_REQUEST['o']))
-        $o = $_REQUEST['o'];
 
     if (isset($_REQUEST['select']))
         $select = $_REQUEST['select'];
-    
+
     if (isset($_REQUEST['id']))
         $connector_id = $_REQUEST['id'];
-     
+
     if (isset($_REQUEST['options']))
         $options = $_REQUEST['options'];
-    
+
     switch ($o)
     {
-        case "a": 
+        case "a":
             require_once($path.'formConnector.php');
         break;
 
-        case "w": 
+        case "w":
             require_once($path.'formConnector.php');
         break;
 
         case "c":
             require_once($path.'formConnector.php');
         break;
-    
+
         case "s":
             $myConnector = $connectorObj->read($connector_id);
             $myConnector['enabled'] = '1';
             $connectorObj->update($connector_id, $myConnector);
             require_once($path.'listConnector.php');
         break;
-        
+
         case "u":
             $myConnector = $connectorObj->read($connector_id);
             $myConnector['enabled'] = '0';
@@ -95,7 +92,7 @@
             foreach($selectedConnectors as $connectorId)
                 $connectorObj->copy($connectorId, (int)$options[$connectorId]);
             require_once($path.'listConnector.php');
-        break; 
+        break;
 
         case "d":
             $selectedConnectors = array_keys($select);
@@ -104,7 +101,7 @@
             require_once($path.'listConnector.php');
         break;
 
-        default: 
+        default:
             require_once($path.'listConnector.php');
         break;
     }

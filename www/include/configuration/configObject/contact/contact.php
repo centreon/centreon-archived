@@ -74,7 +74,9 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page']) {
 		$p = $ret['topology_page'];
 	}
-	
+
+    $acl = $oreon->user->access;
+
 	switch ($o)	{
 		case "li" : require_once($path."ldapImportContact.php"); break; # LDAP import form	# Wistof
 		case "mc" : require_once($path."formContact.php"); break; # Massive Change
@@ -90,5 +92,5 @@
 		case "dn" : require_once $path.'displayNotification.php'; break;
 		default : require_once($path."listContact.php"); break;
 	}
-	
+
 ?>

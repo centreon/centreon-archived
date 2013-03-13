@@ -49,8 +49,19 @@
 
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
+        $aclFrom = "";
+        $aclCond = "";
+        if (!$oreon->user->admin) {
+            $aclFrom = ", $dbmon.centreon_acl acl ";
+            $aclCond = " AND dspr.host_host_id = acl.host_id 
+                         AND acl.service_id = dspr.service_service_id 
+                         AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        }
+        
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = dep.dep_id) > 0 ";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_serviceParent_relation dspr $aclFrom
+                        WHERE dspr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
@@ -83,7 +94,9 @@
 	 * Dependency list
 	 */
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_serviceParent_relation dspr WHERE dspr.dependency_dep_id = dep.dep_id) > 0 ";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_serviceParent_relation dspr $aclFrom
+                        WHERE dspr.dependency_dep_id = dep.dep_id $aclCond) > 0 ";
 	if ($search)
 		$rq .= " AND (dep_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR dep_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
 	$rq .= " LIMIT ".$num * $limit.", ".$limit;

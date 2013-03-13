@@ -155,4 +155,50 @@ class CentreonUtils
         }
         return $result;
     }
+    
+    /**
+     * Merge with initial values
+     * 
+     * @param Quickform $form
+     * @param string $key 
+     * @return array
+     */
+    public function mergeWithInitialValues($form, $key) {
+        $init = array();
+        $initForm = $form->getElement('initialValues');
+        $c = get_class($initForm);
+        if (!is_null($form) && $c != "HTML_QuickForm_Error") {
+            $initialValues = unserialize($initForm->getValue());
+            if (count($initialValues) && isset($initialValues[$key])) {
+               $init = $initialValues[$key];
+            }
+        }
+        return array_merge((array)$form->getSubmitValue($key), $init);
+    }
+    
+    /**
+     * Transforms an array into a string with the following format
+     * '1','2','3' or '' if the array is empty
+     * 
+     * @param array $arr
+     * @param bool $transformKey | string will be formed with keys when true,
+     *                             otherwise values will be used
+     * @return string
+     */
+    public function toStringWithQuotes($arr = array(), $transformKey = true) {
+        $string = "";
+        $first = true;
+        foreach ($arr as $key => $value) {
+            if ($first) {
+                $first = false;
+            } else {
+                $string .= ", ";
+            }
+            $string .= $transformKey ? "'".$key."'" : "'".$value."'";
+        }
+        if ($string == "") {
+            $string = "''";
+        }
+        return $string;
+    }
 }

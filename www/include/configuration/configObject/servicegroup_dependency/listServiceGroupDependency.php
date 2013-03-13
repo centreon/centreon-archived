@@ -48,8 +48,19 @@
 	include_once("./include/common/quickSearch.php");
 	
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
+        
+        $aclCond = "";
+        if (!$oreon->user->admin) {
+            $aclCond = " AND servicegroup_sg_id IN ($sgstring) ";
+        }
+        
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_servicegroupParent_relation dsgpr 
+                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
+                 OR    (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_servicegroupChild_relation dsgpr 
+                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 	
 	/*
 	 * Search case
@@ -85,7 +96,12 @@
 	 * Dependcy list
 	 */
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupParent_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_servicegroupChild_relation dsgpr WHERE dsgpr.dependency_dep_id = dep.dep_id ) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_servicegroupParent_relation dsgpr 
+                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
+                 OR    (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_servicegroupChild_relation dsgpr 
+                        WHERE dsgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 	
 	/*
 	 * Search Case

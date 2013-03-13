@@ -238,7 +238,9 @@
 		 * Update Host HG relations
 		 */
 		$DBRESULT = $pearDB->query("DELETE FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
-		isset($ret["hc_hosts"]) ? $ret = $ret["hc_hosts"] : $ret = $form->getSubmitValue("hc_hosts");
+
+        
+                $ret = isset($ret["hc_hosts"]) ? $ret["hc_hosts"] : CentreonUtils::mergeWithInitialValues($form, 'hc_hosts');
 		$hgNEW = array();
 
 		$rq = "INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id) VALUES ";
