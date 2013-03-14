@@ -971,11 +971,12 @@ class CentreonACL
                     /*
                     * Get Services attached to hostgroups
                     */
-                    $DBRESULT = $pearDB->query("SELECT service_id, service_description FROM hostgroup_relation hgr, service, host_service_relation hsr" .
+                    $DBRESULT = $pearDB->query("SELECT hgr.host_host_id, s.service_id, s.service_description 
+                                      FROM hostgroup_relation hgr, service s, host_service_relation hsr" .
                                     " WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id" .
-                                    " AND service_id = hsr.service_service_id");
+                                    " AND s.service_id = hsr.service_service_id");
                     while ($elem = $DBRESULT->fetchRow()){
-                            $tab[$elem["service_id"]] = $elem["service_description"];
+                        $tab[$elem['host_host_id']][$elem["service_id"]] = $elem["service_description"];    
                     }
                     $DBRESULT->free();
                 }
