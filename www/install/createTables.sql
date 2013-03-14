@@ -1968,7 +1968,7 @@ CREATE TABLE `session` (
   `user_id` int(11) DEFAULT NULL,
   `current_page` int(11) DEFAULT NULL,
   `last_reload` int(11) DEFAULT NULL,
-  `ip_address` varchar(16) DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
   `s_nbHostsUp` int(11) DEFAULT NULL,
   `s_nbHostsDown` int(11) DEFAULT NULL,
   `s_nbHostsUnreachable` int(11) DEFAULT NULL,
