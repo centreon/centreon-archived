@@ -52,6 +52,7 @@
 			$id = $form->getSubmitValue('id');
 		$DBRESULT = $pearDB->query("SELECT name, id FROM `nagios_server` WHERE `name` = '".htmlentities($name, ENT_QUOTES, "UTF-8")."'");
 		$ndomod = $DBRESULT->fetchRow();
+        
 		if ($DBRESULT->numRows() >= 1 && $ndomod["id"] == $id)#Modif case
 			return true;
 		else if ($DBRESULT->numRows() >= 1 && $ndomod["id"] != $id)#Duplicate entry
@@ -86,19 +87,22 @@
 
 		foreach ($server as $key => $value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
-			$row = $DBRESULT->fetchRow();
-			$row["id"] = '';
-			$row["ns_activate"] = '0';
-			$row["is_default"] = '0';
-			$row["localhost"] = '0';
+			$rowServer = $DBRESULT->fetchRow();
+			$rowServer["id"] = '';
+			$rowServer["ns_activate"] = '0';
+			$rowServer["is_default"] = '0';
+			$rowServer["localhost"] = '0';
 			$DBRESULT->free();
+            
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
-				foreach ($row as $key2=>$value2)	{
-					$key2 == "name" ? ($server_name = $value2 = $value2."_".$i) : null;
-					$val ? $val .= ($value2 != NULL ? (", '".$value2."'"):", NULL") : $val .= ($value2 != NULL ? ("'".$value2."'") : "NULL");
+				foreach ($rowServer as $key2=>$value2) {
+                    if ($key2 == "name") {
+                        $server_name = $value2 = $value2."_".$i;
+                    }
+                    $val ? $val .= ($value2 != NULL ? (", '".$value2."'"):", NULL") : $val .= ($value2 != NULL ? ("'".$value2."'") : "NULL");
 				}
-				if (testExistence($server_name))	{
+				if (testExistence($server_name)) {
 					$val ? $rq = "INSERT INTO `nagios_server` VALUES (".$val.")" : $rq = null;
 					$DBRESULT = $pearDB->query($rq);
 					$queryGetId = 'SELECT id
