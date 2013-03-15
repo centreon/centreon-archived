@@ -613,6 +613,7 @@
     }
 ?>
 
+<?php if (!is_null($host_id)) { ?>
 <script type="text/javascript">
 	var _sid = '<?php echo session_id();?>';
 	var glb_confirm = '<?php  echo _("Submit command?"); ?>';
@@ -721,3 +722,4 @@
 		_setTimeout("centreonMsg", 3);
 	}
 </script>
+<?php } ?>
