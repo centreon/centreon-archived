@@ -106,11 +106,7 @@
                 $proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
                 $proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
             }
-
-            echo '<pre>';
-            var_dump($host_name);
-            var_dump($host_id);
-            echo '</pre>';
+            
             /*
              * Get servicegroups list
              */
