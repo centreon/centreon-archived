@@ -64,7 +64,7 @@ To get help type:
 error_reporting(-1);
 date_default_timezone_set(@date_default_timezone_get());
 
-$options = (getopt('hd:u:p:He:i:s', array(
+$options = (getopt('hd:u:p:H:e:i:s', array(
             'host:',
             'dbname:',
             'username:',
