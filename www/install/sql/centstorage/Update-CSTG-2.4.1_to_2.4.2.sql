@@ -1,0 +1,1 @@
+ALTER TABLE `downtimes` ADD INDEX `downtimeManager_hostList` (`host_id`, `start_time`);
