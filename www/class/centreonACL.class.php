@@ -1294,7 +1294,7 @@ class CentreonACL
 		}
 		$query = "(SELECT " . $request['fields'] . " FROM servicegroup, servicegroup_relation, service, host $from_acl" .
 			 " WHERE servicegroup.sg_id = '$sg_id'" .
-			 " AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id" .
+			 " AND service.service_activate='1' AND host.host_activate='1' AND servicegroup.sg_id = servicegroup_relation.servicegroup_sg_id" .
 			 " AND servicegroup_relation.service_service_id = service.service_id" .
 			 " AND servicegroup_relation.host_host_id = host.host_id" .
 			 " $where_acl" .
@@ -1483,7 +1483,7 @@ class CentreonACL
 			# We should check if host is activate (maybe)
 			$query = "SELECT " . $request['fields'] . " FROM hostgroup, hostgroup_relation, host ".
 				 " WHERE $searchSTR hg_activate = '1' ".
-				 " AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id ".
+				 " AND host_activate='1' AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id ".
 				 " AND hostgroup_relation.host_host_id = host.host_id ".
 				 $request['order'];
 		} else {
