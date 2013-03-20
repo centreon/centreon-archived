@@ -100,7 +100,19 @@ sub redirect_output {
 sub severity {
     my $self = shift;
     if (@_) {
-        $self->{"severity"} = $_[0];
+        if ($_[0] =~ /^[012347]$/) {
+            $self->{"severity"} = $_[0];
+        } elsif ($_[0] eq "none") {
+            $self->{"severity"} = 0;
+        } elsif ($_[0] eq "error") {
+            $self->{"severity"} = 1;
+        } elsif ($_[0] eq "info") {
+            $self->{"severity"} = 3;
+        } elsif ($_[0] eq "debug") {
+            $self->{"severity"} = 7;
+        } else {
+            $self->writeLogError("Wrong severity value set.");
+        }
     }
     return $self->{"severity"};
 }

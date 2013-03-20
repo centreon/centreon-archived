@@ -25,7 +25,7 @@ sub new {
        log_file => undef,
        centreon_db_conn => 0,
        centstorage_db_conn => 0,
-       debug_mode => 0
+       severity => "info"
       );
     my $self = {%defaults, %options};
 
@@ -35,7 +35,7 @@ sub new {
     $self->{options} = {
         "config=s" => \$self->{config_file},
         "logfile=s" => \$self->{log_file},
-        "debug" => \$self->{debug_mode},
+        "severity=s" => \$self->{severity},
         "help|?" => \$self->{help}
     };
     return $self;
@@ -47,6 +47,7 @@ sub init {
     if (defined $self->{log_file}) {
         $self->{logger}->file_mode($self->{log_file});
     }
+    $self->{logger}->severity($self->{severity});
 
     if ($self->{centreon_db_conn}) {
         $self->{cdb} = centreon::db->new
