@@ -40,7 +40,8 @@ CREATE TABLE `nagios_acknowledgements` (
   `persistent_comment` smallint(6) NOT NULL DEFAULT '0',
   `notify_contacts` smallint(6) NOT NULL DEFAULT '0',
   PRIMARY KEY (`acknowledgement_id`),
-  KEY `entry_time` (`entry_time`,`object_id`,`acknowledgement_type`)
+  KEY `entry_time` (`entry_time`,`object_id`,`acknowledgement_type`),
+  KEY `idx_reporting_ack` (`object_id`, `acknowledgement_id`, `entry_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Current and historical host and service acknowledgements';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -331,7 +332,8 @@ CREATE TABLE `nagios_downtimehistory` (
   `actual_end_time_usec` int(11) NOT NULL DEFAULT '0',
   `was_cancelled` smallint(6) NOT NULL DEFAULT '0',
   PRIMARY KEY (`downtimehistory_id`),
-  UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`entry_time`,`internal_downtime_id`)
+  UNIQUE KEY `instance_id` (`instance_id`,`object_id`,`entry_time`,`internal_downtime_id`), 
+  KEY `idx_reporting_downtime` (`was_started`, `actual_start_time`, `actual_end_time`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Historical scheduled host and service downtime';
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
