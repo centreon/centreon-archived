@@ -113,8 +113,7 @@
             $query = "SELECT DISTINCT sg.sg_name
                 FROM servicegroup sg, servicegroup_relation sgr
                 WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
-                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
-            echo $query;
+                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));echo
             $DBRESULT = $pearDB->query($query);
             while ($row = $DBRESULT->fetchRow()) {
                 $serviceGroups[] = $row['sg_name'];
