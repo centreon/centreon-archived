@@ -2015,7 +2015,7 @@ CREATE TABLE `timeperiod_exceptions` (
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `timeperiod_exclude_relations` (
-  `include_id` int(11) NOT NULL AUTO_INCREMENT,
+  `exclude_id` int(11) NOT NULL AUTO_INCREMENT,
   `timeperiod_id` int(11) NOT NULL,
   `timeperiod_exclude_id` int(11) NOT NULL,
   PRIMARY KEY (`include_id`)
