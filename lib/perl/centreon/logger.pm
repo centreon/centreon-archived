@@ -33,7 +33,8 @@ use Sys::Syslog qw(:standard :macros);
 use IO::Handle;
 
 my %severities = (1 => LOG_INFO,
-                  2 => LOG_ERR);
+                  2 => LOG_ERR,
+                  4 => LOG_DEBUG);
 
 sub new {
     my $class = shift;
@@ -42,7 +43,7 @@ sub new {
       {
        file => 0,
        filehandler => undef,
-       # 0 = nothing, 1 = critical, 3 = info
+       # 0 = nothing, 1 = critical, 3 = info, 7 = debug
        severity => 3,
        # 0 = stdout, 1 = file, 2 = syslog
        log_mode => 0,
@@ -59,10 +60,20 @@ sub file_mode($$) {
     if (open($self->{filehandler}, ">>", $file)){
         $self->{log_mode} = 1;
         $self->{filehandler}->autoflush(1);
+        $self->{file_name} = $file;
         return 1;
     }
     $self->{filehandler} = undef;
     print STDERR "Cannot open file $file: $!\n";
+    return 0;
+}
+
+sub is_file_mode {
+    my $self = shift;
+    
+    if ($self->{log_mode} == 1) {
+        return 1;
+    }
     return 0;
 }
 
@@ -72,6 +83,17 @@ sub syslog_mode($$$) {
     $self->{log_mode} = 2;
     openlog($0, $logopt, $facility);
     return 1;
+}
+
+# For daemons
+sub redirect_output {
+    my $self = shift;
+
+    if ($self->is_file_mode()) {
+        open my $lfh, '>>', $self->{file_name};
+        open STDOUT, '>&', $lfh;
+        open STDERR, '>&', $lfh;
+    }
 }
 
 # Getter/Setter Log severity
@@ -110,12 +132,16 @@ sub writeLog($$$%) {
     }
 }
 
+sub writeLogDebug {
+    shift->writeLog(4, @_);
+}
+
 sub writeLogInfo {
-    shift->writeLog(1, @_);
+    shift->writeLog(2, @_);
 }
 
 sub writeLogError {
-    shift->writeLog(2, @_);
+    shift->writeLog(1, @_);
 }
 
 sub DESTROY {

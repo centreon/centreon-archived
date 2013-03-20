@@ -946,8 +946,13 @@ sub rebuild {
         $self->{'dbcentstorage'}->set_inactive_destroy();
         $self->{'dbcentreon'}->set_inactive_destroy();
 
-        my $centreon_db_centstorage = centreon::db(logger => $self->{'logger'}, db => $self->{'dbcentstorage'}->db(), host => $self->{'dbcentstorage'}->host(),
-                                           user => $self->{'dbcentstorage'}->user(), password => $self->{'dbcentstorage'}->password(), "port" => $self->{'dbcentstorage'}->port(), force => 0);
+        my $centreon_db_centstorage = centreon::db(logger => $self->{'logger'},
+                                                   db => $self->{'dbcentstorage'}->db(),
+                                                   host => $self->{'dbcentstorage'}->host(),
+                                                   user => $self->{'dbcentstorage'}->user(),
+                                                   password => $self->{'dbcentstorage'}->password(),
+                                                   port => $self->{'dbcentstorage'}->port(),
+                                                   force => 0);
         $status = $centreon_db_centstorage->connect();
         exit 1 if ($status == -1);
         my $centstorage_rebuild = centstorage::CentstorageRebuild->new($self->{'logger'});
