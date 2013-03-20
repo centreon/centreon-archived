@@ -1,0 +1,47 @@
+#!/usr/bin/env perl
+
+use warnings;
+use FindBin qw($Bin);
+use lib "$Bin/../lib/perl";
+use centreon::script::eventReportBuilder;
+
+centreon::script::eventReportBuilder->new()->run();
+
+__END__
+
+=head1 NAME
+
+eventReportBuilder - script to create events for dashboards
+
+=head1 SYNOPSIS
+
+eventReportBuilder [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-r|--rebuild>
+
+Specify for rebuild all events.
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--logfile>
+
+Write log messages into this file instead of the standard output.
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<eventReportBuilder> will read "log" (ndo) or "logs" (centreon-broker) tables
+to create events.
+
+=cut
