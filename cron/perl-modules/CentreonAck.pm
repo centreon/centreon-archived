@@ -75,8 +75,9 @@ sub getServiceAckTime {
 			" FROM `nagios_acknowledgements` a, `nagios_objects` o".
 			" WHERE o.`object_id` = a.`object_id`".
 			" AND `acknowledgement_type` = '1'".
-			" AND UNIX_TIMESTAMP(`entry_time`) >= ".$start.
-			" AND UNIX_TIMESTAMP(`entry_time`) <= ".$end.
+			" AND `entry_time` >= FROM_UNIXTIME(".$start.")".
+			" AND `entry_time` <= FROM_UNIXTIME(".$end.")".
+            " AND objecttype_id = '2'".
 			" AND o.`name1` = '".$hostName. "'".
 			" AND o.`name2` = '".$serviceDescription. "'".	
 			" ORDER BY `entry_time` asc";
