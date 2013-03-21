@@ -44,7 +44,7 @@ sub insertHostStats {
     my $query_end = "";
     my $firstHost = 1;
     my $count = 0;
-    my $sth;
+    my ($status, $sth);
     while (my ($key, $value) = each %$names) {
         if ($firstHost == 1) {
             $firstHost = 0;
@@ -64,14 +64,14 @@ sub insertHostStats {
         }
         $count++;
         if ($count == 5000) {
-            $sth = $centstorage->query($query_start.$query_end);        
+            ($status, $sth) = $centstorage->query($query_start.$query_end);        
             $firstHost = 1;
             $query_end = "";
             $count = 0;
         }
     }
     if ($count) {
-        $sth = $centstorage->query($query_start.$query_end);
+        ($status, $sth) = $centstorage->query($query_start.$query_end);
     }
 }
 
@@ -99,7 +99,7 @@ sub insertServiceStats {
     my $query_end = "";
     my $firstService = 1;
     my $count = 0;
-    my $sth;
+    my ($status, $sth);
     while (my ($key, $value) = each %$names) {
         if ($firstService == 1) {
             $firstService = 0;
@@ -120,14 +120,14 @@ sub insertServiceStats {
         }
         $count++;
         if ($count == 5000) {
-            $sth = $centstorage->query($query_start.$query_end);
+            ($status, $sth) = $centstorage->query($query_start.$query_end);
             $firstService = 1;
             $query_end = "";
             $count = 0;
         }
     }
     if ($count) {
-        $sth = $centstorage->query($query_start.$query_end);
+        ($status, $sth) = $centstorage->query($query_start.$query_end);
     }    
 }
 

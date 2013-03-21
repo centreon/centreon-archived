@@ -61,7 +61,7 @@ sub getDownTime {
                  "ORDER BY name1 ASC, start_time ASC, end_time ASC";        
     }
 
-    my $sth = $centreon->query($query);
+    my ($status, $sth) = $centreon->query($query);
     
     my @periods = ();
     while (my $row = $sth->fetchrow_hashref()) {

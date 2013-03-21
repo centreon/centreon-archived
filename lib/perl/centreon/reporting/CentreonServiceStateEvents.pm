@@ -36,7 +36,7 @@ sub getStateEventDurations {
                 " WHERE `start_time` < ".$end.
                     " AND `end_time` > ".$start.
                     " AND `state` < 4"; # NOT HANDLING PENDING STATE
-    my $sth = $centstorage->query($query);
+    my ($status, $sth) = $centstorage->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
         if ($row->{"start_time"} < $start) {
             $row->{"start_time"} = $start;
@@ -84,7 +84,7 @@ sub getLastStates {
     my $query = "SELECT `host_id`, `service_id`, `state`, `servicestateevent_id`, `end_time`, `in_downtime`".
                 " FROM `servicestateevents`".
                 " WHERE `last_update` = 1";
-    my $sth = $centstorage->query($query);
+    my ($status, $sth) = $centstorage->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
         my $serviceId = $row->{'host_id'}.";;".$row->{'service_id'};
         if (defined($serviceNames->{$serviceId})) {
@@ -191,7 +191,7 @@ sub getFirstLastIncidentTimes {
     my $centstorage = $self->{"centstorage"};
     
     my $query = "SELECT min(`start_time`) as minc, max(`end_time`) as maxc FROM `servicestateevents`";
-    my $sth = $centstorage->query($query);
+    my ($status, $sth) = $centstorage->query($query);
     my ($start, $end) = (0,0);
     if (my $row = $sth->fetchrow_hashref()) {
         ($start, $end) = ($row->{"minc"}, $row->{"maxc"});

@@ -37,7 +37,7 @@ sub getAllHosts {
     if ($activated == 1) {
         $query .= " AND `host_activate` ='1'";
     }
-    my $sth = $centreon->query($query);
+    my ($status, $sth) = $centreon->query($query);
     while (my $row = $sth->fetchrow_hashref()) {
         $host_ids{$row->{"host_name"}} = $row->{"host_id"};
         $host_names{$row->{"host_id"}} = $row->{"host_name"};

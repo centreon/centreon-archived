@@ -39,7 +39,7 @@ sub getAllServices {
     if ($activated == 1) {
         $query .= " AND `service_activate`='1'";
     }
-    my $sth = $centreon->query($query);
+    my ($status, $sth) = $centreon->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
         $service_ids{$row->{'host_name'}.";;".$row->{'service_description'}} = $row->{'host_id'}.";;".$row->{'service_id'};
         $service_names{$row->{'host_id'}.";;".$row->{'service_id'}} = $row->{'host_name'}.";;".$row->{'service_description'};
@@ -59,7 +59,7 @@ sub getAllServices {
     }
     $query .= " AND hg.hg_id = hgr.hostgroup_hg_id";
 
-    $sth = $centreon->query($query);
+    ($status, $sth) = $centreon->query($query);
     while(my $row = $sth->fetchrow_hashref()) {
         $service_ids{$row->{'host_name'}.";;".$row->{'service_description'}} = $row->{'host_id'}.";;".$row->{'service_id'};
         $service_names{$row->{'host_id'}.";;".$row->{'service_id'}} = $row->{'host_name'}.";;".$row->{'service_description'};

@@ -54,7 +54,7 @@ sub getLogOfServices {
                         " AND `msg_type` IN ('0', '1', '6', '7', '8', '9')".
                     " ORDER BY `ctime`";
     }
-    my $result = $centstorage->query($query);
+    my ($status, $result) = $centstorage->query($query);
     return $result;
 }
 
@@ -90,7 +90,7 @@ sub getLogOfHosts {
                     " AND `service_id` IS NULL".
                 " ORDER BY `ctime`";
     }
-    my $result = $centstorage->query($query);
+    my ($status, $result) = $centstorage->query($query);
     return $result;
 }
 
@@ -105,7 +105,7 @@ sub getFirstLastLogTime {
     } elsif ($self->{'dbLayer'} eq "broker") {
         $query = "SELECT min(`ctime`) as minc, max(`ctime`) as maxc FROM `logs`";
     }
-    my $sth = $centstorage->query($query);
+    my ($status, $sth) = $centstorage->query($query);
     my ($start, $end) = (0,0);
     if (my $row = $sth->fetchrow_hashref()) {
         ($start, $end) = ($row->{"minc"}, $row->{"maxc"});

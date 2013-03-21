@@ -58,7 +58,7 @@ sub getServiceAckTime {
             " ORDER BY `entry_time` asc";
     }
 
-    my $sth = $centreon->query($query);
+    my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
     if (my $row = $sth->fetchrow_hashref()) {
         $ackTime = $row->{'ack_time'};
@@ -97,7 +97,7 @@ sub getHostAckTime {
             " ORDER BY `entry_time` asc";
     }
 
-    my $sth = $centreon->query($query);
+    my ($status, $sth) = $centreon->query($query);
     my $ackTime = "NULL";
     if (my $row = $sth->fetchrow_hashref()) {
         $ackTime = $row->{'ack_time'};

@@ -1,4 +1,6 @@
 
+package centreon::script::eventReportBuilder;
+
 use warnings;
 use strict;
 use POSIX;
@@ -50,7 +52,7 @@ sub exit_pgr() {
 sub getDbLayer() {
     my $self = shift;
 
-	my $res = $self->{cdb}->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+	my ($status, $res) = $self->{cdb}->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
 	if (my $row = $res->fetchrow_hashref()) { 
 		return $row->{'value'};
 	}
@@ -60,11 +62,12 @@ sub getDbLayer() {
 # Initialize objects for program
 sub initVars {
 	my $self = shift;
+    my $centstatus;
 	
 	# Getting centstatus database name
-	$self->{dbLayer} = getDbLayer();
+	$self->{dbLayer} = $self->getDbLayer();
 	if ($self->{dbLayer} eq "ndo") {
-		my $sth = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+		my ($status, $sth) = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
 		if (my $row = $sth->fetchrow_hashref()) {
 			#connecting to censtatus
             $centstatus = centreon::common::db->new(db => $row->{"db_name"},
@@ -138,7 +141,7 @@ sub rebuildIncidents {
     $self->{serviceEvents}->truncateStateEvents();
     $self->{hostEvents}->truncateStateEvents();
     # Getting first log and last log times
-    my ($start, $end) = $nagiosLog->getFirstLastLogTime();
+    my ($start, $end) = $self->{nagiosLog}->getFirstLastLogTime();
    	my $periods = $self->getDaysFromPeriod($start, $end);
     # archiving logs for each days
     foreach(@$periods) {
