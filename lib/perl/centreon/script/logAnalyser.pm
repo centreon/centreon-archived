@@ -142,7 +142,7 @@ EOQ
 
     $self->{csdb}->transaction_mode(1);
     eval {
-        my $sth = $self->{csdb}->query(<<"EOQ");
+        my $sth = $self->{csdb}->{instance}->prepare(<<"EOQ");
 INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOQ
@@ -154,73 +154,62 @@ EOQ
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{cdbs}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], $tab[1], $tab[2], $tab[5], '', '', $tab[3], $tab[4], '0', $instance);
+                  [($cur_ctime, $tab[0], $tab[1], $tab[2], $tab[5], '', '', $tab[3], $tab[4], '0', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], '', $tab[1], $tab[4], '', '', $tab[2], $tab[3], '1', $instance);
+                  [($cur_ctime, $tab[0], '', $tab[1], $tab[4], '', '', $tab[2], $tab[3], '1', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
+                $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" }
-                    ($cur_ctime, $tab[1], $tab[2], $tab[3], $tab[5], $tab[4], $tab[0], '', '', '2', $instance);
+                  [($cur_ctime, $tab[1], $tab[2], $tab[3], $tab[5], $tab[4], $tab[0], '', 0, '2', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[1], '', $tab[2], $tab[4], $tab[3], $tab[0], '', '', '3', $instance);
+                  [($cur_ctime, $tab[1], '', $tab[2], $tab[4], $tab[3], $tab[0], '', 0, '3', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], '', '7', $instance);
+                  [($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], 0, '7', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows,
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], '', '6', $instance);
+                  [($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], 0, '6', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], '', '9', $instance);
+                  [($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], 0, '9', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], '', '8', $instance);
+                  [($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], 0, '8', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', '', '10', $instance);
+                  [($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', 0, '10', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', '', '11', $instance);
+                  [($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', 0, '11', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/) {
                 my $tab = $2;
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, '', '', '', $tab, '', '', '', '', '4', $instance);
+                  [($cur_ctime, '', '', '', $tab, '', '', '', 0, '4', $instance)];
             } elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/ && (!$self->{msg_type5_disabled})) {
                 $cur_ctime = $1;
                 my $tab = $2;
                 push @log_table_rows, 
-                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
-                    ($cur_ctime, '', '', '', $tab, '', '', '', '', '5', $instance);
+                  [($cur_ctime, '', '', '', $tab, '', '', '', 0, '5', $instance)];
             }
             $counter++;
             $nbqueries++;
