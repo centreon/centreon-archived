@@ -44,7 +44,7 @@ sub new {
 sub exit_pgr() {
     my $self = shift;
     
-	$self->{logger}->writeLogInfo("INFO", "Exiting program...");
+    $self->{logger}->writeLogInfo("INFO", "Exiting program...");
     exit (0);
 }
 
@@ -52,24 +52,24 @@ sub exit_pgr() {
 sub getDbLayer() {
     my $self = shift;
 
-	my ($status, $res) = $self->{cdb}->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
-	if (my $row = $res->fetchrow_hashref()) { 
-		return $row->{'value'};
-	}
-	return "ndo";
+    my ($status, $res) = $self->{cdb}->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
+    if (my $row = $res->fetchrow_hashref()) { 
+        return $row->{'value'};
+    }
+    return "ndo";
 }
 
 # Initialize objects for program
 sub initVars {
-	my $self = shift;
+    my $self = shift;
     my $centstatus;
-	
-	# Getting centstatus database name
-	$self->{dbLayer} = $self->getDbLayer();
-	if ($self->{dbLayer} eq "ndo") {
-		my ($status, $sth) = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
-		if (my $row = $sth->fetchrow_hashref()) {
-			#connecting to censtatus
+    
+    # Getting centstatus database name
+    $self->{dbLayer} = $self->getDbLayer();
+    if ($self->{dbLayer} eq "ndo") {
+        my ($status, $sth) = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+        if (my $row = $sth->fetchrow_hashref()) {
+            #connecting to censtatus
             $centstatus = centreon::common::db->new(db => $row->{"db_name"},
                                                      host => $row->{'db_host'},
                                                      port => $row->{'db_port'},
@@ -77,38 +77,38 @@ sub initVars {
                                                      password => $row->{'db_pass'},
                                                      force => 0,
                                                      logger => $self->{logger});
-		}
-	} elsif ($self->{dbLayer} eq "broker") {
-		$centstatus = $self->{csdb};
-	} else {
-		$self->{logger}->writeLogError("Unsupported database layer: " . $self->{dbLayer});
-		$self->exit_pgr();
-	}
-	
-	# classes to query database tables 
-	$self->{host} = CentreonHost->new($self->{logger}, $self->{cdb});
-	$self->{service} = CentreonService->new($self->{logger}, $self->{cdb});
-	$self->{nagiosLog} = CentreonLog->new($self->{logger}, $self->{csdb}, $self->{dbLayer});
-	my $centreonDownTime = CentreonDownTime->new($self->{logger}, $centstatus, $self->{dbLayer});
-	my $centreonAck = CentreonAck->new($self->{logger}, $centstatus, $self->{dbLayer});
-	$self->{serviceEvents} = CentreonServiceStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
-	$self->{hostEvents} = CentreonHostStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
-	
-	# Class that builds events
-	$self->{processEvents} = CentreonProcessStateEvents->new($self->{logger}, $self->{host}, $self->{service}, $self->{nagiosLog}, $self->{hostEvents}, $self->{serviceEvents}, $centreonDownTime, $self->{dbLayer});
+        }
+    } elsif ($self->{dbLayer} eq "broker") {
+        $centstatus = $self->{csdb};
+    } else {
+        $self->{logger}->writeLogError("Unsupported database layer: " . $self->{dbLayer});
+        $self->exit_pgr();
+    }
+    
+    # classes to query database tables 
+    $self->{host} = centreon::reporting::CentreonHost->new($self->{logger}, $self->{cdb});
+    $self->{service} = centreon::reporting::CentreonService->new($self->{logger}, $self->{cdb});
+    $self->{nagiosLog} = centreon::reporting::CentreonLog->new($self->{logger}, $self->{csdb}, $self->{dbLayer});
+    my $centreonDownTime = centreon::reporting::CentreonDownTime->new($self->{logger}, $centstatus, $self->{dbLayer});
+    my $centreonAck = centreon::reporting::CentreonAck->new($self->{logger}, $centstatus, $self->{dbLayer});
+    $self->{serviceEvents} = centreon::reporting::CentreonServiceStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
+    $self->{hostEvents} = centreon::reporting::CentreonHostStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
+    
+    # Class that builds events
+    $self->{processEvents} = centreon::reporting::CentreonProcessStateEvents->new($self->{logger}, $self->{host}, $self->{service}, $self->{nagiosLog}, $self->{hostEvents}, $self->{serviceEvents}, $centreonDownTime, $self->{dbLayer});
 }
 
-# For a given period returns in a table each	
+# For a given period returns in a table each    
 sub getDaysFromPeriod {
     my $self = shift;
-	my ($start, $end) = (shift, shift);
-	
-	my @days;
+    my ($start, $end) = (shift, shift);
+    
+    my @days;
     # Check if $end is > to current time
-	my ($day,$month,$year) = (localtime(time))[3,4,5];
+    my ($day,$month,$year) = (localtime(time))[3,4,5];
     my $today_begin =  mktime(0,0,0,$day,$month,$year,0,0,-1);
     if ($end > $today_begin) {
-		$end = $today_begin;
+        $end = $today_begin;
     }
     # get start day as mm/dd/yyyy 00:00
     ($day,$month,$year) = (localtime($start))[3,4,5];
@@ -116,18 +116,18 @@ sub getDaysFromPeriod {
     my $previousDay = mktime(0,0,0,$day - 1,$month,$year,0,0,-1);
     
     while ($start < $end) {
-		# getting day beginning => 00h 00min
-	    # if there is few hour gap (time change : winter/summer), we also readjust it
-		if ($start == $previousDay) {
-		    $start = mktime(0,0,0, ++$day, $month, $year,0,0,-1);
-		}
-		# setting day beginning/end hour and minute with the value set in centreon DB
-		my $dayEnd =mktime(0, 0, 0, ++$day, $month, $year, 0, 0, -1);
-		my %period = ("day_start" => $start, "day_end" => $dayEnd);
-		$days[scalar(@days)] = \%period;
-		
-		$previousDay = $start;
-		$start = $dayEnd;
+        # getting day beginning => 00h 00min
+        # if there is few hour gap (time change : winter/summer), we also readjust it
+        if ($start == $previousDay) {
+            $start = mktime(0,0,0, ++$day, $month, $year,0,0,-1);
+        }
+        # setting day beginning/end hour and minute with the value set in centreon DB
+        my $dayEnd =mktime(0, 0, 0, ++$day, $month, $year, 0, 0, -1);
+        my %period = ("day_start" => $start, "day_end" => $dayEnd);
+        $days[scalar(@days)] = \%period;
+        
+        $previousDay = $start;
+        $start = $dayEnd;
     }
     return \@days;
 }
@@ -142,12 +142,12 @@ sub rebuildIncidents {
     $self->{hostEvents}->truncateStateEvents();
     # Getting first log and last log times
     my ($start, $end) = $self->{nagiosLog}->getFirstLastLogTime();
-   	my $periods = $self->getDaysFromPeriod($start, $end);
+       my $periods = $self->getDaysFromPeriod($start, $end);
     # archiving logs for each days
     foreach(@$periods) {
-    	$self->{logger}->writeLogInfo("Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-		$self->{processEvents}->parseHostLog($_->{"day_start"}, $_->{"day_end"});
-		$self->{processEvents}->parseServiceLog($_->{"day_start"}, $_->{"day_end"});
+        $self->{logger}->writeLogInfo("Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
+        $self->{processEvents}->parseHostLog($_->{"day_start"}, $_->{"day_end"});
+        $self->{processEvents}->parseServiceLog($_->{"day_start"}, $_->{"day_end"});
     }
 }
 
@@ -161,18 +161,18 @@ sub run {
     $self->{logger}->writeLogInfo("Starting program...");
     
     if (defined($self->{opt_rebuild})) {
-		$self->rebuildIncidents();
-    }else {
-    	my $currentTime = time;
-		my ($day,$month,$year) = (localtime($currentTime))[3,4,5];
-		my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
-		my $start = mktime(0,0,0,$day-1,$month,$year,0,0,-1);
-		$self->{logger}->writeLogInfo("Processing period: ".localtime($start)." => ".localtime($end));
-		$self->{processEvents}->parseHostLog($start, $end);
-		$self->{processEvents}->parseServiceLog($start, $end);
+        $self->rebuildIncidents();
+    } else {
+        my $currentTime = time;
+        my ($day,$month,$year) = (localtime($currentTime))[3,4,5];
+        my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
+        my $start = mktime(0,0,0,$day-1,$month,$year,0,0,-1);
+        $self->{logger}->writeLogInfo("Processing period: ".localtime($start)." => ".localtime($end));
+        $self->{processEvents}->parseHostLog($start, $end);
+        $self->{processEvents}->parseServiceLog($start, $end);
     }
 
-	$self->exit_pgr();
+    $self->exit_pgr();
 }
 
 1;
