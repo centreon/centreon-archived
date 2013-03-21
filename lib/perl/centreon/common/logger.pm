@@ -77,6 +77,15 @@ sub is_file_mode {
     return 0;
 }
 
+sub is_debug {
+    my $self = shift;
+    
+    if (($self->{severity} & 4) == 0) {
+        return 0;
+    }
+    return 1;
+}
+
 sub syslog_mode($$$) {
     my ($self, $logopt, $facility) = @_;
 

@@ -1,114 +1,133 @@
-#!/usr/bin/perl -w
-################################################################################
-# Copyright 2005-2011 MERETHIS
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
-# GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
-# Foundation ; either version 2 of the License.
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-# PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
-# this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
-# General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give MERETHIS 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of MERETHIS choice, provided that 
-# MERETHIS also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
-# exception to your version of the program, but you are not obliged to do so. If you
-# do not wish to do so, delete this exception statement from your version.
-# 
-# For more information : contact@centreon.com
-# 
-# SVN : $URL: http://svn.centreon.com/trunk/centreon/bin/centTrapHandler-2.x $
-# SVN : $Id: centTrapHandler-2.x 13319 2012-08-13 10:01:17Z jmathis $
-#
-####################################################################################
-#
-# Script init
-#
+
+package centreon::script::trapd;
 
 use strict;
-use DBI;
+use warnings;
+use centreon::script;
+use centreon::common::db;
+use centreon::trapd::lib;
 
-use vars qw($centrapmanager_daemon $centrapmanager_log_debug $centrapmanager_sleep $centrapmanager_use_trap_time
-        $centrapmanager_net_snmp_perl_enable $centrapmanager_remove_backslash_from_quotes 
-        $centrapmanager_dns_enable $centrapmanager_strip_domain @centrapmanager_strip_domain_list 
-        $centrapmanager_duplicate_trap_window $centrapmanager_date_format $centrapmanager_time_format
-        $centrapmanager_date_time_format $centrapmanager_cache_unknown_traps_enable $centrapmanager_cache_unknown_traps_retention
-        $centrapmanager_cache_unknown_traps_file $centrapmanager_mode $spool_directory $centrapmanager_mibs_environment
-        $centrapmanager_logfile $centrapmanager_cmd_timeout $centrapmanager_seperator
-        $centrapmanager_cmdFile);
-use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd $debug $htmlentities);
-use vars qw($etc $CENTREON_USER);
+use base qw(centreon::script);
+use vars qw(%centreontrapd_config);
 
-$CENTREON_USER = '@CENTREON_USER@';
+my %handlers = ('TERM' => {}, 'HUP' => {});
 
-use POSIX qw(strftime);
-eval "use HTML::Entities";
-if ($@) {
-    $htmlentities = 0;
-} else {
-    $htmlentities = 1;
+sub new {
+    my $class = shift;
+    my $self = $class->SUPER::new("centreontrapd",
+        centreon_db_conn => 0,
+        centstorage_db_conn => 0
+    );
+
+    bless $self, $class;
+    $self->add_options(
+        "config-extra" => \$self->{opt_extra},
+    );
+
+    my %centreontrapd_default_config =
+      (
+       daemon => 0,
+       spool_directory => "/var/spool/centreontrapd/",
+       sleep => 2,
+       use_trap_time => 1,
+       net_snmp_perl_enable => 1,
+       mibs_environment => '',
+       remove_backslash_from_quotes => 1,
+       dns_enable => 0,
+       separator => ' ',
+       strip_domain => 0,
+       strip_domain_list => (),
+       duplicate_trap_window => 1,
+       date_format => "",
+       time_format => "",
+       date_time_format => "",
+       cache_unknown_traps_enable => 1,
+       cache_unknown_traps_retention => 600,
+       cache_unknown_traps_file => "/tmp/centreontrapd.cache",
+       mode => 0,
+       cmdFile => "/var/lib/centreon/centcore.cmd",
+       cmd_timeout => 10,
+       centreon_user => "centreon"
+    );
+    
+    if (!defined($self->{opt_extra})) {
+        $self->{opt_extra} = "/etc/centreon/centreontrapd.pm";
+    }
+    if (-f $self->{opt_extra}) {
+        require $self->{opt_extra};
+    } else {
+        $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
+    }
+
+    $self->{centreontrapd_config} = {%centreontrapd_default_config, %centreontrapd_config};
+    
+    $self->{htmlentities} = 0;
+    @{$self->{var}} = undef;                      # Variables of trap received by SNMPTRAPD
+    @{$self->{entvar}} = undef;                   # Enterprise variable values of trap received by SNMPTRAPD
+    @{$self->{entvarname}} = undef;               # Enterprise variable names of trap received by SNMPTRAPD
+    $self->{agent_dns_name} = undef;
+    $self->{trap_date} = undef;
+    $self->{trap_time} = undef;
+    $self->{trap_date_time} = undef;
+    $self->{trap_date_time_epoch} = undef;
+    %{$self->{duplicate_traps}} = undef;
+    $self->{timetoreload} = 0;
+    $self->{timetodie} = 0;
+    @{self->{filenames}} = undef;
+    $self->{input} = undef;
+    $self->{oids_cache} = undef;
+    $self->{last_cache_time} = undef;
+    $self->{whoami} = undef;
+
+    $self->{cmdFile} = undef;
+    
+    # Daemon Only
+    if ($self->{centreontrapd_config}->{daemon} == 0) {
+        $self->set_signal_handlers;
+    }
+    return $self;
 }
 
-###############################
-# Init 
+sub set_signal_handlers {
+    my $self = shift;
 
-require "@CENTREON_PATH@/lib/centreon-traplib.pm";
+    $SIG{TERM} = \&class_handle_TERM;
+    $handlers{TERM}->{$self} = sub { $self->handle_TERM() };
+    $SIG{HUP} = \&class_handle_HUP;
+    $handlers{HUP}->{$self} = sub { $self->handle_HUP() };
+}
 
-our $cmdFile;
-$etc = "@CENTREON_ETC@";
-my $config_centreon_trap = "centreon-trap.conf.pm";
+sub class_handle_TERM {
+    foreach (keys %{$handlers{TERM}}) {
+        &{$handlers{TERM}->{$_}}();
+    }
+}
 
-###############################
-# require config file
+sub class_handle_HUP {
+    foreach (keys %{$handlers{HUP}}) {
+        &{$handlers{HUP}->{$_}}();
+    }
+}
 
-init_config($etc . "/conf.pm", 1);
-init_config($etc . "/" . $config_centreon_trap, 1);
+sub handle_TERM {
+    my $self = shift;
+    $self->{timetodie} = 1;
+}
 
-manage_params_conf();
-init_modules();
+sub handle_HUP {
+    my $self = shift;
+    $self->{timetoreload} = 1;
+}
 
-our $agent_dns_name;
-our $trap_date;
-our $trap_time;
-our $trap_date_time;
-our $trap_date_time_epoch;
-our @var;                      # Variables of trap received by SNMPTRAPD
-our @entvar;                   # Enterprise variable values of trap received by SNMPTRAPD
-our @entvarname;               # Enterprise variable names of trap received by SNMPTRAPD
-our %duplicate_traps;
-my $timetoreload = 0;
-my $timetodie = 0;
-our @filenames;
-our $input;
-our $dbh;
-our $oids_cache;
-our $last_cache_time;
-our $whoami;
-
-###############################
-## Write into Log File
-#
-sub logit($$) {
-    my ($log, $criticity) = @_;
-
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
-    open (LOG, ">> ".$centrapmanager_logfile) || print "can't write $centrapmanager_logfile: $!";
-    printf LOG "[%04d-%02d-%02d %02d:%02d:%02d] [$criticity] %s\n", $year+1900, $mon+1, $mday, $hour, $min, $sec, $_[0];
-    close LOG or warn $!;
+sub reload_config {
+    my $self = shift;
+    my $file = $_[0];
+    
+    unless (my $return = do $file) {
+        $self->{logger}->writeLogError("couldn't parse $file: $@") if $@;
+        $self->{logger}->writeLogError("couldn't do $file: $!") unless defined $return;
+        $self->{logger}->writeLogError("couldn't run $file") unless $return;
+    }
 }
 
 ###############################
@@ -503,103 +522,102 @@ sub getTrapsInfos($$$) {
 ####################################
 ## GenerateError
 #
-sub myDie($) {
-    logit($_[0], "EE");
-    exit(1);
-}
 
-sub catch_zap_term {
-    $timetodie = 1;
-}
 
-sub catch_zap_hup {
-    $timetoreload = 1;
-}
 
 #########################################################
 # Beginning
 #
 
-if ($centrapmanager_log_debug >= 1) {
-    logit("centrapmaanger launched....", "DD");
-    logit("PID: $$", "DD");
-}
+sub run {
+    my $self = shift;
 
-open my $centrapmanager_fh, '>>', $centrapmanager_logfile;
-open STDOUT, '>&', $centrapmanager_fh;
-open STDERR, '>&', $centrapmanager_fh;
+    $self->SUPER::run();
+    $self->{logger}->redirect_output();
 
-$dbh = connectDB();
-if ($centrapmanager_mode == 0) {
-    $cmdFile = $centrapmanager_cmdFile;
-} else {
-    # Dirty!!! Need to know the poller
-    my $sth = $dbh->prepare("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
-    $sth->execute();
-    my @conf = $sth->fetchrow_array();
-    $cmdFile = $conf[0];
-}
-$whoami = getpwuid($<);
-
-if ($centrapmanager_daemon == 1) {
-    $SIG{TERM}  = \&catch_zap_term;
-    $SIG{HUP} = \&catch_zap_hup;
+    ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
+                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
+                                                                             $self->{centreontrapd_config}->{time_format});
+    centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     
-    while (!$timetodie) {
-        purge_duplicate_trap();
-        while ((my $file = get_trap())) {
-            logit("Processing file: $file", "DD") if ($centrapmanager_log_debug >= 1);
-            
-            if (open FILE, $spool_directory.$file) {
-                $input = 'FILE';
-                my $trap_is_a_duplicate = 0;
-                my $readtrap_result = readtrap();
+    $self->{logger}->writeLogDebug("centrapmaanger launched....");
+    $self->{logger}->writeLogDebug("PID: $$");
+
+    $self->{cdb} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
+                                             host => $self->{centreon_config}->{db_host},
+                                             port => $self->{centreon_config}->{db_port},
+                                             user => $self->{centreon_config}->{db_user},
+                                             password => $self->{centreon_config}->{db_passwd},
+                                             force => 0,
+                                             logger => $self->{logger});
+    if ($self->{centreon_config}->{mode} == 0) {
+        $self->{cmdFile} = $self->{centreon_config}->{cmdFile};
+    } else {
+        # Dirty!!! Need to know the poller
+        my ($status, $sth) = $self->{cdb}->query("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
+        my @conf = $sth->fetchrow_array();
+        $self->{cmdFile} = $conf[0];
+    }
+    $self->{whoami} = getpwuid($<);
+
+    if ($self->{centreontrapd_config}->{daemon} == 1) {
+        while (!$self->{timetodie}) {
+            centreon::trapd::lib::purge_duplicate_trap();
+            while ((my $file = centreon::trapd::lib::get_trap())) {
+                $self->{logger}->writeLogDebug("Processing file: $file");
                 
-                if ($readtrap_result == 1) {
-                    if (check_known_trap($var[3]) == 1) {
-                        getTrapsInfos($var[1], $var[2], $var[3]);
+                if (open FILE, $self->{spool_directory} . $file) {
+                    my $trap_is_a_duplicate = 0;
+                    my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
+                                                                         handle => 'FILE');
+                    
+                    if ($readtrap_result == 1) {
+                        if (centreon::trapd::lib::check_known_trap($var[3]) == 1) {
+                            getTrapsInfos($var[1], $var[2], $var[3]);
+                        }
+                    } elsif ($readtrap_result == 0) {
+                        $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
+                    } elsif ($readtrap_result == -1) {
+                        $trap_is_a_duplicate = 1;
+                        $self->{logger}->writeLogInfo("Duplicate trap detected in trap file $file.  Skipping...");
                     }
-                } elsif ($readtrap_result == 0) {
-                     logit("Error processing trap file $file.  Skipping...", "DD") if ($centrapmanager_log_debug >= 1);
-                } elsif ($readtrap_result == -1) {
-                    $trap_is_a_duplicate = 1;
-                    logit("Duplicate trap detected in trap file $file.  Skipping...", "II");
+                    
+                    close FILE;
+                    unless (unlink($file)) {
+                        $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
+                    }  
+                } else {
+                    $self->{logger}->writeLogError("Could not open trap file $spool_directory$file: ($!)");
                 }
-                
-                close FILE;
-                unless (unlink($file)) {
-                    logit("Unable to delete trap file $file from spool dir:$!", "EE");
-                }
-                
-            } else {
-                logit("Could not open trap file $spool_directory$file: ($!)", "EE");
+            }
+            
+            $self->{logger}->writeLogDebug("Sleeping for $centrapmanager_sleep seconds");
+            sleep $self->{centreontrapd_config}->{sleep};
+                    
+            if ($self->{timetoreload} == 1) {
+                $self->{logger}->writeLogDebug("Reloading configuration file");
+                $self->reload_config($self->{opt_extra});
+                ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
+                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
+                                                                             $self->{centreontrapd_config}->{time_format});
+                centreon::trapd::lib::init_modules();
+                centreon::trapd::lib::get_cache_oids();
+                $self->{timetoreload} = 0;
             }
         }
-        
-        logit("Sleeping for $centrapmanager_sleep seconds", "DD") if ($centrapmanager_log_debug >= 1);
-        sleep $centrapmanager_sleep;
-                
-        if ($timetoreload == 1) {
-            logit("Reloading configuration file", "DD") if ($centrapmanager_log_debug >= 1);
-            init_config($etc . "/conf.pm", 0);
-            init_config($etc . "/" . $config_centreon_trap, 0);
-            manage_params_conf();
-            init_modules();
-            get_cache_oids();
-            $timetoreload = 0;
+    } else {
+        my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
+                                                             handle => 'STDIN');
+        if ($readtrap_result == 1) {
+            if (centreon::trapd::lib::check_known_trap($var[3]) == 1) {
+                getTrapsInfos($var[1], $var[2], $var[3]);
+            }
+        } elsif ($readtrap_result == 0) {
+            $self->{logger}->writeLogDebug("Error processing trap file.  Skipping...");
         }
     }
-} else {
-    $input = 'STDIN';
-    my $readtrap_result = readtrap();
-    if ($readtrap_result == 1) {
-        if (check_known_trap($var[3]) == 1) {
-            getTrapsInfos($var[1], $var[2], $var[3]);
-        }
-    } elsif ($readtrap_result == 0) {
-        logit("Error processing trap file.  Skipping...", "DD") if ($centrapmanager_log_debug >= 1);
-    }
-    $dbh->disconnect();
 }
+
+1;
 
 __END__
