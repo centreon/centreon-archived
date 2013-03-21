@@ -116,6 +116,7 @@
 	$sub = $form->addElement('submit', 'submit', _("Generate"));
 	$msg = NULL;
 	$stdout = NULL;
+        $msg_generate = "";
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();
         $host_list = array();
