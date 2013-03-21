@@ -60,7 +60,7 @@ sub compute {
     }
 
     my $fh = $self->{"filehandler"};
-    while ((my ($status, $readline) = centstorage::CentstorageLib::get_line_file($fh, \@{$self->{"buffer"}}, \$self->{"readed"}))) {
+    while ((my ($status, $readline) = centreon::centstorage::CentstorageLib::get_line_file($fh, \@{$self->{"buffer"}}, \$self->{"readed"}))) {
         last if ($status == -1);
         $readline =~ /([0-9]+?)\t+?([^\t]+?)\t+?([^\t]+?)\t/;
         if (defined($1) && defined($2) && defined($3)) {

@@ -338,7 +338,7 @@ sub run {
     my $status;
     my $pools_perfdata_filename;
 
-    $self->{centreon_db_centreon} = centreon::commmon::db->new(db => $self->{centreon_config}->{centreon_db},
+    $self->{centreon_db_centreon} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
                                                      host => $self->{centreon_config}->{db_host},
                                                      port => $self->{centreon_config}->{db_port},
                                                      user => $self->{centreon_config}->{db_user},

@@ -57,32 +57,6 @@ sub getDbLayer() {
 	return "ndo";
 }
 
-# function that checks if the log is already built
-sub dayAlreadyProcessed($$$$) {
-    my $self = shift;
-    my ($day, $month, $year) = (shift, shift, shift);
-
-    my $tmp_file = $varLibCentreon . "/archive-monitoring-incidents.last";
-    my $last;
-    my $now;
-    my $write_cmd;
-
-    $now = $day.$month.$year;
-    if (-e "$tmp_file") {
-    	chomp($last = `cat $tmp_file`);
-    	$write_cmd = `echo $now > $tmp_file`;
-	if ($now == $last) {
-	    print "[".time."] Error : day already processed\n";
-	    return 1;
-	}
-	else {
-	    return 0;
-	}
-    }
-    $write_cmd = `echo $now > $tmp_file`;
-    return 0;
-}
-
 # Initialize objects for program
 sub initVars {
 	my $self = shift;
@@ -90,33 +64,40 @@ sub initVars {
 	# Getting centstatus database name
 	$self->{dbLayer} = getDbLayer();
 	if ($self->{dbLayer} eq "ndo") {
-		my $sth = $centreon->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+		my $sth = $self->{cdb}->query("SELECT db_name, db_host, db_port, db_user, db_pass FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
 		if (my $row = $sth->fetchrow_hashref()) {
 			#connecting to censtatus
-			$centstatus = CentreonDB->new($logger, $row->{"db_name"}, $row->{'db_host'}, $row->{'db_user'}, $row->{'db_pass'}, $row->{'db_port'});
+            $centstatus = centreon::common::db->new(db => $row->{"db_name"},
+                                                     host => $row->{'db_host'},
+                                                     port => $row->{'db_port'},
+                                                     user => $row->{'db_user'},
+                                                     password => $row->{'db_pass'},
+                                                     force => 0,
+                                                     logger => $self->{logger});
 		}
 	} elsif ($self->{dbLayer} eq "broker") {
-		$centstatus = $centstorage;
+		$centstatus = $self->{csdb};
 	} else {
-		$self->{logger}->writeLogError("Unsupported database layer: " . $dbLayer);
+		$self->{logger}->writeLogError("Unsupported database layer: " . $self->{dbLayer});
 		$self->exit_pgr();
 	}
 	
 	# classes to query database tables 
-	$host = CentreonHost->new($logger, $centreon);
-	$service = CentreonService->new($logger, $centreon);
-	$nagiosLog = CentreonLog->new($logger, $centstorage, $dbLayer);
-	my $centreonDownTime = CentreonDownTime->new($logger, $centstatus, $dbLayer);
-	my $centreonAck = CentreonAck->new($logger, $centstatus, $dbLayer);
-	$serviceEvents = CentreonServiceStateEvents->new($logger, $centstorage, $centreonAck, $centreonDownTime);
-	$hostEvents = CentreonHostStateEvents->new($logger, $centstorage, $centreonAck, $centreonDownTime);
+	$self->{host} = CentreonHost->new($self->{logger}, $self->{cdb});
+	$self->{service} = CentreonService->new($self->{logger}, $self->{cdb});
+	$self->{nagiosLog} = CentreonLog->new($self->{logger}, $self->{csdb}, $self->{dbLayer});
+	my $centreonDownTime = CentreonDownTime->new($self->{logger}, $centstatus, $self->{dbLayer});
+	my $centreonAck = CentreonAck->new($self->{logger}, $centstatus, $self->{dbLayer});
+	$self->{serviceEvents} = CentreonServiceStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
+	$self->{hostEvents} = CentreonHostStateEvents->new($self->{logger}, $self->{csdb}, $centreonAck, $centreonDownTime);
 	
 	# Class that builds events
-	$processEvents = CentreonProcessStateEvents->new($logger, $host, $service, $nagiosLog, $hostEvents, $serviceEvents, $centreonDownTime, $dbLayer);
+	$self->{processEvents} = CentreonProcessStateEvents->new($self->{logger}, $self->{host}, $self->{service}, $self->{nagiosLog}, $self->{hostEvents}, $self->{serviceEvents}, $centreonDownTime, $self->{dbLayer});
 }
 
 # For a given period returns in a table each	
 sub getDaysFromPeriod {
+    my $self = shift;
 	my ($start, $end) = (shift, shift);
 	
 	my @days;
@@ -150,18 +131,20 @@ sub getDaysFromPeriod {
 
 # rebuild all events
 sub rebuildIncidents {
+    my $self = shift;
     my $time_period = shift;
+
     # Empty tables
-    $serviceEvents->truncateStateEvents();
-    $hostEvents->truncateStateEvents();
+    $self->{serviceEvents}->truncateStateEvents();
+    $self->{hostEvents}->truncateStateEvents();
     # Getting first log and last log times
     my ($start, $end) = $nagiosLog->getFirstLastLogTime();
-   	my $periods = getDaysFromPeriod($start, $end);
+   	my $periods = $self->getDaysFromPeriod($start, $end);
     # archiving logs for each days
     foreach(@$periods) {
     	$self->{logger}->writeLogInfo("Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
-		$processEvents->parseHostLog($_->{"day_start"}, $_->{"day_end"});
-		$processEvents->parseServiceLog($_->{"day_start"}, $_->{"day_end"});
+		$self->{processEvents}->parseHostLog($_->{"day_start"}, $_->{"day_end"});
+		$self->{processEvents}->parseServiceLog($_->{"day_start"}, $_->{"day_end"});
     }
 }
 
@@ -174,7 +157,7 @@ sub run {
     
     $self->{logger}->writeLogInfo("Starting program...");
     
-    if (defined($options{'rebuild'})) {
+    if (defined($self->{opt_rebuild})) {
 		$self->rebuildIncidents();
     }else {
     	my $currentTime = time;
@@ -182,8 +165,8 @@ sub run {
 		my $end = mktime(0,0,0,$day,$month,$year,0,0,-1);
 		my $start = mktime(0,0,0,$day-1,$month,$year,0,0,-1);
 		$self->{logger}->writeLogInfo("Processing period: ".localtime($start)." => ".localtime($end));
-		$processEvents->parseHostLog($start, $end);
-		$processEvents->parseServiceLog($start, $end);
+		$self->{processEvents}->parseHostLog($start, $end);
+		$self->{processEvents}->parseServiceLog($start, $end);
     }
 
 	$self->exit_pgr();
