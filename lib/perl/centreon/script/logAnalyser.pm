@@ -18,7 +18,7 @@ sub new {
     $self->add_options(
         "a" => \$self->{opt_a}, "archives" => \$self->{opt_a},
         "p=s" => \$self->{opt_p}, "poller" => \$self->{opt_p},
-        "s=s" => \$self->{opt_s}, "startdate" => \$self->{opt_s}
+        "s=s" => \$self->{opt_s}, "startdate=s" => \$self->{opt_s}
     );
     $self->{launch_time} = time();
     $self->{msg_type5_disabled} = 0;
@@ -79,8 +79,10 @@ EOQ
 }
 
 sub commit_to_log {
-    my ($self, $instance, $ctime, $counter) = @_;
+    my ($self, $sth, $log_table_rows, $instance, $ctime, $counter) = @_;
+    my @tuple_status;
 
+    $sth->execute_for_fetch(sub { shift @$log_table_rows }, \@tuple_status);
     $self->{csdb}->do(<<"EOQ");
 UPDATE instance SET log_flag='$counter', last_ctime='$ctime' WHERE instance_id = '$instance'
 EOQ
@@ -98,6 +100,7 @@ sub parse_file($$$) {
     my $ctime = 0;
     my $logdir = "$self->{centreon_config}->{VarLib}/log/$instance";
     my ($last_position, $nbqueries, $counter) = (0, 0, 0);
+    my @log_table_rows;
 
     if (!-d $logdir) {
         mkpath($logdir);
@@ -139,135 +142,95 @@ EOQ
 
     $self->{csdb}->transaction_mode(1);
     eval {
+        my $sth = $self->{csdb}->query(<<"EOQ");
+INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+EOQ
+
         while (<FILE>) {
             my $cur_ctime;
 
             if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                $tab[1] =~ s/\\/\\\\/g;
-                $tab[1] =~ s/\'/\\\'/g;
-                $tab[5] =~ s/\\/\\\\/g; 
-                $tab[5] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance`) VALUES ('0', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{cdbs}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], $tab[1], $tab[2], $tab[5], '', '', $tab[3], $tab[4], '0', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                if (defined($tab[4]) && $tab[4]) {
-                    $tab[4] =~ s/\\/\\\\/g;
-                    $tab[4] =~ s/\'/\\\'/g;
-                }
-                my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance`) VALUES ('1', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], '', $tab[1], $tab[4], '', '', $tab[2], $tab[3], '1', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                $cur_ctime = $1;
-                $tab[2] =~ s/\\/\\\\/g;
-                $tab[2] =~ s/\'/\\\'/g;
-                $tab[1] =~ s/\\/\\\\/g;
-                $tab[1] =~ s/\'/\\\'/g;
-                if (defined($tab[5])) {
-                    $tab[5] =~ s/\\/\\\\/g; 
-                    $tab[5] =~ s/\'/\\\'/g;
-                } else {
-                    $tab[5] = "";
-                }
-                my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `notification_cmd`, `notification_contact`, `output`, `instance`) VALUES ('2', '$cur_ctime', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$tab[4]."','".$tab[0]."','".$tab[5]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" }
+                    ($cur_ctime, $tab[1], $tab[2], $tab[3], $tab[5], $tab[4], $tab[0], '', '', '2', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                if (defined($tab[4])) {
-                    $tab[4] =~ s/\\/\\\\/g; 
-                    $tab[4] =~ s/\'/\\\'/g;
-                } else {
-                    $tab[4] = "";
-                }
-                my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `notification_contact`, `host_name` , `status`, `notification_cmd`,  `output`, `instance`) VALUES ('3', '$cur_ctime', '".$tab[0]."','".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[1], '', $tab[2], $tab[4], $tab[3], $tab[0], '', '', '3', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('7', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], '', '7', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                $tab[1] =~ s/\\/\\\\/g;
-                $tab[1] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('6', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows,
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], '', '6', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('9', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], '', $tab[1], '', '', '', $tab[2], '', '9', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
                 $cur_ctime = $1;
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                $tab[1] =~ s/\\/\\\\/g;
-                $tab[1] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('8', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], $tab[1], $tab[2], '', '', '', $tab[3], '', '8', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                $tab[1] =~ s/\\/\\\\/g;
-                $tab[1] =~ s/\'/\\\'/g;
-                if (!defined($tab[6])) {
-                    $tab[6] = "";
-                }
-                $tab[6] =~ s/\\/\\\\/g;
-                $tab[6] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description`, `notification_contact`, `output`, `instance`) VALUES ('10', '$cur_ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[5]."', '".$tab[6]."','".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', '', '10', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
-                $tab[0] =~ s/\\/\\\\/g;
-                $tab[0] =~ s/\'/\\\'/g;
-                $tab[5] =~ s/\\/\\\\/g;
-                $tab[5] =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `notification_contact`, `output`, `instance`) VALUES ('11', '$cur_ctime', '".$tab[0]."', '".$tab[4]."', '".$tab[5]."','".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', '', '11', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/) {
                 my $tab = $2;
                 $cur_ctime = $1;
-                $tab =~ s/\\/\\\\/g; 
-                $tab =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('4','$cur_ctime', '".$tab."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, '', '', '', $tab, '', '', '', '', '4', $instance);
             } elsif ($_ =~ m/^\[([0-9]*)\]\s(.*)$/ && (!$self->{msg_type5_disabled})) {
                 $cur_ctime = $1;
                 my $tab = $2;
-                $tab =~ s/\\/\\\\/g; 
-                $tab =~ s/\'/\\\'/g;
-                my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `output`, `instance`) VALUES ('5','$cur_ctime', '".$tab."', '".$instance."')";
-                my $res = $self->{csdb}->do($rq);
+                push @log_table_rows, 
+                  map { defined $_ ? $self->{csdb}->quote($_) : "" } 
+                    ($cur_ctime, '', '', '', $tab, '', '', '', '', '5', $instance);
             }
             $counter++;
             $nbqueries++;
             if ($nbqueries == $self->{queries_per_transaction}) {
-                $self->commit_to_log($instance, $ctime, $counter);
+                $self->commit_to_log($sth, \@log_table_rows, $instance, $ctime, $counter);
                 $nbqueries = 0;
+                @log_table_rows = ();
             }
         }
-        $self->commit_to_log($instance, $ctime, $counter);
+        $self->commit_to_log($sth, \@log_table_rows, $instance, $ctime, $counter);
     };
     close FILE;
     if ($@) {
