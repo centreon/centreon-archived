@@ -44,7 +44,7 @@ sub new {
 sub exit_pgr() {
     my $self = shift;
     
-    $self->{logger}->writeLogInfo("INFO", "Exiting program...");
+    $self->{logger}->writeLogInfo("Exiting program...");
     exit (0);
 }
 

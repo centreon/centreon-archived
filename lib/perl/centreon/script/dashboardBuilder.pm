@@ -46,7 +46,7 @@ sub new {
 sub exit_pgr() {
     my $self = shift;
     
-    $self->{logger}->writeLogInfo("INFO", "Exiting program...");
+    $self->{logger}->writeLogInfo("Exiting program...");
     exit (0);
 }
 
@@ -168,8 +168,8 @@ sub rebuildIncidents {
             $self->{dashboard}->insertHostStats($allNames, $hostStateDurations, $_->{"day_start"}, $_->{"day_end"});
         }
     }
-       if (defined($start) && defined($end) && !$hostOnly) {
-           my ($allIds, $allNames) = $service->getAllServices(0);
+    if (defined($start) && defined($end) && !$hostOnly) {
+        my ($allIds, $allNames) = $self->{service}->getAllServices(0);
         # archiving logs for each days
         foreach(@$periods) {
             $self->{logger}->writeLogInfo("[SERVICE] Processing period: ".localtime($_->{"day_start"})." => ".localtime($_->{"day_end"}));
