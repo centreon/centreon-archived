@@ -99,13 +99,9 @@ $form->addElement('header', 'information', _("Centreon Broker configuration"));
 $form->addElement('text', 'name', _("Name"), $attrsText);
 $form->addElement('text', 'filename', _("Config file name"), $attrsText);
 $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
-<<<<<<< HEAD
-    $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
 
-=======
 $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
     
->>>>>>> eef56fb... fixes #4297
 $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Disabled"), 0);
