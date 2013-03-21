@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-package reporting::CentreonProcessStateEvents;
+package centreon::reporting::CentreonProcessStateEvents;
 
 #use vars qw (%serviceStates %hostStates %servicStateIds %hostStateIds);
 #require "/home/msugumaran/merethis/centreon-bi-server/centreon/cron/perl-modules/variables.pm";

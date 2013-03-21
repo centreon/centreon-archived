@@ -3,7 +3,7 @@ use RRDs;
 use strict;
 use warnings;
 
-package centstorage::CentstorageRRD;
+package centreon::centstorage::CentstorageRRD;
 
 my @rrd_dst = ("GAUGE","COUNTER","DERIVE","ABSOLUTE");
 

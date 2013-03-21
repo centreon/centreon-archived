@@ -1,4 +1,4 @@
-package centreon::lock;
+package centreon::common::lock;
 
 use strict;
 use warnings;
@@ -25,9 +25,9 @@ sub set {
     die "Failed to set lock for $self->{name}" if $self->is_set();
 }
 
-package centreon::lock::file;
+package centreon::common::lock::file;
 
-use base qw(centreon::lock);
+use base qw(centreon::common::lock);
 
 sub new {
     my $class = shift;
@@ -62,9 +62,9 @@ sub DESTROY {
     }
 }
 
-package centreon::lock::sql;
+package centreon::common::lock::sql;
 
-use base qw(centreon::lock);
+use base qw(centreon::common::lock);
 
 sub new {
     my $class = shift;

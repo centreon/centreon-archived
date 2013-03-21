@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-package reporting::CentreonServiceStateEvents;
+package centreon::reporting::CentreonServiceStateEvents;
 
 # Constructor
 # parameters:

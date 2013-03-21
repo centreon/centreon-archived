@@ -5,9 +5,9 @@ use warnings;
 use FindBin;
 use Getopt::Long;
 use Pod::Usage;
-use centreon::logger;
-use centreon::db;
-use centreon::lock;
+use centreon::common::logger;
+use centreon::common::db;
+use centreon::common::lock;
 
 use vars qw($centreon_config);
 
@@ -31,7 +31,7 @@ sub new {
 
     bless $self, $class;
     $self->{name} = $name;
-    $self->{logger} = centreon::logger->new();
+    $self->{logger} = centreon::common::logger->new();
     $self->{options} = {
         "config=s" => \$self->{config_file},
         "logfile=s" => \$self->{log_file},
@@ -50,17 +50,17 @@ sub init {
     $self->{logger}->severity($self->{severity});
 
     if ($self->{centreon_db_conn}) {
-        $self->{cdb} = centreon::db->new
+        $self->{cdb} = centreon::common::db->new
           (db => $self->{centreon_config}->{centreon_db},
            host => $self->{centreon_config}->{db_host},
            user => $self->{centreon_config}->{db_user},
            password => $self->{centreon_config}->{db_passwd},
            logger => $self->{logger});
-        $self->{lock} = centreon::lock::sql->new($self->{name}, dbc => $self->{cdb});
+        $self->{lock} = centreon::common::lock::sql->new($self->{name}, dbc => $self->{cdb});
         $self->{lock}->set();
     }
     if ($self->{centstorage_db_conn}) {
-        $self->{csdb} = centreon::db->new
+        $self->{csdb} = centreon::common::db->new
           (db => $self->{centreon_config}->{centstorage_db},
            host => $self->{centreon_config}->{db_host},
            user => $self->{centreon_config}->{db_user},

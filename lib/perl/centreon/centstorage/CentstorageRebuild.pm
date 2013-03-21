@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-package centstorage::CentstorageRebuild;
+package centreon::centstorage::CentstorageRebuild;
 my %handlers = ('TERM' => {});
 
 sub new {

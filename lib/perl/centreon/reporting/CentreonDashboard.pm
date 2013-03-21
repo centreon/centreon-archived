@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-package reporting::CentreonDashboard;
+package centreon::reporting::CentreonDashboard;
 
 use POSIX;
 use Getopt::Long;

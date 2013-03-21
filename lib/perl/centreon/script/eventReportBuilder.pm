@@ -4,14 +4,14 @@ use strict;
 use POSIX;
 use Time::Local;
 
-use reporting::CentreonHost;
-use reporting::CentreonService;
-use reporting::CentreonLog;
-use reporting::CentreonServiceStateEvents;
-use reporting::CentreonHostStateEvents;
-use reporting::CentreonProcessStateEvents;
-use reporting::CentreonDownTime;
-use reporting::CentreonAck;
+use centreon::reporting::CentreonHost;
+use centreon::reporting::CentreonService;
+use centreon::reporting::CentreonLog;
+use centreon::reporting::CentreonServiceStateEvents;
+use centreon::reporting::CentreonHostStateEvents;
+use centreon::reporting::CentreonProcessStateEvents;
+use centreon::reporting::CentreonDownTime;
+use centreon::reporting::CentreonAck;
 use centreon::script;
 
 use base qw(centreon::script);

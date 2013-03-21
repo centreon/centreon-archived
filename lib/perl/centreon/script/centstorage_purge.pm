@@ -3,7 +3,7 @@ package centreon::script::centstorage_purge;
 use strict;
 use warnings;
 use centreon::script;
-use centreon::lock;
+use centreon::common::lock;
 
 use base qw(centreon::script);
 
@@ -59,7 +59,7 @@ sub run {
         eval {
             my $lock = undef;
             if ($self->{broker} eq "ndo") {
-                $lock = centreon::lock::sql("logAnalyser", dbc => $self->{cdb});
+                $lock = centreon::common::lock::sql("logAnalyser", dbc => $self->{cdb});
                 $lock->set();
             }
             $self->{csdb}->do("DELETE FROM `$table` WHERE `ctime` < '$last_log'");

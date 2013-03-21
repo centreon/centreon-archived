@@ -2,11 +2,11 @@
 use strict;
 use warnings;
 
-package centstorage::CentstoragePool;
+package centreon::centstorage::CentstoragePool;
 
-use centreon::db;
-use centstorage::CentstorageLib;
-use centstorage::CentstorageRebuild;
+use centreon::common::db;
+use centreon::centstorage::CentstorageLib;
+use centreon::centstorage::CentstorageRebuild;
 my %handlers = ('TERM' => {}, 'CHLD' => {});
 my %rrd_trans = ("g" => 0, "c" => 1, "d" => 2, "a" => 3);
 
@@ -146,7 +146,7 @@ sub handle_TERM {
         if (scalar(@rh_set) > 0) {
             foreach my $rh (@rh_set) {
                 my $read_done = 0;
-                while ((my ($status_line, $readline) = CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
+                while ((my ($status_line, $readline) = centreon::centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
                     last if ($status_line <= 0);
                     if ($readline =~ /^UPDATE/) {
                         $readline =~ s/^UPDATE\t//;
@@ -946,16 +946,16 @@ sub rebuild {
         $self->{'dbcentstorage'}->set_inactive_destroy();
         $self->{'dbcentreon'}->set_inactive_destroy();
 
-        my $centreon_db_centstorage = centreon::db(logger => $self->{'logger'},
-                                                   db => $self->{'dbcentstorage'}->db(),
-                                                   host => $self->{'dbcentstorage'}->host(),
-                                                   user => $self->{'dbcentstorage'}->user(),
-                                                   password => $self->{'dbcentstorage'}->password(),
-                                                   port => $self->{'dbcentstorage'}->port(),
-                                                   force => 0);
+        my $centreon_db_centstorage = centreon::common::db(logger => $self->{'logger'},
+                                                           db => $self->{'dbcentstorage'}->db(),
+                                                           host => $self->{'dbcentstorage'}->host(),
+                                                           user => $self->{'dbcentstorage'}->user(),
+                                                           password => $self->{'dbcentstorage'}->password(),
+                                                           port => $self->{'dbcentstorage'}->port(),
+                                                           force => 0);
         $status = $centreon_db_centstorage->connect();
         exit 1 if ($status == -1);
-        my $centstorage_rebuild = centstorage::CentstorageRebuild->new($self->{'logger'});
+        my $centstorage_rebuild = centreon::centstorage::CentstorageRebuild->new($self->{'logger'});
         $status = $centstorage_rebuild->main($centreon_db_centstorage, $rebuild_index_id, $self->{"cache_service"}->{$key_service}->{'check_interval'}, $self->{'rrd'}, $self->{"cache_service"}->{$key_service}->{'rrd_retention'});
         $centreon_db_centstorage->disconnect();
         exit $status;
@@ -1047,7 +1047,7 @@ sub main {
     $self->{'num_pool'} = $num_pool;
     $self->{'perfdata_parser_stop'} = $perfdata_parser_stop if (defined($perfdata_parser_stop));
 
-    ($status, $self->{"main_perfdata_file"}) = centstorage::CentstorageLib::get_main_perfdata_file($self->{'dbcentreon'});
+    ($status, $self->{"main_perfdata_file"}) = centreon::centstorage::CentstorageLib::get_main_perfdata_file($self->{'dbcentreon'});
     ($status, $self->{"len_storage_rrd"}, $self->{"rrd_metrics_path"}, $self->{"rrd_status_path"}, $self->{"storage_type"}) = $self->get_centstorage_information();
     ($status, $self->{"interval_time"}) = $self->get_centreon_intervaltime();
     $self->{"rrd"}->metric_path($self->{"rrd_metrics_path"});
@@ -1072,7 +1072,7 @@ sub main {
         }
         foreach my $rh (@rh_set) {
             my $read_done = 0;
-            while ((my ($status_line, $readline) = centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
+            while ((my ($status_line, $readline) = centreon::centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
                 class_handle_TERM() if ($status_line == -1);
                 last if ($status_line == 0);
                 my ($method, @fields) = split(/\t/, $readline);

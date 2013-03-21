@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-package reporting::CentreonDownTime;
+package centreon::reporting::CentreonDownTime;
 
 # Constructor
 # parameters:

@@ -2,9 +2,9 @@
 use strict;
 use warnings;
 
-package centstorage::CentstorageAction;
+package centreon::centstorage::CentstorageAction;
 
-use centstorage::CentstorageLib;
+use centreon::centstorage::CentstorageLib;
 my %handlers = ('TERM' => {});
 
 sub new {
@@ -265,7 +265,7 @@ sub main {
         if (scalar(@rh_set) > 0) {
             foreach my $rh (@rh_set) {
                 my $read_done = 0;
-                while ((my ($status_line, $readline) = centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
+                while ((my ($status_line, $readline) = centreon::centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
                     class_handle_TERM() if ($status_line == -1);
                     last if ($status_line == 0);
                     my ($method, @fields) = split(/\t/, $readline);

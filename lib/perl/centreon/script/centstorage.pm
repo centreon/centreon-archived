@@ -7,13 +7,13 @@ use POSIX;
 use IO::Select;
 use IO::Handle;
 use centreon::script;
-use centreon::db;
-use centstorage::CentstorageLib;
-use centstorage::CentstoragePool;
-use centstorage::CentstoragePerfdataFile;
-use centstorage::CentstorageAction;
-use centstorage::CentstorageAction;
-use centstorage::CentstorageRRD;
+use centreon::common::db;
+use centreon::centstorage::CentstorageLib;
+use centreon::centstorage::CentstoragePool;
+use centreon::centstorage::CentstoragePerfdataFile;
+use centreon::centstorage::CentstorageAction;
+use centreon::centstorage::CentstorageAction;
+use centreon::centstorage::CentstorageRRD;
 
 use base qw(centreon::script);
 use vars qw(%centstorage_config);
@@ -188,7 +188,7 @@ sub verify_pool {
                 if (defined($create_pool) && $create_pool == 1) {
                     # We have lost one. And if it's the pool rebuild, send progress finish
                     if ($pool_num == $self->{rebuild_pool_choosen}) {
-                        centstorage::CentstorageLib::call_pool_rebuild_finish(\%{$self->{pool_pipes}}, $self->{centstorage_config}->{pool_childs}, \%{$self->{delete_pipes}}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
+                        centreoncentstorage::CentstorageLib::call_pool_rebuild_finish(\%{$self->{pool_pipes}}, $self->{centstorage_config}->{pool_childs}, \%{$self->{delete_pipes}}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
                     }
                     $self->create_pool_child($pool_num);
                 }
@@ -231,7 +231,7 @@ sub create_pool_child {
     if (!$current_pid) {
         close $self->{pool_pipes}{$pool_num}->{'reader_one'};
         close $self->{pool_pipes}{$pool_num}->{'writer_two'};
-        my $centreon_db_centreon = centreon::db->new(db => $self->{centreon_config}->{centreon_db},
+        my $centreon_db_centreon = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
                                                      host => $self->{centreon_config}->{db_host},
                                                      port => $self->{centreon_config}->{db_port},
                                                      user => $self->{centreon_config}->{db_user},
@@ -239,7 +239,7 @@ sub create_pool_child {
                                                      force => 1,
                                                      logger => $self->{logger});
         $centreon_db_centreon->connect();
-        my $centreon_db_centstorage = centreon::db->new(db => $self->{centreon_config}->{centstorage_db},
+        my $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
                                                         host => $self->{centreon_config}->{db_host},
                                                         port => $self->{centreon_config}->{db_port},
                                                         user => $self->{centreon_config}->{db_user},
@@ -248,9 +248,9 @@ sub create_pool_child {
                                                         logger => $self->{logger});
         $centreon_db_centstorage->connect();
 
-        my $centstorage_rrd = centstorage::CentstorageRRD->new($self->{logger});
+        my $centstorage_rrd = centreon::centstorage::CentstorageRRD->new($self->{logger});
 
-        my $centstorage_pool = centstorage::CentstoragePool->new($self->{logger}, $centstorage_rrd,  $self->{rebuild_progress});
+        my $centstorage_pool = centreon::centstorage::CentstoragePool->new($self->{logger}, $centstorage_rrd,  $self->{rebuild_progress});
         $centstorage_pool->main($centreon_db_centreon, $centreon_db_centstorage,
                     $self->{pool_pipes}{$pool_num}->{'reader_two'}, $self->{pool_pipes}{$pool_num}->{'writer_one'}, $pool_num,
                     $self->{centstorage_config}->{rrd_cache_mode}, $self->{centstorage_config}->{rrd_flush_time}, $self->{centstorage_config}->{perfdata_parser_stop});
@@ -285,7 +285,7 @@ sub create_delete_child {
     if (!$current_pid) {
         close $self->{delete_pipes}{'reader_one'};
         close $self->{delete_pipes}{'writer_two'};
-        my $centreon_db_centreon = centreon::db->new(db => $self->{centreon_config}->{centreon_db},
+        my $centreon_db_centreon = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
                                                      host => $self->{centreon_config}->{db_host},
                                                      port => $self->{centreon_config}->{db_port},
                                                      user => $self->{centreon_config}->{db_user},
@@ -293,7 +293,7 @@ sub create_delete_child {
                                                      force => 1,
                                                      logger => $self->{logger});
         $centreon_db_centreon->connect();
-        my $centreon_db_centstorage = centreon::db->new(db => $self->{centreon_config}->{centstorage_db},
+        my $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
                                                         host => $self->{centreon_config}->{db_host},
                                                         port => $self->{centreon_config}->{db_port},
                                                         user => $self->{centreon_config}->{db_user},
@@ -302,7 +302,7 @@ sub create_delete_child {
                                                         logger => $self->{logger});
         $centreon_db_centstorage->connect();
         
-        my $centstorage_action = centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress}, $self->{centstorage_config}->{centreon_23_compatibility});
+        my $centstorage_action = centreon::centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress}, $self->{centstorage_config}->{centreon_23_compatibility});
         $centstorage_action->main($centreon_db_centreon, $centreon_db_centstorage,
                     $self->{delete_pipes}{'reader_two'}, $self->{delete_pipes}{'writer_one'});
         exit(0);
@@ -338,7 +338,7 @@ sub run {
     my $status;
     my $pools_perfdata_filename;
 
-    $self->{centreon_db_centreon} = centreon::db->new(db => $self->{centreon_config}->{centreon_db},
+    $self->{centreon_db_centreon} = centreon::commmon::db->new(db => $self->{centreon_config}->{centreon_db},
                                                      host => $self->{centreon_config}->{db_host},
                                                      port => $self->{centreon_config}->{db_port},
                                                      user => $self->{centreon_config}->{db_user},
@@ -346,11 +346,11 @@ sub run {
                                                      force => 1,
                                                      logger => $self->{logger});
     $self->{centreon_db_centreon}->connect();
-    $self->handle_DIE("Censtorage option is '0'. Don't have to start") if (centstorage::CentstorageLib::start_or_not($self->{centreon_db_centreon}) == 0);
+    $self->handle_DIE("Censtorage option is '0'. Don't have to start") if (centreon::centstorage::CentstorageLib::start_or_not($self->{centreon_db_centreon}) == 0);
     while (!defined($main_perfdata) || $main_perfdata eq "") {
-        ($status, $main_perfdata) = centstorage::CentstorageLib::get_main_perfdata_file($self->{centreon_db_centreon});
+        ($status, $main_perfdata) = centreon::centstorage::CentstorageLib::get_main_perfdata_file($self->{centreon_db_centreon});
         if (defined($main_perfdata)) {
-            $pools_perfdata_filename = centstorage::CentstorageLib::check_pool_old_perfdata_file($main_perfdata, $self->{centstorage_config}->{pool_childs});
+            $pools_perfdata_filename = centreon::centstorage::CentstorageLib::check_pool_old_perfdata_file($main_perfdata, $self->{centstorage_config}->{pool_childs});
         }
     }
     $self->{centreon_db_centreon}->disconnect();
@@ -360,10 +360,10 @@ sub run {
     ###
     if (defined($pools_perfdata_filename)) {
         foreach (@$pools_perfdata_filename) {    
-            $self->handle_DIE("Don't have righs on file '$_' (or the directory)") if (centstorage::CentstorageLib::can_write($_) == 0);
+            $self->handle_DIE("Don't have righs on file '$_' (or the directory)") if (centreon::centstorage::CentstorageLib::can_write($_) == 0);
         }
     }
-    $self->handle_DIE("Don't have righs on file '$main_perfdata' (or the directory)") if (centstorage::CentstorageLib::can_write($main_perfdata) == 0);
+    $self->handle_DIE("Don't have righs on file '$main_perfdata' (or the directory)") if (centreon::centstorage::CentstorageLib::can_write($main_perfdata) == 0);
 
     ###
     # Create Childs
@@ -389,7 +389,7 @@ sub run {
         ###
         if (defined($pools_perfdata_filename)) {
             foreach (@$pools_perfdata_filename) {
-                $self->{centstorage_perfdata_file} = centstorage::CentstoragePerfdataFile->new($self->{logger});
+                $self->{centstorage_perfdata_file} = centreon::centstorage::CentstoragePerfdataFile->new($self->{logger});
                 $self->{centstorage_perfdata_file}->compute($_, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
             }
             $pools_perfdata_filename = undef;
@@ -398,7 +398,7 @@ sub run {
         ###
         # Do main file
         ###
-        $self->{centstorage_perfdata_file} = centstorage::CentstoragePerfdataFile->new($self->{logger});
+        $self->{centstorage_perfdata_file} = centreon::centstorage::CentstoragePerfdataFile->new($self->{logger});
         $self->{centstorage_perfdata_file}->compute($main_perfdata, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
 
         ###
@@ -407,18 +407,18 @@ sub run {
         my @rh_set = $self->{read_select}->can_read(10);
         foreach my $rh (@rh_set) {
             my $read_done = 0;
-            while ((my ($status_line, $data_element) = centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{fileno_save_read}{fileno($rh)}}, \$read_done))) {
+            while ((my ($status_line, $data_element) = centreon::centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{fileno_save_read}{fileno($rh)}}, \$read_done))) {
                 last if ($status_line <= 0);
                 if ($data_element =~ /^REBUILDBEGIN/) {
-                    centstorage::CentstorageLib::call_pool_rebuild($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
+                    centreon::centstorage::CentstorageLib::call_pool_rebuild($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
                 } elsif ($data_element =~ /^REBUILDFINISH/) {
-                    centstorage::CentstorageLib::call_pool_rebuild_finish(\%{$self->{pool_pipes}}, $self->{centstorage_config}->{pool_childs}, \%{$self->{delete_pipes}}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
+                    centreon::centstorage::CentstorageLib::call_pool_rebuild_finish(\%{$self->{pool_pipes}}, $self->{centstorage_config}->{pool_childs}, \%{$self->{delete_pipes}}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
                 } elsif ($data_element =~ /^RENAMECLEAN/) {
-                    centstorage::CentstorageLib::call_pool_rename_clean($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
+                    centreon::centstorage::CentstorageLib::call_pool_rename_clean($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
                 } elsif ($data_element =~ /^RENAMEFINISH/) {
-                    centstorage::CentstorageLib::call_pool_rename_finish($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
+                    centreon::centstorage::CentstorageLib::call_pool_rename_finish($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
                 } elsif ($data_element =~ /^DELETECLEAN/) {
-                    centstorage::CentstorageLib::call_pool_delete_clean($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
+                    centreon::centstorage::CentstorageLib::call_pool_delete_clean($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
                 }
             }
         }

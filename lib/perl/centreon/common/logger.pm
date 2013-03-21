@@ -1,4 +1,4 @@
-package centreon::logger;
+package centreon::common::logger;
 
 =head1 NOM
 

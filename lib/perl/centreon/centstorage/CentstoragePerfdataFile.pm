@@ -3,8 +3,8 @@ use strict;
 use warnings;
 use File::Copy;
 
-package centstorage::CentstoragePerfdataFile;
-use centstorage::CentstorageLib;
+package centreon::centstorage::CentstoragePerfdataFile;
+use centreon::centstorage::CentstorageLib;
 my $end_size_buffer = 1*1024*1024*10; # 10Mo
 
 sub new {

@@ -1,5 +1,5 @@
 
-package centstorage::CentstorageLib;
+package centreon::centstorage::CentstorageLib;
 use File::Basename;
 
 my $read_size = 1*1024*1024*10; # 10Mo
