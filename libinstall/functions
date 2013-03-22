@@ -1235,11 +1235,11 @@ function configureApache() {
 			echo "$(gettext "Finding Apache Centreon configuration file")"
 			echo_success "'$DIR_APACHE_CONF/centreon.conf' :" "$ok"
 			yes_no_default "$(gettext "Do you want to update Centreon Apache sub configuration file ?")"
-      if [ "$?" -eq 0 ] ; then 
-        write_config="1"
-        cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
-        echo_info "$(gettext "Backup Centreon Apache configuration completed")"
-      fi
+                        if [ "$?" -eq 0 ] ; then 
+                            write_config="1"
+                            cp -f $DIR_APACHE_CONF/centreon.conf $DIR_APACHE_CONF/centreon.conf-bak >> $LOG_FILE 2>&1
+                            echo_info "$(gettext "Backup Centreon Apache configuration completed")"
+                        fi
 		else 
 			yes_no_default "$(gettext "Do you want to add Centreon Apache sub configuration file ?")"
 			[ "$?" -eq 0 ] && write_config="1"
@@ -1248,7 +1248,11 @@ function configureApache() {
 		write_config="1"
     	fi
 	if [ "$write_config" -eq 1 ] ; then 
-		cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
+                if [ "$upgrade" -eq 1 ] ; then
+                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf.new >> $LOG_FILE 2>&1
+                else
+                    cp -f $dir_conf/centreon.apache.conf $DIR_APACHE_CONF/centreon.conf >> $LOG_FILE 2>&1
+                fi
 		echo_success "$(gettext "Create") '$DIR_APACHE_CONF/centreon.conf'" "$ok"
 		echo_success "$(gettext "Configuring Apache")" "$ok"
 		# After finishing the configuration -> 

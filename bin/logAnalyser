@@ -153,7 +153,7 @@ sub clean_exit {
 
     print $logmsg;
     writeLogFile($logmsg);
-
+    
     if ($cpt != -1) {
         my $rq = "UPDATE `instance` SET `log_flag` = '$cpt' WHERE `instance_id` = '$cur_instance'";
         my $res = $dbh->do($rq);
@@ -162,7 +162,7 @@ sub clean_exit {
             writeLogFile("SQL UPDATE Error:" . $dbh->errstr);
         }
     }
-
+    
     if (defined $dbhoreon) {
         unset_lock($dbhoreon, $appID);
         $dbhoreon->disconnect();
@@ -206,12 +206,12 @@ sub parseFile($$) {
     my $lastCTime = 0;
     my $CTime = 0;
     my $historyFile = "$VarLib/log/$instance/.history";
-
+    
     $flag_position_file = "$VarLib/log/$instance/.flag_position";
     if (!-f "$VarLib/log/") {
         mkdir("$VarLib/log/");
     }
-
+    
     if (!-f "$VarLib/log/$instance") {
         mkdir("$VarLib/log/$instance");
     }
@@ -299,21 +299,27 @@ sub parseFile($$) {
             my @tab = split(/;/, $2);
             $ctime = $1;
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             $tab[1] =~ s/\\/\\\\/g;
-                    $tab[1] =~ s/\'/\\\'/g;
-            $tab[5] =~ s/\\/\\\\/g; 
-            $tab[5] =~ s/\'/\\\'/g;
+            $tab[1] =~ s/\'/\\\'/g;
+            if (defined($tab[5])) {
+                $tab[5] =~ s/\\/\\\\/g; 
+                $tab[5] =~ s/\'/\\\'/g;
+            } else {
+                $tab[5] = "";
+            }
             my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `service_description`, `status`, `type`, `retry`, `output`, `instance`) VALUES ('0', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."','".$tab[4]."','".$tab[5]."', '".$instance."')";
             my $res = $dbh->do($rq);
         } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/){
             my @tab = split(/;/, $2);
             $ctime = $1;
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             if (defined($tab[4]) && $tab[4]) {
-            $tab[4] =~ s/\\/\\\\/g; 
-            $tab[4] =~ s/\'/\\\'/g;
+                $tab[4] =~ s/\\/\\\\/g; 
+                $tab[4] =~ s/\'/\\\'/g;
+            } else {
+                $tab[4] = "";
             }
             my $rq = "INSERT INTO `log` (`msg_type`,`ctime`, `host_name` , `status`,  `type`, `retry`, `output`, `instance`) VALUES ('1', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."','".$tab[3]."','".$tab[4]."', '".$instance."')";
             my $res = $dbh->do($rq);
@@ -347,46 +353,46 @@ sub parseFile($$) {
             my @tab = split(/;/, $2);
             $ctime = $1;
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('7', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')";
             my $res = $dbh->do($rq);
         } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
             $ctime = $1;
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             $tab[1] =~ s/\\/\\\\/g;
-                    $tab[1] =~ s/\'/\\\'/g;
+            $tab[1] =~ s/\'/\\\'/g;
             my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('6', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')";
             my $res = $dbh->do($rq);
         } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
             $ctime = $1;
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name` , `status`, `type`, `instance`) VALUES ('9', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$instance."')";
             my $res = $dbh->do($rq);
         } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/){
             my @tab = split(/;/, $2);
             $ctime = $1;
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             $tab[1] =~ s/\\/\\\\/g;
-                    $tab[1] =~ s/\'/\\\'/g;
+            $tab[1] =~ s/\'/\\\'/g;
             my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description` , `status`, `type`, `instance`) VALUES ('8', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[2]."', '".$tab[3]."', '".$instance."')";
             my $res = $dbh->do($rq);
         } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
             $ctime = $1;
             my @tab = split(/;/, $2);
             $tab[0] =~ s/\\/\\\\/g;
-                    $tab[0] =~ s/\'/\\\'/g;
+            $tab[0] =~ s/\'/\\\'/g;
             $tab[1] =~ s/\\/\\\\/g;
-                    $tab[1] =~ s/\'/\\\'/g;
+            $tab[1] =~ s/\'/\\\'/g;
             if (!defined($tab[6])){
                 $tab[6] = "";
             }
             $tab[6] =~ s/\\/\\\\/g;
-                    $tab[6] =~ s/\'/\\\'/g;
+            $tab[6] =~ s/\'/\\\'/g;
             my $rq = "INSERT INTO `log` (`msg_type`, `ctime`, `host_name`, `service_description`, `notification_contact`, `output`, `instance`) VALUES ('10', '$ctime', '".$tab[0]."', '".$tab[1]."', '".$tab[5]."', '".$tab[6]."','".$instance."')";
             my $res = $dbh->do($rq);
         } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {

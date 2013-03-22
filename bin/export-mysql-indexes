@@ -152,7 +152,7 @@ try {
     $indexesForExport[] = $currentIndex;
     if (!function_exists('json_encode')) {
         if (!(@include 'Services/JSON.php') || !class_exists('Services_JSON')) {
-            echo "Please insstall Services_JSON pear package\n    pear install Services_JSON\n";
+            echo "Please install Services_JSON pear package\n    pear install Services_JSON\n";
             exit(1);
         }
         $json = new Services_JSON();
