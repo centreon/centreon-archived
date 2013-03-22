@@ -114,7 +114,7 @@ sub write_cache_file {
         $args{logger}->writeLogError("Go to DB to get info");
         return 1;
     }
-    my $oids_value = join("\n", keys %{$args{oids_cache}});
+    my $oids_value = join("\n", keys %{${$args{oids_cache}}});
     print FILECACHE $oids_value;
     close FILECACHE;
     $args{logger}->writeLogInfo("Cache file refreshed");
@@ -242,9 +242,9 @@ sub purge_duplicate_trap {
         # Purge traps older than duplicate_trap_window in %duplicate_traps
         my $duplicate_traps_current_time = time();
         foreach my $key (sort keys %{$args{duplicate_traps}}) {
-            if (${args{duplicate_traps}}{$key} < $duplicate_traps_current_time - $args{config}->{duplicate_trap_window}) {
+            if ($args{duplicate_traps}->{$key} < $duplicate_traps_current_time - $args{config}->{duplicate_trap_window}) {
                 # Purge the record
-                delete ${args{duplicate_traps}}{$key};
+                delete $args{duplicate_traps}->{$key};
             }
         }
     }
@@ -280,7 +280,7 @@ sub readtrap {
         chomp(${$args{trap_date_time_epoch}} = (<$input>));	# Pull time trap was spooled
         push(@rawtrap, ${$args{trap_date_time_epoch}});
         if (${$args{trap_date_time_epoch}} eq "") {
-            if ($args{logger}->isDebug()) {
+            if ($args{logger}->is_debug()) {
                 $args{logger}->writeLogDebug("  Invalid trap file.  Expected a serial time on the first line but got nothing");
                 return 0;
             }
@@ -317,7 +317,7 @@ sub readtrap {
     push(@rawtrap, $tempvar[0]);
     $tempvar[0] =~ s(`)(')g;	#` Replace any back ticks with regular single quote 
     if ($tempvar[0] eq "") {
-        if ($args{logger}->isDebug()) {
+        if ($args{logger}->is_debug()) {
             $args{logger}->writeLogDebug("  Invalid trap file.  Expected a hostname on line 2 but got nothing");
             return 0;
         }
@@ -327,7 +327,7 @@ sub readtrap {
     push(@rawtrap, $tempvar[1]);
     $tempvar[1] =~ s(`)(')g;	#` Replace any back ticks with regular single quote
     if ($tempvar[1] eq "") {
-        if ($args{logger}->isDebug()) {
+        if ($args{logger}->is_debug()) {
             $args{logger}->writeLogDebug("  Invalid trap file.  Expected an IP address on line 3 but got nothing");
             return 0;
         }
@@ -462,7 +462,7 @@ sub readtrap {
         $linenum++;
     }
 
-    if ($args{logger}->isDebug()) {
+    if ($args{logger}->is_debug()) {
         # Print out raw trap passed from snmptrapd
         $args{logger}->writeLogDebug("Raw trap passed from snmptrapd:");
         for (my $i=0;$i <= $#rawtrap;$i++) {
@@ -571,7 +571,7 @@ sub readtrap {
 
     $args{logger}->writeLogDebug("Trap received from $tempvar[0]: $tempvar[5]");
 
-   if ($args{logger}->isDebug()) {
+   if ($args{logger}->is_debug()) {
         $args{logger}->writeLogDebug("0:		hostname");
         $args{logger}->writeLogDebug("1:		ip address");
         $args{logger}->writeLogDebug("2:		uptime");
