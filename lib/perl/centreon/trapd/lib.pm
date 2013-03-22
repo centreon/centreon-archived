@@ -114,7 +114,7 @@ sub write_cache_file {
         $args{logger}->writeLogError("Go to DB to get info");
         return 1;
     }
-    my $oids_value = join("\n", keys %{$args->{oids_cache}});
+    my $oids_value = join("\n", keys %{$args{oids_cache}});
     print FILECACHE $oids_value;
     close FILECACHE;
     $args{logger}->writeLogInfo("Cache file refreshed");
@@ -142,7 +142,7 @@ sub check_known_trap {
                         !($db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time})) && ($db_mode = write_cache_file(logger => $args{logger}, config => $args{config}, oids_cache => $args{oids_cache}));
                     }
                 } else {
-                    $args{logger}->writeLogError("Can't stat file $centrapmanager_cache_unknown_traps_file: $!");
+                    $args{logger}->writeLogError("Can't stat file " . $args{config}->{cache_unknown_traps_file} . ": $!");
                     $args{logger}->writeLogError("Go to DB to get info");
                     $db_mode = 1;
                 }
@@ -166,7 +166,7 @@ sub check_known_trap {
            }
         } else {
             if (!open FILECACHE, $args{config}->{cache_unknown_traps_file}) {
-                $args{logger}->writeLogError("Can't read file $centrapmanager_cache_unknown_traps_file: $!");
+                $args{logger}->writeLogError("Can't read file " . $args{config}->{cache_unknown_traps_file} . ": $!");
                 $db_mode = 1;
             } else {
                 while (<FILECACHE>) {
@@ -225,7 +225,7 @@ sub get_trap {
         @{$args{filenames}} = sort (@{$args{filenames}});
     }
     
-    while (($file = shift @{$args{filenames}})) {
+    while ((my $file = shift @{$args{filenames}})) {
         next if ($file eq ".");
         next if ($file eq "..");
         return $file;
@@ -244,7 +244,7 @@ sub purge_duplicate_trap {
         foreach my $key (sort keys %{$args{duplicate_traps}}) {
             if (${args{duplicate_traps}}{$key} < $duplicate_traps_current_time - $args{config}->{duplicate_trap_window}) {
                 # Purge the record
-                delete $duplicate_traps{$key};
+                delete ${args{duplicate_traps}}{$key};
             }
         }
     }
@@ -593,7 +593,7 @@ sub readtrap {
         $args{logger}->writeLogDebug("Agent dns name: " . ${$args{agent_dns_name}});
 
         #print out all enterprise specific variables
-        for (my $i=0;$i <= $#{args{entvar}};$i++) {
+        for (my $i=0;$i <= $#{$args{entvar}};$i++) {
             $args{logger}->writeLogDebug("Ent Value $i (\$" . ($i+1) . "): " . ${$args{entvarname}}[$i] . "=" . ${$args{entvar}}[$i]);
         }
     }
@@ -660,7 +660,7 @@ sub translate_symbolic_to_oid
         if ($config->{net_snmp_perl_enable} == 1) {
             my $temp3 = SNMP::translateObj("$temp",0);
             if (defined ($temp3) ) {
-                $args{logger}->writeLogDebug("  Translated to $temp3");
+                $logger->writeLogDebug("  Translated to $temp3");
                 $temp = $temp3;
             } else {
                 # Could not translate default to numeric

@@ -73,7 +73,7 @@ sub new {
     %{$self->{duplicate_traps}} = undef;
     $self->{timetoreload} = 0;
     $self->{timetodie} = 0;
-    @{self->{filenames}} = undef;
+    @{$self->{filenames}} = undef;
     $self->{oids_cache} = undef;
     $self->{last_cache_time} = undef;
     $self->{whoami} = undef;
@@ -137,7 +137,7 @@ sub send_command {
 
     eval {
         local $SIG{ALRM} = sub { die "TIMEOUT"; };
-        alarm($centrapmanager_cmd_timeout);
+        alarm($self->{centreontrapd_config}->{cmd_timeout});
         system @_;
         alarm(0);
     };
@@ -153,66 +153,61 @@ sub send_command {
 ###############################
 ## GET HOSTNAME FROM IP ADDRESS
 #
-sub get_hostinfos($$$) {
+sub get_hostinfos($$) {
     my $self = shift;
     my %host = ();
 
-    my $sth = $_[0]->prepare("SELECT host_id, host_name FROM host WHERE host_address='$_[1]' OR host_address='$_[2]'");
-    $sth->execute();
+    my ($status, $sth) = $self->{cdb}->query("SELECT host_id, host_name FROM host WHERE host_address='$_[0]' OR host_address='$_[1]'");
     while (my ($host_id, $host_name) = $sth->fetchrow_array()) {
         $host{$host_id} = $host_name;
     }
-    $sth->finish();
     return %host;
 }
 
 ###############################
 ## GET host location
 #
-sub get_hostlocation($$) {
+sub get_hostlocation($) {
     my $self = shift;
 
-    my $sth = $_[0]->prepare("SELECT localhost FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND host.host_name = '".$_[1]."'");
-    $sth->execute();
+    my ($status, $sth) = $self->{cdb}->query("SELECT localhost FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND host.host_name = '".$_[0]."'");
     if ($sth->rows()){
         my $temp = $sth->fetchrow_array();
         $sth->finish();
-    	return $temp;
+        return $temp;
     } else {
-    	return 0;
+        return 0;
     }
 }
 
 ##################################
 ## GET nagios server id for a host
 #
-sub get_hostNagiosServerID($$) {
+sub get_hostNagiosServerID($) {
     my $self = shift;
 
-    my $sth = $_[0]->prepare("SELECT id FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND (host.host_name = '".$_[1]."' OR host.host_address = '".$_[1]."')");
-    $sth->execute();
+    my ($status, $sth) = $self->{cdb}->query("SELECT id FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND (host.host_name = '".$_[0]."' OR host.host_address = '".$_[0]."')");
     if ($sth->rows()){
-	my $temp = $sth->fetchrow_array();
-	$sth->finish();
-    	return $temp;
+        my $temp = $sth->fetchrow_array();
+        $sth->finish();
+        return $temp;
     } else {
-    	return 0;
+        return 0;
     }
 }
 
 #####################################################################
 ## GET SERVICES FOR GIVEN HOST (GETTING SERVICES TEMPLATES IN ACCOUNT)
 #
-sub getServicesIncludeTemplate($$$$) {
+sub getServicesIncludeTemplate($$$) {
     my $self = shift;
-    my ($dbh, $sth_st, $host_id, $trap_id) = @_;
+    my $status;
+    my ($sth_st, $host_id, $trap_id) = @_;
     my @service;
-    $sth_st->execute();
     
     while (my @temp = $sth_st->fetchrow_array()) {
         my $tr_query = "SELECT `traps_id` FROM `traps_service_relation` WHERE `service_id` = '".$temp[0]."' AND `traps_id` = '".$trap_id."'";
-        my $sth_st3 = $dbh->prepare($tr_query);
-        $sth_st3->execute();
+        ($status, my $sth_st3) = $self->{cdb}->query($tr_query);
         my @trap = $sth_st3->fetchrow_array();
         if (defined($trap[0])) {
             $service[scalar(@service)] = $temp[1];
@@ -222,12 +217,10 @@ sub getServicesIncludeTemplate($$$$) {
                 my $service_template = $temp[2];
                 while (!$found) {
                     my $st1_query = "SELECT `service_id`, `service_template_model_stm_id`, `service_description` FROM service s WHERE `service_id` = '".$service_template."'";
-                    my $sth_st1 = $dbh->prepare($st1_query);
-                    $sth_st1 -> execute();
+                    ($status, my $sth_st1) = $self->{cdb}->query($st1_query);
                     my @st1_result = $sth_st1->fetchrow_array();
                     if (defined($st1_result[0])) {
-                        my $sth_st2 = $dbh->prepare("SELECT `traps_id` FROM `traps_service_relation` WHERE `service_id` = '".$service_template."' AND `traps_id` = '".$trap_id."'");
-                        $sth_st2->execute();
+                        ($status, my $sth_st2) = $self->{cdb}->query("SELECT `traps_id` FROM `traps_service_relation` WHERE `service_id` = '".$service_template."' AND `traps_id` = '".$trap_id."'");
                         my @st2_result = $sth_st2->fetchrow_array();
                         if (defined($st2_result[0])) {
                             $found = 1;
@@ -239,7 +232,7 @@ sub getServicesIncludeTemplate($$$$) {
                                 $found = 0;
                             }
                         }
-                        $sth_st2->finish;		    
+                        $sth_st2->finish;            
                     }
                     $sth_st1->finish;
                 }
@@ -255,10 +248,11 @@ sub getServicesIncludeTemplate($$$$) {
 ##########################
 # GET SERVICE DESCRIPTION
 #
-sub getServiceInformations($$$)	{
+sub getServiceInformations($$)    {
     my $self = shift;
-    my $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment`, `traps_args` FROM `traps` WHERE `traps_oid` = '$_[1]'");
-    $sth->execute();
+    my $status;
+    
+    ($status, my $sth) = $self->{cdb}->query("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment`, `traps_args` FROM `traps` WHERE `traps_oid` = '$_[0]'");
     my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output) = $sth->fetchrow_array();
     return(undef) if (!defined $trap_id);
     $sth->finish();
@@ -266,19 +260,18 @@ sub getServiceInformations($$$)	{
     ######################################################
     # getting all "services by host" for given host
     my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id FROM service s, host_service_relation h";
-    $st_query .= " where  s.service_id = h.service_service_id and h.host_host_id='$_[2]'";
-    my $sth_st = $_[0]->prepare($st_query); 
-    my @service = $self->getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id);
+    $st_query .= " where  s.service_id = h.service_service_id and h.host_host_id='$_[1]'";
+    ($status, my $sth_st) = $self->{cdb}->query($st_query); 
+    my @service = $self->getServicesIncludeTemplate($sth_st, $_[1], $trap_id);
     $sth_st->finish;
 
     ######################################################
     # getting all "services by hostgroup" for given host
     my $query_hostgroup_services = "SELECT s.service_id, service_description, service_template_model_stm_id FROM hostgroup_relation hgr,  service s, host_service_relation hsr";
-    $query_hostgroup_services .= " WHERE hgr.host_host_id = '".$_[2]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id";
+    $query_hostgroup_services .= " WHERE hgr.host_host_id = '".$_[1]."' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id";
     $query_hostgroup_services .= " AND s.service_id = hsr.service_service_id";
-    $sth_st = $_[0]->prepare($query_hostgroup_services);
-    $sth_st->execute();
-    @service = (@service, $self->getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id));
+    ($status, $sth_st) = $self->{cdb}->query($query_hostgroup_services);
+    @service = (@service, $self->getServicesIncludeTemplate($sth_st, $_[1], $trap_id));
     $sth_st->finish;
 
     return $trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, \@service;
@@ -287,22 +280,22 @@ sub getServiceInformations($$$)	{
 ######################################
 ## Force a new check for selected services
 #
-sub forceCheck($$$$) {
+sub forceCheck($$$) {
     my $self = shift;
-    my ($dbh, $this_host, $this_service, $datetime) = @_;
+    my ($this_host, $this_service, $datetime) = @_;
     my $result;
 
-    my $id = $self->get_hostNagiosServerID($dbh, $this_host);
+    my $id = $self->get_hostNagiosServerID($this_host);
     if (defined($id) && $id != 0) {
         my $submit;
         
-        if ($whoami eq $CENTREON_USER) {
-            $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile";
+        if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
+            $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> " . $self->{centreontrapd_config}->{cmdFile};
         } else {
-            $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
+            $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> " . $self->{centreontrapd_config}->{cmdFile} . "'";
         }
         $result = $self->send_command($submit);
-	
+    
         $self->{logger}->writeLogInfo("FORCE: Reschedule linked service");
         $self->{logger}->writeLogInfo("FORCE: Launched command: $submit");
     }
@@ -312,27 +305,27 @@ sub forceCheck($$$$) {
 #######################################
 ## Submit result via external command
 #
-sub submitResult($$$$$$) {
+sub submitResult($$$$$) {
     my $self = shift;
-    my ($dbh, $this_host, $this_service, $datetime, $status, $traps_output) = @_;
+    my ($this_host, $this_service, $datetime, $status, $traps_output) = @_;
     my $result;
 
     # No matching rules
-    my $id = $self->get_hostNagiosServerID($dbh, $this_host);
+    my $id = $self->get_hostNagiosServerID($this_host);
     if (defined($id) && $id != 0) {
         my $str = "PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$traps_output";
 
         my $submit;
-        if ($whoami eq $CENTREON_USER) {
+        if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
             $str =~ s/"/\\"/g;
-            $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> $cmdFile";
+            $submit = "/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile};
         } else {
             $str =~ s/'/'\\''/g;
             $str =~ s/"/\\"/g;
-            $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> $cmdFile'";
+            $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile} . "'";
         }
         $result = $self->send_command($submit);
-	
+    
         $self->{logger}->writeLogInfo("SUBMIT: Force service status via passive check update");
         $self->{logger}->writeLogInfo("SUBMIT: Launched command: $submit");
     }
@@ -349,8 +342,8 @@ sub substitute_string {
     # Substitute @{oid_value} and $1, $2,...
     for (my $i=0; $i <= $#{$self->{entvar}}; $i++) {
         my $x = $i + 1;
-        $str =~ s/\@\{${$self->{entvarname}}[$i]\}/${self->{entvar}}[$i]/g;
-        $str =~ s/\$$x(\s|$)/${self->{entvar}}[$i]/g;
+        $str =~ s/\@\{${$self->{entvarname}}[$i]\}/${$self->{entvar}}[$i]/g;
+        $str =~ s/\$$x(\s|$)/${$self->{entvar}}[$i]/g;
     }
     
     # Substitute $*
@@ -367,11 +360,10 @@ sub substitute_string {
 #
 sub checkMatchingRules($$$$$$$$$) {
     my $self = shift;
-    my ($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status) = @_;
+    my ($trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status) = @_;
     
     # Check matching options 
-    my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
-    $sth->execute();
+    my ($status, $sth) = $self->{cdb}->query("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
     while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
         $self->{logger}->writeLogDebug("[$tmoString][$regexp] => $tmoStatus");
         
@@ -394,7 +386,7 @@ sub checkMatchingRules($$$$$$$$$) {
 
         ##########################
         # REPLACE special Chars
-        if ($htmlentities == 1) {
+        if ($self->{htmlentities} == 1) {
             $tmoString = decode_entities($tmoString);
         } else {
             $tmoString =~ s/\&quot\;/\"/g;
@@ -408,7 +400,7 @@ sub checkMatchingRules($$$$$$$$$) {
         $tmoString =~ s/\@OUTPUT\@/$traps_output/g;
         $tmoString =~ s/\@TIME\@/$datetime/g;
 
-        # Integrate OID Matching		    
+        # Integrate OID Matching            
         if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
             $status = $tmoStatus;
             $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
@@ -430,7 +422,7 @@ sub executeCommand($$$$$$$$) {
     
     ##########################
     # REPLACE MACROS
-    if ($htmlentities == 1) {
+    if ($self->{htmlentities} == 1) {
         $traps_execution_command = decode_entities($traps_execution_command);
     } else {
         $traps_execution_command =~ s/\&quot\;/\"/g;
@@ -451,7 +443,7 @@ sub executeCommand($$$$$$$$) {
     if ($traps_execution_command) {
         $self->{logger}->writeLogInfo("EXEC: Launch specific command");
         $self->{logger}->writeLogInfo("EXEC: Launched command: $traps_execution_command");
-	
+    
         my $output = `$traps_execution_command`;
         if ($?) {
             $self->{logger}->writeLogError("EXEC: Execution error: $!");
@@ -474,15 +466,15 @@ sub getTrapsInfos($$$) {
     
     my $status;
 
-    my %host = $self->get_hostinfos($dbh, $ip, $hostname);
+    my %host = $self->get_hostinfos($ip, $hostname);
     foreach my $host_id (keys %host) {
         my $this_host = $host{$host_id};
-        my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = getServiceInformations($dbh, $oid, $host_id);
+        my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = getServiceInformations($oid, $host_id);
         if (!defined($trap_id)) {
             return ;
         }
         my @servicename = @{$ref_servicename};
-	
+    
         foreach (@servicename) {
             my $this_service = $_;
 
@@ -496,21 +488,21 @@ sub getTrapsInfos($$$) {
             ######################################################################
             # Advanced matching rules
             if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-                $status = $self->checkMatchingRules($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
+                $status = $self->checkMatchingRules($trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
             }
 
             #####################################################################
             # Submit value to passive service
             if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-                $self->submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_output);
+                $self->submitResult($this_host, $this_service, $datetime, $status, $traps_output);
             }
 
             ######################################################################
             # Force service execution with external command
             if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
-                $self->forceCheck($dbh, $this_host, $this_service, $datetime);
+                $self->forceCheck($this_host, $this_service, $datetime);
             }
-	    
+        
             ######################################################################
             # Execute special command
             if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
@@ -578,11 +570,11 @@ sub run {
                     if ($readtrap_result == 1) {
                         if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
                                                                    config => $self->{centreontrapd_config},
-                                                                   oid2verif => $var[3],      
+                                                                   oid2verif => ${$self->{var}}[3],      
                                                                    cdb => $self->{cdb},
                                                                    last_cache_time => \$self->{last_cache_time},
                                                                    oids_cache => \$self->{oids_cache}) == 1) {
-                            $self->getTrapsInfos($var[1], $var[2], $var[3]);
+                            $self->getTrapsInfos(${$self->{var}}[1], ${$self->{var}}[2], ${$self->{var}}[3]);
                         }
                     } elsif ($readtrap_result == 0) {
                         $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
@@ -600,7 +592,7 @@ sub run {
                 }
             }
             
-            $self->{logger}->writeLogDebug("Sleeping for $centrapmanager_sleep seconds");
+            $self->{logger}->writeLogDebug("Sleeping for " . $self->{centreontrapd_config}->{sleep} . " seconds");
             sleep $self->{centreontrapd_config}->{sleep};
                     
             if ($self->{timetoreload} == 1) {
@@ -630,11 +622,11 @@ sub run {
         if ($readtrap_result == 1) {
             if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
                                                        config => $self->{centreontrapd_config},
-                                                       oid2verif => $var[3],      
+                                                       oid2verif => ${$self->{var}}[3],      
                                                        cdb => $self->{cdb},
                                                        last_cache_time => \$self->{last_cache_time},
                                                        oids_cache => \$self->{oids_cache}) == 1) {
-                $self->getTrapsInfos($var[1], $var[2], $var[3]);
+                $self->getTrapsInfos(${$self->{var}}[1], ${$self->{var}}[2], ${$self->{var}}[3]);
             }
         } elsif ($readtrap_result == 0) {
             $self->{logger}->writeLogDebug("Error processing trap file.  Skipping...");
