@@ -74,7 +74,6 @@ sub new {
     $self->{timetoreload} = 0;
     $self->{timetodie} = 0;
     @{self->{filenames}} = undef;
-    $self->{input} = undef;
     $self->{oids_cache} = undef;
     $self->{last_cache_time} = undef;
     $self->{whoami} = undef;
@@ -134,6 +133,8 @@ sub reload_config {
 ## Execute a command Nagios or Centcore
 #
 sub send_command {
+    my $self = shift;
+
     eval {
         local $SIG{ALRM} = sub { die "TIMEOUT"; };
         alarm($centrapmanager_cmd_timeout);
@@ -142,7 +143,7 @@ sub send_command {
     };
     if ($@) {
         if ($@ =~ "TIMEOUT") {
-            logit("ERROR: Send command timeout", "EE");
+            $self->{logger}->writeLogError("ERROR: Send command timeout");
             return 0;
         }
     }
@@ -153,6 +154,7 @@ sub send_command {
 ## GET HOSTNAME FROM IP ADDRESS
 #
 sub get_hostinfos($$$) {
+    my $self = shift;
     my %host = ();
 
     my $sth = $_[0]->prepare("SELECT host_id, host_name FROM host WHERE host_address='$_[1]' OR host_address='$_[2]'");
@@ -168,6 +170,8 @@ sub get_hostinfos($$$) {
 ## GET host location
 #
 sub get_hostlocation($$) {
+    my $self = shift;
+
     my $sth = $_[0]->prepare("SELECT localhost FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND host.host_name = '".$_[1]."'");
     $sth->execute();
     if ($sth->rows()){
@@ -179,18 +183,12 @@ sub get_hostlocation($$) {
     }
 }
 
-##############################
-## Connect to MySQL 
-#
-sub connectDB() {
-    my $dbh = DBI->connect("dbi:mysql:".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd) or myDie("Echec de la connexion");
-    return $dbh;
-}
-
 ##################################
 ## GET nagios server id for a host
 #
 sub get_hostNagiosServerID($$) {
+    my $self = shift;
+
     my $sth = $_[0]->prepare("SELECT id FROM host, `ns_host_relation`, nagios_server WHERE host.host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = nagios_server.id AND (host.host_name = '".$_[1]."' OR host.host_address = '".$_[1]."')");
     $sth->execute();
     if ($sth->rows()){
@@ -206,6 +204,7 @@ sub get_hostNagiosServerID($$) {
 ## GET SERVICES FOR GIVEN HOST (GETTING SERVICES TEMPLATES IN ACCOUNT)
 #
 sub getServicesIncludeTemplate($$$$) {
+    my $self = shift;
     my ($dbh, $sth_st, $host_id, $trap_id) = @_;
     my @service;
     $sth_st->execute();
@@ -257,7 +256,7 @@ sub getServicesIncludeTemplate($$$$) {
 # GET SERVICE DESCRIPTION
 #
 sub getServiceInformations($$$)	{
-    
+    my $self = shift;
     my $sth = $_[0]->prepare("SELECT `traps_id`, `traps_status`, `traps_submit_result_enable`, `traps_execution_command`, `traps_reschedule_svc_enable`, `traps_execution_command_enable`, `traps_advanced_treatment`, `traps_args` FROM `traps` WHERE `traps_oid` = '$_[1]'");
     $sth->execute();
     my ($trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output) = $sth->fetchrow_array();
@@ -269,7 +268,7 @@ sub getServiceInformations($$$)	{
     my $st_query = "SELECT s.service_id, service_description, service_template_model_stm_id FROM service s, host_service_relation h";
     $st_query .= " where  s.service_id = h.service_service_id and h.host_host_id='$_[2]'";
     my $sth_st = $_[0]->prepare($st_query); 
-    my @service = getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id);
+    my @service = $self->getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id);
     $sth_st->finish;
 
     ######################################################
@@ -279,7 +278,7 @@ sub getServiceInformations($$$)	{
     $query_hostgroup_services .= " AND s.service_id = hsr.service_service_id";
     $sth_st = $_[0]->prepare($query_hostgroup_services);
     $sth_st->execute();
-    @service = (@service, getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id));
+    @service = (@service, $self->getServicesIncludeTemplate($_[0], $sth_st, $_[2], $trap_id));
     $sth_st->finish;
 
     return $trap_id, $trap_status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, \@service;
@@ -289,10 +288,11 @@ sub getServiceInformations($$$)	{
 ## Force a new check for selected services
 #
 sub forceCheck($$$$) {
+    my $self = shift;
     my ($dbh, $this_host, $this_service, $datetime) = @_;
     my $result;
 
-    my $id = get_hostNagiosServerID($dbh, $this_host);
+    my $id = $self->get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
         my $submit;
         
@@ -301,11 +301,10 @@ sub forceCheck($$$$) {
         } else {
             $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> $cmdFile'";
         }
-        $result = send_command($submit);
+        $result = $self->send_command($submit);
 	
-        logit("FORCE: Reschedule linked service", "II");
-        logit("FORCE: Launched command: $submit", "II");
-	
+        $self->{logger}->writeLogInfo("FORCE: Reschedule linked service");
+        $self->{logger}->writeLogInfo("FORCE: Launched command: $submit");
     }
     return $result;
 }
@@ -314,11 +313,12 @@ sub forceCheck($$$$) {
 ## Submit result via external command
 #
 sub submitResult($$$$$$) {
+    my $self = shift;
     my ($dbh, $this_host, $this_service, $datetime, $status, $traps_output) = @_;
     my $result;
 
     # No matching rules
-    my $id = get_hostNagiosServerID($dbh, $this_host);
+    my $id = $self->get_hostNagiosServerID($dbh, $this_host);
     if (defined($id) && $id != 0) {
         my $str = "PROCESS_SERVICE_CHECK_RESULT;$this_host;$this_service;$status;$traps_output";
 
@@ -331,10 +331,10 @@ sub submitResult($$$$$$) {
             $str =~ s/"/\\"/g;
             $submit = "su -l $CENTREON_USER -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> $cmdFile'";
         }
-        $result = send_command($submit);
+        $result = $self->send_command($submit);
 	
-        logit("SUBMIT: Force service status via passive check update", "II");
-        logit("SUBMIT: Launched command: $submit", "II");
+        $self->{logger}->writeLogInfo("SUBMIT: Force service status via passive check update");
+        $self->{logger}->writeLogInfo("SUBMIT: Launched command: $submit");
     }
     return $result;
 }
@@ -343,17 +343,18 @@ sub submitResult($$$$$$) {
 ## REPLACE
 #
 sub substitute_string {
+    my $self = shift;
     my $str = $_[0];
     
     # Substitute @{oid_value} and $1, $2,...
-    for (my $i=0; $i <= $#entvar; $i++) {
+    for (my $i=0; $i <= $#{$self->{entvar}}; $i++) {
         my $x = $i + 1;
-        $str =~ s/\@\{$entvarname[$i]\}/$entvar[$i]/g;
-        $str =~ s/\$$x(\s|$)/$entvar[$i]/g;
+        $str =~ s/\@\{${$self->{entvarname}}[$i]\}/${self->{entvar}}[$i]/g;
+        $str =~ s/\$$x(\s|$)/${self->{entvar}}[$i]/g;
     }
     
     # Substitute $*
-    my $sub_str = join($centrapmanager_seperator, @entvar);
+    my $sub_str = join($self->{centreontrapd_config}->{seperator}, @{$self->{entvar}});
     $str =~ s/\$\*/$sub_str/g;
     
     # Clean OID
@@ -365,13 +366,14 @@ sub substitute_string {
 ## Check Advanced Matching Rules
 #
 sub checkMatchingRules($$$$$$$$$) {
+    my $self = shift;
     my ($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status) = @_;
     
     # Check matching options 
     my $sth = $dbh->prepare("SELECT tmo_regexp, tmo_status, tmo_string FROM traps_matching_properties WHERE trap_id = '".$trap_id."' ORDER BY tmo_order");
     $sth->execute();
     while (my ($regexp, $tmoStatus, $tmoString) = $sth->fetchrow_array()) {
-        logit("[$tmoString][$regexp] => $tmoStatus", "DD") if ($centrapmanager_log_debug >= 2);
+        $self->{logger}->writeLogDebug("[$tmoString][$regexp] => $tmoStatus");
         
         my @temp = split(//, $regexp);
         my $i = 0;
@@ -409,12 +411,11 @@ sub checkMatchingRules($$$$$$$$$) {
         # Integrate OID Matching		    
         if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
             $status = $tmoStatus;
-            logit("Regexp: String:$tmoString => REGEXP:$regexp", "II");
-            logit("Status: $status ($tmoStatus)", "II");
+            $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
+            $self->{logger}->writeLogInfo("Status: $status ($tmoStatus)");
             last;
         }    
     }
-    $sth->finish();
     return $status;
 }
 
@@ -422,9 +423,10 @@ sub checkMatchingRules($$$$$$$$$) {
 ## Execute a specific command
 #
 sub executeCommand($$$$$$$$) {
+    my $self = shift;
     my ($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status) = @_;
     
-    $traps_execution_command = substitute_string($traps_execution_command);
+    $traps_execution_command = $self->substitute_string($traps_execution_command);
     
     ##########################
     # REPLACE MACROS
@@ -447,15 +449,15 @@ sub executeCommand($$$$$$$$) {
     ##########################
     # SEND COMMAND
     if ($traps_execution_command) {
-        logit("EXEC: Launch specific command", "II");
-        logit("EXEC: Launched command: $traps_execution_command", "II");
+        $self->{logger}->writeLogInfo("EXEC: Launch specific command");
+        $self->{logger}->writeLogInfo("EXEC: Launched command: $traps_execution_command");
 	
         my $output = `$traps_execution_command`;
         if ($?) {
-            logit("EXEC: Execution error: $!", "EE");
+            $self->{logger}->writeLogError("EXEC: Execution error: $!");
         }
         if ($output) {
-            logit("EXEC: Output : $output", "II");
+            $self->{logger}->writeLogInfo("EXEC: Output : $output");
         }
     }
 }
@@ -465,13 +467,14 @@ sub executeCommand($$$$$$$$) {
 ## GET HOSTNAME AND SERVICE DESCRIPTION
 #
 sub getTrapsInfos($$$) {
+    my $self = shift;
     my $ip = shift;
     my $hostname = shift;
     my $oid = shift;
     
     my $status;
 
-    my %host = get_hostinfos($dbh, $ip, $hostname);
+    my %host = $self->get_hostinfos($dbh, $ip, $hostname);
     foreach my $host_id (keys %host) {
         my $this_host = $host{$host_id};
         my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = getServiceInformations($dbh, $oid, $host_id);
@@ -483,51 +486,39 @@ sub getTrapsInfos($$$) {
         foreach (@servicename) {
             my $this_service = $_;
 
-            if ($centrapmanager_log_debug >= 2) {
-                logit("Trap found on service \'$this_service\' for host \'$this_host\'.", "DD");
-            }
+            $self->{logger}->writeLogDebug("Trap found on service \'$this_service\' for host \'$this_host\'.");
 
             my $datetime = `date +%s`;
             chomp($datetime);
 
-            $traps_output = substitute_string($traps_output);
+            $traps_output = $self->substitute_string($traps_output);
 
             ######################################################################
             # Advanced matching rules
             if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-                $status = checkMatchingRules($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
+                $status = $self->checkMatchingRules($dbh, $trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
             }
 
             #####################################################################
             # Submit value to passive service
             if (defined($traps_submit_result_enable) && $traps_submit_result_enable eq 1) { 
-                submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_output);
+                $self->submitResult($dbh, $this_host, $this_service, $datetime, $status, $traps_output);
             }
 
             ######################################################################
             # Force service execution with external command
             if (defined($traps_reschedule_svc_enable) && $traps_reschedule_svc_enable eq 1) {
-                forceCheck($dbh, $this_host, $this_service, $datetime);
+                $self->forceCheck($dbh, $this_host, $this_service, $datetime);
             }
 	    
             ######################################################################
             # Execute special command
             if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-                executeCommand($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
+                $self->executeCommand($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
             }
         }
     }
 }
-
-####################################
-## GenerateError
-#
-
-
-
-#########################################################
-# Beginning
-#
 
 sub run {
     my $self = shift;
@@ -562,18 +553,36 @@ sub run {
 
     if ($self->{centreontrapd_config}->{daemon} == 1) {
         while (!$self->{timetodie}) {
-            centreon::trapd::lib::purge_duplicate_trap();
-            while ((my $file = centreon::trapd::lib::get_trap())) {
+            centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
+                                                       duplicate_traps => \%{$self->{duplicate_traps}});
+            while ((my $file = centreon::trapd::lib::get_trap(logger => $self->{logger}, 
+                                                              config => $self->{centreontrapd_config},
+                                                              filenames => \@{$self->{filenames}}))) {
                 $self->{logger}->writeLogDebug("Processing file: $file");
                 
                 if (open FILE, $self->{spool_directory} . $file) {
                     my $trap_is_a_duplicate = 0;
                     my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
-                                                                         handle => 'FILE');
+                                                                         config => $self->{centreontrapd_config},
+                                                                         handle => 'FILE',
+                                                                         agent_dns => \$self->{agent_dns},
+                                                                         trap_date => \$self->{trap_date},
+                                                                         trap_time => \$self->{trap_time},
+                                                                         trap_date_time => \$self->{trap_date_time},
+                                                                         trap_date_time_epoch => \$self->{trap_date_time_epoch},
+                                                                         duplicate_traps => \%{$self->{duplicate_traps}},
+                                                                         var => \@{$self->{var}},
+                                                                         entvar => \%{$self->{entvar}},
+                                                                         entvarname => \%{$self->{entvarname}});
                     
                     if ($readtrap_result == 1) {
-                        if (centreon::trapd::lib::check_known_trap($var[3]) == 1) {
-                            getTrapsInfos($var[1], $var[2], $var[3]);
+                        if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                                                                   config => $self->{centreontrapd_config},
+                                                                   oid2verif => $var[3],      
+                                                                   cdb => $self->{cdb},
+                                                                   last_cache_time => \$self->{last_cache_time},
+                                                                   oids_cache => \$self->{oids_cache}) == 1) {
+                            $self->getTrapsInfos($var[1], $var[2], $var[3]);
                         }
                     } elsif ($readtrap_result == 0) {
                         $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
@@ -607,10 +616,25 @@ sub run {
         }
     } else {
         my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
-                                                             handle => 'STDIN');
+                                                             config => $self->{centreontrapd_config},
+                                                             handle => 'STDIN',
+                                                             agent_dns => \$self->{agent_dns},
+                                                             trap_date => \$self->{trap_date},
+                                                             trap_time => \$self->{trap_time},
+                                                             trap_date_time => \$self->{trap_date_time},
+                                                             trap_date_time_epoch => \$self->{trap_date_time_epoch},
+                                                             duplicate_traps => \%{$self->{duplicate_traps}},
+                                                             var => \@{$self->{var}},
+                                                             entvar => \%{$self->{entvar}},
+                                                             entvarname => \%{$self->{entvarname}});
         if ($readtrap_result == 1) {
-            if (centreon::trapd::lib::check_known_trap($var[3]) == 1) {
-                getTrapsInfos($var[1], $var[2], $var[3]);
+            if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                                                       config => $self->{centreontrapd_config},
+                                                       oid2verif => $var[3],      
+                                                       cdb => $self->{cdb},
+                                                       last_cache_time => \$self->{last_cache_time},
+                                                       oids_cache => \$self->{oids_cache}) == 1) {
+                $self->getTrapsInfos($var[1], $var[2], $var[3]);
             }
         } elsif ($readtrap_result == 0) {
             $self->{logger}->writeLogDebug("Error processing trap file.  Skipping...");

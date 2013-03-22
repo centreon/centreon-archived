@@ -56,7 +56,7 @@ sub init_modules {
     if ($args{config}->{duplicate_trap_window} > 0) {
         eval 'require Digest::MD5;';
         if ($@) {
-            $args{logger}->writeLogError($@, "EE");
+            $args{logger}->writeLogError($@);
             $args{logger}->writeLogError("Could not load the Perl module Digest::MD5!  If centrapmanager_duplicate_trap_window");
             $args{logger}->writeLogError("is set then the Digest::MD5 module is required");
             $args{logger}->writeLogError("for system requirements.");
@@ -91,26 +91,33 @@ sub manage_params_conf {
 ##############
 
 sub get_cache_oids {
-    my $sth = $dbh->prepare("SELECT traps_oid FROM traps");
-    if (!$sth->execute()) {
-        logit("SELECT traps_oid from traps error: " . $sth->errstr, "EE");
-        return 1;
-    }
-    $oids_cache = $sth->fetchall_hashref("traps_oid");
-    $last_cache_time = time();
+    # cdb => connection db
+    # last_cache_time => ref
+    # oids_cache => ref
+    my %args = @_;
+
+    my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps");
+    return 1 if ($status == -1);
+    ${$args{oids_cache}} = $sth->fetchall_hashref("traps_oid");
+    ${$args{last_cache_time}} = time();
     return 0;
 }
 
 sub write_cache_file {
-    if (!open(FILECACHE, ">", $centrapmanager_cache_unknown_traps_file)) {
-        logit("Can't write $centrapmanager_cache_unknown_traps_file; $!", "EE");
-        logit("Go to DB to get info", "EE");
+    # logger => obj
+    # config => hash
+    # oids_cache => val (not ref)
+    my %args = @_;
+    
+    if (!open(FILECACHE, ">", $args{config}->{cache_unknown_traps_file})) {
+        $args{logger}->writeLogError("Can't write " . $args{config}->{cache_unknown_traps_file} . ": $!");
+        $args{logger}->writeLogError("Go to DB to get info");
         return 1;
     }
-    my $oids_value = join("\n", keys %$oids_cache);
+    my $oids_value = join("\n", keys %{$args->{oids_cache}});
     print FILECACHE $oids_value;
     close FILECACHE;
-    logit("Cache file refreshed", "II") if ($centrapmanager_log_debug >= 1);
+    $args{logger}->writeLogInfo("Cache file refreshed");
     return 0;
 }
 
@@ -118,18 +125,21 @@ sub check_known_trap {
     # logger => obj
     # config => hash
     # oid2verif => val
+    # cdb => db connection
+    # last_cache_time => ref
+    # oids_cache => ref
     my %args = @_;
     my $oid2verif = $args{oid2verif};
     my $db_mode = 1;
 
-    if ($centrapmanager_cache_unknown_traps_enable == 1) {
-        if ($centrapmanager_daemon != 1) {
+    if ($args{config}->{cache_unknown_traps_enable} == 1) {
+        if ($args{config}->{daemon} != 1) {
             $db_mode = 0;
-            if (-e $centrapmanager_cache_unknown_traps_file) {
-                if ((my $result = stat($centrapmanager_cache_unknown_traps_file))) {
-                    if ((time() - $result->mtime) > $centrapmanager_cache_unknown_traps_retention) {
+            if (-e $args{config}->{cache_unknown_traps_file}) {
+                if ((my $result = stat($args{config}->{cache_unknown_traps_file}))) {
+                    if ((time() - $result->mtime) > $args{config}->{cache_unknown_traps_retention}) {
                         $args{logger}->writeLogInfo("Try to rewrite cache");
-                        !($db_mode = get_cache_oids()) && ($db_mode = write_cache_file());
+                        !($db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time})) && ($db_mode = write_cache_file(logger => $args{logger}, config => $args{config}, oids_cache => $args{oids_cache}));
                     }
                 } else {
                     $args{logger}->writeLogError("Can't stat file $centrapmanager_cache_unknown_traps_file: $!");
@@ -137,25 +147,25 @@ sub check_known_trap {
                     $db_mode = 1;
                 }
             } else {
-                !($db_mode = get_cache_oids()) && ($db_mode = write_cache_file());
+                !($db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time})) && ($db_mode = write_cache_file(logger => $args{logger}, config => $args{config}, oids_cache => $args{oids_cache}));
             }
         } else {
-            if (!defined($last_cache_time) || ((time() - $last_cache_time) > $centrapmanager_cache_unknown_traps_retention)) {
-                $db_mode = get_cache_oids();
+            if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
+                $db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time});
             }
         }
     }
 
     if ($db_mode == 0) {
-        if (defined($oids_cache)) {
-            if (defined($oids_cache->{$oid2verif})) {
+        if (defined(${$args{oids_cache}})) {
+            if (defined(${$args{oids_cache}}->{$oid2verif})) {
                 return 1;
             } else {
                 $args{logger}->writeLogInfo("Unknown trap");
                 return 0;
            }
         } else {
-            if (!open FILECACHE, $centrapmanager_cache_unknown_traps_file) {
+            if (!open FILECACHE, $args{config}->{cache_unknown_traps_file}) {
                 $args{logger}->writeLogError("Can't read file $centrapmanager_cache_unknown_traps_file: $!");
                 $db_mode = 1;
             } else {
@@ -173,11 +183,8 @@ sub check_known_trap {
 
     if ($db_mode == 1) {
         # Read db
-        my $sth = $dbh->prepare("SELECT traps_oid FROM traps WHERE traps_oid = " . $dbh->quote($oid2verif));
-        if (!$sth->execute()) {
-            #$args{logger}->writeLogError("SELECT traps_oid from traps error: " . $sth->errstr);
-            return 0;
-        }
+        my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps WHERE traps_oid = " . $args{cdb}->quote($oid2verif));
+        return 0 if ($status == -1);
         if ($sth->rows == 0) {
             $args{logger}->writeLogInfo("Unknown trap");
             return 0;
@@ -196,24 +203,29 @@ sub check_known_trap {
 ###
 
 sub get_trap {
-    if (!@filenames) { 
-        if (!(chdir($spool_directory))) {
-            logit("Unable to enter spool dir $spool_directory:$!", "EE");
+    # logger => obj
+    # config => hash
+    # filenames => ref array
+    my %args = @_;
+
+    if (!@{$args{filenames}}) { 
+        if (!(chdir($args{config}->{spool_directory}))) {
+            $args{logger}->writeLogError("Unable to enter spool dir " . $args{config}->{spool_directory} . ":$!");
             return undef;
         }
         if (!(opendir(DIR, "."))) {
-            logit("Unable to open spool dir $spool_directory:$!", "EE");
+            $args{logger}->writeLogError("Unable to open spool dir " . $args{config}->{spool_directory} . ":$!");
             return undef;
         }
-        if (!(@filenames = readdir(DIR))) {
-            logit("Unable to read spool dir $spool_directory:$!", "EE");
+        if (!(@{$args{filenames}} = readdir(DIR))) {
+            $args{logger}->writeLogError("Unable to read spool dir " . $args{config}->{spool_directory} . ":$!");
             return undef;
         }
         closedir(DIR);
-        @filenames = sort (@filenames);
+        @{$args{filenames}} = sort (@{$args{filenames}});
     }
     
-    while (($file = shift @filenames)) {
+    while (($file = shift @{$args{filenames}})) {
         next if ($file eq ".");
         next if ($file eq "..");
         return $file;
@@ -222,11 +234,15 @@ sub get_trap {
 }
 
 sub purge_duplicate_trap {
-    if ($centrapmanager_duplicate_trap_window) {
+    # config => hash
+    # duplicate_traps => ref hash 
+    my %args = @_;
+
+    if ($args{config}->{duplicate_trap_window}) {
         # Purge traps older than duplicate_trap_window in %duplicate_traps
         my $duplicate_traps_current_time = time();
-        foreach my $key (sort keys %duplicate_traps) {
-            if ($duplicate_traps{$key} < $duplicate_traps_current_time - $centrapmanager_duplicate_trap_window) {
+        foreach my $key (sort keys %{$args{duplicate_traps}}) {
+            if (${args{duplicate_traps}}{$key} < $duplicate_traps_current_time - $args{config}->{duplicate_trap_window}) {
                 # Purge the record
                 delete $duplicate_traps{$key};
             }
@@ -238,61 +254,71 @@ sub readtrap {
     # logger => obj
     # config => hash
     # handle => str
+    # agent_dns => ref
+    # trap_date => ref
+    # trap_time => ref
+    # trap_date_time => ref
+    # trap_date_time_epoch => ref
+    # duplicate_traps => ref hash
+    # var => ref array
+    # entvar => ref array
+    # entvarname => ref array
+    
     my %args = @_;
     my $input = $args{handle};
 
     # Flush out @tempvar, @var and @entvar
     my @tempvar = ();
-    @var = ();
-    @entvar = ();
-    @entvarname = ();
+    @{$args{var}} = ();
+    @{$args{entvar}} = ();
+    @{$args{entvarname}} = ();
     my @rawtrap = ();
 
-    $self->{logger}->writeLogDebug("Reading trap.  Current time: " . scalar(localtime()));
+    $args{logger}->writeLogDebug("Reading trap.  Current time: " . scalar(localtime()));
 
-    if ($centrapmanager_daemon == 1) {
-        chomp($trap_date_time_epoch = (<$input>));	# Pull time trap was spooled
-        push(@rawtrap, $trap_date_time_epoch);
-        if ($trap_date_time_epoch eq "") {
-            if ($self->{logger}->isDebug()) {
-                $self->{logger}->writeLogDebug("  Invalid trap file.  Expected a serial time on the first line but got nothing");
+    if ($args{config}->{daemon} == 1) {
+        chomp(${$args{trap_date_time_epoch}} = (<$input>));	# Pull time trap was spooled
+        push(@rawtrap, ${$args{trap_date_time_epoch}});
+        if (${$args{trap_date_time_epoch}} eq "") {
+            if ($args{logger}->isDebug()) {
+                $args{logger}->writeLogDebug("  Invalid trap file.  Expected a serial time on the first line but got nothing");
                 return 0;
             }
         }
-        $trap_date_time_epoch =~ s(`)(')g;	#` Replace any back ticks with regular single quote
+        ${$args{trap_date_time_epoch}} =~ s(`)(')g;	#` Replace any back ticks with regular single quote
     } else {
-        $trap_date_time_epoch = time();		# Use current time as time trap was received
+        ${$args{trap_date_time_epoch}} = time();		# Use current time as time trap was received
     }
 
     my @localtime_array;
-    if ($centrapmanager_daemon == 1 && $centrapmanager_use_trap_time == 1) {
-        @localtime_array = localtime($trap_date_time_epoch);
+    if ($args{config}->{daemon} == 1 && $args{config}->{use_trap_time} == 1) {
+        @localtime_array = localtime(${$args{trap_date_time_epoch}});
 
-        if ($centrapmanager_date_time_format eq "") {
-            $trap_date_time = localtime($trap_date_time_epoch);
+        if ($args{config}->{date_time_format} eq "") {
+            ${$args{trap_date_time}} = localtime(${$args{trap_date_time_epoch}});
         } else {
-            $trap_date_time = strftime($centrapmanager_date_time_format, @localtime_array);
+            ${$args{trap_date_time}} = strftime($args{config}->{date_time_format}, @localtime_array);
         }
     } else {
         @localtime_array = localtime();
 
-        if ($centrapmanager_date_time_format eq "") {
-            $trap_date_time = localtime();
+        if ($args{config}->{date_time_format} eq "") {
+            ${$args{trap_date_time}} = localtime();
         } else {
-            $trap_date_time = strftime($centrapmanager_date_time_format, @localtime_array);
+            ${$args{trap_date_time}} = strftime($args{config}->{date_time_format}, @localtime_array);
         }
     }
 
-    $trap_date = strftime($centrapmanager_date_format, @localtime_array);
-    $trap_time = strftime($centrapmanager_time_format, @localtime_array);
+    ${$args{trap_date}} = strftime($args{config}->{date_format}, @localtime_array);
+    ${$args{trap_time}} = strftime($args{config}->{time_format}, @localtime_array);
 
     # Pull in passed SNMP info from snmptrapd via STDIN and place in the array @tempvar
     chomp($tempvar[0]=<$input>);	# hostname
     push(@rawtrap, $tempvar[0]);
     $tempvar[0] =~ s(`)(')g;	#` Replace any back ticks with regular single quote 
     if ($tempvar[0] eq "") {
-        if ($self->{logger}->isDebug()) {
-            $self->{logger}->writeLogDebug("  Invalid trap file.  Expected a hostname on line 2 but got nothing");
+        if ($args{logger}->isDebug()) {
+            $args{logger}->writeLogDebug("  Invalid trap file.  Expected a hostname on line 2 but got nothing");
             return 0;
         }
     }
@@ -301,8 +327,8 @@ sub readtrap {
     push(@rawtrap, $tempvar[1]);
     $tempvar[1] =~ s(`)(')g;	#` Replace any back ticks with regular single quote
     if ($tempvar[1] eq "") {
-        if ($self->{logger}->isDebug()) {
-            $self->{logger}->writeLogDebug("  Invalid trap file.  Expected an IP address on line 3 but got nothing");
+        if ($args{logger}->isDebug()) {
+            $args{logger}->writeLogDebug("  Invalid trap file.  Expected an IP address on line 3 but got nothing");
             return 0;
         }
     }
@@ -325,7 +351,7 @@ sub readtrap {
         $line =~ s(`)(')g;	#` Replace any back ticks with regular single quote
 
         # Remove escape from quotes if enabled
-        if ($centrapmanager_remove_backslash_from_quotes == 1) {
+        if ($args{config}->{remove_backslash_from_quotes} == 1) {
             $line =~ s/\\\"/"/g;
         }
 
@@ -350,13 +376,13 @@ sub readtrap {
 
         if ($variable_fix == 0 ) {
             # Make sure variable names are numerical
-            $temp1 = translate_symbolic_to_oid($temp1);
+            $temp1 = translate_symbolic_to_oid($temp1, $args{logger}, $args{config});
 
             # If line begins with a double quote (") but does not END in a double quote then we need to merge
             # the following lines together into one until we find the closing double quote.  Allow for escaped quotes.
             # Net-SNMP sometimes divides long lines into multiple lines..
             if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /[^\\]\"$/)) ) {
-                $self->{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
+                $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
                 chomp $temp2; # Remove the newline character
                 while (defined(my $line2 = <$input>)) {
                     chomp $line2;
@@ -398,13 +424,13 @@ sub readtrap {
             # v4.2.3 should NOT be used with SNMPTT as it prevents SNMP V2 traps 
             # from being handled correctly.
 
-            $self->{logger}->writeLogDebug("Data passed from snmptrapd is incorrect.  UCD-SNMP v4.2.3 is known to cause this");
+            $args{logger}->writeLogDebug("Data passed from snmptrapd is incorrect.  UCD-SNMP v4.2.3 is known to cause this");
 
             # If line begins with a double quote (") but does not END in a double quote then we need to merge
             # the following lines together into one until we find the closing double quote.  Allow for escaped quotes.
             # Net-SNMP sometimes divides long lines into multiple lines..
             if ( ($line =~ /^\"/) && ( ! ($line =~ /[^\\]\"$/)) ) {
-                $self->{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
+                $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
                 chomp $line;				# Remove the newline character
                 while (defined(my $line2 = <$input>)) {
                     chomp $line2;
@@ -436,40 +462,40 @@ sub readtrap {
         $linenum++;
     }
 
-    if ($self->{logger}->isDebug()) {
+    if ($args{logger}->isDebug()) {
         # Print out raw trap passed from snmptrapd
-        $self->{logger}->writeLogDebug("Raw trap passed from snmptrapd:");
+        $args{logger}->writeLogDebug("Raw trap passed from snmptrapd:");
         for (my $i=0;$i <= $#rawtrap;$i++) {
             chomp($rawtrap[$i]);
-            $self->{logger}->writeLogDebug("$rawtrap[$i]");
+            $args{logger}->writeLogDebug("$rawtrap[$i]");
         }
 
         # Print out all items passed from snmptrapd
-        $self->{logger}->writeLogDebug("Items passed from snmptrapd:");
+        $args{logger}->writeLogDebug("Items passed from snmptrapd:");
         for (my $i=0;$i <= $#tempvar;$i++) {
-            $self->{logger}->writeLogDebug("value $i: $tempvar[$i]");
+            $args{logger}->writeLogDebug("value $i: $tempvar[$i]");
         }
     }
 
     # Copy what I need to new variables to make it easier to manipulate later
 
     # Standard variables
-    $var[0] = $tempvar[0];		# hostname
-    $var[1] = $tempvar[1];		# ip address
-    $var[2] = $tempvar[3];		# uptime
-    $var[3] = $tempvar[5];		# trapname / OID - assume first value after uptime is
+    ${$args{var}}[0] = $tempvar[0];		# hostname
+    ${$args{var}}[1] = $tempvar[1];		# ip address
+    ${$args{var}}[2] = $tempvar[3];		# uptime
+    ${$args{var}}[3] = $tempvar[5];		# trapname / OID - assume first value after uptime is
         # the trap OID (value for .1.3.6.1.6.3.1.1.4.1.0)
 
-    $var[4] = "";	 # Clear ip address from trap agent
-    $var[5] = "";	 # Clear trap community string
-    $var[6] = "";	 # Clear enterprise
-    $var[7] = "";	 # Clear securityEngineID
-    $var[8] = "";	 # Clear securityName
-    $var[9] = "";	 # Clear contextEngineID
-    $var[10] = ""; # Clear contextName
+    ${$args{var}}[4] = "";	 # Clear ip address from trap agent
+    ${$args{var}}[5] = "";	 # Clear trap community string
+    ${$args{var}}[6] = "";	 # Clear enterprise
+    ${$args{var}}[7] = "";	 # Clear securityEngineID
+    ${$args{var}}[8] = "";	 # Clear securityName
+    ${$args{var}}[9] = "";	 # Clear contextEngineID
+    ${$args{var}}[10] = ""; # Clear contextName
 
     # Make sure trap OID is numerical as event lookups are done using numerical OIDs only
-    $var[3] = translate_symbolic_to_oid($var[3]);
+    ${$args{var}}[3] = translate_symbolic_to_oid(${$args{var}}[3], $args{logger}, $args{config});
 
     # Cycle through remaining variables searching for for agent IP (.1.3.6.1.6.3.18.1.3.0),
     # community name (.1.3.6.1.6.3.18.1.4.0) and enterpise (.1.3.6.1.6.3.1.1.4.3.0)
@@ -478,116 +504,116 @@ sub readtrap {
     for (my $i=6;$i <= $#tempvar; $i+=2) {
         
         if ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.3.0$/) { # ip address from trap agent
-            $var[4] = $tempvar[$i+1];
+            ${$args{var}}[4] = $tempvar[$i+1];
         } elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.4.0$/)	{ # trap community string
-            $var[5] = $tempvar[$i+1];
+            ${$args{var}}[5] = $tempvar[$i+1];
         } elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.1.1.4.3.0$/) {	# enterprise
-            # $var[6] = $tempvar[$i+1];
+            # ${$args{var}}[6] = $tempvar[$i+1];
             # Make sure enterprise value is numerical
-            $var[6] = translate_symbolic_to_oid($tempvar[$i+1]);
+            ${$args{var}}[6] = translate_symbolic_to_oid($tempvar[$i+1], $args{logger}, $args{config});
         } elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.10.2.1.1.0$/) { # securityEngineID
-            $var[7] = $tempvar[$i+1];
+            ${$args{var}}[7] = $tempvar[$i+1];
         } elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.1.1.3$/) { # securityName
-            $var[8] = $tempvar[$i+1];
+            ${$args{var}}[8] = $tempvar[$i+1];
         } elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.1.1.4$/) {	# contextEngineID
-            $var[9] = $tempvar[$i+1];
+            ${$args{var}}[9] = $tempvar[$i+1];
         }
         elsif ($tempvar[$i] =~ /^.1.3.6.1.6.3.18.1.1.1.5$/)	{ # contextName
-            $var[10] = $tempvar[$i+1];
+            ${$args{var}}[10] = $tempvar[$i+1];
         } else { # application specific variables
-            $entvarname[$j] = $tempvar[$i];
-            $entvar[$j] = $tempvar[$i+1];
+            ${$args{entvarname}}[$j] = $tempvar[$i];
+            ${$args{entvar}}[$j] = $tempvar[$i+1];
             $j++;
         }
     }
 
     # Only if it's not already resolved
-    if ($centrapmanager_dns_enable == 1 && $var[0] =~  /^\d+\.\d+\.\d+\.\d+$/) {
-        my $temp = gethostbyaddr(Socket::inet_aton($var[0]),Socket::AF_INET());
+    if ($args{config}->{dns_enable} == 1 && ${$args{var}}[0] =~  /^\d+\.\d+\.\d+\.\d+$/) {
+        my $temp = gethostbyaddr(Socket::inet_aton(${$args{var}}[0]),Socket::AF_INET());
         if (defined ($temp)) {
-            $self->{logger}->writeLogDebug("Host IP address ($var[0]) resolved to: $temp");
-            $var[0] = $temp;
+            $args{logger}->writeLogDebug("Host IP address (" . ${$args{var}}[0] . ") resolved to: $temp");
+            ${$args{var}}[0] = $temp;
         } else {
-            $self->{logger}->writeLogDebug("Host IP address ($var[0]) could not be resolved by DNS.  Variable \$r / \$R etc will use the IP address");
+            $args{logger}->writeLogDebug("Host IP address (" . ${$args{var}}[0] . ") could not be resolved by DNS.  Variable \$r / \$R etc will use the IP address");
         }
     }
 
     # If the agent IP is blank, copy the IP from the host IP.
     # var[4] would only be blank if it wasn't passed from snmptrapd, which
     # should only happen with ucd-snmp 4.2.3, which you should be using anyway!
-    if ($var[4] eq '') {
-        $var[4] = $var[1];
-        $self->{logger}->writeLogDebug("Agent IP address was blank, so setting to the same as the host IP address of $var[1]");
+    if (${$args{var}}[4] eq '') {
+        ${$args{var}}[4] = ${$args{var}}[1];
+        $args{logger}->writeLogDebug("Agent IP address was blank, so setting to the same as the host IP address of " . ${$args{var}}[1]);
     }
 
     # If the agent IP is the same as the host IP, then just use the host DNS name, no need
     # to look up, as it's obviously the same..
-    if ($var[4] eq $var[1]) {
-        $self->{logger}->writeLogDebug("Agent IP address ($var[4]) is the same as the host IP, so copying the host name: $var[0]");
-        $agent_dns_name = $var[0];
+    if (${$args{var}}[4] eq ${$args{var}}[1]) {
+        $args{logger}->writeLogDebug("Agent IP address (" . ${$args{var}}[4] . ") is the same as the host IP, so copying the host name: " . ${$args{var}}[0]);
+        ${$args{agent_dns_name}} = ${$args{var}}[0];
     } else {
-        $agent_dns_name = $var[4];     # Default to IP address
-        if ($centrapmanager_dns_enable == 1 && $var[4] ne '') {
-            my $temp = gethostbyaddr(Socket::inet_aton($var[4]),Socket::AF_INET());
+        ${$args{agent_dns_name}} = ${$args{var}}[4];     # Default to IP address
+        if ($args{config}->{dns_enable} == 1 && ${$args{var}}[4] ne '') {
+            my $temp = gethostbyaddr(Socket::inet_aton(${$args{var}}[4]),Socket::AF_INET());
             if (defined ($temp)) {
-                $self->{logger}->writeLogDebug("Agent IP address ($var[4]) resolved to: $temp");
-                $agent_dns_name = $temp;
+                $args{logger}->writeLogDebug("Agent IP address (" . ${$args{var}}[4] . ") resolved to: $temp");
+                ${$args{agent_dns_name}} = $temp;
             } else {
-                $self->{logger}->writeLogDebug("Agent IP address ($var[4]) could not be resolved by DNS.  Variable \$A etc will use the IP address");
+                $args{logger}->writeLogDebug("Agent IP address (" . ${$args{var}}[4] . ") could not be resolved by DNS.  Variable \$A etc will use the IP address");
             }
         }
     }
 
-    if ($centrapmanager_strip_domain) {
-        $var[0] = strip_domain_name($var[0], $centrapmanager_strip_domain);
-        $agent_dns_name = strip_domain_name($agent_dns_name, $centrapmanager_strip_domain);
+    if ($args{config}->{strip_domain}) {
+        ${$args{var}}[0] = strip_domain_name(${$args{var}}[0], $args{config}->{strip_domain}, $args{config});
+        ${$args{agent_dns_name}} = strip_domain_name(${$args{agent_dns_name}}, $args{config}->{strip_domain}, $args{config});
     }
 
-    $self->{logger}->writeLogDebug("Trap received from $tempvar[0]: $tempvar[5]");
+    $args{logger}->writeLogDebug("Trap received from $tempvar[0]: $tempvar[5]");
 
-   if ($self->{logger}->isDebug()) {
-        $self->{logger}->writeLogDebug("0:		hostname");
-        $self->{logger}->writeLogDebug("1:		ip address");
-        $self->{logger}->writeLogDebug("2:		uptime");
-        $self->{logger}->writeLogDebug("3:		trapname / OID");
-        $self->{logger}->writeLogDebug("4:		ip address from trap agent");
-        $self->{logger}->writeLogDebug("5:		trap community string");
-        $self->{logger}->writeLogDebug("6:		enterprise");
-        $self->{logger}->writeLogDebug("7:		securityEngineID        (not use)");
-        $self->{logger}->writeLogDebug("8:		securityName            (not use)");
-        $self->{logger}->writeLogDebug("9:		contextEngineID         (not use)");
-        $self->{logger}->writeLogDebug("10:		contextName             (not)");
-        $self->{logger}->writeLogDebug("0+:		passed variables");	
+   if ($args{logger}->isDebug()) {
+        $args{logger}->writeLogDebug("0:		hostname");
+        $args{logger}->writeLogDebug("1:		ip address");
+        $args{logger}->writeLogDebug("2:		uptime");
+        $args{logger}->writeLogDebug("3:		trapname / OID");
+        $args{logger}->writeLogDebug("4:		ip address from trap agent");
+        $args{logger}->writeLogDebug("5:		trap community string");
+        $args{logger}->writeLogDebug("6:		enterprise");
+        $args{logger}->writeLogDebug("7:		securityEngineID        (not use)");
+        $args{logger}->writeLogDebug("8:		securityName            (not use)");
+        $args{logger}->writeLogDebug("9:		contextEngineID         (not use)");
+        $args{logger}->writeLogDebug("10:		contextName             (not)");
+        $args{logger}->writeLogDebug("0+:		passed variables");	
 
         #print out all standard variables
-        for (my $i=0;$i <= $#var;$i++) {
-            $self->{logger}->writeLogDebug("Value $i: $var[$i]");
+        for (my $i=0;$i <= $#{$args{var}};$i++) {
+            $args{logger}->writeLogDebug("Value $i: " . ${$args{var}}[$i]);
         }
 
-        $self->{logger}->writeLogDebug("Agent dns name: $agent_dns_name");
+        $args{logger}->writeLogDebug("Agent dns name: " . ${$args{agent_dns_name}});
 
         #print out all enterprise specific variables
-        for (my $i=0;$i <= $#entvar;$i++) {
-            $self->{logger}->writeLogDebug("Ent Value $i (\$" . ($i+1) . "): $entvarname[$i]=$entvar[$i]");
+        for (my $i=0;$i <= $#{args{entvar}};$i++) {
+            $args{logger}->writeLogDebug("Ent Value $i (\$" . ($i+1) . "): " . ${$args{entvarname}}[$i] . "=" . ${$args{entvar}}[$i]);
         }
     }
 
     # Generate hash of trap and detect duplicates
-    if ($centrapmanager_duplicate_trap_window) {
+    if ($args{config}->{duplicate_trap_window}) {
         my $md5 = Digest::MD5->new;
         # All variables except for uptime.
-        $md5->add($var[0],$var[1].$var[3].$var[4].$var[5].$var[6].$var[7].$var[8].$var[9].$var[10]."@entvar");
+        $md5->add(${$args{var}}[0],${$args{var}}[1].${$args{var}}[3].${$args{var}}[4].${$args{var}}[5].${$args{var}}[6].${$args{var}}[7].${$args{var}}[8].${$args{var}}[9].${$args{var}}[10]."@{$args{entvar}}");
         
         my $trap_digest = $md5->hexdigest;
 
-        $self->{logger}->writeLogDebug("Trap digest: $trap_digest");
+        $args{logger}->writeLogDebug("Trap digest: $trap_digest");
 
-        if ($duplicate_traps{$trap_digest}) {
+        if ($args{duplicate_traps}->{$trap_digest}) {
             # Duplicate trap detected.  Skipping trap...
             return -1;
         }
 
-        $duplicate_traps{$trap_digest} = time();
+        $args{duplicate_traps}->{$trap_digest} = time();
     }
 
     return 1;
@@ -623,31 +649,25 @@ sub readtrap {
 sub translate_symbolic_to_oid
 {
     my $temp = shift;
+    my $logger = shift;
+    my $config = shift;
     
     # Check to see if OID passed from snmptrapd is fully numeric.  If not, try to translate
     if (! ($temp =~ /^(\.\d+)+$/))  {
         # Not numeric
         # Try to convert to numerical
-        if ($centrapmanager_log_debug >= 2) {
-            logit("Symbolic trap variable name detected ($temp).  Will attempt to translate to a numerical OID", "DD");
-        }
-        if ($centrapmanager_net_snmp_perl_enable == 1) {
+        $logger->writeLogDebug("Symbolic trap variable name detected ($temp).  Will attempt to translate to a numerical OID");
+        if ($config->{net_snmp_perl_enable} == 1) {
             my $temp3 = SNMP::translateObj("$temp",0);
             if (defined ($temp3) ) {
-                if ($centrapmanager_log_debug >= 2) {
-                    logit("  Translated to $temp3\n", "DD");
-                }
+                $args{logger}->writeLogDebug("  Translated to $temp3");
                 $temp = $temp3;
             } else {
                 # Could not translate default to numeric
-                if ($centrapmanager_log_debug >= 2) {
-                    logit("  Could not translate - will leave as-is", "DD");
-                }
+                $logger->writeLogDebug("  Could not translate - will leave as-is");
             }
         } else {
-            if ($centrapmanager_log_debug >= 2) {
-                logit("  Could not translate - Net-SNMP Perl module not enabled - will leave as-is", "DD");
-            }
+            $logger->writeLogDebug("  Could not translate - Net-SNMP Perl module not enabled - will leave as-is");
         }
     }
   return $temp;
@@ -657,6 +677,7 @@ sub translate_symbolic_to_oid
 sub strip_domain_name {
     my $name = shift;
     my $mode = shift;
+    my $config = shift;
 
     # If mode = 1, strip off all domain names leaving only the host
     if ($mode == 1 && !($name =~ /^\d+\.\d+\.\d+\.\d+$/)) {
@@ -665,8 +686,8 @@ sub strip_domain_name {
             $name = $1;
         }
     } elsif ($mode == 2 && !($name =~ /^\d+\.\d+\.\d+\.\d+$/)) { # If mode = 2, strip off the domains as listed in strip_domain_list in .ini file 
-        if (@centrapmanager_strip_domain_list) {
-            foreach my $strip_domain_list_temp (@centrapmanager_strip_domain_list) {
+        if (@{$config->{strip_domain_list}}) {
+            foreach my $strip_domain_list_temp (@{$config->{strip_domain_list}}) {
                 if ($strip_domain_list_temp =~ /^\..*/) { # If domain from list starts with a '.' then remove it first
                     ($strip_domain_list_temp) = $strip_domain_list_temp =~ /^\.(.*)/;
                 }
