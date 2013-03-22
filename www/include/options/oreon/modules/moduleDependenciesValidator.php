@@ -50,7 +50,6 @@ function parse_zend_license_file($file)
 }
     
 // Load conf
-ini_set('display_errors', '1');
 require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
@@ -60,6 +59,8 @@ $modulesDirResource = opendir($modulesPath);
 
 $XmlObj = new CentreonXML(true);
 $XmlObj->startElement("validation");
+$message = array();
+
 while(false !== ($filename = readdir($modulesDirResource)))
 {
     if ($filename != "." && $filename != ".." && $filename != ".SVN" && $filename != ".svn" && $filename != ".CSV")
@@ -91,6 +92,11 @@ while(false !== ($filename = readdir($modulesDirResource)))
             else
             {
                 $XmlObj->writeAttribute('status', 'ok');
+                if (isset($customAction) && is_array($customAction))
+                {
+                    $XmlObj->writeAttribute('customAction', $customAction['action']);
+                    $XmlObj->writeAttribute('customActionName', $customAction['name']);
+                }
             }
         }
         else

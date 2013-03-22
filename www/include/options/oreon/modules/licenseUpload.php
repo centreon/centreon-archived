@@ -97,8 +97,11 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
                     unlink($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
 
                 rename($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl", $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
-                zend_loader_install_license($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl", true);
-                echo 'License sucessfully installed';
+                clearstatcache(true, $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                if (zend_loader_install_license($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl", true))
+                    echo 'License sucessfully installed';
+                else
+                    echo 'An error occured';
             }
             else
             {
