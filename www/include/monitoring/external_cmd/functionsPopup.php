@@ -43,14 +43,19 @@
 	 * @param $key
 	 */
 	function massiveHostAck($key){
-        global $pearDB, $is_admin, $oreon;
+            global $pearDB, $is_admin, $oreon;
+            static $processedHosts = array();
 
-		$actions = false;
-        $actions = $oreon->user->access->checkAction("host_acknowledgement");
+            $actions = false;
+            $actions = $oreon->user->access->checkAction("host_acknowledgement");
 
-        $key = urldecode($key);
-		$tmp = preg_split("/\;/", $key);
-		$host_name = $tmp[0];
+            $key = urldecode($key);
+            $tmp = preg_split("/\;/", $key);
+            $host_name = $tmp[0];
+            if (isset($processedHosts[$host_name])) {
+                return null;
+            }
+            $processedHosts[$host_name] = true;
 
 		isset($_GET['persistent']) && $_GET['persistent'] == "true" ? $persistent = "1" : $persistent = "0";
 		isset($_GET['notify']) && $_GET['notify'] == "true" ? $notify = "1" : $notify = "0";
@@ -153,7 +158,8 @@
 	 */
     function massiveHostDowntime($key) {
     	global $pearDB, $is_admin, $oreon, $centreonGMT;
-
+        static $processedHosts = array();
+        
         $actions = false;
         $actions = $oreon->user->access->checkAction("host_schedule_downtime");
 
@@ -162,9 +168,13 @@
 
         	$tmp = preg_split("/\;/", $key);
         	if (!isset($tmp[0])) {
-				throw new Exception('No host found');
-			}
-			$host_name = $tmp[0];
+                    throw new Exception('No host found');
+		}
+                $host_name = $tmp[0];
+                if (isset($processedHosts[$host_name])) {
+                    return null;
+                }
+                $processedHosts[$host_name] = true;
 
 			isset($_GET['start']) && $_GET['start'] ? $start = $_GET['start'] : $start = time();
 			isset($_GET['end']) && $_GET['end'] ? $end = $_GET['end'] : $end = time();
