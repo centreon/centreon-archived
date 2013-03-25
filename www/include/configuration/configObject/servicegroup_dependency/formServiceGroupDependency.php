@@ -41,6 +41,7 @@
 	## Database retrieve information for Dependency
 	#
 	$dep = array();
+        $initialValues = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
@@ -59,14 +60,24 @@
 
 		# Set ServiceGroup Parents
 		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupParent_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for ($i = 0; $sgP = $DBRESULT->fetchRow(); $i++)
-			$dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
+		for ($i = 0; $sgP = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && !isset($sgs[$sgP["servicegroup_sg_id"]])) {
+                        $initialValues['dep_sgParents'][] = $sgP["servicegroup_sg_id"];
+                    } else {
+                        $dep["dep_sgParents"][$i] = $sgP["servicegroup_sg_id"];
+                    }
+                }
 		$DBRESULT->free();
 
 		# Set ServiceGroup Childs
 		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM dependency_servicegroupChild_relation WHERE dependency_dep_id = '".$dep_id."'");
-		for ($i = 0; $sgC = $DBRESULT->fetchRow(); $i++)
-			$dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
+		for ($i = 0; $sgC = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && !isset($sgs[$sgC["servicegroup_sg_id"]])) {
+                        $initialValues['dep_sgChilds'][] = $sgC["servicegroup_sg_id"];
+                    } else {
+                        $dep["dep_sgChilds"][$i] = $sgC["servicegroup_sg_id"];
+                    }
+                }
 		$DBRESULT->free();
 	}
 
@@ -74,15 +85,6 @@
 	 * Database retrieve information for differents elements list we need on the page
 	 */
 
-	 /*
-	  * ServiceGroup comes from DB -> Store in $sgs Array
-	  */
-
-	$sgs = array();
-	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while ($sg = $DBRESULT->fetchRow())
-		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	$DBRESULT->free();
 
 	/*
 	 * Var information to format the element
@@ -159,6 +161,9 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+        $init = $form->addElement('hidden', 'initialValues');
+        $init->setValue(serialize($initialValues));
+        
 	/*
 	 * Form Rules
 	 */

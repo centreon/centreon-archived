@@ -729,7 +729,7 @@ sub syncTraps($) {
 
             writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
             my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
-            if ($ls > 1) {
+            if ($ls >= 1) {
                 writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ". $ns_server->{'ns_ip_address'} .":/etc/snmp/centreon_traps/") if ($debug);                
                 $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
             	if (defined($stdout) && $stdout){
@@ -759,7 +759,7 @@ sub syncTraps($) {
 		    $cmd = "ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l";
                     writeLogFile($cmd) if ($debug);
                     my $ls = `$cmd`;
-                    if ($ls > 1) {
+                    if ($ls >= 1) {
 			$cmd = "$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
                         writeLogFile($cmd) if ($debug);
                         $stdout = `$cmd`;

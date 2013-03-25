@@ -70,7 +70,7 @@ class CentreonDependency
         }
         $listServices = array();
         while ($row = $res->fetchRow()) {
-            $listServices[] = $row;
+            $listServices[$row['parent_host_id'] . ";" . $row['parent_service_id'] . ";" . $row['child_host_id'] . ";" . $row['child_service_id']] = $row;
         }
         if ($withSg) {
             $querySg = 'SELECT dsgp.servicegroup_sg_id as parent_sg, dsgc.servicegroup_sg_id as child_sg
@@ -86,7 +86,7 @@ class CentreonDependency
                 $sgcs = $sgObj->getServiceGroupServices($row['child_sg']);
                 foreach ($sgps as $sgp) {
                     foreach ($sgcs as $sgc) {
-                        $listServices[] = array('parent_host_id' => $sgp[0],
+                        $listServices[$sgp[0] . ";" . $sgp[1] . ";" . $sgc[0] . ";" . $sgc[1]] = array('parent_host_id' => $sgp[0],
                                                 'parent_service_id' => $sgp[1],
                                                 'child_host_id' => $sgc[0],
                                                 'child_service_id' => $sgc[1]);
@@ -94,7 +94,7 @@ class CentreonDependency
                 }
             }
         }
-        return array_unique($listServices);
+        return $listServices;
     }
 
     /**
@@ -114,7 +114,7 @@ class CentreonDependency
         }
         $listHosts = array();
         while ($row = $res->fetchRow()) {
-            $listHosts[] = $row;
+            $listHosts[$row['parent_host_id'] . ';' . $row['child_host_id']] = $row;
         }
         if ($withHg) {
             $queryHg = 'SELECT dhgp.hostgroup_hg_id as parent_hg, dhgc.hostgroup_hg_id as child_hg
@@ -130,13 +130,13 @@ class CentreonDependency
                 $hgcs = $hgObj->getHostGroupHosts($row['child_hg']);
                 foreach ($hgps as $hgp) {
                     foreach ($hgcs as $hgc) {
-                        $listHosts[] = array('parent_host_id' => $hgp,
+                        $listHosts[$hgp . ";" . $hgc] = array('parent_host_id' => $hgp,
                                              'child_host_id' => $hgc);
                     }
                 }
             }
         }
-        return array_unique($listHosts);
+        return $listHosts;
     }
 
     /**

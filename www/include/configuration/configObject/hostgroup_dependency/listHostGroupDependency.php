@@ -49,8 +49,18 @@
 
 	isset($_GET["list"]) ? $list = $_GET["list"] : $list = NULL;
 
+        $aclCond = "";
+        if (!$oreon->user->admin) {
+            $aclCond = " AND hostgroup_hg_id IN ($hgstring) ";
+        }
+        
 	$rq = "SELECT COUNT(*) FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_hostgroupParent_relation dhgpr 
+                        WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
+                 OR    (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_hostgroupChild_relation dhgpr 
+                        WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 
 	if (isset($search))
 		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";
@@ -83,7 +93,12 @@
 	 * List dependancies
 	 */
 	$rq = "SELECT dep_id, dep_name, dep_description FROM dependency dep";
-	$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupParent_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0 AND (SELECT DISTINCT COUNT(*) FROM dependency_hostgroupChild_relation dhgpr WHERE dhgpr.dependency_dep_id = dep.dep_id) > 0";
+	$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_hostgroupParent_relation dhgpr 
+                        WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0 
+                 OR    (SELECT DISTINCT COUNT(*) 
+                        FROM dependency_hostgroupChild_relation dhgpr 
+                        WHERE dhgpr.dependency_dep_id = dep.dep_id $aclCond) > 0";
 
 	if ($search)
 		$rq .= " AND (dep_name LIKE '".CentreonDB::escape($search)."' OR dep_description LIKE '%".CentreonDB::escape($search)."%')";

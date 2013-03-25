@@ -152,18 +152,21 @@
 		/*
 		 * Init Table of template
 		 */
+                $loopBreak = array();
 		while (1) {
-			if (isset($svcTplCache[$service_id]) && $svcTplCache[$service_id]) {
-				if (isset($svcCatCache[$service_id])) {
-					foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
-						$tabCategory[$ct_id] = $ct_id;
-					}
-				}
-				$service_id = $svcTplCache[$service_id];
+                    if (isset($svcTplCache[$service_id]) && 
+                            $svcTplCache[$service_id] &&
+                            !isset($loopBreak[$service_id])) {
+                        if (isset($svcCatCache[$service_id])) {
+                            foreach ($svcCatCache[$service_id] as $ct_id => $flag) {
+                                $tabCategory[$ct_id] = $ct_id;
+                            }
 			}
-			else {
-				return $tabCategory;
-			}
+                        $loopBreak[$service_id] = true;
+			$service_id = $svcTplCache[$service_id];
+                    } else {
+                        return $tabCategory;
+                    }
 		}
 	}
 

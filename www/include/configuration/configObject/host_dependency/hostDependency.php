@@ -73,6 +73,9 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 	
+        $acl = $oreon->user->access;
+        $dbmon = $acl->getNameDBAcl($oreon->broker->getBroker());
+        
 	switch ($o)	{
 		case "a" : require_once($path."formHostDependency.php"); break; #Add a Dependency
 		case "w" : require_once($path."formHostDependency.php"); break; #Watch a Dependency

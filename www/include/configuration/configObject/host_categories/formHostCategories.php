@@ -39,13 +39,31 @@
  	if (!isset($oreon))
  		exit();
 
+    if (!$oreon->user->admin) {
+        if ($hc_id && $hcString != "''" && false === strpos($hcString, "'".$hc_id."'")) {
+            $msg = new CentreonMsg();
+            $msg->setImage("./img/icones/16x16/warning.gif");
+            $msg->setTextStyle("bold");
+            $msg->setText(_('You are not allowed to access this host category'));
+            return null;
+        }
+    }
+
 	/*
 	 * Hosts comes from DB -> Store in $hosts Array
 	 */
 	$hosts = array();
-	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow())
-		$hosts[$host["host_id"]] = $host["host_name"];
+    $ishost = array();
+	$DBRESULT = $pearDB->query("SELECT host_id, host_name
+                                FROM host
+                                WHERE host_register = '1'
+                                ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow()) {
+        $ishost[$host['host_id']] = $host['host_name'];
+        if ($oreon->user->admin || false !== strpos($hoststring, "'".$host['host_id']."'")) {
+            $hosts[$host["host_id"]] = $host["host_name"];
+        }
+    }
 	$DBRESULT->free();
 	unset($host);
 
@@ -58,6 +76,8 @@
 		$hostTpl[$host["host_id"]] = $host["host_name"];
 	$DBRESULT->free();
 	unset($host);
+
+    $initialValues = array();
 
 	/*
 	 * Database retrieve information for HostCategories
@@ -75,9 +95,13 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM hostcategories_relation WHERE hostcategories_hc_id = '".$hc_id."'");
 		for ($i = 0, $i2 = 0; $host = $DBRESULT->fetchRow();) {
-			if (isset($hosts[$host["host_host_id"]])) {
-				$hc["hc_hosts"][$i] = $host["host_host_id"];
-				$i++;
+			if (isset($ishost[$host["host_host_id"]])) {
+                if (!$oreon->user->admin && false === strpos($hoststring, "'".$host['host_host_id']."'")) {
+                    $initialValues['hc_hosts'][] = $host['host_host_id'];
+                } else {
+				    $hc["hc_hosts"][$i] = $host["host_host_id"];
+				    $i++;
+                }
 			}
 			if (isset($hostTpl[$host["host_host_id"]])) {
 				$hc["hc_hostsTemplate"][$i2] = $host["host_host_id"];
@@ -161,6 +185,10 @@
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Delete")));
 	$ams1->setElementTemplate($eTemplate);
+    if (!$oreon->user->admin) {
+        $ams1->setPersistantFreeze(true);
+        $ams1->freeze();
+    }
 	echo $ams1->getElementJs(false);
 
 	/*
@@ -183,6 +211,9 @@
 	$form->addElement('hidden', 'hc_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
 
 	/*
 	 * Form Rules

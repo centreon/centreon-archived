@@ -72,29 +72,29 @@ sub getDownTime {
 	
 	if ($dbLayer eq "ndo") {
 		$query = "SELECT `name1`, `name2`,".
-				" UNIX_TIMESTAMP(`scheduled_start_time`) as start_time,".
-				" UNIX_TIMESTAMP(`actual_end_time`) as end_time".
+            " UNIX_TIMESTAMP(`scheduled_start_time`) as start_time,".
+            " UNIX_TIMESTAMP(`actual_end_time`) as end_time".
 			" FROM `nagios_downtimehistory` d, `nagios_objects` o".
 			" WHERE o.`object_id` = d.`object_id` AND o.`objecttype_id` = '".$type."'".
 			" AND was_started = 1".
-			" AND UNIX_TIMESTAMP(`scheduled_start_time`) < ".$end.
-			" AND (UNIX_TIMESTAMP(`actual_end_time`) > ".$start." || UNIX_TIMESTAMP(`actual_end_time`) = 0)".
+			" AND `scheduled_start_time` < FROM_UNIXTIME(".$end.")".
+			" AND (`actual_end_time` > FROM_UNIXTIME(".$start.") || `actual_end_time` = '0000-00-00')".
 			" ORDER BY `name1` ASC, `scheduled_start_time` ASC, `actual_end_time` ASC";
 	} elsif ($dbLayer eq "broker") {
 		$query = "SELECT DISTINCT h.name as name1, s.description as name2, " .
-				 "d.start_time, d.end_time " .
-				 "FROM `hosts` h, `downtimes` d " .
-				 "LEFT JOIN services s ON s.service_id = d.service_id " .
-				 "WHERE started = 1 " .
-				 "AND d.host_id = h.host_id ";
+            "d.start_time, d.end_time " .
+            "FROM `hosts` h, `downtimes` d " .
+            "LEFT JOIN services s ON s.service_id = d.service_id " .
+            "WHERE started = 1 " .
+            "AND d.host_id = h.host_id ";
 		if ($type == 1) {
 			$query .= "AND d.type = 2 "; # That can be confusing, but downtime_type 2 is for host
 		} elsif ($type == 2) {
 			$query .= "AND d.type = 1 "; # That can be confusing, but downtime_type 1 is for service
 		}
 		$query .= "AND start_time < " . $end . " " .
-				 "AND (end_time > " . $start . " || end_time = 0) " .
-				 "ORDER BY name1 ASC, start_time ASC, end_time ASC";		
+            "AND (end_time > " . $start . " || end_time = 0) " .
+            "ORDER BY name1 ASC, start_time ASC, end_time ASC";		
 	}
 
 	my $sth = $centreon->query($query);

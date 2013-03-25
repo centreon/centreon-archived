@@ -39,6 +39,18 @@
  	if (!isset($oreon))
  		exit();
 
+    if (!$oreon->user->admin) {
+        if ($hg_id && false === strpos($hgString, "'".$hg_id."'")) {
+            $msg = new CentreonMsg();
+            $msg->setImage("./img/icones/16x16/warning.gif");
+            $msg->setTextStyle("bold");
+            $msg->setText(_('You are not allowed to access this host group'));
+            return null;
+        }
+    }
+
+    $initialValues = array();
+
 	/*
 	 * Database retrieve information for HostGroup
 	 */
@@ -60,8 +72,13 @@
 		 *  Set HostGroup Childs
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
-		for ($i = 0; $hosts = $DBRESULT->fetchRow(); $i++) {
-			$hg["hg_hosts"][$i] = $hosts["host_id"];
+		for ($i = 0; $hosts = $DBRESULT->fetchRow();) {
+            if (!$oreon->user->admin && false === strpos($hoststring, "'".$hosts['host_id']."'")) {
+                $initialValues['hg_hosts'][] = $hosts['host_id'];
+            } else {
+    			$hg["hg_hosts"][$i] = $hosts["host_id"];
+                $i++;
+            }
 		}
 		$DBRESULT->free();
 		unset($hosts);
@@ -80,10 +97,21 @@
 	/*
 	 * Hosts comes from DB -> Store in $hosts Array
 	 */
+    $aclFrom = "";
+    $aclCond = "";
+    if (!$oreon->user->admin) {
+        $aclFrom = ", $aclDbName.centreon_acl acl ";
+        $aclCond = " AND h.host_id = acl.host_id
+                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+    }
 	$hosts = array();
-	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow())
+	$DBRESULT = $pearDB->query("SELECT DISTINCT h.host_id, h.host_name
+                                FROM host h $aclFrom
+                                WHERE host_register = '1' $aclCond
+                                ORDER BY host_name");
+	while ($host = $DBRESULT->fetchRow()) {
 		$hosts[$host["host_id"]] = $host["host_name"];
+    }
 	$DBRESULT->free();
 	unset($host);
 
@@ -199,6 +227,9 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
+
 	/*
 	 * Form Rules
 	 */
@@ -211,6 +242,10 @@
 	$form->applyFilter('hg_name', 'myReplace');
 	$form->addRule('hg_name', _("Compulsory Name"), 'required');
 	$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
+
+    if (!$oreon->user->admin) {
+        $form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
+    }
 
 	$form->registerRule('exist', 'callback', 'testHostGroupExistence');
 	$form->addRule('hg_name', _("Name is already in use"), 'exist');

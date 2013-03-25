@@ -228,7 +228,7 @@
 		if (isset($ret["dep_sgParents"]))
 			$ret = $ret["dep_sgParents"];
 		else
-			$ret = $form->getSubmitValue("dep_sgParents");
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'dep_sgParents');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO dependency_servicegroupParent_relation ";
 			$rq .= "(dependency_dep_id, servicegroup_sg_id) ";
@@ -248,7 +248,7 @@
 		if (isset($ret["dep_sgChilds"]))
 			$ret = $ret["dep_sgChilds"];
 		else
-			$ret = $form->getSubmitValue("dep_sgChilds");
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'dep_sgChilds');
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO dependency_servicegroupChild_relation ";
 			$rq .= "(dependency_dep_id, servicegroup_sg_id) ";

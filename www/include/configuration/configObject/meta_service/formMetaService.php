@@ -38,10 +38,24 @@
 
  	if (!isset($oreon))
  		exit();
- 		
+
  	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
+    /* notification contact groups */
+    $notifCgs = array();
+    $cg = new CentreonContactgroup($pearDB);
+    if ($oreon->user->admin) {
+        $notifCgs = $cg->getListContactgroup(true);
+    } else {
+        $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
+                                                                       'get_row' => 'cg_name',
+                                                                       'keys'    => array('cg_id'),                                                                                                                                                        'order'   => array('cg_name')));
+        $cgLdap = $cg->getListContactgroup(true, true);
+        $notifCgs = array_intersect_key($cgLdap, $cgAcl);
+    }
+
+    $initialValues = array();
 	$ms = array();
 	if (($o == "c" || $o == "w") && $meta_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM meta_service WHERE meta_id = '".$meta_id."' LIMIT 1");
@@ -57,8 +71,13 @@
 		 * Set Contact Group
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT cg_cg_id FROM meta_contactgroup_relation WHERE meta_id = '".$meta_id."'");
-		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
-			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
+            if (!$oreon->user->admin && !isset($notifCgs[$notifCg['cg_cg_id']])) {
+                $initialValues['ms_cgs'][] = $notifCg["cg_cg_id"];
+            } else {
+    			$ms["ms_cgs"][$i] = $notifCg["cg_cg_id"];
+            }
+        }
 		$DBRESULT->free();
 	}
 
@@ -89,13 +108,6 @@
 	$DBRESULT->free();
 
 	/*
-	 * Contact Groups comes from DB -> Store in $notifCcts Array
-	 */
-	$notifCgs = array();
-	$cg = new CentreonContactgroup($pearDB);
-	$notifCgs = $cg->getListContactgroup(true);
-
-	/*
 	 * Escalations comes from DB -> Store in $escs Array
 	 */
 	$escs = array();
@@ -121,8 +133,8 @@
         /*
          * Data source type
          */
-        $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");        
-        
+        $dsType = array(0 => "GAUGE", 1 => "COUNTER", 2 => "DERIVE", 3 => "ABSOLUTE");
+
 	/*
 	 * Graphs Template comes from DB -> Store in $graphTpls Array
 	 */
@@ -230,6 +242,9 @@
 	$form->addElement('hidden', 'meta_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
 
 	/*
 	 * Form Rules

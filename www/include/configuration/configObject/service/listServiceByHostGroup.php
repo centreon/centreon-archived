@@ -119,17 +119,28 @@
 	$rows = 0;
 	$tmp = NULL;
 	$tmp2 = NULL;
-	$searchH = CentreonDB::escape($searchH);
-	$searchS = CentreonDB::escape($searchS);
+	$searchH = $pearDB->escape($searchH);
+	$searchS = $pearDB->escape($searchS);
+
+    $aclfrom = "";
+    $aclcond = "";
+    $distinct = "";
+    if (!$oreon->user->admin) {
+        $aclfrom = ", $acldbname.centreon_acl acl ";
+        $aclcond = " AND sv.service_id = acl.service_id
+                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+        $distinct = " DISTINCT ";
+    }
+
 	/*
 	 * Due to Description maybe in the Template definition, we have to search if the description could match for each service with a Template.
 	 */
 	if ($searchS != "" || $searchH != "") {
 		if ($searchS && !$searchH) {
-			$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
-										"FROM service sv, host_service_relation hsr " .
+			$DBRESULT = $pearDB->query("SELECT $distinct hostgroup_hg_id, sv.service_id, sv.service_description, service_template_model_stm_id " .
+										"FROM service sv, host_service_relation hsr $aclfrom" .
 										"WHERE sv.service_register = '1' $sqlFilterCase " .
-										"	AND hsr.service_service_id = sv.service_id " .
+										"	AND hsr.service_service_id = sv.service_id " . $aclcond .
 										"	AND hsr.host_host_id IS NULL " .
 										"	AND (sv.service_description LIKE '%$searchS%')".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
 			while ($service = $DBRESULT->fetchRow()){
@@ -140,10 +151,10 @@
 				$rows++;
 			}
 		} else if (!$searchS && $searchH)	{
-			$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
-										"FROM service sv, host_service_relation hsr, hostgroup hg " .
+			$DBRESULT = $pearDB->query("SELECT $distinct hostgroup_hg_id, sv.service_id, sv.service_description, service_template_model_stm_id " .
+										"FROM service sv, host_service_relation hsr, hostgroup hg $aclfrom" .
 										"WHERE sv.service_register = '1' $sqlFilterCase " .
-										"	AND hsr.service_service_id = sv.service_id " .
+										"	AND hsr.service_service_id = sv.service_id " . $aclcond .
 										"	AND hsr.host_host_id IS NULL " .
 										"	AND (hg.hg_name LIKE '%$searchH%')" .
 										"	AND hsr.hostgroup_hg_id = hg.hg_id".((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : ""));
@@ -153,10 +164,10 @@
 				$rows++;
 			}
 		} else {
-			$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id, service_id, service_description, service_template_model_stm_id " .
-										"FROM service sv, host_service_relation hsr, hostgroup hg " .
+			$DBRESULT = $pearDB->query("SELECT $distinct hostgroup_hg_id, sv.service_id, sv.service_description, service_template_model_stm_id " .
+										"FROM service sv, host_service_relation hsr, hostgroup hg $aclfrom" .
 										"WHERE sv.service_register = '1' $sqlFilterCase " .
-										"	AND hsr.service_service_id = sv.service_id " .
+										"	AND hsr.service_service_id = sv.service_id " . $aclcond .
 										"	AND hsr.host_host_id IS NULL " .
 										"	AND hg.hg_name LIKE '%$searchH%'" .
 										"	AND sv.service_description LIKE '%$searchS%'" .
@@ -168,7 +179,9 @@
 			}
 		}
 	} else	{
-		$DBRESULT = $pearDB->query("SELECT service_description FROM service sv, host_service_relation hsr WHERE service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL");
+		$DBRESULT = $pearDB->query("SELECT $distinct sv.service_description
+                                    FROM service sv, host_service_relation hsr $aclfrom
+                                    WHERE service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hsr.host_host_id IS NULL $aclcond");
 		$rows = $DBRESULT->numRows();
 	}
 
@@ -199,9 +212,9 @@
 	 * HostGroup/service list
 	 */
 	if ($searchS || $searchH) {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND hsr.hostgroup_hg_id IN (".($tmp2 ? $tmp2 : 'NULL').") ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom WHERE sv.service_register = '1' $sqlFilterCase AND sv.service_id IN (".($tmp ? $tmp : 'NULL').") AND hsr.hostgroup_hg_id IN (".($tmp2 ? $tmp2 : 'NULL').") ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $aclcond ORDER BY hg.hg_name, sv.service_description LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq = "SELECT @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr WHERE sv.service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id ORDER BY hg.hg_name, service_description LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT $distinct @nbr:=(SELECT COUNT(*) FROM host_service_relation WHERE service_service_id = sv.service_id GROUP BY sv.service_id ) AS nbr, sv.service_id, sv.service_description, sv.service_activate, sv.service_template_model_stm_id, hg.hg_id, hg.hg_name FROM service sv, hostgroup hg, host_service_relation hsr $aclfrom WHERE sv.service_register = '1' $sqlFilterCase ". ((isset($template) && $template) ? " AND service_template_model_stm_id = '$template' " : "") . " AND hsr.service_service_id = sv.service_id AND hg.hg_id = hsr.hostgroup_hg_id $aclcond ORDER BY hg.hg_name, sv.service_description LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT = $pearDB->query($rq);
 

@@ -64,8 +64,13 @@ function replaceInstallationMacros($query) {
         if (isset($_SESSION[$matches[1]])) {
             $macroValue = $_SESSION[$matches[1]];
         }
+        // Exception
+        if ($matches[1] == 'MAILER') {
+            $macroValue = '-MAILER-';
+        }
         $query = preg_replace('/@'.$matches[1].'@/', $macroValue, $query);
     }
+    $query = str_replace('-MAILER-', '@MAILER@', $query);
     return $query;
 }
 

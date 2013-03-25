@@ -256,7 +256,7 @@
 		if (isset($ret["dep_hSvPar"])) {
 			$ret1 = $ret["dep_hSvPar"];
 		} else {
-			$ret1 = $form->getSubmitValue("dep_hSvPar");
+			$ret1 = CentreonUtils::mergeWithInitialValues($form, "dep_hSvPar");
 		}
 		for($i = 0; $i < count($ret1); $i++)	{
 			$exp = explode("_", $ret1[$i]);
@@ -283,7 +283,7 @@
 		if (isset($ret["dep_hSvChi"])) {
 			$ret1 = $ret["dep_hSvChi"];
 		} else {
-			$ret1 = $form->getSubmitValue("dep_hSvChi");
+			$ret1 = CentreonUtils::mergeWithInitialValues($form, "dep_hSvChi");
 		}
 		for ($i = 0; $i < count($ret1); $i++)	{
 			$exp = explode("_", $ret1[$i]);
@@ -313,7 +313,7 @@
 		if (isset($ret["dep_hHostChi"])) {
 			$ret1 = $ret["dep_hHostChi"];
 		} else {
-			$ret1 = $form->getSubmitValue("dep_hHostChi");
+			$ret1 = CentreonUtils::mergeWithInitialValues($form, "dep_hHostChi");
 		}
 		for ($i = 0; $i < count($ret1); $i++)	{
             $rq = "INSERT INTO dependency_hostChild_relation ";

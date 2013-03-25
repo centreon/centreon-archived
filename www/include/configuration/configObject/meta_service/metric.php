@@ -64,17 +64,23 @@
 	/*
 	 * Host comes from DB -> Store in $hosts Array
 	 */
-	$hosts = array(NULL=>NULL);
-	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' AND host_activate = '1' ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow())
-		$hosts[$host["host_id"]] = $host["host_name"];
-	$DBRESULT->free();
+    $hosts = array(null => null) + $acl->getHostAclConf(null,
+                                                        $oreon->broker->getBroker(),
+                                                        array('fields'  => array('host.host_id', 'host.host_name'),
+                                                              'keys'    => array('host_id'),
+                                                              'get_row' => 'host_name',
+                                                              'order'   => array('host.host_name')),
+                                                        true);
 
 	$services1 = array(NULL => NULL);
 	$services2 = array(NULL => NULL);
 	if ($host_id)	{
-		$services = array(NULL => NULL);
-		$services = getMyHostServices($host_id);
+        $services = array(null => null) + $acl->getHostServiceAclConf($host_id,
+                                                                      $oreon->broker->getBroker(),
+                                                                      array('fields'  => array('service_id', 'service_description'),
+                                                                            'keys'    => array('service_id'),
+                                                                            'get_row' => 'service_description',
+                                                                            'order'   => array('service_description')));
 		foreach ($services as $key => $value)	{
 			$DBRESULT = $pearDBO->query("SELECT DISTINCT metric_name, metric_id, unit_name
 										 FROM metrics m, index_data i

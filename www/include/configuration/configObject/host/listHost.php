@@ -43,6 +43,7 @@
 	require_once ("./include/common/autoNumLimit.php");
 	require_once ($centreon_path . "/www/class/centreonHost.class.php");
 
+
 	/*
 	 * Init Host Method
 	 */
@@ -137,7 +138,9 @@
 	$SearchTool = "";
 	if (isset($search) && $search) {
 		$search = str_replace('_', "\_", $search);
-		$SearchTool = "(host_name LIKE '%".CentreonDB::escape($search)."%' OR host_alias LIKE '%".CentreonDB::escape($search)."%' OR host_address LIKE '%".CentreonDB::escape($search)."%') AND ";
+		$SearchTool = "(h.host_name LIKE '%".$pearDB->escape($search)."%'
+                        OR host_alias LIKE '%".$pearDB->escape($search)."%'
+                        OR host_address LIKE '%".$pearDB->escape($search)."%') AND ";
 	}
 
 
@@ -175,7 +178,10 @@
 	 * Host list
 	 */
 	$nagios_server = array();
-	$DBRESULT = $pearDB->query("SELECT ns.name, ns.id FROM nagios_server ns ORDER BY ns.name");
+	$DBRESULT = $pearDB->query("SELECT ns.name, ns.id
+                                FROM nagios_server ns ".
+                                ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'ns.id', $aclPollerString) : "").
+                                " ORDER BY ns.name");
 	while ($relation = $DBRESULT->fetchRow()) {
 		$nagios_server[$relation["id"]] = $relation["name"];
 	}
@@ -210,16 +216,46 @@
 	/*
 	 * Select hosts
 	 */
+    $aclFrom = "";
+    $aclCond = "";
+    if (!$oreon->user->admin) {
+        $aclFrom = ", $aclDbName.centreon_acl acl";
+        $aclCond = " AND h.host_id = acl.host_id
+                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+    }
+
 	if ($hostgroup) {
-	  if ($poller)
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
-	  else
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, hostgroup_relation hr $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND h.host_id = hr.host_host_id AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	  if ($poller) {
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
+                                    FROM host h, ns_host_relation, hostgroup_relation hr $templateFROM $aclFrom
+                                    WHERE $SearchTool $templateWHERE host_register = '1'
+                                    AND h.host_id = ns_host_relation.host_host_id
+                                    AND ns_host_relation.nagios_server_id = '$poller'
+                                    AND h.host_id = hr.host_host_id
+                                    AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
+                                    ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
 	 } else {
-	  if ($poller)
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h, ns_host_relation $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' AND host_id = ns_host_relation.host_host_id AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
-	  else
-	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS host_id, host_name, host_alias, host_address, host_activate, host_template_model_htm_id FROM host h $templateFROM WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase ORDER BY host_name LIMIT ".$num * $limit.", ".$limit);
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
+                                    FROM host h, hostgroup_relation hr $templateFROM $aclFrom
+                                    WHERE $SearchTool $templateWHERE host_register = '1'
+                                    AND h.host_id = hr.host_host_id
+                                    AND hr.hostgroup_hg_id = '$hostgroup' $sqlFilterCase $aclCond
+                                    ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+     }
+    } else {
+	  if ($poller) {
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
+                                    FROM host h, ns_host_relation $templateFROM $aclFrom
+                                    WHERE $SearchTool $templateWHERE host_register = '1'
+                                    AND h.host_id = ns_host_relation.host_host_id
+                                    AND ns_host_relation.nagios_server_id = '$poller' $sqlFilterCase $aclCond
+                                    ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+      } else {
+	    $DBRESULT = $pearDB->query("SELECT SQL_CALC_FOUND_ROWS DISTINCT h.host_id, h.host_name, host_alias, host_address, host_activate, host_template_model_htm_id
+                                    FROM host h $templateFROM $aclFrom
+                                    WHERE $SearchTool $templateWHERE host_register = '1' $sqlFilterCase $aclCond
+                                    ORDER BY h.host_name LIMIT ".$num * $limit.", ".$limit);
+      }
 	}
 
 	$rows = $pearDB->numberRows();
@@ -394,10 +430,9 @@
 	$tpl->assign("poller", $options);
 	unset($options);
 
-	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	$options = "<option value='0'></options>";
-	while ($data = $DBRESULT->fetchRow()) {
-        $options .= "<option value='".$data["hg_id"]."' ".(($hostgroup == $data["hg_id"]) ? 'selected' : "").">".$data["hg_name"]."</option>";
+    $options = "<option value='0'></options>";
+    foreach ($hgs as $hgId => $hgName) {
+        $options .= "<option value='".$hgId."' ".(($hostgroup == $hgId) ? 'selected' : "").">".$hgName."</option>";
     }
 
 	$tpl->assign('hostgroup', $options);

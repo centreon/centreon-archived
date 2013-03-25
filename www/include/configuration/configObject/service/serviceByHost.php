@@ -109,6 +109,9 @@
 		$p = $ret['topology_page'];
 	}
 
+    $acl = $oreon->user->access;
+    $acldbname = $acl->getNameDBAcl($oreon->broker->getBroker());
+
 	switch ($o)	{
 		case "a" : require_once($path."formService.php"); break; #Add a service
 		case "w" : require_once($path."formService.php"); break; #Watch a service

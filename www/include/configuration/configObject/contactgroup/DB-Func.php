@@ -212,10 +212,11 @@
 
 		$rq = "DELETE FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'";
 		$DBRESULT = $pearDB->query($rq);
+                                
 		if (isset($ret["cg_contacts"]))
 			$ret = $ret["cg_contacts"];
 		else
-			$ret = $form->getSubmitValue("cg_contacts");
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'cg_contacts');
 
 		for ($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO `contactgroup_contact_relation` (`contact_contact_id`, `contactgroup_cg_id`) ";

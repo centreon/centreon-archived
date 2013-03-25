@@ -40,6 +40,43 @@
 	if (!isset($oreon))
 		exit();
 
+
+    if (!$oreon->user->admin) {
+        if ($host_id && false === strpos($aclHostString, "'".$host_id."'")) {
+            $msg = new CentreonMsg();
+            $msg->setImage("./img/icones/16x16/warning.gif");
+            $msg->setTextStyle("bold");
+            $msg->setText(_('You are not allowed to access this host'));
+            return null;
+        }
+    }
+
+    $initialValues = array();
+
+    /* host categories */
+    $hcString = $acl->getHostCategoriesString();
+
+    /* notification contacts */
+    $notifCs = $acl->getContactAclConf(array('fields'     => array('contact_id', 'contact_name'),
+                                             'get_row'    => 'contact_name',
+                                             'keys'       => array('contact_id'),
+                                             'conditions' => array('contact_register' => '1'),
+                                             'order'      => array('contact_name')));
+
+    /* notification contact groups */
+    $notifCgs = array();
+    $cg = new CentreonContactgroup($pearDB);
+    if ($oreon->user->admin) {
+        $notifCgs = $cg->getListContactgroup(true);
+    } else {
+        $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
+                                                    'get_row' => 'cg_name',
+                                                    'keys'    => array('cg_id'),
+                                                    'order'   => array('cg_name')));
+        $cgLdap = $cg->getListContactgroup(true, true);
+        $notifCgs = array_intersect_key($cgLdap, $cgAcl);
+    }
+
     require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
 
@@ -87,7 +124,6 @@
         return true;
     }
 
-
 	/*
 	 * Database retrieve information for Host
 	 */
@@ -119,33 +155,57 @@
 		/*
 		 * Set Contact Group
 		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_host_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++)
-			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
+		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id
+                                    FROM contactgroup_host_relation
+                                    WHERE host_host_id = '".$host_id."'");
+		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
+            if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
+                $initialValues['host_cgs'][] = $notifCg['contactgroup_cg_id'];
+            } else {
+    			$host["host_cgs"][$i] = $notifCg["contactgroup_cg_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		/*
 		 * Set Contacts
 		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_host_relation WHERE host_host_id = '".$host_id."'");
-		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++)
-			$host["host_cs"][$i] = $notifC["contact_id"];
+		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id
+                                    FROM contact_host_relation
+                                    WHERE host_host_id = '".$host_id."'");
+		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
+            if (!isset($notifCs[$notifC['contact_id']])) {
+                $initialValues['host_cs'][] = $notifC['contact_id'];
+            } else {
+    			$host["host_cs"][$i] = $notifC["contact_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		/*
 		 * Set Host Parents
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation, host WHERE host_id = host_parent_hp_id AND host_host_id = '".$host_id."' ORDER BY host_name");
-		for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++)
-			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
+		for ($i = 0; $parent = $DBRESULT->fetchRow(); $i++) {
+            if (!$oreon->user->admin && false === strpos($aclHostString, "'".$parent['host_parent_hp_id']."'")) {
+                $initialValues['host_parents'][] = $parent['host_parent_hp_id'];
+            } else {
+    			$host["host_parents"][$i] = $parent["host_parent_hp_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		/*
 		 * Set Host Childs
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT host_host_id FROM host_hostparent_relation, host WHERE host_id = host_host_id AND host_parent_hp_id = '".$host_id."' ORDER BY host_name");
-		for ($i = 0; $child = $DBRESULT->fetchRow(); $i++)
-			$host["host_childs"][$i] = $child["host_host_id"];
+		for ($i = 0; $child = $DBRESULT->fetchRow(); $i++) {
+            if (!$oreon->user->admin && false === strpos($aclHostString, "'".$child['host_host_id']."'")) {
+                $initialValues['host_childs'][] = $child['host_host_id'];
+            } else {
+    			$host["host_childs"][$i] = $child["host_host_id"];
+            }
+        }
 		$DBRESULT->free();
 
 		/*
@@ -160,8 +220,13 @@
 		 * Set Host Category Parents
 		 */
 		$DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id FROM hostcategories_relation WHERE host_host_id = \''.$host_id.'\'');
-		for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++)
-			$host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
+		for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
+            if (!$oreon->user->admin && false === strpos($hcString, "'".$hc['hostcategories_hc_id']."'")) {
+                $initialValues['host_hcs'][] = $hc['hostcategories_hc_id'];
+            } else {
+    			$host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
+            }
+        }
 		$DBRESULT->free();
 
 		/*
@@ -227,48 +292,28 @@
 	$DBRESULT->free();
 
 	/*
-	 * Contact Groups comes from DB -> Store in $notifCcts Array
-	 */
-	$notifCgs = array();
-	$cg = new CentreonContactgroup($pearDB);
-	$notifCgs = $cg->getListContactgroup(true);
-
-	/*
-	 * Contacts come from DB -> Store in $notifCs Array
-	 */
-	$notifCs = array();
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name");
-	while ($notifC = $DBRESULT->fetchRow())
-		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
-	$DBRESULT->free();
-
-
-	/*
 	 * Nagios Server comes from DB -> Store in $nsServer Array
 	 */
 
 	$nsServers = array();
 	if ($o == "mc")
 		$nsServers[NULL] = NULL;
-	$DBRESULT = $pearDB->query("SELECT id, name FROM nagios_server ORDER BY name");
+	$DBRESULT = $pearDB->query("SELECT id, name
+                                FROM nagios_server ".
+                                ($aclPollerString != "''" ? $acl->queryBuilder('WHERE', 'id', $aclPollerString) : "") .
+                                " ORDER BY name");
 	while ($nsServer = $DBRESULT->fetchRow())
 		$nsServers[$nsServer["id"]] = $nsServer["name"];
-	$DBRESULT->free();
-
-	/*
-	 * Host Groups comes from DB -> Store in $hgs Array
-	 */
-	$hgs = array();
-		$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while ($hg = $DBRESULT->fetchRow())
-		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	$DBRESULT->free();
 
 	/*
 	 * Host Categories comes from DB -> Store in $hcs Array
 	 */
 	$hcs = array();
-		$DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
+    $DBRESULT = $pearDB->query("SELECT hc_id, hc_name
+                                FROM hostcategories ".
+                                ($hcString != "''" ? $acl->queryBuilder('WHERE', 'hc_id', $hcString) : "").
+                                " ORDER BY hc_name");
 	while ($hc = $DBRESULT->fetchRow())
 		$hcs[$hc["hc_id"]] = $hc["hc_name"];
 	$DBRESULT->free();
@@ -276,8 +321,19 @@
 	/*
 	 * Host Parents comes from DB -> Store in $hostPs Array
 	 */
+     $aclFrom = "";
+     $aclCond = "";
+     if (!$oreon->user->admin) {
+         $aclFrom = ", $aclDbName.centreon_acl acl ";
+         $aclCond = " AND h.host_id = acl.host_id
+                      AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+     }
 	$hostPs = array();
-		$DBRESULT = $pearDB->query("SELECT host_id, host_name, host_template_model_htm_id FROM host WHERE host_id != '".$host_id."' AND host_register = '1' ORDER BY host_name");
+    $DBRESULT = $pearDB->query("SELECT h.host_id, h.host_name, host_template_model_htm_id
+                                FROM host h $aclFrom
+                                WHERE h.host_id != '".$host_id."'
+                                AND host_register = '1' $aclCond
+                                ORDER BY h.host_name");
 	while ($hostP = $DBRESULT->fetchRow())	{
 		if (!$hostP["host_name"])
 			$hostP["host_name"] = getMyHostName($hostP["host_template_model_htm_id"])."'";
@@ -750,6 +806,16 @@
 	$form->addElement('text', 'ehi_2d_coords', _("2d Coords"), $attrsText2);
 	$form->addElement('text', 'ehi_3d_coords', _("3d Coords"), $attrsText2);
 
+    if (!$oreon->user->admin && $o == "a") {
+        $aclGroups = $acl->getResourceGroups();
+        $ams = $form->addElement('advmultiselect', 'acl_groups', array(_("ACL Resource Groups"), _("Available"), _("Selected")), $aclGroups, $attrsAdvSelect, SORT_ASC);
+        $ams->setButtonAttributes('add', array('value' =>  _("Add")));
+        $ams->setButtonAttributes('remove', array('value' => _("Remove")));
+        $ams->setElementTemplate($eTemplate);
+        echo $ams->getElementJs(false);
+        $form->addRule('acl_groups', _("Mandatory field for ACL purpose."), 'required');
+    }
+
         /*
          * Criticality
          */
@@ -792,6 +858,9 @@
 	$host_register = 1;
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
 
 	if (is_array($select))	{
 		$select_str = NULL;
@@ -916,6 +985,7 @@
 	$tpl->assign("sort4", _("Host Extended Infos"));
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
+    $tpl->assign('accessgroups', _('Access groups'));
 
 	# prepare help texts
 	$helptext = "";

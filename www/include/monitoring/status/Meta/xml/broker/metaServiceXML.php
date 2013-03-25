@@ -131,7 +131,8 @@
 				" s.host_id " .
 				" FROM services s, hosts h";
 	$rq .= 	" WHERE s.host_id = h.host_id ".
-			" AND h.name LIKE '_Module_Meta' ";
+		" AND h.name LIKE '_Module_Meta' ".
+                " AND s.enabled = 1 ";
 
 	if (!$is_admin) {
 		$ACLString = "";

@@ -47,16 +47,16 @@ $title = _('Installation');
 
 $contents = _('Currently installing database... please do not interrupt this process.<br/><br/>');
 
-$contents .= "<table cellpadding='0' cellspacing='0' border='0' width='80%' class='StyleDottedHr' align='center'>
+$contents .= '<table cellpadding="0" cellspacing="0" border="0" width="80%" class="StyleDottedHr" align="center">
                 <thead>
                     <tr>
-                        <th>"._('Step')."</th>
-                        <th>"._('Status')."</th>
+                        <th>'._('Step').'</th>
+                        <th>'._('Status').'</th>
                     </tr>
                 </thead>
-                <tbody id='step_contents'>
+                <tbody id="step_contents">
                 </tbody>
-              </table>";
+              </table>';
 
 $map = "{            
             'dbconf'     : './steps/process/installConfigurationDb.php',
@@ -98,10 +98,7 @@ $template->display('content.tpl');
      * @return void
      */
     function nextStep(key) {
-       jQuery('#step_contents').append('<tr>');
-       jQuery('#step_contents').append('<td>'+labels[key]+'</td>');
-       jQuery('#step_contents').append('<td style="font-weight: bold;" id="'+key+'"><img src="../img/misc/ajax-loader.gif"></td>');
-       jQuery('#step_contents').append('</tr>');
+       jQuery('#step_contents').append('<tr><td>'+labels[key]+'</td><td style="font-weight: bold;" id="'+key+'"><img src="../img/misc/ajax-loader.gif"></td></tr>');
        doProcess(true, map[key], new Array, function(response) {
             var data = jQuery.parseJSON(response);
             if (data['result'] == 0) {

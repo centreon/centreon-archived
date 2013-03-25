@@ -50,15 +50,15 @@
 	isset($_POST["dupNbr"]) ? $cP = $_POST["dupNbr"] : $cP = NULL;
 	$cG ? $dupNbr = $cG : $dupNbr = $cP;
 
-	#Pear library
+	// Pear library
 	require_once "HTML/QuickForm.php";
 	require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
-	#Path to the configuration dir
+	// Path to the configuration dir
 	$path = "./include/configuration/configCGI/";
 
-	#PHP functions
+	// PHP functions
 	require_once $path."DB-Func.php";
 	require_once "./include/common/common-Func.php";
 
@@ -66,14 +66,27 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 
+    $acl = $oreon->user->access;
+    $serverString = $acl->getPollerString();
+    $allowedCgiConf = array();
+    if ($serverString != "''") {
+       $sql = "SELECT cgi_id
+               FROM cfg_cgi
+               WHERE instance_id IN (".$serverString.")";
+       $res = $pearDB->query($sql);
+       while ($row = $res->fetchRow()) {
+           $allowedCgiConf[$row['cgi_id']] = true;
+       }
+    }
+
 	switch ($o)	{
-		case "a" : require_once($path."formCGI.php"); break; #Add CGI.cfg
-		case "w" : require_once($path."formCGI.php"); break; #Watch CGI.cfg
-		case "c" : require_once($path."formCGI.php"); break; #Modify CGI.cfg
-		case "s" : enableCGIInDB($cgi_id); require_once($path."listCGI.php"); break; #Activate a CGI CFG
-		case "u" : disableCGIInDB($cgi_id); require_once($path."listCGI.php"); break; #Desactivate a CGI CFG
-		case "m" : multipleCGIInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCGI.php"); break; #Duplicate n CGI CFGs
-		case "d" : deleteCGIInDB(isset($select) ? $select : array()); require_once($path."listCGI.php"); break; #Delete n CGI CFG
+		case "a" : require_once($path."formCGI.php"); break; // Add CGI.cfg
+		case "w" : require_once($path."formCGI.php"); break; // Watch CGI.cfg
+		case "c" : require_once($path."formCGI.php"); break; // Modify CGI.cfg
+		case "s" : enableCGIInDB($cgi_id); require_once($path."listCGI.php"); break; // Activate a CGI CFG
+		case "u" : disableCGIInDB($cgi_id); require_once($path."listCGI.php"); break; // Desactivate a CGI CFG
+		case "m" : multipleCGIInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listCGI.php"); break; // Duplicate n CGI CFGs
+		case "d" : deleteCGIInDB(isset($select) ? $select : array()); require_once($path."listCGI.php"); break; // Delete n CGI CFG
 		default : require_once($path."listCGI.php"); break;
 	}
 ?>

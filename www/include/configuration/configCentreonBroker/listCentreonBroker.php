@@ -82,10 +82,28 @@
 	/*
 	 * Centreon Brober config list
 	 */
+    $aclCond = "";
+    if (!$oreon->user->admin && count($allowedBrokerConf)) {
+        if (isset($search) && $search) {
+            $aclCond = " AND ";
+        } else {
+            $aclCond = " WHERE ";
+        }
+        $aclCond .= "config_id IN (".implode(',', array_keys($allowedBrokerConf)).") ";
+    }
 	if ($search) {
-		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate FROM cfg_centreonbroker WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ORDER BY config_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate
+               FROM cfg_centreonbroker
+               WHERE description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'
+               $aclCond
+               ORDER BY config_name
+               LIMIT ".$num * $limit.", ".$limit;
 	} else {
-		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate FROM cfg_centreonbroker ORDER BY config_name LIMIT ".$num * $limit.", ".$limit;
+		$rq = "SELECT SQL_CALC_FOUND_ROWS config_id, config_name, ns_nagios_server, config_activate
+               FROM cfg_centreonbroker
+               $aclCond
+               ORDER BY config_name
+               LIMIT ".$num * $limit.", ".$limit;
 	}
 	$DBRESULT = $pearDB->query($rq);
 

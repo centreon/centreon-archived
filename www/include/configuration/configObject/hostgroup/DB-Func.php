@@ -343,7 +343,9 @@
     		$rq .= 	"WHERE hostgroup_hg_id = '".$hg_id."'";
     		$pearDB->query($rq);
 		}
-		isset($ret["hg_hosts"]) ? $ret = $ret["hg_hosts"] : $ret = $form->getSubmitValue("hg_hosts");
+
+        $ret = isset($ret["hg_hosts"]) ? $ret["hg_hosts"] : CentreonUtils::mergeWithInitialValues($form, 'hg_hosts');
+
 		$hgNEW = array();
 
 		$rq = "INSERT INTO hostgroup_relation (hostgroup_hg_id, host_host_id) VALUES ";

@@ -74,8 +74,20 @@
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
-	$rq = "SELECT * FROM `meta_service_relation` WHERE  meta_id = '".$meta_id."' ORDER BY host_id";
-    $results = $pearDB->getAll($rq);
+    $aclFrom = "";
+    $aclCond = "";
+    if (!$oreon->user->admin) {
+        $aclFrom = ", $aclDbName.centreon_acl acl ";
+        $aclCond = " AND acl.host_id = msr.host_id
+                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+    }
+
+	$rq = "SELECT DISTINCT msr.*
+           FROM `meta_service_relation` msr $aclFrom
+           WHERE msr.meta_id = '".$meta_id."'
+           $aclCond
+           ORDER BY host_id";
+    $results = $pearDB->query($rq);
     $ar_relations = array();
 
 	$form = new HTML_QuickForm('Form', 'POST', "?p=".$p);
@@ -85,7 +97,7 @@
     */
     $in_statement = "";
     $in_statement_append = "";
-    foreach ($results as $row) {
+    while ($row = $results->fetchRow()) {
         $ar_relations[$row['metric_id']][] = array("activate" => $row['activate'], "msr_id" => $row['msr_id']);
         $in_statement .= $in_statement_append . $row['metric_id'];
         $in_statement_append = ",";

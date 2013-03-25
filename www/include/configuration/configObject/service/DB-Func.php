@@ -294,7 +294,7 @@
          * @return int
          */
         function getServiceIdByCombination($serviceDescription, $hPars = array(), $hgPars = array(), $params = array()) {
-            if (!count($hPars) && !count($hgPars)) {                
+            if (!count($hPars) && !count($hgPars)) {
                 return testServiceTemplateExistence($serviceDescription, true);
             }
             return testServiceExistence($serviceDescription, $hPars, $hgPars, true, $params);
@@ -355,20 +355,20 @@
 
 function divideGroupedServiceInDB($service_id = null, $service_arr = array(), $toHost = null) {
     global $pearDB, $pearDBO;
-    
+
     if (!$service_id && !count($service_arr)) {
         return;
     }
-    
+
     if ($service_id) {
         $service_arr = array($service_id => "1");
     }
-    
-    
+
+
     foreach ($service_arr as $key => $value) {
         $DBRESULT = $pearDB->query("SELECT count(host_host_id) as nbHost, count(hostgroup_hg_id) as nbHG FROM host_service_relation WHERE service_service_id = '".$key."'");
         $res = $DBRESULT->fetchRow();
-        
+
         if ($res["nbHost"] != 0 && $res["nbHG"] == 0) {
             divideHostsToHost($key);
         } else {
@@ -378,21 +378,21 @@ function divideGroupedServiceInDB($service_id = null, $service_arr = array(), $t
                 divideHostGroupsToHostGroup($key);
             }
         }
-        
+
         /*
          * Delete old links for servicegroups
          */
         $pearDB->query('DELETE FROM servicegroup_relation WHERE service_service_id = ' . $key);
-        
+
         // Flag service to delete
         $svcToDelete[$key] = 1;
     }
-    
-    // Purge Old Service    
+
+    // Purge Old Service
     foreach ($svcToDelete as $svc_id => $flag) {
         $pearDB->query("DELETE FROM service WHERE service_id = '".$svc_id."'");
         $pearDB->query("DELETE FROM host_service_relation WHERE service_service_id = '".$svc_id."'");
-    }    
+    }
 }
 
 function divideHostGroupsToHostGroup($service_id) {
@@ -416,11 +416,11 @@ function divideHostGroupsToHost($service_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$service_id."'");
     while ($relation = $DBRESULT->fetchRow()) {
         $hosts = getMyHostGroupHosts($relation["hostgroup_hg_id"]);
-        
+
         foreach ($hosts as $host_id) {
             $sv_id = multipleServiceInDB(array($service_id=>"1"), array($service_id=>"1"), $host_id, 0, null, array(), array($relation["hostgroup_hg_id"] => null));
             $DBRESULT3 = $pearDBO->query("UPDATE index_data SET service_id = '".$sv_id."' WHERE host_id = '".$host_id."' AND service_id = '".$service_id."'");
-            setHostChangeFlag($pearDB, $host_id, null);                            
+            setHostChangeFlag($pearDB, $host_id, null);
         }
     }
     $DBRESULT->free();
@@ -428,7 +428,7 @@ function divideHostGroupsToHost($service_id) {
 
 function divideHostsToHost($service_id) {
     global $pearDB, $pearDBO;
-    
+
     $DBRESULT = $pearDB->query("SELECT * FROM host_service_relation WHERE service_service_id = '".$service_id."'");
     while ($relation = $DBRESULT->fetchRow()) {
         $sv_id = multipleServiceInDB(array($service_id => "1"), array($service_id => "1"), $relation["host_host_id"], 0, null, array(), array($relation["hostgroup_hg_id"] => null));
@@ -614,7 +614,7 @@ function divideHostsToHost($service_id) {
                             /*
                              * Criticality
                              */
-                            $sql = "SELECT criticality_id 
+                            $sql = "SELECT criticality_id
                                         FROM criticality_resource_relations
                                         WHERE service_id = ".$pearDB->escape($key);
                             $res = $pearDB->query($sql);
@@ -622,7 +622,7 @@ function divideHostsToHost($service_id) {
                                 $cr = $res->fetchRow();
                                 setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
                             }
-                            
+
 							/*
 							 *  get svc desc
 							 */
@@ -1812,18 +1812,20 @@ function divideHostsToHost($service_id) {
 		$rq = "DELETE FROM servicegroup_relation ";
 		$rq .= "WHERE service_service_id = '".$service_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["service_sgs"]))
+
+		if (isset($ret["service_sgs"])) {
 			$ret = $ret["service_sgs"];
-		else
-			$ret = $form->getSubmitValue("service_sgs");
+        } else {
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'service_sgs');
+        }
 		for($i = 0; $i < count($ret); $i++)	{
 			/* We need to record each relation for host / hostgroup selected */
 			if (isset($ret["service_hPars"]))
-				$ret1 = $ret["service_hPars"];
+				$ret1 = CentreonUtils::mergeWithInitialValues($form, 'service_hPars');
 			else
 				$ret1 = getMyServiceHosts($service_id);
 			if (isset($ret["service_hgPars"]))
-				$ret2 = $ret["service_hgPars"];
+				$ret2 = CentreonUtils::mergeWithInitialValues($form, 'service_hgPars');
 			else
 				$ret2 = getMyServiceHostGroups($service_id);
 			 if (count($ret2))
@@ -1941,16 +1943,15 @@ function divideHostsToHost($service_id) {
 
 		$ret1 = array();
 		$ret2 = array();
-
 		if (isset($ret["service_hPars"])) {
 			$ret1 = $ret["service_hPars"];
 		} else {
-			$ret1 = $form->getSubmitValue("service_hPars");
+			$ret1 = CentreonUtils::mergeWithInitialValues($form, 'service_hPars');
 		}
 		if (isset($ret["service_hgPars"])) {
 			$ret2 = $ret["service_hgPars"];
 		} else {
-			$ret2 = $form->getSubmitValue("service_hgPars");
+			$ret2 = CentreonUtils::mergeWithInitialValues($form, 'service_hgPars');
 		}
 
 		/*
@@ -2148,10 +2149,12 @@ function divideHostsToHost($service_id) {
 		global $form, $pearDB;
 		$rq = "DELETE FROM service_categories_relation WHERE service_service_id = '".$service_id."'";
 		$DBRESULT = $pearDB->query($rq);
-		if (isset($ret["service_categories"]))
+
+		if (isset($ret["service_categories"])) {
 			$ret = $ret["service_categories"];
-		else
-			$ret = $form->getSubmitValue("service_categories");
+        } else {
+			$ret = CentreonUtils::mergeWithInitialValues($form, 'service_categories');
+        }
 		for($i = 0; $i < count($ret); $i++)	{
 			$rq = "INSERT INTO service_categories_relation ";
 			$rq .= "(sc_id, service_service_id) ";

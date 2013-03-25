@@ -48,13 +48,22 @@
 	include_once "./include/common/quickSearch.php";
 
 	$SearchSTR = "";
-	if (isset($search))
-		$SearchSTR = " AND (`cg_name` LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR `cg_alias` LIKE '".htmlentities($search, ENT_QUOTES, "UTF-8")."')";
 
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM `contactgroup` WHERE `cg_type` = 'local'$SearchSTR");
+        $clauses = array();
+        if (isset($search) && $search) {
+            $clauses = array('cg_name'  => array('LIKE', '%'.$search.'%'),
+                             'cg_alias' => array('OR', 'LIKE', '%'.$search.'%'));
+        }
 
-	$tmp = $DBRESULT->fetchRow();
-	$rows = $tmp["COUNT(*)"];
+        $aclOptions = array('fields' => array('cg_id',
+                                              'cg_name',
+                                              'cg_alias',
+                                              'cg_activate'),
+                            'keys'  => array('cg_id'),
+                            'order' => array('cg_name'),
+                            'conditions' => $clauses);
+        $cgs = $acl->getContactGroupAclConf($aclOptions);
+        $rows = count($cgs);
 
 	include_once "./include/common/checkPagination.php";
 
@@ -78,9 +87,9 @@
 	/*
 	 * Contactgroup list
 	 */
-	$rq = "SELECT cg_id, cg_name, cg_alias, cg_activate FROM contactgroup WHERE `cg_type` = 'local'$SearchSTR ORDER BY cg_name LIMIT ".$num * $limit.", ".$limit;
-	$DBRESULT = $pearDB->query($rq);
-
+        $aclOptions['pages'] = $num * $limit.", ".$limit;
+        $cgs = $acl->getContactGroupAclConf($aclOptions);
+        
 	$search = tidySearchKey($search, $advanced_search);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
@@ -92,7 +101,7 @@
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
+	foreach ($cgs as $cg) {
 		$selectedElements = $form->addElement('checkbox', "select[".$cg['cg_id']."]");
 		if ($cg["cg_activate"])
 			$moptions = "<a href='main.php?p=".$p."&cg_id=".$cg['cg_id']."&o=u&limit=".$limit."&num=".$num."&search=".$search."'><img src='img/icones/16x16/element_previous.gif' border='0' alt='"._("Disabled")."'></a>&nbsp;&nbsp;";
@@ -104,10 +113,13 @@
 		 * Contacts
 		 */
 		$ctNbr = array();
-		$rq = "SELECT COUNT(*) AS `nbr` FROM `contactgroup_contact_relation` `cgr` WHERE `cgr`.`contactgroup_cg_id` = '".$cg['cg_id']."'";
+		$rq = "SELECT COUNT(DISTINCT contact_contact_id) AS `nbr` 
+                       FROM `contactgroup_contact_relation` `cgr` 
+                       WHERE `cgr`.`contactgroup_cg_id` = '".$cg['cg_id']."' ".
+                       $acl->queryBuilder('AND', 'contact_contact_id', $contactstring);
 		$DBRESULT2 = $pearDB->query($rq);
 		$ctNbr = $DBRESULT2->fetchRow();
-		$elemArr[$i] = array("MenuClass"=>"list_".$style,
+		$elemArr[] = array("MenuClass"=>"list_".$style,
 							"RowMenu_select"=>$selectedElements->toHtml(),
 							"RowMenu_name"=>$cg["cg_name"],
 							"RowMenu_link"=>"?p=".$p."&o=c&cg_id=".$cg['cg_id'],

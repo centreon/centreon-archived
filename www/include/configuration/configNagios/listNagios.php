@@ -47,9 +47,21 @@
 	# end quickSearch form
 
 	$SearchTool = NULL;
-	if (isset($search) && $search)
-		$SearchTool = "WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%'";
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool");
+	if (isset($search) && $search) {
+		$SearchTool = " WHERE nagios_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' ";
+    }
+
+    $aclCond = "";
+    if (!$oreon->user->admin && count($allowedMainConf)) {
+        if (isset($search) && $search) {
+            $aclCond = " AND ";
+        } else {
+            $aclCond = " WHERE ";
+        }
+        $aclCond .= "nagios_id IN (".implode(',', array_keys($allowedMainConf)).") ";
+    }
+
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM cfg_nagios $SearchTool $aclCond");
 
 	$tmp = $DBRESULT->fetchRow();
 	$rows = $tmp["COUNT(*)"];
@@ -89,7 +101,10 @@
 	 * Nagios list
 	 */
 
-	$DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id FROM cfg_nagios $SearchTool ORDER BY nagios_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT = $pearDB->query("SELECT nagios_id, nagios_name, nagios_comment, nagios_activate, nagios_server_id
+                                FROM cfg_nagios $SearchTool $aclCond
+                                ORDER BY nagios_name
+                                LIMIT ".$num * $limit.", ".$limit);
 
 	$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 

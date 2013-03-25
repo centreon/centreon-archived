@@ -39,15 +39,32 @@
  	if (!isset($oreon))
  		exit();
 
+        if (!$oreon->user->admin && $cg_id) {
+            $aclOptions = array('fields'     => array('cg_id','cg_name'),
+                                'keys'       => array('cg_id'),
+                                'get_row'    => 'cg_name',
+                                'conditions' => array('cg_id' => $cg_id));
+            $cgs = $acl->getContactGroupAclConf($aclOptions);
+            if (!count($cgs)) {
+                $msg = new CentreonMsg();
+                $msg->setImage("./img/icones/16x16/warning.gif");
+                $msg->setTextStyle("bold");
+                $msg->setText(_('You are not allowed to access this contact group'));
+                return null;
+            }
+        }
+        
 	/*
 	 * Form Rules
 	 */
-	function myReplace()	{
+	function myReplace() {
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["cg_name"]));
 	}
 
+        $initialValues = array();
+        
 	/*
 	 * Database retrieve information for Contact
 	 */
@@ -67,8 +84,13 @@
 		 * Set Contact Childs
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_contact_id` FROM `contactgroup_contact_relation` WHERE `contactgroup_cg_id` = '".$cg_id."'");
-		for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++)
-			$cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
+		for ($i = 0; $contacts = $DBRESULT->fetchRow(); $i++) {
+                    if (!$oreon->user->admin && !isset($allowedContacts[$contacts['contact_contact_id']])) {
+                        $initialValues['cg_contacts'][] = $contacts["contact_contact_id"];
+                    } else {
+                        $cg["cg_contacts"][$i] = $contacts["contact_contact_id"];
+                    }
+                }
 		$DBRESULT->free();
 	}
 
@@ -76,7 +98,10 @@
 	 * Contacts comes from DB -> Store in $contacts Array
 	 */
 	$contacts = array();
-	$DBRESULT = $pearDB->query("SELECT `contact_id`, `contact_name`, `contact_register` FROM `contact` ORDER BY `contact_name`");
+	$DBRESULT = $pearDB->query("SELECT DISTINCT `contact_id`, `contact_name`, `contact_register` 
+                                    FROM `contact` ".
+                                   $acl->queryBuilder('WHERE', 'contact_id', $contactstring).
+                                   " ORDER BY `contact_name`");
 	while ($contact = $DBRESULT->fetchRow()) {
 		$contacts[$contact["contact_id"]] = $contact["contact_name"];
 		if ($contact['contact_register'] == 0) {
@@ -140,6 +165,9 @@
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
 
+        $init = $form->addElement('hidden', 'initialValues');
+        $init->setValue(serialize($initialValues));
+        
 	/*
 	 * Set rules
 	 */

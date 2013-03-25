@@ -40,13 +40,26 @@ if (!isset($oreon)) {
     exit();
 }
 
+if (!$oreon->user->admin && isset($_GET['id'])
+    && count($allowedBrokerConf) && !isset($allowedBrokerConf[$_GET['id']])) {
+    $msg = new CentreonMsg();
+    $msg->setImage("./img/icones/16x16/warning.gif");
+    $msg->setTextStyle("bold");
+    $msg->setText(_('You are not allowed to access this object configuration'));
+    return null;
+}
+
 $cbObj = new CentreonConfigCentreonBroker($pearDB);
 
 /*
  * nagios servers comes from DB
  */
 $nagios_servers = array();
-$DBRESULT = $pearDB->query("SELECT * FROM nagios_server ORDER BY name");
+$serverAcl = "";
+if (!$oreon->user->admin && $serverString != "''") {
+    $serverAcl = " WHERE id IN ($serverString) ";
+}
+$DBRESULT = $pearDB->query("SELECT * FROM nagios_server $serverAcl ORDER BY name");
 while($nagios_server = $DBRESULT->fetchRow()) {
     $nagios_servers[$nagios_server["id"]] = $nagios_server["name"];
 }
@@ -55,7 +68,7 @@ $DBRESULT->free();
 /*
  * Var information to format the element
  */
-$attrsText      = array("size"=>"30");
+$attrsText      = array("size"=>"120");
 $attrsText2     = array("size"=>"50");
 $attrsText3     = array("size"=>"10");
 $attrsTextarea  = array("rows"=>"5", "cols"=>"40");
@@ -86,7 +99,8 @@ $form->addElement('header', 'information', _("Centreon Broker configuration"));
 $form->addElement('text', 'name', _("Name"), $attrsText);
 $form->addElement('text', 'filename', _("Config file name"), $attrsText);
 $form->addElement('select', 'ns_nagios_server', _("Requester"), $nagios_servers);
-    $form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
+
+$form->addElement('text', 'event_queue_max_size', _('Event queue max size'), $attrsText);
     
 $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
@@ -97,7 +111,12 @@ $tags = $cbObj->getTags();
 
 $tabs = array();
 foreach ($tags as $tagId => $tag) {
-    $tabs[] = array('id' => $tag, 'name' => _("Centreon-Broker " . ucfirst($tag)), 'link' => _("Add"), 'nb' => 0, 'blocks' => $cbObj->getListConfigBlock($tagId), 'forms' => array());
+    $tabs[] = array('id' => $tag,
+                    'name' => _("Centreon-Broker " . ucfirst($tag)),
+                    'link' => _("Add"),
+                    'nb' => 0,
+                    'blocks' => $cbObj->getListConfigBlock($tagId),
+                    'forms' => array());
 }
 
 /*

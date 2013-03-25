@@ -42,7 +42,7 @@
 
 	global $num, $limit, $search, $url, $pearDB, $search_type_service, $search_type_host, $host_name, $hostgroup, $rows, $p, $gopt, $pagination, $poller, $template, $search_output, $search_service;
 
-	isset($_GET["type"]) ? $type = $_GET["type"] : $stype = NULL;
+        $type = isset($_REQUEST["type"]) ? $_REQUEST["type"] : NULL;
 	isset($_GET["o"]) ? $o = $_GET["o"] : $o = NULL;
 
 	if (isset($_GET["num"]))

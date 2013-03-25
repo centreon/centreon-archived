@@ -57,14 +57,30 @@
 	unset($data);
 	$DBRESULT->free();
 
+    $clauses = array();
+    if (isset($search) && $search) {
+        $clauses = array('contact_name'  => array('LIKE', '%'.$search.'%'),
+                         'contact_alias' => array('OR', 'LIKE', '%'.$search.'%'));
+    }
 
-	if (isset($search)) {
-		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')");
-	} else {
-		$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM contact");
-	}
-	$tmp = $DBRESULT->fetchRow();
-	$rows = $tmp["COUNT(*)"];
+    $aclOptions = array('fields' => array('contact_id',
+                                          'timeperiod_tp_id',
+                                          'timeperiod_tp_id2',
+                                          'contact_name',
+                                          'contact_alias',
+                                          'contact_lang',
+                                          'contact_oreon',
+                                          'contact_host_notification_options',
+                                          'contact_service_notification_options',
+                                          'contact_activate',
+                                          'contact_email',
+                                          'contact_admin',
+                                          'contact_register'),
+                        'keys'  => array('contact_id'),
+                        'order' => array('contact_name'),
+                        'conditions' => $clauses);
+    $contacts = $acl->getContactAclConf($aclOptions);
+	$rows = count($contacts);
 
 	include("./include/common/checkPagination.php");
 
@@ -96,12 +112,8 @@
 	/*
 	 * Contact list
 	 */
-	if ($search) {
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin, contact_register FROM contact WHERE (contact_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR contact_alias LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%') ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
-	} else {
-		$rq = "SELECT contact_id, timeperiod_tp_id, timeperiod_tp_id2, contact_name, contact_alias, contact_lang, contact_oreon, contact_host_notification_options, contact_service_notification_options, contact_activate, contact_email, contact_admin, contact_register FROM contact ORDER BY contact_name LIMIT ".$num * $limit.", ".$limit;
-	}
-	$DBRESULT = $pearDB->query($rq);
+    $aclOptions['pages'] = $num * $limit.", ".$limit;
+    $contacts = $acl->getContactAclConf($aclOptions);
 
 	$search = tidySearchKey($search, $advanced_search);
 
@@ -113,12 +125,12 @@
 	$style = "one";
 	$contactTypeIcone = array(1 => "./img/icones/16x16/guard.gif", 2 => "./img/icones/16x16/user1.gif", 3 => "./img/icones/16x16/user1_information.png");
 	$contactTypeIconeTitle = array(1 => _("This user is an administrator."), 2 => _("This user is a simple user."), 3 => _("This is a contact template."));
-	
+
 	/*
 	 * Fill a tab with a mutlidimensionnal Array we put in $tpl
 	 */
 	$elemArr = array();
-	for ($i = 0; $contact = $DBRESULT->fetchRow(); $i++) {
+	foreach ($contacts as $contact) {
 		$selectedElements = $form->addElement('checkbox', "select[".$contact['contact_id']."]");
 
 		$moptions = "";
@@ -144,8 +156,8 @@
 		} else {
 			$contact_type = 3;
 		}
-		
-		$elemArr[$i] = array("MenuClass" => "list_".$style,
+
+		$elemArr[] = array("MenuClass" => "list_".$style,
 						"RowMenu_select" => $selectedElements->toHtml(),
 						"RowMenu_name" => html_entity_decode($contact["contact_name"], ENT_QUOTES, "UTF-8"),
 						"RowMenu_ico" => isset($contactTypeIcone[$contact_type]) ? $contactTypeIcone[$contact_type] : "",

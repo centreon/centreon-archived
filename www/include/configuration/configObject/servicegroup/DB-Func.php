@@ -137,7 +137,7 @@
 
 	function insertServiceGroupInDB ($ret = array())	{
             global $centreon;
-            
+
             $sg_id = insertServiceGroup($ret);
             updateServiceGroupServices($sg_id, $ret);
             $centreon->user->access->updateACL();
@@ -146,7 +146,7 @@
 
 	function updateServiceGroupInDB ($sg_id = NULL, $ret = array(), $increment = false)	{
             global $centreon;
-                
+
             if (!$sg_id) return;
             updateServiceGroup($sg_id, $ret);
             updateServiceGroupServices($sg_id, $ret, $increment);
@@ -223,7 +223,8 @@
     		$rq .= 	"WHERE servicegroup_sg_id = '".$sg_id."'";
     		$DBRESULT = $pearDB->query($rq);
 		}
-		isset($ret["sg_hServices"]) ? $ret = $ret["sg_hServices"] : $ret = $form->getSubmitValue("sg_hServices");
+
+		$ret = isset($ret["sg_hServices"]) ? $ret["sg_hServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hServices');
 		for ($i = 0; $i < count($ret); $i++)	{
 			if (isset($ret[$i]) && $ret[$i]){
 				$t = preg_split("/\-/", $ret[$i]);
@@ -234,7 +235,7 @@
 				}
 			}
 		}
-		isset($ret["sg_hgServices"]) ? $ret = $ret["sg_hgServices"] : $ret = $form->getSubmitValue("sg_hgServices");
+		$ret = isset($ret["sg_hgServices"]) ? $ret["sg_hgServices"] : CentreonUtils::mergeWithInitialValues($form, 'sg_hgServices');
 		for ($i = 0; $i < count($ret); $i++)	{
 			$t = preg_split("/\-/", $ret[$i]);
 			$resTest = $pearDB->query("SELECT servicegroup_sg_id service FROM servicegroup_relation WHERE hostgroup_hg_id = ".$t[0]." AND service_service_id = ".$t[1]." AND servicegroup_sg_id = ".$sg_id);

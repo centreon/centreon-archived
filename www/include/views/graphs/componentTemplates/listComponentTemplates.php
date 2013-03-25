@@ -110,20 +110,20 @@
 		}
 		$titles->free();
 		$elemArr[$i] = array("MenuClass"=>"list_".$style,
-						"title"=>$title["host_name"],
-						"RowMenu_select"=>$selectedElements->toHtml(),
-						"RowMenu_name"=>$compo["name"],
-						"RowMenu_link"=>"?p=".$p."&o=c&compo_id=".$compo['compo_id'],
-						"RowMenu_desc"=>$compo["ds_name"],
-						"RowMenu_legend"=>$compo["ds_legend"],
-						"RowMenu_stack"=>$yesOrNo[$compo["ds_stack"]],
-						"RowMenu_order"=>$compo["ds_order"],
-						"RowMenu_transp"=>$compo["ds_transparency"],
-						"RowMenu_clrLine"=>$compo["ds_color_line"],
-						"RowMenu_clrArea"=>$compo["ds_color_area"],
-						"RowMenu_fill"=>$yesOrNo[$compo["ds_filled"]],
-						"RowMenu_tickness"=>$compo["ds_tickness"],
-						"RowMenu_options"=>$moptions);
+                            "title"=>$title["host_name"],
+                            "RowMenu_select"=>$selectedElements->toHtml(),
+                            "RowMenu_name"=>$compo["name"],
+                            "RowMenu_link"=>"?p=".$p."&o=c&compo_id=".$compo['compo_id'],
+                            "RowMenu_desc"=>$compo["ds_name"],
+                            "RowMenu_legend"=>$compo["ds_legend"],
+                            "RowMenu_stack"=>$yesOrNo[$compo["ds_stack"]],
+                            "RowMenu_order"=>$compo["ds_order"],
+                            "RowMenu_transp"=>$compo["ds_transparency"],
+                            "RowMenu_clrLine"=>$compo["ds_color_line"],
+                            "RowMenu_clrArea"=>$compo["ds_color_area"],
+                            "RowMenu_fill"=>$yesOrNo[$compo["ds_filled"]],
+                            "RowMenu_tickness"=>$compo["ds_tickness"],
+                            "RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
 	}
 	$tpl->assign("elemArr", $elemArr);
@@ -145,34 +145,28 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");
-
-        $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-
-	$form->setDefaults(array('o1' => NULL));
+                    "if (this.form.elements['o1'].selectedIndex === 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                    " 	setO(this.form.elements['o1'].value); submit();} " .
+                    "else if (this.form.elements['o1'].selectedIndex === 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                    " 	setO(this.form.elements['o1'].value); submit();} ".
+                    "this.form.elements['o1'].selectedIndex = 0;".
+                    "");
+    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
 	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"");
+                    "if (this.form.elements['o2'].selectedIndex === 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+                    " 	setO(this.form.elements['o2'].value); submit();} " .
+                    "else if (this.form.elements['o2'].selectedIndex === 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+                    " 	setO(this.form.elements['o2'].value); submit();} " .
+                    "this.form.elements['o2'].selectedIndex = 0;".
+                    "");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
-	$form->setDefaults(array('o2' => NULL));
-
 	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
+    
 	$tpl->assign('limit', $limit);
 
 	/*

@@ -86,15 +86,15 @@
 
 		foreach ($server as $key => $value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE id = '".$key."' LIMIT 1");
-			$row = $DBRESULT->fetchRow();
-			$row["id"] = '';
-			$row["ns_activate"] = '0';
-			$row["is_default"] = '0';
-			$row["localhost"] = '0';
+			$rowServer = $DBRESULT->fetchRow();
+			$rowServer["id"] = '';
+			$rowServer["ns_activate"] = '0';
+			$rowServer["is_default"] = '0';
+			$rowServer["localhost"] = '0';
 			$DBRESULT->free();
 			for ($i = 1; $i <= $nbrDup[$key]; $i++)	{
 				$val = null;
-				foreach ($row as $key2=>$value2)	{
+				foreach ($rowServer as $key2=>$value2)	{
 					$key2 == "name" ? ($server_name = $value2 = $value2."_".$i) : null;
 					$val ? $val .= ($value2 != NULL ? (", '".$value2."'"):", NULL") : $val .= ($value2 != NULL ? ("'".$value2."'") : "NULL");
 				}

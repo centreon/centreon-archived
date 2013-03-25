@@ -60,9 +60,76 @@
 		return html_entity_decode($arg, ENT_QUOTES, "UTF-8");
 	}
 
+    if (!$oreon->user->admin) {
+        if ($service_id) {
+            $checkres = $pearDB->query("SELECT service_id
+                                        FROM $acldbname.centreon_acl
+                                        WHERE service_id = ".$pearDB->escape($service_id)."
+                                        AND group_id IN (".$acl->getAccessGroupsString().")");
+            if (!$checkres->numRows()) {
+                $msg = new CentreonMsg();
+                $msg->setImage("./img/icones/16x16/warning.gif");
+                $msg->setTextStyle("bold");
+                $msg->setText(_('You are not allowed to access this service'));
+                return null;
+            }
+        }
+    }
+
+
+    /* notification contacts */
+    $notifCs = $acl->getContactAclConf(array('fields'     => array('contact_id', 'contact_name'),
+                                             'get_row'    => 'contact_name',
+                                             'keys'       => array('contact_id'),
+                                             'conditions' => array('contact_register' => '1'),
+                                             'order'      => array('contact_name')));
+
+    /* notification contact groups */
+    $notifCgs = array();
+    $cg = new CentreonContactgroup($pearDB);
+    if ($oreon->user->admin) {
+        $notifCgs = $cg->getListContactgroup(true);
+    } else {
+        $cgAcl = $acl->getContactGroupAclConf(array('fields'  => array('cg_id', 'cg_name'),
+                                                    'get_row' => 'cg_name',
+                                                    'keys'    => array('cg_id'),
+                                                    'order'   => array('cg_name')));
+        $cgLdap = $cg->getListContactgroup(true, true);
+        $notifCgs = array_intersect_key($cgLdap, $cgAcl);                                                                                                                               }
+
+    /* hosts */
+    $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
+                                                                           'keys'    => array('host_id'),
+                                                                           'get_row' => 'host_name',
+                                                                           'order'   => array('host_name')));
+
+    /* hostgroups */
+    $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('hg_id', 'hg_name'),
+                                                                              'keys'    => array('hg_id'),
+                                                                              'get_row' => 'hg_name',
+                                                                              'order'   => array('hg_name')));
+
+    /* service groups */
+    $sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('sg_id', 'sg_name'),
+                                                                                 'keys'    => array('sg_id'),
+                                                                                 'get_row' => 'sg_name',
+                                                                                 'order'   => array('sg_name')));
+
+    /* service categories */
+    $service_categories = array();
+    $scstring = $acl->getServiceCategoriesString();
+    $rescat = $pearDB->query("SELECT sc_name, sc_id
+                              FROM service_categories ".
+                              ($scstring != "''" ? $acl->queryBuilder('WHERE', 'sc_id', $acl->getServiceCategoriesString()) : "").
+                             " ORDER BY sc_name");
+    while ($scat = $rescat->fetchRow()) {
+        $service_categories[$scat['sc_id']] = $scat['sc_name'];
+    }
+
 	$cmdId = 0;
 	$service = array();
 	$serviceTplId = null;
+    $initialValues = array();
 	if (($o == "c" || $o == "w") && $service_id) {
 
 		$DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
@@ -79,7 +146,11 @@
 		$DBRESULT = $pearDB->query("SELECT host_host_id FROM host_service_relation hsr, host WHERE hsr.service_service_id = '".$service_id."' AND host_host_id IS NOT NULL AND host_id = host_host_id ORDER BY host_name, host_alias");
 		while ($parent = $DBRESULT->fetchRow())	{
 			if ($parent["host_host_id"]) {
-				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
+                if (!isset($hosts[$parent['host_host_id']])) {
+                    $initialValues['service_hPars'][] = $parent['host_host_id'];
+                } else {
+    				$service["service_hPars"][$parent["host_host_id"]] = $parent["host_host_id"];
+                }
 			}
 		}
 		$DBRESULT->free();
@@ -87,7 +158,11 @@
 		$DBRESULT = $pearDB->query("SELECT hostgroup_hg_id FROM host_service_relation hsr, hostgroup WHERE hsr.service_service_id = '".$service_id."' AND hostgroup_hg_id IS NOT NULL AND hostgroup_hg_id = hg_id ORDER BY hg_name, hg_alias");
 		while ($parent = $DBRESULT->fetchRow())	{
 			if ($parent["hostgroup_hg_id"]) {
-				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
+                if (!isset($hgs[$parent['hostgroup_hg_id']])) {
+                    $initialValues['service_hgPars'][] = $parent['hostgroup_hg_id'];
+                } else {
+    				$service["service_hgPars"][$parent["hostgroup_hg_id"]] = $parent["hostgroup_hg_id"];
+                }
 			}
 		}
 		$DBRESULT->free();
@@ -113,16 +188,24 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT contactgroup_cg_id FROM contactgroup_service_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $notifCg = $DBRESULT->fetchRow(); $i++) {
-			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
+            if (!isset($notifCgs[$notifCg['contactgroup_cg_id']])) {
+                $initialValues['service_cgs'][] = $notifCg["contactgroup_cg_id"];
+            } else {
+    			$service["service_cgs"][$i] = $notifCg["contactgroup_cg_id"];
+            }
 		}
 		$DBRESULT->free();
 
 		/*
-		 * Set Contact Group
+		 * Set Contacts
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT contact_id FROM contact_service_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $notifC = $DBRESULT->fetchRow(); $i++) {
-			$service["service_cs"][$i] = $notifC["contact_id"];
+            if (!isset($notifCs[$notifC['contact_id']])) {
+                $initialValues['service_cs'][] = $notifC['contact_id'];
+            } else {
+    			$service["service_cs"][$i] = $notifC["contact_id"];
+            }
 		}
 		$DBRESULT->free();
 
@@ -131,7 +214,11 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $sg = $DBRESULT->fetchRow(); $i++) {
-			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
+            if (!isset($sgs[$sg['servicegroup_sg_id']])) {
+                $initialValues['service_sgs'][] = $sg['servicegroup_sg_id'];
+            } else {
+    			$service["service_sgs"][$i] = $sg["servicegroup_sg_id"];
+            }
 		}
 		$DBRESULT->free();
 
@@ -149,7 +236,11 @@
 		 */
 		$DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
 		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++) {
-			$service["service_categories"][$i] = $service_category["sc_id"];
+            if (!isset($service_categories[$service_category['sc_id']])) {
+                $initialValues['service_categories'][] = $service_category['sc_id'];
+            } else {
+    			$service["service_categories"][$i] = $service_category["sc_id"];
+            }
 		}
 		$DBRESULT->free();
 
@@ -163,19 +254,6 @@
                 }
 	}
 
-
-	/*
-	 * Database retrieve information for differents elements list we need on the page
-	 */
-
-	# Hosts comes from DB -> Store in $hosts Array
-	$hosts = array();
-	$DBRESULT = $pearDB->query("SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow()) {
-		$hosts[$host["host_id"]] = $host["host_name"];
-	}
-	$DBRESULT->free();
-
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array(null => null);
 	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");
@@ -187,14 +265,6 @@
 			$svTpl["service_description"] = str_replace('#BS#', "\\", $svTpl["service_description"]);
 		}
 		$svTpls[$svTpl["service_id"]] = $svTpl["service_description"];
-	}
-	$DBRESULT->free();
-
-	# HostGroups comes from DB -> Store in $hgs Array
-	$hgs = array();
-	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup ORDER BY hg_name");
-	while ($hg = $DBRESULT->fetchRow()) {
-		$hgs[$hg["hg_id"]] = $hg["hg_name"];
 	}
 	$DBRESULT->free();
 
@@ -222,40 +292,11 @@
 	}
 	$DBRESULT->free();
 
-	# Contact Groups comes from DB -> Store in $notifCcts Array
-	$notifCgs = array();
-	$cg = new CentreonContactgroup($pearDB);
-	$notifCgs = $cg->getListContactgroup(true);
-
-	# Contact comes from DB -> Store in $notifCcts Array
-	$notifCs = array();
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_name FROM contact WHERE contact_register = 1 ORDER BY contact_name");
-	while ($notifC = $DBRESULT->fetchRow()) {
-		$notifCs[$notifC["contact_id"]] = $notifC["contact_name"];
-	}
-	$DBRESULT->free();
-
-	# Service Groups comes from DB -> Store in $sgs Array
-	$sgs = array();
-	$DBRESULT = $pearDB->query("SELECT sg_id, sg_name FROM servicegroup ORDER BY sg_name");
-	while ($sg = $DBRESULT->fetchRow()) {
-		$sgs[$sg["sg_id"]] = $sg["sg_name"];
-	}
-	$DBRESULT->free();
-
 	# Graphs Template comes from DB -> Store in $graphTpls Array
 	$graphTpls = array(null => null);
 	$DBRESULT = $pearDB->query("SELECT graph_id, name FROM giv_graphs_template ORDER BY name");
 	while ($graphTpl = $DBRESULT->fetchRow()) {
 		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
-	}
-	$DBRESULT->free();
-
-	# service categories comes from DB -> Store in $service_categories Array
-	$service_categories = array();
-	$DBRESULT = $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
-	while ($service_categorie = $DBRESULT->fetchRow()) {
-		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	}
 	$DBRESULT->free();
 
@@ -535,7 +576,7 @@
             }
         }
 
-	# Service relations
+	// Service relations
 	$form->addElement('header', 'links', _("Relations"));
 	if ($o == "mc")	{
 		$mc_mod_sgs = array();
@@ -670,9 +711,9 @@
 	$form->addElement('select', 'esi_icon_image', _("Icon"), $extImg, array("id"=>"esi_icon_image", "onChange"=>"showLogo('esi_icon_image_img',this.value)", "onkeyup" => "this.blur();this.focus();"));
 	$form->addElement('text', 'esi_icon_image_alt', _("Alt icon"), $attrsText);
 
-        
+
         /*
-         * Criticality 
+         * Criticality
          */
         $criticality = new CentreonCriticality($pearDB);
         $critList = $criticality->getList();
@@ -681,7 +722,7 @@
             $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
         }
         $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
-        
+
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
 
@@ -743,6 +784,10 @@
 	$page->setValue($p);
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);
+
+    $init = $form->addElement('hidden', 'initialValues');
+    $init->setValue(serialize($initialValues));
+
 	if (is_array($select))	{
 		$select_str = null;
 		foreach ($select as $key => $value) {

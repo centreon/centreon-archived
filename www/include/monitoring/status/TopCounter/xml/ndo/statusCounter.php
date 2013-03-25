@@ -181,6 +181,7 @@
 	$activity = 0;
 	$error = "";
 	$pollerListInError = "";
+        $pollersWithLatency = array();
 
 	/*
 	 * Get minimum check interval
@@ -261,11 +262,13 @@
 					"	AND i.instance_name IN ($pollerList)";
 		$DBRESULT = $obj->DBC->query($request);
 		while ($ndo = $DBRESULT->fetchRow()) {
-			if ($latency != 2 && $ndo["stat_value"] >= 60) {
+			if (!$latency && $ndo["stat_value"] >= 60) {
 				$latency = 1;
+                                $pollersWithLatency[$ndo['instance_id']] = $ndo['instance_name'];
 			}
 			if ($ndo["stat_value"] >= 120) {
 				$latency = 2;
+                                $pollersWithLatency[$ndo['instance_id']] = $ndo['instance_name'];
 			}
 		}
 		$DBRESULT->free();
@@ -284,10 +287,10 @@
 		$errorPstt = _("OK: all pollers are running");
 	}
 
-	if ($latency != 0) {
-		$errorLtc = _("Latency detected on your platform; check configuration for better optimisation");
+	if ($latency && count($pollersWithLatency)) {
+            $errorLtc = sprintf(_("Latency detected on %s; check configuration for better optimisation"), implode(',', $pollersWithLatency));
 	} else {
-		$errorLtc = _("OK: no latency detected on your platform");
+            $errorLtc = _("OK: no latency detected on your platform");
 	}
 
 	if ($activity != 0) {

@@ -73,6 +73,17 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 	
+        $acl = $oreon->user->access;
+        $dbmon = $acl->getNameDBAcl($oreon->broker->getBroker());
+        
+        $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
+        $hgString = CentreonUtils::toStringWithQuotes($hgs);            
+        $sgs = $acl->getServiceGroupAclConf(array('fields'  => array('sg_id', 'sg_name'),
+                                                  'keys'    => array('sg_id'),
+                                                  'get_row' => 'sg_name',
+                                                  'order'   => array('sg_name')));
+        $sgString = CentreonUtils::toStringWithQuotes($sgs);
+        
 	switch ($o)	{
 		case "a" : 
 			require_once($path."formEscalation.php"); 

@@ -73,6 +73,10 @@
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])
 		$p = $ret['topology_page'];
 	
+        $acl = $oreon->user->access;
+        $sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+        $sgstring = CentreonUtils::toStringWithQuotes($sgs);
+        
 	switch ($o)	{
 		case "a" : 
 			require_once($path."formServiceGroupDependency.php"); 

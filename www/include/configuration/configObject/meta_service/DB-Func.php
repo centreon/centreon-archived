@@ -296,8 +296,9 @@
 		$rq = "DELETE FROM meta_contactgroup_relation ";
 		$rq .= "WHERE meta_id = '".$meta_id."'";
 		$DBRESULT = $pearDB->query($rq);
+
 		$ret = array();
-		$ret = $form->getSubmitValue("ms_cgs");
+		$ret = CentreonUtils::mergeWithInitialValues($form, 'ms_cgs');
 		$cg = new CentreonContactgroup($pearDB);
 		for($i = 0; $i < count($ret); $i++)	{
 		    if (!is_numeric($ret[$i])) {

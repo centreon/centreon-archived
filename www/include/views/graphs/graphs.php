@@ -206,8 +206,8 @@
 <script type="text/javascript">
     var gmt = <?php echo $userGmt ? $userGmt : 0;?>;
     var useGmt = <?php echo $useGmt;?>;
-    var currentMicroTime = <?php echo $currentServerMicroTime;?>;
-	var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
+    var currentMicroTime = <?php echo number_format($currentServerMicroTime, 15, '.', '');?>;
+    var css_file 	= './include/common/javascript/codebase/dhtmlxtree.css';
     var headID 		= document.getElementsByTagName("head")[0];
     var cssNode 	= document.createElement('link');
     cssNode.type 	= 'text/css';

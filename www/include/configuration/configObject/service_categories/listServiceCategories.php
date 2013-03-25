@@ -48,9 +48,21 @@
 	include_once("./include/common/quickSearch.php");
 
 	$SearchTool = NULL;
-	if (isset($search) && $search)
+	if (isset($search) && $search) {
 		$SearchTool = "WHERE (sc_name LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%' OR sc_description LIKE '%".htmlentities($search, ENT_QUOTES, "UTF-8")."%')";
-	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool");
+    }
+
+    $aclCond = "";
+    if (!$oreon->user->admin && $scString != "''") {
+        if (is_null($SearchTool)) {
+            $clause = " WHERE ";
+        } else {
+            $clause = " AND ";
+        }
+        $aclCond .= $acl->queryBuilder($clause, "sc_id", $scString);
+    }
+
+	$DBRESULT = $pearDB->query("SELECT COUNT(*) FROM service_categories $SearchTool $aclCond");
 
 	$tmp = $DBRESULT->fetchRow();
 	$DBRESULT->free();
@@ -80,8 +92,10 @@
 	/*
 	 * Services Categories Lists
 	 */
-
-	$DBRESULT = $pearDB->query("SELECT * FROM service_categories $SearchTool ORDER BY sc_name LIMIT ".$num * $limit.", ".$limit);
+	$DBRESULT = $pearDB->query("SELECT *
+                                FROM service_categories $SearchTool $aclCond
+                                ORDER BY sc_name
+                                LIMIT ".$num * $limit.", ".$limit);
 
 	$search = tidySearchKey($search, $advanced_search);
 

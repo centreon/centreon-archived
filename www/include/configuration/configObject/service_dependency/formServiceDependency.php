@@ -41,6 +41,28 @@
 	$dep = array();
 	$parentServices = array();
 	$childServices = array();
+        
+        /* hosts */
+        $hosts = $acl->getHostAclConf(null, $oreon->broker->getBroker(), array('fields'  => array('host.host_id', 'host.host_name'),
+                                                                               'keys'    => array('host_id'),
+                                                                               'get_row' => 'host_name',
+                                                                               'order'   => array('host.host_name')));
+
+        /* services */
+        if (!$oreon->user->admin) {
+            $hServices = array();
+            $sql = "SELECT DISTINCT CONCAT(host_id, '_', service_id) as k, 
+                                    CONCAT(host_name, ' / ', service_description) as v
+                    FROM $dbmon.centreon_acl 
+                    WHERE group_id IN (".$acl->getAccessGroupsString().")";
+            $res = $pearDB->query($sql);
+            while ($row = $res->fetchRow()) {
+                $hServices[$row['k']] = $row['v'];
+            }
+        }
+
+        
+        $initialValues = array();
 	if (($o == "c" || $o == "w") && $dep_id)	{
 		$DBRESULT = $pearDB->query("SELECT * FROM dependency WHERE dep_id = '".$dep_id."' LIMIT 1");
 
@@ -64,7 +86,12 @@
 									FROM dependency_serviceChild_relation dscr
 									WHERE dscr.dependency_dep_id = '".$dep_id."'");
 		for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-			$dep["dep_hSvChi"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
+                    $key = $service["host_host_id"]."_".$service["service_service_id"];
+                    if (!$oreon->user->admin && !isset($hServices[$key])) {
+                        $initialValues["dep_hSvChi"][] = $key;
+                    } else {
+                        $dep["dep_hSvChi"][$i] = $key;
+                    }
 		}
 		$DBRESULT->free();
 
@@ -73,15 +100,24 @@
 									FROM dependency_serviceParent_relation dspr
 									WHERE dspr.dependency_dep_id = '".$dep_id."'");
 		for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-			$dep["dep_hSvPar"][$i] = $service["host_host_id"]."_".$service["service_service_id"];
+                    $key = $service["host_host_id"]."_".$service["service_service_id"];
+                    if (!$oreon->user->admin && !isset($hServices[$key])) {
+                        $initialValues['dep_hSvPar'][] = $key;
+                    } else {
+                        $dep["dep_hSvPar"][$i] = $key;
+                    }
 		}
 
-    	// Set Host Children
+                // Set Host Children
 		$DBRESULT = $pearDB->query("SELECT host_host_id
 									FROM dependency_hostChild_relation dspr
 									WHERE dspr.dependency_dep_id = '".$dep_id."'");
 		for ($i = 0; $service = $DBRESULT->fetchRow(); $i++) {
-			$dep["dep_hHostChi"][$i] = $service["host_host_id"];
+                    if (!$oreon->user->admin && !isset($hosts[$service['host_host_id']])) {
+                        $initialValues['dep_hHostChi'][] = $service["host_host_id"];
+                    } else {
+                        $dep["dep_hHostChi"][$i] = $service["host_host_id"];
+                    }
 		}
 		$DBRESULT->free();
 
@@ -111,16 +147,18 @@
 	/*
 	 * Services comes from DB -> Store in $hServices Array
 	 */
-	$hServices = array();
-	$DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
-	while ($elem = $DBRESULT->fetchRow())	{
-		$services = getMyHostServices($elem["host_id"]);
-		foreach ($services as $key=>$index)	{
-			$index = str_replace('#S#', "/", $index);
-			$index = str_replace('#BS#', "\\", $index);
-			$hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
-		}
-	}
+        if ($oreon->user->admin) {
+            $hServices = array();
+            $DBRESULT = $pearDB->query("SELECT DISTINCT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name");
+            while ($elem = $DBRESULT->fetchRow())	{
+                    $services = getMyHostServices($elem["host_id"]);
+                    foreach ($services as $key=>$index)	{
+                            $index = str_replace('#S#', "/", $index);
+                            $index = str_replace('#BS#', "\\", $index);
+                            $hServices[$elem["host_id"]."_".$key] = $elem["host_name"]." / ".$index;
+                    }
+            }
+        }
 
 	/*
 	 * Var information to format the element
@@ -180,15 +218,9 @@
 	 * Sort 2 Host Service Dependencies
 	 */
 	$hostFilter = array(null => null,
-	                    0    => sprintf('%s', _('All ressources')));
-    $hostList = array();
-    $query = "SELECT host_id, host_name FROM host WHERE host_register = '1' ORDER BY host_name ";
-    $res = $pearDB->query($query);
-    while ($row = $res->fetchRow()) {
-        $hostFilter[$row['host_id']] = $row['host_name'];
-        $hostList[$row['host_id']] = $row['host_name'];
-    }
-    $form->addElement('select', 'host_filterParent', _('Host Filter'), $hostFilter, array('onChange' => 'hostFilterSelect("parent", this);'));
+	                    0    => sprintf('%s', _('All ressources'))) + $hosts;
+    
+        $form->addElement('select', 'host_filterParent', _('Host Filter'), $hostFilter, array('onChange' => 'hostFilterSelect("parent", this);'));
 	$ams1 = $form->addElement('advmultiselect', 'dep_hSvPar', array(_("Services"), _("Available"), _("Selected")), $parentServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
@@ -202,7 +234,7 @@
 	$ams1->setElementTemplate($eTemplate);
 	echo $ams1->getElementJs(false);
 
-	$ams1 = $form->addElement('advmultiselect', 'dep_hHostChi', array(_("Dependent Hosts"), _("Available"), _("Selected")), $hostList, $attrsAdvSelect, SORT_ASC);
+	$ams1 = $form->addElement('advmultiselect', 'dep_hHostChi', array(_("Dependent Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 	$ams1->setElementTemplate($eTemplate);

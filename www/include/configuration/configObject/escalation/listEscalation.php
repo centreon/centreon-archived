@@ -49,18 +49,44 @@
 	$advanced_search = 0;
 	include_once("./include/common/quickSearch.php");
 	
-	
+        $aclFrom = "";
+        $aclCond = array('h'  => '',
+                         'sv' => '',
+                         'hg' => '',
+                         'sg' => '',
+                         'ms' => '');
+        if (!$oreon->user->admin) {
+            $aclFrom = ", $dbmon.centreon_acl acl ";
+            $aclCond['h'] = " AND ehr.host_host_id = acl.host_id 
+                              AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+            $aclCond['sv'] = " AND esr.host_host_id = acl.host_id 
+                               AND esr.service_service_id = acl.service_id
+                               AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+            $aclCond['hg'] = $acl->queryBuilder('AND', 'hostgroup_hg_id', $hgString);
+            $aclCond['sg'] = $acl->queryBuilder('AND', 'servicegroup_sg_id', $sgString);
+            $aclCond['ms'] = $acl->queryBuilder('AND', 'meta_service_meta_id', $acl->getMetaServiceString());
+        }
 	$rq = "SELECT COUNT(*) FROM escalation esc";	
 	if ($list && $list == "h"){
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT COUNT(DISTINCT host_host_id) 
+                                FROM escalation_host_relation ehr $aclFrom
+                                WHERE ehr.escalation_esc_id = esc.esc_id ".$aclCond['h'].") > 0 ";
 	} else if ($list && $list == "sv") {
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_service_relation esr $aclFrom
+                                WHERE esr.escalation_esc_id = esc.esc_id ".$aclCond['sv'].") > 0 ";
 	} else if ($list && $list == "hg") {
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_hostgroup_relation ehgr 
+                                WHERE ehgr.escalation_esc_id = esc.esc_id ".$aclCond['hg'].") > 0 ";
 	} else if ($list && $list == "sg") {
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_servicegroup_relation esgr 
+                                WHERE esgr.escalation_esc_id = esc.esc_id ".$aclCond['sg'].") > 0 ";
 	} else if ($list && $list == "ms"){
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_meta_service_relation emsr 
+                                WHERE emsr.escalation_esc_id = esc.esc_id ".$aclCond['ms'].") > 0 ";
 	}
 	
 	if (isset($search) && $list)
@@ -96,15 +122,25 @@
 	 */
 	$rq = "SELECT esc_id, esc_name, esc_alias FROM escalation esc";
 	if ($list && $list == "h")
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_host_relation ehr WHERE ehr.escalation_esc_id = esc.esc_id) > 0";
-		else if ($list && $list == "sv")
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_service_relation esr WHERE esr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(host_host_id) 
+                                FROM escalation_host_relation ehr $aclFrom
+                                WHERE ehr.escalation_esc_id = esc.esc_id ".$aclCond['h'].") > 0 ";
+        else if ($list && $list == "sv")
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_service_relation esr $aclFrom
+                                WHERE esr.escalation_esc_id = esc.esc_id ".$aclCond['sv'].") > 0 ";
 	else if ($list && $list == "hg")
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_hostgroup_relation ehgr WHERE ehgr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_hostgroup_relation ehgr 
+                                WHERE ehgr.escalation_esc_id = esc.esc_id ".$aclCond['hg'].") > 0 ";
 	else if ($list && $list == "sg")
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_servicegroup_relation esgr WHERE esgr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_servicegroup_relation esgr 
+                                WHERE esgr.escalation_esc_id = esc.esc_id ".$aclCond['sg'].") > 0 ";
 	else if ($list && $list == "ms")
-		$rq .= " WHERE (SELECT DISTINCT COUNT(*) FROM escalation_meta_service_relation emsr WHERE emsr.escalation_esc_id = esc.esc_id) > 0";
+		$rq .= " WHERE (SELECT DISTINCT COUNT(*) 
+                                FROM escalation_meta_service_relation emsr 
+                                WHERE emsr.escalation_esc_id = esc.esc_id ".$aclCond['ms'].") > 0 ";
 	
 	/*
 	 * Check if $search is init
