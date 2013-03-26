@@ -1,3 +1,135 @@
+## Centreon 2.4.2
+
+Enhancements
+============
+#4215: Import from ldap server must display a warning when no ldap configuration has been checked
+#4240: IDE complains about invalid syntax in htmlHeader.php
+#4246: Add index on downtimes tables
+#4249: Tell me which poller has latency [patch provided]
+#4259: [downtimes][broker] Perf issue
+#4274: Existing centreon.conf still gets overwritten
+#4299: eventReportBuilder.pl > Performance optimization
+
+Bug fixes
+=========
+#3455: Conf SNMP
+#3552: ACL > Resources Access
+#3615: Bug avec IE7/8
+#4021: Primary key name for timeperiod_exclude_relations
+#4120: IsRunning NO
+#4161: Graphs margin values need to be updated
+#4195: IPv6 addresses shown incorrectly at session page
+#4223: CSV Export not Working in Views->Graphs
+#4227: Graph stacks when inserting new metric
+#4230: Options field not use in Poller Configuration
+#4234: Difference between Criticity service and Criticity host
+#4237: Warning message when host no longer in Centreon configuration
+#4242: Hardcoded path in documentation
+#4243: Slow sql query in tacticalOverviewXml.php
+#4251: Menu contextuel dans Vues -> Graphiques -> Courbes
+#4260: graph - issue with negative values, warning and critical
+#4262: probleme a l'installation avec IE8
+#4266: Tactical Overview - ndo and centreon 2.4.1
+#4267: Probleme avec fichier de Log
+#4269: CES standard 2.2 (en mode central avec centreon-engine et centreon-broker)
+#4275: Dashboard percentages wrong after upgrade
+#4277: [2.4.1] Uninitialized value in logAnalyser
+#4278: [broker][config] Correlation file error
+#4283: last_execution_time not consistent
+#4284: Macro @MAILER@ set to void during fresh install
+#4285: check_meta_service doesn't work in 2.4 and 2.4.1 with Centreon-Broker
+#4286: centAcl.php hangs forever
+#4288: [Centreon 2.4.1] Services by HostGroup not displayed in Event Logs
+#4293: [2.4.1] Dashboard Hostgroup - Les hosts inactifs sont affichés et donc ressortent en indeterminés.
+#4297: column size in different menu
+#4307: Disabled meta services are still displayed in monitoring console
+#4308: Cannot use import-mysql-indexes and export-mysql-indexes on remote host (-H option)
+#4312: Bug après désactivation de services
+#4313: Bug après modification des commandes notifications
+#4315: Graphs not shown on french platforms
+#4321: centTrapHandler does'nt handle output message args correctly
+#4322: rsync on alternative port doesn't work (patch attached)
+#4325: Sync Trap Poller
+#4327: Update centreon 2.3.9 -> 2.4.0 Bug Centcore & Centstorage
+#4329: Host set downtime multiplied when selecting services
+#4337: Plus d'infos sur la page d'accueil après passage en 2.4.0
+#4338: Impossible d'ajouter un widget
+#4341: Version error during CLI install
+
+## Centreon 2.4.1
+
+Enhancements
+============
+#4028: Failover for Broker SQL Database and Perfdata Generator (Centreon Storage) with Wizard Configuration
+#4046: Optimize cron centacl.php
+#4148: Precise tool tip for unix socket configuration in rrdcached options.
+#4218: Remove Aggressive Host Checks selection.
+#4225: Add index on hosts and services tables
+
+Bug fixes
+=========
+#3306: genEscalations.php stopping after generating first escalation
+#3664: LDAP groups not resolved with every config generation
+#4039: centcore - missing data when rotation occurs
+#4049: Duplicate menu in ACL Menu Access
+#4058: [tool] logAnalyser-cbroker: problem with status/type
+#4065: snmptt daemon starting failed
+#4067: Error receiving trap with snmptthandler
+#4068: Configuration > Services (by host/hostgroup) > duplication input value is overwritten
+#4069: Centreon 2.4.0 Stable RPM
+#4073: Inheritance of check command when defined in service template
+#4074: Incorrect error message for wizard configuration
+#4079: _() expects exactly 1 parameter, 2 given
+#4084: Problème avec les downtimes récurrents sur Centreon 2.3.9
+#4088: [migration] LDAP Users: user page blank
+#4089: [monitoring] Ack in service details page + Blank page
+#4090: [dashboard] MySQL Port and ndo
+#4091: Criticality column in "home > tactical overview"
+#4096: [2.4] Erreur dans le fichier logAnalyser.log
+#4097: [2.4] Erreur sql ACL das sql-error.log
+#4098: [LOG] EventLog page: too heavy
+#4100: [2.4] Table 'centstorage.rebuild' doesn't exist
+#4105: [2.4] centreon-purge.log message tronqué
+#4108: Ask about Embedded Perl initialisation file during cli install
+#4109: Debian cent* init script
+#4111: message non affiché lors de la génération des fichier conf de TRAP
+#4112: Fichier centTrapHandler-2.x non configuré lors d'une installation ou mise à jour de Centreon 2.4
+#4115: Update 2.4 crée une macro USER $USER3$
+#4119: Duplication error
+#4125: Probleme installation avec IE8 et IE9
+#4127: Apply realpath on metrics path and status path.
+#4130: Web installation and MySQL 5.5.x failed
+#4133: Time periods configuration.
+#4134: Tactical overview - unhandled service problems missing
+#4136: init.d/centcore probleme VERBOSE
+#4137: Probleme Wizard Centreon-Broker
+#4138: [ldap] Auto-import bug
+#4139: service generation hangs due to duplicate key in index_data
+#4140: meta_host- uninitialized variable used in query
+#4141: ldap special characters on displayname - import and update
+#4142: Meta service generation hangs
+#4147: Connector generation error.
+#4152: ldap account
+#4153: PHP problem within tacticalOverviewXml.php
+#4155: Possible duplicated lines in the same function
+#4157: Conflict about host relationships in configuration
+#4159: Broker: use short and long output from the output field
+#4163: [ldap] always auto-import mode on
+#4164: Alert user when he's trying to set parents relationship between hosts from different pollers
+#4166: Probleme Affichage Tactical Overview
+#4168: interval_length introuvable dans le Default Nagios.cfg
+#4178: warning messages when generating Centreon Broker configuration
+#4192: [Esthetic] Tactical Overview Criticality column size
+#4196: Integer=0 Criticality level : icon not displayed
+#4198: [acl] Issue category filter
+#4202: Administration > Sessions : "page view" field when calling Centreon via API
+#4209: Little mistake in downtime creation form
+#4213: Argument overload
+#4217: Surcharge de service
+#4228: not more than 100 Pollers shown
+#4229: Infinite loop when php-pear is missing
+#4232: Bouton EventLog de la page monitoring fonctionne mal
+
 ## Centreon 2.4.0
 
 Enhancements
