@@ -14,7 +14,8 @@
 PKGNAME=centstorage
 DESC="CentStorage"
 DAEMON=@CENTSTORAGE_BINDIR@/centstorage
-PIDFILE=@CENTREON_RUNDIR@/centstorage.pid
+RUNDIR=@CENTREON_RUNDIR@
+PIDFILE=$RUNDIR/centstorage.pid
 
 if [ ! -x "${DAEMON}" ]; then
   echo "The program ${DAEMON} does not exists or is not executable"
@@ -39,6 +40,11 @@ fi
 if [ -z "${CENTREON_USER}" ]; then
     log_warning_msg "Not starting $PKGNAME, CENTREON_USER not set in /etc/default/$PKGNAME."
     exit 0
+fi
+
+if [ ! -d "$RUNDIR" ]; then
+    mkdir $RUNDIR
+    chown $CENTREON_USER:$CENTREON_USER $RUNDIR
 fi
 
 do_start()
