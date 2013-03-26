@@ -313,7 +313,7 @@ sub replaceMacros($) {
     my @args = split(/\#\#C\#\#/, $allargs);
     foreach (@args) {
 	my $tmp = $_;
-	my ($oid, $str) = split(':', $tmp);
+	my ($oid, $str) = split(':', $tmp, 2);
 	$OIDTable[($x+1)] = $oid;
 	if ($str !~ m/^$/ && $str ne " ") {
 	    $macros[($x+1)] = $str;
@@ -454,13 +454,13 @@ sub replaceArgs($$) {
 
     my $x = 1;
     foreach (@macros) {
-	if (defined($macros[$x])) {
-	    if ($debug) {
-		logit("REPLACE VAL: $string => /\$".$x."/".$macros[$x]."/", "DD");
-	    }
-	    $string =~ s/\$$x/$macros[$x]/g;
-	    $x++;
-	}
+        if (defined($macros[$x])) {
+            if ($debug) {
+                logit("REPLACE VAL: $string => /\$".$x."/".$macros[$x]."/", "DD");
+            }
+            $string =~ s/\$$x(\D|$)/$macros[$x]$1/g;
+            $x++;
+        }
     }
     undef($x);
     return $string;
