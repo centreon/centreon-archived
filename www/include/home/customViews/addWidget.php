@@ -128,10 +128,10 @@ function submitData()
 			success :	function(response) {
 							var view = response.getElementsByTagName('custom_view_id');
 							var error = response.getElementsByTagName('error');
-							if (typeof(view) != 'undefined') {
+							if (view !== undefined) {
 								var viewId = view.item(0).firstChild.data;
 								window.top.location = './main.php?p=103&currentView='+viewId;
-							} else if (typeof(err) != 'undefined') {
+							} else if (err !== undefined) {
 								var errorMsg = err.item(0).firstChild.data;
 								console.log(errorMsg);
 							}
