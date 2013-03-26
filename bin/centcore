@@ -730,8 +730,9 @@ sub syncTraps($) {
             writeLogFile("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l") if ($debug);
             my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
             if ($ls >= 1) {
-                writeLogFile("$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf ". $ns_server->{'ns_ip_address'} .":/etc/snmp/centreon_traps/") if ($debug);                
-                $stdout = `$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
+                $cmd = "$rsync -e 'ssh -p $port' -c /etc/snmp/centreon_traps/*.conf $ns_server->{ns_ip_address}:/etc/snmp/centreon_traps/";
+                writeLogFile($cmd) if ($debug);
+                $stdout = `$cmd`;
             	if (defined($stdout) && $stdout){
                     writeLogFile("Result : $stdout\n");
                 }
@@ -750,20 +751,20 @@ sub syncTraps($) {
                 my $port = checkSSHPort($ns_server->{'ssh_port'});
 
                 if ($id == 0) {
-		    my $cmd = "$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
+                    my $cmd = "$scp -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
                     writeLogFile($cmd) if ($debug);
                     $stdout = `$cmd`;
-                    if (defined($stdout) && $stdout){
+                    if (defined($stdout) && $stdout) {
                         writeLogFile("Result : $stdout\n");
                     }
-		    $cmd = "ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l";
+                    $cmd = "ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l";
                     writeLogFile($cmd) if ($debug);
                     my $ls = `$cmd`;
                     if ($ls >= 1) {
-			$cmd = "$rsync --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
+                        $cmd = "$rsync -e 'ssh -p $port' -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
                         writeLogFile($cmd) if ($debug);
                         $stdout = `$cmd`;
-                        if (defined($stdout) && $stdout){
+                        if (defined($stdout) && $stdout) {
                             writeLogFile("Result : $stdout\n");
                         }
                     }
@@ -812,11 +813,11 @@ sub syncArchives($) {
         my $sth = $con->prepare("SELECT `log_archive_path` FROM `cfg_nagios` WHERE `nagios_server_id` = '".$id."' AND `nagios_activate` = '1'");
         if ($sth->execute()) {
             my $data = $sth->fetchrow_hashref();
-
             # Archive Sync
-	    my $cmd = "$rsync --port=$port -c ". $ns_server->{'ns_ip_address'}. ":".$data->{'log_archive_path'}."/*.log $VARLIB/log/".$ns_server->{'id'}."/archives/";
-	    writeLogFile($cmd) if ($debug);
-            `$rsyncWT --port=$port -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/*.log $VARLIB/log/$ns_server->{'id'}/archives/ 2>> /dev/null`;
+            my $cmd = "$rsyncWT -e 'ssh -p $port' -c $ns_server->{ns_ip_address}:$data->{log_archive_path}/*.log $VARLIB/log/$ns_server->{id}/archives/";
+
+            writeLogFile($cmd) if ($debug);
+            `$cmd 2>> /dev/null`;
         } else {
             print "Can't get archive path for poller ".$ns_server->{'id'}." (".$ns_server->{'ns_address_ip'}.") -> ".$sth->errstr;
         }
