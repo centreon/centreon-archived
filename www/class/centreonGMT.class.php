@@ -117,9 +117,12 @@ class CentreonGMT{
 	}
 
 	function getDate($format, $date, $gmt = NULL) {
-		if ($date == "N/A") {
-			return $date;
-		}
+            if (!$date) {
+                $date = "N/A";
+            }
+            if ($date == "N/A") {
+                return $date;
+            }
 		/*
 		 * Specify special GMT
 		 */
