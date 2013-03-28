@@ -25,7 +25,8 @@ sub new {
        log_file => undef,
        centreon_db_conn => 0,
        centstorage_db_conn => 0,
-       severity => "info"
+       severity => "info",
+       noconfig => 0
       );
     my $self = {%defaults, %options};
 
@@ -92,8 +93,10 @@ sub parse_options {
     Getopt::Long::Configure('bundling');
     die "Command line error" if !GetOptions(%{$self->{options}});
     pod2usage(-exitval => 1, -input => $FindBin::Bin . "/" . $FindBin::Script) if $self->{help};
-    require $self->{config_file};
-    $self->{centreon_config} = $centreon_config;
+    if ($self->{noconfig} == 0) (
+        require $self->{config_file};
+        $self->{centreon_config} = $centreon_config;
+    }
 }
 
 sub run {

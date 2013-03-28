@@ -11,7 +11,8 @@ sub new {
     my $class = shift;
     my $self = $class->SUPER::new("centreon_trap_send",
         centreon_db_conn => 0,
-        centstorage_db_conn => 0
+        centstorage_db_conn => 0,
+        noconfig => 1
     );
 
     bless $self, $class;

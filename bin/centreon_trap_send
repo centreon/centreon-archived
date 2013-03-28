@@ -41,10 +41,6 @@ Specify the trap OID.
 Specify the trap arguments.
 <value> corresponds to a trap argument (default: -a '.1.3.6.1.4.1.12182.2.1:OCTET_STRING:Test "20"' -a '.1.3.6.1.4.1.12182.2.1:INTEGER:10').
 
-=item B<--config>
-
-Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
-
 =item B<--help>
 
 Print a brief help message and exits.
