@@ -545,14 +545,14 @@ sub get_perfdata {
     $perf_label = $self->parse_label();
     if (!defined($perf_label) || $perf_label eq '') {
         $self->{"logger"}->writeLogError("Wrong perfdata format: " . $self->{'service_perfdata'});
-        return 0 if ($self->{'perfdata_parser_stop'} == 1);
+        return -1 if ($self->{'perfdata_parser_stop'} == 1);
         return 1;
     }
 
     $perf_value = $self->parse_value();
     if (!defined($perf_value) || $perf_value eq '') {
         $self->{"logger"}->writeLogError("Wrong perfdata format: " . $self->{'service_perfdata'});
-        return 0 if ($self->{'perfdata_parser_stop'} == 1);
+        return -1 if ($self->{'perfdata_parser_stop'} == 1);
         return 1;
     }
 
@@ -570,7 +570,7 @@ sub get_perfdata {
         $perf_label = $2;
         if (!defined($perf_label) || $perf_label eq '') {
             $self->{"logger"}->writeLogError("Wrong perfdata format: " . $self->{'service_perfdata'});
-            return 0 if ($self->{'perfdata_parser_stop'} == 1);
+            return -1 if ($self->{'perfdata_parser_stop'} == 1);
             return 1;
         }
     }
@@ -807,7 +807,7 @@ sub update {
     }
 
      $self->init_perfdata();
-    while (($self->get_perfdata())) {
+    while (($self->get_perfdata()) > 0) {
         if (!defined($self->{"cache_service"}->{$key_service}->{'metrics'}->{$self->{"metric_name"}})) {
             # Need to identify metrics    
             # if failed, we go 'next'
