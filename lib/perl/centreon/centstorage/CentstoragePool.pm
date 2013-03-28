@@ -634,10 +634,12 @@ sub get_host_service_ids {
     my ($host_id, $service_id);
     my ($status, $stmt, $data);
     my $host_register = 1;
+    my $service_register = "'1', '3'";
 
     # For Modules
     if ($host_name =~ /_Module_([a-zA-Z0-9]*)/) {
         $host_register = 2;
+        $service_register = "'2'";
     }
     # Get Host_Id
     ($status, $stmt) = $self->{'dbcentreon'}->query("SELECT `host_id` FROM `host` WHERE `host_name` = " . $self->{'dbcentreon'}->quote($host_name) . " AND `host_register` = '$host_register' LIMIT 1");
@@ -649,18 +651,13 @@ sub get_host_service_ids {
     }
 
     $host_id = $data->{'host_id'};
-    # For 'BAM' module: in 'host' and 'service' table but there is no relations
-    # For 'meta' module: in 'host' and 'meta_service_relation' (we can't purge)
-    if ($host_register == 2) {
-        return (0, $host_id, undef);
-    }
     
-    ($status, $stmt) = $self->{'dbcentreon'}->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '" . $host_id . "' AND hsr.service_service_id = service_id AND service_description = " . $self->{'dbcentreon'}->quote($service_description) . " AND `service_register` IN ('1', '3') LIMIT 1");
+    ($status, $stmt) = $self->{'dbcentreon'}->query("SELECT service_id FROM service, host_service_relation hsr WHERE hsr.host_host_id = '" . $host_id . "' AND hsr.service_service_id = service_id AND service_description = " . $self->{'dbcentreon'}->quote($service_description) . " AND `service_register` IN (" . $service_register . ") LIMIT 1");
     return -1 if ($status == -1);
     $data = $stmt->fetchrow_hashref();
     if (!defined($data)) {
         # Search in service By hostgroup
-        ($status, $stmt) = $self->{'dbcentreon'}->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr WHERE hgr.host_host_id = '" . $host_id . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id AND service_id = hsr.service_service_id AND service_description = " . $self->{'dbcentreon'}->quote($service_description) . " AND `service_register` IN ('1', '3') LIMIT 1");
+        ($status, $stmt) = $self->{'dbcentreon'}->query("SELECT service_id FROM hostgroup_relation hgr, service, host_service_relation hsr WHERE hgr.host_host_id = '" . $host_id . "' AND hsr.hostgroup_hg_id = hgr.hostgroup_hg_id AND service_id = hsr.service_service_id AND service_description = " . $self->{'dbcentreon'}->quote($service_description) . " AND `service_register` IN (" . $service_register . ") LIMIT 1");
         return -1 if ($status == -1);
         $data = $stmt->fetchrow_hashref();
     }
