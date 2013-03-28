@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.4.0"
+version="2.4.2"
 
 # Debug
 #set -x
@@ -194,7 +194,7 @@ ${CAT} << __EOT__
 #                         Centreon (www.centreon.com)                         #
 #                          Thanks for using Centreon                          #
 #                                                                             #
-#                                    v$version                                     #
+#                                    v$version                                   #
 #                                                                             #
 #                               infos@centreon.com                            #
 #                                                                             #

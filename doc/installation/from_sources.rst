@@ -76,7 +76,7 @@ the */etc/apt/sources.list* file and add the ``non-free`` category.
 Then, run the following commands::
 
   $ apt-get update
-  $ apt-get install snmp-mibs-installer
+  $ apt-get install snmp-mibs-downloader
 
 Suse
 ====

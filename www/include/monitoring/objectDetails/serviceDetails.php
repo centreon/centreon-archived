@@ -102,11 +102,24 @@
             $DBRESULT->free();
 
             $service_id = getMyServiceID($svc_description, $host_id);
-            if (!is_null($service_id)) {
-                if (isset($service_id) && $service_id) {
-                    $proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
-                    $proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
-                }
+            if (isset($service_id) && $service_id) {
+                $proc_warning =  getMyServiceMacro($service_id, "PROC_WARNING");
+                $proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
+            }
+            
+            /*
+             * Get servicegroups list
+             */
+            $query = "SELECT DISTINCT sg.sg_name
+                FROM servicegroup sg, servicegroup_relation sgr
+                WHERE sgr.servicegroup_sg_id = sg.sg_id AND sgr.host_host_id = " . $host_id . " AND sgr.service_service_id = " . $service_id  . " " .
+                $oreon->user->access->queryBuilder("AND", "sgr.host_host_id", $oreon->user->access->getHostsString("ID", (($oreon->broker->getBroker() == "ndo") ? $pearDBndo : $pearDBO)));
+            $DBRESULT = $pearDB->query($query);
+            while ($row = $DBRESULT->fetchRow()) {
+                $serviceGroups[] = $row['sg_name'];
+            }
+            $DBRESULT->free();
+
 
                 /*
                  * Get servicegroups list

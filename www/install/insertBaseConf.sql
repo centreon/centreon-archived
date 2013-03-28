@@ -3,7 +3,7 @@
 -- Insert version
 --
 
-INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.4.1');
+INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.4.2');
 
 --
 -- Contenu de la table `contact`
@@ -117,7 +117,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('snmp_community','public'),
 ('snmp_version','1'),
 ('snmp_trapd_path_conf','/etc/snmp/centreon_traps/'),
-('snmptt_unknowntrap_log_file','snmptrapd.log'),
+('snmptt_unknowntrap_log_file','snmpttunknown.log'),
 ('snmpttconvertmib_path_bin','@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib'),
 ('perl_library_path','/usr/local/lib'),
 ('rrdtool_path_bin','/usr/bin/rrdtool'),
