@@ -117,30 +117,29 @@
 	<?php
 	$attrs1 = array(
 		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+				"if (this.form.elements['o1'].selectedIndex === 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				"else if (this.form.elements['o1'].selectedIndex === 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
+				"else if (this.form.elements['o1'].selectedIndex === 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
+                "this.form.elements['o1'].selectedIndex = 0;".
 				"");
     $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-	$form->setDefaults(array('o1' => NULL));
 	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
 
 	$attrs = array(
 				'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+				"if (this.form.elements['o2'].selectedIndex === 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				"else if (this.form.elements['o2'].selectedIndex === 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
+				"else if (this.form.elements['o2'].selectedIndex === 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
+                "this.form.elements['o2'].selectedIndex = 0;".
 				"");
     $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
-	$form->setDefaults(array('o2' => NULL));
-
 	$o2 = $form->getElement('o2');
 	$o2->setValue(NULL);
 

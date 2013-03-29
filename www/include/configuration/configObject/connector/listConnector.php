@@ -48,43 +48,6 @@ try
     
     $tpl->assign('msg', array ("addL"=>"?p=".$p."&o=a", "addT"=>_("Add"), "delConfirm"=>_("Do you confirm the deletion ?")));
     
-    /*
-	 * Toolbar select 
-	 */
-	$attrs1 = array(
-		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"this.form.elements['o1'].selectedIndex = 0");
-
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
-	$form->setDefaults(array('o1' => NULL));
-		
-	$attrs2 = array(
-		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"this.form.elements['o2'].selectedIndex = 0");
-
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
-	$form->setDefaults(array('o2' => NULL));
-
-	$o1 = $form->getElement('o1');
-	$o1->setValue(NULL);
-	$o1->setSelected(NULL);
-
-	$o2 = $form->getElement('o2');
-	$o2->setValue(NULL);
-	$o2->setSelected(NULL);
-    
     $elemArr = array();
     $j = 0;
     $attrsText = array("size"=>"2");
@@ -131,6 +94,37 @@ try
      * @todo implement
      */
     $rows = $connectorObj->count(false);
+    
+    /*
+	 * Toolbar select 
+	 */
+	$attrs1 = array(
+                'onchange'=>"javascript: " .
+				"if (this.form.elements['o1'].selectedIndex === 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex === 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+				"else if (this.form.elements['o1'].selectedIndex === 3) {" .
+				" 	setO(this.form.elements['o1'].value); submit();} " .
+                "this.form.elements['o1'].selectedIndex = 0;".
+				"");
+	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs1);
+    $o1 = $form->getElement('o1');
+	$o1->setValue(NULL);
+    
+	$attrs2 = array(
+                'onchange'=>"javascript: " .
+				"if (this.form.elements['o2'].selectedIndex === 1 && confirm('"._("Do you confirm the duplication ?")."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex === 2 && confirm('"._("Do you confirm the deletion ?")."')) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+				"else if (this.form.elements['o2'].selectedIndex === 3) {" .
+				" 	setO(this.form.elements['o2'].value); submit();} " .
+                "this.form.elements['o2'].selectedIndex = 0;".
+				"");
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs2);
+	$o2 = $form->getElement('o2');
+	$o2->setValue(NULL);
     
     include_once "./include/common/checkPagination.php";
     
