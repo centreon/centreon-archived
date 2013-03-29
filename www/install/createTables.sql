@@ -2018,7 +2018,7 @@ CREATE TABLE `timeperiod_exclude_relations` (
   `exclude_id` int(11) NOT NULL AUTO_INCREMENT,
   `timeperiod_id` int(11) NOT NULL,
   `timeperiod_exclude_id` int(11) NOT NULL,
-  PRIMARY KEY (`include_id`)
+  PRIMARY KEY (`exclude_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
