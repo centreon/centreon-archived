@@ -26,7 +26,8 @@ sub new {
        centreon_db_conn => 0,
        centstorage_db_conn => 0,
        severity => "info",
-       noconfig => 0
+       noconfig => 0,
+       noroot => 0
       );
     my $self = {%defaults, %options};
 
@@ -50,6 +51,14 @@ sub init {
     }
     $self->{logger}->severity($self->{severity});
 
+    if ($self->{noroot} == 1) {
+        # Stop exec if root
+        if ($< == 0) {
+            $self->{logger}->writeLogError("Can't execute script as root.");
+            die("Quit");
+        }
+    }
+    
     if ($self->{centreon_db_conn}) {
         $self->{cdb} = centreon::common::db->new
           (db => $self->{centreon_config}->{centreon_db},

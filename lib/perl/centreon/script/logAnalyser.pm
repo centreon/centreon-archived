@@ -11,7 +11,8 @@ sub new {
     my $class = shift;
     my $self = $class->SUPER::new("logAnalyser",
         centreon_db_conn => 1,
-        centstorage_db_conn => 1
+        centstorage_db_conn => 1,
+        noroot => 1
     );
 
     bless $self, $class;
