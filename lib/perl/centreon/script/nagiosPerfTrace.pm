@@ -70,7 +70,7 @@ sub rrd_process {
             }
             RRDs::update ($self->{global_cmd_buffer}, "--template", "In_Use:Max_Used:Total_Available", "N:".$1.":".$2.":".$3);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -84,14 +84,14 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
             if (!-e $self->{global_active_service_latency}) {
-                RRDs::create ($self->{global_active_service_latency}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create ($self->{global_active_service_latency}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_active_service_latency}, "-h", "Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_service_latency}, "-h", "Max:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_service_latency}, "-h", "Average:$self->{heartbeat}");
             }
             RRDs::update ($self->{global_active_service_latency}, "--template", "Min:Max:Average", "N:".$1.":".$2.":".$3);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -105,14 +105,14 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
             if (! -e $self->{global_active_service_execution}) {
-                RRDs::create ($self->{global_active_service_execution}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create ($self->{global_active_service_execution}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_active_service_execution}, "-h", "Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_service_execution}, "-h", "Max:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_service_execution}, "-h", "Average:$self->{heartbeat}");
             }
             RRDs::update ($self->{global_active_service_execution}, "--template", "Min:Max:Average", "N:".$1.":".$2.":".$3);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -127,7 +127,7 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
             if (!-e $self->{global_active_service_last}) {
-                RRDs::create ($self->{global_active_service_last}, "-s $self->{interval}", "DS:Last_Min:GAUGE:$self->{interval}:0:U", "DS:Last_5_Min:GAUGE:$self->{interval}:0:U", "DS:Last_15_Min:GAUGE:$self->{interval}:0:U", "DS:Last_Hour:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create ($self->{global_active_service_last}, "-s $self->{interval}", "DS:Last_Min:GAUGE:$self->{interval}:0:U", "DS:Last_5_Min:GAUGE:$self->{interval}:0:U", "DS:Last_15_Min:GAUGE:$self->{interval}:0:U", "DS:Last_Hour:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_active_service_last}, "-h", "Last_Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_service_last}, "-h", "Last_5_Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_service_last}, "-h", "Last_15_Min:$self->{heartbeat}");
@@ -135,7 +135,7 @@ sub rrd_process {
             }
             RRDs::update ($self->{global_active_service_last}, "--template", "Last_Min:Last_5_Min:Last_15_Min:Last_Hour", "N:".$1.":".$2.":".$3.":".$4);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -150,8 +150,8 @@ sub rrd_process {
         } elsif ($match =~ /Services Ok\/Warn\/Unk\/Crit/) {     
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
-            if (! -e $self->{global_services_states) {
-                RRDs::create ($self->{global_services_states}, "-s $self->{interval}", "DS:Ok:GAUGE:$self->{interval}:0:U", "DS:Warn:GAUGE:$self->{interval}:0:U", "DS:Unk:GAUGE:$self->{interval}:0:U", "DS:Crit:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+            if (! -e $self->{global_services_states}) {
+                RRDs::create ($self->{global_services_states}, "-s $self->{interval}", "DS:Ok:GAUGE:$self->{interval}:0:U", "DS:Warn:GAUGE:$self->{interval}:0:U", "DS:Unk:GAUGE:$self->{interval}:0:U", "DS:Crit:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_services_states}, "-h", "Ok:$self->{heartbeat}");
                 RRDs::tune($self->{global_services_states}, "-h", "Warn:$self->{heartbeat}");
                 RRDs::tune($self->{global_services_states}, "-h", "Unk:$self->{heartbeat}");
@@ -159,7 +159,7 @@ sub rrd_process {
             }
             RRDs::update ($self->{global_services_states}, "--template", "Ok:Warn:Unk:Crit", "N:".$1.":".$2.":".$3.":".$4);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -175,14 +175,14 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ [sec|%]/;
             if (! -e $self->{global_active_host_latency}) {
-                RRDs::create ($self->{global_active_host_latency}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create ($self->{global_active_host_latency}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_active_host_latency}, "-h", "Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_host_latency}, "-h", "Max:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_host_latency}, "-h", "Average:$self->{heartbeat}");
             }
             RRDs::update ($self->{global_active_host_latency}, "--template", "Min:Max:Average", "N:".$1.":".$2.":".$3);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -197,14 +197,14 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ sec/;
             if (! -e $self->{global_active_host_execution}) {
-                RRDs::create ($self->{global_active_host_execution}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create ($self->{global_active_host_execution}, "-s $self->{interval}", "DS:Min:GAUGE:$self->{interval}:0:U", "DS:Max:GAUGE:$self->{interval}:0:U", "DS:Average:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_active_host_execution}, "-h", "Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_host_execution}, "-h", "Max:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_host_execution}, "-h", "Average:$self->{heartbeat}");
             }
             RRDs::update ($self->{global_active_host_execution}, "--template", "Min:Max:Average", "N:".$1.":".$2.":".$3);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -219,7 +219,7 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
             if (!-e $self->{global_active_host_last}) {
-                RRDs::create ($self->{global_active_host_last}, "-s $self->{interval}", "DS:Last_Min:GAUGE:$self->{interval}:0:U", "DS:Last_5_Min:GAUGE:$self->{interval}:0:U", "DS:Last_15_Min:GAUGE:$self->{interval}:0:U", "DS:Last_Hour:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create ($self->{global_active_host_last}, "-s $self->{interval}", "DS:Last_Min:GAUGE:$self->{interval}:0:U", "DS:Last_5_Min:GAUGE:$self->{interval}:0:U", "DS:Last_15_Min:GAUGE:$self->{interval}:0:U", "DS:Last_Hour:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_active_host_last}, "-h", "Last_Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_host_last}, "-h", "Last_5_Min:$self->{heartbeat}");
                 RRDs::tune($self->{global_active_host_last}, "-h", "Last_15_Min:$self->{heartbeat}");
@@ -227,7 +227,7 @@ sub rrd_process {
             }
             RRDs::update ($self->{global_active_host_last}, "--template", "Last_Min:Last_5_Min:Last_15_Min:Last_Hour", "N:".$1.":".$2.":".$3.":".$4);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -242,14 +242,14 @@ sub rrd_process {
             $tab[$j+1] = trim($tab[$j+1]);
             $tab[$j+1] =~ /([0-9\.]*)\ \/\ ([0-9\.]*)\ \/\ ([0-9\.]*)/;
             if (!-e $self->{global_hosts_states}) {
-                RRDs::create($self->{global_hosts_states}, "-s $self->{interval}", "DS:Up:GAUGE:$self->{interval}:0:U", "DS:Down:GAUGE:$self->{interval}:0:U", "DS:Unreach:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$number, "RRA:AVERAGE:0.5:12:".$number);
+                RRDs::create($self->{global_hosts_states}, "-s $self->{interval}", "DS:Up:GAUGE:$self->{interval}:0:U", "DS:Down:GAUGE:$self->{interval}:0:U", "DS:Unreach:GAUGE:$self->{interval}:0:U", "RRA:AVERAGE:0.5:1:".$self->{number}, "RRA:AVERAGE:0.5:12:".$self->{number});
                 RRDs::tune($self->{global_hosts_states}, "-h", "Up:$self->{heartbeat}");
                 RRDs::tune($self->{global_hosts_states}, "-h", "Down:$self->{heartbeat}");
                 RRDs::tune($self->{global_hosts_states}, "-h", "Unreach:$self->{heartbeat}");
             }
             RRDs::update ($self->{global_hosts_states}, "--template", "Up:Down:Unreach", "N:".$1.":".$2.":".$3);
             if (RRDs::error()) {
-                $error = RRDs::error()
+                $error = RRDs::error();
                 $self->{logger}->writeLogError($error);
             }
 
@@ -263,7 +263,7 @@ sub rrd_process {
         $j++;
     }
     if (!$error && ($query_str ne "")) {
-        my ($status, $sth) = $self->{csdb}->query("DELETE FROM `nagios_stats` WHERE instance_id = '" . $ns_id . "'")
+        my ($status, $sth) = $self->{csdb}->query("DELETE FROM `nagios_stats` WHERE instance_id = '" . $ns_id . "'");
         ($status, $sth) = $self->{csdb}->query("INSERT INTO `nagios_stats` (instance_id, stat_label, stat_key, stat_value) VALUES " . $query_str);
     }
 }
@@ -274,7 +274,7 @@ sub check_dir {
 
     if (! -d $self->{global_prefix} . "perfmon-" . $nagios_id) {
         if (mkpath($self->{global_prefix} . "perfmon-" . $nagios_id) == 0) {
-            $self->{logger}->writeLogError("Can't create directory '" . $self->{global_prefix} . "perfmon-" . $nagios_id . "': $!")
+            $self->{logger}->writeLogError("Can't create directory '" . $self->{global_prefix} . "perfmon-" . $nagios_id . "': $!");
             return 0;
         }
     }
@@ -301,7 +301,7 @@ sub get_poller {
     my $cfg_item;
     my $cfg_result;
     my $cfg_dir;
-    my $nagiostats;
+    my $nagiostats_bin;
     my $must_update_ds;
     my $dataDir = $self->{centreon_config}->{VarLib} . "/log/";
 
@@ -325,8 +325,12 @@ sub get_poller {
             $self->{logger}->writeLogError("The Monitoring engine configuration filename is empty.");
             next;
         }
+        if (!defined($nagiostats_bin) || $nagiostats_bin eq '') {
+            $self->{logger}->writeLogError("The monitoring engine stat binary is empty");
+            next;
+        }
 
-        my $nagiostats_bin = '';
+        my $nagiostats = '';
 
         if ($is_localhost){
             $nagiostats = `$nagiostats_bin -c $cfg_dir/$cfg_result->{'cfg_file'}`;
@@ -348,7 +352,7 @@ sub get_poller {
                 $nagiostats = `ssh $self->{sshOptions} -p $ssh_port $ip $nagiostats_bin -c $cfg_dir/$cfg_result->{'cfg_file'}`;
             }
         }
-        if ($nagiosstats eq '' || $nagiostats =~ m/Error reading status file/ ) {
+        if ($nagiostats eq '' || $nagiostats =~ m/Error reading status file/ ) {
             next;
         }
         if ($self->check_dir($id) == 1) {
