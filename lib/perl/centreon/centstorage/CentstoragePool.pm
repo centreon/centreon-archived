@@ -19,6 +19,9 @@ sub new {
     $self->{"dbcentreon"} = undef;
     $self->{"dbcentstorage"} = undef;
 
+    # skip if we don't find IDS in config
+    $self->{"skip_if_no_ids"} = 1;
+    
     $self->{"len_storage_rrd"} = undef;
     $self->{"rrd_metrics_path"} = undef;
     $self->{"rrd_status_path"} = undef;
@@ -188,16 +191,16 @@ sub handle_CHLD {
     if ($self->{"rename_rebuild_wait"} == 1) {
         my ($new_host_name, $new_service_description) = split(';', $self->{"rename_old_new"}->{$self->{"rebuild_key"}});
         $self->force_flush_rrd($self->{"rebuild_key"});
-            delete $self->{"cache_service"}->{$self->{"rebuild_key"}};
-            delete $self->{"cache_services_failed"}->{$self->{"rebuild_key"}};
+        delete $self->{"cache_service"}->{$self->{"rebuild_key"}};
+        delete $self->{"cache_services_failed"}->{$self->{"rebuild_key"}};
         delete $self->{"rename_old_new"}->{$self->{"rebuild_key"}};
-            $self->send_rename_finish($new_host_name, $new_service_description);
+        $self->send_rename_finish($new_host_name, $new_service_description);
     }
     $self->rebuild_finish();
-        while (($child_pid = waitpid(-1, &POSIX::WNOHANG)) > 0) {
-                $exit_code = $? >> 8;
-        }
-        $SIG{CHLD} = \&class_handle_CHLD;
+    while (($child_pid = waitpid(-1, &POSIX::WNOHANG)) > 0) {
+        $exit_code = $? >> 8;
+    }
+    $SIG{CHLD} = \&class_handle_CHLD;
 }
 
 sub class_handle_TERM {
@@ -647,7 +650,7 @@ sub get_host_service_ids {
     $data = $stmt->fetchrow_hashref();
     if (!defined($data)) {
         $self->{'logger'}->writeLogError("Can't find 'host_id' $host_name");
-        return -1;
+        return -2;
     }
 
     $host_id = $data->{'host_id'};
@@ -664,7 +667,7 @@ sub get_host_service_ids {
 
     if (!defined($data)) {
         $self->{'logger'}->writeLogError("Can't find 'service_id' for $host_name/$service_description");
-        return -1;
+        return -2;
     }
 
     $service_id = $data->{'service_id'};
@@ -739,6 +742,9 @@ sub get_information_service {
     # Need to identify it
     my ($status, $host_id, $service_id) = $self->get_host_service_ids($host_name, $service_description);
     if ($status != 0) {
+        if ($status == -2 && $self->{"skip_if_no_ids"} == 1) {
+            return 1;
+        }
         if (!defined($no_cache) || $no_cache == 0) {
             push @{$self->{"cache_services_failed"}->{$key_service}}, [$timestamp, $host_name, $service_description, $last_service_state, $service_state, $self->{'service_perfdata'}];
         }
