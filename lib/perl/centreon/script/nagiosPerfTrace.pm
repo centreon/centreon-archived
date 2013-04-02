@@ -1,5 +1,5 @@
 
-package centreon::script::NagiosPerfTrace;
+package centreon::script::nagiosPerfTrace;
 
 use strict;
 use warnings;
@@ -11,7 +11,7 @@ use base qw(centreon::script);
 
 sub new {
     my $class = shift;
-    my $self = $class->SUPER::new("logAnalyser",
+    my $self = $class->SUPER::new("nagiosPerfTrace",
         centreon_db_conn => 1,
         centstorage_db_conn => 1
     );
@@ -388,6 +388,8 @@ sub run {
 
     $self->get_poller();
 }
+
+1;
 
 __END__
 

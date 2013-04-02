@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 sub new {
-    my ($class, $name, $pid, %options) = @_;
-    my %defaults = (name => $name, pid => $pid, timeout => 10);
+    my ($class, $name, %options) = @_;
+    my %defaults = (name => $name, pid => $$, timeout => 10);
     my $self = {%defaults, %options};
 
     bless $self, $class;
@@ -83,6 +83,8 @@ sub is_set {
     my ($status, $sth) = $self->{dbc}->query(
         "SELECT id,running,pid,time_launch FROM cron_operation WHERE name LIKE '$self->{name}'"
     );
+    
+    return 1 if ($status == -1);
     my $data = $sth->fetchrow_hashref();
 
     if (!defined $data->{id}) {
@@ -91,6 +93,7 @@ sub is_set {
         return 0;
     }
     $self->{id} = $data->{id};
+    $data->{pid} = -1 if (!defined($data->{pid}));
     $self->{pid} = $data->{pid};
     $self->{previous_launch_time} = $data->{time_launch};
     if (defined $data->{running} && $data->{running} == 1) {
