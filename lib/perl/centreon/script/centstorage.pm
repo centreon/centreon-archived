@@ -56,19 +56,24 @@ sub new {
        centreon_23_compatibility => 0,
        perfdata_parser_stop => 1
     );
-    
-    if (defined($self->{opt_extra})) {
-        require $self->{opt_extra};
-    } else {
-        if (-f "/etc/centreon/centstorage.pm") {
-            require "/etc/centreon/centstorage.pm";
-        }
-    }
-    $self->{centstorage_config} = {%centstorage_default_config, %centstorage_config};
-    
+
     $self->set_signal_handlers;
 
     return $self;
+}
+
+sub init {
+    my $self = shift;
+
+    if (!defined($self->{opt_extra})) {
+        $self->{opt_extra} = "/etc/centreon/centstorage.pm";
+    }
+    if (-f $self->{opt_extra}) {
+        require $self->{opt_extra};
+    } else {
+        $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
+    }
+    $self->{centstorage_config} = {%centstorage_default_config, %centstorage_config};
 }
 
 sub set_signal_handlers {
@@ -329,6 +334,7 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
+    $self->init();
     $self->{logger}->redirect_output();
 
     ####

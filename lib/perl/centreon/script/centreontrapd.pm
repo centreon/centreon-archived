@@ -49,18 +49,7 @@ sub new {
        cmd_timeout => 10,
        centreon_user => "centreon"
     );
-    
-    if (!defined($self->{opt_extra})) {
-        $self->{opt_extra} = "/etc/centreon/centreontrapd.pm";
-    }
-    if (-f $self->{opt_extra}) {
-        require $self->{opt_extra};
-    } else {
-        $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
-    }
-
-    $self->{centreontrapd_config} = {%centreontrapd_default_config, %centreontrapd_config};
-    
+   
     $self->{htmlentities} = 0;
     @{$self->{var}} = undef;                      # Variables of trap received by SNMPTRAPD
     @{$self->{entvar}} = undef;                   # Enterprise variable values of trap received by SNMPTRAPD
@@ -82,17 +71,32 @@ sub new {
     
     # redefine to avoid out when we try modules
     $SIG{__DIE__} = undef;
+    return $self;
+}
+
+sub init {
+    my $self = shift;
+    
+    if (!defined($self->{opt_extra})) {
+        $self->{opt_extra} = "/etc/centreon/centreontrapd.pm";
+    }
+    if (-f $self->{opt_extra}) {
+        require $self->{opt_extra};
+    } else {
+        $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
+    }
+
+    $self->{centreontrapd_config} = {%centreontrapd_default_config, %centreontrapd_config};
+    
     # Daemon Only
     if ($self->{centreontrapd_config}->{daemon} == 1) {
         $self->set_signal_handlers;
     }
-    return $self;
 }
 
 sub set_signal_handlers {
     my $self = shift;
 
-    
     $SIG{TERM} = \&class_handle_TERM;
     $handlers{TERM}->{$self} = sub { $self->handle_TERM() };
     $SIG{HUP} = \&class_handle_HUP;
@@ -519,6 +523,7 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
+    $self->init();
     $self->{logger}->redirect_output();
 
     ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
