@@ -1,143 +1,40 @@
-#! /usr/bin/perl -w
-################################################################################
-# Copyright 2005-2011 MERETHIS
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
-# GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
-# Foundation ; either version 2 of the License.
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-# PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
-# this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
-# General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give MERETHIS 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of MERETHIS choice, provided that 
-# MERETHIS also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
-# exception to your version of the program, but you are not obliged to do so. If you
-# do not wish to do so, delete this exception statement from your version.
-# 
-# For more information : contact@centreon.com
-# 
-# SVN : $URL$
-# SVN : $Id$
-#
-####################################################################################
+#!/usr/bin/env perl
 
-use strict;
 use warnings;
-use DBI;
-use Getopt::Long;
-use POSIX;
+use centreon::script::purgeLogs;
 
-use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $opt_h $opt_a $data);
+centreon::script::purgeLogs->new()->run();
 
-require "@CENTREON_ETC@/conf.pm";
+__END__
 
-my $VarLib 	= "@CENTREON_VARLIB@";
-my $LOG 	= "@CENTREON_LOG@/centreon-purge.log";
+=head1 NAME
 
-sub writeLogFile($){
-    my ($sec,$min,$hour,$mday,$mon,$year,$wday,$yday,$isdst) = localtime(time());
-    open (LOG, ">> ".$LOG) || print "can't write $LOG: $!";
-   
-   	# Add initial 0 if value is under 10
-    $hour = "0".$hour if ($hour < 10);
-    $min = "0".$min if ($min < 10);
-    $sec = "0".$sec if ($sec < 10);
-   	
-    print LOG "$mday/".($mon+1)."/".($year+1900)." $hour:$min:$sec - ".$_[0]."\n";
-    close LOG or warn $!;
-}
+purgeLogs - a simple script to purge logs in database.
 
-# logAnalyser's lock file
-my $lock_file = "$VarLib/logAnalyser.lock";
-my $pid;
-for (my $x = 0; -e "$lock_file" ; $x++) {
-	sleep(1);
-	if ($x >= 1000) {
-		writeLogFile("Cannot purge logs. Lock file found : $lock_file");
-		exit();
-	}
-}
+=head1 SYNOPSIS
 
-# Manage Lock
-$pid = getpgrp(0);
-`echo $pid > $lock_file`;
+purgeLogs [options]
 
-# Init MySQL Connexion
-my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_ods.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
-my $dbh_centreon = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0});
+=head1 OPTIONS
 
-# Get conf Data
-my $logRetention;
-my $reportingRetention;
-my $sth_config = $dbh->prepare("SELECT `archive_retention`, `reporting_retention` FROM `config`");
-if (!$sth_config->execute()) {
-	writeLogFile("Error:" . $sth_config->errstr);
-} else {
-	my $data = $sth_config->fetchrow_hashref();
-	$logRetention = $data->{'archive_retention'};
-	$reportingRetention = $data->{'reporting_retention'};
-	$sth_config->finish();
-}
+=over 8
 
-################################
-# Get broker
-my $broker = "ndo";
-$sth_config = $dbh_centreon->prepare("SELECT `value` FROM `options` WHERE `key` = 'broker'");
-if (!$sth_config->execute) {
-    writeLogFile("Error:" . $sth_config->errstr);
-} else {
-    my $data = $sth_config->fetchrow_hashref();
-    $broker = $data->{'value'};
-    $sth_config->finish();
-}
+=item B<--config>
 
-####################################################
-# Logs Data purge
-if (defined($logRetention) && $logRetention ne 0){
-    my $last_log = time() - ($logRetention * 24 * 60 * 60);
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
 
-    # Purge Log Database
-    if ($broker eq "ndo") {
-        writeLogFile("Begin centstorage.log purge");
-        $dbh->do("DELETE FROM `log` WHERE `ctime` < '$last_log'");
-		writeLogFile("End centstorage.log purge");
-    } else {
-        writeLogFile("Begin centstorage.logs purge");
-        $dbh->do("DELETE FROM `logs` WHERE `ctime` < '$last_log'");
-        writeLogFile("End centstorage.logs purge");
-    }   
-}
+=item B<--logfile>
 
-####################################################
-# Reporting Data purge
-if (defined($reportingRetention) && $reportingRetention ne 0){
-    my $last_log = time() - ($reportingRetention * 24 * 60 * 60);
+Write log messages into this file instead of the standard output.
 
-    # Purge Log Archive Database
-    $dbh->do("DELETE FROM `log_archive_host` WHERE `date_end` < '$last_log'");
-    $dbh->do("DELETE FROM `log_archive_service` WHERE `date_end` < '$last_log'");
+=item B<--help>
 
-    writeLogFile("Purge log_archive table... Done");
-}
+Print a brief help message and exits.
 
-$dbh->disconnect();
-$dbh_centreon->disconnect();
+=back
 
-`rm -rf $lock_file`;
+=head1 DESCRIPTION
 
-exit(0);
+B<purgeLogs> will get retention information and purge logs in centstorage database.
+
+=cut
