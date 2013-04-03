@@ -28,7 +28,7 @@ sub new {
 sub existsInDB {
     my $self = shift;
     my ($oid, $name) = @_;
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = " . $self->{centreon_dbc}->query($oid) . " AND `traps_name` = " . self->{centreon_dbc}->quote($name) . " LIMIT 1");
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($oid) . " AND `traps_name` = " . $self->{centreon_dbc}->quote($name) . " LIMIT 1");
     if ($status == -1) {
         return 0;
     }
@@ -131,3 +131,5 @@ sub run {
     $self->main();
     exit(0);
 }
+
+1;
