@@ -1,156 +1,37 @@
-#! /usr/bin/perl -w
-################################################################################
-# Copyright 2005-2011 MERETHIS
-# Centreon is developped by : Julien Mathis and Romain Le Merlus under
-# GPL Licence 2.0.
-# 
-# This program is free software; you can redistribute it and/or modify it under 
-# the terms of the GNU General Public License as published by the Free Software 
-# Foundation ; either version 2 of the License.
-# 
-# This program is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
-# PARTICULAR PURPOSE. See the GNU General Public License for more details.
-# 
-# You should have received a copy of the GNU General Public License along with 
-# this program; if not, see <http://www.gnu.org/licenses>.
-# 
-# Linking this program statically or dynamically with other modules is making a 
-# combined work based on this program. Thus, the terms and conditions of the GNU 
-# General Public License cover the whole combination.
-# 
-# As a special exception, the copyright holders of this program give MERETHIS 
-# permission to link this program with independent modules to produce an executable, 
-# regardless of the license terms of these independent modules, and to copy and 
-# distribute the resulting executable under terms of MERETHIS choice, provided that 
-# MERETHIS also meet, for each linked independent module, the terms  and conditions 
-# of the license of that module. An independent module is a module which is not 
-# derived from this program. If you modify this program, you may extend this 
-# exception to your version of the program, but you are not obliged to do so. If you
-# do not wish to do so, delete this exception statement from your version.
-# 
-# For more information : contact@centreon.com
-# 
-# SVN : $URL$
-# SVN : $Id$
-#
-####################################################################################
-#
-# Script init
-#
-use strict;
-use Getopt::Long;
-use DBI;
+#!/usr/bin/perl
 
-use vars qw($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
-require "@CENTREON_ETC@/conf.pm";
+use warnings;
+use centreon::script::centFillTrapDB;
 
-#########################################
-## TEST IF OID ALREADY EXISTS IN DATABASE
-#
+centreon::script::centFillTrapDB->new()->run();
 
-sub existsInDB($$$) {
-    my ($dbh, $oid, $name) = @_;
-    my $sth = $dbh->prepare("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = '$oid' AND `traps_name` = '$name'");
-    $sth->execute();
-    if (defined($sth->fetchrow_array)) {
-		$sth->finish();
-		return 1;
-    }
-    $sth->finish();
-    return 0;
-}
+__END__
 
-#####################################
-## RETURN ENUM FROM STRING FOR STATUS
-#
+=head1 NAME
 
-sub getStatus($$) {
-    my ($val, $name) = @_;
-    if ($val =~ /up/i) {
-        return 0;
-    } elsif ($val =~ /warning|degraded|minor/i) {
-        return 1;
-    } elsif ($val =~ /critical|major|failure|error|down/i) {
-        return 2;
-    }else {
-        if ($name =~ /normal|up/i || $name =~ /on$/i) {
-            return 0;
-        } elsif ($name =~ /warning|degraded|minor/i) {
-            return 1;
-        } elsif ($name =~ /critical|major|fail|error|down|bad/i | $name =~ /off|low$/i) {
-            return 2;
-        }
-    }
-    return 3;
-}
+centFillTrapDB - a script to load MIBs in centreon database.
 
-################
-## MAIN FUNCTION
-#
+=head1 SYNOPSIS
 
-sub main($$) {
-    my $manuf = $_[1];
-    my $dbh = DBI->connect("DBI:mysql:database=".$mysql_database_oreon.";host=".$mysql_host, $mysql_user, $mysql_passwd, {'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1});
-    if (!open(FILE, $_[0])) {
-		print "Cannot open configuration file : $_[0]\n";
-		exit;
-    }
-    my $last_oid = "";
-	while (<FILE>) {	
-		if ($_ =~ /^EVENT\ ([a-zA-Z0-9\_\-]+)\ ([0-9\.]+)\ (\"[A-Za-z\ \_\-]+\")\ ([a-zA-Z]+)/) {
-			my ($name,$oid,$type,$val) = ($1,$2,$3,$4);
-		    if (existsInDB($dbh, $oid, $name)) {
-				print "Trap oid : $name => $oid already exists in database\n";
-				$last_oid = $oid;
-		    } else {
-				$val = getStatus($val,$name);
-				my $sth = $dbh->prepare("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES ('$name', '$oid', '$val', '$manuf', '1')");
-				$sth->execute();
-				$sth->finish();
-				$last_oid = $oid;
-		    }
-		} elsif ($_ =~/^FORMAT\ (.*)/ && $last_oid ne "") {
-		    my $sth = $dbh->prepare("UPDATE `traps` set `traps_args` = '$1' WHERE `traps_oid` = '$last_oid'");
-		    $sth->execute();
-		    $sth->finish();
-		} elsif ($_ =~ /^SDESC(.*)/ && $last_oid ne "") {	    
-		    my $temp_val = $1;
-		    my $desc = "";
-		    if (! ($temp_val =~ /\s+/)){
-				$temp_val =~ s/\"/\\\"/g;
-				$temp_val =~ s/\'/\\\'/g;
-				$desc .= $temp_val;
-		    }
-		    my $found = 0;
-		    while (!$found) {
-				my $line = <FILE>;
-				if ($line =~ /^EDESC/) {
-				    $found = 1;
-				} else {
-					$line =~ s/\"/\\\"/g;
-					$line =~ s/\'/\\\'/g;
-				 	$desc .= $line;
-				}
-		    }
-		    if ($desc ne "") {
-				my $sth = $dbh->prepare("UPDATE `traps` SET `traps_comments` = '$desc' WHERE `traps_oid` = '$last_oid'");
-				$sth->execute();
-				$sth->finish();
-		    }
-		}
-    }
-    $dbh->disconnect();
-}
+centFillTrapDB [options]
 
-Getopt::Long::Configure('bundling');
-my ($opt_f, $opt_m);
-GetOptions("f|file=s" => \$opt_f, "m|man=s"  => \$opt_m);
+=head1 OPTIONS
 
-if (!$opt_f || !$opt_m) {
-    print "fill_trapDB : Usage : ./centFillTrapDB -f configuration_file -m manufacturer_id\n";
-    exit;
-}
+=over 8
 
-main($opt_f,$opt_m);
-exit();
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centFillTrapDB> will read MIB file and load in centreon database.
+
+=cut
+
