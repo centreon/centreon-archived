@@ -47,7 +47,7 @@ sub new {
     $self->{rebuild_progress} = 0;
     $self->{rebuild_pool_choosen} = 0;
 
-    my %centstorage_default_config =
+    %{$self->{centstorage_default_config}} =
       (
        pool_childs => 4,
        TIMEOUT => 60,
@@ -64,6 +64,7 @@ sub new {
 
 sub init {
     my $self = shift;
+    $self->SUPER::init();
 
     if (!defined($self->{opt_extra})) {
         $self->{opt_extra} = "/etc/centreon/centstorage.pm";
@@ -73,7 +74,7 @@ sub init {
     } else {
         $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
     }
-    $self->{centstorage_config} = {%centstorage_default_config, %centstorage_config};
+    $self->{centstorage_config} = {%{$self->{centstorage_default_config}}, %centstorage_config};
 }
 
 sub set_signal_handlers {

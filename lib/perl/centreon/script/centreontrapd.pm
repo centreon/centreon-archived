@@ -24,7 +24,7 @@ sub new {
         "config-extra" => \$self->{opt_extra},
     );
 
-    my %centreontrapd_default_config =
+    %{$self->{centreontrapd_default_config}} =
       (
        daemon => 0,
        spool_directory => "/var/spool/centreontrapd/",
@@ -76,6 +76,7 @@ sub new {
 
 sub init {
     my $self = shift;
+    $self->SUPER::init();
     
     if (!defined($self->{opt_extra})) {
         $self->{opt_extra} = "/etc/centreon/centreontrapd.pm";
@@ -86,7 +87,7 @@ sub init {
         $self->{logger}->writeLogInfo("Can't find extra config file $self->{opt_extra}");
     }
 
-    $self->{centreontrapd_config} = {%centreontrapd_default_config, %centreontrapd_config};
+    $self->{centreontrapd_config} = {%{$self->{centreontrapd_default_config}}, %centreontrapd_config};
     
     # Daemon Only
     if ($self->{centreontrapd_config}->{daemon} == 1) {
