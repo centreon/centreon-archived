@@ -1,8 +1,6 @@
 #!/usr/bin/perl
 
 use warnings;
-use FindBin qw($Bin);
-use lib "$Bin/../lib/perl";
 use centreon::script::centreon_trap_send;
 
 centreon::script::centreon_trap_send->new()->run();
