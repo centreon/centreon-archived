@@ -1,8 +1,6 @@
 #!/usr/bin/env perl
 
 use warnings;
-use FindBin qw($Bin);
-use lib "$Bin/../lib/perl";
 use centreon::script::logAnalyser;
 
 centreon::script::logAnalyser->new()->run();
