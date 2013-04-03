@@ -177,7 +177,7 @@
         $tab_hostcriticality[$nbhostpb] = '';
         $rqCriticality = "SELECT cvs.value as criticality ".
                          "FROM customvariables cvs ".
-                         "WHERE cvs.host_id = '".$ndo['host_id']."' ".
+                         "WHERE cvs.host_id = '".$ndo['host_id']."' AND ISNULL(cvs.service_id) ".
                          "AND cvs.name='CRITICALITY_ID'";
         
         $resCriticality = $dbb->query($rqCriticality);
