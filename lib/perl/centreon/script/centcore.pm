@@ -120,9 +120,9 @@ sub reload {
     
     # Get Config
     unless (my $return = do $self->{config_file}) {
-        $self->{logger}->writeLogError("couldn't parse $file: $@") if $@;
-        $self->{logger}->writeLogError("couldn't do $file: $!") unless defined $return;
-        $self->{logger}->writeLogError("couldn't run $file") unless $return;
+        $self->{logger}->writeLogError("couldn't parse $self->{config_file}: $@") if $@;
+        $self->{logger}->writeLogError("couldn't do $self->{config_file}: $!") unless defined $return;
+        $self->{logger}->writeLogError("couldn't run $self->{config_file}") unless $return;
     } else {
         $self->{centreon_config} = $centreon_config;
     }
@@ -234,17 +234,6 @@ sub getNagiosConfigurationField($$){
     }
     my $data = $sth->fetchrow_hashref();
     return $data->{$_[1]};
-}
-
-sub getLocalOptionsField($){
-    CheckMySQLConnexion();
-    my $sth2 = $con->prepare("SELECT `value` FROM `options` WHERE `key` LIKE '".$_[0]."' LIMIT 1");
-    if (!$sth2->execute()) {
-        writeLogFile("Error when getting general options properties : ".$sth2->errstr);
-    }
-    my $data = $sth2->fetchrow_hashref();
-    $sth2->finish();
-    return $data->{'value'};
 }
 
 sub getLocalServerID(){
@@ -900,11 +889,15 @@ sub checkDebugFlag {
     return -1 if ($status == -1);
     my $data = $sth->fetchrow_hashref();
     if (defined($data->{'value'}) && $data->{'value'} == 1) {
-        $self->{logger}->severity("debug");
-        $self->{logger}->writeLogInfo("Enable Debug in Centcore");
+        if (!$self->{logger}->is_debug()) {
+            $self->{logger}->severity("debug");
+            $self->{logger}->writeLogInfo("Enable Debug in Centcore");
+        }
     } else {
-        $self->{logger}->set_default_severity();
-        $self->{logger}->writeLogInfo("Disable Debug in Centcore");
+        if ($self->{logger}->is_debug()) {
+            $self->{logger}->set_default_severity();
+            $self->{logger}->writeLogInfo("Disable Debug in Centcore");
+        }
     }
     return 0;
 }
@@ -939,8 +932,9 @@ sub run {
         
     while ($self->{stop}) {
         if ($self->{reload} == 0) {
-            $self->reload();
             $self->{logger}->writeLogInfo("Reload in progress...");
+            $self->reload();
+            $self->{reload} = 1;
         }
         # Read Centcore.cmd
         if (-e $self->{cmdFile}) {

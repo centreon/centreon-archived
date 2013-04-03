@@ -19,7 +19,6 @@ sub new {
       );
     my $self = {%defaults, %options};
 
-    $self->{port} = 3306 if (!defined($self->{port}));
     $self->{"instance"} = undef;
     $self->{"type"} = "mysql";
     $self->{"args"} = [];
@@ -129,7 +128,7 @@ sub kill {
         my $rv = $self->{'instance'}->do("KILL QUERY " . $self->{'instance'}->{'mysql_thread_id'});
         if (!$rv) {
             my ($package, $filename, $line) = caller;
-            $self->{'logger'}->writeLogError("MySQL error : " . $self->{'instance'}->errstr . " (caller: $package:$filename:$line)\n");
+            $self->{'logger'}->writeLogError("MySQL error : " . $self->{'instance'}->errstr . " (caller: $package:$filename:$line)");
         }
     }
 }
@@ -141,6 +140,7 @@ sub connect() {
     my $status = 0;
 
     while (1) {
+        $self->{port} = 3306 if (!defined($self->{port}));
         $self->{"instance"} = DBI->connect(
             "DBI:".$self->{"type"} 
                 .":".$self->{"db"}
@@ -155,7 +155,7 @@ sub connect() {
         }
 
         my ($package, $filename, $line) = caller;
-        $logger->writeLogError("MySQL error : cannot connect to database " . $self->{"db"} . ": " . $DBI::errstr . " (caller: $package:$filename:$line)\n");
+        $logger->writeLogError("MySQL error : cannot connect to database " . $self->{"db"} . ": " . $DBI::errstr . " (caller: $package:$filename:$line)");
         if ($self->{'force'} == 0) {
             $status = -1;
             last;
