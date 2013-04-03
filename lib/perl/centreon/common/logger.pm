@@ -45,6 +45,7 @@ sub new {
        filehandler => undef,
        # 0 = nothing, 1 = critical, 3 = info, 7 = debug
        severity => 3,
+       old_severity => 3,
        # 0 = stdout, 1 = file, 2 = syslog
        log_mode => 0,
        # syslog
@@ -57,6 +58,9 @@ sub new {
 sub file_mode($$) {
     my ($self, $file) = @_;
 
+    if (defined($self->{filehandler})) {
+        $self->{filehandler}->close();
+    }
     if (open($self->{filehandler}, ">>", $file)){
         $self->{log_mode} = 1;
         $self->{filehandler}->autoflush(1);
@@ -105,10 +109,17 @@ sub redirect_output {
     }
 }
 
+sub set_default_severity {
+    my $self = shift;
+
+    $self->{"severity"} = $self->{"old_severity"};
+}
+
 # Getter/Setter Log severity
 sub severity {
     my $self = shift;
     if (@_) {
+        my $save_severity = $self->{"severity"};
         if ($_[0] =~ /^[012347]$/) {
             $self->{"severity"} = $_[0];
         } elsif ($_[0] eq "none") {
@@ -121,7 +132,9 @@ sub severity {
             $self->{"severity"} = 7;
         } else {
             $self->writeLogError("Wrong severity value set.");
+            return -1;
         }
+        $self->{"old_severity"} = $save_severity;
     }
     return $self->{"severity"};
 }

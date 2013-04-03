@@ -10,6 +10,7 @@ use centreon::common::db;
 use base qw(centreon::script);
 
 my %handlers = ('TERM' => {}, 'HUP' => {}, 'DIE' => {});
+use vars qw($centreon_config);
 
 sub new {
     my $class = shift;
@@ -27,12 +28,13 @@ sub new {
     $self->{rsync} = "rsync";
     $self->{rsyncWT} = $self->{rsync};
     $self->{sudo} = "sudo";
-
-    $self->{ssh} .= " -o ConnectTimeout=$timeout -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
-    $self->{rsync} .= " --timeout=$timeout ";
-    $self->{scp} .= " -o ConnectTimeout=$timeout -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
-
     $self->{timeout} = 5; 
+    
+    $self->{ssh} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
+    $self->{rsync} .= " --timeout=$self->{timeout} ";
+    $self->{scp} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
+
+    
     $self->{timeBetween2SyncPerf} = 60;
     $self->{perfdataSync} = 0;
     $self->{logSync} = 0;
@@ -108,6 +110,31 @@ sub handle_DIE {
     $self->{logger}->writeLogInfo("Dont die...");
 }
 
+sub reload {
+    my $self = shift;
+    
+    if (defined $self->{log_file}) {
+        $self->{logger}->file_mode($self->{log_file});
+    }
+    $self->{logger}->redirect_output();
+    
+    # Get Config
+    unless (my $return = do $self->{config_file}) {
+        $self->{logger}->writeLogError("couldn't parse $file: $@") if $@;
+        $self->{logger}->writeLogError("couldn't do $file: $!") unless defined $return;
+        $self->{logger}->writeLogError("couldn't run $file") unless $return;
+    } else {
+        $self->{centreon_config} = $centreon_config;
+    }
+    
+    $self->{centreon_dbc}->disconnect();
+    $self->{centreon_dbc}->db($self->{centreon_config}->{centreon_db});
+    $self->{centreon_dbc}->host($self->{centreon_config}->{db_host});
+    $self->{centreon_dbc}->user($self->{centreon_config}->{db_user});
+    $self->{centreon_dbc}->password($self->{centreon_config}->{db_passwd});
+    $self->{centreon_dbc}->port($self->{centreon_config}->{db_port});
+}
+
 ###########################################################
 # Function to move command file on temporary file
 #
@@ -143,7 +170,7 @@ sub GetAllNagiosServerPerfData {
         if ($self->{logSync} == 1) {
             $self->GetLogFile($data->{'id'});
         }
-        getBrokerStats($data->{'id'});
+        $self->getBrokerStats($data->{'id'});
     }
 
     return 0;
@@ -154,6 +181,7 @@ sub GetAllNagiosServerPerfData {
 ## fifo
 #
 sub getBrokerStats($) {
+    my $self = shift;
     my ($poller_id) = @_;
     my $port = "";
     my $statPipe = "/tmp/.centreon-broker-stats.dat";
@@ -162,37 +190,34 @@ sub getBrokerStats($) {
 
     # Check Cache directory
     if (!-d $destFile) {
-        writeLogFile("Create data directory for broker-stats: $destFile");
+        $self->{logger}->writeLogInfo("Create data directory for broker-stats: $destFile");
         mkpath($destFile);
     }
 
-    # Check MySQL Configuration 
-    CheckMySQLConnexion();
-
-    my $sth2 = $con->prepare("SELECT cbi.config_value FROM cfg_centreonbroker_info as cbi, cfg_centreonbroker as cb WHERE cb.config_id = cbi.config_id AND cbi.config_group = 'stats' AND cbi.config_key = 'fifo' AND cb.ns_nagios_server = '".$poller_id."'");
-    if (!$sth2->execute()) {
-        writeLogFile("Error poller broker pipe : ".$sth2->errstr);
-        return ;
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT cbi.config_value FROM cfg_centreonbroker_info as cbi, cfg_centreonbroker as cb WHERE cb.config_id = cbi.config_id AND cbi.config_group = 'stats' AND cbi.config_key = 'fifo' AND cb.ns_nagios_server = '".$poller_id."'");
+    if ($status == -1) {
+        $self->{logger}->writeLogError("Error poller broker pipe");
+        return -1;
     }
-    while (my $data = $sth2->fetchrow_hashref()) {
+    while (my $data = $sth->fetchrow_hashref()) {
 
         # Get poller Configuration
-        $server_info = getServerConfig($poller_id);
+        $server_info = $self->getServerConfig($poller_id);
         $port = checkSSHPort($server_info->{'ssh_port'});
 
         # Copy the stat file into a buffer
-        my $stdout = `$ssh -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
-        if (defined($stdout) && $stdout){
-            writeLogFile("Result : $stdout\n");
+        my $stdout = `$self->{ssh} -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
+        if (defined($stdout) && $stdout) {
+            $self->{logger}->writeLogInfo("Result : $stdout");
         }
 
         # Get the stats file
-        $stdout = `$scp -P $port $server_info->{'ns_ip_address'}:$statPipe $destFile/broker-stats-$poller_id.dat >> /dev/null`;
+        $stdout = `$self->{scp} -P $port $server_info->{'ns_ip_address'}:$statPipe $destFile/broker-stats-$poller_id.dat >> /dev/null`;
         if (defined($stdout) && $stdout){
-            writeLogFile("Result : $stdout\n");
+            $self->{logger}->writeLogInfo("Result : $stdout");
         }
     }
-    return;
+    return 0;
 }
 
 # -------------------
@@ -504,7 +529,7 @@ sub GetLogFile($) {
 
             if ($flag == 1) {
                 # Get file with rsync
-                my $cmd = "$scp -P $port $distantconnexion:$distantlogfile $locallogfile > /dev/null";
+                my $cmd = "$self->{scp} -P $port $distantconnexion:$distantlogfile $locallogfile > /dev/null";
                 `$cmd`;
                 $self->{logger}->writeLogDebug($cmd);
                 if ($? ne 0) {
@@ -527,7 +552,6 @@ sub sendConfigFile($){
     my $self = shift;
     # Init Values
     my $id = $_[0];
-    my $debug = 0;
 
     my $cfg_dir = $self->getNagiosConfigurationField($id, "cfg_dir");
     my $server_info = $self->getServerConfig($id);
@@ -546,7 +570,7 @@ sub sendConfigFile($){
     my $cmd = "$self->{scp} -P $port $origin $dest 2>&1";
     my $stdout = `$cmd`;
     $self->{logger}->writeLogInfo("Result : $stdout");
-    $self->{logger]->writeLogInfo("End: Send config files on poller $id");
+    $self->{logger}->writeLogInfo("End: Send config files on poller $id");
 
     # Send configuration for Centreon Broker
     if ( -e $self->{centreonDir}  . "/filesGeneration/broker/".$id) {
@@ -654,9 +678,9 @@ sub syncTraps($) {
         # synchronize Archives for all pollers
         my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
         return if ($status == -1);
-        while (my $server = $sth2->fetchrow_hashref()) {
+        while (my $server = $sth->fetchrow_hashref()) {
             # Get configuration
-            my $ns_server = getServerConfig($server->{'id'});
+            my $ns_server = $self->getServerConfig($server->{'id'});
             my $port = checkSSHPort($ns_server->{'ssh_port'});
 
             if ($id == 0) {
@@ -876,10 +900,10 @@ sub checkDebugFlag {
     return -1 if ($status == -1);
     my $data = $sth->fetchrow_hashref();
     if (defined($data->{'value'}) && $data->{'value'} == 1) {
-        $debug = 1;
+        $self->{logger}->severity("debug");
         $self->{logger}->writeLogInfo("Enable Debug in Centcore");
     } else {
-        $debug = 0;
+        $self->{logger}->set_default_severity();
         $self->{logger}->writeLogInfo("Disable Debug in Centcore");
     }
     return 0;
@@ -905,16 +929,17 @@ sub run {
     $self->{logger}->writeLogInfo("Starting centcore engine...");
 
     $self->{centreon_dbc} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
-                                                              host => $self->{centreon_config}->{db_host},
-                                                              port => $self->{centreon_config}->{db_port},
-                                                              user => $self->{centreon_config}->{db_user},
-                                                              password => $self->{centreon_config}->{db_passwd},
-                                                              force => 0,
-                                                              logger => $self->{logger});
+                                                      host => $self->{centreon_config}->{db_host},
+                                                      port => $self->{centreon_config}->{db_port},
+                                                      user => $self->{centreon_config}->{db_user},
+                                                      password => $self->{centreon_config}->{db_passwd},
+                                                      force => 0,
+                                                      logger => $self->{logger});
     $self->checkDebugFlag();
         
     while ($self->{stop}) {
         if ($self->{reload} == 0) {
+            $self->reload();
             $self->{logger}->writeLogInfo("Reload in progress...");
         }
         # Read Centcore.cmd
@@ -972,7 +997,7 @@ sub run {
             $self->checkDebugFlag();
 
             $self->GetAllNagiosServerPerfData();        
-            $timeSyncPerf = time();
+            $self->{timeSyncPerf} = time();
         }
 
         sleep(1);
