@@ -221,7 +221,7 @@
 									foreach ($ext_cmd_add['host'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $hostClass->getHostName($host), $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $host, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -233,7 +233,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $host, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -255,7 +255,7 @@
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hid, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -267,7 +267,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hid, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -283,7 +283,7 @@
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $period['host_name'], $period['obj_name'], $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hid, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -295,7 +295,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hid, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -313,6 +313,7 @@
                         if (!isset($service[0])) {
                             continue;
                         }
+                                            $hid = $service[0];
 					    $currentHostDate = $gmt->getHostCurrentDatetime($service[0], 'U');
 						$dts = $downtime->doSchedule($period['dt_id'], $currentHostDate, $delay, $period['dtp_start_time'], $period['dtp_end_time']);
 						if (count($dts) != 0) {
@@ -324,7 +325,7 @@
 									foreach ($ext_cmd_add['svc'] as $cmd) {
 										$cmd = sprintf($cmd, time(), $host_name, $service_name, $dt[0], $dt[1], $period['dtp_fixed'], $period['dtp_duration'], $period['dt_id']);
 										if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hid, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
@@ -336,7 +337,7 @@
 											$cmd = sprintf('[%u] DEL_SVC_DOWNTIME;%u', time(), $schelDt['internal_downtime_id']);
 										}
                                         if (!in_array($cmd, $existingDowntime)) {
-                                            sendCommand($pearDB, $period['obj_id'], $cmd);
+                                            sendCommand($pearDB, $hid, $cmd);
                                             $existingDowntime[] = $cmd;
                                         }
 									}
