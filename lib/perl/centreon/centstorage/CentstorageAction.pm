@@ -75,7 +75,7 @@ sub reload {
     
     $self->{logger}->writeLogInfo("Reload in progress for delete process...");
     # reopen file
-    if (defined($self->{logger}->is_file_mode())) {
+    if ($self->{logger}->is_file_mode()) {
         $self->{logger}->file_mode($self->{logger}->{file_name});
     }
     $self->{logger}->redirect_output();

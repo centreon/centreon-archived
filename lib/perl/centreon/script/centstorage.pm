@@ -86,7 +86,7 @@ sub reload {
     
     $self->{logger}->writeLogInfo("Reload in progress for main process...");
     # reopen file
-    if (defined($self->{logger}->is_file_mode())) {
+    if ($self->{logger}->is_file_mode()) {
         $self->{logger}->file_mode($self->{logger}->{file_name});
     }
     $self->{logger}->redirect_output();
@@ -162,7 +162,7 @@ sub handle_DIE {
     ###
     # Send -TERM signal
     ###
-    for (my $i = 0; $i < $self->{centstorage_config}->{pool_childs}; $i++) {
+    for (my $i = 0; defined($self->{centstorage_config}->{pool_childs}) && $i < $self->{centstorage_config}->{pool_childs}; $i++) {
         if (defined($self->{pool_pipes}{$i}) && $self->{pool_pipes}{$i}->{'running'} == 1) {
             kill('TERM', $self->{pool_pipes}{$i}->{'pid'});
             $self->{logger}->writeLogInfo("Send -TERM signal to pool process..");

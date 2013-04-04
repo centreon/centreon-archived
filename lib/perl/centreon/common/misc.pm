@@ -19,7 +19,7 @@ sub reload_db_config {
             $centreon_config->{db_user} ne $cdb->user() ||
             $centreon_config->{db_passwd} ne $cdb->password() ||
             $centreon_config->{db_port} ne $cdb->port()) {
-            $logger->writeLogInfo("Database centreon db config had been modified")
+            $logger->writeLogInfo("Database centreon config had been modified");
             $cdb->db($centreon_config->{centreon_db});
             $cdb->host($centreon_config->{db_host});
             $cdb->user($centreon_config->{db_user});
@@ -30,13 +30,13 @@ sub reload_db_config {
     }
     
     if (defined($csdb)) {
-        if ($centreon_config->{centreon_db} ne $csdb->db() ||
+        if ($centreon_config->{centstorage_db} ne $csdb->db() ||
             $centreon_config->{db_host} ne $csdb->host() ||
             $centreon_config->{db_user} ne $csdb->user() ||
             $centreon_config->{db_passwd} ne $csdb->password() ||
             $centreon_config->{db_port} ne $csdb->port()) {
-            $logger->writeLogInfo("Database centreon db config had been modified")
-            $csdb->db($centreon_config->{centreon_db});
+            $logger->writeLogInfo("Database centstorage config had been modified");
+            $csdb->db($centreon_config->{centstorage_db});
             $csdb->host($centreon_config->{db_host});
             $csdb->user($centreon_config->{db_user});
             $csdb->password($centreon_config->{db_passwd});
@@ -51,7 +51,7 @@ sub reload_db_config {
 sub check_debug {
     my ($logger, $key, $cdb, $name) = @_;
     
-    my $request = "SELECT value FROM options WHERE `key` = " . $cdb->quote($key));
+    my $request = "SELECT value FROM options WHERE `key` = " . $cdb->quote($key);
     my ($status, $sth) =  $cdb->query($request);
     return -1 if ($status == -1);
     my $data = $sth->fetchrow_hashref();
