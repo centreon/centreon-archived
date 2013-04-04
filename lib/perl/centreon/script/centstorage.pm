@@ -8,6 +8,7 @@ use IO::Select;
 use IO::Handle;
 use centreon::script;
 use centreon::common::db;
+use centreon::common::misc;
 use centreon::centstorage::CentstorageLib;
 use centreon::centstorage::CentstoragePool;
 use centreon::centstorage::CentstoragePerfdataFile;
@@ -18,7 +19,7 @@ use centreon::centstorage::CentstorageRRD;
 use base qw(centreon::script);
 use vars qw(%centstorage_config);
 
-my %handlers = ('TERM' => {}, 'CHLD' => {}, 'DIE' => {});
+my %handlers = ('TERM' => {}, 'CHLD' => {}, 'DIE' => {}, 'HUP' => {});
 
 sub new {
     my $class = shift;
@@ -47,6 +48,9 @@ sub new {
     $self->{rebuild_progress} = 0;
     $self->{rebuild_pool_choosen} = 0;
 
+    # reload flag
+    $self->{reload} = 1;
+    
     %{$self->{centstorage_default_config}} =
       (
        pool_childs => 4,
@@ -77,6 +81,37 @@ sub init {
     $self->{centstorage_config} = {%{$self->{centstorage_default_config}}, %centstorage_config};
 }
 
+sub reload {
+    my $self = shift;
+    
+    $self->{logger}->writeLogInfo("Reload in progress for main process...");
+    # reopen file
+    if (defined($self->{logger}->is_file_mode())) {
+        $self->{logger}->file_mode($self->{logger}->{file_name});
+    }
+    $self->{logger}->redirect_output();
+    
+    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{centreon_db_centreon});
+    centreon::common::misc::check_debug($self->{logger}, "debug_centstorage", $self->{centreon_db_centreon}, "centstorage main process");
+    
+    # Not needed anymore
+    $self->{centreon_db_centreon}->disconnect();
+    
+    # Send HUP to childs
+    for (my $i = 0; $i < $self->{centstorage_config}->{pool_childs}; $i++) {
+        if ($self->{pool_pipes}{$i}->{'running'} == 1) {
+            kill('HUP', $self->{pool_pipes}{$i}->{'pid'});
+            $self->{logger}->writeLogInfo("Send -HUP signal to pool process..");
+        }
+    }
+    if ($self->{delete_pipes}{'running'} == 1) {
+        kill('HUP', $self->{pid_delete_child});
+        $self->{logger}->writeLogInfo("Send -HUP signal to delete process..");
+    }
+
+    $self->{reload} = 1;
+}
+
 sub set_signal_handlers {
     my $self = shift;
 
@@ -86,6 +121,8 @@ sub set_signal_handlers {
     $handlers{DIE}->{$self} = sub { $self->handle_DIE($_[0]) };
     $SIG{CHLD} = \&class_handle_CHLD;
     $handlers{CHLD}->{$self} = sub { $self->handle_CHLD() };
+    $SIG{HUP} = \&class_handle_HUP;
+    $handlers{HUP}->{$self} = sub { $self->handle_HUP() };
 }
 
 sub class_handle_TERM {
@@ -106,6 +143,12 @@ sub class_handle_DIE {
 sub class_handle_CHLD {
     foreach (keys %{$handlers{CHLD}}) {
         &{$handlers{CHLD}->{$_}}();
+    }
+}
+
+sub class_handle_HUP {
+    foreach (keys %{$handlers{HUP}}) {
+        &{$handlers{HUP}->{$_}}();
     }
 }
 
@@ -174,6 +217,11 @@ sub handle_TERM {
     my $self = shift;
     $self->{logger}->writeLogInfo("$$ Receiving order to stop...");
     die("Quit");
+}
+
+sub handle_HUP {
+    my $self = shift;
+    $self->{reload} = 0;
 }
 
 ####
@@ -259,7 +307,7 @@ sub create_pool_child {
         my $centstorage_pool = centreon::centstorage::CentstoragePool->new($self->{logger}, $centstorage_rrd,  $self->{rebuild_progress});
         $centstorage_pool->main($centreon_db_centreon, $centreon_db_centstorage,
                     $self->{pool_pipes}{$pool_num}->{'reader_two'}, $self->{pool_pipes}{$pool_num}->{'writer_one'}, $pool_num,
-                    $self->{centstorage_config}->{rrd_cache_mode}, $self->{centstorage_config}->{rrd_flush_time}, $self->{centstorage_config}->{perfdata_parser_stop});
+                    $self->{centstorage_config}->{rrd_cache_mode}, $self->{centstorage_config}->{rrd_flush_time}, $self->{centstorage_config}->{perfdata_parser_stop}, $self->{config_file});
         exit(0);
     }
     $self->{pool_pipes}{$pool_num}->{'pid'} = $current_pid;
@@ -310,7 +358,7 @@ sub create_delete_child {
         
         my $centstorage_action = centreon::centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress}, $self->{centstorage_config}->{centreon_23_compatibility});
         $centstorage_action->main($centreon_db_centreon, $centreon_db_centstorage,
-                    $self->{delete_pipes}{'reader_two'}, $self->{delete_pipes}{'writer_one'});
+                    $self->{delete_pipes}{'reader_two'}, $self->{delete_pipes}{'writer_one'}, $self->{config_file});
         exit(0);
     }
     $self->{pid_delete_child} = $current_pid;
@@ -428,6 +476,10 @@ sub run {
                     centreon::centstorage::CentstorageLib::call_pool_delete_clean($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
                 }
             }
+        }
+        
+        if ($self->{reload} == 0) {
+            $self->reload();
         }
     }
 }

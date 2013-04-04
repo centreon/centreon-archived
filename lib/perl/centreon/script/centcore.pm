@@ -113,7 +113,7 @@ sub handle_DIE {
 sub reload {
     my $self = shift;
     
-    if (defined $self->{log_file}) {
+    if (defined($self->{log_file})) {
         $self->{logger}->file_mode($self->{log_file});
     }
     $self->{logger}->redirect_output();

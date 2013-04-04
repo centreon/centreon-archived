@@ -1,11 +1,11 @@
 
-use strict;
-use warnings;
-
 package centreon::centstorage::CentstorageAction;
 
+use strict;
+use warnings;
+use centreon::common::misc;
 use centreon::centstorage::CentstorageLib;
-my %handlers = ('TERM' => {});
+my %handlers = ('TERM' => {}, 'HUP' => {});
 
 sub new {
     my $class = shift;
@@ -26,6 +26,9 @@ sub new {
 
     $self->{"save_read"} = [];
 
+    # reload flag
+    $self->{reload} = 1;
+    $self->{config_file} = undef;
 
     bless $self, $class;
     $self->set_signal_handlers;
@@ -37,6 +40,13 @@ sub set_signal_handlers {
 
     $SIG{TERM} = \&class_handle_TERM;
     $handlers{'TERM'}->{$self} = sub { $self->handle_TERM() };
+    $SIG{HUP} = \&class_handle_HUP;
+    $handlers{HUP}->{$self} = sub { $self->handle_HUP() };
+}
+
+sub handle_HUP {
+    my $self = shift;
+    $self->{reload} = 0;
 }
 
 sub handle_TERM {
@@ -52,6 +62,37 @@ sub class_handle_TERM {
         &{$handlers{'TERM'}->{$_}}();
     }
     exit(0);
+}
+
+sub class_handle_HUP {
+    foreach (keys %{$handlers{HUP}}) {
+        &{$handlers{HUP}->{$_}}();
+    }
+}
+
+sub reload {
+    my $self = shift;
+    
+    $self->{logger}->writeLogInfo("Reload in progress for delete process...");
+    # reopen file
+    if (defined($self->{logger}->is_file_mode())) {
+        $self->{logger}->file_mode($self->{logger}->{file_name});
+    }
+    $self->{logger}->redirect_output();
+    
+    my ($status, $status_cdb, $status_csdb) = centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file},
+                                                                                       $self->{dbcentreon}, $self->{dbcentstorage});
+    if ($status_cdb == 1) {
+        $self->{dbcentreon}->disconnect();
+        $self->{dbcentreon}->connect();
+    }
+    if ($status_csdb == 1) {
+        $self->{dbcentstorage}->disconnect();
+        $self->{dbcentstorage}->connect();
+    }
+    centreon::common::misc::check_debug($self->{logger}, "debug_centstorage", $self->{dbcentreon}, "centstorage delete process");
+
+    $self->{reload} = 1;
 }
 
 sub check_deleted {
@@ -246,11 +287,12 @@ sub check_purge {
 
 sub main {
     my $self = shift;
-    my ($dbcentreon, $dbcentstorage, $pipe_read, $pipe_write) = @_;
+    my ($dbcentreon, $dbcentstorage, $pipe_read, $pipe_write, $config_file) = @_;
     my $status;
 
-    $self->{'dbcentreon'} = $dbcentreon;
-    $self->{'dbcentstorage'} = $dbcentstorage;
+    $self->{dbcentreon} = $dbcentreon;
+    $self->{dbcentstorage} = $dbcentstorage;
+    $self->{config_file} = $config_file;
     
     ($status, $self->{"rrd_metrics_path"}, $self->{"rrd_status_path"}) = $self->get_centstorage_information();
 
@@ -280,6 +322,10 @@ sub main {
             $self->check_rebuild($pipe_write);
             $self->check_deleted($pipe_write);
             $self->check_purge();
+        }
+        
+        if ($self->{reload} == 0) {
+            $self->reload();
         }
     }
 }

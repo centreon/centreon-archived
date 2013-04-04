@@ -1,13 +1,14 @@
 
-use strict;
-use warnings;
-
 package centreon::centstorage::CentstoragePool;
 
+use strict;
+use warnings;
 use centreon::common::db;
+use centreon::common::misc;
 use centreon::centstorage::CentstorageLib;
 use centreon::centstorage::CentstorageRebuild;
-my %handlers = ('TERM' => {}, 'CHLD' => {});
+
+my %handlers = ('TERM' => {}, 'CHLD' => {}, 'HUP' => {});
 my %rrd_trans = ("g" => 0, "c" => 1, "d" => 2, "a" => 3);
 
 sub new {
@@ -80,6 +81,10 @@ sub new {
     $self->{"rebuild_key"} = undef;
     $self->{"current_pid"} = undef;
 
+    # reload flag
+    $self->{reload} = 1;
+    $self->{config_file} = undef;
+    
     $self->{"save_read"} = [];
     $self->{"read_select"} = undef;
     $self->{"pipe_write"} = undef;
@@ -95,6 +100,13 @@ sub set_signal_handlers {
     $handlers{'TERM'}->{$self} = sub { $self->handle_TERM() };
     $SIG{CHLD} = \&class_handle_CHLD;
     $handlers{'CHLD'}->{$self} = sub { $self->handle_CHLD() };
+    $SIG{HUP} = \&class_handle_HUP;
+    $handlers{HUP}->{$self} = sub { $self->handle_HUP() };
+}
+
+sub handle_HUP {
+    my $self = shift;
+    $self->{reload} = 0;
 }
 
 sub handle_TERM {
@@ -214,6 +226,37 @@ sub class_handle_CHLD {
     foreach (keys %{$handlers{'CHLD'}}) {
         &{$handlers{'CHLD'}->{$_}}();
     }
+}
+
+sub class_handle_HUP {
+    foreach (keys %{$handlers{HUP}}) {
+        &{$handlers{HUP}->{$_}}();
+    }
+}
+
+sub reload {
+    my $self = shift;
+    
+    $self->{logger}->writeLogInfo("Reload in progress for pool process " . $self->{num_pool} . "...");
+    # reopen file
+    if (defined($self->{logger}->is_file_mode())) {
+        $self->{logger}->file_mode($self->{logger}->{file_name});
+    }
+    $self->{logger}->redirect_output();
+    
+    my ($status, $status_cdb, $status_csdb) = centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file},
+                                                                                       $self->{dbcentreon}, $self->{dbcentstorage});
+    if ($status_cdb == 1) {
+        $self->{dbcentreon}->disconnect();
+        $self->{dbcentreon}->connect();
+    }
+    if ($status_csdb == 1) {
+        $self->{dbcentstorage}->disconnect();
+        $self->{dbcentstorage}->connect();
+    }
+    centreon::common::misc::check_debug($self->{logger}, "debug_centstorage", $self->{dbcentreon}, "centstorage pool process " . $self->{num_pool});
+
+    $self->{reload} = 1;
 }
 
 sub add_data_mysql {
@@ -997,8 +1040,8 @@ sub send_rename_finish {
     my ($host_name, $service_description) = @_;
     
     $self->{"rename_rebuild_wait"} = 0;
-        my $fh = $self->{'pipe_write'};
-        print $fh "RENAMEFINISH\t$host_name\t$service_description\n";
+    my $fh = $self->{'pipe_write'};
+    print $fh "RENAMEFINISH\t$host_name\t$service_description\n";
 }
 
 sub rename_clean {
@@ -1042,13 +1085,14 @@ sub delete_clean {
 
 sub main {
     my $self = shift;
-    my ($dbcentreon, $dbcentstorage, $pipe_read, $pipe_write, $num_pool, $rrd_cache_mode, $rrd_flush_time, $perfdata_parser_stop) = @_;
+    my ($dbcentreon, $dbcentstorage, $pipe_read, $pipe_write, $num_pool, $rrd_cache_mode, $rrd_flush_time, $perfdata_parser_stop, $config_file) = @_;
     my $status;
 
-    $self->{'dbcentreon'} = $dbcentreon;
-    $self->{'dbcentstorage'} = $dbcentstorage;
-    $self->{'num_pool'} = $num_pool;
-    $self->{'perfdata_parser_stop'} = $perfdata_parser_stop if (defined($perfdata_parser_stop));
+    $self->{dbcentreon} = $dbcentreon;
+    $self->{dbcentstorage} = $dbcentstorage;
+    $self->{num_pool} = $num_pool;
+    $self->{config_file} = $config_file;
+    $self->{perfdata_parser_stop} = $perfdata_parser_stop if (defined($perfdata_parser_stop));
 
     ($status, $self->{"main_perfdata_file"}) = centreon::centstorage::CentstorageLib::get_main_perfdata_file($self->{'dbcentreon'});
     ($status, $self->{"len_storage_rrd"}, $self->{"rrd_metrics_path"}, $self->{"rrd_status_path"}, $self->{"storage_type"}) = $self->get_centstorage_information();
@@ -1100,6 +1144,10 @@ sub main {
             }
         }
         $self->flush_failed();
+        
+        if ($self->{reload} == 0) {
+            $self->reload();
+        }
     }
 }
 
