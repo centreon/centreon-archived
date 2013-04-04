@@ -2,6 +2,7 @@ package centreon::script::logAnalyserBroker;
 
 use strict;
 use warnings;
+use POSIX;
 use centreon::script;
 
 use base qw(centreon::script);
@@ -28,7 +29,6 @@ sub new {
     my $self = $class->SUPER::new("logAnalyserBroker",
         centreon_db_conn => 1,
         centstorage_db_conn => 1,
-        noroot => 1
     );
 
     bless $self, $class;
@@ -90,8 +90,8 @@ sub parseFile($$) {
     $self->{csdb}->transaction_mode(1);
     eval {
         my $sth = $self->{csdb}->{instance}->prepare(<<"EOQ");
-INSERT INTO log (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance, host_id, service_id)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+INSERT INTO logs (ctime, host_name, service_description, status, output, notification_cmd, notification_contact, type, retry, msg_type, instance_name, host_id, service_id)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOQ
 
         while (<FILE>) {

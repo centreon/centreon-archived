@@ -30,7 +30,7 @@ sub run {
                                         force => 0,
                                         logger => $self->{logger});
     my ($status, $sth) = $cdb->query("SELECT nagios_server.id, nagios_server.ns_ip_address, cfg_nagios.log_archive_path FROM nagios_server, cfg_nagios 
-                                      WHERE nagios_server.ns_activate = '1' AND nagios_server.localhost = '0' AND nagios_server.id = cfg_nagios.ns_server_id");
+                                      WHERE nagios_server.ns_activate = '1' AND nagios_server.localhost = '0' AND nagios_server.id = cfg_nagios.nagios_server_id");
     die("Error SQL Quit") if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
 		if (defined($data->{log_archive_path}) && $data->{log_archive_path} ne '') {
