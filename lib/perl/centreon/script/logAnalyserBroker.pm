@@ -99,64 +99,64 @@ EOQ
 
             if ($_ =~ m/^\[([0-9]*)\]\sSERVICE ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, $tab[5], '', '', $type_code{$tab[3]}, $tab[4], '0', $instance_name, $cache_host{$tab[0]}, $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                  [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, $tab[5], '', '', $type_code{$tab[3]}, $tab[4], '0', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST ALERT\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host{$tab[0]}));
+                next if (!defined($self->{cache_host}{$tab[0]}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, $tab[4], '', '', $type_code{$tab[2]}, $tab[3], '1', $instance_name, $cache_host{$tab[0]}, '')];
+                  [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, $tab[4], '', '', $type_code{$tab[2]}, $tab[3], '1', $instance_name, $self->{cache_host}{$tab[0]}, '')];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sSERVICE NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host_service{$tab[1] . ":" . $tab[2]}->{'service_id'}));
+                next if (!defined($self->{cache_host_service}{$tab[1] . ":" . $tab[2]}->{'service_id'}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[1], $tab[2], $svc_status_code{$tab[3]}, $tab[5], $tab[4], $tab[0], '', 0, '2', $instance_name, $cache_host{$tab[1]}, $cache_host_service{$tab[1] . ":" . $tab[2]}->{'service_id'})];
+                  [($cur_ctime, $tab[1], $tab[2], $svc_status_code{$tab[3]}, $tab[5], $tab[4], $tab[0], '', 0, '2', $instance_name, $self->{cache_host}{$tab[1]}, $self->{cache_host_service}{$tab[1] . ":" . $tab[2]}->{'service_id'})];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sHOST NOTIFICATION\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host{$tab[1]}));
+                next if (!defined($self->{cache_host}{$tab[1]}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[1], '', $host_status_code{$tab[2]}, $tab[4], $tab[3], $tab[0], '', 0, '3', $instance_name, $cache_host{$tab[1]}, '')];
+                  [($cur_ctime, $tab[1], '', $host_status_code{$tab[2]}, $tab[4], $tab[3], $tab[0], '', 0, '3', $instance_name, $self->{cache_host}{$tab[1]}, '')];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host{$tab[0]}));
+                next if (!defined($self->{cache_host}{$tab[0]}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, '', '', '', $type_code{$tab[2]}, 0, '7', $instance_name, $cache_host{$tab[0]}, '')];
+                  [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, '', '', '', $type_code{$tab[2]}, 0, '7', $instance_name, $self->{cache_host}{$tab[0]}, '')];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sCURRENT\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
                 $cur_ctime = $1;
                 push @log_table_rows,
-                  [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, '', '', '',  $type_code{$tab[3]}, 0, '6', $instance_name, $cache_host{$tab[0]}, $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                  [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, '', '', '',  $type_code{$tab[3]}, 0, '6', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sHOST\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host{$tab[0]}));
+                next if (!defined($self->{cache_host}{$tab[0]}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, '', '', '', $type_code{$tab[2]}, 0, '9', $instance_name, $cache_host{$tab[0]}, '')];
+                  [($cur_ctime, $tab[0], '', $host_status_code{$tab[1]}, '', '', '', $type_code{$tab[2]}, 0, '9', $instance_name, $self->{cache_host}{$tab[0]}, '')];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sINITIAL\sSERVICE\sSTATE\:\s(.*)$/) {
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
                 $cur_ctime = $1;
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, '', '', '', $type_code{$tab[3]}, 0, '8', $instance_name, $cache_host{$tab[0]}, $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                  [($cur_ctime, $tab[0], $tab[1], $svc_status_code{$tab[2]}, '', '', '', $type_code{$tab[3]}, 0, '8', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_SVC\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'}));
+                next if (!defined($self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'}));
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', 0, '10', $instance_name, $cache_host{$tab[0]}, $cache_host_service{$tab[0] . ":" . $tab[1]}->{'service_id'})];
+                  [($cur_ctime, $tab[0], $tab[1], '', $tab[6], '', $tab[5], '', 0, '10', $instance_name, $self->{cache_host}{$tab[0]}, $self->{cache_host_service}{$tab[0] . ":" . $tab[1]}->{'service_id'})];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sEXTERNAL\sCOMMAND\:\sACKNOWLEDGE\_HOST\_PROBLEM\;(.*)$/) {
                 $cur_ctime = $1;
                 my @tab = split(/;/, $2);
-                next if (!defined($cache_host{$tab[0]}));
+                next if (!defined($self->{cache_host}{$tab[0]}));
                 push @log_table_rows, 
-                  [($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', 0, '11', $instance_name, $cache_host{$tab[0]}, '')];
+                  [($cur_ctime, $tab[0], '', '', $tab[5], '', $tab[4], '', 0, '11', $instance_name, $self->{cache_host}{$tab[0]}, '')];
             } elsif ($_ =~ m/^\[([0-9]*)\]\sWarning\:\s(.*)$/) {
                 my $tab = $2;
                 $cur_ctime = $1;
@@ -220,7 +220,7 @@ sub parseArchive {
         if ($status == -1) {
             die "Can't get information on poller";
         }
-        $data = $sth->fetchrow_hashref();
+        my $data = $sth->fetchrow_hashref();
         if (!$data->{'log_archive_path'}) {
             die "Could not find local var log directory";
         }
@@ -240,8 +240,8 @@ sub run {
 
     $self->SUPER::run();
 
-    if (defined($opt_s)) {
-        if ($opt_s !~ m/\d{2}-\d{2}-\d{4}/) {
+    if (defined($self->{opt_s})) {
+        if ($self->{opt_s} !~ m/\d{2}-\d{2}-\d{4}/) {
             $self->{logger}->writeLogError("Invalid start date provided");
             exit 1;
         }
@@ -250,7 +250,7 @@ sub run {
     # Get conf Data
     my ($status, $sth_config) = $self->{csdb}->query("SELECT `archive_log`, `archive_retention`, `nagios_log_file`  FROM `config` LIMIT 1");
     die("Cannot get archive log path") if ($status == -1);
-    $data = $sth_config->fetchrow_hashref();
+    my $data = $sth_config->fetchrow_hashref();
     die("Cannot get archive log path") if (!$data->{'archive_log'});
 
     my $retention = $data->{'archive_retention'};
@@ -290,13 +290,13 @@ sub run {
 
     if (defined($self->{opt_p}) && $instanceId) {
         if (!defined($self->{opt_s})) {
-            $self->{csdb}->query("DELETE FROM `logs` WHERE instance_name = '$opt_p' AND `ctime` < $current_time");
+            $self->{csdb}->query("DELETE FROM `logs` WHERE instance_name = " . $self->{csdb}->quote($self->{opt_p}) . " AND `ctime` < $self->{current_time}");
         } else {
             my $limit = date_to_time($self->{opt_s});
             if ($limit >  $self->{retention_time}) {
                 $self->{retention_time} = $limit;
             }
-            $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $current_time");
+            $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $self->{current_time}");
         }
         $self->parseArchive($instanceId);
     } else {
@@ -305,14 +305,14 @@ sub run {
             die("Can't get poller list");
         }
         while (my $ns_server = $sth->fetchrow_hashref()) {
-            if (!defined $opt_s) {
-                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` < $current_time");
+            if (!defined($self->{opt_s})) {
+                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` < $self->{current_time}");
             } else {
                 my $limit = date_to_time($self->{opt_s});
                 if ($limit > $self->{retention_time}) {
                     $self->{retention_time} = $limit;
                 }
-                $res = $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $current_time");
+                $self->{csdb}->query("DELETE FROM `logs` WHERE `ctime` >= $limit AND `ctime` < $self->{current_time}");
             }
             $self->parseArchive($ns_server->{'id'});
         }

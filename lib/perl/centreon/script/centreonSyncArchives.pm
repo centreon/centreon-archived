@@ -34,9 +34,9 @@ sub run {
     die("Error SQL Quit") if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
 		if (defined($data->{log_archive_path}) && $data->{log_archive_path} ne '') {
-			`$self->{rsync} -c $ns_server->{'ns_ip_address'}:$data->{'log_archive_path'}/* $self->{centreon_config}->{VarLib}/log/$ns_server->{'id'}/archives/`;
+			`$self->{rsync} -c $data->{'ns_ip_address'}:$data->{'log_archive_path'}/* $self->{centreon_config}->{VarLib}/log/$data->{'id'}/archives/`;
 		} else {
-			$self->{logger}->writeLogError("Can't get archive path for service " . $ns_server->{'id'} . " (" . $ns_server->{'ns_address_ip'} . ")");
+			$self->{logger}->writeLogError("Can't get archive path for service " . $data->{'id'} . " (" . $data->{'ns_address_ip'} . ")");
 		}		
 	}
 }
