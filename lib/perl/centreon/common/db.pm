@@ -18,6 +18,7 @@ sub new {
        force => 0
       );
     my $self = {%defaults, %options};
+    $self->{port} = 3306 if (!defined($self->{port}));
 
     $self->{"instance"} = undef;
     $self->{"type"} = "mysql";

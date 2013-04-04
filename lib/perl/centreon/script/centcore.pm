@@ -127,12 +127,19 @@ sub reload {
         $self->{centreon_config} = $centreon_config;
     }
     
-    $self->{centreon_dbc}->disconnect();
-    $self->{centreon_dbc}->db($self->{centreon_config}->{centreon_db});
-    $self->{centreon_dbc}->host($self->{centreon_config}->{db_host});
-    $self->{centreon_dbc}->user($self->{centreon_config}->{db_user});
-    $self->{centreon_dbc}->password($self->{centreon_config}->{db_passwd});
-    $self->{centreon_dbc}->port($self->{centreon_config}->{db_port});
+    if ($self->{centreon_config}->{centreon_db} ne $self->{centreon_dbc}->db() ||
+         $self->{centreon_config}->{db_host} ne $self->{centreon_dbc}->host() ||
+         $self->{centreon_config}->{db_user} ne $self->{centreon_dbc}->user() ||
+         $self->{centreon_config}->{db_passwd} ne $self->{centreon_dbc}->password() ||
+         $self->{centreon_config}->{db_port} ne $self->{centreon_dbc}->port()) {
+        $self->{logger}->writeLogInfo("Database config had been modified")
+        $self->{centreon_dbc}->disconnect();
+        $self->{centreon_dbc}->db($self->{centreon_config}->{centreon_db});
+        $self->{centreon_dbc}->host($self->{centreon_config}->{db_host});
+        $self->{centreon_dbc}->user($self->{centreon_config}->{db_user});
+        $self->{centreon_dbc}->password($self->{centreon_config}->{db_passwd});
+        $self->{centreon_dbc}->port($self->{centreon_config}->{db_port});
+    }
 }
 
 ###########################################################
