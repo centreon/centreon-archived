@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+
+use warnings;
+use centreon::script::centreonSyncArchives;
+
+centreon::script::centreonSyncArchives->new()->run();
+
+__END__
+
+=head1 NAME
+
+centreonSyncArchives - a script to get engine archive on central server.
+
+=head1 SYNOPSIS
+
+centreonSyncArchives [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreonSyncArchives> will read MySQL database and get archive engine from pollers.
+
+=cut
+
