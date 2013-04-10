@@ -10,7 +10,7 @@ use centreon::trapd::lib;
 use base qw(centreon::script);
 use vars qw(%centreontrapd_config);
 
-my %handlers = ('TERM' => {}, 'HUP' => {});
+my %handlers = ('TERM' => {}, 'HUP' => {}, 'DIE' => {}, 'CHLD' => {});
 
 sub new {
     my $class = shift;
@@ -26,7 +26,7 @@ sub new {
 
     %{$self->{centreontrapd_default_config}} =
       (
-       daemon => 0,
+       daemon => 1,
        spool_directory => "/var/spool/centreontrapd/",
        sleep => 2,
        use_trap_time => 1,
@@ -47,7 +47,9 @@ sub new {
        mode => 0,
        cmdFile => "/var/lib/centreon/centcore.cmd",
        cmd_timeout => 10,
-       centreon_user => "centreon"
+       centreon_user => "centreon",
+       # 0 => skip if MySQL error | 1 => dont skip (block) if MySQL error (and keep order)
+       policy_trap => 1
     );
    
     $self->{htmlentities} = 0;
@@ -61,12 +63,22 @@ sub new {
     $self->{trap_date_time_epoch} = undef;
     %{$self->{duplicate_traps}} = ();
     $self->{timetoreload} = 0;
-    $self->{timetodie} = 0;
     @{$self->{filenames}} = undef;
     $self->{oids_cache} = undef;
     $self->{last_cache_time} = undef;
     $self->{whoami} = undef;
 
+    # Fork manage
+    %{$self->{return_child}} = ();
+    %{$self->{running_processes}} = ();
+    %{$self->{last_time_exec}} = ('oid' => {}, 'host' => {});
+    # Current ID of working
+    $self->{current_host_id} = undef;
+    
+    # For policy_trap = 1 (temp). To avoid doing the same thing twice
+    # ID oid ===> Host ID ===> Service ID
+    %{$self->{policy_trap_skip}} = ();
+    
     $self->{cmdFile} = undef;
     
     # redefine to avoid out when we try modules
@@ -102,6 +114,10 @@ sub set_signal_handlers {
     $handlers{TERM}->{$self} = sub { $self->handle_TERM() };
     $SIG{HUP} = \&class_handle_HUP;
     $handlers{HUP}->{$self} = sub { $self->handle_HUP() };
+    $SIG{__DIE__} = \&class_handle_DIE;
+    $handlers{DIE}->{$self} = sub { $self->handle_DIE($_[0]) };
+    $SIG{CHLD} = \&class_handle_CHLD;
+    $handlers{CHLD}->{$self} = sub { $self->handle_CHLD() };
 }
 
 sub class_handle_TERM {
@@ -116,14 +132,51 @@ sub class_handle_HUP {
     }
 }
 
+sub class_handle_CHLD {
+    foreach (keys %{$handlers{CHLD}}) {
+        &{$handlers{CHLD}->{$_}}();
+    }
+}
+
+sub class_handle_DIE {
+    my ($msg) = @_;
+
+    foreach (keys %{$handlers{DIE}}) {
+        &{$handlers{DIE}->{$_}}($msg);
+    }
+}
+
 sub handle_TERM {
     my $self = shift;
-    $self->{timetodie} = 1;
+    $self->{logger}->writeLogInfo("$$ Receiving order to stop...");
+    die("Quit");
+}
 }
 
 sub handle_HUP {
     my $self = shift;
     $self->{timetoreload} = 1;
+}
+
+sub handle_DIE {
+    my $self = shift;
+    my $msg = shift;
+
+    # We get SIGCHLD signals
+    $self->{logger}->writeLogInfo($msg);
+    
+    exit(0);
+}
+
+sub handle_CHLD {
+    my $self = shift;
+    my $child_pid;
+
+    while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
+        $self->{return_child}{$child_pid} = {'exit_code' => $? >> 8};
+        $self->{logger}->writeLogInfo("SIGCHLD received: $child_pid");
+    }
+    $SIG{CHLD} = \&class_handle_CHLD;
 }
 
 sub reload_config {
@@ -137,12 +190,23 @@ sub reload_config {
     }
 }
 
+sub manage_pool {
+    my $self = shift;
+    
+    foreach my $child_pid (keys %{$self->{return_child}}) {
+        if (defined($self->{running_processes}->{$child_pid})) {
+            delete $self->{running_processes}->{$child_pid};
+            delete $self->{return_child}->{$child_pid};
+        }
+    }
+}
+
 ###############################
 ## Execute a command Nagios or Centcore
 #
-sub send_command {
+sub do_command {
     my $self = shift;
-
+   
     eval {
         local $SIG{ALRM} = sub { die "TIMEOUT"; };
         alarm($self->{centreontrapd_config}->{cmd_timeout});
@@ -155,6 +219,27 @@ sub send_command {
             return 0;
         }
     }
+  
+    return 1;
+}
+
+sub manage_exec {
+    my $self = shift;
+
+    if ($self->{centreontrapd_config}->{daemon} == 0) {
+        return $self->do_command();
+    }
+    
+    #### Fork And manage exec ####
+    my $current_pid = fork();
+    if (!$current_pid) {
+        exit($self->do_command());
+    }
+    
+    $self->{logger}->writeLogInfo("CHLD command launched: $current_pid");
+    $self->{running_processes}->{$current_pid} = 1;
+    $self->{last_time_exec}{oid}->{${$self->{var}}[3]} = $self->{trap_date_time_epoch};
+    $self->{last_time_exec}{host}->{$self->{current_host_id}} = $self->{trap_date_time_epoch};
     return 1;
 }
 
@@ -302,7 +387,7 @@ sub forceCheck($$$) {
         } else {
             $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] SCHEDULE_FORCED_SVC_CHECK;$this_host;$this_service;$datetime\" >> " . $self->{centreontrapd_config}->{cmdFile} . "'";
         }
-        $result = $self->send_command($submit);
+        $result = $self->manage_exec($submit);
     
         $self->{logger}->writeLogInfo("FORCE: Reschedule linked service");
         $self->{logger}->writeLogInfo("FORCE: Launched command: $submit");
@@ -332,7 +417,7 @@ sub submitResult($$$$$) {
             $str =~ s/"/\\"/g;
             $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$id:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile} . "'";
         }
-        $result = $self->send_command($submit);
+        $result = $self->manage_exec($submit);
     
         $self->{logger}->writeLogInfo("SUBMIT: Force service status via passive check update");
         $self->{logger}->writeLogInfo("SUBMIT: Launched command: $submit");
@@ -471,11 +556,19 @@ sub getTrapsInfos($$$) {
     my $ip = shift;
     my $hostname = shift;
     my $oid = shift;
-    
     my $status;
 
+    # LOOP on OID
+    {
+        # Get Hosts
+        {
+            # Get Services
+        }
+    }
+    
     my %host = $self->get_hostinfos($ip, $hostname);
     foreach my $host_id (keys %host) {
+        $self->{current_host_id} = $host_id;
         my $this_host = $host{$host_id};
         my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = $self->getServiceInformations($oid, $host_id);
         if (!defined($trap_id)) {
@@ -518,6 +611,8 @@ sub getTrapsInfos($$$) {
             }
         }
     }
+    
+    return 1;
 }
 
 sub run {
@@ -542,6 +637,8 @@ sub run {
                                              password => $self->{centreon_config}->{db_passwd},
                                              force => 0,
                                              logger => $self->{logger});
+    $self->{cbd}->set_inactive_destroy();
+
     if ($self->{centreontrapd_config}->{mode} == 0) {
         $self->{cmdFile} = $self->{centreon_config}->{cmdFile};
     } else {
@@ -553,7 +650,7 @@ sub run {
     $self->{whoami} = getpwuid($<);
 
     if ($self->{centreontrapd_config}->{daemon} == 1) {
-        while (!$self->{timetodie}) {
+        while (1) {
             centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
                                                        duplicate_traps => \%{$self->{duplicate_traps}});
             while ((my $file = centreon::trapd::lib::get_trap(logger => $self->{logger}, 
@@ -562,6 +659,7 @@ sub run {
                 $self->{logger}->writeLogDebug("Processing file: $file");
                 
                 if (open FILE, $self->{centreontrapd_config}->{spool_directory} . $file) {
+                    my $unlink_trap = 1;
                     my $trap_is_a_duplicate = 0;
                     my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
                                                                          config => $self->{centreontrapd_config},
@@ -583,7 +681,7 @@ sub run {
                                                                    cdb => $self->{cdb},
                                                                    last_cache_time => \$self->{last_cache_time},
                                                                    oids_cache => \$self->{oids_cache}) == 1) {
-                            $self->getTrapsInfos(${$self->{var}}[1], ${$self->{var}}[2], ${$self->{var}}[3]);
+                            $unlink_trap = $self->getTrapsInfos(${$self->{var}}[1], ${$self->{var}}[2], ${$self->{var}}[3]);
                         }
                     } elsif ($readtrap_result == 0) {
                         $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
@@ -593,27 +691,40 @@ sub run {
                     }
                     
                     close FILE;
-                    unless (unlink($file)) {
-                        $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
-                    }  
+                    if ($self->{centreontrapd_config}->{policy_trap} == 0 || ($self->{centreontrapd_config}->{policy_trap} == 1 && $unlink_trap == 1)) {
+                        unless (unlink($file)) {
+                            $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
+                        }
+                    } else {
+                        $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
+                        # we reput in
+                        unshift @{$self->{filenames}}, $file;
+                    }
                 } else {
                     $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . "$file: ($!)");
+                    if ($self->{centreontrapd_config}->{policy_trap} == 1) {
+                        $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
+                        # we reput in
+                        unshift @{$self->{filenames}}, $file;
+                    }
+                }
+                
+                if ($self->{timetoreload} == 1) {
+                    $self->{logger}->writeLogDebug("Reloading configuration file");
+                    $self->reload_config($self->{opt_extra});
+                    ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
+                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
+                                                                             $self->{centreontrapd_config}->{time_format});
+                    centreon::trapd::lib::init_modules();
+                    centreon::trapd::lib::get_cache_oids();
+                    $self->{timetoreload} = 0;
                 }
             }
             
             $self->{logger}->writeLogDebug("Sleeping for " . $self->{centreontrapd_config}->{sleep} . " seconds");
             sleep $self->{centreontrapd_config}->{sleep};
-                    
-            if ($self->{timetoreload} == 1) {
-                $self->{logger}->writeLogDebug("Reloading configuration file");
-                $self->reload_config($self->{opt_extra});
-                ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
-                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
-                                                                             $self->{centreontrapd_config}->{time_format});
-                centreon::trapd::lib::init_modules();
-                centreon::trapd::lib::get_cache_oids();
-                $self->{timetoreload} = 0;
-            }
+
+            $self->manage_pool();
         }
     } else {
         my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},

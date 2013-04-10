@@ -534,7 +534,7 @@ sub readtrap {
             $args{logger}->writeLogDebug("Host IP address (" . ${$args{var}}[0] . ") resolved to: $temp");
             ${$args{var}}[0] = $temp;
         } else {
-            $args{logger}->writeLogDebug("Host IP address (" . ${$args{var}}[0] . ") could not be resolved by DNS.  Variable \$r / \$R etc will use the IP address");
+            $args{logger}->writeLogDebug("Host IP address (" . ${$args{var}}[0] . ") could not be resolved by DNS. Variable \$r / \$R etc will use the IP address");
         }
     }
 
