@@ -90,12 +90,105 @@ sub manage_params_conf {
 # DB Request
 ##############
 
+# We get All datas for a TRAP
 sub get_oids {
     my ($cdb, $oid) = @_;
+    my $ref_result;
     
-    ($dstatus, $sth) = $cdb->query("SELECT * FROM traps WHERE traps_oid = " . $cdb->quote($oid));
+    my ($dstatus, $sth) = $cdb->query("SELECT traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
+                                        traps_oid, traps_name, traps_advanced_treatment, traps_execution_command_enable, traps_submit_result_enable, traps_status,
+                                        traps_timeout, traps_exec_interval, traps_exec_interval_type FROM traps WHERE traps_oid = " . $cdb->quote($oid));
     return -1 if ($dstatus == -1);
-    return (0, $cdb->fetchall_hashref('traps_id'));
+    $ref_result = $sth->fetchall_hashref('traps_id');
+    
+    foreach (keys %$ref_result) {
+        # Get Matching Status Rules
+        if (defined($ref_result->{$_}->{traps_advanced_treatment}) && $ref_result->{$_}->{traps_advanced_treatment} == 1) {
+            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties WHERE trap_id = " . $_ . " ORDER BY id ASC");
+            return -1 if ($dstatus == -1);
+            $ref_result->{$_}->{traps_matching_properties} = $sth->fetchall_hashref("tmo_id");
+        }
+        
+        # Get Trap PREEXEC Commands
+        #($dstatus, $sth) = $cdb->query("");
+        
+        # Get Associated Host
+        # TODO
+    }
+    return (0, $ref_result);
+}
+
+sub get_hosts {
+    # logger => obj
+    # cbd => obj
+    # trap_info => ref
+    # agent_dns_name => value
+    # ip_address => value
+    # entvar => ref array
+    # entvarname => ref array    
+    my %args = @_;
+    my ($dstatus, $sth);
+    my $ref_result;
+    
+    ($dstatus, $sth) = $args{cbd}->query("SELECT host_id, host_name FROM host WHERE 
+                           host_address=" . $args{cbd}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cbd}->quote($args{ip_address}));
+    return -1 if ($dstatus == -1);
+    $ref_result = $sth->fetchall_hashref('host_id');
+    
+    # Get server_id
+    foreach (keys %$ref_result) {
+        ($dstatus, $sth) = $args{cbd}->query("SELECT nagios_server_id FROM ns_host_relation WHERE 
+                                            host_host_id = " . $ref_result->{$_}->{host_id} . " LIMIT 1");
+        return -1 if ($dstatus == -1);
+        my $data = $sth->fetchrow_hashref();
+        $ref_result->{$_}->{nagios_server_id} = $data->{nagios_server_id};
+    }
+    
+    return (0, $ref_result);
+}
+
+sub get_services {
+    my ($cdb, $trap_id, $host_id, $result) = @_;
+    my $services_do = {};
+    
+    ### Get service List for the Host
+    ($dstatus, $sth) = $args{cbd}->query("(SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
+                                         h.host_id = " . $host_id . " h.host_activate = '1' AND h.host_id = hsrc.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
+                                    ) UNION ALL (SELECT s.service_id, s.service_description FROM 
+                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " h.host_activate = '1' AND 
+                                   h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1')");
+    return -1 if ($dstatus == -1);
+    $result = $sth->fetchall_hashref('service_id');
+    foreach my $service_id (keys %$result) {
+        # Search Template trap_id
+        my %loop_stop = ();
+        my @stack = ($service_id);
+        
+        while ((my $lservice_id = shift(@stack))) {
+            if (defined($loop_stop{$lservice_id})) {
+                # Already done
+                last;
+            }
+            $loop_stop{$lservice_id} = 1;
+            
+            ($dstatus, $sth) = $args{cbd}->query("SELECT traps_id FROM traps_service_relation WHERE service_id = '" . $lservice_id . "' AND traps_id = '" . $trap_id . "' LIMIT 1");
+            return -1 if ($dstatus == -1);
+            my $data = $sth->fetchrow_hashref();
+            if (defined($data)) {
+                $services_do->{$service_id} = $result->{$service_id};
+                last;
+            }
+            
+            ($dstatus, $sth) = $args{cbd}->query("SELECT service_template_model_stm_id FROM service WHERE service_id = " . $lservice_id . " LIMIT 1");
+            return -1 if ($dstatus == -1);
+            $data = $sth->fetchrow_hashref();
+            if (defined($data) && defined($data->{service_template_model_stm_id})) {
+                unshift @stack, $data->{service_template_model_stm_id};
+            }
+        }
+    }
+    
+    return (0, $service_do);
 }
 
 sub set_macro {
