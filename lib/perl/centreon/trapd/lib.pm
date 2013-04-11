@@ -65,7 +65,7 @@ sub init_modules {
         require Digest::MD5;
     }
     
-    eval "use HTML::Entities";
+    eval "require HTML::Entities";
     if ($@) {
         ${$args{htmlentities}} = 0;
     } else {
@@ -90,6 +90,14 @@ sub manage_params_conf {
 # DB Request
 ##############
 
+sub get_oids {
+    my ($cdb, $oid) = @_;
+    
+    ($dstatus, $sth) = $cdb->query("SELECT * FROM traps WHERE traps_oid = " . $cdb->quote($oid));
+    return -1 if ($dstatus == -1);
+    return (0, $cdb->fetchall_hashref('traps_id'));
+}
+
 sub set_macro {
     my ($macros, $name, $value) = @_;
     
@@ -99,7 +107,7 @@ sub set_macro {
 }
 
 sub get_macros_host {
-    my ($cbd, $host_id) = @_;
+    my ($cdb, $host_id) = @_;
     my ($dstatus, $sth, $value);
     my %macros;
     my %loop_stop = ();
@@ -128,14 +136,14 @@ sub get_macros_host {
             set_macro(\%macros, $value->{host_macro_name}, $value->{host_macro_value});
         }
     
-        ($dstatus, $sth) = $cdb->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = " . $lhost_id . " ORDER BY order DESC");
+        ($dstatus, $sth) = $cdb->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = " . $lhost_id . " ORDER BY `order` DESC");
         return -1 if ($dstatus == -1);
         while ($value = $sth->fetchrow_hashref()) {
             unshift @stack, $value->{host_tpl_id};
         }
     }
         
-    return (0, %macros);
+    return (0, \%macros);
 }
 
 ##############

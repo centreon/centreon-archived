@@ -383,7 +383,6 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
-    $self->init();
     $self->{logger}->redirect_output();
 
     ####

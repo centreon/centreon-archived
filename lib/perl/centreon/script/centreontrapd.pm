@@ -75,6 +75,7 @@ sub new {
     # Current ID of working
     $self->{current_host_id} = undef;
     $self->{current_ip} = undef;
+    $self->{current_oid} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
@@ -101,6 +102,11 @@ sub init {
     }
 
     $self->{centreontrapd_config} = {%{$self->{centreontrapd_default_config}}, %centreontrapd_config};
+    
+    ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
+                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
+                                                                             $self->{centreontrapd_config}->{time_format});
+    centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     
     # Daemon Only
     if ($self->{centreontrapd_config}->{daemon} == 1) {
@@ -151,7 +157,6 @@ sub handle_TERM {
     my $self = shift;
     $self->{logger}->writeLogInfo("$$ Receiving order to stop...");
     die("Quit");
-}
 }
 
 sub handle_HUP {
@@ -552,27 +557,30 @@ sub executeCommand($$$$$$$$) {
 #######################################
 ## GET HOSTNAME AND SERVICE DESCRIPTION
 #
-sub getTrapsInfos($$) {
+sub getTrapsInfos($) {
     my $self = shift;
     my $hostname = shift;
-    my $oid = shift;
-    my $status;
-
-    $self->{current_ip} = ${$self->{var}}[1];
+    my ($status, $dstatus);
+    my ($ref_oids);
     
-    # LOOP on OID
-    #{
-        # Get Hosts
-    #    {
-            # Get Services
-    #    }
-    #}
+    $self->{current_ip} = ${$self->{var}}[1];
+    $self->{current_oid} = ${$self->{var}}[3];
+    
+    ### Get OIDS 
+    ($dstatus, $ref_oids) = centreon::trapd::lib::get_oids($self->{cdb}, $self->{current_oid});
+    return 0 if ($dstatus == -1);
+    foreach (keys %$ref_oids) {
+        ##### Get Hosts
+        print Data::Dumper::Dumper($ref_oids);
+    }
+    
+    exit(1);
     
     my %host = $self->get_hostinfos($self->{current_ip}, $hostname);
     foreach my $host_id (keys %host) {
         $self->{current_host_id} = $host_id;
         my $this_host = $host{$host_id};
-        my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = $self->getServiceInformations($oid, $host_id);
+        my ($trap_id, $status, $traps_submit_result_enable, $traps_execution_command, $traps_reschedule_svc_enable, $traps_execution_command_enable, $traps_advanced_treatment, $traps_output, $ref_servicename) = $self->getServiceInformations($self->{current_oid}, $host_id);
         if (!defined($trap_id)) {
             return ;
         }
@@ -621,13 +629,7 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
-    $self->init();
     $self->{logger}->redirect_output();
-
-    ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
-                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
-                                                                             $self->{centreontrapd_config}->{time_format});
-    centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     
     $self->{logger}->writeLogDebug("centreontrapd launched....");
     $self->{logger}->writeLogDebug("PID: $$");
@@ -639,7 +641,7 @@ sub run {
                                              password => $self->{centreon_config}->{db_passwd},
                                              force => 0,
                                              logger => $self->{logger});
-    $self->{cbd}->set_inactive_destroy();
+    $self->{cdb}->set_inactive_destroy();
 
     if ($self->{centreontrapd_config}->{mode} == 0) {
         $self->{cmdFile} = $self->{centreon_config}->{cmdFile};
@@ -697,7 +699,7 @@ sub run {
                                                                    cdb => $self->{cdb},
                                                                    last_cache_time => \$self->{last_cache_time},
                                                                    oids_cache => \$self->{oids_cache}) == 1) {
-                            $unlink_trap = $self->getTrapsInfos(${$self->{var}}[2], ${$self->{var}}[3]);
+                            $unlink_trap = $self->getTrapsInfos(${$self->{var}}[2]);
                         }
                     } elsif ($readtrap_result == 0) {
                         $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
@@ -762,7 +764,7 @@ sub run {
                                                        cdb => $self->{cdb},
                                                        last_cache_time => \$self->{last_cache_time},
                                                        oids_cache => \$self->{oids_cache}) == 1) {
-                $self->getTrapsInfos(${$self->{var}}[2], ${$self->{var}}[3]);
+                $self->getTrapsInfos(${$self->{var}}[2]);
             }
         } elsif ($readtrap_result == 0) {
             $self->{logger}->writeLogDebug("Error processing trap file.  Skipping...");
