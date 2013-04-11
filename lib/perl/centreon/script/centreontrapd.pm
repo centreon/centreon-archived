@@ -661,6 +661,7 @@ sub run {
                         if ($self->{centreontrapd_config}->{duplicate_trap_window}) {
                             delete $self->{duplicate_traps}->{$self->{digest_trap}};
                         }
+                        sleep $self->{centreontrapd_config}->{sleep};
                     }
                 } else {
                     $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . "$file: ($!)");

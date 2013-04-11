@@ -760,7 +760,7 @@ sub readtrap {
         $md5->add(${$args{var}}[0],${$args{var}}[1].${$args{var}}[3].${$args{var}}[4].${$args{var}}[5].${$args{var}}[6].${$args{var}}[7].${$args{var}}[8].${$args{var}}[9].${$args{var}}[10]."@{$args{entvar}}");
         
         my $trap_digest = $md5->hexdigest;
-        ${$args{trap_date_time}} = $trap_digest;
+        ${$args{digest_trap}} = $trap_digest;
 
         $args{logger}->writeLogDebug("Trap digest: $trap_digest");
 
