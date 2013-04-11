@@ -130,14 +130,14 @@ sub get_hosts {
     my ($dstatus, $sth);
     my $ref_result;
     
-    ($dstatus, $sth) = $args{cbd}->query("SELECT host_id, host_name FROM host WHERE 
+    ($dstatus, $sth) = $args{cdb}->query("SELECT host_id, host_name FROM host WHERE 
                            host_address=" . $args{cbd}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cbd}->quote($args{ip_address}));
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('host_id');
     
     # Get server_id
     foreach (keys %$ref_result) {
-        ($dstatus, $sth) = $args{cbd}->query("SELECT nagios_server_id FROM ns_host_relation WHERE 
+        ($dstatus, $sth) = $args{cdb}->query("SELECT nagios_server_id FROM ns_host_relation WHERE 
                                             host_host_id = " . $ref_result->{$_}->{host_id} . " LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
@@ -152,7 +152,7 @@ sub get_services {
     my $services_do = {};
     
     ### Get service List for the Host
-    ($dstatus, $sth) = $args{cbd}->query("(SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
+    my ($dstatus, $sth) = $cdb->query("(SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
                                          h.host_id = " . $host_id . " h.host_activate = '1' AND h.host_id = hsrc.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
                                     ) UNION ALL (SELECT s.service_id, s.service_description FROM 
                                    host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " h.host_activate = '1' AND 
@@ -171,7 +171,7 @@ sub get_services {
             }
             $loop_stop{$lservice_id} = 1;
             
-            ($dstatus, $sth) = $args{cbd}->query("SELECT traps_id FROM traps_service_relation WHERE service_id = '" . $lservice_id . "' AND traps_id = '" . $trap_id . "' LIMIT 1");
+            ($dstatus, $sth) = $cdb->query("SELECT traps_id FROM traps_service_relation WHERE service_id = '" . $lservice_id . "' AND traps_id = '" . $trap_id . "' LIMIT 1");
             return -1 if ($dstatus == -1);
             my $data = $sth->fetchrow_hashref();
             if (defined($data)) {
@@ -179,7 +179,7 @@ sub get_services {
                 last;
             }
             
-            ($dstatus, $sth) = $args{cbd}->query("SELECT service_template_model_stm_id FROM service WHERE service_id = " . $lservice_id . " LIMIT 1");
+            ($dstatus, $sth) = $cdb->query("SELECT service_template_model_stm_id FROM service WHERE service_id = " . $lservice_id . " LIMIT 1");
             return -1 if ($dstatus == -1);
             $data = $sth->fetchrow_hashref();
             if (defined($data) && defined($data->{service_template_model_stm_id})) {
@@ -188,7 +188,7 @@ sub get_services {
         }
     }
     
-    return (0, $service_do);
+    return (0, $services_do);
 }
 
 sub set_macro {
@@ -414,6 +414,7 @@ sub readtrap {
     # trap_date_time => ref
     # trap_date_time_epoch => ref
     # duplicate_traps => ref hash
+    # digest_trap => ref,
     # var => ref array
     # entvar => ref array
     # entvarname => ref array
@@ -759,6 +760,7 @@ sub readtrap {
         $md5->add(${$args{var}}[0],${$args{var}}[1].${$args{var}}[3].${$args{var}}[4].${$args{var}}[5].${$args{var}}[6].${$args{var}}[7].${$args{var}}[8].${$args{var}}[9].${$args{var}}[10]."@{$args{entvar}}");
         
         my $trap_digest = $md5->hexdigest;
+        ${$args{trap_date_time}} = $trap_digest;
 
         $args{logger}->writeLogDebug("Trap digest: $trap_digest");
 

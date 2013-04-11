@@ -91,6 +91,7 @@ sub new {
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
     %{$self->{policy_trap_skip}} = ();
+    $self->{digest_trap} = undef;
     
     $self->{cmdFile} = undef;
     
@@ -276,8 +277,7 @@ sub manage_exec {
     #### Fork And manage exec ####
     ####### Check Interval ######
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type}) && 
-        defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) && 
-    ) {
+        defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
         # OID type
         if ($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 1 &&
             defined($self->{last_time_exec}{oid}->{$self->{current_oid}}) &&
@@ -298,7 +298,6 @@ sub manage_exec {
     my $current_pid = fork();
     if (!$current_pid) {
         eval {
-            $self->{ref_services}->{$service_id}->{service_description}
             my $alarm_timeout = $self->{centreontrapd_config}->{cmd_timeout};
             if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout})) {
                 $alarm_timeout = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
@@ -520,7 +519,7 @@ sub getTrapsInfos {
     ### Get OIDS 
     ($fstatus, $self->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, $self->{current_oid});
     return 0 if ($fstatus == -1);
-    foreach my $trap_id (keys %$self->{ref_oids}) {
+    foreach my $trap_id (keys %{$self->{ref_oids}}) {
         $self->{current_trap_id} = $trap_id;
         ($fstatus, $self->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
                                                                  cdb => $self->{cdb},
@@ -530,7 +529,7 @@ sub getTrapsInfos {
                                                                  entvar => \@{$self->{entvar}},
                                                                  entvarname => \@{$self->{entvarname}});
         return 0 if ($fstatus == -1);
-        foreach my $host_id (keys %$self->{ref_hosts}) {
+        foreach my $host_id (keys %{$self->{ref_hosts}}) {
             if (!defined($self->{ref_hosts}->{$host_id}->{nagios_server_id})) {
                 $self->{logger}->writeLogError("Cant get server associated for host '" . $self->{ref_hosts}->{$host_id}->{host_name} . "'");
                 next;
@@ -540,11 +539,11 @@ sub getTrapsInfos {
             $self->{current_hostname} = $self->{ref_hosts}->{$host_id}->{host_name};
 
             #### Get Services ####
-            ($fstatus, $self->{ref_services}) = centreon::trapd::lib::get_services($self->[cdb}, $trap_id, $host_id);
+            ($fstatus, $self->{ref_services}) = centreon::trapd::lib::get_services($self->{cdb}, $trap_id, $host_id);
             return 0 if ($fstatus == -1);
             
             #### If none, we stop ####
-            my $size = keys %$self->{ref_services};
+            my $size = keys %{$self->{ref_services}};
             if ($size < 1) {
                 $self->{logger}->writeLogDebug("Trap without service associated. Skipping...");
                 return 1;
@@ -553,11 +552,11 @@ sub getTrapsInfos {
             #### Check if macro $_HOST*$ needed
             if (defined($self->{ref_oids}->{$trap_id}->{traps_execution_command_enable}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command_enable} == 1 &&
                 defined($self->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST*?\$/) {
-                ($fstatus, $ref_macro_hosts) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
+                ($fstatus, $self->{ref_macro_hosts}) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
                 return 0 if ($fstatus == -1);
             }
             
-            foreach my $service_id (keys %$self->{ref_services}) {
+            foreach my $service_id (keys %{$self->{ref_services}}) {
                 $self->{current_service_id} = $service_id;
                 $self->{current_service_desc} = $self->{ref_services}->{$service_id}->{service_description};
                 $self->{logger}->writeLogDebug("Trap found on service '" . $self->{ref_services}->{$service_id}->{service_description} . "' for host '" . $self->{ref_hosts}->{$host_id}->{host_name} . "'.");
@@ -629,6 +628,7 @@ sub run {
                                                                          trap_date_time => \$self->{trap_date_time},
                                                                          trap_date_time_epoch => \$self->{trap_date_time_epoch},
                                                                          duplicate_traps => \%{$self->{duplicate_traps}},
+                                                                         digest_trap => \$self->{digest_trap},
                                                                          var => \@{$self->{var}},
                                                                          entvar => \@{$self->{entvar}},
                                                                          entvarname => \@{$self->{entvarname}});
@@ -656,8 +656,11 @@ sub run {
                         }
                     } else {
                         $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
-                        # we reput in
+                        # we reput in AND we delete trap_digest (avoid skipping duplicate trap)
                         unshift @{$self->{filenames}}, $file;
+                        if ($self->{centreontrapd_config}->{duplicate_trap_window}) {
+                            delete $self->{duplicate_traps}->{$self->{digest_trap}};
+                        }
                     }
                 } else {
                     $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . "$file: ($!)");
@@ -695,6 +698,7 @@ sub run {
                                                              trap_date_time => \$self->{trap_date_time},
                                                              trap_date_time_epoch => \$self->{trap_date_time_epoch},
                                                              duplicate_traps => \%{$self->{duplicate_traps}},
+                                                             digest_trap => \$self->{digest_trap},
                                                              var => \@{$self->{var}},
                                                              entvar => \@{$self->{entvar}},
                                                              entvarname => \@{$self->{entvarname}});
