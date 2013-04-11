@@ -74,6 +74,7 @@ sub new {
     %{$self->{last_time_exec}} = ('oid' => {}, 'host' => {});
     # Current ID of working
     $self->{current_host_id} = undef;
+    $self->{current_ip} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
@@ -551,22 +552,23 @@ sub executeCommand($$$$$$$$) {
 #######################################
 ## GET HOSTNAME AND SERVICE DESCRIPTION
 #
-sub getTrapsInfos($$$) {
+sub getTrapsInfos($$) {
     my $self = shift;
-    my $ip = shift;
     my $hostname = shift;
     my $oid = shift;
     my $status;
 
-    # LOOP on OID
-    {
-        # Get Hosts
-        {
-            # Get Services
-        }
-    }
+    $self->{current_ip} = ${$self->{var}}[1];
     
-    my %host = $self->get_hostinfos($ip, $hostname);
+    # LOOP on OID
+    #{
+        # Get Hosts
+    #    {
+            # Get Services
+    #    }
+    #}
+    
+    my %host = $self->get_hostinfos($self->{current_ip}, $hostname);
     foreach my $host_id (keys %host) {
         $self->{current_host_id} = $host_id;
         my $this_host = $host{$host_id};
@@ -589,7 +591,7 @@ sub getTrapsInfos($$$) {
             ######################################################################
             # Advanced matching rules
             if (defined($traps_advanced_treatment) && $traps_advanced_treatment eq 1) {
-                $status = $self->checkMatchingRules($trap_id, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
+                $status = $self->checkMatchingRules($trap_id, $this_host, $this_service, $self->{current_ip}, $hostname, $traps_output, $datetime, $status);
             }
 
             #####################################################################
@@ -607,7 +609,7 @@ sub getTrapsInfos($$$) {
             ######################################################################
             # Execute special command
             if (defined($traps_execution_command_enable) && $traps_execution_command_enable) {
-                $self->executeCommand($traps_execution_command, $this_host, $this_service, $ip, $hostname, $traps_output, $datetime, $status);
+                $self->executeCommand($traps_execution_command, $this_host, $this_service, $self->{current_ip}, $hostname, $traps_output, $datetime, $status);
             }
         }
     }
@@ -649,6 +651,9 @@ sub run {
     }
     $self->{whoami} = getpwuid($<);
 
+    centreon::trapd::lib::get_macros_host(14);
+    exit(1);
+    
     if ($self->{centreontrapd_config}->{daemon} == 1) {
         while (1) {
             centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
@@ -657,6 +662,17 @@ sub run {
                                                               config => $self->{centreontrapd_config},
                                                               filenames => \@{$self->{filenames}}))) {
                 $self->{logger}->writeLogDebug("Processing file: $file");
+                
+                # Test can delete before. Dont go after if we cant
+                if (! -w $self->{centreontrapd_config}->{spool_directory} . $file) {
+                    $self->{logger}->writeLogError("Dont have write permission on '" . $self->{centreontrapd_config}->{spool_directory} . $file . "' file.");
+                    if ($self->{centreontrapd_config}->{policy_trap} == 1) {
+                        unshift @{$self->{filenames}}, $file;
+                        # We're waiting. We are in a loop
+                        sleep $self->{centreontrapd_config}->{sleep};
+                        next;
+                    }
+                }
                 
                 if (open FILE, $self->{centreontrapd_config}->{spool_directory} . $file) {
                     my $unlink_trap = 1;
@@ -681,7 +697,7 @@ sub run {
                                                                    cdb => $self->{cdb},
                                                                    last_cache_time => \$self->{last_cache_time},
                                                                    oids_cache => \$self->{oids_cache}) == 1) {
-                            $unlink_trap = $self->getTrapsInfos(${$self->{var}}[1], ${$self->{var}}[2], ${$self->{var}}[3]);
+                            $unlink_trap = $self->getTrapsInfos(${$self->{var}}[2], ${$self->{var}}[3]);
                         }
                     } elsif ($readtrap_result == 0) {
                         $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
@@ -692,7 +708,7 @@ sub run {
                     
                     close FILE;
                     if ($self->{centreontrapd_config}->{policy_trap} == 0 || ($self->{centreontrapd_config}->{policy_trap} == 1 && $unlink_trap == 1)) {
-                        unless (unlink($file)) {
+                        unless (unlink($self->{centreontrapd_config}->{spool_directory} . $file)) {
                             $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
                         }
                     } else {
@@ -746,7 +762,7 @@ sub run {
                                                        cdb => $self->{cdb},
                                                        last_cache_time => \$self->{last_cache_time},
                                                        oids_cache => \$self->{oids_cache}) == 1) {
-                $self->getTrapsInfos(${$self->{var}}[1], ${$self->{var}}[2], ${$self->{var}}[3]);
+                $self->getTrapsInfos(${$self->{var}}[2], ${$self->{var}}[3]);
             }
         } elsif ($readtrap_result == 0) {
             $self->{logger}->writeLogDebug("Error processing trap file.  Skipping...");

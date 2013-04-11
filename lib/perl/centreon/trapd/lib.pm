@@ -87,6 +87,58 @@ sub manage_params_conf {
 }
 
 ##############
+# DB Request
+##############
+
+sub set_macro {
+    my ($macros, $name, $value) = @_;
+    
+    if (!defined($macros->{$name})) {
+        $macros->{$name} = $value;
+    }
+}
+
+sub get_macros_host {
+    my ($cbd, $host_id) = @_;
+    my ($dstatus, $sth, $value);
+    my %macros;
+    my %loop_stop = ();
+    my @stack = ($host_id);
+    
+    while ((my $lhost_id = shift(@stack))) {
+        if (defined($loop_stop{$lhost_id})) {
+            # Already done the host
+            next;
+        }
+        $loop_stop{$lhost_id} = 1;
+    
+        ($dstatus, $sth) = $cdb->query("SELECT host_snmp_community, host_snmp_version FROM host WHERE host_id = " . $lhost_id . " LIMIT 1");
+        return -1 if ($dstatus == -1);
+        $value = $sth->fetchrow_hashref();
+        if (defined($value->{host_snmp_community}) && $value->{host_snmp_community} ne "") {
+            set_macro(\%macros, '$_HOSTSNMPCOMMUNITY$', $value->{host_snmp_community});
+        }
+        if (defined($value->{host_snmp_version}) && $value->{host_snmp_version} ne "") {
+            set_macro(\%macros, '$_HOSTSNMPVERSION$', $value->{host_snmp_version});
+        }
+    
+        ($dstatus, $sth) = $cdb->query("SELECT host_macro_name, host_macro_value FROM on_demand_macro_host WHERE host_host_id = " . $lhost_id);
+        return -1 if ($dstatus == -1);
+        while ($value = $sth->fetchrow_hashref()) {
+            set_macro(\%macros, $value->{host_macro_name}, $value->{host_macro_value});
+        }
+    
+        ($dstatus, $sth) = $cdb->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = " . $lhost_id . " ORDER BY order DESC");
+        return -1 if ($dstatus == -1);
+        while ($value = $sth->fetchrow_hashref()) {
+            unshift @stack, $value->{host_tpl_id};
+        }
+    }
+        
+    return (0, %macros);
+}
+
+##############
 # CACHE MANAGEMENT
 ##############
 
@@ -228,6 +280,7 @@ sub get_trap {
     while ((my $file = shift @{$args{filenames}})) {
         next if ($file eq ".");
         next if ($file eq "..");
+        next if (! -f $args{config}->{spool_directory} . $file);
         return $file;
     }
     return undef;
