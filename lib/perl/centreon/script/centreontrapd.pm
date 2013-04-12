@@ -402,6 +402,19 @@ sub submitResult {
 ##########################
 ## REPLACE
 #
+sub substitute_host_macro {
+    my $self = shift;
+    my $str = $_[0];
+    
+    if (defined($self->{ref_macro_hosts})) {
+        foreach my $macro_name (keys %{$self->{ref_macro_hosts}}) {
+            $str =~ s/$macro_name/$self->{ref_macro_hosts}->{$macro_name}/g;
+        }
+    }
+    
+    return $str;
+}
+
 sub substitute_string {
     my $self = shift;
     my $str = $_[0];
@@ -491,6 +504,7 @@ sub executeCommand {
     my $traps_execution_command = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
     
     $traps_execution_command = $self->substitute_string($traps_execution_command);
+    $traps_execution_command = $self->substitute_host_macro($traps_execution_command);
     
     ##########################
     # REPLACE MACROS
