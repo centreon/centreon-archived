@@ -104,7 +104,7 @@ sub get_oids {
     foreach (keys %$ref_result) {
         # Get Matching Status Rules
         if (defined($ref_result->{$_}->{traps_advanced_treatment}) && $ref_result->{$_}->{traps_advanced_treatment} == 1) {
-            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties WHERE trap_id = " . $_ . " ORDER BY id ASC");
+            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties WHERE trap_id = " . $_ . " ORDER BY tmo_id ASC");
             return -1 if ($dstatus == -1);
             $ref_result->{$_}->{traps_matching_properties} = $sth->fetchall_hashref("tmo_id");
         }
@@ -131,7 +131,7 @@ sub get_hosts {
     my $ref_result;
     
     ($dstatus, $sth) = $args{cdb}->query("SELECT host_id, host_name FROM host WHERE 
-                           host_address=" . $args{cbd}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cbd}->quote($args{ip_address}));
+                           host_address=" . $args{cdb}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cdb}->quote($args{ip_address}));
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('host_id');
     
@@ -153,9 +153,9 @@ sub get_services {
     
     ### Get service List for the Host
     my ($dstatus, $sth) = $cdb->query("(SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
-                                         h.host_id = " . $host_id . " h.host_activate = '1' AND h.host_id = hsrc.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
+                                         h.host_id = " . $host_id . " AND h.host_activate = '1' AND h.host_id = hsr.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
                                     ) UNION ALL (SELECT s.service_id, s.service_description FROM 
-                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " h.host_activate = '1' AND 
+                                   host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
                                    h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1')");
     return -1 if ($dstatus == -1);
     $result = $sth->fetchall_hashref('service_id');

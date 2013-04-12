@@ -3,6 +3,7 @@ package centreon::script::centreontrapd;
 
 use strict;
 use warnings;
+use POSIX;
 use centreon::script;
 use centreon::common::db;
 use centreon::trapd::lib;
@@ -27,6 +28,7 @@ sub new {
     %{$self->{centreontrapd_default_config}} =
       (
        daemon => 1,
+       timeout_end => 30,
        spool_directory => "/var/spool/centreontrapd/",
        sleep => 2,
        use_trap_time => 1,
@@ -180,9 +182,25 @@ sub handle_DIE {
     my $self = shift;
     my $msg = shift;
 
-    # We get SIGCHLD signals
     $self->{logger}->writeLogInfo($msg);
-    
+
+    # We're waiting n seconds
+    for (my $i = 0; $i < $self->{centreontrapd_config}->{timeout_end}; $i++) {
+        $self->manage_pool();
+        if (keys %{$self->{running_processes}} == 0) {
+                $self->{logger}->writeLogInfo("Main process exit.");
+                exit(0);
+        }
+        sleep 1;
+    }
+
+    $self->{logger}->writeLogInfo("Dont handle gently. Send KILl Signals to childs");
+    # We are killing
+    foreach (keys %{$self->{running_processes}}) {
+        kill('KILL', $_);
+        $self->{logger}->writeLogInfo("Send -KILL signal to child process '$_'..");
+    }
+
     exit(0);
 }
 
@@ -297,6 +315,10 @@ sub manage_exec {
     
     my $current_pid = fork();
     if (!$current_pid) {
+        # Unhandle die in child
+        $SIG{CHLD} = undef;
+        $SIG{__DIE__} = undef;
+        $self->{cdb}->set_inactive_destroy();
         eval {
             my $alarm_timeout = $self->{centreontrapd_config}->{cmd_timeout};
             if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout})) {
@@ -392,7 +414,7 @@ sub substitute_string {
     }
     
     # Substitute $*
-    my $sub_str = join($self->{centreontrapd_config}->{seperator}, @{$self->{entvar}});
+    my $sub_str = join($self->{centreontrapd_config}->{separator}, @{$self->{entvar}});
     $str =~ s/\$\*/$sub_str/g;
     
     # Clean OID
@@ -495,10 +517,13 @@ sub executeCommand {
         $self->{logger}->writeLogInfo("EXEC: Launched command: $traps_execution_command");
     
         my $output = `$traps_execution_command`;
-        if ($?) {
+        if ($? == -1) {
             $self->{logger}->writeLogError("EXEC: Execution error: $!");
+        } elsif (($? >> 8) != 0) {
+            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($? >> 8));
         }
-        if ($output) {
+        if (defined($output)) {
+            chomp $output;
             $self->{logger}->writeLogInfo("EXEC: Output : $output");
         }
     }
@@ -550,6 +575,7 @@ sub getTrapsInfos {
             }
             
             #### Check if macro $_HOST*$ needed
+            $self->{ref_macro_hosts} = undef;
             if (defined($self->{ref_oids}->{$trap_id}->{traps_execution_command_enable}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command_enable} == 1 &&
                 defined($self->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST*?\$/) {
                 ($fstatus, $self->{ref_macro_hosts}) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
@@ -584,7 +610,6 @@ sub run {
                                              password => $self->{centreon_config}->{db_passwd},
                                              force => 0,
                                              logger => $self->{logger});
-    $self->{cdb}->set_inactive_destroy();
 
     if ($self->{centreontrapd_config}->{mode} == 0) {
         $self->{cmdFile} = $self->{centreon_config}->{cmdFile};
