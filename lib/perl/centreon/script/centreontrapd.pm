@@ -408,7 +408,7 @@ sub substitute_host_macro {
     
     if (defined($self->{ref_macro_hosts})) {
         foreach my $macro_name (keys %{$self->{ref_macro_hosts}}) {
-            $str =~ s/$macro_name/$self->{ref_macro_hosts}->{$macro_name}/g;
+            $str =~ s/\Q$macro_name\E/\Q$self->{ref_macro_hosts}->{$macro_name}\E/g;
         }
     }
     
@@ -591,7 +591,7 @@ sub getTrapsInfos {
             #### Check if macro $_HOST*$ needed
             $self->{ref_macro_hosts} = undef;
             if (defined($self->{ref_oids}->{$trap_id}->{traps_execution_command_enable}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command_enable} == 1 &&
-                defined($self->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST*?\$/) {
+                defined($self->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST.*?\$/) {
                 ($fstatus, $self->{ref_macro_hosts}) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
                 return 0 if ($fstatus == -1);
             }
