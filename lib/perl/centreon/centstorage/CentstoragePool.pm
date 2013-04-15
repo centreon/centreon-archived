@@ -992,7 +992,7 @@ sub rebuild {
         $self->{'dbcentstorage'}->set_inactive_destroy();
         $self->{'dbcentreon'}->set_inactive_destroy();
 
-        my $centreon_db_centstorage = centreon::common::db(logger => $self->{'logger'},
+        my $centreon_db_centstorage = centreon::common::db->new(logger => $self->{'logger'},
                                                            db => $self->{'dbcentstorage'}->db(),
                                                            host => $self->{'dbcentstorage'}->host(),
                                                            user => $self->{'dbcentstorage'}->user(),
