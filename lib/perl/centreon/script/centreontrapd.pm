@@ -46,8 +46,8 @@ sub new {
        cache_unknown_traps_enable => 1,
        cache_unknown_traps_retention => 600,
        cache_unknown_traps_file => "/tmp/centreontrapd.cache",
+       # 0 = central, 1 = poller
        mode => 0,
-       cmdFile => "/var/lib/centreon/centcore.cmd",
        cmd_timeout => 10,
        centreon_user => "centreon",
        # 0 => skip if MySQL error | 1 => dont skip (block) if MySQL error (and keep order)
@@ -356,11 +356,11 @@ sub forceCheck {
     
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile};
+        $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile} . "' 2>&1";
+        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
     my $stdout = `$submit`;
 
@@ -384,11 +384,11 @@ sub submitResult {
     my $submit;
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile};
+        $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{centreontrapd_config}->{cmdFile} . "' 2>&1";
+        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
     my $stdout = `$submit`;
     
@@ -523,6 +523,8 @@ sub executeCommand {
     $traps_execution_command =~ s/\@OUTPUT\@/$traps_output/g;
     $traps_execution_command =~ s/\@STATUS\@/$status/g;
     $traps_execution_command =~ s/\@TIME\@/$datetime/g;
+    $traps_execution_command =~ s/\@POLLERID\@/$self->{current_server_id}/g;
+    $traps_execution_command =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
 
     ##########################
     # SEND COMMAND
@@ -626,7 +628,7 @@ sub run {
                                              logger => $self->{logger});
 
     if ($self->{centreontrapd_config}->{mode} == 0) {
-        $self->{cmdFile} = $self->{centreon_config}->{cmdFile};
+        $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
     } else {
         # Dirty!!! Need to know the poller
         my ($status, $sth) = $self->{cdb}->query("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
