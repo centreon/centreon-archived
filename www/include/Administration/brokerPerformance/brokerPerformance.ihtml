@@ -93,7 +93,18 @@
 	 		<div class="info"><span class="info_name">{$lang.state}</span><span>{$io_infos.state}</span></div>
 	 		{foreach from=$io_infos key=info_key item=info_value}
 	 		{if $info_key != 'state' && $info_key != 'type' && $info_key != 'peers'}
-	 		<div class="info"><span class="info_name">{$lang[$info_key]}</span><span>{$info_value}</span></div>
+                        <div class="info">
+                                <span class="info_name">
+                                        {if $lang[$info_key]}
+                                                {$lang[$info_key]}
+                                        {else}
+                                                {$info_key}
+                                        {/if}
+                                </span>
+                                <span>
+                                        {$info_value}
+                                </span>
+                        </div>
 	 		{/if}
 	 		{/foreach}
 	 		{if count($io_infos.peers)}
