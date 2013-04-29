@@ -142,8 +142,7 @@
     /* Il faut gerer les hostsgroup */
 	$where_hg = "";
 	if ($hostgroups && $o != "meta") {
-		$from .= ", " . $obj->ndoPrefix . "hostgroup_members as hm, " . $obj->ndoPrefix . "hostgroups as nhg";
-		$where_hg = "nhs.host_object_id = hm.host_object_id AND hm.hostgroup_id = nhg.hostgroup_id AND nhg.alias LIKE '".$hostgroups."' AND ";
+		 $where_hg = "EXISTS(SELECT 1 FROM " . $obj->ndoPrefix . "objects as nohg, " . $obj->ndoPrefix . "hostgroup_members as hm, " . $obj->ndoPrefix . "hostgroups as nhg WHERE  nohg.objecttype_id = 3 AND nohg.name1 = '" . $hostgroups . "' AND nohg.is_active = '1' AND nohg.object_id = nhg.hostgroup_object_id AND nhg.hostgroup_id = hm.hostgroup_id AND hm.host_object_id = nhs.host_object_id) AND ";
 	}
 
 	$where_unhandled_host = "";

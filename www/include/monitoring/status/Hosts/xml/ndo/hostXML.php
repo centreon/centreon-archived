@@ -126,9 +126,6 @@
 	if (!$obj->is_admin) {
 		$rq1 .= ", centreon_acl ";
 	}
-	if ($hostgroups) {
-		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hm ";
-	}
 
 	$rq1 .= ", (" . $obj->ndoPrefix."hosts nh " ;
 	$rq1 .= " LEFT JOIN " . $obj->ndoPrefix . "host_parenthosts hph ";
@@ -188,8 +185,7 @@
 		$rq1 .= " AND nhs.scheduled_downtime_depth = 0";
 	}
 	if ($hostgroups) {
-		$rq1 .= " AND nh.host_object_id = hm.host_object_id AND hm.hostgroup_id IN
-				(SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."') ";
+		$rq1 .= " AND EXISTS(SELECT 1 FROM " . $obj->ndoPrefix . "objects as nohg, " . $obj->ndoPrefix . "hostgroup_members as hm, " . $obj->ndoPrefix . "hostgroups as nhg WHERE nohg.objecttype_id = 3 AND nohg.name1 = '" . $hostgroups . "' AND nohg.is_active = '1' AND nohg.object_id = nhg.hostgroup_object_id AND nhg.hostgroup_id = hm.hostgroup_id AND hm.host_object_id = nh.host_object_id) ";
 	}
 
 	if ($instance != -1) {
