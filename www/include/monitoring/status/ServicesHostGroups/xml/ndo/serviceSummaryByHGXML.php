@@ -102,49 +102,47 @@
 	 * Get Host status
 	 *
 	 */
-	$rq1 = 	" SELECT SQL_CALC_FOUND_ROWS DISTINCT no.name1 as host_name, noo.name1 as alias, hgm.hostgroup_id, hgm.host_object_id, hs.current_state".
-			" FROM " .$obj->ndoPrefix."hostgroups hg, ";
+	$rq1 =  " SELECT SQL_CALC_FOUND_ROWS DISTINCT nohg.name1 as alias, noh.object_id id, noh.name1 as host_name, hgm.hostgroup_id, hs.current_state hs ".
+            " FROM " . $obj->ndoPrefix . "objects nohg, " .$obj->ndoPrefix."hostgroups hg, ";
     if (!$obj->is_admin) {
-		$rq1 .= " centreon_acl, ";
-	}
-	$rq1 .=	$obj->ndoPrefix."hoststatus hs,
-			" .$obj->ndoPrefix."objects noo,
-			" .$obj->ndoPrefix."hostgroup_members hgm ";
-    $rq1 .= " INNER JOIN " . $obj->ndoPrefix. "objects no ON no.object_id = hgm.host_object_id ";
-	$rq1 .=	" WHERE hs.host_object_id = hgm.host_object_id".
-			" AND noo.object_id = hg.hostgroup_object_id " .
-			" AND no.object_id = hgm.host_object_id" .
-			" AND hgm.hostgroup_id = hg.hostgroup_id".
-			" AND no.name1 not like '_Module_%' ";
-	if (!$obj->is_admin) {
-		$rq1 .= $obj->access->queryBuilder("AND", "no.name1", "centreon_acl.host_name") . $obj->access->queryBuilder("AND", "group_id", $grouplistStr) . " " . $obj->access->queryBuilder("AND", "hg.alias", $obj->access->getHostGroupsString("ALIAS"));
-	}
-	if ($instance != -1) {
-		$rq1 .= " AND no.instance_id = ".$instance;
-	}
-	if	($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
-		$rq1 .= " AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.current_state != 0)";
-	}
-	if ($o == "svcSumHG_ack_0") {
-		$rq1 .=	" AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0)";
-	}
-	if ($o == "svcSumHG_ack_1"){
-		$rq1 .= " AND no.name1 IN (" .
-				" SELECT nno.name1 FROM " .$obj->ndoPrefix."objects nno," .$obj->ndoPrefix."servicestatus nss " .
-				" WHERE nss.service_object_id = nno.object_id AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0)";
-	}
-	if ($search != "") {
-		$rq1 .= " AND no.name1 like '%" . $search . "%' ";
-	}
-	if ($hostgroups != "" && $hostgroups != '0') {
-		$rq1 .= " AND hg.alias = '" . $obj->DBNdo->escape($hostgroups) . "'";
-	}
-	$rq1 .= " ORDER BY $sort_type, host_name $order ";
-	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
+            $rq1 .= " centreon_acl, ";
+    }
+    $rq1 .= $obj->ndoPrefix."hoststatus hs," .
+            $obj->ndoPrefix."objects noh, " .
+            $obj->ndoPrefix."hostgroup_members hgm ";
+    if ($o == "svcgridHG_pb" || $o == "svcSumHG_pb" || $o == "svcSumHG_ack_0" || $o == "svcSumHG_ack_1") {
+            $rq1 .= ", " . $obj->ndoPrefix."objects nos, " . $obj->ndoPrefix."servicestatus nss ";
+    }
+    $rq1 .= " WHERE nohg.objecttype_id = 3 ";
+    if ($hostgroups != "" && $hostgroups != '0') {
+            $rq1 .= " AND nohg.name1 = '" . $obj->DBNdo->escape($hostgroups) . "' ";
+    }
+    $rq1 .= " AND nohg.is_active = '1' AND nohg.object_id = hg.hostgroup_object_id AND hg.hostgroup_id = hgm.hostgroup_id AND hgm.host_object_id = hs.host_object_id " .
+            " AND hgm.host_object_id = noh.object_id ".
+            " AND noh.name1 NOT LIKE '_Module_%' ";
+    if ($search != "") {
+            $rq1 .= " AND noh.name1 like '%" . $search . "%' ";
+    }
+    if (!$obj->is_admin) {
+            $rq1 .= " AND EXISTS(SELECT 1 FROM centreon_acl WHERE noh.name1 = centreon_acl.host_name AND group_id IN (" . $grouplistStr . ")) ";
+    }
+    if ($instance != -1) {
+            $rq1 .= " AND noh.instance_id = " . $instance . " ";
+    }
+    if ($o == "svcgridHG_pb" || $o == "svcSumHG_pb") {
+            $rq1 .= " AND nos.objecttype_id = 2 AND noh.name1 = nos.name1 AND noh.instance_id = nos.instance_id AND nos.object_id = nss.service_object_id " .
+                    " AND nss.current_state != 0 ";
+    }
+    if ($o == "svcSumHG_ack_0") {
+            $rq1 .= " AND nos.objecttype_id = 2 AND noh.name1 = nos.name1 AND noh.instance_id = nos.instance_id AND nos.object_id = nss.service_object_id " .
+                    " AND nss.problem_has_been_acknowledged = 0 AND nss.current_state != 0 ";
+    }
+    if ($o == "svcSumHG_ack_1"){
+            $rq1 .= " AND nos.objecttype_id = 2 AND noh.name1 = nos.name1 AND noh.instance_id = nos.instance_id AND nos.object_id = nss.service_object_id " .
+                    " AND nss.problem_has_been_acknowledged = 1 AND nss.current_state != 0 ";
+    }
+    $rq1 .= " ORDER BY $sort_type, host_name $order ";
+    $rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
 	$obj->XML = new CentreonXML();
 	$obj->XML->startElement("reponse");

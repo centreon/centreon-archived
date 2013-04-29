@@ -87,9 +87,6 @@
 	 */
 	$rq1 =	  	" SELECT SQL_CALC_FOUND_ROWS DISTINCT no.name1 as host_name, nhs.current_state, icon_image, nh.host_object_id " .
 				" FROM " .$obj->ndoPrefix."objects no, " .$obj->ndoPrefix."hoststatus nhs, " .$obj->ndoPrefix."hosts nh ";
-	if ($hostgroups) {
-		$rq1 .= ", ".$obj->ndoPrefix."hostgroup_members hgm ";
-	}
 	if (!$obj->is_admin) {
 		$rq1 	.= ", centreon_acl ";
 	}
@@ -113,8 +110,7 @@
 		$rq1 .= " AND no.instance_id = ".$instance."";
 	}
 	if ($hostgroups) {
-	    $rq1 .= " AND nhs.host_object_id = hgm.host_object_id ";
-	    $rq1 .= " AND hgm.hostgroup_id IN (SELECT hostgroup_id FROM ".$obj->ndoPrefix."hostgroups WHERE alias LIKE '".$hostgroups."') ";
+	    $rq1 .= " AND EXISTS(SELECT 1 FROM " . $obj->ndoPrefix . "objects as nohg, " . $obj->ndoPrefix . "hostgroup_members as hm, " . $obj->ndoPrefix . "hostgroups as nhg WHERE nohg.objecttype_id = 3 AND nohg.name1 = '" . $hostgroups . "' AND nohg.is_active = '1' AND nohg.object_id = nhg.hostgroup_object_id AND nhg.hostgroup_id = hm.hostgroup_id AND hm.host_object_id = nh.host_object_id) ";
 	}
 	switch ($sort_type) {
 		case 'current_state' : $rq1 .= " order by nhs.current_state ". $order.",no.name1 "; break;
