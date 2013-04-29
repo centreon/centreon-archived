@@ -1514,7 +1514,7 @@ class CentreonACL
                 $request['order'];
         } else {
             if ($search != "") {
-                $searchSTR = " AND (host.host_name LIKE '%$search%' OR host.host_alias LIKE '%$search%')";
+                $searchSTR = "(host.host_name LIKE '%$search%' OR host.host_alias LIKE '%$search%') AND";
             }
             $groupIds = array_keys($this->accessGroups);
             if ($host_empty) {
