@@ -93,6 +93,8 @@
 
 	function multipleServiceGroupInDB ($serviceGroups = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
+                
+                $sgAcl = array();
 		foreach($serviceGroups as $key=>$value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM servicegroup WHERE sg_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -116,7 +118,7 @@
 					$DBRESULT = $pearDB->query("SELECT MAX(sg_id) FROM servicegroup");
 					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(sg_id)"]))	{
-
+                                                $sgAcl[$maxId["MAX(sg_id)"]] = $key;
 						$DBRESULT->free();
 						$DBRESULT = $pearDB->query("SELECT DISTINCT sgr.host_host_id, sgr.hostgroup_hg_id, sgr.service_service_id FROM servicegroup_relation sgr WHERE sgr.servicegroup_sg_id = '".$key."'");
 						$fields["sg_hgServices"] = "";
@@ -133,6 +135,7 @@
 				}
 			}
 		}
+                CentreonACL::duplicateSgAcl($sgAcl);
 	}
 
 	function insertServiceGroupInDB ($ret = array())	{

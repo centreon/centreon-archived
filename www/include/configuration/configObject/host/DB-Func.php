@@ -43,7 +43,8 @@
 	global $centreon_path;
 	require_once $centreon_path . 'www/class/centreonLDAP.class.php';
  	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-
+        require_once $centreon_path . 'www/class/centreonACL.class.php';
+        
         /**
          * Quickform rule that checks whether or not monitoring server can be set
          *
@@ -271,6 +272,7 @@
 	function multipleHostInDB ($hosts = array(), $nbrDup = array())	{
 		global $pearDB, $path, $centreon, $is_admin;
 
+                $hostAcl = array();
 		foreach ($hosts as $key => $value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM host WHERE host_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -291,7 +293,8 @@
 					$DBRESULT = $pearDB->query("SELECT MAX(host_id) FROM host");
 					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(host_id)"]))	{
-						#
+                                                $hostAcl[$maxId['MAX(host_id)']] = $key;
+                                            
 						$DBRESULT = $pearDB->query("SELECT DISTINCT host_parent_hp_id FROM host_hostparent_relation WHERE host_host_id = '".$key."'");
 						$fields["host_parents"] = "";
 						while($host = $DBRESULT->fetchRow()){
@@ -454,6 +457,7 @@
 				}
 			}
 		}
+                CentreonACL::duplicateHostAcl($hostAcl);
 	}
 
 	function updateHostInDB ($host_id = NULL, $from_MC = false, $cfg = NULL)	{

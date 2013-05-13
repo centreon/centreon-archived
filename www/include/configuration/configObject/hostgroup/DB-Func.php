@@ -125,6 +125,7 @@
 	function multipleHostGroupInDB ($hostGroups = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
 
+                $hgAcl = array();
 		foreach($hostGroups as $key=>$value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -147,7 +148,8 @@
 					$DBRESULT = $pearDB->query("SELECT MAX(hg_id) FROM hostgroup");
 					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hg_id)"]))	{
-						if (!$is_admin){
+						$hgAcl[$maxId["MAX(hg_id)"]] = $key;
+                                                if (!$is_admin){
 							$resource_list = $oreon->user->access->getResourceGroups();
 							if (count($resource_list)){
 								foreach ($resource_list as $res_id => $res_name)	{
@@ -173,6 +175,7 @@
 				}
 			}
 		}
+                CentreonACL::duplicateHgAcl($hgAcl);
 	}
 
 	function insertHostGroupInDB ($ret = array())	{

@@ -101,6 +101,7 @@
 	function multipleHostCategoriesInDB ($hostcategories = array(), $nbrDup = array())	{
 		global $pearDB, $oreon, $is_admin;
 
+                $hcAcl = array();
 		foreach ($hostcategories as $key => $value)	{
 			$DBRESULT = $pearDB->query("SELECT * FROM hostcategories WHERE hc_id = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
@@ -121,7 +122,7 @@
 					$DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
 					$maxId = $DBRESULT->fetchRow();
 					if (isset($maxId["MAX(hc_id)"]))	{
-
+                                                $hcAcl[$maxId["MAX(hc_id)"]] = $key;
 						$DBRESULT = $pearDB->query("SELECT DISTINCT hgr.host_host_id FROM hostcategories_relation hgr WHERE hgr.hostcategories_hc_id = '".$key."'");
 						$fields["hc_hosts"] = "";
 						while($host = $DBRESULT->fetchRow()){
@@ -134,6 +135,7 @@
 				}
 			}
 		}
+                CentreonACL::duplicateHcAcl($hcAcl);
 	}
 
 	function insertHostCategoriesInDB ($ret = array())	{

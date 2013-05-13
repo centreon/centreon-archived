@@ -984,6 +984,9 @@ class CentreonACL
         if ($this->admin) {
             return $str;
         }
+        if ($stringlist == "") {
+            $stringlist = "''";
+        }
         $str .= " " . $condition . " " . $field . " IN (".$stringlist.") ";
         return $str;
     }
@@ -1771,6 +1774,109 @@ class CentreonACL
         $res = $pearDB->query($sql);
         $result = $this->constructResult($res, $options);
         return $result;
+    }
+    
+    /**
+     * Duplicate Host ACL
+     * 
+     * @param array $hosts | hosts to duplicate
+     * @return void
+     */
+    public function duplicateHostAcl($hosts = array()) {
+        global $pearDB;
+            
+        $sql = "INSERT INTO %s 
+                    (host_host_id, acl_res_id)
+                    (SELECT %d, acl_res_id 
+                    FROM %s 
+                    WHERE host_host_id = %d)";
+        $tbHost = "acl_resources_host_relations";
+        $tbHostEx = "acl_resources_hostex_relations";
+        foreach ($hosts as $copyId => $originalId) {
+            $pearDB->query(sprintf($sql, $tbHost, $copyId, $tbHost, $originalId));
+            $pearDB->query(sprintf($sql, $tbHostEx, $copyId, $tbHostEx, $originalId));
+            
+        }
+    }
+    
+    /**
+     * Duplicate Host Group ACL
+     * 
+     * @param array $hgs | host groups to duplicate 
+     * @return void
+     */
+    public function duplicateHgAcl($hgs = array()) {
+        global $pearDB;
+        
+        $sql = "INSERT INTO %s 
+                    (hg_hg_id, acl_res_id)
+                    (SELECT %d, acl_res_id 
+                    FROM %s 
+                    WHERE hg_hg_id = %d)";
+        $tb = "acl_resources_hg_relations";
+        foreach ($hgs as $copyId => $originalId) {
+            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+        }
+    }
+    
+    /**
+     * Duplicate Service Group ACL
+     *
+     * @param array $sgs | service groups to duplicate  
+     * @return void 
+     */
+    public function duplicateSgAcl($sgs = array()) {
+        global $pearDB;
+        
+        $sql = "INSERT INTO %s 
+                    (sg_id, acl_res_id)
+                    (SELECT %d, acl_res_id 
+                    FROM %s 
+                    WHERE sg_id = %d)";
+        $tb = "acl_resources_sg_relations";
+        foreach ($sgs as $copyId => $originalId) {
+            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+        }
+    }
+    
+    /**
+     * Duplicate Host Category ACL
+     * 
+     * @param array $hcs | host categories to duplicate 
+     * @return void 
+     */
+    public function duplicateHcAcl($hcs = array()) {
+        global $pearDB;
+        
+        $sql = "INSERT INTO %s 
+                    (hc_id, acl_res_id)
+                    (SELECT %d, acl_res_id 
+                    FROM %s 
+                    WHERE hc_id = %d)";
+        $tb = "acl_resources_hc_relations";
+        foreach ($hcs as $copyId => $originalId) {
+            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+        }
+    }
+    
+    /**
+     * Duplicate Service Category ACL
+     * 
+     * @param array $scs | service categories to duplicate 
+     * @return void 
+     */
+    public function duplicateScAcl($scs = array()) {
+        global $pearDB;
+        
+        $sql = "INSERT INTO %s 
+                    (sc_id, acl_res_id)
+                    (SELECT %d, acl_res_id 
+                    FROM %s 
+                    WHERE sc_id = %d)";
+        $tb = "acl_resources_sc_relations";
+        foreach ($scs as $copyId => $originalId) {
+            $pearDB->query(sprintf($sql, $tb, $copyId, $tb, $originalId));
+        }
     }
 }
 ?>
