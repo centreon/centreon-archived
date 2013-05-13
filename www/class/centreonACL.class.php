@@ -1184,9 +1184,19 @@ class CentreonACL
      */
     public function updateACL()
     {
-        global $pearDB;
+        global $pearDB, $centreon_path;
 
-        $DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+        if (!$this->admin) {
+            $groupIds = array_keys($this->accessGroups);
+            if (is_array($groupIds) && count($groupIds)) {
+                $DBRESULT = $pearDB->query("UPDATE acl_groups 
+                    SET acl_group_changed = '1' 
+                    WHERE acl_group_id IN (".implode(",", $groupIds).")");
+                passthru("php " . $centreon_path . "/cron/centAcl.php");
+            }
+        } else {
+            $DBRESULT = $pearDB->query("UPDATE `acl_resources` SET `changed` = '1'");
+        }
     }
 
     /*

@@ -458,6 +458,7 @@
 			}
 		}
                 CentreonACL::duplicateHostAcl($hostAcl);
+                $centreon->user->access->updateACL();
 	}
 
 	function updateHostInDB ($host_id = NULL, $from_MC = false, $cfg = NULL)	{

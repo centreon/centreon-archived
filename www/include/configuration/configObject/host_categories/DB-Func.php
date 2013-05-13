@@ -136,6 +136,7 @@
 			}
 		}
                 CentreonACL::duplicateHcAcl($hcAcl);
+                $oreon->user->access->updateACL();
 	}
 
 	function insertHostCategoriesInDB ($ret = array())	{

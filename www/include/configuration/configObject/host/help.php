@@ -80,7 +80,7 @@ $help["3d_coords"] = dgettext("help", "Define the coordinates to use when drawin
 
 $help['criticality_id'] = dgettext("help", "Criticality level");
 
-$help['acl_groups'] = dgettext("help", "This is required so that you can access your host after creation. Some selected resource groups may contain filter, thus still preventing you from seeing the new host.");
+$help['acl_groups'] = dgettext("help", "This is required so that you can access your host after creation. Some selected resource groups may contain filter, thus still preventing you from seeing the new host. In this case, make sure to link your Host to a Host Category.");
 
 /*
  * Macros

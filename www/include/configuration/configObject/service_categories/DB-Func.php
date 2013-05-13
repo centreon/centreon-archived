@@ -55,7 +55,7 @@
 	}
 
 	function multipleServiceCategorieInDB ($sc = array(), $nbrDup = array())	{
-                global $pearDB;
+                global $pearDB, $centreon;
                 
                 $scAcl = array();
                 foreach($sc as $key => $value)	{	
@@ -81,6 +81,7 @@
 			}
 		}
                 CentreonACL::duplicateScAcl($scAcl);
+                $centreon->user->access->updateACL();
 	}
 
 	function enableServiceCategorieInDB($sc_id = null, $sc_arr = array())	{

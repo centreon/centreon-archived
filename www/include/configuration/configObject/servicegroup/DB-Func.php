@@ -136,6 +136,7 @@
 			}
 		}
                 CentreonACL::duplicateSgAcl($sgAcl);
+                $oreon->user->access->updateACL();
 	}
 
 	function insertServiceGroupInDB ($ret = array())	{
