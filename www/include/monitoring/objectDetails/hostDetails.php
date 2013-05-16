@@ -443,11 +443,11 @@
              * Add Tips
              */
             $tpl->assign("shortcut", _("Host Shortcuts"));
-            $tpl->assign("lnk_all_services", sprintf(_("View status of all services on host %s"), $host_name));
-            $tpl->assign("lnk_host_graphs", sprintf(_("View graphs for host %s"), $host_name));
-            $tpl->assign("lnk_host_config", sprintf(_("Configure host %s"), $host_name));
-            $tpl->assign("lnk_host_reports", sprintf(_("View report for host %s"), $host_name));
-            $tpl->assign("lnk_host_logs", sprintf(_("View logs for host %s"), $host_name));
+            $tpl->assign("lnk_all_services", addslashes(sprintf(_("View status of all services on host %s"), $host_name)));
+            $tpl->assign("lnk_host_graphs", addslashes(sprintf(_("View graphs for host %s"), $host_name)));
+            $tpl->assign("lnk_host_config", addslashes(sprintf(_("Configure host %s"), $host_name)));
+            $tpl->assign("lnk_host_reports", addslashes(sprintf(_("View report for host %s"), $host_name)));
+            $tpl->assign("lnk_host_logs", addslashes(sprintf(_("View logs for host %s"), $host_name)));
 
             /*
              * if user is admin, allActions is true,
