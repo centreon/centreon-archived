@@ -36,6 +36,7 @@
  *
  */
 
+
 	/**
 	 * Require configuration.
 	 */
@@ -61,6 +62,29 @@
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
 
+        /*
+        * Get session
+        */
+        if (isset($_SESSION['centreon'])) {
+            $centreon = $_SESSION['centreon'];
+        } else {
+            exit;
+        }
+
+       /*
+        * Get language
+        */
+        $locale = $centreon->user->get_lang();
+        putenv("LANG=$locale");
+        setlocale(LC_ALL, $locale);
+        bindtextdomain("messages",  $centreon_path . "www/locale/");;
+        bind_textdomain_codeset("messages", "UTF-8");
+        textdomain("messages");
+        
+        $criticality = new CentreonCriticality($obj->DB);
+	$instanceObj = new CentreonInstance($obj->DB);
+        $media = new CentreonMedia($obj->DB);
+        
         $criticality = new CentreonCriticality($obj->DB);	        
 	$instanceObj = new CentreonInstance($obj->DB);
         $media = new CentreonMedia($obj->DB);
