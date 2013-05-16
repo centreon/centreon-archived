@@ -61,7 +61,7 @@
 	/*
 	 * Init QuickFrom
 	 */
-	$form = new HTML_QuickForm('form_dt', 'post', "?p=".$p);
+	$form = new HTML_QuickForm('form_dt', 'post', "?p=$p&type=$type");
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add a downtime"));
 	} elseif ($o == "c") {
