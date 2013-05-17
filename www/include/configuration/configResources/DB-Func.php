@@ -173,4 +173,16 @@
             $pearDB->query($query . $query2);
         }
 	}
+
+    function getLinkedPollerList($resource_id) {
+        global $pearDB;
+
+        $str = "";
+        $DBRESULT = $pearDB->query("SELECT ns.name, ns.id FROM cfg_resource_instance_relations nsr, cfg_resource r, nagios_server ns WHERE nsr.resource_id = r.resource_id AND nsr.instance_id = ns.id AND nsr.resource_id = '".$resource_id."'");
+        while ($data = $DBRESULT->fetchRow()) {
+            $str .= "<a href='main.php?p=60901&o=c&server_id=".$data["id"]."'>".$data["name"]."</a> ";
+        }
+        unset($DBRESULT);
+        return $str;
+    }
 ?>

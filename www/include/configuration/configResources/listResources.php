@@ -36,7 +36,7 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 
 	include("./include/common/autoNumLimit.php");
@@ -89,6 +89,7 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_values", _("Values"));
 	$tpl->assign("headerMenu_comment", _("Description"));
+    $tpl->assign("headerMenu_associated_poller", _("Associated pollers"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
@@ -128,6 +129,7 @@
 								"RowMenu_link"=>"?p=".$p."&o=c&resource_id=".$resource['resource_id'],
 								"RowMenu_values"=>substr($resource["resource_line"], 0, 40),
 								"RowMenu_comment"=>substr(html_entity_decode($resource["resource_comment"], ENT_QUOTES, "UTF-8"), 0, 40),
+                                "RowMenu_associated_poller" => getLinkedPollerList($resource['resource_id']),
 								"RowMenu_status"=>$resource["resource_activate"] ? _("Enabled") :  _("Disabled"),
 								"RowMenu_options"=>$moptions);
 		$style != "two" ? $style = "two" : $style = "one";
