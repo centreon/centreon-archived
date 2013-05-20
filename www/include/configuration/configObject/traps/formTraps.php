@@ -116,7 +116,6 @@
 	$form->addElement('select', 'traps_status', _("Default Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")), array('id' => 'trapStatus'));
 	$form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
 	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
-	$form->setDefaults(0);
 
 	/* *******************************************************************
 	 * Three possibilities : 	- submit result
@@ -128,20 +127,18 @@
 	 * submit result
 	 */
 	$form->addElement('checkbox', 'traps_submit_result_enable', _("Submit result"));
-	$form->setDefaults(1);
+    $form->setDefaults(array('traps_submit_result_enable' => '1'));
 
 	/*
 	 * Schedule svc check forced
 	 */
 	$form->addElement('checkbox', 'traps_reschedule_svc_enable', _("Reschedule associated services"));
-	$form->setDefaults(0);
 
 	/*
 	 * execute commande
 	 */
 	$form->addElement('text', 'traps_execution_command', _("Special Command"), $attrsLongText);
 	$form->addElement('checkbox', 'traps_execution_command_enable', _("Execute special command"));
-	$form->setDefaults(0);
 
 	/*
 	 * Further informations
