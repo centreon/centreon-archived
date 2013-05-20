@@ -36,97 +36,102 @@
  *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+    exit();
+}
 
-	require_once ($centreon_path . "/www/class/centreonHost.class.php");
-        require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
+require_once ($centreon_path . "/www/class/centreonHost.class.php");
+require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
-        $criticality = new CentreonCriticality($pearDB);
-        
-	/*
-	 * Create table for host / instance list.
-	 */
+$criticality = new CentreonCriticality($pearDB);
 
-	$host_instance = array();
-	$DBRESULT = $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
-	while ($datas = $DBRESULT->fetchRow())
-		$host_instance[$datas["host_host_id"]] = $datas["host_host_id"];
-	$DBRESULT->free();
+/*
+ * Create table for host / instance list.
+ */
+$host_instance = array();
+$DBRESULT = $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
+while ($datas = $DBRESULT->fetchRow()) {
+    $host_instance[$datas["host_host_id"]] = $datas["host_host_id"];
+}
+$DBRESULT->free();
 
-	/*
-	 * Get Command List
-	 */
-	$DBRESULT = $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
-	$commands = array();
-	while ($command = $DBRESULT->fetchRow())	{
-		$commands[$command["command_id"]] = $command["command_name"];
-	}
-	unset($command);
+/*
+ * Get Command List
+ */
+$DBRESULT = $pearDB->query('SELECT command_id, command_name FROM `command` ORDER BY `command_type`,`command_name`');
+$commands = array();
+while ($command = $DBRESULT->fetchRow())	{
+    $commands[$command["command_id"]] = $command["command_name"];
+}
+unset($command);
 
-	/*
-	 * Get Template cache
-	 */
-	$templateCache = array();
-	$DBRESULT = $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `order`");
-	while ($h = $DBRESULT->fetchRow()) {
-		if (!isset($templateCache[$h["host_host_id"]]))
-			$templateCache[$h["host_host_id"]] = array();
-		$templateCache[$h["host_host_id"]][] = $h["host_name"];
-	}
-	$DBRESULT->free();
-	unset($h);
+/*
+ * Get Template cache
+ */
+$templateCache = array();
+$DBRESULT = $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `order`");
+while ($h = $DBRESULT->fetchRow()) {
+    if (!isset($templateCache[$h["host_host_id"]])) {
+        $templateCache[$h["host_host_id"]] = array();
+    }
+    $templateCache[$h["host_host_id"]][] = $h["host_name"];
+}
+$DBRESULT->free();
+unset($h);
 
-	/*
-	 * Create HG Cache
-	 */
-	$hgCache = array();
-	$DBRESULT2 = $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id AND hg.hg_activate = '1'");
-	while ($hg = $DBRESULT2->fetchRow()) {
-		if (!isset($hgCache[$hg["host_host_id"]]))
-			$hgCache[$hg["host_host_id"]] = array();
-		$hgCache[$hg["host_host_id"]][$hg["hostgroup_hg_id"]] = $hg["hg_name"];
-	}
-	$DBRESULT->free();
-	unset($hg);
+/*
+ * Create HG Cache
+ */
+$hgCache = array();
+$DBRESULT2 = $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id AND hg.hg_activate = '1'");
+while ($hg = $DBRESULT2->fetchRow()) {
+    if (!isset($hgCache[$hg["host_host_id"]])) {
+        $hgCache[$hg["host_host_id"]] = array();
+    }
+    $hgCache[$hg["host_host_id"]][$hg["hostgroup_hg_id"]] = $hg["hg_name"];
+}
+$DBRESULT->free();
+unset($hg);
 
-	/*
-	 * Init Table for filled HG
-	 */
-	$HGFilled = array();
+/*
+ * Init Table for filled HG
+ */
+$HGFilled = array();
 
-	/*
-	 * Create Contact Cache
-	 */
-	$cctCache = array();
-	$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id AND c.contact_register = 1 AND c.contact_activate = '1'");
-	while ($contact = $DBRESULT2->fetchRow())	{
-		if (!isset($cctCache[$contact["host_host_id"]]))
-			$cctCache[$contact["host_host_id"]] = array();
-		$cctCache[$contact["host_host_id"]][$contact["contact_id"]] = $contact["contact_name"];
-	}
-	$DBRESULT->free();
-	unset($contact);
+/*
+ * Create Contact Cache
+ */
+$cctCache = array();
+$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id AND c.contact_register = 1 AND c.contact_activate = '1'");
+while ($contact = $DBRESULT2->fetchRow())	{
+    if (!isset($cctCache[$contact["host_host_id"]])) {
+        $cctCache[$contact["host_host_id"]] = array();
+    }
+    $cctCache[$contact["host_host_id"]][$contact["contact_id"]] = $contact["contact_name"];
+}
+$DBRESULT->free();
+unset($contact);
 
-	/*
-	 * Create Cache for CG
-	 */
-	$cgCache = array();
-	$DBRESULT2 = $pearDB->query("SELECT cg.cg_id, cg.cg_name, chr.host_host_id FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
-	while ($cg = $DBRESULT2->fetchRow())	{
-		if (!isset($cgCache[$cg["host_host_id"]]))
-			$cgCache[$cg["host_host_id"]] = array();
-		$cgCache[$cg["host_host_id"]][$cg["cg_id"]] = $cg["cg_name"];
+/*
+ * Create Cache for CG
+ */
+$cgCache = array();
+$DBRESULT2 = $pearDB->query("SELECT cg.cg_id, cg.cg_name, chr.host_host_id FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
+while ($cg = $DBRESULT2->fetchRow())	{
+    if (!isset($cgCache[$cg["host_host_id"]])) {
+        $cgCache[$cg["host_host_id"]] = array();
+    }
+    $cgCache[$cg["host_host_id"]][$cg["cg_id"]] = $cg["cg_name"];
+    
+}
+$DBRESULT->free();
+unset($cg);
 
-	}
-	$DBRESULT->free();
-	unset($cg);
-
-        /*
-         * Criticality cache
-         */
-        $critCache = array();
-        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id 
+/*
+ * Criticality cache
+ */
+$critCache = array();
+$critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id 
                                    FROM criticality_resource_relations crr, host h
                                    WHERE crr.host_id = h.host_id
                                    AND h.host_register = '1'");
@@ -236,182 +241,190 @@
                                     }
                                 }
                                 
-				if ($host["host_register"] == 1 && $host["host_location"] != "")
-					$str .= print_line("#location", $host["host_location"]);
+            if ($host["host_register"] == 1 && $host["host_location"] != "")
+                $str .= print_line("#location", $host["host_location"]);
 
-				if ($host["host_snmp_community"])
-					$str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
-				if ($host["host_snmp_version"])
-					$str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
+            if ($host["host_snmp_community"])
+                $str .= print_line("_SNMPCOMMUNITY", $host["host_snmp_community"]);
+            if ($host["host_snmp_version"])
+                $str .= print_line("_SNMPVERSION", $host["host_snmp_version"]);
 
-				/*
-				 * Get Parents List for this host
-				 */
-				$hostParent = array();
-				$strTemp = NULL;
-				$DBRESULT2 = $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
-				while ($hostParent = $DBRESULT2->fetchRow())	{
-					$DBRESULT3 = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
-					if (verifyIfMustBeGenerated($hostParent["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows()) {
-						$strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
-					}
-				}
-				$DBRESULT2->free();
+            /*
+             * Get Parents List for this host
+             */
+            $hostParent = array();
+            $strTemp = NULL;
+            $DBRESULT2 = $pearDB->query("SELECT host.host_id, host.host_name FROM host_hostparent_relation hhr, host WHERE hhr.host_host_id = '".$host["host_id"]."' AND hhr.host_parent_hp_id = host.host_id ORDER BY `host_name`");
+            while ($hostParent = $DBRESULT2->fetchRow())	{
+                $DBRESULT3 = $pearDB->query("SELECT * FROM ns_host_relation WHERE host_host_id = '".$hostParent["host_id"]."' AND nagios_server_id = '".$tab['id']."'");
+                if (verifyIfMustBeGenerated($hostParent["host_id"], $gbArr[2], $ret) && $DBRESULT3->numRows()) {
+                    $strTemp != NULL ? $strTemp .= ", ".$hostParent["host_name"] : $strTemp = $hostParent["host_name"];
+                }
+            }
+            $DBRESULT2->free();
 
-				if ($strTemp)
-					$str .= print_line("parents", $strTemp);
-				unset($hostParent);
-				unset($strTemp);
+            if ($strTemp) {
+                $str .= print_line("parents", $strTemp);
+            }
+            unset($hostParent);
+            unset($strTemp);
 
-				/*
-				 * Hostgroups relation
-				 */
-				$strTemp = "";
-				if (isset($hgCache[$host["host_id"]])) {
-					foreach ($hgCache[$host["host_id"]] as $hgs) {
-						if ($strTemp != "") {
-							$strTemp .= ",";
-						}
-						$strTemp .= $hgs;
-						$HGFilled[$hgs] = $hgs;
-						$hgHostGenerated[$hgs] = 1;
-					}
-				}
-				if ($strTemp)
-					$str .= print_line("hostgroups", $strTemp);
-				unset($strTemp);
+            /*
+             * Hostgroups relation
+             */
+            $strTemp = "";
+            if (isset($hgCache[$host["host_id"]])) {
+                foreach ($hgCache[$host["host_id"]] as $hgs) {
+                    if ($strTemp != "") {
+                        $strTemp .= ",";
+                    }
+                    $strTemp .= $hgs;
+                    $HGFilled[$hgs] = $hgs;
+                    $hgHostGenerated[$hgs] = 1;
+                }
+            }
+            if ($strTemp)
+                $str .= print_line("hostgroups", $strTemp);
+            unset($strTemp);
 
-				/*
-				 * Check Command
-				 */
-			    if (isset($host["command_command_id_arg1"]) && $host["command_command_id_arg1"]) {
-					$host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
-					if (!isset($host['command_command_id']) || !$host['command_command_id']) {
-					    $host["command_command_id"] = getMyHostFieldFromMultiTemplates($host["host_id"], "command_command_id");
-					}
-					if (isset($host["command_command_id"]) && $host['command_command_id']) {
-						$str .= print_line("check_command", $commands[$host["command_command_id"]].$host["command_command_id_arg1"]);
-					}
-				} else if (isset($host["command_command_id"]) && $host["command_command_id"]) {
-					$host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
-					$str .= print_line("check_command", $commands[$host["command_command_id"]].$host["command_command_id_arg1"]);
-				}
+            /*
+             * Check Command
+             */
+            if (isset($host["command_command_id_arg1"]) && $host["command_command_id_arg1"]) {
+                $host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
+                if (!isset($host['command_command_id']) || !$host['command_command_id']) {
+                    $host["command_command_id"] = getMyHostFieldFromMultiTemplates($host["host_id"], "command_command_id");
+                }
+                if (isset($host["command_command_id"]) && $host['command_command_id']) {
+                    $str .= print_line("check_command", $commands[$host["command_command_id"]].$host["command_command_id_arg1"]);
+                }
+            } else if (isset($host["command_command_id"]) && $host["command_command_id"]) {
+                $host["command_command_id_arg1"] = removeSpecialChar($host["command_command_id_arg1"]);
+                $str .= print_line("check_command", $commands[$host["command_command_id"]].$host["command_command_id_arg1"]);
+            }
 
-				if ($host["host_max_check_attempts"] != NULL)
-					$str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
-				if ($host["host_check_interval"] != NULL)
-					$str .= print_line("check_interval", $host["host_check_interval"]);
-				if ($host["host_retry_check_interval"] != NULL)
-					$str .= print_line("retry_interval", $host["host_retry_check_interval"]);
-				if ($host["host_active_checks_enabled"] != 2)
-					$str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
-				if ($host["host_passive_checks_enabled"] != 2)
-					$str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
+            if ($host["host_max_check_attempts"] != NULL)
+                $str .= print_line("max_check_attempts", $host["host_max_check_attempts"]);
+            if ($host["host_check_interval"] != NULL)
+                $str .= print_line("check_interval", $host["host_check_interval"]);
+            if ($host["host_retry_check_interval"] != NULL)
+                $str .= print_line("retry_interval", $host["host_retry_check_interval"]);
+            if ($host["host_active_checks_enabled"] != 2)
+                $str .= print_line("active_checks_enabled", $host["host_active_checks_enabled"] == 1 ? "1": "0");
+            if ($host["host_passive_checks_enabled"] != 2)
+                $str .= print_line("passive_checks_enabled", $host["host_passive_checks_enabled"] == 1 ? "1": "0");
 
-				/*
-				 * Check Period
-				 */
-				if ($oreon->CentreonGMT->used() == 1) {
-					if ($host["timeperiod_tp_id"])
-						$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location_tp"]);
-					else
-						$str .= print_line("check_period", $timeperiods[getMyHostField($host["host_id"], "timeperiod_tp_id")]."_GMT".$host["host_location_tp"]);
-				} else {
-					if ($host["timeperiod_tp_id"])
-						$str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]);
-				}
+            /*
+             * Check Period
+             */
+            if ($oreon->CentreonGMT->used() == 1) {
+                if (isset($host["host_location_tp"])) {
+                    if ($host["timeperiod_tp_id"] && isset($timeperiods[$host["timeperiod_tp_id"]])) {
+                        $str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location_tp"]);
+                    } else {
+                        $tp_tmp = getMyHostField($host["host_id"], "timeperiod_tp_id");
+                        if (isset($tp_tmp) && $tp_tmp != "" && isset($timeperiods[$tp_tmp])) {
+                            $str .= print_line("check_period", $timeperiods[$tp_tmp]."_GMT".$host["host_location_tp"]);
+                        }
+                    }
+                }
+            } else {
+                if ($host["timeperiod_tp_id"]) {
+                    $str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]);
+                }
+            }
 
-				if ($host["host_obsess_over_host"] != 2)
-					$str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
-				if ($host["host_check_freshness"] != 2)
-					$str .= print_line("check_freshness", $host["host_check_freshness"] == 1 ? "1": "0");
-				if ($host["host_freshness_threshold"])
-					$str .= print_line("freshness_threshold", $host["host_freshness_threshold"]);
+            if ($host["host_obsess_over_host"] != 2)
+                $str .= print_line("obsess_over_host", $host["host_obsess_over_host"] == 1 ? "1": "0");
+            if ($host["host_check_freshness"] != 2)
+                $str .= print_line("check_freshness", $host["host_check_freshness"] == 1 ? "1": "0");
+            if ($host["host_freshness_threshold"])
+                $str .= print_line("freshness_threshold", $host["host_freshness_threshold"]);
 
-				/*
-				 * Event_handler
-				 */
-				$host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
-				if ($host["command_command_id2"])
-					$str .= print_line("event_handler", $commands[$host["command_command_id2"]].$host["command_command_id_arg2"]);
+            /*
+             * Event_handler
+             */
+            $host["command_command_id_arg2"] = removeSpecialChar($host["command_command_id_arg2"]);
+            if ($host["command_command_id2"])
+                $str .= print_line("event_handler", $commands[$host["command_command_id2"]].$host["command_command_id_arg2"]);
 
-				if ($host["host_event_handler_enabled"] != 2)
-					$str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
-				if ($host["host_low_flap_threshold"])
-					$str .= print_line("low_flap_threshold", $host["host_low_flap_threshold"]);
-				if ($host["host_high_flap_threshold"])
-					$str .= print_line("high_flap_threshold", $host["host_high_flap_threshold"]);
-				if ($host["host_flap_detection_enabled"] != 2)
-					$str .= print_line("flap_detection_enabled", $host["host_flap_detection_enabled"] == 1 ? "1": "0");
-				if ($host["host_process_perf_data"] != 2)
-					$str .= print_line("process_perf_data", $host["host_process_perf_data"] == 1 ? "1": "0");
-				if ($host["host_retain_status_information"] != 2)
-					$str .= print_line("retain_status_information", $host["host_retain_status_information"] == 1 ? "1": "0");
-				if ($host["host_retain_nonstatus_information"] != 2)
-					$str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
+            if ($host["host_event_handler_enabled"] != 2)
+                $str .= print_line("event_handler_enabled", $host["host_event_handler_enabled"] == 1 ? "1": "0");
+            if ($host["host_low_flap_threshold"])
+                $str .= print_line("low_flap_threshold", $host["host_low_flap_threshold"]);
+            if ($host["host_high_flap_threshold"])
+                $str .= print_line("high_flap_threshold", $host["host_high_flap_threshold"]);
+            if ($host["host_flap_detection_enabled"] != 2)
+                $str .= print_line("flap_detection_enabled", $host["host_flap_detection_enabled"] == 1 ? "1": "0");
+            if ($host["host_process_perf_data"] != 2)
+                $str .= print_line("process_perf_data", $host["host_process_perf_data"] == 1 ? "1": "0");
+            if ($host["host_retain_status_information"] != 2)
+                $str .= print_line("retain_status_information", $host["host_retain_status_information"] == 1 ? "1": "0");
+            if ($host["host_retain_nonstatus_information"] != 2)
+                $str .= print_line("retain_nonstatus_information", $host["host_retain_nonstatus_information"] == 1 ? "1": "0");
 
-				/*
-				 * Nagios V2 & V3 : contactGroups relation
-				 */
-				$strTemp = "";
-				if (isset($cgCache[$host["host_id"]])) {
-					foreach ($cgCache[$host["host_id"]] as $cg) {
-						if ($strTemp != "")
-							$strTemp .= ",";
-						$strTemp .= $cg;
-					}
-					if ($strTemp)
-						$str .= print_line("contact_groups", $strTemp);
-					unset($strTemp);
-				}
+            /*
+             * Nagios V2 & V3 : contactGroups relation
+             */
+            $strTemp = "";
+            if (isset($cgCache[$host["host_id"]])) {
+                foreach ($cgCache[$host["host_id"]] as $cg) {
+                    if ($strTemp != "")
+                        $strTemp .= ",";
+                    $strTemp .= $cg;
+                }
+                if ($strTemp)
+                    $str .= print_line("contact_groups", $strTemp);
+                unset($strTemp);
+            }
 
-				/*
-				 * Nagios V3 : contacts relation
-				 */
-				$strTemp = "";
-				if (isset($cctCache[$host["host_id"]])) {
-					foreach ($cctCache[$host["host_id"]] as $contact) {
-						if ($strTemp != "")
-							$strTemp .= ",";
-						$strTemp .= $contact;
-					}
-					if ($strTemp)
-						$str .= print_line("contacts", $strTemp);
-					unset($strTemp);
-				}
+            /*
+             * Nagios V3 : contacts relation
+             */
+            $strTemp = "";
+            if (isset($cctCache[$host["host_id"]])) {
+                foreach ($cctCache[$host["host_id"]] as $contact) {
+                    if ($strTemp != "")
+                        $strTemp .= ",";
+                    $strTemp .= $contact;
+                }
+                if ($strTemp)
+                    $str .= print_line("contacts", $strTemp);
+                unset($strTemp);
+            }
 
-				if ($host["host_notification_interval"] != NULL)
-					$str .= print_line("notification_interval", $host["host_notification_interval"]);
-				if ($host["host_first_notification_delay"] != NULL)
-					$str .= print_line("first_notification_delay", $host["host_first_notification_delay"]);
+            if ($host["host_notification_interval"] != NULL)
+                $str .= print_line("notification_interval", $host["host_notification_interval"]);
+            if ($host["host_first_notification_delay"] != NULL)
+                $str .= print_line("first_notification_delay", $host["host_first_notification_delay"]);
 
-				/*
-				 * Timeperiod name
-				 */
-				if ($oreon->CentreonGMT->used() == 1) {
-					if ($host["timeperiod_tp_id2"])
-						$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]."_GMT".$host["host_location_tp"]);
-					else
-						$str .= print_line("notification_period", $timeperiods[getMyHostField($host["host_id"], "timeperiod_tp_id2")]."_GMT".$host["host_location_tp"]);
-				} else {
-					if ($host["timeperiod_tp_id2"])
-						$str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]);
-				}
+            /*
+             * Timeperiod name
+             */
+            if ($oreon->CentreonGMT->used() == 1) {
+                if ($host["timeperiod_tp_id2"])
+                    $str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]."_GMT".$host["host_location_tp"]);
+                else
+                    $str .= print_line("notification_period", $timeperiods[getMyHostField($host["host_id"], "timeperiod_tp_id2")]."_GMT".$host["host_location_tp"]);
+            } else {
+                if ($host["timeperiod_tp_id2"])
+                    $str .= print_line("notification_period", $timeperiods[$host["timeperiod_tp_id2"]]);
+            }
 
-				if ($host["host_notification_options"])
-					$str .= print_line("notification_options", $host["host_notification_options"]);
-				if ($host["host_notifications_enabled"] != 2)
-					$str .= print_line("notifications_enabled", $host["host_notifications_enabled"] == 1 ? "1": "0");
-				if ($host["host_stalking_options"])
-					$str .= print_line("stalking_options", $host["host_stalking_options"]);
-				if (!$host["host_register"])
-					$str .= print_line("register", "0");
+            if ($host["host_notification_options"])
+                $str .= print_line("notification_options", $host["host_notification_options"]);
+            if ($host["host_notifications_enabled"] != 2)
+                $str .= print_line("notifications_enabled", $host["host_notifications_enabled"] == 1 ? "1": "0");
+            if ($host["host_stalking_options"])
+                $str .= print_line("stalking_options", $host["host_stalking_options"]);
+            if (!$host["host_register"])
+                $str .= print_line("register", "0");
 
-				/*
-				 * On-demand macros
-				 */
+            /*
+             * On-demand macros
+             */
 
-				$rq = "SELECT `host_macro_name`, `host_macro_value`
+            $rq = "SELECT `host_macro_name`, `host_macro_value`
 					   FROM `on_demand_macro_host`
 					   WHERE `host_host_id` = '" . $host['host_id']."'
 					   AND host_macro_name NOT IN (SELECT macro_name FROM nagios_macro)";
