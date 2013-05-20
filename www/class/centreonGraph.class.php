@@ -518,6 +518,7 @@ class CentreonGraph {
         $mmetrics = array_merge($this->rmetrics, $this->vmetrics);
         $DBRESULT->free();
         $this->listMetricsId = array();
+        $components_ds_cache = NULL;
 
         foreach ($mmetrics as $key => $metric) {
             /*
@@ -550,46 +551,46 @@ class CentreonGraph {
                 $this->metrics[$metric["metric_id"]]["unit"] = $metric["unit_name"];
 
                 if (!isset($metric["need"]) || $metric["need"] != 1) {
-                    /** **********************************
-                     * Copy Template values
-                     */
-                    $DBRESULT2 = $this->DB->query("SELECT * FROM giv_components_template WHERE (host_id = '".$metric["host_id"]."' OR host_id IS NULL) AND (service_id = '".$metric["service_id"]."' OR service_id IS NULL) AND ds_name = '".$this->DB->escape($metric["metric_name"])."' ORDER BY host_id DESC");
-                    $ds_data = $DBRESULT2->fetchRow();
-                    $DBRESULT2->free();
+                    if (is_null($components_ds_cache)) {
+                        $components_ds_cache = $this->DB->getAll("SELECT * FROM giv_components_template");
+                    }
+                    $ds_data_associated = null;
+                    $ds_data_regular = null;
+                    foreach ($components_ds_cache as $ds_val) {
+                        # Check associated
+                        if (($ds_val['host_id'] == $metric['host_id'] || $ds_val['host_id'] == '') &&
+                            ($ds_val['service_id'] == $metric['service_id'] || $ds_val['service_id'] == '') &&
+                            $ds_val['ds_name'] == $metric['metric_name']) {
+                            $ds_data_associated = $ds_val;
+                            break;
+                        }
 
-                    if (!$ds_data) {
-                        $ds = array();
+                        # Check regular
+                        if (is_null($ds_data_regular) && preg_match('/' . $ds_val['ds_name'] . '/', $metric["metric_name"])) {
+                                $ds_data_regular = $ds_val;
+                        }
+                    }
 
+                    $ds_data = null;
+                    if (!is_null($ds_data_associated)) {
+                        $ds_data = $ds_data_associated;
+                    } else if (!is_null($ds_data_regular)) {
+                        $ds_data = $ds_data_regular;
+                    }
+
+
+                    if (!isset($ds_data) && !$ds_data) {
                         /** *******************************************
-                         * Get Matching Template
-                         */
-                        $DBRESULT3 = $this->DB->query("SELECT * FROM giv_components_template");
+                        * Get default info in default template
+                        */
+                        $DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
                         if ($DBRESULT3->numRows()) {
-                            while ($data = $DBRESULT3->fetchRow()) {
-                                $DBRESULT4 = $this->DBC->query("SELECT * from metrics WHERE metric_id = '".$metric["metric_id"]."' AND metric_name = '".$this->DBC->escape($metric["metric_name"])."' AND metric_name LIKE '".$this->DBC->escape($data["ds_name"])."'");
-                                if ($DBRESULT4->numRows()) {
-                                    $ds_data = $data;
-                                    $DBRESULT4->free();
-                                    break;
-                                }
-                                $DBRESULT4->free();
-                            }
+                            foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
+                                $ds[$key] = $ds_val;
+                           }
                         }
                         $DBRESULT3->free();
-
-                        if (!isset($ds_data) && !$ds_data) {
-                            /** *******************************************
-                             * Get default info in default template
-                             */
-                            $DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
-                            if ($DBRESULT3->numRows()) {
-                                foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
-                                    $ds[$key] = $ds_val;
-                                }
-                            }
-                            $DBRESULT3->free();
-                            $ds_data = $ds;
-                        }
+                        $ds_data = $ds;
                     }
 
                     if ($ds_data["ds_color_line_mode"] == '1') {

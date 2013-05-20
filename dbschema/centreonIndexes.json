@@ -3373,6 +3373,21 @@
         "tableName": "ods_view_details",
         "unique": true
     },
+	{
+        "columns": [
+            {
+                "length": null,
+                "name": "index_id"
+            },
+			{
+                "length": null,
+                "name": "metric_id"
+            }
+        ],
+        "indexName": "index_metric_mult",
+        "tableName": "ods_view_details",
+        "unique": false
+    },
     {
         "columns": [
             {
