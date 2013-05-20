@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -36,6 +37,7 @@
  *
  */
 
+
 if (!isset($oreon)) {
     exit();
 }
@@ -69,71 +71,81 @@ function getCentreonBrokerModulesList()
 function parseStatsFile($statfile)
 {
     $fieldDate = array('last event at', 'last connection attempt', 'last connection success');
-    $listModules = getCentreonBrokerModulesList();   
+    $listModules = getCentreonBrokerModulesList();
     $lastmodif = date('Y-m-d H:i:s', filemtime($statfile));
-    $fd = fopen($statfile, 'r');
+
+    if (!($fd = fopen($statfile, 'r+'))) {
+        $fd = fopen($statfile, 'r');
+    }
     $lineBlock = null;
     $failover = null;
     $result = array(
-	        'lastmodif' => $lastmodif,
-	        'modules' => array(),
-	        'io' => array()
+        'lastmodif' => $lastmodif,
+        'modules' => array(),
+        'io' => array()
     );
-    while ($line = fgets($fd)) {
-        $line = trim($line);
-        if ($line == '') {
-            $lineBlock = null;
-        } elseif (is_null($lineBlock)) {
-            if (strncmp('module ', $line, 7) == 0) {
-                $lineBlock = 'module';
-                list($tag, $module) = explode(' ', $line);
-                $baseModuleFile = preg_replace('/^[0-9]+\-/', '', basename($module));
-                if (isset($listModules[$baseModuleFile])) {
-                    $moduleName = $listModules[$baseModuleFile];
-                } else {
-                    $moduleName = $baseModuleFile;
-                }
-            } elseif (strncmp('input ', $line, 6) == 0 || strncmp('output ', $line, 7) == 0) {
-                $lineBlock = 'io';
-                list($tag, $ioName) = explode(' ', $line);
-                $result['io'][$ioName] = array(
-	                    'type' => $tag
-                );
-                if (!is_null($failover)) {
-                    $result['io'][$failover]['failover'] = '<a href="javascript:toggleInfoBlock(\'' . $ioName . '\')">' . $ioName . '</a>';
-                    $failover = null;
-                }
-            }
-        } else {
-            if ($lineBlock == 'peers') {
-                if (strstr($line, '=') === false) {
-                    $result['io'][$ioName]['peers'][] = $line;
-                } else {
-                    $lineBlock = 'io';
-                }
-            }
-            if ($lineBlock == 'module') {
-                list($tag, $status) = explode('=', $line);
-                if ($tag == 'state') {
-                    $result['modules'][$moduleName] = $status;
-                }
+    stream_set_blocking($fd, false);
+    $read = array($fd);
+    $write = null;
+    $except= null;
+    $nbChanged = stream_select($read, $write, $except, 2);
+    if ($nbChanged) {
+        while ($line = fgets($fd)) {
+            $line = trim($line);
+            if ($line == '') {
                 $lineBlock = null;
-                $moduleName = null;
-            } elseif ($lineBlock == 'io') {
-                if ($line == 'failover') {
-                    $failover = $ioName;
-                    $lineBlock = null;
-                } else {
-                    list($key, $value) = explode('=', $line);
-                    if ($key != 'peers') {
-                        if (in_array($key, $fieldDate) && $value != 0) {
-                            $result['io'][$ioName][$key] = date('Y-m-d H:i:s', $value);
-                        } else {
-                            $result['io'][$ioName][$key] = $value;
-                        }
+            } elseif (is_null($lineBlock)) {
+                if (strncmp('module ', $line, 7) == 0) {
+                    $lineBlock = 'module';
+                    list($tag, $module) = explode(' ', $line);
+                    $baseModuleFile = preg_replace('/^[0-9]+\-/', '', basename($module));
+                    if (isset($listModules[$baseModuleFile])) {
+                        $moduleName = $listModules[$baseModuleFile];
                     } else {
-                        $result['io'][$ioName][$key] = array();
-                        $lineBlock = 'peers';
+                        $moduleName = $baseModuleFile;
+                    }
+                } elseif (strncmp('input ', $line, 6) == 0 || strncmp('output ', $line, 7) == 0) {
+                    $lineBlock = 'io';
+                    list($tag, $ioName) = explode(' ', $line);
+                    $result['io'][$ioName] = array(
+                        'type' => $tag
+                    );
+                    if (!is_null($failover)) {
+                        $result['io'][$failover]['failover'] = '<a href="javascript:toggleInfoBlock(\'' . $ioName . '\')">' . $ioName . '</a>';
+                        $failover = null;
+                    }
+                }
+            } else {
+                if ($lineBlock == 'peers') {
+                    if (strstr($line, '=') === false) {
+                        $result['io'][$ioName]['peers'][] = $line;
+                    } else {
+                        $lineBlock = 'io';
+                    }
+                }
+                if ($lineBlock == 'module') {
+                    list($tag, $status) = explode('=', $line);
+                    if ($tag == 'state') {
+                        $result['modules'][$moduleName] = $status;
+                    }
+                    $lineBlock = null;
+                    $moduleName = null;
+                } elseif ($lineBlock == 'io') {
+                    if ($line == 'failover') {
+                        $failover = $ioName;
+                        $lineBlock = null;
+                    } else {
+                        list($key, $value) = explode('=', $line);
+                        if ($key != 'peers') {
+                            if (in_array($key, $fieldDate) && $value != 0) {
+                                $result['io'][$ioName][$key] = date('Y-m-d H:i:s', $value);
+                            } else {
+                                $result['io'][$ioName][$key] = $value;
+                            }
+                        } else {
+                            $result['io'][$ioName][$key] = array();
+                            $lineBlock = 'peers';
+                        }
                     }
                 }
             }
@@ -149,7 +161,7 @@ function parseStatsFile($statfile)
 $centreonGMT = new CentreonGMT($pearDB);
 $centreonGMT->getMyGMTFromSession(session_id(), $pearDB);
 
-$form = new HTML_QuickForm('form', 'post', "?p=".$p);
+$form = new HTML_QuickForm('form', 'post', "?p=" . $p);
 
 /*
  * Get Poller List
@@ -174,7 +186,7 @@ if (!isset($selectedPoller)) {
     unset($tmpKeys);
 }
 
-$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" =>"this.form.submit();"));
+$form->addElement('select', 'pollers', _("Poller :"), $pollerList, array("onChange" => "this.form.submit();"));
 $form->setDefaults(array('pollers' => $selectedPoller));
 $pollerName = $pollerList[$selectedPoller];
 
@@ -230,14 +242,14 @@ if ($oreon->broker->getBroker() == 'broker') {
         $tpl->assign('msg_err', _('Error in getting stats filename'));
     } else {
         if (!$res->numRows()) {
-             $tpl->assign('msg_err', _('No statistics file defined for this poller'));
+            $tpl->assign('msg_err', _('No statistics file defined for this poller'));
         }
         $perf_info = array();
         $perf_err = array();
         while ($row = $res->fetchRow()) {
             $statsfile = $row['config_value'];
             if ($defaultPoller != $selectedPoller) {
-                $statsfile = '@CENTREON_VARLIB@/broker-stats/broker-stats-' . $selectedPoller . '.dat';
+                $statsfile = '/var/lib/centreon/broker-stats/broker-stats-' . $selectedPoller . '.dat';
             }
             if (!file_exists($statsfile) || !is_readable($statsfile)) {
                 $perf_err[$row['config_name']] = _('Cannot open statistics file');
