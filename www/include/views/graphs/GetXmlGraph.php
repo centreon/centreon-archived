@@ -504,7 +504,7 @@
 			$buffer->writeElement("critical", $critical);
 			foreach ($tab_period as $name => $start){
 				$buffer->startElement("period");
-				$buffer->writeElement("name", $name);
+				$buffer->writeElement("name", _($name));
 				$buffer->writeElement("start", $start);
 				$buffer->writeElement("end", time());
 

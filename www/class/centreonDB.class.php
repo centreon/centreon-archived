@@ -286,11 +286,14 @@ class CentreonDB
      *
      * @access public
      * @param string $str
+     * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
      * @return string
      */
-    public function escape($str)
+    public function escape($str, $htmlSpecialChars = true)
     {
-        //return DB_common::escapeSimple($str);
+        if ($htmlSpecialChars) {
+            $str = htmlspecialchars($str);
+        }
         return mysql_real_escape_string($str);
     }
 

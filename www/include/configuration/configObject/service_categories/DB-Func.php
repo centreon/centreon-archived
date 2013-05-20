@@ -55,8 +55,10 @@
 	}
 
 	function multipleServiceCategorieInDB ($sc = array(), $nbrDup = array())	{
-		foreach($sc as $key => $value)	{
-			global $pearDB;
+                global $pearDB, $centreon;
+                
+                $scAcl = array();
+                foreach($sc as $key => $value)	{	
 			$DBRESULT = $pearDB->query("SELECT * FROM `service_categories` WHERE `sc_id` = '".$key."' LIMIT 1");
 			$row = $DBRESULT->fetchRow();
 			$row["sc_id"] = '';
@@ -72,11 +74,14 @@
 					$DBRESULT = $pearDB->query($rq);
 					$DBRESULT = $pearDB->query("SELECT MAX(sc_id) as maxid FROM `service_categories`");
 					$maxId = $DBRESULT->fetchRow();
+                                        $scAcl[$maxId['MAX(sc_id)']] = $key;
 					$query = "INSERT INTO service_categories_relation (service_service_id, sc_id) (SELECT service_service_id, ".$maxId['maxid']." FROM service_categories_relation WHERE sc_id = ".$pearDB->escape($key).")";
 					$pearDB->query($query);
 				}
 			}
 		}
+                CentreonACL::duplicateScAcl($scAcl);
+                $centreon->user->access->updateACL();
 	}
 
 	function enableServiceCategorieInDB($sc_id = null, $sc_arr = array())	{
