@@ -1188,7 +1188,7 @@ class CentreonGraph {
 
         $this->flushRrdcached($this->listMetricsId);
 
-        $commandLine = $this->general_opt["rrdtool_path_bin"]." graph - ";
+        $commandLine = " graph - ";
 
         if (isset($this->_RRDoptions["end"]) && isset($this->_RRDoptions["start"])) {
             if ($this->_RRDoptions["end"] - $this->_RRDoptions["start"] > 2160000
@@ -1242,13 +1242,20 @@ class CentreonGraph {
          * Send Binary Data
          */
         if (!$this->checkcurve) {
-            $fp = popen($commandLine." 2>&1"  , 'r');
-            if (isset($fp) && $fp) {
-                $str ='';
-                while (!feof ($fp)) {
-                    $buffer = fgets($fp, 4096);
-                    $str = $str . $buffer ;
-                }
+            $descriptorspec = array(
+                                0 => array("pipe", "r"),  // stdin est un pipe processus va lire
+                                1 => array("pipe", "w"),  // stdout est un pipe processus va ecrire
+                                2 => array("file", $this->general_opt["debug_path"] . "/rrdtool.log", "a") // stderr est un fichier
+                            );
+
+            $process = proc_open($this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
+            if (is_resource($process)) {
+                fwrite($pipes[0], $commandLine);
+                fclose($pipes[0]);
+
+                $str = stream_get_contents($pipes[1]);
+                $return_value = proc_close($process);
+
                 /* Force no compress for image */
                 $this->setHeaders(false, strlen($str));
                 print $str;
