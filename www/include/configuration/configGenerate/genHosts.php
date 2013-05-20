@@ -48,11 +48,11 @@ $criticality = new CentreonCriticality($pearDB);
 /*
  * Create table for host / instance list.
  */
-
 $host_instance = array();
 $DBRESULT = $pearDB->query("SELECT * FROM `ns_host_relation` WHERE `nagios_server_id` = '".$tab['id']."'");
-while ($datas = $DBRESULT->fetchRow())
+while ($datas = $DBRESULT->fetchRow()) {
     $host_instance[$datas["host_host_id"]] = $datas["host_host_id"];
+}
 $DBRESULT->free();
 
 /*
@@ -71,8 +71,9 @@ unset($command);
 $templateCache = array();
 $DBRESULT = $pearDB->query("SELECT host_name, host_host_id, `order` FROM `host_template_relation`, host WHERE host_template_relation.host_tpl_id = host.host_id ORDER BY `order`");
 while ($h = $DBRESULT->fetchRow()) {
-    if (!isset($templateCache[$h["host_host_id"]]))
+    if (!isset($templateCache[$h["host_host_id"]])) {
         $templateCache[$h["host_host_id"]] = array();
+    }
     $templateCache[$h["host_host_id"]][] = $h["host_name"];
 }
 $DBRESULT->free();
@@ -84,8 +85,9 @@ unset($h);
 $hgCache = array();
 $DBRESULT2 = $pearDB->query("SELECT hgr.hostgroup_hg_id, hgr.host_host_id, hg.hg_name FROM hostgroup_relation hgr, hostgroup hg WHERE hgr.hostgroup_hg_id = hg.hg_id AND hg.hg_activate = '1'");
 while ($hg = $DBRESULT2->fetchRow()) {
-    if (!isset($hgCache[$hg["host_host_id"]]))
+    if (!isset($hgCache[$hg["host_host_id"]])) {
         $hgCache[$hg["host_host_id"]] = array();
+    }
     $hgCache[$hg["host_host_id"]][$hg["hostgroup_hg_id"]] = $hg["hg_name"];
 }
 $DBRESULT->free();
@@ -102,8 +104,9 @@ $HGFilled = array();
 $cctCache = array();
 $DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name, chr.host_host_id FROM contact_host_relation chr, contact c WHERE chr.contact_id = c.contact_id AND c.contact_register = 1 AND c.contact_activate = '1'");
 while ($contact = $DBRESULT2->fetchRow())	{
-    if (!isset($cctCache[$contact["host_host_id"]]))
+    if (!isset($cctCache[$contact["host_host_id"]])) {
         $cctCache[$contact["host_host_id"]] = array();
+    }
     $cctCache[$contact["host_host_id"]][$contact["contact_id"]] = $contact["contact_name"];
 }
 $DBRESULT->free();
@@ -115,8 +118,9 @@ unset($contact);
 $cgCache = array();
 $DBRESULT2 = $pearDB->query("SELECT cg.cg_id, cg.cg_name, chr.host_host_id FROM contactgroup_host_relation chr, contactgroup cg WHERE chr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 while ($cg = $DBRESULT2->fetchRow())	{
-    if (!isset($cgCache[$cg["host_host_id"]]))
+    if (!isset($cgCache[$cg["host_host_id"]])) {
         $cgCache[$cg["host_host_id"]] = array();
+    }
     $cgCache[$cg["host_host_id"]][$cg["cg_id"]] = $cg["cg_name"];
     
 }
@@ -259,8 +263,9 @@ while ($host = $DBRESULT->fetchRow()) {
             }
             $DBRESULT2->free();
 
-            if ($strTemp)
+            if ($strTemp) {
                 $str .= print_line("parents", $strTemp);
+            }
             unset($hostParent);
             unset($strTemp);
 
@@ -313,13 +318,20 @@ while ($host = $DBRESULT->fetchRow()) {
              * Check Period
              */
             if ($oreon->CentreonGMT->used() == 1) {
-                if ($host["timeperiod_tp_id"])
-                    $str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location_tp"]);
-                else
-                    $str .= print_line("check_period", $timeperiods[getMyHostField($host["host_id"], "timeperiod_tp_id")]."_GMT".$host["host_location_tp"]);
+                if (isset($host["host_location_tp"])) {
+                    if ($host["timeperiod_tp_id"] && isset($timeperiods[$host["timeperiod_tp_id"]])) {
+                        $str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]."_GMT".$host["host_location_tp"]);
+                    } else {
+                        $tp_tmp = getMyHostField($host["host_id"], "timeperiod_tp_id");
+                        if (isset($tp_tmp) && $tp_tmp != "" && isset($timeperiods[$tp_tmp])) {
+                            $str .= print_line("check_period", $timeperiods[$tp_tmp]."_GMT".$host["host_location_tp"]);
+                        }
+                    }
+                }
             } else {
-                if ($host["timeperiod_tp_id"])
+                if ($host["timeperiod_tp_id"]) {
                     $str .= print_line("check_period", $timeperiods[$host["timeperiod_tp_id"]]);
+                }
             }
 
             if ($host["host_obsess_over_host"] != 2)
