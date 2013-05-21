@@ -750,12 +750,12 @@ class CentreonLdapAdmin {
             }
             if (isset($gopt[$key])) {
                 $query = "UPDATE `auth_ressource_info` 
-                              SET `ari_value` = '" . $this->_db->escape($value) . "' 
+                              SET `ari_value` = '" . $this->_db->escape($value, false) . "' 
                               WHERE `ari_name` = '" . $this->_db->escape($key) . "' 
                               AND ar_id = " . $this->_db->escape($arId);
             } else {
                 $query = "INSERT INTO `auth_ressource_info` (`ar_id`, `ari_name`, `ari_value`) 
-                              VALUES (" . $this->_db->escape($arId) . ", '" . $this->_db->escape($key) . "', '" . $this->_db->escape($value) . "')";
+                              VALUES (" . $this->_db->escape($arId) . ", '" . $this->_db->escape($key) . "', '" . $this->_db->escape($value, false) . "')";
             }
             $this->_db->query($query);
         }
