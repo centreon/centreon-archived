@@ -44,7 +44,7 @@ function _TestRPNInfinityLoop () {
     if (isset($form))
         $gsvs = $form->getSubmitValues();
     
-    if ( $gsvs["vmetric_name"] != NULL && preg_match("/".$gsvs["vmetric_name"]."/",$gsvs["rpn_function"]) ) {
+    if ( $gsvs["vmetric_name"] != NULL && preg_match("/".$gsvs["vmetric_name"]."/i",$gsvs["rpn_function"]) ) {
         return false;
     } else {
         return true;
