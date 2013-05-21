@@ -1520,7 +1520,6 @@
 			$tmpConf["service_description"] = $tmpConf["name"];
 		}
 		if (isset($tmpConf["service_description"]) && testServiceTemplateExistence($tmpConf["service_description"]) && testServiceExistence($tmpConf["service_description"], $tmpConf["service_hPars"], $tmpConf["service_hgPars"]))	{
-		//if (isset($tmpConf["service_description"]) /*&& !serviceExists($tmpConf["service_description"]) */)	{
 			if ((count($tmpConf["service_hgPars"]) || count($tmpConf["service_hPars"])) || !$tmpConf["service_register"]["service_register"])	{
 				if ($debug_nagios_import == 1)
 					error_log("[" . date("d/m/Y H:s") ."] Nagios Import : insertServiceCFG : ". $tmpConf["service_description"] ." \n", 3, $debug_path."cfgimport.log");
@@ -1544,6 +1543,10 @@
                         $bkpConf["service_description"] = $prefix.$bkpConf["service_description"];
                         return insertServiceCFG($bkpConf, $prefix);
                     } else {
+                        if (!is_null($use)) {
+                            $svcObj = new CentreonService($pearDB);
+                            $tmpConf['service_template_model_stm_id'] = $svcObj->getServiceTemplateId($use);
+                        }
                         updateServiceInDB(getServiceIdByCombination($tmpConf['service_description'], $tmpConf['service_hPars'], $tmpConf['service_hgPars'], $tmpConf), false, $tmpConf);
                     }
 		}
