@@ -2081,7 +2081,7 @@ CREATE TABLE `traps` (
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
   `traps_execution_command` varchar(255) DEFAULT NULL,
   `traps_execution_command_enable` enum('0','1') DEFAULT '0',
-  `traps_submit_result_enable` enum('0','1') DEFAULT '0',
+  `traps_submit_result_enable` enum('0','1') DEFAULT '1',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
   `traps_comments` text,
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
