@@ -81,6 +81,30 @@
  	    return null;
  	}
 
+        /**
+         * Get Service Template ID
+         * 
+         * @param string $templateName
+         * @return int
+         */
+        public function getServiceTemplateId($templateName = null)
+        {
+            if (is_null($templateName)) {
+                return null;
+            }
+            $res = $this->db->query(
+                    "SELECT service_id 
+                        FROM service
+                        WHERE service_description = '".$this->db->escape($templateName)."' 
+                            AND service_register = '0'"
+                    );
+            if (!$res->numRows()) {
+                return null;
+            }
+            $row = $res->fetchRow();
+            return $row['service_id'];
+        }
+        
  	/**
  	 *  Method that returns the id of a service
  	 *
