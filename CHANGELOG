@@ -1,3 +1,39 @@
+## Centreon 2.4.3
+
+Enhancements
+============
+#4389: Set max value for CPU Graph template
+#4406: Centreon broker statistics.
+#4472: Display the link between resource macro and poller
+
+Bug fixes
+=========
+#4120: IsRunning NO
+#4340: Move configuration files errors (images)
+#4343: Default SNMP Traps not submitted by default since 2.4.0
+#4356: Services associated with service categories
+#4364: Special characters and htmlentities function
+#4368: Centreon generate check_period with value _GMT
+#4384: [Virtual metric] issue with metric name
+#4391: Load Nagios Configuration produces unusable services.cfg
+#4400: Issue with hostgroup filter in all services
+#4409: Useless field into administration, monitoring options.
+#4412: Default configuration.
+#4413: [move] File config move
+#4417: service with multiple servigroups linked to different escalations : escalations not correctly generated
+#4426: [upgrade] some issue in SQL upgrade
+#4431: [dashboard] Quick search for host
+#4452: Possibility to execute scripts through some form input fields
+#4459: Blank page for the statistics of Centreon Broker if the file of statistics is not configured
+#4460: configuration > recurrent downtime - display issues
+#4462: [ldap][contactgroup] Form listing and sync when you remove user from ldap group
+#4464: No translation for icons in "monitoring -> services"
+#4465: Missing tooltips help in "Configuration -> Users -> Contacts / Users -> user_definition"
+#4466: No translation in graphs for Daily/Weekly/Monthly/Yearly
+#4467: No translation for icons in host details
+#4468: No translation for hosts and services status colors configuration
+
+
 ## Centreon 2.4.2
 
 Enhancements
