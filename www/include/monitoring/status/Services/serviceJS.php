@@ -282,9 +282,11 @@ var _criticality_id = 0;
 			return 1;
 		} else {
 			for (keyz in _selectedElem) {
-				if ((keyz == _selectedElem[keyz]) && (document.getElementById(decodeURIComponent(keyz)))) {
-					_getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
-				}
+                            if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined')) {
+                                if (document.getElementById(decodeURIComponent(keyz)).checked) {
+                                    _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
+                                }
+                            }
 			}
 			Modalbox.show('./include/monitoring/external_cmd/popup/popup.php?sid='+ _sid + '&o=' + _o + '&p='+ _p +'&cmd='+ cmd + _getVar, {title:'<?php echo _("External commands") ?>',width:600});
 			return 0;
