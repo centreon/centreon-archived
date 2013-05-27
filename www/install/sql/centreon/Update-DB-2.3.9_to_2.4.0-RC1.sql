@@ -40,8 +40,8 @@ CREATE TABLE IF NOT EXISTS `custom_view_user_relation` (
 	`custom_view_id` INT( 11 ) NOT NULL,
 	`user_id` INT( 11 ) NULL,
 	`usergroup_id` INT( 11 ) NULL,
-	`locked` TINYINT( 6 ) DEFAULT 0,	
-	`is_owner` TINYINT( 6 ) DEFAULT 0,
+	`locked` TINYINT( 6 ) DEFAULT '0',	
+	`is_owner` TINYINT( 6 ) DEFAULT '0',
 	CONSTRAINT `fk_custom_views_user_id`
     FOREIGN KEY (`user_id` )
     REFERENCES `contact` (`contact_id` )
@@ -149,7 +149,7 @@ CREATE TABLE IF NOT EXISTS `widget_views` (
 CREATE TABLE IF NOT EXISTS `widget_parameters_field_type` (
   `field_type_id` INT ( 11 ) NOT NULL AUTO_INCREMENT ,
   `ft_typename` VARCHAR(50) NOT NULL ,
-  `is_connector` TINYINT(6) NOT NULL DEFAULT 0,
+  `is_connector` TINYINT(6) NOT NULL DEFAULT '0',
   PRIMARY KEY (`field_type_id`) 
 ) ENGINE = InnoDB CHARACTER SET utf8 COLLATE utf8_general_ci;
 
@@ -471,7 +471,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 --
 -- Add unique configuration block type in Centreon Broker
 --
-ALTER TABLE `cb_tag_type_relation` ADD COLUMN `cb_type_uniq` int(1) NOT NULL DEFAULT 0 AFTER `cb_type_id`;
+ALTER TABLE `cb_tag_type_relation` ADD COLUMN `cb_type_uniq` int(1) NOT NULL DEFAULT '0' AFTER `cb_type_id`;
 UPDATE `cb_tag_type_relation` SET `cb_type_uniq` = 1 WHERE `cb_tag_id` = 4 AND `cb_type_id` = 22;
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES
 ('60909', 'c', NULL, 'loadedConfiguration'),
