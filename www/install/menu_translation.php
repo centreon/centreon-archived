@@ -172,4 +172,8 @@ echo _("hostgroup dependency");
 echo _("service dependency");
 echo _("servicegroup dependency");
 
+
+/* Views -> Graphs */
+
+echo _("Yearly");
 ?>
