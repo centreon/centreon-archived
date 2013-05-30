@@ -69,4 +69,59 @@ sub check_debug {
     return 0;
 }
 
+sub get_line_file {
+    my ($fh, $datas, $readed) = @_;
+    my $line;
+    my $size = scalar(@$datas);
+
+    return (1, shift(@$datas)) if ($size > 1);
+    while ((my $eof = sysread($fh, $line, $read_size))) {
+        my @result = split("\n", $line);
+        if ($line =~ /\n$/) {
+            push @result, "";
+        }
+        if ($size == 1) {
+            $$datas[0] .= shift(@result);
+        }
+        push @$datas, @result;
+        $$readed += $eof;
+        $size = scalar(@$datas);
+        if ($size > 1) {
+            return (1, shift(@$datas));
+        }
+    }
+    return (1, shift(@$datas)) if ($size > 1);
+    return -1;
+}
+
+sub get_line_pipe {
+    my ($fh, $datas, $read_done) = @_;
+    my $line;
+    my $size = scalar(@$datas);
+
+    if ($size > 1) {
+        return (1, shift(@$datas));
+    } elsif ($size == 1 && $$read_done == 1) {
+        return 0;
+    }
+    while ((my $eof = sysread($fh, $line, 10000))) {
+        $$read_done = 1;
+        my @result = split("\n", $line);
+        if ($line =~ /\n$/) {
+            push @result, "";
+        }
+        if ($size == 1) {
+            $$datas[0] .= shift(@result);
+        }
+        push @$datas, @result;
+        $size = scalar(@$datas);
+        if ($size > 1) {
+            return (1, shift(@$datas));
+        } else {
+            return 0;
+        }
+    }
+    return -1;
+}
+
 1;

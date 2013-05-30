@@ -7,6 +7,7 @@ use POSIX;
 use centreon::script;
 use centreon::common::db;
 use centreon::trapd::lib;
+use centreon::trapd::Log;
 
 use base qw(centreon::script);
 use vars qw(%centreontrapd_config);
@@ -51,7 +52,9 @@ sub new {
        cmd_timeout => 10,
        centreon_user => "centreon",
        # 0 => skip if MySQL error | 1 => dont skip (block) if MySQL error (and keep order)
-       policy_trap => 1
+       policy_trap => 1,
+       # Log DB
+       log_trap_db => 0
     );
    
     $self->{htmlentities} = 0;
@@ -96,6 +99,10 @@ sub new {
     $self->{digest_trap} = undef;
     
     $self->{cmdFile} = undef;
+    
+    # Pipe for log DB 
+    %{$self->{logdb_pipes}} = (running => 0);
+    $self->{pid_logdb_child} = undef;
     
     # redefine to avoid out when we try modules
     $SIG{__DIE__} = undef;
@@ -184,21 +191,36 @@ sub handle_DIE {
 
     $self->{logger}->writeLogInfo($msg);
 
+    ###
+    # Send -TERM signal
+    ###
+    if (defined($self->{logdb_pipes}{'running'}) && $self->{logdb_pipes}{'running'} == 1) {
+        $self->{logger}->writeLogInfo("Send -TERM signal to logdb process..");
+        kill('TERM', $self->{pid_logdb_child});
+    }
+    
     # We're waiting n seconds
     for (my $i = 0; $i < $self->{centreontrapd_config}->{timeout_end}; $i++) {
-        $self->manage_pool();
-        if (keys %{$self->{running_processes}} == 0) {
+        $self->manage_pool(0);
+        if (keys %{$self->{running_processes}} == 0 && $self->{logdb_pipes}{'running'} == 0) {
                 $self->{logger}->writeLogInfo("Main process exit.");
                 exit(0);
         }
         sleep 1;
     }
 
-    $self->{logger}->writeLogInfo("Dont handle gently. Send KILl Signals to childs");
+    $self->{logger}->writeLogInfo("Dont handle gently. Send KILL Signals to childs");
+    # Last check before
+    $self->manage_pool(0);
+
     # We are killing
     foreach (keys %{$self->{running_processes}}) {
         kill('KILL', $_);
         $self->{logger}->writeLogInfo("Send -KILL signal to child process '$_'..");
+    }
+    if ($self->{logdb_pipes}{'running'} == 1) {
+        kill('KILL', $self->{pid_logdb_child});
+        $self->{logger}->writeLogInfo("Send -KILL signal to logdb process..");
     }
 
     exit(0);
@@ -226,13 +248,62 @@ sub reload_config {
     }
 }
 
+sub create_logdb_child {
+    my $self = shift;
+    my ($reader_pipe, $writer_pipe);
+
+    pipe($reader_pipe, $writer_pipe);
+    $writer_pipe->autoflush(1);
+
+    $self->{logdb_pipes}{'reader'} = \*$reader_pipe;
+    $self->{logdb_pipes}{'writer'} = \*$writer_pipe;
+    
+    $self->{logger}->writeLogInfo("Create delete child");
+    my $current_pid = fork();
+    if (!$current_pid) {
+        # Unhandle die in child
+        $SIG{CHLD} = undef;
+        $SIG{__DIE__} = undef;
+        $self->{cdb}->set_inactive_destroy();
+
+        close $self->{logdb_pipes}{'writer'};
+        my $centreon_db_centstorage = centreon::common::db->new(db => $self->{centreon_config}->{centstorage_db},
+                                                        host => $self->{centreon_config}->{db_host},
+                                                        port => $self->{centreon_config}->{db_port},
+                                                        user => $self->{centreon_config}->{db_user},
+                                                        password => $self->{centreon_config}->{db_passwd},
+                                                        force => 1,
+                                                        logger => $self->{logger});
+        $centreon_db_centstorage->connect();
+        
+        my $centreontrapd_log = centreon::trapd::Log->new($self->{logger});
+        $centreontrapd_log->main($centreon_db_centstorage,
+                                 $self->{logdb_pipes}{'reader'}, $self->{config_file});
+        exit(0);
+    }
+    $self->{pid_logdb_child} = $current_pid;
+    close $self->{logdb_pipes}{'reader'};
+    close $self->{logdb_pipes}{'writer'};
+    $self->{logdb_pipes}{'running'} = 1;
+}
+
 sub manage_pool {
     my $self = shift;
+    my ($create_pool) = @_;
     
     foreach my $child_pid (keys %{$self->{return_child}}) {
         if (defined($self->{running_processes}->{$child_pid})) {
             delete $self->{running_processes}->{$child_pid};
             delete $self->{return_child}->{$child_pid};
+        }
+        
+        if (defined($self->{pid_logdb_child}) && $child_pid == $self->{pid_logdb_child}) {
+            $self->{logger}->writeLogInfo("Logdb child is dead");
+            $self->{logdb_pipes}{'running'} = 0;
+            if ($self->{centreontrapd_config}->{log_trap_db} == 1 && defined($create_pool) && $create_pool == 1) {
+                $self->create_logdb_child();
+            }
+            delete $self->{return_child}{$child_pid};
         }
     }
 }
@@ -638,6 +709,10 @@ sub run {
     $self->{whoami} = getpwuid($<);
     
     if ($self->{centreontrapd_config}->{daemon} == 1) {
+        if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
+            $self->create_logdb_child();
+        }
+    
         while (1) {
             centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
                                                        duplicate_traps => \%{$self->{duplicate_traps}});
@@ -728,7 +803,7 @@ sub run {
             $self->{logger}->writeLogDebug("Sleeping for " . $self->{centreontrapd_config}->{sleep} . " seconds");
             sleep $self->{centreontrapd_config}->{sleep};
 
-            $self->manage_pool();
+            $self->manage_pool(1);
         }
     } else {
         my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},

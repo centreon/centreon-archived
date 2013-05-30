@@ -411,6 +411,51 @@ LOCK TABLES `statistics` WRITE;
 INSERT INTO `statistics` VALUES (1,0,1,0,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
+
+LOCK TABLES `traps_log` WRITE;
+/*!40000 ALTER TABLE `traps_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `traps_log` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_log` (
+  `trap_id` int(11) NOT NULL AUTO_INCREMENT,
+  `trap_time` int(11) DEFAULT NULL,
+  `host_name` varchar(255) DEFAULT NULL,
+  `ip_address` varchar(255) DEFAULT NULL,
+  `agent_host_name` varchar(255) DEFAULT NULL,
+  `agent_ip_address` varchar(255) DEFAULT NULL,
+  `trap_oid` varchar(512) DEFAULT NULL,
+  `trap_name` varchar(255) DEFAULT NULL,
+  `vendor` varchar(255) DEFAULT NULL,
+  `severity` varchar(255) DEFAULT NULL,
+  `output_message` varchar(2048) DEFAULT NULL,
+  KEY `trap_id` (`trap_id`),
+  KEY `trap_time` (`trap_time`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+LOCK TABLES `traps_args_log` WRITE;
+/*!40000 ALTER TABLE `traps_args_log` DISABLE KEYS */;
+/*!40000 ALTER TABLE `traps_args_log` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_args_log` (
+  `fk_traps_log` int(11) NOT NULL,
+  `arg_number` int(11) DEFAULT NULL,
+  `arg_oid` varchar(255) DEFAULT NULL,
+  `arg_value` varchar(255) DEFAULT NULL,
+  `trap_time` int(11) DEFAULT NULL,
+  KEY `fk_traps_log` (`fk_traps_log`)
+) ENGINE=INNODB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+UNLOCK TABLES;
+
+
+
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

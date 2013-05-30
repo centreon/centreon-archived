@@ -4,7 +4,6 @@ package centreon::centstorage::CentstorageAction;
 use strict;
 use warnings;
 use centreon::common::misc;
-use centreon::centstorage::CentstorageLib;
 my %handlers = ('TERM' => {}, 'HUP' => {});
 
 sub new {
@@ -307,7 +306,7 @@ sub main {
         if (scalar(@rh_set) > 0) {
             foreach my $rh (@rh_set) {
                 my $read_done = 0;
-                while ((my ($status_line, $readline) = centreon::centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
+                while ((my ($status_line, $readline) = centreon::common::misc::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
                     class_handle_TERM() if ($status_line == -1);
                     last if ($status_line == 0);
                     my ($method, @fields) = split(/\t/, $readline);
