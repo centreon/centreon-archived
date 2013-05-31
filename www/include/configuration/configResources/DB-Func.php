@@ -50,6 +50,7 @@
 		} elseif (!is_null($instanceId) && $instanceId) {
                     $instances = array($instanceId);
                 }
+        $instances = array_filter($instances);
 		if (!count($instances)) {
 		    return true;
 		}
