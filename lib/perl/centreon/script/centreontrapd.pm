@@ -54,7 +54,10 @@ sub new {
        # 0 => skip if MySQL error | 1 => dont skip (block) if MySQL error (and keep order)
        policy_trap => 1,
        # Log DB
-       log_trap_db => 0
+       log_trap_db => 0,
+       log_transaction_request_max => 500,
+       log_transaction_timeout => 10,
+       log_purge_time => 600
     );
    
     $self->{htmlentities} = 0;
@@ -94,6 +97,7 @@ sub new {
     $self->{current_oid} = undef;
     # From centreon DB
     $self->{current_trap_name} = undef;
+    $self->{current_trap_log} = undef;
     $self->{current_vendor_name} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
@@ -253,6 +257,33 @@ sub reload_config {
     }
 }
 
+sub reload {
+    my $self = shift;
+
+    $self->{logger}->writeLogInfo("Reload in progress for main process...");
+    # reopen file
+    if ($self->{logger}->is_file_mode()) {
+        $self->{logger}->file_mode($self->{logger}->{file_name});
+    }
+    $self->{logger}->redirect_output();
+    
+    centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb});
+    centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
+
+    if ($self->{logdb_pipes}{'running'} == 1) {
+        kill('HUP', $self->{pid_logdb_child});
+        $self->{logger}->writeLogInfo("Send -HUP signal to logdb process..");
+    }
+    
+    $self->reload_config($self->{opt_extra});
+    ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
+                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
+                                                                             $self->{centreontrapd_config}->{time_format});
+    centreon::trapd::lib::init_modules();
+    centreon::trapd::lib::get_cache_oids();
+    $self->{timetoreload} = 0;
+}
+
 sub create_logdb_child {
     my $self = shift;
     my ($reader_pipe, $writer_pipe);
@@ -283,7 +314,7 @@ sub create_logdb_child {
         
         my $centreontrapd_log = centreon::trapd::Log->new($self->{logger});
         $centreontrapd_log->main($centreon_db_centstorage,
-                                 $self->{logdb_pipes}{'reader'}, $self->{config_file});
+                                 $self->{logdb_pipes}{'reader'}, $self->{config_file}, $self->{centreontrapd_config});
         exit(0);
     }
     $self->{pid_logdb_child} = $current_pid;
@@ -349,7 +380,7 @@ sub do_exec {
         $self->executeCommand($traps_output, $status);
     }
     
-    if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
+    if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
         centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
                                         id => $self->{id_logdb},
                                         cdb => $self->{cdb},
@@ -426,7 +457,7 @@ sub manage_exec {
             alarm(0);
         };
         if ($@) {
-            if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
+            if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
                 centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
                                                  id => $self->{id_logdb},
                                                  cdb => $self->{cdb},
@@ -675,6 +706,7 @@ sub getTrapsInfos {
     return 0 if ($fstatus == -1);
     foreach my $trap_id (keys %{$self->{ref_oids}}) {
         $self->{current_trap_id} = $trap_id;
+        $self->{current_trap_log} = $self->{ref_oids}->{$trap_id}->{traps_log};
         $self->{current_trap_name} = $self->{ref_oids}->{$trap_id}->{traps_name};
         $self->{current_vendor_name} = $self->{ref_oids}->{$trap_id}->{name};
         ($fstatus, $self->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
@@ -833,14 +865,7 @@ sub run {
                 }
                 
                 if ($self->{timetoreload} == 1) {
-                    $self->{logger}->writeLogDebug("Reloading configuration file");
-                    $self->reload_config($self->{opt_extra});
-                    ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
-                                    centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
-                                                                             $self->{centreontrapd_config}->{time_format});
-                    centreon::trapd::lib::init_modules();
-                    centreon::trapd::lib::get_cache_oids();
-                    $self->{timetoreload} = 0;
+                    $self->reload();
                 }
             }
             

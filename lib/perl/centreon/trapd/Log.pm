@@ -16,6 +16,10 @@ sub new {
     # reload flag
     $self->{reload} = 1;
     $self->{config_file} = undef;
+    $self->{centreontrapd_config} = undef;
+    $self->{construct_log} = {};
+    $self->{request_log} = {};
+    $self->{last_transaction} = time;
     
     $self->{"save_read"} = [];
 
@@ -43,6 +47,7 @@ sub handle_TERM {
     $self->{'logger'}->writeLogInfo("$$ Receiving order to stop...");
 
     $self->{'dbcentstorage'}->disconnect() if (defined($self->{'dbcentstorage'}));
+    $self->{'cdb'}->disconnect() if (defined($self->{'cdb'}));
 }
 
 sub class_handle_TERM {
@@ -69,24 +74,63 @@ sub reload {
     $self->{logger}->redirect_output();
     
     my ($status, $status_cdb, $status_csdb) = centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file},
-                                                                                       $self->{dbcentreon}, $self->{dbcentstorage});
+                                                                                       $self->{dbcentstorage}, $self->{cdb});
 
     if ($status_csdb == 1) {
         $self->{dbcentstorage}->disconnect();
         $self->{dbcentstorage}->connect();
     }
-    centreon::common::misc::check_debug($self->{logger}, "debug_centstorage", $self->{dbcentreon}, "centstorage delete process");
+    if ($status_cdb == 1) {
+        $self->{cdb}->disconnect();
+        $self->{cdb}->connect();
+    }
+    centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd logdb process");
 
     $self->{reload} = 1;
 }
 
+sub compute_request {
+    my $self = shift;
+    
+    if (scalar(keys(%{$self->{request_log}})) > $self->{centreontrapd_config}->{log_transaction_request_max} ||
+        (time() - $self->{last_transaction}) > $self->{centreontrapd_config}->{log_transaction_timeout}) {
+        $self->{dbcentstorage}->transaction_mode(1);
+        eval {
+            foreach my $id (keys %{$self->{request_log}}) {
+                $self->{dbcentstorage}->query("INSERT INTO log_traps VALUES (" . $self->{request_log}->{$id}->{value} . ")");
+                $self->{dbcentstorage}->query("SET @last_id_trap = LAST_INSERT_ID();");
+                if (defined($self->{request_log}->{$id}->{args})) {
+                    foreach (@{$self->{request_log}->{$id}->{args}}) {
+                        $self->{dbcentstorage}->query("INSERT INTO log_traps_args VALUES (@last_id_trap, " . $_ ")");
+                    }
+                }
+            }
+            $self->{dbcentstorage}->commit;
+        };
+        if ($@) {
+            $self->{dbcentstorage}->rollback;
+        } else {
+             $self->{request_log} = {};
+        }
+        $self->{last_transaction} = time;
+    }
+    
+    # Check time purge
+    foreach my $id (keys %{$self->{construct_log}}) {
+        if ((time() - $self->{construct_log}->{$id}->{time}) > $self->{centreontrapd_config}->{log_purge_time}) {
+            delete $self->{construct_log}->{$id};
+        }
+    }
+}
+
 sub main {
     my $self = shift;
-    my ($dbcentstorage, $pipe_read, $config_file) = @_;
+    my ($dbcentstorage, $pipe_read, $config_file, $centreontrapd_config) = @_;
     my $status;
 
     $self->{dbcentstorage} = $dbcentstorage;
     $self->{config_file} = $config_file;
+    $self->{centreontrapd_config} = $centreontrapd_config;
 
     # We have to manage if you don't need infos
     $self->{'dbcentstorage'}->force(0);
@@ -101,13 +145,33 @@ sub main {
                 while ((my ($status_line, $readline) = centreon::common::misc::get_line_pipe($rh, \@{$self->{'save_read'}}, \$read_done))) {
                     class_handle_TERM() if ($status_line == -1);
                     last if ($status_line == 0);
-                    $self->{logger}->writeLogInfo("=== test $readline");
+                    $readline =~ /^(.*?):(.*?):(.*?):(.*)/;
+                    my ($id, $type, $num, $value) = ($1, $2, $3, $4);
+                    $value =~ s/\\n/\n/g;
+                    
+                    if ($type == 0) {
+                        if ($num <= 0) {
+                            $self->{request_log}->{$id} = { value => $value };
+                        } else {
+                            $self->{construct_log}->{$id} = { time => time(), value => $value, current_args => 0, num_args => $num, args => [] };
+                        }
+                    } else if ($type == 1) {
+                        if (defined($self->{construct_log}->{$id})) {
+                            if ($self->{construct_log}->{$id}->{current_args} + 1 == $self->{construct_log}->{$id}->{num_args}) {
+                                $self->{request_log}->{$id} = { value => $self->{construct_log}->{$id}->{value}, args => $self->{construct_log}->{$id}->{args} };
+                                delete $self->{construct_log}->{$id};
+                            } else {
+                                push @{$self->{construct_log}->{$id}->{args}}, $value;
+                                $self->{construct_log}->{$id}->{current_args}++;
+                            }
+                        }
+                    }
                 }
             }
-        } else {
-            # Here we have to check if we do transaction
-        }
+        } 
         
+        $self->compute_request();
+
         if ($self->{reload} == 0) {
             $self->reload();
         }
