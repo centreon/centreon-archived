@@ -325,7 +325,7 @@ sub do_exec {
     # Advanced matching rules
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment}) && 
         $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment} == 1) {
-        $status = $self->checkMatchingRules($traps_output);
+        $status = $self->checkMatchingRules($traps_output, $status);
     }
 
     #####################################################################
@@ -354,6 +354,7 @@ sub do_exec {
                                         id => $self->{id_logdb},
                                         cdb => $self->{cdb},
                                         trap_time => $self->{trap_date_time_epoch},
+                                        timeout => 0,
                                         host_name => ${$self->{var}}[0],
                                         ip_address => $self->{current_ip},
                                         agent_host_name => $self->{agent_dns_name},
@@ -363,8 +364,8 @@ sub do_exec {
                                         vendor => $self->{current_vendor_name},
                                         severity => $status,
                                         output_message => $traps_output,
-                                        arguments => \@{$self->{entvar}},
-                                        arguments_name => \@{$self->{entvarname}});
+                                        entvar => \@{$self->{entvar}},
+                                        entvarname => \@{$self->{entvarname}});
     }
 }
 
@@ -425,6 +426,24 @@ sub manage_exec {
             alarm(0);
         };
         if ($@) {
+            if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
+                centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
+                                                 id => $self->{id_logdb},
+                                                 cdb => $self->{cdb},
+                                                 trap_time => $self->{trap_date_time_epoch},
+                                                 timeout => 1,
+                                                 host_name => ${$self->{var}}[0],
+                                                 ip_address => $self->{current_ip},
+                                                 agent_host_name => $self->{agent_dns_name},
+                                                 agent_ip_address => ${$self->{var}}[4],
+                                                 trap_oid => $self->{current_oid},
+                                                 trap_name => $self->{current_trap_name},
+                                                 vendor => $self->{current_vendor_name},
+                                                 severity => $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status},
+                                                 output_message => $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_args},
+                                                 entvar => \@{$self->{entvar}},
+                                                 entvarname => \@{$self->{entvarname}});
+            }
             $self->{logger}->writeLogError("ERROR: Exec timeout");
             exit(0);
         }
@@ -571,7 +590,7 @@ sub checkMatchingRules {
         }
         $tmoString =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
         $tmoString =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
-        $tmoString =~ s/\@HOSTADDRESS2\@/$self->{agent_dns}/g;
+        $tmoString =~ s/\@HOSTADDRESS2\@/$self->{agent_dns_name}/g;
         $tmoString =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
         $tmoString =~ s/\@TRAPOUTPUT\@/$traps_output/g;
         $tmoString =~ s/\@OUTPUT\@/$traps_output/g;
@@ -611,7 +630,7 @@ sub executeCommand {
     }
     $traps_execution_command =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
     $traps_execution_command =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
-    $traps_execution_command =~ s/\@HOSTADDRESS2\@/$self->{agent_dns}/g;
+    $traps_execution_command =~ s/\@HOSTADDRESS2\@/$self->{agent_dns_name}/g;
     $traps_execution_command =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
     $traps_execution_command =~ s/\@TRAPOUTPUT\@/$traps_output/g;
     $traps_execution_command =~ s/\@OUTPUT\@/$traps_output/g;
@@ -661,7 +680,7 @@ sub getTrapsInfos {
         ($fstatus, $self->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
                                                                  cdb => $self->{cdb},
                                                                  trap_info => $self->{ref_oids}->{$trap_id},
-                                                                 agent_dns_name => $self->{agent_dns},
+                                                                 agent_dns_name => $self->{agent_dns_name},
                                                                  ip_address => $self->{current_ip},
                                                                  entvar => \@{$self->{entvar}},
                                                                  entvarname => \@{$self->{entvarname}});
@@ -763,7 +782,7 @@ sub run {
                     my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
                                                                          config => $self->{centreontrapd_config},
                                                                          handle => \*FILE,
-                                                                         agent_dns => \$self->{agent_dns},
+                                                                         agent_dns_name => \$self->{agent_dns_name},
                                                                          trap_date => \$self->{trap_date},
                                                                          trap_time => \$self->{trap_time},
                                                                          trap_date_time => \$self->{trap_date_time},
@@ -834,7 +853,7 @@ sub run {
         my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
                                                              config => $self->{centreontrapd_config},
                                                              handle => \*STDIN,
-                                                             agent_dns => \$self->{agent_dns},
+                                                             agent_dns_name => \$self->{agent_dns_name},
                                                              trap_date => \$self->{trap_date},
                                                              trap_time => \$self->{trap_time},
                                                              trap_date_time => \$self->{trap_date_time},

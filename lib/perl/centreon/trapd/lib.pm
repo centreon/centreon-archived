@@ -247,28 +247,29 @@ sub get_macros_host {
 sub send_logdb {
     my %args = @_;
     my $pipe = $args{pipe};
-    my $num_args = $#{$args{entvar}};
+    my $num_args = $#{$args{entvar}} + 1;
     
     # Need atomic write (Limit to 4096 with Linux)
     $args{output_message} =~ s/\n/\\n/g;
     print $pipe $args{id} . ":0:$num_args:" . 
                 $args{trap_time} . "," .
-                $self->{cdb}->quote($args{host_name}) . "," .  
-                $self->{cdb}->quote($args{ip_address}) . "," .
-                $self->{cdb}->quote($args{agent_host_name}) . "," .
-                $self->{cdb}->quote($args{agent_ip_address}) . "," .
-                $self->{cdb}->quote($args{trap_oid}) . "," .
-                $self->{cdb}->quote($args{trap_name}) . "," .
-                $self->{cdb}->quote($args{vendor}) . "," .
-                $self->{cdb}->quote($args{severity}) . "," .
-                $self->{cdb}->quote($args{output_message}) . "\n";
+                $args{cdb}->quote($args{timeout}) . "," .
+                $args{cdb}->quote($args{host_name}) . "," .  
+                $args{cdb}->quote($args{ip_address}) . "," .
+                $args{cdb}->quote($args{agent_host_name}) . "," .
+                $args{cdb}->quote($args{agent_ip_address}) . "," .
+                $args{cdb}->quote($args{trap_oid}) . "," .
+                $args{cdb}->quote($args{trap_name}) . "," .
+                $args{cdb}->quote($args{vendor}) . "," .
+                $args{cdb}->quote($args{severity}) . "," .
+                $args{cdb}->quote($args{output_message}) . "\n";
    for (my $i=0; $i <= $#{$args{entvar}}; $i++) {
         my $value = ${$args{entvar}}[$i];
         $value =~ s/\n/\\n/g;
         print $pipe $args{id} . ":1:$i:" . 
                     $i . "," .
-                    $self->{cdb}->quote(${$args{entvarname}}[$i]) . "," .
-                    $self->{cdb}->quote($value) . "," .
+                    $args{cdb}->quote(${$args{entvarname}}[$i]) . "," .
+                    $args{cdb}->quote($value) . "," .
                     $args{trap_time} . "\n";
    }
 }

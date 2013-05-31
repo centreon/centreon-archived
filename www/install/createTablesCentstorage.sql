@@ -421,6 +421,7 @@ UNLOCK TABLES;
 CREATE TABLE `log_traps` (
   `trap_id` int(11) NOT NULL AUTO_INCREMENT,
   `trap_time` int(11) DEFAULT NULL,
+  `timeout` enum('0','1') DEFAULT '0' DEFAULT NULL,
   `host_name` varchar(255) DEFAULT NULL,
   `ip_address` varchar(255) DEFAULT NULL,
   `agent_host_name` varchar(255) DEFAULT NULL,
