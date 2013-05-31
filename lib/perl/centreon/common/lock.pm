@@ -4,8 +4,8 @@ use strict;
 use warnings;
 
 sub new {
-    my ($class, $name, %options) = @_;
-    my %defaults = (name => $name, timeout => 10);
+    my ($class, $name, $pid, %options) = @_;
+    my %defaults = (name => $name, pid => $pid, timeout => 10);
     my $self = {%defaults, %options};
 
     bless $self, $class;
@@ -33,7 +33,7 @@ sub new {
     my $class = shift;
     my $self = $class->SUPER::new(@_);
 
-    if (!defined $self->{pid} || !defined $self->{storagedir}) {
+    if (!defined $self->{storagedir}) {
         die "Can't build lock, required arguments not provided";
     }
     bless $self, $class;
@@ -81,7 +81,7 @@ sub new {
 sub is_set {
     my $self = shift;
     my ($status, $sth) = $self->{dbc}->query(
-        "SELECT id,running,time_launch FROM cron_operation WHERE name LIKE '$self->{name}'"
+        "SELECT id,running,pid,time_launch FROM cron_operation WHERE name LIKE '$self->{name}'"
     );
     my $data = $sth->fetchrow_hashref();
 
@@ -91,8 +91,11 @@ sub is_set {
         return 0;
     }
     $self->{id} = $data->{id};
+    $self->{pid} = $data->{pid};
     $self->{previous_launch_time} = $data->{time_launch};
     if (defined $data->{running} && $data->{running} == 1) {
+        my $line = `ps -ef | grep -v grep | grep $self->{pid} | grep $self->{name}`;
+        return 0 if !length $line;
         return 1;
     }
     return 0;
@@ -115,7 +118,7 @@ EOQ
     }
     $status = $self->{dbc}->do(<<"EOQ");
 UPDATE cron_operation
-SET running = '1', time_launch = '$self->{launch_time}'
+SET running = '1', time_launch = '$self->{launch_time}', pid = '$self->{pid}'
 WHERE id = '$self->{id}'
 EOQ
     goto error if $status == -1;
@@ -132,7 +135,7 @@ sub DESTROY {
         my $exectime = time() - $self->{launch_time};
         $self->{dbc}->do(<<"EOQ");
 UPDATE cron_operation
-SET running = '0', last_execution_time = '$exectime'
+SET running = '0', last_execution_time = '$exectime', pid = '-1'
 WHERE id = '$self->{id}'
 EOQ
     }

@@ -1016,6 +1016,7 @@ CREATE TABLE `cron_operation` (
   `system` enum('0','1') DEFAULT NULL,
   `module` enum('0','1') DEFAULT NULL,
   `running` enum('0','1') DEFAULT NULL,
+  `pid` int(11) DEFAULT NULL,
   `last_execution_time` int(11) NOT NULL,
   `activate` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`id`)
