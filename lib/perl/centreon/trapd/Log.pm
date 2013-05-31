@@ -97,11 +97,11 @@ sub compute_request {
         $self->{dbcentstorage}->transaction_mode(1);
         eval {
             foreach my $id (keys %{$self->{request_log}}) {
-                $self->{dbcentstorage}->query("INSERT INTO log_traps VALUES (" . $self->{request_log}->{$id}->{value} . ")");
-                $self->{dbcentstorage}->query("SET @last_id_trap = LAST_INSERT_ID();");
+                $self->{dbcentstorage}->query("INSERT INTO log_traps (`trap_time`, `timeout`, `host_name`, `ip_address`, `agent_host_name`, `agent_ip_address`, `trap_oid`, `trap_name`, `vendor`, `severity`, `output_message`) VALUES (" . $self->{request_log}->{$id}->{value} . ")");
+                $self->{dbcentstorage}->query("SET \@last_id_trap = LAST_INSERT_ID();");
                 if (defined($self->{request_log}->{$id}->{args})) {
                     foreach (@{$self->{request_log}->{$id}->{args}}) {
-                        $self->{dbcentstorage}->query("INSERT INTO log_traps_args VALUES (@last_id_trap, " . $_ ")");
+                        $self->{dbcentstorage}->query("INSERT INTO log_traps_args (`fk_log_traps`, `arg_number`, `arg_oid`, `arg_value`, `trap_time`) VALUES (\@last_id_trap, " . $_ . ")");
                     }
                 }
             }
@@ -155,7 +155,7 @@ sub main {
                         } else {
                             $self->{construct_log}->{$id} = { time => time(), value => $value, current_args => 0, num_args => $num, args => [] };
                         }
-                    } else if ($type == 1) {
+                    } elsif ($type == 1) {
                         if (defined($self->{construct_log}->{$id})) {
                             if ($self->{construct_log}->{$id}->{current_args} + 1 == $self->{construct_log}->{$id}->{num_args}) {
                                 $self->{request_log}->{$id} = { value => $self->{construct_log}->{$id}->{value}, args => $self->{construct_log}->{$id}->{args} };
