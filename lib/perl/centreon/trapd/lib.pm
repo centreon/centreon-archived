@@ -95,9 +95,10 @@ sub get_oids {
     my ($cdb, $oid) = @_;
     my $ref_result;
     
-    my ($dstatus, $sth) = $cdb->query("SELECT traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
+    my ($dstatus, $sth) = $cdb->query("SELECT name, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
                                         traps_oid, traps_name, traps_advanced_treatment, traps_execution_command_enable, traps_submit_result_enable, traps_status,
-                                        traps_timeout, traps_exec_interval, traps_exec_interval_type FROM traps WHERE traps_oid = " . $cdb->quote($oid));
+                                        traps_timeout, traps_exec_interval, traps_exec_interval_type 
+                                        FROM traps LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id) WHERE traps_oid = " . $cdb->quote($oid));
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('traps_id');
     
@@ -237,6 +238,39 @@ sub get_macros_host {
     }
         
     return (0, \%macros);
+}
+
+##############
+# Protocol with logdb
+##############
+
+sub send_logdb {
+    my %args = @_;
+    my $pipe = $args{pipe};
+    my $num_args = $#{$args{entvar}};
+    
+    # Need atomic write (Limit to 4096 with Linux)
+    $args{output_message} =~ s/\n/\\n/g;
+    print $pipe $args{id} . ":0:$num_args:" . 
+                $args{trap_time} . "," .
+                $self->{cdb}->quote($args{host_name}) . "," .  
+                $self->{cdb}->quote($args{ip_address}) . "," .
+                $self->{cdb}->quote($args{agent_host_name}) . "," .
+                $self->{cdb}->quote($args{agent_ip_address}) . "," .
+                $self->{cdb}->quote($args{trap_oid}) . "," .
+                $self->{cdb}->quote($args{trap_name}) . "," .
+                $self->{cdb}->quote($args{vendor}) . "," .
+                $self->{cdb}->quote($args{severity}) . "," .
+                $self->{cdb}->quote($args{output_message}) . "\n";
+   for (my $i=0; $i <= $#{$args{entvar}}; $i++) {
+        my $value = ${$args{entvar}}[$i];
+        $value =~ s/\n/\\n/g;
+        print $pipe $args{id} . ":1:$i:" . 
+                    $i . "," .
+                    $self->{cdb}->quote(${$args{entvarname}}[$i]) . "," .
+                    $self->{cdb}->quote($value) . "," .
+                    $args{trap_time} . "\n";
+   }
 }
 
 ##############

@@ -4,15 +4,20 @@ package centreon::trapd::Log;
 use strict;
 use warnings;
 use centreon::common::misc;
+use IO::Select;
 my %handlers = ('TERM' => {}, 'HUP' => {});
 
 sub new {
     my $class = shift;
     my $self  = {};
 
+    $self->{logger} = shift;
+    
     # reload flag
     $self->{reload} = 1;
     $self->{config_file} = undef;
+    
+    $self->{"save_read"} = [];
 
     bless $self, $class;
     $self->set_signal_handlers;
@@ -97,8 +102,6 @@ sub main {
                     class_handle_TERM() if ($status_line == -1);
                     last if ($status_line == 0);
                     $self->{logger}->writeLogInfo("=== test $readline");
-
-                    
                 }
             }
         } else {

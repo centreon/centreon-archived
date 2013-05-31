@@ -92,6 +92,9 @@ sub new {
     $self->{current_trap_id} = undef;
     $self->{current_ip} = undef;
     $self->{current_oid} = undef;
+    # From centreon DB
+    $self->{current_trap_name} = undef;
+    $self->{current_vendor_name} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
@@ -103,6 +106,8 @@ sub new {
     # Pipe for log DB 
     %{$self->{logdb_pipes}} = (running => 0);
     $self->{pid_logdb_child} = undef;
+    # For protocol
+    $self->{id_logdb} = 0;
     
     # redefine to avoid out when we try modules
     $SIG{__DIE__} = undef;
@@ -283,7 +288,6 @@ sub create_logdb_child {
     }
     $self->{pid_logdb_child} = $current_pid;
     close $self->{logdb_pipes}{'reader'};
-    close $self->{logdb_pipes}{'writer'};
     $self->{logdb_pipes}{'running'} = 1;
 }
 
@@ -344,11 +348,30 @@ sub do_exec {
         $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable} == 1) {
         $self->executeCommand($traps_output, $status);
     }
+    
+    if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
+        centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
+                                        id => $self->{id_logdb},
+                                        cdb => $self->{cdb},
+                                        trap_time => $self->{trap_date_time_epoch},
+                                        host_name => ${$self->{var}}[0],
+                                        ip_address => $self->{current_ip},
+                                        agent_host_name => $self->{agent_dns_name},
+                                        agent_ip_address => ${$self->{var}}[4],
+                                        trap_oid => $self->{current_oid},
+                                        trap_name => $self->{current_trap_name},
+                                        vendor => $self->{current_vendor_name},
+                                        severity => $status,
+                                        output_message => $traps_output,
+                                        arguments => \@{$self->{entvar}},
+                                        arguments_name => \@{$self->{entvarname}});
+    }
 }
 
 sub manage_exec {
     my $self = shift;
 
+    $self->{id_logdb}++;
     if ($self->{centreontrapd_config}->{daemon} == 0) {
         eval {
             local $SIG{ALRM} = sub { die "TIMEOUT"; };
@@ -633,6 +656,8 @@ sub getTrapsInfos {
     return 0 if ($fstatus == -1);
     foreach my $trap_id (keys %{$self->{ref_oids}}) {
         $self->{current_trap_id} = $trap_id;
+        $self->{current_trap_name} = $self->{ref_oids}->{$trap_id}->{traps_name};
+        $self->{current_vendor_name} = $self->{ref_oids}->{$trap_id}->{name};
         ($fstatus, $self->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
                                                                  cdb => $self->{cdb},
                                                                  trap_info => $self->{ref_oids}->{$trap_id},
