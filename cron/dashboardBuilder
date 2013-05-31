@@ -1,0 +1,62 @@
+#!/usr/bin/env perl
+
+use warnings;
+use FindBin qw($Bin);
+use lib "$Bin/../lib/perl";
+use centreon::script::dashboardBuilder;
+
+centreon::script::dashboardBuilder->new()->run();
+
+__END__
+
+=head1 NAME
+
+dashboardBuilder - script to update dashboards
+
+=head1 SYNOPSIS
+
+dashboardBuilder [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<-r|--rebuild>
+
+Rebuild completely the reporting.
+
+=item B<-s|--start-period>
+
+The reporting rebuild period starts at the indicated date. Example: 2011-09-20.
+
+=item B<-e|--end-period>
+
+The reporting rebuild period ends at the indicated date. Example: 2011-09-21.
+
+=item B<--host-only>
+
+Rebuild only reporting for hosts.
+
+=item B<--service-only>
+
+Rebuild only reporting for services.
+
+=item B<--config>
+
+Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+
+=item B<--logfile>
+
+Write log messages into this file instead of the standard output.
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=back
+
+=head1 DESCRIPTION
+
+B<dashboardBuilder> will update dashboard (see in centreon UI).
+
+=cut
