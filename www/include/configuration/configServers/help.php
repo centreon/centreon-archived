@@ -15,4 +15,5 @@ $help['centreonbroker_cfg_path'] = dgettext("help", "Path of the configuration f
 $help['centreonbroker_module_path'] = dgettext("help", "Path with modules for Centreon Broker");
 $help['centreonconnector_path'] = dgettext("help", "Path with Centreon Connector binaries");
 $help['ns_activate'] = dgettext("help", "Enable or disable poller");
+$help['snmptt_init_script'] = dgettext("help", "SNMP Trap Translator init script");
 ?>
