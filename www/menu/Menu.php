@@ -184,7 +184,12 @@
                     $tpl->assign("autoLoginEnable", 0);
                 }
                 if ($centreon->user->getToken()) {
-                    $autoLoginUrl = "&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
+                    $autoLoginUrl = "";
+                    if (!strstr($_SERVER['REQUEST_URI'], '?')) {
+                        $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
+                        $autoLoginUrl .= "?p=".$root_menu["topology_page"];
+                    }
+                    $autoLoginUrl .= "&autologin=1&useralias=$userAlias&token=".$centreon->user->getToken();
                     $prefix = '';
                     if (!strncmp($_SERVER["SERVER_PROTOCOL"], "HTTP/", 5)) {
                             $prefix .= "http://";
