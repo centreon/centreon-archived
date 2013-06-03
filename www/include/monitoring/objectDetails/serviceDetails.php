@@ -325,6 +325,23 @@
                 $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
             }
 
+            if ($oreon->broker->getBroker() == "broker") {
+                $hskey = $host_name."_".$svc_description;
+                $service_status[$hskey]["long_plugin_output"] = "";
+                $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
+                if (count($outputTmp)) {
+                    $i = 0;
+                    while (isset($outputTmp[$i])) {
+                        if (!$i) {
+                            $service_status[$hskey]["plugin_output"] = $outputTmp[$i] . "<br />";
+                        } else {
+                            $service_status[$hskey]["long_plugin_output"] .= $outputTmp[$i] . "<br />";
+                        }
+                        $i++;
+                    }
+                }
+            }
+            
             $service_status[$host_name."_".$svc_description]["plugin_output"] = $service_status[$host_name."_".$svc_description]["plugin_output"];
             $service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
             $service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
