@@ -793,7 +793,7 @@ class CentreonGraph {
             }
 
             if (!$this->checkcurve) {
-                $arg .= $tm["legend"];
+                $arg .= str_replace(":", "\:", $tm["legend"]);
                 for ($i = $tm["legend_len"]; $i <= $this->longer; $i++) {
                     $arg .= " ";
                 }
