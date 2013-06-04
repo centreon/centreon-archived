@@ -512,7 +512,8 @@
             $tpl->assign("lcaTopo", $oreon->user->access->topology);
             $tpl->assign("count_comments_svc", count($tabCommentServices));
             $tpl->assign("tab_comments_svc", $tabCommentServices);
-            $tpl->assign("flag_graph", service_has_graph($host_id, $service_id));
+            $centreonGraph = new CentreonGraph(session_id(), null, 0, null);
+            $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
             $tpl->assign("service_id", $service_id);
             $tpl->assign("host_data", $host_status[$host_name]);
             $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);
