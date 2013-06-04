@@ -53,13 +53,6 @@
                             $brk->reload();
                         }
 		    }
-			/*foreach ($selected as $key => $value){
-				$DBRESULT = $pearDBO->query("SELECT * FROM metrics WHERE `metric_id` = '".$key."'");
-				while ($metrics = $DBRESULT->fetchRow()){
-					$DBRESULT2 = $pearDBO->query("DELETE FROM metrics WHERE `metric_id` = '".$metrics['metric_id']."'");
-					$pearDB->query("DELETE FROM ods_view_details WHERE metric_id = " . $pearDB->escape($metrics['metric_id']));
-				}
-			}*/
 		} else if ($_POST["o1"] == "hg" || $_POST["o2"] == "hg"){
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
@@ -89,6 +82,16 @@
 			$selected = $_POST["select"];
 			foreach ($selected as $key => $value){
 				$DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '1' WHERE `metric_id` = '".$key."'");
+			}
+        } else if ($_POST["o1"] == "dst_d" || $_POST["o2"] == "dst_d"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '2' WHERE `metric_id` = '".$key."'");
+			}
+        } else if ($_POST["o1"] == "dst_a" || $_POST["o2"] == "dst_a"){
+			$selected = $_POST["select"];
+			foreach ($selected as $key => $value){
+				$DBRESULT = $pearDBO->query("UPDATE metrics SET `data_source_type` = '3' WHERE `metric_id` = '".$key."'");
 			}
 		}
 	}
@@ -143,49 +146,45 @@
 
 	?>
 	<script type="text/javascript">
+    var confirm_messages = [
+        '<? echo _("Do you confirm the deletion ?") ?>',
+        '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+        '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+        '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+        '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
+    ];
+
 	function setO(_i) {
 		document.forms['form'].elements['o'].value = _i;
 	}
-	</SCRIPT>
+
+    function on_action_change(id) {
+        var selected_id = this.form.elements[id].selectedIndex - 1;
+        
+        if (selected_id in confirm_messages && !confirm(confirm_messages[selected_id])) {
+            return;
+        }
+        setO(this.form.elements[id].value);
+        submit();
+    }
+	</script>
 	<?php
-	$attrs1 = array(
-		'onchange'=>"javascript: " .
-				"if (this.form.elements['o1'].selectedIndex == 1 && confirm('"._('Do you confirm the deletion ?')."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 2 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 3 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 4) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 5) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 6) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"else if (this.form.elements['o1'].selectedIndex == 7) {" .
-				" 	setO(this.form.elements['o1'].value); submit();} " .
-				"");
-	$form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "ed"=>_("Delete graphs"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs1);
+    $actions = array(
+        NULL => _("More actions..."), 
+        "ed" => _("Delete graphs"), 
+        "dst_a" => _("Set RRD Data Source Type to ABSOLUTE"),
+        "dst_c" => _("Set RRD Data Source Type to COUNTER"),
+        "dst_d" => _("Set RRD Data Source Type to DERIVE"),
+        "dst_g" => _("Set RRD Data Source Type to GAUGE"), 
+        "hg" => _("Hide graphs of selected Services"), 
+        "nhg" => _("Stop hiding graphs of selected Services"), 
+        "lk" => _("Lock Services"), 
+        "nlk" => _("Unlock Services")
+    );
+    $form->addElement('select', 'o1', NULL, $actions, array('onchange' => "javascript:on_action_change('o1')"));
 	$form->setDefaults(array('o1' => NULL));
 
-	$attrs2 = array(
-		'onchange'=>"javascript: " .
-				"if (this.form.elements['o2'].selectedIndex == 1 && confirm('"._('Do you confirm the deletion ?')."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 2 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 3 && confirm('"._('Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database')."')) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 4) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 5) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 6) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"else if (this.form.elements['o2'].selectedIndex == 7) {" .
-				" 	setO(this.form.elements['o2'].value); submit();} " .
-				"");
-	$form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "ed"=>_("Delete graphs"), "dst_g"=>_("Set RRD Data Source Type to GAUGE"), "dst_c"=>_("Set RRD Data Source Type to COUNTER"), "hg"=>_("Hide graphs of selected Services"), "nhg"=>_("Stop hiding graphs of selected Services"), "lk"=>_("Lock Services"), "nlk"=>_("Unlock Services")), $attrs2);
+    $form->addElement('select', 'o2', NULL, $actions, array('onchange' => "javascript:on_action_change('o2')"));
 	$form->setDefaults(array('o2' => NULL));
 
 	$o1 = $form->getElement('o1');
