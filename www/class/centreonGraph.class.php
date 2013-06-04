@@ -95,6 +95,7 @@ class CentreonGraph {
     var $filename;
     var $commandLine;
     var $dbPath;
+    var $dbStatusPath;
     var $index;
     var $indexData;
     var $template_id;
@@ -194,9 +195,11 @@ class CentreonGraph {
         $this->onecurve = false;
         $this->checkcurve = false;
 
-        $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path FROM config LIMIT 1");
+        $DBRESULT = $this->DBC->query("SELECT RRDdatabase_path, RRDdatabase_status_path 
+                                        FROM config LIMIT 1");
         $config = $DBRESULT->fetchRow();
         $this->dbPath = $config["RRDdatabase_path"];
+        $this->dbStatusPath = $config['RRDdatabase_status_path'];
         unset($config);
         $DBRESULT->free();
 
@@ -1595,6 +1598,40 @@ class CentreonGraph {
         fputs($sock, "QUIT\n");
         @fclose($sock);
         return true;
+    }
+    
+    /**
+     * Returns index data id
+     * 
+     * @param int $hostId
+     * @param int $serviceId
+     * @return int
+     */
+    public function getIndexDataId($hostId, $serviceId) {
+        $sql = "SELECT id FROM index_data 
+            WHERE host_id = " . $this->DBC->escape($hostId) . "
+                AND service_id = " . $this->DBC->escape($serviceId);
+        $res = $this->DBC->query($sql);
+        if ($res->numRows()) {
+            $row = $res->fetchRow();
+            return $row['id'];
+        }
+        return 0;
+    }
+    
+    /**
+     * Returns true if status graph exists
+     * 
+     * @param int $hostId
+     * @param int $serviceId
+     * @return bool
+     */
+    public function statusGraphExists($hostId, $serviceId) {
+        $id = $this->getIndexDataId($hostId, $serviceId);
+        if (is_file($this->dbStatusPath."/".$id.".rrd")) {
+            return true;
+        }
+        return false;
     }
 }
 
