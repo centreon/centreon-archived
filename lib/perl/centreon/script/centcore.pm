@@ -213,7 +213,16 @@ sub getBrokerStats($) {
         $port = checkSSHPort($server_info->{'ssh_port'});
 
         # Copy the stat file into a buffer
-        my $stdout = `$self->{ssh} -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
+        my $stdout;
+        eval {
+            local $SIG{ALRM} = sub { die "alarm\n" };
+            alarm $timeout;
+            $stdout = `$ssh -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
+            alarm 0;
+        };
+	if ($@) {
+            writeLogFile("Could not read pipe ".$data->{'config_value'}." on poller ".$server_info->{'ns_ip_address'}."\n");
+        }
         if (defined($stdout) && $stdout) {
             $self->{logger}->writeLogInfo("Result : $stdout");
         }
