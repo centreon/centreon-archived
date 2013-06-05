@@ -111,7 +111,9 @@ sub get_oids {
         }
         
         # Get Trap PREEXEC Commands
-        #($dstatus, $sth) = $cdb->query("");
+        ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_preexec WHERE trap_id = " . $_ . " ORDER BY tpe_order ASC");
+        return -1 if ($dstatus == -1);
+        $ref_result->{$_}->{traps_preexec} = $sth->fetchall_hashref("trap_id");
         
         # Get Associated Host
         # TODO
@@ -138,11 +140,12 @@ sub get_hosts {
     
     # Get server_id
     foreach (keys %$ref_result) {
-        ($dstatus, $sth) = $args{cdb}->query("SELECT nagios_server_id FROM ns_host_relation WHERE 
-                                            host_host_id = " . $ref_result->{$_}->{host_id} . " LIMIT 1");
+        ($dstatus, $sth) = $args{cdb}->query("SELECT ns_host_relation.nagios_server_id, nagios_server.ns_ip_address FROM ns_host_relation, nagios_server WHERE 
+                                            ns_host_relation.host_host_id = " . $ref_result->{$_}->{host_id} . " AND ns_host_relation.nagios_server_id = nagios_server.id LIMIT 1");
         return -1 if ($dstatus == -1);
         my $data = $sth->fetchrow_hashref();
         $ref_result->{$_}->{nagios_server_id} = $data->{nagios_server_id};
+        $ref_result->{$_}->{ns_ip_address} = $data->{ns_ip_address};
     }
     
     return (0, $ref_result);
