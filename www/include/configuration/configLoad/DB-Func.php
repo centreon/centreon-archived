@@ -960,7 +960,9 @@
 		/*
 		 * Create all sevices
 		 */
-		generateHostServiceMultiTemplate($useTpl[0], $useTpl[0]);
+                if ($tmpConf["host_register"]["host_register"] == 1) {
+                    generateHostServiceMultiTemplate($useTpl[0], $useTpl[0]);
+                }
 
 		$useTpl[1] = $use;
 		isset($tmpConf["host_parentsTMP"]) ? $useTpl[2] = $tmpConf["host_parentsTMP"] : NULL;
