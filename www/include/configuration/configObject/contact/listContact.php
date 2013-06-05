@@ -98,8 +98,8 @@
 	 * start header menu
 	 */
 	$tpl->assign("headerMenu_icone", "<img src='./img/icones/16x16/pin_red.gif'>");
-	$tpl->assign("headerMenu_name", _("Name"));
-	$tpl->assign("headerMenu_desc", _("Alias/Login"));
+	$tpl->assign("headerMenu_name", _("Full Name"));
+	$tpl->assign("headerMenu_desc", _("Alias / Login"));
 	$tpl->assign("headerMenu_email", _("Email"));
 	$tpl->assign("headerMenu_hostNotif", _("Host Notification Period"));
 	$tpl->assign("headerMenu_svNotif", _("Services Notification Period"));

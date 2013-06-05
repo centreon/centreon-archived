@@ -2077,7 +2077,7 @@ CREATE TABLE `traps` (
   `traps_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_name` varchar(255) DEFAULT NULL,
   `traps_oid` varchar(255) DEFAULT NULL,
-  `traps_args` varchar(255) DEFAULT NULL,
+  `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
