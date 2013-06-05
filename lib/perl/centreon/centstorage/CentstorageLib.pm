@@ -2,8 +2,6 @@
 package centreon::centstorage::CentstorageLib;
 use File::Basename;
 
-my $read_size = 1*1024*1024*10; # 10Mo
-
 sub start_or_not {
     my ($centreon_db_centreon) = @_;
     my $status = 1;

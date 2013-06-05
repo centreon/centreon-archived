@@ -2,6 +2,8 @@
 package centreon::common::misc;
 use vars qw($centreon_config);
 
+my $read_size = 1*1024*1024*10; # 10Mo
+
 sub reload_db_config {
     my ($logger, $config_file, $cdb, $csdb) = @_;
     my ($cdb_mod, $csdb_mod) = (0, 0);

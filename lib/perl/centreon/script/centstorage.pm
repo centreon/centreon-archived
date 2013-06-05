@@ -461,7 +461,7 @@ sub run {
         my @rh_set = $self->{read_select}->can_read(10);
         foreach my $rh (@rh_set) {
             my $read_done = 0;
-            while ((my ($status_line, $data_element) = centreon::centstorage::CentstorageLib::get_line_pipe($rh, \@{$self->{fileno_save_read}{fileno($rh)}}, \$read_done))) {
+            while ((my ($status_line, $data_element) = centreon::common::misc::get_line_pipe($rh, \@{$self->{fileno_save_read}{fileno($rh)}}, \$read_done))) {
                 last if ($status_line <= 0);
                 if ($data_element =~ /^REBUILDBEGIN/) {
                     centreon::centstorage::CentstorageLib::call_pool_rebuild($data_element, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs}, \$self->{rebuild_progress}, \$self->{rebuild_pool_choosen});
