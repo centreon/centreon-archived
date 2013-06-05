@@ -765,6 +765,7 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (1, 'No', 'no'),
 (1, 'Yes', 'yes'),
 (2, 'NDO Protocol', 'ndo'),
+(2, 'BBDO Protocol', 'bbdo'),
 (3, 'DB2', 'db2'),
 (3, 'InterBase', 'ibase'),
 (3, 'MySQL', 'mysql'),

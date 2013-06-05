@@ -11,6 +11,9 @@ UPDATE `topology` SET `readonly` = '0' WHERE `topology_parent` = '608' AND `topo
 -- ticket #2329
 ALTER TABLE  `traps` CHANGE  `traps_args`  `traps_args` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
+-- Ticket #4201
+INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUE (2, 'BBDO Protocol', 'bbdo');
+
 -- /!\ WARNING /!\
 -- This file must be renamed and the query below must be updated once we know the exact source and target versions.
 -- /!\ WARNING /!\
