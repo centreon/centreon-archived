@@ -219,6 +219,12 @@ $lang['input'] = _('Input');
 $lang['output'] = _('Output');
 $lang['failover'] = _('Failover');
 $lang['queued_events'] = _('Queued events');
+$lang['file_read_path'] = _('File read path');
+$lang['file_read_offset'] = _('File read offset');
+$lang['file_write_path'] = _('File write path');
+$lang['file_write_offset'] = _('File write offset');
+$lang['file_max_size'] = _('File max size');
+$lang['temporary recovery mode'] = _('Temporary recovery mode');
 
 $tpl->assign('lang', $lang);
 $tpl->assign('poller_name', $pollerName);
