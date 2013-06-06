@@ -2112,6 +2112,16 @@ CREATE TABLE `traps_matching_properties` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `traps_preexec` (
+  `trap_id` int(11) DEFAULT NULL,
+  `tpe_order` int(11) DEFAULT NULL,
+  `tpe_string` varchar(512) DEFAULT NULL,
+  KEY `trap_id` (`trap_id`),
+  CONSTRAINT `traps_preexec_ibfk_1` FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `traps_service_relation` (
   `tsr_id` int(11) NOT NULL AUTO_INCREMENT,
   `traps_id` int(11) DEFAULT NULL,

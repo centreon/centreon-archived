@@ -91,6 +91,7 @@ sub new {
     $self->{current_hostname} = undef;
     $self->{current_server_id} = undef;
     $self->{current_service_id} = undef;
+    $self->{current_server_ip_address} = undef;
     $self->{current_service_desc} = undef;
     $self->{current_trap_id} = undef;
     $self->{current_ip} = undef;
@@ -99,6 +100,10 @@ sub new {
     $self->{current_trap_name} = undef;
     $self->{current_trap_log} = undef;
     $self->{current_vendor_name} = undef;
+    
+    #
+    $self->{traps_global_output} = undef;
+    $self->{traps_global_status} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
@@ -349,21 +354,24 @@ sub manage_pool {
 sub do_exec {
     my $self = shift;
 
-    my $traps_output = $self->substitute_string($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_args});
-    my $status = $self->substitute_string($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status});
+    $self->{traps_global_status} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status};
+    # PREEXEC commands
+    $self->execute_preexec();
+
+    $self->{traps_global_output} = $self->substitute_string($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_args});    
     
     ######################################################################
     # Advanced matching rules
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment}) && 
         $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment} == 1) {
-        $status = $self->checkMatchingRules($traps_output, $status);
+        $status = $self->checkMatchingRules();
     }
 
     #####################################################################
     # Submit value to passive service
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable}) && 
         $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable} == 1) { 
-        $self->submitResult($status, $traps_output);
+        $self->submitResult();
     }
 
     ######################################################################
@@ -377,7 +385,7 @@ sub do_exec {
     # Execute special command
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable}) && 
         $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable} == 1) {
-        $self->executeCommand($traps_output, $status);
+        $self->executeCommand();
     }
     
     if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
@@ -393,8 +401,8 @@ sub do_exec {
                                         trap_oid => $self->{current_oid},
                                         trap_name => $self->{current_trap_name},
                                         vendor => $self->{current_vendor_name},
-                                        severity => $status,
-                                        output_message => $traps_output,
+                                        severity => $self->{traps_global_status},
+                                        output_message => $self->{traps_global_output},
                                         entvar => \@{$self->{entvar}},
                                         entvarname => \@{$self->{entvarname}});
     }
@@ -520,10 +528,9 @@ sub forceCheck {
 #
 sub submitResult {
     my $self = shift;
-    my ($status, $traps_output) = @_;
     my $datetime = time();
     
-    my $str = "PROCESS_SERVICE_CHECK_RESULT;$self->{current_hostname};$self->{current_service_desc};$status;$traps_output";
+    my $str = "PROCESS_SERVICE_CHECK_RESULT;$self->{current_hostname};$self->{current_service_desc};" . $self->{traps_global_status} . ";" . $self->{traps_global_output};
 
     my $submit;
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
@@ -543,6 +550,30 @@ sub submitResult {
     }
 }
 
+sub execute_preexec {
+    my $self = shift;
+
+    foreach my $trap_id (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
+        my $tpe_string = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$trap_id}->{tpe_string};
+        $tpe_string = $self->substitute_string($tpe_string);
+        $tpe_string = $self->subtitute_centreon_var($tpe_string);
+        
+        my $output = `$tpe_string`;
+        if ($? == -1) {
+            $self->{logger}->writeLogError("EXEC: Execution error: $!");
+        } elsif (($? >> 8) != 0) {
+            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($? >> 8));
+        }
+        if (defined($output)) {
+            chomp $output;
+            push @{$self->{preexec}}, $output;
+            $self->{logger}->writeLogInfo("EXEC: Output : $output");
+        } else {
+            push @{$self->{preexec}}, "";
+        }
+    }
+}
+
 ##########################
 ## REPLACE
 #
@@ -555,7 +586,7 @@ sub substitute_host_macro {
             $str =~ s/\Q$macro_name\E/\Q$self->{ref_macro_hosts}->{$macro_name}\E/g;
         }
     }
-    
+
     return $str;
 }
 
@@ -570,6 +601,12 @@ sub substitute_string {
         $str =~ s/\$$x(\s|$)/${$self->{entvar}}[$i]/g;
     }
     
+    # Substitute preexec var
+    for (my $i=0; $i <= $#{$self->{preexec}}; $i++) {
+        my $x = $i + 1;
+        $str =~ s/\$p$x(\s|$)/${$self->{preexec}}[$i]/g;
+    }
+
     # Substitute $*
     my $sub_str = join($self->{centreontrapd_config}->{separator}, @{$self->{entvar}});
     $str =~ s/\$\*/$sub_str/g;
@@ -579,12 +616,30 @@ sub substitute_string {
     return $str;
 }
 
+sub subtitute_centreon_var {
+    my $self = shift;
+    my $str = $_[0];
+
+    $str =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
+    $str =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
+    $str =~ s/\@HOSTADDRESS2\@/$self->{agent_dns_name}/g;
+    $str =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
+    $str =~ s/\@TRAPOUTPUT\@/$self->{traps_global_output}/g;
+    $str =~ s/\@OUTPUT\@/$self->{traps_global_output}/g;
+    $str =~ s/\@STATUS\@/$self->{traps_global_status}/g;
+    $str =~ s/\@TIME\@/$self->{trap_date_time_epoch}/g;
+    $str =~ s/\@POLLERID\@/$self->{current_server_id}/g;
+    $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
+    $str =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
+    $str = $self->substitute_host_macro($str);
+    return $str;
+}
+
 #######################################
 ## Check Advanced Matching Rules
 #
 sub checkMatchingRules {
     my $self = shift;
-    my ($traps_output, $status) = @_;
     
     # Check matching options 
     foreach my $tmo_id (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}}) {
@@ -610,6 +665,7 @@ sub checkMatchingRules {
         }
 
         $tmoString = $self->substitute_string($tmoString);
+        $tmoString = $self->subtitute_centreon_var($tmoString);
 
         ##########################
         # REPLACE special Chars
@@ -619,23 +675,15 @@ sub checkMatchingRules {
             $tmoString =~ s/\&quot\;/\"/g;
             $tmoString =~ s/\&#039\;\&#039\;/"/g;
         }
-        $tmoString =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
-        $tmoString =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
-        $tmoString =~ s/\@HOSTADDRESS2\@/$self->{agent_dns_name}/g;
-        $tmoString =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
-        $tmoString =~ s/\@TRAPOUTPUT\@/$traps_output/g;
-        $tmoString =~ s/\@OUTPUT\@/$traps_output/g;
-        $tmoString =~ s/\@TIME\@/$self->{trap_date_time_epoch}/g;
 
         # Integrate OID Matching            
         if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
-            $status = $tmoStatus;
+            $self->{traps_global_status} = $tmoStatus;
             $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
-            $self->{logger}->writeLogInfo("Status: $status ($tmoStatus)");
+            $self->{logger}->writeLogInfo("Status: $self->{traps_global_status} ($tmoStatus)");
             last;
         }    
     }
-    return $status;
 }
 
 ################################
@@ -643,12 +691,10 @@ sub checkMatchingRules {
 #
 sub executeCommand {
     my $self = shift;
-    my ($traps_output, $status) = @_;
     my $datetime = time();
     my $traps_execution_command = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
     
     $traps_execution_command = $self->substitute_string($traps_execution_command);
-    $traps_execution_command = $self->substitute_host_macro($traps_execution_command);
     
     ##########################
     # REPLACE MACROS
@@ -659,17 +705,9 @@ sub executeCommand {
         $traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
         $traps_execution_command =~ s/\&#039\;/'/g;
     }
-    $traps_execution_command =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
-    $traps_execution_command =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
-    $traps_execution_command =~ s/\@HOSTADDRESS2\@/$self->{agent_dns_name}/g;
-    $traps_execution_command =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
-    $traps_execution_command =~ s/\@TRAPOUTPUT\@/$traps_output/g;
-    $traps_execution_command =~ s/\@OUTPUT\@/$traps_output/g;
-    $traps_execution_command =~ s/\@STATUS\@/$status/g;
-    $traps_execution_command =~ s/\@TIME\@/$datetime/g;
-    $traps_execution_command =~ s/\@POLLERID\@/$self->{current_server_id}/g;
-    $traps_execution_command =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
-
+    
+    $traps_execution_command = $self->subtitute_centreon_var($traps_execution_command);
+    
     ##########################
     # SEND COMMAND
     if ($traps_execution_command) {
@@ -724,6 +762,7 @@ sub getTrapsInfos {
             }
             $self->{current_host_id} = $host_id;
             $self->{current_server_id} = $self->{ref_hosts}->{$host_id}->{nagios_server_id};
+            $self->{current_server_ip_address} = $self->{ref_hosts}->{$host_id}->{ns_ip_address};
             $self->{current_hostname} = $self->{ref_hosts}->{$host_id}->{host_name};
 
             #### Get Services ####

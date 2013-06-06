@@ -21,6 +21,14 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (61701,
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (61701,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (61701,NULL,'./include/common/javascript/centreon/serviceFilterByHost.js',NULL);
 
+CREATE TABLE `traps_preexec` (
+  `trap_id` int(11) DEFAULT NULL,
+  `tpe_order` int(11) DEFAULT NULL,
+  `tpe_string` varchar(512) DEFAULT NULL,
+  KEY `trap_id` (`trap_id`),
+  CONSTRAINT `traps_preexec_ibfk_1` FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 -- /!\ WARNING /!\
 -- This file must be renamed and the query below must be updated once we know the exact source and target versions.
 -- /!\ WARNING /!\
