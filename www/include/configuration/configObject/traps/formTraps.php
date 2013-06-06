@@ -42,11 +42,11 @@
 	/**
 	 * Database retrieve information for Trap
 	 */
-    function testTrapExistence() {
-        global $trapObj;
+        function testTrapExistence() {
+            global $trapObj;
 
-        return $trapObj->testTrapExistence();
-    }
+            return $trapObj->testTrapExistence();
+        }
 
 	function myDecodeTrap($arg)	{
 		$arg = html_entity_decode($arg, ENT_QUOTES, "UTF-8");
@@ -61,27 +61,77 @@
 	$trap = array();
 	$mnftr = array(NULL=>NULL);
 	$mnftr_id = -1;
-	if (($o == "c" || $o == "w") && $traps_id)	{
+        $initialValues = array();
+        $hServices = array();
+	if (($o == "c" || $o == "w") && $traps_id) {
 		$DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
 		# Set base value
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
 		$DBRESULT->free();
+                
+                /**
+                 * ACL
+                 */
+                if (!$centreon->user->admin) {
+                    $aclSql = "SELECT hsr.host_host_id, hsr.service_service_id
+                        FROM traps_service_relations tsr, $aclDbName.centreon_acl acl, host_service_relation hsr
+                        WHERE tsr.traps_id = '".$trapsId."'
+                        AND tsr.service_id = hsr.service_service_id
+                        AND hsr.host_host_id = acl.host_id
+                        AND acl.service_id = tsr.service_id
+                        AND acl.group_id IN (".$acl->getAccessGroupsString().")";
+                    $aclRes = $pearDB->query($aclSql);
+                    $aclHs = array();
+                    while ($aclRow = $aclRes->fetchRow()) {
+                        $aclHs[$aclRow['host_host_id']."-".$aclRow['service_service_id']] = true;
+                    }
+                }
+                $DBRESULT = $pearDB->query("SELECT tsr.service_id, hsr.host_host_id, h.host_name, s.service_description
+                        FROM traps_service_relation tsr, host_service_relation hsr, host h, service s
+                        WHERE h.host_id = hsr.host_host_id
+                        AND hsr.service_service_id = s.service_id
+                        AND s.service_register = '1'
+                        AND hsr.service_service_id = tsr.service_id
+                        AND tsr.traps_id = '".$pearDB->escape($traps_id)."'");
+                for ($i = 0; $hs = $DBRESULT->fetchRow(); $i++) {
+                    $hkey = $hs["host_host_id"]."-".$hs["service_id"];
+                    if (isset($aclHs) && !isset($aclHs[$hkey])) {
+                        $initialValues['services'][] = $hkey;
+                    } else {
+                        $hServices[$hkey] = $hs["host_name"]."&nbsp;-&nbsp;".$hs['service_description'];
+                        $trap["services"][$i] = $hkey;
+                    }
+                }
+
+                if ($centreon->user->admin) {
+                    $res = $pearDB->query("SELECT s.service_id 
+                                FROM traps_service_relation tsr, service s
+                                WHERE tsr.service_id = s.service_id
+                                AND s.service_register = '0'
+                                AND tsr.traps_id = " . $pearDB->escape($traps_id));
+                    $trap['service_templates'] = array();
+                    while ($row = $res->fetchRow()) {
+                        $trap['service_templates'][] = $row['service_id'];
+                    }
+                }
 	}
 	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 	while ($rmnftr = $DBRESULT->fetchRow()){
-		$mnftr[$rmnftr["id"]] = $rmnftr["alias"];
+            $mnftr[$rmnftr["id"]] = $rmnftr["alias"];
 	}
 	$DBRESULT->free();
 
 	$attrsText 		= array("size"=>"50");
 	$attrsLongText 	= array("size"=>"120");
 	$attrsTextarea 	= array("rows"=>"10", "cols"=>"120");
+        $attrsAdvSelect 	= array("style" => "width: 270px; height: 100px;");
+        $eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
 	/*
 	 * Form begin
 	 */
 	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-    $trapObj->setForm($form);
+        $trapObj->setForm($form);
 	if ($o == "a") {
 		$form->addElement('header', 'title', _("Add a Trap definition"));
 	} else if ($o == "c") {
@@ -156,6 +206,38 @@
 	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
 	$form->setDefaults(array('action'=>'1'));
 
+        /*
+         * Service relations
+         */
+        $hostFilter = array(null => null,
+                            0    => sprintf('__%s__', _('ALL')));
+        $hostFilter = ($hostFilter + $acl->getHostAclConf(null,
+                                                         $oreon->broker->getBroker(),
+                                                         array('fields'  => array('host.host_id', 'host.host_name'),
+                                                              'keys'    => array('host_id'),
+                                                              'get_row' => 'host_name',
+                                                              'order'   => array('host.host_name')),
+                                                         true));
+        $form->addElement('select', 'host_filter', _('Host'), $hostFilter, array('onChange' => 'hostFilterSelect(this, "services");'));
+        $ams = $form->addElement('advmultiselect', 'services', array(_("Linked Services"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
+	$ams->setButtonAttributes('add', array('value' =>  _("Add")));
+	$ams->setButtonAttributes('remove', array('value' => _("Remove")));
+	$ams->setElementTemplate($eTemplate);
+	echo $ams->getElementJs(false);
+        
+        if ($centreon->user->admin) {
+            $svcObj = new CentreonService($pearDB);
+            $ams = $form->addElement('advmultiselect', 'service_templates', array(_("Linked services templates"), _("Available"), _("Selected")), $svcObj->getServiceTemplateList(), $attrsAdvSelect, SORT_ASC);
+            $ams->setButtonAttributes('add', array('value' =>  _("Add")));
+            $ams->setButtonAttributes('remove', array('value' => _("Remove")));
+            $ams->setElementTemplate($eTemplate);
+            echo $ams->getElementJs(false);
+        }
+        
+        /*
+         * Routing 
+         */
+        
 	/*
 	 * Form Rules
 	 */
@@ -204,7 +286,8 @@
 
 	$valid = false;
 	if ($form->validate())	{
-		$trapParam = $form->getElement('traps_id');
+		$trapObj = new Centreon_Traps($centreon, $pearDB, $form);
+                $trapParam = $form->getElement('traps_id');
 		if ($form->getSubmitValue("submitA"))
 			$trapParam->setValue($trapObj->insert());
 		else if ($form->getSubmitValue("submitC"))
@@ -227,13 +310,21 @@
 		$tpl->assign('form', $renderer->toArray());
 		$tpl->assign('o', $o);
 
+                $tpl->assign('tabTitle_1', _('Main'));
+                $tpl->assign('tabTitle_2', _('Relations'));
+                $tpl->assign('tabTitle_3', _('Advanced'));
 		$tpl->assign('subtitle0', _("Main information"));
 		$tpl->assign('subtitle0', _("Convert Trap information"));
 		$tpl->assign('subtitle1', _("Action 1 : Submit result to Monitoring Engine"));
 		$tpl->assign('subtitle2', _("Action 2 : Force rescheduling of service check"));
 		$tpl->assign('subtitle3', _("Action 3 : Execute a Command"));
 		$tpl->assign('subtitle4', _("Trap description"));
-
+                $tpl->assign('routingDefTxt', _('Route parameters'));
+                $tpl->assign('resourceTxt', _('Resources'));
+                $tpl->assign('preexecTxt', _('Pre execution commands'));
+                $tpl->assign('serviceTxt', _('Linked services'));
+                $tpl->assign('serviceTemplateTxt', _('Linked service templates'));
+                $tpl->assign('admin', $centreon->user->admin);
 		$tpl->display("formTraps.ihtml");
 	}
 
