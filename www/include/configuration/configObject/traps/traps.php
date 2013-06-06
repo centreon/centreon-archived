@@ -53,6 +53,7 @@
 
 	#Pear library
 	require_once "HTML/QuickForm.php";
+        require_once 'HTML/QuickForm/advmultiselect.php';
 	require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 	#Path to the configuration dir
@@ -64,6 +65,10 @@
 	require_once "./include/common/common-Func.php";
 
     $trapObj = new Centreon_Traps($oreon, $pearDB);
+    $acl = $oreon->user->access;
+    $aclDbName = $acl->getNameDBAcl($oreon->broker->getBroker());
+    $dbmon = $oreon->broker->getBroker() == 'broker' ? new CentreonDB('centstorage') : new CentreonDB('ndo');
+    $sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
     
     /* Set the real page */
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])

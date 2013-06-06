@@ -437,7 +437,12 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (202,60216,'w','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (203,607,NULL,'./include/common/javascript/scriptaculous/jsProgressBarHandler.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (204,60701,NULL,'./include/common/javascript/scriptaculous/jsProgressBarHandler.js',NULL);
-
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (205,61701,'a','./include/common/javascript/changetab.js','initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (206,61701,'c','./include/common/javascript/changetab.js','initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (207,61701,'w','./include/common/javascript/changetab.js','initChangeTab');
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (208,61701,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (209,61701,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
+INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (210,61701,NULL,'./include/common/javascript/centreon/serviceFilterByHost.js',NULL);
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

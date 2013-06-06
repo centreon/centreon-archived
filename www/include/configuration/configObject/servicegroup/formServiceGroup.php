@@ -315,14 +315,14 @@ else	{
     $tpl->display("formServiceGroup.ihtml");
 }
 ?>
-    <script type='text/javascript'>
+<script type='text/javascript'>
 function hostFilterSelect(elem)
 {
     var arg = 'host_id='+elem.value;
 
     if (window.XMLHttpRequest) {
         var xhr = new XMLHttpRequest();
-    } else if(window.ActiveXObject){r
+    } else if(window.ActiveXObject){
         try {
             var xhr = new ActiveXObject("Msxml2.XMLHTTP");
         } catch (e) {

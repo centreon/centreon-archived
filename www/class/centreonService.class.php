@@ -42,7 +42,7 @@
  class CentreonService
  {
  	protected $db;
-    protected $instanceObj;
+        protected $instanceObj;
 
  	/**
  	 *  Constructor
@@ -279,5 +279,22 @@
  		}
  		return $string;
  	}
+        
+        /**
+         * Get list of service templates
+         * 
+         * @return array 
+         */
+        public function getServiceTemplateList() {
+            $res = $this->db->query("SELECT service_id, service_description 
+                            FROM service
+                            WHERE service_register = '0'
+                            ORDER BY service_description");
+            $list = array();
+            while ($row = $res->fetchRow()) {
+                $list[$row['service_id']] = $row['service_description'];
+            }
+            return $list;
+        }
  }
  ?>
