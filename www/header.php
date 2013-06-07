@@ -97,8 +97,19 @@
 		header("Location: index.php?disconnect=2");
 	}
 
+    // Check autologin here
+    
+    
 	if (!isset($_SESSION["centreon"])) {
-		header("Location: index.php?disconnect=1");
+        if (!isset($_GET['autologin'])) {
+            header("Location: index.php?disconnect=1");
+        } else {
+            $args = NULL;
+            foreach ($_GET as $key=>$value)
+                $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+            
+            header("Location: index.php?".$args."");
+        }
 	}
 
 	/*

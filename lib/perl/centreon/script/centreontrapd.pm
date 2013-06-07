@@ -611,6 +611,20 @@ sub substitute_string {
     my $sub_str = join($self->{centreontrapd_config}->{separator}, @{$self->{entvar}});
     $str =~ s/\$\*/$sub_str/g;
     
+    # $A
+    $str =~ s/\$A(\s|$)/$self->{agent_dns_name}/g;
+    
+    # $aA (Trap agent IP Adress)
+    $str =~ s/\$aA(\s|$)/${$self->{var}}[4]/g;
+    
+    # $R, $r (Trap Hostname)
+    $str =~ s/\$R(\s|$)/${$self->{var}}[0]/g;
+    $str =~ s/\$r(\s|$)/${$self->{var}}[0]/g;
+    
+    # $aR, $ar (IP Adress)
+    $str =~ s/\$aR(\s|$)/${$self->{var}}[1]/g;
+    $str =~ s/\$ar(\s|$)/${$self->{var}}[1]/g;
+    
     # Clean OID
     $str =~ s/\@\{[\.0-9]*\}//g;
     return $str;
@@ -753,7 +767,8 @@ sub getTrapsInfos {
                                                                  agent_dns_name => $self->{agent_dns_name},
                                                                  ip_address => $self->{current_ip},
                                                                  entvar => \@{$self->{entvar}},
-                                                                 entvarname => \@{$self->{entvarname}});
+                                                                 entvarname => \@{$self->{entvarname}},
+                                                                 centreontrapd => $self);
         return 0 if ($fstatus == -1);
         foreach my $host_id (keys %{$self->{ref_hosts}}) {
             if (!defined($self->{ref_hosts}->{$host_id}->{nagios_server_id})) {
