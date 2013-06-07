@@ -340,6 +340,24 @@
                         $service_status[$host_name."_".$svc_description]["next_notification"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_notification"], $oreon->user->getMyGMT());
                     }
 
+                    if ($oreon->broker->getBroker() == "broker") {
+                        $hskey = $host_name."_".$svc_description;
+                        $service_status[$hskey]["long_plugin_output"] = "";
+                        $outputTmp = explode('\n', $service_status[$hskey]["plugin_output2"]);
+                        if (count($outputTmp)) {
+                            $i = 0;
+                            while (isset($outputTmp[$i])) {
+                                if (!$i) {
+                                    $service_status[$hskey]["plugin_output"] = $outputTmp[$i] . "<br />";
+                                } else {
+                                    $service_status[$hskey]["long_plugin_output"] .= $outputTmp[$i] . "<br />";
+                                }
+                                $i++;
+                            }
+                        }
+                        
+                    }
+                    
                     $service_status[$host_name."_".$svc_description]["plugin_output"] = $service_status[$host_name."_".$svc_description]["plugin_output"];
                     $service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("'", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
                     $service_status[$host_name.'_'.$svc_description]["plugin_output"] = str_replace("\"", "", $service_status[$host_name.'_'.$svc_description]["plugin_output"]);
@@ -510,7 +528,8 @@
                     $tpl->assign("lcaTopo", $oreon->user->access->topology);
                     $tpl->assign("count_comments_svc", count($tabCommentServices));
                     $tpl->assign("tab_comments_svc", $tabCommentServices);
-                    $tpl->assign("flag_graph", service_has_graph($host_id, $service_id));
+                    $centreonGraph = new CentreonGraph(session_id(), null, 0, null);
+                    $tpl->assign("flag_graph", $centreonGraph->statusGraphExists($host_id, $service_id));
                     $tpl->assign("service_id", $service_id);
                     $tpl->assign("host_data", $host_status[$host_name]);
                     $tpl->assign("service_data", $service_status[$host_name."_".$svc_description]);

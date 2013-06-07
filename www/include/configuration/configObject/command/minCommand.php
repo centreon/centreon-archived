@@ -54,7 +54,7 @@
 				$arg = str_replace('#R#', "\\r", $arg);
 				$arg = str_replace('#S#', "/", $arg);
 				$arg = str_replace('#BS#', "\\", $arg);
-				return($arg);
+				return(html_entity_decode($arg));
 			}
 		}
 

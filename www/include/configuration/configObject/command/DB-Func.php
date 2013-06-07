@@ -47,7 +47,7 @@
 			$arg = str_replace('#S#', "/", $arg);
 			$arg = str_replace('#BS#', "\\", $arg);
 			$arg = str_replace('#P#', "|", $arg);
-			return($arg);
+			return(html_entity_decode($arg));
 		}
 	}
 

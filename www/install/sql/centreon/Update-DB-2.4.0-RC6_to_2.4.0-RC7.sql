@@ -6,8 +6,8 @@ CREATE TABLE `auth_ressource_host` (
     `auth_ressource_id` INT(11) NOT NULL,
     `host_address` VARCHAR(255) NOT NULL,
     `host_port` INT(11) NOT NULL,
-    `use_ssl` TINYINT NULL DEFAULT 0,
-    `use_tls` TINYINT NULL DEFAULT 0,
+    `use_ssl` TINYINT NULL DEFAULT '0',
+    `use_tls` TINYINT NULL DEFAULT '0',
     `host_order` TINYINT NOT NULL DEFAULT 1,
     PRIMARY KEY (`ldap_host_id`),
     CONSTRAINT `fk_auth_ressource_id`

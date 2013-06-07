@@ -104,7 +104,7 @@ ALTER TABLE `cfg_nagios` ADD `external_command_buffer_slots` INT(11) DEFAULT NUL
 ALTER TABLE `cfg_nagios` CHANGE service_reaper_frequency check_result_reaper_frequency INT(11);
 ALTER TABLE `cfg_nagios` CHANGE `translate_passive_host_checks` `translate_passive_host_checks` INT(11) DEFAULT NULL ;
 
-ALTER TABLE `cfg_nagios` ADD use_aggressive_host_checking enum('0','1','2') default 0;
+ALTER TABLE `cfg_nagios` ADD use_aggressive_host_checking enum('0','1','2') default '0';
 ALTER TABLE `cfg_nagios` DROP COLUMN aggregate_status_updates;
 ALTER TABLE `cfg_nagios` DROP COLUMN use_agressive_host_checking;
 
@@ -334,7 +334,7 @@ ALTER TABLE `contact`
 CREATE TABLE IF NOT EXISTS `auth_ressource` (
   `ar_id` INT(11) NOT NULL AUTO_INCREMENT,
   `ar_type` VARCHAR(50) NOT NULL,
-  `ar_enable` ENUM('0', '1') DEFAULT 0,
+  `ar_enable` ENUM('0', '1') DEFAULT '0',
   `ar_order` INT(3) DEFAULT 0,
   PRIMARY KEY (`ar_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;

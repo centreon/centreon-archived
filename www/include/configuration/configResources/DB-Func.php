@@ -51,6 +51,7 @@ function testExistence ($name = null, $instanceId = null) {
     } elseif (!is_null($instanceId) && $instanceId) {
         $instances = array($instanceId);
     }
+    $instances = array_filter($instances);
     if (!count($instances)) {
         return true;
     }
@@ -103,6 +104,10 @@ function multipleResourceInDB ($DBRESULT = array(), $nbrDup = array())	{
             }
             if (testExistence($resource_name))	{
                 $DBRESULT = $pearDB->query($val ? $rq = "INSERT INTO cfg_resource VALUES (".$val.")" : $rq = null);
+                $res = $pearDB->query("SELECT MAX(resource_id) as lastid FROM cfg_resource");
+                $id = $res->fetchRow();
+                $pearDB->query("INSERT INTO cfg_resource_instance_relations (resource_id, instance_id) 
+                    (SELECT ".$id['lastid'].", instance_id FROM cfg_resource_instance_relations WHERE resource_id = $key)");
             }
         }
     }

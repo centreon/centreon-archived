@@ -243,7 +243,7 @@ class CentreonAuthLDAP {
                  */
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 $queryUpdateExtInfos = "UPDATE contact SET
-					contact_ldap_dn = '" . $userDn . "',
+					contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "',
 					contact_name = '" . $userDisplay . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
@@ -282,7 +282,7 @@ class CentreonAuthLDAP {
                     /*
                      * Get the contact_id
                      */
-                    $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $userDn . "'";
+                    $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $pearDB->escape($userDn, false) . "'";
                     $res = $this->pearDB->query($query);
                     $row = $res->fetchRow();
                     $contact_id = $row['contact_id'];

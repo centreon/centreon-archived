@@ -221,7 +221,11 @@
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 	$form->accept($renderer);
 
-	isset($_GET["host_name"]) ? $host_name = $_GET["host_name"] : $host_name = NULL;
+        if (isset($_GET['host_name'])) {
+            $host_name = $_GET['host_name'];
+        } elseif (!isset($host_name) || $host_name == "") {
+            $host_name = null;
+        }
 	isset($_GET["status"]) ? $status = $_GET["status"] : $status = NULL;
 
 	$tpl->assign("host_name", $host_name);

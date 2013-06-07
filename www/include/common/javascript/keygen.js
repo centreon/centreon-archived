@@ -41,7 +41,6 @@ function generatePassword(what)
 		document.getElementById('passwd2').value = sPassword;
 		document.getElementById('passwd2').setAttribute('type','text');
     }
-    sPassword = str_md5(sPassword);
     return true;
 }
 
