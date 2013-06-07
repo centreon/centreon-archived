@@ -1,0 +1,27 @@
+<div id="{$cloneId}_controls">
+    <div id="{$cloneId}_add">
+        <span style="cursor:pointer;">
+            Add <img src="./img/icones/16x16/navigate_plus.gif">
+        </span>
+    </div>
+</div>
+<ul id="{$cloneId}" class="clonable no-deco-list">
+    <li class="clone_template" id="{$cloneId}_template">
+        <hr/>
+        <span class="clonehandle">
+            <img src="./img/icones/16x16/move.png">
+        </span>
+        <a id="{$cloneId}_remove_current" class="cloneremove">
+            <img src="./img/icones/16x16/delete.gif">
+        </a>
+        <div style="padding-top:10px;">
+            {foreach from=$cloneSet item=v}
+                {$v->getLabel()} : {$v->toHtml()}
+            {/foreach}
+        </div>
+        <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />
+    </li>
+    <li id="{$cloneId}_noforms_template">
+        <p class="muted">Nothing here, use the "Add" button</p>
+    </li>
+</ul>

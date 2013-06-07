@@ -439,3 +439,34 @@ p.oreonbutton input {padding:0px 15px;}
 .pull-left {
     float: left;
 }
+
+ul.no-deco-list {
+    list-style-type: none;
+}
+
+.clonable {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.clonehandle {
+    margin-top: -5px;
+    margin-right: 10px;
+    cursor: move;
+    float: right;
+}
+
+.cloneremove {
+    margin-top:-5px;
+    cursor: pointer;
+    float: right;
+}
+
+.clone-placeholder {
+    border-color: #cccccc;
+    border-style: dashed;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    height:60px;
+}

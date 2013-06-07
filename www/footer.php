@@ -67,6 +67,12 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 <?php } else {
 	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
 }
+
+$cdata = CentreonData::getInstance();
+$jsdata = $cdata->getJsData();
+foreach ($jsdata as $k => $val) {
+    echo "<span class=\"data hide\" id=\"".$k."\" data-".$k."=\"".$val."\"></span>";
+}
 ?>
 </body>
 </html>

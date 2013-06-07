@@ -108,12 +108,21 @@
                                 FROM traps_service_relation tsr, service s
                                 WHERE tsr.service_id = s.service_id
                                 AND s.service_register = '0'
-                                AND tsr.traps_id = " . $pearDB->escape($traps_id));
+                                AND tsr.traps_id = " . $pearDB->escape($traps_id ));
                     $trap['service_templates'] = array();
                     while ($row = $res->fetchRow()) {
                         $trap['service_templates'][] = $row['service_id'];
                     }
                 }
+                
+                $cdata = CentreonData::getInstance();
+                $preexecArray = $trapObj->getPreexecFromTrapId($traps_id);
+                $cdata->addJsData('clone-values-preexec', htmlspecialchars(
+                        json_encode($preexecArray), 
+                        ENT_QUOTES
+                    )
+                );
+                $cdata->addJsData('clone-count-preexec',count($preexecArray));
 	}
 	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 	while ($rmnftr = $DBRESULT->fetchRow()){
@@ -238,6 +247,20 @@
          * Routing 
          */
         
+        /*
+         * Pre exec 
+         */
+        $cloneSet = array();
+        $cloneSet[] = $form->addElement(
+                'text', 
+                'preexec[#index#]', 
+                _("Preexec command"), 
+                array(
+                    "size"=>"50", 
+                    "id" => "preexec_#index#"
+                    )
+                );
+        
 	/*
 	 * Form Rules
 	 */
@@ -325,6 +348,8 @@
                 $tpl->assign('serviceTxt', _('Linked services'));
                 $tpl->assign('serviceTemplateTxt', _('Linked service templates'));
                 $tpl->assign('admin', $centreon->user->admin);
+                $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+                $tpl->assign('cloneSet', $cloneSet);
 		$tpl->display("formTraps.ihtml");
 	}
 

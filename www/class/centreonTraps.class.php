@@ -188,6 +188,10 @@ class Centreon_Traps {
                                     (SELECT ".$maxId['MAX(traps_id)'].", service_id 
                                         FROM traps_service_relation 
                                         WHERE traps_id = ".$this->_db->escape($key).")");
+                    $this->_db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) 
+                                    (SELECT ".$maxId['MAX(traps_id)'].", tpe_string, tpe_order
+                                        FROM traps_preexec 
+                                        WHERE trap_id = ".$this->_db->escape($key).")");
                     $this->_centreon->CentreonLogAction->insertLog("traps", $maxId["MAX(traps_id)"], $traps_name, "a", $fields);
 		}
             }
@@ -250,9 +254,35 @@ class Centreon_Traps {
             $this->_setMatchingOptions($traps_id, $_POST);
             $this->_setServiceRelations($traps_id);
             $this->_setServiceTemplateRelations($traps_id);
+            $this->_setPreexec($traps_id);
             $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id, $fields["traps_name"], "c", $fields);
 	}
 
+        /**
+         * Set preexec commands
+         * 
+         * @param int $trapId
+         */
+        protected function _setPreexec($trapId) {
+            $this->_db->query("DELETE FROM traps_preexec 
+                WHERE trap_id = ".$this->_db->escape($trapId));
+            $insertStr = "";
+            if (isset($_REQUEST['preexec'])) {
+                $preexec = $_REQUEST['preexec'];
+                $i = 1;
+                foreach ($preexec as $value) {
+                    if ($insertStr) {
+                        $insertStr .= ", ";
+                    }
+                    $insertStr .= "($trapId, '".$this->_db->escape($value)."', $i)";
+                    $i++;
+                }
+            }
+            if ($insertStr) {
+                $this->_db->query("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES $insertStr");
+            }
+        }
+        
         /**
          * Delete & insert service relations
          * 
@@ -373,11 +403,32 @@ class Centreon_Traps {
             $this->_setMatchingOptions($traps_id['MAX(traps_id)'], $_POST);
             $this->_setServiceRelations($traps_id['MAX(traps_id)']);
             $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)']);
+            $this->_setPreexec($traps_id['MAX(traps_id)']);
             if ($this->_centreon->user->admin) {
                 $this->_setServiceTemplateRelations($traps_id['MAX(traps_id)'], $ret['service_templates']);
             }
 
             return ($traps_id["MAX(traps_id)"]);
 	}
+        
+        /**
+         * Get pre exec commands from trap_id
+         * 
+         * @param int $trapId
+         * @return array
+         */
+        public function getPreexecFromTrapId($trapId) {
+            $res = $this->_db->query("SELECT tpe_string
+                    FROM traps_preexec
+                    WHERE trap_id = ".$this->_db->escape($trapId)."
+                    ORDER BY tpe_order");
+            $arr = array();
+            $i = 0;
+            while ($row = $res->fetchRow()) {
+                $arr[$i] = array("preexec_#index#" => $row['tpe_string']);
+                $i++;
+            }
+            return $arr;
+        }
 }
 ?>

@@ -70,6 +70,11 @@
                     <tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
                     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$routingDefTxt}</td></tr>
                     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$preexecTxt}</td></tr>
+                    <tr class="list_one">
+                        <td colspan="2">
+                            {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="preexec" cloneSet=$cloneSet}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
