@@ -42,33 +42,33 @@ class CentreonAuth {
      * Declare Values
      */
 
-    private $login;
-    private $password;
-    private $enable;
-    private $userExists;
-    private $cryptEngine;
-    private $autologin;
+    protected $login;
+    protected $password;
+    protected $enable;
+    protected $userExists;
+    protected $cryptEngine;
+    protected $autologin;
     public $userInfos;
-    private $cryptPossibilities;
-    private $pearDB;
-    private $debug;
+    protected $cryptPossibilities;
+    protected $pearDB;
+    protected $debug;
     /*
      * Flags
      */
     public $passwdOk;
-    private $authType;
+    protected $authType;
     protected $ldap_auto_import;
     protected $ldap_store_password;
 
     /*
      * keep log class
      */
-    private $CentreonLog;
+    protected $CentreonLog;
 
     /*
      * Error Message
      */
-    private $error;
+    protected $error;
 
     /**
      * Constructor
@@ -117,7 +117,7 @@ class CentreonAuth {
      *
      * @return int
      */
-    private function getLogFlag() {
+    protected function getLogFlag() {
         $res = $this->pearDB->query("SELECT value FROM options WHERE `key` = 'debug_auth'");
         $data = $res->fetchRow();
         if (isset($data["value"])) {
@@ -134,7 +134,7 @@ class CentreonAuth {
      * @param boolean $autoimport
      * @return void
      */
-    private function checkPassword($password, $token = "", $autoimport = false) {
+    protected function checkPassword($password, $token = "", $autoimport = false) {
         global $centreon_path;
 
         if ((strlen($password) == 0 || $password == "") && $token == "") {
@@ -223,7 +223,7 @@ class CentreonAuth {
      * @param string $token
      * @return void
      */
-    private function checkUser($username, $password, $token) {
+    protected function checkUser($username, $password, $token) {
         if ($this->autologin == 0 || ($this->autologin && $token != "")) {
             $DBRESULT = $this->pearDB->query("SELECT * FROM `contact` WHERE `contact_alias` = '" . htmlentities($username, ENT_QUOTES, "UTF-8") . "' AND `contact_activate` = '1' AND `contact_register` = '1' LIMIT 1");
         } else {
@@ -281,7 +281,7 @@ class CentreonAuth {
      * Check crypt system
      */
 
-    private function getCryptFunction() {
+    protected function getCryptFunction() {
         if (isset($this->cryptEngine)) {
             switch ($this->cryptEngine) {
                 case 1 :
@@ -303,7 +303,7 @@ class CentreonAuth {
      * Crypt String
      */
 
-    private function myCrypt($str) {
+    protected function myCrypt($str) {
         switch ($this->cryptEngine) {
             case 1 :
                 return md5($str);
@@ -317,23 +317,23 @@ class CentreonAuth {
         }
     }
 
-    private function getCryptEngine() {
+    protected function getCryptEngine() {
         return $this->cryptEngine;
     }
 
-    private function userExists() {
+    protected function userExists() {
         return $this->userExists;
     }
 
-    private function userIsEnable() {
+    protected function userIsEnable() {
         return $this->enable;
     }
 
-    private function passwordIsOk() {
+    protected function passwordIsOk() {
         return $this->passwdOk;
     }
 
-    private function getAuthType() {
+    protected function getAuthType() {
         return $this->authType;
     }
 

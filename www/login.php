@@ -53,7 +53,7 @@
 	$date = date("d/m/Y");
 
 	if (isset($msg_error))
-		echo "<div style='padding-top: 60px;'>$msg_error</span></div>";
+		echo "<div style='padding-top: 60px;'><span class='msg'>$msg_error</span></div>";
 	else if (isset($_POST["submit"]))
 		echo "<div style='padding-top: 60px;'><span class='msg'>Invalid user</span></div>";
 	?>
