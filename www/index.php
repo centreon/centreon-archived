@@ -159,7 +159,7 @@
 	    	$encryptType = 1;
 	    }
 
-	    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $generalOptions);
+	    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
 
 	    if ($centreonAuth->passwdOk == 1) {
 
