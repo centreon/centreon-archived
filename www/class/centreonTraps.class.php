@@ -222,6 +222,9 @@ class Centreon_Traps {
             if (!isset($ret["traps_advanced_treatment"]) || !$ret["traps_advanced_treatment"]) {
         	$ret["traps_advanced_treatment"] = 0;
             }
+            if (!isset($ret["traps_routing_mode"]) || !$ret["traps_routing_mode"]) {
+                $ret["traps_routing_mode"] = 0;
+            }
 
             $rq = "UPDATE traps ";
             $rq .= "SET `traps_name` = '".$this->_db->escape($ret["traps_name"])."', ";
@@ -234,6 +237,8 @@ class Centreon_Traps {
             $rq .= "`traps_execution_command_enable` = '".$this->_db->escape($ret["traps_execution_command_enable"])."', ";
             $rq .= "`traps_advanced_treatment` = '".$this->_db->escape($ret["traps_advanced_treatment"])."', ";
             $rq .= "`traps_comments` = '".$this->_db->escape($ret["traps_comments"])."', ";
+            $rq .= "`traps_routing_mode` = '".$this->_db->escape($ret["traps_routing_mode"])."', ";
+            $rq .= "`traps_routing_value` = '".$this->_db->escape($ret["traps_routing_value"])."', ";
             $rq .= "`manufacturer_id` = '".$this->_db->escape($ret["manufacturer_id"])."' ";
             $rq .= "WHERE `traps_id` = '".$traps_id."'";
             $res = $this->_db->query($rq);
@@ -249,6 +254,8 @@ class Centreon_Traps {
             $fields["traps_execution_command"] = $this->_db->escape($ret["traps_execution_command"]);
             $fields["traps_execution_command_enable"] = $this->_db->escape($ret["traps_execution_command_enable"]);
             $fields["traps_comments"] = $this->_db->escape($ret["traps_comments"]);
+            $fields["traps_routing_mode"] = $this->_db->escape($ret["traps_routing_mode"]);
+            $fields["traps_routing_value"] = $this->_db->escape($ret["traps_routing_value"]);
             $fields["manufacturer_id"] = $this->_db->escape($ret["manufacturer_id"]);
 
             $this->_setMatchingOptions($traps_id, $_POST);
@@ -363,12 +370,18 @@ class Centreon_Traps {
                 $ret["traps_execution_command_enable"] = 0;
             }
             if (!isset($ret["traps_advanced_treatment"]) || !$ret["traps_advanced_treatment"]) {
-                    $ret["traps_advanced_treatment"] = 0;
+                $ret["traps_advanced_treatment"] = 0;
+            }
+            if (!isset($ret["traps_routing_mode"]) || !$ret["traps_routing_mode"]) {
+                $ret["traps_routing_mode"] = 0;
             }
 
 
             $rq = "INSERT INTO traps ";
-            $rq .= "(traps_name, traps_oid, traps_args, traps_status, traps_submit_result_enable, traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_advanced_treatment, traps_comments, manufacturer_id) ";
+            $rq .= "(traps_name, traps_oid, traps_args, 
+                traps_status, traps_submit_result_enable, 
+                traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
+                traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, manufacturer_id) ";
             $rq .= "VALUES ";
             $rq .= "('".$this->_db->escape($ret["traps_name"])."',";
             $rq .= "'".$this->_db->escape($ret["traps_oid"])."', ";
@@ -380,6 +393,8 @@ class Centreon_Traps {
             $rq .= "'".$this->_db->escape($ret["traps_execution_command_enable"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_advanced_treatment"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_comments"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_routing_mode"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_routing_value"])."', ";
             $rq .= "'".$this->_db->escape($ret["manufacturer_id"])."')";
             $this->_db->query($rq);
             $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
@@ -397,6 +412,7 @@ class Centreon_Traps {
             $fields["traps_execution_command_enable"] = $this->_db->escape($ret["traps_execution_command_enable"]);
             $fields["traps_advanced_treatment"] = $this->_db->escape($ret["traps_advanced_treatment"]);
             $fields["traps_comments"] = $this->_db->escape($ret["traps_comments"]);
+            $fields["traps_routing_mode"] = $this->_db->escape($ret["traps_routing_mode"]);
             $fields["manufacturer_id"] = $this->_db->escape($ret["manufacturer_id"]);
             $this->_centreon->CentreonLogAction->insertLog("traps", $traps_id["MAX(traps_id)"], $fields["traps_name"], "a", $fields);
 

@@ -69,6 +69,14 @@
                 <tbody>
                     <tr class="ListHeader"><td class="FormHeader" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.title}</td></tr>
                     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$routingDefTxt}</td></tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_routing_mode">&nbsp;{$form.traps_routing_mode.label}</td>
+                        <td class="FormRowValue">{$form.traps_routing_mode.html}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_routing_value">&nbsp;{$form.traps_routing_value.label}</td>
+                        <td class="FormRowValue">{$form.traps_routing_value.html}</td>
+                    </tr>
                     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$preexecTxt}</td></tr>
                     <tr class="list_one">
                         <td colspan="2">

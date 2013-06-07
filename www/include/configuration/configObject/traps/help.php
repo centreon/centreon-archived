@@ -14,6 +14,7 @@ $help["reschedule_enabled"] = dgettext("help", "Choose whether or not the associ
 $help["command_enabled"] = dgettext("help", "Choose whether or not a special command should be run by snmptrapd when this trap was received.");
 $help["command_args"] = dgettext("help", "Define the command to execute by snmptrapd's trap handler. The command must be located in the PATH of the snmptrapd user.");
 $help["comments"] = dgettext("help", "Describe the situation in which this trap will be send. Additionally the format and the parameters of the trap can be described.");
-
+$help["traps_routing_mode"] = dgettext("help", "Enable/Disable routing definition");
+$help["traps_routing_value"] = dgettext("help", "Routing definition");
 ?>
 

@@ -122,7 +122,7 @@
                         ENT_QUOTES
                     )
                 );
-                $cdata->addJsData('clone-count-preexec',count($preexecArray));
+                $cdata->addJsData('clone-count-preexec', count($preexecArray));
 	}
 	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 	while ($rmnftr = $DBRESULT->fetchRow()){
@@ -186,21 +186,19 @@
 	/*
 	 * submit result
 	 */
-	$form->addElement('checkbox', 'traps_submit_result_enable', _("Submit result"));
-	$form->setDefaults(1);
+	$cbt = $form->addElement('checkbox', 'traps_submit_result_enable', _("Submit result"));
+	$form->setDefaults(array('traps_submit_result_enable' => '1'));
 
 	/*
 	 * Schedule svc check forced
 	 */
 	$form->addElement('checkbox', 'traps_reschedule_svc_enable', _("Reschedule associated services"));
-	$form->setDefaults(0);
 
 	/*
 	 * execute commande
 	 */
 	$form->addElement('text', 'traps_execution_command', _("Special Command"), $attrsLongText);
 	$form->addElement('checkbox', 'traps_execution_command_enable', _("Execute special command"));
-	$form->setDefaults(0);
 
 	/*
 	 * Further informations
@@ -246,6 +244,13 @@
         /*
          * Routing 
          */
+        $form->addElement(
+                'text', 
+                'traps_routing_value', 
+                _('Route definition'), 
+                $attrsLongText
+                );
+        $form->addElement('checkbox', 'traps_routing_mode', _("Enable routing"));
         
         /*
          * Pre exec 
