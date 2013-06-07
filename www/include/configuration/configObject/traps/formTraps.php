@@ -116,6 +116,9 @@
                 }
                 
                 $cdata = CentreonData::getInstance();
+                /*
+                 * Preset values of preexec commands
+                 */
                 $preexecArray = $trapObj->getPreexecFromTrapId($traps_id);
                 $cdata->addJsData('clone-values-preexec', htmlspecialchars(
                         json_encode($preexecArray), 
@@ -123,6 +126,17 @@
                     )
                 );
                 $cdata->addJsData('clone-count-preexec', count($preexecArray));
+                
+                /*
+                 * Preset values of matching rules
+                 */
+                $mrulesArray = $trapObj->getMatchingRulesFromTrapId($traps_id);
+                $cdata->addJsData('clone-values-matchingrules', htmlspecialchars(
+                        json_encode($mrulesArray), 
+                        ENT_QUOTES
+                    )
+                );
+                $cdata->addJsData('clone-count-matchingrules', count($mrulesArray));
 	}
 	$DBRESULT = $pearDB->query("SELECT id, alias FROM traps_vendor ORDER BY alias");
 	while ($rmnftr = $DBRESULT->fetchRow()){
@@ -253,13 +267,54 @@
         $form->addElement('checkbox', 'traps_routing_mode', _("Enable routing"));
         
         /*
+         * Matching rules
+         */
+        $cloneSetMaching = array();
+        $cloneSetMaching[] = $form->addElement(
+                'text', 
+                'rule[#index#]', 
+                _("String"), 
+                array(
+                    "size"=>"50", 
+                    "id" => "rule_#index#",
+                    "value" => "@OUTPUT@"
+                    )
+                );
+        $cloneSetMaching[] = $form->addElement(
+                'text', 
+                'regexp[#index#]', 
+                _("Regexp"), 
+                array(
+                    "size"=>"50", 
+                    "id" => "regexp_#index#",
+                    "value" => "//"
+                    )
+                );
+        $cloneSetMaching[] = $form->addElement(
+                'select', 
+                'rulestatus[#index#]', 
+                _("Status"), 
+                array(
+                  0 => _('OK'),
+                  1 => _('Warning'),
+                  2 => _('Critical'),
+                  3 => _('Unknown')
+                ),
+                array(
+                    "id" => "rulestatus_#index#",
+                    "type" => "select-one"
+                    )
+                );
+        
+        
+        /*
          * Pre exec 
          */
         $cloneSet = array();
         $cloneSet[] = $form->addElement(
                 'text', 
                 'preexec[#index#]', 
-                _("Preexec command"), 
+                _("Preexec definition"), 
                 array(
                     "size"=>"50", 
                     "id" => "preexec_#index#"
@@ -355,11 +410,10 @@
                 $tpl->assign('admin', $centreon->user->admin);
                 $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
                 $tpl->assign('cloneSet', $cloneSet);
+                $tpl->assign('cloneSetMaching', $cloneSetMaching);
+                $tpl->assign('preexeccmd_str', _('SNMPTT PREEXEC command'));
 		$tpl->display("formTraps.ihtml");
 	}
 
     require_once $path . '/javascript/trapJs.php';
-
-?><script type='text/javascript'>
-setTimeout('initParams()', 200);
-</script>
+?>

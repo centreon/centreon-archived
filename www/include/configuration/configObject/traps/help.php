@@ -16,5 +16,6 @@ $help["command_args"] = dgettext("help", "Define the command to execute by snmpt
 $help["comments"] = dgettext("help", "Describe the situation in which this trap will be send. Additionally the format and the parameters of the trap can be described.");
 $help["traps_routing_mode"] = dgettext("help", "Enable/Disable routing definition");
 $help["traps_routing_value"] = dgettext("help", "Routing definition");
+$help["preexeccmd"] = dgettext("help", "SNMPTT PREXEC commands are executed before the process of FORMAT and EXEC statements");
 ?>
 

@@ -66,51 +66,31 @@ class Centreon_Traps {
      *
      *  _setMatchingOptions takes the $_POST array and analyses it,
      *  then inserts data into the  traps_matching_properties
-     * @param $trapId
-     * @param $tab
+     * @param int $trapId
      */
-    private function _setMatchingOptions($trapId, $tab = array()) {
-       	/**
-         * Remove all data before insert them again.
-         */
+    private function _setMatchingOptions($trapId) {
     	$this->_db->query("DELETE FROM traps_matching_properties WHERE trap_id = '" . $trapId ."'");
 
-        if (isset($tab['traps_advanced_treatment']) && $tab['traps_advanced_treatment']) {
-            $matchingTab = array();
-            $i = 0;
-            foreach ($tab as $key => $value) {
-                if (preg_match('/^regularRegexp_(\d+)/', $key, $matches)) {
-                    $index = $matches[1];
-                    $matchingTab['order'][$i] = $this->_db->escape($tab['regularOrder_'.$index]);
-                    $matchingTab['regexp'][$i] = $this->_db->escape($tab['regularRegexp_'.$index]);
-                    $matchingTab['status'][$i] = $this->_db->escape($tab['regularStatus_'.$index]);
-                    $matchingTab['var'][$i] = $this->_db->escape($tab['regularVar_'.$index]);
-                    $i++;
-                } else if (preg_match('/^additionalRegexp_(\d+)/', $key, $matches)) {
-                    $index = $matches[1];
-                    $matchingTab['order'][$i] = $this->_db->escape($tab['additionalOrder_'.$index]);
-                    $matchingTab['regexp'][$i] = $this->_db->escape($tab['additionalRegexp_'.$index]);
-                    $matchingTab['status'][$i] = $this->_db->escape($tab['additionalStatus_'.$index]);
-                    $matchingTab['var'][$i] = $this->_db->escape($tab['additionalVar_'.$index]);
-                    $i++;
+        $insertStr = "";
+        if (isset($_REQUEST['rule'])) {
+            $rules = $_REQUEST['rule'];
+            $regexp = $_REQUEST['regexp'];
+            $status = $_REQUEST['rulestatus'];
+            $i = 1;
+            foreach ($rules as $key => $value) {
+                if ($value == "") {
+                    continue;
                 }
+                if ($insertStr) {
+                    $insertStr .= ", ";
+                }
+                $insertStr .= "($trapId, '".$this->_db->escape($value)."', '".$this->_db->escape($regexp[$key])."', ".$this->_db->escape($status[$key]).", $i)";
+                $i++;
             }
-            if (isset($matchingTab['order'])) {
-	            asort($matchingTab['order']);
-	            $j = 1;
-	            foreach ($matchingTab['order'] as $key => $value) {
-	                $query = "INSERT INTO traps_matching_properties (trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status) VALUES (";
-	                $query .= "'".$trapId."', ";
-	                $query .= "'".$j."', ";
-	                $query .= "'".$matchingTab['regexp'][$key]."', ";
-	                $query .= "'".$matchingTab['var'][$key]."', ";
-	                $query .= "'".$matchingTab['status'][$key]."' ";
-	                $query .= ")";
-	                $this->_db->query($query);
-	                $j++;
-	            }
-            }
-		}
+        }
+        if ($insertStr) {
+            $this->_db->query("INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, tmo_order) VALUES $insertStr");
+        }
     }
 
 	/**
@@ -178,7 +158,9 @@ class Centreon_Traps {
                         if ($key2 != "traps_id") {
                             $fields[$key2] = $value2;
                         }
-			$fields["traps_name"] = $traps_name;
+                        if (isset($traps_name)) {
+                            $fields["traps_name"] = $traps_name;
+                        }
                     }
                     $val ? $rq = "INSERT INTO traps VALUES (".$val.")" : $rq = null;
                     $res = $this->_db->query($rq);
@@ -278,6 +260,9 @@ class Centreon_Traps {
                 $preexec = $_REQUEST['preexec'];
                 $i = 1;
                 foreach ($preexec as $value) {
+                    if ($value == "") {
+                        continue;
+                    }
                     if ($insertStr) {
                         $insertStr .= ", ";
                     }
@@ -442,6 +427,30 @@ class Centreon_Traps {
             $i = 0;
             while ($row = $res->fetchRow()) {
                 $arr[$i] = array("preexec_#index#" => $row['tpe_string']);
+                $i++;
+            }
+            return $arr;
+        }
+        
+        /**
+         * Get matching rules from trap_id
+         * 
+         * @param int $trapId
+         * @return array
+         */
+        public function getMatchingRulesFromTrapId($trapId) {
+            $res = $this->_db->query("SELECT tmo_string, tmo_regexp, tmo_status
+                    FROM traps_matching_properties
+                    WHERE trap_id = ".$this->_db->escape($trapId)."
+                    ORDER BY tmo_order");
+            $arr = array();
+            $i = 0;
+            while ($row = $res->fetchRow()) {
+                $arr[$i] = array(
+                            "rule_#index#" => $row['tmo_string'],
+                            "regexp_#index#" => $row['tmo_regexp'],
+                            "rulestatus_#index#" => $row['tmo_status']
+                           );
                 $i++;
             }
             return $arr;
