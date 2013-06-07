@@ -60,7 +60,7 @@
 
 	require_once "$classdir/centreon.class.php";
 	require_once "$classdir/centreonSession.class.php";
-	require_once "$classdir/centreonAuth.class.php";
+	require_once "$classdir/centreonAuth.SSO.class.php";
 	require_once "$classdir/centreonLog.class.php";
 	require_once "$classdir/centreonDB.class.php";
 
@@ -94,17 +94,10 @@
 	 */
 	ini_set("session.gc_maxlifetime", "31536000");
 
-	if (!isset($cas) || !isset($cas["auth_cas_enable"])){
-		CentreonSession::start();
-	}
+	CentreonSession::start();
 
 	if (isset($_GET["disconnect"])) {
 
-		if (isset($cas) && isset($cas["auth_cas_enable"]) && $cas["auth_cas_enable"]){
-			include_once('/var/www/CAS/CAS.php');
-			phpCAS::client(CAS_VERSION_2_0, $cas["cas_server"], 443, $cas["cas_url"]);
-			phpCAS::logout();
-		}
 		$centreon = & $_SESSION["centreon"];
 
 		/*
@@ -134,7 +127,8 @@
 
 	if (isset($_POST["submit"])
 		|| (isset($_GET["autologin"]) && $_GET["autologin"] && isset($_GET["p"]) && $_GET["autologin"] && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
-		|| (isset($_POST["autologin"]) && $_POST["autologin"] && isset($_POST["p"]) && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])) {
+		|| (isset($_POST["autologin"]) && $_POST["autologin"] && isset($_POST["p"]) && isset($generalOptions["enable_autologin"]) && $generalOptions["enable_autologin"])
+        || (!isset($generalOptions['sso_enable']) || $generalOptions['sso_enable'] == 1)) {
 		/*
 		 * Init log class
 		 */
@@ -165,7 +159,7 @@
 	    	$encryptType = 1;
 	    }
 
-	    $centreonAuth = new CentreonAuth($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token);
+	    $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
 
 	    if ($centreonAuth->passwdOk == 1) {
 
