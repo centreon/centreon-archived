@@ -116,7 +116,7 @@
 	$tab[] = HTML_QuickForm::createElement('radio', 'group_update_behavior', null, _("Increment"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'group_update_behavior', null, _("Replace"), '0');
 	$form->addGroup($tab, 'group_update_behavior', _("Group member update behavior"), '&nbsp;');
-	$form->setDefaults(array('group_update_behavior' => '0'));
+	$form->setDefaults(array('group_update_behavior' => '1'));
 
         $tab = array();
         $tab[] = HTML_QuickForm::createElement('radio', 'duplication_behavior', null, _("Create new object with prefix"), '1');
