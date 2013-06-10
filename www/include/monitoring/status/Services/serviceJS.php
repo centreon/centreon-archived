@@ -267,7 +267,9 @@ var _criticality_id = 0;
 		for (keyz in _selectedElem) {
 			if (keyz == _selectedElem[keyz]) {
 				removeFromSelectedElem(decodeURIComponent(keyz));
-				document.getElementById(decodeURIComponent(keyz)).checked = false;
+                                if (document.getElementById(decodeURIComponent(keyz))) { 
+                                    document.getElementById(decodeURIComponent(keyz)).checked = false;
+                                }
 			}
 		}
 	}
@@ -282,7 +284,8 @@ var _criticality_id = 0;
 			return 1;
 		} else {
 			for (keyz in _selectedElem) {
-                            if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined')) {
+                            if ((keyz == _selectedElem[keyz]) && typeof(document.getElementById(decodeURIComponent(keyz)) != 'undefined') &&
+                                document.getElementById(decodeURIComponent(keyz))) {
                                 if (document.getElementById(decodeURIComponent(keyz)).checked) {
                                     _getVar += '&select[' + encodeURIComponent(keyz) + ']=1';
                                 }
