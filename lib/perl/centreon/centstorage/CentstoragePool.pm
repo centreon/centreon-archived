@@ -361,7 +361,7 @@ sub create_metric {
             # Insert
             ($status, $stmt) = $self->{dbcentstorage}->query("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `warn_low`, `warn_threshold_mode`, `crit`, `crit_low`, `crit_threshold_mode`, `min`, `max`, `data_source_type`) VALUES ('" . $index_id . "', " . $self->{dbcentstorage}->quote($metric_name) . ", '" . $self->{metric_unit} . "', " . 
                                     $self->{dbcentstorage}->quote($self->{metric_warn}) . ", " . $self->{dbcentstorage}->quote($self->{warn_low}) . ", " . $self->{dbcentstorage}->quote($self->{warn_threshold_mode}) . ", " . 
-                                    $self->{dbcentstorage}->quote($self->{metric_crit}) . ", " . $self->{dbcentstorage}->quote($self->{crit_low}) . ", " . $self->{dbcentstorage}->quote($self->{crit_threshold_mode}) . ", " .
+                                    $self->{dbcentstorage}->quote($self->{metric_crit}) . ", " . $self->{dbcentstorage}->quote($self->{crit_low}) . ", " . $self->{dbcentstorage}->quote($self->{crit_threshold_mode}) . ", '" .
                                     $self->{metric_min} . "', '" . $self->{metric_max} . "', '" . $self->{metric_type} . "')");    
             return -1 if ($status);
             my $last_insert_id = $self->{dbcentstorage}->last_insert_id();
@@ -402,7 +402,7 @@ sub check_update_extra_metric {
         $$cache_metric->{metric_max} ne $self->{metric_max}) {
         $self->{dbcentstorage}->query("UPDATE `metrics` SET `unit_name` = " . $self->{dbcentstorage}->quote($self->{metric_unit}) . ", " . 
                                             "`warn` = " . $self->{dbcentstorage}->quote($self->{metric_warn}) . ", `warn_low` = " . $self->{dbcentstorage}->quote($self->{warn_low}) . ", `warn_threshold_mode` = " . $self->{dbcentstorage}->quote($self->{warn_threshold_mode}) . ", " .
-                                            "`crit` = " . $self->{dbcentstorage}->quote($self->{metric_crit}) . ", `crit_low` = " . $self->{dbcentstorage}->quote($self->{crit_low}) . ", `warn_threshold_mode` = " . $self->{dbcentstorage}->quote($self->{crit_threshold_mode}) . ", " .
+                                            "`crit` = " . $self->{dbcentstorage}->quote($self->{metric_crit}) . ", `crit_low` = " . $self->{dbcentstorage}->quote($self->{crit_low}) . ", `crit_threshold_mode` = " . $self->{dbcentstorage}->quote($self->{crit_threshold_mode}) . ", " .
                                             "`min` = '" . $self->{metric_min} . "', `max` = '" . $self->{metric_max} . "' WHERE `metric_id` = " . $$cache_metric->{metric_id});
         $$cache_metric->{metric_unit} = $self->{metric_unit};
         $$cache_metric->{metric_warn} = $self->{metric_warn};
@@ -659,6 +659,7 @@ sub parse_threshold {
             $infinite_pos = 1;
         }
     } else {
+        $value_start = 0;
         $value_end = $value_tmp;
     }
     
@@ -735,7 +736,7 @@ sub get_perfdata {
     $self->{metric_crit} = 0;
     $self->{crit_low} = 0;
     $self->{crit_threshold_mode} = 0;
-    if ($status_th_warn == 1) {
+    if ($status_th_crit == 1) {
         $self->{metric_crit} = $th_crit_end;
         $self->{crit_low} = $th_crit_start;
         $self->{crit_threshold_mode} = $th_crit_inclusive;
