@@ -57,7 +57,6 @@ sub new {
        TIMEOUT => 60,
        rrd_cache_mode => 0,
        rrd_flush_time => 60 * 10,
-       centreon_23_compatibility => 0,
        perfdata_parser_stop => 1
     );
 
@@ -356,7 +355,7 @@ sub create_delete_child {
                                                         logger => $self->{logger});
         $centreon_db_centstorage->connect();
         
-        my $centstorage_action = centreon::centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress}, $self->{centstorage_config}->{centreon_23_compatibility});
+        my $centstorage_action = centreon::centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress});
         $centstorage_action->main($centreon_db_centreon, $centreon_db_centstorage,
                     $self->{delete_pipes}{'reader_two'}, $self->{delete_pipes}{'writer_one'}, $self->{config_file});
         exit(0);

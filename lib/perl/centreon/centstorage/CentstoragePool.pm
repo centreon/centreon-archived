@@ -58,7 +58,11 @@ sub new {
     $self->{"metric_value"} = undef;
     $self->{"metric_unit"} = undef;
     $self->{"metric_warn"} = undef;
+    $self->{"warn_low"} = undef;
+    $self->{"warn_threshold_mode"} = undef;
     $self->{"metric_crit"} = undef;
+    $self->{"crit_low"} = undef;
+    $self->{"crit_threshold_mode"} = undef;
     $self->{"metric_min"} = undef;
     $self->{"metric_max"} = undef;
 
@@ -342,29 +346,44 @@ sub create_metric {
     my ($index_id, $cache_metrics, $metric_name) = @_;
 
     # Check if exists already
-    my ($status, $stmt) = $self->{'dbcentstorage'}->query("SELECT * FROM `metrics` WHERE `index_id` = '" . $index_id . "' AND `metric_name` = " . $self->{'dbcentstorage'}->quote($metric_name) . " LIMIT 1");
+    my ($status, $stmt) = $self->{dbcentstorage}->query("SELECT * FROM `metrics` WHERE `index_id` = '" . $index_id . "' AND `metric_name` = " . $self->{dbcentstorage}->quote($metric_name) . " LIMIT 1");
     return -1 if ($status == -1);
     my $data = $stmt->fetchrow_hashref();
     # move part for compat with old centstorage name
     if (!defined($data)) {
-        ($status, $stmt) = $self->{'dbcentstorage'}->query("SELECT * FROM `metrics` WHERE `index_id` = '" . $index_id . "' AND `metric_name` = " . $self->{'dbcentstorage'}->quote($self->remove_special_char_metric($metric_name)) . " LIMIT 1");
+        ($status, $stmt) = $self->{dbcentstorage}->query("SELECT * FROM `metrics` WHERE `index_id` = '" . $index_id . "' AND `metric_name` = " . $self->{dbcentstorage}->quote($self->remove_special_char_metric($metric_name)) . " LIMIT 1");
         return -1 if ($status == -1);
         $data = $stmt->fetchrow_hashref();
         if (defined($data)) {
-            ($status) = $self->{'dbcentstorage'}->query("UPDATE `metrics` SET `metric_name` = " . $self->{'dbcentstorage'}->quote($metric_name) . " WHERE `index_id` = '" . $index_id . "' AND `metric_name` = " . $self->{'dbcentstorage'}->quote($self->remove_special_char_metric($metric_name)) . " LIMIT 1");
+            ($status) = $self->{dbcentstorage}->query("UPDATE `metrics` SET `metric_name` = " . $self->{dbcentstorage}->quote($metric_name) . " WHERE `index_id` = '" . $index_id . "' AND `metric_name` = " . $self->{dbcentstorage}->quote($self->remove_special_char_metric($metric_name)) . " LIMIT 1");
             return -1 if ($status == -1);
         } else {
             # Insert
-            ($status, $stmt) = $self->{'dbcentstorage'}->query("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `crit`, `min`, `max`, `data_source_type`) VALUES ('" . $index_id . "', " . $self->{'dbcentstorage'}->quote($metric_name) . ", '" . $self->{"metric_unit"} . "', '" . $self->{"metric_warn"} . "', '" . $self->{"metric_crit"} . "', '" . $self->{"metric_min"} . "', '" . $self->{"metric_max"} . "', '" . $self->{"metric_type"} . "')");    
+            ($status, $stmt) = $self->{dbcentstorage}->query("INSERT INTO `metrics` (`index_id`, `metric_name`, `unit_name`, `warn`, `warn_low`, `warn_threshold_mode`, `crit`, `crit_low`, `crit_threshold_mode`, `min`, `max`, `data_source_type`) VALUES ('" . $index_id . "', " . $self->{dbcentstorage}->quote($metric_name) . ", '" . $self->{metric_unit} . "', " . 
+                                    $self->{dbcentstorage}->quote($self->{metric_warn}) . ", " . $self->{dbcentstorage}->quote($self->{warn_low}) . ", " . $self->{dbcentstorage}->quote($self->{warn_threshold_mode}) . ", " . 
+                                    $self->{dbcentstorage}->quote($self->{metric_crit}) . ", " . $self->{dbcentstorage}->quote($self->{crit_low}) . ", " . $self->{dbcentstorage}->quote($self->{crit_threshold_mode}) . ", " .
+                                    $self->{metric_min} . "', '" . $self->{metric_max} . "', '" . $self->{metric_type} . "')");    
             return -1 if ($status);
-            my $last_insert_id = $self->{'dbcentstorage'}->last_insert_id();
-            $$cache_metrics->{$metric_name} = {'metric_id' => $last_insert_id, 'metric_unit' => $self->{"metric_unit"}, 'metric_warn' => $self->{"metric_warn"}, 'metric_crit' => $self->{"metric_crit"}, 'metric_min' => $self->{"metric_min"}, 'metric_max' => $self->{"metric_max"}, 'data_source_type' => $self->{"metric_type"}};
+            my $last_insert_id = $self->{dbcentstorage}->last_insert_id();
+            $$cache_metrics->{$metric_name} = {metric_id => $last_insert_id, metric_unit => $self->{metric_unit}, 
+                                               metric_warn => $self->{metric_warn}, warn_low => $self->{warn_low}, warn_threshold_mode => $self->{warn_threshold_mode}, 
+                                               metric_crit => $self->{metric_crit}, crit_low => $self->{crit_low}, crit_threshold_mode => $self->{crit_threshold_mode},
+                                               metric_min => $self->{metric_min}, metric_max => $self->{metric_max}, data_source_type => $self->{metric_type}};
             
             return 0;
         }
     }
     # We get
-    $$cache_metrics->{$metric_name} = {'metric_id' => $data->{'metric_id'}, 'metric_unit' => defined($data->{"unit_name"}) ? $data->{"unit_name"} : "", 'metric_warn' => defined($data->{"warn"}) ? $data->{"warn"} : "", 'metric_crit' => defined($data->{"crit"}) ? $data->{"crit"} : "", 'metric_min' => defined($data->{"min"}) ? $data->{"min"} : "", 'metric_max' => defined($data->{"max"}) ? $data->{"max"} : "", 'data_source_type' => $data->{"data_source_type"}};
+    $$cache_metrics->{$metric_name} = {metric_id => $data->{metric_id}, metric_unit => defined($data->{unit_name}) ? $data->{unit_name} : "", 
+                                       metric_warn => defined($data->{warn}) ? $data->{warn} : "", 
+                                       warn_low => defined($data->{warn_low}) ? $data->{warn_low} : "", 
+                                       warn_threshold_mode => defined($data->{warn_threshold_mode}) ? $data->{warn_threshold_mode} : "",
+                                       metric_crit => defined($data->{crit}) ? $data->{crit} : "", 
+                                       crit_low => defined($data->{crit_low}) ? $data->{crit_low} : "", 
+                                       crit_threshold_mode => defined($data->{crit_threshold_mode}) ? $data->{crit_threshold_mode} : "",
+                                       metric_min => defined($data->{min}) ? $data->{min} : "", 
+                                       metric_max => defined($data->{max}) ? $data->{max} : "",
+                                       data_source_type => $data->{data_source_type}};
     return 0;
 }
 
@@ -372,17 +391,28 @@ sub check_update_extra_metric {
     my $self = shift;
     my $cache_metric = $_[0];
 
-    if ($$cache_metric->{'metric_unit'} ne $self->{"metric_unit"} ||
-        $$cache_metric->{'metric_warn'} ne $self->{"metric_warn"} ||
-        $$cache_metric->{'metric_crit'} ne $self->{"metric_crit"} ||
-        $$cache_metric->{'metric_min'} ne $self->{"metric_min"} ||
-        $$cache_metric->{'metric_max'} ne $self->{"metric_max"}) {
-        $self->{'dbcentstorage'}->query("UPDATE `metrics` SET `unit_name` = " . $self->{'dbcentstorage'}->quote($self->{"metric_unit"}) . ", `warn` = '" . $self->{"metric_warn"} . "', `crit` = '" . $self->{"metric_crit"} . "', `min` = '" . $self->{"metric_min"} . "', `max` = '" . $self->{"metric_max"} . "' WHERE `metric_id` = " . $$cache_metric->{'metric_id'});
-        $$cache_metric->{'metric_unit'} = $self->{"metric_unit"};
-        $$cache_metric->{'metric_warn'} = $self->{"metric_warn"};
-        $$cache_metric->{'metric_crit'} = $self->{"metric_crit"};
-        $$cache_metric->{'metric_min'} = $self->{"metric_min"};
-        $$cache_metric->{'metric_max'} = $self->{"metric_max"};
+    if ($$cache_metric->{metric_unit} ne $self->{metric_unit} ||
+        $$cache_metric->{metric_warn} ne $self->{metric_warn} ||
+        $$cache_metric->{warn_low} ne $self->{warn_low} ||
+        $$cache_metric->{warn_threshold_mode} ne $self->{warn_threshold_mode} ||
+        $$cache_metric->{metric_crit} ne $self->{metric_crit} ||
+        $$cache_metric->{crit_low} ne $self->{crit_low} ||
+        $$cache_metric->{crit_threshold_mode} ne $self->{crit_threshold_mode} ||
+        $$cache_metric->{metric_min} ne $self->{metric_min} ||
+        $$cache_metric->{metric_max} ne $self->{metric_max}) {
+        $self->{dbcentstorage}->query("UPDATE `metrics` SET `unit_name` = " . $self->{dbcentstorage}->quote($self->{metric_unit}) . ", " . 
+                                            "`warn` = " . $self->{dbcentstorage}->quote($self->{metric_warn}) . ", `warn_low` = " . $self->{dbcentstorage}->quote($self->{warn_low}) . ", `warn_threshold_mode` = " . $self->{dbcentstorage}->quote($self->{warn_threshold_mode}) . ", " .
+                                            "`crit` = " . $self->{dbcentstorage}->quote($self->{metric_crit}) . ", `crit_low` = " . $self->{dbcentstorage}->quote($self->{crit_low}) . ", `warn_threshold_mode` = " . $self->{dbcentstorage}->quote($self->{crit_threshold_mode}) . ", " .
+                                            "`min` = '" . $self->{metric_min} . "', `max` = '" . $self->{metric_max} . "' WHERE `metric_id` = " . $$cache_metric->{metric_id});
+        $$cache_metric->{metric_unit} = $self->{metric_unit};
+        $$cache_metric->{metric_warn} = $self->{metric_warn};
+        $$cache_metric->{warn_low} = $self->{warn_low};
+        $$cache_metric->{warn_threshold_mode} = $self->{warn_threshold_mode};
+        $$cache_metric->{metric_crit} = $self->{metric_crit};
+        $$cache_metric->{crit_low} = $self->{crit_low};
+        $$cache_metric->{crit_threshold_mode} = $self->{crit_threshold_mode};
+        $$cache_metric->{metric_min} = $self->{metric_min};
+        $$cache_metric->{metric_max} = $self->{metric_max};
     }
 }
 
@@ -390,7 +420,7 @@ sub send_rename_command {
     my $self = shift;
     my ($old_host_name, $old_service_description, $new_host_name, $new_service_description) = @_;
     
-    $self->{'logger'}->writeLogInfo("Hostname/Servicename changed had been detected " . $old_host_name . "/" . $old_service_description);
+    $self->{logger}->writeLogInfo("Hostname/Servicename changed had been detected " . $old_host_name . "/" . $old_service_description);
     my $fh = $self->{'pipe_write'};
         print $fh "RENAMECLEAN\t" . $old_host_name . "\t" . $old_service_description . "\t" . $new_host_name . "\t" . $new_service_description . "\n";
 }
@@ -544,6 +574,8 @@ sub parse_label {
 
 sub parse_value {
     my $self = shift;
+    my $with_unit = shift;
+    my $unit = '';
     my $value = "";
     my $neg = 1;
 
@@ -557,8 +589,12 @@ sub parse_value {
         $value =~ s/,/./g;
         $value = $value * $neg;
     }
-    $self->skip_chars(";");
-    return $value;
+    if (defined($with_unit) && $with_unit == 1) {
+        $unit = $self->parse_unit();
+    } else {
+        $self->skip_chars(";");
+    }
+    return ($value, $unit);
 }
 
 sub parse_unit {
@@ -572,11 +608,75 @@ sub parse_unit {
 
 sub parse_threshold {
     my $self = shift;
-    my $value = "";
+    my $neg = 1;
+    my $value_tmp = "";
 
-    $value = $self->continue_to(undef, "[ \t;]");
+    my $arobase = 0;
+    my $infinite_neg = 0;
+    my $infinite_pos = 0;
+    my $value_start = "";
+    my $value_end = "";
+    my $global_status = 1;
+    
+    if (defined(${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}]) && ${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}] eq "@") {
+        $arobase = 1;
+        $self->{"perfdata_pos"}++;
+    }
+
+    if (defined(${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}]) && ${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}] eq "~") {
+        $infinite_neg = 1;
+        $self->{"perfdata_pos"}++;
+    } else {
+        if (defined(${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}]) && ${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}] eq "-") {
+            $neg = -1;
+            $self->{"perfdata_pos"}++;
+        }
+        $value_tmp = $self->continue_to(undef, "[^0-9\.,]");
+        if (defined($value_tmp) && $value_tmp ne "") {
+            $value_tmp =~ s/,/./g;
+            $value_tmp = $value_tmp * $neg;
+        }
+        $neg = 1;
+    }
+
+    if (defined(${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}]) && ${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}] eq ":") {
+        if ($value_tmp ne "") {
+                $value_start = $value_tmp;
+        } else {
+                $value_start = 0;
+        }
+        $self->{"perfdata_pos"}++;
+
+        if (defined(${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}]) && ${$self->{"perfdata_chars"}}[$self->{"perfdata_pos"}] eq "-") {
+            $neg = -1;
+            $self->{"perfdata_pos"}++;
+        }
+        $value_end = $self->continue_to(undef, "[^0-9\.,]");
+        if (defined($value_tmp) && $value_end ne "") {
+            $value_end =~ s/,/./g;
+            $value_end = $value_end * $neg;
+        } else {
+            $infinite_pos = 1;
+        }
+    } else {
+        $value_end = $value_tmp;
+    }
+    
+    my $value = $self->continue_to(undef, "[ \t;]");
     $self->skip_chars(";");
-    return $value;
+    if ($value ne '') {
+        $self->{logger}->writeLogInfo("Wrong threshold...");
+        $global_status = 0;
+    }
+
+    if ($infinite_neg == 1) {
+        $value_start = '-1e500';
+    }
+    if ($infinite_pos == 1) {
+        $value_end = '1e500';
+    }
+
+    return ($global_status, $value_start, $value_end, $arobase);
 }
 
 sub get_perfdata {
@@ -595,17 +695,15 @@ sub get_perfdata {
         return 1;
     }
 
-    $perf_value = $self->parse_value();
+    ($perf_value, $perf_unit) = $self->parse_value(1);
     if (!defined($perf_value) || $perf_value eq '') {
         $self->{"logger"}->writeLogError("Wrong perfdata format: " . $self->{'service_perfdata'});
         return -1 if ($self->{'perfdata_parser_stop'} == 1);
         return 1;
     }
 
-    $perf_unit = $self->parse_unit();
-
-    $perf_warn = $self->parse_threshold();
-    $perf_crit = $self->parse_threshold();
+    my ($status_th_warn, $th_warn_start, $th_warn_end, $th_warn_inclusive) = $self->parse_threshold();
+    my ($status_th_crit, $th_crit_start, $th_crit_end, $th_crit_inclusive) = $self->parse_threshold();
     $perf_min = $self->parse_value();
     $perf_max = $self->parse_value();
 
@@ -621,22 +719,31 @@ sub get_perfdata {
         }
     }
 
-    # Can't manage threshold well (db not ready)
-    if ($perf_warn =~ /[^0-9-.,]/) {
-        $perf_warn = "";
+    $self->{metric_name} = $perf_label;
+    $self->{metric_value} = $perf_value;
+    $self->{metric_unit} = $perf_unit;
+
+    $self->{metric_warn} = 0;
+    $self->{warn_low} = 0;
+    $self->{warn_threshold_mode} = 0;
+    if ($status_th_warn == 1) {
+        $self->{metric_warn} = $th_warn_end;
+        $self->{warn_low} = $th_warn_start;
+        $self->{warn_threshold_mode} = $th_warn_inclusive;
     }
-    if ($perf_crit =~ /[^0-9-.,]/) {
-        $perf_crit = "";
+    
+    $self->{metric_crit} = 0;
+    $self->{crit_low} = 0;
+    $self->{crit_threshold_mode} = 0;
+    if ($status_th_warn == 1) {
+        $self->{metric_crit} = $th_crit_end;
+        $self->{crit_low} = $th_crit_start;
+        $self->{crit_threshold_mode} = $th_crit_inclusive;
     }
 
-    $self->{"metric_name"} = $perf_label;
-    $self->{"metric_value"} = $perf_value;
-    $self->{"metric_unit"} = $perf_unit;
-    $self->{"metric_warn"} = $perf_warn;
-    $self->{"metric_crit"} = $perf_crit;
-    $self->{"metric_min"} = $perf_min;
-    $self->{"metric_max"} = $perf_max;
-    $self->{"metric_type"} = $rrd_trans{$counter_type};
+    $self->{metric_min} = $perf_min;
+    $self->{metric_max} = $perf_max;
+    $self->{metric_type} = $rrd_trans{$counter_type};
     
     return 1;
 }

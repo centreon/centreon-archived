@@ -11,7 +11,6 @@ sub new {
     my $self  = {};
     $self->{"logger"} = shift;
     $self->{"rebuild_progress"} = shift;
-    $self->{"centreon_23_compatibility"} = shift;
     $self->{"dbcentreon"} = undef;
     $self->{"dbcentstorage"} = undef;
     $self->{"purge_delay"} = 3600;
@@ -97,10 +96,6 @@ sub reload {
 sub check_deleted {
     my $self = shift;
     my $pipe_write = $_[0];
-
-    if (defined($self->{'centreon_23_compatibility'}) && $self->{'centreon_23_compatibility'} == 1) {
-        return ;
-    }
 
     if (time() < ($self->{"last_deleted_time"} + $self->{"deleted_delay"})) {
         return ;
