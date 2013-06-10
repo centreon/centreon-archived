@@ -221,7 +221,7 @@ sub getBrokerStats($) {
             alarm 0;
         };
 	if ($@) {
-            writeLogFile("Could not read pipe ".$data->{'config_value'}." on poller ".$server_info->{'ns_ip_address'}."\n");
+            $self->{logger}->writeLogError("Could not read pipe ".$data->{'config_value'}." on poller ".$server_info->{'ns_ip_address'}."\n");
         }
         if (defined($stdout) && $stdout) {
             $self->{logger}->writeLogInfo("Result : $stdout");
