@@ -34,14 +34,11 @@
 	{if $o != 'w'}        
 	<tr class='list_two' id='ldap_tr'>
 		<td class='FormRowField'>
-                    <img class="helpTooltip" name="ldapConf" />
-                    <span>
-                        <a id='addBtn' style='cursor: pointer;' name='additionalHost' onClick='addNewHost();'>
-                            {$addNewHostLabel} <img src='./img/icones/16x16/navigate_plus.gif'/>
-                        </a>
-                    </span>
+                    <img class="helpTooltip" name="ldapConf" />&nbsp;{$addNewHostLabel}
 		</td>
-                <td class='FormRowValue' id='dynamicDiv'></td>
+                <td class="FormRowValue">
+                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="ldapservers" cloneSet=$cloneSet}
+                </td>
 	</tr>
 	{/if}
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/user1_view.gif'/>&nbsp;&nbsp;{$form.header.ldapinfo}</td></tr>

@@ -172,7 +172,62 @@ if ($arId) {
         $gopt['ldap_auth_enable'] = $row['ar_enable'];
     }
     unset($res);
+    
+    /*
+     * Preset values of ldap servers
+     */
+    $cdata = CentreonData::getInstance();
+    $serversArray = $ldapAdmin->getServersFromResId($arId);
+    $cdata->addJsData('clone-values-ldapservers', htmlspecialchars(
+                        json_encode($serversArray), 
+                        ENT_QUOTES
+                    )
+                );
+    $cdata->addJsData('clone-count-ldapservers', count($serversArray));
 }
+
+/*
+ * LDAP servers 
+ */
+$cloneSet = array();
+$cloneSet[] = $form->addElement(
+                'text', 
+                'address[#index#]', 
+                _("Host address"), 
+                array(
+                    "size"=>"30", 
+                    "id" => "address_#index#"
+                    )
+                );
+$cloneSet[] = $form->addElement(
+                'text', 
+                'port[#index#]', 
+                _("Port"), 
+                array(
+                    "size"=>"10", 
+                    "id" => "port_#index#"
+                    )
+                );
+$cbssl = $form->addElement(
+                'checkbox', 
+                'ssl[#index#]', 
+                _("SSL"), 
+                "",
+                array("id" => "ssl_#index#")
+                );
+$cbssl->setText('');
+$cloneSet[] = $cbssl;
+
+$cbtls = $form->addElement(
+                'checkbox', 
+                'tls[#index#]', 
+                _("TLS"), 
+                "",
+                array("id" => "tls_#index#")
+                );
+$cbtls->setText('');
+$cloneSet[] = $cbtls;
+
 $gopt = array_merge($defaultOpt, $gopt);
 $form->setDefaults($gopt);
 
@@ -228,44 +283,7 @@ if ($form->validate()) {
             $values['ldap_contact_tmpl'] = "";
         }
 
-        $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);
-
-        $hostOld = array();
-        if (isset($_POST['ldapHosts'])) {
-            $sortArray = array();
-            foreach ($_POST['ldapHosts'] as $ldapHost) {
-                if (isset($ldapHost['id'])) {
-                    $hostOld[] = $ldapHost['id'];
-                }
-                foreach ($ldapHost as $k => $v) {
-                    if (!isset($sortArray[$k])) {
-                        $sortArray[$k] = array();
-                    }
-                    $sortArray[$k][] = $v;
-                }
-            }
-            if (count($hostOld)) {
-                $query = "DELETE FROM auth_ressource_host
-                        WHERE auth_ressource_id = ".$pearDB->escape($values['ar_id'])."
-                        AND ldap_host_id NOT IN (" . join(', ', $hostOld) . ")";
-                $pearDB->query($query);
-            }
-            array_multisort($sortArray['order'], SORT_ASC, $_POST['ldapHosts']);
-            $counter = 1;
-            foreach ($_POST['ldapHosts'] as $ldapHost) {
-                $ldapHost['order'] = $counter;
-                if (isset($ldapHost['id'])) {
-                    $ldapAdmin->modifyServer($arId, $ldapHost);
-                } else {
-                    $ldapAdmin->addServer($arId, $ldapHost);
-                }
-                $counter++;
-            }
-        } else {
-            $query = "DELETE FROM auth_ressource_host WHERE ar_id = ".$pearDB->escape($arId);
-            $pearDB->query($query);
-        }
-
+        $arId = $ldapAdmin->setGeneralOptions($values['ar_id'], $values);        
         $o = "w";
         $valid = true;
 
@@ -306,9 +324,11 @@ $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font
 $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
+$tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+$tpl->assign('cloneSet', $cloneSet);
 $tpl->assign('o', $o);
 $tpl->assign("optGen_ldap_properties", _("LDAP Properties"));
-$tpl->assign('addNewHostLabel', _('Add a new LDAP server'));
+$tpl->assign('addNewHostLabel', _('LDAP servers'));
 $tpl->assign('manualImport', _('Import users manually'));
 $tpl->assign('valid', $valid);
 $tpl->display("form.ihtml");

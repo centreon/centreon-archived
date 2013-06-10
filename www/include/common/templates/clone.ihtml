@@ -16,7 +16,7 @@
         </a>
         <div style="padding-top:10px;">
             {foreach from=$cloneSet item=v}
-                {$v->getLabel()} : {$v->toHtml()}
+                <span style="padding-right: 10px;">{$v->getLabel()} : {$v->toHtml()}</span>
             {/foreach}
         </div>
         <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />

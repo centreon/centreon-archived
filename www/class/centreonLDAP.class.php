@@ -710,6 +710,39 @@ class CentreonLdapAdmin {
     }
 
     /**
+     * Update Ldap servers
+     * 
+     * @param int $arId | auth resource id
+     */
+    protected function updateLdapServers($arId) {
+        $this->_db->query("DELETE FROM auth_ressource_host WHERE auth_ressource_id = ".$this->_db->escape($arId));
+        if (isset($_REQUEST['address'])) {
+            $addressList = $_REQUEST['address'];
+            $portList = $_REQUEST['port'];
+            $sslList = $_REQUEST['ssl'];
+            $tlsList = $_REQUEST['tls'];
+            $insertStr = "";
+            $i = 1;
+            foreach ($addressList as $key => $addr) {
+                if ($addr == "") {
+                    continue;
+                }
+                if ($insertStr) {
+                    $insertStr .= ", ";
+                }
+                $insertStr .= "($arId, '".$this->_db->escape($addr)."', '".
+                        $this->_db->escape($portList[$key])."', ".
+                        $this->_db->escape($sslList[$key] ? 1 : 0).", ".
+                        $this->_db->escape($tlsList[$key] ? 1 : 0).", $i)";
+                $i++;
+            }
+            if ($insertStr) {
+                $this->_db->query("INSERT INTO auth_ressource_host (auth_ressource_id, host_address, host_port, use_ssl, use_tls, host_order) VALUES $insertStr");
+            }
+        }
+    }
+    
+    /**
      * Set ldap options
      *
      * 'ldap_auth_enable', 'ldap_auto_import', 'ldap_srv_dns', 'ldap_search_limit', 'ldap_search_timeout'
@@ -759,6 +792,7 @@ class CentreonLdapAdmin {
             }
             $this->_db->query($query);
         }
+        $this->updateLdapServers($arId);
         return $arId;
     }
 
@@ -1004,6 +1038,32 @@ class CentreonLdapAdmin {
         }
     }
 
+    /**
+     * Get list of servers from resource id
+     * 
+     * @param int $arId | Auth resource id
+     * @return array
+     */
+    public function getServersFromResId($arId) {
+        $res = $this->_db->query("SELECT host_address, host_port, use_ssl, use_tls
+                                FROM auth_ressource_host
+                                WHERE auth_ressource_id = " . $this->_db->escape($arId) .
+                                " ORDER BY host_order");
+        $arr = array();
+        $i = 0;
+        while ($row = $res->fetchRow()) {
+            $arr[$i]['address_#index#'] = $row['host_address'];
+            $arr[$i]['port_#index#'] = $row['host_port'];
+            if ($row['use_ssl']) {
+                $arr[$i]['ssl_#index#'] = $row['use_ssl'];
+            }
+            if ($row['use_tls']) {
+                $arr[$i]['tls_#index#'] = $row['use_tls'];
+            }
+            $i++;
+        }
+        return $arr;
+    }
 }
 
 ?>
