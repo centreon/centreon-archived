@@ -95,9 +95,8 @@
 	/*
 	 * Add checkbox for enable restart
 	 */
-	$form->addElement('checkbox', 'generate', _("Generate configuration files for SNMP Traps (SNMPTT)"));
+	$form->addElement('checkbox', 'generate', _("Generate trap database "));
 	$form->addElement('checkbox', 'apply', _("Apply configurations"));
-	$form->addElement('checkbox', 'restart', _("Restart SNMPTT"));
 
 	/*
 	 * Set checkbox checked.
@@ -130,31 +129,30 @@
 			 * Create Server List to snmptt generation file
 			 */
 			$tab_server = array();
-			$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+			$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
 			while ($tab = $DBRESULT_Servers->fetchRow()){
-				if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
-					$tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
-				}
-				if (isset($ret['localhost']) && $ret['localhost'] == 1) {
-				    $localhost_poller_id = $ret['id'];
-				}
+                            if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
+                                $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
+                            }
 			}
 			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
-				$stdout = "";
-				/* even if we generate files for a remote server, we push snmptt config files on the local server */
-	            $stdout = shell_exec("$centreon_path/bin/centGenSnmpttConfFile 2>&1");
-	            $msg_generate .= "<br>".str_replace ("\n", "<br>", $stdout)."<br>";
+                            $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Database generation'));
+                            $stdout = "";
+                            foreach ($tab_server as $host) {
+                                if (!is_dir("{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}")) {
+                                    mkdir("{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}");
+                                }
+                                $filename = "{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}/centreontrapd.sdb";
+                                $stdout .= shell_exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1");
+                            }
+                            $msg_generate .= str_replace ("\n", "<br>", $stdout)."<br>";
 			}
 
 			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"]) {
-			    foreach ($tab_server as $host) {
-				    passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
-			    }
-			}
-
-			if (isset($ret["restart"]["restart"]) && $ret["restart"]["restart"]) {
-			    foreach ($tab_server as $host) {
-				    passthru("echo 'RESTARTSNMPTT:".$host['id']."' >> $centcore_pipe", $return);
+			    $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Centcore commands'));
+                            foreach ($tab_server as $host) {
+                                passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
+                                $msg_generate .= "Poller (id:{$host['id']}): SYNCTRAP sent to centcore.cmd<br/>";
 			    }
 			}
 		}
