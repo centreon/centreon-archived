@@ -144,7 +144,13 @@
 
 		$DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE graph_id = '".$template_id."' LIMIT 1");
 		$GraphTemplate = $DBRESULT->fetchRow();
-
+        if (is_null($GraphTemplate))
+        {
+            unset($DBRESULT);
+            $DBRESULT = $pearDB->query("SELECT * FROM giv_graphs_template WHERE default_tpl1 = '1' LIMIT 1");
+            $GraphTemplate = $DBRESULT->fetchRow();
+        }
+        
 		if (preg_match("/meta_([0-9]*)/", $index_data_ODS["service_description"], $matches)) {
 			$DBRESULT_meta = $pearDB->query("SELECT meta_name FROM meta_service WHERE `meta_id` = '".$matches[1]."'");
 			$meta = $DBRESULT_meta->fetchRow();
@@ -156,13 +162,24 @@
 
 		$base = "";
 		if (isset($GraphTemplate["base"]) && $GraphTemplate["base"])
+        {
 			$base = "-b ".$GraphTemplate["base"];
+        }
+        
 		if (!isset($GraphTemplate["width"]) || $GraphTemplate["width"] == "")
+        {
 			$GraphTemplate["width"] = 500;
+        }
+        
 		if (!isset($GraphTemplate["height"]) || $GraphTemplate["height"] == "")
+        {
 			$GraphTemplate["height"] = 120;
+        }
+        
 		if (!isset($GraphTemplate["vertical_label"]) || $GraphTemplate["vertical_label"] == "")
+        {
 			$GraphTemplate["vertical_label"] = "sds";
+        }
 
 		$command_line .= " --interlaced $base --imgformat PNG --width=".$GraphTemplate["width"]." --height=".$GraphTemplate["height"]." ";
 		$command_line .= "--title='".$index_data_ODS["service_description"]." graph on ".$index_data_ODS["host_name"]."' --vertical-label='Status' ";
