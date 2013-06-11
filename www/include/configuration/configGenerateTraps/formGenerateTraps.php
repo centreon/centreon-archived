@@ -143,18 +143,24 @@
                                     mkdir("{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}");
                                 }
                                 $filename = "{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}/centreontrapd.sdb";
-                                $stdout .= shell_exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1");
+                                $output = array();
+                                $returnVal = 0;
+                                exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
+                                $stdout .= implode("<br/>", $output)."<br/>";
+                                if ($returnVal != 0) {
+                                    break;
+                                }
                             }
-                            $msg_generate .= str_replace ("\n", "<br>", $stdout)."<br>";
+                            $msg_generate .= str_replace ("\n", "<br/>", $stdout)."<br/>";
 			}
-
-			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"]) {
+			if (isset($ret["apply"]["apply"]) && $ret["apply"]["apply"] &&
+                                $returnVal == 0) {
 			    $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Centcore commands'));
                             foreach ($tab_server as $host) {
                                 passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
                                 $msg_generate .= "Poller (id:{$host['id']}): SYNCTRAP sent to centcore.cmd<br/>";
 			    }
-			}
+                        }
 		}
 	}
 

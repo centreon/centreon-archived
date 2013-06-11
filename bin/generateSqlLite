@@ -2,18 +2,21 @@
 <?php
 require_once "@CENTREON_ETC@/centreon.conf.php";
 
+define("OK", 0);
+define("NOK", 1);
+
 $programName = $argv[0];
 
 if ($argc < 3) {
     echo "$programName: Missing argument\n";
-    exit;
+    exit(NOK);
 }
 
 $server_id = (int)$argv[1];
 $dbfilename = $argv[2];
 if (!is_writable(dirname($dbfilename))) {
     echo "$programName: Cannot write into $dbfilename\n";
-    exit;
+    exit(NOK);
 }
 
 if (is_file($dbfilename)) {
@@ -30,40 +33,70 @@ try {
     $db_centreon->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // get hosts
-    $stmt = $db_centreon->prepare("SELECT host.host_id, host.host_name, host.host_address FROM host, ns_host_relation WHERE ns_host_relation.nagios_server_id = :server_id AND ns_host_relation.host_host_id = host.host_id AND host.host_activate = '1'");
+    $stmt = $db_centreon->prepare("SELECT host.host_id, host.host_name, host.host_address 
+        FROM host, ns_host_relation 
+        WHERE ns_host_relation.nagios_server_id = :server_id 
+        AND ns_host_relation.host_host_id = host.host_id 
+        AND host.host_activate = '1'");
     $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
     $stmt->execute();
     $result_hosts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // get services
-    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id FROM host, host_service_relation, service, ns_host_relation WHERE ns_host_relation.nagios_server_id = :server_id AND ns_host_relation.host_host_id = host.host_id AND host.host_id = host_service_relation.host_host_id AND host_service_relation.service_service_id = service.service_id AND service.service_activate = '1'");
+    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id 
+        FROM host, host_service_relation, service, ns_host_relation 
+        WHERE ns_host_relation.nagios_server_id = :server_id 
+        AND ns_host_relation.host_host_id = host.host_id 
+        AND host.host_id = host_service_relation.host_host_id 
+        AND host_service_relation.service_service_id = service.service_id 
+        AND service.service_activate = '1'");
     $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
     $stmt->execute();
     $result_host_services = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // get services by hostgroup
-    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, hostgroup_relation.hostgroup_hg_id FROM host, host_service_relation, hostgroup_relation, service, ns_host_relation WHERE ns_host_relation.nagios_server_id = :server_id AND ns_host_relation.host_host_id = host.host_id AND host.host_id = hostgroup_relation.host_host_id AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id AND host_service_relation.service_service_id = service.service_id AND service.service_activate = '1'");
+    $stmt = $db_centreon->prepare("SELECT host.host_id, service.service_id, service.service_description, service.service_template_model_stm_id, hostgroup_relation.hostgroup_hg_id 
+        FROM host, host_service_relation, hostgroup_relation, service, ns_host_relation 
+        WHERE ns_host_relation.nagios_server_id = :server_id 
+        AND ns_host_relation.host_host_id = host.host_id 
+        AND host.host_id = hostgroup_relation.host_host_id 
+        AND hostgroup_relation.hostgroup_hg_id = host_service_relation.hostgroup_hg_id 
+        AND host_service_relation.service_service_id = service.service_id 
+        AND service.service_activate = '1'");
     $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
     $stmt->execute();
     $result_services_from_hg = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // get service templates
-    $stmt = $db_centreon->prepare("SELECT service.service_id, service.service_description, service.service_template_model_stm_id FROM service WHERE service.service_register = '0' AND service.service_activate = '1'");
+    $stmt = $db_centreon->prepare("SELECT service.service_id, service.service_description, service.service_template_model_stm_id 
+        FROM service 
+        WHERE service.service_register = '0' 
+        AND service.service_activate = '1'");
     $stmt->execute();
     $result_services_template = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // get trap info
-    $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, traps_submit_result_enable, traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args FROM traps");
+    $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, traps_submit_result_enable, 
+        traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args, 
+        traps_routing_mode, traps_routing_value 
+        FROM traps");
     $stmt->execute();
     $result_traps = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $db_centreon->prepare("SELECT trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status FROM traps_matching_properties");
+    $stmt = $db_centreon->prepare("SELECT trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status 
+        FROM traps_matching_properties");
     $stmt->execute();
     $result_traps_matching = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $db_centreon->prepare("SELECT traps_id, service_id FROM traps_service_relation");
+    $stmt = $db_centreon->prepare("SELECT traps_id, service_id 
+        FROM traps_service_relation");
     $stmt->execute();
     $result_traps_relation = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    $stmt = $db_centreon->prepare("SELECT trap_id, tpe_string, tpe_order
+        FROM traps_preexec");
+    $stmt->execute();
+    $result_traps_preexec = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e ) {
     echo "Error on poller (id:$server_id): " . $e->getMessage() . "\n";
 }
@@ -115,7 +148,9 @@ try {
                     `traps_reschedule_svc_enable` int(11) DEFAULT '0',
                     `traps_execution_command_enable` int(11) DEFAULT '0',
                     `traps_advanced_treatment` int(11) DEFAULT '0',
-                    `traps_args` varchar(255) DEFAULT NULL
+                    `traps_args` varchar(255) DEFAULT NULL,
+                    `traps_routing_mode` int(11) DEFAULT 0,
+                    `traps_routing_value` varchar(255) DEFAULT NULL
                     );
 
             CREATE INDEX IF NOT EXISTS idx_t_traps_oid ON traps (traps_oid);
@@ -129,6 +164,12 @@ try {
                     );
 
             CREATE INDEX IF NOT EXISTS idx_tmp_trap_id ON traps_matching_properties (trap_id);
+
+            CREATE TABLE IF NOT EXISTS `traps_preexec` (
+                    `trap_id` int(11) DEFAULT NULL,
+                    `tpe_order` int(11) DEFAULT NULL,
+                    `tpe_string` varchar(512) DEFAULT NULL
+                    );
 
             ");
             $dbh_sqlite->beginTransaction();
@@ -224,9 +265,21 @@ try {
                 $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->execute();
             }
+            
+            foreach ($result_traps_preexec as $value) {
+                $stmt = $dbh_sqlite->prepare("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES (
+                    :trap_id, :tpe_string, :tpe_order)");
+                $stmt->bindParam(':trap_id', $value['trap_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':tpe_string', $value['tpe_string'], PDO::PARAM_STR);
+                $stmt->bindParam(':tpe_order', $value['tpe_order'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
             $dbh_sqlite->commit();
             echo "Poller (id:$server_id): Sqlite database successfully created\n";
+            exit(OK);
 } catch (PDOException $e ) {
     $dbh_sqlite->rollback();
     echo "Error on poller (id:$server_id): " . $e->getMessage() . "\n";
+    exit(NOK);
 }
