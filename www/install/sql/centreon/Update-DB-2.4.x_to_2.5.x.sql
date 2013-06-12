@@ -31,6 +31,9 @@ ALTER TABLE  `traps` CHANGE  `traps_args`  `traps_args` TEXT CHARACTER SET utf8 
 -- Ticket #4201
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUE (2, 'BBDO Protocol', 'bbdo');
 
+-- Add possibility to lock a service template
+ALTER TABLE  `service` ADD  `service_locked` BOOLEAN NOT NULL AFTER  `command_command_id_arg2`;
+
 -- /!\ WARNING /!\
 -- This file must be renamed and the query below must be updated once we know the exact source and target versions.
 -- /!\ WARNING /!\
