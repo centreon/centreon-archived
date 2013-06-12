@@ -5,11 +5,15 @@
 		 	<tr class="ListHeader"><td colspan='2' class="tactical_light_header"><img src="./img/icones/16x16/warning.gif">&nbsp;&nbsp;{$form.header.title}</td></tr>
 			<tr class="list_two">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.start.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.start.html}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>
+                                    {$form.start.html}&nbsp;{$form.start_time.html}
+                                </td>
 			</tr>
 			<tr class="list_one">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.end.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.end.html}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>
+                                    {$form.end.html}&nbsp;{$form.end_time.html}
+                                </td>
 			</tr>
 			<tr class="list_two">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.duration.label}</td>
@@ -47,3 +51,11 @@
 		<input name="select[{$it}]" type="hidden" value="1" />
 	{/foreach}
 </form>
+{literal}
+<script type="text/javascript">
+    jQuery(function() {
+        jQuery(".datepicker").datepicker();
+        jQuery(".timepicker").timepicker();
+    });
+</script>
+{/literal}

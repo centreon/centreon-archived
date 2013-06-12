@@ -189,7 +189,7 @@
 			$res1 = preg_split("/\//", $res[0]);
 			$res2 = preg_split("/:/", $res[1]);
 
-			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0]);
+			$start_time = mktime($res2[0], $res2[1], "0", $res1[0], $res1[1], $res1[2]);
 			$start_time = $centreonGMT->getUTCDate($start_time);
 
 			$res = preg_split("/ /", $end);
@@ -198,7 +198,7 @@
 			}
 			$res3 = preg_split("/\//", $res[0]);
 			$res4 = preg_split("/:/", $res[1]);
-			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
+			$end_time = mktime($res4[0], $res4[1], "0", $res3[0], $res3[1], $res3[2]);
 			$end_time = $centreonGMT->getUTCDate($end_time);
             if (!$duration) {
 			    $duration = $end_time - $start_time;
@@ -259,7 +259,7 @@
 			}
 			$res1 = preg_split("/\//", $res[0]);
 			$res2 = preg_split("/:/", $res[1]);
-			$start_time = mktime($res2[0], $res2[1], "0", $res1[1], $res1[2], $res1[0], -1);
+			$start_time = mktime($res2[0], $res2[1], "0", $res1[0], $res1[1], $res1[2], -1);
 
 			$start_time = $centreonGMT->getUTCDate($start_time);
 			$res = preg_split("/ /", $end);
@@ -268,7 +268,7 @@
 			}
 			$res3 = preg_split("/\//", $res[0]);
 			$res4 = preg_split("/:/", $res[1]);
-			$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0], -1);
+			$end_time = mktime($res4[0], $res4[1], "0", $res3[0], $res3[1], $res3[2], -1);
 			$end_time = $centreonGMT->getUTCDate($end_time);
 			if (!$duration) {
 			    $duration = $end_time - $start_time;

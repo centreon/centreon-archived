@@ -70,7 +70,12 @@
 			$host_name = NULL;
 
 			$data = array();
-			$data = array("start" => $centreonGMT->getDate("Y/m/d G:i" , time() + 120), "end" => $centreonGMT->getDate("Y/m/d G:i", time() + 7320));
+			$data = array(
+                            "start" => $centreonGMT->getDate("m/d/Y" , time() + 120), 
+                            "end" => $centreonGMT->getDate("m/d/Y", time() + 7320),
+                            "start_time" => $centreonGMT->getDate("G:i" , time() + 120),
+                            "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
+                        );
 			if (isset($host_id))
 				$data["host_id"] = $host_id;
 			if (isset($service_id))
@@ -120,8 +125,12 @@
 		    }
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
-			$form->addElement('text', 'start', _("Start Time"), $attrsText);
-			$form->addElement('text', 'end', _("End Time"), $attrsText);
+			$form->addElement('text', 'start', _("Start Time"), array('size' => 10, 'class' => 'datepicker'));
+			$form->addElement('text', 'end', _("End Time"), array('size' => 10, 'class' => 'datepicker'));
+                        
+                        $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
+			$form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
+                        
 			$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
 			$defaultDuration = 3600;
 	        if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
@@ -134,6 +143,8 @@
 			$form->addRule('service_id', _("Required Field"), 'required');
 			$form->addRule('end', _("Required Field"), 'required');
 			$form->addRule('start', _("Required Field"), 'required');
+                        $form->addRule('end_time', _("Required Field"), 'required');
+			$form->addRule('start_time', _("Required Field"), 'required');
 			$form->addRule('comment', _("Required Field"), 'required');
 
 			$form->setDefaults($data);
@@ -142,16 +153,24 @@
 			$res = $form->addElement('reset', 'reset', _("Reset"));
 
 		  	if ((isset($_POST["submitA"]) && $_POST["submitA"]) && $form->validate())	{
-				if (!isset($_POST["persistant"]))
-					$_POST["persistant"] = 0;
-				if (!isset($_POST["comment"]))
-					$_POST["comment"] = 0;
+                            if (!isset($_POST["persistant"]))
+                                $_POST["persistant"] = 0;
+                            if (!isset($_POST["comment"]))
+                                $_POST["comment"] = 0;
 			    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
 			    $duration = null;
 			    if (isset($_POST['duration'])) {
-                    $duration = $_POST['duration'];
+                                $duration = $_POST['duration'];
 			    }
-				$ecObj->AddSvcDowntime($_POST["host_id"], $_POST["service_id"],  $_POST["comment"], $_POST["start"], $_POST["end"], $_POST["persistant"], $duration);
+                            $ecObj->AddSvcDowntime(
+                                $_POST["host_id"], 
+                                $_POST["service_id"],  
+                                $_POST["comment"], 
+                                $_POST["start"] . ' ' . $_POST['start_time'], 
+                                $_POST["end"] . ' ' . $_POST['end_time'], 
+                                $_POST["persistant"], 
+                                $duration
+                            );
 		    	require_once("viewServiceDowntime.php");
 			} else {
 				/*

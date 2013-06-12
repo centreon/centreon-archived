@@ -309,6 +309,8 @@ class CentreonExternalCommand {
 	/**
 	 *
 	 * Get date from string
+         * 
+         * date format: m/d/Y H:i
 	 * @param string $string
 	 */
 	private function getDate($string)
@@ -316,7 +318,7 @@ class CentreonExternalCommand {
 		$res = preg_split("/ /", $string);
 		$res3 = preg_split("/\//", $res[0]);
 		$res4 = preg_split("/:/", $res[1]);
-		$end_time = mktime($res4[0], $res4[1], "0", $res3[1], $res3[2], $res3[0]);
+		$end_time = mktime($res4[0], $res4[1], "0", $res3[0], $res3[1], $res3[2]);
 		unset($res);
 		return $end_time;
 	}

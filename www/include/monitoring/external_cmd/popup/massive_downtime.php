@@ -82,13 +82,20 @@
 	$form->addElement('textarea', 'comment', _("Comment"), array("rows"=>"5", "cols"=>"70", "id"=>"popupComment"));
 	$form->setDefaults(array("comment" => sprintf(_("Downtime set by %s"), $oreon->user->alias)));
 
-	$form->addElement('text', 'start', _('Start Time'), array('id'=>'start', 'width'=>'30'));
-	$form->addElement('text', 'end', _('End Time'), array('id'=>'end', 'width'=>'30'));
-	$form->setDefaults(array(
-						'start' => $centreonGMT->getDate('Y/m/d H:i', time()),
-						'end' => $centreonGMT->getDate('Y/m/d H:i', time() + 7200)
-					   )
-					);
+	$form->addElement('text', 'start', _('Start Time'), array('id'=>'start', 'size'=>10, 'class'=>'datepicker'));
+	$form->addElement('text', 'end', _('End Time'), array('id'=>'end', 'size'=>10, 'class'=>'datepicker'));
+        
+        $form->addElement('text', 'start_time', '', array('id'=>'start_time', 'size' => 5, 'class' => 'timepicker'));
+        $form->addElement('text', 'end_time', '', array('id'=>'end_time', 'size' => 5, 'class' => 'timepicker'));
+        
+	$form->setDefaults(
+                array(
+                    "start" => $centreonGMT->getDate("m/d/Y" , time() + 120), 
+                    "end" => $centreonGMT->getDate("m/d/Y", time() + 7320),
+                    "start_time" => $centreonGMT->getDate("G:i" , time() + 120),
+                    "end_time" => $centreonGMT->getDate("G:i" , time() + 7320)
+		)
+        );
 	$form->addElement('text', 'duration', _('Duration'), array('id'=>'duration', 'width'=>'30', 'disabled'=>'true'));
 	$defaultDuration = 3600;
 	if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
