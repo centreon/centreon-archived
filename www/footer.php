@@ -74,15 +74,7 @@ foreach ($jsdata as $k => $val) {
     echo "<span class=\"data hide\" id=\"".$k."\" data-".$k."=\"".$val."\"></span>";
 }
 ?>
-</body>
-</html>
-<?php
 
-	if (isset($pearDB) && is_object($pearDB))
-		$pearDB->disconnect();
-	if (isset($pearDBO) && is_object($pearDBO))
-		$pearDBO->disconnect();
-?>
 <script type='text/javascript'>
 jQuery(function() {
     initWholePage();
@@ -101,12 +93,24 @@ function initWholePage()
  */
 function setQuickSearchPosition()
 {
-	if ($('QuickSearch')) {
-    	if ($('header').visible()) {
-    		$('QuickSearch').setStyle({ top: '86px' });
-    	} else {
-    		$('QuickSearch').setStyle({ top: '3px' });
-    	}
-	}
+    if ($('QuickSearch')) {
+        if ($('header').visible()) {
+            $('QuickSearch').setStyle({ top: '86px' });
+        } else {
+            $('QuickSearch').setStyle({ top: '3px' });
+        }
+    }
+    
+    jQuery(".timepicker").timepicker();
+    jQuery(".datepicker").datepicker();
 }
 </script>
+</body>
+</html>
+<?php
+
+	if (isset($pearDB) && is_object($pearDB))
+		$pearDB->disconnect();
+	if (isset($pearDBO) && is_object($pearDBO))
+		$pearDBO->disconnect();
+?>
