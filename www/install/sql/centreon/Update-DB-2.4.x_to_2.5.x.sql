@@ -28,6 +28,9 @@ UPDATE `topology` SET `readonly` = '0' WHERE `topology_parent` = '608' AND `topo
 -- ticket #2329
 ALTER TABLE  `traps` CHANGE  `traps_args`  `traps_args` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
+-- ticket #4536
+UPDATE `service` SET `service_alias` = 'Swap' WHERE `service_description` = 'SNMP-Linux-Swap';
+
 -- Ticket #4201
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUE (2, 'BBDO Protocol', 'bbdo');
 
