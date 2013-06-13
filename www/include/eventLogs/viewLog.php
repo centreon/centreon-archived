@@ -217,10 +217,10 @@
 						"31104000"=>_("Last Year"));
 
 	$form->addElement('select', 'period', _("Log Period"), $periods, array("onchange" => "resetFields([this.form.StartDate, this.form.StartTime, this.form.EndDate, this.form.EndTime])"));
-	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "size"=>8));
-	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "onclick"=>"displayTimePicker('StartTime', this)", "size"=>5));
-	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "size"=>8));
-	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "onclick"=>"displayTimePicker('EndTime', this)", "size"=>5));
+	$form->addElement('text', 'StartDate', '', array("id"=>"StartDate", "class" => "datepicker", "size"=>8));
+	$form->addElement('text', 'StartTime', '', array("id"=>"StartTime", "class"=>"timepicker", "size"=>5));
+	$form->addElement('text', 'EndDate', '', array("id"=>"EndDate", "class" => "datepicker", "size"=>8));
+	$form->addElement('text', 'EndTime', '', array("id"=>"EndTime", "class"=>"timepicker", "size"=>5));
 	$form->addElement('button', 'graph', _("Apply"), array("onclick"=>"apply_period()"));
 
 	$form->setDefaults(array("period" => $user_params['log_filter_period']));
@@ -235,7 +235,7 @@
 	$tpl->assign('treeFocus', _('Tree Focus'));
 	$tpl->display("viewLog.ihtml");
 
-?><link href="./include/common/javascript/datePicker.css" rel="stylesheet" type="text/css"/>
+?>
 <script type="text/javascript" src="./include/common/javascript/LinkBar.js"></script>
 <script language='javascript' src='./include/common/javascript/tool.js'></script>
 <script>

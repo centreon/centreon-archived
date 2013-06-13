@@ -23,11 +23,15 @@
 			</tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.start.label}</td>
-				<td  class="ListColLeft">{$form.start.html}</td>
+				<td  class="ListColLeft">
+                                    {$form.start.html}&nbsp;{$form.start_time.html}
+                                </td>
 			</tr>
 			<tr class="list_two">
 				<td  class="ListColLeft">{$form.end.label}</td>
-				<td  class="ListColLeft">{$form.end.html}</td>
+				<td  class="ListColLeft">
+                                    {$form.end.html}&nbsp;{$form.end_time.html}
+                                </td>
 			</tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.comment.label}</td>

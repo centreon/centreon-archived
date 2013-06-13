@@ -1,7 +1,5 @@
 {$form.javascript}
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/ui.tabs.closable.min.js"></script>
-<script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
-<link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" />
 {literal}
 <script type="text/javascript">
 var tabsPeriods;

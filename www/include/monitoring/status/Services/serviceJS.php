@@ -347,8 +347,8 @@ var _criticality_id = 0;
 			} else {
 				var fixed = 0;
 			}
-			var start = document.getElementById('start').value;
-			var end = document.getElementById('end').value;
+			var start = document.getElementById('start').value+' '+document.getElementById('start_time').value;
+			var end = document.getElementById('end').value+' '+document.getElementById('end_time').value;
 			var author = document.getElementById('author').value;
 			var duration = document.getElementById('duration').value;
 			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
