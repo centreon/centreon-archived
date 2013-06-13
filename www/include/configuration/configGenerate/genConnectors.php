@@ -42,6 +42,7 @@
     
 	$fileHandler = create_file($nagiosCFGPath.$tab['id']."/connectors.cfg", $oreon->user->get_name());
 
+    $str = "";
     if ($tab['monitoring_engine'] == 'CENGINE')
     {
         /* Getting base path for connectors */
@@ -73,7 +74,6 @@
                                "\\",
                                "|");
             
-            $str = "";
             foreach($connectorList as $connector)
             {
                 $connector['command_line'] = $connector_basepath . '/' . $connector['command_line'];
