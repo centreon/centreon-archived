@@ -148,12 +148,15 @@ Enforce a proper exit in every case.
 =cut
 sub clean_exit {
     my $message = shift;
-    my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time());
-    my $logmsg = "$mday/" . ($mon + 1) . "/" . ($year + 1900) . " $hour:$min:$sec -  $message";
 
-    print $logmsg;
-    writeLogFile($logmsg);
-    
+    if ($message) {
+        my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime(time());
+        my $logmsg = "$mday/" . ($mon + 1) . "/" . ($year + 1900) . " $hour:$min:$sec -  $message";
+
+        print $logmsg;
+        writeLogFile($logmsg);
+    }
+
     if ($cpt != -1) {
         my $rq = "UPDATE `instance` SET `log_flag` = '$cpt' WHERE `instance_id` = '$cur_instance'";
         my $res = $dbh->do($rq);
@@ -607,7 +610,7 @@ if (!$dbLayer->execute()) {
 my $dataLayer = $dbLayer->fetchrow_hashref();
 if ($dataLayer->{'value'} eq "broker") {
     $dbLayer->finish();
-    clean_exit("This script is only suitable for NDO.\n");
+    clean_exit();
 }
 $dbLayer->finish();
 
