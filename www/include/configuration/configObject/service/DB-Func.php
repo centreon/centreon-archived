@@ -875,11 +875,8 @@ function divideHostsToHost($service_id) {
 		 *  Insert on demand macros
 		 */
 		if (isset($macro_on_demand)) {
-			$my_tab = $macro_on_demand;
-		} elseif (isset($ret['nbOfMacro'])) {
-			$my_tab = $ret;
-		}
-		if (isset($my_tab['nbOfMacro'])) {
+                    $my_tab = $macro_on_demand;
+                    if (isset($my_tab['nbOfMacro'])) {
 			$already_stored = array();
 	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++) {
 	 			$macInput = "macroInput_" . $i;
@@ -895,7 +892,15 @@ function divideHostsToHost($service_id) {
 					$already_stored[strtolower($my_tab[$macInput])] = 1;
 	 			}
 	 		}
-		}
+                    }
+                } elseif (isset($_REQUEST['macroInput']) &&
+                        isset($_REQUEST['macroValue'])) {
+                    $service->insertMacro(
+                            $service_id["MAX(service_id)"],
+                            $_REQUEST['macroInput'],
+                            $_REQUEST['macroValue']
+                            );
+                }
 
                 if (isset($ret['criticality_id'])) {
                     setServiceCriticality($service_id['MAX(service_id)'], $ret['criticality_id']);
@@ -1202,26 +1207,14 @@ function divideHostsToHost($service_id) {
 		/*
 		 *  Update demand macros
 		 */
-		if (isset($_POST['nbOfMacro'])) {
-			$already_stored = array();
-			$DBRESULT = $pearDB->query("DELETE FROM `on_demand_macro_service` WHERE `svc_svc_id`='".$service_id."'");
-
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++) {
-	 			$macInput = "macroInput_" . $i;
-	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
-		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = $_POST[$macInput];
-		 			$macVal = $_POST[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
-					$already_stored[strtolower($_POST[$macInput])] = 1;
-	 			}
-	 		}
-		}
-
+		if (isset($_REQUEST['macroInput']) && 
+                        isset($_REQUEST['macroValue'])) {
+                    $service->insertMacro(
+                            $service_id,
+                            $_REQUEST['macroInput'],
+                            $_REQUEST['macroValue']
+                            );
+                }
                 if (isset($ret['criticality_id'])) {
                     setServiceCriticality($service_id, $ret['criticality_id']);
                 }
@@ -1493,46 +1486,14 @@ function divideHostsToHost($service_id) {
 		/*
 		 *  Update on demand macros
 		 */
-		if (isset($_POST['nbOfMacro']) && $_POST['nbOfMacro']) {
-			$already_stored = array();
-			$already_stored_in_db = array();
-
-			$rq = "SELECT svc_macro_name FROM `on_demand_macro_service` WHERE `svc_svc_id`=" . $service_id;
-			$DBRESULT = $pearDB->query($rq);
-			while ($mac = $DBRESULT->fetchRow()) {
-				$tmp = str_replace("\$_SERVICE", "", $mac["svc_macro_name"]);
-				$tmp = str_replace("\$", "", $tmp);
-				$tmp = strtolower($tmp);
-				$already_stored_in_db[$tmp] = 1;
-			}
-
-
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
-	 		{
-	 			$macInput = "macroInput_" . $i;
-	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[strtolower($_POST[$macInput])])) {
-	 				$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = $_POST[$macInput];
-		 			$macVal = $_POST[$macValue];
-	 				$rq = "UPDATE on_demand_macro_service SET `svc_macro_value`='". CentreonDB::escape($macVal) . "'".
-	 					  " WHERE `svc_svc_id`=" . $service_id .
-	 					  " AND `svc_macro_name`='\$_SERVICE" . CentreonDB::escape($macName) . "\$'";
-			 		$DBRESULT = $pearDB->query($rq);
-	 			}
-	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
-		 			$_POST[$macInput] = str_replace("\$_SERVICE", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = $_POST[$macInput];
-		 			$macVal = $_POST[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) VALUES ('\$_SERVICE". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $service_id .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$already_stored[$_POST[$macInput]] = 1;
-	 			}
-	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
-	 		}
-		}
+		if (isset($_REQUEST['macroInput']) && 
+                        isset($_REQUEST['macroValue'])) {
+                    $service->insertMacro(
+                            $service_id,
+                            $_REQUEST['macroInput'],
+                            $_REQUEST['macroValue']
+                            );
+                }
 
                 if (isset($ret['criticality_id']) && $ret['criticality_id']) {
                     setServiceCriticality($service_id, $ret['criticality_id']);

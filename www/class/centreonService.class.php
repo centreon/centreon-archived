@@ -296,5 +296,62 @@
             }
             return $list;
         }
+        
+        /**
+         * Insert macro
+         * 
+         * @param int $serviceId
+         * @param array $macroInput
+         * @param array $macroValue
+         * @return void
+         */
+        public function insertMacro($serviceId, $macroInput = array(), $macroValue = array()) {
+            $this->db->query("DELETE FROM on_demand_macro_service
+                WHERE svc_svc_id = ".$this->db->escape($serviceId));
+            
+            $macros = $macroInput;
+            $macrovalues = $macroValue;
+            $stored = array();
+            foreach ($macros as $key => $value) {
+                if ($value != "" && 
+                    !isset($stored[strtolower($value)])) {
+                        $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `svc_svc_id`) 
+                                VALUES ('\$_SERVICE". strtoupper($value) ."\$', '". $this->db->escape($macrovalues[$key]) ."', ". $serviceId .")");
+                        $stored[strtolower($value)] = true;
+                }
+            }
+        }
+        
+        /**
+         * Get service custom macro
+         * 
+         * @param int $serviceId
+         * @return array
+         */
+        public function getCustomMacro($serviceId) {
+            $arr = array();
+            $i = 0;
+            if (!isset($_REQUEST['macroInput'])) {
+                $res = $this->db->query("SELECT svc_macro_name, svc_macro_value
+                                FROM on_demand_macro_service
+                                WHERE svc_svc_id = " . 
+                                $this->db->escape($serviceId) . "
+                                ORDER BY svc_macro_name");
+                while ($row = $res->fetchRow()) {
+                    if (preg_match('/\$_SERVICE(.*)\$$/', $row['svc_macro_name'], $matches)) {
+                        $arr[$i]['macroInput_#index#'] = $matches[1];
+                        $arr[$i]['macroValue_#index#'] = $row['svc_macro_value'];
+                        $i++;
+                    }
+                }
+            } else {
+                foreach($_REQUEST['macroInput'] as $key => $val) {
+                    $arr[$i]['macroInput_#index#'] = $val;
+                    $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
+                    $i++;
+                }
+            }
+            return $arr;
+        }
  }
  ?>
