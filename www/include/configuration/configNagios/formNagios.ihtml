@@ -165,13 +165,9 @@
 				<td class="FormRowField">
 				<div style="text-decoration: underline;">{$form.multiple_broker_module.label}</div>
 				{$form.bkTextMultiple.label}	
-				<input type="hidden" name="lsOfBroker" id="hiLsBroker">
-				<input type="hidden" name="nbOfBroker" id="hiNbBroker">
 				</td>
 				<td class="FormRowValue" id="multipleBroker">
-				{if $o == "a" || $o == "c"}
-       	        	{$form.addBroker.label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onClick="javascript:addBroker();">
-           		{/if}
+                                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="broker" cloneSet=$cloneSet}
 				</td>
 			</tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="event_broker_options">&nbsp;{$form.event_broker_options.label}</td><td class="FormRowValue">{$form.event_broker_options.html}</td></tr>
