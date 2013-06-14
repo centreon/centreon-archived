@@ -254,20 +254,19 @@
                     $cr = $res->fetchRow();
                     $service['criticality_id'] = $cr['criticality_id'];
                 }
-                
-                /*
-                 * Preset values of macros
-                 */
-                $cdata = CentreonData::getInstance();
-                $macroArray = $serviceObj->getCustomMacro($service_id);
-                $cdata->addJsData('clone-values-macro', htmlspecialchars(
+	}
+        /*
+         * Preset values of macros
+         */
+        $cdata = CentreonData::getInstance();
+        $macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
+        $cdata->addJsData('clone-values-macro', htmlspecialchars(
                                     json_encode($macroArray), 
                                     ENT_QUOTES
                                 )
-                            );
-                $cdata->addJsData('clone-count-macro', count($macroArray));
-	}
-
+        );
+        $cdata->addJsData('clone-count-macro', count($macroArray));
+        
 	# Service Templates comes from DB -> Store in $svTpls Array
 	$svTpls = array(null => null);
 	$DBRESULT = $pearDB->query("SELECT service_id, service_description, service_template_model_stm_id FROM service WHERE service_register = '0' AND service_id != '".$service_id."' ORDER BY service_description");

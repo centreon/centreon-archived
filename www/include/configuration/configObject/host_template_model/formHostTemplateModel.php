@@ -110,31 +110,29 @@
                             $host['criticality_id'] = $cr['criticality_id'];
                         }
 		}
-                
-                /*
-                 * Preset values of macros
-                 */
-                $cdata = CentreonData::getInstance();
-                $macroArray = $hostObj->getCustomMacro($host_id);
-                $cdata->addJsData('clone-values-macro', htmlspecialchars(
-                                    json_encode($macroArray), 
-                                    ENT_QUOTES
-                                )
-                            );
-                $cdata->addJsData('clone-count-macro', count($macroArray));
-                
-                /*
-                 * Preset values of host templates
-                 */
-                $tplArray = $hostObj->getTemplates($host_id);
-                $cdata->addJsData('clone-values-template', htmlspecialchars(
+	}
+        /*
+         * Preset values of macros
+         */
+        $cdata = CentreonData::getInstance();
+        $macroArray = $hostObj->getCustomMacro(isset($host_id) ? $host_id : null);
+        $cdata->addJsData('clone-values-macro', htmlspecialchars(
+                          json_encode($macroArray), 
+                          ENT_QUOTES
+                          )
+        );
+        $cdata->addJsData('clone-count-macro', count($macroArray));        
+        /*
+         * Preset values of host templates
+         */
+        $tplArray = $hostObj->getTemplates(isset($host_id) ? $host_id : null);
+        $cdata->addJsData('clone-values-template', htmlspecialchars(
                                     json_encode($tplArray), 
                                     ENT_QUOTES
                                 )
-                            );
-                $cdata->addJsData('clone-count-template', count($tplArray));
-                
-	}
+        );
+        $cdata->addJsData('clone-count-template', count($tplArray));
+        
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#

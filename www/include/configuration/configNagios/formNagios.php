@@ -62,20 +62,19 @@
 		foreach ($tmp as $key => $value) {
 			$nagios_d["nagios_debug_level"][$value] = 1;
 		}
-                
-                /*
-                 * Preset values of broker directives
-                 */
-                $mainCfg = new CentreonConfigEngine($pearDB);
-                $cdata = CentreonData::getInstance();
-                $dirArray = $mainCfg->getBrokerDirectives($nagios_id);
-                $cdata->addJsData('clone-values-broker', htmlspecialchars(
-                                    json_encode($dirArray), 
-                                    ENT_QUOTES
-                                )
-                            );
-                $cdata->addJsData('clone-count-broker', count($dirArray));
 	}
+        /*
+         * Preset values of broker directives
+         */
+         $mainCfg = new CentreonConfigEngine($pearDB);
+         $cdata = CentreonData::getInstance();
+         $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+         $cdata->addJsData('clone-values-broker', htmlspecialchars(
+            json_encode($dirArray), 
+            ENT_QUOTES
+            )
+         );
+         $cdata->addJsData('clone-count-broker', count($dirArray));
 
 	/*
 	 * Database retrieve information for differents elements list we need on the page

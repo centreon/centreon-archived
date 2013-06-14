@@ -512,10 +512,10 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
          * @param int $hostId
          * @return array
          */
-        public function getCustomMacro($hostId) {
+        public function getCustomMacro($hostId = null) {
             $arr = array();
             $i = 0;
-            if (!isset($_REQUEST['macroInput'])) {
+            if (!isset($_REQUEST['macroInput']) && $hostId) {
                 $res = $this->db->query("SELECT host_macro_name, host_macro_value
                                 FROM on_demand_macro_host
                                 WHERE host_host_id = " . 
@@ -544,10 +544,10 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
          * @param int $hostId
          * @return array
          */
-        public function getTemplates($hostId) {
+        public function getTemplates($hostId = null) {
             $arr = array();
             $i = 0;
-            if (!isset($_REQUEST['tpSelect'])) {
+            if (!isset($_REQUEST['tpSelect']) && $hostId) {
                 $res = $this->db->query("SELECT host_tpl_id
                                 FROM host_template_relation
                                 WHERE host_host_id = " . 

@@ -79,10 +79,10 @@ class CentreonConfigEngine
      * @param int $serverId
      * @return array
      */
-    public function getBrokerDirectives($serverId) {
+    public function getBrokerDirectives($serverId = null) {
         $arr = array();
         $i = 0;
-        if (!isset($_REQUEST['in_broker'])) {
+        if (!isset($_REQUEST['in_broker']) && $serverId) {
             $res = $this->db->query("SELECT broker_module
                                 FROM cfg_nagios_broker_module
                                 WHERE cfg_nagios_id = " . $this->db->escape($serverId));

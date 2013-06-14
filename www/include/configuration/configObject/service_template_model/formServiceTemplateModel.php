@@ -143,19 +143,19 @@
                     $cr = $res->fetchRow();
                     $service['criticality_id'] = $cr['criticality_id'];
                 }
-                
-                /*
-                 * Preset values of macros
-                 */
-                $cdata = CentreonData::getInstance();
-                $macroArray = $serviceObj->getCustomMacro($service_id);
-                $cdata->addJsData('clone-values-macro', htmlspecialchars(
+	}
+        /*
+         * Preset values of macros
+         */
+        $cdata = CentreonData::getInstance();
+        $macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
+        $cdata->addJsData('clone-values-macro', htmlspecialchars(
                                     json_encode($macroArray), 
                                     ENT_QUOTES
                                 )
-                            );
-                $cdata->addJsData('clone-count-macro', count($macroArray));
-	}
+        );
+        $cdata->addJsData('clone-count-macro', count($macroArray));
+        
 	/*
 	 * 	Database retrieve information for differents elements list we need on the page
 	 */

@@ -328,10 +328,10 @@
          * @param int $serviceId
          * @return array
          */
-        public function getCustomMacro($serviceId) {
+        public function getCustomMacro($serviceId = null) {
             $arr = array();
             $i = 0;
-            if (!isset($_REQUEST['macroInput'])) {
+            if (!isset($_REQUEST['macroInput']) && $serviceId) {
                 $res = $this->db->query("SELECT svc_macro_name, svc_macro_value
                                 FROM on_demand_macro_service
                                 WHERE svc_svc_id = " . 
