@@ -51,6 +51,8 @@
         }
     }
 
+    $hostObj = new CentreonHost($pearDB);
+    
     $initialValues = array();
 
     /* host categories */
@@ -246,6 +248,29 @@
                     $cr = $res->fetchRow();
                     $host['criticality_id'] = $cr['criticality_id'];
                 }
+                
+                /*
+                 * Preset values of macros
+                 */
+                $cdata = CentreonData::getInstance();
+                $macroArray = $hostObj->getCustomMacro($host_id);
+                $cdata->addJsData('clone-values-macro', htmlspecialchars(
+                                    json_encode($macroArray), 
+                                    ENT_QUOTES
+                                )
+                            );
+                $cdata->addJsData('clone-count-macro', count($macroArray));
+                
+                /*
+                 * Preset values of host templates
+                 */
+                $tplArray = $hostObj->getTemplates($host_id);
+                $cdata->addJsData('clone-values-template', htmlspecialchars(
+                                    json_encode($tplArray), 
+                                    ENT_QUOTES
+                                )
+                            );
+                $cdata->addJsData('clone-count-template', count($tplArray));
 	}
 
 	/*
@@ -362,22 +387,6 @@
 	}
 	$DBRESULT->free();
 
-	/*
-	 *  Host on demand macro stored in DB
-	 */
-	$j = 0;
-	$DBRESULT = $pearDB->query("SELECT host_macro_id, host_macro_name, host_macro_value, host_host_id FROM on_demand_macro_host WHERE host_host_id = '". $host_id ."' ORDER BY `host_macro_id`");
-	while ($od_macro = $DBRESULT->fetchRow()){
-		$od_macro_id[$j] = $od_macro["host_macro_id"];
-		$od_macro_name[$j] = str_replace("\$_HOST", "", $od_macro["host_macro_name"]);
-		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
-		$od_macro_value[$j] = $od_macro["host_macro_value"];
-		$od_macro_host_id[$j] = $od_macro["host_host_id"];
-		$j++;
-	}
-	$DBRESULT->free();
-
-
 	#
 	# End of "database-retrieved" information
 	##########################################################
@@ -468,26 +477,39 @@
 
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70, FIX, [this, 0, 10])\" onmouseout=\"UnTip()\">". _("Here is a self explanatory image.")."</a>");
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
-
-	include_once("makeJS_formHost.php");
-
-	for ($k = 0 ; isset($mTp[$k]); $k++) { ?>
-		<script type="text/javascript">
-		tab[<?php echo $k;?>] = <?php echo $mTp[$k];?>;
-		</script>
-	<?php
-	}
-	for ($k = 0; isset($od_macro_id[$k]); $k++) { ?>
-		<script type="text/javascript">
-		globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
-		globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-		globalMacroTabValue[<?php echo $k;?>] = '<?php echo addslashes($od_macro_value[$k]);?>';
-		globalMacroTabHostId[<?php echo $k;?>] = <?php echo $od_macro_host_id[$k];?>;
-		</script>
-	<?php
-
-	}
-
+        
+        $cloneSetMacro = array();
+        $cloneSetMacro[] = $form->addElement(
+                'text', 
+                'macroInput[#index#]',
+                _('Macro name'),
+                array(
+                    'id' => 'macroInput_#index#',
+                    'size' => 25
+                )
+                );
+        $cloneSetMacro[] = $form->addElement(
+                'text', 
+                'macroValue[#index#]',
+                _('Macro value'),
+                array(
+                    'id' => 'macroValue_#index#',
+                    'size' => 25
+                )
+                );
+        
+        $cloneSetTemplate = array();
+        $cloneSetTemplate[] = $form->addElement(
+                'select', 
+                'tpSelect[#index#]', 
+                _("Template"), 
+                (array(null => null) + $hostObj->getList(false, true))
+                ,
+                array(
+                    "id" => "tpSelect_#index#",
+                    "type" => "select-one"
+                    )
+                );
 
 	$dupSvTpl[] = HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("Yes"), '1');
 	$dupSvTpl[] = HTML_QuickForm::createElement('radio', 'dupSvTplAssoc', null, _("No"), '0');
@@ -880,54 +902,51 @@
 	$form->applyFilter('__ALL__', 'myTrim');
 	$from_list_menu = false;
 	if ($o != "mc")	{
-		$form->applyFilter('host_name', 'myReplace');
-		$form->addRule('host_name', _("Compulsory Name"), 'required');
-        $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
-        $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
-		/*
-		 * Test existence
-		 */
-		$form->registerRule('testModule', 'callback', 'testHostName');
-		$form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
-		$form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
+            $form->applyFilter('host_name', 'myReplace');
+            $form->addRule('host_name', _("Compulsory Name"), 'required');
+            $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
+            $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
+            /*
+             * Test existence
+             */
+            $form->registerRule('testModule', 'callback', 'testHostName');
+            $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
+            $form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
 	    $form->registerRule('exist', 'callback', 'testHostExistence');
 	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
 	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
 
-        $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
-        $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
-        $form->addRule('host_address', _("Compulsory Address"), 'required');
+            $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
+            $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+            $form->addRule('host_address', _("Compulsory Address"), 'required');
 
-		/*
-		 * If we are using a Template, no need to check the value, we hope there are in the Template
-		 */
+            /*
+             * If we are using a Template, no need to check the value, we hope there are in the Template
+             */
+            $mustApplyFormRule = false;
+            if (isset($_REQUEST['tpSelect'])) {
+                foreach ($_REQUEST['tpSelect'] as $val) {
+                    if ($val != "") {
+                        $mustApplyFormRule = false;
+                    }
+                }
+            } else {
+                $mustApplyFormRule = true;
+            }
+            if ($mustApplyFormRule) {
+                $form->addRule('host_alias', _("Compulsory Alias"), 'required');
+                $form->addRule('host_max_check_attempts', _("Required Field"), 'required');
+                $form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
 
-		if (isset($_POST['nbOfSelect'])) {
-			$z = 0;
-			$ok_flag = 0;
-			while ($z < $_POST['nbOfSelect']) {
-				$tpSelect = "tpSelect_" . $z;
-				if ($_POST[$tpSelect]) {
-					$ok_flag = 1;
-					break;
-				}
-				$z++;
-			}
-			if (!$ok_flag) {
-				$form->addRule('host_alias', _("Compulsory Alias"), 'required');
-				$form->addRule('host_max_check_attempts', _("Required Field"), 'required');
-				$form->addRule('timeperiod_tp_id', _("Compulsory Period"), 'required');
+                if (!$form->getSubmitValue("host_cs"))
+                    $form->addRule('host_cgs', _("Compulsory Contact Group"), 'required');
+                if (!$form->getSubmitValue("host_cgs"))
+                    $form->addRule('host_cs', _("Compulsory Contact"), 'required');
 
-				if (!$form->getSubmitValue("host_cs"))
-					$form->addRule('host_cgs', _("Compulsory Contact Group"), 'required');
-				if (!$form->getSubmitValue("host_cgs"))
-					$form->addRule('host_cs', _("Compulsory Contact"), 'required');
-
-				$form->addRule('host_notification_interval', _("Required Field"), 'required');
-				$form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
-				$form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
-			}
-		}
+                $form->addRule('host_notification_interval', _("Required Field"), 'required');
+                $form->addRule('timeperiod_tp_id2', _("Compulsory Period"), 'required');
+                $form->addRule('host_notifOpts', _("Compulsory Option"), 'required');
+            }
 	} else if ($o == "mc")	{
 		if ($form->getSubmitValue("submitMC"))
 			$from_list_menu = false;
@@ -985,7 +1004,7 @@
 	$tpl->assign("sort4", _("Host Extended Infos"));
 	$tpl->assign("sort5", _("Macros"));
 	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
-    $tpl->assign('accessgroups', _('Access groups'));
+        $tpl->assign('accessgroups', _('Access groups'));
 
 	# prepare help texts
 	$helptext = "";
@@ -1053,14 +1072,15 @@
 		$tpl->assign("hostID", $host_id);
 		$tpl->assign("add_mtp_label", _("Add a template"));
 		$tpl->assign('custom_macro_label', _('Custom macros'));
+                $tpl->assign('cloneSetMacro', $cloneSetMacro);
+                $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
+                $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
 		$tpl->assign("k", $k);
 		$tpl->assign("tpl", 0);
 		$tpl->assign("tzUsed", $CentreonGMT->used());
 		$tpl->display("formHost.ihtml");
 ?>
 <script type="text/javascript">
-		add_select_template('<?php echo $o;?>');
-		displayExistingMacroHost(<?php echo $k;?>);
 		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
 		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
 		showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
