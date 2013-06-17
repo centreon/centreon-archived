@@ -648,7 +648,7 @@
 	'check_external_commands' => '1', 
 	'external_command_buffer_slots' => '4096', 
 	'command_check_interval' => '1s', 
-	'command_file' => '/var/log/centreon-engine/rw/centengine.cmd', 
+	'command_file' => '/var/lib/centreon-engine/rw/centengine.cmd', 
 	'lock_file' => '/var/lock/subsys/centengine.lock', 
 	'retain_state_information' => '1', 
 	'state_retention_file' => '/var/log/centreon-engine/retention.dat', 
