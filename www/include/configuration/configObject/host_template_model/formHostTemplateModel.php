@@ -37,7 +37,9 @@
  */
 
     require_once $centreon_path . 'www/class/centreonLDAP.class.php';
- 	require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+    require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
+    
+    $hostObj = new CentreonHost($pearDB);
 
 	#
 	## Database retrieve information for Host
@@ -109,6 +111,28 @@
                         }
 		}
 	}
+        /*
+         * Preset values of macros
+         */
+        $cdata = CentreonData::getInstance();
+        $macroArray = $hostObj->getCustomMacro(isset($host_id) ? $host_id : null);
+        $cdata->addJsData('clone-values-macro', htmlspecialchars(
+                          json_encode($macroArray), 
+                          ENT_QUOTES
+                          )
+        );
+        $cdata->addJsData('clone-count-macro', count($macroArray));        
+        /*
+         * Preset values of host templates
+         */
+        $tplArray = $hostObj->getTemplates(isset($host_id) ? $host_id : null);
+        $cdata->addJsData('clone-values-template', htmlspecialchars(
+                                    json_encode($tplArray), 
+                                    ENT_QUOTES
+                                )
+        );
+        $cdata->addJsData('clone-count-template', count($tplArray));
+        
 	#
 	## Database retrieve information for differents elements list we need on the page
 	#
@@ -279,24 +303,39 @@
 	$form->addElement('static', 'tplTextParallel', _("A host can have multiple templates, their orders have a significant importance")."<br><a href='#' onmouseover=\"Tip('<img src=\'img/misc/multiple-templates2.png\'>', OPACITY, 70)\" onmouseout=\"UnTip()\">"._("Here is a self explanatory image.")."</a>");
 	$form->addElement('static', 'tplText', _("Using a Template allows you to have multi-level Template connection"));
 
-	include_once("include/configuration/configObject/host/makeJS_formHost.php");
-
-	for ($k = 0; isset($mTp[$k]) && $mTp[$k] ; $k++) {?>
-		<script type="text/javascript">
-		tab[<?php echo $k; ?>] = <?php echo $mTp[$k]; ?>;
-		</script>
-	<?php }
-	for($k=0; isset($od_macro_id[$k]); $k++) {?>
-		<script type="text/javascript">
-		globalMacroTabId[<?php echo $k; ?>] = <?php echo $od_macro_id[$k]; ?>;
-		globalMacroTabName[<?php echo $k; ?>] = '<?php echo $od_macro_name[$k]; ?>';
-		globalMacroTabValue[<?php echo $k; ?>] = '<?php echo addslashes($od_macro_value[$k]); ?>';
-		globalMacroTabHostId[<?php echo $k; ?>] = <?php echo $od_macro_host_id[$k]; ?>;
-		</script>
-	<?php
-	}
-
-
+        $cloneSetMacro = array();
+        $cloneSetMacro[] = $form->addElement(
+                'text', 
+                'macroInput[#index#]',
+                _('Macro name'),
+                array(
+                    'id' => 'macroInput_#index#',
+                    'size' => 25
+                )
+                );
+        $cloneSetMacro[] = $form->addElement(
+                'text', 
+                'macroValue[#index#]',
+                _('Macro value'),
+                array(
+                    'id' => 'macroValue_#index#',
+                    'size' => 25
+                )
+                );
+        
+        $cloneSetTemplate = array();
+        $cloneSetTemplate[] = $form->addElement(
+                'select', 
+                'tpSelect[#index#]', 
+                _("Template"), 
+                (array(null => null) + $hostObj->getList(false, true))
+                ,
+                array(
+                    "id" => "tpSelect_#index#",
+                    "type" => "select-one"
+                    )
+                );
+        
 	/*
 	 * Check information
 	 */
@@ -716,30 +755,31 @@
 	$action = $form->getSubmitValue("action");
 	if ($valid && $action["action"]["action"])
 		require_once($path."listHostTemplateModel.php");
-	else	{
-		#Apply a template definition
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);
-		$tpl->assign('form', $renderer->toArray());
-		$tpl->assign('o', $o);
+	else {
+            #Apply a template definition
+            $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+            $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+            $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+            $form->accept($renderer);
+            $tpl->assign('form', $renderer->toArray());
+            $tpl->assign('o', $o);
 
-        $tpl->assign('custom_macro_label', _('Custom macros'));
-		$tpl->assign("Freshness_Control_options", _("Freshness Control options"));
-		$tpl->assign("Flapping_Options", _("Flapping options"));
-		$tpl->assign("Perfdata_Options", _("Perfdata Options"));
-		$tpl->assign("History_Options", _("History Options"));
-		$tpl->assign("Event_Handler", _("Event Handler"));
-		$tpl->assign("add_mtp_label", _("Add a template"));
-		$tpl->assign("seconds", _("seconds"));
-		$tpl->assign("tpl", 1);
-		$tpl->display("formHost.ihtml");
+            $tpl->assign('custom_macro_label', _('Custom macros'));
+            $tpl->assign('cloneSetMacro', $cloneSetMacro);
+            $tpl->assign('cloneSetTemplate', $cloneSetTemplate);
+            $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+            $tpl->assign("Freshness_Control_options", _("Freshness Control options"));
+            $tpl->assign("Flapping_Options", _("Flapping options"));
+            $tpl->assign("Perfdata_Options", _("Perfdata Options"));
+            $tpl->assign("History_Options", _("History Options"));
+            $tpl->assign("Event_Handler", _("Event Handler"));
+            $tpl->assign("add_mtp_label", _("Add a template"));
+            $tpl->assign("seconds", _("seconds"));
+            $tpl->assign("tpl", 1);
+            $tpl->display("formHost.ihtml");
 
 ?>
 <script type="text/javascript">
-		add_select_template('<?php echo $o;?>');
-		displayExistingMacroHost(<?php echo $k; ?>);
 		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
 		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
 		showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);

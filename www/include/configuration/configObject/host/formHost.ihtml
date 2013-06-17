@@ -43,12 +43,9 @@
 		<td class="FormRowField">
 			<img class="helpTooltip" name="use"> <span>{$form.host_parallel_template.label}</span><br>
 			{$form.tplTextParallel.label}
-			<input type="hidden" name="nbOfSelect" id="hiddenInput">
 		</td>
-		<td class="FormRowValue" id="parallelTemplate">			
-			{if $o == "a" || $o == "c" || $o == "mc"}
-				{$add_mtp_label}&nbsp;<img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onclick="javascript:addBlankSelect();">
-			{/if}
+		<td class="FormRowValue" id="parallelTemplate">
+                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="template" cloneSet=$cloneSetTemplate}
 		</td>
 	</tr>
 		
@@ -85,27 +82,13 @@
  			<img src='./img/icones/16x16/gear_new.gif'>&nbsp;&nbsp;{$form.header.macro}
  		</td>
  	</tr>		
-	<tr style='display: none;'>
-		<td>
-			<input type="hidden" name="nbOfMacro" id="hiddenMacInput">
-		</td>
-	</tr>
 	<tr class="list_one">
 		<td class="FormRowField">
 			<img class="helpTooltip" name="macro"> {$custom_macro_label}
 		</td>
-		<td>
-			{$macChecker}
-			<table id="macroTable" class="ListTableSmall">
-				<tr class="ListHeader">
-					<td class="ListColLeft">{$form.macroName.label}</td>
-					<td class="ListColLeft">{$form.macroValue.label}</td>
-					{if $o != "w"}
-						<td class="ListColCenter"><img src='./img/icones/16x16/navigate_plus.gif' style='cursor:pointer' onclick="javascript:addBlankInput();"></td>			
-					{/if}
-				</tr>
-			</table>
-		</td>
+		<td class="FormRowValue">
+                    {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="macro" cloneSet=$cloneSetMacro}
+                </td>
 	</tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>

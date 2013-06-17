@@ -289,7 +289,7 @@ class CentreonDB
      * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
      * @return string
      */
-    public function escape($str, $htmlSpecialChars = true)
+    public function escape($str, $htmlSpecialChars = false)
     {
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);

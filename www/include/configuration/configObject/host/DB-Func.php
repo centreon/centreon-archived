@@ -85,22 +85,23 @@
  	function hostMacHandler() {
  	    global $pearDB;
 
- 	    $macArray = $_POST;
+            if (!isset($_REQUEST['macroInput'])) {
+                return true;
+            }            
+ 	    $macArray = $_POST['macroInput'];
 	    $macTab = array();
-		foreach ($macArray as $key => $value) {
-		    if (preg_match('/^macroInput/', $key, $matches)) {
-			    $macTab[] = "'\$_HOST".strtoupper($value)."\$'";
-			}
-        }
-        if (count($macTab)) {
-            $sql = "SELECT count(*) as nb FROM nagios_macro WHERE macro_name IN (".implode(',',$macTab).")";
-            $res = $pearDB->query($sql);
-            $row = $res->fetchRow();
-            if (isset($row['nb']) && $row['nb']) {
-                return false;
+            foreach ($macArray as $value) {
+                $macTab[] = "'\$_HOST".strtoupper($value)."\$'";
             }
-        }
-        return true;
+            if (count($macTab)) {
+                $sql = "SELECT count(*) as nb FROM nagios_macro WHERE macro_name IN (".implode(',',$macTab).")";
+                $res = $pearDB->query($sql);
+                $row = $res->fetchRow();
+                if (isset($row['nb']) && $row['nb']) {
+                    return false;
+                }
+            }
+            return true;
  	}
 
 
@@ -657,6 +658,7 @@
 	function insertHost($ret, $macro_on_demand = NULL)	{
 		global $form, $pearDB, $centreon, $is_admin;
 
+                $hostObj = new CentreonHost($pearDB);
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
 
@@ -739,7 +741,6 @@
  		 *  Insert multiple templates
  		 */
  		$multiTP_logStr = "";
-
  		if (isset($ret["use"]) && $ret["use"]){
  			$already_stored = array();
  			$tplTab = preg_split("/\,/", $ret["use"]);
@@ -754,46 +755,41 @@
 					$already_stored[$tplId] = 1;
 	 			}
 	 		}
- 		} elseif (isset($_POST['nbOfSelect'])) {
-	 		$already_stored = array();
-	 		for ($i=0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) {
-	 			$tpSelect = "tpSelect_" . $i;
-	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect] && hasNoInfiniteLoop($host_id['MAX(host_id)'], $_POST[$tpSelect]) === true) {
-		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id['MAX(host_id)'] .", ". $_POST[$tpSelect] .", ". $j .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$multiTP_logStr .= $_POST[$tpSelect] . ",";
-					$j++;
-					$already_stored[$_POST[$tpSelect]] = 1;
-	 			}
-	 		}
+ 		} elseif (isset($_REQUEST['tpSelect'])) {
+                    $hostObj->setTemplates($host_id['MAX(host_id)'], $_REQUEST['tpSelect']);
  		}
- 		if ($multiTP_logStr != "")
-	 		$multiTP_logStr = trim($multiTP_logStr, ",");
 
 		/*
-		 *  Insert on demand macros
+		 * Insert on demand macros
+                 * Keeping it just in case it could used somewhere else
 		 */
-		if (isset($macro_on_demand))
-			$my_tab = $macro_on_demand;
-		else if (isset($_POST['nbOfMacro']))
-			$my_tab = $_POST;
-		if (isset($my_tab['nbOfMacro'])) {
-			$already_stored = array();
-	 		for ($i=0; $i <= $my_tab['nbOfMacro']; $i++) {
-	 			$macInput = "macroInput_" . $i;
-	 			$macValue = "macroValue_" . $i;
-	 			if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
-		 			$my_tab[$macInput] = str_replace("\$_HOST", "", $my_tab[$macInput]);
-		 			$my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
-		 			$macName = $my_tab[$macInput];
-		 			$macVal = $my_tab[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id['MAX(host_id)'] .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
-					$already_stored[strtolower($my_tab[$macInput])] = 1;
-	 			}
-	 		}
-		}
+		if (isset($macro_on_demand)) {
+                    $my_tab = $macro_on_demand;
+                    if (isset($my_tab['nbOfMacro'])) {
+                        $already_stored = array();
+                        for ($i=0; $i <= $my_tab['nbOfMacro']; $i++) {
+                            $macInput = "macroInput_" . $i;
+                            $macValue = "macroValue_" . $i;
+                            if (isset($my_tab[$macInput]) && !isset($already_stored[strtolower($my_tab[$macInput])]) && $my_tab[$macInput]) {
+                                $my_tab[$macInput] = str_replace("\$_HOST", "", $my_tab[$macInput]);
+                                $my_tab[$macInput] = str_replace("\$", "", $my_tab[$macInput]);
+                                $macName = $my_tab[$macInput];
+                                $macVal = $my_tab[$macValue];
+                                $rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id['MAX(host_id)'] .")";
+                                $DBRESULT = $pearDB->query($rq);
+                                $fields["_".strtoupper($my_tab[$macInput])."_"] = $my_tab[$macValue];
+                                $already_stored[strtolower($my_tab[$macInput])] = 1;
+                            }
+                        }
+                    }
+                } elseif (isset($_REQUEST['macroInput']) &&
+                        isset($_REQUEST['macroValue'])) {
+                    $hostObj->insertMacro(
+                            $host_id['MAX(host_id)'],
+                            $_REQUEST['macroInput'],
+                            $_REQUEST['macroValue']
+                            );
+                }
 
                 if (isset($ret['criticality_id'])) {
                     setHostCriticality($host_id['MAX(host_id)'], $ret['criticality_id']);
@@ -1081,6 +1077,8 @@
 	function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
 		global $form, $pearDB, $centreon;
 
+                $hostObj = new CentreonHost($pearDB);
+                
 		if (!$host_id) {
 			return;
 		}
@@ -1199,48 +1197,9 @@
 		/*
 		 *  Update multiple templates
 		 */
-		if (isset($_POST['nbOfSelect'])) {
-	 		$already_stored = array();
-
-	 		$oldTp = array();
-	 		$newTp = array();
-			$DBRESULT = $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		while ($hst = $DBRESULT->fetchRow()) {
-	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];
-	 		}
-	 		for ($i=0; $i <= $_POST['nbOfSelect']; $i++){
-				$tpSelect = "tpSelect_" . $i;
-				if (isset($_POST[$tpSelect])) {
-		 			$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
-				}
-	 		}
-
-	 		foreach ($oldTp as $val){
-	 			/*
-  	 			 * if not set, then that means a template was removed
-	 			 * we will have to remove the services that were linked to that host template as well
-	 			 */
-	 			if (!isset($newTp[$val])) {
-	 				deleteHostServiceMultiTemplate($host_id, $val, $newTp);
-	 			}
-	 		}
-
-	 		$DBRESULT = $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-	 		$multiTP_logStr = "";
-	 		for ($i = 0, $j = 1; $i <= $_POST['nbOfSelect']; $i++){
-	 			$tpSelect = "tpSelect_" . $i;
-	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect] && hasNoInfiniteLoop($host_id, $_POST[$tpSelect]) === true) {
-		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$j++;
-					$multiTP_logStr .= $_POST[$tpSelect] . ",";
-					$already_stored[$_POST[$tpSelect]] = 1;
-	 			}
-	 		}
-	 		$multiTP_logStr = trim($multiTP_logStr, ",");
-		}
-
-		elseif (isset($ret["use"]) && $ret["use"]) {
+		if (isset($_REQUEST['tpSelect'])) {
+                    $hostObj->setTemplates($host_id, $_REQUEST['tpSelect']);
+		} elseif (isset($ret["use"]) && $ret["use"]) {
  			$already_stored = array();
  			$tplTab = preg_split("/\,/", $ret["use"]);
  			$j = 0;
@@ -1259,25 +1218,14 @@
  		/*
 		 *  Update demand macros
 		 */
-		if (isset($_POST['nbOfMacro'])) {
-			$already_stored = array();
-			$DBRESULT = $pearDB->query("DELETE FROM `on_demand_macro_host` WHERE `host_host_id`='".$host_id."'");
-
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++){
-	 			$macInput = "macroInput_" . $i;
-	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
-		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = $_POST[$macInput];
-		 			$macVal = $_POST[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". CentreonDB::escape(strtoupper($macName)) ."\$', '". CentreonDB::escape($macVal) ."', ". $host_id .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
-					$already_stored[strtolower($_POST[$macInput])] = 1;
-	 			}
-	 		}
-		}
+		if (isset($_REQUEST['macroInput']) && 
+                        isset($_REQUEST['macroValue'])) {
+                    $hostObj->insertMacro(
+                            $host_id,
+                            $_REQUEST['macroInput'],
+                            $_REQUEST['macroValue']
+                            );
+                }
 
                 if (isset($ret['criticality_id'])) {
                     setHostCriticality($host_id, $ret['criticality_id']);
@@ -1365,6 +1313,7 @@
 	function updateHost_MC($host_id = null)	{
 		global $form, $pearDB, $centreon;
 
+                $hostObj = new CentreonHost($pearDB);
 		if (!$host_id)
 			return;
 		$ret = array();
@@ -1540,103 +1489,28 @@
 		/*
 		 *  update multiple templates
 		 */
- 		if (isset($_POST['nbOfSelect']) && $_POST['nbOfSelect']) {
-	 		$already_stored = array();
-
-	 		$oldTp = array();
-	 		$newTp = array();
-	 		$DBRESULT = $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
+                if (isset($_REQUEST['tpSelect'])) {
+                    $oldTp = array();
+                    if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 0) {
+                        $DBRESULT = $pearDB->query("SELECT `host_tpl_id` FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
 	 		while ($hst = $DBRESULT->fetchRow()) {
 	 			$oldTp[$hst["host_tpl_id"]] = $hst["host_tpl_id"];
 	 		}
-	 		$multiTP_logStr = "";
-	 		for ($i = 0; $i <= $_POST['nbOfSelect']; $i++){
-	 			$tpSelect = "tpSelect_" . $i;
-	 			if (isset($_POST[$tpSelect])) {
-	 				$newTp[$_POST[$tpSelect]] = $_POST[$tpSelect];
-	 				$multiTP_logStr .= $_POST[$tpSelect] . ",";
-	 			}
-	 		}
-	 		$multiTP_logStr = trim($multiTP_logStr, ",");
-	 		if ($multiTP_logStr != "") {
-	 			$fields["templates"] = $multiTP_logStr;
-	 		}
-
-	 		/*
-	 		 *  in case of replacement
-	 		 */
-	 		$allowedToDelete = 0;
-	 		if (isset($_POST['mc_mod_tplp']['mc_mod_tplp']) && $_POST['mc_mod_tplp']['mc_mod_tplp'] == 1) {
-		 		$DBRESULT = $pearDB->query("DELETE FROM `host_template_relation` WHERE `host_host_id`='".$host_id."'");
-		 		$allowedToDelete = 1;
-	 		}
-
-	 		for ($i = 0, $j = 1;$i <= $_POST['nbOfSelect']; $i++) {
-	 			$tpSelect = "tpSelect_" . $i;
-	 			if (isset($_POST[$tpSelect]) && !isset($already_stored[$_POST[$tpSelect]]) && $_POST[$tpSelect]) {
-		 			$rq = "INSERT INTO host_template_relation (`host_host_id`, `host_tpl_id`, `order`) VALUES (". $host_id .", ". $_POST[$tpSelect] .", ". $j .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$j++;
-					$already_stored[$_POST[$tpSelect]] = 1;
-	 			}
-	 		}
-
-	 		if ($allowedToDelete) {
-    		    foreach ($oldTp as $val){
-    	 			/*
-      	 			 * if not set, then that means a template was removed
-    	 			 * we will have to remove the services that were linked to that host template as well
-    	 			 */
-    	 			if (!isset($newTp[$val])) {
-    	 				deleteHostServiceMultiTemplate($host_id, $val, $newTp);
-    	 			}
-    	 		}
-	 		}
- 		}
+                    }
+                    $hostObj->setTemplates($host_id, $_REQUEST['tpSelect'], $oldTp);
+                }
 
  		/*
 		 *  Update on demand macros
 		 */
-		if (isset($_POST['nbOfMacro']) && $_POST['nbOfMacro']) {
-			$already_stored = array();
-			$already_stored_in_db = array();
-
-			$rq = "SELECT host_macro_name FROM `on_demand_macro_host` WHERE `host_host_id`=" . $host_id;
-			$DBRESULT = $pearDB->query($rq);
-			while ($mac = $DBRESULT->fetchRow()) {
-				$tmp = str_replace("\$_HOST", "", $mac["host_macro_name"]);
-				$tmp = str_replace("\$", "", $tmp);
-				$tmp = strtolower($tmp);
-				$already_stored_in_db[$tmp] = 1;
-			}
-
-
-	 		for ($i=0; $i <= $_POST['nbOfMacro']; $i++)
-	 		{
-	 			$macInput = "macroInput_" . $i;
-	 			$macValue = "macroValue_" . $i;
-	 			if (isset($_POST[$macInput]) && isset($already_stored_in_db[strtolower($_POST[$macInput])])) {
-	 				$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = $_POST[$macInput];
-		 			$macVal = $_POST[$macValue];
-	 				$rq = "UPDATE on_demand_macro_host SET `host_macro_value`='". $macVal . "'".
-	 					  " WHERE `host_host_id`=" . $host_id .
-	 					  " AND `host_macro_name`='\$_HOST" . $macName . "\$'";
-			 		$DBRESULT = $pearDB->query($rq);
-	 			}
-	 			elseif (isset($_POST[$macInput]) && !isset($already_stored[strtolower($_POST[$macInput])]) && $_POST[$macInput]) {
-		 			$_POST[$macInput] = str_replace("\$_HOST", "", $_POST[$macInput]);
-		 			$_POST[$macInput] = str_replace("\$", "", $_POST[$macInput]);
-		 			$macName = $_POST[$macInput];
-		 			$macVal = $_POST[$macValue];
-		 			$rq = "INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) VALUES ('\$_HOST". strtoupper($macName) ."\$', '". $macVal ."', ". $host_id .")";
-			 		$DBRESULT = $pearDB->query($rq);
-					$already_stored[strtolower($_POST[$macInput])] = 1;
-	 			}
-	 			$fields["_".strtoupper($_POST[$macInput])."_"] = $_POST[$macValue];
-	 		}
-		}
+		if (isset($_REQUEST['macroInput']) && 
+                        isset($_REQUEST['macroValue'])) {
+                    $hostObj->insertMacro(
+                            $host_id,
+                            $_REQUEST['macroInput'],
+                            $_REQUEST['macroValue']
+                            );
+                }
 
                 if (isset($ret['criticality_id']) && $ret['criticality_id']) {
                     setHostCriticality($host_id, $ret['criticality_id']);

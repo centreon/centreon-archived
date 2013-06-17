@@ -55,6 +55,7 @@
 	$cmdId = 0;
 	$serviceTplId = null;
 	$service = array();
+        $serviceObj = new CentreonService($pearDB);
 	if (($o == "c" || $o == "w") && $service_id) {
 		$DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
 		# Set base value
@@ -143,6 +144,18 @@
                     $service['criticality_id'] = $cr['criticality_id'];
                 }
 	}
+        /*
+         * Preset values of macros
+         */
+        $cdata = CentreonData::getInstance();
+        $macroArray = $serviceObj->getCustomMacro(isset($service_id) ? $service_id : null);
+        $cdata->addJsData('clone-values-macro', htmlspecialchars(
+                                    json_encode($macroArray), 
+                                    ENT_QUOTES
+                                )
+        );
+        $cdata->addJsData('clone-count-macro', count($macroArray));
+        
 	/*
 	 * 	Database retrieve information for differents elements list we need on the page
 	 */
@@ -255,24 +268,6 @@
 	}
 	$DBRESULT->free();
 
-	/*
-	 *  Service on demand macro stored in DB
-	 */
-	$j = 0;
-	$DBRESULT = $pearDB->query("SELECT svc_macro_id, svc_macro_name, svc_macro_value, svc_svc_id FROM on_demand_macro_service WHERE svc_svc_id = '". $service_id ."' ORDER BY `svc_macro_id`");
-	while ($od_macro = $DBRESULT->fetchRow()) {
-		$od_macro_id[$j] = $od_macro["svc_macro_id"];
-		$od_macro_name[$j] = str_replace("\$_SERVICE", "", $od_macro["svc_macro_name"]);
-		$od_macro_name[$j] = str_replace("\$", "", $od_macro_name[$j]);
-		$od_macro_name[$j] = str_replace("#BS#", "\\", $od_macro_name[$j]);
-		$od_macro_name[$j] = str_replace("#S#", "/", $od_macro_name[$j]);
-		$od_macro_value[$j] = str_replace("#BS#", "\\", $od_macro["svc_macro_value"]);
-		$od_macro_value[$j] = str_replace("#S#", "/", $od_macro_value[$j]);
-		$od_macro_svc_id[$j] = $od_macro["svc_svc_id"];
-		$j++;
-	}
-	$DBRESULT->free();
-
 
 	# IMG comes from DB -> Store in $extImg Array
 	$extImg = array();
@@ -376,6 +371,26 @@
 
 	$form->addElement('select', 'timeperiod_tp_id', _("Check Period"), $tps);
 
+        $cloneSetMacro = array();
+        $cloneSetMacro[] = $form->addElement(
+                'text', 
+                'macroInput[#index#]',
+                _('Macro name'),
+                array(
+                    'id' => 'macroInput_#index#',
+                    'size' => 25
+                )
+                );
+        $cloneSetMacro[] = $form->addElement(
+                'text', 
+                'macroValue[#index#]',
+                _('Macro value'),
+                array(
+                    'id' => 'macroValue_#index#',
+                    'size' => 25
+                )
+                );
+        
 	##
 	## Notification informations
 	##
@@ -683,18 +698,6 @@
 	$form->addElement('text', 'macroValue', _("Macro value"), $attrsText2);
 	$form->addElement('text', 'macroDelete', _("Delete"), $attrsText2);
 
-	include_once("include/configuration/configObject/service/makeJS_formService.php");
-
-    for ($k = 0; isset($od_macro_id[$k]); $k++) {?>
-		<script type="text/javascript">
-		globalMacroTabId[<?php echo $k;?>] = <?php echo $od_macro_id[$k];?>;
-		globalMacroTabName[<?php echo $k;?>] = '<?php echo $od_macro_name[$k];?>';
-		globalMacroTabValue[<?php echo $k;?>] = '<?php echo addslashes($od_macro_value[$k]);?>';
-		globalMacroTabSvcId[<?php echo $k;?>] = <?php echo $od_macro_svc_id[$k];?>;
-		</script>
-	<?php
-	}
-
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
@@ -854,12 +857,12 @@
 		$tpl->assign("Event_Handler", _("Event Handler"));
 		$tpl->assign("topdoc", _("Documentation"));
 		$tpl->assign("seconds", _("seconds"));
-        $tpl->assign('custom_macro_label', _('Custom macros'));
+                $tpl->assign('custom_macro_label', _('Custom macros'));
+                $tpl->assign('cloneSetMacro', $cloneSetMacro);
+                $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
 		$tpl->display("formService.ihtml");
 ?>
 <script type="text/javascript">
-		displayExistingMacroSvc(<?php echo $k;?>, '<?php echo $o;?>');
-		showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
-		setTimeout('transformForm()', 200);
+    showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 </script>
 <?php } ?>

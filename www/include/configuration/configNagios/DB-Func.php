@@ -335,30 +335,11 @@
 		$nagios_id = $DBRESULT->fetchRow();
 		$DBRESULT->free();
 
-		/*
-		 *  Insert multiple broker module
-		 */
-		if (isset($_POST['lsOfBroker']) || count($brokerTab)) {
-		    $brokerConf = array();
-		    if (isset($_POST['lsOfBroker'])) {
-		        $brokerConf = $_POST;
-		    } else {
-                $brokerConf = $brokerTab;
-		    }
-			if (isset($brokerConf['nbOfBroker']) && $brokerConf['nbOfBroker'] != 0) {
-				for ($lsIn=0;$lsIn <= $brokerConf['lsOfBroker']; $lsIn++){
-					$inBr = "in_broker_".$lsIn;
-					if (isset($brokerConf[$inBr]) && $brokerConf[$inBr]) {
-						# Insert broker module
-					    $rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', '".$brokerConf[$inBr]."')";
-					    $DBRESULT = $pearDB->query($rq);
-					}
-				}
-			} else {
-				$rq = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id["MAX(nagios_id)"]."', NULL)";
-				$DBRESULT = $pearDB->query($rq);
-			}
-		}
+                if (isset($_REQUEST['in_broker'])) {
+                    $mainCfg = new CentreonConfigEngine($pearDB);
+                    $mainCfg->insertBrokerDirectives($nagios_id["MAX(nagios_id)"], $_REQUEST['in_broker']);
+                }
+		
 		if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])	{
 			$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
 			$centreon->Nagioscfg = array();
@@ -525,48 +506,10 @@
 		$DBRESULT = $pearDB->query($rq);
 
 
-		/*
-		 *  Update multiple broker module
-		 */
-		if (isset($_POST['lsOfBroker'])) {
-			/* Find how many Broker we already have */
-
-			$DBRESULT = $pearDB->query("SELECT count(bk_mod_id) as nbOldBroker FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
-			$nRow = $DBRESULT->fetchRow();
-			$DBRESULT->free();
-			$nbOldBroker = $nRow["nbOldBroker"];
-			$oldBks = array();
-			$DBRESULT = $pearDB->query("SELECT bk_mod_id FROM cfg_nagios_broker_module WHERE cfg_nagios_id='".$nagios_id."'");
-			while ($oldBk = $DBRESULT->fetchRow()) {
-				$oldBks[] = $oldBk;
-			}
-			$DBRESULT->free();
-
-			$cBk = 0;
-
-			for ($lsIn=0 ; $lsIn <= $_POST['lsOfBroker'] ; $lsIn++) {
-				$rq1 = "";
-			    $inBr = "in_broker_".$lsIn;
-				if (isset($_POST[$inBr])) {
-					if ($cBk < $nbOldBroker && isset($oldBks[$cBk]['bk_mod_id'])) {
-						# Update broker module
-						$rq1 = "UPDATE cfg_nagios_broker_module SET broker_module = '".$_POST[$inBr]."' WHERE bk_mod_id ='".$oldBks[$cBk]['bk_mod_id']."'";
-					} elseif ($_POST[$inBr]) {
-						# Insert broker module
-						$rq1 = "INSERT INTO cfg_nagios_broker_module (`cfg_nagios_id`, `broker_module`) VALUES ('".$nagios_id."', '".$_POST[$inBr]."')";
-					}
-					if ($rq1 != "") {
-					    $DBRESULT = $pearDB->query($rq1);
-					}
-					$cBk++;
-				}
-			}
-			while ( $cBk < $nbOldBroker ) {
-				$rq = "DELETE FROM cfg_nagios_broker_module WHERE bk_mod_id ='".$oldBks[$cBk]['bk_mod_id']."'";
-				$DBRESULT = $pearDB->query($rq);
-				$cBk++;
-			}
-		}
+                if (isset($_REQUEST['in_broker'])) {
+                    $mainCfg = new CentreonConfigEngine($pearDB);
+                    $mainCfg->insertBrokerDirectives($nagios_id["MAX(nagios_id)"], $_REQUEST['in_broker']);
+                }
 
 		if ($ret["nagios_activate"]["nagios_activate"]) {
 			enableNagiosInDB($nagios_id);

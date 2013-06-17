@@ -63,6 +63,18 @@
 			$nagios_d["nagios_debug_level"][$value] = 1;
 		}
 	}
+        /*
+         * Preset values of broker directives
+         */
+         $mainCfg = new CentreonConfigEngine($pearDB);
+         $cdata = CentreonData::getInstance();
+         $dirArray = $mainCfg->getBrokerDirectives(isset($nagios_id) ? $nagios_id : null);
+         $cdata->addJsData('clone-values-broker', htmlspecialchars(
+            json_encode($dirArray), 
+            ENT_QUOTES
+            )
+         );
+         $cdata->addJsData('clone-count-broker', count($dirArray));
 
 	/*
 	 * Database retrieve information for differents elements list we need on the page
@@ -503,28 +515,17 @@
 	 */
 	$form->addElement('text', 'multiple_broker_module', _("Multiple Broker Module"), $attrsText2);
 	$form->addElement('static', 'bkTextMultiple', _("This directive can be used multiple times, see nagios documentation.<BR>NDO use the broker module directive."));
-	$form->addElement('text', 'addBroker', _("Add a new broker module"), $attrsText2);
-	$form->addElement('text', 'delBroker', _("Delete this broker module"), $attrsText2);
-	include_once("makeJS_formNagios.php");
-	if ($o == "c" || $o == "a" ) {
-		if ( $nBk > 0 ) {
-?>
-<script type="text/javascript">
-<?php
-		}
-		for ($nBk = 0 ; isset($aBk[$nBk]); $nBk++) {
-?>
-	gBkId[<?php echo $nBk;?>] = <?php echo $aBk[$nBk]["bk_mod_id"];?>;
-	gBkValue[<?php echo $nBk;?>] = '<?php echo $aBk[$nBk]["broker_module"];?>';
-<?php
-		}
-?>
-</script>
-<?php
-		//if ( $nBk > 0 ) {
+        $cloneSet = array();
+        $cloneSet[] = $form->addElement(
+                'text', 
+                'in_broker[#index#]',
+                _('Event broker directive'),
+                array(
+                    'id' => 'in_broker_#index#',
+                    'size' => 100
+                )
+                );
 	$form->addElement('text', 'event_broker_options', _("Broker Module Options"), $attrsText2);
-		//}
-	}
 
 	$tab = array();
 	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
@@ -883,16 +884,17 @@
 		$tpl->assign("Seconds", _("seconds"));
 		$tpl->assign("Minutes", _("minutes"));
 		$tpl->assign("Bytes", _("bytes"));
-        $tpl->assign("BrokerOptionsWarning",
-                     _("Warning: this value can be dangerous, use -1 if you have any doubt."));
-        $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
-        $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
-        $tpl->display("formNagios.ihtml");
+                $tpl->assign("BrokerOptionsWarning",
+                             _("Warning: this value can be dangerous, use -1 if you have any doubt."));
+                $tpl->assign('cloneSet', $cloneSet);
+                $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
+                $tpl->assign("initial_state_warning", _("This option must be enabled for Centreon Dashboard module."));
+                $tpl->assign("aggressive_host_warning", _("This option must be disable in order to avoid latency problem."));
+                $tpl->display("formNagios.ihtml");
 
 	}
 	?>
 <script type="text/javascript">
-displayBroker('<?php echo $o;?>');
 function unCheckOthers(id) {
 	if (id == "debug-1") {
 		document.getElementById("debug0").checked = false;
