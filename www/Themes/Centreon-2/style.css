@@ -470,3 +470,8 @@ ul.no-deco-list {
     margin-bottom: 10px;
     height:60px;
 }
+
+.clone-cell {
+    padding-top:10px;
+    padding-bottom:10px;
+}
