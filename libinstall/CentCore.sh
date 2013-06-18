@@ -54,6 +54,8 @@ find_OS "DISTRIB"
 if [ "$DISTRIB" = "DEBIAN" ]; then
     cp -f $BASE_DIR/tmpl/install/debian/centcore.init.d $TMP_DIR/src
     cp -f $BASE_DIR/tmpl/install/debian/centcore.default $TMP_DIR/src
+elif [ "$DISTRIB" = "SUSE" ]; then
+    cp -f $BASE_DIR/tmpl/install/suse/centcore.init.d $TMP_DIR/src
 else
     cp -f $BASE_DIR/tmpl/install/redhat/centcore.init.d $TMP_DIR/src
 fi
