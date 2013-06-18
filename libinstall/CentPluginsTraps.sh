@@ -49,6 +49,8 @@ find_OS "DISTRIB"
 if [ "$DISTRIB" = "DEBIAN" ]; then
 	cp -f $BASE_DIR/snmptt/initd/debian/snmptt.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/snmptt/initd/debian/snmptt.default $TMP_DIR/src
+elif [ "$DISTRIB" = "DEBIAN" ]; then
+        cp -f $BASE_DIR/snmptt/initd/suse/snmptt.init.d $TMP_DIR/src
 else
 	cp -f $BASE_DIR/snmptt/initd/redhat/snmptt.init.d $TMP_DIR/src
 fi
