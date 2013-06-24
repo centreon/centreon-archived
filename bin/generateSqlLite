@@ -150,7 +150,7 @@ try {
     $dbh_sqlite->exec("
             CREATE TABLE IF NOT EXISTS `nagios_server` (
                 `id` int(11) UNIQUE NOT NULL,
-                `ns_ip_address` varchar(200) DEFAULT NULL,
+                `ns_ip_address` varchar(200) DEFAULT NULL
             );
             
             CREATE TABLE IF NOT EXISTS `ns_host_relation` (
@@ -166,7 +166,7 @@ try {
                 `host_address` varchar(255) DEFAULT NULL,
                 `host_snmp_community` varchar(255) DEFAULT NULL,
                 `host_snmp_version` varchar(255) DEFAULT NULL,
-                `host_activate` int(11) DEFAULT '1',
+                `host_activate` int(11) DEFAULT '1'
             );
             
             CREATE INDEX IF NOT EXISTS idx_host_host_id ON host (host_id);
@@ -175,7 +175,7 @@ try {
                 `service_id` int(11) UNIQUE NOT NULL,
                 `service_description` varchar(200) DEFAULT NULL,
                 `service_template_model_stm_id` int(11) DEFAULT NULL,
-                `service_activate` int(11) DEFAULT '1',
+                `service_activate` int(11) DEFAULT '1'
                 );
                 
             CREATE INDEX IF NOT EXISTS idx_service_service_id ON service (service_id);
@@ -242,7 +242,7 @@ try {
             CREATE INDEX IF NOT EXISTS idx_t_traps_oid ON traps (traps_oid);
 
             CREATE TABLE IF NOT EXISTS `traps_matching_properties` (
-                    `tmo_id` int(11) DEFAULT NULL,,
+                    `tmo_id` int(11) DEFAULT NULL,
                     `trap_id` int(11) DEFAULT NULL,
                     `tmo_order` int(11) DEFAULT NULL,
                     `tmo_regexp` varchar(255) DEFAULT NULL,
@@ -265,12 +265,30 @@ try {
                 `name` int(11) DEFAULT NULL
             );
             
-            CREATE INDEX IF NOT EXISTS idx_tv_id ON traps_vendor (id);
+            CREATE INDEX IF NOT EXISTS idx_tv_id ON traps_vendor (`id`);
             
             ");
 
             $dbh_sqlite->beginTransaction();
 
+            // Poller
+            $stmt = $dbh_sqlite->prepare("INSERT INTO nagios_server (`id`, ns_ip_address) VALUES (
+                    :id, :ns_ip_address)");
+            foreach ($result_pollers as $value) {
+                $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
+                $stmt->bindParam(':ns_ip_address', $value['ns_ip_address'], PDO::PARAM_STR);
+                $stmt->execute();	
+            }
+            
+            // poller/host relation
+            $stmt = $dbh_sqlite->prepare("INSERT INTO ns_host_relation (host_host_id, nagios_server_id) VALUES (
+                    :host_host_id, :nagios_server_id)");
+            foreach ($result_pollers_relations as $value) {
+                $stmt->bindParam(':host_host_id', $value['host_host_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':nagios_server_id', $value['nagios_server_id'], PDO::PARAM_INT);
+                $stmt->execute();
+            }
+            
             // Insert host
             $stmt = $dbh_sqlite->prepare("INSERT INTO host (host_id, host_name, host_address, host_snmp_community, host_snmp_version) VALUES (
                     :host_id, :host_name, :host_address, :host_snmp_community, :host_snmp_version)");
@@ -314,7 +332,7 @@ try {
             // Insert direct services
             foreach ($result_host_services as $value) {
                 $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
-                    :service_id, :service_description, :service_template_model_stm_id, :service_activate)");
+                    :service_id, :service_description, :service_template_model_stm_id)");
                 $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
                 $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
@@ -423,7 +441,7 @@ try {
             
             // Insert traps vendor
             foreach ($result_traps_vendor as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO result_traps_vendor (`id`, `name`) VALUES (
+                $stmt = $dbh_sqlite->prepare("INSERT INTO traps_vendor (`id`, `name`) VALUES (
                     :id, :name)");
                 $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
                 $stmt->bindParam(':name', $value['name'], PDO::PARAM_STR);

@@ -15,16 +15,25 @@ sub new {
        user => undef,
        password => undef,
        port => 3306,
-       force => 0
+       force => 0,
+       type => "mysql"
       );
     my $self = {%defaults, %options};
-    $self->{port} = 3306 if (!defined($self->{port}));
+    $self->{type} = 'mysql' if (!defined($self->{type}));
 
     $self->{"instance"} = undef;
-    $self->{"type"} = "mysql";
     $self->{"args"} = [];
     bless $self, $class;
     return $self;
+}
+
+# Getter/Setter DB name
+sub type {
+    my $self = shift;
+    if (@_) {
+        $self->{"type"} = shift;
+    }
+    return $self->{"type"};
 }
 
 # Getter/Setter DB name
@@ -141,16 +150,26 @@ sub connect() {
     my $status = 0;
 
     while (1) {
-        $self->{port} = 3306 if (!defined($self->{port}));
-        $self->{"instance"} = DBI->connect(
-            "DBI:".$self->{"type"} 
-                .":".$self->{"db"}
-                .":".$self->{"host"}
-                .":".$self->{"port"},
-            $self->{"user"},
-            $self->{"password"},
-            { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
-          );
+        $self->{port} = 3306 if (!defined($self->{port}) && $self->{"type"} eq 'mysql');
+        if ($self->{"type"} =~ /SQLite/i) {
+            $self->{"instance"} = DBI->connect(
+                "DBI:".$self->{"type"} 
+                    .":".$self->{"db"},
+                $self->{"user"},
+                $self->{"password"},
+                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
+            );
+        } else {
+            $self->{"instance"} = DBI->connect(
+                "DBI:".$self->{"type"} 
+                    .":".$self->{"db"}
+                    .":".$self->{"host"}
+                    .":".$self->{"port"},
+                $self->{"user"},
+                $self->{"password"},
+                { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
+            );
+        }
         if (defined($self->{"instance"})) {
             last;
         }

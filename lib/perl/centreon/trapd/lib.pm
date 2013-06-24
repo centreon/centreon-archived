@@ -165,11 +165,11 @@ sub get_services {
     my $services_do = {};
     
     ### Get service List for the Host
-    my ($dstatus, $sth) = $cdb->query("(SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
+    my ($dstatus, $sth) = $cdb->query("SELECT s.service_id, s.service_description FROM host h, host_service_relation hsr, service s WHERE 
                                          h.host_id = " . $host_id . " AND h.host_activate = '1' AND h.host_id = hsr.host_host_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'
-                                    ) UNION ALL (SELECT s.service_id, s.service_description FROM 
+                                     UNION ALL SELECT s.service_id, s.service_description FROM 
                                    host h, host_service_relation hsr, hostgroup_relation hgr, service s WHERE h.host_id = " . $host_id . " AND h.host_activate = '1' AND 
-                                   h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1')");
+                                   h.host_id = hgr.host_host_id AND hgr.hostgroup_hg_id = hsr.hostgroup_hg_id AND hsr.service_service_id = s.service_id AND s.service_activate = '1'");
     return -1 if ($dstatus == -1);
     $result = $sth->fetchall_hashref('service_id');
     foreach my $service_id (keys %$result) {
@@ -333,26 +333,8 @@ sub check_known_trap {
     my $db_mode = 1;
 
     if ($args{config}->{cache_unknown_traps_enable} == 1) {
-        if ($args{config}->{daemon} != 1) {
-            $db_mode = 0;
-            if (-e $args{config}->{cache_unknown_traps_file}) {
-                if ((my $result = stat($args{config}->{cache_unknown_traps_file}))) {
-                    if ((time() - $result->mtime) > $args{config}->{cache_unknown_traps_retention}) {
-                        $args{logger}->writeLogInfo("Try to rewrite cache");
-                        !($db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time})) && ($db_mode = write_cache_file(logger => $args{logger}, config => $args{config}, oids_cache => $args{oids_cache}));
-                    }
-                } else {
-                    $args{logger}->writeLogError("Can't stat file " . $args{config}->{cache_unknown_traps_file} . ": $!");
-                    $args{logger}->writeLogError("Go to DB to get info");
-                    $db_mode = 1;
-                }
-            } else {
-                !($db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time})) && ($db_mode = write_cache_file(logger => $args{logger}, config => $args{config}, oids_cache => $args{oids_cache}));
-            }
-        } else {
-            if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
-                $db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time});
-            }
+        if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
+            $db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time});
         }
     }
 
@@ -385,7 +367,7 @@ sub check_known_trap {
         # Read db
         my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps WHERE traps_oid = " . $args{cdb}->quote($oid2verif));
         return 0 if ($status == -1);
-        if ($sth->rows == 0) {
+        if (!$sth->fetchrow_hashref()) {
             $args{logger}->writeLogInfo("Unknown trap");
             return 0;
         }
@@ -478,22 +460,18 @@ sub readtrap {
 
     $args{logger}->writeLogDebug("Reading trap.  Current time: " . scalar(localtime()));
 
-    if ($args{config}->{daemon} == 1) {
-        chomp(${$args{trap_date_time_epoch}} = (<$input>));	# Pull time trap was spooled
-        push(@rawtrap, ${$args{trap_date_time_epoch}});
-        if (${$args{trap_date_time_epoch}} eq "") {
-            if ($args{logger}->is_debug()) {
-                $args{logger}->writeLogDebug("  Invalid trap file.  Expected a serial time on the first line but got nothing");
-                return 0;
-            }
+    chomp(${$args{trap_date_time_epoch}} = (<$input>));	# Pull time trap was spooled
+    push(@rawtrap, ${$args{trap_date_time_epoch}});
+    if (${$args{trap_date_time_epoch}} eq "") {
+        if ($args{logger}->is_debug()) {
+            $args{logger}->writeLogDebug("  Invalid trap file.  Expected a serial time on the first line but got nothing");
+            return 0;
         }
-        ${$args{trap_date_time_epoch}} =~ s(`)(')g;	#` Replace any back ticks with regular single quote
-    } else {
-        ${$args{trap_date_time_epoch}} = time();		# Use current time as time trap was received
     }
+    ${$args{trap_date_time_epoch}} =~ s(`)(')g;	#` Replace any back ticks with regular single quote
 
     my @localtime_array;
-    if ($args{config}->{daemon} == 1 && $args{config}->{use_trap_time} == 1) {
+    if ($args{config}->{use_trap_time} == 1) {
         @localtime_array = localtime(${$args{trap_date_time_epoch}});
 
         if ($args{config}->{date_time_format} eq "") {

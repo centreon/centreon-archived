@@ -28,7 +28,6 @@ sub new {
 
     %{$self->{centreontrapd_default_config}} =
       (
-       daemon => 1,
        timeout_end => 30,
        spool_directory => "/var/spool/centreontrapd/",
        sleep => 2,
@@ -143,10 +142,7 @@ sub init {
                                                                              $self->{centreontrapd_config}->{time_format});
     centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     
-    # Daemon Only
-    if ($self->{centreontrapd_config}->{daemon} == 1) {
-        $self->set_signal_handlers;
-    }
+    $self->set_signal_handlers;
 }
 
 sub set_signal_handlers {
@@ -414,19 +410,6 @@ sub manage_exec {
     my $self = shift;
 
     $self->{id_logdb}++;
-    if ($self->{centreontrapd_config}->{daemon} == 0) {
-        eval {
-            local $SIG{ALRM} = sub { die "TIMEOUT"; };
-            alarm($self->{centreontrapd_config}->{cmd_timeout});
-            $self->do_exec();
-            alarm(0);
-        };
-        if ($@) {
-            $self->{logger}->writeLogError("ERROR: Exec timeout");
-            return 0;
-        }
-        return 1;
-    }
     
     #### Fork And manage exec ####
     ####### Check Interval ######
@@ -831,6 +814,7 @@ sub run {
     $self->{logger}->writeLogDebug("PID: $$");
 
     $self->{cdb} = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
+                                             type => $self->{centreon_config}->{db_type},
                                              host => $self->{centreon_config}->{db_host},
                                              port => $self->{centreon_config}->{db_port},
                                              user => $self->{centreon_config}->{db_user},
@@ -848,122 +832,94 @@ sub run {
     }
     $self->{whoami} = getpwuid($<);
     
-    if ($self->{centreontrapd_config}->{daemon} == 1) {
-        if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
-            $self->create_logdb_child();
-        }
-    
-        while (1) {
-            centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
-                                                       duplicate_traps => \%{$self->{duplicate_traps}});
-            while ((my $file = centreon::trapd::lib::get_trap(logger => $self->{logger}, 
-                                                              config => $self->{centreontrapd_config},
-                                                              filenames => \@{$self->{filenames}}))) {
-                $self->{logger}->writeLogDebug("Processing file: $file");
-                
-                # Test can delete before. Dont go after if we cant
-                if (! -w $self->{centreontrapd_config}->{spool_directory} . $file) {
-                    $self->{logger}->writeLogError("Dont have write permission on '" . $self->{centreontrapd_config}->{spool_directory} . $file . "' file.");
-                    if ($self->{centreontrapd_config}->{policy_trap} == 1) {
-                        unshift @{$self->{filenames}}, $file;
-                        # We're waiting. We are in a loop
-                        sleep $self->{centreontrapd_config}->{sleep};
-                        next;
-                    }
-                }
-                
-                if (open FILE, $self->{centreontrapd_config}->{spool_directory} . $file) {
-                    my $unlink_trap = 1;
-                    my $trap_is_a_duplicate = 0;
-                    my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
-                                                                         config => $self->{centreontrapd_config},
-                                                                         handle => \*FILE,
-                                                                         agent_dns_name => \$self->{agent_dns_name},
-                                                                         trap_date => \$self->{trap_date},
-                                                                         trap_time => \$self->{trap_time},
-                                                                         trap_date_time => \$self->{trap_date_time},
-                                                                         trap_date_time_epoch => \$self->{trap_date_time_epoch},
-                                                                         duplicate_traps => \%{$self->{duplicate_traps}},
-                                                                         digest_trap => \$self->{digest_trap},
-                                                                         var => \@{$self->{var}},
-                                                                         entvar => \@{$self->{entvar}},
-                                                                         entvarname => \@{$self->{entvarname}});
-                    
-                    if ($readtrap_result == 1) {
-                        if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
-                                                                   config => $self->{centreontrapd_config},
-                                                                   oid2verif => ${$self->{var}}[3],      
-                                                                   cdb => $self->{cdb},
-                                                                   last_cache_time => \$self->{last_cache_time},
-                                                                   oids_cache => \$self->{oids_cache}) == 1) {
-                            $unlink_trap = $self->getTrapsInfos();
-                        }
-                    } elsif ($readtrap_result == 0) {
-                        $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
-                    } elsif ($readtrap_result == -1) {
-                        $trap_is_a_duplicate = 1;
-                        $self->{logger}->writeLogInfo("Duplicate trap detected in trap file $file.  Skipping...");
-                    }
-                    
-                    close FILE;
-                    if ($self->{centreontrapd_config}->{policy_trap} == 0 || ($self->{centreontrapd_config}->{policy_trap} == 1 && $unlink_trap == 1)) {
-                        unless (unlink($self->{centreontrapd_config}->{spool_directory} . $file)) {
-                            $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
-                        }
-                    } else {
-                        $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
-                        # we reput in AND we delete trap_digest (avoid skipping duplicate trap)
-                        unshift @{$self->{filenames}}, $file;
-                        if ($self->{centreontrapd_config}->{duplicate_trap_window}) {
-                            delete $self->{duplicate_traps}->{$self->{digest_trap}};
-                        }
-                        sleep $self->{centreontrapd_config}->{sleep};
-                    }
-                } else {
-                    $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . "$file: ($!)");
-                    if ($self->{centreontrapd_config}->{policy_trap} == 1) {
-                        $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
-                        # we reput in
-                        unshift @{$self->{filenames}}, $file;
-                    }
-                }
-                
-                if ($self->{timetoreload} == 1) {
-                    $self->reload();
+    if ($self->{centreontrapd_config}->{log_trap_db} == 1) {
+        $self->create_logdb_child();
+    }
+
+    while (1) {
+        centreon::trapd::lib::purge_duplicate_trap(config => $self->{centreontrapd_config},
+                                                   duplicate_traps => \%{$self->{duplicate_traps}});
+        while ((my $file = centreon::trapd::lib::get_trap(logger => $self->{logger}, 
+                                                          config => $self->{centreontrapd_config},
+                                                          filenames => \@{$self->{filenames}}))) {
+            $self->{logger}->writeLogDebug("Processing file: $file");
+            
+            # Test can delete before. Dont go after if we cant
+            if (! -w $self->{centreontrapd_config}->{spool_directory} . $file) {
+                $self->{logger}->writeLogError("Dont have write permission on '" . $self->{centreontrapd_config}->{spool_directory} . $file . "' file.");
+                if ($self->{centreontrapd_config}->{policy_trap} == 1) {
+                    unshift @{$self->{filenames}}, $file;
+                    # We're waiting. We are in a loop
+                    sleep $self->{centreontrapd_config}->{sleep};
+                    next;
                 }
             }
             
-            $self->{logger}->writeLogDebug("Sleeping for " . $self->{centreontrapd_config}->{sleep} . " seconds");
-            sleep $self->{centreontrapd_config}->{sleep};
-
-            $self->manage_pool(1);
-        }
-    } else {
-        my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
-                                                             config => $self->{centreontrapd_config},
-                                                             handle => \*STDIN,
-                                                             agent_dns_name => \$self->{agent_dns_name},
-                                                             trap_date => \$self->{trap_date},
-                                                             trap_time => \$self->{trap_time},
-                                                             trap_date_time => \$self->{trap_date_time},
-                                                             trap_date_time_epoch => \$self->{trap_date_time_epoch},
-                                                             duplicate_traps => \%{$self->{duplicate_traps}},
-                                                             digest_trap => \$self->{digest_trap},
-                                                             var => \@{$self->{var}},
-                                                             entvar => \@{$self->{entvar}},
-                                                             entvarname => \@{$self->{entvarname}});
-        if ($readtrap_result == 1) {
-            if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
-                                                       config => $self->{centreontrapd_config},
-                                                       oid2verif => ${$self->{var}}[3],      
-                                                       cdb => $self->{cdb},
-                                                       last_cache_time => \$self->{last_cache_time},
-                                                       oids_cache => \$self->{oids_cache}) == 1) {
-                $self->getTrapsInfos();
+            if (open FILE, $self->{centreontrapd_config}->{spool_directory} . $file) {
+                my $unlink_trap = 1;
+                my $trap_is_a_duplicate = 0;
+                my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
+                                                                     config => $self->{centreontrapd_config},
+                                                                     handle => \*FILE,
+                                                                     agent_dns_name => \$self->{agent_dns_name},
+                                                                     trap_date => \$self->{trap_date},
+                                                                     trap_time => \$self->{trap_time},
+                                                                     trap_date_time => \$self->{trap_date_time},
+                                                                     trap_date_time_epoch => \$self->{trap_date_time_epoch},
+                                                                     duplicate_traps => \%{$self->{duplicate_traps}},
+                                                                     digest_trap => \$self->{digest_trap},
+                                                                     var => \@{$self->{var}},
+                                                                     entvar => \@{$self->{entvar}},
+                                                                     entvarname => \@{$self->{entvarname}});
+                
+                if ($readtrap_result == 1) {
+                    if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
+                                                               config => $self->{centreontrapd_config},
+                                                               oid2verif => ${$self->{var}}[3],      
+                                                               cdb => $self->{cdb},
+                                                               last_cache_time => \$self->{last_cache_time},
+                                                               oids_cache => \$self->{oids_cache}) == 1) {
+                        $unlink_trap = $self->getTrapsInfos();
+                    }
+                } elsif ($readtrap_result == 0) {
+                    $self->{logger}->writeLogDebug("Error processing trap file $file.  Skipping...");
+                } elsif ($readtrap_result == -1) {
+                    $trap_is_a_duplicate = 1;
+                    $self->{logger}->writeLogInfo("Duplicate trap detected in trap file $file.  Skipping...");
+                }
+                
+                close FILE;
+                if ($self->{centreontrapd_config}->{policy_trap} == 0 || ($self->{centreontrapd_config}->{policy_trap} == 1 && $unlink_trap == 1)) {
+                    unless (unlink($self->{centreontrapd_config}->{spool_directory} . $file)) {
+                        $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
+                    }
+                } else {
+                    $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
+                    # we reput in AND we delete trap_digest (avoid skipping duplicate trap)
+                    unshift @{$self->{filenames}}, $file;
+                    if ($self->{centreontrapd_config}->{duplicate_trap_window}) {
+                        delete $self->{duplicate_traps}->{$self->{digest_trap}};
+                    }
+                    sleep $self->{centreontrapd_config}->{sleep};
+                }
+            } else {
+                $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . "$file: ($!)");
+                if ($self->{centreontrapd_config}->{policy_trap} == 1) {
+                    $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
+                    # we reput in
+                    unshift @{$self->{filenames}}, $file;
+                }
             }
-        } elsif ($readtrap_result == 0) {
-            $self->{logger}->writeLogDebug("Error processing trap file.  Skipping...");
+            
+            if ($self->{timetoreload} == 1) {
+                $self->reload();
+            }
         }
+        
+        $self->{logger}->writeLogDebug("Sleeping for " . $self->{centreontrapd_config}->{sleep} . " seconds");
+        sleep $self->{centreontrapd_config}->{sleep};
+
+        $self->manage_pool(1);
     }
 }
 
