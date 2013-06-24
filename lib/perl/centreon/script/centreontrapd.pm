@@ -353,7 +353,8 @@ sub manage_pool {
 #
 sub do_exec {
     my $self = shift;
-
+    my $matching_result = 0;
+    
     $self->{traps_global_status} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status};
     # PREEXEC commands
     $self->execute_preexec();
@@ -364,13 +365,14 @@ sub do_exec {
     # Advanced matching rules
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment}) && 
         $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment} == 1) {
-        $status = $self->checkMatchingRules();
+        $matching_result = $self->checkMatchingRules();
     }
 
     #####################################################################
     # Submit value to passive service
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable}) && 
-        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable} == 1) { 
+        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable} == 1 &&
+        $matching_result == 0) {
         $self->submitResult();
     }
 
@@ -654,6 +656,7 @@ sub subtitute_centreon_var {
 #
 sub checkMatchingRules {
     my $self = shift;
+    my $matching_boolean = 0;
     
     # Check matching options 
     foreach my $tmo_id (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}}) {
@@ -695,9 +698,16 @@ sub checkMatchingRules {
             $self->{traps_global_status} = $tmoStatus;
             $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
             $self->{logger}->writeLogInfo("Status: $self->{traps_global_status} ($tmoStatus)");
+            $matching_boolean = 1;
             last;
         }    
     }
+    
+    # Dont do submit if no matching
+    if ($matching_boolean == 0 && $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
+        return 1;
+    }
+    return 0;
 }
 
 ################################

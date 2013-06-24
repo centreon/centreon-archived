@@ -96,7 +96,7 @@ sub get_oids {
     my $ref_result;
     
     my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
-                                        traps_oid, traps_name, traps_advanced_treatment, traps_execution_command_enable, traps_submit_result_enable, traps_status,
+                                        traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_exec_interval, traps_exec_interval_type,
                                         traps_routing_mode, traps_routing_value
                                         FROM traps LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id) WHERE traps_oid = " . $cdb->quote($oid));
@@ -137,7 +137,7 @@ sub get_hosts {
     if ($args{trap_info}->{traps_routing_mode} == 1) {
         my $search_str = $args{centreontrapd}->substitute_string($args{trap_info}->{traps_routing_value});
         ($dstatus, $sth) = $args{cdb}->query("SELECT host_id, host_name FROM host WHERE 
-                                          host_address=" . $args{cdb}->quote($search_str);
+                                          host_address=" . $args{cdb}->quote($search_str));
     } else {
         # Default Mode
         ($dstatus, $sth) = $args{cdb}->query("SELECT host_id, host_name FROM host WHERE 

@@ -2087,6 +2087,7 @@ CREATE TABLE `traps` (
   `traps_execution_command_enable` enum('0','1') DEFAULT '0',
   `traps_submit_result_enable` enum('0','1') DEFAULT '0',
   `traps_advanced_treatment` enum('0','1') DEFAULT '0',
+  `traps_advanced_treatment_default` enum('0','1') DEFAULT '0',
   `traps_timeout` int(11) DEFAULT NULL,
   `traps_exec_interval` int(11) DEFAULT NULL,
   `traps_exec_interval_type` enum('0','1', '2') DEFAULT '0',
