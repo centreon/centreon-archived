@@ -297,27 +297,9 @@ sub get_cache_oids {
     my %args = @_;
 
     my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps");
-    return 1 if ($status == -1);
+    return -1 if ($status == -1);
     ${$args{oids_cache}} = $sth->fetchall_hashref("traps_oid");
     ${$args{last_cache_time}} = time();
-    return 0;
-}
-
-sub write_cache_file {
-    # logger => obj
-    # config => hash
-    # oids_cache => val (not ref)
-    my %args = @_;
-    
-    if (!open(FILECACHE, ">", $args{config}->{cache_unknown_traps_file})) {
-        $args{logger}->writeLogError("Can't write " . $args{config}->{cache_unknown_traps_file} . ": $!");
-        $args{logger}->writeLogError("Go to DB to get info");
-        return 1;
-    }
-    my $oids_value = join("\n", keys %{${$args{oids_cache}}});
-    print FILECACHE $oids_value;
-    close FILECACHE;
-    $args{logger}->writeLogInfo("Cache file refreshed");
     return 0;
 }
 
@@ -330,40 +312,21 @@ sub check_known_trap {
     # oids_cache => ref
     my %args = @_;
     my $oid2verif = $args{oid2verif};
-    my $db_mode = 1;
 
     if ($args{config}->{cache_unknown_traps_enable} == 1) {
         if (!defined(${$args{last_cache_time}}) || ((time() - ${$args{last_cache_time}}) > $args{config}->{cache_unknown_traps_retention})) {
-            $db_mode = get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time});
-        }
-    }
-
-    if ($db_mode == 0) {
-        if (defined(${$args{oids_cache}})) {
-            if (defined(${$args{oids_cache}}->{$oid2verif})) {
-                return 1;
-            } else {
-                $args{logger}->writeLogInfo("Unknown trap");
-                return 0;
-           }
-        } else {
-            if (!open FILECACHE, $args{config}->{cache_unknown_traps_file}) {
-                $args{logger}->writeLogError("Can't read file " . $args{config}->{cache_unknown_traps_file} . ": $!");
-                $db_mode = 1;
-            } else {
-                while (<FILECACHE>) {
-                    if (/^$oid2verif$/m) {
-                        return 1;
-                    }
-                }
-                close FILECACHE;
-                $args{logger}->writeLogInfo("Unknown trap");
+            if (get_cache_oids(cdb => $args{cdb}, oids_cache => $args{oids_cache}, last_cache_time => $args{last_cache_time}) == -1) {
+                $args{logger}->writeLogError("Cant load cache trap oids.");
                 return 0;
             }
         }
-    }
-
-    if ($db_mode == 1) {
+        if (defined(${$args{oids_cache}}->{$oid2verif})) {
+            return 1;
+        } else {
+            $args{logger}->writeLogInfo("Unknown trap");
+            return 0;
+        }
+    } else {
         # Read db
         my ($status, $sth) = $args{cdb}->query("SELECT traps_oid FROM traps WHERE traps_oid = " . $args{cdb}->quote($oid2verif));
         return 0 if ($status == -1);

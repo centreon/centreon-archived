@@ -45,7 +45,6 @@ sub new {
        date_time_format => "",
        cache_unknown_traps_enable => 1,
        cache_unknown_traps_retention => 600,
-       cache_unknown_traps_file => "/tmp/centreontrapd.cache",
        # 0 = central, 1 = poller
        mode => 0,
        cmd_timeout => 10,
