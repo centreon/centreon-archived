@@ -56,6 +56,9 @@ require_once $centreon_path . '/www/autoloader.php';
 $LicenseFileInfos = $_FILES['licensefile'];
 $filename = str_replace('/', '', $_GET['module']);
 
+if (isset($_GET['oldmodule']))
+    $oldfilename = str_replace('/', '', $_GET['oldmodule']);
+
 if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
 {
     if (is_writable($centreon_path . "www/modules/" . $filename . "/license/"))
@@ -74,6 +77,9 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
 
             if ($zend_info['Product-Name'] == 'merethis_'.$filename)
                 $licenseMatchedProduct = true;
+            elseif (isset($oldfilename) && ($zend_info['Product-Name'] == 'merethis_'.$oldfilename))
+                $licenseMatchedProduct = true;
+                
 
             $ZendIds = zend_get_id();
             foreach($ZendIds as $zendId)
