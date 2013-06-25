@@ -32,13 +32,21 @@ try {
     $mysql_user, $mysql_password);
     $db_centreon->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    // get pollers
+    // Get pollers
     $stmt = $db_centreon->prepare("SELECT ns_ip_address, id
         FROM nagios_server
         WHERE id = :server_id");
     $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
     $stmt->execute();
     $result_pollers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get engine command file
+    $stmt = $db_centreon->prepare("SELECT command_file
+        FROM cfg_nagios
+        WHERE nagios_server_id = :server_id AND nagios_activate = '1'");
+    $stmt->bindParam(':server_id', $server_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $result_cfg_engine = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
     // get host relations with poller
     $stmt = $db_centreon->prepare("SELECT nagios_server_id, host_host_id
@@ -151,6 +159,11 @@ try {
             CREATE TABLE IF NOT EXISTS `nagios_server` (
                 `id` int(11) UNIQUE NOT NULL,
                 `ns_ip_address` varchar(200) DEFAULT NULL
+            );
+            
+            CREATE TABLE IF NOT EXISTS `cfg_nagios` (
+                `command_file` varchar(255) DEFAULT NULL,
+                `nagios_activate` int(11) DEFAULT '1'
             );
             
             CREATE TABLE IF NOT EXISTS `ns_host_relation` (
@@ -277,6 +290,14 @@ try {
             foreach ($result_pollers as $value) {
                 $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
                 $stmt->bindParam(':ns_ip_address', $value['ns_ip_address'], PDO::PARAM_STR);
+                $stmt->execute();	
+            }
+            
+            // Engine command file
+            $stmt = $dbh_sqlite->prepare("INSERT INTO cfg_nagios (`command_file`) VALUES (
+                    :command_file)");
+            foreach ($result_cfg_engine as $value) {
+                $stmt->bindParam(':command_file', $value['command_file'], PDO::PARAM_STR);
                 $stmt->execute();	
             }
             

@@ -551,7 +551,7 @@ sub execute_preexec {
     foreach my $trap_id (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
         my $tpe_string = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$trap_id}->{tpe_string};
         $tpe_string = $self->substitute_string($tpe_string);
-        $tpe_string = $self->subtitute_centreon_var($tpe_string);
+        $tpe_string = $self->substitute_centreon_var($tpe_string);
         
         my $output = `$tpe_string`;
         if ($? == -1) {
@@ -593,13 +593,13 @@ sub substitute_string {
     for (my $i=0; $i <= $#{$self->{entvar}}; $i++) {
         my $x = $i + 1;
         $str =~ s/\@\{${$self->{entvarname}}[$i]\}/${$self->{entvar}}[$i]/g;
-        $str =~ s/\$$x(\s|$)/${$self->{entvar}}[$i]/g;
+        $str =~ s/\$$x([^0-9]|$)/${$self->{entvar}}[$i]$1/g;
     }
     
     # Substitute preexec var
     for (my $i=0; $i <= $#{$self->{preexec}}; $i++) {
         my $x = $i + 1;
-        $str =~ s/\$p$x(\s|$)/${$self->{preexec}}[$i]/g;
+        $str =~ s/\$p$x([^0-9]|$)/${$self->{preexec}}[$i]$1/g;
     }
 
     # Substitute $*
@@ -607,25 +607,25 @@ sub substitute_string {
     $str =~ s/\$\*/$sub_str/g;
     
     # $A
-    $str =~ s/\$A(\s|$)/$self->{agent_dns_name}/g;
+    $str =~ s/\$A/$self->{agent_dns_name}/g;
     
     # $aA (Trap agent IP Adress)
-    $str =~ s/\$aA(\s|$)/${$self->{var}}[4]/g;
+    $str =~ s/\$aA/${$self->{var}}[4]/g;
     
     # $R, $r (Trap Hostname)
-    $str =~ s/\$R(\s|$)/${$self->{var}}[0]/g;
-    $str =~ s/\$r(\s|$)/${$self->{var}}[0]/g;
+    $str =~ s/\$R/${$self->{var}}[0]/g;
+    $str =~ s/\$r/${$self->{var}}[0]/g;
     
     # $aR, $ar (IP Adress)
-    $str =~ s/\$aR(\s|$)/${$self->{var}}[1]/g;
-    $str =~ s/\$ar(\s|$)/${$self->{var}}[1]/g;
+    $str =~ s/\$aR/${$self->{var}}[1]/g;
+    $str =~ s/\$ar/${$self->{var}}[1]/g;
     
     # Clean OID
     $str =~ s/\@\{[\.0-9]*\}//g;
     return $str;
 }
 
-sub subtitute_centreon_var {
+sub substitute_centreon_var {
     my $self = shift;
     my $str = $_[0];
 
@@ -641,6 +641,25 @@ sub subtitute_centreon_var {
     $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
     $str =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
     $str = $self->substitute_host_macro($str);
+    return $str;
+}
+
+sub substitute_centreon_functions {
+    my $self = shift;
+    my $str = $_[0];
+
+    if ($str =~ /\@GETHOSTBYADDR\((.*?)\)\@/) {
+        my $result = gethostbyaddr(Socket::inet_aton("$1"),Socket::AF_INET());
+        $result = '' if (!defined($result));
+        $str =~ s/\@GETHOSTBYADDR\(.*?\)\@/$result/;
+    }
+    if ($str =~ /\@GETHOSTBYNAME\((.*?)\)\@/) {
+        my $result = gethostbyname("$1");
+        $result = inet_ntoa($result) if (defined($result));
+        $result = '' if (!defined($result));
+        $str =~ s/\@GETHOSTBYNAME\(.*?\)\@/$result/;
+    }
+
     return $str;
 }
 
@@ -675,7 +694,7 @@ sub checkMatchingRules {
         }
 
         $tmoString = $self->substitute_string($tmoString);
-        $tmoString = $self->subtitute_centreon_var($tmoString);
+        $tmoString = $self->substitute_centreon_var($tmoString);
 
         ##########################
         # REPLACE special Chars
@@ -723,7 +742,7 @@ sub executeCommand {
         $traps_execution_command =~ s/\&#039\;/'/g;
     }
     
-    $traps_execution_command = $self->subtitute_centreon_var($traps_execution_command);
+    $traps_execution_command = $self->substitute_centreon_var($traps_execution_command);
     
     ##########################
     # SEND COMMAND
@@ -835,7 +854,7 @@ sub run {
     if ($self->{centreontrapd_config}->{mode} == 0) {
         $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
     } else {
-        # Dirty!!! Need to know the poller
+        # Dirty!!! Need to know the poller (not Dirty if you use SQLite database)
         my ($status, $sth) = $self->{cdb}->query("SELECT `command_file` FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
         my @conf = $sth->fetchrow_array();
         $self->{cmdFile} = $conf[0];

@@ -133,19 +133,26 @@ sub get_hosts {
     my %args = @_;
     my ($dstatus, $sth);
     my $ref_result;
+    my $request;
     
     if ($args{trap_info}->{traps_routing_mode} == 1) {
         my $search_str = $args{centreontrapd}->substitute_string($args{trap_info}->{traps_routing_value});
-        ($dstatus, $sth) = $args{cdb}->query("SELECT host_id, host_name FROM host WHERE 
-                                          host_address=" . $args{cdb}->quote($search_str));
+        $search_str = $args{centreontrapd}->substitute_centreon_functions($search_str);
+        $request = "SELECT host_id, host_name FROM host WHERE host_address = " . $args{cdb}->quote($search_str);
     } else {
         # Default Mode
-        ($dstatus, $sth) = $args{cdb}->query("SELECT host_id, host_name FROM host WHERE 
-                                          host_address=" . $args{cdb}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cdb}->quote($args{ip_address}));
+        $request = "SELECT host_id, host_name FROM host WHERE host_address=" . $args{cdb}->quote($args{agent_dns_name}) .  " OR host_address=" . $args{cdb}->quote($args{ip_address});  
     }
     
+    ($dstatus, $sth) = $args{cdb}->query($request);
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('host_id');
+
+    if ($args{logger}->is_debug()) {
+        if (scalar(keys %$ref_result) == 0) {
+            $args{logger}->writeLogDebug("Cant find a host. Request: " . $request);
+        }
+    }
     
     # Get server_id
     foreach (keys %$ref_result) {
