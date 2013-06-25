@@ -247,7 +247,7 @@ sub query {
 
         $statement_handle = $self->{"instance"}->prepare($query);
         if (!defined $statement_handle) {
-            $self->error($statement_handle->errstr, $query);
+            $self->error($self->{"instance"}->errstr, $query);
             $status = -1;
             last if $self->{'force'} == 0;
             next;

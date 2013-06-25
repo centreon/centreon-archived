@@ -191,6 +191,7 @@ sub handle_TERM {
 
 sub handle_HUP {
     my $self = shift;
+    $self->{logger}->writeLogInfo("$$ Receiving order to reload...");
     $self->{timetoreload} = 1;
 }
 
@@ -270,6 +271,12 @@ sub reload {
     centreon::common::misc::reload_db_config($self->{logger}, $self->{config_file}, $self->{cdb});
     centreon::common::misc::check_debug($self->{logger}, "debug_centreontrapd", $self->{cdb}, "centreontrapd main process");
 
+    if ($self->{cdb}->type() =~ /SQLite/i) {
+        $self->{logger}->writeLogInfo("Sqlite database. Need to disconnect and connect file.");
+        $self->{cdb}->disconnect();
+        $self->{cdb}->connect();
+    }
+    
     if ($self->{logdb_pipes}{'running'} == 1) {
         kill('HUP', $self->{pid_logdb_child});
         $self->{logger}->writeLogInfo("Send -HUP signal to logdb process..");
@@ -279,8 +286,12 @@ sub reload {
     ($self->{centreontrapd_config}->{date_format}, $self->{centreontrapd_config}->{time_format}) = 
                                     centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
                                                                              $self->{centreontrapd_config}->{time_format});
-    centreon::trapd::lib::init_modules();
-    centreon::trapd::lib::get_cache_oids();
+    # redefine to avoid out when we try modules
+    $SIG{__DIE__} = undef;
+    centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
+    $self->set_signal_handlers;
+
+    centreon::trapd::lib::get_cache_oids(cdb => $self->{cdb}, oids_cache => \$self->{oids_cache}, last_cache_time => \$self->{last_cache_time});
     $self->{timetoreload} = 0;
 }
 
@@ -918,6 +929,9 @@ sub run {
         $self->{logger}->writeLogDebug("Sleeping for " . $self->{centreontrapd_config}->{sleep} . " seconds");
         sleep $self->{centreontrapd_config}->{sleep};
 
+        if ($self->{timetoreload} == 1) {
+            $self->reload();
+        }
         $self->manage_pool(1);
     }
 }
