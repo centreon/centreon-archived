@@ -53,9 +53,7 @@
 	$instanceObj = new CentreonInstance($obj->DB);
         $media = new CentreonMedia($obj->DB);
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
+	if ((!isset($obj->session_id)) || (!CentreonSession::checkSession($obj->session_id, $obj->DB))) {
 		print "Bad Session ID";
 		exit();
 	}
@@ -75,15 +73,18 @@
 	$instance 	= $obj->checkArgument("instance", $_GET, $obj->defaultPoller);
 	$hostgroups = $obj->checkArgument("hostgroups", $_GET, $obj->defaultHostgroups);
 	$search 	= $obj->checkArgument("search", $_GET, "");
-	if ($o == "hpb" || $o == "h_unhandled") {
-	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+    $order 		= $obj->checkArgument("order", $_GET, "ASC");
+	if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
+	    $sort_type = "name";
 	} else {
-	    $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
+            if ($o == "hpb" || $o == "h_unhandled") {
+                $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+            } else {
+                $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+            }
 	}
-
-	$order 		= $obj->checkArgument("order", $_GET, "ASC");
-	$dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
-        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+    $dateFormat = $obj->checkArgument("date_time_format_status", $_GET, "d/m/Y H:i:s");
+    $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
 
 
 	/*
@@ -193,37 +194,35 @@
 	}
 	$rq1 .= " GROUP BY host_name ";
 	switch ($sort_type) {
-		case 'host_name' :
-                    $rq1 .= " ORDER BY no.name1 ". $order;
-                    break;
-		case 'current_state' :
-                    $rq1 .= " ORDER BY nhs.current_state ". $order.",no.name1 ";
-                    break;
-		case 'last_state_change' :
-                    $rq1 .= " ORDER BY nhs.last_state_change ". $order.",no.name1 ";
-                    break;
-		case 'last_hard_state_change' :
-                    $rq1 .= " ORDER BY nhs.last_hard_state_change ". $order.",no.name1 ";
-                    break;
-		case 'last_check' :
-                    $rq1 .= " ORDER BY nhs.last_check ". $order.",no.name1 ";
-                    break;
-		case 'current_check_attempt' :
-                    $rq1 .= " ORDER BY nhs.current_check_attempt ". $order.",no.name1 ";
-                    break;
-		case 'ip' :
+        default:
+        case 'host_name' :
+            $rq1 .= " ORDER BY no.name1 ". $order;
+            break;
+        case 'current_state' :
+            $rq1 .= " ORDER BY nhs.current_state ". $order.",no.name1 ";
+            break;
+        case 'last_state_change' :
+            $rq1 .= " ORDER BY nhs.last_state_change ". $order.",no.name1 ";
+            break;
+        case 'last_hard_state_change' :
+            $rq1 .= " ORDER BY nhs.last_hard_state_change ". $order.",no.name1 ";
+            break;
+        case 'last_check' :
+            $rq1 .= " ORDER BY nhs.last_check ". $order.",no.name1 ";
+            break;
+        case 'current_check_attempt' :
+            $rq1 .= " ORDER BY nhs.current_check_attempt ". $order.",no.name1 ";
+            break;
+        case 'ip' :
             # Not SQL portable
-                    $rq1 .= " ORDER BY IFNULL(inet_aton(nh.address), nh.address) ". $order.",no.name1 ";
-                    break;
-		case 'plugin_output' :
-                    $rq1 .= " ORDER BY nhs.output ". $order.",no.name1 ";
-                    break;
-                case 'criticality_id':
-                    $rq1 .= " ORDER BY isnull $order, criticality $order, no.name1 ";
-                    break;
-		default :
-                    $rq1 .= " ORDER BY isnull $order, criticality $order, no.name1 ";
-                    break;
+            $rq1 .= " ORDER BY IFNULL(inet_aton(nh.address), nh.address) ". $order.",no.name1 ";
+            break;
+        case 'plugin_output' :
+            $rq1 .= " ORDER BY nhs.output ". $order.",no.name1 ";
+            break;
+        case 'criticality_id':
+            $rq1 .= " ORDER BY isnull $order, criticality $order, no.name1 ";
+            break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
@@ -259,7 +258,7 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
 	$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
-        $obj->XML->writeElement("use_criticality", $criticalityUsed);
+    $obj->XML->writeElement("use_criticality", $criticalityUsed);
 	$obj->XML->endElement();
 
 	$delimInit = 0;

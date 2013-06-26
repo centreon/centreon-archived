@@ -61,8 +61,28 @@
 
 	include("./include/common/autoNumLimit.php");
 
-	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-	!isset($_GET["order"]) ? $order = 'ASC' : $order = $_GET["order"];
+    
+    
+    if (!isset($_GET["sort_types"])) {
+        if (isset($_SESSION['centreon']->optGen["sort_type"]) && $_SESSION['centreon']->optGen["sort_type"] != "host_name") {
+            $sort_types = CentreonDB::escape($_SESSION['centreon']->optGen["sort_type"]);
+        } else {
+            $sort_types = "host_name";
+        }
+    } else {
+        $sort_type = $_GET["sort_types"];
+    }
+    if (!isset($_GET["order"])) {
+        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
+            $order = "ASC";
+        } else {
+            $order = $_SESSION['centreon']->optGen["global_sort_order"];
+        }
+    } else {
+        $order = $_GET["order"];
+    }
+    
+    
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
 	!isset($_GET["sort_type"]) ? $sort_type = "" : $sort_type = $_GET["sort_type"];
