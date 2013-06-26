@@ -62,7 +62,7 @@ sub new {
     @{$self->{var}} = undef;                      # Variables of trap received by SNMPTRAPD
     @{$self->{entvar}} = undef;                   # Enterprise variable values of trap received by SNMPTRAPD
     @{$self->{entvarname}} = undef;               # Enterprise variable names of trap received by SNMPTRAPD
-    @{$self->{preexec}} = undef;                  # Result from PREEXEC
+    @{$self->{preexec}} = ();                     # Result from PREEXEC
     $self->{agent_dns_name} = undef;
     $self->{trap_date} = undef;
     $self->{trap_time} = undef;
@@ -548,8 +548,8 @@ sub submitResult {
 sub execute_preexec {
     my $self = shift;
 
-    foreach my $trap_id (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
-        my $tpe_string = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$trap_id}->{tpe_string};
+    foreach my $tpe_order (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
+        my $tpe_string = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}->{$tpe_order}->{tpe_string};
         $tpe_string = $self->substitute_string($tpe_string);
         $tpe_string = $self->substitute_centreon_var($tpe_string);
         

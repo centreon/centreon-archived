@@ -114,7 +114,7 @@ sub get_oids {
         # Get Trap PREEXEC Commands
         ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_preexec WHERE trap_id = " . $_ . " ORDER BY tpe_order ASC");
         return -1 if ($dstatus == -1);
-        $ref_result->{$_}->{traps_preexec} = $sth->fetchall_hashref("trap_id");
+        $ref_result->{$_}->{traps_preexec} = $sth->fetchall_hashref("tpe_order");
         
         # Get Associated Host
         # TODO
