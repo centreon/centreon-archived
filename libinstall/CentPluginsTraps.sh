@@ -112,12 +112,12 @@ log "INFO" "$(gettext "Backup all your snmp files")"
 # Backup snmptrapd.conf if exist
 if [ -e "$SNMP_ETC/snmptrapd.conf" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMP_ETC/snmptrapd.conf"
-	mv $SNMP_ETC/snmptrapd.conf $SNMP_ETC/snmptrapd.conf.bak-centreon
+	\cp $SNMP_ETC/snmptrapd.conf $SNMP_ETC/snmptrapd.conf.bak-centreon
 fi
 # Backup snmptt.ini 
 if [ -e "$SNMP_ETC/centreon_traps/snmptt.ini" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMP_ETC/centreon_traps/snmptt.ini"
-	mv $SNMP_ETC/centreon_traps/snmptt.ini \
+	\cp $SNMP_ETC/centreon_traps/snmptt.ini \
 		$SNMP_ETC/centreon_traps/snmptt.ini.bak-centreon
 fi
 
@@ -130,7 +130,7 @@ fi
 # Backup snmp.conf if exist
 if [ -e "$SNMP_ETC/snmp.conf" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMP_ETC/snmp.conf"
-	mv $SNMP_ETC/snmp.conf $SNMP_ETC/snmp.conf.bak-centreon
+	\cp $SNMP_ETC/snmp.conf $SNMP_ETC/snmp.conf.bak-centreon
 fi
 
 # Backup snmptt if exist
@@ -200,23 +200,37 @@ fi
 install_init_service "snmptt" | tee -a $LOG_FILE
 
 ## Install all config file
-log "INFO" "$(gettext "Install") : snmptrapd.conf"
-$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-	$TMP_DIR/final/snmptrapd/snmptrapd.conf \
-	$SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install") : snmptrapd.conf"
+write_snmp_conf="1"
+if [ "$upgrade" = "1" ]; then
+    yes_no_default "$(gettext "Should I overwrite all your SNMP configuration files?")"
+    if [ "$?" -eq 0 ] ; then
+        write_snmp_conf="1"
+	log "INFO" "$(gettext "SNMP configuration will be overwritten")"
+    else
+        write_snmp_conf="0"
+        log "INFO" "$(gettext "Keeping configuration files")"
+    fi
+fi
+if [ "$write_snmp_conf" = "1" ]; then
+    log "INFO" "$(gettext "Install") : snmptrapd.conf"
+    $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+            $TMP_DIR/final/snmptrapd/snmptrapd.conf \
+            $SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
+    check_result $? "$(gettext "Install") : snmptrapd.conf"
 
-log "INFO" "$(gettext "Install") : snmp.conf"
-$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-	$TMP_DIR/final/snmptrapd/snmp.conf \
-	$SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install") : snmp.conf"
+    log "INFO" "$(gettext "Install") : snmp.conf"
+    $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+            $TMP_DIR/final/snmptrapd/snmp.conf \
+            $SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
+    check_result $? "$(gettext "Install") : snmp.conf"
 
-log "INFO" "$(gettext "Install") : snmptt.ini"
-$INSTALL_DIR/cinstall $cinstall_opts -u $WEB_USER -g $CENTREON_GROUP -m 644 \
-	$TMP_DIR/final/snmptt/snmptt.ini \
-	$SNMP_ETC/centreon_traps/snmptt.ini >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install") : snmptt.ini"
+    log "INFO" "$(gettext "Install") : snmptt.ini"
+    $INSTALL_DIR/cinstall $cinstall_opts -u $WEB_USER -g $CENTREON_GROUP -m 644 \
+            $TMP_DIR/final/snmptt/snmptt.ini \
+            $SNMP_ETC/centreon_traps/snmptt.ini >> $LOG_FILE 2>&1
+    check_result $? "$(gettext "Install") : snmptt.ini"
+fi
+## End ##
 
 log "INFO" "$(gettext "Install") : snmptt"
 $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
@@ -241,9 +255,11 @@ $INSTALL_DIR/cinstall $cinstall_opts -d 775 \
 	/var/spool/snmptt
 
 if [ -f $CENTREON_ETC/conf.pm ] ; then 
-	log "INFO" "$(gettext "Generate SNMPTT configuration")"
+    if [ "$write_snmp_conf" = "1" ]; then
+        log "INFO" "$(gettext "Generate SNMPTT configuration")"
 	$CENTPLUGINSTRAPS_BINDIR/centGenSnmpttConfFile >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "Generate SNMPTT configuration")"
+    fi
 fi
 
 # Create traps directory in nagios pluginsdir
