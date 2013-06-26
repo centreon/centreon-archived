@@ -293,7 +293,11 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_GENDIR/filesGeneration/nagiosCFG >> "$LOG_FILE" 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
-	$CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1	
+	$CENTREON_GENDIR/filesGeneration/broker >> "$LOG_FILE" 2>&1
+
+# setgid flag
+chmod -R g+rwxs $CENTREON_GENDIR/filesGeneration/
+
 # By default, CentWeb use a filesGeneration directory in install dir.
 # I create a symlink to continue in a same process
 [ ! -h $INSTALL_DIR_CENTREON/filesGeneration -a ! -d $INSTALL_DIR_CENTREON/filesGeneration ] && \

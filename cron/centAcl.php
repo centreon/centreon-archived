@@ -48,6 +48,7 @@ include_once "@CENTREON_ETC@/centreon.conf.php";
 include_once $centreon_path . "/cron/centAcl-Func.php";
 include_once $centreon_path . "/www/class/centreonDB.class.php";
 include_once $centreon_path . "/www/class/centreonLDAP.class.php";
+include_once $centreon_path . "/www/class/centreonMeta.class.php";
 
 $centreonDbName = $conf_centreon['db'];
 
@@ -74,7 +75,9 @@ try {
      */
     $pearDB = new CentreonDB();
     $pearDBO = new CentreonDB("centstorage");
-
+    
+    $metaObj = new CentreonMeta($pearDB);
+    
     /*
      * Detect Which DB layer is used
      */
@@ -616,6 +619,14 @@ try {
                     unset($tab);
                 }
                 unset($Host);
+                
+                /*
+                 * Set meta services
+                 */
+                $metaServices = getMetaServices($res2['acl_res_id'], $pearDB, $metaObj);
+                if (count($metaServices)) {
+                    $tabElem += $metaServices;
+                }
                 
                 /* ------------------------------------------------------------------
                  * reset Flags

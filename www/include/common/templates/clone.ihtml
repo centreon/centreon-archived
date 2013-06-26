@@ -1,7 +1,7 @@
 <div id="{$cloneId}_controls">
     <div id="{$cloneId}_add">
         <span style="cursor:pointer;">
-            Add <img src="./img/icones/16x16/navigate_plus.gif">
+            {t}Add{/t} <img src="./img/icones/16x16/navigate_plus.gif">
         </span>
     </div>
 </div>
@@ -22,6 +22,6 @@
         <input type="hidden" name="clone_order_{$cloneId}_#index#" id="clone_order_#index#" />
     </li>
     <li id="{$cloneId}_noforms_template">
-        <p class="muted">Nothing here, use the "Add" button</p>
+        <p class="muted">{t}Nothing here, use the "Add" button{/t}</p>
     </li>
 </ul>

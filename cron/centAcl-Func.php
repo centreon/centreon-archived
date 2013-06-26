@@ -385,4 +385,28 @@
 		}
 		return $hSvs;
 	}
+        
+        /**
+         * Get meta services
+         * 
+         * @param int $resId
+         * @param CentreonDB $db
+         * @param CentreonMeta $metaObj
+         * @return array
+         */
+        function getMetaServices($resId, $db, $metaObj) {
+            $sql = "SELECT meta_id 
+                FROM acl_resources_meta_relations
+                WHERE acl_res_id = {$db->escape($resId)}";
+            $res = $db->query($sql);
+            $arr = array();
+            if ($res->numRows()) {
+                $hostId = $metaObj->getRealHostId();
+                while ($row = $res->fetchRow()) {
+                    $svcId = $metaObj->getRealServiceId($row['meta_id']);
+                    $arr['_Module_Meta']['meta_'.$row['meta_id']] = "$hostId,$svcId";
+                }
+            }
+            return $arr;
+        }
 ?>
