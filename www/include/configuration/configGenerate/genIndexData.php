@@ -36,6 +36,7 @@
  *
  */
 
+<<<<<<< HEAD
 define('DAY_SECS', 86400);
 
 /* RRD retention cache*/
@@ -50,6 +51,9 @@ while ($row = $retentionRes->fetchRow()) {
         $retentionCache[$row['id']] = $row['retention'] * DAY_SECS;
     }
 }
+=======
+define('NB_REQUEST', 1000);
+>>>>>>> 71a6745... closes #4568
 
 /* Change index data info */
 $indexToAdd = array();
@@ -69,13 +73,11 @@ AND hgr.host_host_id = h.host_id
 AND h.host_activate = '1'
 AND hsr.service_service_id = s.service_id";
 $hostSvcRes = $pearDB->query($hostSvcSql);
-$hostSvc = "";
+$hostSvc = array();
 while ($hostSvcRow = $hostSvcRes->fetchRow()) {
-    if ($hostSvc != "") {
-        $hostSvc .= ",";
-    }
+    
     $relation = $hostSvcRow['host_id'].';'.$hostSvcRow['service_id'];
-    $hostSvc .= "'".$relation."'";
+    $hostSvc[$hostSvcRow['host_id']][$hostSvcRow['service_id']] = true;
     if (!isset($listIndexData[$relation])) {
         $indexToAdd[] = array('host_id' => $hostSvcRow['host_id'],
                               'service_id' => $hostSvcRow['service_id'],
@@ -88,17 +90,52 @@ while ($hostSvcRow = $hostSvcRes->fetchRow()) {
         $serviceRetention[$retentionCache[$host_id]] = $host_id.';'.$hostSvcRow['service_id'];
     }
 }
-if ($hostSvc != "") {
-    $pearDBO->query("UPDATE index_data
-            SET to_delete = 1
-            WHERE CONCAT(host_id, ';', service_id) NOT IN (".$hostSvc.")");
+
+$res = $pearDBO->query("SELECT host_id, service_id FROM index_data");
+$toDelete = "";
+$i = 0;
+$sql = "UPDATE index_data SET to_delete = 1 "
+     . "WHERE CONCAT(host_id,';',service_id) IN (%s)";
+while ($row = $res->fetchRow()) {
+    $hid = $row['host_id'];
+    $sid = $row['service_id'];
+    if (!isset($hostSvc[$hid]) || !isset($hostSvc[$hid][$sid])) {
+        $toDelete .= "'$hid;$sid',";
+    }
+    $i++;
+    if (($i % NB_REQUEST) == 0) {
+        if ($toDelete != "") {
+            $pearDBO->query(sprintf($sql, substr($toDelete, 0, (strlen($toDelete)-1))));
+            $toDelete = "";
+        }
+    }
 }
 
-$queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete)
-VALUES (%d, '%s', %d, '%s', 0)";
+if ($toDelete != "") {
+    $pearDBO->query(sprintf($sql, substr($toDelete, 0, (strlen($toDelete)-1))));
+}
+unset($hostSvc);
+
+
+// 
+$queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete) VALUES ";
+$queryAddIndexValues = "(%d, '%s', %d, '%s', 0),";
+$valuesToAdd = "";
+$i = 0;
+
 foreach ($indexToAdd as $index) {
-    $queryAddIndexToExec = sprintf($queryAddIndex, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
-    $pearDBO->query($queryAddIndexToExec);
+    $valuesToAdd .= sprintf($queryAddIndexValues, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
+    $i++;
+    if (($i % NB_REQUEST) == 0) {
+        if ($valuesToAdd != "") {
+            $pearDBO->query($queryAddIndex.substr($valuesToAdd, 0, (strlen($valuesToAdd)-1)));
+            $valuesToAdd = "";
+        }
+    }
+}
+
+if ($valuesToAdd != "") {
+    $pearDBO->query($queryAddIndex.substr($valuesToAdd, 0, (strlen($valuesToAdd)-1)));
 }
 
 $pearDBO->query('UPDATE index_data SET rrd_retention = NULL');
