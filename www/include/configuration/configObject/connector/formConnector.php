@@ -59,24 +59,23 @@ function return_plugin($rep)
     return ($availableConnectors);
 }
 
-try
-{
+try {
+    
     $tpl = new Smarty();
     $tpl = initSmartyTpl($path, $tpl);
-
+    
     $cnt = array();
-    if (($o == "c" || $o == "w") && isset($connector_id))
-    {
+    if (($o == "c" || $o == "w") && isset($connector_id)) {
         $cnt = $connectorObj->read((int)$connector_id);
         $cnt['connector_name'] = $cnt['name'];
         $cnt['connector_description'] = $cnt['description'];
         $cnt['command_line'] = $cnt['command_line'];
 
-        if($cnt['enabled'])
+        if ($cnt['enabled']) {
             $cnt['connector_status'] = '1';
-        else
+        } else {
             $cnt['connector_status'] = '0';
-
+        }
         $cnt['connector_id'] = $cnt['id'];
 
         unset($cnt['name']);
@@ -90,15 +89,26 @@ try
 	 */
 	$resource = array();
 	$DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
-	while ($row = $DBRESULT->fetchRow())
-    {
+	while ($row = $DBRESULT->fetchRow()) {
 		$resource[$row["resource_name"]] = $row["resource_name"];
-		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
-			 $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+		if (isset($row["resource_comment"]) && $row["resource_comment"] != "") {
+            $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+        }
 	}
 	unset($row);
 	$DBRESULT->free();
 
+
+    /*                                                                                                                                                                                                            
+     * Commands                                                                                                                                                                                                   
+     */
+    $command = array();
+    $DBRESULT = $pearDB->query("SELECT command_id, command_name FROM `command` ORDER BY `command_name`");
+    while ($row = $DBRESULT->fetchRow()) {
+        $command[$row["command_id"]] = $row["command_name"];
+    }
+    unset($row);
+    $DBRESULT->free();
 
     /*
 	 * Nagios Macro
@@ -136,6 +146,11 @@ try
 	ksort($availableConnectors_list);
 	$form->addElement('select', 'plugins', null, $availableConnectors_list);
 
+    $ams3 = $form->addElement('advmultiselect', 'command_id', array(_("Used by commands"), _("Available"), _("Selected")), $command, $attrsAdvSelect, SORT_ASC);
+    $ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+    $ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+    $ams3->setElementTemplate($eTemplate);
+    echo $ams3->getElementJs(false);
 
     $cntStatus = array();
     $cntStatus[] = HTML_QuickForm::createElement('radio', 'connector_status', null, _("Enabled"), '1');
@@ -156,13 +171,13 @@ try
     } elseif ($o == "c") {
         $subC = $form->addElement('submit', 'submitC', _("Save"));
         $res = $form->addElement('reset', 'reset', _("Reset"));
-	$form->setDefaults($cnt);
+        $form->setDefaults($cnt);
     } elseif ($o == "a") {
         $subA = $form->addElement('submit', 'submitA', _("Save"));
-	$res = $form->addElement('reset', 'reset', _("Reset"));
+        $res = $form->addElement('reset', 'reset', _("Reset"));
     }
-
-
+    
+    
     $form->addRule('connector_name', _("Name"), 'required');
     $form->addRule('command_line', _("Command Line"), 'required');
     $form->registerRule('exist', 'callback', 'testConnectorExistence');
@@ -182,18 +197,19 @@ try
         $connectorValues['command_line'] = $tab['command_line'];
         $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
         $connectorId = $tab['connector_id'];
-
-        if ($form->getSubmitValue("submitA"))
+        
+        if ($form->getSubmitValue("submitA")) {
             $connectorId = $cntObj->create($connectorValues, true);
-        elseif ($form->getSubmitValue("submitC"))
+        } else if ($form->getSubmitValue("submitC")) {
             $cntObj->update((int)$connectorId, $connectorValues);
+        }
         $valid = true;
     }
 
 
-    if ($valid)
+    if ($valid) {
         require_once($path."listConnector.php");
-    else {
+    } else {
         $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
         $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
         $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
@@ -201,18 +217,16 @@ try
         $tpl->assign('form', $renderer->toArray());
         $tpl->assign('o', $o);
         $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	$helptext = "";
-	include_once("help.php");
-	foreach ($help as $key => $text) {
-		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
-	}
-	$tpl->assign("helptext", $helptext);
-
+        $helptext = "";
+        include_once("help.php");
+        foreach ($help as $key => $text) {
+            $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+        }
+        $tpl->assign("helptext", $helptext);
+        
         $tpl->display("formConnector.ihtml");
     }
-}
-catch(Exception $e)
-{
+} catch(Exception $e) {
     echo "Erreur n°".$e->getCode()." : ".$e->getMessage();
 }
 

@@ -1,5 +1,5 @@
 <form {$form.attributes}>
-    
+
     <div id="validFormTop">
 	{if $o == "a" || $o == "c"}
 		<p class="oreonbutton">{$form.submitC.html}{$form.submitA.html}&nbsp;&nbsp;&nbsp;{$form.reset.html}</p>
@@ -42,11 +42,10 @@
                     </table>
                 </td>
             </tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="command_id"> {$form.command_id.label.0}</td><td class="FormRowValue">{$form.command_id.html}</td></tr>            
             <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="connector_status"> {$form.connector_status.label}</td><td class="FormRowValue">{$form.connector_status.html}</td></tr>
-            
         </table>
-    </div>
-              
+    </div>              
     <div id="validForm">
 	{if $o == "a" || $o == "c"}
 		<p>{$form.action.html}</p>
