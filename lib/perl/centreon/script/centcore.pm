@@ -662,21 +662,11 @@ sub syncTraps($) {
         my $port = checkSSHPort($ns_server->{'ssh_port'});
 
         if ($id != 0 && $ns_server->{'localhost'} == 0) {
-            my $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
+            my $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
             $self->{logger}->writeLogDebug($cmd);
             $stdout = `$cmd`;
             if (defined($stdout) && $stdout){
                 $self->{logger}->writeLogInfo("Result : $stdout");
-            }
-
-            $self->{logger}->writeLogDebug("ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l");
-            my $ls = `ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l`;
-            if ($ls > 1) {
-                $self->{logger}->writeLogDebug("$self->{rsync} --port=$port -c /etc/snmp/centreon_traps/*.conf ". $ns_server->{'ns_ip_address'} .":/etc/snmp/centreon_traps/");                
-                $stdout = `$self->{rsync} --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/`;
-                if (defined($stdout) && $stdout){
-                    $self->{logger}->writeLogInfo("Result : $stdout\n");
-                }
             }
         }
     } else {
@@ -689,22 +679,11 @@ sub syncTraps($) {
             my $port = checkSSHPort($ns_server->{'ssh_port'});
 
             if ($id == 0) {
-                my $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/*.ini $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
+                my $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
                 $self->{logger}->writeLogDebug($cmd);
                 $stdout = `$cmd`;
                 if (defined($stdout) && $stdout){
                     $self->{logger}->writeLogInfo("Result : $stdout");
-                }
-                $cmd = "ls -l /etc/snmp/centreon_traps/*.conf 2>> /dev/null | wc -l";
-                $self->{logger}->writeLogDebug($cmd);
-                my $ls = `$cmd`;
-                if ($ls > 1) {
-                    $cmd = "$self->{rsync} --port=$port -c /etc/snmp/centreon_traps/*.conf $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/";
-                    $self->{logger}->writeLogDebug($cmd);
-                    $stdout = `$cmd`;
-                    if (defined($stdout) && $stdout){
-                        $self->{logger}->writeLogInfo("Result : $stdout");
-                    }
                 }
             }
         }
@@ -806,9 +785,9 @@ sub getInfos($) {
 }
 
 ################################
-## Restart SNMPTT Daemon
+## Reload CentreonTrapd Daemon
 #
-sub restartSNMPTT($) {
+sub reloadCentreonTrapd($) {
     my $self = shift;
     my $id = $_[0];
     my $stdout = "";
@@ -819,20 +798,20 @@ sub restartSNMPTT($) {
     my $port = checkSSHPort($ns_server->{'ssh_port'});
 
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}
-        && defined($ns_server->{'init_script_snmptt'}) && $ns_server->{'init_script_snmptt'} ne "") {
+        && defined($ns_server->{'init_script_centreontrapd'}) && $ns_server->{'init_script_centreontrapd'} ne "") {
         # Launch command
         if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
-            $cmd = "$self->{sudo} ".$ns_server->{'init_script_snmptt'}." restart";
+            $cmd = "$self->{sudo} ".$ns_server->{'init_script_centreontrapd'}." restart";
             $self->{logger}->writeLogDebug($cmd);
             $stdout = `$cmd`;
         } else {
-            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ns_ip_address'} ." $self->{sudo} ".$ns_server->{'init_script_snmptt'}." restart";
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ns_ip_address'} ." $self->{sudo} ".$ns_server->{'init_script_centreontrapd'}." reload";
             $self->{logger}->writeLogDebug($cmd);
             $stdout = `$cmd`;
         }
-        $self->{logger}->writeLogInfo("Restart SNMPTT on poller $id ($ns_server->{'ns_ip_address'})");
+        $self->{logger}->writeLogInfo("Reload CentreonTrapd on poller $id ($ns_server->{'ns_ip_address'})");
     } else {
-        $self->{logger}->writeLogError("Cannot restart SNMPTT for poller $id");
+        $self->{logger}->writeLogError("Cannot reload CentreonTrapd for poller $id");
     }
 }
 
@@ -863,8 +842,8 @@ sub parseRequest($){
         $self->testConfig($1);
     } elsif ($action =~ /^SYNCTRAP\:([0-9]*)/){
         $self->syncTraps($1);
-    } elsif ($action =~ /^RESTARTSNMPTT\:([0-9]*)/){
-        $self->restartSNMPTT($1);
+    } elsif ($action =~ /^RELOADCENTREONTRAPD\:([0-9]*)/){
+        $self->reloadCentreonTrapd($1);
     } elsif ($action =~ /^SYNCARCHIVES\:([0-9]*)/){
         $self->syncArchives($1);
     } elsif ($action =~ /^EXTERNALCMD\:([0-9]*)\:(.*)/){
