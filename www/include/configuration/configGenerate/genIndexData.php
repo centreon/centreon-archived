@@ -35,9 +35,9 @@
  * SVN : $Id:$
  *
  */
-
-<<<<<<< HEAD
+ 
 define('DAY_SECS', 86400);
+define('NB_REQUEST', 1000);
 
 /* RRD retention cache*/
 $retentionCache = array();
@@ -51,9 +51,6 @@ while ($row = $retentionRes->fetchRow()) {
         $retentionCache[$row['id']] = $row['retention'] * DAY_SECS;
     }
 }
-=======
-define('NB_REQUEST', 1000);
->>>>>>> 71a6745... closes #4568
 
 /* Change index data info */
 $indexToAdd = array();
@@ -123,6 +120,17 @@ $queryAddIndexValues = "(%d, '%s', %d, '%s', 0),";
 $valuesToAdd = "";
 $i = 0;
 
+if ($toDelete != "") {
+    $pearDBO->query(sprintf($sql, substr($toDelete, 0, (strlen($toDelete)-1))));
+}
+unset($hostSvc);
+
+
+// 
+$queryAddIndex = "INSERT INTO index_data (host_id, host_name, service_id, service_description, to_delete) VALUES ";
+$queryAddIndexValues = "(%d, '%s', %d, '%s', 0),";
+$valuesToAdd = "";
+$i = 0;
 foreach ($indexToAdd as $index) {
     $valuesToAdd .= sprintf($queryAddIndexValues, $index['host_id'], $index['host_name'], $index['service_id'], $index['service_description']);
     $i++;
@@ -137,6 +145,7 @@ foreach ($indexToAdd as $index) {
 if ($valuesToAdd != "") {
     $pearDBO->query($queryAddIndex.substr($valuesToAdd, 0, (strlen($valuesToAdd)-1)));
 }
+
 
 $pearDBO->query('UPDATE index_data SET rrd_retention = NULL');
 foreach ($serviceRetention as $retentionValue => $retention) {
