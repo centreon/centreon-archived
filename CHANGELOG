@@ -1,3 +1,40 @@
+## Centreon 2.4.4
+
+Enhancements
+============
+#3782: Handle ABSOLUTE and DERIVE graphs
+#4402: Contact list label inconsistency
+#4500: Possibility to copy and paste generated password
+#4506: Snmp configuration files get overwritten
+#4549: Possibility to choose display order on monitoring consoles
+#4568: Enhances generation time of configuration files
+
+Bug fixes
+=========
+#4319: Malformed long output on host/service detail pages - /w Centreon Broker
+#4454: Services are not created after import of configuration
+#4483: RRD status graphs not displayed in detail page
+#4485: Fixes LDAP connection and import issues
+#4486: Filter problem with hostgroup and centreon-broker
+#4487: import-mysql-indexes : Failed to drop index 'PRIMARY' for table 'timeperiod_exclude_relations
+#4488: Autologin in main page does not work
+#4489: init.d scripts not compatible with SLES
+#4494: Missing tooltip in «Configuration > Centreon > Pollers»
+#4496: Curve's «Legend Name» cannot contain «:»
+#4497: Status graph, not resized with default template
+#4504: centcore blocked due to blocking named pipes
+#4522: Special chars are converted to html entities in check commands
+#4524: Plugin outputs not displayed properly
+#4533: setgid flag for the filesGeneration directory
+#4536: Rename default Swap template name
+#4537: "Display all services for this host" does not working
+#4542: MetaService not visible with a non admin user
+#4544: Fixe default configuration on main.cfg
+#4555: [monitoring] Ack in host details page + Blank page
+#4570: MetaService graphs not displayed when negative values are involved
+#4577: Pending state labels not shown in Home > Global health for hosts
+
+
 ## Centreon 2.4.3
 
 Enhancements
