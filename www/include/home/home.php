@@ -64,7 +64,7 @@
 	/**
 	 * Tab status
 	 */
-	$tabSatusHost 		= array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE");
+	$tabSatusHost 		= array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE", 4 => "PENDING");
 	$tabSatusService 	= array(0 => "OK", 1 => "WARNING", 2 => "CRITICAL", 3 => "UNKNOWN", 4 => "PENDING");
 
 	/**
@@ -113,7 +113,13 @@
 		if ($statHosts !=  _("Hosts")) {
 			$statHosts .= " - ";
 		}
-		$statHosts .=  " " . _($tabSatusHost[$ndo["state"]]).": ".$ndo["cnt"];
+        
+        if (isset($tabSatusHost[$ndo["state"]])) {
+            $statHosts .=  " " . _($tabSatusHost[$ndo["state"]]);
+            if (isset($ndo["cnt"])) {
+                $statHosts .= ": ".$ndo["cnt"];
+            }
+        }
 	}
 	$DBRESULT->free();
 
@@ -167,7 +173,15 @@
 		if ($statServices !=  _("Services")) {
 			$statServices .= " - ";
 		}
-		$statServices .= " " . _($tabSatusService[$ndo["state"]]).": ".$ndo["count"];
+        
+        if (isset($tabSatusService[$ndo["state"]])) {
+            $statServices .= " " . _($tabSatusService[$ndo["state"]]);
+            if (isset($ndo["count"])) {
+                $statServices .= ": ".$ndo["count"];
+            }
+        }
+        
+        
 	}
 	$DBRESULT->free();
 

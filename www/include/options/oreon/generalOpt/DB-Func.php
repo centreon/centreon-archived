@@ -116,6 +116,7 @@
 
 		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? $pearDB->escape($ret["nagios_path_img"]) : "NULL");
 		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? $pearDB->escape($ret["nagios_path_plugins"]) : "NULL");
+		updateOption($pearDB, "cengine_path_connectors", isset($ret["cengine_path_connectors"]) && $ret["cengine_path_connectors"] != NULL ? $pearDB->escape($ret["cengine_path_connectors"]) : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL");
 		updateOption($pearDB, "broker_correlator_script", isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != NULL ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL");
@@ -267,6 +268,8 @@
 		updateOption($pearDB, "template", isset($ret["template"]) && $ret["template"] != NULL ? htmlentities($ret["template"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "enable_gmt", isset($ret["enable_gmt"]["yes"]) && $ret["enable_gmt"]["yes"] != NULL ? htmlentities($ret["enable_gmt"]["yes"], ENT_QUOTES, "UTF-8"): "0");
 		updateOption($pearDB, "gmt", isset($ret["gmt"]) && $ret["gmt"] != NULL ? htmlentities($ret["gmt"], ENT_QUOTES, "UTF-8"): "NULL");
+        updateOption($pearDB, "global_sort_type", isset($ret["global_sort_type"]) && $ret["global_sort_type"] != NULL ? htmlentities($ret["global_sort_type"], ENT_QUOTES, "UTF-8"): "NULL");
+        updateOption($pearDB, "global_sort_order", isset($ret["global_sort_order"]) && $ret["global_sort_order"] != NULL ? htmlentities($ret["global_sort_order"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "problem_sort_type", isset($ret["problem_sort_type"]) && $ret["problem_sort_type"] != NULL ? htmlentities($ret["problem_sort_type"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "enable_autologin", isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != NULL ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0");

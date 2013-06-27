@@ -83,12 +83,21 @@ if ($o == "svcpb" || $o == "svc_unhandled") {
     }
 } else {
     if (!isset($_GET["sort_type"])) {
-        $sort_type = "criticality_id";
+        if (isset($_SESSION['centreon']->optGen["sort_type"]) && $_SESSION['centreon']->optGen["sort_type"] != "host_name") {
+            $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["sort_type"]);
+        } else {
+            $sort_type = "host_name";
+        }
     } else {
         $sort_type = $_GET["sort_type"];
     }
+    
     if (!isset($_GET["order"])) {
-        $order = "ASC";
+        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
+            $order = "ASC";
+        } else {
+            $order = $_SESSION['centreon']->optGen["global_sort_order"];
+        }
     } else {
         $order = $_GET["order"];
     }

@@ -1,5 +1,5 @@
 <?php
-/*
+/**
  * Copyright 2005-2011 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
@@ -36,37 +36,70 @@
  *
  */
 
-	if (!isset($oreon))
-		exit();
-
-	if (!is_dir($nagiosCFGPath.$tab['id']."/"))
-		mkdir($nagiosCFGPath.$tab['id']."/");
-
-	$handle = create_file($nagiosCFGPath.$tab['id']."/resource.cfg", $oreon->user->get_name());
-	$DBRESULT = $pearDB->query("SELECT *
-								FROM `cfg_resource` cr, `cfg_resource_instance_relations` crir
-								WHERE cr.resource_id = crir.resource_id
-								AND crir.instance_id = ".$pearDB->escape($tab['id'])."
-								AND cr.`resource_activate` = '1'");
-	$str = NULL;
-	while ($DBRESULTource = $DBRESULT->fetchRow())	{
-		if (isset($DBRESULTource["resource_line"]) && $DBRESULTource["resource_line"] != "") {
-                    $ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
-                    if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
-                            $comment = array();
-                            $comment = explode("\n", $DBRESULTource["resource_comment"]);
-                            foreach ($comment as $cmt)
-                                    $str .= "# ".$cmt."\n";
+/**
+ * @author Sylvestre Ho <sho@merethis.com>
+ */
+class CentreonMeta
+{
+    protected $db;
+    
+    /**
+     * Constructor
+     */
+    public function __construct($db) {
+        $this->db = $db;
+    }
+    
+    /**
+     * Return host id
+     * 
+     * @return int
+     */
+    public function getRealHostId() {
+        static $hostId = null;
+        
+        if (is_null($hostId)) {
+            $sql = "SELECT host_id 
+                FROM host 
+                WHERE host_name = '_Module_Meta' 
+                LIMIT 1";
+            $res = $this->db->query($sql);
+            if ($res->numRows()) {
+                $row = $res->fetchRow();
+                $hostId = $row['host_id'];
+            } else {
+                $hostId = 0;
+            }
+        }
+        return $hostId;
+    }
+    
+    /**
+     * Return service id
+     * 
+     * @param int $metaId
+     * @return int
+     */
+    public function getRealServiceId($metaId) {
+        static $services = null;
+        
+        if (is_null($services)) {
+            $sql = "SELECT s.service_id, s.service_description 
+                FROM service s, host_service_relation hsr
+                WHERE s.service_id = hsr.service_service_id
+                AND hsr.host_host_id = {$this->getRealHostId()}";
+            $res = $this->db->query($sql);
+            if ($res->numRows()) {
+                while ($row = $res->fetchRow()) {
+                    if (preg_match('/meta_(\d+)/', $row['service_description'], $matches)) {
+                        $services[$matches[1]] = $row['service_id'];
                     }
-                    $str .= $DBRESULTource["resource_name"]."=".$DBRESULTource["resource_line"]."\n";
                 }
-	}
-	$str .= "\n";
-	write_in_file($handle, html_entity_decode($str, ENT_QUOTES, "UTF-8"), $nagiosCFGPath.$tab['id']."/resource.cfg");
-	fclose($handle);
-	
-	setFileMod($nagiosCFGPath.$tab['id']."/resource.cfg");
-	
-	$DBRESULT->free();
-	unset($str);
-?>
+            }
+        }
+        if (isset($services[$metaId])) {
+            return $services[$metaId];
+        }
+        return 0;
+    }
+}

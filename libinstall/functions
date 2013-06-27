@@ -2128,6 +2128,10 @@ function find_OS() {
 			[ -e "/etc/SuSE-release" ] ; then
 			dist_found="SUSE"
 			log "INFO" "$(gettext "GNU/Linux Suse Distribution")"
+                elif [ "$lsb_release" = "openSUSE project" ] || \
+			[ -e "/etc/SuSE-release" ] ; then
+			dist_found="SUSE"
+			log "INFO" "$(gettext "GNU/openSUSE Distribution")"
 		elif [ "$lsb_release" = "RedHatEnterpriseES" ] || \
 			[ "$lsb_release" = "Fedora" ] || \
 			[ -e "/etc/redhat-release" ] ; then

@@ -66,7 +66,7 @@
     $convertID = array();
     $DBRESULT = $obj->DBC->query("SELECT hostgroup_id, alias, name FROM hostgroups");
     while ($hg = $DBRESULT->fetchRow()){
-		$convertTable[$hg["alias"]] = $hg["name"];
+		$convertTable[$hg["name"]] = $hg["alias"];
 	    $convertID[$hg["alias"]] = $hg["hostgroup_id"];
     }
     $DBRESULT->free();
@@ -97,14 +97,14 @@
 	 */
 	$searchStr = "";
 	if ($search != "") {
-		$searchStr = " AND hg.alias LIKE '%$search%' ";
+		$searchStr = " AND hg.name LIKE '%$search%' ";
 	}
 
 	/*
 	 * Host state
 	 */
 	if ($obj->is_admin) {
-		$rq1 = 	"SELECT hg.alias as alias, h.state, count(h.host_id) AS nb " .
+		$rq1 = 	"SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
@@ -115,7 +115,7 @@
 		$rq1 .= $searchStr .
 				"GROUP BY hg.name, h.state";
 	} else {
-		$rq1 = 	"SELECT hg.alias as alias, h.state, count(h.host_id) AS nb " .
+		$rq1 = 	"SELECT hg.name as alias, h.state, count(h.host_id) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
                 "AND hhg.host_id = h.host_id " .
@@ -140,7 +140,7 @@
 	 * Get Services request
 	 */
 	if ($obj->is_admin) {
-			$rq2 = 	"SELECT hg.alias as alias, s.state, count( s.service_id ) AS nb " .
+			$rq2 = 	"SELECT hg.name as alias, s.state, count( s.service_id ) AS nb " .
 					"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
 					"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
 					"AND hhg.host_id = h.host_id " .
@@ -151,11 +151,11 @@
                 $rq2 .= "AND hg.instance_id = " . $obj->DBC->escape($instance) . " ";
 			}
             $rq2 .= $searchStr .
-					"GROUP BY hg.alias, s.state";
+					"GROUP BY hg.name, s.state";
 	} else {
 		$hostStr = $obj->access->getHostsString("ID", $obj->DBC);
 		$svcStr = $obj->access->getServicesString("ID", $obj->DBC);
-		$rq2 = 	"SELECT hg.alias as alias, s.state, count( s.service_id ) AS nb " .
+		$rq2 = 	"SELECT hg.name as alias, s.state, count( s.service_id ) AS nb " .
 				"FROM hosts_hostgroups hhg, hosts h, hostgroups hg, services s " .
 				"WHERE hg.hostgroup_id = hhg.hostgroup_id " .
 				"AND hhg.host_id = h.host_id " .
@@ -168,7 +168,7 @@
         $rq2 .= $searchStr .
 			    $obj->access->queryBuilder("AND", "hg.name", $obj->access->getHostGroupsString("NAME")).
 			    "AND h.host_id IN ($hostStr) AND s.service_id IN ($svcStr) " .
-				"GROUP BY hg.alias, s.state";
+				"GROUP BY hg.name, s.state";
 	}
 	$DBRESULT = $obj->DBC->query($rq2);
 	while ($ndo = $DBRESULT->fetchRow()) {
@@ -202,7 +202,7 @@
 	$i = 0;
 	$ct = 0;
 	foreach ($stats as $name => $stat) {
-		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($convertID[$name]) && isset($acl[$convertID[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
+		if (($i < (($num + 1) * $limit) && $i >= (($num) * $limit)) && ((isset($converTable[$name]) && isset($acl[$convertTable[$name]])) || (!isset($acl))) && $name != "meta_hostgroup") {
 			$class = $obj->getNextLineClass();
 			if (isset($stat["h"]) && count($stat["h"])) {
 				$obj->XML->startElement("l");

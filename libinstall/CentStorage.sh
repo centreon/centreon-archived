@@ -59,6 +59,8 @@ find_OS "DISTRIB"
 if [ "$DISTRIB" = "DEBIAN" ]; then
     cp -f $BASE_DIR/tmpl/install/debian/centstorage.init.d $TMP_DIR/src
     cp -f $BASE_DIR/tmpl/install/debian/centstorage.default $TMP_DIR/src
+elif [ "$DISTRIB" = "SUSE" ]; then
+    cp -f $BASE_DIR/tmpl/install/suse/centstorage.init.d $TMP_DIR/src
 else
     cp -f $BASE_DIR/tmpl/install/redhat/centstorage.init.d $TMP_DIR/src
 fi

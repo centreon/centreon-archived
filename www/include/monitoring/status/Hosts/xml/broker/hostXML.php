@@ -53,9 +53,7 @@
 	$instanceObj = new CentreonInstance($obj->DB);
         $media = new CentreonMedia($obj->DB);
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		;
-	} else {
+	if ((!isset($obj->session_id)) && (!CentreonSession::checkSession($obj->session_id, $obj->DB))) {
 		print "Bad Session ID";
 		exit();
 	}
@@ -80,13 +78,13 @@
 	if (isset($_GET['sort_type']) && $_GET['sort_type'] == "host_name") {
 	    $sort_type = "name";
 	} else {
-            if ($o == "hpb" || $o == "h_unhandled") {
-                $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
-            } else {
-                $sort_type 	= $obj->checkArgument("sort_type", $_GET, "criticality_id");
-            }
+        if ($o == "hpb" || $o == "h_unhandled") {
+            $sort_type 	= $obj->checkArgument("sort_type", $_GET, "");
+        } else {
+            $sort_type 	= $obj->checkArgument("sort_type", $_GET, "host_name");
+        }
 	}
-        $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
+    $criticality_id = $obj->checkArgument('criticality', $_GET, $obj->defaultCriticality);
         
 	/*
 	 * Backup poller selection
@@ -195,6 +193,7 @@
 	}
 	$rq1 .= " AND h.enabled = 1 ";
 	switch ($sort_type) {
+        default :
 		case 'name' :
                     $rq1 .= " ORDER BY h.name ". $order;
                     break;
@@ -220,12 +219,9 @@
 		case 'plugin_output' :
                     $rq1 .= " ORDER BY h.output ". $order.",h.name ";
                     break;
-                case 'criticality_id':
-                    $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
-                    break;
-		default :
-                    $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
-                    break;
+        case 'criticality_id':
+            $rq1 .= " ORDER BY isnull $order, criticality $order, h.name ";
+            break;
 	}
 	$rq1 .= " LIMIT ".($num * $limit).",".$limit;
 
