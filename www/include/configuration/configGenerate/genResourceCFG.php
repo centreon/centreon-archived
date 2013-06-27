@@ -50,7 +50,7 @@
 								AND cr.`resource_activate` = '1'");
 	$str = NULL;
 	while ($DBRESULTource = $DBRESULT->fetchRow())	{
-		if (isset($DBRESULTource["resource_line"]) && $DBRESULTource["resource_line"]) {
+		if (isset($DBRESULTource["resource_line"]) && $DBRESULTource["resource_line"] != "") {
                     $ret["comment"] ? ($str .= "# '".$DBRESULTource["resource_name"]."'\n") : NULL;
                     if ($ret["comment"] && $DBRESULTource["resource_comment"])	{
                             $comment = array();
