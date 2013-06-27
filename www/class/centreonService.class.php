@@ -353,5 +353,25 @@
             }
             return $arr;
         }
+
+        /**
+         * Returns array of locked templates
+         * 
+         * @return array
+         */
+        public function getLockedServiceTemplates() {
+            static $arr = null;
+            
+            if (is_null($arr)) {
+                $arr = array();
+                $res = $this->db->query("SELECT service_id 
+                    FROM service 
+                    WHERE service_locked = 1");
+                while ($row = $res->fetchRow()) {
+                    $arr[$row['service_id']] = true;
+                }
+            }
+            return $arr;
+        }
  }
  ?>

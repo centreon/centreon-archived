@@ -1892,7 +1892,7 @@ CREATE TABLE `service` (
   `service_comment` text,
   `command_command_id_arg` text,
   `command_command_id_arg2` text,
-  `service_locked` BOOLEAN DEFAULT NULL,
+  `service_locked` BOOLEAN DEFAULT 0,
   `service_register` enum('0','1','2','3') NOT NULL DEFAULT '0',
   `service_activate` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`service_id`),

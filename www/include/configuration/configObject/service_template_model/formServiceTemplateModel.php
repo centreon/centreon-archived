@@ -57,7 +57,10 @@
 	$service = array();
         $serviceObj = new CentreonService($pearDB);
 	if (($o == "c" || $o == "w") && $service_id) {
-		$DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+		if (isset($lockedElements[$service_id])) {
+                    $o = "w";
+                }            
+                $DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
 		# Set base value
 		$service_list = $DBRESULT->fetchRow();
 		$service = array_map("myDecodeSvTP", $service_list);
@@ -768,7 +771,7 @@
 
 	# Just watch a host information
 	if ($o == "w")	{
-		if (!$min && $centreon->user->access->page($p) != 2) {
+		if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$service_id])) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
 		}
 	    $form->setDefaults($service);
