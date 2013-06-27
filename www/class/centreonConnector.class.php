@@ -161,6 +161,15 @@ class CentreonConnector
             $lastId = $lastIdQueryResult->fetchRow();
             if (!isset($lastId['id'])) {
                 throw new RuntimeException('Field id for connector not selected in query or connector not inserted');
+            } else {
+                if (isset($connector["command_id"])) {
+                    foreach ($connector["command_id"] as $key => $value) {
+                        $updateResult = $this->dbConnection->query("UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'");
+                        if (PEAR::isError($updateResult)) {
+                            throw new RuntimeException('Cannot update connector');
+                        }
+                    }
+                }
             }
             return $lastId['id'];
         }
@@ -202,6 +211,14 @@ class CentreonConnector
         $connector['enabled'] = (boolean) $connector['enabled'];
         $connector['created'] = (int) $connector['created'];
         $connector['modified'] = (int) $connector['modified'];
+
+        $connector['command_id'] = array();
+        $DBRESULT = $this->dbConnection->query("SELECT command_id FROM command WHERE connector_id = '$connector_id'");
+        while ($row = $DBRESULT->fetchRow()) {
+            $connector['command_id'][] = $row["command_id"];
+        }
+        unset($row);
+        $DBRESULT->free();
 
         return $connector;
     }
@@ -257,6 +274,20 @@ class CentreonConnector
             }
         }
 
+        $updateResult = $this->dbConnection->query("UPDATE `command` SET connector_id = NULL WHERE `connector_id` = $id");
+        if (PEAR::isError($updateResult)) {
+            throw new RuntimeException('Cannot update connector');
+        }
+        
+        if (isset($connector["command_id"])) {
+            foreach ($connector["command_id"] as $key => $value) {
+                $updateResult = $this->dbConnection->query("UPDATE `command` SET connector_id = '$id' WHERE `command_id` = '$value'");
+                if (PEAR::isError($updateResult)) {
+                    throw new RuntimeException('Cannot update connector');
+                }
+            }
+        }
+        
         return $this;
     }
 
