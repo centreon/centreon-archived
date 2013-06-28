@@ -18,6 +18,6 @@ will now see the new data source types.
 Monitoring consoles
 ===================
 
-A new option is available, allowing you to chose the display order of the 
+A new option is available, allowing you to choose the display order of the 
 monitored resources. The new option is available in `Administration` > `Options`
 , in the `Problem display properties` section.
