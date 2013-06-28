@@ -11,8 +11,8 @@ $help["trap_status"] = dgettext("help", "Choose the service state to be submitte
 $help["trap_advanced"] = dgettext("help", "Enable advanced matching mode for cases where a trap relates to multiple monitoring engine states and the trap message has to be parsed.");
 $help["trap_adv_args"] = dgettext("help", "Define one or multiple regular expressions to match against the trap message and map it to the related monitoring engine service state. Use <a href='http://perldoc.perl.org/perlre.html'>perlre</a> for the format and place the expression between two slashes.");
 $help["reschedule_enabled"] = dgettext("help", "Choose whether or not the associated service should be actively rechecked after submission of this trap.");
-$help["command_enabled"] = dgettext("help", "Choose whether or not a special command should be run by snmptrapd when this trap was received.");
-$help["command_args"] = dgettext("help", "Define the command to execute by snmptrapd's trap handler. The command must be located in the PATH of the snmptrapd user.");
+$help["command_enabled"] = dgettext("help", "Choose whether or not a special command should be run by centreontrapd when this trap was received.");
+$help["command_args"] = dgettext("help", "Define the command to execute by centreontrapd's trap handler. The command must be located in the PATH of the centreontrapd user.");
 $help["comments"] = dgettext("help", "Describe the situation in which this trap will be send. Additionally the format and the parameters of the trap can be described.");
 $help["traps_routing_mode"] = dgettext("help", "Enable/Disable routing definition");
 $help["traps_routing_value"] = dgettext("help", "Routing definition");
