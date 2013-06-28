@@ -207,6 +207,16 @@ class Centreon_Traps {
             if (!isset($ret["traps_routing_mode"]) || !$ret["traps_routing_mode"]) {
                 $ret["traps_routing_mode"] = 0;
             }
+            if (!isset($ret["traps_log"]) || !$ret["traps_log"]) {
+                $ret["traps_log"] = 0;
+            }
+            if (!isset($ret['traps_advanced_treatment_default']) ||
+                    !$ret['traps_advanced_treatment_default']) {
+                $ret['traps_advanced_treatment_default'] = 0;
+            }
+            if (isset($ret['traps_exec_interval_type']['traps_exec_interval_type'])) {
+                $ret['traps_exec_interval_type'] = $ret['traps_exec_interval_type']['traps_exec_interval_type'];
+            }
 
             $rq = "UPDATE traps ";
             $rq .= "SET `traps_name` = '".$this->_db->escape($ret["traps_name"])."', ";
@@ -221,7 +231,12 @@ class Centreon_Traps {
             $rq .= "`traps_comments` = '".$this->_db->escape($ret["traps_comments"])."', ";
             $rq .= "`traps_routing_mode` = '".$this->_db->escape($ret["traps_routing_mode"])."', ";
             $rq .= "`traps_routing_value` = '".$this->_db->escape($ret["traps_routing_value"])."', ";
-            $rq .= "`manufacturer_id` = '".$this->_db->escape($ret["manufacturer_id"])."' ";
+            $rq .= "`manufacturer_id` = '".$this->_db->escape($ret["manufacturer_id"])."', ";
+            $rq .= "`traps_log` = '".$this->_db->escape($ret["traps_log"])."', ";
+            $rq .= "`traps_exec_interval` = '".$this->_db->escape($ret["traps_exec_interval"])."', ";
+            $rq .= "`traps_exec_interval_type` = '".$this->_db->escape($ret["traps_exec_interval_type"])."', ";
+            $rq .= "`traps_advanced_treatment_default` = '".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
+            $rq .= "`traps_timeout` = '".$this->_db->escape($ret["traps_timeout"])."' ";
             $rq .= "WHERE `traps_id` = '".$traps_id."'";
             $res = $this->_db->query($rq);
 
@@ -360,13 +375,24 @@ class Centreon_Traps {
             if (!isset($ret["traps_routing_mode"]) || !$ret["traps_routing_mode"]) {
                 $ret["traps_routing_mode"] = 0;
             }
-
-
+            if (!isset($ret["traps_log"]) || !$ret["traps_log"]) {
+                $ret["traps_log"] = 0;
+            }
+            if (!isset($ret['traps_advanced_treatment_default']) ||
+                    !$ret['traps_advanced_treatment_default']) {
+                $ret['traps_advanced_treatment_default'] = 0;
+            }
+            if (isset($ret['traps_exec_interval_type']['traps_exec_interval_type'])) {
+                $ret['traps_exec_interval_type'] = $ret['traps_exec_interval_type']['traps_exec_interval_type'];
+            }
+            
             $rq = "INSERT INTO traps ";
             $rq .= "(traps_name, traps_oid, traps_args, 
                 traps_status, traps_submit_result_enable, 
                 traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
-                traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, manufacturer_id) ";
+                traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, manufacturer_id,
+                traps_log, traps_exec_interval, traps_exec_interval_type, traps_advanced_treatment_default,
+                traps_timeout) ";
             $rq .= "VALUES ";
             $rq .= "('".$this->_db->escape($ret["traps_name"])."',";
             $rq .= "'".$this->_db->escape($ret["traps_oid"])."', ";
@@ -380,7 +406,12 @@ class Centreon_Traps {
             $rq .= "'".$this->_db->escape($ret["traps_comments"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_routing_mode"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_routing_value"])."', ";
-            $rq .= "'".$this->_db->escape($ret["manufacturer_id"])."')";
+            $rq .= "'".$this->_db->escape($ret["manufacturer_id"])."',";
+            $rq .= "'".$this->_db->escape($ret["traps_log"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_exec_interval"])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_exec_interval_type"])."', ";
+            $rq .= "'".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
+            $rq .= "'".$this->_db->escape($ret["traps_timeout"])."') ";
             $this->_db->query($rq);
             $res = $this->_db->query("SELECT MAX(traps_id) FROM traps");
             $traps_id = $res->fetchRow();

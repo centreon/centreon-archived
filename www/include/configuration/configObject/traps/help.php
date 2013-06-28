@@ -17,5 +17,10 @@ $help["comments"] = dgettext("help", "Describe the situation in which this trap 
 $help["traps_routing_mode"] = dgettext("help", "Enable/Disable routing definition");
 $help["traps_routing_value"] = dgettext("help", "Routing definition");
 $help["preexeccmd"] = dgettext("help", "SNMPTT PREXEC commands are executed before the process of FORMAT and EXEC statements");
+$help["traps_log"] = dgettext("help", "Whether or not traps will be logged into database. Disabled by default");
+$help["traps_exec_interval"] = dgettext("help", "Minimum delay necessary for a trap to be processed after another one");
+$help["traps_exec_interval_type"] = dgettext("help", "Whether execution interval will be applied to identical OIDs or identical OIDs and hosts");
+$help["traps_advanced_treatment_default"] = dgettext("help", "Will not submit result in case no rules match");
+$help["traps_timeout"] = dgettext("help", "Maximum execution time of trap processing. This includes Preexec commands, submit command and special command");
 ?>
 

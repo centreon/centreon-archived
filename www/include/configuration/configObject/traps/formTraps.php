@@ -306,6 +306,36 @@
                     )
                 );
         
+        $form->addElement(
+                'text', 
+                'traps_timeout', 
+                _("Timeout"),
+                array('size' => 5)
+                );
+        
+        $form->addElement(
+                'text',
+                'traps_exec_interval',
+                _('Execution interval'),
+                array('size' => 5)
+                );
+        
+        $form->addElement(
+                'checkbox',
+                'traps_log',
+                _('Enable log')
+                );
+        
+        $form->addElement(
+                'checkbox',
+                'traps_advanced_treatment_default',
+                _('Disable submit result if no matched rules')
+                );
+        
+        $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
+	$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
+	$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID and Host"), '2');
+	$form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution t ype"), '&nbsp;');
         
         /*
          * Pre exec 
