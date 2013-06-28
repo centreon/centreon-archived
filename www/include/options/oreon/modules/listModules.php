@@ -79,6 +79,13 @@
 			$php_file_path = "./modules/".$moduleinfo["name"]."/php/";
 			if ($moduleinfo["php_files"] && file_exists($php_file_path.$php_file))
 				include_once($php_file_path.$php_file);
+            
+            /*
+             * SESSION deletion
+             */
+            if (isset($oreon->modules[$moduleinfo["name"]])) {
+                unset($oreon->modules[$moduleinfo["name"]]);
+            }
 		}
 	}
 
@@ -91,16 +98,16 @@
 	/*
 	 * start header menu
 	 */
-	$tpl->assign("headerMenu_name", 		_("Name"));
-	$tpl->assign("headerMenu_rname", 		_("Real name"));
-	$tpl->assign("headerMenu_release", 		_("Release"));
-	$tpl->assign("headerMenu_infos", 		_("Informations"));
-    $tpl->assign("headerMenu_moduleStatus", _("Status"));
-	$tpl->assign("headerMenu_author", 		_("Author"));
+	$tpl->assign("headerMenu_name", 		 _("Name"));
+	$tpl->assign("headerMenu_rname", 		 _("Real name"));
+	$tpl->assign("headerMenu_release", 		 _("Release"));
+	$tpl->assign("headerMenu_infos", 		 _("Informations"));
+    $tpl->assign("headerMenu_moduleStatus",  _("Status"));
+	$tpl->assign("headerMenu_author", 		 _("Author"));
 	$tpl->assign("headerMenu_licenseExpire", _("Expiration date"));
-	$tpl->assign("headerMenu_isinstalled", 	_("Installed"));
-	$tpl->assign("headerMenu_action", 		_("Actions"));
-	$tpl->assign("confirm_removing", 		_("Do you confirm the deletion ?"));
+	$tpl->assign("headerMenu_isinstalled", 	 _("Installed"));
+	$tpl->assign("headerMenu_action", 		 _("Actions"));
+	$tpl->assign("confirm_removing", 		 _("Do you confirm the deletion ?"));
 
 	/*
 	 * Different style between each lines
