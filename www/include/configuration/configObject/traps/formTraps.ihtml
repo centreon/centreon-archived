@@ -27,10 +27,10 @@
                    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$subtitle0}</td></tr>
                    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trap_args"> {$form.traps_args.label}</td><td class="FormRowValue">{$form.traps_args.html}</td></tr>
                    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="trap_status"> {$form.traps_status.label}</td><td class="FormRowValue">{$form.traps_status.html}</td></tr>		
-                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trap_advanced"> {$form.traps_advanced_treatment.label}</td><td class="FormRowValue">{$form.traps_advanced_treatment.html}</td></tr>
-                   <tr class="list_two">
+                   <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="trap_advanced"> {$form.traps_advanced_treatment.label}</td><td class="FormRowValue">{$form.traps_advanced_treatment.html}</td></tr>                   
+                   <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="traps_advanced_treatment_default"> {$form.traps_advanced_treatment_default.label}</td><td class="FormRowValue">{$form.traps_advanced_treatment_default.html}</td></tr>
+                   <tr class="list_one">
                         <td class="FormRowField"><img class="helpTooltip" name="trap_adv_args"> {$trap_adv_args}</td>
-                        <!-- <td><div id='dynamicDiv'></div></td> -->
                         <td class="FormRowValue">
                             {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="matchingrules" cloneSet=$cloneSetMaching}
                         </td>
@@ -83,13 +83,30 @@
                         <td class="FormRowValue">{$form.traps_routing_value.html}</td>
                     </tr>
                     <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$preexecTxt}</td></tr>
-                    <tr class="list_one">
+                    <tr class="list_two">
                         <td class="FormRowField">
                             <img class="helpTooltip" name="preexeccmd">&nbsp;{$preexeccmd_str}
                         </td>
                         <td class="FormRowValue">
                             {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="preexec" cloneSet=$cloneSet}
                         </td>
+                    </tr>
+                    <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{t}Misc{/t}</td></tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_log">&nbsp;{$form.traps_log.label}</td>
+                        <td class="FormRowValue">{$form.traps_log.html}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_timeout">&nbsp;{$form.traps_timeout.label}</td>
+                        <td class="FormRowValue">{$form.traps_timeout.html}&nbsp;{t}seconds{/t}</td>
+                    </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_exec_interval">&nbsp;{$form.traps_exec_interval.label}</td>
+                        <td class="FormRowValue">{$form.traps_exec_interval.html}&nbsp;{t}seconds{/t}</td>
+                    </tr>
+                    <tr class="list_two">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_exec_interval_type">&nbsp;{$form.traps_exec_interval_type.label}</td>
+                        <td class="FormRowValue">{$form.traps_exec_interval_type.html}</td>
                     </tr>
                 </tbody>
             </table>
