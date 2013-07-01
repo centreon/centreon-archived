@@ -120,6 +120,7 @@
 	$rq1 =  " SELECT nhs.current_state," .
 			" nh.address," .
 			" no.name1 as host_name," .
+                        " nh.alias," .
 			" nhs.perfdata," .
 			" nhs.current_check_attempt," .
 			" nhs.state_type," .
@@ -186,6 +187,7 @@
 			$next_notification = $ndo["next_notification"];
 
 		$buffer->writeElement("hostname", $ndo["host_name"], false);
+                $buffer->writeElement("hostalias", $ndo["alias"], false);
 		$buffer->writeElement("address", $ndo["address"]);
 		$buffer->startElement("current_state");
 		$buffer->writeAttribute("color", $tab_color_host[$ndo["current_state"]]);
