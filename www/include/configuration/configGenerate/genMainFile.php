@@ -100,6 +100,7 @@
 			else if ($key == "free_child_process_memory" && $value == 2);
 			else if ($key == "child_processes_fork_twice" && $value == 2);
 			else if ($key == "enable_environment_macros" && $value == 2);
+                        else if ($key == "use_setpgid" && $value == 2 || ($tab['monitoring_engine'] != 'CENGINE'));
 			else if ($key == "enable_embedded_perl" && $value == 2);
 			else if ($key == "use_embedded_perl_implicitly" && $value == 2);
 			else if ($key == "host_perfdata_file_mode" && $value == 2);

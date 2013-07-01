@@ -9,6 +9,10 @@ ALTER TABLE `traps` ADD COLUMN `traps_routing_mode` enum('0','1') DEFAULT '0' AF
 ALTER TABLE `traps` ADD COLUMN `traps_routing_value` varchar(255) DEFAULT NULL AFTER `traps_routing_mode`;
 ALTER TABLE `traps` ADD COLUMN `traps_advanced_treatment_default` enum('0','1') DEFAULT '0' AFTER `traps_advanced_treatment`;
 
+ALTER TABLE `cfg_nagios` ADD COLUMN `use_setpgid` enum('0','1','2') DEFAULT NULL AFTER `enable_environment_macros`;
+UPDATE `cfg_nagios` SET `use_setpgid` = '2';
+
+
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (61701,'a','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (61701,'c','./include/common/javascript/changetab.js','initChangeTab');
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (61701,'w','./include/common/javascript/changetab.js','initChangeTab');
