@@ -603,6 +603,7 @@ CREATE TABLE `cfg_nagios` (
   `free_child_process_memory` enum('0','1','2') DEFAULT NULL,
   `child_processes_fork_twice` enum('0','1','2') DEFAULT NULL,
   `enable_environment_macros` enum('0','1','2') DEFAULT NULL,
+  `use_setpgid` enum('0','1','2') DEFAULT NULL,
   `additional_freshness_latency` int(11) DEFAULT NULL,
   `enable_embedded_perl` enum('0','1','2') DEFAULT NULL,
   `use_embedded_perl_implicitly` enum('0','1','2') DEFAULT NULL,

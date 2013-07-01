@@ -261,6 +261,8 @@
 	$obj->XML->writeElement("hard_state_label", _("Hard State Duration"));
 	$obj->XML->writeElement("parent_host_label", _("Top Priority Hosts"));
 	$obj->XML->writeElement("regular_host_label", _("Secondary Priority Hosts"));
+        $obj->XML->writeElement("http_action_link", _("HTTP Action Link"));
+        $obj->XML->writeElement("notif_disabled", _("Notification is disabled"));
         $obj->XML->writeElement("use_criticality", $criticalityUsed);
 	$obj->XML->endElement();
 

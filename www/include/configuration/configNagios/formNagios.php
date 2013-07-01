@@ -580,6 +580,12 @@
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("No"), '0');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_environment_macros', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'enable_environment_macros', _("Enable environment macros"), '&nbsp;');
+        
+        $nagTab = array();
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("No"), '0');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_setpgid', null, _("Default"), '2');
+	$form->addGroup($nagTab, 'use_setpgid', _("Use setpgid"), '&nbsp;');
 
 	$nagTab = array();
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_embedded_perl', null, _("Yes"), '1');
@@ -726,6 +732,7 @@
 	'free_child_process_memory' => '2',
 	'child_processes_fork_twice' => '2',
 	'enable_environment_macros' => '2',
+        'use_setpgid' => '2',
 	'enable_embedded_perl' => '2',
 	'use_embedded_perl_implicitly' => '2',
 	'debug_file' => '/var/log/centreon-engine/centengine.debug',

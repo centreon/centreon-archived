@@ -88,6 +88,7 @@
 	$rq1 =  " SELECT state," .
 			" address," .
 			" name," .
+                        " alias," .
 			" perfdata," .
 			" check_attempt," .
 			" state_type," .
@@ -149,6 +150,7 @@
 		}
 
 		$obj->XML->writeElement("hostname", $data["name"], false);
+                $obj->XML->writeElement("hostalias", $data["alias"], false);
 		$obj->XML->writeElement("address", $data["address"]);
 		$obj->XML->startElement("current_state");
 		$obj->XML->writeAttribute("color", $obj->colorHost[$data["state"]]);
