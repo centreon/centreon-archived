@@ -1887,6 +1887,7 @@ CREATE TABLE `service` (
   `service_notification_interval` int(11) DEFAULT NULL,
   `service_notification_options` varchar(200) DEFAULT NULL,
   `service_notifications_enabled` enum('0','1','2') DEFAULT '2',
+  `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1',
   `service_first_notification_delay` int(11) DEFAULT NULL,
   `service_stalking_options` varchar(200) DEFAULT NULL,
   `service_comment` text,

@@ -56,6 +56,8 @@ UPDATE `service` SET `service_alias` = 'Swap' WHERE `service_description` = 'SNM
 -- Ticket #4201
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUE (2, 'BBDO Protocol', 'bbdo');
 
+-- Add option to not inherit host contacts and contactgroups Ticket #4498
+ALTER TABLE `service` ADD COLUMN `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1' AFTER `service_notifications_enabled`;
 
 -- /!\ WARNING /!\
 -- This file must be renamed and the query below must be updated once we know the exact source and target versions.

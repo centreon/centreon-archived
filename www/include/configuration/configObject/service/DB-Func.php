@@ -792,6 +792,7 @@ function divideHostsToHost($service_id) {
 		updateServiceNotifOptionTimeperiod($service_id, $ret);
 		updateServiceNotifOptionFirstNotificationDelay($service_id, $ret);
 		updateServiceHost($service_id, $ret);
+        updateServiceHostContactsInheritance($service_id, $ret);
 		updateServiceServiceGroup($service_id, $ret);
 		insertServiceExtInfos($service_id, $ret);
 		updateServiceTrap($service_id, $ret);
@@ -826,7 +827,7 @@ function divideHostsToHost($service_id) {
 				"service_passive_checks_enabled, service_obsess_over_service, service_check_freshness, service_freshness_threshold, " .
 				"service_event_handler_enabled, service_low_flap_threshold, service_high_flap_threshold, service_flap_detection_enabled, " .
 				"service_process_perf_data, service_retain_status_information, service_retain_nonstatus_information, service_notification_interval, " .
-				"service_notification_options, service_notifications_enabled, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
+				"service_notification_options, service_notifications_enabled, service_inherit_contacts_from_host, service_stalking_options, service_first_notification_delay ,service_comment, command_command_id_arg, command_command_id_arg2, " .
 				"service_register, service_activate) " .
 				"VALUES ( ";
 				isset($ret["service_template_model_stm_id"]) && $ret["service_template_model_stm_id"] != NULL ? $rq .= "'".$ret["service_template_model_stm_id"]."', ": $rq .= "NULL, ";
@@ -855,7 +856,8 @@ function divideHostsToHost($service_id) {
 				isset($ret["service_notification_interval"]) && $ret["service_notification_interval"] != NULL ? $rq .= "'".$ret["service_notification_interval"]."', " : $rq .= "NULL, ";
 				isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, ";
 				isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
-				isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
+				isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "'NULL', ";
+                isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
 				isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= "NULL, ";
 
 				isset($ret["service_comment"]) && $ret["service_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["service_comment"])."', " : $rq .= "NULL, ";
@@ -1184,7 +1186,11 @@ function divideHostsToHost($service_id) {
 		isset($ret["service_notifOpts"]) && $ret["service_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_notifOpts"]))."', " : $rq .= "NULL, "; */
 		$rq .= "service_notifications_enabled = ";
 		isset($ret["service_notifications_enabled"]["service_notifications_enabled"]) && $ret["service_notifications_enabled"]["service_notifications_enabled"] != 2 ? $rq .= "'".$ret["service_notifications_enabled"]["service_notifications_enabled"]."', " : $rq .= "'2', ";
-		/*$rq .= "service_first_notification_delay = ";
+		
+        $rq .= "service_inherit_contacts_from_host = ";
+		isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]) && $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"] != NULL ? $rq .= "'".$ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"]."', " : $rq .= "'NULL', ";
+
+        /*$rq .= "service_first_notification_delay = ";
 		isset($ret["service_first_notification_delay"]) && $ret["service_first_notification_delay"] != NULL ? $rq .= "'".$ret["service_first_notification_delay"]."', " : $rq .= " NULL, ";*/
 		$rq .= "service_stalking_options = ";
 		isset($ret["service_stalOpts"]) && $ret["service_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["service_stalOpts"]))."', " : $rq .= "NULL, ";
@@ -1203,7 +1209,7 @@ function divideHostsToHost($service_id) {
 		isset($ret["service_activate"]["service_activate"]) && $ret["service_activate"]["service_activate"] != NULL ? $rq .= "'".$ret["service_activate"]["service_activate"]."' " : $rq .= "NULL ";
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT = $pearDB->query($rq);
-
+        
 		/*
 		 *  Update demand macros
 		 */
@@ -1895,6 +1901,28 @@ function divideHostsToHost($service_id) {
 		}
 	}
 
+    function updateServiceHostContactsInheritance($service_id = null, $ret = array())
+    {
+        if (!$service_id) return;
+		global $form;
+		global $pearDB;
+
+		if (isset($ret["service_inherit_contacts_from_host"])) {
+			$ret = $ret["service_inherit_contacts_from_host"];
+        } else {
+			$ret = $form->getSubmitValue("service_inherit_contacts_from_host");
+        }
+
+		$rq = "UPDATE service SET " ;
+		$rq .= "service_inherit_contacts_from_host = ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret['service_inherit_contacts_from_host']."' " : $rq .= "NULL ";
+		$rq .= "WHERE service_id = '".$service_id."'";
+        
+        echo $rq;
+        die();
+		$DBRESULT =& $pearDB->query($rq);
+    }
+    
 	function updateServiceHost($service_id = null, $ret = array())
 	{
 		global $form, $pearDB;

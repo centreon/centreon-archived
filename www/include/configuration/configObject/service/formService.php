@@ -464,6 +464,19 @@
 		$form->addGroup($mc_mod_cgs, 'mc_mod_cgs', _("Update mode"), '&nbsp;');
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
+    
+    
+    ##
+	## Host's contact inheritance
+	##
+	$form->addElement('header', 'inherit_contacts_from_host', _("Inherit contacts from host"));
+	$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("Yes"), '1');
+	$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("No"), '0');
+	$form->addGroup($serviceIHC, 'service_inherit_contacts_from_host', _("Inherit contacts from host"), '&nbsp;');
+	if ($o != "mc") {
+		$form->setDefaults(array('service_inherit_contacts_from_host' => '1'));
+	}
+    
 	/*
 	 *  Contacts
 	 */
