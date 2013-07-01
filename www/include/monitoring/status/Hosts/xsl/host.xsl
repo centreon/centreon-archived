@@ -112,6 +112,9 @@
 						<xsl:attribute name="target">_blank</xsl:attribute>
 						<xsl:element name="img">
 							<xsl:attribute name="src">./img/icones/16x16/star_yellow.gif</xsl:attribute>							
+                                                        <xsl:attribute name="title">
+						  		<xsl:value-of select='//i/http_action_link'/>&#160;:&#160;<xsl:value-of select="sau"/>
+						  	</xsl:attribute>
 						</xsl:element>
 				</xsl:element>
 			</xsl:if>
@@ -156,6 +159,9 @@
 			<xsl:if test="ne = 0">
 				<xsl:element name="img">
 				  	<xsl:attribute name="src">./img/icones/14x14/noloudspeaker.gif</xsl:attribute>
+                                        <xsl:attribute name="title">					  		
+                                            <xsl:value-of select='//i/notif_disabled'/>
+                                        </xsl:attribute>
 				</xsl:element>
 			</xsl:if>
 			<xsl:element name="a">
