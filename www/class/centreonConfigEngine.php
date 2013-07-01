@@ -90,7 +90,7 @@ class CentreonConfigEngine
                 $arr[$i]['in_broker_#index#'] = $row['broker_module'];
                 $i++;
             }
-        } else {
+        } elseif (isset($_REQUEST['in_broker'])) {
             foreach($_REQUEST['in_broker'] as $val) {
                 $arr[$i]['in_broker_#index#'] = $val;
                 $i++;

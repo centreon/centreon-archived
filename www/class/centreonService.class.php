@@ -344,7 +344,7 @@
                         $i++;
                     }
                 }
-            } else {
+            } elseif (isset($_REQUEST['macroInput'])) {
                 foreach($_REQUEST['macroInput'] as $key => $val) {
                     $arr[$i]['macroInput_#index#'] = $val;
                     $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
