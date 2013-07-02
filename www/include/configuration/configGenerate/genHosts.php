@@ -373,8 +373,12 @@ $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id
                         $strTemp .= ",";
                     $strTemp .= $cg;
                 }
-                if ($strTemp)
+                if ($strTemp) {
+                    if ($host['cg_additive_inheritance']) {
+                        $strTemp = "+".$strTemp;
+                    }
                     $str .= print_line("contact_groups", $strTemp);
+                }
                 unset($strTemp);
             }
 
@@ -388,8 +392,12 @@ $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id
                         $strTemp .= ",";
                     $strTemp .= $contact;
                 }
-                if ($strTemp)
+                if ($strTemp) {
+                    if ($host['contact_additive_inheritance']) {
+                        $strTemp = "+".$strTemp;
+                    }
                     $str .= print_line("contacts", $strTemp);
+                }
                 unset($strTemp);
             }
 

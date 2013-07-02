@@ -193,6 +193,12 @@
 	$cg = new CentreonContactgroup($pearDB);
 	$notifCgs = $cg->getListContactgroup(true);
 
+        /*
+         * Additive
+         */
+        $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
+        $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
+        
 	/*
 	 * Contacts come from DB -> Store in $notifCs Array
 	 */
