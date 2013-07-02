@@ -296,8 +296,12 @@
 						$strTemp .= ",";
 					$strTemp .= $cg;
 				}
-				if ($strTemp)
-					$str .= print_line("contact_groups", $strTemp);
+				if ($strTemp) {
+                                    if ($host['cg_additive_inheritance']) {
+                                        $strTemp = "+".$strTemp;
+                                    }
+                                    $str .= print_line("contact_groups", $strTemp);
+                                }
 				unset($strTemp);
 			}
 
@@ -311,8 +315,12 @@
 						$strTemp .= ",";
 					$strTemp .= $contact;
 				}
-				if ($strTemp)
-					$str .= print_line("contacts", $strTemp);
+				if ($strTemp) {
+                                    if ($host['contact_additive_inheritance']) {
+                                        $strTemp = "+".$strTemp;
+                                    }
+                                    $str .= print_line("contacts", $strTemp);
+                                }
 				unset($strTemp);
 			}
 

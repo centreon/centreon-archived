@@ -91,9 +91,23 @@
 		{if $o == "mc"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
 		{/if}
-		{if $msg.nagios >= 3}
+                <tr class="list_one">
+                    <td class="FormRowField">
+                        <img class="helpTooltip" name="contact_additive_inheritance"> {$form.contact_additive_inheritance.label}
+                    </td>
+                    <td class="FormRowValue">
+                        {$form.contact_additive_inheritance.html}
+                    </td>
+                </tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contacts"> {$form.service_cs.label}</td><td class="FormRowValue">{$form.service_cs.html}</td></tr>
-		{/if}
+                <tr class="list_one">
+                    <td class="FormRowField">
+                        <img class="helpTooltip" name="cg_additive_inheritance"> {$form.cg_additive_inheritance.label}
+                    </td>
+                    <td class="FormRowValue">
+                        {$form.cg_additive_inheritance.html}
+                    </td>
+                </tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="contact_groups"> {$form.service_cgs.label}</td><td class="FormRowValue">{$form.service_cgs.html}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_notifopt_notification_interval.label}</td><td class="FormRowValue">{$form.mc_mod_notifopt_notification_interval.html}</td></tr>

@@ -22,6 +22,8 @@ $help["active_checks_enabled"] = dgettext("help", "Enable or disable active chec
 $help["passive_checks_enabled"] = dgettext("help", "Enable or disable passive checks here. When disabled submitted states will be not accepted.");
 
 $help["notifications_enabled"] = dgettext("help", "Specify whether or not notifications for this service are enabled.");
+$help["contact_additive_inheritance"] = dgettext("help", "When enabled, the contact definition will not override the definitions on template levels, it will be appended instead.");
+$help["contacts"] = dgettext("help", "This is a list of contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups. You must specify at least one contact or contact group in each host definition (or indirectly through its template).");
 $help["inherit_contacts_from_host"] = dgettext("help", "Specify whether or not the service will inherit host's contacts and contactgroups (if no contacts or contactgroups are defined for the service).");
 $help["contacts"] = dgettext("help", "This is a list of contacts that should be notified whenever there are problems (or recoveries) with this service. Useful if you want notifications to go to just a few people and don't want to configure contact groups. You must specify at least one contact or contact group in each service definition (or indirectly through its template).");
 $help["contact_groups"] = dgettext("help", "This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this service. You must specify at least one contact or contact group in each service definition.");

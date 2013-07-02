@@ -515,14 +515,14 @@
 		# 2 - MC with addition of new cg
 		# 3 - Normal update
 		if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && $ret["mc_mod_hcg"]["mc_mod_hcg"]) {
-			updateHostContactGroup($host_id);
-			updateHostContact($host_id);
+			updateHostContactGroup($host_id, $ret);
+			updateHostContact($host_id, $ret);
 		} else if (isset($ret["mc_mod_hcg"]["mc_mod_hcg"]) && !$ret["mc_mod_hcg"]["mc_mod_hcg"]) {
-			updateHostContactGroup_MC($host_id);
-			updateHostContact_MC($host_id);
+			updateHostContactGroup_MC($host_id, $ret);
+			updateHostContact_MC($host_id, $ret);
 		} else {
-			updateHostContactGroup($host_id);
-			updateHostContact($host_id);
+			updateHostContactGroup($host_id, $ret);
+			updateHostContact($host_id, $ret);
 		}
 
 		# Function for updating notification options
@@ -692,7 +692,7 @@
 			"host_passive_checks_enabled, host_checks_enabled, host_obsess_over_host, host_check_freshness, host_freshness_threshold, " .
 			"host_event_handler_enabled, host_low_flap_threshold, host_high_flap_threshold, host_flap_detection_enabled, " .
 			"host_process_perf_data, host_retain_status_information, host_retain_nonstatus_information, host_notification_interval, host_first_notification_delay, " .
-			"host_notification_options, host_notifications_enabled, host_stalking_options, host_snmp_community, " .
+			"host_notification_options, host_notifications_enabled, contact_additive_inheritance, cg_additive_inheritance, host_stalking_options, host_snmp_community, " .
 			"host_snmp_version, host_location, host_comment, host_register, host_activate) " .
 			"VALUES ( ";
 			isset($ret["host_template_model_htm_id"]) && $ret["host_template_model_htm_id"] != NULL ? $rq .= "'".$ret["host_template_model_htm_id"]."', ": $rq .= "NULL, ";
@@ -725,7 +725,9 @@
 			isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] != NULL ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= "NULL, ";
 			isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";
 			isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
-			isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
+                        $rq .= (isset($ret["contact_additive_inheritance"]) ? 1 : 0) . ', ';
+                        $rq .= (isset($ret["cg_additive_inheritance"]) ? 1 : 0) . ', ';
+                        isset($ret["host_stalOpts"]) && $ret["host_stalOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_stalOpts"]))."', " : $rq .= "NULL, ";
 			isset($ret["host_snmp_community"]) && $ret["host_snmp_community"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_community"])."', " : $rq .= "NULL, ";
 			isset($ret["host_snmp_version"]) && $ret["host_snmp_version"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_snmp_version"])."', " : $rq .= "NULL, ";
 			isset($ret["host_location"]) && $ret["host_location"] != NULL ? $rq .= "'".CentreonDB::escape($ret["host_location"])."', " : $rq .= "NULL, ";
@@ -1175,6 +1177,10 @@
 		isset($ret["host_notifOpts"]) && $ret["host_notifOpts"] != NULL ? $rq .= "'".implode(",", array_keys($ret["host_notifOpts"]))."', " : $rq .= "NULL, ";*/
 		$rq .= "host_notifications_enabled = ";
 		isset($ret["host_notifications_enabled"]["host_notifications_enabled"]) && $ret["host_notifications_enabled"]["host_notifications_enabled"] != 2 ? $rq .= "'".$ret["host_notifications_enabled"]["host_notifications_enabled"]."', " : $rq .= "'2', ";
+                $rq.= "contact_additive_inheritance = ";
+                $rq .= (isset($ret['contact_additive_inheritance']) ? 1 : 0) . ', ';
+                $rq.= "cg_additive_inheritance = ";
+                $rq .= (isset($ret['cg_additive_inheritance']) ? 1 : 0) . ', ';
 		/*$rq .= "host_first_notification_delay = ";
 		isset($ret["host_first_notification_delay"]) && $ret["host_first_notification_delay"] ? $rq .= "'".$ret["host_first_notification_delay"]."', " : $rq .= " NULL, ";*/
 		$rq .= "host_stalking_options = ";

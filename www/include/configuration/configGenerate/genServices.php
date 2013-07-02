@@ -323,6 +323,9 @@
                             $strTMPTemp .= $cg_name;
                         }
                         if ($strTMPTemp) {
+                            if ($service['cg_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
                             $strTMP .= print_line("contact_groups", $strTMPTemp);
                         }
                         unset($strTMPTemp);
@@ -345,6 +348,9 @@
                             $strTMPTemp .= $cct_name;
                         }
                         if ($strTMPTemp) {
+                            if ($service['contact_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
                             $strTMP .= print_line("contacts", $strTMPTemp);
                         }
                         unset($strTMPTemp);
@@ -674,6 +680,9 @@
                             $strTMPTemp .= $cg_name;
                         }
                         if ($strTMPTemp) {
+                            if ($service['cg_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
                             $strTMP .= print_line("contact_groups", $strTMPTemp);
                         }
                         unset($strTMPTemp);
@@ -696,6 +705,9 @@
                             $strTMPTemp .= $cct_name;
                         }
                         if ($strTMPTemp) {
+                            if ($service['contact_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
                             $strTMP .= print_line("contacts", $strTMPTemp);
                         }
                         unset($strTMPTemp);
