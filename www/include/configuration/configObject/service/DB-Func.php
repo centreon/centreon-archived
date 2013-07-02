@@ -1917,9 +1917,6 @@ function divideHostsToHost($service_id) {
 		$rq .= "service_inherit_contacts_from_host = ";
 		isset($ret) && $ret != NULL ? $rq .= "'".$ret['service_inherit_contacts_from_host']."' " : $rq .= "NULL ";
 		$rq .= "WHERE service_id = '".$service_id."'";
-        
-        echo $rq;
-        die();
 		$DBRESULT =& $pearDB->query($rq);
     }
     
