@@ -87,7 +87,7 @@
 			 			
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/mailer.gif'>&nbsp;&nbsp;{$form.header.notification}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="notifications_enabled"> {$form.service_notifications_enabled.label}</td><td class="FormRowValue">{$form.service_notifications_enabled.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="inherit_host_contacts"> {$form.service_inherit_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_inherit_contacts_from_host.html}</td></tr>
+        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="inherit_contacts_from_host"> {$form.service_inherit_contacts_from_host.label}</td><td class="FormRowValue">{$form.service_inherit_contacts_from_host.html}</td></tr>
 		{if $o == "mc"}
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="mc_update"> {$form.mc_mod_cgs.label}</td><td class="FormRowValue">{$form.mc_mod_cgs.html}</td></tr>
 		{/if}
