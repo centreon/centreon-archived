@@ -740,6 +740,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (39, 'check_replication', 'Replication enabled', 'When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.', 'radio', NULL),
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
 (41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL);
+(42, 'store_in_data_bin', 'Store in performance data in data_bin', ' It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL);
+(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'radio', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -756,6 +758,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (3, 15, NULL),
 (4, 24, NULL),
 (1, 39, 'no');
+(1, 42, 'yes');
+(1, 43, 'no'); 
 
 --
 -- Contenu de la table `cb_list_values`
@@ -899,6 +903,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (16, 35, 0, 8),
 (14, 34, 0, 9),
 (14, 35, 0, 10),
+(14, 42, 1, 11);
+(14, 43, 1, 12);
 (17, 38, 0, 7),
 (24, 19, 1, 1),
 (24, 20, 1, 2),

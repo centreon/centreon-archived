@@ -1909,15 +1909,15 @@ function divideHostsToHost($service_id) {
 		global $form;
 		global $pearDB;
 
-		if (isset($ret["service_inherit_contacts_from_host"])) {
-			$ret = $ret["service_inherit_contacts_from_host"];
+		if (isset($ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"])) {
+			$ret = $ret["service_inherit_contacts_from_host"]["service_inherit_contacts_from_host"];
         } else {
 			$ret = $form->getSubmitValue("service_inherit_contacts_from_host");
         }
 
 		$rq = "UPDATE service SET " ;
 		$rq .= "service_inherit_contacts_from_host = ";
-		isset($ret) && $ret != NULL ? $rq .= "'".$ret['service_inherit_contacts_from_host']."' " : $rq .= "NULL ";
+		isset($ret) && $ret != NULL ? $rq .= "'".$ret['service_inherit_contacts_from_host']["service_inherit_contacts_from_host"]."' " : $rq .= "NULL ";
 		$rq .= "WHERE service_id = '".$service_id."'";
 		$DBRESULT =& $pearDB->query($rq);
     }

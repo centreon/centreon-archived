@@ -66,6 +66,39 @@
 	!isset($_GET["num"]) ? $num = 0 : $num = $_GET["num"];
 	!isset($_GET["host_search"]) ? $search_host = "" : $search_host = $_GET["host_search"];
 	!isset($_GET["sort_type"]) ? $sort_type = "" : $sort_type = $_GET["sort_type"];
+    
+    
+    if ($o == "hpb" || $o == "h_unhandled") {
+        if (!isset($_GET["sort_type"])) {
+            $sort_type = $oreon->optGen["problem_sort_type"];
+        } else {
+            $sort_type = $_GET["sort_type"];
+        }
+        if (!isset($_GET["order"])) {
+            $order = $oreon->optGen["problem_sort_order"];
+        } else {
+            $order = $_GET["order"];
+        }
+    } else {
+        if (!isset($_GET["sort_type"])) {
+            if (isset($_SESSION['centreon']->optGen["global_sort_type"]) && $_SESSION['centreon']->optGen["global_sort_type"] != "host_name") {
+                $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["global_sort_type"]);
+            } else {
+                $sort_type = "host_name";
+            }
+        } else {
+            $sort_type = $_GET["sort_type"];
+        }
+        if (!isset($_GET["order"])) {
+            if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
+                $order = "ASC";
+            } else {
+                $order = $_SESSION['centreon']->optGen["global_sort_order"];
+            }
+        } else {
+            $order = $_GET["order"];
+        }
+    }
 
 	/*
 	 * Check search value in Host search field
@@ -90,7 +123,7 @@
 
 	$tpl->assign("p", $p);
 	$tpl->assign('o', $o);
-	$tpl->assign("sort_types", $sort_types);
+	$tpl->assign("sort_type", $sort_type);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
