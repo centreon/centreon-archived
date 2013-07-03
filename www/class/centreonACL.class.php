@@ -1729,9 +1729,10 @@ class CentreonACL
         global $pearDB;
 
         if ($this->admin) {
-            $request = $this->constructRequest($options);
+            $request = $this->constructRequest($options, true);
             $sql = "SELECT ".$request['fields'].
                    " FROM contact ".
+                   " WHERE contact_register = '1' ".
                    $request['conditions'].
                    $request['order'];
         } else {
@@ -1739,12 +1740,14 @@ class CentreonACL
             $sql = "SELECT ".$request['fields']."
                     FROM acl_group_contacts_relations agcr, contact c
                     WHERE c.contact_id = agcr.contact_contact_id
+                    AND c.contact_register = '1'
                     AND agcr.acl_group_id IN (".$this->getAccessGroupsString().") ".
                     $request['conditions'].
                    " UNION ".
                    "SELECT ".$request['fields']."
                     FROM acl_group_contactgroups_relations agccgr, contactgroup_contact_relation ccr, contact c
                     WHERE c.contact_id = ccr.contact_contact_id
+                    AND c.contact_register = '1'
                     AND ccr.contactgroup_cg_id = agccgr.cg_cg_id
                     AND agccgr.acl_group_id IN (".$this->getAccessGroupsString().") ".
                     $request['conditions'].

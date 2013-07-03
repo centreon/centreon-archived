@@ -229,6 +229,10 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 (NULL,'Manufacturer','./img/icones/16x16/factory.gif',617,61702,20,1,'./include/configuration/configObject/traps-manufacturer/mnftr.php',NULL,'0','0','1',NULL,NULL,NULL,'0'),
 (NULL,'MIBs','./img/icones/16x16/component_add.gif',617,61703,30,1,'./include/configuration/configObject/traps-mibs/mibs.php',NULL,'0','0','1',NULL,NULL,NULL,'1'),
 (NULL,'Generate','./img/icones/16x16/funnel_new.gif',617,61704,40,1,'./include/configuration/configGenerateTraps/generateTraps.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
+
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`,`topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) 
+VALUES ('Contact Templates','./img/icones/16x16/user1_information.png',603,60306,13,1,'./include/configuration/configObject/contact_template_model/contact_template.php','0','0','1',NULL,NULL,NULL,'0');
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -457,6 +461,8 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (222,60206,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (223,60703,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (224,60703,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60306, './include/common/javascript/changetab.js', 'initChangeTab');
 
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
 UNLOCK TABLES;
