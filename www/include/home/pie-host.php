@@ -80,7 +80,7 @@
 	/**
 	 * calcul stat for resume
 	 */
-	$statistic_host = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE",3 => "PENDING");
+	$statistic_host = array(0 => "UP", 1 => "DOWN", 2 => "UNREACHABLE", 4 => "PENDING");
 
 	/**
 	 * Get DB informations for creating Flash
