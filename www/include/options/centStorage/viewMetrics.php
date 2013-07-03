@@ -165,7 +165,7 @@ function on_action_change(id) {
         return;
     }
     setO(this.form.elements[id].value);
-    submit();
+    document.forms['form'].submit();
 }
 </script>
 <?php
