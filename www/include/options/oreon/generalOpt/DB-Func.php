@@ -274,7 +274,11 @@
 		updateOption($pearDB, "problem_sort_order", isset($ret["problem_sort_order"]) && $ret["problem_sort_order"] != NULL ? htmlentities($ret["problem_sort_order"], ENT_QUOTES, "UTF-8"): "NULL");
 		updateOption($pearDB, "enable_autologin", isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != NULL ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0");
 		updateOption($pearDB, "display_autologin_shortcut", isset($ret["display_autologin_shortcut"]["yes"]) && $ret["display_autologin_shortcut"]["yes"] != NULL ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES, "UTF-8"): "0");
-		updateOption($pearDB, "batch_cache_path", isset($ret["batch_cache_path"]) && $ret["batch_cache_path"] != NULL ? htmlentities($ret["batch_cache_path"], ENT_QUOTES, "UTF-8"): "NULL");
+		updateOption($pearDB, "sso_enable", isset($ret["sso_enable"]["yes"]) && $ret["sso_enable"]["yes"] != NULL ? 1 : 0);
+                updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
+                updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
+                updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
+                updateOption($pearDB, "batch_cache_path", isset($ret["batch_cache_path"]) && $ret["batch_cache_path"] != NULL ? htmlentities($ret["batch_cache_path"], ENT_QUOTES, "UTF-8"): "NULL");
 
 		$oreon->initOptGen($pearDB);
 	}
