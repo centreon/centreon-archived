@@ -66,7 +66,7 @@ $DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxViewMonitori
 $data = $DBRESULT->fetchRow();
 $gopt[$data['key']] = myDecode($data['key']);
 
-!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
+!isset($_GET["sort_type"]) ? $sort_type = 0 : $sort_type = $_GET["sort_type"];
 !isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
 !isset($_GET["strict"]) ? $hostSearchStrict = 0 : $hostSearchStrict = 1;
 
@@ -83,8 +83,8 @@ if ($o == "svcpb" || $o == "svc_unhandled") {
     }
 } else {
     if (!isset($_GET["sort_type"])) {
-        if (isset($_SESSION['centreon']->optGen["sort_type"]) && $_SESSION['centreon']->optGen["sort_type"] != "host_name") {
-            $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["sort_type"]);
+        if (isset($_SESSION['centreon']->optGen["global_sort_type"]) && $_SESSION['centreon']->optGen["global_sort_type"] != "host_name") {
+            $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["global_sort_type"]);
         } else {
             $sort_type = "host_name";
         }
@@ -136,7 +136,7 @@ $tpl = initSmartyTpl($svc_path, $tpl, "/templates/");
 
 $tpl->assign("p", $p);
 $tpl->assign('o', $o);
-$tpl->assign("sort_types", $sort_types);
+$tpl->assign("sort_type", $sort_type);
 $tpl->assign("num", $num);
 $tpl->assign("limit", $limit);
 $tpl->assign("mon_host", _("Hosts"));
