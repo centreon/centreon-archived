@@ -89,7 +89,8 @@
 		 * Set base value
 		 */
 		$hc = array_map("myDecode", $DBRESULT->fetchRow());
-
+                $hc['hc_severity_level'] = $hc['level'];
+                $hc['hc_severity_icon'] = $hc['icon_id'];
 		/*
 		 *  Set hostcategories Childs => Hosts
 		 */
@@ -171,6 +172,19 @@
 	$form->addElement('text', 		'hc_name', _("Host Category Name"), $attrsText);
 	$form->addElement('text', 		'hc_alias', _("Alias"), $attrsText);
 
+        /*
+         * Severity
+         */
+        $hctype = $form->addElement('checkbox', 'hc_type', _('Severity type'), null, array('id' => 'hc_type'));
+        if (isset($hc_id) && $hc['level']) {
+            $hctype->setValue('1');
+        }
+        $form->addElement('text', 'hc_severity_level', _("Level"), array("size" => "10"));
+        $iconImgs = return_image_list(1);
+        $form->addElement('select', 'hc_severity_icon', _("Icon"), $iconImgs, array("id" => "icon_id",
+                                                                   "onChange" => "showLogo('icon_id_ctn', this.value)",
+                                                                   "onkeyup" => "this.blur(); this.focus();"));
+        
 	/*
 	 * Hosts Selection
 	 */

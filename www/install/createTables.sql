@@ -1615,6 +1615,8 @@ CREATE TABLE `hostcategories` (
   `hc_id` int(11) NOT NULL AUTO_INCREMENT,
   `hc_name` varchar(200) DEFAULT NULL,
   `hc_alias` varchar(200) DEFAULT NULL,
+  `level` TINYINT(5) DEFAULT NULL,
+  `icon_id` INT(11) DEFAULT NULL,
   `hc_comment` text,
   `hc_activate` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`hc_id`),
@@ -1920,6 +1922,8 @@ CREATE TABLE `service_categories` (
   `sc_id` int(11) NOT NULL AUTO_INCREMENT,
   `sc_name` varchar(255) DEFAULT NULL,
   `sc_description` varchar(255) DEFAULT NULL,
+  `level` TINYINT(5) DEFAULT NULL,
+  `icon_id` INT(11) DEFAULT NULL,
   `sc_activate` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`sc_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Services Catygories For best Reporting';
