@@ -169,12 +169,13 @@
         $tab_hostproblast[$nbhostpb] = $centreon->CentreonGMT->getDate(_("Y/m/d G:i"), $ndo["last_check"], $centreon->user->getMyGMT());
         $tab_hostprobduration[$nbhostpb] = CentreonDuration::toString(time() - $ndo["lsc"]);
         
+        $ndo["output"] = str_replace("\n", '\n', $ndo["output"]);
         $outputTmp = explode('\n', $ndo["output"]);
-            if (count($outputTmp)) {
-                $tab_hostproboutput[$nbhostpb] = $outputTmp[0];
-            } else {
-                $tab_hostproboutput[$nbhostpb] = $ndo["output"];
-            }
+        if (count($outputTmp)) {
+            $tab_hostproboutput[$nbhostpb] = $outputTmp[0];
+        } else {
+            $tab_hostproboutput[$nbhostpb] = $ndo["output"];
+        }
             
     	$tab_hostprobip[$nbhostpb] = $ndo["address"];
     	$tab_hosticone[$nbhostpb] = $ndo["icon_image"];
@@ -536,12 +537,14 @@
 	    		$tab_duration[$j] = CentreonDuration::toString(time() - $ndo["last_state_change"]);
 			}
             
+            $ndo["output"] = str_replace("\n", '\n', $ndo["output"]);
             $outputTmp = explode('\n', $ndo["output"]);
             if (count($outputTmp)) {
                 $tab_output[$j] = $outputTmp[0];
             } else {
                 $tab_output[$j] = $ndo["output"];
             }
+            
                 
             
 			$tab_icone[$j] = $ndo["icon_image"];
