@@ -152,14 +152,18 @@ sub syncDay ($$) {
 		if (defined($row->{'host_name'})) { 
 			$newQuery .= "host_name,";
 			if (defined($hosts{$row->{'host_name'}})) {
-				$newQuery .= "host_id,";
-			}
+                            $newQuery .= "host_id,";
+			} else {
+                            next;
+                        }
 		}
 		if (defined($row->{'service_description'})) { 
 			$newQuery .= "service_description,"; 
 			if (defined($services{$row->{'host_name'}}{$row->{'service_description'}})) {
-				$newQuery .= "service_id,";
-			}
+                            $newQuery .= "service_id,";
+			} else {
+                            next;
+                        }
 		}
 		if (defined($row->{'status'})) { $newQuery .= "status,"; }
 		if (defined($row->{'output'})) { $newQuery .= "output,"; }
