@@ -165,6 +165,84 @@ class CentreonContactgroup
     }
 
     /**
+     * Synchronize with LDAP groups
+     * 
+     * @return array | array of error messages
+     */
+    public function syncWithLdap()
+    {
+        $query = "SELECT ar_id FROM auth_ressource WHERE ar_enable = '1'";
+        $ldapres = $this->db->query($query);
+
+        $msg = array();
+        
+        /*
+         * Connect to LDAP Server
+         */
+        while ($ldaprow = $ldapres->fetchRow()) {
+            $ldapConn = new CentreonLDAP($this->db, null, $ldaprow['ar_id']);
+            $connectionResult = $ldapConn->connect();
+            if (false != $connectionResult) {
+                $res = $this->db->query("SELECT cg_id, cg_name, cg_ldap_dn FROM contactgroup WHERE cg_type = 'ldap'");
+                while ($row = $res->fetchRow()) {
+                    /*
+                     * Test is the group a not move or delete in ldap
+                     */
+                    if (false === $ldapConn->getEntry($row['cg_ldap_dn'])) {
+                        $dn = $ldapConn->findGroupDn($row['cg_name']);
+                        if (false === $dn) {
+                            /*
+                             * Delete the ldap group in contactgroup
+                             */
+                            $queryDelete = "DELETE FROM contactgroup WHERE cg_id = " . $row['cg_id'];
+                            if (PEAR::isError($this->db->query($queryDelete))) {
+                                $msg[] = "Error in delete contactgroup for ldap group : " . $row['cg_name'];
+                            }
+                            continue;
+                        } else {
+                            /*
+                             * Update the ldap group in contactgroup
+                             */
+                            $queryUpdateDn = "UPDATE contactgroup SET cg_ldap_dn = '" . $row['cg_ldap_dn'] . "' WHERE cg_id = " . $row['cg_id'];
+                            if (PEAR::isError($this->db->query($queryUpdateDn))) {
+                                $msg[] = "Error in update contactgroup for ldap group : " . $row['cg_name'];
+                                continue;
+                            } else {
+                                $row['cg_ldap_dn'] = $dn;
+                            }
+                        }
+                    }
+                    $members = $ldapConn->listUserForGroup($row['cg_ldap_dn']);
+
+                    /*
+                     * Refresh Users Groups.
+                     */
+                    $queryDeleteRelation = "DELETE FROM contactgroup_contact_relation WHERE contactgroup_cg_id = " . $row['cg_id'];
+                    $this->db->query($queryDeleteRelation);
+                    $queryContact = "SELECT contact_id FROM contact WHERE contact_ldap_dn IN ('" . join("', '", array_map('mysql_real_escape_string', $members)) . "')";
+                    $resContact = $this->db->query($queryContact);
+                    if (PEAR::isError($resContact)) {
+                        $msg[] = "Error in getting contact id form members.";
+                        continue;
+                    }
+                    while ($rowContact = $resContact->fetchRow()) {
+                        $queryAddRelation = "INSERT INTO contactgroup_contact_relation (contactgroup_cg_id, contact_contact_id)
+            	            		    VALUES (" . $row['cg_id'] . ", " . $rowContact['contact_id'] . ")";
+                        if (PEAR::isError($this->db->query($queryAddRelation))) {
+                            $msg[] ="Error insert relation between contactgroup " . $row['cg_id'] . " and contact " . $rowContact['contact_id'];
+                        }
+                    }
+                }
+                $queryUpdateTime = "UPDATE `options` SET `value` = '" . time() . "' WHERE `key` = 'ldap_last_acl_update'";
+                $this->db->query($queryUpdateTime);
+            } else {
+                $msg[] = "Unable to connect to LDAP server. I keep building ACL ...";
+            }
+        }
+        return $msg;
+    }
+    
+    /**
      * Get contact group name from contact group id
      *
      * @param int $cgId
