@@ -155,6 +155,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('tactical_host_limit', '100'),
 ('tactical_service_limit', '100'),
 ('tactical_refresh_interval', '20'), 
+('index_data', '0'), 
 ('interval_length', '60');
 
 --
@@ -698,7 +699,7 @@ INSERT INTO `cb_type` (`cb_type_id`, `type_name`, `type_shortname`, `cb_module_i
 -- Contenu de la table `cb_field`
 --
 
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES 
 (1, 'port', 'Connection port', 'Port to listen on (empty host) or to connect to (with host filled).', 'int', NULL),
 (2, 'host', 'Host to connect to', 'IP address or hostname of the host to connect to (leave blank for listening mode).', 'text', NULL),
 (3, 'ca_certificate', 'Trusted CA''s certificate', 'Trusted CA''s certificate.', 'text', NULL),
@@ -739,9 +740,11 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (38, 'max_size', 'Max file size in bytes', 'The maximum size of log file.', 'int', NULL),
 (39, 'check_replication', 'Replication enabled', 'When enabled, the broker engine will check whether or not the replication is up to date before attempting to update data.', 'radio', NULL),
 (40, 'rebuild_check_interval', 'Rebuild check interval in seconds', 'The interval between check if some metrics must be rebuild. The default value is 300s', 'int', NULL),
-(41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL);
-(42, 'store_in_data_bin', 'Store in performance data in data_bin', ' It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL);
-(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'radio', NULL);
+(41, 'max_size', 'Maximum size of file', 'Maximum size in bytes.', 'int', NULL),
+(42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
+(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
+(44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
+(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -757,9 +760,10 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (2, 12, NULL),
 (3, 15, NULL),
 (4, 24, NULL),
-(1, 39, 'no');
-(1, 42, 'yes');
-(1, 43, 'no'); 
+(1, 39, 'no'),
+(1, 42, 'yes'),
+(1, 44, 'yes'),
+(1, 45, 'yes');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -903,8 +907,8 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (16, 35, 0, 8),
 (14, 34, 0, 9),
 (14, 35, 0, 10),
-(14, 42, 1, 11);
-(14, 43, 1, 12);
+(14, 42, 1, 13),
+(14, 43, 1, 14),
 (17, 38, 0, 7),
 (24, 19, 1, 1),
 (24, 20, 1, 2),
@@ -920,7 +924,11 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (25, 25, 1, 3),
 (25, 26, 0, 4),
 (25, 27, 0, 5),
-(25, 41, 0, 6);
+(25, 41, 0, 6),
+(13, 42, 1, 5),
+(13, 43, 1, 6),
+(13, 44, 1, 5),
+(13, 45, 1, 6);
 
 --
 -- Contenu de la table `widget_parameters_field_type`

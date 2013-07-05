@@ -6,6 +6,7 @@ $help = array();
  */
 
 $help['tip_enable_centstorage_engine'] = dgettext('help', 'Enables Centstorage Engine.');
+$help['tip_insert_in_index_data'] = dgettext('help', 'Enables resource\'s insertion in index_data.');
 $help['tip_path_to_rrdtool_database_for_metrics'] = dgettext('help', 'Path to RRDTool database for graphs of metrics.');
 $help['tip_path_to_rrdtool_database_for_status'] = dgettext('help', 'Path to RRDTool database for graphs of status.');
 $help['tip_path_to_rrdtool_database_for_nagios_statistics'] = dgettext('help', 'Path to RRDTool database for graphs of monitoring engine stats.');

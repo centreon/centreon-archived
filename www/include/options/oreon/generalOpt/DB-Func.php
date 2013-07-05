@@ -352,7 +352,8 @@
 				`storage_type` = '".$ret["storage_type"]."' WHERE `id` = 1 LIMIT 1 ;";
 		$DBRESULT = $pearDBO->query($rq);
 
-		updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
+		updateOption($pearDB, "index_data", isset($ret["insert_in_index_data"]) && $ret["insert_in_index_data"] != NULL ? "0": "1");
+        updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
 	}
 
 	function updateCASConfigData($gopt_id = null)	{

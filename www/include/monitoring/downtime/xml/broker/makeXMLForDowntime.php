@@ -93,21 +93,21 @@ $xml->endElement();
  * Retrieve info
  */
 if (!$service_id) {
-    $query = "SELECT author, start_time, end_time, comment_data, duration, fixed
+    $query = "SELECT author, actual_start_time , actual_end_time, comment_data, duration, fixed
     		  FROM downtimes
     		  WHERE host_id = " . CentreonDB::escape($host_id) . "
     		  AND service_id IS NULL
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
-    		  ORDER BY start_time";
+    		  ORDER BY actual_start_time";
 } else {
-    $query = "SELECT author, start_time, end_time, comment_data, duration, fixed
+    $query = "SELECT author, actual_start_time as \"start_time\, actual_end_time as \"end_time, comment_data, duration, fixed
     		  FROM downtimes
     		  WHERE host_id = " . CentreonDB::escape($host_id) . "
     		  AND service_id = " . CentreonDB::escape($service_id) . "
     		  AND cancelled = 0
     		  AND end_time > UNIX_TIMESTAMP(NOW())
-    		  ORDER BY start_time";
+    		  ORDER BY actual_start_time";
 }
 $res = $dbb->query($query);
 $rowClass = "list_one";
@@ -116,8 +116,8 @@ while ($row = $res->fetchRow()) {
     $xml->startElement('dwt');
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);
-    $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['start_time']));
-    $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['end_time']));
+    $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['actual_start_time']));
+    $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['actual_end_time']));
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
     $xml->writeElement('fixed', $row['fixed'] ? _('Yes') : _('No'));
