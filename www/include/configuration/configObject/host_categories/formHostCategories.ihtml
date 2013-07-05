@@ -16,8 +16,18 @@
 		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/link.gif'>&nbsp;&nbsp;{$form.header.relation}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hc_hosts.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hc_hosts.html}</p></td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.hc_hostsTemplate.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hc_hostsTemplate.html}</p></td></tr>
-
+		<tr class="list_two"><td class="FormRowField">{$form.hc_hostsTemplate.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.hc_hostsTemplate.html}</p></td></tr>
+                <tr class="list_one"><td class="FormRowField">{$form.hc_type.label}</td><td class="FormRowValue">{$form.hc_type.html}</td></tr>
+                <tr class="list_two" id="severity_level">
+                    <td class="FormRowField">{$form.hc_severity_level.label}</td>
+                    <td class="FormRowValue">{$form.hc_severity_level.html}</td>
+                </tr>
+                <tr class="list_one" id="severity_icon">
+                    <td class="FormRowField">{$form.hc_severity_icon.label}</td>
+                    <td class="FormRowValue">
+                        {$form.hc_severity_icon.html}&nbsp;<img id='icon_id_ctn' src='./img/blank.gif' height='16' width='16'>
+                    </td>
+                </tr>
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.hc_activate.label}</td><td class="FormRowValue">{$form.hc_activate.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField">{$form.hc_comment.label}</td><td class="FormRowValue">{$form.hc_comment.html}</td></tr>		
@@ -36,3 +46,25 @@
 	</div>
 	{$form.hidden}
 </form>
+{literal}
+<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>
+<script type='text/javascript'>
+jQuery(function() {
+    showLogo('icon_id_ctn', document.getElementById('icon_id').value);
+    jQuery('#hc_type').click(function() {
+        toggleSeverityFields();
+    });
+    toggleSeverityFields();
+});
+
+function toggleSeverityFields() {
+    if (jQuery('#hc_type').prop('checked')) {
+        jQuery('#severity_level').show();
+        jQuery('#severity_icon').show();
+    } else {
+        jQuery('#severity_level').hide();
+        jQuery('#severity_icon').hide();
+    }
+}
+</script>
+{/literal}

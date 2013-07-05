@@ -2054,8 +2054,13 @@
 		if (!$host_id)
 			return;
 
-		$rq = "DELETE FROM hostcategories_relation ";
-		$rq .= "WHERE host_host_id = '".$host_id."'";
+		$rq = "DELETE FROM hostcategories_relation hcr ";
+		$rq .= "WHERE hcr.host_host_id = '".$host_id."' ";
+                $rq .= "AND NOT EXISTS(
+                            SELECT hc_id 
+                            FROM hostcategories hc 
+                            WHERE hc.hc_id = hcr.hostcategories_hc_id
+                            AND hc.level IS NOT NULL) ";
 		$DBRESULT = $pearDB->query($rq);
 
        		$ret = isset($ret["host_hcs"]) ? $ret["host_hcs"] : CentreonUtils::mergeWithInitialValues($form, 'host_hcs');
@@ -2283,9 +2288,15 @@
         function setHostCriticality($hostId, $criticalityId) {
             global $pearDB;
 
-            $pearDB->query("DELETE FROM criticality_resource_relations WHERE host_id = " . $pearDB->escape($hostId));
+            $pearDB->query("DELETE FROM hostcategories_relation hcr 
+                WHERE host_host_id = " . $pearDB->escape($hostId) . "
+                AND NOT EXISTS(
+                    SELECT hc_id 
+                    FROM hostcategories hc 
+                    WHERE hc.hc_id = hcr.hostcategories_hc_id
+                    AND hc.level IS NULL)");
             if ($criticalityId) {
-                $pearDB->query("INSERT INTO criticality_resource_relations (criticality_id, host_id)
+                $pearDB->query("INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id)
                                 VALUES (".$pearDB->escape($criticalityId).", ".$pearDB->escape($hostId).")");
             }
         }

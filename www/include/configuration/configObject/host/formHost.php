@@ -221,7 +221,11 @@
 		/*
 		 * Set Host Category Parents
 		 */
-		$DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id FROM hostcategories_relation WHERE host_host_id = \''.$host_id.'\'');
+		$DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id 
+                    FROM hostcategories_relation hcr, hostcategories hc
+                    WHERE hcr.hostcategories_hc_id = hc.hc_id
+                    AND hc.level IS NULL
+                    AND hcr.host_host_id = \''.$host_id.'\'');
 		for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++) {
             if (!$oreon->user->admin && false === strpos($hcString, "'".$hc['hostcategories_hc_id']."'")) {
                 $initialValues['host_hcs'][] = $hc['hostcategories_hc_id'];
@@ -243,10 +247,14 @@
                 /*
                  * Set criticality
                  */
-                $res = $pearDB->query("SELECT criticality_id FROM criticality_resource_relations WHERE host_id = " . $pearDB->escape($host_id));
+                $res = $pearDB->query("SELECT hc.hc_id 
+                            FROM hostcategories hc, hostcategories_relation hcr
+                            WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
+                            AND hcr.hostcategories_hc_id = hc.hc_id
+                            AND hc.level IS NOT NULL");
                 if ($res->numRows()) {
                     $cr = $res->fetchRow();
-                    $host['criticality_id'] = $cr['criticality_id'];
+                    $host['criticality_id'] = $cr['hc_id'];
                 }
 	}
         /*
@@ -334,8 +342,8 @@
 	 */
 	$hcs = array();
     $DBRESULT = $pearDB->query("SELECT hc_id, hc_name
-                                FROM hostcategories ".
-                                ($hcString != "''" ? $acl->queryBuilder('WHERE', 'hc_id', $hcString) : "").
+                                FROM hostcategories WHERE level IS NULL ".
+                                ($hcString != "''" ? $acl->queryBuilder('AND', 'hc_id', $hcString) : "").
                                 " ORDER BY hc_name");
 	while ($hc = $DBRESULT->fetchRow())
 		$hcs[$hc["hc_id"]] = $hc["hc_name"];
@@ -849,9 +857,9 @@
         $critList = $criticality->getList();
         $criticalityIds = array(null => null);
         foreach($critList as $critId => $critData) {
-            $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
+            $criticalityIds[$critId] = $critData['hc_name'].' ('.$critData['level'].')';
         }
-        $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
+        $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
 
 	/*
 	 * Sort 5 - Macros - Nagios 3

@@ -46,108 +46,9 @@ class CentreonCriticality {
      * @var CentreonDB
      */
     protected $db;
-    /**
-     * @var array
-     */
-    protected $properties;
     
     public function __construct($db) {
         $this->db = $db;
-        $this->properties = array('criticality_id', 'name', 'level', 'icon_id', 'comments');
-    }
-    
-    /**
-     * Insert new criticality object
-     * 
-     * @param array $params
-     * @return int
-     * @throws Exception
-     */
-    public function insert($params = array()) {
-        $sql = "INSERT INTO criticality (name, level, comments, icon_id) VALUES 
-                ('".$this->db->escape($params['name'])."', 
-                  ".$this->db->escape($params['level']).", 
-                 '".$this->db->escape($params['comments'])."',
-                  ".$this->db->escape($params['icon_id']).")";
-        $this->db->query($sql);        
-        $res = $this->db->query("SELECT MAX(criticality_id) as last_id FROM criticality WHERE name = '".$this->db->escape($params['name'])."'");
-        if (!$res->numRows()) {
-            throw new Exception('Criticality not found');
-        }
-        $row = $res->fetchRow();
-        return $row['last_id'];
-    }
-    
-    /**
-     * Update existing criticality object
-     * 
-     * @param int $criticalityId
-     * @param array $params
-     * @return void
-     */
-    public function update($criticalityId, $params = array()) {
-        $sql = "UPDATE criticality SET ";
-        $first = true;
-        foreach ($params as $key => $value) {
-            if ($key == 'criticality_id' || !in_array($key, $this->properties)) {
-                continue;
-            }
-            if ($first == false) {
-                $sql .= ", ";                
-            } else {
-                $first = false;
-            }
-            $sql .= $key . " = '" .$this->db->escape($value)."'";
-        }
-        $sql .= " WHERE criticality_id = " . $this->db->escape($criticalityId);
-        $this->db->query($sql);
-    }
-    
-    /**
-     * Delete criticality object
-     * 
-     * @param array $criticalityIds
-     * @return void
-     */
-    public function delete($criticalityIds = array()) {
-        if (count($criticalityIds)) {
-            $sql = "DELETE FROM criticality WHERE criticality_id IN (".implode(",", array_keys($criticalityIds)).")";
-            $this->db->query($sql);
-        }
-    }
-    
-    /**
-     * Get list of criticality
-     * 
-     * @param string $searchString
-     * @param string $orderBy
-     * @param string $sort
-     * @param int $offset
-     * @param int $limit
-     * @return array
-     */
-    public function getList($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
-        $sql = "SELECT criticality_id, name, level, icon_id, comments 
-                FROM criticality";
-        if (!is_null($searchString) && $searchString != "") {
-            $sql .= " WHERE name LIKE '%".$this->db->escape($searchString)."%' ";
-        }
-        if (!is_null($orderBy) && !is_null($sort)) {
-            $sql .= " ORDER BY $orderBy $sort ";
-        }
-        if (!is_null($offset) && !is_null($limit)) {
-            $sql .= " LIMIT $offset,$limit";
-        }
-        $res = $this->db->query($sql);
-        $elements = array();
-        while ($row = $res->fetchRow()) {
-            $elements[$row['criticality_id']] = array();
-            $elements[$row['criticality_id']]['name'] = $row['name'];
-            $elements[$row['criticality_id']]['level'] = $row['level'];
-            $elements[$row['criticality_id']]['icon_id'] = $row['icon_id'];
-            $elements[$row['criticality_id']]['comments'] = $row['comments'];
-        }
-        return $elements;
     }
     
     /**
@@ -160,12 +61,14 @@ class CentreonCriticality {
         static $data = array();
         
         if (!isset($data[$critId])) {
-            $sql = "SELECT criticality_id, name, level, icon_id, comments 
-                    FROM criticality";            
+            $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
+                    FROM hostcategories 
+                    WHERE level IS NOT NULL";            
             $res = $this->db->query($sql);
             while ($row = $res->fetchRow()) {
-                if (!isset($data[$row['criticality_id']])) {
-                    $data[$row['criticality_id']] = $row;
+                if (!isset($data[$row['hc_id']])) {
+                    $row['name'] = $row['hc_name'];
+                    $data[$row['hc_id']] = $row;
                 }                
             }            
         }
@@ -173,5 +76,41 @@ class CentreonCriticality {
             return $data[$critId];
         }
         return null;
+    }
+
+    
+    /**
+     * Get list of criticality
+     * 
+     * @param string $searchString
+     * @param string $orderBy
+     * @param string $sort
+     * @param int $offset
+     * @param int $limit
+     * @return array
+     */
+    public function getList($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
+        $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
+                FROM hostcategories 
+                WHERE level IS NOT NULL ";
+        if (!is_null($searchString) && $searchString != "") {
+            $sql .= " AND hc_name LIKE '%".$this->db->escape($searchString)."%' ";
+        }
+        if (!is_null($orderBy) && !is_null($sort)) {
+            $sql .= " ORDER BY $orderBy $sort ";
+        }
+        if (!is_null($offset) && !is_null($limit)) {
+            $sql .= " LIMIT $offset,$limit";
+        }
+        $res = $this->db->query($sql);
+        $elements = array();
+        while ($row = $res->fetchRow()) {
+            $elements[$row['hc_id']] = array();
+            $elements[$row['hc_id']]['hc_name'] = $row['hc_name'];
+            $elements[$row['hc_id']]['level'] = $row['level'];
+            $elements[$row['hc_id']]['icon_id'] = $row['icon_id'];
+            $elements[$row['hc_id']]['comments'] = $row['hc_comment'];
+        }
+        return $elements;
     }
 }
