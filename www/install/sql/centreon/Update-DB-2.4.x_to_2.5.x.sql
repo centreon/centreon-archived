@@ -98,6 +98,4 @@ ALTER TABLE `hostcategories` ADD COLUMN `icon_id` INT(11) DEFAULT NULL AFTER `le
 ALTER TABLE `service_categories` ADD COLUMN `level` TINYINT(5) DEFAULT NULL AFTER `sc_description`;
 ALTER TABLE `service_categories` ADD COLUMN `icon_id` INT(11) DEFAULT NULL AFTER `sc_description`;
 
-
-
 UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
