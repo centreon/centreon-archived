@@ -42,6 +42,7 @@
 	
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$ResultCache}</td></tr>	
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_path" />&nbsp;{$form.check_result_path.label}</td><td class="FormRowValue">{$form.check_result_path.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_check_result_path" />&nbsp;{$form.use_check_result_path.label}</td><td class="FormRowValue">{$form.use_check_result_path.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_result_file_age" />&nbsp;{$form.max_check_result_file_age.label}</td><td class="FormRowValue">{$form.max_check_result_file_age.html}</td></tr>
 			
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif' />&nbsp;&nbsp;{$ExternalCommandes}</td></tr>	

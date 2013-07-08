@@ -201,6 +201,11 @@
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("No"), '0');
 	$nagTab[] = HTML_QuickForm::createElement('radio', 'enable_event_handlers', null, _("Default"), '2');
 	$form->addGroup($nagTab, 'enable_event_handlers', _("Event Handler Option"), '&nbsp;');
+    
+    $nagTab = array();
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_check_result_path', null, _("Yes"), '1');
+	$nagTab[] = HTML_QuickForm::createElement('radio', 'use_check_result_path', null, _("No"), '0');
+	$form->addGroup($nagTab, 'use_check_result_path', _("Status"), '&nbsp;');
 
 	/* *****************************************************
 	 * Log Rotation Method

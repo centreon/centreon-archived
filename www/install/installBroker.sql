@@ -109,6 +109,8 @@ CREATE TABLE `downtimes` (
   `instance_id` int(11) DEFAULT NULL,
   `internal_id` int(11) DEFAULT NULL,
   `start_time` int(11) DEFAULT NULL,
+  `actual_start_time` int(11) DEFAULT NULL,
+  `actual_end_time` int(11) DEFAULT NULL,
   `started` tinyint(1) DEFAULT NULL,
   `triggered_by` int(11) DEFAULT NULL,
   `type` smallint(6) DEFAULT NULL,

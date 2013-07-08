@@ -100,7 +100,7 @@
 			else if ($key == "free_child_process_memory" && $value == 2);
 			else if ($key == "child_processes_fork_twice" && $value == 2);
 			else if ($key == "enable_environment_macros" && $value == 2);
-                        else if ($key == "use_setpgid" && ($value == 2 || $tab['monitoring_engine'] != 'CENGINE'));
+            else if ($key == "use_setpgid" && ($value == 2 || $tab['monitoring_engine'] != 'CENGINE'));
 			else if ($key == "enable_embedded_perl" && $value == 2);
 			else if ($key == "use_embedded_perl_implicitly" && $value == 2);
 			else if ($key == "host_perfdata_file_mode" && $value == 2);
@@ -149,7 +149,12 @@
 					$key = str_replace("nagios", "icinga", $key);
 				}
 				$str .= $key."=".$value."\n";
-			} else if ($key == "broker_module") {
+			} else if (($key == "use_check_result_path" || $key == "use_check_result_path") && $value)	{
+				if (isset($tab['monitoring_engine']) && ($tab["monitoring_engine"] == "CENGINE")) {
+					$str .= $key."=".$value."\n";
+				}
+			}
+            else if ($key == "broker_module") {
 				foreach ($nagios["broker_module"] as $kBrm => $vBrm)
 					if ( $vBrm["broker_module"] != NULL )
 						$str .= $key."=".$vBrm["broker_module"]."\n";
@@ -157,6 +162,10 @@
 			} else if ($key == "debug_level_opt");
 			else
 				$str .= $key."=".$value."\n";
+            
+            if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "NAGIOS") {
+                $str .= "check_for_updates=0\n";
+            }
 		}
 	}
 	if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "NAGIOS") {

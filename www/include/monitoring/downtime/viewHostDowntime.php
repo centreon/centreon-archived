@@ -128,7 +128,7 @@
 		if ($oreon->broker->getBroker() == "ndo") {
 		    $extrafields = ", UNIX_TIMESTAMP(dtm.actual_end_time) as actual_end_time, was_cancelled ";
 		} else {
-		    $extrafields = ", end_time as actual_end_time, cancelled as was_cancelled ";
+		    $extrafields = ", actual_end_time, cancelled as was_cancelled ";
 		}
 	} else {
 		$downtimeTable = "scheduleddowntime";
