@@ -140,12 +140,12 @@
          * Criticality cache
          */
         $critCache = array();
-        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.service_id
-                                   FROM criticality_resource_relations crr, service s
-                                   WHERE crr.service_id = s.service_id
+        $critRes = $pearDB->query("SELECT scr.sc_id, scr.service_service_id
+                                   FROM service_categories_relation scr , service s
+                                   WHERE scr.service_service_id = s.service_id
                                    AND s.service_register = '1'");
         while ($critRow = $critRes->fetchRow()) {
-            $critCache[$critRow['service_id']] = $critRow['criticality_id'];
+            $critCache[$critRow['service_service_id']] = $critRow['sc_id'];
         }
 
 	$cacheSVCTpl = intCmdParam($pearDB, $tab['id']);
@@ -196,10 +196,10 @@
                                  * Criticality level
                                  */
                                 if (isset($critCache[$service['service_id']])) {
-                                    $critData = $criticality->getData($critCache[$service['service_id']]);
+                                    $critData = $criticality->getData($critCache[$service['service_id']], true);
                                     if (!is_null($critData)) {
                                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
+                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['sc_id']);
                                     }
                                 }
 
@@ -542,10 +542,10 @@
                                  * Criticality level
                                  */
                                 if (isset($critCache[$service['service_id']])) {
-                                    $critData = $criticality->getData($critCache[$service['service_id']]);
+                                    $critData = $criticality->getData($critCache[$service['service_id']], true);
                                     if (!is_null($critData)) {
                                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
+                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['sc_id']);
                                     }
                                 }
 

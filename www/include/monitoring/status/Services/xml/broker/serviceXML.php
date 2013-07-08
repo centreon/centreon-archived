@@ -433,7 +433,7 @@
 		$obj->XML->writeElement("ca", 	$data["current_attempt"]."/".$data["max_check_attempts"]." (".$obj->stateType[$data["state_type"]].")");
                 if (isset($data['criticality']) && $data['criticality'] != '' && isset($critCache[$data['service_id']])) {
                     $obj->XML->writeElement("hci", 1); // has criticality
-                    $critData = $criticality->getData($critCache[$data['service_id']]);
+                    $critData = $criticality->getData($critCache[$data['service_id']], true);
                     $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
                     $obj->XML->writeElement("cih", $critData['name']);
                 } else {

@@ -108,7 +108,11 @@
 		global $pearDB, $centreon;
 
 		if (testServiceCategorieExistence($_POST["sc_name"])){
-                $DBRESULT = $pearDB->query("INSERT INTO `service_categories` (`sc_name` , `sc_description` , `sc_activate` ) VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', '".$_POST["sc_activate"]["sc_activate"]."')");
+                $DBRESULT = $pearDB->query("INSERT INTO `service_categories` (`sc_name`, `sc_description`, `level`, `icon_id`, `sc_activate` ) 
+                    VALUES ('".$_POST["sc_name"]."', '".$_POST["sc_description"]."', ".
+                        (isset($_POST['sc_severity_level']) && $_POST['sc_type'] ? $pearDB->escape($_POST['sc_severity_level']):"NULL").", ".
+                        (isset($_POST['sc_severity_icon']) && $_POST['sc_type'] ? $pearDB->escape($_POST['sc_severity_icon']) : "NULL").", ".
+                        "'".$_POST["sc_activate"]["sc_activate"]."')");
                 $DBRESULT = $pearDB->query("SELECT MAX(sc_id) FROM `service_categories` WHERE sc_name LIKE '".$_POST["sc_name"]."'");
                 $data = $DBRESULT->fetchRow();
         }
@@ -119,7 +123,13 @@
 	function updateServiceCategorieInDB(){
 		global $pearDB, $centreon;
 
-		$DBRESULT = $pearDB->query("UPDATE `service_categories` SET `sc_name` = '".$_POST["sc_name"]."' , `sc_description` = '".$_POST["sc_description"]."' , `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' WHERE `sc_id` = '".$_POST["sc_id"]."'");
+		$DBRESULT = $pearDB->query("UPDATE `service_categories` SET 
+                    `sc_name` = '".$_POST["sc_name"]."' , 
+                    `sc_description` = '".$_POST["sc_description"]."' , 
+                    `level` = ".(isset($_POST['sc_severity_level']) && $_POST['sc_type'] ? $pearDB->escape($_POST['sc_severity_level']):"NULL").", 
+                    `icon_id` = ".(isset($_POST['sc_severity_icon']) && $_POST['sc_type'] ? $pearDB->escape($_POST['sc_severity_icon']) : "NULL").",
+                    `sc_activate` = '".$_POST["sc_activate"]["sc_activate"]."' 
+                    WHERE `sc_id` = '".$_POST["sc_id"]."'");
 		updateServiceCategoriesServices(htmlentities($_POST["sc_id"], ENT_QUOTES, "UTF-8"));
 		$centreon->user->access->updateACL();
 	}
