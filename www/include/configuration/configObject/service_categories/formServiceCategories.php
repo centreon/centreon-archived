@@ -142,7 +142,7 @@
          * Severity
          */
         $sctype = $form->addElement('checkbox', 'sc_type', _('Severity type'), null, array('id' => 'sc_type'));
-        if (isset($sc_id) && isset($sc['level']) && $sc['level']) {
+        if (isset($sc_id) && isset($sc['level']) && $sc['level'] != "") {
             $sctype->setValue('1');
         }
         $form->addElement('text', 'sc_severity_level', _("Level"), array("size" => "10"));
@@ -209,7 +209,9 @@
 
 	$form->registerRule('existName', 'callback', 'testServiceCategorieExistence');
 	$form->addRule('sc_name', _("Name is already in use"), 'existName');
-
+        
+        $form->addRule('sc_severity_level', _("Must be a number"), 'numeric');
+        
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
