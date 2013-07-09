@@ -122,8 +122,9 @@
     $scstring = $acl->getServiceCategoriesString();
     $rescat = $pearDB->query("SELECT sc_name, sc_id
                               FROM service_categories ".
-                              ($scstring != "''" ? $acl->queryBuilder('WHERE', 'sc_id', $acl->getServiceCategoriesString()) : "").
-                             " ORDER BY sc_name");
+                              "WHERE level IS NULL ".
+                              ($scstring != "''" ? $acl->queryBuilder('AND', 'sc_id', $acl->getServiceCategoriesString()) : "").
+                              " ORDER BY sc_name");
     while ($scat = $rescat->fetchRow()) {
         $service_categories[$scat['sc_id']] = $scat['sc_name'];
     }
@@ -249,10 +250,14 @@
                 /*
                  * Set criticality
                  */
-                $res = $pearDB->query("SELECT criticality_id FROM criticality_resource_relations WHERE service_id = " . $pearDB->escape($service_id));
+                $res = $pearDB->query("SELECT sc.sc_id 
+                            FROM service_categories sc, service_categories_relation scr
+                            WHERE scr.service_service_id = " . $pearDB->escape($service_id). "
+                            AND scr.sc_id = sc.sc_id
+                            AND sc.level IS NOT NULL");
                 if ($res->numRows()) {
                     $cr = $res->fetchRow();
-                    $service['criticality_id'] = $cr['criticality_id'];
+                    $service['criticality_id'] = $cr['sc_id'];
                 }
 	}
         /*
@@ -749,12 +754,12 @@
          * Criticality
          */
         $criticality = new CentreonCriticality($pearDB);
-        $critList = $criticality->getList();
+        $critList = $criticality->getList(null, "level", 'ASC', null, null, true);
         $criticalityIds = array(null => null);
         foreach($critList as $critId => $critData) {
-            $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
+            $criticalityIds[$critId] = $critData['sc_name'].' ('.$critData['level'].')';
         }
-        $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
+        $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
 
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);

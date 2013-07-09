@@ -346,7 +346,15 @@ sub sendExternalCommand($$){
         } else {
             $self->{logger}->writeLogInfo("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
             my $cmd = "$self->{ssh} -q ". $server_info->{'ns_ip_address'} ." -p $port '$self->{echo} \"".$cmd."\" >> ".$command_file."'\n";
-            $stdout = `$cmd`;
+            eval {
+                local $SIG{ALRM} = sub { die "alarm\n" };
+                alarm $timeout;
+                $stdout = `$cmd`;
+                alarm 0;
+            };
+            if ($@) {
+                writeLogFile("Could not write into pipe file ".$command_file." on poller ".$server_i
+            }
         }
 
         if (defined($stdout) && $stdout){
