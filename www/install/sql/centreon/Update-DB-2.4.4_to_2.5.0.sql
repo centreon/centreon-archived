@@ -98,6 +98,8 @@ ALTER TABLE `hostcategories` ADD COLUMN `level` TINYINT(5) DEFAULT NULL AFTER `h
 ALTER TABLE `hostcategories` ADD COLUMN `icon_id` INT(11) DEFAULT NULL AFTER `level`;
 ALTER TABLE `service_categories` ADD COLUMN `level` TINYINT(5) DEFAULT NULL AFTER `sc_description`;
 ALTER TABLE `service_categories` ADD COLUMN `icon_id` INT(11) DEFAULT NULL AFTER `sc_description`;
+DELETE FROM `topology` WHERE `topology_page` = 60228 AND `topology_name` = 'Criticality';
+DELETE FROM `topology` WHERE `topology_page` = 60107 AND `topology_name` = 'Criticality';
 
 UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
 

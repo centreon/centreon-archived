@@ -176,7 +176,7 @@
          * Severity
          */
         $hctype = $form->addElement('checkbox', 'hc_type', _('Severity type'), null, array('id' => 'hc_type'));
-        if (isset($hc_id) && $hc['level']) {
+        if (isset($hc_id) && isset($hc['level']) && $hc['level'] != "") {
             $hctype->setValue('1');
         }
         $form->addElement('text', 'hc_severity_level', _("Level"), array("size" => "10"));
@@ -245,6 +245,8 @@
 	$form->registerRule('exist', 'callback', 'testHostCategorieExistence');
 	$form->addRule('hc_name', _("Name is already in use"), 'exist');
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
+        
+        $form->addRule('hc_severity_level', _("Must be a number"), 'numeric');
 
 	/*
 	 * Smarty template Init
@@ -252,6 +254,16 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl);
 
+        $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+
+	# prepare help texts
+	$helptext = "";
+	include_once("help.php");
+	foreach ($help as $key => $text) {
+		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+	}
+	$tpl->assign("helptext", $helptext);
+        
 	if ($o == "w")	{
 		/*
 		 * Just watch a HostCategorie information

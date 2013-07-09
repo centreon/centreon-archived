@@ -28,7 +28,8 @@ sub new {
     $self->{rsync} = "rsync";
     $self->{rsyncWT} = $self->{rsync};
     $self->{sudo} = "sudo";
-    $self->{timeout} = 5; 
+    $self->{timeout} = 5;
+    $self->{cmd_timeout} = 5; 
     
     $self->{ssh} .= " -o ConnectTimeout=$self->{timeout} -o StrictHostKeyChecking=yes -o PreferredAuthentications=publickey -o ServerAliveInterval=10 -o ServerAliveCountMax=3 -o Compression=yes ";
     $self->{rsync} .= " --timeout=$self->{timeout} ";
@@ -53,6 +54,8 @@ sub new {
 
 sub init {
     my $self = shift;
+    $self->SUPER::init();
+
     $self->{cmdFile} = $self->{centreon_config}->{VarLib} . "/centcore.cmd";
     $self->{cmdDir} = $self->{centreon_config}->{VarLib} . "/centcore/";
     $self->{centreonDir} = $self->{centreon_config}->{CentreonDir};
@@ -132,7 +135,7 @@ sub reload {
          $self->{centreon_config}->{db_user} ne $self->{centreon_dbc}->user() ||
          $self->{centreon_config}->{db_passwd} ne $self->{centreon_dbc}->password() ||
          $self->{centreon_config}->{db_port} ne $self->{centreon_dbc}->port()) {
-        $self->{logger}->writeLogInfo("Database config had been modified")
+        $self->{logger}->writeLogInfo("Database config had been modified");
         $self->{centreon_dbc}->disconnect();
         $self->{centreon_dbc}->db($self->{centreon_config}->{centreon_db});
         $self->{centreon_dbc}->host($self->{centreon_config}->{db_host});
@@ -216,12 +219,12 @@ sub getBrokerStats($) {
         my $stdout;
         eval {
             local $SIG{ALRM} = sub { die "alarm\n" };
-            alarm $timeout;
-            $stdout = `$ssh -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
+            alarm $self->{cmd_timeout};
+            $stdout = `$self->{ssh} -q $server_info->{'ns_ip_address'} -p $port 'cat \"$data->{'config_value'}" > $statPipe'`;
             alarm 0;
         };
 	if ($@) {
-            $self->{logger}->writeLogError("Could not read pipe ".$data->{'config_value'}." on poller ".$server_info->{'ns_ip_address'}."\n");
+            $self->{logger}->writeLogError("Could not read pipe ".$data->{'config_value'}." on poller ".$server_info->{'ns_ip_address'});
         }
         if (defined($stdout) && $stdout) {
             $self->{logger}->writeLogInfo("Result : $stdout");
@@ -348,12 +351,12 @@ sub sendExternalCommand($$){
             my $cmd = "$self->{ssh} -q ". $server_info->{'ns_ip_address'} ." -p $port '$self->{echo} \"".$cmd."\" >> ".$command_file."'\n";
             eval {
                 local $SIG{ALRM} = sub { die "alarm\n" };
-                alarm $timeout;
+                alarm $self->{cmd_timeout};
                 $stdout = `$cmd`;
                 alarm 0;
             };
             if ($@) {
-                writeLogFile("Could not write into pipe file ".$command_file." on poller ".$server_i
+                $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
             }
         }
 
@@ -920,7 +923,6 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
-    $self->init();
     $self->{logger}->redirect_output();
     $self->{logger}->writeLogInfo("Starting centcore engine...");
 

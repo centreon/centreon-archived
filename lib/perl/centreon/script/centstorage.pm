@@ -13,7 +13,6 @@ use centreon::centstorage::CentstorageLib;
 use centreon::centstorage::CentstoragePool;
 use centreon::centstorage::CentstoragePerfdataFile;
 use centreon::centstorage::CentstorageAction;
-use centreon::centstorage::CentstorageAction;
 use centreon::centstorage::CentstorageRRD;
 
 use base qw(centreon::script);
