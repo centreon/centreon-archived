@@ -61,22 +61,23 @@ UPDATE `service` SET `service_alias` = 'Swap' WHERE `service_description` = 'SNM
 -- Ticket #4201
 INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUE (2, 'BBDO Protocol', 'bbdo');
 
--- Ticket #4440
-INSERT INTO cb_field(`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`)
-       values(42, 'store_in_data_bin', 'Store in data_bin', ' It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL);
-INSERT INTO cb_type_field_relation(`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)
-       values(14, 42, 1, 9); 
-INSERT INTO cb_list(`cb_list_id`, `cb_field_id`, `default_value`)
-       values(1, 42, 'yes');
+-- Add Centreon Broker configuration
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES 
+(42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
+(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
+(44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
+(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL);
 
--- Ticket #4586
-INSERT INTO cb_field(`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`)
-       values(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'radio', NULL); 
-INSERT INTO cb_type_field_relation(`cb_type_id`, `cb_field_id`, `is_required`, `order_display`)
-       values(14, 43, 1, 10);
-INSERT INTO cb_list(`cb_list_id`, `cb_field_id`, `default_value`)
-       values(1, 43, 'yes');   
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
+(1, 42, 'yes'),
+(1, 44, 'yes'),
+(1, 45, 'yes');
 
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
+(13, 42, 1, 5),
+(13, 43, 1, 6),
+(13, 44, 1, 5),
+(13, 45, 1, 6);
 
 -- Add option to not inherit host contacts and contactgroups Ticket #4498
 ALTER TABLE `service` ADD COLUMN `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1' AFTER `service_notifications_enabled`;
@@ -99,3 +100,6 @@ ALTER TABLE `service_categories` ADD COLUMN `level` TINYINT(5) DEFAULT NULL AFTE
 ALTER TABLE `service_categories` ADD COLUMN `icon_id` INT(11) DEFAULT NULL AFTER `sc_description`;
 
 UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
+
+-- Ticket #3765
+ALTER TABLE `cfg_centreonbroker` ADD COLUMN `config_write_timestamp` enum('0','1') DEFAULT '1' AFTER `config_filename`;
