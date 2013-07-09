@@ -134,7 +134,7 @@ try {
 
     $attrsText 		= array("size"=>"35");
 	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
-    //$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
+    $attrsAdvSelect = array("style" => "width: 300px; height: 100px;");
 
 
     $form->addElement('text', 'connector_name', _("Connector Name"), $attrsText);
