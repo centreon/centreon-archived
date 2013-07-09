@@ -49,7 +49,7 @@ $status = 0;
  * Variables for upgrade scripts
  */
 try {
-    $pearDB = new CentreonDB();
+    $pearDB = new CentreonDB('centreon', 3, true);
     $res = $pearDB->query("SELECT `value` FROM `options` WHERE `key` = 'broker'");
     $row = $res->fetchRow();
     $isBroker = false;
@@ -110,7 +110,11 @@ if (is_file($confSql)) {
  */
 $postPhp = '../../php/Update-'.$current.'_to_'.$next.'.post.php';
 if (is_file($postPhp)) {
-    include_once $postPhp;
+    try {
+        include_once $postPhp;
+    } catch (Exception $e) {
+        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+    }
 }
 
 $res = $pearDB->query("SELECT `value` FROM `informations` WHERE `key` = 'version'");

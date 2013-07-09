@@ -110,7 +110,10 @@ class CentreonDB {
             $this->requestSuccessful = 0;
             $this->lineRead = 0;
 
-            $this->debug = 1;
+            $this->debug = 0;
+            if (false === $silent) {
+                $this->debug = 1;
+            }
         } catch (Exception $e) {
             if (false === $silent) {
                 $this->displayConnectionErrorPage($e->getMessage());
@@ -302,6 +305,8 @@ class CentreonDB {
         if (PEAR::isError($DBRES)) {
             if ($this->debug) {
                 $this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+            } else {
+                throw new Exception($DBRES->getMessage());
             }
         } else {
             $this->requestSuccessful++;
