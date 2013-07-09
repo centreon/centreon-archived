@@ -38,103 +38,98 @@
 
 require_once ("DB.php");
 
-class CentreonDB
-{
+class CentreonDB {
 
-	private static $instance = array();
+    private static $instance = array();
+    protected $db_type = "mysql";
+    protected $db_port = "3306";
+    protected $retry;
+    protected $db;
+    protected $dsn;
+    protected $options;
+    protected $centreon_path;
+    protected $log;
+    /*
+     * Statistics
+     */
+    protected $requestExecuted;
+    protected $requestSuccessful;
+    protected $lineRead;
+    protected $debug;
 
-	protected $db_type = "mysql";
-	protected $db_port = "3306";
-	protected $retry;
-	protected $db;
-	protected $dsn;
-	protected $options;
-	protected $centreon_path;
-	protected $log;
-	/*
-	 * Statistics
-	 */
-	protected $requestExecuted;
-	protected $requestSuccessful;
-	protected $lineRead;
-	protected $debug;
-
-	/**
-         * Constructor
-         * 
-	 * @param string $db | centreon, centstorage, or ndo
-         * @param int $retry
-         * @param bool $silent | when silent is set to false, it will display an HTML error msg, otherwise it will throw an Exception
-	 * @return void
-	 */
-    public function __construct($db = "centreon", $retry = 3, $silent = false)
-    {
+    /**
+     * Constructor
+     * 
+     * @param string $db | centreon, centstorage, or ndo
+     * @param int $retry
+     * @param bool $silent | when silent is set to false, it will display an HTML error msg, otherwise it will throw an Exception
+     * @return void
+     */
+    public function __construct($db = "centreon", $retry = 3, $silent = false) {
         try {
             include("@CENTREON_ETC@/centreon.conf.php");
-            
-    		require_once $centreon_path."/www/class/centreonLog.class.php";
-    		$this->log = new CentreonLog();
 
-    		$this->centreon_path = $centreon_path;
-    		$this->retry = $retry;
-    		$this->options = array('debug' => 2,'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
+            require_once $centreon_path . "/www/class/centreonLog.class.php";
+            $this->log = new CentreonLog();
 
-    		/*
-    		 * Add possibility to change SGDB port
-    		 */
-    		if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
-    			$this->db_port = $conf_centreon["port"];
-    		}
+            $this->centreon_path = $centreon_path;
+            $this->retry = $retry;
+            $this->options = array('debug' => 2, 'portability' => DB_PORTABILITY_ALL ^ DB_PORTABILITY_LOWERCASE);
 
-    		switch (strtolower($db)) {
-    			case "centreon" :
-    				$this->connectToCentreon($conf_centreon);
-    				$this->connect();
-    				break;
-    			case "centstorage" :
-    				$this->connectToCentstorage($conf_centreon);
-    				$this->connect();
-    				break;
-    			case "ndo" :
-    				$this->connectToCentreon($conf_centreon);
-    				$this->connect();
-    				$this->connectToNDO($conf_centreon);
-    				$this->connect();
-    				break;
-    			case "default" :
-    				$this->connectToCentreon($conf_centreon);
-    				$this->connect();
-    				break;
-    		}
-    		/*
-    		 * Init request statistics
-    		 */
-    		$this->requestExecuted = 0;
-    		$this->requestSuccessful = 0;
-    		$this->lineRead = 0;
+            /*
+             * Add possibility to change SGDB port
+             */
+            if (isset($conf_centreon["port"]) && $conf_centreon["port"] != "") {
+                $this->db_port = $conf_centreon["port"];
+            }
 
-    		$this->debug = 1;
-		}
-		catch (Exception $e) {
-		    if (false === $silent) {
-                        $this->displayConnectionErrorPage($e->getMessage());
-                    } else {
-                        throw new Exception($e->getMessage());
-                    }
-		}
+            switch (strtolower($db)) {
+                case "centreon" :
+                    $this->connectToCentreon($conf_centreon);
+                    $this->connect();
+                    break;
+                case "centstorage" :
+                    $this->connectToCentstorage($conf_centreon);
+                    $this->connect();
+                    break;
+                case "ndo" :
+                    $this->connectToCentreon($conf_centreon);
+                    $this->connect();
+                    $this->connectToNDO($conf_centreon);
+                    $this->connect();
+                    break;
+                case "default" :
+                    $this->connectToCentreon($conf_centreon);
+                    $this->connect();
+                    break;
+            }
+            /*
+             * Init request statistics
+             */
+            $this->requestExecuted = 0;
+            $this->requestSuccessful = 0;
+            $this->lineRead = 0;
+
+            $this->debug = 1;
+        } catch (Exception $e) {
+            if (false === $silent) {
+                $this->displayConnectionErrorPage($e->getMessage());
+            } else {
+                throw new Exception($e->getMessage());
+            }
+        }
     }
 
     /**
      * Display error page
      *
      * @access protected
-	 * @return	void
+     * @return	void
      */
-    protected function displayConnectionErrorPage($msg = null)
-    {
-		if (!$msg) {
+    protected function displayConnectionErrorPage($msg = null) {
+        if (!$msg) {
             $msg = _("Connection failed, please contact your administrator");
-		}
+        }
         echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
               <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-US" lang="en-US">
                 <head>
@@ -157,82 +152,79 @@ class CentreonDB
                   </center>
                 </body>
               </html>';
-		exit;
-	}
+        exit;
+    }
 
     /**
      * estrablish centreon DB connector
      *
      * @access protected
-	 * @return	void
+     * @return	void
      */
-	protected function connectToCentreon($conf_centreon)
-	{
-		if (!isset($conf_centreon["port"])) {
-			$conf_centreon["port"] = "3306";
-		}
+    protected function connectToCentreon($conf_centreon) {
+        if (!isset($conf_centreon["port"])) {
+            $conf_centreon["port"] = "3306";
+        }
 
-		$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $conf_centreon["user"],
-	    	'password' => $conf_centreon["password"],
-	    	'hostspec' => $conf_centreon["hostCentreon"].":".$conf_centreon["port"],
-	    	'database' => $conf_centreon["db"],
-		);
+        $this->dsn = array(
+            'phptype' => $this->db_type,
+            'username' => $conf_centreon["user"],
+            'password' => $conf_centreon["password"],
+            'hostspec' => $conf_centreon["hostCentreon"] . ":" . $conf_centreon["port"],
+            'database' => $conf_centreon["db"],
+        );
     }
 
     /**
      * estrablish Centstorage DB connector
      *
      * @access protected
-	 * @return	void
+     * @return	void
      */
-	protected function connectToCentstorage($conf_centreon)
-	{
-    	if (!isset($conf_centreon["port"])) {
-			$conf_centreon["port"] = "3306";
-		}
+    protected function connectToCentstorage($conf_centreon) {
+        if (!isset($conf_centreon["port"])) {
+            $conf_centreon["port"] = "3306";
+        }
 
-    	$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $conf_centreon["user"],
-	    	'password' => $conf_centreon["password"],
-	    	'hostspec' => $conf_centreon["hostCentstorage"].":".$conf_centreon["port"],
-	    	'database' => $conf_centreon["dbcstg"],
-		);
+        $this->dsn = array(
+            'phptype' => $this->db_type,
+            'username' => $conf_centreon["user"],
+            'password' => $conf_centreon["password"],
+            'hostspec' => $conf_centreon["hostCentstorage"] . ":" . $conf_centreon["port"],
+            'database' => $conf_centreon["dbcstg"],
+        );
     }
 
     /**
      * estrablish NDO DB connector
      *
      * @access protected
-	 * @return	void
+     * @return	void
      */
-    protected function connectToNDO($conf_centreon)
-    {
-		$DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
-		if (PEAR::isError($DBRESULT)) {
-			print "DB Error : ".$DBRESULT->getDebugInfo()."<br />";
-		}
+    protected function connectToNDO($conf_centreon) {
+        $DBRESULT = $this->db->query("SELECT db_name, db_prefix, db_user, db_pass, db_host, db_port FROM cfg_ndo2db WHERE activate = '1' LIMIT 1");
+        if (PEAR::isError($DBRESULT)) {
+            print "DB Error : " . $DBRESULT->getDebugInfo() . "<br />";
+        }
 
-		if (!$DBRESULT->numRows()) {
-		    throw new Exception('No broker connection found');
-		}
+        if (!$DBRESULT->numRows()) {
+            throw new Exception('No broker connection found');
+        }
 
-		$confNDO = $DBRESULT->fetchRow();
-		unset($DBRESULT);
+        $confNDO = $DBRESULT->fetchRow();
+        unset($DBRESULT);
 
-		if (!isset($confNDO['db_port'])) {
-			$confNDO['db_port'] = "3306";
-		}
+        if (!isset($confNDO['db_port'])) {
+            $confNDO['db_port'] = "3306";
+        }
 
-		$this->dsn = array(
-	    	'phptype'  => $this->db_type,
-	    	'username' => $confNDO['db_user'],
-	    	'password' => $confNDO['db_pass'],
-	    	'hostspec' => $confNDO['db_host'].":".$confNDO['db_port'],
-	    	'database' => $confNDO['db_name'],
-		);
+        $this->dsn = array(
+            'phptype' => $this->db_type,
+            'username' => $confNDO['db_user'],
+            'password' => $confNDO['db_pass'],
+            'hostspec' => $confNDO['db_host'] . ":" . $confNDO['db_port'],
+            'database' => $confNDO['db_name'],
+        );
     }
 
     /**
@@ -241,33 +233,31 @@ class CentreonDB
      * @access protected
      * @return void
      */
-    protected function connect()
-    {
+    protected function connect() {
         $this->db = DB::connect($this->dsn, $this->options);
         $i = 0;
-	while (PEAR::isError($this->db) && ($i < $this->retry)) {
+        while (PEAR::isError($this->db) && ($i < $this->retry)) {
             $this->db = DB::connect($this->dsn, $this->options);
             $i++;
         }
-	if ($i == $this->retry) {
+        if ($i == $this->retry) {
             if ($this->debug) {
                 $this->log->insertLog(2, $this->db->getMessage() . " (retry : $i)");
             }
             throw new Exception('Database Error: Could not connect to database. <br />Please contact your administrator.');
-	} else {
+        } else {
             $this->db->setFetchMode(DB_FETCHMODE_ASSOC);
-	}
+        }
     }
 
-	/**
+    /**
      * Disconnect DB connector
      *
      * @access public
-	 * @return	void
+     * @return	void
      */
-	public function disconnect()
-	{
-    	$this->db->disconnect();
+    public function disconnect() {
+        $this->db->disconnect();
     }
 
     /**
@@ -276,9 +266,8 @@ class CentreonDB
      * @access public
      * @return string
      */
-    public function toString()
-    {
-    	return $this->db->toString();
+    public function toString() {
+        return $this->db->toString();
     }
 
     /**
@@ -289,8 +278,7 @@ class CentreonDB
      * @param bool $htmlSpecialChars | htmlspecialchars() is used when true
      * @return string
      */
-    public function escape($str, $htmlSpecialChars = false)
-    {
+    public function escape($str, $htmlSpecialChars = false) {
         if ($htmlSpecialChars) {
             $str = htmlspecialchars($str);
         }
@@ -301,114 +289,110 @@ class CentreonDB
      * launch a query
      *
      * @access public
-	 * @param	string	$query_string	query
-	 * @return	object	query result
+     * @param	string	$query_string	query
+     * @return	object	query result
      */
-	public function query($query_string = null, $placeHolders = array())
-	{
-		$this->requestExecuted++;
-		if (count($placeHolders)) {
+    public function query($query_string = null, $placeHolders = array()) {
+        $this->requestExecuted++;
+        if (count($placeHolders)) {
             $DBRES = $this->db->query($query_string, $placeHolders);
-		} else {
-    	    $DBRES = $this->db->query($query_string);
-		}
-    	if (PEAR::isError($DBRES)) {
-    		if ($this->debug) {
-				$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
-    		}
-    	} else {
-			$this->requestSuccessful++;
-    	}
-    	return $DBRES;
+        } else {
+            $DBRES = $this->db->query($query_string);
+        }
+        if (PEAR::isError($DBRES)) {
+            if ($this->debug) {
+                $this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+            }
+        } else {
+            $this->requestSuccessful++;
+        }
+        return $DBRES;
     }
-    
+
     /**
      * launch a getAll
      *
      * @access public
-	 * @param	string	$query_string	query
-	 * @return	object	getAll result
+     * @param	string	$query_string	query
+     * @return	object	getAll result
      */
-	public function getAll($query_string = null, $placeHolders = array())
-	{
-		$this->requestExecuted++;
-		if (count($placeHolders)) {
+    public function getAll($query_string = null, $placeHolders = array()) {
+        $this->requestExecuted++;
+        if (count($placeHolders)) {
             $DBRES = $this->db->getAll($query_string, $placeHolders);
-		} else {
-    	    $DBRES = $this->db->getAll($query_string);
-		}
-    	if (PEAR::isError($DBRES)) {
-    		if ($this->debug) {
-				$this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
-    		}
-    	} else {
-			$this->requestSuccessful++;
-    	}
-    	return $DBRES;
+        } else {
+            $DBRES = $this->db->getAll($query_string);
+        }
+        if (PEAR::isError($DBRES)) {
+            if ($this->debug) {
+                $this->log->insertLog(2, $DBRES->getMessage() . " QUERY : " . $query_string);
+            }
+        } else {
+            $this->requestSuccessful++;
+        }
+        return $DBRES;
     }
-    
 
     /**
      * Check NDO user grants
      * Check if user is able to modify schema.
      *
      * @access protected
-	 * @param	char	$grant	User Name
-	 * @return	int		result flag
+     * @param	char	$grant	User Name
+     * @return	int		result flag
      */
-	public function hasGrants($grant = "")
-	{
-		if ($grant == "") {
-			return 0;
-		}
+    public function hasGrants($grant = "") {
+        if ($grant == "") {
+            return 0;
+        }
 
-		$db_name = $this->dsn["database"];
-		$db_nameSec = str_replace("_", "\\\_", $this->dsn["database"]);
-		$db_nameSec = str_replace("-", "\\\-", $db_nameSec);
+        $db_name = $this->dsn["database"];
+        $db_nameSec = str_replace("_", "\\\_", $this->dsn["database"]);
+        $db_nameSec = str_replace("-", "\\\-", $db_nameSec);
 
-		$DBRESULT = $this->query("show grants");
-		while ($result = $DBRESULT->fetchRow()) {
-			foreach ($result as $key => $value)
-				;
-			$expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_name."`.\*/";
-			$expr2 = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `".$db_nameSec."`.\*/";
-			if (preg_match($expr, $value, $matches) || preg_match($expr2, $value, $matches)) {
-				if ($matches[1] == "ALL PRIVILEGES" || strstr($matches[1], $grant)) {
-					return 1;
-				}
-			}
-		}
-	}
+        $DBRESULT = $this->query("show grants");
+        while ($result = $DBRESULT->fetchRow()) {
+            foreach ($result as $key => $value)
+                ;
+            $expr = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `" . $db_name . "`.\*/";
+            $expr2 = "/GRANT\ ([a-zA-Z\_\-\,\ ]*)\ ON `" . $db_nameSec . "`.\*/";
+            if (preg_match($expr, $value, $matches) || preg_match($expr2, $value, $matches)) {
+                if ($matches[1] == "ALL PRIVILEGES" || strstr($matches[1], $grant)) {
+                    return 1;
+                }
+            }
+        }
+    }
 
-	/**
-	 * Factory for singleton
-	 *
-	 * @param string $name The name of centreon datasource
-	 * @throws Exception
-	 * @return CentreonDB
-	 */
-	public static function factory($name = "centreon")
-	{
-		if (!in_array($name, array('centreon', 'centstorage', 'ndo'))) {
-			throw new Exception("The datasource isn't defined in configuration file.");
-		}
-		if (!isset(self::$instance[$name])) {
-			self::$instance[$name] = new CentreonDB($name);
-		}
-		return self::$instance[$name];
-	}
+    /**
+     * Factory for singleton
+     *
+     * @param string $name The name of centreon datasource
+     * @throws Exception
+     * @return CentreonDB
+     */
+    public static function factory($name = "centreon") {
+        if (!in_array($name, array('centreon', 'centstorage', 'ndo'))) {
+            throw new Exception("The datasource isn't defined in configuration file.");
+        }
+        if (!isset(self::$instance[$name])) {
+            self::$instance[$name] = new CentreonDB($name);
+        }
+        return self::$instance[$name];
+    }
 
-	/**
-	 * return number of rows
-	 *
-	 */
-	public function numberRows() {
-		$number = 0;
-		$DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
-		$data = $DBRESULT->fetchRow();
-		if (isset($data["number"])) {
-			$number = $data["number"];
-		}
-		return $number;
-	}
+    /**
+     * return number of rows
+     *
+     */
+    public function numberRows() {
+        $number = 0;
+        $DBRESULT = $this->query("SELECT FOUND_ROWS() AS number");
+        $data = $DBRESULT->fetchRow();
+        if (isset($data["number"])) {
+            $number = $data["number"];
+        }
+        return $number;
+    }
+
 }
