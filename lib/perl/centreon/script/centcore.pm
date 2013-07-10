@@ -341,7 +341,7 @@ sub sendExternalCommand($$){
             my $result = waitPipe($command_file);
             if ($result == 0) {
                 $self->{logger}->writeLogInfo("External command on Central Server: ($id) : \"".$cmd."\"");
-                my $cmd = "self->{echo} \"".$cmd."\" >> ".$command_file."\n";
+                my $cmd = "$self->{echo} \"".$cmd."\" >> ".$command_file;
                 $stdout = `$cmd`;        
             } else {
                 $self->{logger}->writeLogError("Cannot write external command on central server : \"".$cmd."\"");

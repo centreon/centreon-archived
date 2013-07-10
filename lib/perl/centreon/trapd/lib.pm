@@ -98,7 +98,7 @@ sub get_oids {
     my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
                                         traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_exec_interval, traps_exec_interval_type,
-                                        traps_routing_mode, traps_routing_value
+                                        traps_routing_mode, traps_routing_value,
                                         service_categories.level, service_categories.sc_name, service_categories.sc_id
                                         FROM traps
                                         LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
