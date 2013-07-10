@@ -75,8 +75,8 @@ class Centreon_Traps {
         if (isset($_REQUEST['rule'])) {
             $rules = $_REQUEST['rule'];
             $regexp = $_REQUEST['regexp'];
-            $status = $_REQUEST['rulestatus'];
-            $severity = $_REQUEST['ruleseverity'] != "" ? $_REQUEST['ruleseverity'] : "NULL";
+            $status = $_REQUEST['rulestatus'];            
+            $severity = $_REQUEST['ruleseverity'];
             $i = 1;
             foreach ($rules as $key => $value) {
                 if ($value == "") {
@@ -85,13 +85,15 @@ class Centreon_Traps {
                 if ($insertStr) {
                     $insertStr .= ", ";
                 }
+                if ($severity[$key] == "") {
+                    $severity[$key] = "NULL";
+                }
                 $insertStr .= "($trapId, '".$this->_db->escape($value)."', '".$this->_db->escape($regexp[$key])."', ".$this->_db->escape($status[$key]).", ".$this->_db->escape($severity[$key]).", $i)";
                 $i++;
             }
         }
         if ($insertStr) {
             $this->_db->query("INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr");
-            echo "INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr";
         }
     }
 
