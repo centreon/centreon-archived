@@ -192,11 +192,17 @@ try {
                 }
             } else {
                 passthru("echo 'SENDCFGFILE:".$host['id']."' >> $centcore_pipe", $return);
+                if ($return) {
+                    throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
+                }
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
                 }
                 if (count(glob($centreonBrokerPath . $host['id'] . "/*.xml")) > 0) {
                     passthru("echo 'SENDCBCFG:".$host['id']."' >> $centcore_pipe", $return);
+                    if ($return) {
+                        throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
+                    }
                 }
                 $msg_restart[$host["id"]] .= _("<br><b>Centreon : </b>All configuration will be send to ".$host['name']." by centcore in several minutes.");
             }

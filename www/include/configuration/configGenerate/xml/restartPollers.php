@@ -155,6 +155,9 @@ try {
                 $msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " reload");
             } else {
                 system("echo 'RELOAD:".$host["id"]."' >> $centcore_pipe", $return);
+                if ($return) {
+                    throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
+                }
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
                 }
@@ -169,6 +172,9 @@ try {
                 $msg_restart[$host["id"]] = shell_exec("sudo " . $nagios_init_script . " restart");
             } else {
                 system("echo \"RESTART:".$host["id"]."\" >> $centcore_pipe", $return);
+                if ($return) {
+                    throw new Exception(_("Could not write into centcore.cmd. Please check file permissions."));
+                }
 
                 if (!isset($msg_restart[$host["id"]])) {
                     $msg_restart[$host["id"]] = "";
