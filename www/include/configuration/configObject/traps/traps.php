@@ -69,6 +69,7 @@
     $aclDbName = $acl->getNameDBAcl($oreon->broker->getBroker());
     $dbmon = $oreon->broker->getBroker() == 'broker' ? new CentreonDB('centstorage') : new CentreonDB('ndo');
     $sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+    $severityObj = new CentreonCriticality($pearDB);
     
     /* Set the real page */
 	if ($ret['topology_page'] != "" && $p != $ret['topology_page'])

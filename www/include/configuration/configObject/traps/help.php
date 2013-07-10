@@ -8,6 +8,7 @@ $help["vendor"] = dgettext("help", "Choose a vendor from the list. The vendor mu
 $help["submit_result_enabled"] = dgettext("help", "Switch the submission of trap results to monitoring engine on or off.");
 $help["trap_args"] = dgettext("help", "Enter the status message to be submitted to monitoring engine. The original trap message will be placed into the entered string at the position of the variable \$*.");
 $help["trap_status"] = dgettext("help", "Choose the service state to be submitted to monitoring engine together with the status message. This simple mode can be used if each trap can be mapped to exactly 1 monitoring engine status.");
+$help["severity"] = dgettext("help", "Severities are defined in the service category object.");
 $help["trap_advanced"] = dgettext("help", "Enable advanced matching mode for cases where a trap relates to multiple monitoring engine states and the trap message has to be parsed.");
 $help["trap_adv_args"] = dgettext("help", "Define one or multiple regular expressions to match against the trap message and map it to the related monitoring engine service state. Use <a href='http://perldoc.perl.org/perlre.html'>perlre</a> for the format and place the expression between two slashes.");
 $help["reschedule_enabled"] = dgettext("help", "Choose whether or not the associated service should be actively rechecked after submission of this trap.");

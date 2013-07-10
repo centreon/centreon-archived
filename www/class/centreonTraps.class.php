@@ -76,6 +76,7 @@ class Centreon_Traps {
             $rules = $_REQUEST['rule'];
             $regexp = $_REQUEST['regexp'];
             $status = $_REQUEST['rulestatus'];
+            $severity = $_REQUEST['ruleseverity'] != "" ? $_REQUEST['ruleseverity'] : "NULL";
             $i = 1;
             foreach ($rules as $key => $value) {
                 if ($value == "") {
@@ -84,12 +85,13 @@ class Centreon_Traps {
                 if ($insertStr) {
                     $insertStr .= ", ";
                 }
-                $insertStr .= "($trapId, '".$this->_db->escape($value)."', '".$this->_db->escape($regexp[$key])."', ".$this->_db->escape($status[$key]).", $i)";
+                $insertStr .= "($trapId, '".$this->_db->escape($value)."', '".$this->_db->escape($regexp[$key])."', ".$this->_db->escape($status[$key]).", ".$this->_db->escape($severity[$key]).", $i)";
                 $i++;
             }
         }
         if ($insertStr) {
-            $this->_db->query("INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, tmo_order) VALUES $insertStr");
+            $this->_db->query("INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr");
+            echo "INSERT INTO traps_matching_properties (trap_id, tmo_string, tmo_regexp, tmo_status, severity_id, tmo_order) VALUES $insertStr";
         }
     }
 
@@ -217,12 +219,16 @@ class Centreon_Traps {
             if (isset($ret['traps_exec_interval_type']['traps_exec_interval_type'])) {
                 $ret['traps_exec_interval_type'] = $ret['traps_exec_interval_type']['traps_exec_interval_type'];
             }
+            if (!isset($ret['severity']) || $ret['severity'] == "") {
+                $ret['severity'] = "NULL";
+            }
 
             $rq = "UPDATE traps ";
             $rq .= "SET `traps_name` = '".$this->_db->escape($ret["traps_name"])."', ";
             $rq .= "`traps_oid` = '".$this->_db->escape($ret["traps_oid"])."', ";
             $rq .= "`traps_args` = '".$this->_db->escape($ret["traps_args"])."', ";
             $rq .= "`traps_status` = '".$this->_db->escape($ret["traps_status"])."', ";
+            $rq .= "`severity_id` = ".$this->_db->escape($ret["severity"]).", ";
             $rq .= "`traps_submit_result_enable` = '".$this->_db->escape($ret["traps_submit_result_enable"])."', ";
             $rq .= "`traps_reschedule_svc_enable` = '".$this->_db->escape($ret["traps_reschedule_svc_enable"])."', ";
             $rq .= "`traps_execution_command` = '".$this->_db->escape($ret["traps_execution_command"])."', ";
@@ -238,7 +244,7 @@ class Centreon_Traps {
             $rq .= "`traps_advanced_treatment_default` = '".$this->_db->escape($ret['traps_advanced_treatment_default'])."', ";
             $rq .= "`traps_timeout` = '".$this->_db->escape($ret["traps_timeout"])."' ";
             $rq .= "WHERE `traps_id` = '".$traps_id."'";
-            $res = $this->_db->query($rq);
+            $this->_db->query($rq);
 
             /*
              * Logs
@@ -385,10 +391,13 @@ class Centreon_Traps {
             if (isset($ret['traps_exec_interval_type']['traps_exec_interval_type'])) {
                 $ret['traps_exec_interval_type'] = $ret['traps_exec_interval_type']['traps_exec_interval_type'];
             }
+            if (!isset($ret['severity']) || $ret['severity'] == "") {
+                $ret['severity'] = "NULL";
+            }
             
             $rq = "INSERT INTO traps ";
             $rq .= "(traps_name, traps_oid, traps_args, 
-                traps_status, traps_submit_result_enable, 
+                traps_status, severity_id, traps_submit_result_enable, 
                 traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, 
                 traps_advanced_treatment, traps_comments, traps_routing_mode, traps_routing_value, manufacturer_id,
                 traps_log, traps_exec_interval, traps_exec_interval_type, traps_advanced_treatment_default,
@@ -398,6 +407,7 @@ class Centreon_Traps {
             $rq .= "'".$this->_db->escape($ret["traps_oid"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_args"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_status"])."', ";
+            $rq .= "".$this->_db->escape($ret["severity"]).", ";
             $rq .= "'".$this->_db->escape($ret["traps_submit_result_enable"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_reschedule_svc_enable"])."', ";
             $rq .= "'".$this->_db->escape($ret["traps_execution_command"])."', ";
@@ -470,7 +480,7 @@ class Centreon_Traps {
          * @return array
          */
         public function getMatchingRulesFromTrapId($trapId) {
-            $res = $this->_db->query("SELECT tmo_string, tmo_regexp, tmo_status
+            $res = $this->_db->query("SELECT tmo_string, tmo_regexp, tmo_status, severity_id
                     FROM traps_matching_properties
                     WHERE trap_id = ".$this->_db->escape($trapId)."
                     ORDER BY tmo_order");
@@ -480,7 +490,8 @@ class Centreon_Traps {
                 $arr[$i] = array(
                             "rule_#index#" => $row['tmo_string'],
                             "regexp_#index#" => $row['tmo_regexp'],
-                            "rulestatus_#index#" => $row['tmo_status']
+                            "rulestatus_#index#" => $row['tmo_status'],
+                            "ruleseverity_#index#" => $row['severity_id']
                            );
                 $i++;
             }

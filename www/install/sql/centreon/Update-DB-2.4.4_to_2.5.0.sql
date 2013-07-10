@@ -99,5 +99,9 @@ ALTER TABLE `service_categories` ADD COLUMN `level` TINYINT(5) DEFAULT NULL AFTE
 ALTER TABLE `service_categories` ADD COLUMN `icon_id` INT(11) DEFAULT NULL AFTER `sc_description`;
 DELETE FROM `topology` WHERE `topology_page` = 60228 AND `topology_name` = 'Criticality';
 DELETE FROM `topology` WHERE `topology_page` = 60107 AND `topology_name` = 'Criticality';
+ALTER TABLE `traps` ADD COLUMN `severity_id` int(11) DEFAULT NULL AFTER `traps_status`;
+ALTER TABLE `traps` ADD CONSTRAINT `traps_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE;
+ALTER TABLE `traps_matching_properties` ADD COLUMN `severity_id` int(11) DEFAULT NULL AFTER `tmo_status`;
+ALTER TABLE `traps_matching_properties` ADD CONSTRAINT `traps_matching_properties_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE;
 
 UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;

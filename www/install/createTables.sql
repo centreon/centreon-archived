@@ -2066,6 +2066,7 @@ CREATE TABLE `traps` (
   `traps_oid` varchar(255) DEFAULT NULL,
   `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
   `traps_execution_command` varchar(255) DEFAULT NULL,
@@ -2083,7 +2084,8 @@ CREATE TABLE `traps` (
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),
   KEY `traps_ibfk_1` (`manufacturer_id`),
-  CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE
+  CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2095,9 +2097,11 @@ CREATE TABLE `traps_matching_properties` (
   `tmo_regexp` varchar(255) DEFAULT NULL,
   `tmo_string` varchar(255) DEFAULT NULL,
   `tmo_status` int(11) DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`tmo_id`),
   KEY `trap_id` (`trap_id`),
-  CONSTRAINT `traps_matching_properties_ibfk_1` FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+  CONSTRAINT `traps_matching_properties_ibfk_1` FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_matching_properties_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
