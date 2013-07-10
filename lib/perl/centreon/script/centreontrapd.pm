@@ -6,6 +6,7 @@ use warnings;
 use POSIX;
 use centreon::script;
 use centreon::common::db;
+use centreon::common::misc;
 use centreon::trapd::lib;
 use centreon::trapd::Log;
 
@@ -98,6 +99,8 @@ sub new {
     $self->{current_trap_name} = undef;
     $self->{current_trap_log} = undef;
     $self->{current_vendor_name} = undef;
+    
+    $self->{current_alarm_timeout} = undef;
     
     #
     $self->{traps_global_output} = undef;
@@ -455,39 +458,13 @@ sub manage_exec {
         $SIG{CHLD} = 'IGNORE';
         $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
-        eval {
-            my $alarm_timeout = $self->{centreontrapd_config}->{cmd_timeout};
-            if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout})) {
-                $alarm_timeout = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
-            }
-            
-            local $SIG{ALRM} = sub { die "TIMEOUT"; };
-            alarm($alarm_timeout);
-            $self->do_exec();
-            alarm(0);
-        };
-        if ($@) {
-            if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
-                centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
-                                                 id => $self->{id_logdb},
-                                                 cdb => $self->{cdb},
-                                                 trap_time => $self->{trap_date_time_epoch},
-                                                 timeout => 1,
-                                                 host_name => ${$self->{var}}[0],
-                                                 ip_address => $self->{current_ip},
-                                                 agent_host_name => $self->{agent_dns_name},
-                                                 agent_ip_address => ${$self->{var}}[4],
-                                                 trap_oid => $self->{current_oid},
-                                                 trap_name => $self->{current_trap_name},
-                                                 vendor => $self->{current_vendor_name},
-                                                 severity => $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status},
-                                                 output_message => $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_args},
-                                                 entvar => \@{$self->{entvar}},
-                                                 entvarname => \@{$self->{entvarname}});
-            }
-            $self->{logger}->writeLogError("ERROR: Exec timeout");
-            exit(0);
+        
+        $self->{current_alarm_timeout} = $self->{centreontrapd_config}->{cmd_timeout};
+        if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout}) && $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout} != 0) {
+            $self->{current_alarm_timeout} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
         }
+        $self->do_exec();
+
         exit(1);
     }
     
@@ -516,11 +493,14 @@ sub forceCheck {
         $str =~ s/"/\\"/g;
         $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
-    my $stdout = `$submit`;
-
+    
+    my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
+                                                             logger => $self->{logger},
+                                                             timeout => $self->{current_alarm_timeout}
+                                                             );
     $self->{logger}->writeLogInfo("FORCE: Reschedule linked service");
     $self->{logger}->writeLogInfo("FORCE: Launched command: $submit");
-    if (defined($stdout)) {
+    if (defined($stdout) && $stdout ne "") {
         $self->{logger}->writeLogError("FORCE stdout: $stdout");
     }
 }
@@ -543,11 +523,14 @@ sub submitResult_do {
         $str =~ s/"/\\"/g;
         $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
-    my $stdout = `$submit`;
+    my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
+                                                             logger => $self->{logger},
+                                                             timeout => $self->{current_alarm_timeout}
+                                                             );
     
     $self->{logger}->writeLogInfo("SUBMIT: Force service status via passive check update");
     $self->{logger}->writeLogInfo("SUBMIT: Launched command: $submit");
-    if (defined($stdout)) {
+    if (defined($stdout) && $stdout ne "") {
         $self->{logger}->writeLogError("SUBMIT RESULT stdout: $stdout");
     }
 }
@@ -562,9 +545,9 @@ sub submitResult {
     # Severity
     #####
     return if (!defined($self->{traps_global_severity_id}) || $self->{traps_global_severity_id} eq ''); 
-    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};_CRITICALITY_ID;" . $self->{traps_global_severity_id};
+    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};CRITICALITY_ID;" . $self->{traps_global_severity_id};
     $self->submitResult_do($str);
-    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};_CRITICALITY_LEVEL;" . $self->{traps_global_severity_level};
+    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};CRITICALITY_LEVEL;" . $self->{traps_global_severity_level};
     $self->submitResult_do($str);
 }
 
@@ -576,16 +559,20 @@ sub execute_preexec {
         $tpe_string = $self->substitute_string($tpe_string);
         $tpe_string = $self->substitute_centreon_var($tpe_string);
         
-        my $output = `$tpe_string`;
-        if ($? == -1) {
-            $self->{logger}->writeLogError("EXEC: Execution error: $!");
-        } elsif (($? >> 8) != 0) {
-            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($? >> 8));
+        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(command => $tpe_string,
+                                                                             logger => $self->{logger},
+                                                                             timeout => $self->{current_alarm_timeout},
+                                                                             wait_exit => 1
+                                                                            );
+        if ($exit_code == -1) {
+            $self->{logger}->writeLogError("EXEC prexec: Execution error: $!");
+        } elsif (($exit_code >> 8) != 0) {
+            $self->{logger}->writeLogInfo("EXEC preexec: Exit command: " . ($exit_code >> 8));
         }
         if (defined($output)) {
             chomp $output;
             push @{$self->{preexec}}, $output;
-            $self->{logger}->writeLogInfo("EXEC: Output : $output");
+            $self->{logger}->writeLogInfo("EXEC preexec: Output : $output");
         } else {
             push @{$self->{preexec}}, "";
         }
@@ -784,11 +771,15 @@ sub executeCommand {
         $self->{logger}->writeLogInfo("EXEC: Launch specific command");
         $self->{logger}->writeLogInfo("EXEC: Launched command: $traps_execution_command");
     
-        my $output = `$traps_execution_command`;
-        if ($? == -1) {
+        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(command => $traps_execution_command,
+                                                                             logger => $self->{logger},
+                                                                             timeout => $self->{current_alarm_timeout},
+                                                                             wait_exit => 1
+                                                                            );
+        if ($exit_code == -1) {
             $self->{logger}->writeLogError("EXEC: Execution error: $!");
-        } elsif (($? >> 8) != 0) {
-            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($? >> 8));
+        } elsif (($exit_code >> 8) != 0) {
+            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($exit_code >> 8));
         }
         if (defined($output)) {
             chomp $output;

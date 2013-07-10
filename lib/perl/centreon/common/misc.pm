@@ -1,6 +1,10 @@
 
 package centreon::common::misc;
+
+use strict;
+use warnings;
 use vars qw($centreon_config);
+use POSIX ":sys_wait_h";
 
 my $read_size = 1*1024*1024*10; # 10Mo
 
@@ -126,4 +130,85 @@ sub get_line_pipe {
     return -1;
 }
 
+sub plop {
+    my $child_pid;
+
+    while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
+        print "SIGCHLD received: $child_pid\n";
+    }
+    print "SIGCHLD received: $child_pid\n";
+    #print "LAAAAAAAAAAAAAAAAAA\n";
+}
+
+sub backtick {
+    my %arg = (
+        command => undef,
+        logger => undef,
+        timeout => 30,
+        wait_exit => 0,
+        @_,
+    );
+    my @output;
+    my $pid;
+    my $return_code;
+    
+    my $sig_do;
+    if ($arg{wait_exit} == 0) {
+        $sig_do = 'IGNORE';
+        $return_code = undef;
+    } else {
+        $sig_do = 'DEFAULT';
+    }
+    local $SIG{CHLD} = $sig_do;
+    if (!defined($pid = open( KID, "-|" ))) {
+        $arg{logger}->writeLogError("Cant fork: $!");
+        return -1;
+    }
+    
+    if ($pid) {
+        
+       
+        eval {
+           local $SIG{ALRM} = sub { die "Timeout by signal ALARM\n"; };
+           alarm( $arg{timeout} );
+           while (<KID>) {
+               chomp;
+               push @output, $_;
+           }
+
+           alarm(0);
+        };
+        if ($@) {
+            $arg{logger}->writeLogInfo($@);
+
+            $arg{logger}->writeLogInfo("Killing child process [$pid] ...");
+            if ($pid != -1) {
+                kill -9, $pid;
+            }
+            $arg{logger}->writeLogInfo("Killed");
+
+            alarm(0);
+            close KID;
+            return (-1, join("\n", @output), -1);
+        } else {
+            if ($arg{wait_exit} == 1) {
+                # We're waiting the exit code                
+                waitpid($pid, 0);
+                $return_code = $?;
+            }
+            close KID;
+        }
+    } else {
+        # child
+        # set the child process to be a group leader, so that
+        # kill -9 will kill it and all its descendents
+        setpgrp( 0, 0 );
+
+        exec($arg{command});
+        exit(0);
+    }
+
+    return (0, join("\n", @output), $return_code);
+}
+        
 1;
