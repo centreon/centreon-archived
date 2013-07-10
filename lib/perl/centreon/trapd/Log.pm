@@ -123,6 +123,11 @@ sub compute_request {
     }
 }
 
+####
+# Protocol description:
+#      First: ID_UNIQUE:0:num_args:value
+#      Args:  ID_UNIQUE:1:arg_pos:value
+
 sub main {
     my $self = shift;
     my ($dbcentstorage, $pipe_read, $config_file, $centreontrapd_config) = @_;
