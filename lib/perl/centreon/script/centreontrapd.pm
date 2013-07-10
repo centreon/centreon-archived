@@ -120,7 +120,7 @@ sub new {
     $self->{id_logdb} = 0;
     
     # redefine to avoid out when we try modules
-    $SIG{__DIE__} = undef;
+    $SIG{__DIE__} = 'IGNORE';
     return $self;
 }
 
@@ -290,7 +290,7 @@ sub reload {
                                     centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
                                                                              $self->{centreontrapd_config}->{time_format});
     # redefine to avoid out when we try modules
-    $SIG{__DIE__} = undef;
+    $SIG{__DIE__} = 'IGNORE';
     centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     $self->set_signal_handlers;
 
@@ -312,8 +312,8 @@ sub create_logdb_child {
     my $current_pid = fork();
     if (!$current_pid) {
         # Unhandle die in child
-        $SIG{CHLD} = undef;
-        $SIG{__DIE__} = undef;
+        $SIG{CHLD} = 'IGNORE';
+        $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
 
         close $self->{logdb_pipes}{'writer'};
@@ -452,8 +452,8 @@ sub manage_exec {
     my $current_pid = fork();
     if (!$current_pid) {
         # Unhandle die in child
-        $SIG{CHLD} = undef;
-        $SIG{__DIE__} = undef;
+        $SIG{CHLD} = 'IGNORE';
+        $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
         eval {
             my $alarm_timeout = $self->{centreontrapd_config}->{cmd_timeout};
@@ -843,8 +843,8 @@ sub getTrapsInfos {
             #### If none, we stop ####
             my $size = keys %{$self->{ref_services}};
             if ($size < 1) {
-                $self->{logger}->writeLogDebug("Trap without service associated. Skipping...");
-                return 1;
+                $self->{logger}->writeLogDebug("Trap without service associated for host " . $self->{current_hostname} . ". Skipping...");
+                next;
             }
             
             #### Check if macro $_HOST*$ needed
