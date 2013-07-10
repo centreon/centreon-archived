@@ -102,6 +102,9 @@ sub new {
     #
     $self->{traps_global_output} = undef;
     $self->{traps_global_status} = undef;
+    $self->{traps_global_severity_id} = undef;
+    $self->{traps_global_severity_name} = undef;
+    $self->{traps_global_severity_level} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
@@ -362,6 +365,10 @@ sub do_exec {
     my $matching_result = 0;
     
     $self->{traps_global_status} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status};
+    $self->{traps_global_severity_id} = $self->{ref_oids}->{ $self->{current_trap_id} }->{sc_id};
+    $self->{traps_global_severity_name} = $self->{ref_oids}->{ $self->{current_trap_id} }->{sc_name};
+    $self->{traps_global_severity_level} = $self->{ref_oids}->{ $self->{current_trap_id} }->{level};
+    
     # PREEXEC commands
     $self->execute_preexec();
 
@@ -521,13 +528,13 @@ sub forceCheck {
 #######################################
 ## Submit result via external command
 #
-sub submitResult {
-    my $self = shift;
-    my $datetime = time();
-    
-    my $str = "PROCESS_SERVICE_CHECK_RESULT;$self->{current_hostname};$self->{current_service_desc};" . $self->{traps_global_status} . ";" . $self->{traps_global_output};
 
+sub submitResult_do {
+    my $self = shift;
+    my $str = $_[0];
+    my $datetime = time();
     my $submit;
+
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
         $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile};
@@ -543,6 +550,22 @@ sub submitResult {
     if (defined($stdout)) {
         $self->{logger}->writeLogError("SUBMIT RESULT stdout: $stdout");
     }
+}
+
+sub submitResult {
+    my $self = shift;
+    
+    my $str = "PROCESS_SERVICE_CHECK_RESULT;$self->{current_hostname};$self->{current_service_desc};" . $self->{traps_global_status} . ";" . $self->{traps_global_output};
+    $self->submitResult_do($str);
+    
+    #####
+    # Severity
+    #####
+    return if (!defined($self->{traps_global_severity_id}) || $self->{traps_global_severity_id} eq ''); 
+    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};_CRITICALITY_ID;" . $self->{traps_global_severity_id};
+    $self->submitResult_do($str);
+    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};_CRITICALITY_LEVEL;" . $self->{traps_global_severity_level};
+    $self->submitResult_do($str);
 }
 
 sub execute_preexec {
@@ -636,6 +659,8 @@ sub substitute_centreon_var {
     $str =~ s/\@TRAPOUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@OUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@STATUS\@/$self->{traps_global_status}/g;
+    $str =~ s/\@SEVERITYNAME\@/$self->{traps_global_severity_name}/g;
+    $str =~ s/\@SEVERITYLEVEL\@/$self->{traps_global_severity_level}/g;
     $str =~ s/\@TIME\@/$self->{trap_date_time_epoch}/g;
     $str =~ s/\@POLLERID\@/$self->{current_server_id}/g;
     $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
@@ -675,6 +700,9 @@ sub checkMatchingRules {
         my $tmoString = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_string};
         my $regexp = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_regexp};
         my $tmoStatus = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_status};
+        my $severity_level = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{level};
+        my $severity_name = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_name};
+        my $severity_id = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_id};
         
         $self->{logger}->writeLogDebug("[$tmoString][$regexp] => $tmoStatus");
         
@@ -708,8 +736,14 @@ sub checkMatchingRules {
         # Integrate OID Matching            
         if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
             $self->{traps_global_status} = $tmoStatus;
+            $self->{traps_global_severity_name} = $severity_name;
+            $self->{traps_global_severity_level} = $severity_level;
+            $self->{traps_global_severity_id} = $severity_id;
             $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
             $self->{logger}->writeLogInfo("Status: $self->{traps_global_status} ($tmoStatus)");
+            $self->{logger}->writeLogInfo("Severity id: $self->{traps_global_severity_id} ($severity_id)");
+            $self->{logger}->writeLogInfo("Severity name: $self->{traps_global_severity_name} ($severity_name)");
+            $self->{logger}->writeLogInfo("Severity level: $self->{traps_global_severity_level} ($severity_level)");
             $matching_boolean = 1;
             last;
         }    

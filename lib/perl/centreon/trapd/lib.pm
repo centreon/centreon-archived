@@ -99,14 +99,20 @@ sub get_oids {
                                         traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_exec_interval, traps_exec_interval_type,
                                         traps_routing_mode, traps_routing_value
-                                        FROM traps LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id) WHERE traps_oid = " . $cdb->quote($oid));
+                                        service_categories.level, service_categories.sc_name, service_categories.sc_id
+                                        FROM traps
+                                        LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
+                                        LEFT JOIN service_categories ON (service_categories.sc_id = traps.severity_id)
+                                        WHERE traps_oid = " . $cdb->quote($oid));
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('traps_id');
     
     foreach (keys %$ref_result) {
         # Get Matching Status Rules
         if (defined($ref_result->{$_}->{traps_advanced_treatment}) && $ref_result->{$_}->{traps_advanced_treatment} == 1) {
-            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties WHERE trap_id = " . $_ . " ORDER BY tmo_id ASC");
+            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties
+                                            LEFT JOIN service_categories ON (service_categories.sc_id = traps_matching_properties.severity_id)
+                                            WHERE trap_id = " . $_ . " ORDER BY tmo_id ASC");
             return -1 if ($dstatus == -1);
             $ref_result->{$_}->{traps_matching_properties} = $sth->fetchall_hashref("tmo_id");
         }
