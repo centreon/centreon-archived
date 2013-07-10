@@ -25,7 +25,6 @@ sub init_modules {
             $args{logger}->writeLogError("SNMP module, NOT the CPAN Net::SNMP module!");
             die("Quit");
         }
-        require SNMP;
         if (defined ($args{config}->{mibs_environment}) && $args{config}->{mibs_environment} ne '') {
             $ENV{'MIBS'} = $args{config}->{mibs_environment};
         }
@@ -49,7 +48,6 @@ sub init_modules {
             $args{logger}->writeLogError("for system requirements");
             die("Quit");
         }
-        require Socket;
         $args{logger}->writeLogInfo("********** DNS enabled **********");
     }
     
@@ -62,7 +60,6 @@ sub init_modules {
             $args{logger}->writeLogError("for system requirements.");
             die("Quit");
         }
-        require Digest::MD5;
     }
     
     eval "require HTML::Entities";

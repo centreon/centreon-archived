@@ -714,7 +714,7 @@ sub checkMatchingRules {
         ##########################
         # REPLACE special Chars
         if ($self->{htmlentities} == 1) {
-            $tmoString = decode_entities($tmoString);
+            $tmoString = HTML::Entities::decode_entities($tmoString);
         } else {
             $tmoString =~ s/\&quot\;/\"/g;
             $tmoString =~ s/\&#039\;\&#039\;/"/g;
@@ -756,7 +756,7 @@ sub executeCommand {
     ##########################
     # REPLACE MACROS
     if ($self->{htmlentities} == 1) {
-        $traps_execution_command = decode_entities($traps_execution_command);
+        $traps_execution_command = HTML::Entities::decode_entities($traps_execution_command);
     } else {
         $traps_execution_command =~ s/\&quot\;/\"/g;
         $traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
