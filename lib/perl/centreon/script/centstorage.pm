@@ -56,7 +56,10 @@ sub new {
        TIMEOUT => 60,
        rrd_cache_mode => 0,
        rrd_flush_time => 60 * 10,
-       perfdata_parser_stop => 1
+       perfdata_parser_stop => 1,
+       auto_duplicate => 0,
+       duplicate_file => undef,
+       nopurge => 0
     );
 
     $self->set_signal_handlers;
@@ -161,12 +164,12 @@ sub handle_DIE {
     # Send -TERM signal
     ###
     for (my $i = 0; defined($self->{centstorage_config}->{pool_childs}) && $i < $self->{centstorage_config}->{pool_childs}; $i++) {
-        if (defined($self->{pool_pipes}{$i}) && $self->{pool_pipes}{$i}->{'running'} == 1) {
-            kill('TERM', $self->{pool_pipes}{$i}->{'pid'});
+        if (defined($self->{pool_pipes}{$i}) && $self->{pool_pipes}{$i}->{running} == 1) {
+            kill('TERM', $self->{pool_pipes}{$i}->{pid});
             $self->{logger}->writeLogInfo("Send -TERM signal to pool process..");
         }
     }
-    if (defined($self->{delete_pipes}{'running'}) && $self->{delete_pipes}{'running'} == 1) {
+    if (defined($self->{delete_pipes}{running}) && $self->{delete_pipes}{running} == 1) {
         $self->{logger}->writeLogInfo("Send -TERM signal to delete process..");
         kill('TERM', $self->{pid_delete_child});
     }
@@ -185,9 +188,9 @@ sub handle_DIE {
         $self->verify_pool(0);
         my $running = 0;
         for (my $i = 0; $i < $self->{centstorage_config}->{pool_childs}; $i++) {
-            $running += $self->{pool_pipes}{$i}->{'running'} == 1;
+            $running += $self->{pool_pipes}{$i}->{running} == 1;
         }
-        $running += $self->{delete_pipes}{'running'};
+        $running += $self->{delete_pipes}{running};
         if ($running == 0) {
             $kill_or_not = 0;
             last;
@@ -197,12 +200,12 @@ sub handle_DIE {
 
     if ($kill_or_not == 1) {
         for (my $i = 0; $i < $self->{centstorage_config}->{pool_childs}; $i++) {
-            if ($self->{pool_pipes}{$i}->{'running'} == 1) {
-                kill('KILL', $self->{pool_pipes}{$i}->{'pid'});
+            if ($self->{pool_pipes}{$i}->{running} == 1) {
+                kill('KILL', $self->{pool_pipes}{$i}->{pid});
                 $self->{logger}->writeLogInfo("Send -KILL signal to pool process..");
             }
         }
-        if ($self->{delete_pipes}{'running'} == 1) {
+        if ($self->{delete_pipes}{running} == 1) {
             kill('KILL', $self->{pid_delete_child});
             $self->{logger}->writeLogInfo("Send -KILL signal to delete process..");
         }
@@ -233,10 +236,10 @@ sub verify_pool {
 
     foreach my $child_pid (keys %{$self->{return_child}}) {
         foreach my $pool_num (keys %{$self->{pool_pipes}}) {
-            if ($self->{pool_pipes}{$pool_num}->{'pid'} == $child_pid) {
+            if ($self->{pool_pipes}{$pool_num}->{pid} == $child_pid) {
                 $self->{logger}->writeLogInfo("Pool child '$pool_num' is dead");
-                $self->{read_select}->remove($self->{pool_pipes}{$pool_num}->{'reader_one'});
-                $self->{pool_pipes}{$pool_num}->{'running'} = 0;
+                $self->{read_select}->remove($self->{pool_pipes}{$pool_num}->{reader_one});
+                $self->{pool_pipes}{$pool_num}->{running} = 0;
                 if (defined($create_pool) && $create_pool == 1) {
                     # We have lost one. And if it's the pool rebuild, send progress finish
                     if ($pool_num == $self->{rebuild_pool_choosen}) {
@@ -250,8 +253,8 @@ sub verify_pool {
         }
         if ($child_pid == $self->{pid_delete_child}) {
             $self->{logger}->writeLogInfo("Delete child is dead");
-            $self->{read_select}->remove($self->{delete_pipes}{'reader_one'});
-            $self->{delete_pipes}{'running'} = 0;
+            $self->{read_select}->remove($self->{delete_pipes}{reader_one});
+            $self->{delete_pipes}{running} = 0;
             if (defined($create_pool) && $create_pool == 1) {
                 $self->create_delete_child();
             }
@@ -273,16 +276,16 @@ sub create_pool_child {
     $writer_pipe_two->autoflush(1);
 
     $self->{pool_pipes}{$pool_num} = {};
-    $self->{pool_pipes}{$pool_num}->{'reader_one'} = \*$reader_pipe_one;
-    $self->{pool_pipes}{$pool_num}->{'writer_one'} = \*$writer_pipe_one;
-    $self->{pool_pipes}{$pool_num}->{'reader_two'} = \*$reader_pipe_two;
-    $self->{pool_pipes}{$pool_num}->{'writer_two'} = \*$writer_pipe_two;
+    $self->{pool_pipes}{$pool_num}->{reader_one} = \*$reader_pipe_one;
+    $self->{pool_pipes}{$pool_num}->{writer_one} = \*$writer_pipe_one;
+    $self->{pool_pipes}{$pool_num}->{reader_two} = \*$reader_pipe_two;
+    $self->{pool_pipes}{$pool_num}->{writer_two} = \*$writer_pipe_two;
 
     $self->{logger}->writeLogInfo("Create Pool child '$pool_num'");
     my $current_pid = fork();
     if (!$current_pid) {
-        close $self->{pool_pipes}{$pool_num}->{'reader_one'};
-        close $self->{pool_pipes}{$pool_num}->{'writer_two'};
+        close $self->{pool_pipes}{$pool_num}->{reader_one};
+        close $self->{pool_pipes}{$pool_num}->{writer_two};
         my $centreon_db_centreon = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
                                                      host => $self->{centreon_config}->{db_host},
                                                      port => $self->{centreon_config}->{db_port},
@@ -302,18 +305,19 @@ sub create_pool_child {
 
         my $centstorage_rrd = centreon::centstorage::CentstorageRRD->new($self->{logger});
 
-        my $centstorage_pool = centreon::centstorage::CentstoragePool->new($self->{logger}, $centstorage_rrd,  $self->{rebuild_progress});
+        my $centstorage_pool = centreon::centstorage::CentstoragePool->new($self->{logger}, $centstorage_rrd, $self->{rebuild_progress}, $self->{centstorage_config});
         $centstorage_pool->main($centreon_db_centreon, $centreon_db_centstorage,
-                    $self->{pool_pipes}{$pool_num}->{'reader_two'}, $self->{pool_pipes}{$pool_num}->{'writer_one'}, $pool_num,
-                    $self->{centstorage_config}->{rrd_cache_mode}, $self->{centstorage_config}->{rrd_flush_time}, $self->{centstorage_config}->{perfdata_parser_stop}, $self->{config_file});
+                    $self->{pool_pipes}{$pool_num}->{reader_two}, $self->{pool_pipes}{$pool_num}->{writer_one}, $pool_num,
+                    $self->{centstorage_config}->{rrd_cache_mode}, $self->{centstorage_config}->{rrd_flush_time}, $self->{centstorage_config}->{perfdata_parser_stop},
+                    $self->{config_file});
         exit(0);
     }
-    $self->{pool_pipes}{$pool_num}->{'pid'} = $current_pid;
-    $self->{pool_pipes}{$pool_num}->{'running'} = 1;
-    close $self->{pool_pipes}{$pool_num}->{'writer_one'};
-    close $self->{pool_pipes}{$pool_num}->{'reader_two'};
-    $self->{fileno_save_read}{fileno($self->{pool_pipes}{$pool_num}->{'reader_one'})} = [];
-    $self->{read_select}->add($self->{pool_pipes}{$pool_num}->{'reader_one'});
+    $self->{pool_pipes}{$pool_num}->{pid} = $current_pid;
+    $self->{pool_pipes}{$pool_num}->{running} = 1;
+    close $self->{pool_pipes}{$pool_num}->{writer_one};
+    close $self->{pool_pipes}{$pool_num}->{reader_two};
+    $self->{fileno_save_read}{fileno($self->{pool_pipes}{$pool_num}->{reader_one})} = [];
+    $self->{read_select}->add($self->{pool_pipes}{$pool_num}->{reader_one});
 }
 
 sub create_delete_child {
@@ -327,16 +331,16 @@ sub create_delete_child {
     $writer_pipe_one->autoflush(1);
     $writer_pipe_two->autoflush(1);
 
-    $self->{delete_pipes}{'reader_one'} = \*$reader_pipe_one;
-    $self->{delete_pipes}{'writer_one'} = \*$writer_pipe_one;
-    $self->{delete_pipes}{'reader_two'} = \*$reader_pipe_two;
-    $self->{delete_pipes}{'writer_two'} = \*$writer_pipe_two;
+    $self->{delete_pipes}{reader_one} = \*$reader_pipe_one;
+    $self->{delete_pipes}{writer_one} = \*$writer_pipe_one;
+    $self->{delete_pipes}{reader_two} = \*$reader_pipe_two;
+    $self->{delete_pipes}{writer_two} = \*$writer_pipe_two;
 
     $self->{logger}->writeLogInfo("Create delete child");
     my $current_pid = fork();
     if (!$current_pid) {
-        close $self->{delete_pipes}{'reader_one'};
-        close $self->{delete_pipes}{'writer_two'};
+        close $self->{delete_pipes}{reader_one};
+        close $self->{delete_pipes}{writer_two};
         my $centreon_db_centreon = centreon::common::db->new(db => $self->{centreon_config}->{centreon_db},
                                                      host => $self->{centreon_config}->{db_host},
                                                      port => $self->{centreon_config}->{db_port},
@@ -354,17 +358,18 @@ sub create_delete_child {
                                                         logger => $self->{logger});
         $centreon_db_centstorage->connect();
         
-        my $centstorage_action = centreon::centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress});
+        my $centstorage_action = centreon::centstorage::CentstorageAction->new($self->{logger}, $self->{rebuild_progress}, $self->{centstorage_config});
         $centstorage_action->main($centreon_db_centreon, $centreon_db_centstorage,
-                    $self->{delete_pipes}{'reader_two'}, $self->{delete_pipes}{'writer_one'}, $self->{config_file});
+                    $self->{delete_pipes}{reader_two}, $self->{delete_pipes}{writer_one},
+                    $self->{config_file});
         exit(0);
     }
     $self->{pid_delete_child} = $current_pid;
-    close $self->{delete_pipes}{'writer_one'};
-    close $self->{delete_pipes}{'reader_two'};
-    $self->{delete_pipes}{'running'} = 1;
-    $self->{fileno_save_read}{fileno($self->{delete_pipes}{'reader_one'})} = [];
-    $self->{read_select}->add($self->{delete_pipes}{'reader_one'});
+    close $self->{delete_pipes}{writer_one};
+    close $self->{delete_pipes}{reader_two};
+    $self->{delete_pipes}{running} = 1;
+    $self->{fileno_save_read}{fileno($self->{delete_pipes}{reader_one})} = [];
+    $self->{read_select}->add($self->{delete_pipes}{reader_one});
 }
 
 sub handle_CHLD {
@@ -372,7 +377,7 @@ sub handle_CHLD {
     my $child_pid;
 
     while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
-        $self->{return_child}{$child_pid} = {'exit_code' => $? >> 8};
+        $self->{return_child}{$child_pid} = {exit_code => $? >> 8};
     }
     $SIG{CHLD} = \&class_handle_CHLD;
 }
@@ -398,6 +403,10 @@ sub run {
                                                      force => 1,
                                                      logger => $self->{logger});
     $self->{centreon_db_centreon}->connect();
+    
+    centreon::common::misc::get_all_options_config($self->{centstorage_config}, $self->{centreon_db_centreon}, 
+                                                   "centstorage");
+    
     $self->handle_DIE("Censtorage option is '0'. Don't have to start") if (centreon::centstorage::CentstorageLib::start_or_not($self->{centreon_db_centreon}) == 0);
     while (!defined($main_perfdata) || $main_perfdata eq "") {
         ($status, $main_perfdata) = centreon::centstorage::CentstorageLib::get_main_perfdata_file($self->{centreon_db_centreon});
@@ -451,7 +460,8 @@ sub run {
         # Do main file
         ###
         $self->{centstorage_perfdata_file} = centreon::centstorage::CentstoragePerfdataFile->new($self->{logger});
-        $self->{centstorage_perfdata_file}->compute($main_perfdata, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs});
+        $self->{centstorage_perfdata_file}->compute($main_perfdata, \%{$self->{pool_pipes}}, \%{$self->{routing_services}}, \$self->{roundrobin_pool_current}, $self->{centstorage_config}->{pool_childs},
+                                                    $self->{centstorage_config}->{auto_duplicate}, $self->{centstorage_config}->{duplicate_file});
 
         ###
         # Check response from rebuild

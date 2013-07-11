@@ -10,19 +10,19 @@ my @rrd_dst = ("GAUGE","COUNTER","DERIVE","ABSOLUTE");
 sub new {
     my $class = shift;
     my $self  = {};
-    $self->{"logger"} = shift;
-    $self->{"metric_path"} = undef;
-    $self->{"status_path"} = undef;
-    $self->{"len_rrd"} = undef;
-    $self->{"status_info"} = {};
-    $self->{"metric_info"} = {};
+    $self->{logger} = shift;
+    $self->{metric_path} = undef;
+    $self->{status_path} = undef;
+    $self->{len_rrd} = undef;
+    $self->{status_info} = {};
+    $self->{metric_info} = {};
     # By metric_id
-    $self->{"rrdcache_metric_data"} = {};
-    $self->{"rrdcache_status_data"} = {};
+    $self->{rrdcache_metric_data} = {};
+    $self->{rrdcache_status_data} = {};
     # Flush every n seconds: -1 = disable
-    $self->{"last_flush"} = time();
-    $self->{"flush"} = -1;
-    $self->{"cache_mode"} = 0;
+    $self->{last_flush} = time();
+    $self->{flush} = -1;
+    $self->{cache_mode} = 0;
     bless $self, $class;
     return $self;
 }
@@ -53,7 +53,7 @@ sub create_rrd_database {
     RRDs::create($RRDdatabase_path . "/" . $metric_id . ".rrd", "-b ".$begin, "-s ".$interval, "DS:" . substr($metric_name, 0, 19) . ":" . $lsource_type . ":".$interval.":U:U", "RRA:AVERAGE:0.5:1:".$my_len_storage_rrd, "RRA:AVERAGE:0.5:12:".($my_len_storage_rrd / 12));
     my $ERR = RRDs::error;
     if ($ERR) {
-        $self->{'logger'}->writeLogError("ERROR while creating " . $RRDdatabase_path.$metric_id . ".rrd : $ERR");
+        $self->{logger}->writeLogError("ERROR while creating " . $RRDdatabase_path.$metric_id . ".rrd : $ERR");
     } else {
         chmod 0664, "${RRDdatabase_path}/${metric_id}.rrd";
     }
@@ -66,7 +66,7 @@ sub tune_rrd_database {
     RRDs::tune($RRDdatabase_path . "/" . $metric_id . ".rrd", "-h", substr($metric_name, 0, 19).":".$interval_hb);
     my $ERR = RRDs::error;
     if ($ERR) {
-        $self->{'logger'}->writeLogError("ERROR while tunning operation on " . $RRDdatabase_path.$metric_id . ".rrd : $ERR");
+        $self->{logger}->writeLogError("ERROR while tunning operation on " . $RRDdatabase_path.$metric_id . ".rrd : $ERR");
     }
 }
 
@@ -90,54 +90,54 @@ sub metric_path {
     my $self = shift;
 
     if (@_) {
-        $self->{'metric_path'} = shift;
+        $self->{metric_path} = shift;
     }
-    return $self->{'metric_path'};
+    return $self->{metric_path};
 }
 
 sub status_path {
     my $self = shift;
 
     if (@_) {
-        $self->{'status_path'} = shift;
+        $self->{status_path} = shift;
     }
-    return $self->{'status_path'};
+    return $self->{status_path};
 }
 
 sub len_rrd {
     my $self = shift;
 
     if (@_) {
-        $self->{'len_rrd'} = shift() * 60 * 60 * 24;
+        $self->{len_rrd} = shift() * 60 * 60 * 24;
     }
-    return $self->{'len_rrd'};
+    return $self->{len_rrd};
 }
 
 sub flush {
     my $self = shift;
 
     if (@_) {
-        $self->{'flush'} = shift;
+        $self->{flush} = shift;
     }
-    return $self->{'flush'};
+    return $self->{flush};
 }
 
 sub cache_mode {
     my $self = shift;
 
     if (@_) {
-        $self->{'cache_mode'} = shift;
+        $self->{cache_mode} = shift;
     }
-    return $self->{'cache_mode'};
+    return $self->{cache_mode};
 }
 
 sub delete_rrd_metric {
     my $self = shift;
     my ($id) = @_;
 
-    if (-e $self->{"metric_path"} . "/" . $id . ".rrd") {
-        if (!unlink($self->{"metric_path"} . "/" . $id . ".rrd")) {
-            $self->{'logger'}->writeLogError("Cannot delete rrd file " . $self->{"metric_path"} . "/" . $id . ".rrd");
+    if (-e $self->{metric_path} . "/" . $id . ".rrd") {
+        if (!unlink($self->{metric_path} . "/" . $id . ".rrd")) {
+            $self->{logger}->writeLogError("Cannot delete rrd file " . $self->{metric_path} . "/" . $id . ".rrd");
             return -1;
         }
     }
@@ -148,11 +148,11 @@ sub delete_cache_metric {
     my $self = shift;
     my ($metric_id) = @_;
 
-    if (defined($self->{"metric_info"}->{$metric_id})) {
-        delete $self->{"metric_info"}->{$metric_id};
+    if (defined($self->{metric_info}->{$metric_id})) {
+        delete $self->{metric_info}->{$metric_id};
     }
-    if (defined($self->{"rrdcache_metric_data"}->{$metric_id})) {
-        delete $self->{"rrdcache_metric_data"}->{$metric_id};
+    if (defined($self->{rrdcache_metric_data}->{$metric_id})) {
+        delete $self->{rrdcache_metric_data}->{$metric_id};
     }
 }
 
@@ -160,11 +160,11 @@ sub delete_cache_status {
     my $self = shift;
     my ($id) = @_;
     
-    if (defined($self->{"status_info"}->{$id})) {
-        delete $self->{"status_info"}->{$id};
+    if (defined($self->{status_info}->{$id})) {
+        delete $self->{status_info}->{$id};
     }
-    if (defined($self->{"rrdcache_status_data"}->{$id})) {
-        delete $self->{"rrdcache_status_data"}->{$id};
+    if (defined($self->{rrdcache_status_data}->{$id})) {
+        delete $self->{rrdcache_status_data}->{$id};
     }
 }
 
@@ -172,34 +172,34 @@ sub add_metric {
     my $self = shift;
     my ($metric_id, $metric_name, $interval, $data_source_type, $timestamp, $value, $local_rrd_retention) = @_;
 
-    if (!defined($self->{"metric_info"}->{$metric_id})) {
+    if (!defined($self->{metric_info}->{$metric_id})) {
         my $my_len_storage_rrd;
         if ($local_rrd_retention == -1) {
-            $my_len_storage_rrd = $self->{"len_rrd"} / $interval;
+            $my_len_storage_rrd = $self->{len_rrd} / $interval;
         } else {
             $my_len_storage_rrd = $local_rrd_retention / $interval;
         }
-        my $ltimestamp = $self->get_last_update($self->{"metric_path"}, $metric_id);
+        my $ltimestamp = $self->get_last_update($self->{metric_path}, $metric_id);
         return if ($ltimestamp == -2);
-        $self->{"metric_info"}->{$metric_id} = {'metric_name' => $metric_name,
-                            'interval' => $interval,
-                            'data_source_type' => $data_source_type,
-                            'last_timestamp' => $ltimestamp,
-                            'len_rrd' => $my_len_storage_rrd};
-        if ($self->{"metric_info"}->{$metric_id}->{'last_timestamp'} == -1) {
+        $self->{metric_info}->{$metric_id} = {metric_name => $metric_name,
+                            interval => $interval,
+                            data_source_type => $data_source_type,
+                            last_timestamp => $ltimestamp,
+                            len_rrd => $my_len_storage_rrd};
+        if ($self->{metric_info}->{$metric_id}->{last_timestamp} == -1) {
             my $interval_hb = $interval * 10;            
 
-            $self->create_rrd_database($self->{"metric_path"}, $metric_id, $timestamp - 200, $interval,
+            $self->create_rrd_database($self->{metric_path}, $metric_id, $timestamp - 200, $interval,
                            $self->get_ds_name($metric_name), $my_len_storage_rrd, $data_source_type);
-            $self->tune_rrd_database($self->{"metric_path"}, $metric_id, $self->get_ds_name($metric_name), $interval_hb);
-            $self->{"metric_info"}->{$metric_id}->{'last_timestamp'} = $timestamp - 200;
+            $self->tune_rrd_database($self->{metric_path}, $metric_id, $self->get_ds_name($metric_name), $interval_hb);
+            $self->{metric_info}->{$metric_id}->{last_timestamp} = $timestamp - 200;
         }
     }
 
-    return -1 if ($timestamp <= $self->{"metric_info"}->{$metric_id}->{'last_timestamp'} || $timestamp > (time() + 7200));
-    $self->{"rrdcache_metric_data"}->{$metric_id} = [] if (!defined($self->{"rrdcache_metric_data"}->{$metric_id}));
-    push @{$self->{"rrdcache_metric_data"}->{$metric_id}}, $timestamp . ":" . $value;
-    $self->{"metric_info"}->{$metric_id}->{'last_timestamp'} = $timestamp;
+    return -1 if ($timestamp <= $self->{metric_info}->{$metric_id}->{last_timestamp} || $timestamp > (time() + 7200));
+    $self->{rrdcache_metric_data}->{$metric_id} = [] if (!defined($self->{rrdcache_metric_data}->{$metric_id}));
+    push @{$self->{rrdcache_metric_data}->{$metric_id}}, $timestamp . ":" . $value;
+    $self->{metric_info}->{$metric_id}->{last_timestamp} = $timestamp;
 }
 
 sub add_status {
@@ -217,59 +217,59 @@ sub add_status {
         # Don't do for 'UNKNOWN'
         return ;
     }
-    if (!defined($self->{'status_info'}->{$index_id})) {
+    if (!defined($self->{status_info}->{$index_id})) {
         my $my_len_storage_rrd;
         if ($local_rrd_retention == -1) {
-            $my_len_storage_rrd = $self->{"len_rrd"} / $interval;
+            $my_len_storage_rrd = $self->{len_rrd} / $interval;
         } else {
             $my_len_storage_rrd = $local_rrd_retention / $interval;
         }
-        my $ltimestamp = $self->get_last_update($self->{"status_path"}, $index_id);
+        my $ltimestamp = $self->get_last_update($self->{status_path}, $index_id);
         return if ($ltimestamp == -2);
-        $self->{"status_info"}->{$index_id} = {'interval' => $interval, 
-                             'last_timestamp' => $ltimestamp,
-                             'values' => [],
-                             'len_rrd' => $my_len_storage_rrd};
-        if ($self->{"status_info"}->{$index_id}->{'last_timestamp'} == -1) {
+        $self->{status_info}->{$index_id} = {interval => $interval, 
+                             last_timestamp => $ltimestamp,
+                             values => [],
+                             len_rrd => $my_len_storage_rrd};
+        if ($self->{status_info}->{$index_id}->{last_timestamp} == -1) {
             my $interval_hb = $interval * 10;
 
-            $self->create_rrd_database($self->{"status_path"}, $index_id, $timestamp - 200, $interval,
+            $self->create_rrd_database($self->{status_path}, $index_id, $timestamp - 200, $interval,
                            "status", $my_len_storage_rrd, 0);
-            $self->tune_rrd_database($self->{"status_path"}, $index_id, "status", $interval_hb);
-            $self->{"status_info"}->{$index_id}->{'last_timestamp'} = $timestamp - 200;
+            $self->tune_rrd_database($self->{status_path}, $index_id, "status", $interval_hb);
+            $self->{status_info}->{$index_id}->{last_timestamp} = $timestamp - 200;
         }
     }
 
-    return -1 if ($timestamp <= $self->{"status_info"}->{$index_id}->{'last_timestamp'} || $timestamp > (time() + 7200));
-    $self->{"rrdcache_status_data"}->{$index_id} = [] if (!defined($self->{"rrdcache_status_data"}->{$index_id}));
-    push @{$self->{"rrdcache_status_data"}->{$index_id}}, $timestamp . ":" . $value;
-    $self->{"status_info"}->{$index_id}->{'last_timestamp'} = $timestamp;
+    return -1 if ($timestamp <= $self->{status_info}->{$index_id}->{last_timestamp} || $timestamp > (time() + 7200));
+    $self->{rrdcache_status_data}->{$index_id} = [] if (!defined($self->{rrdcache_status_data}->{$index_id}));
+    push @{$self->{rrdcache_status_data}->{$index_id}}, $timestamp . ":" . $value;
+    $self->{status_info}->{$index_id}->{last_timestamp} = $timestamp;
 }
 
 sub flush_metric {
     my $self = shift;
     my ($metric_id) = @_;
 
-    if (defined($self->{"rrdcache_metric_data"}->{$metric_id})) {
-        RRDs::update($self->{"metric_path"} . "/" . $metric_id . ".rrd", @{$self->{"rrdcache_metric_data"}->{$metric_id}});
+    if (defined($self->{rrdcache_metric_data}->{$metric_id})) {
+        RRDs::update($self->{metric_path} . "/" . $metric_id . ".rrd", @{$self->{rrdcache_metric_data}->{$metric_id}});
         my $ERR = RRDs::error;
         if ($ERR) {
             # Try to see if the file had been deleted
-            if (! -e $self->{"metric_path"} . "/" . $metric_id . ".rrd") {
-                my $my_len_storage_rrd = $self->{"metric_info"}->{$metric_id}->{'len_rrd'};
-                my $interval_hb = $self->{"metric_info"}->{$metric_id}->{'interval'} * 10;
+            if (! -e $self->{metric_path} . "/" . $metric_id . ".rrd") {
+                my $my_len_storage_rrd = $self->{metric_info}->{$metric_id}->{len_rrd};
+                my $interval_hb = $self->{metric_info}->{$metric_id}->{interval} * 10;
 
-                $self->create_rrd_database($self->{"metric_path"}, $metric_id,
-                               $self->{"metric_info"}->{$metric_id}->{'last_timestamp'} - 200, 
-                               $self->{"metric_info"}->{$metric_id}->{'interval'},
-                               $self->get_ds_name($self->{"metric_info"}->{$metric_id}->{'metric_name'}), $my_len_storage_rrd,
-                               $self->{"metric_info"}->{$metric_id}->{'data_source_type'});
-                $self->tune_rrd_database($self->{"metric_path"}, $metric_id, $self->get_ds_name($self->{"metric_info"}->{$metric_id}->{'metric_name'}), $interval_hb);
+                $self->create_rrd_database($self->{metric_path}, $metric_id,
+                               $self->{metric_info}->{$metric_id}->{last_timestamp} - 200, 
+                               $self->{metric_info}->{$metric_id}->{interval},
+                               $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $my_len_storage_rrd,
+                               $self->{metric_info}->{$metric_id}->{data_source_type});
+                $self->tune_rrd_database($self->{metric_path}, $metric_id, $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $interval_hb);
             } else {
-                $self->{'logger'}->writeLogError("ERROR while updating '" . $self->{"metric_path"} . "/" . $metric_id . ".rrd' $ERR");
+                $self->{logger}->writeLogError("ERROR while updating '" . $self->{metric_path} . "/" . $metric_id . ".rrd' $ERR");
             }
         }
-        delete $self->{"rrdcache_metric_data"}->{$metric_id};
+        delete $self->{rrdcache_metric_data}->{$metric_id};
     }
 }
 
@@ -277,26 +277,26 @@ sub flush_status {
     my $self = shift;
     my ($index_id) = @_;
 
-    if (defined($self->{"rrdcache_status_data"}->{$index_id})) {
-        RRDs::update($self->{"status_path"} . "/" . $index_id . ".rrd", @{$self->{"rrdcache_status_data"}->{$index_id}});
+    if (defined($self->{rrdcache_status_data}->{$index_id})) {
+        RRDs::update($self->{status_path} . "/" . $index_id . ".rrd", @{$self->{rrdcache_status_data}->{$index_id}});
         my $ERR = RRDs::error;
         if ($ERR) {
             # Try to see if the file had been deleted
-            if (! -e $self->{"status_path"} . "/" . $index_id . ".rrd") {
-                my $my_len_storage_rrd = $self->{"status_info"}->{$index_id}->{'len_rrd'};
-                my $interval_hb = $self->{"status_info"}->{$index_id}->{'interval'} * 10;
+            if (! -e $self->{status_path} . "/" . $index_id . ".rrd") {
+                my $my_len_storage_rrd = $self->{status_info}->{$index_id}->{len_rrd};
+                my $interval_hb = $self->{status_info}->{$index_id}->{interval} * 10;
 
-                $self->create_rrd_database($self->{"status_path"}, $index_id,
-                               $self->{"status_info"}->{$index_id}->{'last_timestamp'} - 200, 
-                               $self->{"status_info"}->{$index_id}->{'interval'},
+                $self->create_rrd_database($self->{status_path}, $index_id,
+                               $self->{status_info}->{$index_id}->{last_timestamp} - 200, 
+                               $self->{status_info}->{$index_id}->{interval},
                                "status", $my_len_storage_rrd,
                                0);
                 $self->tune_rrd_database($self->{"status_path"}, $index_id, "status", $interval_hb);
             } else {
-                $self->{'logger'}->writeLogError("ERROR while updating '" . $self->{"status_path"} . "/" . $index_id . ".rrd' $ERR");
+                $self->{logger}->writeLogError("ERROR while updating '" . $self->{status_path} . "/" . $index_id . ".rrd' $ERR");
             }
         }
-        delete $self->{"rrdcache_status_data"}->{$index_id};
+        delete $self->{rrdcache_status_data}->{$index_id};
     }
 }
 
@@ -304,62 +304,62 @@ sub flush_all {
     my $self = shift;
     my ($force) = @_;
 
-    if ($self->{'cache_mode'} == 1 && (!defined($force) || $force == 0)) {
-        return if (time() < ($self->{'last_flush'} + $self->{'flush'}));
-        $self->{'last_flush'} = time();
-        $self->{'logger'}->writeLogInfo("Flush Beginning");
+    if ($self->{cache_mode} == 1 && (!defined($force) || $force == 0)) {
+        return if (time() < ($self->{last_flush} + $self->{flush}));
+        $self->{last_flush} = time();
+        $self->{logger}->writeLogInfo("Flush Beginning");
     }
     ###
     # Metrics
     ###
-    foreach my $metric_id (keys %{$self->{"rrdcache_metric_data"}}) {
-        RRDs::update($self->{"metric_path"} . "/" . $metric_id . ".rrd", @{$self->{"rrdcache_metric_data"}->{$metric_id}});
+    foreach my $metric_id (keys %{$self->{rrdcache_metric_data}}) {
+        RRDs::update($self->{metric_path} . "/" . $metric_id . ".rrd", @{$self->{rrdcache_metric_data}->{$metric_id}});
         my $ERR = RRDs::error;
         if ($ERR) {
             # Try to see if the file had been deleted
-            if (! -e $self->{"metric_path"} . "/" . $metric_id . ".rrd") {
-                my $my_len_storage_rrd = $self->{"metric_info"}->{$metric_id}->{'len_rrd'};
-                my $interval_hb = $self->{"metric_info"}->{$metric_id}->{'interval'} * 10;
+            if (! -e $self->{metric_path} . "/" . $metric_id . ".rrd") {
+                my $my_len_storage_rrd = $self->{metric_info}->{$metric_id}->{len_rrd};
+                my $interval_hb = $self->{metric_info}->{$metric_id}->{interval} * 10;
 
-                $self->create_rrd_database($self->{"metric_path"}, $metric_id,
-                               $self->{"metric_info"}->{$metric_id}->{'last_timestamp'} - 200, 
-                               $self->{"metric_info"}->{$metric_id}->{'interval'},
-                               $self->get_ds_name($self->{"metric_info"}->{$metric_id}->{'metric_name'}), $my_len_storage_rrd,
-                               $self->{"metric_info"}->{$metric_id}->{'data_source_type'});
-                $self->tune_rrd_database($self->{"metric_path"}, $metric_id, $self->get_ds_name($self->{"metric_info"}->{$metric_id}->{'metric_name'}), $interval_hb);
+                $self->create_rrd_database($self->{metric_path}, $metric_id,
+                               $self->{metric_info}->{$metric_id}->{last_timestamp} - 200, 
+                               $self->{metric_info}->{$metric_id}->{interval},
+                               $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $my_len_storage_rrd,
+                               $self->{metric_info}->{$metric_id}->{data_source_type});
+                $self->tune_rrd_database($self->{metric_path}, $metric_id, $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $interval_hb);
             } else {
-                $self->{'logger'}->writeLogError("ERROR while updating '" . $self->{"metric_path"} . "/" . $metric_id . ".rrd' $ERR");
+                $self->{logger}->writeLogError("ERROR while updating '" . $self->{metric_path} . "/" . $metric_id . ".rrd' $ERR");
             }
         }
     }
-    $self->{"rrdcache_metric_data"} = {};
+    $self->{rrdcache_metric_data} = {};
 
     ###
     # Status
     ###
-    foreach my $service_id (keys %{$self->{"rrdcache_status_data"}}) {
-        RRDs::update($self->{"status_path"} . "/" . $service_id . ".rrd", @{$self->{"rrdcache_status_data"}->{$service_id}});
+    foreach my $service_id (keys %{$self->{rrdcache_status_data}}) {
+        RRDs::update($self->{status_path} . "/" . $service_id . ".rrd", @{$self->{rrdcache_status_data}->{$service_id}});
         my $ERR = RRDs::error;
         if ($ERR) {
             # Try to see if the file had been deleted
-            if (! -e $self->{"status_path"} . "/" . $service_id . ".rrd") {
-                my $my_len_storage_rrd = $self->{"status_info"}->{$service_id}->{'len_rrd'};
-                my $interval_hb = $self->{"status_info"}->{$service_id}->{'interval'} * 10;
+            if (! -e $self->{status_path} . "/" . $service_id . ".rrd") {
+                my $my_len_storage_rrd = $self->{status_info}->{$service_id}->{len_rrd};
+                my $interval_hb = $self->{status_info}->{$service_id}->{interval} * 10;
 
-                $self->create_rrd_database($self->{"status_path"}, $service_id,
-                               $self->{"status_info"}->{$service_id}->{'last_timestamp'} - 200, 
-                               $self->{"status_info"}->{$service_id}->{'interval'},
+                $self->create_rrd_database($self->{status_path}, $service_id,
+                               $self->{status_info}->{$service_id}->{last_timestamp} - 200, 
+                               $self->{status_info}->{$service_id}->{interval},
                                "status", $my_len_storage_rrd,
                                0);
-                $self->tune_rrd_database($self->{"status_path"}, $service_id, "status", $interval_hb);
+                $self->tune_rrd_database($self->{status_path}, $service_id, "status", $interval_hb);
             } else {
-                $self->{'logger'}->writeLogError("ERROR while updating '" . $self->{"status_path"} . "/" . $service_id . ".rrd' $ERR");
+                $self->{logger}->writeLogError("ERROR while updating '" . $self->{status_path} . "/" . $service_id . ".rrd' $ERR");
             }
         }
     }
-    $self->{"rrdcache_status_data"} = {};
+    $self->{rrdcache_status_data} = {};
     
-    $self->{'logger'}->writeLogInfo("Flush Ending") if ($self->{'cache_mode'} == 1);
+    $self->{logger}->writeLogInfo("Flush Ending") if ($self->{cache_mode} == 1);
 }
 
 1;
