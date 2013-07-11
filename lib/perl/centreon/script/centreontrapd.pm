@@ -419,7 +419,9 @@ sub do_exec {
                                         trap_oid => $self->{current_oid},
                                         trap_name => $self->{current_trap_name},
                                         vendor => $self->{current_vendor_name},
-                                        severity => $self->{traps_global_status},
+                                        status => $self->{traps_global_status},
+                                        severity_id => $self->{traps_global_severity_id},
+                                        severity_name => $self->{traps_global_severity_name},
                                         output_message => $self->{traps_global_output},
                                         entvar => \@{$self->{entvar}},
                                         entvarname => \@{$self->{entvarname}});

@@ -97,7 +97,7 @@ sub compute_request {
         $self->{dbcentstorage}->transaction_mode(1);
         eval {
             foreach my $id (keys %{$self->{request_log}}) {
-                $self->{dbcentstorage}->query("INSERT INTO log_traps (`trap_time`, `timeout`, `host_name`, `ip_address`, `agent_host_name`, `agent_ip_address`, `trap_oid`, `trap_name`, `vendor`, `severity`, `output_message`) VALUES (" . $self->{request_log}->{$id}->{value} . ")");
+                $self->{dbcentstorage}->query("INSERT INTO log_traps (`trap_time`, `timeout`, `host_name`, `ip_address`, `agent_host_name`, `agent_ip_address`, `trap_oid`, `trap_name`, `vendor`, `status`, `severity_id`, `severity_name`, `output_message`) VALUES (" . $self->{request_log}->{$id}->{value} . ")");
                 $self->{dbcentstorage}->query("SET \@last_id_trap = LAST_INSERT_ID();");
                 if (defined($self->{request_log}->{$id}->{args})) {
                     foreach (@{$self->{request_log}->{$id}->{args}}) {

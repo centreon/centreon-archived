@@ -273,7 +273,7 @@ sub send_logdb {
     
     # Need atomic write (Limit to 4096 with Linux)
     $args{output_message} =~ s/\n/\\n/g;
-    print $pipe $args{id} . ":0:$num_args:" . 
+    my $value = $args{id} . ":0:$num_args:" . 
                 $args{trap_time} . "," .
                 $args{cdb}->quote($args{timeout}) . "," .
                 $args{cdb}->quote($args{host_name}) . "," .  
@@ -283,9 +283,14 @@ sub send_logdb {
                 $args{cdb}->quote($args{trap_oid}) . "," .
                 $args{cdb}->quote($args{trap_name}) . "," .
                 $args{cdb}->quote($args{vendor}) . "," .
-                $args{cdb}->quote($args{severity}) . "," .
-                $args{cdb}->quote($args{output_message}) . "\n";
-   for (my $i=0; $i <= $#{$args{entvar}}; $i++) {
+                $args{cdb}->quote($args{status}) . "," .
+                $args{cdb}->quote($args{severity_id}) . "," .
+                $args{cdb}->quote($args{severity_name}) . ",";
+    # We truncate if it
+    $value .= substr($args{cdb}->quote($args{output_message}), 0, 4096 - length($value) - 1);
+    print $pipe $value . "\n";
+
+    for (my $i=0; $i <= $#{$args{entvar}}; $i++) {
         my $value = ${$args{entvar}}[$i];
         $value =~ s/\n/\\n/g;
         print $pipe $args{id} . ":1:$i:" . 
@@ -293,7 +298,7 @@ sub send_logdb {
                     $args{cdb}->quote(${$args{entvarname}}[$i]) . "," .
                     $args{cdb}->quote($value) . "," .
                     $args{trap_time} . "\n";
-   }
+    }
 }
 
 ##############

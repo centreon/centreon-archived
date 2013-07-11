@@ -433,8 +433,10 @@ CREATE TABLE `log_traps` (
   `trap_oid` varchar(512) DEFAULT NULL,
   `trap_name` varchar(255) DEFAULT NULL,
   `vendor` varchar(255) DEFAULT NULL,
-  `severity` varchar(255) DEFAULT NULL,
-  `output_message` varchar(1024) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
+  `severity_name` varchar(255) DEFAULT NULL,
+  `output_message` varchar(2048) DEFAULT NULL,
   KEY `trap_id` (`trap_id`),
   KEY `trap_time` (`trap_time`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
