@@ -373,5 +373,31 @@
             }
             return $arr;
         }
+        
+        /**
+         * Clean up service relations (services by hostgroup)
+         * 
+         * @param string $table
+         * @param string $host_id_field
+         * @param string $service_id_field
+         * @return void
+         */
+        public function cleanServiceRelations($table = "", $host_id_field = "", $service_id_field = "") {
+            $sql = "DELETE FROM {$table}
+                    WHERE NOT EXISTS ( 
+                        SELECT hsr1.host_host_id 
+                        FROM host_service_relation hsr1
+                        WHERE hsr1.host_host_id = {$table}.{$host_id_field}
+                        AND hsr1.service_service_id = {$table}.{$service_id_field}
+                    )
+                    AND NOT EXISTS (
+                        SELECT hsr2.host_host_id 
+                        FROM host_service_relation hsr2, hostgroup_relation hgr
+                        WHERE hsr2.host_host_id = hgr.host_host_id
+                        AND hgr.host_host_id = {$table}.{$host_id_field}
+                        AND hsr2.service_service_id = {$table}.{$service_id_field}
+                    )";
+            $this->db->query($sql);
+        }
  }
  ?>
