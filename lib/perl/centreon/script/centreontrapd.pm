@@ -728,9 +728,9 @@ sub checkMatchingRules {
             $self->{traps_global_severity_id} = $severity_id;
             $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
             $self->{logger}->writeLogInfo("Status: $self->{traps_global_status} ($tmoStatus)");
-            $self->{logger}->writeLogInfo("Severity id: $self->{traps_global_severity_id} ($severity_id)");
-            $self->{logger}->writeLogInfo("Severity name: $self->{traps_global_severity_name} ($severity_name)");
-            $self->{logger}->writeLogInfo("Severity level: $self->{traps_global_severity_level} ($severity_level)");
+            $self->{logger}->writeLogInfo("Severity id: " . (defined($self->{traps_global_severity_id}) ? $self->{traps_global_severity_id} : "null"));
+            $self->{logger}->writeLogInfo("Severity name: " . (defined($self->{traps_global_severity_name}) ? $self->{traps_global_severity_name} : "null"));
+            $self->{logger}->writeLogInfo("Severity level: " . (defined($self->{traps_global_severity_level}) ? $self->{traps_global_severity_level} : "null"));
             $matching_boolean = 1;
             last;
         }    

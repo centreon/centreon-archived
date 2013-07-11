@@ -117,7 +117,7 @@ try {
     $result_services_template = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // get trap info
-    $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, traps_submit_result_enable, 
+    $stmt = $db_centreon->prepare("SELECT traps_id, traps_oid, traps_status, severity_id, traps_submit_result_enable, 
         traps_execution_command, traps_reschedule_svc_enable, traps_execution_command_enable, traps_args, 
         traps_routing_mode, traps_routing_value, traps_log, traps_name, traps_advanced_treatment, traps_advanced_treatment_default,
         traps_timeout, traps_exec_interval, traps_exec_interval_type, manufacturer_id 
@@ -125,7 +125,7 @@ try {
     $stmt->execute();
     $result_traps = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $stmt = $db_centreon->prepare("SELECT trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status 
+    $stmt = $db_centreon->prepare("SELECT trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status, severity_id 
         FROM traps_matching_properties");
     $stmt->execute();
     $result_traps_matching = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -145,6 +145,12 @@ try {
         FROM traps_vendor");
     $stmt->execute();
     $result_traps_vendor = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Get Severities
+    $stmt = $db_centreon->prepare("SELECT sc_id, sc_name, `level`
+        FROM service_categories WHERE `level` IS NOT NULL");
+    $stmt->execute();
+    $result_severities = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
 } catch (PDOException $e ) {
     echo "Error on poller (id:$server_id): " . $e->getMessage() . "\n";
@@ -237,6 +243,7 @@ try {
                     `traps_oid` varchar(255) DEFAULT NULL,
                     `traps_args` varchar(255) DEFAULT NULL,
                     `traps_status` int(11) DEFAULT NULL,
+                    `severity_id` int(11) DEFAULT NULL,
                     `manufacturer_id` int(11) DEFAULT NULL,
                     `traps_reschedule_svc_enable` int(11) DEFAULT '0',
                     `traps_execution_command` varchar(255) DEFAULT NULL,
@@ -260,7 +267,8 @@ try {
                     `tmo_order` int(11) DEFAULT NULL,
                     `tmo_regexp` varchar(255) DEFAULT NULL,
                     `tmo_string` varchar(255) DEFAULT NULL,
-                    `tmo_status` int(11) DEFAULT NULL
+                    `tmo_status` int(11) DEFAULT NULL,
+                    `severity_id` int(11) DEFAULT NULL
                     );
 
             CREATE INDEX IF NOT EXISTS idx_tmp_trap_id ON traps_matching_properties (trap_id);
@@ -279,6 +287,14 @@ try {
             );
             
             CREATE INDEX IF NOT EXISTS idx_tv_id ON traps_vendor (`id`);
+            
+            CREATE TABLE IF NOT EXISTS `service_categories` (
+                `sc_id` int(11) DEFAULT NULL,
+                `sc_name` varchar(255) DEFAULT NULL,
+                `level` int(11) DEFAULT NULL
+            );
+            
+            CREATE INDEX IF NOT EXISTS idx_sc_sc_id ON service_categories (`sc_id`);
             
             ");
 
@@ -389,9 +405,9 @@ try {
             }
 
             // Insert service templates
-            foreach ($result_services_template as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
+            $stmt = $dbh_sqlite->prepare("INSERT INTO service (service_id, service_description, service_template_model_stm_id) VALUES (
                     :service_id, :service_description, :service_template_model_stm_id)");
+            foreach ($result_services_template as $value) {
                 $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':service_description', $value['service_description'], PDO::PARAM_STR);
                 $stmt->bindParam(':service_template_model_stm_id', $value['service_template_model_stm_id'], PDO::PARAM_INT);
@@ -399,22 +415,23 @@ try {
             }
 
             // Insert traps
-            foreach ($result_traps as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO traps (traps_id, traps_name, traps_oid, traps_args, traps_status, manufacturer_id,
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps (traps_id, traps_name, traps_oid, traps_args, traps_status, severity_id, manufacturer_id,
                                             traps_reschedule_svc_enable, traps_execution_command, traps_execution_command_enable, traps_submit_result_enable, 
                                             traps_advanced_treatment, traps_advanced_treatment_default, traps_timeout,
                                             traps_exec_interval, traps_exec_interval_type, traps_log,
                                             traps_routing_mode, traps_routing_value) VALUES (
-                    :traps_id, :traps_name, :traps_oid, :traps_args, :traps_status, :manufacturer_id,
+                    :traps_id, :traps_name, :traps_oid, :traps_args, :traps_status, :severity_id, :manufacturer_id,
                     :traps_reschedule_svc_enable, :traps_execution_command, :traps_execution_command_enable, :traps_submit_result_enable,
                     :traps_advanced_treatment, :traps_advanced_treatment_default, :traps_timeout,
                     :traps_exec_interval, :traps_exec_interval_type, :traps_log,
                     :traps_routing_mode, :traps_routing_value)");
+            foreach ($result_traps as $value) {
                 $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_name', $value['traps_name'], PDO::PARAM_STR);
                 $stmt->bindParam(':traps_oid', $value['traps_oid'], PDO::PARAM_STR);
                 $stmt->bindParam(':traps_args', $value['traps_args'], PDO::PARAM_STR);
                 $stmt->bindParam(':traps_status', $value['traps_status'], PDO::PARAM_INT);
+                $stmt->bindParam(':severity_id', $value['severity_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':manufacturer_id', $value['manufacturer_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_reschedule_svc_enable', $value['traps_reschedule_svc_enable'], PDO::PARAM_INT);
                 $stmt->bindParam(':traps_execution_command', $value['traps_execution_command'], PDO::PARAM_STR);
@@ -431,29 +448,30 @@ try {
                 $stmt->execute();
             }
 
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_matching_properties (tmo_id, trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status, severity_id) VALUES (
+                    :tmo_id, :trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status, :severity_id)");
             foreach ($result_traps_matching as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO traps_matching_properties (tmo_id, trap_id, tmo_order, tmo_regexp, tmo_string, tmo_status) VALUES (
-                    :tmo_id, :trap_id, :tmo_order, :tmo_regexp, :tmo_string, :tmo_status)");
                 $stmt->bindParam(':tmo_id', $value['tmo_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':trap_id', $value['trap_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':tmo_order', $value['tmo_order'], PDO::PARAM_INT);
                 $stmt->bindParam(':tmo_regexp', $value['tmo_regexp'], PDO::PARAM_STR);
                 $stmt->bindParam(':tmo_string', $value['tmo_string'], PDO::PARAM_STR);
                 $stmt->bindParam(':tmo_status', $value['tmo_status'], PDO::PARAM_INT);
+                $stmt->bindParam(':severity_id', $value['severity_id'], PDO::PARAM_INT);
                 $stmt->execute();
             }
 
-            foreach ($result_traps_relation as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO traps_service_relation (traps_id, service_id) VALUES (
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_service_relation (traps_id, service_id) VALUES (
                     :traps_id, :service_id)");
+            foreach ($result_traps_relation as $value) {
                 $stmt->bindParam(':traps_id', $value['traps_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':service_id', $value['service_id'], PDO::PARAM_INT);
                 $stmt->execute();
             }
             
-            foreach ($result_traps_preexec as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES (
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_preexec (trap_id, tpe_string, tpe_order) VALUES (
                     :trap_id, :tpe_string, :tpe_order)");
+            foreach ($result_traps_preexec as $value) {
                 $stmt->bindParam(':trap_id', $value['trap_id'], PDO::PARAM_INT);
                 $stmt->bindParam(':tpe_string', $value['tpe_string'], PDO::PARAM_STR);
                 $stmt->bindParam(':tpe_order', $value['tpe_order'], PDO::PARAM_INT);
@@ -461,11 +479,21 @@ try {
             }
             
             // Insert traps vendor
-            foreach ($result_traps_vendor as $value) {
-                $stmt = $dbh_sqlite->prepare("INSERT INTO traps_vendor (`id`, `name`) VALUES (
+            $stmt = $dbh_sqlite->prepare("INSERT INTO traps_vendor (`id`, `name`) VALUES (
                     :id, :name)");
+            foreach ($result_traps_vendor as $value) {
                 $stmt->bindParam(':id', $value['id'], PDO::PARAM_INT);
                 $stmt->bindParam(':name', $value['name'], PDO::PARAM_STR);
+                $stmt->execute();
+            }
+            
+            // Insert severities
+            $stmt = $dbh_sqlite->prepare("INSERT INTO service_categories (`sc_id`, `sc_name`, `level`) VALUES (
+                    :sc_id, :sc_name, :level)");
+            foreach ($result_severities as $value) {
+                $stmt->bindParam(':sc_id', $value['sc_id'], PDO::PARAM_INT);
+                $stmt->bindParam(':sc_name', $value['sc_name'], PDO::PARAM_STR);
+                $stmt->bindParam(':level', $value['level'], PDO::PARAM_INT);
                 $stmt->execute();
             }
             
