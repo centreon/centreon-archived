@@ -486,6 +486,13 @@ sub readtrap {
         }
     }
 
+    # With DNS resolution disabled in snmptrapd, some systems pass the hostname as:
+    # UDP: [x.x.x.x]:161->[y.y.y.y]
+    # If this is detected, use x.x.x.x as the hostname.
+    if ($tempvar[0] =~ /\[(\d+\.\d+\.\d+\.\d+)\].*?->\[(\d+\.\d+\.\d+\.\d+)\]/) {
+        $tempvar[0] = $1;
+    }
+    
     # Some systems pass the IP address as udp:ipaddress:portnumber.  This will pull
     # out just the IP address
     $tempvar[1] =~ /(\d+\.\d+\.\d+\.\d+)/;
@@ -518,16 +525,16 @@ sub readtrap {
         chomp ($line);
 
         my $variable_fix;
-        #if ($linenum == 1) {
+        if ($linenum == 1) {
             # Check if line 1 contains 'variable value' or just 'value' 
             if (defined($temp2)) {
                 $variable_fix = 0;
             } else {
                 $variable_fix = 1;
             }
-        #}
+        }
 
-        if ($variable_fix == 0 ) {
+        if ($variable_fix == 0) {
             # Make sure variable names are numerical
             $temp1 = translate_symbolic_to_oid($temp1, $args{logger}, $args{config});
 
@@ -536,13 +543,13 @@ sub readtrap {
             # Net-SNMP sometimes divides long lines into multiple lines..
             if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /[^\\]\"$/)) ) {
                 $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
-                chomp $temp2; # Remove the newline character
+                $temp2 =~ s/[\r\n]//g;			# Remove the newline character
                 while (defined(my $line2 = <$input>)) {
                     chomp $line2;
                     push(@rawtrap, $line2);
-                    $temp2.=" ".$line2;
-                    # Ends in a non-escaped quote
-                    if ($line2 =~ /[^\\]\"$/) {
+                    $temp2 .= " " . $line2;
+                    # Check if line ends in a non-escaped quote
+                    if (($line2 =~ /\"$/) && ($line2 !~ /\\\"$/)) {
                         last;
                     }
                 }
@@ -584,13 +591,12 @@ sub readtrap {
             # Net-SNMP sometimes divides long lines into multiple lines..
             if ( ($line =~ /^\"/) && ( ! ($line =~ /[^\\]\"$/)) ) {
                 $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
-                chomp $line;				# Remove the newline character
+                $temp2 =~ s/[\r\n]//g;			# Remove newline characters
                 while (defined(my $line2 = <$input>)) {
                     chomp $line2;
                     push(@rawtrap, $line2);
-                    $line.=" ".$line2;
-                    # Ends in a non-escaped quote
-                    if ($line2 =~ /[^\\]\"$/) {
+                    $temp2 .= " " . $line2;
+                    if (($line2 =~ /\"$/) && ($line2 !~ /\\\"$/)) { # Ends in a non-escaped quote or it's a single line with a quote.
                         last;
                     }
                 }
