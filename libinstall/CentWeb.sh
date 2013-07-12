@@ -35,11 +35,9 @@ locate_centreon_bindir
 locate_centreon_datadir
 locate_centreon_generationdir
 locate_centreon_varlib
-locate_centpluginstraps_bindir
 
 ## Config pre-require
 # define all necessary variables.
-locate_rrd_perldir
 locate_rrdtool
 locate_mail
 #locate_nagios_p1_file $NAGIOS_ETC
@@ -149,13 +147,12 @@ cp -Rf $TMP_DIR/src/libinstall/{functions,cinstall,gettext} \
 ### Step 1:
 ## Change Macro on sql file
 log "INFO" "$(gettext "Change macros for insertBaseConf.sql")"
-${SED} -e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
-	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
+${SED} -e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 	-e 's|@BIN_MAIL@|'"$BIN_MAIL"'|g' \
 	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+	-e 's|@BIN_RRDTOOL@|'"$BIN_RRDTOOL"'|g' \
 	$TMP_DIR/src/www/install/insertBaseConf.sql > \
 	$TMP_DIR/work/www/install/insertBaseConf.sql
 check_result $? "$(gettext "Change macros for insertBaseConf.sql")"
@@ -374,25 +371,11 @@ check_result $? "$(gettext "Change macros for downtimeManager.php")"
 cp -f $TMP_DIR/work/cron/downtimeManager.php \
 	$TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
 
-log "INFO" "$(gettext "Change macros for eventReportBuilder.pl")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/eventReportBuilder.pl > $TMP_DIR/work/cron/eventReportBuilder.pl
-check_result $? "$(gettext "Change macros for eventReportBuilder.pl")"
+cp -f $TMP_DIR/work/cron/eventReportBuilder \
+	$TMP_DIR/final/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
 
-cp -f $TMP_DIR/work/cron/eventReportBuilder.pl \
-	$TMP_DIR/final/cron/eventReportBuilder.pl >> "$LOG_FILE" 2>&1
-
-log "INFO" "$(gettext "Change macros for dashboardBuilder.pl")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/dashboardBuilder.pl > $TMP_DIR/work/cron/dashboardBuilder.pl
-check_result $? "$(gettext "Change macros for dashboardBuilder.pl")"
-
-cp -f $TMP_DIR/work/cron/dashboardBuilder.pl \
-	$TMP_DIR/final/cron/dashboardBuilder.pl >> "$LOG_FILE" 2>&1
+cp -f $TMP_DIR/work/cron/dashboardBuilder \
+	$TMP_DIR/final/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -400,13 +383,13 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/final/cron $INSTALL_DIR_CENTREON/cron >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install cron directory")"
 
-log "INFO" "$(gettext "Change right for eventReportBuilder.pl")"
-${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/eventReportBuilder.pl >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for eventReportBuilder.pl")"
+log "INFO" "$(gettext "Change right for eventReportBuilder")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for eventReportBuilder")"
 
-log "INFO" "$(gettext "Change right for dashboardBuilder.pl")"
-${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder.pl >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Change right for dashboardBuilder.pl")"
+log "INFO" "$(gettext "Change right for dashboardBuilder")"
+${CHMOD} 755 $INSTALL_DIR_CENTREON/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Change right for dashboardBuilder")"
 
 ## Logrotate
 log "INFO" "$(gettext "Change macros for centreon.logrotate")"
@@ -421,11 +404,22 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$TMP_DIR/final/centreon.logrotate $LOGROTATE_D/centreon >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Install Centreon logrotate.d file")"
 
+## Install traps insert binary
+log "INFO" "$(gettext "Prepare centFillTrapDB")"
+cp $TMP_DIR/src/bin/centFillTrapDB \
+	$TMP_DIR/final/bin/centFillTrapDB >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare centFillTrapDB")"
+
+log "INFO" "$(gettext "Install centFillTrapDB")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centFillTrapDB \
+	$CENTREON_BINDIR/centFillTrapDB >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install centFillTrapDB")"
+
 ## Install binaries for check indexes
 log "INFO" "$(gettext "Prepare export-mysql-indexes")"
 cp $TMP_DIR/src/bin/export-mysql-indexes \
-	$TMP_DIR/work/bin/export-mysql-indexes >> "$LOG_FILE" 2>&1
-cp $TMP_DIR/work/bin/export-mysql-indexes \
 	$TMP_DIR/final/bin/export-mysql-indexes >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Prepare export-mysql-indexes")"
 
@@ -438,8 +432,6 @@ check_result $? "$(gettext "Install export-mysql-indexes")"
 
 log "INFO" "$(gettext "Prepare import-mysql-indexes")"
 cp $TMP_DIR/src/bin/import-mysql-indexes \
-	$TMP_DIR/work/bin/import-mysql-indexes >> "$LOG_FILE" 2>&1
-cp $TMP_DIR/work/bin/import-mysql-indexes \
 	$TMP_DIR/final/bin/import-mysql-indexes >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Prepare import-mysql-indexes")"
 
@@ -452,9 +444,7 @@ check_result $? "$(gettext "Install import-mysql-indexes")"
 
 ## Install indexes schema
 log "INFO" "$(gettext "Prepare indexes schema")"
-cp $TMP_DIR/src/dbschema/* \
-	$TMP_DIR/work/data/ >> "$LOG_FILE" 2>&1
-cp $TMP_DIR/work/data/* \
+cp $TMP_DIR/src/data/* \
 	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Prepare indexes schema")"
 

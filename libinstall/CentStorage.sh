@@ -30,7 +30,6 @@ locate_centreon_generationdir
 locate_centreon_varlib
 
 ## Config pre-require
-locate_rrd_perldir
 locate_init_d
 locate_cron_d
 
@@ -63,6 +62,7 @@ elif [ "$DISTRIB" = "SUSE" ]; then
     cp -f $BASE_DIR/tmpl/install/suse/centstorage.init.d $TMP_DIR/src
 else
     cp -f $BASE_DIR/tmpl/install/redhat/centstorage.init.d $TMP_DIR/src
+	cp -f $BASE_DIR/tmpl/install/redhat/centstorage.sysconfig $TMP_DIR/src
 fi
 cp -rf $TMP_DIR/src/lib $TMP_DIR/final
 
@@ -116,15 +116,6 @@ check_rrd_right
     
 ###### CentStorage binary
 #################################
-## Change macros in CentStorage binary
-log "INFO" "$(gettext "Change macros for centstorage binary")"
-${SED} -e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
-	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@RRD_PERL@|'"$RRD_PERL"'|g' \
-	 $TMP_DIR/src/bin/centstorage > $TMP_DIR/work/bin/centstorage
-check_result $? "$(gettext "Change macros for centstorage binary")"
 	 
 log "INFO" "$(gettext "Copying CentStorage binary in final directory")"
 cp $TMP_DIR/work/bin/centstorage $TMP_DIR/final/bin/centstorage >> $LOG_FILE 2>&1
@@ -163,10 +154,17 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 check_result $? "$(gettext "Change macros for centstorage init script")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-  ${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centstorage.default > $TMP_DIR/work/centstorage.default
-  check_result $? "$(gettext "Replace CentCore default script Macro")"
-  cp $TMP_DIR/work/centstorage.default $TMP_DIR/final/centstorage.default
-  cp $TMP_DIR/final/centstorage.default $INSTALL_DIR_CENTREON/examples/centstorage.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centstorage.default > $TMP_DIR/work/centstorage.default
+	check_result $? "$(gettext "Replace Centstorage default script Macro")"
+	cp $TMP_DIR/work/centstorage.default $TMP_DIR/final/centstorage.default
+	cp $TMP_DIR/final/centstorage.default $INSTALL_DIR_CENTREON/examples/centstorage.default
+elif [ "$DISTRIB" = "REDHAT" ]; then
+	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
+		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+		$TMP_DIR/src/centstorage.sysconfig > $TMP_DIR/work/centstorage.sysconfig
+	check_result $? "$(gettext "Replace CentStorage sysconfig script Macro")"
+	cp $TMP_DIR/work/centstorage.sysconfig $TMP_DIR/final/centstorage.sysconfig
+	cp $TMP_DIR/final/centstorage.sysconfig $INSTALL_DIR_CENTREON/examples/centstorage.sysconfig
 fi
 
 cp $TMP_DIR/work/centstorage.init.d \
@@ -188,15 +186,21 @@ if [ "$RC" -eq "0" ] ; then
 		$INIT_D/centstorage >> $LOG_FILE 2>&1
 	check_result $? "$(gettext "CentStorage init script installed")"
 	RC="1"
-        if [ "$DISTRIB" = "DEBIAN" ]; then
+	if [ "$DISTRIB" = "DEBIAN" ]; then
 	    log "INFO" "$(gettext "CentStorage default script installed")"
             $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
                  $TMP_DIR/final/centstorage.default \
                  /etc/default/centstorage >> $LOG_FILE 2>&1
 	    check_result $? "$(gettext "CentStorage default script installed")"
 	    log "INFO" "$(gettext "CentStorage default script installed")"
-	    RC="1"
-        fi
+	elif [ "$DISTRIB" = "REDHAT" ]; then
+		log "INFO" "$(gettext "CentStorage sysconfig script installed")"
+            $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+                 $TMP_DIR/final/centstorage.sysconfig \
+                 /etc/sysconfig/centstorage >> $LOG_FILE 2>&1
+	    check_result $? "$(gettext "CentStorage sysconfig script installed")"
+	    log "INFO" "$(gettext "CentStorage sysconfig script installed")"
+    fi
 	if [ ! "${CENTSTORAGE_INSTALL_RUNLVL}" ] ; then
 		yes_no_default "$(gettext "Do you want me to install CentStorage run level ?")"
 		RC="$?"
@@ -225,57 +229,33 @@ fi
 #################################
 ### Macro
 ## logAnalyser
-log "INFO" "$(gettext "Change macros for logAnalyser")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-        -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/bin/logAnalyser > $TMP_DIR/work/bin/logAnalyser
-check_result $? "$(gettext "Change macros for logAnalyser")"
 
-cp $TMP_DIR/work/bin/logAnalyser $TMP_DIR/final/bin/logAnalyser >> $LOG_FILE 2>&1
+cp $TMP_DIR/work/cron/logAnalyser $TMP_DIR/final/cron/logAnalyser >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install logAnalyser")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/bin/logAnalyser \
-	$CENTSTORAGE_BINDIR/logAnalyser >> $LOG_FILE 2>&1
+	$TMP_DIR/final/cron/logAnalyser \
+	$INSTALL_DIR_CENTREON/cron/logAnalyser >> $LOG_FILE 2>&1
 check_result $?  "$(gettext "Install logAnalyser")"
 
-#echo_success "$(gettext "Set logAnalyser properties")" "$ok"
+## logAnalyserBroker
 
-## logAnalyser-cbroker
-log "INFO" "$(gettext "Change macros for logAnalyser-cbroker")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-        -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/bin/logAnalyser-cbroker > $TMP_DIR/work/bin/logAnalyser-cbroker
-check_result $? "$(gettext "Change macros for logAnalyser-cbroker")"
-
-cp $TMP_DIR/work/bin/logAnalyser-cbroker $TMP_DIR/final/bin/logAnalyser-cbroker >> $LOG_FILE 2>&1
-log "INFO" "$(gettext "Install logAnalyser-cbroker")"
+cp $TMP_DIR/work/bin/logAnalyserBroker $TMP_DIR/final/bin/logAnalyserBroker >> $LOG_FILE 2>&1
+log "INFO" "$(gettext "Install logAnalyserBroker")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/bin/logAnalyser-cbroker \
-	$CENTSTORAGE_BINDIR/logAnalyser-cbroker >> $LOG_FILE 2>&1
-check_result $?  "$(gettext "Install logAnalyser-cbroker")"
-
-#echo_success "$(gettext "Set logAnalyser-cbroker properties")" "$ok"
+	$TMP_DIR/final/bin/logAnalyserBroker \
+	$CENTSTORAGE_BINDIR/logAnalyserBroker >> $LOG_FILE 2>&1
+check_result $?  "$(gettext "Install logAnalyserBroker")"
 
 ## nagiosPerfTrace
-log "INFO" "$(gettext "Change macros for nagiosPerfTrace")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTSTORAGE_LIB@|'"$CENTSTORAGE_RRD"'|g' \
-	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
-	-e 's|@CENTREON_GROUP@|'"$CENTREON_GROUP"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/bin/nagiosPerfTrace > $TMP_DIR/work/bin/nagiosPerfTrace
-check_result $? "$(gettext "Change macros for nagiosPerfTrace")"
 
-cp $TMP_DIR/work/bin/nagiosPerfTrace $TMP_DIR/final/bin/nagiosPerfTrace >> $LOG_FILE 2>&1
+cp $TMP_DIR/work/cron/nagiosPerfTrace $TMP_DIR/final/cron/nagiosPerfTrace >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install nagiosPerfTrace")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/bin/nagiosPerfTrace \
-	$CENTSTORAGE_BINDIR/nagiosPerfTrace >> $LOG_FILE 2>&1
+	$TMP_DIR/final/cron/nagiosPerfTrace \
+	$INSTALL_DIR_CENTREON/cron/nagiosPerfTrace >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install nagiosPerfTrace")"
 
 if [ -f "$CENTREON_LOG/nagiosPerfTrace.log" ]; then
@@ -283,64 +263,15 @@ if [ -f "$CENTREON_LOG/nagiosPerfTrace.log" ]; then
     $CHOWN $CENTREON_USER:$CENTREON_GROUP $CENTREON_LOG/nagiosPerfTrace.log
 fi
 
-#echo_success "$(gettext "Set nagiosPerfTrace properties")" "$ok"
+## Purge
 
-## purgeLogs
-log "INFO" "$(gettext "Change macros for purgeLogs")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	$TMP_DIR/src/cron/purgeLogs > $TMP_DIR/work/cron/purgeLogs
-check_result $? "$(gettext "Change macros for purgeLogs")"
-
-cp $TMP_DIR/work/cron/purgeLogs $TMP_DIR/final/cron/purgeLogs >> $LOG_FILE 2>&1
-log "INFO" "$(gettext "Install purgeLogs")"
+cp $TMP_DIR/work/cron/centstorage_purge $TMP_DIR/final/cron/centstorage_purge >> $LOG_FILE 2>&1
+log "INFO" "$(gettext "Install centstorage_purge")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/cron/purgeLogs \
+	$TMP_DIR/final/cron/centstorage_purge \
 	$INSTALL_DIR_CENTREON/cron/purgeLogs >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install purgeLogs")"
-
-#echo_success "$(gettext "Set purgeLogs properties")" "$ok"
-
-## purgeCentstorage
-log "INFO" "$(gettext "Change macros for purgeCentstorage")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
-	-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-	$TMP_DIR/src/cron/purgeCentstorage > $TMP_DIR/work/cron/purgeCentstorage
-check_result $? "$(gettext "Change macros for purgeCentstorage")"
-
-cp $TMP_DIR/work/cron/purgeCentstorage $TMP_DIR/final/cron/purgeCentstorage >> $LOG_FILE 2>&1
-log "INFO" "$(gettext "Install purgeCentstorage")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/cron/purgeCentstorage \
-	$INSTALL_DIR_CENTREON/cron/purgeCentstorage >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install purgeCentstorage")"
-
-#echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
-
-## centreonPurge.sh
-log "INFO" "$(gettext "Change macros for centreonPurge.sh")"
-${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-	-e 's|@CENTREON_PATH@|'"$INSTALL_DIR_CENTREON"'|g' \
-	-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
-	$TMP_DIR/src/cron/centreonPurge.sh > $TMP_DIR/work/cron/centreonPurge.sh
-check_result $? "$(gettext "Change macros for centreonPurge.sh")"
-
-cp $TMP_DIR/work/cron/centreonPurge.sh $TMP_DIR/final/cron/centreonPurge.sh >> $LOG_FILE 2>&1
-log "INFO" "$(gettext "Install centreonPurge.sh")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/cron/centreonPurge.sh \
-	$INSTALL_DIR_CENTREON/cron/centreonPurge.sh >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install centreonPurge.sh")"
-
-#echo_success "$(gettext "Set purgeCentstorage properties")" "$ok"
-
+check_result $? "$(gettext "Install centstorage_purge")"
 
 ## cron file
 log "INFO" "$(gettext "Change macros for centstorage.cron")"

@@ -21,7 +21,6 @@ check_tmp_disk_space
 locate_plugindir
 
 ## Locale for sed
-locate_rrd_perldir
 locate_centplugins_tmpdir
 
 ## check centreon user and group
@@ -29,7 +28,7 @@ check_centreon_user
 check_centreon_group
 
 
-## Populate temporaty source directory
+## Populate temporary source directory
 copyInTempFile 2>>$LOG_FILE
 
 ## Create temporary folder
@@ -57,7 +56,6 @@ for FILE in `ls $TMP_DIR/src/plugins/src/check*centreon*` \
 		-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@PLUGIN_DIR@|'"$PLUGIN_DIR"'|g' \
 		-e 's|@NAGIOS_PLUGINS@|'"$PLUGIN_DIR"'|g' \
-		-e 's|@RRDTOOL_PERL_LIB@|'"$RRD_PERL"'|g' \
 		-e 's|@INSTALL_DIR_CENTREON@|'"$INSTALL_DIR_CENTREON"'|g' \
 		-e 's|@CENTPLUGINS_TMP@|'"$CENTPLUGINS_TMP"'|g' \
 		"$FILE" > "$TMP_DIR/work/plugins/`basename $FILE`"

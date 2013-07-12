@@ -119,7 +119,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('snmptt_unknowntrap_log_file','snmpttunknown.log'),
 ('snmpttconvertmib_path_bin','@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib'),
 ('perl_library_path','/usr/local/lib'),
-('rrdtool_path_bin','/usr/bin/rrdtool'),
+('rrdtool_path_bin','@BIN_RRDTOOL@'),
 ('rrdtool_version','1.2'),
 ('debug_path','@CENTREON_LOG@/'),
 ('debug_auth','0'),

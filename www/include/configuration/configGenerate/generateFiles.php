@@ -50,9 +50,6 @@
 	 * Path to the option dir
 	 */
 	$path = "./include/configuration/configGenerate/";
-	$nagiosCFGPath = "@CENTREON_GENDIR@/filesGeneration/nagiosCFG/";
-	$centreonBrokerPath = "@CENTREON_GENDIR@/filesGeneration/broker/";
-	$DebugPath = "filesGeneration/nagiosCFG/";
 	
 	/*
 	 * PHP functions
