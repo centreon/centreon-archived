@@ -44,9 +44,6 @@
 		$gopt[$opt["key"]] = myDecode($opt["value"]);
 	}
 
-	if (!isset($gopt["batch_cache_path"]) || isset($gopt["batch_cache_path"]) && $gopt["batch_cache_path"] = "NULL") {
-		$gopt["batch_cache_path"] = "";
-	}
 
 	/*
 	 * Style
@@ -80,7 +77,6 @@
 	$form->addElement('text', 'AjaxFirstTimeReloadStatistic', _("First Refresh delay for statistics"), $attrsText2);
 	$form->addElement('text', 'AjaxFirstTimeReloadMonitoring', _("First Refresh delay for monitoring"), $attrsText2);
 	$form->addElement('text', 'gmt', _("Default host timezone"), $attrsText2);
-	$form->addElement('text', 'batch_cache_path', _("Cache path"), $attrsText);
 
 	$templates = array();
 	if ($handle  = @opendir($oreon->optGen["oreon_path"]."www/Themes/"))	{
@@ -145,7 +141,6 @@
 	$form->applyFilter('oreon_path', 'slash');
 	$form->applyFilter('oreon_web_path', 'slash');
 	$form->applyFilter('debug_path', 'slash');
-	$form->applyFilter('batch_cache_path', 'slash');
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');
 	$form->registerRule('is_executable_binary', 'callback', 'is_executable_binary');
@@ -153,7 +148,6 @@
 	$form->registerRule('is_writable_file', 'callback', 'is_writable_file');
 	$form->registerRule('is_writable_file_if_exist', 'callback', 'is_writable_file_if_exist');
 	$form->addRule('oreon_path', _("Can't write in directory"), 'is_valid_path');
-	$form->addRule('batch_cache_path', _("Can't write in directory"), 'is_writable_path');
 	$form->addRule('nagios_path_plugins', _("Can't write in directory"), 'is_writable_path');
 	$form->addRule('nagios_path_img', _("Can't write in directory"), 'is_writable_path');
 	$form->addRule('nagios_path', _("The directory isn't valid"), 'is_valid_path');
@@ -205,7 +199,6 @@
 	$tpl->assign("genOpt_problem_display", _("Problem display properties"));
 	$tpl->assign("genOpt_time_zone", _("Time Zone"));
 	$tpl->assign("genOpt_auth", _("Authentification properties"));
-	$tpl->assign("genOpt_batch", _("Batch configuration"));
 	$tpl->assign('valid', $valid);
         
         // prepare help texts

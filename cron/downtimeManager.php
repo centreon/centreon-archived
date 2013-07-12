@@ -129,17 +129,6 @@
 	$broker = $row['value'];
 
 	/*
-	 * Cache path
-	 */
-	$res = $pearDB->query("SELECT `value` FROM options WHERE `key` = 'batch_cache_path'");
-	if (PEAR::isError($res)) {
-		file_put_contents('php://stderr', "Error to connection in database.");
-		exit(1);
-	}
-	$row = $res->fetchRow();
-	$cache_path = $row['value'];
-
-	/*
 	 * Initialize the downtime class with broker
 	 */
 	if ($broker == "ndo") {

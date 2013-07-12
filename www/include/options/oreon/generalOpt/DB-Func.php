@@ -279,7 +279,6 @@
                 updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
                 updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
                 updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
-                updateOption($pearDB, "batch_cache_path", isset($ret["batch_cache_path"]) && $ret["batch_cache_path"] != NULL ? htmlentities($ret["batch_cache_path"], ENT_QUOTES, "UTF-8"): "NULL");
 
 		$oreon->initOptGen($pearDB);
 	}
