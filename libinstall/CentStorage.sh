@@ -64,7 +64,6 @@ else
     cp -f $BASE_DIR/tmpl/install/redhat/centstorage.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/redhat/centstorage.sysconfig $TMP_DIR/src
 fi
-cp -rf $TMP_DIR/src/lib $TMP_DIR/final
 
 ###### DB script
 #################################
@@ -113,7 +112,6 @@ fi
 ## Change right to RRD directory
 check_rrd_right
     
-    
 ###### CentStorage binary
 #################################
 	 
@@ -121,18 +119,17 @@ log "INFO" "$(gettext "Copying CentStorage binary in final directory")"
 cp $TMP_DIR/work/bin/centstorage $TMP_DIR/final/bin/centstorage >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/bin/centstorage $CENTSTORAGE_BINDIR/centstorage \
+	$TMP_DIR/src/bin/centstorage $CENTSTORAGE_BINDIR/centstorage \
 	>> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install CentStorage binary")"
 
-#echo_success "$(gettext "Set CentStorage properties")" "$ok"
-
-## Copy lib for CentStorage
-log "INFO" "$(gettext "Install library for centstorage")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-g "$CENTREON_GROUP" -m 644 \
-	$TMP_DIR/final/lib $INSTALL_DIR_CENTREON/lib >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install library for centstorage")"
+## Copy lib for CentStorage TODO
+####
+#log "INFO" "$(gettext "Install library for centstorage")"
+#$INSTALL_DIR/cinstall $cinstall_opts \
+#	-g "$CENTREON_GROUP" -m 644 \
+#	$TMP_DIR/final/lib $INSTALL_DIR_CENTREON/lib >> $LOG_FILE 2>&1
+#check_result $? "$(gettext "Install library for centstorage")"
 
 ## Change right on CENTREON_RUNDIR
 log "INFO" "$(gettext "Change right") : $CENTREON_RUNDIR"
@@ -230,31 +227,28 @@ fi
 ### Macro
 ## logAnalyser
 
-cp $TMP_DIR/work/cron/logAnalyser $TMP_DIR/final/cron/logAnalyser >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install logAnalyser")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/cron/logAnalyser \
+	$TMP_DIR/src/cron/logAnalyser \
 	$INSTALL_DIR_CENTREON/cron/logAnalyser >> $LOG_FILE 2>&1
 check_result $?  "$(gettext "Install logAnalyser")"
 
 ## logAnalyserBroker
 
-cp $TMP_DIR/work/bin/logAnalyserBroker $TMP_DIR/final/bin/logAnalyserBroker >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install logAnalyserBroker")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/bin/logAnalyserBroker \
+	$TMP_DIR/src/bin/logAnalyserBroker \
 	$CENTSTORAGE_BINDIR/logAnalyserBroker >> $LOG_FILE 2>&1
 check_result $?  "$(gettext "Install logAnalyserBroker")"
 
 ## nagiosPerfTrace
 
-cp $TMP_DIR/work/cron/nagiosPerfTrace $TMP_DIR/final/cron/nagiosPerfTrace >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install nagiosPerfTrace")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/cron/nagiosPerfTrace \
+	$TMP_DIR/src/cron/nagiosPerfTrace \
 	$INSTALL_DIR_CENTREON/cron/nagiosPerfTrace >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install nagiosPerfTrace")"
 

@@ -41,8 +41,6 @@ copyInTempFile 2>>$LOG_FILE
 ## Create temporary folder
 log "INFO" "$(gettext "Create working directory")"
 mkdir -p $TMP_DIR/{work,final}/bin 
-mkdir -p $TMP_DIR/{work,final}/www/include/configuration/configGenerate
-mkdir -p $TMP_DIR/{work,final}/www/include/monitoring/external_cmd
 [ ! -d $INSTALL_DIR_CENTREON/examples ] && mkdir -p $INSTALL_DIR_CENTREON/examples
 # Copy init.d template in src
 DISTRIB=""
@@ -61,13 +59,10 @@ fi
 #################################
 ## Change macros for CentCore binary
 
-log "INFO" "$(gettext "Copying CentCore binary in final directory")"
-cp $TMP_DIR/work/bin/centcore $TMP_DIR/final/bin/centcore 2>&1  >> $LOG_FILE
-
 log "INFO" "$(gettext "Copying CentCore in binary directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
-	$TMP_DIR/final/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
+	$TMP_DIR/src/bin/centcore $CENTCORE_BINDIR/centcore >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Copy CentCore in binary directory")"
 
 ## Change right on CENTREON_RUNDIR

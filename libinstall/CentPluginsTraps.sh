@@ -178,13 +178,13 @@ fi
 if [ "$write_snmp_conf" = "1" ]; then
     log "INFO" "$(gettext "Install") : snmptrapd.conf"
     $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-            $TMP_DIR/final/snmptrapd/snmptrapd.conf \
+            $TMP_DIR/work/snmptrapd/snmptrapd.conf \
             $SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
     check_result $? "$(gettext "Install") : snmptrapd.conf"
 
     log "INFO" "$(gettext "Install") : snmp.conf"
     $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-            $TMP_DIR/final/snmptrapd/snmp.conf \
+            $TMP_DIR/work/snmptrapd/snmp.conf \
             $SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
     check_result $? "$(gettext "Install") : snmp.conf"
 fi
