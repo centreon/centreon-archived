@@ -105,7 +105,12 @@ ALTER TABLE `traps` ADD CONSTRAINT `traps_ibfk_2` FOREIGN KEY (`severity_id`) RE
 ALTER TABLE `traps_matching_properties` ADD COLUMN `severity_id` int(11) DEFAULT NULL AFTER `tmo_status`;
 ALTER TABLE `traps_matching_properties` ADD CONSTRAINT `traps_matching_properties_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE;
 
-UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
-
 -- Ticket #3765
 ALTER TABLE `cfg_centreonbroker` ADD COLUMN `config_write_timestamp` enum('0','1') DEFAULT '1' AFTER `config_filename`;
+
+-- Ticket #4623
+ALTER TABLE `nagios_server` ADD COLUMN `snmp_trapd_path_conf` VARCHAR(255) DEFAULT NULL AFTER `init_script_snmptt`;
+UPDATE `nagios_server` SET snmp_trapd_path_conf = (SELECT `value` FROM `options` WHERE `key` = 'snmp_trapd_path_conf');
+DELETE FROM `options` WHERE `key` = 'snmp_trapd_path_conf';
+
+UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;

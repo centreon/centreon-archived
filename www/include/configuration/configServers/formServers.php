@@ -170,6 +170,7 @@ $form->addElement('text', 'centreonconnector_path', _("Centreon Connector path")
  * SNMPTT
  */
 $form->addElement('text', 'init_script_snmptt', _("Centreontrapd init script path"), $attrsText2);
+$form->addElement('text', 'snmp_trapd_path_conf', _('Directory of light database for traps'), $attrsText2);
 
 /*
  * Set Default Values
@@ -191,7 +192,8 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     "nagios_perfdata"  => $me["nagios_perfdata"],
     "centreonbroker_cfg_path" => "/etc/centreon-broker",
     "centreonbroker_module_path" => "/usr/share/centreon/lib/centreon-broker",
-    "init_script_snmptt" => isset($centreon->optGen["init_script_snmptt"]) ? $centreon->optGen["init_script_snmptt"] : ''));
+    "init_script_snmptt" => "/etc/init.d/centreontrapd",
+    "snmp_trapd_path_conf" => "/etc/snmp/centreon_traps/"));
 } else {
     if (isset($cfg_server)) {
         $form->setDefaults($cfg_server);

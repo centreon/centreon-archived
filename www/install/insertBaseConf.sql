@@ -116,7 +116,6 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('mailer_path_bin','@BIN_MAIL@'),
 ('snmp_community','public'),
 ('snmp_version','1'),
-('snmp_trapd_path_conf','/etc/snmp/centreon_traps/'),
 ('snmptt_unknowntrap_log_file','snmpttunknown.log'),
 ('snmpttconvertmib_path_bin','@INSTALL_DIR_CENTREON@/bin/snmpttconvertmib'),
 ('perl_library_path','/usr/local/lib'),

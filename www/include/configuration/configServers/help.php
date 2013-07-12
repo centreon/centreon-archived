@@ -16,4 +16,5 @@ $help['centreonbroker_module_path'] = dgettext("help", "Path with modules for Ce
 $help['centreonconnector_path'] = dgettext("help", "Path with Centreon Connector binaries");
 $help['ns_activate'] = dgettext("help", "Enable or disable poller");
 $help['snmptt_init_script'] = dgettext("help", "SNMP Trap Translator init script");
+$help['snmp_trapd_path_conf'] = dgettext("help", "Light databases will be stored in the specified directory. They are used for synchronizing trap definitions on pollers.");
 ?>
