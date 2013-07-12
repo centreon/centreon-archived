@@ -19,6 +19,8 @@ start_timeout=5
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid
 
+[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+
 # Check if we can find the binary.
 if [ ! -x $binary ]; then
     echo -n $"Starting $servicename.";
@@ -46,9 +48,9 @@ start() {
         fi
 
 	if [ "$(id -u -n)" = "$user" ] ; then
-		daemon ''$binary' "'$config_file'" > /dev/null 2>&1 &'
+		daemon ''$binary' $OPTIONS > /dev/null 2>&1 &'
 	else
-		daemon --user $user ''$binary' "'$config_file'" > /dev/null 2>&1 &'
+		daemon --user $user ''$binary' $OPTIONS > /dev/null 2>&1 &'
 	fi
 
 	i=0

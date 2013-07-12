@@ -22,11 +22,13 @@ locate_plugindir
 
 ## Locate centreon etc_dir
 locate_centreon_etcdir
+locate_centreon_rundir
+locate_centreon_logdir
 locate_snmp_etcdir
 locate_init_d
-locate_snmptt_bindir
-locate_centpluginstraps_bindir
+locate_centreontrapd_bindir
 
+check_centreon_user
 check_centreon_group
 check_httpd_directory
 check_user_apache
@@ -40,69 +42,22 @@ mkdir -p $TMP_DIR/final/bin
 mkdir -p $TMP_DIR/work/bin
 mkdir -p $TMP_DIR/work/snmptrapd
 mkdir -p $TMP_DIR/final/snmptrapd
-mkdir -p $TMP_DIR/work/snmptt
-mkdir -p $TMP_DIR/final/snmptt
+mkdir -p $TMP_DIR/work/centreontrapd
+mkdir -p $TMP_DIR/final/centreontrapd
 
 # Prepare init.d
 DISTRIB=""
 find_OS "DISTRIB"
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	cp -f $BASE_DIR/snmptt/initd/debian/snmptt.init.d $TMP_DIR/src
-	cp -f $BASE_DIR/snmptt/initd/debian/snmptt.default $TMP_DIR/src
+	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.init.d $TMP_DIR/src
+	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
-    cp -f $BASE_DIR/snmptt/initd/suse/snmptt.init.d $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
 else
-	cp -f $BASE_DIR/snmptt/initd/redhat/snmptt.init.d $TMP_DIR/src
+	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.init.d $TMP_DIR/src
+	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.sysconfig $TMP_DIR/src
 fi
 
-## Change Macro in working dir
-log "INFO" "$(gettext "Change macros for ")centFillTrapDB, centGenSnmpttConfFile, centTrapHandler-2.x"
-flg_error=0
-for FILE in  $TMP_DIR/src/bin/centFillTrapDB \
-	$TMP_DIR/src/bin/centGenSnmpttConfFile \
-	$TMP_DIR/src/bin/centTrapHandler-2.x; do
-	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
-		-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
-		-e 's|@CENTREON_VARLOG@|'"$CENTREON_LOG"'|g' \
-		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
-		"$FILE" > "$TMP_DIR/work/bin/`basename $FILE`"
-	[ $? -ne 0 ] && flg_error=1
-done
-check_result $flg_error "$(gettext "Change macros for CentPluginsTraps")"
-
-## Change macro for init scripts
-log "INFO" "$(gettext "Change macros for ")init scripts"
-flg_error=0
-${SED} -e 's|@SNMPTT_BINDIR@|'"$SNMPTT_BINDIR"'|g' \
-	-e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
-	"$TMP_DIR/src/snmptt.init.d" > "$TMP_DIR/work/snmptt.init.d"
-[ $? -ne 0 ] && flg_error=1
-if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
-		-e 's|"NO"|"YES"|g' \
-		"$TMP_DIR/src/snmptt.default" > "$TMP_DIR/work/snmptt.default"
-	[ $? -ne 0 ] && flg_error=1
-fi
-check_result $flg_error "$(gettext "Change macros for init scripts")"
-
-## Copy in final dir
-log "INFO" "$(gettext "Copying Traps binaries in final directory")"
-cp -f $TMP_DIR/work/bin/* $TMP_DIR/final/bin >> $LOG_FILE 2>&1
-
-## Copy init scripts in final dir
-cp $TMP_DIR/work/snmptt.init.d $TMP_DIR/final/snmptt.init.d
-if [ "$DISTRIB" = "DEBIAN" ]; then
-	cp $TMP_DIR/work/snmptt.default $TMP_DIR/final/snmptt.default
-fi
-
-## Install the plugins traps binaries
-log "INFO" "$(gettext "Installing the plugins Traps binaries")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-m 755 -p $TMP_DIR/final/bin \
-	$TMP_DIR/final/bin/* $CENTPLUGINSTRAPS_BINDIR >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Installing the plugins Trap binaries ")"
-
-# Create a SNMP config
 ## Create centreon_traps directory
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u $WEB_USER -g $CENTREON_GROUP -d 775 \
@@ -114,18 +69,6 @@ if [ -e "$SNMP_ETC/snmptrapd.conf" ] ; then
 	log "INFO" "$(gettext "Backup") : $SNMP_ETC/snmptrapd.conf"
 	\cp $SNMP_ETC/snmptrapd.conf $SNMP_ETC/snmptrapd.conf.bak-centreon
 fi
-# Backup snmptt.ini 
-if [ -e "$SNMP_ETC/centreon_traps/snmptt.ini" ] ; then
-	log "INFO" "$(gettext "Backup") : $SNMP_ETC/centreon_traps/snmptt.ini"
-	\cp $SNMP_ETC/centreon_traps/snmptt.ini \
-		$SNMP_ETC/centreon_traps/snmptt.ini.bak-centreon
-fi
-
-# Backup snmptt init if exists
-if [ -e "$INIT_D/snmptt" ]; then
-	log "INFO" "$(gettext "Backup") : $INIT_D/snmptt"
-	mv $INIT_D/snmptt $INIT_D/snmptt.bak
-fi
 
 # Backup snmp.conf if exist
 if [ -e "$SNMP_ETC/snmp.conf" ] ; then
@@ -133,71 +76,92 @@ if [ -e "$SNMP_ETC/snmp.conf" ] ; then
 	\cp $SNMP_ETC/snmp.conf $SNMP_ETC/snmp.conf.bak-centreon
 fi
 
-# Backup snmptt if exist
-if [ -e "$SNMPTT_BINDIR/snmptt" ] ; then
-	log "INFO" "$(gettext "Backup") : $SNMPTT_BINDIR/snmptt"
-	mv $SNMPTT_BINDIR/snmptt $SNMPTT_BINDIR/snmptt.bak-centreon
-fi
-
-# Backup snmptthandler if exist
-if [ -e "$SNMPTT_BINDIR/snmptthandler" ]; then
-	log "INFO" "$(gettext "Backup") : $SNMPTT_BINDIR/snmptthandler"
-	mv $SNMPTT_BINDIR/snmptthandler \
-		$SNMPTT_BINDIR/snmptthandler.bak-centreon
-fi
-
-# Backup snmpttconvertmib if exist
-if [ -e "$SNMPTT_BINDIR/snmpttconvertmib" ] ; then
-	log "INFO" "$(gettext "Backup") : $SNMPTT_BINDIR/snmpttconvertmib"
-	mv $SNMPTT_BINDIR/snmpttconvertmib \
-		$SNMPTT_BINDIR/snmpttconvertmib.bak-centreon
-	check_result $?  "$(gettext "Backup all your snmp files")"
-fi
-
 log "INFO" "$(gettext "Installing snmptt")"
 # Change macros on snmptrapd.conf
-${SED} -e 's|@SNMPTT_INI_FILE@|'"$SNMP_ETC/centreon_traps/snmptt.ini"'|g' \
-	-e 's|@SNMPTT_BINDIR@|'"$SNMPTT_BINDIR"'|g' \
+${SED} -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREONTRAPD_BINDIR"'|g' \
+	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
 	$TMP_DIR/src/snmptrapd/snmptrapd.conf > \
 	$TMP_DIR/work/snmptrapd/snmptrapd.conf 2>>$LOG_FILE
 check_result $? "$(gettext "Change macros for snmptrapd.conf")"
 
-# Change macros on snmptt.ini
-# TODO: SNMPTT_LOG, SNMPTT_SPOOL
-${SED} -e 's|@SNMP_ETC@|'"$SNMP_ETC"'|g' \
-	$TMP_DIR/src/snmptt/snmptt.ini > $TMP_DIR/work/snmptt/snmptt.ini \
-	2>>$LOG_FILE
-check_result $? "$(gettext "Change macros for snmptt.ini")"
 
-## Copy in final dir
-log "INFO" "$(gettext "Copying traps config in final directory")"
-cp -r $TMP_DIR/work/snmptrapd/snmptrapd.conf \
-	$TMP_DIR/final/snmptrapd/snmptrapd.conf >> $LOG_FILE 2>&1
-cp $TMP_DIR/work/snmptt/snmptt.ini \
-	$TMP_DIR/final/snmptt/snmptt.ini >> $LOG_FILE 2>&1
-cp $TMP_DIR/src/snmptrapd/snmp.conf \
-	$TMP_DIR/final/snmptrapd/snmp.conf >> $LOG_FILE 2>&1
-cp $TMP_DIR/src/snmptt/snmptt \
-	$TMP_DIR/final/snmptt/snmptt >> $LOG_FILE 2>&1
-cp $TMP_DIR/src/snmptt/snmptthandler \
-	$TMP_DIR/final/snmptt/snmptthandler >> $LOG_FILE 2>&1
-cp $TMP_DIR/src/snmptt/snmpttconvertmib \
-	$TMP_DIR/final/snmptt/snmpttconvertmib >> $LOG_FILE 2>&1
+###### CentreonTrapd init
+#################################
+## Change macros in CentTrapd init script
+${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+	-e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+	-e 's|@CENTREON_RUNDIR@|'"$CENTREON_RUNDIR"'|g' \
+	-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREONTRAPD_BINDIR"'|g' \
+	-e 's|@CENTREON_USER@|'"$CENTREON_USER"'|g' \
+	$TMP_DIR/src/centreontrapd.init.d > $TMP_DIR/work/centreontrapd.init.d
+check_result $? "$(gettext "Replace CentreonTrapd init script Macro")"
 
-## Install init scripts
-log "INFO" "$(gettext "SNMPTT init script installed")"
-$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-	$TMP_DIR/final/snmptt.init.d \
-	$INIT_D/snmptt >> $LOG_FILE 2>&1
-check_result $? "$(gettext "SNMPTT init script installed")"
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	log "INFO" "$(gettext "SNMPTT default script installed")"
-	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-		$TMP_DIR/final/snmptt.default \
-		/etc/default/snmptt >> $LOG_FILE 2>&1
-	check_result $? "$(gettext "SNMPTT default script installed")"
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centreontrapd.default > $TMP_DIR/work/centreontrapd.default
+	check_result $? "$(gettext "Replace CentreonTrapd default script Macro")"
+	cp $TMP_DIR/work/centreontrapd.default $TMP_DIR/final/centreontrapd.default
+	cp $TMP_DIR/final/centreontrapd.default $INSTALL_DIR_CENTREON/examples/centreontrapd.default
+elif [ "$DISTRIB" = "REDHAT" ]; then
+	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
+		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+		$TMP_DIR/src/centreontrapd.sysconfig > $TMP_DIR/work/centreontrapd.sysconfig
+	check_result $? "$(gettext "Replace CentreonTrapd sysconfig script Macro")"
+	cp $TMP_DIR/work/centreontrapd.sysconfig $TMP_DIR/final/centreontrapd.sysconfig
+	cp $TMP_DIR/final/centreontrapd.sysconfig $INSTALL_DIR_CENTREON/examples/centreontrapd.sysconfig
 fi
-install_init_service "snmptt" | tee -a $LOG_FILE
+
+cp $TMP_DIR/work/centreontrapd.init.d $TMP_DIR/final/centreontrapd.init.d
+cp $TMP_DIR/final/centreontrapd.init.d $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d
+
+RC="1"
+if [ ! "${CENTREONTRAPD_INSTALL_INIT}" ] ; then
+	yes_no_default "$(gettext "Do you want me to install CentreonTrapd init script ?")"
+	RC="$?"
+elif [ "${CENTREONTRAPD_INSTALL_INIT}" -eq 1 ] ; then
+	RC="0"
+fi
+if [ "$RC" -eq "0" ] ; then 
+	log "INFO" "$(gettext "CentreonTrapd init script installed")"
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+				 $TMP_DIR/final/centreontrapd.init.d \
+                 $INIT_D/centreontrapd >> $LOG_FILE 2>&1
+	check_result $? "$(gettext "CentreonTrapd init script installed")"
+	log "INFO" "$(gettext "CentreonTrapd init script installed")"
+	RC="1"
+	if [ "$DISTRIB" = "DEBIAN" ]; then
+		log "INFO" "$(gettext "CentreonTrapd default script installed")"
+			$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+				 $TMP_DIR/final/centreontrapd.default \
+				 /etc/default/centreontrapd >> $LOG_FILE 2>&1
+		check_result $? "$(gettext "CentreonTrapd default script installed")"
+		log "INFO" "$(gettext "CentreonTrapd default script installed")"
+	elif [ "$DISTRIB" = "REDHAT" ]; then
+		log "INFO" "$(gettext "CentreonTrapd sysconfig script installed")"
+			$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+				 $TMP_DIR/final/centreontrapd.sysconfig \
+				 /etc/sysconfig/centreontrapd >> $LOG_FILE 2>&1
+		check_result $? "$(gettext "CentreonTrapd sysconfig script installed")"
+		log "INFO" "$(gettext "CentreonTrapd sysconfig script installed")"
+	fi
+	if [ ! "${CENTCORE_INSTALL_RUNLVL}" ] ; then
+		yes_no_default "$(gettext "Do you want me to install CentreonTrapd run level ?")"
+		RC="$?"
+	elif [ "${CENTCORE_INSTALL_RUNLVL}" -eq 1 ] ; then
+		RC="0"
+	fi
+	if [ "$RC" -eq "0" ] ; then
+		install_init_service "centreontrapd" | tee -a $LOG_FILE
+		#check_result $? "$(gettext "CentreonTrapd run level installed")"
+		log "INFO" "$(gettext "CentreonTrapd run level installed")"
+	else
+		echo_passed "$(gettext "CentreonTrapd run level not installed")" "$passed"
+		log "INFO" "$(gettext "CentreonTrapd run level not installed")"
+	fi
+else
+	echo_passed "$(gettext "CentreonTrapd init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d" "$passed"
+	log "INFO" "$(gettext "CentreonTrapd init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d"
+fi
+
 
 ## Install all config file
 write_snmp_conf="1"
@@ -223,44 +187,24 @@ if [ "$write_snmp_conf" = "1" ]; then
             $TMP_DIR/final/snmptrapd/snmp.conf \
             $SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
     check_result $? "$(gettext "Install") : snmp.conf"
-
-    log "INFO" "$(gettext "Install") : snmptt.ini"
-    $INSTALL_DIR/cinstall $cinstall_opts -u $WEB_USER -g $CENTREON_GROUP -m 644 \
-            $TMP_DIR/final/snmptt/snmptt.ini \
-            $SNMP_ETC/centreon_traps/snmptt.ini >> $LOG_FILE 2>&1
-    check_result $? "$(gettext "Install") : snmptt.ini"
 fi
 ## End ##
 
-log "INFO" "$(gettext "Install") : snmptt"
-$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-	$TMP_DIR/final/snmptt/snmptt \
-	$SNMPTT_BINDIR/snmptt >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install") : snmptt"
+## Copy Binaries
+log "INFO" "$(gettext "Install : centreontrapdforward")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 $TMP_DIR/src/bin/centreontrapdforward $CENTREONTRAPD_BINDIR/centreontrapdforward >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install") : centreontrapdforward"
 
-log "INFO" "$(gettext "Install") : snmptthandler"
-$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-	$TMP_DIR/final/snmptt/snmptthandler \
-	$SNMPTT_BINDIR/snmptthandler >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install") : snmptthandler"
-
-log "INFO" "$(gettext "Install") : snmpttconvertmib"
-$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
-	$TMP_DIR/final/snmptt/snmpttconvertmib \
-	$SNMPTT_BINDIR/snmpttconvertmib >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install") : snmpttconvertmib"
+log "INFO" "$(gettext "Install : centreontrapd")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 $TMP_DIR/src/bin/centreontrapd $CENTREONTRAPD_BINDIR/centreontrapd >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install") : centreontrapd"
 
 log "INFO" "$(gettext "Install") : spool directory"
 $INSTALL_DIR/cinstall $cinstall_opts -d 775 \
-	/var/spool/snmptt
+	/var/spool/centreontrapd
 
-if [ -f $CENTREON_ETC/conf.pm ] ; then 
-    if [ "$write_snmp_conf" = "1" ]; then
-        log "INFO" "$(gettext "Generate SNMPTT configuration")"
-	$CENTPLUGINSTRAPS_BINDIR/centGenSnmpttConfFile >> $LOG_FILE 2>&1
-	check_result $? "$(gettext "Generate SNMPTT configuration")"
-    fi
-fi
 
 # Create traps directory in nagios pluginsdir
 #$INSTALL_DIR/cinstall $cinstall_opts -d 664 \
