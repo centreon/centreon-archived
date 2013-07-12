@@ -749,7 +749,7 @@ sub syncTraps($) {
         }
     } else {
         # synchronize Archives for all pollers
-        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
+        my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id`, `snmp_trapd_path_conf` FROM `nagios_server` WHERE `ns_activate` = '1' AND `localhost` = '0'");
         return if ($status == -1);
         while (my $server = $sth->fetchrow_hashref()) {
             # Get configuration
@@ -757,7 +757,7 @@ sub syncTraps($) {
             my $port = checkSSHPort($ns_server->{'ssh_port'});
 
             if ($id == 0) {
-                $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ns_ip_address'}:/etc/snmp/centreon_traps/ 2>&1";
+                $cmd = "$self->{scp} -P $port /etc/snmp/centreon_traps/$id/centreontrapd.sdb $ns_server->{'ns_ip_address'}:$ns_server->{'snmp_trapd_path_conf'} 2>&1";
                 $self->{logger}->writeLogDebug($cmd);
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                                       logger => $self->{logger},
