@@ -54,6 +54,46 @@ sub reload_db_config {
     return (0, $cdb_mod, $csdb_mod);
 }
 
+sub get_all_options_config {
+    my ($extra_config, $centreon_db_centreon, $prefix) = @_;
+
+    my $save_force = $centreon_db_centreon->force();
+    $centreon_db_centreon->force(0);
+    
+    my ($status, $stmt) = $centreon_db_centreon->query("SELECT `key`, `value` FROM options WHERE `key` LIKE " . $centreon_db_centreon->quote($prefix . "_%") . " LIMIT 1");
+    if ($status == -1) {
+        $centreon_db_centreon->force($save_force);
+        return ;
+    }
+    while ((my $data = $stmt->fetchrow_hashref())) {
+        if (defined($data->{value}) && length($data->{value}) > 0) {
+            $data->{key} =~ s/^${prefix}_//;
+            $extra_config->{$data->{key}} = $data->{value};
+        }
+    }
+    
+    $centreon_db_centreon->force($save_force);
+}
+
+sub get_option_config {
+    my ($extra_config, $centreon_db_centreon, $prefix, $key) = @_;
+    my $data;
+ 
+    my $save_force = $centreon_db_centreon->force();
+    $centreon_db_centreon->force(0);
+    
+    my ($status, $stmt) = $centreon_db_centreon->query("SELECT value FROM options WHERE `key` = " . $centreon_db_centreon->quote($prefix . "_" . $key) . " LIMIT 1");
+    if ($status == -1) {
+        $centreon_db_centreon->force($save_force);
+        return ;
+    }
+    if (($data = $stmt->fetchrow_hashref()) && defined($data->{value})) {
+        $extra_config->{$key} = $data->{value};
+    }
+    
+    $centreon_db_centreon->force($save_force);
+}
+
 sub check_debug {
     my ($logger, $key, $cdb, $name) = @_;
     

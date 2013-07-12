@@ -263,7 +263,7 @@ sub getNagiosConfigurationField($$){
 sub getLocalServerID(){
     my $self = shift;
 
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1' LIMIT 1");
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
         return undef;
