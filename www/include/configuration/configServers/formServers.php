@@ -120,7 +120,7 @@ $form->addElement('header', 'Server_Informations', _("Server Information"));
 $form->addElement('header', 'SSH_Informations', _("SSH Information"));
 $form->addElement('header', 'Nagios_Informations', _("Monitoring Engine Information"));
 $form->addElement('header', 'Misc', _("Miscelleneous"));
-$form->addElement('header', 'SNMPTT', _("SNMPTT Traps Collector"));
+$form->addElement('header', 'SNMPTT', _("Centreon Trap Collector"));
 $form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitoring_engine_names", $monitoring_engines));
 
 /*
@@ -169,7 +169,7 @@ $form->addElement('text', 'centreonconnector_path', _("Centreon Connector path")
 /*
  * SNMPTT
  */
-$form->addElement('text', 'init_script_snmptt', _("SNMPTT init script path"), $attrsText2);
+$form->addElement('text', 'init_script_snmptt', _("Centreontrapd init script path"), $attrsText2);
 
 /*
  * Set Default Values
