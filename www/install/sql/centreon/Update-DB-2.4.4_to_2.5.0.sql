@@ -112,5 +112,6 @@ ALTER TABLE `cfg_centreonbroker` ADD COLUMN `config_write_timestamp` enum('0','1
 ALTER TABLE `nagios_server` ADD COLUMN `snmp_trapd_path_conf` VARCHAR(255) DEFAULT NULL AFTER `init_script_snmptt`;
 UPDATE `nagios_server` SET snmp_trapd_path_conf = (SELECT `value` FROM `options` WHERE `key` = 'snmp_trapd_path_conf');
 DELETE FROM `options` WHERE `key` = 'snmp_trapd_path_conf';
+DELETE FROM `topology` WHERE `topology_page` = 5010104 AND topology_name = 'SNMP';
 
 UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
