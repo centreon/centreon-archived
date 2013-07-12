@@ -91,13 +91,20 @@
     $form->addElement('header', 'infos', 	_("Implied Server"));
 
 	$form->addElement('select', 'host', 	_("Poller"), $tab_nagios_server, $attrSelect);
-
+        
 	/*
 	 * Add checkbox for enable restart
 	 */
 	$form->addElement('checkbox', 'generate', _("Generate trap database "));
 	$form->addElement('checkbox', 'apply', _("Apply configurations"));
 
+        $form->addElement('select', 'signal', _('Send signal'), array(
+                null=>null,
+                'RELOADCENTREONTRAPD' => _('Reload'),
+                'RESTARTCENTREONTRAPD' => _('Restart')
+            )
+        );
+        
 	/*
 	 * Set checkbox checked.
 	 */
@@ -158,7 +165,21 @@
 			    $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Centcore commands'));
                             foreach ($tab_server as $host) {
                                 passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
-                                $msg_generate .= "Poller (id:{$host['id']}): SYNCTRAP sent to centcore.cmd<br/>";
+                                if ($return) {
+                                    $msg_generate .= "Error while writing into $centcore_pipe<br/>";
+                                } else {
+                                    $msg_generate .= "Poller (id:{$host['id']}): SYNCTRAP sent to centcore.cmd<br/>";
+                                }
+			    }
+                        }
+                        if (isset($ret['signal']) && in_array($ret['signal'], array('RELOADCENTREONTRAPD', 'RESTARTCENTREONTRAPD'))) {
+                            foreach ($tab_server as $host) {
+                                passthru("echo '".$ret['signal'].":".$host['id']."' >> $centcore_pipe", $return);
+                                if ($return) {
+                                    $msg_generate .= "Error while writing into $centcore_pipe<br/>";
+                                } else {
+                                    $msg_generate .= "Poller (id:{$host['id']}): ".$ret['signal']." sent to centcore.cmd<br/>";
+                                }
 			    }
                         }
 		}
