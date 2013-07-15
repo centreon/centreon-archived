@@ -173,6 +173,7 @@ chdir($centreon_path . "www");
 require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
 require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $centreon_path . "www/class/centreonSession.class.php";
+require_once $centreon_path . "www/class/centreonUtils.class.php";
 require_once $centreon_path . "www/class/centreon.class.php";
 require_once $centreon_path . "www/class/centreonXML.class.php";
 require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";

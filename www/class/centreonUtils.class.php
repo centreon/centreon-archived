@@ -201,4 +201,50 @@ class CentreonUtils
         }
         return $string;
     }
+    
+    /**
+     * 
+     * @param string $currentVersion Original version
+     * @param string $targetVersion Version to compare
+     * @param string $delimiter Indicates the delimiter parameter for version
+     * @param integer $depth Indicates the depth of comparison, if 0 it means "unlimited"
+     */
+    public static function compareVersion($currentVersion, $targetVersion, $delimiter = ".", $depth = 0)
+    {
+        $currentVersionExplode = explode($delimiter, $currentVersion);
+        $targetVersionExplode = explode($delimiter, $targetVersion);
+        $isCurrentSuperior = false;
+        $isCurrentEqual = false;
+        
+        
+        if ($depth == 0) {
+            $maxRecursion = count($currentVersionExplode);
+        } else {
+            $maxRecursion = $depth;
+        }
+        
+        for ($i=0; $i<$maxRecursion; $i++)
+        {
+            if ($currentVersionExplode[$i] > $targetVersionExplode[$i]) {
+                $isCurrentSuperior = true;
+                $isCurrentEqual = false;
+                break;
+            } elseif ($currentVersionExplode[$i] < $targetVersionExplode[$i]) {
+                $isCurrentSuperior = false;
+                $isCurrentEqual = false;
+                break;
+            } else {
+                $isCurrentEqual = true;
+            }
+        }
+        
+        
+        if ($isCurrentSuperior) {
+            return 1;
+        } elseif (($isCurrentSuperior === false) && $isCurrentEqual) {
+            return 2;
+        } else {
+            return 0;
+        }
+    }
 }

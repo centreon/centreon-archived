@@ -151,7 +151,10 @@
 				$str .= $key."=".$value."\n";
 			} else if (($key == "use_check_result_path" || $key == "use_check_result_path") && $value)	{
 				if (isset($tab['monitoring_engine']) && ($tab["monitoring_engine"] == "CENGINE")) {
-					$str .= $key."=".$value."\n";
+                    if (isset($tab['monitoring_engine_version']) &&
+                            (CentreonUtils::compareVersion($tab["monitoring_engine_version"], "1.4.0") >= 1 )) {
+                        $str .= $key."=".$value."\n";
+                    }
 				}
 			}
             else if ($key == "broker_module") {
