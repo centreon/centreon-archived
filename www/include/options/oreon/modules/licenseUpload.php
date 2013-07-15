@@ -78,18 +78,12 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
             }
 
             // Check ZendId
-            $ZendIds = zend_get_id();
+            $serverZendIds = zend_get_id();
             $licenseFileZendIds = explode(';', $zend_info['Zendid']);
-            foreach($ZendIds as $zendId)
+            foreach($serverZendIds as $serverZendId)
             {
-                foreach ($licenseFileZendIds as $licenseZendId)
-                {
-                    if ($zendId == $licenseZendId) {
-                        $licenseMatchedZendID = true;
-                        break;
-                    }
-                }
-                if ($licenseMatchedZendID) {
+                if (in_array($serverZendId, $licenseFileZendIds)) {
+                    $licenseMatchedZendID = true;
                     break;
                 }
             }
