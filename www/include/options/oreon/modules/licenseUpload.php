@@ -42,14 +42,14 @@ function parse_zend_license_file($file)
     $infos = array();
     foreach ($lines as $line)
     {
-        if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match))
+        if (preg_match('/^([^= ]+)\s*=\s*(.+)$/', $line, $match)) {
             $infos[$match[1]] = $match[2];
+        }
     }
     return $infos;
 }
     
 // Load conf
-//ini_set('display_errors', '1');
 require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
@@ -62,68 +62,89 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
     {
         if (move_uploaded_file($_FILES["licensefile"]["tmp_name"], $centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"))
         {
-            if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl"))
+            if (zend_loader_file_encoded($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl")) {
                 $zend_info = zend_loader_file_licensed($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
-            else
+            } else {
                 $zend_info = parse_zend_license_file($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl");
-
+            }
+            
             $licenseMatchedProduct = false;
             $licenseMatchedZendID = false;
             $licenseHasAdmin = true;
             $licenseExpired = true;
 
-            if ($zend_info['Product-Name'] == 'merethis_'.$filename)
+            if ($zend_info['Product-Name'] == 'merethis_'.$filename) {
                 $licenseMatchedProduct = true;
+            }
 
+            // Check ZendId
             $ZendIds = zend_get_id();
+            $licenseFileZendIds = explode(';', $zend_info['Zendid']);
             foreach($ZendIds as $zendId)
             {
-                if ($zendId == $zend_info['Zendid'])
-                    $licenseMatchedZendID = true;
+                foreach ($licenseFileZendIds as $licenseZendId)
+                {
+                    if ($zendId == $licenseZendId) {
+                        $licenseMatchedZendID = true;
+                        break;
+                    }
+                }
+                if ($licenseMatchedZendID) {
+                    break;
+                }
             }
-            if ((isset($zend_info['Zendid']) && ($zend_info['Zendid'] == 'Not-Locked')) || (isset($zend_info['Hardware-Locked']) && ($zend_info['Hardware-Locked'] == 'No')))
+            
+            if ((isset($zend_info['Zendid']) && ($zend_info['Zendid'] == 'Not-Locked')) || (isset($zend_info['Hardware-Locked']) && ($zend_info['Hardware-Locked'] == 'No'))) {
                 $licenseMatchedZendID = true;
+            }
 
             $license_expires = strtotime($zend_info['Expires']);
-            if ($license_expires > time())
+            if ($license_expires > time()) {
                 $licenseExpired = false;
+            }
             
-            if (isset($zend_info['Admin']) && $zend_info['Admin'] < 1 && ($filename == 'centreon-map-server'))
+            if (isset($zend_info['Admin']) && $zend_info['Admin'] < 1 && ($filename == 'centreon-map-server')) {
                 $licenseHasAdmin = false;
+            }
 
             if ($licenseMatchedProduct && $licenseMatchedZendID && $licenseHasAdmin && ($licenseExpired == FALSE))
             {
-                if(file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl"))
+                if(file_exists($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl")) {
                     unlink($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
+                }
 
                 rename($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl", $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 clearstatcache(true, $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
-                if (zend_loader_install_license($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl", true))
+                if (zend_loader_install_license($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl", true)) {
                     echo 'License sucessfully installed';
-                else
+                } else {
                     echo 'An error occured';
+                }
             }
             else
             {
                 echo "Sorry your license is not valid\n";
-                if ($licenseMatchedProduct == false)
+                if ($licenseMatchedProduct == false) {
                     echo "Your license is not valid for this product";
-                if ($licenseMatchedZendID == false)
+                }
+                
+                if ($licenseMatchedZendID == false) {
                     echo "Your license don't match any Zend ID of your machine";
-                if ($licenseHasAdmin == false)
+                }
+                
+                if ($licenseHasAdmin == false) {
                     echo "Your license don't include any Administrator";
-                if ($licenseExpired == true)
+                }
+                
+                if ($licenseExpired == true) {
                     echo "Your license has expired";
+                }
             }
         }
-    }
-    else
+    } else {
         echo "License upload has failed.\n"
             ."Destination directory doesn't exist or your webserver's user don't have the right to access it";
-}
-else
+    }
+} else {
     echo 'License file not valid';
-
-
-
-?>
+}
