@@ -451,6 +451,27 @@
 		$obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/broker/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$data['host_id']."&svc_id=".$data['service_id']);
 		$obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
+        if ($data["notes"] != "") {
+			$data["notes"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes"]);
+			$data["note"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes"]);
+			if (isset($data["alias"]) && $data["alias"]) {
+			    $data["notes"] = str_replace("\$HOSTALIAS\$", $data["alias"], $data["notes"]);
+			}
+			if (isset($data['address']) && $data['address']) {
+                $data["notes"] = str_replace("\$HOSTADDRESS\$", $data['address'], $data["notes"]);
+			}
+			if (isset($data['instance_name']) && $data['instance_name']) {
+                $data["notes"] = str_replace("\$INSTANCENAME\$", $data['instance_name'], $data['notes']);
+                $data["notes"] = str_replace("\$INSTANCEADDRESS\$",
+                                                 $instanceObj->getParam($data['instance_name'], 'ns_ip_address'),
+                                                 $data["notes"]);
+			}
+			$obj->XML->writeElement("snn", $data["notes"]);
+		} else {
+			$obj->XML->writeElement("snn", 'none');
+		}
+        
+        
 		if ($data["notes_url"] != "") {
 			$data["notes_url"] = str_replace("\$SERVICEDESC\$", $data["description"], $data["notes_url"]);
 			$data["notes_url"] = str_replace("\$HOSTNAME\$", $data["name"], $data["notes_url"]);
