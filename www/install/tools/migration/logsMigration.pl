@@ -35,9 +35,8 @@ use Time::Local;
 ####################################################################
 
 # Include Centreon DB Configuration Variables
-use vars
-  qw ($mysql_database_oreon $mysql_database_ods $mysql_host $mysql_user $mysql_passwd);
-require "@CENTREON_ETC@/conf.pm";
+use vars qw($centreon_config);
+require "@CENTREON_ETC@/centreon-config.pm";
 
 #Hash tables that will contain host and services availability stats by day
 my %hosts;
@@ -239,15 +238,15 @@ sub syncDay ($$) {
 sub main {
 	# Initializing MySQL DB connection
 	$dbh = DBI->connect(
-		"DBI:mysql:database=" . $mysql_database_ods . ";host=" . $mysql_host,
-		$mysql_user,
-		$mysql_passwd,
+		"DBI:mysql:database=" . $centreon_config->{centstorage_db} . ";host=" . $centreon_config->{db_host},
+		$centreon_config->{db_user},
+		$centreon_config->{db_passwd},
 		{ 'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1 }
 	);
 	$dbhoreon = DBI->connect(
-		"DBI:mysql:database=" . $mysql_database_oreon . ";host=" . $mysql_host,
-		$mysql_user,
-		$mysql_passwd,
+		"DBI:mysql:database=" . $centreon_config->{centreon_db} . ";host=" . $centreon_config->{db_host},
+		$centreon_config->{db_user},
+		$centreon_config->{db_passwd},
 		{ 'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1 }
 	);
 	
