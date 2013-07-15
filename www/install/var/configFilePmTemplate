@@ -8,6 +8,16 @@ $mysql_passwd = '--DBPASS--';
 $mysql_database_oreon = "--CONFDB--";
 $mysql_database_ods = "--STORAGEDB--";
 
+$centreon_config = {
+       VarLib => "--CENTREON_VARLIB--",
+       CentreonDir => "--CENTREONDIR--",
+       "centreon_db" => "--CONFDB--",
+       "centstorage_db" => "--STORAGEDB--",
+       "db_host" => "--ADDRESS--:--DBPORT--",
+       "db_user" => "--DBUSER--",
+       "db_passwd" => "--DBPASS--"
+};
+
 # Central or Poller ?
 $instance_mode = "--INSTANCEMODE--";
 
