@@ -110,35 +110,34 @@ if ($LicenseFileInfos['name'] == 'merethis_lic.zl')
                 rename($centreon_path . "www/modules/" . $filename . "/license/merethis_lic_temp.zl", $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 clearstatcache(true, $centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl");
                 if (zend_loader_install_license($centreon_path . "www/modules/" . $filename . "/license/merethis_lic.zl", true)) {
-                    echo 'License sucessfully installed';
+                    echo _("The license has been sucessfully installed");
                 } else {
-                    echo 'An error occured';
+                    echo _("An error occured");
                 }
             }
             else
             {
-                echo "Sorry your license is not valid\n";
+                echo _("Sorry your license is not valid\n");
                 if ($licenseMatchedProduct == false) {
-                    echo "Your license is not valid for this product";
+                    echo _("Your license is not valid for this product");
                 }
                 
                 if ($licenseMatchedZendID == false) {
-                    echo "Your license don't match any Zend ID of your machine";
+                    echo _("Your license doesn't match any Zend ID of your machine");
                 }
                 
                 if ($licenseHasAdmin == false) {
-                    echo "Your license don't include any Administrator";
+                    echo _("Your license doesn't include any Administrator");
                 }
                 
                 if ($licenseExpired == true) {
-                    echo "Your license has expired";
+                    echo _("Your license has expired");
                 }
             }
         }
     } else {
-        echo "License upload has failed.\n"
-            ."Destination directory doesn't exist or your webserver's user don't have the right to access it";
+        echo _("License upload has failed.\nDestination directory doesn't exist or your webserver's user don't have the right to access it");
     }
 } else {
-    echo 'License file not valid';
+    echo _("The given license file is not valid");
 }
