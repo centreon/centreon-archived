@@ -19,7 +19,7 @@ start_timeout=5
 
 pidfile=@CENTREON_RUNDIR@/centcore.pid
 
-[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
+[ -e /etc/sysconfig/$servicename ] && . /etc/sysconfig/$servicename
 
 # Check if we can find the binary.
 if [ ! -x $binary ]; then

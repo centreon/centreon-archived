@@ -149,8 +149,8 @@
 					$key = str_replace("nagios", "icinga", $key);
 				}
 				$str .= $key."=".$value."\n";
-			} else if (($key == "use_check_result_path" || $key == "use_check_result_path") && $value)	{
-				if (isset($tab['monitoring_engine']) && ($tab["monitoring_engine"] == "CENGINE")) {
+			} else if ($key == "use_check_result_path")	{
+				if (isset($tab['monitoring_engine']) && ($tab["monitoring_engine"] == "CENGINE") && $value != 2) {
                     if (isset($tab['monitoring_engine_version']) &&
                             (CentreonUtils::compareVersion($tab["monitoring_engine_version"], "1.4.0") >= 1 )) {
                         $str .= $key."=".$value."\n";

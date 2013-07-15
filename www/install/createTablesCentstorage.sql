@@ -416,10 +416,7 @@ INSERT INTO `statistics` VALUES (1,0,1,0,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
-LOCK TABLES `log_traps` WRITE;
-/*!40000 ALTER TABLE `log_traps` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_traps` ENABLE KEYS */;
-UNLOCK TABLES;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_traps` (
@@ -442,10 +439,11 @@ CREATE TABLE `log_traps` (
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-LOCK TABLES `log_traps_args` WRITE;
-/*!40000 ALTER TABLE `log_traps_args` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_traps_args` ENABLE KEYS */;
+LOCK TABLES `log_traps` WRITE;
+/*!40000 ALTER TABLE `log_traps` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_traps` ENABLE KEYS */;
 UNLOCK TABLES;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_traps_args` (
@@ -458,9 +456,10 @@ CREATE TABLE `log_traps_args` (
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+LOCK TABLES `log_traps_args` WRITE;
+/*!40000 ALTER TABLE `log_traps_args` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_traps_args` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
 
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
