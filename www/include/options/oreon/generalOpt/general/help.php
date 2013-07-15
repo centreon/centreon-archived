@@ -59,12 +59,6 @@ $help['tip_enable_timezone_management'] = dgettext('help', 'Enables timezone man
 $help['tip_default_timezone'] = dgettext('help', 'Default host timezone.');
 
 /**
- * Batch configuration
- */
-
-$help['tip_cache_path'] = dgettext('help', 'Cache path.');
-
-/**
  * SSO
  */
 $help['sso_enable'] = dgettext('help', 'Whether SSO authentication is enabled.');

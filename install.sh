@@ -50,7 +50,7 @@
 # -- on upgrade, overwrite existing ? backup ? 
 
 # Define centreon version
-version="2.4.2"
+version="2.5.0"
 
 # Debug
 #set -x
@@ -281,7 +281,7 @@ if [ "$upgrade" -eq 1 ] ; then
 		yes_no_default "$(gettext "Do you want to use the last Centreon install parameters ?")" "$yes"
 		if [ "$?" -eq 0 ] ; then
 			echo_passed "\n$(gettext "Using: ") $(ls $inst_upgrade_dir/instCent*)"
-		use_upgrade_files="1"
+			use_upgrade_files="1"
 		fi
 	fi
 fi

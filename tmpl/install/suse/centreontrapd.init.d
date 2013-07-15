@@ -5,12 +5,12 @@
 # chkconfig: 2345 71 31
 # description: centreontrapd is a Centreon program that manage traps
 # processname: centreontrapd
-# config: @CENTREON_ETC@/conf.pm
-# pidfile: ${centstorageRunDir}/centreontrapd.pid
+# config: @CENTREON_ETC@
+# pidfile: ${RunDir}/centreontrapd.pid
 
 # Source function library.
-. /etc/init.d/functions
-
+. /lib/lsb/init-functions
+  
 binary=@CENTREONTRAPD_BINDIR@/centreontrapd
 servicename=$(basename "$0")
 user=@CENTREON_USER@
@@ -19,44 +19,42 @@ start_timeout=5
 
 pidfile=@CENTREON_RUNDIR@/centreontrapd.pid
 
-[ -e /etc/sysconfig/$prog ] && . /etc/sysconfig/$prog
-
 # Check if we can find the binary.
 if [ ! -x $binary ]; then
     echo -n $"Starting $servicename.";
-    failure $"Executable file $binary not found. Exiting."
+    log_failure_msg $"Executable file $binary not found. Exiting."
     echo
     exit 2
 fi
 
 start() {
 	echo -n $"Starting $servicename: "
-        if [ -e "$pidfile" ] && [ -n "$(cat $pidfile)" ] && [ -e "/proc/`cat $pidfile`" ]; then
-                echo -n $"cannot start $servicename: $servicename is already running.";
-                failure $"cannot start $servicename: $servicename already running.";
-                echo
-                return 1
-        fi
-        if [ ! -e "$pidfile" ] ; then
-                pid=$(pidofproc $binary)
-                if [ -n "$pid" ] ; then
-                        echo -n $"cannot start $servicename: $servicename is already running.";
-                        failure $"cannot start $servicename: $servicename already running.";
-                        echo
-                        return 1
-                fi
-        fi
-
-	if [ "$(id -u -n)" = "$user" ] ; then
-		daemon ''$binary' '$OPTIONS' > /dev/null 2>&1 &'
-	else
-		daemon --user $user ''$binary' '$OPTIONS' > /dev/null 2>&1 &'
+	if [ -e "$pidfile" ] && [ -n "$(cat $pidfile)" ] && [ -e "/proc/`cat $pidfile`" ]; then
+		echo -n $"cannot start $servicename: $servicename is already running.";
+		log_failure_msg $"cannot start $servicename: $servicename already running.";
+		echo
+		return 1
+	fi
+	if [ ! -e "$pidfile" ] ; then
+			pid=$(pidofproc $binary)
+			if [ -n "$pid" ] ; then
+				echo -n $"cannot start $servicename: $servicename is already running.";
+				log_failure_msg $"cannot start $servicename: $servicename already running.";
+				echo
+				return 1
+			fi
 	fi
 
+	if [ "$(id -u -n)" = "$user" ] ; then
+		startproc $binary
+	else
+		startproc -u $user $binary
+	fi
+	
 	i=0
 	while : ; do
 		if [ "$i" -gt $start_timeout ] ; then
-			failure $"service not launched"
+			log_failure_msg $"service not launched"
 			echo
 			return 1
 		fi
@@ -68,7 +66,7 @@ start() {
 		sleep 1
 		i=$(($i + 1))
 	done
-	success $"service launched"
+	log_success_msg $"service launched"
 	echo
 	return 0
 }
@@ -76,9 +74,9 @@ start() {
 stop() {
 	echo -n $"Stopping $servicename: "
 	if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
-		killproc -d $timeout "$binary"
+		killproc -t$timeout "$binary"
 	else
-		killproc -p "$pidfile" -d $timeout "$binary"
+		killproc -p "$pidfile" -t$timeout "$binary" 
 	fi
 	RETVAL=$?
 	echo
@@ -87,9 +85,13 @@ stop() {
 
 rhstatus() {
 	if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
-		status "$binary"
+		echo -n "$servicename is " 
+        checkproc "$binary"
+        rc_status -v
 	else
-		status -p "$pidfile" "$binary"
+		echo -n "$servicename is " 
+        checkproc -p "$pidfile" "$binary"
+        rc_status -v
 	fi
 }	
 
@@ -127,7 +129,7 @@ case "$1" in
   	rhstatus
 	;;
   condrestart)
-  	[ -f /var/lock/subsys/centstorage ] && restart || :
+  	[ -f /var/lock/subsys/centcore ] && restart || :
 	;;
   *)
 	echo $"Usage: $0 {start|stop|status|reload|restart|condrestart}"

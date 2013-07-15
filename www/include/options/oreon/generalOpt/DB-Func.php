@@ -116,7 +116,6 @@
 
 		updateOption($pearDB, "nagios_path_img", isset($ret["nagios_path_img"]) && $ret["nagios_path_img"] != NULL ? $pearDB->escape($ret["nagios_path_img"]) : "NULL");
 		updateOption($pearDB, "nagios_path_plugins", isset($ret["nagios_path_plugins"]) && $ret["nagios_path_plugins"] != NULL ? $pearDB->escape($ret["nagios_path_plugins"]) : "NULL");
-		updateOption($pearDB, "cengine_path_connectors", isset($ret["cengine_path_connectors"]) && $ret["cengine_path_connectors"] != NULL ? $pearDB->escape($ret["cengine_path_connectors"]) : "NULL");
 		updateOption($pearDB, "monitoring_engine", isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $ret["monitoring_engine"] : "NULL");
 		updateOption($pearDB, "mailer_path_bin", isset($ret["mailer_path_bin"]) && $ret["mailer_path_bin"] != NULL ? $pearDB->escape($ret["mailer_path_bin"]) : "NULL");
 		updateOption($pearDB, "broker_correlator_script", isset($ret["broker_correlator_script"]) && $ret["broker_correlator_script"] != NULL ? $pearDB->escape($ret["broker_correlator_script"]) : "NULL");
@@ -197,6 +196,7 @@
 		updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret['debug_ldap_import'] ? 1 : 0);
 		updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
 		updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
+                updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
 
 		$oreon->initOptGen($pearDB);
 	}
@@ -278,7 +278,6 @@
                 updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
                 updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
                 updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
-                updateOption($pearDB, "batch_cache_path", isset($ret["batch_cache_path"]) && $ret["batch_cache_path"] != NULL ? htmlentities($ret["batch_cache_path"], ENT_QUOTES, "UTF-8"): "NULL");
 
 		$oreon->initOptGen($pearDB);
 	}

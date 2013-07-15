@@ -91,13 +91,20 @@
     $form->addElement('header', 'infos', 	_("Implied Server"));
 
 	$form->addElement('select', 'host', 	_("Poller"), $tab_nagios_server, $attrSelect);
-
+        
 	/*
 	 * Add checkbox for enable restart
 	 */
 	$form->addElement('checkbox', 'generate', _("Generate trap database "));
 	$form->addElement('checkbox', 'apply', _("Apply configurations"));
 
+        $form->addElement('select', 'signal', _('Send signal'), array(
+                null=>null,
+                'RELOADCENTREONTRAPD' => _('Reload'),
+                'RESTARTCENTREONTRAPD' => _('Restart')
+            )
+        );
+        
 	/*
 	 * Set checkbox checked.
 	 */
@@ -116,6 +123,7 @@
 	$msg = NULL;
 	$stdout = NULL;
         $msg_generate = "";
+        $trapdPath = "/etc/snmp/centreon_traps/";
 	if ($form->validate())	{
 		$ret = $form->getSubmitValues();
         $host_list = array();
@@ -129,20 +137,23 @@
 			 * Create Server List to snmptt generation file
 			 */
 			$tab_server = array();
-			$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
+			$DBRESULT_Servers = $pearDB->query("SELECT `name`, `id`, `snmp_trapd_path_conf`, `localhost` FROM `nagios_server` WHERE `ns_activate` = '1' ORDER BY `localhost` DESC");
 			while ($tab = $DBRESULT_Servers->fetchRow()){
                             if (isset($ret["host"]) && ($ret["host"] == 0 || $ret["host"] == $tab['id'])) {
                                 $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
+                            }
+                            if ($tab['localhost'] && $tab['snmp_trapd_path_conf']) {
+                                $trapdPath = $tab['snmp_trapd_path_conf'];
                             }
 			}
 			if (isset($ret["generate"]["generate"]) && $ret["generate"]["generate"]) {
                             $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Database generation'));
                             $stdout = "";
                             foreach ($tab_server as $host) {
-                                if (!is_dir("{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}")) {
-                                    mkdir("{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}");
+                                if (!is_dir("{$trapdPath}/{$host['id']}")) {
+                                    mkdir("{$trapdPath}/{$host['id']}");
                                 }
-                                $filename = "{$centreon->optGen['snmp_trapd_path_conf']}/{$host['id']}/centreontrapd.sdb";
+                                $filename = "{$trapdPath}/{$host['id']}/centreontrapd.sdb";
                                 $output = array();
                                 $returnVal = 0;
                                 exec("$centreon_path/bin/generateSqlLite '{$host['id']}' '{$filename}' 2>&1", $output, $returnVal);
@@ -158,7 +169,21 @@
 			    $msg_generate .= sprintf("<strong>%s</strong><br/>", _('Centcore commands'));
                             foreach ($tab_server as $host) {
                                 passthru("echo 'SYNCTRAP:".$host['id']."' >> $centcore_pipe", $return);
-                                $msg_generate .= "Poller (id:{$host['id']}): SYNCTRAP sent to centcore.cmd<br/>";
+                                if ($return) {
+                                    $msg_generate .= "Error while writing into $centcore_pipe<br/>";
+                                } else {
+                                    $msg_generate .= "Poller (id:{$host['id']}): SYNCTRAP sent to centcore.cmd<br/>";
+                                }
+			    }
+                        }
+                        if (isset($ret['signal']) && in_array($ret['signal'], array('RELOADCENTREONTRAPD', 'RESTARTCENTREONTRAPD'))) {
+                            foreach ($tab_server as $host) {
+                                passthru("echo '".$ret['signal'].":".$host['id']."' >> $centcore_pipe", $return);
+                                if ($return) {
+                                    $msg_generate .= "Error while writing into $centcore_pipe<br/>";
+                                } else {
+                                    $msg_generate .= "Poller (id:{$host['id']}): ".$ret['signal']." sent to centcore.cmd<br/>";
+                                }
 			    }
                         }
 		}
