@@ -169,7 +169,7 @@ try {
                     if (!$succeded) {
                         throw new Exception(sprintf(_("Could not write to file '%s' for monitoring engine '%s'. Please add writing permissions for the webserver's user"), basename($filename), $host['name']));
                     } else {
-                        chmod(rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename), "0664");
+                        chmod(rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename), 0664);
                     }
                 }
                 /*
@@ -189,7 +189,7 @@ try {
                             if (!$succeded) {
                                 throw new Exception(sprintf(_("Could not write to Centreon Broker's configuration file '%s' for monitoring engine '%s'. Please add writing permissions for the webserver's user"), basename($fileCfg), $host['name']));
                             } else {
-                                chmod(rtrim($centreonBrokerDirCfg, "/") . '/' . basename($fileCfg), "0664");
+                                chmod(rtrim($centreonBrokerDirCfg, "/") . '/' . basename($fileCfg), 0664);
                             }
                         }
                     }
