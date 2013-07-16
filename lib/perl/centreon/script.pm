@@ -21,7 +21,7 @@ sub new {
     my ($class, $name, %options) = @_;
     my %defaults = 
       (
-       config_file => "@CENTREON_ETC@/centreon-config.pm",
+       config_file => "/etc/centreon/centreon-config.pm",
        log_file => undef,
        centreon_db_conn => 0,
        centstorage_db_conn => 0,
