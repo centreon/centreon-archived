@@ -217,6 +217,28 @@ if [ "$RC" -eq "0" ] ; then
 		/etc/init.d/centstorage stop
 		check_result $? "$(gettext "CentStorage stop")"
 	fi
+
+        # Install centstorage perl lib
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/common/ \
+                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                $TMP_DIR/src/lib/perl/centreon/script.pm \
+                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/centstorage/ \
+                 $PERL_LIB_DIR/centreon/centstorage/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centstorage.pm \
+                 $PERL_LIB_DIR/centreon/script/centstorage.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centstorage_purge.pm \
+                 $PERL_LIB_DIR/centreon/script/centstorage_purge.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreon_check_perfdata.pm \
+                 $PERL_LIB_DIR/centreon/script/centreon_check_perfdata.pm >> $LOG_FILE 2>&1
+        echo_passed "$(gettext "CentStorage Perl lib installed")" "$passed"
+        log "INFO" "$(gettext "CentStorage Perl lib installed")"
 else
 	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/INSTALL_DIR_CENTREONexamples/centstorage.init.d" "$passed"
 	log "INFO" "$(gettext "CentStorage init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centstorage.init.d"
