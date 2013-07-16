@@ -237,7 +237,7 @@ if [ "$RC" -eq "0" ] ; then
         $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
                  $TMP_DIR/src/lib/perl/centreon/script/centreon_check_perfdata.pm \
                  $PERL_LIB_DIR/centreon/script/centreon_check_perfdata.pm >> $LOG_FILE 2>&1
-        echo_passed "$(gettext "CentStorage Perl lib installed")" "$passed"
+        echo_success "$(gettext "CentStorage Perl lib installed")" "$ok"
         log "INFO" "$(gettext "CentStorage Perl lib installed")"
 else
 	echo_passed "$(gettext "CentStorage init script not installed, please use "):\n $INSTALL_DIR_CENTREON/INSTALL_DIR_CENTREONexamples/centstorage.init.d" "$passed"

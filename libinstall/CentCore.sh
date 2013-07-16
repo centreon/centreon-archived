@@ -180,7 +180,7 @@ if [ "$RC" -eq "0" ] ; then
         $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
                  $TMP_DIR/src/lib/perl/centreon/script/centreonSyncPlugins.pm \
                  $PERL_LIB_DIR/centreon/script/centreonSyncPlugins.pm >> $LOG_FILE 2>&1
-        echo_passed "$(gettext "CentCore Perl lib installed")" "$passed"
+        echo_success "$(gettext "CentCore Perl lib installed")" "$ok"
         log "INFO" "$(gettext "CentCore Perl lib installed")"
 else
 	echo_passed "$(gettext "CentCore init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centcore.init.d" "$passed"

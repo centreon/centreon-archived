@@ -180,7 +180,7 @@ if [ "$RC" -eq "0" ] ; then
         $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
                  $TMP_DIR/src/lib/perl/centreon/script/centreontrapdforward.pm \
                  $PERL_LIB_DIR/centreon/script/centreontrapdforward.pm >> $LOG_FILE 2>&1
-        echo_passed "$(gettext "trapd Perl lib installed")" "$passed"
+        echo_success "$(gettext "trapd Perl lib installed")" "$ok"
         log "INFO" "$(gettext "trapd Perl lib installed")"
         # End
 else

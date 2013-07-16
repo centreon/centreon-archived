@@ -480,7 +480,7 @@ check_result $? "$(gettext "Install indexes schema")"
     $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
         $TMP_DIR/src/lib/perl/centreon/script/nagiosPerfTrace.pm \
         $PERL_LIB_DIR/centreon/script/nagiosPerfTrace.pm >> $LOG_FILE 2>&1
-    echo_passed "$(gettext "Centreon Web Perl lib installed")" "$passed"
+    echo_success "$(gettext "Centreon Web Perl lib installed")" "$ok"
     log "INFO" "$(gettext "Centreon Web Perl lib installed")"
 # End
 
