@@ -168,6 +168,8 @@ try {
                     $succeded = @copy($filename, rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename));
                     if (!$succeded) {
                         throw new Exception(sprintf(_("Could not write to file '%s' for monitoring engine '%s'. Please add writing permissions for the webserver's user"), basename($filename), $host['name']));
+                    } else {
+                        chmod(rtrim($oreon->Nagioscfg["cfg_dir"], "/").'/'.basename($filename), "0664");
                     }
                 }
                 /*
