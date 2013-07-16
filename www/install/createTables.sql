@@ -417,6 +417,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_id` int(11) NOT NULL AUTO_INCREMENT,
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
+  `config_write_timestamp` enum('0','1') DEFAULT '1',
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '50000',
@@ -490,6 +491,7 @@ CREATE TABLE `cfg_nagios` (
   `temp_path` varchar(255) DEFAULT NULL,
   `status_file` varchar(255) DEFAULT NULL,
   `check_result_path` varchar(255) DEFAULT NULL,
+  `use_check_result_path` enum('0','1') DEFAULT '0',
   `max_check_result_file_age` varchar(255) DEFAULT NULL,
   `p1_file` varchar(255) DEFAULT NULL,
   `status_update_interval` int(11) DEFAULT NULL,
@@ -603,6 +605,7 @@ CREATE TABLE `cfg_nagios` (
   `free_child_process_memory` enum('0','1','2') DEFAULT NULL,
   `child_processes_fork_twice` enum('0','1','2') DEFAULT NULL,
   `enable_environment_macros` enum('0','1','2') DEFAULT NULL,
+  `use_setpgid` enum('0','1','2') DEFAULT NULL,
   `additional_freshness_latency` int(11) DEFAULT NULL,
   `enable_embedded_perl` enum('0','1','2') DEFAULT NULL,
   `use_embedded_perl_implicitly` enum('0','1','2') DEFAULT NULL,
@@ -612,7 +615,6 @@ CREATE TABLE `cfg_nagios` (
   `debug_verbosity` enum('0','1','2') DEFAULT NULL,
   `max_debug_file_size` int(11) DEFAULT NULL,
   `daemon_dumps_core` enum('0','1') DEFAULT NULL,
-  `use_check_result_path` enum('0','1') DEFAULT NULL,
   `cfg_file` varchar(255) NOT NULL DEFAULT 'centengine.cfg',
   PRIMARY KEY (`nagios_id`),
   KEY `cmd1_index` (`global_host_event_handler`),
@@ -979,31 +981,6 @@ CREATE TABLE `contactgroup_servicegroup_relation` (
   KEY `contactgroup_index` (`contactgroup_cg_id`),
   CONSTRAINT `contactgroup_servicegroup_relation_ibfk_1` FOREIGN KEY (`contactgroup_cg_id`) REFERENCES `contactgroup` (`cg_id`) ON DELETE CASCADE,
   CONSTRAINT `contactgroup_servicegroup_relation_ibfk_2` FOREIGN KEY (`servicegroup_sg_id`) REFERENCES `servicegroup` (`sg_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `criticality` (
-  `criticality_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) NOT NULL,
-  `level` int(11) NOT NULL,
-  `comments` text,
-  `icon_id` int(11) NOT NULL,
-  PRIMARY KEY (`criticality_id`),
-  KEY `fk_criticality_icon_id` (`icon_id`),
-  CONSTRAINT `fk_criticality_icon_id` FOREIGN KEY (`icon_id`) REFERENCES `view_img` (`img_id`) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `criticality_resource_relations` (
-  `criticality_id` int(11) NOT NULL,
-  `host_id` int(11) DEFAULT NULL,
-  `service_id` int(11) DEFAULT NULL,
-  KEY `fk_crit_host_id` (`host_id`),
-  KEY `fk_crit_svc_id` (`service_id`),
-  CONSTRAINT `fk_crit_host_id` FOREIGN KEY (`host_id`) REFERENCES `host` (`host_id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_crit_svc_id` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -1536,6 +1513,8 @@ CREATE TABLE `host` (
   `host_notification_interval` int(11) DEFAULT NULL,
   `host_notification_options` varchar(200) DEFAULT NULL,
   `host_notifications_enabled` enum('0','1','2') DEFAULT NULL,
+  `contact_additive_inheritance` boolean DEFAULT 0,
+  `cg_additive_inheritance` boolean DEFAULT 0,
   `host_first_notification_delay` int(11) DEFAULT NULL,
   `host_stalking_options` varchar(200) DEFAULT NULL,
   `host_snmp_community` varchar(255) DEFAULT NULL,
@@ -1612,6 +1591,8 @@ CREATE TABLE `hostcategories` (
   `hc_id` int(11) NOT NULL AUTO_INCREMENT,
   `hc_name` varchar(200) DEFAULT NULL,
   `hc_alias` varchar(200) DEFAULT NULL,
+  `level` TINYINT(5) DEFAULT NULL,
+  `icon_id` INT(11) DEFAULT NULL,
   `hc_comment` text,
   `hc_activate` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`hc_id`),
@@ -1796,6 +1777,7 @@ CREATE TABLE `nagios_server` (
   `ssh_port` int(11) DEFAULT NULL,
   `ssh_private_key` varchar(255) DEFAULT NULL,
   `init_script_snmptt` varchar(255) DEFAULT NULL,
+  `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1887,12 +1869,15 @@ CREATE TABLE `service` (
   `service_notification_interval` int(11) DEFAULT NULL,
   `service_notification_options` varchar(200) DEFAULT NULL,
   `service_notifications_enabled` enum('0','1','2') DEFAULT '2',
+  `contact_additive_inheritance` boolean DEFAULT 0,
+  `cg_additive_inheritance` boolean DEFAULT 0,
+  `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1',
   `service_first_notification_delay` int(11) DEFAULT NULL,
   `service_stalking_options` varchar(200) DEFAULT NULL,
   `service_comment` text,
   `command_command_id_arg` text,
   `command_command_id_arg2` text,
-  `service_locked` BOOLEAN DEFAULT NULL,
+  `service_locked` BOOLEAN DEFAULT 0,
   `service_register` enum('0','1','2','3') NOT NULL DEFAULT '0',
   `service_activate` enum('0','1') NOT NULL DEFAULT '1',
   PRIMARY KEY (`service_id`),
@@ -1914,6 +1899,8 @@ CREATE TABLE `service_categories` (
   `sc_id` int(11) NOT NULL AUTO_INCREMENT,
   `sc_name` varchar(255) DEFAULT NULL,
   `sc_description` varchar(255) DEFAULT NULL,
+  `level` TINYINT(5) DEFAULT NULL,
+  `icon_id` INT(11) DEFAULT NULL,
   `sc_activate` enum('0','1') DEFAULT NULL,
   PRIMARY KEY (`sc_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Services Catygories For best Reporting';
@@ -2081,6 +2068,7 @@ CREATE TABLE `traps` (
   `traps_oid` varchar(255) DEFAULT NULL,
   `traps_args` text,
   `traps_status` enum('-1','0','1','2','3') DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
   `manufacturer_id` int(11) DEFAULT NULL,
   `traps_reschedule_svc_enable` enum('0','1') DEFAULT '0',
   `traps_execution_command` varchar(255) DEFAULT NULL,
@@ -2098,7 +2086,8 @@ CREATE TABLE `traps` (
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),
   KEY `traps_ibfk_1` (`manufacturer_id`),
-  CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE
+  CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -2110,9 +2099,11 @@ CREATE TABLE `traps_matching_properties` (
   `tmo_regexp` varchar(255) DEFAULT NULL,
   `tmo_string` varchar(255) DEFAULT NULL,
   `tmo_status` int(11) DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`tmo_id`),
   KEY `trap_id` (`trap_id`),
-  CONSTRAINT `traps_matching_properties_ibfk_1` FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE
+  CONSTRAINT `traps_matching_properties_ibfk_1` FOREIGN KEY (`trap_id`) REFERENCES `traps` (`traps_id`) ON DELETE CASCADE,
+  CONSTRAINT `traps_matching_properties_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

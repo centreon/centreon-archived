@@ -5,7 +5,7 @@
 # chkconfig: 2345 71 31
 # description: centstorage is a Centreon program that manage perfs
 # processname: centstorage
-# config: @CENTREON_ETC@/conf.pm
+# config: @CENTREON_ETC@/centreon-config.pm
 # pidfile: ${centstorageRunDir}/centstorage.pid
 
 # Source function library.
@@ -18,6 +18,8 @@ timeout=60
 start_timeout=5
 
 pidfile=@CENTREON_RUNDIR@/centstorage.pid
+
+[ -e /etc/sysconfig/$servicename ] && . /etc/sysconfig/$servicename
 
 # Check if we can find the binary.
 if [ ! -x $binary ]; then
@@ -46,9 +48,9 @@ start() {
         fi
 
 	if [ "$(id -u -n)" = "$user" ] ; then
-		daemon ''$binary' "'$config_file'" > /dev/null 2>&1 &'
+		daemon ''$binary' $OPTIONS > /dev/null 2>&1 &'
 	else
-		daemon --user $user ''$binary' "'$config_file'" > /dev/null 2>&1 &'
+		daemon --user $user ''$binary' $OPTIONS > /dev/null 2>&1 &'
 	fi
 
 	i=0

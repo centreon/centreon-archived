@@ -438,7 +438,9 @@
 			$fields["contact_type_msg"] = $ret["contact_type_msg"];
 
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
-		$fields["contact_auth_type"] = $ret["contact_auth_type"];
+                if (isset($ret['contact_auth_type'])) {
+                    $fields["contact_auth_type"] = $ret["contact_auth_type"];
+                }
 
 		if (isset($ret["contact_ldap_dn"]))
 			$fields["contact_ldap_dn"] = $ret["contact_ldap_dn"];
@@ -568,24 +570,36 @@
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
 		} else if ($encryptType == 2) {
 			$fields["contact_passwd"] = sha1($ret["contact_passwd"]);
-		} else {
+		} elseif (isset($ret['contact_passwd'])) {
 			$fields["contact_passwd"] = md5($ret["contact_passwd"]);
 		}
 
+                if (isset($ret['contact_lang'])) {
 		$fields["contact_lang"] = htmlentities($ret["contact_lang"], ENT_QUOTES, "UTF-8");
+                }
 		if (isset($ret["contact_hostNotifOpts"]))
 			$fields["contact_hostNotifOpts"] = implode(",", array_keys($ret["contact_hostNotifOpts"]));
 		if (isset($ret["contact_svNotifOpts"]))
 			$fields["contact_svNotifOpts"] = implode(",", array_keys($ret["contact_svNotifOpts"]));
-		$fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8");
-		$fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8");
+		if (isset($ret['contact_email'])) {
+                    $fields["contact_email"] = htmlentities($ret["contact_email"], ENT_QUOTES, "UTF-8");
+                }
+                if (isset($ret['contact_pager'])) {
+                    $fields["contact_pager"] = htmlentities($ret["contact_pager"], ENT_QUOTES, "UTF-8");
+                }
 		$fields["contact_comment"] = htmlentities($ret["contact_comment"], ENT_QUOTES, "UTF-8");
-		$fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
-		$fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+		if (isset($ret['contact_oreon'])) {
+                    $fields["contact_oreon"] = $ret["contact_oreon"]["contact_oreon"];
+                }
+                if (isset($ret['contact_admin'])) {
+                    $fields["contact_admin"] = $ret["contact_admin"]["contact_admin"];
+                }
 		if (isset($ret["contact_register"]) && isset($ret["contact_register"]["contact_register"]))
 			$fields["contact_register"] = $ret["contact_register"]["contact_register"];
 		$fields["contact_activate"] = $ret["contact_activate"]["contact_activate"];
-		$fields["contact_auth_type"] = $ret["contact_auth_type"];
+                if (isset($ret['contact_auth_type'])) {
+                    $fields["contact_auth_type"] = $ret["contact_auth_type"];
+                }
 		if (isset($ret["contact_template_id"]))
 			$fields["contact_template_id"] = $ret["contact_template_id"];
 		if (isset($ret["contact_ldap_dn"]))

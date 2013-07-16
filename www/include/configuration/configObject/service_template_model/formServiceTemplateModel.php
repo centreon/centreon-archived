@@ -57,7 +57,10 @@
 	$service = array();
         $serviceObj = new CentreonService($pearDB);
 	if (($o == "c" || $o == "w") && $service_id) {
-		$DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
+		if (isset($lockedElements[$service_id])) {
+                    $o = "w";
+                }            
+                $DBRESULT = $pearDB->query("SELECT * FROM service, extended_service_information esi WHERE service_id = '".$service_id."' AND esi.service_service_id = service_id LIMIT 1");
 		# Set base value
 		$service_list = $DBRESULT->fetchRow();
 		$service = array_map("myDecodeSvTP", $service_list);
@@ -129,7 +132,11 @@
 		/*
 		 * Set Categories
 		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT sc_id FROM service_categories_relation WHERE service_service_id = '".$service_id."'");
+                $DBRESULT = $pearDB->query('SELECT DISTINCT scr.sc_id 
+                    FROM service_categories_relation scr, service_categories sc
+                    WHERE scr.sc_id = sc.sc_id
+                    AND sc.level IS NULL
+                    AND scr.service_service_id = \''.$service_id.'\'');
 		for ($i = 0; $service_category = $DBRESULT->fetchRow(); $i++) {
 			$service["service_categories"][$i] = $service_category["sc_id"];
 		}
@@ -138,10 +145,14 @@
                 /*
                  * Set criticality
                  */
-                $res = $pearDB->query("SELECT criticality_id FROM criticality_resource_relations WHERE service_id = " . $pearDB->escape($service_id));
+                $res = $pearDB->query("SELECT sc.sc_id 
+                            FROM service_categories sc, service_categories_relation scr
+                            WHERE scr.service_service_id = " . $pearDB->escape($service_id). "
+                            AND scr.sc_id = sc.sc_id
+                            AND sc.level IS NOT NULL");
                 if ($res->numRows()) {
                     $cr = $res->fetchRow();
-                    $service['criticality_id'] = $cr['criticality_id'];
+                    $service['criticality_id'] = $cr['sc_id'];
                 }
 	}
         /*
@@ -262,7 +273,7 @@
 
 	# service categories comes from DB -> Store in $service_categories Array
 	$service_categories = array();
-	$DBRESULT = $pearDB->query("SELECT sc_name, sc_id FROM service_categories ORDER BY sc_name");
+	$DBRESULT = $pearDB->query("SELECT sc_name, sc_id FROM service_categories WHERE level IS NULL ORDER BY sc_name");
 	while ($service_categorie = $DBRESULT->fetchRow()) {
 		$service_categories[$service_categorie["sc_id"]] = $service_categorie["sc_name"];
 	}
@@ -411,6 +422,12 @@
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
 
+        /*
+         * Additive
+         */
+        $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
+        $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
+        
 	/*
 	 *  Contacts
 	 */
@@ -648,12 +665,12 @@
          * Criticality 
          */
         $criticality = new CentreonCriticality($pearDB);
-        $critList = $criticality->getList();
+        $critList = $criticality->getList(null, "level", 'ASC', null, null, true);
         $criticalityIds = array(null => null);
         foreach($critList as $critId => $critData) {
-           $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
+           $criticalityIds[$critId] = $critData['sc_name'].' ('.$critData['level'].')';
         }
-        $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
+        $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
         
 	$form->addElement('header', 'oreon', _("Centreon"));
 	$form->addElement('select', 'graph_id', _("Graph Template"), $graphTpls);
@@ -768,7 +785,7 @@
 
 	# Just watch a host information
 	if ($o == "w")	{
-		if (!$min && $centreon->user->access->page($p) != 2) {
+		if (!$min && $centreon->user->access->page($p) != 2 && !isset($lockedElements[$service_id])) {
 			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&service_id=".$service_id."'"));
 		}
 	    $form->setDefaults($service);

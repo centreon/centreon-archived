@@ -1,6 +1,10 @@
 
 package centreon::common::misc;
+
+use strict;
+use warnings;
 use vars qw($centreon_config);
+use POSIX ":sys_wait_h";
 
 my $read_size = 1*1024*1024*10; # 10Mo
 
@@ -48,6 +52,46 @@ sub reload_db_config {
     }
    
     return (0, $cdb_mod, $csdb_mod);
+}
+
+sub get_all_options_config {
+    my ($extra_config, $centreon_db_centreon, $prefix) = @_;
+
+    my $save_force = $centreon_db_centreon->force();
+    $centreon_db_centreon->force(0);
+    
+    my ($status, $stmt) = $centreon_db_centreon->query("SELECT `key`, `value` FROM options WHERE `key` LIKE " . $centreon_db_centreon->quote($prefix . "_%") . " LIMIT 1");
+    if ($status == -1) {
+        $centreon_db_centreon->force($save_force);
+        return ;
+    }
+    while ((my $data = $stmt->fetchrow_hashref())) {
+        if (defined($data->{value}) && length($data->{value}) > 0) {
+            $data->{key} =~ s/^${prefix}_//;
+            $extra_config->{$data->{key}} = $data->{value};
+        }
+    }
+    
+    $centreon_db_centreon->force($save_force);
+}
+
+sub get_option_config {
+    my ($extra_config, $centreon_db_centreon, $prefix, $key) = @_;
+    my $data;
+ 
+    my $save_force = $centreon_db_centreon->force();
+    $centreon_db_centreon->force(0);
+    
+    my ($status, $stmt) = $centreon_db_centreon->query("SELECT value FROM options WHERE `key` = " . $centreon_db_centreon->quote($prefix . "_" . $key) . " LIMIT 1");
+    if ($status == -1) {
+        $centreon_db_centreon->force($save_force);
+        return ;
+    }
+    if (($data = $stmt->fetchrow_hashref()) && defined($data->{value})) {
+        $extra_config->{$key} = $data->{value};
+    }
+    
+    $centreon_db_centreon->force($save_force);
 }
 
 sub check_debug {
@@ -126,4 +170,85 @@ sub get_line_pipe {
     return -1;
 }
 
+sub plop {
+    my $child_pid;
+
+    while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
+        print "SIGCHLD received: $child_pid\n";
+    }
+    print "SIGCHLD received: $child_pid\n";
+    #print "LAAAAAAAAAAAAAAAAAA\n";
+}
+
+sub backtick {
+    my %arg = (
+        command => undef,
+        logger => undef,
+        timeout => 30,
+        wait_exit => 0,
+        @_,
+    );
+    my @output;
+    my $pid;
+    my $return_code;
+    
+    my $sig_do;
+    if ($arg{wait_exit} == 0) {
+        $sig_do = 'IGNORE';
+        $return_code = undef;
+    } else {
+        $sig_do = 'DEFAULT';
+    }
+    local $SIG{CHLD} = $sig_do;
+    if (!defined($pid = open( KID, "-|" ))) {
+        $arg{logger}->writeLogError("Cant fork: $!");
+        return -1;
+    }
+    
+    if ($pid) {
+        
+       
+        eval {
+           local $SIG{ALRM} = sub { die "Timeout by signal ALARM\n"; };
+           alarm( $arg{timeout} );
+           while (<KID>) {
+               chomp;
+               push @output, $_;
+           }
+
+           alarm(0);
+        };
+        if ($@) {
+            $arg{logger}->writeLogInfo($@);
+
+            $arg{logger}->writeLogInfo("Killing child process [$pid] ...");
+            if ($pid != -1) {
+                kill -9, $pid;
+            }
+            $arg{logger}->writeLogInfo("Killed");
+
+            alarm(0);
+            close KID;
+            return (-1, join("\n", @output), -1);
+        } else {
+            if ($arg{wait_exit} == 1) {
+                # We're waiting the exit code                
+                waitpid($pid, 0);
+                $return_code = $?;
+            }
+            close KID;
+        }
+    } else {
+        # child
+        # set the child process to be a group leader, so that
+        # kill -9 will kill it and all its descendents
+        setpgrp( 0, 0 );
+
+        exec($arg{command});
+        exit(0);
+    }
+
+    return (0, join("\n", @output), $return_code);
+}
+        
 1;

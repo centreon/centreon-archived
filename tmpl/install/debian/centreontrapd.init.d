@@ -1,18 +1,20 @@
 #!/bin/sh
 ### BEGIN INIT INFO
-# Provides:		snmptt
+# Provides:		centreontrapd
 # Required-Start:	$local_fs $network
 # Required-Stop:	$local_fs $network
 # Default-Start:	2 3 4 5
 # Default-Stop:		0 1 6
-# Short-Description:	Start daemon snmptt at boot
-# Description:		Enable service provided SNMPTT : SNMP Trap Translator
+# Should-Start:		mysql
+# Should-Stop:
+# Short-Description:	Start daemon centreontrapd at boot
+# Description:		Enable service provided CentreonTrapd : Manage SNMP Traps
 ### END INIT INFO
 
-PKGNAME=snmptt
-DESC="SNMPTT"
-DAEMON=@SNMPTT_BINDIR@/snmptt
-PIDFILE=/var/run/snmptt.pid
+PKGNAME=centreontrapd
+DESC="CentreonTrapd"
+DAEMON=@CENTSTORAGE_BINDIR@/centreontrapd
+PIDFILE=@CENTREON_RUNDIR@/centreontrapd.pid
 
 if [ ! -x "${DAEMON}" ]; then
   echo "The program ${DAEMON} does not exists or is not executable"
@@ -34,22 +36,34 @@ if [ -z "${RUN_AT_STARTUP}" -o "${RUN_AT_STARTUP}" != "YES" ]; then
     exit 0
 fi
 
+if [ -z "${CENTREON_USER}" ]; then
+    log_warning_msg "Not starting $PKGNAME, CENTREON_USER not set in /etc/default/$PKGNAME."
+    exit 0
+fi
+
 do_start()
 {
-  start-stop-daemon --start --quiet --pidfile ${PIDFILE} --exec ${DAEMON} --test
+  start-stop-daemon --start --background --quiet --pidfile ${PIDFILE} --exec ${DAEMON} \
+    --chuid ${CENTREON_USER} --user ${CENTREON_USER} --test
   [ "$?" = "0" ] || return 1
-  start-stop-daemon --start --quiet --pidfile ${PIDFILE} --exec ${DAEMON} \
-    -- --daemon --ini=${SNMPTT_INI_FILE}
+  start-stop-daemon --start --background --quiet --pidfile ${PIDFILE} --exec ${DAEMON} \
+    --make-pidfile --chuid ${CENTREON_USER} --user ${CENTREON_USER}
   [ "$?" = "0" ] || return 2
   return 0
 }
 
 do_stop()
 {
-  start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --pidfile ${PIDFILE}
+  start-stop-daemon --stop --quiet --retry=TERM/30/KILL/5 --user ${CENTREON_USER} --pidfile ${PIDFILE}
   [ "$?" = "2" ] && return 2
   rm -rf ${PIDFILE}
   [ "$?" = 0 ] && return 0 || return 1
+}
+
+do_reload()
+{
+  start-stop-daemon --stop --quiet --signal HUP --chuid ${CENTREON_USER} --user ${CENTREON_USER} --pidfile ${PIDFILE} --exec ${DAEMON}
+  return 0
 }
 
 case "$1" in
@@ -87,7 +101,11 @@ case "$1" in
        *) log_end_msg 1 ;;
      esac
      ;;
+   reload)
+     [ "${VERBOSE}" != no ] && log_daemon_msg "Reloading ${DESC}" "${PKGNAME}"
+     do_reload
+     log_end_msg 0 ;;
    *)
-     echo "Usage: ${SCRIPTNAME} (start|stop|status|restart|force-reload)" >&2
+     echo "Usage: ${SCRIPTNAME} (start|stop|status|restart|force-reload|reload)" >&2
      exit 3
 esac

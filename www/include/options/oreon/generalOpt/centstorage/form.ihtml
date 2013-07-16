@@ -5,6 +5,9 @@
  	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;&nbsp;{$genOpt_ODS_config}</td></tr>
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.enable}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_centstorage_engine">{$form.enable_centstorage.label}</td><td class="FormRowValue">{$form.enable_centstorage.html}</td></tr>
+   
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{$form.header.insert}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_insert_in_index_data">{$form.insert_in_index_data.label}</td><td class="FormRowValue">{$form.insert_in_index_data.html}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif'>&nbsp;&nbsp;{$form.header.folder}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_path_to_rrdtool_database_for_metrics">{$form.RRDdatabase_path.label}</td><td class="FormRowValue">{$form.RRDdatabase_path.html}</td></tr>

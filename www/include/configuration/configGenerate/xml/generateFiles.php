@@ -173,11 +173,14 @@ chdir($centreon_path . "www");
 require_once $centreon_path . "www/include/configuration/configGenerate/DB-Func.php";
 require_once $centreon_path . "www/class/centreonDB.class.php";
 require_once $centreon_path . "www/class/centreonSession.class.php";
+require_once $centreon_path . "www/class/centreonUtils.class.php";
 require_once $centreon_path . "www/class/centreon.class.php";
 require_once $centreon_path . "www/class/centreonXML.class.php";
 require_once $centreon_path . "www/class/centreonConfigCentreonBroker.php";
 require_once $centreon_path . "www/class/centreonUser.class.php";
 require_once $centreon_path . "www/class/centreonACL.class.php";
+require_once $centreon_path . "www/class/centreonLDAP.class.php";
+require_once $centreon_path . "www/class/centreonContactgroup.class.php";
 require_once $centreon_path . 'www/include/configuration/configGenerate/genCentreonBrokerCorrelation.php';
 
 session_start();
@@ -216,6 +219,8 @@ try {
                                                              'order'      => array('name'),
                                                              'keys'       => array('id'),
                                                              'conditions' => array('ns_activate' => '1')));
+        $cgObj = new CentreonContactgroup($pearDB);
+        $cgObj->syncWithLdap();
         foreach ($tabs as $tab){
             if (isset($poller) && ($tab['id'] == $poller || $poller == 0)) {
                 $pollerID = $tab['id'];

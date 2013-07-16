@@ -111,8 +111,7 @@
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="addressx"> {$form.contact_address6.label}</td><td class="FormRowValue">{$form.contact_address6.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.contact_activate.label}</td><td class="FormRowValue">{$form.contact_activate.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField">{$form.contact_register.label}</td><td class="FormRowValue">{$form.contact_register.html}</td></tr>
-		<tr class="list_one"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
+		<tr class="list_two"><td class="FormRowField">{$form.contact_comment.label}</td><td class="FormRowValue">{$form.contact_comment.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 		{/if}

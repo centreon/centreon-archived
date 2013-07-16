@@ -475,7 +475,7 @@
 		$obj->XML->writeElement("ca", 	$ndo["service_current_check_attempt"]."/".get_service_config_type($ndo['service_object_id'], "service_max_check_attempts")." (".$obj->stateType[$ndo["service_state_type"]].")");
                 if (isset($ndo['criticality']) && $ndo['criticality'] != '' && isset($critCache[$ndo['service_object_id']])) {
                     $obj->XML->writeElement("hci", 1); // has criticality
-                    $critData = $criticality->getData($critCache[$ndo['service_object_id']]);
+                    $critData = $criticality->getData($critCache[$ndo['service_object_id']], true);
                     $obj->XML->writeElement("ci", $media->getFilename($critData['icon_id']));
                     $obj->XML->writeElement("cih", $critData['name']);
                 } else {
@@ -493,6 +493,27 @@
 		$obj->XML->writeElement("ackXml", "./include/monitoring/acknowlegement/xml/ndo/makeXMLForAck.php?sid=".$obj->session_id."&hid=".$ndo["host_object_id"]."&svc_id=".$ndo["service_object_id"]);
 		$obj->XML->writeElement("ackXsl", "./include/monitoring/acknowlegement/xsl/popupForAck.xsl");
 
+        if (get_service_config_type($ndo['service_object_id'], "service_notes") != "") {
+			$service_notes = get_service_config_type($ndo['service_object_id'], "service_notes");
+			$service_notes = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $service_notes);
+			$service_notes = str_replace("\$HOSTNAME\$", $ndo["host_name"], $service_notes);
+			if (get_host_config_type($ndo['host_object_id'], "host_alias")) {
+				$service_notes = str_replace("\$HOSTALIAS\$", get_host_config_type($ndo['host_object_id'], "host_alias"), $service_notes);
+			}
+			if (get_host_config_type($ndo['host_object_id'], "host_address")) {
+				$service_notes = str_replace("\$HOSTADDRESS\$", get_host_config_type($ndo['host_object_id'], "host_address"), $service_notes);
+			}
+			if (isset($ndo['instance_name']) && $ndo['instance_name']) {
+				$service_notes = str_replace("\$INSTANCENAME\$", $ndo['instance_name'], $service_notesn);
+				$service_notes = str_replace("\$INSTANCEADDRESS\$",
+												$instanceObj->getParam($ndo['instance_name'], 'ns_ip_address'),
+												$service_notes);
+			}
+			$obj->XML->writeElement("snn", $service_notes);
+		} else {
+			$obj->XML->writeElement("snn", 'none');
+		}
+        
 		if (get_service_config_type($ndo['service_object_id'], "service_notes_url") != "") {
 			$service_notes_url = get_service_config_type($ndo['service_object_id'], "service_notes_url");
 			$service_notes_url = str_replace("\$SERVICEDESC\$", $ndo["service_description"], $service_notes_url);

@@ -162,13 +162,15 @@
 
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-
+                
 		$rq = "INSERT INTO hostcategories ";
-		$rq .= "(hc_name, hc_alias, hc_comment, hc_activate) ";
+		$rq .= "(hc_name, hc_alias, level, icon_id, hc_comment, hc_activate) ";
 		$rq .= "VALUES (";
-		isset($ret["hc_name"]) && $ret["hc_name"] ? $rq .= "'".CentreonDB::escape($ret["hc_name"])."', " : $rq .= "NULL,";
-		isset($ret["hc_alias"]) && $ret["hc_alias"] ? $rq .= "'".CentreonDB::escape($ret["hc_alias"])."', " : $rq .= "NULL,";
-		isset($ret["hc_comment"]) && $ret["hc_comment"] ? $rq .= "'".CentreonDB::escape($ret["hc_comment"])."', " : $rq .= "NULL, ";
+		isset($ret["hc_name"]) && $ret["hc_name"] ? $rq .= "'".$pearDB->escape($ret["hc_name"])."', " : $rq .= "NULL,";
+		isset($ret["hc_alias"]) && $ret["hc_alias"] ? $rq .= "'".$pearDB->escape($ret["hc_alias"])."', " : $rq .= "NULL,";
+                isset($ret["hc_severity_level"]) && $ret["hc_severity_level"] && isset($ret['hc_type']) ? $rq .= "'".$pearDB->escape($ret["hc_severity_level"])."', " : $rq .= "NULL,";
+                isset($ret["hc_severity_icon"]) && $ret["hc_severity_icon"] ? $rq .= "'".$pearDB->escape($ret["hc_severity_icon"])."', " : $rq .= "NULL,";
+		isset($ret["hc_comment"]) && $ret["hc_comment"] ? $rq .= "'".$pearDB->escape($ret["hc_comment"])."', " : $rq .= "NULL, ";
 		isset($ret["hc_activate"]["hc_activate"]) && $ret["hc_activate"]["hc_activate"] ? $rq .= "'".$ret["hc_activate"]["hc_activate"]."'" : $rq .= "'0'";
 		$rq .= ")";
 
@@ -176,9 +178,11 @@
 		$DBRESULT = $pearDB->query("SELECT MAX(hc_id) FROM hostcategories");
 		$hc_id = $DBRESULT->fetchRow();
 
-		$fields["hc_name"] = CentreonDB::escape($ret["hc_name"]);
-		$fields["hc_alias"] = CentreonDB::escape($ret["hc_alias"]);
-		$fields["hc_comment"] = CentreonDB::escape($ret["hc_comment"]);
+		$fields["hc_name"] = $pearDB->escape($ret["hc_name"]);
+		$fields["hc_alias"] = $pearDB->escape($ret["hc_alias"]);
+                $fields["level"] = $pearDB->escape($ret["hc_severity_level"]);
+                $fields["icon_id"] = $pearDB->escape($ret["hc_severity_icon"]);
+		$fields["hc_comment"] = $pearDB->escape($ret["hc_comment"]);
 		$fields["hc_activate"] = $ret["hc_activate"]["hc_activate"];
 		if (isset($ret["hc_hosts"]))
 			$fields["hc_hosts"] = implode(",", $ret["hc_hosts"]);
@@ -196,19 +200,25 @@
 		$ret = $form->getSubmitValues();
 		$rq = "UPDATE hostcategories SET ";
 		$rq .= "hc_name = ";
-		isset($ret["hc_name"]) && $ret["hc_name"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hc_name"])."', " : $rq .= "NULL, ";
+		isset($ret["hc_name"]) && $ret["hc_name"] != NULL ? $rq .= "'".$pearDB->escape($ret["hc_name"])."', " : $rq .= "NULL, ";
 		$rq .= "hc_alias = ";
-		isset($ret["hc_alias"]) && $ret["hc_alias"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hc_alias"])."', " : $rq .= "NULL, ";
+		isset($ret["hc_alias"]) && $ret["hc_alias"] != NULL ? $rq .= "'".$pearDB->escape($ret["hc_alias"])."', " : $rq .= "NULL, ";
+                $rq .= "level = ";
+		isset($ret["hc_severity_level"]) && $ret["hc_severity_level"] && isset($ret['hc_type']) ? $rq .= "'".$pearDB->escape($ret["hc_severity_level"])."', " : $rq .= "NULL, ";
+                $rq .= "icon_id = ";
+		isset($ret["hc_severity_icon"]) && $ret["hc_severity_icon"] ? $rq .= "'".$pearDB->escape($ret["hc_severity_icon"])."', " : $rq .= "NULL, ";
 		$rq .= "hc_comment = ";
-		isset($ret["hc_comment"]) && $ret["hc_comment"] != NULL ? $rq .= "'".CentreonDB::escape($ret["hc_comment"])."', " : $rq .= "NULL, ";
+		isset($ret["hc_comment"]) && $ret["hc_comment"] != NULL ? $rq .= "'".$pearDB->escape($ret["hc_comment"])."', " : $rq .= "NULL, ";
 		$rq .= "hc_activate = ";
 		isset($ret["hc_activate"]["hc_activate"]) && $ret["hc_activate"]["hc_activate"] != NULL ? $rq .= "'".$ret["hc_activate"]["hc_activate"]."'" : $rq .= "NULL ";
 		$rq .= "WHERE hc_id = '".$hc_id."'";
 		$DBRESULT = $pearDB->query($rq);
 
-		$fields["hc_name"] = CentreonDB::escape($ret["hc_name"]);
-		$fields["hc_alias"] = CentreonDB::escape($ret["hc_alias"]);
-		$fields["hc_comment"] = CentreonDB::escape($ret["hc_comment"]);
+		$fields["hc_name"] = $pearDB->escape($ret["hc_name"]);
+		$fields["hc_alias"] = $pearDB->escape($ret["hc_alias"]);
+                $fields["level"] = $pearDB->escape($ret["hc_severity_level"]);
+                $fields["icon_id"] = $pearDB->escape($ret["hc_severity_icon"]);
+		$fields["hc_comment"] = $pearDB->escape($ret["hc_comment"]);
 		$fields["hc_activate"] = $ret["hc_activate"]["hc_activate"];
 
 		if (isset( $ret["hc_hosts"]))

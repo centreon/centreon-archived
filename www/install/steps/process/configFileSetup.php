@@ -49,24 +49,24 @@ if ($_SESSION['ADDRESS']) {
 }
 
 $patterns = array('/--ADDRESS--/',
-                               '/--DBUSER--/',
-                               '/--DBPASS--/',
-                               '/--CONFDB--/',
-                               '/--STORAGEDB--/',
-                               '/--CENTREONDIR--/',
-                               '/--DBPORT--/', 
-							   '/--INSTANCEMODE--/', 
-							   '/--CENTREON_VARLIB--/');
+                  '/--DBUSER--/',
+                  '/--DBPASS--/',
+                  '/--CONFDB--/',
+                  '/--STORAGEDB--/',
+                  '/--CENTREONDIR--/',
+                  '/--DBPORT--/', 
+                  '/--INSTANCEMODE--/', 
+                  '/--CENTREON_VARLIB--/');
 
 $replacements = array($host,
-                               $_SESSION['DB_USER'],
-                               $_SESSION['DB_PASS'],
-                               $_SESSION['CONFIGURATION_DB'],
-                               $_SESSION['STORAGE_DB'],
-                               $_SESSION['INSTALL_DIR_CENTREON'],
-                               $_SESSION['DB_PORT'], 
-							   "central", 
-							   $_SESSION['CENTREON_VARLIB']);
+                      $_SESSION['DB_USER'],
+                      $_SESSION['DB_PASS'],
+                      $_SESSION['CONFIGURATION_DB'],
+                      $_SESSION['STORAGE_DB'],
+                      $_SESSION['INSTALL_DIR_CENTREON'],
+                      $_SESSION['DB_PORT'], 
+                      "central", 
+                      $_SESSION['CENTREON_VARLIB']);
 
 /**
  * centreon.conf.php
@@ -77,9 +77,9 @@ $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
 
 /**
- * conf.pm
+ * centreon-config.pm
  */
-$centreonConfPmFile = rtrim($_SESSION['CENTREON_ETC'], '/').'/conf.pm';
+$centreonConfPmFile = rtrim($_SESSION['CENTREON_ETC'], '/').'/centreon-config.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);

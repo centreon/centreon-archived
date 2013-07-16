@@ -25,7 +25,6 @@ sub init_modules {
             $args{logger}->writeLogError("SNMP module, NOT the CPAN Net::SNMP module!");
             die("Quit");
         }
-        require SNMP;
         if (defined ($args{config}->{mibs_environment}) && $args{config}->{mibs_environment} ne '') {
             $ENV{'MIBS'} = $args{config}->{mibs_environment};
         }
@@ -49,7 +48,6 @@ sub init_modules {
             $args{logger}->writeLogError("for system requirements");
             die("Quit");
         }
-        require Socket;
         $args{logger}->writeLogInfo("********** DNS enabled **********");
     }
     
@@ -62,7 +60,6 @@ sub init_modules {
             $args{logger}->writeLogError("for system requirements.");
             die("Quit");
         }
-        require Digest::MD5;
     }
     
     eval "require HTML::Entities";
@@ -98,15 +95,21 @@ sub get_oids {
     my ($dstatus, $sth) = $cdb->query("SELECT name, traps_log, traps_execution_command, traps_reschedule_svc_enable, traps_id, traps_args,
                                         traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_exec_interval, traps_exec_interval_type,
-                                        traps_routing_mode, traps_routing_value
-                                        FROM traps LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id) WHERE traps_oid = " . $cdb->quote($oid));
+                                        traps_routing_mode, traps_routing_value,
+                                        service_categories.level, service_categories.sc_name, service_categories.sc_id
+                                        FROM traps
+                                        LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
+                                        LEFT JOIN service_categories ON (service_categories.sc_id = traps.severity_id)
+                                        WHERE traps_oid = " . $cdb->quote($oid));
     return -1 if ($dstatus == -1);
     $ref_result = $sth->fetchall_hashref('traps_id');
     
     foreach (keys %$ref_result) {
         # Get Matching Status Rules
         if (defined($ref_result->{$_}->{traps_advanced_treatment}) && $ref_result->{$_}->{traps_advanced_treatment} == 1) {
-            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties WHERE trap_id = " . $_ . " ORDER BY tmo_id ASC");
+            ($dstatus, $sth) = $cdb->query("SELECT * FROM traps_matching_properties
+                                            LEFT JOIN service_categories ON (service_categories.sc_id = traps_matching_properties.severity_id)
+                                            WHERE trap_id = " . $_ . " ORDER BY tmo_id ASC");
             return -1 if ($dstatus == -1);
             $ref_result->{$_}->{traps_matching_properties} = $sth->fetchall_hashref("tmo_id");
         }
@@ -270,7 +273,7 @@ sub send_logdb {
     
     # Need atomic write (Limit to 4096 with Linux)
     $args{output_message} =~ s/\n/\\n/g;
-    print $pipe $args{id} . ":0:$num_args:" . 
+    my $value = $args{id} . ":0:$num_args:" . 
                 $args{trap_time} . "," .
                 $args{cdb}->quote($args{timeout}) . "," .
                 $args{cdb}->quote($args{host_name}) . "," .  
@@ -280,9 +283,14 @@ sub send_logdb {
                 $args{cdb}->quote($args{trap_oid}) . "," .
                 $args{cdb}->quote($args{trap_name}) . "," .
                 $args{cdb}->quote($args{vendor}) . "," .
-                $args{cdb}->quote($args{severity}) . "," .
-                $args{cdb}->quote($args{output_message}) . "\n";
-   for (my $i=0; $i <= $#{$args{entvar}}; $i++) {
+                $args{cdb}->quote($args{status}) . "," .
+                $args{cdb}->quote($args{severity_id}) . "," .
+                $args{cdb}->quote($args{severity_name}) . ",";
+    # We truncate if it
+    $value .= substr($args{cdb}->quote($args{output_message}), 0, 4096 - length($value) - 1);
+    print $pipe $value . "\n";
+
+    for (my $i=0; $i <= $#{$args{entvar}}; $i++) {
         my $value = ${$args{entvar}}[$i];
         $value =~ s/\n/\\n/g;
         print $pipe $args{id} . ":1:$i:" . 
@@ -290,7 +298,7 @@ sub send_logdb {
                     $args{cdb}->quote(${$args{entvarname}}[$i]) . "," .
                     $args{cdb}->quote($value) . "," .
                     $args{trap_time} . "\n";
-   }
+    }
 }
 
 ##############
@@ -483,6 +491,13 @@ sub readtrap {
         }
     }
 
+    # With DNS resolution disabled in snmptrapd, some systems pass the hostname as:
+    # UDP: [x.x.x.x]:161->[y.y.y.y]
+    # If this is detected, use x.x.x.x as the hostname.
+    if ($tempvar[0] =~ /\[(\d+\.\d+\.\d+\.\d+)\].*?->\[(\d+\.\d+\.\d+\.\d+)\]/) {
+        $tempvar[0] = $1;
+    }
+    
     # Some systems pass the IP address as udp:ipaddress:portnumber.  This will pull
     # out just the IP address
     $tempvar[1] =~ /(\d+\.\d+\.\d+\.\d+)/;
@@ -515,16 +530,16 @@ sub readtrap {
         chomp ($line);
 
         my $variable_fix;
-        #if ($linenum == 1) {
+        if ($linenum == 1) {
             # Check if line 1 contains 'variable value' or just 'value' 
             if (defined($temp2)) {
                 $variable_fix = 0;
             } else {
                 $variable_fix = 1;
             }
-        #}
+        }
 
-        if ($variable_fix == 0 ) {
+        if ($variable_fix == 0) {
             # Make sure variable names are numerical
             $temp1 = translate_symbolic_to_oid($temp1, $args{logger}, $args{config});
 
@@ -533,13 +548,13 @@ sub readtrap {
             # Net-SNMP sometimes divides long lines into multiple lines..
             if ( ($temp2 =~ /^\"/) && ( ! ($temp2 =~ /[^\\]\"$/)) ) {
                 $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
-                chomp $temp2; # Remove the newline character
+                $temp2 =~ s/[\r\n]//g;			# Remove the newline character
                 while (defined(my $line2 = <$input>)) {
                     chomp $line2;
                     push(@rawtrap, $line2);
-                    $temp2.=" ".$line2;
-                    # Ends in a non-escaped quote
-                    if ($line2 =~ /[^\\]\"$/) {
+                    $temp2 .= " " . $line2;
+                    # Check if line ends in a non-escaped quote
+                    if (($line2 =~ /\"$/) && ($line2 !~ /\\\"$/)) {
                         last;
                     }
                 }
@@ -581,13 +596,12 @@ sub readtrap {
             # Net-SNMP sometimes divides long lines into multiple lines..
             if ( ($line =~ /^\"/) && ( ! ($line =~ /[^\\]\"$/)) ) {
                 $args{logger}->writeLogDebug("  Multi-line value detected - merging onto one line...");
-                chomp $line;				# Remove the newline character
+                $temp2 =~ s/[\r\n]//g;			# Remove newline characters
                 while (defined(my $line2 = <$input>)) {
                     chomp $line2;
                     push(@rawtrap, $line2);
-                    $line.=" ".$line2;
-                    # Ends in a non-escaped quote
-                    if ($line2 =~ /[^\\]\"$/) {
+                    $temp2 .= " " . $line2;
+                    if (($line2 =~ /\"$/) && ($line2 !~ /\\\"$/)) { # Ends in a non-escaped quote or it's a single line with a quote.
                         last;
                     }
                 }

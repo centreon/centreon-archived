@@ -179,6 +179,7 @@
 			</xsl:element>
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
+            <xsl:value-of select="snn"/>
 			<xsl:if test="snu != 'none'">
 				<xsl:element name="a">
 				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
@@ -187,7 +188,12 @@
 						<xsl:element name="img">
 						  	<xsl:attribute name="src">./img/icones/15x7/weblink.gif</xsl:attribute>
 						  	<xsl:attribute name="title">
-						  		<xsl:value-of select='//i/http_link'/>&#160;:&#160;<xsl:value-of select="snu"/>
+                                <xsl:if test="snn = 'none'">
+                                    <xsl:value-of select='//i/http_link'/>&#160;:&#160;<xsl:value-of select="snu"/>
+                                </xsl:if>
+                                <xsl:if test="snn != 'none'">
+                                    <xsl:value-of select="snn"/>
+                                </xsl:if>
 						  	</xsl:attribute>
 						</xsl:element>
 				</xsl:element>

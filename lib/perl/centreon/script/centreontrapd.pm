@@ -6,6 +6,7 @@ use warnings;
 use POSIX;
 use centreon::script;
 use centreon::common::db;
+use centreon::common::misc;
 use centreon::trapd::lib;
 use centreon::trapd::Log;
 
@@ -99,9 +100,14 @@ sub new {
     $self->{current_trap_log} = undef;
     $self->{current_vendor_name} = undef;
     
+    $self->{current_alarm_timeout} = undef;
+    
     #
     $self->{traps_global_output} = undef;
     $self->{traps_global_status} = undef;
+    $self->{traps_global_severity_id} = undef;
+    $self->{traps_global_severity_name} = undef;
+    $self->{traps_global_severity_level} = undef;
     
     # For policy_trap = 1 (temp). To avoid doing the same thing twice
     # ID oid ===> Host ID ===> Service ID
@@ -117,7 +123,7 @@ sub new {
     $self->{id_logdb} = 0;
     
     # redefine to avoid out when we try modules
-    $SIG{__DIE__} = undef;
+    $SIG{__DIE__} = 'IGNORE';
     return $self;
 }
 
@@ -287,7 +293,7 @@ sub reload {
                                     centreon::trapd::lib::manage_params_conf($self->{centreontrapd_config}->{date_format},
                                                                              $self->{centreontrapd_config}->{time_format});
     # redefine to avoid out when we try modules
-    $SIG{__DIE__} = undef;
+    $SIG{__DIE__} = 'IGNORE';
     centreon::trapd::lib::init_modules(logger => $self->{logger}, config => $self->{centreontrapd_config}, htmlentities => \$self->{htmlentities});
     $self->set_signal_handlers;
 
@@ -309,8 +315,8 @@ sub create_logdb_child {
     my $current_pid = fork();
     if (!$current_pid) {
         # Unhandle die in child
-        $SIG{CHLD} = undef;
-        $SIG{__DIE__} = undef;
+        $SIG{CHLD} = 'IGNORE';
+        $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
 
         close $self->{logdb_pipes}{'writer'};
@@ -362,6 +368,10 @@ sub do_exec {
     my $matching_result = 0;
     
     $self->{traps_global_status} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status};
+    $self->{traps_global_severity_id} = $self->{ref_oids}->{ $self->{current_trap_id} }->{sc_id};
+    $self->{traps_global_severity_name} = $self->{ref_oids}->{ $self->{current_trap_id} }->{sc_name};
+    $self->{traps_global_severity_level} = $self->{ref_oids}->{ $self->{current_trap_id} }->{level};
+    
     # PREEXEC commands
     $self->execute_preexec();
 
@@ -409,7 +419,9 @@ sub do_exec {
                                         trap_oid => $self->{current_oid},
                                         trap_name => $self->{current_trap_name},
                                         vendor => $self->{current_vendor_name},
-                                        severity => $self->{traps_global_status},
+                                        status => $self->{traps_global_status},
+                                        severity_id => $self->{traps_global_severity_id},
+                                        severity_name => $self->{traps_global_severity_name},
                                         output_message => $self->{traps_global_output},
                                         entvar => \@{$self->{entvar}},
                                         entvarname => \@{$self->{entvarname}});
@@ -445,42 +457,16 @@ sub manage_exec {
     my $current_pid = fork();
     if (!$current_pid) {
         # Unhandle die in child
-        $SIG{CHLD} = undef;
-        $SIG{__DIE__} = undef;
+        $SIG{CHLD} = 'IGNORE';
+        $SIG{__DIE__} = 'IGNORE';
         $self->{cdb}->set_inactive_destroy();
-        eval {
-            my $alarm_timeout = $self->{centreontrapd_config}->{cmd_timeout};
-            if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout})) {
-                $alarm_timeout = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
-            }
-            
-            local $SIG{ALRM} = sub { die "TIMEOUT"; };
-            alarm($alarm_timeout);
-            $self->do_exec();
-            alarm(0);
-        };
-        if ($@) {
-            if ($self->{centreontrapd_config}->{log_trap_db} == 1 && $self->{current_trap_log} == 1) {
-                centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
-                                                 id => $self->{id_logdb},
-                                                 cdb => $self->{cdb},
-                                                 trap_time => $self->{trap_date_time_epoch},
-                                                 timeout => 1,
-                                                 host_name => ${$self->{var}}[0],
-                                                 ip_address => $self->{current_ip},
-                                                 agent_host_name => $self->{agent_dns_name},
-                                                 agent_ip_address => ${$self->{var}}[4],
-                                                 trap_oid => $self->{current_oid},
-                                                 trap_name => $self->{current_trap_name},
-                                                 vendor => $self->{current_vendor_name},
-                                                 severity => $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status},
-                                                 output_message => $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_args},
-                                                 entvar => \@{$self->{entvar}},
-                                                 entvarname => \@{$self->{entvarname}});
-            }
-            $self->{logger}->writeLogError("ERROR: Exec timeout");
-            exit(0);
+        
+        $self->{current_alarm_timeout} = $self->{centreontrapd_config}->{cmd_timeout};
+        if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout}) && $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout} != 0) {
+            $self->{current_alarm_timeout} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_timeout};
         }
+        $self->do_exec();
+
         exit(1);
     }
     
@@ -509,11 +495,14 @@ sub forceCheck {
         $str =~ s/"/\\"/g;
         $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
-    my $stdout = `$submit`;
-
+    
+    my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
+                                                             logger => $self->{logger},
+                                                             timeout => $self->{current_alarm_timeout}
+                                                             );
     $self->{logger}->writeLogInfo("FORCE: Reschedule linked service");
     $self->{logger}->writeLogInfo("FORCE: Launched command: $submit");
-    if (defined($stdout)) {
+    if (defined($stdout) && $stdout ne "") {
         $self->{logger}->writeLogError("FORCE stdout: $stdout");
     }
 }
@@ -521,13 +510,13 @@ sub forceCheck {
 #######################################
 ## Submit result via external command
 #
-sub submitResult {
-    my $self = shift;
-    my $datetime = time();
-    
-    my $str = "PROCESS_SERVICE_CHECK_RESULT;$self->{current_hostname};$self->{current_service_desc};" . $self->{traps_global_status} . ";" . $self->{traps_global_output};
 
+sub submitResult_do {
+    my $self = shift;
+    my $str = $_[0];
+    my $datetime = time();
     my $submit;
+
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
         $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile};
@@ -536,13 +525,32 @@ sub submitResult {
         $str =~ s/"/\\"/g;
         $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
-    my $stdout = `$submit`;
+    my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
+                                                             logger => $self->{logger},
+                                                             timeout => $self->{current_alarm_timeout}
+                                                             );
     
     $self->{logger}->writeLogInfo("SUBMIT: Force service status via passive check update");
     $self->{logger}->writeLogInfo("SUBMIT: Launched command: $submit");
-    if (defined($stdout)) {
+    if (defined($stdout) && $stdout ne "") {
         $self->{logger}->writeLogError("SUBMIT RESULT stdout: $stdout");
     }
+}
+
+sub submitResult {
+    my $self = shift;
+    
+    my $str = "PROCESS_SERVICE_CHECK_RESULT;$self->{current_hostname};$self->{current_service_desc};" . $self->{traps_global_status} . ";" . $self->{traps_global_output};
+    $self->submitResult_do($str);
+    
+    #####
+    # Severity
+    #####
+    return if (!defined($self->{traps_global_severity_id}) || $self->{traps_global_severity_id} eq ''); 
+    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};CRITICALITY_ID;" . $self->{traps_global_severity_id};
+    $self->submitResult_do($str);
+    $str = "CHANGE_CUSTOM_SVC_VAR;$self->{current_hostname};$self->{current_service_desc};CRITICALITY_LEVEL;" . $self->{traps_global_severity_level};
+    $self->submitResult_do($str);
 }
 
 sub execute_preexec {
@@ -553,16 +561,20 @@ sub execute_preexec {
         $tpe_string = $self->substitute_string($tpe_string);
         $tpe_string = $self->substitute_centreon_var($tpe_string);
         
-        my $output = `$tpe_string`;
-        if ($? == -1) {
-            $self->{logger}->writeLogError("EXEC: Execution error: $!");
-        } elsif (($? >> 8) != 0) {
-            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($? >> 8));
+        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(command => $tpe_string,
+                                                                             logger => $self->{logger},
+                                                                             timeout => $self->{current_alarm_timeout},
+                                                                             wait_exit => 1
+                                                                            );
+        if ($exit_code == -1) {
+            $self->{logger}->writeLogError("EXEC prexec: Execution error: $!");
+        } elsif (($exit_code >> 8) != 0) {
+            $self->{logger}->writeLogInfo("EXEC preexec: Exit command: " . ($exit_code >> 8));
         }
         if (defined($output)) {
             chomp $output;
             push @{$self->{preexec}}, $output;
-            $self->{logger}->writeLogInfo("EXEC: Output : $output");
+            $self->{logger}->writeLogInfo("EXEC preexec: Output : $output");
         } else {
             push @{$self->{preexec}}, "";
         }
@@ -636,6 +648,8 @@ sub substitute_centreon_var {
     $str =~ s/\@TRAPOUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@OUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@STATUS\@/$self->{traps_global_status}/g;
+    $str =~ s/\@SEVERITYNAME\@/$self->{traps_global_severity_name}/g;
+    $str =~ s/\@SEVERITYLEVEL\@/$self->{traps_global_severity_level}/g;
     $str =~ s/\@TIME\@/$self->{trap_date_time_epoch}/g;
     $str =~ s/\@POLLERID\@/$self->{current_server_id}/g;
     $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
@@ -675,6 +689,9 @@ sub checkMatchingRules {
         my $tmoString = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_string};
         my $regexp = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_regexp};
         my $tmoStatus = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_status};
+        my $severity_level = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{level};
+        my $severity_name = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_name};
+        my $severity_id = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_id};
         
         $self->{logger}->writeLogDebug("[$tmoString][$regexp] => $tmoStatus");
         
@@ -699,7 +716,7 @@ sub checkMatchingRules {
         ##########################
         # REPLACE special Chars
         if ($self->{htmlentities} == 1) {
-            $tmoString = decode_entities($tmoString);
+            $tmoString = HTML::Entities::decode_entities($tmoString);
         } else {
             $tmoString =~ s/\&quot\;/\"/g;
             $tmoString =~ s/\&#039\;\&#039\;/"/g;
@@ -708,8 +725,14 @@ sub checkMatchingRules {
         # Integrate OID Matching            
         if (defined($tmoString) && $tmoString =~ m/$regexp/g) {
             $self->{traps_global_status} = $tmoStatus;
+            $self->{traps_global_severity_name} = $severity_name;
+            $self->{traps_global_severity_level} = $severity_level;
+            $self->{traps_global_severity_id} = $severity_id;
             $self->{logger}->writeLogInfo("Regexp: String:$tmoString => REGEXP:$regexp");
             $self->{logger}->writeLogInfo("Status: $self->{traps_global_status} ($tmoStatus)");
+            $self->{logger}->writeLogInfo("Severity id: " . (defined($self->{traps_global_severity_id}) ? $self->{traps_global_severity_id} : "null"));
+            $self->{logger}->writeLogInfo("Severity name: " . (defined($self->{traps_global_severity_name}) ? $self->{traps_global_severity_name} : "null"));
+            $self->{logger}->writeLogInfo("Severity level: " . (defined($self->{traps_global_severity_level}) ? $self->{traps_global_severity_level} : "null"));
             $matching_boolean = 1;
             last;
         }    
@@ -735,7 +758,7 @@ sub executeCommand {
     ##########################
     # REPLACE MACROS
     if ($self->{htmlentities} == 1) {
-        $traps_execution_command = decode_entities($traps_execution_command);
+        $traps_execution_command = HTML::Entities::decode_entities($traps_execution_command);
     } else {
         $traps_execution_command =~ s/\&quot\;/\"/g;
         $traps_execution_command =~ s/\&#039\;\&#039\;/"/g;
@@ -750,11 +773,15 @@ sub executeCommand {
         $self->{logger}->writeLogInfo("EXEC: Launch specific command");
         $self->{logger}->writeLogInfo("EXEC: Launched command: $traps_execution_command");
     
-        my $output = `$traps_execution_command`;
-        if ($? == -1) {
+        my ($lerror, $output, $exit_code) = centreon::common::misc::backtick(command => $traps_execution_command,
+                                                                             logger => $self->{logger},
+                                                                             timeout => $self->{current_alarm_timeout},
+                                                                             wait_exit => 1
+                                                                            );
+        if ($exit_code == -1) {
             $self->{logger}->writeLogError("EXEC: Execution error: $!");
-        } elsif (($? >> 8) != 0) {
-            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($? >> 8));
+        } elsif (($exit_code >> 8) != 0) {
+            $self->{logger}->writeLogInfo("EXEC: Exit command: " . ($exit_code >> 8));
         }
         if (defined($output)) {
             chomp $output;
@@ -809,8 +836,8 @@ sub getTrapsInfos {
             #### If none, we stop ####
             my $size = keys %{$self->{ref_services}};
             if ($size < 1) {
-                $self->{logger}->writeLogDebug("Trap without service associated. Skipping...");
-                return 1;
+                $self->{logger}->writeLogDebug("Trap without service associated for host " . $self->{current_hostname} . ". Skipping...");
+                next;
             }
             
             #### Check if macro $_HOST*$ needed

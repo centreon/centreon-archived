@@ -25,7 +25,9 @@ $help["active_checks_enabled"] = dgettext("help", "Enable or disable active chec
 $help["passive_checks_enabled"] = dgettext("help", "Enable or disable passive checks here. When disabled submitted states will be not accepted.");
 
 $help["notifications_enabled"] = dgettext("help", "Specify whether or not notifications for this host are enabled.");
+$help["contact_additive_inheritance"] = dgettext("help", "When enabled, the contact definition will not override the definitions on template levels, it will be appended instead.");
 $help["contacts"] = dgettext("help", "This is a list of contacts that should be notified whenever there are problems (or recoveries) with this host. Useful if you want notifications to go to just a few people and don't want to configure contact groups. You must specify at least one contact or contact group in each host definition (or indirectly through its template).");
+$help["cg_additive_inheritance"] = dgettext("help", "When enabled, the contact group definition will not override the definitions on template levels, it will be appended instead.");
 $help["contact_groups"] = dgettext("help", "This is a list of contact groups that should be notified whenever there are problems (or recoveries) with this host. You must specify at least one contact or contact group in each host definition.");
 
 $help["notification_interval"] = dgettext("help", "Define the number of \"time units\" to wait before re-notifying a contact that this host is still down or unreachable. With the default time unit of 60s, this number will mean multiples of 1 minute. A value of 0 disables re-notififications of contacts about problems for this host - only one problem notification will be sent out.");
@@ -78,7 +80,7 @@ $help["statusmap_image"] = dgettext("help", "Define an image that should be asso
 $help["2d_coords"] = dgettext("help", "Define the coordinates to use when drawing the host in the statusmap CGI. Coordinates should be given in positive integers, as they correspond to physical pixels in the generated image. The origin for drawing (0,0) is in the upper left hand corner of the image and extends in the positive x direction (to the right) along the top of the image and in the positive y direction (down) along the left hand side of the image. For reference, the size of the icons drawn is usually about 40x40 pixels (text takes a little extra space). The coordinates you specify here are for the upper left hand corner of the host icon that is drawn. Note: Don't worry about what the maximum x and y coordinates that you can use are. The CGI will automatically calculate the maximum dimensions of the image it creates based on the largest x and y coordinates you specify.");
 $help["3d_coords"] = dgettext("help", "Define the coordinates to use when drawing the host in the statuswrl CGI. Coordinates can be positive or negative real numbers. The origin for drawing is (0.0,0.0,0.0). For reference, the size of the host cubes drawn is 0.5 units on each side (text takes a little more space). The coordinates you specify here are used as the center of the host cube.");
 
-$help['criticality_id'] = dgettext("help", "Criticality level");
+$help['criticality_id'] = dgettext("help", "Severity level");
 
 $help['acl_groups'] = dgettext("help", "This is required so that you can access your host after creation. Some selected resource groups may contain filter, thus still preventing you from seeing the new host. In this case, make sure to link your Host to a Host Category.");
 

@@ -42,6 +42,7 @@
 	
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/folder.gif' />&nbsp;&nbsp;{$ResultCache}</td></tr>	
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="check_result_path" />&nbsp;{$form.check_result_path.label}</td><td class="FormRowValue">{$form.check_result_path.html}</td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_check_result_path" />&nbsp;{$form.use_check_result_path.label}</td><td class="FormRowValue">{$form.use_check_result_path.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="max_check_result_file_age" />&nbsp;{$form.max_check_result_file_age.label}</td><td class="FormRowValue">{$form.max_check_result_file_age.html}</td></tr>
 			
 			<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif' />&nbsp;&nbsp;{$ExternalCommandes}</td></tr>	
@@ -223,6 +224,7 @@
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="free_child_process_memory">&nbsp;{$form.free_child_process_memory.label}</td><td class="FormRowValue">{$form.free_child_process_memory.html}</td></tr>
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="child_processes_fork_twice">&nbsp;{$form.child_processes_fork_twice.label}</td><td class="FormRowValue">{$form.child_processes_fork_twice.html}</td></tr>
 			<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="enable_environment_macros">&nbsp;{$form.enable_environment_macros.label}</td><td class="FormRowValue">{$form.enable_environment_macros.html}</td></tr>
+                        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="use_setpgid">&nbsp;{$form.use_setpgid.label}</td><td class="FormRowValue">{$form.use_setpgid.html}</td></tr>
 			{if $o == "a" || $o == "c"}
 				<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 			{/if}			

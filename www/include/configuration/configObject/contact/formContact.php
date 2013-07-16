@@ -441,9 +441,7 @@ if ($o == "c" && $centreon->user->get_id() == $cct["contact_id"]) {
     $form->freeze('contact_activate');
 }
 
-$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("Yes"), '0', array('onclick' => 'switchTemplate(true);'));
-$cctRegister[] = HTML_QuickForm::createElement('radio', 'contact_register', null, _("No"), '1', array('onclick' => 'switchTemplate(false);'));
-$form->addGroup($cctRegister, 'contact_register', _("Is this contact a template ?"), '&nbsp;');
+$form->addElement('hidden', 'contact_register');
 $form->setDefaults(array('contact_register' => '1'));
 
 $form->addElement('textarea', 'contact_comment', _("Comments"), $attrsTextarea);
@@ -635,29 +633,4 @@ function uncheckAllS(object)
         document.getElementById('sNone').checked = false;
     }
 }
-
-/*function switchTemplate(template)
-  {
-  if (template) {
-  aclSelected = document.getElementById('contact_acl_groups-t');
-  for (var i = 0; i < aclSelected.options.length; i++) {
-  aclSelected.options[i].selected = true;
-  }
-  QFAMS.moveSelection('contact_acl_groups',
-  document.getElementById('contact_acl_groups-f'),
-  aclSelected,
-  document.getElementsByName('contact_acl_groups[]')[0],
-  'remove',
-  'asc');
-  aclSelected.disabled = true;
-  document.getElementById('contact_acl_groups-f').disabled = true;
-  } else {
-  document.getElementById('contact_acl_groups-t').disabled = false;
-  document.getElementById('contact_acl_groups-f').disabled = false;
-  }
-  }
-
-  Event.observe(window, 'load', function() {
-  switchTemplate(document.getElementsByName('contact_register[contact_register]')[0].checked);
-  });*/
 </script>

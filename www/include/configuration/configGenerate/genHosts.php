@@ -131,12 +131,12 @@ unset($cg);
  * Criticality cache
  */
 $critCache = array();
-$critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id 
-                                   FROM criticality_resource_relations crr, host h
-                                   WHERE crr.host_id = h.host_id
+$critRes = $pearDB->query("SELECT hcr.hostcategories_hc_id, hcr.host_host_id 
+                                   FROM hostcategories_relation hcr, host h
+                                   WHERE hcr.host_host_id = h.host_id
                                    AND h.host_register = '1'");
         while ($critRow = $critRes->fetchRow()) {
-            $critCache[$critRow['host_id']] = $critRow['criticality_id'];
+            $critCache[$critRow['host_host_id']] = $critRow['hostcategories_hc_id'];
         }
         
 	/*
@@ -237,7 +237,7 @@ $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id
                                     $critData = $criticality->getData($critCache[$host['host_id']]);
                                     if (!is_null($critData)) {
                                         $str .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                        $str .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
+                                        $str .= print_line("_CRITICALITY_ID", $critData['hc_id']);
                                     }
                                 }
                                 
@@ -373,8 +373,12 @@ $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id
                         $strTemp .= ",";
                     $strTemp .= $cg;
                 }
-                if ($strTemp)
+                if ($strTemp) {
+                    if ($host['cg_additive_inheritance']) {
+                        $strTemp = "+".$strTemp;
+                    }
                     $str .= print_line("contact_groups", $strTemp);
+                }
                 unset($strTemp);
             }
 
@@ -388,8 +392,12 @@ $critRes = $pearDB->query("SELECT crr.criticality_id, crr.host_id
                         $strTemp .= ",";
                     $strTemp .= $contact;
                 }
-                if ($strTemp)
+                if ($strTemp) {
+                    if ($host['contact_additive_inheritance']) {
+                        $strTemp = "+".$strTemp;
+                    }
                     $str .= print_line("contacts", $strTemp);
+                }
                 unset($strTemp);
             }
 

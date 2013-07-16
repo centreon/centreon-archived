@@ -61,12 +61,12 @@
          * Criticality cache
          */
         $critCache = array();
-        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.service_id
-                                   FROM criticality_resource_relations crr, service s
-                                   WHERE crr.service_id = s.service_id
+        $critRes = $pearDB->query("SELECT scr.sc_id, scr.service_service_id
+                                   FROM service_categories_relation scr, service s
+                                   WHERE scr.service_service_id = s.service_id
                                    AND s.service_register = '0'");
         while ($critRow = $critRes->fetchRow()) {
-            $critCache[$critRow['service_id']] = $critRow['criticality_id'];
+            $critCache[$critRow['service_service_id']] = $critRow['sc_id'];
         }
         
 	/*
@@ -138,10 +138,10 @@
                          * Criticality level
                          */
                         if (isset($critCache[$service['service_id']])) {
-                            $critData = $criticality->getData($critCache[$service['service_id']]);
+                            $critData = $criticality->getData($critCache[$service['service_id']], true);
                             if (!is_null($critData)) {
                                 $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
+                                $strTMP .= print_line("_CRITICALITY_ID", $critData['sc_id']);
                             }
                         }
                         
@@ -254,42 +254,67 @@
 			/*
 			 * Contact Group Relation
 			 */
-			if (isset($cgSvcCache[$service["service_id"]])) {
-				$strTMPTemp = "";
-				foreach ($cgSvcCache[$service["service_id"]] as $cg_name) {
-					if ($strTMPTemp != "")
-						$strTMPTemp .= ",";
-					$strTMPTemp .= $cg_name;
-				}
-				if ($strTMPTemp) 
-					$strTMP .= print_line("contact_groups", $strTMPTemp);
-			}
+            if ($service["service_inherit_contacts_from_host"] === '1') {
+                if (isset($cgSvcCache[$service["service_id"]])) {
+                    $strTMPTemp = "";
+                    foreach ($cgSvcCache[$service["service_id"]] as $cg_name) {
+                        if ($strTMPTemp != "") {
+                            $strTMPTemp .= ",";
+                        }
+                        $strTMPTemp .= $cg_name;
+                    }
+                    if ($strTMPTemp) {
+                        if ($service['cg_additive_inheritance']) {
+                            $strTMPTemp = "+".$strTMPTemp;
+                        }
+                        $strTMP .= print_line("contact_groups", $strTMPTemp);
+                    }
+                }
+            }
+            else {
+                $strTMP .= print_line("contact_groups", "null");
+            }
+
 			
 			/*
 			 * Contact Relation
 			 */
-			$contact = array();
-			$strTMPTemp = NULL;
-			$DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id AND c.contact_activate = '1' AND c.contact_register = 1 ORDER BY `contact_name`");
-			while ($contact = $DBRESULT2->fetchRow())	{
-				if (isset($gbArr[0][$contact["contact_id"]]))
-					$strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
-			}
-			$DBRESULT2->free();
-			if ($strTMPTemp) $strTMP .= print_line("contacts", $strTMPTemp);
-			unset($contact);
-
+            if ($service["service_inherit_contacts_from_host"] === '1') {
+                $contact = array();
+                $strTMPTemp = NULL;
+                $DBRESULT2 = $pearDB->query("SELECT c.contact_id, c.contact_name FROM contact_service_relation csr, contact c WHERE csr.service_service_id = '".$service["service_id"]."' AND csr.contact_id = c.contact_id AND c.contact_activate = '1' AND c.contact_register = 1 ORDER BY `contact_name`");
+                while ($contact = $DBRESULT2->fetchRow())	{
+                    if (isset($gbArr[0][$contact["contact_id"]])) {
+                        $strTMPTemp != NULL ? $strTMPTemp .= ", ".$contact["contact_name"] : $strTMPTemp = $contact["contact_name"];
+                    }
+                }
+                $DBRESULT2->free();
+                if ($strTMPTemp) {
+                    if ($service['contact_additive_inheritance']) {
+                        $strTMPTemp = "+".$strTMPTemp;
+                    }
+                    $strTMP .= print_line("contacts", $strTMPTemp);
+                }
+                unset($contact);
+            }
+            else {
+                $strTMP .= print_line("contacts", "null");
+            }
 			
 			
-			if ($service["service_stalking_options"]) 
+			if ($service["service_stalking_options"]) {
 				$strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
-			if (!$service["service_register"]) 
+            }
+			if (!$service["service_register"]) {
 				$strTMP .= print_line("register", "0");
+            }
 			
 			if (isset($service["service_register"]) && $service["service_register"] == 0){
 				$DBRESULT_TEMP = $pearDB->query("SELECT host_name FROM host, host_service_relation WHERE `service_service_id` = '".$service["service_id"]."' AND `host_id` = `host_host_id`");
 				while ($template_link = $DBRESULT_TEMP->fetchRow())
+                {
 					$strTMP .= print_line(";TEMPLATE-HOST-LINK", $template_link["host_name"]);
+                }
 				unset($template_link);
 				unset($DBRESULT_TEMP);
 			}

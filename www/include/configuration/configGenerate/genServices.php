@@ -140,12 +140,12 @@
          * Criticality cache
          */
         $critCache = array();
-        $critRes = $pearDB->query("SELECT crr.criticality_id, crr.service_id
-                                   FROM criticality_resource_relations crr, service s
-                                   WHERE crr.service_id = s.service_id
+        $critRes = $pearDB->query("SELECT scr.sc_id, scr.service_service_id
+                                   FROM service_categories_relation scr , service s
+                                   WHERE scr.service_service_id = s.service_id
                                    AND s.service_register = '1'");
         while ($critRow = $critRes->fetchRow()) {
-            $critCache[$critRow['service_id']] = $critRow['criticality_id'];
+            $critCache[$critRow['service_service_id']] = $critRow['sc_id'];
         }
 
 	$cacheSVCTpl = intCmdParam($pearDB, $tab['id']);
@@ -196,10 +196,10 @@
                                  * Criticality level
                                  */
                                 if (isset($critCache[$service['service_id']])) {
-                                    $critData = $criticality->getData($critCache[$service['service_id']]);
+                                    $critData = $criticality->getData($critCache[$service['service_id']], true);
                                     if (!is_null($critData)) {
                                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
+                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['sc_id']);
                                     }
                                 }
 
@@ -290,55 +290,82 @@
 				 * Notifications
 				 */
 
-				if (!$service["timeperiod_tp_id2"])
+				if (!$service["timeperiod_tp_id2"]) {
 					$service["timeperiod_tp_id2"] = getMyServiceTPInCache($service["service_template_model_stm_id"], $npCache);
-				if (isset($timeperiods[$service["timeperiod_tp_id2"]]) && $timeperiods[$service["timeperiod_tp_id2"]] != "")
+                }
+				if (isset($timeperiods[$service["timeperiod_tp_id2"]]) && $timeperiods[$service["timeperiod_tp_id2"]] != "") {
 					$strTMP .= print_line("notification_period", $timeperiods[$service["timeperiod_tp_id2"]]."_GMT".$gmt);
+                }
 
-				if ($service["service_notification_interval"] != NULL)
+				if ($service["service_notification_interval"] != NULL) {
 					$strTMP .= print_line("notification_interval", $service["service_notification_interval"]);
-				if ($service["service_notification_options"])
+                }
+				if ($service["service_notification_options"]) {
 					$strTMP .= print_line("notification_options", $service["service_notification_options"]);
-				if ($service["service_notifications_enabled"] != 2)
+                }
+				if ($service["service_notifications_enabled"] != 2) {
 					$strTMP .= print_line("notifications_enabled", $service["service_notifications_enabled"] == 1 ? "1": "0");
-				if ($service["service_first_notification_delay"] != NULL)
+                }
+				if ($service["service_first_notification_delay"] != NULL) {
 					$strTMP .= print_line("first_notification_delay", $service["service_first_notification_delay"]);
+                }
 
 				/*
 				 * Contact Group Relation
 				 */
-
-				if (isset($cgSCache[$service["service_id"]])) {
-					$strTMPTemp = "";
-					foreach ($cgSCache[$service["service_id"]] as $cg_name) {
-						if ($strTMPTemp != "")
-							$strTMPTemp .= ",";
-						$strTMPTemp .= $cg_name;
-					}
-					if ($strTMPTemp)
-						$strTMP .= print_line("contact_groups", $strTMPTemp);
-					unset($strTMPTemp);
-				}
+                if ($service["service_inherit_contacts_from_host"] === '1') {
+                    if (isset($cgSCache[$service["service_id"]])) {
+                        $strTMPTemp = "";
+                        foreach ($cgSCache[$service["service_id"]] as $cg_name) {
+                            if ($strTMPTemp != "") {
+                                $strTMPTemp .= ",";
+                            }
+                            $strTMPTemp .= $cg_name;
+                        }
+                        if ($strTMPTemp) {
+                            if ($service['cg_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
+                            $strTMP .= print_line("contact_groups", $strTMPTemp);
+                        }
+                        unset($strTMPTemp);
+                    }
+                }
+                else {
+                    $strTMP .= print_line("contact_groups", "null");
+                }
 
 				/*
 				 * Contact Relation
 				 */
-				if (isset($cctSCache[$service["service_id"]])) {
-					$strTMPTemp = "";
-					foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
-						if ($strTMPTemp != "")
-							$strTMPTemp .= ",";
-						$strTMPTemp .= $cct_name;
-					}
-					if ($strTMPTemp)
-						$strTMP .= print_line("contacts", $strTMPTemp);
-					unset($strTMPTemp);
-				}
+                if ($service["service_inherit_contacts_from_host"] === '1') {
+                    if (isset($cctSCache[$service["service_id"]])) {
+                        $strTMPTemp = "";
+                        foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
+                            if ($strTMPTemp != "") {
+                                $strTMPTemp .= ",";
+                            }
+                            $strTMPTemp .= $cct_name;
+                        }
+                        if ($strTMPTemp) {
+                            if ($service['contact_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
+                            $strTMP .= print_line("contacts", $strTMPTemp);
+                        }
+                        unset($strTMPTemp);
+                    }
+                }
+                else {
+                    $strTMP .= print_line("contacts", "null");
+                }
 
-				if ($service["service_stalking_options"])
+				if ($service["service_stalking_options"]) {
 					$strTMP .= print_line("stalking_options", $service["service_stalking_options"]);
-				if (!$service["service_register"])
+                }
+				if (!$service["service_register"]) {
 					$strTMP .= print_line("register", "0");
+                }
 
 				/*
 				 * On-demand macros
@@ -515,10 +542,10 @@
                                  * Criticality level
                                  */
                                 if (isset($critCache[$service['service_id']])) {
-                                    $critData = $criticality->getData($critCache[$service['service_id']]);
+                                    $critData = $criticality->getData($critCache[$service['service_id']], true);
                                     if (!is_null($critData)) {
                                         $strTMP .= print_line("_CRITICALITY_LEVEL", $critData['level']);
-                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['criticality_id']);
+                                        $strTMP .= print_line("_CRITICALITY_ID", $critData['sc_id']);
                                     }
                                 }
 
@@ -643,33 +670,53 @@
 				/*
 				 * Contact Group Relation
 				 */
-
-				if (isset($cgSCache[$service["service_id"]])) {
-					$strTMPTemp = "";
-					foreach ($cgSCache[$service["service_id"]] as $cg_name) {
-						if ($strTMPTemp != "")
-							$strTMPTemp .= ",";
-						$strTMPTemp .= $cg_name;
-					}
-					if ($strTMPTemp)
-						$strTMP .= print_line("contact_groups", $strTMPTemp);
-					unset($strTMPTemp);
-				}
+                if ($service["service_inherit_contacts_from_host"] === '1') {
+                    if (isset($cgSCache[$service["service_id"]])) {
+                        $strTMPTemp = "";
+                        foreach ($cgSCache[$service["service_id"]] as $cg_name) {
+                            if ($strTMPTemp != "") {
+                                $strTMPTemp .= ",";
+                            }
+                            $strTMPTemp .= $cg_name;
+                        }
+                        if ($strTMPTemp) {
+                            if ($service['cg_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
+                            $strTMP .= print_line("contact_groups", $strTMPTemp);
+                        }
+                        unset($strTMPTemp);
+                    }
+                }
+                else {
+                    $strTMP .= print_line("contact_groups", "null");
+                }
 
 				/*
 				 * Contact Relation only for Nagios 3
 				 */
-				if (isset($cctSCache[$service["service_id"]])) {
-					$strTMPTemp = "";
-					foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
-						if ($strTMPTemp != "")
-							$strTMPTemp .= ",";
-						$strTMPTemp .= $cct_name;
-					}
-					if ($strTMPTemp)
-						$strTMP .= print_line("contacts", $strTMPTemp);
-					unset($strTMPTemp);
-				}
+                if ($service["service_inherit_contacts_from_host"] === '1') {
+                    if (isset($cctSCache[$service["service_id"]])) {
+                        $strTMPTemp = "";
+                        foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
+                            if ($strTMPTemp != "") {
+                                $strTMPTemp .= ",";
+                            }
+                            $strTMPTemp .= $cct_name;
+                        }
+                        if ($strTMPTemp) {
+                            if ($service['contact_additive_inheritance']) {
+                                $strTMPTemp = "+".$strTMPTemp;
+                            }
+                            $strTMP .= print_line("contacts", $strTMPTemp);
+                        }
+                        unset($strTMPTemp);
+                    }
+                }
+                else {
+                    $strTMP .= print_line("contacts", "null");
+                }
+                
 
 				if ($service["service_stalking_options"])
 					$strTMP .= print_line("stalking_options", $service["service_stalking_options"]);

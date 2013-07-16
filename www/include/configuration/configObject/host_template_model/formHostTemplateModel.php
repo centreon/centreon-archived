@@ -96,7 +96,11 @@
             /*
              * Set Host Category Parents
              */
-            $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id FROM hostcategories_relation WHERE host_host_id = \''.$host_id.'\'');
+            $DBRESULT = $pearDB->query('SELECT DISTINCT hostcategories_hc_id 
+                FROM hostcategories_relation hcr, hostcategories hc
+                WHERE hcr.hostcategories_hc_id = hc.hc_id
+                AND hc.level IS NULL
+                AND hcr.host_host_id = \''.$host_id.'\'');
             for ($i = 0; $hc = $DBRESULT->fetchRow(); $i++)
                 $host["host_hcs"][$i] = $hc['hostcategories_hc_id'];
             $DBRESULT->free();
@@ -104,10 +108,14 @@
                         /*
                          * Set criticality
                          */
-                        $res = $pearDB->query("SELECT criticality_id FROM criticality_resource_relations WHERE host_id = " . $pearDB->escape($host_id));
+                        $res = $pearDB->query("SELECT hc.hc_id 
+                            FROM hostcategories hc, hostcategories_relation hcr
+                            WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
+                            AND hcr.hostcategories_hc_id = hc.hc_id
+                            AND hc.level IS NOT NULL");
                         if ($res->numRows()) {
                             $cr = $res->fetchRow();
-                            $host['criticality_id'] = $cr['criticality_id'];
+                            $host['criticality_id'] = $cr['hc_id'];
                         }
 		}
 	}
@@ -192,7 +200,7 @@
 	$notifCgs = array();
 	$cg = new CentreonContactgroup($pearDB);
 	$notifCgs = $cg->getListContactgroup(true);
-
+        
 	/*
 	 * Contacts come from DB -> Store in $notifCs Array
 	 */
@@ -206,7 +214,7 @@
      * Host Categories comes from DB -> Store in $hcs Array
      */
     $hcs = array();
-    $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories ORDER BY hc_name");
+    $DBRESULT = $pearDB->query("SELECT hc_id, hc_name FROM hostcategories WHERE level IS NULL ORDER BY hc_name");
     while ($hc = $DBRESULT->fetchRow())
         $hcs[$hc["hc_id"]] = $hc["hc_name"];
     $DBRESULT->free();
@@ -386,6 +394,12 @@
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
 
+        /*
+         * Additive
+         */
+        $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
+        $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
+        
 	if ($o == "mc")	{
 		$mc_mod_notifopt_first_notification_delay = array();
 		$mc_mod_notifopt_first_notification_delay[] = &HTML_QuickForm::createElement('radio', 'mc_mod_notifopt_first_notification_delay', null, _("Incremental"), '0');
@@ -606,9 +620,9 @@
         $critList = $criticality->getList();
         $criticalityIds = array(null => null);
         foreach($critList as $critId => $critData) {
-            $criticalityIds[$critId] = $critData['name'].' ('.$critData['level'].')';
+            $criticalityIds[$critId] = $critData['hc_name'].' ('.$critData['level'].')';
         }
-        $form->addElement('select', 'criticality_id', _('Criticality level'), $criticalityIds);
+        $form->addElement('select', 'criticality_id', _('Severity level'), $criticalityIds);
         
 	$form->addElement('header', 'oreon', _("Centreon"));
 

@@ -358,7 +358,11 @@ CREATE TABLE `metrics` (
   `data_source_type` enum('0','1','2','3') DEFAULT NULL,
   `unit_name` varchar(32) DEFAULT NULL,
   `warn` float DEFAULT NULL,
+  `warn_low` float DEFAULT NULL,
+  `warn_threshold_mode` enum('0','1') DEFAULT NULL,
   `crit` float DEFAULT NULL,
+  `crit_low` float DEFAULT NULL,
+  `crit_threshold_mode` enum('0','1') DEFAULT NULL,
   `hidden` enum('0','1') DEFAULT '0',
   `min` float DEFAULT NULL,
   `max` float DEFAULT NULL,
@@ -412,10 +416,7 @@ INSERT INTO `statistics` VALUES (1,0,1,0,0,0,0,0,0,0);
 /*!40000 ALTER TABLE `statistics` ENABLE KEYS */;
 UNLOCK TABLES;
 
-LOCK TABLES `log_traps` WRITE;
-/*!40000 ALTER TABLE `log_traps` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_traps` ENABLE KEYS */;
-UNLOCK TABLES;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_traps` (
@@ -429,17 +430,20 @@ CREATE TABLE `log_traps` (
   `trap_oid` varchar(512) DEFAULT NULL,
   `trap_name` varchar(255) DEFAULT NULL,
   `vendor` varchar(255) DEFAULT NULL,
-  `severity` varchar(255) DEFAULT NULL,
-  `output_message` varchar(1024) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
+  `severity_name` varchar(255) DEFAULT NULL,
+  `output_message` varchar(2048) DEFAULT NULL,
   KEY `trap_id` (`trap_id`),
   KEY `trap_time` (`trap_time`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-LOCK TABLES `log_traps_args` WRITE;
-/*!40000 ALTER TABLE `log_traps_args` DISABLE KEYS */;
-/*!40000 ALTER TABLE `log_traps_args` ENABLE KEYS */;
+LOCK TABLES `log_traps` WRITE;
+/*!40000 ALTER TABLE `log_traps` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_traps` ENABLE KEYS */;
 UNLOCK TABLES;
+
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `log_traps_args` (
@@ -452,9 +456,10 @@ CREATE TABLE `log_traps_args` (
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
+LOCK TABLES `log_traps_args` WRITE;
+/*!40000 ALTER TABLE `log_traps_args` DISABLE KEYS */;
+/*!40000 ALTER TABLE `log_traps_args` ENABLE KEYS */;
 UNLOCK TABLES;
-
-
 
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

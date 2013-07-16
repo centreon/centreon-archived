@@ -762,9 +762,7 @@ class XPathBase {
       $sortArrKey[] = $this->profile[$funcName]['totTime'];
       $sortArrVal[] = $funcName;
     }
-    //echo '<pre>';var_dump($sortArrVal);echo '</pre>';
     array_multisort ($sortArrKey, SORT_DESC, $sortArrVal );
-    //echo '<pre>';var_dump($sortArrVal);echo '</pre>';
 
     $totTime = 0;
     $size = sizeOf($sortArrVal);

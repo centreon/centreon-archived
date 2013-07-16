@@ -392,27 +392,14 @@
 			$DBRESULT = $pearDB->query($rq);
 		}
 
-
-		// Special Case, delete relation between host/service, when service is linked to hostgroup in escalation, dependencies
-		if (count($hgSVS)) {
-			foreach ($hostsOLD as $host) {
-				if (!isset($hostsNEW[$host])) {
-					foreach ($hgSVS as $sv)	{
-						// Delete in escalation
-						$rq = "DELETE FROM escalation_service_relation ";
-						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
-						$DBRESULT = $pearDB->query($rq);
-						// Delete in dependencies
-						$rq = "DELETE FROM dependency_serviceChild_relation ";
-						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
-						$DBRESULT = $pearDB->query($rq);
-						$rq = "DELETE FROM dependency_serviceParent_relation ";
-						$rq .= "WHERE host_host_id = '".$host."' AND service_service_id = '".$sv."'";
-						$DBRESULT = $pearDB->query($rq);
-					}
-				}
-			}
-		}
+                /*
+                 * Remove relations that no longer exist (for services by hostgroup)
+                 */
+                $svcObj = new CentreonService($pearDB);
+                $svcObj->cleanServiceRelations("escalation_service_relation", "host_host_id", "service_service_id");
+                $svcObj->cleanServiceRelations("dependency_serviceChild_relation", "host_host_id", "service_service_id");
+                $svcObj->cleanServiceRelations("dependency_serviceParent_relation", "host_host_id", "service_service_id");
+		$svcObj->cleanServiceRelations("downtime_service_relation", "host_host_id", "service_service_id");
 	}
 
 ?>

@@ -59,7 +59,9 @@ $help['tip_enable_timezone_management'] = dgettext('help', 'Enables timezone man
 $help['tip_default_timezone'] = dgettext('help', 'Default host timezone.');
 
 /**
- * Batch configuration
+ * SSO
  */
-
-$help['tip_cache_path'] = dgettext('help', 'Cache path.');
+$help['sso_enable'] = dgettext('help', 'Whether SSO authentication is enabled.');
+$help['sso_mode'] = dgettext('help', 'Authentication can be solely based on SSO or it can work with both SSO and local authentication systems.');
+$help['sso_trusted_clients'] = dgettext('help', 'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.');
+$help['sso_header_username'] = dgettext('help', 'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']');

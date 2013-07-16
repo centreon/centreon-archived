@@ -8,7 +8,7 @@ sub start_or_not {
     
     my ($status2, $stmt) = $centreon_db_centreon->query("SELECT value FROM options WHERE `key` = 'centstorage' LIMIT 1");
     my $data = $stmt->fetchrow_hashref();
-    if (defined($data) && int($data->{'value'}) == 0) {
+    if (defined($data) && int($data->{value}) == 0) {
         $status = 0;
     }
     return $status;
@@ -18,10 +18,10 @@ sub get_main_perfdata_file {
     my ($centreon_db_centreon) = @_;
     my $filename;
 
-    my ($status, $stmt) = $centreon_db_centreon->query("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1'");
+    my ($status, $stmt) = $centreon_db_centreon->query("SELECT `nagios_perfdata` FROM `nagios_server` WHERE `localhost` = '1' ORDER BY ns_activate DESC LIMIT 1");
     my $data = $stmt->fetchrow_hashref();
     if (defined($data)) {
-        $filename = $data->{'nagios_perfdata'};
+        $filename = $data->{nagios_perfdata};
     }
     return ($status, $filename);
 }
@@ -59,13 +59,13 @@ sub call_pool_rebuild {
     $pool_choosen = $routing_services->{$host_name . ";" . $service_description};    
     for ($i = 0; $i < $pool_childs; $i++) {
         if ($i == $pool_choosen) {
-            my $fh = $pool_pipes->{$i}->{'writer_two'};
+            my $fh = $pool_pipes->{$i}->{writer_two};
             # It's when you loose a pool. You have to know
             $$rebuild_progress = 1;
             $$rebuild_pool_choosen = $pool_choosen;
             print $fh "REBUILDBEGIN\t$host_name\t$service_description\n";
         } else {
-            my $fh = $pool_pipes->{$i}->{'writer_two'};
+            my $fh = $pool_pipes->{$i}->{writer_two};
             print $fh "REBUILDBEGIN\n";
         }
     }
@@ -79,11 +79,11 @@ sub call_pool_rebuild_finish {
     $$rebuild_pool_choosen = -1;
     for ($i = 0; $i < $pool_childs; $i++) {
         if ($rebuild_pool_choosen != $i) {
-            $fh = $pool_pipes->{$i}->{'writer_two'};
+            $fh = $pool_pipes->{$i}->{writer_two};
             print $fh "REBUILDFINISH\n";
         }
     }
-    $fh = $delete_pipes->{'writer_two'};
+    $fh = $delete_pipes->{writer_two};
     print $fh "REBUILDFINISH\n";
 }
 
@@ -94,12 +94,12 @@ sub call_pool_rename_clean {
     my $pool_choosen;
     if (!defined($routing_services->{$old_host_name . ";" . $old_service_description})) {
         # There is no for the old name. Can go back
-        my $fh = $pool_pipes->{$routing_services->{$new_host_name . ";" . $new_service_description}}->{'writer_two'};
+        my $fh = $pool_pipes->{$routing_services->{$new_host_name . ";" . $new_service_description}}->{writer_two};
         print $fh "RENAMEFINISH\t" . $new_host_name . "\t" . $new_service_description . "\n";
         return ;
     }
     # Send to clean
-    my $fh = $pool_pipes->{$routing_services->{$old_host_name . ";" . $old_service_description}}->{'writer_two'};
+    my $fh = $pool_pipes->{$routing_services->{$old_host_name . ";" . $old_service_description}}->{writer_two};
     print $fh "RENAMECLEAN\t" . $old_host_name . "\t" . $old_service_description . "\t" . $new_host_name . "\t" . $new_service_description . "\n";
 }
 
@@ -108,7 +108,7 @@ sub call_pool_rename_finish {
 
     my ($method, $new_host_name, $new_service_description) = split(/\t/, $line);
     if (defined($routing_services->{$new_host_name . ";" . $new_service_description})) {
-        my $fh = $pool_pipes->{$routing_services->{$new_host_name . ";" . $new_service_description}}->{'writer_two'};
+        my $fh = $pool_pipes->{$routing_services->{$new_host_name . ";" . $new_service_description}}->{writer_two};
         print $fh "RENAMEFINISH\t" . $new_host_name . "\t" . $new_service_description . "\n";
         return ;
     }
@@ -122,7 +122,7 @@ sub call_pool_delete_clean {
         # No cache. so we return
         return ;
     }
-    my $fh = $pool_pipes->{$routing_services->{$host_name . ";" . $service_description}}->{'writer_two'};
+    my $fh = $pool_pipes->{$routing_services->{$host_name . ";" . $service_description}}->{writer_two};
     print $fh "$line\n";
 }
 

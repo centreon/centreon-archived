@@ -69,7 +69,6 @@
 	$form->addElement('text', 'nagios_path_img', _("Images Directory"), $attrsText);
 	$form->addElement('text', 'nagios_path_plugins', _("Plugins Directory"), $attrsText);
 	$form->addElement('text', 'interval_length', _("Interval Length"), $attrsText2);
-	$form->addElement('text', 'cengine_path_connectors', _("Connectors Directory"), $attrsText);
 	$form->addElement('text', 'mailer_path_bin', _("Directory + Mailer Binary"), $attrsText);
 	$form->addElement('select', 'monitoring_engine', _("Default Engine"), array("CENGINE" => "Centreon Engine", "ICINGA" => "Icinga", "NAGIOS" => "Nagios", "SHINKEN" => "Shinken"));
 	$form->addElement('select', 'broker', _("Broker engine used by Centreon"), array("ndo" => "NDOutils", "broker" => "Centreon Broker"));
@@ -133,7 +132,6 @@
 	$form->applyFilter('nagios_path', 'slash');
 	$form->applyFilter('nagios_path_img', 'slash');
 	$form->applyFilter('nagios_path_plugins', 'slash');
-	$form->applyFilter('cengine_path_connectors', 'slash');
 	
 	$form->registerRule('is_valid_path', 'callback', 'is_valid_path');
 	$form->registerRule('is_readable_path', 'callback', 'is_readable_path');

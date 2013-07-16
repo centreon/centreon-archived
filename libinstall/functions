@@ -789,19 +789,12 @@ function locate_centreon_installdir() {
 
 #----
 ## Define where is Centreon generation directory
-## Generation directory is use for a temporary config of nagios.
+## Generation directory is use for a temporary config (same as INSTALL_DIR).
 ## filesUpload and filesGeneration directories
 ## @Globals	CENTREON_GENDIR, DEFAULT_CENTREON_GENDIR
 #----
 function locate_centreon_generationdir() {
-	if [ -z "$CENTREON_GENDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your Centreon generation_files directory?")" "$DEFAULT_CENTREON_GENDIR" "CENTREON_GENDIR"
-		echo_success "$(gettext "Path" ) $CENTREON_GENDIR" "$ok"
-	elif [ ! -d "$CENTREON_GENDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTREON_GENDIR"
-		log "INFO" "$(gettext "Create") $CENTREON_GENDIR"
-	fi
-	CENTREON_GENDIR=`trim ${CENTREON_GENDIR%/}`
+	CENTREON_GENDIR="$INSTALL_DIR_CENTREON"
 	export CENTREON_GENDIR
 	log "INFO" "CENTREON_GENDIR: $CENTREON_GENDIR"
 }
@@ -927,23 +920,6 @@ function locate_centplugins_tmpdir() {
 }
 
 #----
-## Define where is centPluginsTraps binary directory
-## @Globals	CENTPLUGINSTRAPS_BINDIR, DEFAULT_CENTPLUGINSTRAPS_BINDIR
-#----
-function locate_centpluginstraps_bindir() {
-	if [ -z "$CENTPLUGINSTRAPS_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentPlugins Traps binary")" "$DEFAULT_CENTPLUGINSTRAPS_BINDIR" "CENTPLUGINSTRAPS_BINDIR"
-		echo_success "$(gettext "Path" ) $CENTPLUGINSTRAPS_BINDIR" "$ok"
-	elif [ ! -d "$CENTPLUGINSTRAPS_BINDIR" -a "$silent_install" -eq 1 ] ; then
-		mkdir -p "$CENTPLUGINSTRAPS_BINDIR"
-		log "INFO" "$(gettext "Create") $CENTPLUGINSTRAPS_BINDIR"
-	fi
-	CENTPLUGINSTRAPS_BINDIR=`trim ${CENTPLUGINSTRAPS_BINDIR%/}`
-	export CENTPLUGINSTRAPS_BINDIR
-	log "INFO" "CENTPLUGINSTRAPS_BINDIR: $CENTPLUGINSTRAPS_BINDIR"
-}
-
-#----
 ## Define where is SNMP etc (config) directory
 ## @Globals	SNMP_ETC, DEFAULT_SNMP_ETC
 #----
@@ -959,17 +935,17 @@ function locate_snmp_etcdir() {
 }
 
 #----
-## Define where is SNMPTT binary directory
-## @Globals	SNMPTT_BINDIR, DEFAULT_SNMPTT_BINDIR
+## Define where is CENTREONTRAPD binary directory
+## @Globals	CENTREONTRAPD_BINDIR, DEFAULT_CENTREONTRAPD_BINDIR
 #----
-function locate_snmptt_bindir() {
-	if [ -z "$SNMPTT_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your SNMPTT binaries directory")" "$DEFAULT_SNMPTT_BINDIR" "SNMPTT_BINDIR"
-		echo_success "$SNMPTT_BINDIR" "$ok"
+function locate_centreontrapd_bindir() {
+	if [ -z "$CENTREONTRAPD_BINDIR" ] ; then
+		answer_with_createdir "$(gettext "Where is your CentreonTrapd binaries directory")" "$DEFAULT_CENTREONTRAPD_BINDIR" "CENTREONTRAPD_BINDIR"
+		echo_success "$CENTREONTRAPD_BINDIR" "$ok"
 	fi
-	SNMPTT_BINDIR=`trim ${SNMPTT_BINDIR%/}`
-	export SNMPTT_BINDIR
-	log "INFO" "SNMPTT_BINDIR: $SNMPTT_BINDIR"
+	CENTREONTRAPD_BINDIR=`trim ${CENTREONTRAPD_BINDIR%/}`
+	export CENTREONTRAPD_BINDIR
+	log "INFO" "CENTREONTRAPD_BINDIR: $CENTREONTRAPD_BINDIR"
 }
 
 #----
@@ -985,22 +961,6 @@ function locate_sudo() {
 	SUDO_FILE=`trim ${SUDO_FILE%/}`
 	export SUDO_FILE
 	log "INFO" "SUDO_FILE: $SUDO_FILE"
-}
-
-#----
-## Define where is Perl RRD file (RRDs.pm)
-## @Globals	RRD_PERL, DEFAULT_RRD_PERL
-#----
-function locate_rrd_perldir() {
-	testdir_clean "$RRD_PERL" "RRD_PERL"
-	if [ -z "$RRD_PERL" ] ; then
-		answer_with_testfile "$(gettext "Where is the RRD perl module installed [RRDs.pm]")" "$DEFAULT_RRD_PERL/RRDs.pm" "RRD_PERL"
-		RRD_PERL=$(dirname $RRD_PERL)
-		echo_success "$(gettext "Path" ) $RRD_PERL" "$ok"
-	fi
-	RRD_PERL=`trim ${RRD_PERL%/}`
-	export RRD_PERL
-	log "INFO" "RRD_PERL: $RRD_PERL"
 }
 
 #----
@@ -1067,48 +1027,6 @@ function locate_mail() {
 }
 
 #----
-## Define where is ssh binary
-## find ssh in PATH
-## @Globals	BIN_SSH, DEFAULT_BIN_SSH
-#----
-function locate_ssh() {
-	testfile_clean "$BIN_SSH" "BIN_SSH"
-	if [ -z "$BIN_SSH" ] ; then 
-		pathfind_ret "ssh" "BIN_SSH"
-		if [ "$?" -ne 0 ] ; then 
-			answer_with_testfile "$(gettext "Where is ssh binary")" "$DEFAULT_BIN_SSH" "BIN_SSH"
-		else 
-			BIN_SSH="$BIN_SSH/ssh"
-		fi
-		echo_success "$BIN_SSH" "$ok"
-	fi
-	BIN_SSH=`trim ${BIN_SSH%/}`
-	export BIN_SSH
-	log "INFO" "BIN_SSH: $BIN_SSH"
-}
-
-#----
-## Define where is scp binary
-## find scp in PATH
-## @Globals	BIN_SCP, DEFAULT_BIN_SCP
-#----
-function locate_scp() {
-	testfile_clean "$BIN_SCP" "BIN_SCP"
-	if [ -z "$BIN_SCP" ] ; then 
-		pathfind_ret "scp" "BIN_SCP"
-		if [ "$?" -ne 0 ] ; then 
-			answer_with_testfile "$(gettext "Where is scp binary")" "$DEFAULT_BIN_SCP" "BIN_SCP"
-		else 
-			BIN_SCP="$BIN_SCP/scp"
-		fi
-		echo_success "$BIN_SCP" "$ok"
-	fi
-	BIN_SCP=`trim ${BIN_SCP%/}`
-	export BIN_SCP
-	log "INFO" "BIN_SCP: $BIN_SCP"
-}
-
-#----
 ## Define where is php binary
 ## find php, php5 in PATH
 ## @Globals	PHP_BIN, DEFAULT_PHP_BIN
@@ -1125,7 +1043,7 @@ function locate_php_bin() {
 			fi
 		done
 		if [ -z "$PHP_BIN" ] ; then 
-			answer_with_testfile "$(gettext "Where is your php binany ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
+			answer_with_testfile "$(gettext "Where is your php binary ? ")" "$DEFAULT_PHP_BIN" "PHP_BIN"
 		fi
 		echo_success "$PHP_BIN" "$ok"
 	fi
@@ -1386,8 +1304,10 @@ function prepare_sudo_config() {
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -s *
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
-	# Snmptt restart
-	CENTREON   ALL = NOPASSWD: /etc/init.d/snmptt restart
+	# Centreontrapd restart
+	CENTREON   ALL = NOPASSWD: /etc/init.d/centreontrapd restart
+	# Centreontrapd reload
+	CENTREON   ALL = NOPASSWD: /etc/init.d/centreontrapd reload
 	# CentStorage Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
 	# CentStorage stop
@@ -1704,9 +1624,14 @@ function createCentPluginsInstallConf() {
 	${CAT} <<- __EOT__ >>  $CENTREON_ETC/instCentPlugins.conf
 	# Use in CentPluginsTraps.sh
 	SNMP_ETC=$SNMP_ETC
-	SNMPTT_BINDIR=$SNMPTT_BINDIR
+	CENTREONTRAPD_BINDIR=$CENTREONTRAPD_BINDIR
 	CENTPLUGINSTRAPS_BINDIR=$CENTPLUGINSTRAPS_BINDIR
 	WEB_USER=$WEB_USER
+	CENTREON_USER=$CENTREON_USER
+	CENTREON_GROUP=$CENTREON_GROUP
+	CENTREON_RUNDIR=$CENTREON_RUNDIR
+	CENTREON_ETC=$CENTREON_ETC
+	CENTREON_LOG=$CENTREON_LOG
 	__EOT__
 	fi
 
@@ -2006,7 +1931,7 @@ function check_broker_user()
 #----
 function copyInTempFile()
 {
-	local srclistcp="bin cron logrotate doc GPL_LIB lib snmptrapd snmptt www plugins libinstall dbschema"
+	local srclistcp="bin cron logrotate doc GPL_LIB lib snmptrapd www plugins libinstall dbschema"
 	# Prepare centreon Plugins
 	echo "$(gettext "Preparing Centreon temporary files")"
 	if [ -d $TMP_DIR ] ; then

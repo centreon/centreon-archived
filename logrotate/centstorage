@@ -1,4 +1,4 @@
-@CENTREON_LOG@/centstorage.log @CENTREON_LOG@/centreon-purge.log @CENTREON_LOG@/logAnalyser.log {
+@CENTREON_LOG@/centstorage.log @CENTREON_LOG@/centreon-purge.log @CENTREON_LOG@/logAnalyser.log @CENTREON_LOG@/nagiosPerfTrace.log {
     copytruncate
     weekly
     rotate 52

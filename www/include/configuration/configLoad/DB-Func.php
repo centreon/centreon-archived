@@ -831,7 +831,11 @@
 				case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "contact_groups" :
-					$tmpConf["host_cgs"] = explode(",", $tmpConf[$key]);
+					if (preg_match('/^\+/', $tmpConf[$key])) {
+                                            $tmpConf[$key] = substr($tmpConf[$key], 1);
+                                            $tmpConf['cg_additive_inheritance'] = 1;
+                                        }
+                                        $tmpConf["host_cgs"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["host_cgs"] as $key2=>$value2)	{
 						$tmpConf["host_cgs"][$key2] = getMyContactGroupID(trim($value2));
 						if (!$tmpConf["host_cgs"][$key2])
@@ -840,7 +844,11 @@
 					unset ($tmpConf[$key]);
 					break;
 				case "contacts" :
-					$tmpConf["host_cs"] = explode(",", $tmpConf[$key]);
+					if (preg_match('/^\+/', $tmpConf[$key])) {
+                                            $tmpConf[$key] = substr($tmpConf[$key], 1);
+                                            $tmpConf['contact_additive_inheritance'] = 1;
+                                        }
+                                        $tmpConf["host_cs"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["host_cs"] as $key2=>$value2)	{
 						$tmpConf["host_cs"][$key2] = getMyContactID(trim($value2));
 						if (!$tmpConf["host_cs"][$key2])
@@ -1443,7 +1451,11 @@
 				case "check_period" : $tmpConf["timeperiod_tp_id"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "notification_period" : $tmpConf["timeperiod_tp_id2"] = getMyTPID(trim($tmpConf[$key])); unset ($tmpConf[$key]); break;
 				case "contact_groups" :
-					$tmpConf["service_cgs"] = explode(",", $tmpConf[$key]);
+                                        if (preg_match('/^\+/', $tmpConf[$key])) {
+                                            $tmpConf[$key] = substr($tmpConf[$key], 1);
+                                            $tmpConf['cg_additive_inheritance'] = 1;
+                                        }
+                                        $tmpConf["service_cgs"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_cgs"] as $key2=>$value2)	{
 						$tmpConf["service_cgs"][$key2] = getMyContactGroupID(trim($value2));
 						if (!$tmpConf["service_cgs"][$key2])
@@ -1452,7 +1464,11 @@
 					unset ($tmpConf[$key]);
 					break;
 				case "contacts" :
-					$tmpConf["service_cs"] = explode(",", $tmpConf[$key]);
+					if (preg_match('/^\+/', $tmpConf[$key])) {
+                                            $tmpConf[$key] = substr($tmpConf[$key], 1);
+                                            $tmpConf['contact_additive_inheritance'] = 1;
+                                        }
+                                        $tmpConf["service_cs"] = explode(",", $tmpConf[$key]);
 					foreach ($tmpConf["service_cs"] as $key2=>$value2)	{
 						$tmpConf["service_cs"][$key2] = getMyContactID(trim($value2));
 						if (!$tmpConf["service_cs"][$key2])

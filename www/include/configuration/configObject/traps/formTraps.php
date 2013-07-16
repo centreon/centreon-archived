@@ -67,6 +67,7 @@
 		$DBRESULT = $pearDB->query("SELECT * FROM traps WHERE traps_id = '".$traps_id."' LIMIT 1");
 		# Set base value
 		$trap = array_map("myDecodeTrap", $DBRESULT->fetchRow());
+                $trap['severity'] = $trap['severity_id'];
 		$DBRESULT->free();
                 
                 /**
@@ -187,7 +188,13 @@
 	 */
 	$form->addElement('text', 'traps_oid', _("OID"), $attrsText);
 	$form->addElement('select', 'traps_status', _("Default Status"), array(0=>_("Ok"), 1=>_("Warning"), 2=>_("Critical"), 3=>_("Unknown")), array('id' => 'trapStatus'));
-	$form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
+	$severities = $severityObj->getList(null, "level", 'ASC', null, null, true);
+        $severityArr = array(null=>null);
+        foreach($severities as $severity_id => $severity) {
+            $severityArr[$severity_id] = $severity['sc_name'].' ('.$severity['level'].')';
+        }
+        $form->addElement('select', 'severity', _("Default Severity"), $severityArr);
+        $form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
 	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
 	$form->setDefaults(0);
 
@@ -305,7 +312,47 @@
                     "type" => "select-one"
                     )
                 );
+        $cloneSetMaching[] = $form->addElement(
+                'select', 
+                'ruleseverity[#index#]', 
+                _("Severity"), 
+                $severityArr,
+                array(
+                    "id" => "ruleseverity_#index#",
+                    "type" => "select-one"
+                    )
+                );
         
+        $form->addElement(
+                'text', 
+                'traps_timeout', 
+                _("Timeout"),
+                array('size' => 5)
+                );
+        
+        $form->addElement(
+                'text',
+                'traps_exec_interval',
+                _('Execution interval'),
+                array('size' => 5)
+                );
+        
+        $form->addElement(
+                'checkbox',
+                'traps_log',
+                _('Enable log')
+                );
+        
+        $form->addElement(
+                'checkbox',
+                'traps_advanced_treatment_default',
+                _('Disable submit result if no matched rules')
+                );
+        
+        $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
+	$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
+	$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID and Host"), '2');
+	$form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution t ype"), '&nbsp;');
         
         /*
          * Pre exec 

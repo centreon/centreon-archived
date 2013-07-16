@@ -3,6 +3,12 @@
 -- /!\ WARNING /!\
 ALTER TABLE `index_data` ADD COLUMN `rrd_retention` INT(11) DEFAULT NULL AFTER `to_delete`;
 
+-- Add warn low
+ALTER TABLE `metrics` ADD COLUMN `warn_low` float DEFAULT NULL AFTER `warn`;
+ALTER TABLE `metrics` ADD COLUMN `warn_threshold_mode` enum('0','1') DEFAULT NULL AFTER `warn_low`;
+ALTER TABLE `metrics` ADD COLUMN `crit_low` float DEFAULT NULL AFTER `crit`;
+ALTER TABLE `metrics` ADD COLUMN `crit_threshold_mode` enum('0','1') DEFAULT NULL AFTER `crit_low`;
+
 CREATE TABLE `log_traps_args` (
   `fk_log_traps` int(11) NOT NULL,
   `arg_number` int(11) DEFAULT NULL,
@@ -23,8 +29,13 @@ CREATE TABLE `log_traps` (
   `trap_oid` varchar(512) DEFAULT NULL,
   `trap_name` varchar(255) DEFAULT NULL,
   `vendor` varchar(255) DEFAULT NULL,
-  `severity` varchar(255) DEFAULT NULL,
-  `output_message` varchar(1024) DEFAULT NULL,
+  `status` int(11) DEFAULT NULL,
+  `severity_id` int(11) DEFAULT NULL,
+  `severity_name` varchar(255) DEFAULT NULL,
+  `output_message` varchar(2048) DEFAULT NULL,
   KEY `trap_id` (`trap_id`),
   KEY `trap_time` (`trap_time`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `downtimes` ADD COLUMN `actual_start_time` int(11) DEFAULT NULL AFTER `start_time`;
+ALTER TABLE `downtimes` ADD COLUMN `actual_end_time` int(11) DEFAULT NULL AFTER `actual_start_time`;

@@ -36,58 +36,118 @@
  *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($centreon)) {
+    exit();
+}
 
-	/*
-	 * ACL Actions
-	 */
-	$GroupListofUser = array();
-	$GroupListofUser = $oreon->user->access->getAccessGroups();
+/*
+ * ACL Actions
+ */
+$GroupListofUser = array();
+$GroupListofUser = $oreon->user->access->getAccessGroups();
 
-	$allActions = false;
-	// Get list of actions allowed for user
-	if (count($GroupListofUser) > 0 && $is_admin == 0) {
-		$authorized_actions = array();
-		$authorized_actions = $oreon->user->access->getActions();
-	} else {
-	 	// if user is admin, or without ACL, he cans perform all actions
-		$allActions = true;
-	}
+$allActions = false;
+/*
+ * Get list of actions allowed for user
+ */
+if (count($GroupListofUser) > 0 && $is_admin == 0) {
+    $authorized_actions = array();
+    $authorized_actions = $oreon->user->access->getActions();
+} else {
+    /*
+     * if user is admin, or without ACL, he cans perform all actions
+     */
+    $allActions = true;
+}
 
-	include("./include/common/autoNumLimit.php");
+include("./include/common/autoNumLimit.php");
 
-	/*
-	 * set limit & num
-	 */
-	$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxViewMonitoring' LIMIT 1");
-	$data = $DBRESULT->fetchRow();
-	$gopt[$data['key']] = myDecode($data['key']);
+/*
+ * set limit & num
+ */
+$DBRESULT = $pearDB->query("SELECT * FROM options WHERE `key` = 'maxViewMonitoring' LIMIT 1");
+$data = $DBRESULT->fetchRow();
+$gopt[$data['key']] = myDecode($data['key']);
 
-	!isset($_GET["sort_types"]) ? $sort_types = 0 : $sort_types = $_GET["sort_types"];
-	!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
+!isset($_GET["sort_type"]) ? $sort_type = 0 : $sort_type = $_GET["sort_type"];
+!isset($_GET["host_name"]) ? $host_name = "" : $host_name = $_GET["host_name"];
+!isset($_GET["strict"]) ? $hostSearchStrict = 0 : $hostSearchStrict = 1;
 
-	if ($o == "svcpb" || $o == "svc_unhandled") {
-		if (!isset($_GET["sort_type"])) {
-			$sort_type = $oreon->optGen["problem_sort_type"];
-		} else
-			$sort_type = $_GET["sort_type"];
-		if (!isset($_GET["order"])) {
-			$order = $oreon->optGen["problem_sort_order"];
-		} else
-			$order = $_GET["order"];
-	} else {
-		if (!isset($_GET["sort_type"])) {
-                    $sort_type = "criticality_id";
-                } else {
-                    $sort_type = $_GET["sort_type"];
-                }
-		if (!isset($_GET["order"])) {
-                    $order = "ASC";
-		} else {
-		    $order = $_GET["order"];
-                }
-	}
+if ($o == "svcpb" || $o == "svc_unhandled") {
+    if (!isset($_GET["sort_type"])) {
+        $sort_type = $oreon->optGen["problem_sort_type"];
+    } else {
+        $sort_type = $_GET["sort_type"];
+    }
+    if (!isset($_GET["order"])) {
+        $order = $oreon->optGen["problem_sort_order"];
+    } else {
+        $order = $_GET["order"];
+    }
+} else {
+    if (!isset($_GET["sort_type"])) {
+        if (isset($_SESSION['centreon']->optGen["global_sort_type"]) && $_SESSION['centreon']->optGen["global_sort_type"] != "host_name") {
+            $sort_type = CentreonDB::escape($_SESSION['centreon']->optGen["global_sort_type"]);
+        } else {
+            $sort_type = "host_name";
+        }
+    } else {
+        $sort_type = $_GET["sort_type"];
+    }
+    
+    if (!isset($_GET["order"])) {
+        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
+            $order = "ASC";
+        } else {
+            $order = $_SESSION['centreon']->optGen["global_sort_order"];
+        }
+    } else {
+        $order = $_GET["order"];
+    }
+}
+
+/*
+ * Check the _GET variables
+ */
+if (isset($_GET['host_search']) && $_GET['host_search'] != "") {
+    $centreon->historySearch[$url] = $_GET['host_search'];
+}
+if (isset($_GET['output_search']) && $_GET['output_search'] != "") {
+    $centreon->historySearchOutput[$url] = $_GET['output_search'];
+}
+
+$tab_class = array("0" => "list_one", "1" => "list_two");
+$rows = 10;
+
+if (isset($_REQUEST['hg'])) {
+    $_SESSION['monitoring_default_hostgroups'] = $_REQUEST['hg'];
+} else {
+    if (isset($_GET["hostgroup"]) && $_GET["hostgroup"]) {
+        $_SESSION['monitoring_default_hostgroups'] = $_GET['hostgroup'];
+    }
+}
+
+include_once("./include/monitoring/status/Common/default_poller.php");
+include_once("./include/monitoring/status/Common/default_hostgroups.php");
+include_once($svc_path."/serviceJS.php");
+
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($svc_path, $tpl, "/templates/");
+
+$tpl->assign("p", $p);
+$tpl->assign('o', $o);
+$tpl->assign("sort_type", $sort_type);
+$tpl->assign("num", $num);
+$tpl->assign("limit", $limit);
+$tpl->assign("mon_host", _("Hosts"));
+$tpl->assign("mon_status", _("Status"));
+$tpl->assign("mon_ip", _("IP"));
+$tpl->assign("mon_last_check", _("Last Check"));
+$tpl->assign("mon_duration", _("Duration"));
+$tpl->assign("mon_status_information", _("Status information"));
 
 	/**
 	 * Check the _GET variables

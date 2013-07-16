@@ -46,74 +46,76 @@ class CentreonCriticality {
      * @var CentreonDB
      */
     protected $db;
-    /**
-     * @var array
-     */
-    protected $properties;
     
     public function __construct($db) {
         $this->db = $db;
-        $this->properties = array('criticality_id', 'name', 'level', 'icon_id', 'comments');
     }
     
     /**
-     * Insert new criticality object
+     * Get data of a criticality object
      * 
-     * @param array $params
-     * @return int
-     * @throws Exception
+     * @param int $critId 
+     * @return array
      */
-    public function insert($params = array()) {
-        $sql = "INSERT INTO criticality (name, level, comments, icon_id) VALUES 
-                ('".$this->db->escape($params['name'])."', 
-                  ".$this->db->escape($params['level']).", 
-                 '".$this->db->escape($params['comments'])."',
-                  ".$this->db->escape($params['icon_id']).")";
-        $this->db->query($sql);        
-        $res = $this->db->query("SELECT MAX(criticality_id) as last_id FROM criticality WHERE name = '".$this->db->escape($params['name'])."'");
-        if (!$res->numRows()) {
-            throw new Exception('Criticality not found');
+    public function getData($critId, $service = false) {
+        if ($service === false) {
+            return $this->getDataForHosts($critId);
         }
-        $row = $res->fetchRow();
-        return $row['last_id'];
+        return $this->getDataForServices($critId);
+    }
+
+    /**
+     * Get data of a criticality object for hosts
+     * 
+     * @param int $critId 
+     * @return array
+     */
+    public function getDataForHosts($critId) {
+        static $data = array();
+        
+        if (!isset($data[$critId])) {
+            $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
+                    FROM hostcategories 
+                    WHERE level IS NOT NULL";            
+            $res = $this->db->query($sql);
+            while ($row = $res->fetchRow()) {
+                if (!isset($data[$row['hc_id']])) {
+                    $row['name'] = $row['hc_name'];
+                    $data[$row['hc_id']] = $row;
+                }                
+            }            
+        }
+        if (isset($data[$critId])) {
+            return $data[$critId];
+        }
+        return null;
     }
     
     /**
-     * Update existing criticality object
+     * Get data of a criticality object for services
      * 
-     * @param int $criticalityId
-     * @param array $params
-     * @return void
+     * @param int $critId 
+     * @return array
      */
-    public function update($criticalityId, $params = array()) {
-        $sql = "UPDATE criticality SET ";
-        $first = true;
-        foreach ($params as $key => $value) {
-            if ($key == 'criticality_id' || !in_array($key, $this->properties)) {
-                continue;
-            }
-            if ($first == false) {
-                $sql .= ", ";                
-            } else {
-                $first = false;
-            }
-            $sql .= $key . " = '" .$this->db->escape($value)."'";
+    public function getDataForServices($critId) {
+        static $data = array();
+        
+        if (!isset($data[$critId])) {
+            $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description
+                    FROM service_categories 
+                    WHERE level IS NOT NULL";            
+            $res = $this->db->query($sql);
+            while ($row = $res->fetchRow()) {
+                if (!isset($data[$row['sc_id']])) {
+                    $row['name'] = $row['sc_name'];
+                    $data[$row['sc_id']] = $row;
+                }                
+            }            
         }
-        $sql .= " WHERE criticality_id = " . $this->db->escape($criticalityId);
-        $this->db->query($sql);
-    }
-    
-    /**
-     * Delete criticality object
-     * 
-     * @param array $criticalityIds
-     * @return void
-     */
-    public function delete($criticalityIds = array()) {
-        if (count($criticalityIds)) {
-            $sql = "DELETE FROM criticality WHERE criticality_id IN (".implode(",", array_keys($criticalityIds)).")";
-            $this->db->query($sql);
+        if (isset($data[$critId])) {
+            return $data[$critId];
         }
+        return null;
     }
     
     /**
@@ -124,13 +126,46 @@ class CentreonCriticality {
      * @param string $sort
      * @param int $offset
      * @param int $limit
+     * @paaram bool $service
      * @return array
      */
-    public function getList($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
-        $sql = "SELECT criticality_id, name, level, icon_id, comments 
-                FROM criticality";
+    public function getList($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null, $service = false) {
+        if ($service === false) {
+            $elements = $this->getListForHosts(
+                    $searchString, 
+                    $orderBy, 
+                    $sort, 
+                    $offset, 
+                    $limit
+                    );
+        } else {
+            $elements = $this->getListForServices(
+                    $searchString, 
+                    $orderBy, 
+                    $sort, 
+                    $offset, 
+                    $limit
+                    );
+        }
+        return $elements;
+    }
+    
+    /**
+     * Get list of host criticalities
+     * 
+     * @param type $searchString
+     * @param type $orderBy
+     * @param type $sort
+     * @param type $offset
+     * @param type $limit
+     * @return type
+     */
+    protected function getListForHosts($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
+        $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
+                FROM hostcategories 
+                WHERE level IS NOT NULL ";
         if (!is_null($searchString) && $searchString != "") {
-            $sql .= " WHERE name LIKE '%".$this->db->escape($searchString)."%' ";
+            $sql .= " AND hc_name LIKE '%".$this->db->escape($searchString)."%' ";
         }
         if (!is_null($orderBy) && !is_null($sort)) {
             $sql .= " ORDER BY $orderBy $sort ";
@@ -141,37 +176,47 @@ class CentreonCriticality {
         $res = $this->db->query($sql);
         $elements = array();
         while ($row = $res->fetchRow()) {
-            $elements[$row['criticality_id']] = array();
-            $elements[$row['criticality_id']]['name'] = $row['name'];
-            $elements[$row['criticality_id']]['level'] = $row['level'];
-            $elements[$row['criticality_id']]['icon_id'] = $row['icon_id'];
-            $elements[$row['criticality_id']]['comments'] = $row['comments'];
+            $elements[$row['hc_id']] = array();
+            $elements[$row['hc_id']]['hc_name'] = $row['hc_name'];
+            $elements[$row['hc_id']]['level'] = $row['level'];
+            $elements[$row['hc_id']]['icon_id'] = $row['icon_id'];
+            $elements[$row['hc_id']]['comments'] = $row['hc_comment'];
         }
         return $elements;
     }
     
     /**
-     * Get data of a criticality object
+     * Get list of service criticalities
      * 
-     * @param int $critId 
-     * @return array
+     * @param type $searchString
+     * @param type $orderBy
+     * @param type $sort
+     * @param type $offset
+     * @param type $limit
+     * @return type
      */
-    public function getData($critId) {
-        static $data = array();
-        
-        if (!isset($data[$critId])) {
-            $sql = "SELECT criticality_id, name, level, icon_id, comments 
-                    FROM criticality";            
-            $res = $this->db->query($sql);
-            while ($row = $res->fetchRow()) {
-                if (!isset($data[$row['criticality_id']])) {
-                    $data[$row['criticality_id']] = $row;
-                }                
-            }            
+    protected function getListForServices($searchString = null, $orderBy = "level", $sort = 'ASC', $offset = null, $limit = null) {
+        $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description
+                FROM service_categories 
+                WHERE level IS NOT NULL ";
+        if (!is_null($searchString) && $searchString != "") {
+            $sql .= " AND sc_name LIKE '%".$this->db->escape($searchString)."%' ";
         }
-        if (isset($data[$critId])) {
-            return $data[$critId];
+        if (!is_null($orderBy) && !is_null($sort)) {
+            $sql .= " ORDER BY $orderBy $sort ";
         }
-        return null;
+        if (!is_null($offset) && !is_null($limit)) {
+            $sql .= " LIMIT $offset,$limit";
+        }
+        $res = $this->db->query($sql);
+        $elements = array();
+        while ($row = $res->fetchRow()) {
+            $elements[$row['sc_id']] = array();
+            $elements[$row['sc_id']]['sc_name'] = $row['sc_name'];
+            $elements[$row['sc_id']]['level'] = $row['level'];
+            $elements[$row['sc_id']]['icon_id'] = $row['icon_id'];
+            $elements[$row['sc_id']]['description'] = $row['sc_description'];
+        }
+        return $elements;
     }
 }

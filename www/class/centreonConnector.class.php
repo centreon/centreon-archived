@@ -213,7 +213,7 @@ class CentreonConnector
         $connector['modified'] = (int) $connector['modified'];
 
         $connector['command_id'] = array();
-        $DBRESULT = $this->dbConnection->query("SELECT command_id FROM command WHERE connector_id = '$connector_id'");
+        $DBRESULT = $this->dbConnection->query("SELECT command_id FROM command WHERE connector_id = '$id'");
         while ($row = $DBRESULT->fetchRow()) {
             $connector['command_id'][] = $row["command_id"];
         }

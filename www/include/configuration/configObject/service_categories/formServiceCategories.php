@@ -60,6 +60,8 @@
 		 */
 		$sc = array_map("myDecode", $DBRESULT->fetchRow());
 		$DBRESULT->free();
+                $sc['sc_severity_level'] = $sc['level'];
+                $sc['sc_severity_icon'] = $sc['icon_id'];
 
 		$sc["sc_svc"] = array();
 		$sc["sc_svcTpl"] = array();
@@ -136,6 +138,20 @@
 	$form->addElement('text', 'sc_name', _("Name"), $attrsText);
 	$form->addElement('text', 'sc_description', _("Description"), $attrsText);
 
+        /*
+         * Severity
+         */
+        $sctype = $form->addElement('checkbox', 'sc_type', _('Severity type'), null, array('id' => 'sc_type'));
+        if (isset($sc_id) && isset($sc['level']) && $sc['level'] != "") {
+            $sctype->setValue('1');
+        }
+        $form->addElement('text', 'sc_severity_level', _("Level"), array("size" => "10"));
+        $iconImgs = return_image_list(1);
+        $form->addElement('select', 'sc_severity_icon', _("Icon"), $iconImgs, array(
+            "id" => "icon_id",
+            "onChange" => "showLogo('icon_id_ctn', this.value)",
+            "onkeyup" => "this.blur(); this.focus();"));
+                
 	$ams1 = $form->addElement('advmultiselect', 'sc_svc', array(_("Host Service Descriptions"), _("Available"), _("Selected")), $hServices, $attrsAdvSelect, SORT_ASC);
 	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
@@ -193,7 +209,9 @@
 
 	$form->registerRule('existName', 'callback', 'testServiceCategorieExistence');
 	$form->addRule('sc_name', _("Name is already in use"), 'existName');
-
+        
+        $form->addRule('sc_severity_level', _("Must be a number"), 'numeric');
+        
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	/*
