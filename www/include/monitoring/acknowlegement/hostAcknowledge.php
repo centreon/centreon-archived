@@ -66,11 +66,12 @@
 	$tpl = new Smarty();
 	$tpl = initSmartyTpl($path, $tpl, './templates/');
 
-	if (!$is_admin)
+	if (!$is_admin) {
 		$lcaHostByName = $oreon->user->access->getHostServicesName($pearDBndo);
+    }
 
 	if ($is_admin || (isset($lcaHostByName[$host_name]))) {
-		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=$host_name");
+		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=".urlencode($host_name));
 
 		$form->addElement('header', 'title', _("Acknowledge a host"));
 
