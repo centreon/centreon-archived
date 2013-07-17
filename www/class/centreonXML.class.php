@@ -157,6 +157,19 @@ class CentreonXML {
         $this->buffer->endDocument();
         print $this->buffer->outputMemory(true);
     }
+
+    public function outputFile($filename = null) {
+        $this->buffer->endDocument();
+        $content = $this->buffer->outputMemory(true);
+        if ($handle = fopen($filename, 'w')) {
+            if (strcmp($content, "") && !fwrite($handle, $content)) {
+                throw new RuntimeException('Cannot write to file "' . $filename . '"');
+            }
+        } else {
+            print "Can't open file: $filename";
+        }
+    }
+    
 }
 
 ?>
