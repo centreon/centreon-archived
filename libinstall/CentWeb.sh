@@ -455,6 +455,35 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_DATADIR/ >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install indexes schema")"
 
+# Install centreon perl lib
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/common/ \
+        $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script.pm \
+        $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/reporting/ \
+        $PERL_LIB_DIR/centreon/reporting/ >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/dashboardBuilder.pm \
+        $PERL_LIB_DIR/centreon/script/dashboardBuilder.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/eventReportBuilder.pm \
+        $PERL_LIB_DIR/centreon/script/eventReportBuilder.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/logAnalyser.pm \
+        $PERL_LIB_DIR/centreon/script/logAnalyser.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/logAnalyserBroker.pm \
+        $PERL_LIB_DIR/centreon/script/logAnalyserBroker.pm >> $LOG_FILE 2>&1
+    $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+        $TMP_DIR/src/lib/perl/centreon/script/nagiosPerfTrace.pm \
+        $PERL_LIB_DIR/centreon/script/nagiosPerfTrace.pm >> $LOG_FILE 2>&1
+    echo_success "$(gettext "Centreon Web Perl lib installed")" "$ok"
+    log "INFO" "$(gettext "Centreon Web Perl lib installed")"
+# End
+
 ## Prepare to install all pear modules needed.
 # use check_pear.php script
 echo -e "\n$line"

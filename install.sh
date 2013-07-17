@@ -82,7 +82,11 @@ INSTALL_DIR="$BASE_DIR/libinstall"
 export INSTALL_DIR
 INSTALL_VARS_DIR="$BASE_DIR/varinstall"
 export INSTALL_VARS_DIR
-
+PERL_LIB_DIR=`perl -V:installvendorlib |cut -d '=' -f2 |sed "s/'//g" |sed "s/;//g"`
+# for freebsd
+if [ "$PERL_LIB_DIR" = "" -o "$PERL_LIB_DIR" = "UNKNOWN" ]; then
+    PERL_LIB_DIR=`perl -V:installsitelib |cut -d '=' -f2 |sed "s/'//g" |sed "s/;//g"`
+fi
 # define a locale directory for use gettext (LC_MESSAGE)
 TEXTDOMAINDIR=$BASE_DIR/locale
 export TEXTDOMAINDIR
@@ -304,6 +308,12 @@ fi
 [ -z $PROCESS_CENTCORE ] && PROCESS_CENTCORE="2"
 [ -z $PROCESS_CENTREON_PLUGINS ] && PROCESS_CENTREON_PLUGINS="2"
 [ -z $PROCESS_CENTREON_SNMP_TRAPS ] && PROCESS_CENTREON_SNMP_TRAPS="2"
+
+## install centreon perl lib
+if [ ! -d "$PERL_LIB_DIR/centreon/" ] ; then
+    mkdir "$PERL_LIB_DIR/centreon/"
+    log "INFO" "$(gettext "Created perl library directory")"
+fi
 
 ## resquest centreon_www
 if [ "$PROCESS_CENTREON_WWW" -eq 2 ] ; then 

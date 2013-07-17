@@ -72,7 +72,7 @@
 	 */
 	if ($is_admin || (isset($lcaHostByName["LcaHost"][$host_name]))){
 		## Form begin
-		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=$host_name&service_description=$service_description");
+		$form = new HTML_QuickForm('select_form', 'POST', "?p=".$p."&host_name=".urlencode($host_name)."&service_description=".urlencode($service_description));
 		$form->addElement('header', 'title', _("Acknowledge a Service"));
 
 		$tpl->assign('hostlabel', _("Host Name"));

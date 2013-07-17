@@ -6,4 +6,4 @@ RUN_AT_STARTUP="NO"
 # Centreon user default: nagios
 CENTREON_USER="@CENTREON_USER@"
 
-OPTIONS="--logfile=@CENTREON_LOG@/centstorage.log --severity=error"
+OPTIONS="--logfile=@CENTREON_LOG@/centstorage.log --severity=error --config_file=@CENTREON_ETC@/centreon-config.pm"

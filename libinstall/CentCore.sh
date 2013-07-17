@@ -50,9 +50,10 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
     cp -f $BASE_DIR/tmpl/install/debian/centcore.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
     cp -f $BASE_DIR/tmpl/install/suse/centcore.init.d $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/suse/centcore.sysconfig $TMP_DIR/src
 else
     cp -f $BASE_DIR/tmpl/install/redhat/centcore.init.d $TMP_DIR/src
-	cp -f $BASE_DIR/tmpl/install/redhat/centcore.sysconfig $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/redhat/centcore.sysconfig $TMP_DIR/src
 fi
 
 ###### CentCore binary
@@ -103,12 +104,13 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 check_result $? "$(gettext "Replace CentCore init script Macro")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
 	check_result $? "$(gettext "Replace CentCore default script Macro")"
 	cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
 	cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/examples/centcore.default
-elif [ "$DISTRIB" = "REDHAT" ]; then
+elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
+                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/centcore.sysconfig > $TMP_DIR/work/centcore.sysconfig
 	check_result $? "$(gettext "Replace CentCore sysconfig script Macro")"
@@ -141,7 +143,7 @@ if [ "$RC" -eq "0" ] ; then
 				 /etc/default/centcore >> $LOG_FILE 2>&1
 		check_result $? "$(gettext "CentCore default script installed")"
 		log "INFO" "$(gettext "CentCore default script installed")"
-	elif [ "$DISTRIB" = "REDHAT" ]; then
+	elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 		log "INFO" "$(gettext "CentCore sysconfig script installed")"
 			$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 				 $TMP_DIR/final/centcore.sysconfig \
@@ -163,6 +165,25 @@ if [ "$RC" -eq "0" ] ; then
 		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
 		log "INFO" "$(gettext "CentCore run level not installed")"
 	fi
+
+        # Install centcore perl lib
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/common/ \
+                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                $TMP_DIR/src/lib/perl/centreon/script.pm \
+                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centcore.pm \
+                 $PERL_LIB_DIR/centreon/script/centcore.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreonSyncArchives.pm \
+                 $PERL_LIB_DIR/centreon/script/centreonSyncArchives.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreonSyncPlugins.pm \
+                 $PERL_LIB_DIR/centreon/script/centreonSyncPlugins.pm >> $LOG_FILE 2>&1
+        echo_success "$(gettext "CentCore Perl lib installed")" "$ok"
+        log "INFO" "$(gettext "CentCore Perl lib installed")"
 else
 	echo_passed "$(gettext "CentCore init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centcore.init.d" "$passed"
 	log "INFO" "$(gettext "CentCore init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centcore.init.d"

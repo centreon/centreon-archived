@@ -52,7 +52,8 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
-    cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
+        cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
+        cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.sysconfig $TMP_DIR/src
 else
 	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.sysconfig $TMP_DIR/src
@@ -97,12 +98,13 @@ ${SED} -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 check_result $? "$(gettext "Replace CentreonTrapd init script Macro")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centreontrapd.default > $TMP_DIR/work/centreontrapd.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centreontrapd.default > $TMP_DIR/work/centreontrapd.default
 	check_result $? "$(gettext "Replace CentreonTrapd default script Macro")"
 	cp $TMP_DIR/work/centreontrapd.default $TMP_DIR/final/centreontrapd.default
 	cp $TMP_DIR/final/centreontrapd.default $INSTALL_DIR_CENTREON/examples/centreontrapd.default
-elif [ "$DISTRIB" = "REDHAT" ]; then
+elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
+                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/centreontrapd.sysconfig > $TMP_DIR/work/centreontrapd.sysconfig
 	check_result $? "$(gettext "Replace CentreonTrapd sysconfig script Macro")"
@@ -135,7 +137,7 @@ if [ "$RC" -eq "0" ] ; then
 				 /etc/default/centreontrapd >> $LOG_FILE 2>&1
 		check_result $? "$(gettext "CentreonTrapd default script installed")"
 		log "INFO" "$(gettext "CentreonTrapd default script installed")"
-	elif [ "$DISTRIB" = "REDHAT" ]; then
+	elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 		log "INFO" "$(gettext "CentreonTrapd sysconfig script installed")"
 			$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 				 $TMP_DIR/final/centreontrapd.sysconfig \
@@ -157,6 +159,32 @@ if [ "$RC" -eq "0" ] ; then
 		echo_passed "$(gettext "CentreonTrapd run level not installed")" "$passed"
 		log "INFO" "$(gettext "CentreonTrapd run level not installed")"
 	fi
+
+        # Install trapd perl lib
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/common/ \
+                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                $TMP_DIR/src/lib/perl/centreon/script.pm \
+                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/trapd/ \
+                 $PERL_LIB_DIR/centreon/trapd/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centFillTrapDB.pm \
+                 $PERL_LIB_DIR/centreon/script/centFillTrapDB.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreon_trap_send.pm \
+                 $PERL_LIB_DIR/centreon/script/centreon_trap_send.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreontrapd.pm \
+                 $PERL_LIB_DIR/centreon/script/centreontrapd.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreontrapdforward.pm \
+                 $PERL_LIB_DIR/centreon/script/centreontrapdforward.pm >> $LOG_FILE 2>&1
+        echo_success "$(gettext "trapd Perl lib installed")" "$ok"
+        log "INFO" "$(gettext "trapd Perl lib installed")"
+        # End
 else
 	echo_passed "$(gettext "CentreonTrapd init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d" "$passed"
 	log "INFO" "$(gettext "CentreonTrapd init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d"
