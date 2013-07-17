@@ -156,7 +156,7 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	check_result $? "$(gettext "Replace Centstorage default script Macro")"
 	cp $TMP_DIR/work/centstorage.default $TMP_DIR/final/centstorage.default
 	cp $TMP_DIR/final/centstorage.default $INSTALL_DIR_CENTREON/examples/centstorage.default
-elif [ "$DISTRIB" = "REDHAT" ] || [ "$DISTRIB" = "SUSE" ]; then
+elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
                 -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -192,7 +192,7 @@ if [ "$RC" -eq "0" ] ; then
                  /etc/default/centstorage >> $LOG_FILE 2>&1
 	    check_result $? "$(gettext "CentStorage default script installed")"
 	    log "INFO" "$(gettext "CentStorage default script installed")"
-	elif [ "$DISTRIB" = "REDHAT" ] || [ "$DISTRIB" = "SUSE" ]; then
+	elif [ "$DISTRIB" = "REDHAT" -o "$DISTRIB" = "SUSE" ]; then
 		log "INFO" "$(gettext "CentStorage sysconfig script installed")"
             $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
                  $TMP_DIR/final/centstorage.sysconfig \

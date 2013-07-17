@@ -83,6 +83,10 @@ export INSTALL_DIR
 INSTALL_VARS_DIR="$BASE_DIR/varinstall"
 export INSTALL_VARS_DIR
 PERL_LIB_DIR=`perl -V:installvendorlib |cut -d '=' -f2 |sed "s/'//g" |sed "s/;//g"`
+# for freebsd
+if [ "$PERL_LIB_DIR" = "" -o "$PERL_LIB_DIR" = "UNKNOWN" ]; then
+    PERL_LIB_DIR=`perl -V:installsitelib |cut -d '=' -f2 |sed "s/'//g" |sed "s/;//g"`
+fi
 # define a locale directory for use gettext (LC_MESSAGE)
 TEXTDOMAINDIR=$BASE_DIR/locale
 export TEXTDOMAINDIR
