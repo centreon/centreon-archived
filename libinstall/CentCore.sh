@@ -50,9 +50,10 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
     cp -f $BASE_DIR/tmpl/install/debian/centcore.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
     cp -f $BASE_DIR/tmpl/install/suse/centcore.init.d $TMP_DIR/src
+    INITD_CONF_DIR="/etc/sysconfig/"
 else
     cp -f $BASE_DIR/tmpl/install/redhat/centcore.init.d $TMP_DIR/src
-	cp -f $BASE_DIR/tmpl/install/redhat/centcore.sysconfig $TMP_DIR/src
+    cp -f $BASE_DIR/tmpl/install/redhat/centcore.sysconfig $TMP_DIR/src
 fi
 
 ###### CentCore binary
@@ -103,12 +104,13 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 check_result $? "$(gettext "Replace CentCore init script Macro")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centcore.default > $TMP_DIR/work/centcore.default
 	check_result $? "$(gettext "Replace CentCore default script Macro")"
 	cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
 	cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/examples/centcore.default
 elif [ "$DISTRIB" = "REDHAT" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
+                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/centcore.sysconfig > $TMP_DIR/work/centcore.sysconfig
 	check_result $? "$(gettext "Replace CentCore sysconfig script Macro")"

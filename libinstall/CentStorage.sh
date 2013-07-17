@@ -151,12 +151,13 @@ ${SED} -e 's|@CENTREON_DIR@|'"$INSTALL_DIR_CENTREON"'|g' \
 check_result $? "$(gettext "Change macros for centstorage init script")"
 
 if [ "$DISTRIB" = "DEBIAN" ]; then
-	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centstorage.default > $TMP_DIR/work/centstorage.default
+	${SED} -e 's|"NO"|"YES"|g' -e "s|@CENTREON_ETC@|$CENTREON_ETC|g" -e "s|@CENTREON_USER@|$CENTREON_USER|g" $TMP_DIR/src/centstorage.default > $TMP_DIR/work/centstorage.default
 	check_result $? "$(gettext "Replace Centstorage default script Macro")"
 	cp $TMP_DIR/work/centstorage.default $TMP_DIR/final/centstorage.default
 	cp $TMP_DIR/final/centstorage.default $INSTALL_DIR_CENTREON/examples/centstorage.default
 elif [ "$DISTRIB" = "REDHAT" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
+                -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/centstorage.sysconfig > $TMP_DIR/work/centstorage.sysconfig
 	check_result $? "$(gettext "Replace CentStorage sysconfig script Macro")"
