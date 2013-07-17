@@ -1,0 +1,2 @@
+# centreontrapd command line options
+OPTIONS="--logfile=@CENTREON_LOG@/centreontrapd.log --severity=error --config_file=@CENTREON_ETC@/centreon-config.pm"

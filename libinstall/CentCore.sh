@@ -50,7 +50,7 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
     cp -f $BASE_DIR/tmpl/install/debian/centcore.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
     cp -f $BASE_DIR/tmpl/install/suse/centcore.init.d $TMP_DIR/src
-    INITD_CONF_DIR="/etc/sysconfig/"
+    cp -f $BASE_DIR/tmpl/install/suse/centcore.sysconfig $TMP_DIR/src
 else
     cp -f $BASE_DIR/tmpl/install/redhat/centcore.init.d $TMP_DIR/src
     cp -f $BASE_DIR/tmpl/install/redhat/centcore.sysconfig $TMP_DIR/src
@@ -108,7 +108,7 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	check_result $? "$(gettext "Replace CentCore default script Macro")"
 	cp $TMP_DIR/work/centcore.default $TMP_DIR/final/centcore.default
 	cp $TMP_DIR/final/centcore.default $INSTALL_DIR_CENTREON/examples/centcore.default
-elif [ "$DISTRIB" = "REDHAT" ]; then
+elif [ "$DISTRIB" = "REDHAT" ] || [ "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
                 -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -143,7 +143,7 @@ if [ "$RC" -eq "0" ] ; then
 				 /etc/default/centcore >> $LOG_FILE 2>&1
 		check_result $? "$(gettext "CentCore default script installed")"
 		log "INFO" "$(gettext "CentCore default script installed")"
-	elif [ "$DISTRIB" = "REDHAT" ]; then
+	elif [ "$DISTRIB" = "REDHAT" ] || [ "$DISTRIB" = "SUSE" ]; then
 		log "INFO" "$(gettext "CentCore sysconfig script installed")"
 			$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 				 $TMP_DIR/final/centcore.sysconfig \

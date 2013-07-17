@@ -52,7 +52,8 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/debian/centreontrapd.default $TMP_DIR/src
 elif [ "$DISTRIB" = "SUSE" ]; then
-    cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
+        cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.init.d $TMP_DIR/src
+        cp -f $BASE_DIR/tmpl/install/suse/centreontrapd.sysconfig $TMP_DIR/src
 else
 	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.init.d $TMP_DIR/src
 	cp -f $BASE_DIR/tmpl/install/redhat/centreontrapd.sysconfig $TMP_DIR/src
@@ -101,7 +102,7 @@ if [ "$DISTRIB" = "DEBIAN" ]; then
 	check_result $? "$(gettext "Replace CentreonTrapd default script Macro")"
 	cp $TMP_DIR/work/centreontrapd.default $TMP_DIR/final/centreontrapd.default
 	cp $TMP_DIR/final/centreontrapd.default $INSTALL_DIR_CENTREON/examples/centreontrapd.default
-elif [ "$DISTRIB" = "REDHAT" ]; then
+elif [ "$DISTRIB" = "REDHAT" ] || [ "$DISTRIB" = "SUSE" ]; then
 	${SED} -e "s|@CENTREON_USER@|$CENTREON_USER|g" \
                 -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
@@ -136,7 +137,7 @@ if [ "$RC" -eq "0" ] ; then
 				 /etc/default/centreontrapd >> $LOG_FILE 2>&1
 		check_result $? "$(gettext "CentreonTrapd default script installed")"
 		log "INFO" "$(gettext "CentreonTrapd default script installed")"
-	elif [ "$DISTRIB" = "REDHAT" ]; then
+	elif [ "$DISTRIB" = "REDHAT" ] || [ "$DISTRIB" = "SUSE" ]; then
 		log "INFO" "$(gettext "CentreonTrapd sysconfig script installed")"
 			$INSTALL_DIR/cinstall $cinstall_opts -m 644 \
 				 $TMP_DIR/final/centreontrapd.sysconfig \
