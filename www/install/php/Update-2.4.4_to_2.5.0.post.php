@@ -90,5 +90,35 @@ if (isset($pearDB)) {
     
     $pearDB->query("DROP TABLE criticality_resource_relations");
     $pearDB->query("DROP TABLE criticality");
+    
+    /**
+     * centreon-config.pm
+     */
+    
+    $patterns = array('/--ADDRESS--/',
+                  '/--DBUSER--/',
+                  '/--DBPASS--/',
+                  '/--CONFDB--/',
+                  '/--STORAGEDB--/',
+                  '/--CENTREONDIR--/',
+                  '/--DBPORT--/', 
+                  '/--INSTANCEMODE--/', 
+                  '/--CENTREON_VARLIB--/');
+
+    $replacements = array($conf_centreon['hostCentreon'],
+                      $conf_centreon['user'],
+                      $conf_centreon['password'],
+                      $conf_centreon['db'],
+                      $conf_centreon['dbcstg'],
+                      $centreon_path,
+                      isset($conf_centreon['port']) ? $conf_centreon['port'] : 3306, 
+                      "central", 
+                      "@CENTREON_VARLIB@");
+    
+    $centreonConfPmFile = '@CENTREON_ETC@/centreon-config.pm';
+    $contents = file_get_contents('../var/configFilePmTemplate');
+    $contents = preg_replace($patterns, $replacements, $contents);
+    file_put_contents($centreonConfPmFile, $contents);
+    @unlink('@CENTREON_ETC@/conf.pm');
 }
 ?>

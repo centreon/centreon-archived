@@ -157,6 +157,32 @@ if [ "$RC" -eq "0" ] ; then
 		echo_passed "$(gettext "CentreonTrapd run level not installed")" "$passed"
 		log "INFO" "$(gettext "CentreonTrapd run level not installed")"
 	fi
+
+        # Install trapd perl lib
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/common/ \
+                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                $TMP_DIR/src/lib/perl/centreon/script.pm \
+                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/trapd/ \
+                 $PERL_LIB_DIR/centreon/trapd/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centFillTrapDB.pm \
+                 $PERL_LIB_DIR/centreon/script/centFillTrapDB.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreon_trap_send.pm \
+                 $PERL_LIB_DIR/centreon/script/centreon_trap_send.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreontrapd.pm \
+                 $PERL_LIB_DIR/centreon/script/centreontrapd.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreontrapdforward.pm \
+                 $PERL_LIB_DIR/centreon/script/centreontrapdforward.pm >> $LOG_FILE 2>&1
+        echo_success "$(gettext "trapd Perl lib installed")" "$ok"
+        log "INFO" "$(gettext "trapd Perl lib installed")"
+        # End
 else
 	echo_passed "$(gettext "CentreonTrapd init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d" "$passed"
 	log "INFO" "$(gettext "CentreonTrapd init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centreontrapd.init.d"

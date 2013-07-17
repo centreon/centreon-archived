@@ -163,6 +163,25 @@ if [ "$RC" -eq "0" ] ; then
 		echo_passed "$(gettext "CentCore run level not installed")" "$passed"
 		log "INFO" "$(gettext "CentCore run level not installed")"
 	fi
+
+        # Install centcore perl lib
+	$INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/common/ \
+                 $PERL_LIB_DIR/centreon/common/ >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                $TMP_DIR/src/lib/perl/centreon/script.pm \
+                $PERL_LIB_DIR/centreon/script.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centcore.pm \
+                 $PERL_LIB_DIR/centreon/script/centcore.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreonSyncArchives.pm \
+                 $PERL_LIB_DIR/centreon/script/centreonSyncArchives.pm >> $LOG_FILE 2>&1
+        $INSTALL_DIR/cinstall $cinstall_opts -m 755 \
+                 $TMP_DIR/src/lib/perl/centreon/script/centreonSyncPlugins.pm \
+                 $PERL_LIB_DIR/centreon/script/centreonSyncPlugins.pm >> $LOG_FILE 2>&1
+        echo_success "$(gettext "CentCore Perl lib installed")" "$ok"
+        log "INFO" "$(gettext "CentCore Perl lib installed")"
 else
 	echo_passed "$(gettext "CentCore init script not installed, please use "):\n $INSTALL_DIR_CENTREON/examples/centcore.init.d" "$passed"
 	log "INFO" "$(gettext "CentCore init script not installed, please use "): $INSTALL_DIR_CENTREON/examples/centcore.init.d"

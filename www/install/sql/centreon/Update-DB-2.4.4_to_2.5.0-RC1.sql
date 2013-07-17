@@ -114,4 +114,4 @@ UPDATE `nagios_server` SET snmp_trapd_path_conf = (SELECT `value` FROM `options`
 DELETE FROM `options` WHERE `key` = 'snmp_trapd_path_conf';
 DELETE FROM `topology` WHERE `topology_page` = 5010104 AND topology_name = 'SNMP';
 
-UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
+UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
