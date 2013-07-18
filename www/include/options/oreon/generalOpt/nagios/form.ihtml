@@ -9,10 +9,6 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">&nbsp;{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">&nbsp;{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$genOpt_centcore}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_perfdata_sync">&nbsp;{$form.enable_perfdata_sync.label}</td><td class="FormRowValue">{$form.enable_perfdata_sync.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_logs_sync">&nbsp;{$form.enable_logs_sync.label}</td><td class="FormRowValue">{$form.enable_logs_sync.html}</td></tr>		
-		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$genOpt_dbLayer}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_broker_engine_used_by_centreon">&nbsp;{$form.broker.label}</td><td class="FormRowValue">{$form.broker.html}</td></tr>
 		

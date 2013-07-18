@@ -232,6 +232,8 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`,`topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) 
 VALUES ('Contact Templates','./img/icones/16x16/user1_information.png',603,60306,13,1,'./include/configuration/configObject/contact_template_model/contact_template.php','0','0','1',NULL,NULL,NULL,'0');
 
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('CentCore',NULL,50101,5010110,25,1,'./include/options/oreon/generalOpt/generalOpt.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
