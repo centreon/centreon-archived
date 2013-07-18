@@ -165,6 +165,7 @@
             $ret = $form->getSubmitValues();
             updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
             updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
+            updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? 1 : 0);
             $centreon->initOptGen($db);
         }
         
