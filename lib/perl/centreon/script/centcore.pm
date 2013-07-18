@@ -863,17 +863,31 @@ sub getInfos($) {
             if ($str =~ m/(Nagios) Core ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
                 $self->{logger}->writeLogInfo("Engine: $1");
                 $self->{logger}->writeLogInfo("Version: $2");
+                $self->updateEngineInformation($id, $1, $2);
                 last;
             }
             if ($str =~ m/(Centreon Engine) ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
                 $self->{logger}->writeLogInfo("Engine: $1");
                 $self->{logger}->writeLogInfo("Version: $2");
+                $self->updateEngineInformation($id, $1, $2);
                 last;
             } 
         }
     } else {
         $self->{logger}->writeLogError("Cannot get informations for poller $id");
     }
+}
+
+###############################
+## Update Engine informations
+#
+sub updateEngineInformation($$$) {
+    my $self = shift;
+    my $id = $_[0];
+    my $engine_nane = $_[1]; 
+    my $engine_version = $_[2];
+    
+    $self->{centreon_dbc}->query("UPDATE `nagios_server` SET `engine_name` = '$engine_name', `engine_version` = '$engine_version' WHERE `id` = '$id'");    
 }
 
 ################################

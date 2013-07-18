@@ -1778,6 +1778,8 @@ CREATE TABLE `nagios_server` (
   `ssh_private_key` varchar(255) DEFAULT NULL,
   `init_script_snmptt` varchar(255) DEFAULT NULL,
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
+  `engine_name` varchar(255) DEFAULT NULL,
+  `engine_version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
