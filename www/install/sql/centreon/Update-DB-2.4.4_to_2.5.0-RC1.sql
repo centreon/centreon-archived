@@ -113,6 +113,7 @@ ALTER TABLE `nagios_server` ADD COLUMN `snmp_trapd_path_conf` VARCHAR(255) DEFAU
 UPDATE `nagios_server` SET snmp_trapd_path_conf = (SELECT `value` FROM `options` WHERE `key` = 'snmp_trapd_path_conf');
 DELETE FROM `options` WHERE `key` = 'snmp_trapd_path_conf';
 DELETE FROM `topology` WHERE `topology_page` = 5010104 AND topology_name = 'SNMP';
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('CentCore',NULL,50101,5010110,25,1,'./include/options/oreon/generalOpt/generalOpt.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
 
 -- Ticket 4222
 ALTER TABLE `nagios_server` ADD COLUMN `engine_name` VARCHAR(255) DEFAULT NULL AFTER `snmp_trapd_path_conf`;

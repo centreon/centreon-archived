@@ -158,15 +158,17 @@
         updateOption($pearDB, "monitoring_dwt_fixed", isset($ret["monitoring_dwt_fixed"]) && $ret['monitoring_dwt_fixed'] ? 1 : 0);
         updateOption($pearDB, "monitoring_dwt_svc", isset($ret["monitoring_dwt_svc"]) && $ret['monitoring_dwt_svc'] ? 1 : 0);
 
-        /*
-         * Cencore options
-         */
-        updateOption($pearDB, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
-        updateOption($pearDB, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
-
-		$oreon->initOptGen($pearDB);
+            $oreon->initOptGen($pearDB);
 	}
 
+        function updateCentcoreConfigData($db, $form, $centreon) {
+            $ret = $form->getSubmitValues();
+            updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
+            updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
+            updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? 1 : 0);
+            $centreon->initOptGen($db);
+        }
+        
 	function updateSNMPConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
 

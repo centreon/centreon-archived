@@ -970,7 +970,7 @@ sub parseRequest($){
 sub checkProfile() {
     my $self = shift;
     
-    my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync')";
+    my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync', 'centcore_cmd_timeout')";
     my ($status, $sth) =  $self->{centreon_dbc}->query($request);
     return -1 if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
@@ -980,6 +980,9 @@ sub checkProfile() {
             } 
             if ($data->{'key'} eq "enable_logs_sync") {
                 $self->{logSync} = $data->{'value'};
+            }
+            if ($data->{'key'} eq "centcore_cmd_timeout") {
+                $self->{cmd_timeout} = $data->{'value'};
             }
         }
     }
