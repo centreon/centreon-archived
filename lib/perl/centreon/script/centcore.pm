@@ -884,7 +884,7 @@ sub getInfos($) {
 sub updateEngineInformation($$$) {
     my $self = shift;
     my $id = $_[0];
-    my $engine_nane = $_[1]; 
+    my $engine_name = $_[1]; 
     my $engine_version = $_[2];
     
     $self->{centreon_dbc}->query("UPDATE `nagios_server` SET `engine_name` = '$engine_name', `engine_version` = '$engine_version' WHERE `id` = '$id'");    
