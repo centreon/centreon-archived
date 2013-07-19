@@ -852,12 +852,21 @@ sub getInfos($) {
 
     if (defined($ns_server->{'ns_ip_address'}) && $ns_server->{'ns_ip_address'}) {
         # Launch command
-        $cmd = "$self->{ssh} -p $port ". $ns_server->{'ns_ip_address'} ." ".$ns_server->{'nagios_bin'};
-        $self->{logger}->writeLogDebug($cmd);
-        ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
+        if (defined($ns_server->{'localhost'}) && $ns_server->{'localhost'}) {
+            $cmd = "$self->{sudo} ".$ns_server->{'nagios_bin'};
+            $self->{logger}->writeLogDebug($cmd);
+            ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
                                                               logger => $self->{logger},
                                                               timeout => 60
                                                               );
+        } else {
+            $cmd = "$self->{ssh} -p $port ". $ns_server->{'ns_ip_address'} ." ".$ns_server->{'nagios_bin'};
+            $self->{logger}->writeLogDebug($cmd);
+            ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd,
+                                                              logger => $self->{logger},
+                                                              timeout => 60
+                                                              );
+        }
         my @tab = split("\n", $stdout);
         foreach my $str (@tab) {
             if ($str =~ m/(Nagios) Core ([\.0-9]*[a-zA-Z0-9\-\.]+)/) {
