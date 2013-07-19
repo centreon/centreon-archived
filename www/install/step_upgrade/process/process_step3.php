@@ -69,9 +69,8 @@ try {
  */
 $storageSql = '../../sql/centstorage/Update-CSTG-'.$current.'_to_'.$next.'.sql';
 if (is_file($storageSql)) {
-    try {
-        $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-'.$current.'_to_'.$next);
-    } catch (Exception $e) {
+    $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-'.$current.'_to_'.$next);
+    if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $e->getMessage());
     }
 }
@@ -81,9 +80,8 @@ if (is_file($storageSql)) {
  */
 $utilsSql = '../../sql/brocker/Update-NDO-'.$current.'_to_'.$next.'.sql';
 if (is_file($utilsSql) && $isBroker == false) {
-    try {
-        $result = splitQueries($utilsSql, ';', $pearDBNdo, '../../tmp/Update-NDO-'.$current.'_to_'.$next);
-    } catch (Exception $e) {
+    $result = splitQueries($utilsSql, ';', $pearDBNdo, '../../tmp/Update-NDO-'.$current.'_to_'.$next);
+    if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $e->getMessage());
     }
 }
@@ -93,7 +91,11 @@ if (is_file($utilsSql) && $isBroker == false) {
  */
 $prePhp = '../../php/Update-'.$current.'_to_'.$next.'.php';
 if (is_file($prePhp)) {
-    include_once $prePhp;
+    try {
+        include_once $prePhp;
+    } catch (Exception $e) {
+        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+    }
 }
 
 /**
@@ -101,9 +103,8 @@ if (is_file($prePhp)) {
  */
 $confSql = '../../sql/centreon/Update-DB-'.$current.'_to_'.$next.'.sql';
 if (is_file($confSql)) {    
-    try {
-        $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-'.$current.'_to_'.$next);
-    } catch (Exception $e) {
+    $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-'.$current.'_to_'.$next);
+    if ("0" != $result) {
         exitUpgradeProcess(1, $current, $next, $e->getMessage());
     }
 }
