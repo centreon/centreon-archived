@@ -611,18 +611,6 @@ function divideHostsToHost($service_id) {
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							}
 
-                            /*
-                             * Criticality
-                             */
-                            $sql = "SELECT criticality_id
-                                        FROM criticality_resource_relations
-                                        WHERE service_id = ".$pearDB->escape($key);
-                            $res = $pearDB->query($sql);
-                            if ($res->numRows()) {
-                                $cr = $res->fetchRow();
-                                setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
-                            }
-
 							/*
 							 *  get svc desc
 							 */
