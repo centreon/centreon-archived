@@ -71,7 +71,7 @@ $storageSql = '../../sql/centstorage/Update-CSTG-'.$current.'_to_'.$next.'.sql';
 if (is_file($storageSql)) {
     $result = splitQueries($storageSql, ';', $pearDBO, '../../tmp/Update-CSTG-'.$current.'_to_'.$next);
     if ("0" != $result) {
-        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+        exitUpgradeProcess(1, $current, $next, $result);
     }
 }
 
@@ -82,7 +82,7 @@ $utilsSql = '../../sql/brocker/Update-NDO-'.$current.'_to_'.$next.'.sql';
 if (is_file($utilsSql) && $isBroker == false) {
     $result = splitQueries($utilsSql, ';', $pearDBNdo, '../../tmp/Update-NDO-'.$current.'_to_'.$next);
     if ("0" != $result) {
-        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+        exitUpgradeProcess(1, $current, $next, $result);
     }
 }
 
@@ -105,7 +105,7 @@ $confSql = '../../sql/centreon/Update-DB-'.$current.'_to_'.$next.'.sql';
 if (is_file($confSql)) {    
     $result = splitQueries($confSql, ';', $pearDB, '../../tmp/Update-DB-'.$current.'_to_'.$next);
     if ("0" != $result) {
-        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+        exitUpgradeProcess(1, $current, $next, $result);
     }
 }
 
