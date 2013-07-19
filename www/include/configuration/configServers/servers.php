@@ -78,6 +78,7 @@
 		case "c" : require_once($path."formServers.php"); break; // Modify Servers
 		case "s" : enableServerInDB($server_id); require_once($path."listServers.php"); break; // Activate a Server
 		case "u" : disableServerInDB($server_id); require_once($path."listServers.php"); break; // Desactivate a Server
+        case "i" : require_once($path."getServersVersions.php"); break; // Search for version of engines Servers
 		case "m" : multipleServerInDB(isset($select) ? $select : array(), $dupNbr); require_once($path."listServers.php"); break; // Duplicate n Servers
 		case "d" : deleteServerInDB(isset($select) ? $select : array()); require_once($path."listServers.php"); break; // Delete n Servers
 		default : require_once($path."listServers.php"); break;
