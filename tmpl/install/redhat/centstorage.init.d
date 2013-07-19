@@ -48,9 +48,9 @@ start() {
         fi
 
 	if [ "$(id -u -n)" = "$user" ] ; then
-		daemon ''$binary' $OPTIONS > /dev/null 2>&1 &'
+		daemon $binary $OPTIONS > /dev/null 2>&1 &
 	else
-		daemon --user $user ''$binary' $OPTIONS > /dev/null 2>&1 &'
+		daemon --user $user $binary $OPTIONS > /dev/null 2>&1 &
 	fi
 
 	i=0
