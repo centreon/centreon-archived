@@ -179,7 +179,6 @@
 			</xsl:element>
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
-            <xsl:value-of select="snn"/>
 			<xsl:if test="snu != 'none'">
 				<xsl:element name="a">
 				  	<xsl:attribute name="classe">infobulle</xsl:attribute>
