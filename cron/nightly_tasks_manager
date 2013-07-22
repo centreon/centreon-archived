@@ -5,10 +5,10 @@ use strict;
 use Getopt::Long;
 use FindBin qw($Bin);
 use lib "$Bin/../lib/perl";
-use centreon::logger;
+use centreon::common::logger;
 
 use vars qw(@jobs);
-my $logger = centreon::logger->new();
+my $logger = centreon::common::logger->new();
 
 sub run_task {
     my ($name) = @_;
