@@ -2,7 +2,7 @@ package centreon::common::logger;
 
 =head1 NOM
 
-centreon::logger - Simple logging module
+centreon::common::logger - Simple logging module
 
 =head1 SYNOPSIS
 
@@ -13,7 +13,7 @@ centreon::logger - Simple logging module
 
  use centreon::polling;
 
- my $logger = new centreon::logger();
+ my $logger = new centreon::common::logger();
 
  $logger->writeLogInfo("information");
 
