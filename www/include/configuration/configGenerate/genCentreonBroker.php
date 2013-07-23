@@ -151,8 +151,8 @@
                 $fileXml->writeElement('event_queue_max_size', $eventQueueMaxSize[$filename]);
             }
             
-            if (isset($withTimestamp[$filename])) {
-                $fileXml->writeElement('with_timestamp', $withTimestamp[$filename]);
+            if (isset($logTimestamp[$filename])) {
+                $fileXml->writeElement('log_timestamp', $logTimestamp[$filename]);
             }
             
             if (isset($logThreadId[$filename])) {
