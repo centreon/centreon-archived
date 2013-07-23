@@ -106,6 +106,11 @@ $timestamp = array();
 $timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("Yes"), 1);
 $timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("No"), 0);
 $form->addGroup($timestamp, 'write_timestamp', _("Write timestamp"), '&nbsp;');
+
+$thread_id = array();
+$thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("Yes"), 1);
+$thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("No"), 0);
+$form->addGroup($thread_id, 'write_thread_id', _("Write thread id"), '&nbsp;');
     
 $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
@@ -131,6 +136,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     $form->setDefaults(array(
         "name" => '',
         "write_timestamp" => '1',
+        "write_thread_id" => '1',
         "activate" => '1'
     ));
     $tpl->assign('config_id', 0);
