@@ -442,18 +442,6 @@
                         $DBRESULT3 = $pearDB->query($request);
 
 						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
-
-                                                /*
-                                                 * Criticality
-                                                 */
-                                                $sql = "SELECT criticality_id
-                                                        FROM criticality_resource_relations
-                                                        WHERE host_id = ".$pearDB->escape($key);
-                                                $res = $pearDB->query($sql);
-                                                if ($res->numRows()) {
-                                                    $cr = $res->fetchRow();
-                                                    setHostCriticality($maxId['MAX(host_id)'], $cr['criticality_id']);
-                                                }
 					}
 				}
 			}
