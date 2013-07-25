@@ -311,7 +311,7 @@ sub create_logdb_child {
     $self->{logdb_pipes}{'reader'} = \*$reader_pipe;
     $self->{logdb_pipes}{'writer'} = \*$writer_pipe;
     
-    $self->{logger}->writeLogInfo("Create delete child");
+    $self->{logger}->writeLogInfo("Create logdb child");
     my $current_pid = fork();
     if (!$current_pid) {
         # Unhandle die in child
@@ -436,6 +436,7 @@ sub manage_exec {
     #### Fork And manage exec ####
     ####### Check Interval ######
     if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type}) && 
+        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} ne '' &&
         defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
         # OID type
         if ($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 1 &&

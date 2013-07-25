@@ -511,6 +511,7 @@ sub readtrap {
     #Process varbinds
     #Separate everything out, keeping both the variable name and the value
     my $linenum = 1;
+    my $variable_fix;
     while (defined(my $line = <$input>)) {
         push(@rawtrap, $line);
         $line =~ s(`)(')g;	#` Replace any back ticks with regular single quote
@@ -529,7 +530,6 @@ sub readtrap {
         chomp ($temp2);       # Variable VALUE
         chomp ($line);
 
-        my $variable_fix;
         if ($linenum == 1) {
             # Check if line 1 contains 'variable value' or just 'value' 
             if (defined($temp2)) {
