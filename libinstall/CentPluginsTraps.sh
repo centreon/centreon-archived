@@ -230,7 +230,7 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install") : centreontrapd"
 
 log "INFO" "$(gettext "Install") : spool directory"
-$INSTALL_DIR/cinstall $cinstall_opts -d 775 \
+$INSTALL_DIR/cinstall $cinstall_opts -u "$CENTREON_USER" -g "$CENTREON_GROUP" -d 775 \
 	/var/spool/centreontrapd
 
 
