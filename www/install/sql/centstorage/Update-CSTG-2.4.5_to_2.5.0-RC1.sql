@@ -39,3 +39,5 @@ CREATE TABLE `log_traps` (
 
 ALTER TABLE `downtimes` ADD COLUMN `actual_start_time` int(11) DEFAULT NULL AFTER `start_time`;
 ALTER TABLE `downtimes` ADD COLUMN `actual_end_time` int(11) DEFAULT NULL AFTER `actual_start_time`;
+
+DROP TABLE `log_snmptt`;
