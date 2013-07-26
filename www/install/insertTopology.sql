@@ -464,6 +464,7 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (224,60703,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 
 INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60306, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60101,'./include/common/javascript/centreon/hostResolve.js',NULL);
 
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
 UNLOCK TABLES;
