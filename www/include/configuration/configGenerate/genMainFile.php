@@ -152,7 +152,7 @@
 			} else if ($key == "use_check_result_path")	{
 				if (isset($tab['monitoring_engine']) && ($tab["monitoring_engine"] == "CENGINE") && $value != 2) {
                     if (isset($tab['monitoring_engine_version']) &&
-                            (CentreonUtils::compareVersion($tab["monitoring_engine_version"], "1.4.0") >= 1 )) {
+                            (CentreonUtils::compareVersion($tab["engine_version"], "1.4.0") >= 1 )) {
                         $str .= $key."=".$value."\n";
                     }
 				}
@@ -165,10 +165,6 @@
 			} else if ($key == "debug_level_opt");
 			else
 				$str .= $key."=".$value."\n";
-            
-            if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "NAGIOS") {
-                $str .= "check_for_updates=0\n";
-            }
 		}
 	}
 	if (isset($tab['monitoring_engine']) && $tab['monitoring_engine'] == "NAGIOS") {
