@@ -342,7 +342,7 @@
                 }
 		
 		if (isset($ret["nagios_activate"]["nagios_activate"]) && $ret["nagios_activate"]["nagios_activate"])	{
-			$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."'");
+			$DBRESULT = $pearDB->query("UPDATE cfg_nagios SET nagios_activate = '0' WHERE nagios_id != '".$nagios_id["MAX(nagios_id)"]."' AND nagios_server_id = '".$ret['nagios_server_id']."'");
 			$centreon->Nagioscfg = array();
 			$DBRESULT = $pearDB->query("SELECT * FROM `cfg_nagios` WHERE `nagios_activate` = '1' LIMIT 1");
 			$centreon->Nagioscfg = $DBRESULT->fetchRow();
