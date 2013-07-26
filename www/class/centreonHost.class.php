@@ -586,7 +586,7 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
             $str = "";
             $i = 1;
             foreach ($templates as $templateId) {
-                if ($stored[$tempateId]) {
+                if (!isset($templateId) || !$templateId || isset($stored[$templateId])) {
                     continue;
                 }
                 if ($str != "") {

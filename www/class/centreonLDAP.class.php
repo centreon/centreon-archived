@@ -724,7 +724,7 @@ class CentreonLdapAdmin {
             $insertStr = "";
             $i = 1;
             foreach ($addressList as $key => $addr) {
-                if ($addr == "") {
+                if (is_null($addr) || $addr == "") {
                     continue;
                 }
                 if ($insertStr) {

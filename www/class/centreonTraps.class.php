@@ -79,7 +79,7 @@ class Centreon_Traps {
             $severity = $_REQUEST['ruleseverity'];
             $i = 1;
             foreach ($rules as $key => $value) {
-                if ($value == "") {
+                if (is_null($value) || $value == "") {
                     continue;
                 }
                 if ($insertStr) {
@@ -283,7 +283,7 @@ class Centreon_Traps {
                 $preexec = $_REQUEST['preexec'];
                 $i = 1;
                 foreach ($preexec as $value) {
-                    if ($value == "") {
+                    if (is_null($value) || $value == "") {
                         continue;
                     }
                     if ($insertStr) {
