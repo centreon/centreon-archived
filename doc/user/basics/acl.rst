@@ -188,6 +188,3 @@ First of all, you need to put the list of allowed Hosts or Host Groups or Servic
 
 .. image:: /_static/images/user/acl/acl_2.png
    :align: center
-
-.. warning::
-   Resource ACL rules are not applied on the Configuration pages of Centreon.
