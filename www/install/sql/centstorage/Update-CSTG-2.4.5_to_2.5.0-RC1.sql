@@ -34,5 +34,7 @@ ALTER TABLE `downtimes` ADD COLUMN `actual_start_time` int(11) DEFAULT NULL AFTE
 ALTER TABLE `downtimes` ADD COLUMN `actual_end_time` int(11) DEFAULT NULL AFTER `actual_start_time`;
 
 ALTER TABLE `config` DROP COLUMN `perfdata_file`;
+ALTER TABLE `config` DROP COLUMN `auto_drop`;
+ALTER TABLE `config` DROP COLUMN `drop_file`;
 
 DROP TABLE `log_snmptt`;

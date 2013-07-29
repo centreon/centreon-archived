@@ -53,11 +53,13 @@
 	/*
 	 * Get centstorage state
 	 */
-	$DBRESULT2 = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'centstorage'");
+	$DBRESULT2 = $pearDB->query("SELECT * FROM `options` WHERE `key` LIKE 'centstorage%'");
 	while ($data = $DBRESULT2->fetchRow()) {
 		if (isset($data['value']) && $data['key'] == "centstorage") {
 			$gopt["enable_centstorage"] = $data['value'];
-		}
+		} else {
+                    $gopt[$data['key']] = $data['value'];
+                }
 	}
     
     
@@ -123,8 +125,8 @@
 	$form->addElement('text', 'len_storage_mysql', _("Retention Duration for Data in MySQL"), $attrsText2);
 	$form->addElement('checkbox', 'autodelete_rrd_db', _("RRDTool auto delete"));
 	$form->addElement('text', 'purge_interval', _("Purge check interval"), $attrsText2);
-        $form->addElement('checkbox', 'auto_drop', _("Drop Data in another file"));
-        $form->addElement('text', 'drop_file', _("Drop file"), $attrsText);
+        $form->addElement('checkbox', 'centstorage_auto_drop', _("Drop Data in another file"));
+        $form->addElement('text', 'centstorage_drop_file', _("Drop file"), $attrsText);
         
 	$storage_type = array(0 => "RRDTool", 2 => _("RRDTool & MySQL"));
 	$form->addElement('select', 'storage_type', _("Storage Type"), $storage_type);

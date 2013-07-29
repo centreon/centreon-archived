@@ -330,8 +330,6 @@
 			$ret["autodelete_rrd_db"] = 0;
 		if ($ret["purge_interval"] <= 20)
 			$ret["purge_interval"] = 20;
-		if (!isset($ret["auto_drop"]))
-			$ret["auto_drop"] = "0";
 		if (!isset($ret["archive_log"]))
 			$ret["archive_log"] = "0";
 		if (!$ret["purge_interval"])
@@ -344,8 +342,6 @@
 				`len_storage_mysql` = '".$ret["len_storage_mysql"]."',
 				`autodelete_rrd_db` = '".$ret["autodelete_rrd_db"]."',
 				`purge_interval` = '".$ret["purge_interval"]."',
-				`auto_drop` = '".$ret["auto_drop"]."',
-				`drop_file` = '".$ret["drop_file"]."',
 				`archive_log` = '".$ret["archive_log"]."',
 				`archive_retention` = '".$ret["archive_retention"]."',
 				`reporting_retention` = '".$ret["reporting_retention"]."',
@@ -354,7 +350,9 @@
 		$DBRESULT = $pearDBO->query($rq);
 
 		updateOption($pearDB, "index_data", isset($ret["insert_in_index_data"]) && $ret["insert_in_index_data"] != NULL ? "0": "1");
-        updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
+                updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
+                updateOption($pearDB, "centstorage_auto_drop", isset($ret['centstorage_auto_drop']) ? '1' : '0');
+                updateOption($pearDB, "centstorage_drop_file", isset($ret['centstorage_drop_file']) ? $pearDB->escape($ret['centstorage_drop_file']) : '');
 	}
 
 	function updateCASConfigData($gopt_id = null)	{
