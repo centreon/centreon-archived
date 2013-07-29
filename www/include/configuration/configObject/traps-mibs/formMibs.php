@@ -134,7 +134,7 @@
 			if ($msg) {
                             if (strlen($msg) > $max_characters) {
                                 $msg = substr($msg, 0, $max_characters)."...".
-                                        sprintf(_("Message truncated (exceeded %s characters)", $max_characters));
+                                        sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
                             }
                             $tpl->assign('msg', $msg);
                         }
