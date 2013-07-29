@@ -30,7 +30,4 @@ CREATE TABLE `log_traps` (
   KEY `trap_time` (`trap_time`)
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
-ALTER TABLE `downtimes` ADD COLUMN `actual_start_time` int(11) DEFAULT NULL AFTER `start_time`;
-ALTER TABLE `downtimes` ADD COLUMN `actual_end_time` int(11) DEFAULT NULL AFTER `actual_start_time`;
-
 DROP TABLE `log_snmptt`;
