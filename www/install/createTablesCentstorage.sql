@@ -45,7 +45,6 @@ CREATE TABLE `config` (
   `average` int(11) DEFAULT NULL,
   `auto_drop` enum('0','1') NOT NULL DEFAULT '0',
   `drop_file` varchar(255) DEFAULT NULL,
-  `perfdata_file` varchar(255) DEFAULT NULL,
   `archive_log` enum('0','1') NOT NULL DEFAULT '0',
   `archive_retention` int(11) DEFAULT '31',
   `reporting_retention` int(11) DEFAULT '365',
