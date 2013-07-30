@@ -65,7 +65,7 @@
 			 */
 			$str .= "define contactgroup{\n";
 			if ($contactGroup["cg_name"])
-				$str .= print_line("contactgroup_name", $contactGroup["cg_name"]);
+				$str .= print_line("contactgroup_name", str_replace(" ", "_", $contactGroup["cg_name"]));
 			if ($contactGroup["cg_alias"])
 				$str .= print_line("alias", $contactGroup["cg_alias"]);
 
