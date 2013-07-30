@@ -72,6 +72,9 @@
     $serverResult = $oreon->user->access->getPollerAclConf(array('fields' => array('id', 'name', 'last_restart'),
                                                                  'order'  => array('name'),
                                                                  'keys'   => array('id')));
+    
+    $instanceObj = new CentreonInstance($pearDB);
+    
     switch ($o)	{
 		case "a" : require_once($path."formServers.php"); break; // Add Servers
 		case "w" : require_once($path."formServers.php"); break; // Watch Servers

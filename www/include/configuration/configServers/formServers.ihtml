@@ -33,7 +33,15 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="snmptt_init_script"> {$form.init_script_snmptt.label}</td><td class="FormRowValue">{$form.init_script_snmptt.html}</td></tr>
                 <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="snmp_trapd_path_conf"> {$form.snmp_trapd_path_conf.label}</td><td class="FormRowValue">{$form.snmp_trapd_path_conf.html}</td></tr>
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/note.gif'>&nbsp;&nbsp;{$form.header.Misc}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_activate"> {$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
+		<tr class="list_one">
+                    <td class="FormRowField">
+                        <img class="helpTooltip" name="pollercmd"> {t}Post-Restart command{/t}
+                    </td>
+                    <td class="FormRowValue">
+                        {include file="file:$centreon_path/www/include/common/templates/clone.ihtml" cloneId="pollercmd" cloneSet=$cloneSetCmd}
+                    </td>
+                </tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="ns_activate"> {$form.ns_activate.label}</td><td class="FormRowValue">{$form.ns_activate.html}</td></tr>
 		{if $o == "a" || $o == "c"}
 			<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required_note}</td></tr>
 		{/if}
