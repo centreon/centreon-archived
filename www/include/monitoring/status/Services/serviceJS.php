@@ -151,9 +151,9 @@ var _criticality_id = 0;
 
                         var h = document.getElementById('criticality_id');
                         if (h) {
-                            h.innerHTML = '<?php echo addslashes("C"); ?>';
+                            h.innerHTML = '<?php echo addslashes("S"); ?>';
                             h.indice = 'criticality_id';
-                            h.title = "<?php echo _("Sort by criticality"); ?>";
+                            h.title = "<?php echo _("Sort by severity"); ?>";
                             h.onclick=function(){change_type_order(this.indice)};
                             h.style.cursor = "pointer";
                         }
