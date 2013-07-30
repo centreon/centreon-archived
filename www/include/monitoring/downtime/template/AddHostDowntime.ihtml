@@ -38,19 +38,19 @@ Event.observe(window, "load", function() { toggleParams('host'); });
 			</tr>
 			<tr class="list_two">
 				<td  class="ListColLeft">{$form.duration.label}</td>
-				<td  class="ListColLeft">{$form.duration.html} {$seconds}</td>
+				<td  class="ListColLeft">{$form.duration.html} {$form.duration_scale.html}</td>
 			</tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.start.label}</td>
 				<td  class="ListColLeft">
-                                    {$form.start.html}&nbsp;{$form.start_time.html}
-                                </td>
+                    {$form.start.html}&nbsp;{$form.start_time.html}
+                </td>
 			</tr>
 			<tr class="list_two">
 				<td  class="ListColLeft">{$form.end.label}</td>
 				<td  class="ListColLeft">
-                                    {$form.end.html}&nbsp;{$form.end_time.html}
-                                </td>
+                    {$form.end.html}&nbsp;{$form.end_time.html}
+                </td>
 			</tr>
 			<tr class="list_one">
 				<td  class="ListColLeft">{$form.with_services.label}</td>

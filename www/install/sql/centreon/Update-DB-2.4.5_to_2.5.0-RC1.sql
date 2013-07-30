@@ -94,4 +94,6 @@ INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `t
 ALTER TABLE `nagios_server` ADD COLUMN `engine_name` VARCHAR(255) DEFAULT NULL AFTER `snmp_trapd_path_conf`;
 ALTER TABLE `nagios_server` ADD COLUMN `engine_version` VARCHAR(255) DEFAULT NULL AFTER `engine_name`;
 
+INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_dwt_duration_scale', 's');
+
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

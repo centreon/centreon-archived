@@ -145,6 +145,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('display_autologin_shortcut','1'),
 ('monitoring_ack_svc', '1'),
 ('monitoring_dwt_duration', '3600'),
+('monitoring_dwt_duration_scale', 's'),
 ('monitoring_ack_active_checks', '1'),
 ('monitoring_ack_persistent', '1'),
 ('monitoring_ack_notify', '0'),

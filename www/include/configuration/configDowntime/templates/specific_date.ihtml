@@ -28,7 +28,13 @@ var period_id = {$period_tab};
 	<td class="FormRowField">
 	<input type="radio" name="periods[{$period_tab}][fixed]" value="1" checked="checked" />{$fixed}<br/>
 	<input type="radio" name="periods[{$period_tab}][fixed]" value="0" />{$flexible}&nbsp;
-	<input type="text" name="periods[{$period_tab}][duration]" size="6" />&nbsp;{$seconds}
+	<input type="text" name="periods[{$period_tab}][duration]" size="6" />&nbsp;
+    <select name="periods[{$period_tab}][scale]">
+        <option selected="selected" value="s">{$seconds}</option>
+        <option value="m">{$minutes}</option>
+        <option value="h">{$hours}</option>
+        <option value="d">{$days}</option>
+    </select>
 	</td>
 </tr>
 </table>
