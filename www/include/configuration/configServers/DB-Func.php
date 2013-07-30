@@ -114,6 +114,11 @@
 					        		FROM cfg_resource_instance_relations as b
 					        		WHERE b.instance_id = ' . $key;
 					        $pearDB->query($queryRel);
+                                                $queryCmd = 'INSERT INTO poller_command_relations (poller_id, command_id, command_order)
+                                                            SELECT ' . $row['id'] . ', b.command_id, b.command_order
+					        	    FROM poller_command_relations as b
+                                                            WHERE b.poller_id = ' . $key;
+					        $pearDB->query($queryCmd);
 					    }
 					}
 				}
@@ -158,10 +163,14 @@
         isset($ret["ns_activate"]["ns_activate"]) && $ret["ns_activate"]["ns_activate"] != 2 ? $rq .= "'".$ret["ns_activate"]["ns_activate"]."'  "  : $rq .= "NULL)";
        	$rq .= ")";
        	$DBRESULT = $pearDB->query($rq);
-		$DBRESULT = $pearDB->query("SELECT MAX(id) FROM `nagios_server`");
-		$ndomod_id = $DBRESULT->fetchRow();
+		$DBRESULT = $pearDB->query("SELECT MAX(id) as last_id FROM `nagios_server`");
+		$poller = $DBRESULT->fetchRow();
 		$DBRESULT->free();
-		return ($ndomod_id["MAX(id)"]);
+                if (isset($_REQUEST['pollercmd'])) {
+                    $instanceObj = new CentreonInstance($pearDB);
+                    $instanceObj->setCommands($poller['last_id'], $_REQUEST['pollercmd']);
+                }
+		return ($poller["last_id"]);
 	}
 
 	function addUserRessource($serverId) {
@@ -222,6 +231,10 @@
         $rq .= "ns_activate = '".$ret["ns_activate"]["ns_activate"]."' ";
 		$rq .= "WHERE id = '".$id."'";
 		$DBRESULT = $pearDB->query($rq);
+                if (isset($_REQUEST['pollercmd'])) {
+                    $instanceObj = new CentreonInstance($pearDB);
+                    $instanceObj->setCommands($id, $_REQUEST['pollercmd']);
+                }
 	}
 
 	/**

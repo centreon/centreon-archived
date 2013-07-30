@@ -154,20 +154,21 @@
 		/*
 		 * Downtime part
 		 */
-		updateOption($pearDB, "monitoring_dwt_duration", isset($ret["monitoring_dwt_duration"]) && $ret['monitoring_dwt_duration'] ? $pearDB->escape($ret['monitoring_dwt_duration']) : 3600);
+        updateOption($pearDB, "monitoring_dwt_duration", isset($ret["monitoring_dwt_duration"]) && $ret['monitoring_dwt_duration'] ? $pearDB->escape($ret['monitoring_dwt_duration']) : 3600);
+        updateOption($pearDB, "monitoring_dwt_duration_scale", isset($ret["monitoring_dwt_duration_scale"]) && $ret['monitoring_dwt_duration_scale'] ? $pearDB->escape($ret['monitoring_dwt_duration_scale']) : 's');
         updateOption($pearDB, "monitoring_dwt_fixed", isset($ret["monitoring_dwt_fixed"]) && $ret['monitoring_dwt_fixed'] ? 1 : 0);
         updateOption($pearDB, "monitoring_dwt_svc", isset($ret["monitoring_dwt_svc"]) && $ret['monitoring_dwt_svc'] ? 1 : 0);
 
-            $oreon->initOptGen($pearDB);
+        $oreon->initOptGen($pearDB);
 	}
 
-        function updateCentcoreConfigData($db, $form, $centreon) {
-            $ret = $form->getSubmitValues();
-            updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
-            updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
-            updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? 1 : 0);
-            $centreon->initOptGen($db);
-        }
+    function updateCentcoreConfigData($db, $form, $centreon) {
+        $ret = $form->getSubmitValues();
+        updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
+        updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
+        updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? 1 : 0);
+        $centreon->initOptGen($db);
+    }
         
 	function updateSNMPConfigData($gopt_id = null)	{
 		global $form, $pearDB, $oreon;
@@ -198,7 +199,7 @@
 		updateOption($pearDB, "debug_ldap_import", isset($ret["debug_ldap_import"]) && $ret['debug_ldap_import'] ? 1 : 0);
 		updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
 		updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
-                updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
+        updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
 
 		$oreon->initOptGen($pearDB);
 	}
@@ -277,9 +278,9 @@
 		updateOption($pearDB, "enable_autologin", isset($ret["enable_autologin"]["yes"]) && $ret["enable_autologin"]["yes"] != NULL ? htmlentities($ret["enable_autologin"]["yes"], ENT_QUOTES, "UTF-8"): "0");
 		updateOption($pearDB, "display_autologin_shortcut", isset($ret["display_autologin_shortcut"]["yes"]) && $ret["display_autologin_shortcut"]["yes"] != NULL ? htmlentities($ret["display_autologin_shortcut"]["yes"], ENT_QUOTES, "UTF-8"): "0");
 		updateOption($pearDB, "sso_enable", isset($ret["sso_enable"]["yes"]) && $ret["sso_enable"]["yes"] != NULL ? 1 : 0);
-                updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
-                updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
-                updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
+        updateOption($pearDB, "sso_mode", isset($ret["sso_mode"]["sso_mode"]) && $ret["sso_mode"]["sso_mode"] != NULL ? $pearDB->escape($ret["sso_mode"]["sso_mode"]) : 1);
+        updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
+        updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
 
 		$oreon->initOptGen($pearDB);
 	}
@@ -350,9 +351,9 @@
 		$DBRESULT = $pearDBO->query($rq);
 
 		updateOption($pearDB, "index_data", isset($ret["insert_in_index_data"]) && $ret["insert_in_index_data"] != NULL ? "0": "1");
-                updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
-                updateOption($pearDB, "centstorage_auto_drop", isset($ret['centstorage_auto_drop']) ? '1' : '0');
-                updateOption($pearDB, "centstorage_drop_file", isset($ret['centstorage_drop_file']) ? $pearDB->escape($ret['centstorage_drop_file']) : '');
+        updateOption($pearDB, "centstorage", isset($ret["enable_centstorage"]) && $ret["enable_centstorage"] != NULL ? htmlentities($ret["enable_centstorage"], ENT_QUOTES, "UTF-8"): "0");
+        updateOption($pearDB, "centstorage_auto_drop", isset($ret['centstorage_auto_drop']) ? '1' : '0');
+        updateOption($pearDB, "centstorage_drop_file", isset($ret['centstorage_drop_file']) ? $pearDB->escape($ret['centstorage_drop_file']) : '');
 	}
 
 	function updateCASConfigData($gopt_id = null)	{

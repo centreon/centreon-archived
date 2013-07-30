@@ -104,6 +104,13 @@
     $form->addElement('checkbox', 'monitoring_dwt_fixed', _("Fixed"));
     $form->addElement('checkbox', 'monitoring_dwt_svc', _("Set downtimes on services attached to hosts"));
     $form->addElement('text', 'monitoring_dwt_duration', _("Duration"), $attrsText2);
+    
+    $scaleChoices = array("s" => _("seconds"),
+                          "m" => _("minutes"),
+                          "h" => _("hours"),
+                          "d" => _("days")
+                        );
+    $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
 
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');

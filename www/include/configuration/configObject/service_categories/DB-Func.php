@@ -39,6 +39,23 @@
 	if (!isset ($oreon))
 		exit ();
 
+        /**
+         * Rule that checks whether severity data is set
+         */
+        function checkSeverity($fields) {
+            $arr = array();
+            if (isset($fields['sc_type']) && $fields['sc_severity_level'] == "") {
+                $arr['sc_severity_level'] = "Severity level is required";
+            }
+            if (isset($fields['sc_type']) && $fields['sc_severity_icon'] == "") {
+                $arr['sc_severity_icon'] = "Severity icon is required";
+            }
+            if (count($arr)) {
+                return $arr;
+            }
+            return true;
+        }
+        
 	function testServiceCategorieExistence ($name = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;

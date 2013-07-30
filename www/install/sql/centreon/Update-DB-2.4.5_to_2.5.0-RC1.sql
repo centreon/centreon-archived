@@ -90,10 +90,24 @@ DELETE FROM `options` WHERE `key` = 'snmp_trapd_path_conf';
 DELETE FROM `topology` WHERE `topology_page` = 5010104 AND topology_name = 'SNMP';
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('CentCore',NULL,50101,5010110,25,1,'./include/options/oreon/generalOpt/generalOpt.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
 
--- Ticket 4222
+-- Ticket #4222
 ALTER TABLE `nagios_server` ADD COLUMN `engine_name` VARCHAR(255) DEFAULT NULL AFTER `snmp_trapd_path_conf`;
 ALTER TABLE `nagios_server` ADD COLUMN `engine_version` VARCHAR(255) DEFAULT NULL AFTER `engine_name`;
 
 INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_dwt_duration_scale', 's');
+
+-- Ticket #4666
+CREATE TABLE `poller_command_relations` (
+  `poller_id` int(11) NOT NULL,
+  `command_id` int(11) NOT NULL,
+  `command_order` tinyint (3) DEFAULT NULL,
+  KEY `poller_id` (`poller_id`),
+  KEY `command_id` (`command_id`),
+  CONSTRAINT `poller_command_relations_fk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `poller_command_relations_fk_2` FOREIGN KEY (`command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60901,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60901,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

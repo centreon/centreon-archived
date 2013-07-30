@@ -85,7 +85,19 @@ if (($o == "c" || $o == "w") && $server_id) {
     $DBRESULT = $pearDB->query("SELECT * FROM `nagios_server` WHERE `id` = '$server_id' LIMIT 1");
     $cfg_server = array_map("myDecode", $DBRESULT->fetchRow());
     $DBRESULT->free();
+    
 }
+
+/*
+ * Preset values of misc commands
+ */
+$cdata = CentreonData::getInstance();
+$cmdArray = $instanceObj->getCommandsFromPollerId(isset($server_id) ? $server_id : null);
+$cdata->addJsData('clone-values-pollercmd', htmlspecialchars(
+                          json_encode($cmdArray), 
+                          ENT_QUOTES
+                 ));
+$cdata->addJsData('clone-count-pollercmd', count($cmdArray));        
 
 /*
  * nagios servers comes from DB
@@ -152,6 +164,22 @@ $Tab = array();
 $Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Enabled"), '1');
 $Tab[] = HTML_QuickForm::createElement('radio', 'ns_activate', null, _("Disabled"), '0');
 $form->addGroup($Tab, 'ns_activate', _("Status"), '&nbsp;');
+
+/*
+ * Extra commands
+ */
+$cmdObj = new CentreonCommand($pearDB);
+$cloneSetCmd = array();
+$cloneSetCmd[] = $form->addElement(
+                'select', 
+                'pollercmd[#index#]',
+                _('Command'),
+                (array(null => null) + $cmdObj->getMiscCommands()),
+                array(
+                    'id' => 'pollercmd_#index#',
+                    'type' => 'select-one'
+                )
+    );
 
 /*
  * Centreon Broker
@@ -264,7 +292,8 @@ if ($valid) {
     $tpl->assign('form', $renderer->toArray());
     $tpl->assign('o', $o);
     $tpl->assign('engines', $monitoring_engines);
-
+    $tpl->assign('cloneSetCmd', $cloneSetCmd);
+    $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
     include_once("help.php");
 
     $helptext = "";

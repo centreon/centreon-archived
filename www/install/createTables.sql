@@ -1841,6 +1841,18 @@ CREATE TABLE `options` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `poller_command_relations` (
+  `poller_id` int(11) NOT NULL,
+  `command_id` int(11) NOT NULL,
+  `command_order` tinyint (3) DEFAULT NULL,
+  KEY `poller_id` (`poller_id`),
+  KEY `command_id` (`command_id`),
+  CONSTRAINT `poller_command_relations_fk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `poller_command_relations_fk_2` FOREIGN KEY (`command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `service` (
   `service_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_template_model_stm_id` int(11) DEFAULT NULL,

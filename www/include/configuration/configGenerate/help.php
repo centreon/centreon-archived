@@ -5,4 +5,5 @@ $help['gen']      = dgettext("help", "Generates configuration files and stores t
 $help['debug']    = dgettext("help", "Runs the scheduler debug mode.");
 $help['move']     = dgettext("help", "Copies the generated files into the scheduler's configuration folder.");
 $help['restart']  = dgettext("help", "Restart the scheduler : Restart, Reload or External Command.");
+$help['postcmd']  = dgettext("help", "Run the commands that are defined in the poller configuration page (Configuration > Centreon > Poller > Post-Restart command).");
 ?>
