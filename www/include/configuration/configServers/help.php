@@ -17,4 +17,5 @@ $help['centreonconnector_path'] = dgettext("help", "Path with Centreon Connector
 $help['ns_activate'] = dgettext("help", "Enable or disable poller");
 $help['snmptt_init_script'] = dgettext("help", "SNMP Trap Translator init script");
 $help['snmp_trapd_path_conf'] = dgettext("help", "Light databases will be stored in the specified directory. They are used for synchronizing trap definitions on pollers.");
+$help['pollercmd'] = dgettext("help", "Those commands can be executed at the end of the file generation generation/restart process. Do not specify macros in the commands, for they will not be replaced. Make sure to have sufficient rights for the Apache user to run these commands.");
 ?>
