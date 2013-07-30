@@ -39,6 +39,23 @@
 	if (!isset ($oreon))
 		exit ();
 
+        /**
+         * Rule that checks whether severity data is set
+         */
+        function checkSeverity($fields) {
+            $arr = array();
+            if (isset($fields['hc_type']) && $fields['hc_severity_level'] == "") {
+                $arr['hc_severity_level'] = "Severity level is required";
+            }
+            if (isset($fields['hc_type']) && $fields['hc_severity_icon'] == "") {
+                $arr['hc_severity_icon'] = "Severity icon is required";
+            }
+            if (count($arr)) {
+                return $arr;
+            }
+            return true;
+        }
+        
 	function testHostCategorieExistence ($name = NULL)	{
 		global $pearDB, $form;
 		$id = NULL;
