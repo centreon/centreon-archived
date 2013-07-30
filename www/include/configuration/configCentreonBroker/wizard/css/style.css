@@ -128,3 +128,7 @@ body {
   );
 }
 
+span.button a {
+    text-decoration: none;
+}
+
