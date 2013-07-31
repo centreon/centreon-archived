@@ -430,7 +430,7 @@
 							$macName = str_replace("\$", "", $hst["host_macro_name"]);
 							$macVal = $hst['host_macro_value'];
 							$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
-										"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $macVal ."')";
+										"('".$maxId["MAX(host_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
 					 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							$fields["_".strtoupper($macName)."_"] = $macVal;
 						}
