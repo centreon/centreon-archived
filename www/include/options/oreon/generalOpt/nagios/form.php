@@ -116,6 +116,13 @@
      * Misc
      */
     $form->addElement('checkbox', 'monitoring_console_notification', _('Enable console notification'));
+    $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
+    $form->addElement('checkbox', 'monitoring_host_notification_1', _('Show Down status'));
+    $form->addElement('checkbox', 'monitoring_host_notification_2', _('Show Unreachable status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_0', _('Show OK status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_1', _('Show Warning status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
     
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');

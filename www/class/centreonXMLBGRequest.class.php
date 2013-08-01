@@ -356,12 +356,16 @@ class CentreonXMLBGRequest
             if (!isset($options['monitoring_console_notification']) || !$options['monitoring_console_notification']) {
                 return '';
             }
-            if ((time() - $data["last_state_change"]) <= $options['AjaxTimeReloadMonitoring']) {
+            if (!isset($options['monitoring_svc_notification_'.$data['state']])) {
+                return '';
+            }
+            $interval = $options['AjaxTimeReloadMonitoring'];
+            if ((time() - $data["last_state_change"]) <= $interval) {
                     $msgTypeArr = array(
                       0 => 'success',
-                      1 => 'alert',
+                      1 => 'warning',
                       2 => 'error',
-                      3 => null
+                      3 => 'alert'
                     );
                     $msgdata['type'] = $msgTypeArr[$data['state']];
                     $msgdata['text'] = sprintf(
@@ -386,11 +390,15 @@ class CentreonXMLBGRequest
             if (!isset($options['monitoring_console_notification']) || !$options['monitoring_console_notification']) {
                 return '';
             }
-            if ((time() - $data["last_state_change"]) <= $options['AjaxTimeReloadMonitoring']) {
+            if (!isset($options['monitoring_host_notification_'.$data['state']])) {
+                return '';
+            }
+            $interval = $options['AjaxTimeReloadMonitoring'];
+            if ((time() - $data["last_state_change"]) <= $interval) {
                     $msgTypeArr = array(
                       0 => 'success',
                       1 => 'error',
-                      2 => null
+                      2 => 'alert'
                     );
                     $msgdata['type'] = $msgTypeArr[$data['state']];
                     $msgdata['text'] = sprintf(

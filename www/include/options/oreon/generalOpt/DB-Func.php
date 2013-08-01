@@ -163,6 +163,13 @@
          * Misc
          */
         updateOption($pearDB, 'monitoring_console_notification', isset($ret["monitoring_console_notification"]) && $ret['monitoring_console_notification'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_host_notification_0', isset($ret["monitoring_host_notification_0"]) && $ret['monitoring_host_notification_0'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_host_notification_1', isset($ret["monitoring_host_notification_1"]) && $ret['monitoring_host_notification_1'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_host_notification_2', isset($ret["monitoring_host_notification_2"]) && $ret['monitoring_host_notification_2'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_svc_notification_0', isset($ret["monitoring_svc_notification_0"]) && $ret['monitoring_svc_notification_0'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_svc_notification_1', isset($ret["monitoring_svc_notification_1"]) && $ret['monitoring_svc_notification_1'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_svc_notification_2', isset($ret["monitoring_svc_notification_2"]) && $ret['monitoring_svc_notification_2'] ? 1 : 0);
+        updateOption($pearDB, 'monitoring_svc_notification_3', isset($ret["monitoring_svc_notification_3"]) && $ret['monitoring_svc_notification_3'] ? 1 : 0);
         
         $oreon->initOptGen($pearDB);
 	}

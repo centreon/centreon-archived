@@ -37,6 +37,13 @@
 
                 <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{t}Misc{/t}</td></tr>
                 <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_console_notification">&nbsp;{$form.monitoring_console_notification.label}</td><td class="FormRowValue">{$form.monitoring_console_notification.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_host_notification_0">&nbsp;{$form.monitoring_host_notification_0.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_0.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_host_notification_1">&nbsp;{$form.monitoring_host_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_1.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_host_notification_2">&nbsp;{$form.monitoring_host_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_2.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_0">&nbsp;{$form.monitoring_svc_notification_0.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_0.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_1">&nbsp;{$form.monitoring_svc_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_1.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_2">&nbsp;{$form.monitoring_svc_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_2.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_3">&nbsp;{$form.monitoring_svc_notification_3.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_3.html}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 	{if !$valid}
