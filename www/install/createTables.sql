@@ -2097,6 +2097,7 @@ CREATE TABLE `traps` (
   `traps_log` enum('0','1') DEFAULT '0',
   `traps_routing_mode` enum('0','1') DEFAULT '0',
   `traps_routing_value` varchar(255) DEFAULT NULL,
+  ̀`traps_exec_method` enum('0','1') DEFAULT '0',
   `traps_comments` text,
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),
