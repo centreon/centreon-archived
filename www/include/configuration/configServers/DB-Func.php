@@ -142,10 +142,11 @@
 		global $form, $pearDB, $oreon;
 		if (!count($ret))
 			$ret = $form->getSubmitValues();
-        $rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `ns_ip_address`, `ssh_port`, `monitoring_engine`, `nagios_bin`, `nagiostats_bin` , `init_script`, `init_script_snmptt`, `snmp_trapd_path_conf`, `nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, `ssh_private_key`, `is_default`, `ns_activate`) ";
+        $rq = "INSERT INTO `nagios_server` (`name` , `localhost` , `description`, `ns_ip_address`, `ssh_port`, `monitoring_engine`, `nagios_bin`, `nagiostats_bin` , `init_script`, `init_script_snmptt`, `snmp_trapd_path_conf`, `nagios_perfdata` , `centreonbroker_cfg_path`, `centreonbroker_module_path`, `centreonconnector_path`, `ssh_private_key`, `is_default`, `ns_activate`) ";
 		$rq .= "VALUES (";
 		isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "'".htmlentities(trim($ret["name"]), ENT_QUOTES, "UTF-8")."', " : $rq .= "NULL, ";
 		isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "'".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
+        isset($ret["description"]) && $ret["description"] != NULL ? $rq .= "'".htmlentities(trim($ret["description"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "'".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
         isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "'".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "'22', ";
         isset($ret["monitoring_engine"]) && $ret["monitoring_engine"] != NULL ? $rq .= "'".htmlentities(trim($ret["monitoring_engine"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "NULL, ";
@@ -214,7 +215,8 @@
 		$rq = "UPDATE `nagios_server` SET ";
         isset($ret["name"]) && $ret["name"] != NULL ? $rq .= "name = '".htmlentities($ret["name"], ENT_QUOTES, "UTF-8")."', " : $rq .= "name = NULL, ";
         isset($ret["localhost"]["localhost"]) && $ret["localhost"]["localhost"] != NULL ? $rq .= "localhost = '".htmlentities($ret["localhost"]["localhost"], ENT_QUOTES, "UTF-8")."', " : $rq .= "localhost = NULL, ";
-		isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "ns_ip_address = '".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ns_ip_address = NULL, ";
+        isset($ret["description"]) && $ret["description"] != NULL ? $rq .= "description = '".htmlentities($ret["description"], ENT_QUOTES, "UTF-8")."', " : $rq .= "description = NULL, ";
+        isset($ret["ns_ip_address"]) && $ret["ns_ip_address"] != NULL ? $rq .= "ns_ip_address = '".htmlentities(trim($ret["ns_ip_address"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ns_ip_address = NULL, ";
         isset($ret["ssh_port"]) && $ret["ssh_port"] != NULL ? $rq .= "ssh_port = '".htmlentities(trim($ret["ssh_port"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "ssh_port = '22', ";
         isset($ret["init_script"]) && $ret["init_script"] != NULL ? $rq .= "init_script = '".htmlentities(trim($ret["init_script"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "init_script = NULL, ";
         isset($ret["init_script_snmptt"]) && $ret["init_script_snmptt"] != NULL ? $rq .= "init_script_snmptt = '".htmlentities(trim($ret["init_script_snmptt"]), ENT_QUOTES, "UTF-8")."',  " : $rq .= "init_script_snmptt = NULL, ";

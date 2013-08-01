@@ -147,4 +147,7 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
 -- end of noty
 
+-- Ticket #4611
+ALTER TABLE `nagios_server` ADD COLUMN `description` VARCHAR(50) DEFAULT NULL;
+
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

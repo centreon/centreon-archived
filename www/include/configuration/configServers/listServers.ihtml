@@ -21,6 +21,7 @@
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
+                        <td class="ListColHeaderLeft">{t}Description{/t}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_ip_address}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_localisation}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_is_running}</td>
@@ -37,6 +38,7 @@
 		<tr class={$elemArr[elem].MenuClass}>
 			<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 			<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a></td>
+                        <td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_description}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_ip_address}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].RowMenu_localisation}</td>
 			<td class="ListColCenter"{if $elemArr[elem].RowMenu_statusVal} style='background-color:#{if $elemArr[elem].RowMenu_is_runningFlag}00FF00;{else}FF0000{/if}'{/if}>{$elemArr[elem].RowMenu_is_running}</td>

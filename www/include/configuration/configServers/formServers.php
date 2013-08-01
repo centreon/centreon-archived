@@ -140,6 +140,7 @@ $form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitor
  */
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
+$form->addElement('text', 'description', _("Description"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText);
 
@@ -209,6 +210,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     "name" => '',
     "localhost" => '0',
     "ns_ip_address" => "127.0.0.1",
+    "description" => "",
     "nagios_bin" => $me["nagios_bin"],
     "nagiostats_bin" => $me["nagiostats_bin"],
     "monitoring_engine"  => $centreon->optGen["monitoring_engine"],

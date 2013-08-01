@@ -148,7 +148,7 @@
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
+	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, description, ns_activate, ns_ip_address, localhost, is_default
            FROM `nagios_server` $LCASearch ".
            $oreon->user->access->queryBuilder($LCASearch ? 'AND' : 'WHERE', 'id', $pollerstring).
            " ORDER BY name
@@ -203,6 +203,7 @@
 				     "MenuClass" => "list_".$style,
 				     "RowMenu_select" => $selectedElements->toHtml(),
 				     "RowMenu_name" => $config["name"],
+                                     "RowMenu_description" => $config["description"],
 				     "RowMenu_ip_address" => $config["ns_ip_address"],
 				     "RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
 				     "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
