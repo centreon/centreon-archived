@@ -121,19 +121,23 @@
 		$pathMatch = str_replace('/', '\/', $user1Path);
 
 		if (preg_match("/^$pathMatch/", $command)){
-			$msg = exec($command, $stdout, $status);
-			$msg = join("<br/>",$stdout);
-
-			if ($status == 1)
-				$status = _("WARNING");
-			else if ($status == 2)
-				$status = _("CRITICAL");
-			else if ($status == 0)
-				$status = _("OK");
-			else
-				$status = _("UNKNOWN");
+                    if (preg_match("/\.\./", $command)) {
+                        $msg = _("Directory traversal detected");
+                    } else {
+                        $msg = exec($command, $stdout, $status);
+                        $msg = join("<br/>",$stdout);
+                        if ($status == 1) {
+                            $status = _("WARNING");
+                        } elseif ($status == 2) {
+                            $status = _("CRITICAL");
+                        } elseif ($status == 0) {
+                                    $status = _("OK");
+                        } else {
+                            $status = _("UNKNOWN");
+                        }
+                    }
 		} else {
-			$msg = _("Plugin has to be in : ") . $user1Path;
+                    $msg = _("Plugin has to be in : ") . $user1Path;
 		}
 	}
 
