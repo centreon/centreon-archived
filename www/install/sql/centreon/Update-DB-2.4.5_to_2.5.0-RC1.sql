@@ -112,4 +112,38 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60901,
 
 UPDATE `topology` SET `topology_name` = 'Extensions' WHERE `topology_name` = 'Modules' AND `topology_page` = 507;
 
+-- noty
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+-- end of noty
+
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

@@ -344,5 +344,64 @@ class CentreonXMLBGRequest
 		$name = str_replace("\\", "#BS#", $name);
 		return $name;
 	}
+        
+        /**
+         * Get notification message to make it work with noty lib
+         * 
+         * @param array $data | monitoring data
+         * @param array $options
+         * @return string | json format
+         */
+        public function getServiceNotificationMessage($data = array(), $options = array()) {
+            if (!isset($options['monitoring_console_notification']) || !$options['monitoring_console_notification']) {
+                return '';
+            }
+            if ((time() - $data["last_state_change"]) <= $options['AjaxTimeReloadMonitoring']) {
+                    $msgTypeArr = array(
+                      0 => 'success',
+                      1 => 'alert',
+                      2 => 'error',
+                      3 => null
+                    );
+                    $msgdata['type'] = $msgTypeArr[$data['state']];
+                    $msgdata['text'] = sprintf(
+                                _('%s is %s'), 
+                                $data['name'].' / '.$data['description'],
+                                _($this->statusService[$data["state"]])
+                            );
+                    return (json_encode($msgdata));
+            } else {
+                return '';
+            }
+        }
+        
+        /**
+         * Get notification message to make it work with noty lib
+         * 
+         * @param array $data | monitoring data
+         * @param array $options
+         * @return string | json format
+         */
+        public function getHostNotificationMessage($data = array(), $options = array()) {
+            if (!isset($options['monitoring_console_notification']) || !$options['monitoring_console_notification']) {
+                return '';
+            }
+            if ((time() - $data["last_state_change"]) <= $options['AjaxTimeReloadMonitoring']) {
+                    $msgTypeArr = array(
+                      0 => 'success',
+                      1 => 'error',
+                      2 => null
+                    );
+                    $msgdata['type'] = $msgTypeArr[$data['state']];
+                    $msgdata['text'] = sprintf(
+                                _('%s is %s'), 
+                                $data['name'],
+                                _($this->statusHost[$data["state"]])
+                            );
+                    return (json_encode($msgdata));
+            } else {
+                return '';
+            }
+        }
 }
 ?>

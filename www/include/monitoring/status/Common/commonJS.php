@@ -118,6 +118,7 @@ function monitoringCallBack(t)
     set_displayIMG();
     set_displayPOPUP();
     set_displayGenericInfo();
+    displayNotification();
 }
 
 function resetSelectedCheckboxes()
@@ -1019,4 +1020,19 @@ function isset(variable) {
 	} else {
 		return false;
 	}
+}
+
+/**
+ * Display notification
+ */
+function displayNotification() {
+    jQuery(".notifmsg").each(function(id, el) {
+        var ndata = jQuery.parseJSON(jQuery(el).text());
+        var n = noty({
+            layout: 'bottomRight',
+            text: ndata.text,
+            type: ndata.type,
+            timeout: 10000
+        });
+    });
 }

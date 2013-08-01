@@ -287,6 +287,9 @@
 		</td>
 		<td class="ListColRight" style="white-space:nowrap;">
 			<xsl:value-of select="d"/>
+                        <xsl:if test="notifmsg != ''">
+                            <div style="display:none" class="notifmsg"><xsl:value-of select="notifmsg"/></div>
+                        </xsl:if>
 		</td>
 		<xsl:if test = "//i/o = 'svc_unhandled' or //i/o = 'svcpb' or //i/o = 'svc_warning' or //i/o = 'svc_critical' or //i/o = 'svc_unknown'">
 			<td class="ListColRight" style="white-space:nowrap;">

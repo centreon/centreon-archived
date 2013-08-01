@@ -159,6 +159,11 @@
         updateOption($pearDB, "monitoring_dwt_fixed", isset($ret["monitoring_dwt_fixed"]) && $ret['monitoring_dwt_fixed'] ? 1 : 0);
         updateOption($pearDB, "monitoring_dwt_svc", isset($ret["monitoring_dwt_svc"]) && $ret['monitoring_dwt_svc'] ? 1 : 0);
 
+        /*
+         * Misc
+         */
+        updateOption($pearDB, 'monitoring_console_notification', isset($ret["monitoring_console_notification"]) && $ret['monitoring_console_notification'] ? 1 : 0);
+        
         $oreon->initOptGen($pearDB);
 	}
 

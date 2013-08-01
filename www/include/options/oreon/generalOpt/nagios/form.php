@@ -111,7 +111,12 @@
                           "d" => _("days")
                         );
     $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
-
+    
+    /*
+     * Misc
+     */
+    $form->addElement('checkbox', 'monitoring_console_notification', _('Enable console notification'));
+    
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

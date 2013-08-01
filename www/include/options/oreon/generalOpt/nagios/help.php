@@ -53,3 +53,8 @@ $help['tip_force_active_checks'] = dgettext('help', '[Force Active Checks] optio
 $help['tip_fixed'] = dgettext('help', 'Fixed.');
 $help['tip_set_downtimes_on_services_attached_to_hosts'] = dgettext('help', '[Set downtimes on services attached to hosts] option is enbaled by default.');
 $help['tip_duration'] = dgettext('help', 'Default duration of scheduled downtimes.');
+
+/**
+ * Misc
+ */
+$help['tip_console_notification'] = dgettext('help', 'When enabled, notification messages are displayed when new alerts arise in the monitoring consoles.');
