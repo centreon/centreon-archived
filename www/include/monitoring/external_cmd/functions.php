@@ -297,7 +297,7 @@
 	function acknowledgeHostDisable(){
 		global $pearDB,$tab, $_GET, $is_admin, $oreon;
 		$actions = false;
-		$actions = $oreon->user->access->checkAction("host_acknowledgement");
+		$actions = $oreon->user->access->checkAction("host_disacknowledgement");
 
 		if ($actions == true || $is_admin) {
 			$flg = send_cmd(" REMOVE_HOST_ACKNOWLEDGEMENT;".urldecode($_GET["host_name"]), GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
@@ -313,7 +313,7 @@
 	function acknowledgeServiceDisable(){
 		global $pearDB,$tab, $is_admin, $oreon;
 		$actions = false;
-		$actions = $oreon->user->access->checkAction("service_acknowledgement");
+		$actions = $oreon->user->access->checkAction("service_disacknowledgement");
 
 		if ($actions == true || $is_admin) {
 			$flg = send_cmd(" REMOVE_SVC_ACKNOWLEDGEMENT;".urldecode($_GET["host_name"]).";".urldecode($_GET["service_description"]), GetMyHostPoller($pearDB, urldecode($_GET["host_name"])));
@@ -420,7 +420,7 @@
 	function autoAcknowledgeServiceStop($key){
 		global $pearDB,$tab,$oreon, $is_admin;
 		$actions = false;
-		$actions = $oreon->user->access->checkAction("service_acknowledgement");
+		$actions = $oreon->user->access->checkAction("service_disacknowledgement");
 
 		if ($actions == true || $is_admin) {
 			$comment = "Service Auto Acknowledge by ".$oreon->user->alias."\n";
@@ -450,7 +450,7 @@
 	function autoAcknowledgeHostStop($key){
 		global $pearDB,$tab,$oreon, $is_admin;
 		$actions = false;
-		$actions = $oreon->user->access->checkAction("host_acknowledgement");
+		$actions = $oreon->user->access->checkAction("host_disacknowledgement");
 
 		if ($actions == true || $is_admin) {
 			$comment = "Host Auto Acknowledge by ".$oreon->user->alias."\n";

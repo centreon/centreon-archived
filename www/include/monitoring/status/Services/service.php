@@ -228,7 +228,7 @@ $tpl->assign("mon_status_information", _("Status information"));
 				$action_list[4] = _("Schedule immediate check (Forced)");
 			if ($action_name == "service_acknowledgement")
 				$action_list[70] = _("Services : Acknowledge");
-			if ($action_name == "service_acknowledgement")
+			if ($action_name == "service_disacknowledgement")
 				$action_list[71] = _("Services : Disacknowledge");
 			if ($action_name == "service_notifications")
 				$action_list[80] = _("Services : Enable Notification");

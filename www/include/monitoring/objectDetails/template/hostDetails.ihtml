@@ -198,19 +198,17 @@
 						    </tr>
 						{/if}
 						{if $host_data.current_state != UP}
-							{if $aclAct.host_acknowledgement || $admin == true}
+							{if ($aclAct.host_acknowledgement && !$host_data.problem_has_been_acknowledged) || ($aclAct.host_disacknowledgement && $host_data.problem_has_been_acknowledged) || $admin == true}
 								<tr class='list_one'>
 									<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
 									<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.problem_has_been_acknowledged]};'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$en[$host_data.problem_has_been_acknowledged]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
 									<td class="ListColLeft">
-								    {if $aclAct.host_acknowledgement || $admin == 1}			
-									<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
-									<img src={$img_en[$host_data.problem_has_been_acknowledged]}
-									alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"
-									onmouseover="Tip('{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}')"
-									onmouseout="UnTip()">
-									</img></a>
-								    {/if}
+                                                                            <a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
+                                                                            <img src={$img_en[$host_data.problem_has_been_acknowledged]}
+                                                                            alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"
+                                                                            onmouseover="Tip('{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}')"
+                                                                            onmouseout="UnTip()">
+                                                                            </img></a>
 									</td>
 								</tr>
 							{/if}
