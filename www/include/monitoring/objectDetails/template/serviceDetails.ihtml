@@ -337,7 +337,7 @@
 						<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
 						<td class="ListColLeft"><font style='background-color:{$color_onoff[$service_data.problem_has_been_acknowledged]};'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$en[$service_data.problem_has_been_acknowledged]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
 						<td class="ListColLeft">
-					    		{if ($aclAct.service_acknowledgement && !$service_data.problem_has_been_acknowledged)  || ($aclAct.service_acknowledgement && $service_data.problem_has_been_acknowledged) || $admin == true}
+					    		{if $aclAct.service_acknowledgement && !$service_data.problem_has_been_acknowledged || $aclAct.service_acknowledgement && $service_data.problem_has_been_acknowledged || $admin == true}
                                                             <a href='./main.php?p={$p}&o=svcak&cmd=15&host_name={$h.host_name|urlencode}&service_description={$svc_description|urlencode}&en={$en_acknowledge[$service_data.problem_has_been_acknowledged]}'>
                                                             <img src={$img_en[$service_data.problem_has_been_acknowledged]}
                                                                 alt="{$en_acknowledge_text[$service_data.problem_has_been_acknowledged]}"
