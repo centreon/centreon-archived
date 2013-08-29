@@ -156,6 +156,7 @@ class CentreonExternalCommand {
 		$this->actions["service_notifications"][1] = "DISABLE_SVC_NOTIFICATIONS";
 
 		$this->actions["service_acknowledgement"] = "";
+                $this->actions["service_disacknowledgement"] = "";
 
 		$this->actions["service_schedule_check"][0] = "SCHEDULE_SVC_CHECK";
 		$this->actions["service_schedule_check"][1] = "SCHEDULE_FORCED_SVC_CHECK";
@@ -189,6 +190,7 @@ class CentreonExternalCommand {
 		$this->actions["host_notifications"][1] = "DISABLE_HOST_NOTIFICATIONS";
 
 		$this->actions["host_acknowledgement"] = "";
+                $this->actions["host_disacknowledgement"] = "";
 
 		$this->actions["host_schedule_check"][0] = "SCHEDULE_HOST_SVC_CHECKS";
 		$this->actions["host_schedule_check"][1] = "SCHEDULE_FORCED_HOST_SVC_CHECKS";

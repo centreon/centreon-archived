@@ -149,15 +149,28 @@
 			$form->addElement('text', 'start', _("Start Time"), array('size' => 10, 'class' => 'datepicker'));
 			$form->addElement('text', 'end', _("End Time"), array('size' => 10, 'class' => 'datepicker'));
                         
-                        $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
+            $form->addElement('text', 'start_time', '', array('size' => 5, 'class' => 'timepicker'));
 			$form->addElement('text', 'end_time', '', array('size' => 5, 'class' => 'timepicker'));
                         
 			$form->addElement('text', 'duration', _("Duration"), array('size' => '15', 'id' => 'duration'));
 	        $defaultDuration = 3600;
+            
 	        if (isset($oreon->optGen['monitoring_dwt_duration']) && $oreon->optGen['monitoring_dwt_duration']) {
 	            $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
 	        }
 	        $form->setDefaults(array('duration' => $defaultDuration));
+            
+            $scaleChoices = array("s" => _("seconds"),
+                          "m" => _("minutes"),
+                          "h" => _("hours"),
+                          "d" => _("days")
+                        );
+            $form->addElement('select', 'duration_scale', _("Scale of time"), $scaleChoices);
+            $defaultScale = 's';
+            if (isset($oreon->optGen['monitoring_dwt_duration_scale']) && $oreon->optGen['monitoring_dwt_duration_scale']) {
+	            $defaultScale = $oreon->optGen['monitoring_dwt_duration_scale'];
+	        }
+            $form->setDefaults(array('duration_scale' => $defaultScale));
 
 			$with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("Yes"), '1');
 	        $with_services[] = HTML_QuickForm::createElement('radio', 'with_services', null, _("No"), '0');
@@ -167,7 +180,7 @@
 
 			$form->addRule('end', _("Required Field"), 'required');
 			$form->addRule('start', _("Required Field"), 'required');
-                        $form->addRule('end_time', _("Required Field"), 'required');
+            $form->addRule('end_time', _("Required Field"), 'required');
 			$form->addRule('start_time', _("Required Field"), 'required');
 			$form->addRule('comment', _("Required Field"), 'required');
 
@@ -184,8 +197,34 @@
 				$_POST["comment"] = str_replace("'", " ", $_POST['comment']);
 		  	    $duration = null;
 				if (isset($_POST['duration'])) {
-                    $duration = $_POST['duration'];
+                    
+                    if (isset($_POST['duration_scale'])) {
+                        $duration_scale = $_POST['duration_scale'];
+                    } else {
+                        $duration_scale = 's';
+                    }
+                    
+                    switch ($duration_scale)
+                    {
+                        default:
+                        case 's':
+                            $duration = $_POST['duration'];
+                            break;
+                        
+                        case 'm':
+                            $duration = $_POST['duration'] * 60;
+                            break;
+                        
+                        case 'h':
+                            $duration = $_POST['duration'] * 60 * 60;
+                            break;
+                        
+                        case 'd':
+                            $duration = $_POST['duration'] * 60 * 60 * 24;
+                            break;
+                    }
 			    }
+                
 			    $dt_w_services = false;
 			    if ($values['with_services']['with_services'] == 1) {
 			        $dt_w_services = true;
@@ -194,15 +233,15 @@
 			        /*
 			         * Set a downtime for only host
 			         */
-                                $ecObj->AddHostDowntime(
-                                        $_POST["host_id"], 
-                                        $_POST["comment"], 
-                                        $_POST["start"].' '.$_POST['start_time'], 
-                                        $_POST["end"].' '.$_POST['end_time'], 
-                                        $_POST["persistant"], 
-                                        $duration, 
-                                        $dt_w_services
-                                );
+                    $ecObj->AddHostDowntime(
+                            $_POST["host_id"], 
+                            $_POST["comment"], 
+                            $_POST["start"].' '.$_POST['start_time'], 
+                            $_POST["end"].' '.$_POST['end_time'], 
+                            $_POST["persistant"], 
+                            $duration, 
+                            $dt_w_services
+                    );
 			    } else {
 			        /*
 			         * Set a downtime for hostgroup

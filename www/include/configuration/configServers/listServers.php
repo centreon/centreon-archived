@@ -148,7 +148,7 @@
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
+	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, description, ns_activate, ns_ip_address, localhost, is_default
            FROM `nagios_server` $LCASearch ".
            $oreon->user->access->queryBuilder($LCASearch ? 'AND' : 'WHERE', 'id', $pollerstring).
            " ORDER BY name
@@ -203,6 +203,7 @@
 				     "MenuClass" => "list_".$style,
 				     "RowMenu_select" => $selectedElements->toHtml(),
 				     "RowMenu_name" => $config["name"],
+                                     "RowMenu_description" => $config["description"],
 				     "RowMenu_ip_address" => $config["ns_ip_address"],
 				     "RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
 				     "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
@@ -249,7 +250,7 @@
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
+    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
@@ -263,7 +264,7 @@
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o2 = $form->getElement('o2');

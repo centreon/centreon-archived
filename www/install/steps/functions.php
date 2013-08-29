@@ -114,9 +114,10 @@ function splitQueries($file, $delimiter = ';', $connector = null, $tmpFile = "")
                                 return "$fileName Line $line:".mysql_error();
                             }
                         } else {
-                            $res = $connector->query($query);
-                            if (PEAR::isError($res)) {
-                                return "$fileName Line $line:".$res->getMessage();
+                            try {
+                                $connector->query($query);                        
+                            } catch (Exception $e) {
+                                return "$fileName Line $line:".$e->getMessage();
                             }
                         }
                         while (ob_get_level() > 0) {

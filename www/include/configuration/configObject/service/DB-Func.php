@@ -595,7 +595,7 @@ function divideHostsToHost($service_id) {
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
 							    $macVal = $sv['svc_macro_value'];
 								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
-											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $pearDB->escape($macVal) ."')";
+											"('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
 							}
@@ -610,18 +610,6 @@ function divideHostsToHost($service_id) {
 											"('".$maxId["MAX(service_id)"]."', '". $sv['sc_id'] ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							}
-
-                            /*
-                             * Criticality
-                             */
-                            $sql = "SELECT criticality_id
-                                        FROM criticality_resource_relations
-                                        WHERE service_id = ".$pearDB->escape($key);
-                            $res = $pearDB->query($sql);
-                            if ($res->numRows()) {
-                                $cr = $res->fetchRow();
-                                setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
-                            }
 
 							/*
 							 *  get svc desc

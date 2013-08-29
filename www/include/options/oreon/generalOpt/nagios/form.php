@@ -104,7 +104,26 @@
     $form->addElement('checkbox', 'monitoring_dwt_fixed', _("Fixed"));
     $form->addElement('checkbox', 'monitoring_dwt_svc', _("Set downtimes on services attached to hosts"));
     $form->addElement('text', 'monitoring_dwt_duration', _("Duration"), $attrsText2);
-
+    
+    $scaleChoices = array("s" => _("seconds"),
+                          "m" => _("minutes"),
+                          "h" => _("hours"),
+                          "d" => _("days")
+                        );
+    $form->addElement('select', 'monitoring_dwt_duration_scale', _("Scale of time"), $scaleChoices);
+    
+    /*
+     * Misc
+     */
+    $form->addElement('checkbox', 'monitoring_console_notification', _('Enable console notification'));
+    $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
+    $form->addElement('checkbox', 'monitoring_host_notification_1', _('Show Down status'));
+    $form->addElement('checkbox', 'monitoring_host_notification_2', _('Show Unreachable status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_0', _('Show OK status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_1', _('Show Warning status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
+    $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
+    
 	$form->addElement('hidden', 'gopt_id');
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

@@ -89,7 +89,7 @@ var _default_instance = "<?php echo $default_poller?>";
 var _nc = 0;
 var _poppup = (navigator.appName.substring(0,3) == "Net") ? 1 : 0;
 var _popup_no_comment_msg = '<?php echo addslashes(_("Please enter a comment")); ?>';
-
+var _displayNotif = false;
 
 // Hosts WS For Poppin
 var _addrXMLSpanHost = "./include/monitoring/status/Services/xml/<?php print $centreon->broker->getBroker(); ?>/makeXMLForOneHost.php";
@@ -118,6 +118,11 @@ function monitoringCallBack(t)
     set_displayIMG();
     set_displayPOPUP();
     set_displayGenericInfo();
+    if (_displayNotif) {
+        displayNotification();
+    } else {
+        _displayNotif = true;
+    }
 }
 
 function resetSelectedCheckboxes()
@@ -956,7 +961,8 @@ function monitoring_pause()	{
 }
 
 function monitoring_refresh()	{
-	_tmp_on = _on;
+	_displayNotif = false;
+        _tmp_on = _on;
 	_time_live = _time_reload;
 	_on = 1;
 
@@ -1019,4 +1025,19 @@ function isset(variable) {
 	} else {
 		return false;
 	}
+}
+
+/**
+ * Display notification
+ */
+function displayNotification() {
+    jQuery(".notifmsg").each(function(id, el) {
+        var ndata = jQuery.parseJSON(jQuery(el).text());
+        var n = noty({
+            layout: 'bottomRight',
+            text: ndata.text,
+            type: ndata.type,
+            timeout: 10000
+        });
+    });
 }

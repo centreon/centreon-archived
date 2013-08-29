@@ -45,7 +45,8 @@ $help['tip_enable_performance_data'] = dgettext('help', 'Allows users to enable 
 
 $help['tip_enable_disable_checks_for_a_service'] = dgettext('help', 'Allows users to enable or disable checks of a service.');
 $help['tip_enable_disable_notifications_for_a_service'] = dgettext('help', 'Allows users to enable or disable notifications of a service.');
-$help['tip_acknowledge_disacknowledge_a_service'] = dgettext('help', 'Allows users to acknowledge a service or remove an acknowledgement from a service.');
+$help['tip_acknowledge_a_service'] = dgettext('help', 'Allows users to acknowledge a service.');
+$help['tip_disacknowledge_a_service'] = dgettext('help', 'Allows users to remove an acknowledgement from a service.');
 $help['tip_re_schedule_the_next_check_for_a_service'] = dgettext('help', 'Allows users to re-schedule next check of a service.');
 $help['tip_re_schedule_the_next_check_for_a_service_forced'] = dgettext('help', 'Allows users to re-schedule next check of a service by placing its priority to the top.');
 $help['tip_schedule_downtime_for_a_service'] = dgettext('help', 'Allows users to schedule downtime on a service.');
@@ -61,7 +62,8 @@ $help['tip_submit_result_for_a_service'] = dgettext('help', 'Allows users to sub
 
 $help['tip_enable_disable_checks_for_a_host'] = dgettext('help', 'Allows users to enable or disable checks of a host.');
 $help['tip_enable_disable_notifications_for_a_host'] = dgettext('help', 'Allows users to enable or disable notifications of a host.');
-$help['tip_acknowledge_disaknowledge_a_host'] = dgettext('help', 'Allows users to acknowledge a host or remove an acknowledgement from a host.');
+$help['tip_acknowledge_a_host'] = dgettext('help', 'Allows users to acknowledge a host.');
+$help['tip_disacknowledge_a_host'] = dgettext('help', 'Allows users to remove an acknowledgement from a host.');
 $help['tip_schedule_the_check_for_a_host'] = dgettext('help', 'Allows users to re-schedule next check of a host.');
 $help['tip_schedule_the_check_for_a_host_forced'] = dgettext('help', 'Allows users to re-schedule next check of a host by placing its priority to the top.');
 $help['tip_schedule_downtime_for_a_host'] = dgettext('help', 'Allows users to schedule downtime on a host.');

@@ -91,7 +91,11 @@ if (is_file($utilsSql) && $isBroker == false) {
  */
 $prePhp = '../../php/Update-'.$current.'_to_'.$next.'.php';
 if (is_file($prePhp)) {
-    include_once $prePhp;
+    try {
+        include_once $prePhp;
+    } catch (Exception $e) {
+        exitUpgradeProcess(1, $current, $next, $e->getMessage());
+    }
 }
 
 /**

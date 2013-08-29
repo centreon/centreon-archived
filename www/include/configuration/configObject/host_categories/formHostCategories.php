@@ -247,6 +247,7 @@
 	$form->setRequiredNote("<font style='color: red;'>*</font>". _(" Required fields"));
         
         $form->addRule('hc_severity_level', _("Must be a number"), 'numeric');
+        $form->addFormRule('checkSeverity');
 
 	/*
 	 * Smarty template Init

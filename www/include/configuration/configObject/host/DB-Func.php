@@ -430,7 +430,7 @@
 							$macName = str_replace("\$", "", $hst["host_macro_name"]);
 							$macVal = $hst['host_macro_value'];
 							$mTpRq2 = "INSERT INTO `on_demand_macro_host` (`host_host_id`, `host_macro_name`, `host_macro_value`) VALUES" .
-										"('".$maxId["MAX(host_id)"]."', '\$".$macName."\$', '". $macVal ."')";
+										"('".$maxId["MAX(host_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
 					 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							$fields["_".strtoupper($macName)."_"] = $macVal;
 						}
@@ -442,18 +442,6 @@
                         $DBRESULT3 = $pearDB->query($request);
 
 						$centreon->CentreonLogAction->insertLog("host", $maxId["MAX(host_id)"], $host_name, "a", $fields);
-
-                                                /*
-                                                 * Criticality
-                                                 */
-                                                $sql = "SELECT criticality_id
-                                                        FROM criticality_resource_relations
-                                                        WHERE host_id = ".$pearDB->escape($key);
-                                                $res = $pearDB->query($sql);
-                                                if ($res->numRows()) {
-                                                    $cr = $res->fetchRow();
-                                                    setHostCriticality($maxId['MAX(host_id)'], $cr['criticality_id']);
-                                                }
 					}
 				}
 			}

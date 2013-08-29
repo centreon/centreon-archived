@@ -344,5 +344,72 @@ class CentreonXMLBGRequest
 		$name = str_replace("\\", "#BS#", $name);
 		return $name;
 	}
+        
+        /**
+         * Get notification message to make it work with noty lib
+         * 
+         * @param array $data | monitoring data
+         * @param array $options
+         * @return string | json format
+         */
+        public function getServiceNotificationMessage($data = array(), $options = array()) {
+            if (!isset($options['monitoring_console_notification']) || !$options['monitoring_console_notification']) {
+                return '';
+            }
+            if (!isset($options['monitoring_svc_notification_'.$data['state']])) {
+                return '';
+            }
+            $interval = $options['AjaxTimeReloadMonitoring'];
+            if ((time() - $data["last_state_change"]) <= $interval) {
+                    $msgTypeArr = array(
+                      0 => 'success',
+                      1 => 'warning',
+                      2 => 'error',
+                      3 => 'alert'
+                    );
+                    $msgdata['type'] = $msgTypeArr[$data['state']];
+                    $msgdata['text'] = sprintf(
+                                _('%s is %s'), 
+                                $data['name'].' / '.$data['description'],
+                                _($this->statusService[$data["state"]])
+                            );
+                    return (json_encode($msgdata));
+            } else {
+                return '';
+            }
+        }
+        
+        /**
+         * Get notification message to make it work with noty lib
+         * 
+         * @param array $data | monitoring data
+         * @param array $options
+         * @return string | json format
+         */
+        public function getHostNotificationMessage($data = array(), $options = array()) {
+            if (!isset($options['monitoring_console_notification']) || !$options['monitoring_console_notification']) {
+                return '';
+            }
+            if (!isset($options['monitoring_host_notification_'.$data['state']])) {
+                return '';
+            }
+            $interval = $options['AjaxTimeReloadMonitoring'];
+            if ((time() - $data["last_state_change"]) <= $interval) {
+                    $msgTypeArr = array(
+                      0 => 'success',
+                      1 => 'error',
+                      2 => 'alert'
+                    );
+                    $msgdata['type'] = $msgTypeArr[$data['state']];
+                    $msgdata['text'] = sprintf(
+                                _('%s is %s'), 
+                                $data['name'],
+                                _($this->statusHost[$data["state"]])
+                            );
+                    return (json_encode($msgdata));
+            } else {
+                return '';
+            }
+        }
 }
 ?>

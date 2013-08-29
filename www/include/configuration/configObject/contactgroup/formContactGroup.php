@@ -57,11 +57,11 @@
 	/*
 	 * Form Rules
 	 */
-	function myReplace() {
+	/*function myReplace() {
 		global $form;
 		$ret = $form->getSubmitValues();
 		return (str_replace(" ", "_", $ret["cg_name"]));
-	}
+	}*/
 
         $initialValues = array();
         
@@ -172,7 +172,7 @@
 	 * Set rules
 	 */
 	$form->applyFilter('__ALL__', 'myTrim');
-	$form->applyFilter('cg_name', 'myReplace');
+	//$form->applyFilter('cg_name', 'myReplace');
 	$form->addRule('cg_name', _("Compulsory Name"), 'required');
 	$form->addRule('cg_alias', _("Compulsory Alias"), 'required');
 	$form->registerRule('exist', 'callback', 'testContactGroupExistence');

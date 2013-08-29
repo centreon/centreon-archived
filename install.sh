@@ -82,7 +82,7 @@ INSTALL_DIR="$BASE_DIR/libinstall"
 export INSTALL_DIR
 INSTALL_VARS_DIR="$BASE_DIR/varinstall"
 export INSTALL_VARS_DIR
-PERL_LIB_DIR=`eval "\`perl -V:installvendorlib\`"; echo $installsitelib`
+PERL_LIB_DIR=`eval "\`perl -V:installvendorlib\`"; echo $installvendorlib`
 # for freebsd
 if [ "$PERL_LIB_DIR" = "" -o "$PERL_LIB_DIR" = "UNKNOWN" ]; then
     PERL_LIB_DIR=`eval "\`perl -V:installsitelib\`"; echo $installsitelib`

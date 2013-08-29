@@ -96,9 +96,8 @@ if ($o == "svcpb" || $o == "svc_unhandled") {
     }
     
     if (!isset($_GET["order"])) {
-        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] == "") {
-            $order = "ASC";
-        } else {
+        $order = "ASC";
+        if (isset($_SESSION['centreon']->optGen["global_sort_order"]) && $_SESSION['centreon']->optGen["global_sort_order"] != "") {
             $order = $_SESSION['centreon']->optGen["global_sort_order"];
         }
     } else {
@@ -177,7 +176,6 @@ $tpl->assign("mon_status_information", _("Status information"));
 
 	$tpl->assign("p", $p);
 	$tpl->assign('o', $o);
-	$tpl->assign("sort_types", $sort_types);
 	$tpl->assign("num", $num);
 	$tpl->assign("limit", $limit);
 	$tpl->assign("mon_host", _("Hosts"));
@@ -230,7 +228,7 @@ $tpl->assign("mon_status_information", _("Status information"));
 				$action_list[4] = _("Schedule immediate check (Forced)");
 			if ($action_name == "service_acknowledgement")
 				$action_list[70] = _("Services : Acknowledge");
-			if ($action_name == "service_acknowledgement")
+			if ($action_name == "service_disacknowledgement")
 				$action_list[71] = _("Services : Disacknowledge");
 			if ($action_name == "service_notifications")
 				$action_list[80] = _("Services : Enable Notification");

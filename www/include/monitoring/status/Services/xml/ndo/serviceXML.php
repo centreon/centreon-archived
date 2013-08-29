@@ -584,6 +584,11 @@
 		}
 		$obj->XML->writeElement("d", $duration);
 		$obj->XML->writeElement("last_hard_state_change", $hard_duration);
+                $msgdata['last_state_change'] = $ndo['last_state_change'];
+                $msgdata['state'] = $ndo['current_state'];
+                $msgdata['name'] = $ndo['host_name'];
+                $msgdata['description'] = $ndo['service_description'];
+                $obj->XML->writeElement("notifmsg", $obj->getServiceNotificationMessage($msgdata, $centreon->optGen));
 		$obj->XML->writeElement("svc_index", getMyIndexGraph4Service($ndo["host_name"], $ndo["service_description"], $obj->DBC));
 		$obj->XML->endElement();
 	}

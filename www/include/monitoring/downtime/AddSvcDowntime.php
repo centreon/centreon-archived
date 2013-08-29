@@ -137,6 +137,19 @@
 	            $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
 	        }
 	        $form->setDefaults(array('duration' => $defaultDuration));
+            
+            $scaleChoices = array("s" => _("Seconds"),
+                                  "m" => _("Mminutes"),
+                                  "h" => _("Hours"),
+                                  "d" => _("Days")
+                        );
+            $form->addElement('select', 'duration_scale', _("Scale of time"), $scaleChoices);
+            $defaultScale = 's';
+            if (isset($oreon->optGen['monitoring_dwt_duration_scale']) && $oreon->optGen['monitoring_dwt_duration_scale']) {
+	            $defaultScale = $oreon->optGen['monitoring_dwt_duration_scale'];
+	        }
+            $form->setDefaults(array('duration_scale' => $defaultScale));
+            
 			$form->addElement('textarea', 'comment', _("Comments"), $attrsTextarea);
 
 			$form->addRule('host_id', _("Required Field"), 'required');
@@ -159,18 +172,43 @@
                                 $_POST["comment"] = 0;
 			    $_POST["comment"] = str_replace("'", " ", $_POST['comment']);
 			    $duration = null;
-			    if (isset($_POST['duration'])) {
-                                $duration = $_POST['duration'];
+				if (isset($_POST['duration'])) {
+                    
+                    if (isset($_POST['duration_scale'])) {
+                        $duration_scale = $_POST['duration_scale'];
+                    } else {
+                        $duration_scale = 's';
+                    }
+                    
+                    switch ($duration_scale)
+                    {
+                        default:
+                        case 's':
+                            $duration = $_POST['duration'];
+                            break;
+                        
+                        case 'm':
+                            $duration = $_POST['duration'] * 60;
+                            break;
+                        
+                        case 'h':
+                            $duration = $_POST['duration'] * 60 * 60;
+                            break;
+                        
+                        case 'd':
+                            $duration = $_POST['duration'] * 60 * 60 * 24;
+                            break;
+                    }
 			    }
-                            $ecObj->AddSvcDowntime(
-                                $_POST["host_id"], 
-                                $_POST["service_id"],  
-                                $_POST["comment"], 
-                                $_POST["start"] . ' ' . $_POST['start_time'], 
-                                $_POST["end"] . ' ' . $_POST['end_time'], 
-                                $_POST["persistant"], 
-                                $duration
-                            );
+                $ecObj->AddSvcDowntime(
+                    $_POST["host_id"], 
+                    $_POST["service_id"],  
+                    $_POST["comment"], 
+                    $_POST["start"] . ' ' . $_POST['start_time'], 
+                    $_POST["end"] . ' ' . $_POST['end_time'], 
+                    $_POST["persistant"], 
+                    $duration
+                );
 		    	require_once("viewServiceDowntime.php");
 			} else {
 				/*

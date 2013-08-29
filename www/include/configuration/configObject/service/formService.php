@@ -990,6 +990,7 @@
 		$tpl->display("formService.ihtml");
 ?>
 <script type="text/javascript">
+	setTimeout('transformForm()', 200);
 	showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 </script>
 <?php } ?>

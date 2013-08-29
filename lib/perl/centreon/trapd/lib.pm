@@ -96,6 +96,7 @@ sub get_oids {
                                         traps_oid, traps_name, traps_advanced_treatment, traps_advanced_treatment_default, traps_execution_command_enable, traps_submit_result_enable, traps_status,
                                         traps_timeout, traps_exec_interval, traps_exec_interval_type,
                                         traps_routing_mode, traps_routing_value,
+                                        traps_exec_method, 
                                         service_categories.level, service_categories.sc_name, service_categories.sc_id
                                         FROM traps
                                         LEFT JOIN traps_vendor ON (traps_vendor.id = traps.manufacturer_id)
@@ -131,8 +132,6 @@ sub get_hosts {
     # trap_info => ref
     # agent_dns_name => value
     # ip_address => value
-    # entvar => ref array
-    # entvarname => ref array    
     my %args = @_;
     my ($dstatus, $sth);
     my $ref_result;
@@ -511,6 +510,7 @@ sub readtrap {
     #Process varbinds
     #Separate everything out, keeping both the variable name and the value
     my $linenum = 1;
+    my $variable_fix;
     while (defined(my $line = <$input>)) {
         push(@rawtrap, $line);
         $line =~ s(`)(')g;	#` Replace any back ticks with regular single quote
@@ -529,7 +529,6 @@ sub readtrap {
         chomp ($temp2);       # Variable VALUE
         chomp ($line);
 
-        my $variable_fix;
         if ($linenum == 1) {
             # Check if line 1 contains 'variable value' or just 'value' 
             if (defined($temp2)) {

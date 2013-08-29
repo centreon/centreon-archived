@@ -38,11 +38,12 @@
 
  	if (!isset($oreon))
  		exit();
-
+        
 	/*
 	 * Debug Flag
 	 */
 	$debug = 0;
+        $max_characters = 20000;
 
 	/*
 	 * Database retrieve information for Manufacturer
@@ -130,8 +131,13 @@
 			unlink($values['tmp_name'] . '.conf');
 			$msg .= "<br />".str_replace ("\n", "<br />", $stdout);
 			$msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";
-			if ($msg)
-				$tpl->assign('msg', $msg);
+			if ($msg) {
+                            if (strlen($msg) > $max_characters) {
+                                $msg = substr($msg, 0, $max_characters)."...".
+                                        sprintf(_("Message truncated (exceeded %s characters)"), $max_characters);
+                            }
+                            $tpl->assign('msg', $msg);
+                        }
 		}
 		$valid = true;
 	}

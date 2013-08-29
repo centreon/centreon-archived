@@ -418,6 +418,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
   `config_write_timestamp` enum('0','1') DEFAULT '1',
+  `config_write_thread_id` enum('0','1') DEFAULT '1',
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '50000',
@@ -1840,6 +1841,18 @@ CREATE TABLE `options` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `poller_command_relations` (
+  `poller_id` int(11) NOT NULL,
+  `command_id` int(11) NOT NULL,
+  `command_order` tinyint (3) DEFAULT NULL,
+  KEY `poller_id` (`poller_id`),
+  KEY `command_id` (`command_id`),
+  CONSTRAINT `poller_command_relations_fk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `poller_command_relations_fk_2` FOREIGN KEY (`command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `service` (
   `service_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_template_model_stm_id` int(11) DEFAULT NULL,
@@ -2084,6 +2097,7 @@ CREATE TABLE `traps` (
   `traps_log` enum('0','1') DEFAULT '0',
   `traps_routing_mode` enum('0','1') DEFAULT '0',
   `traps_routing_value` varchar(255) DEFAULT NULL,
+  ̀`traps_exec_method` enum('0','1') DEFAULT '0',
   `traps_comments` text,
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),

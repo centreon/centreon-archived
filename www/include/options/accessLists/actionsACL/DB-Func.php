@@ -278,6 +278,7 @@
 		$actions[] = "service_checks";
 		$actions[] = "service_notifications";
 		$actions[] = "service_acknowledgement";
+                $actions[] = "service_disacknowledgement";
 		$actions[] = "service_schedule_check";
 		$actions[] = "service_schedule_forced_check";
 		$actions[] = "service_schedule_downtime";
@@ -291,6 +292,7 @@
 		$actions[] = "host_checks";
 		$actions[] = "host_notifications";
 		$actions[] = "host_acknowledgement";
+                $actions[] = "host_disacknowledgement";
 		$actions[] = "host_schedule_check";
 		$actions[] = "host_schedule_forced_check";
 		$actions[] = "host_schedule_downtime";
