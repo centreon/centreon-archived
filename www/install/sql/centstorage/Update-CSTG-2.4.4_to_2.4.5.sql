@@ -1,3 +1,4 @@
+
 ALTER TABLE `index_data` ADD COLUMN `rrd_retention` INT(11) DEFAULT NULL AFTER `to_delete`;
 
 -- Add warn low
@@ -8,3 +9,6 @@ ALTER TABLE `metrics` ADD COLUMN `crit_threshold_mode` enum('0','1') DEFAULT NUL
 
 ALTER TABLE `downtimes` ADD COLUMN `actual_start_time` int(11) DEFAULT NULL AFTER `start_time`;
 ALTER TABLE `downtimes` ADD COLUMN `actual_end_time` int(11) DEFAULT NULL AFTER `actual_start_time`;
+
+-- Ticket #4863
+ALTER TABLE metrics MODIFY metric_name VARCHAR (255) COLLATE utf8_bin;

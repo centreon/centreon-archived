@@ -351,7 +351,7 @@ UNLOCK TABLES;
 CREATE TABLE `metrics` (
   `metric_id` int(11) NOT NULL AUTO_INCREMENT,
   `index_id` int(11) DEFAULT NULL,
-  `metric_name` varchar(255) DEFAULT NULL,
+  `metric_name` varchar(255) DEFAULT NULL COLLATE utf8_bin,
   `data_source_type` enum('0','1','2','3') DEFAULT NULL,
   `unit_name` varchar(32) DEFAULT NULL,
   `warn` float DEFAULT NULL,
