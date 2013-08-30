@@ -951,6 +951,8 @@ sub parseRequest($){
         $self->initEngine($1, "restart");
     } elsif ($action =~ /^RELOAD\:([0-9]*)/){
         $self->initEngine($1, "reload");
+    } elsif ($action =~ /^FORCERELOAD\:([0-9]*)/){
+        $self->initEngine($1, "force-reload");
     } elsif ($action =~ /^START\:([0-9]*)/){
         $self->initEngine($1, "start");
     } elsif ($action =~ /^STOP\:([0-9]*)/){

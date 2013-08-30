@@ -1296,6 +1296,9 @@ function prepare_sudo_config() {
 	# Monitoring engine reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* reload
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT reload
+	# Monitoring engine force-reload
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT* force-reload
+	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_INIT_SCRIPT force-reload
 	# Monitoring engine test config
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY* -v *
 	CENTREON   ALL = NOPASSWD: $MONITORINGENGINE_BINARY -v *

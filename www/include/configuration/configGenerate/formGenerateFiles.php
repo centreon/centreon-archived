@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
 /*
  *  Get Poller List
@@ -89,7 +87,7 @@ $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' =
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
 $form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
 
-$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
+$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 4 => _("Force Reload"), 3 => _("External Command"));
 $form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '2'));
 
@@ -110,7 +108,9 @@ $tpl->assign("consoleLabel", _("Console"));
 $tpl->assign("progressLabel", _("Progress"));
 $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 $helptext = "";
+
 include_once("help.php");
+
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
