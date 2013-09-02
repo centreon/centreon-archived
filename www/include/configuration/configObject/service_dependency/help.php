@@ -7,12 +7,8 @@ $help["inherits_parent"] = sprintf("%s<br/><font color='red'><b><i>%s</i></b></f
                                 dgettext("help", "This directive indicates whether or not the dependency inherits dependencies of the host that is being depended upon (also referred to as the master host). In other words, if the master host is dependent upon other hosts and any one of those dependencies fail, this dependency will also fail."),
                                 dgettext("help", "Ignored by Centreon Engine."));
 
-$help["execution_failure_criteria"] = sprintf("%s<br/><font color='red'><b><i>%s</i></b></font>",
-										     dgettext("help", "This directive is used to specify the criteria that determine when the dependent host should not be actively checked. If the master host is in one of the failure states we specify, the dependent host will not be actively checked. If you specify None as an option, the execution dependency will never fail and the dependent host will always be actively checked (if other conditions allow for it to be)."),
-                                             dgettext("help", "Ignored by Centreon Engine."));
-$help["notification_failure_criteria"] = sprintf("%s<br/><font color='red'><b><i>%s</i></b></font>",
-                                                dgettext("help", "This directive is used to define the criteria that determine when notifications for the dependent host should not be sent out. If the master host is in one of the failure states we specify, notifications for the dependent host will not be sent to contacts. If you specify None as an option, the notification dependency will never fail and notifications for the dependent host will always be sent out."),
-                                                dgettext("help", "Ignored by Centreon Engine."));
+$help["execution_failure_criteria"] = dgettext("help", "This directive is used to specify the criteria that determine when the dependent host should not be actively checked. If the master host is in one of the failure states we specify, the dependent host will not be actively checked. If you specify None as an option, the execution dependency will never fail and the dependent host will always be actively checked (if other conditions allow for it to be).");
+$help["notification_failure_criteria"] = dgettext("help", "This directive is used to define the criteria that determine when notifications for the dependent host should not be sent out. If the master host is in one of the failure states we specify, notifications for the dependent host will not be sent to contacts. If you specify None as an option, the notification dependency will never fail and notifications for the dependent host will always be sent out.");
 
 /*
  * Host service description
