@@ -47,7 +47,7 @@ $retentionRes = $pearDB->query("SELECT host_host_id as id, MAX(hg_rrd_retention)
                                 WHERE hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id
                                 GROUP BY host_host_id");
 while ($row = $retentionRes->fetchRow()) {
-    if (!isset($retentionCache[$row['id']])) {
+    if (!isset($retentionCache[$row['id']]) && $row['retention']) {
         $retentionCache[$row['id']] = $row['retention'] * DAY_SECS;
     }
 }
@@ -86,7 +86,7 @@ while ($hostSvcRow = $hostSvcRes->fetchRow()) {
 
     $host_id = $hostSvcRow['host_id'];
     if (isset($retentionCache[$host_id])) {
-        $serviceRetention[$retentionCache[$host_id]] = $host_id.';'.$hostSvcRow['service_id'];
+        $serviceRetention[$retentionCache[$host_id]][] = $host_id.';'.$hostSvcRow['service_id'];
     }
 }
 
