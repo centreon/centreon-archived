@@ -50,7 +50,7 @@ if (!isset($_SESSION['DB_USER'])) {
 $dbUser = $_SESSION['DB_USER'];
 $dbPass = $_SESSION['DB_PASS'];
 $host = "localhost";
-if ($_SESSION['ADDRESS']) {
+if ($_SERVER['SERVER_ADDR']) {
 	$host = $_SERVER['SERVER_ADDR'];
 }
 $query = "GRANT ALL PRIVILEGES ON `%s`.* TO `". $dbUser . "`@`". $host . "` IDENTIFIED BY '". $dbPass . "' WITH GRANT OPTION";
