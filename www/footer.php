@@ -31,13 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
- 	if (!isset($centreon))
-		exit;
+if (!isset($centreon)) {
+    exit;
+ }
+
+require_once("./class/centreonData.class.php");
 
 	?><div>
 		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
