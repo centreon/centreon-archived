@@ -1073,21 +1073,20 @@ function deleteHostServiceMultiTemplate($hID, $scndHID, $host_list, $antiLoop = 
 
 function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
     global $form, $pearDB, $centreon;
-
+    
     $hostObj = new CentreonHost($pearDB);
-                
+    
     if (!$host_id) {
         return;
     }
-
+    
     $host = new CentreonHost($pearDB);
-
+    
     $ret = array();
-    if (!isset($cfg)) {
+    if (!isset($cfg))
         $ret = $form->getSubmitValues();
-    } else {
+    else
         $ret = $cfg;
-    }
 
     if (isset($ret["command_command_id_arg1"]) && $ret["command_command_id_arg1"] != NULL)		{
         $ret["command_command_id_arg1"] = str_replace("\n", "#BR#", $ret["command_command_id_arg1"]);
