@@ -244,20 +244,20 @@ while (false !== ($filename = readdir($handle))) {
         $i++;
     }
  }
-	closedir($handle);
+closedir($handle);
 
-	/*
-	 * Init Template Var
-	 */
-	$tpl->assign("elemArr", $elemArr);
-	$tpl->assign("action_install", _("Install Module"));
-	$tpl->assign("action_delete",  _("Uninstall Module"));
-	$tpl->assign("action_upgrade", _("Upgrade"));
+/*
+ * Init Template Var
+ */
+$tpl->assign("elemArr", $elemArr);
+$tpl->assign("action_install", _("Install Module"));
+$tpl->assign("action_delete",  _("Uninstall Module"));
+$tpl->assign("action_upgrade", _("Upgrade"));
 
-	/*
-	 * Apply a template definition
-	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$tpl->display("listModules.ihtml");
+/*
+ * Apply a template definition
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$tpl->display("listModules.ihtml");
     
 ?>
