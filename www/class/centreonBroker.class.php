@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 class CentreonBroker
@@ -77,60 +74,60 @@ class CentreonBroker
 		return $this->name;
 	}
         
-        /**
-         * Execute script
-         * 
-         * @param string $script
-         * @param string $action
-         * @return void 
-         */
-        protected function execLocalScript($script, $action) {
-            shell_exec("sudo $script $action");
-        }
+    /**
+     * Execute script
+     * 
+     * @param string $script
+     * @param string $action
+     * @return void 
+     */
+    protected function execLocalScript($script, $action) {
+        shell_exec("sudo $script $action");
+    }
         
-        /**
-         * Get Init script
-         * 
-         * @param string $sql;
-         * @return string
-         */
-        protected function getInitScript($sql) {
-            $res = $this->db->query($sql);
-            $row = $res->fetchRow();
-            $scriptName = "";
-            if (isset($row['value']) && trim($row['value']) != '') {
-                $scriptName = trim($row['value']);
-            }
-            return $scriptName;
+    /**
+     * Get Init script
+     * 
+     * @param string $sql;
+     * @return string
+     */
+    protected function getInitScript($sql) {
+        $res = $this->db->query($sql);
+        $row = $res->fetchRow();
+        $scriptName = "";
+        if (isset($row['value']) && trim($row['value']) != '') {
+            $scriptName = trim($row['value']);
         }
+        return $scriptName;
+    }
         
-        /**
-         * Do action
-         * 
-         * @param string $action
-         * @return void 
-         */
-        protected function doAction($action) {
-            if ($this->name == 'broker') {
-                $initScript = $this->getInitScript("SELECT `value` FROM options WHERE `key` = 'broker_correlator_script'");
-                if ($initScript) {
-                    $this->execLocalScript($initScript, $action);
-                }
+    /**
+     * Do action
+     * 
+     * @param string $action
+     * @return void 
+     */
+    protected function doAction($action) {
+        if ($this->name == 'broker') {
+            $initScript = $this->getInitScript("SELECT `value` FROM options WHERE `key` = 'broker_correlator_script'");
+            if ($initScript) {
+                $this->execLocalScript($initScript, $action);
             }
         }
+    }
         
-        /**
-         * Magic method
-         * 
-         * @param string $name 
-         * @param array $params
-         * @throws Exception
-         */
-        public function __call($name, $params) {
-            if (!preg_match('/reload|restart|stop|start/', $name)) {
-                throw new Exception('Unknown method: '.$name);
-            }
-            $this->doAction($name);
+    /**
+     * Magic method
+     * 
+     * @param string $name 
+     * @param array $params
+     * @throws Exception
+     */
+    public function __call($name, $params) {
+        if (!preg_match('/reload|restart|stop|start/', $name)) {
+            throw new Exception('Unknown method: '.$name);
         }
+        $this->doAction($name);
+    }
 }
 ?>

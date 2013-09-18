@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
@@ -232,9 +229,9 @@ class CentreonConfigCentreonBroker
         $qf = new HTML_QuickForm('form_' . $formId, 'post', '?p=' . $page);
 
         $qf->addElement('text', $tag . '[' . $formId . '][name]', _('Name'), array_merge($this->attrText, array(
-            'id' => $tag . '[' . $formId . '][name]',
-            'class' => 'v_required'
-        )));
+                                                                                                                'id' => $tag . '[' . $formId . '][name]',
+                                                                                                                'class' => 'v_required'
+                                                                                                                )));
         //$qf->addRule($tag . '[' . $formId . '][name]', _('Name'), 'required');
 
         $type = $this->getTypeShortname($typeId);
@@ -253,32 +250,32 @@ class CentreonConfigCentreonBroker
             $elementAttr = array();
             $default = null;
             switch ($field['fieldtype']) {
-               case 'int':
-                   $elementType = 'text';
-                   $elementAttr = $this->attrInt;
-                   break;
-               case 'select':
-                   $elementType = 'select';
-                   $elementAttr = $this->getListValues($field['id']);
-                   $default = $this->getDefaults($field['id']);
-                   break;
-               case 'radio':
-                   $tmpRadio = array();
-                   foreach ($this->getListValues($field['id']) as $key => $value) {
-    	               $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['fieldname'], null, _($value), $key);
-                   }
-	               $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
-                   $default = $this->getDefaults($field['id']);
-                   break;
-               case 'password':
-                   $elementType = 'password';
-                   $elementAttr = $this->attrText;
-                   break;
-               case 'text':
-               default:
-                   $elementType = 'text';
-                   $elementAttr = $this->attrText;
-                   break;
+            case 'int':
+                $elementType = 'text';
+                $elementAttr = $this->attrInt;
+                break;
+            case 'select':
+                $elementType = 'select';
+                $elementAttr = $this->getListValues($field['id']);
+                $default = $this->getDefaults($field['id']);
+                break;
+            case 'radio':
+                $tmpRadio = array();
+                foreach ($this->getListValues($field['id']) as $key => $value) {
+                    $tmpRadio[] = HTML_QuickForm::createElement('radio', $field['fieldname'], null, _($value), $key);
+                }
+                $qf->addGroup($tmpRadio, $elementName, _($field['displayname']), '&nbsp;');
+                $default = $this->getDefaults($field['id']);
+                break;
+            case 'password':
+                $elementType = 'password';
+                $elementAttr = $this->attrText;
+                break;
+            case 'text':
+            default:
+                $elementType = 'text';
+                $elementAttr = $this->attrText;
+                break;
             }
 
             /*
@@ -301,9 +298,9 @@ class CentreonConfigCentreonBroker
              */
             if ($field['required'] && is_null($field['value']) && $elementType != 'select') {
                 $elementAttr = array_merge($elementAttr, array(
-                    'id' => $elementName,
-                    'class' => 'v_required'
-                ));
+                                                               'id' => $elementName,
+                                                               'class' => 'v_required'
+                                                               ));
             }
 
             /*
@@ -718,27 +715,27 @@ class CentreonConfigCentreonBroker
         foreach ($configs as $config) {
             list($key, $value) = explode('=', $config);
             switch ($key) {
-                case 'D':
-                    $s_db = $value;
-                    break;
-                case 'T':
-                    $s_table = $value;
-                    break;
-                case 'C':
-                    $s_column = $value;
-                    break;
-                case 'F':
-                    $s_filter = $value;
-                    break;
-                case 'K':
-                    $s_key = $value;
-                    break;
-                case 'CK':
-                    $s_column_key = $value;
-                    break;
-                case 'RPN':
-                    $s_rpn = $value;
-                    break;
+            case 'D':
+                $s_db = $value;
+                break;
+            case 'T':
+                $s_table = $value;
+                break;
+            case 'C':
+                $s_column = $value;
+                break;
+            case 'F':
+                $s_filter = $value;
+                break;
+            case 'K':
+                $s_key = $value;
+                break;
+            case 'CK':
+                $s_column_key = $value;
+                break;
+            case 'RPN':
+                $s_rpn = $value;
+                break;
             }
         }
         /*
@@ -756,12 +753,12 @@ class CentreonConfigCentreonBroker
          * Execute the query
          */
         switch ($s_db) {
-            case 'centreon':
-                $res = $this->db->query($query);
-                break;
-            case 'centreon_storage':
-                $res = $pearDBO->query($query);
-                break;
+        case 'centreon':
+            $res = $this->db->query($query);
+            break;
+        case 'centreon_storage':
+            $res = $pearDBO->query($query);
+            break;
         }
         if (PEAR::isError($res)) {
             return false;
@@ -799,9 +796,9 @@ class CentreonConfigCentreonBroker
         }
         try {
             $val = array_reduce(
-                preg_split('/\s+/', $val . ' ' . $rpn),
-                array($this, 'rpnOperation')
-            );
+                                preg_split('/\s+/', $val . ' ' . $rpn),
+                                array($this, 'rpnOperation')
+                                );
             return $val[0];
         } catch (InvalidArgumentException $e) {
             return $val;
