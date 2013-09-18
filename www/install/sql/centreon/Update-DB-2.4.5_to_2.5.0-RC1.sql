@@ -150,4 +150,19 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,
 -- Ticket #4611
 ALTER TABLE `nagios_server` ADD COLUMN `description` VARCHAR(50) DEFAULT NULL;
 
+-- Ticket #4201
+
+DELETE FROM cb_list WHERE cb_field_id = '6'; 
+INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '6', 'no');
+DELETE FROM cb_list WHERE cb_field_id = '25'; 
+INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '25', 'no');
+
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'No', 'no');
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'Yes', 'yes');
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'Auto', 'auto');
+
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('1', 'No', 'no');
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('1', 'Yes', 'yes');
+
+
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

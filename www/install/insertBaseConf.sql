@@ -751,12 +751,12 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 --
 
 INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
-(1, 6, 'no'),
+(5, 6, 'no'),
 (1, 20, 'yes'),
 (1, 21, 'no'),
 (1, 22, 'yes'),
 (1, 23, 'no'),
-(1, 25, 'no'),
+(5, 25, 'no'),
 (2, 12, NULL),
 (3, 15, NULL),
 (4, 24, NULL),
@@ -784,7 +784,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (3, 'Sysbase', 'tds'),
 (4, 'Base', 'low'),
 (4, 'Detailed', 'medium'),
-(4, 'Very detailed', 'high');
+(4, 'Very detailed', 'high'), 
+(5, 'No', 'no'),
+(5, 'Yes', 'yes'),
+(5, 'Auto', 'auto');
 
 --
 -- Contenu de la table `cb_module_relation`
