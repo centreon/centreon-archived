@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configNdo2db/formNdo2db.php $
- * SVN : $Id: formNdo2db.php 11685 2011-02-14 16:14:15Z jmathis $
- *
  */
 
 if (!isset($oreon)) {
@@ -174,19 +171,19 @@ if ($o == "w")  {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
     }
     $form->freeze();
-} else if ($o == "c")   {
+ } else if ($o == "c")   {
     /*
      * Modify a Centreon Broker information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"));
     $res = $form->addElement('reset', 'reset', _("Reset"));
-} else if ($o == "a")   {
+ } else if ($o == "a")   {
     /*
      * Add a nagios information
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"));
     $res = $form->addElement('reset', 'reset', _("Reset"));
-}
+ }
 
 $valid = false;
 if ($form->validate())  {
@@ -199,9 +196,9 @@ if ($form->validate())  {
     $o = NULL;
     $valid = true;
 }
-if ($valid)
+if ($valid) {
     require_once($path."listCentreonBroker.php");
-else {
+ } else {
     /*
      * Apply a template definition
      */

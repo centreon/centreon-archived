@@ -31,42 +31,39 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    if (!isset($oreon)) {
-        exit();
-    }
+if (!isset($oreon)) {
+    exit();
+ }
 
-	/*
-	 * Path to the configuration dir
-	 */
-	$path = "./include/configuration/configCentreonBroker/";
+/*
+ * Path to the configuration dir
+ */
+$path = "./include/configuration/configCentreonBroker/";
 
-	/*
-	 * PHP functions
-	 */
-	require_once "./include/common/common-Func.php";
+/*
+ * PHP functions
+ */
+require_once "./include/common/common-Func.php";
 
-	require_once "./class/centreonWizard.php";
+require_once "./class/centreonWizard.php";
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-	$wizardId = uniqid();
+$wizardId = uniqid();
 
-	/*
-	 * Initialize the Wizard
-	 */
-	$wizard = new Centreon_Wizard('broker', $wizardId);
+/*
+ * Initialize the Wizard
+ */
+$wizard = new Centreon_Wizard('broker', $wizardId);
 
-    $_SESSION['wizard']['broker'][$wizardId] = serialize($wizard);
+$_SESSION['wizard']['broker'][$wizardId] = serialize($wizard);
 
-	$tpl->assign('wizardId', $wizardId);
+$tpl->assign('wizardId', $wizardId);
 
-	$tpl->display("wizard.ihtml");
+$tpl->display("wizard.ihtml");
