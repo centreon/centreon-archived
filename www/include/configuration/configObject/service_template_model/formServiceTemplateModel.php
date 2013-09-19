@@ -55,7 +55,7 @@
 	$cmdId = 0;
 	$serviceTplId = null;
 	$service = array();
-        $serviceObj = new CentreonService($pearDB);
+    $serviceObj = new CentreonService($pearDB);
 	if (($o == "c" || $o == "w") && $service_id) {
 		if (isset($lockedElements[$service_id])) {
                     $o = "w";
@@ -422,11 +422,22 @@
 		$form->setDefaults(array('mc_mod_cgs'=>'0'));
 	}
 
-        /*
-         * Additive
-         */
-        $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
-        $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
+    ##
+	## Host's contact inheritance
+	##
+	$form->addElement('header', 'inherit_contacts_from_host', _("Inherit contacts from host"));
+	$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("Yes"), '1');
+	$serviceIHC[] = HTML_QuickForm::createElement('radio', 'service_inherit_contacts_from_host', null, _("No"), '0');
+	$form->addGroup($serviceIHC, 'service_inherit_contacts_from_host', _("Inherit contacts from host"), '&nbsp;');
+	if ($o != "mc") {
+		$form->setDefaults(array('service_inherit_contacts_from_host' => '1'));
+	}
+
+    /*
+     * Additive
+     */
+    $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
+    $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
         
 	/*
 	 *  Contacts
