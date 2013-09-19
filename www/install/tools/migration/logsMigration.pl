@@ -315,8 +315,8 @@ sub processData() {
 		  . ( localtime( $_->{"day_end"} ) )[2] . ":"
 		  . ( localtime( $_->{"day_end"} ) )[1] . " => ";
 		syncDay( $_->{"day_start"}, $_->{"day_end"} );
-		undef(%services);
 	}
+	undef(%services);
 }
 
 
