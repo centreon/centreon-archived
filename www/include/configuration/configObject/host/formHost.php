@@ -916,20 +916,22 @@
 	if ($o != "mc")	{
             $form->applyFilter('host_name', 'myReplace');
             $form->addRule('host_name', _("Compulsory Name"), 'required');
-            $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
-            $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
+            
+            if (isset($oreon->optGen["strict_hostParent_poller_management"]) && $centreon->optGen["strict_hostParent_poller_management"] == 1) {
+                $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
+                $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+                $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
+                $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
+            }
             /*
              * Test existence
              */
             $form->registerRule('testModule', 'callback', 'testHostName');
             $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
             $form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
-	    $form->registerRule('exist', 'callback', 'testHostExistence');
-	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
-	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
-
-            $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
-            $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+            $form->registerRule('exist', 'callback', 'testHostExistence');
+            $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
+            $form->addRule('host_name', _("Host name is already in use"), 'exist');            
             $form->addRule('host_address', _("Compulsory Address"), 'required');
 
             /*

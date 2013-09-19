@@ -41,6 +41,9 @@
  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_timezone_management">{$form.enable_gmt.label}</td><td class="FormRowValue">{$form.enable_gmt.html}</td></tr>
  	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">{$form.gmt.label}</td><td class="FormRowValue">{$form.gmt.html}</td></tr>
  	
+  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$configBehavior}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="strict_hostParent_poller_management">{$form.strict_hostParent_poller_management.label}</td><td class="FormRowValue">{$form.strict_hostParent_poller_management.html}</td></tr>
+
  	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
  </table>
 {if !$valid}

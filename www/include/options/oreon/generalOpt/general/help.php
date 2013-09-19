@@ -65,3 +65,8 @@ $help['sso_enable'] = dgettext('help', 'Whether SSO authentication is enabled.')
 $help['sso_mode'] = dgettext('help', 'Authentication can be solely based on SSO or it can work with both SSO and local authentication systems.');
 $help['sso_trusted_clients'] = dgettext('help', 'IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.');
 $help['sso_header_username'] = dgettext('help', 'The header variable that will be used as login. i.e: $_SERVER[\'HTTP_AUTH_USER\']');
+
+/**
+ * UI bahvior
+ */
+$help['strict_hostParent_poller_management'] = dgettext('help', 'This option enable a strict mode for the management of parent links between hosts on different pollers. Some hosts can have a parent link between them even if they are not monitored by the same poller. Select yes if you want to block the UI in order to oblige user to let host with a declared relation on the same poller. if you select No, during the generation process, relation will be broken and not generated but kept with Centreon Broker Correlation module.');
