@@ -116,7 +116,11 @@
 		/*
 		 * Get activated contacts
 		 */
-		$DBRESULT = $pearDB->query("SELECT COUNT(*) AS nbr_valid FROM contact WHERE contact_activate = '1' AND contact_oreon = '1' AND contact_id <> '$contact_id'");
+		$DBRESULT = $pearDB->query("SELECT COUNT(*) AS nbr_valid 
+			FROM contact 
+			WHERE contact_activate = '1' 
+			AND contact_oreon = '1' 
+			AND contact_id <> '".$pearDB->escape($contact_id)."'");
 		$contacts = $DBRESULT->fetchRow();
 
 		if ($contacts["nbr_valid"] == 0) {

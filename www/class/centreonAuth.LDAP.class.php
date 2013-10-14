@@ -244,7 +244,7 @@ class CentreonAuthLDAP {
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 $queryUpdateExtInfos = "UPDATE contact SET
 					contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "',
-					contact_name = '" . $userDisplay . "',
+					contact_name = '" . $this->pearDB->escape($userDisplay, false) . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
                                         ar_id = ".$this->arId."
