@@ -503,6 +503,16 @@
                     'size' => 25
                 )
                 );
+        $cloneSetMacro[] = $form->addElement(
+                'checkbox',
+                'macroPassword[#index#]',
+                _('Password'),
+                null,
+                array(
+                    'id' => 'macroPassword_#index#',
+                    'onClick' => 'javascript:change_macro_input_type(this, false)'
+                )
+        );
         
         $cloneSetTemplate = array();
         $cloneSetTemplate[] = $form->addElement(
@@ -1017,7 +1027,10 @@
 	$tpl->assign("sort3", _("Data Processing"));
 	$tpl->assign("sort4", _("Host Extended Infos"));
 	$tpl->assign("sort5", _("Macros"));
-	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
+	$tpl->assign('javascript', '
+            <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+        ');
         $tpl->assign('accessgroups', _('Access groups'));
 
 	# prepare help texts
@@ -1095,8 +1108,8 @@
 		$tpl->display("formHost.ihtml");
 ?>
 <script type="text/javascript">
-		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
-		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
-		showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
+    showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
+    showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
+    showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 </script>
 <?php } ?>

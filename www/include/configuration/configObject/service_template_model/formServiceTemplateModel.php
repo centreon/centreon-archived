@@ -400,6 +400,16 @@ $cloneSetMacro[] = $form->addElement(
                                            'size' => 25
                                            )
                                      );
+$cloneSetMacro[] = $form->addElement(
+                'checkbox',
+                'macroPassword[#index#]',
+                _('Password'),
+                null,
+                array(
+                    'id' => 'macroPassword_#index#',
+                    'onClick' => 'javascript:change_macro_input_type(this, false)'
+                )
+        );
 
 ##
 ## Notification informations
@@ -820,7 +830,10 @@ $tpl->assign("sort2", _("Relations"));
 $tpl->assign("sort3", _("Data Processing"));
 $tpl->assign("sort4", _("Service Extended Info"));
 $tpl->assign("sort5", _("Macros"));
-$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
+$tpl->assign('javascript', '
+            <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+');
 $tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 

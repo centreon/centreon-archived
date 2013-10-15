@@ -780,7 +780,8 @@ function insertHost($ret, $macro_on_demand = NULL)	{
         $hostObj->insertMacro(
                               $host_id['MAX(host_id)'],
                               $_REQUEST['macroInput'],
-                              $_REQUEST['macroValue']
+                              $_REQUEST['macroValue'],
+                              $_REQUEST['macroPassword']
                               );
     }
 
@@ -1212,7 +1213,7 @@ function updateHost($host_id = NULL, $from_MC = false, $cfg = NULL)	{
      */
     if (isset($_REQUEST['macroInput']) && 
         isset($_REQUEST['macroValue'])) {
-        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue']);
+        $hostObj->insertMacro($host_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword']);
     } else {
         $pearDB->query("DELETE FROM on_demand_macro_host WHERE host_host_id = '".CentreonDB::escape($host_id)."'");
     }
@@ -1500,7 +1501,8 @@ function updateHost_MC($host_id = null)	{
         $hostObj->insertMacro(
                               $host_id,
                               $_REQUEST['macroInput'],
-                              $_REQUEST['macroValue']
+                              $_REQUEST['macroValue'],
+                              $_REQUEST['macroPassword']
                               );
     }
 

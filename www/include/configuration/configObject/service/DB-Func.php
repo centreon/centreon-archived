@@ -887,7 +887,8 @@ function divideHostsToHost($service_id) {
                     $service->insertMacro(
                             $service_id["MAX(service_id)"],
                             $_REQUEST['macroInput'],
-                            $_REQUEST['macroValue']
+                            $_REQUEST['macroValue'],
+                            $_REQUEST['macroPassword']
                             );
                 }
 
@@ -1202,7 +1203,7 @@ function divideHostsToHost($service_id) {
 		 */
 		if (isset($_REQUEST['macroInput']) && 
             isset($_REQUEST['macroValue'])) {
-            $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue']);
+            $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword']);
         } else {
             $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
         }
@@ -1483,7 +1484,8 @@ function divideHostsToHost($service_id) {
                     $service->insertMacro(
                             $service_id,
                             $_REQUEST['macroInput'],
-                            $_REQUEST['macroValue']
+                            $_REQUEST['macroValue'],
+                            $_REQUEST['macroPassword']
                             );
                 }
 
