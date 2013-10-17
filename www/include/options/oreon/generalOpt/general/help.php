@@ -70,3 +70,8 @@ $help['sso_header_username'] = dgettext('help', 'The header variable that will b
  * UI bahvior
  */
 $help['strict_hostParent_poller_management'] = dgettext('help', 'This option enable a strict mode for the management of parent links between hosts on different pollers. Some hosts can have a parent link between them even if they are not monitored by the same poller. Select yes if you want to block the UI in order to oblige user to let host with a declared relation on the same poller. if you select No, during the generation process, relation will be broken and not generated but kept with Centreon Broker Correlation module.');
+
+/*
+ * Support Informations
+ */
+$help['tip_centreon_support_email'] = dgettext('help', 'Company Support email : this email is uses in the Centreon footer in order to have a quick link in order to open an issue to your help desk.');

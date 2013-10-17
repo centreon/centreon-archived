@@ -294,6 +294,7 @@
         updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
         updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
         updateOption($pearDB, "strict_hostParent_poller_management", isset($ret["strict_hostParent_poller_management"]["yes"]) && $ret["strict_hostParent_poller_management"]["yes"] != NULL ? $ret["strict_hostParent_poller_management"]["yes"] : "");
+        updateOption($pearDB, "centreon_support_email", isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != NULL ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL");
         
 		$oreon->initOptGen($pearDB);
 	}
