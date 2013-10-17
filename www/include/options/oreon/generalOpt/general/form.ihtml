@@ -32,10 +32,10 @@
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/lock.gif'>&nbsp;&nbsp;{$genOpt_auth}</td></tr>
 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_autologin">{$form.enable_autologin.label}</td><td class="FormRowValue">{$form.enable_autologin.html}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_autologin_shortcut">{$form.display_autologin_shortcut.label}</td><td class="FormRowValue">{$form.display_autologin_shortcut.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_enable">{$form.sso_enable.label}</td><td class="FormRowValue">{$form.sso_enable.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_mode">{$form.sso_mode.label}</td><td class="FormRowValue">{$form.sso_mode.html}</td></tr>
-        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_trusted_clients">{$form.sso_trusted_clients.label}</td><td class="FormRowValue">{$form.sso_trusted_clients.html}</td></tr>
-        <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_enable">{$form.sso_enable.label}</td><td class="FormRowValue">{$form.sso_enable.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_mode">{$form.sso_mode.label}</td><td class="FormRowValue">{$form.sso_mode.html}</td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_trusted_clients">{$form.sso_trusted_clients.label}</td><td class="FormRowValue">{$form.sso_trusted_clients.html}</td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">{$form.sso_header_username.label}</td><td class="FormRowValue">{$form.sso_header_username.html}</td></tr>
 
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$genOpt_time_zone}</td></tr>
  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_timezone_management">{$form.enable_gmt.label}</td><td class="FormRowValue">{$form.enable_gmt.html}</td></tr>
@@ -43,6 +43,9 @@
  	
   	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$configBehavior}</td></tr>
  	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="strict_hostParent_poller_management">{$form.strict_hostParent_poller_management.label}</td><td class="FormRowValue">{$form.strict_hostParent_poller_management.html}</td></tr>
+
+  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;{$support}</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_support_email">{$form.centreon_support_email.label}</td><td class="FormRowValue">{$form.centreon_support_email.html}</td></tr>
 
  	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
  </table>

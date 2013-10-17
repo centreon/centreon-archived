@@ -178,6 +178,7 @@
         $ret = $form->getSubmitValues();
         updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
         updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
+        updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
         updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? 1 : 0);
         $centreon->initOptGen($db);
     }
@@ -294,6 +295,7 @@
         updateOption($pearDB, "sso_trusted_clients", isset($ret["sso_trusted_clients"]) && $ret["sso_trusted_clients"] != NULL ? $pearDB->escape($ret["sso_trusted_clients"]) : "");
         updateOption($pearDB, "sso_header_username", isset($ret["sso_header_username"]) && $ret["sso_header_username"] != NULL ? $pearDB->escape($ret["sso_header_username"]) : "");
         updateOption($pearDB, "strict_hostParent_poller_management", isset($ret["strict_hostParent_poller_management"]["yes"]) && $ret["strict_hostParent_poller_management"]["yes"] != NULL ? $ret["strict_hostParent_poller_management"]["yes"] : "");
+        updateOption($pearDB, "centreon_support_email", isset($ret["centreon_support_email"]) && $ret["centreon_support_email"] != NULL ? htmlentities($ret["centreon_support_email"], ENT_QUOTES, "UTF-8"): "NULL");
         
 		$oreon->initOptGen($pearDB);
 	}

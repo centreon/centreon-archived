@@ -40,6 +40,7 @@ sub new {
     $self->{timeBetween2SyncPerf} = 60;
     $self->{perfdataSync} = 0;
     $self->{logSync} = 0;
+    $self->{enable_broker_stats} = 0;
     $self->{stop} = 1;
     $self->{reload} = 1;
 
@@ -166,6 +167,7 @@ sub moveCmdFile($){
 #
 sub GetAllNagiosServerPerfData {
     my $self = shift;
+
     my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `id` FROM `nagios_server` WHERE `localhost` = '0' AND `ns_activate` = '1'");
     if ($status == -1) {
         $self->{logger}->writeLogError("Error when getting server properties");
@@ -181,9 +183,10 @@ sub GetAllNagiosServerPerfData {
         if ($self->{logSync} == 1) {
             $self->GetLogFile($data->{'id'});
         }
-        $self->getBrokerStats($data->{'id'});
+        if ($self->{enable_broker_stats} == 1) {
+            $self->getBrokerStats($data->{'id'});
+        }
     }
-
     return 0;
 }
 
@@ -351,7 +354,7 @@ sub sendExternalCommand($$){
                 ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
                                                                       logger => $self->{logger},
                                                                       timeout => $self->{cmd_timeout}
-                                                                      );
+                    );
                 if ($lerror == -1) {
                     $self->{logger}->writeLogError("Could not write into pipe file ".$command_file." on poller ".$id);
                 }
@@ -981,7 +984,7 @@ sub parseRequest($){
 sub checkProfile() {
     my $self = shift;
     
-    my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync', 'centcore_cmd_timeout')";
+    my $request = "SELECT * FROM options WHERE `key` IN ('enable_perfdata_sync', 'enable_logs_sync', 'centcore_cmd_timeout', 'enable_broker_stats')";
     my ($status, $sth) =  $self->{centreon_dbc}->query($request);
     return -1 if ($status == -1);
     while ((my $data = $sth->fetchrow_hashref())) {
@@ -994,6 +997,9 @@ sub checkProfile() {
             }
             if ($data->{'key'} eq "centcore_cmd_timeout") {
                 $self->{cmd_timeout} = $data->{'value'};
+            }
+            if ($data->{'key'} eq "enable_broker_stats") {
+                $self->{enable_broker_stats} = $data->{'value'};
             }
         }
     }

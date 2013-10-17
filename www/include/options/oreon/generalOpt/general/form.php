@@ -129,6 +129,11 @@ $options4[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options4, 'strict_hostParent_poller_management', _("Enable strict mode for host partnership management"), '&nbsp;&nbsp;');
 
 /*
+ * Support Email
+ */
+$form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText2);
+
+/*
  * Form Rules
  */
 function slash($elem = NULL)	{
@@ -202,6 +207,7 @@ $tpl->assign("genOpt_problem_display", _("Problem display properties"));
 $tpl->assign("genOpt_time_zone", _("Time Zone"));
 $tpl->assign("genOpt_auth", _("Authentification properties"));
 $tpl->assign("configBehavior", _("Configuration UI behavior"));
+$tpl->assign("support", _("Support Information"));
 $tpl->assign('valid', $valid);
 
 // prepare help texts
