@@ -351,7 +351,8 @@ var _criticality_id = 0;
 			var end = document.getElementById('end').value+' '+document.getElementById('end_time').value;
 			var author = document.getElementById('author').value;
 			var duration = document.getElementById('duration').value;
-			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
+            var duration_scale = document.getElementById('duration_scale').value;
+			xhr_cmd.open("GET", "./include/monitoring/external_cmd/cmdPopup.php?cmd=" + _cmd + "&duration=" + duration + "&duration_scale=" + duration_scale + "&comment=" + comment + "&start="+ start + "&end=" + end + "&fixed=" + fixed + "&downtimehostservice=" + downtimehostservice + "&author=" + author  + "&sid=" + _sid + _getVar, true);
 		}
 		xhr_cmd.send(null);
 		Modalbox.hide();

@@ -102,6 +102,18 @@
 	    $defaultDuration = $oreon->optGen['monitoring_dwt_duration'];
 	}
 	$form->setDefaults(array('duration' => $defaultDuration));
+    
+    $scaleChoices = array("s" => _("Seconds"),
+                          "m" => _("Mminutes"),
+                          "h" => _("Hours"),
+                          "d" => _("Days")
+              );
+    $form->addElement('select', 'duration_scale', _("Scale of time"), $scaleChoices, array('id'=>'duration_scale'));
+    $defaultScale = 's';
+    if (isset($oreon->optGen['monitoring_dwt_duration_scale']) && $oreon->optGen['monitoring_dwt_duration_scale']) {
+        $defaultScale = $oreon->optGen['monitoring_dwt_duration_scale'];
+    }
+    $form->setDefaults(array('duration_scale' => $defaultScale));
 
 	$chckbox[] = $form->addElement('checkbox', 'fixed', _("Fixed"), "", array("id"=>"fixed"));
 	$chckbox[0]->setChecked(true);
@@ -140,6 +152,5 @@
 	$tpl->assign('p', $p);
 	$tpl->assign('cmd', $cmd);
 	$tpl->assign('select', $select);
-	$tpl->assign('seconds', _('seconds'));
 	$tpl->display("massive_downtime.ihtml");
 ?>
