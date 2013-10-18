@@ -17,7 +17,7 @@
 			</tr>
 			<tr class="list_two">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.duration.label}</td>
-				<td class="FormRowValue" style='padding-left:15px;'>{$form.duration.html} {$seconds}</td>
+				<td class="FormRowValue" style='padding-left:15px;'>{$form.duration.html} {$form.duration_scale.html}</td>
 			</tr>
 			<tr class="list_one">
 				<td class="FormRowField" style='padding-left:15px;'>{$form.fixed.label}</td>
