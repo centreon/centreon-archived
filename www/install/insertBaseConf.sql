@@ -744,7 +744,8 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
 (43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
-(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL);
+(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
+(46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'int', NULL);
 
 --
 -- Contenu de la table `cb_list`
@@ -763,7 +764,8 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (1, 39, 'no'),
 (1, 42, 'yes'),
 (1, 44, 'yes'),
-(1, 45, 'yes');
+(1, 45, 'yes'),
+(1, 46, 'yes');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -847,6 +849,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (3, 4, 0, 5),
 (3, 5, 0, 6),
 (3, 6, 1, 4),
+(3, 46, 1, 8),
 (3, 12, 1, 3),
 (10, 1, 1, 1),
 (10, 2, 0, 2),
@@ -854,6 +857,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (10, 4, 0, 5),
 (10, 5, 0, 6),
 (10, 6, 1, 4),
+(10, 46, 1, 8),
 (10, 12, 1, 3),
 (11, 11, 1, 1),
 (11, 12, 1, 2),

@@ -151,7 +151,6 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,
 ALTER TABLE `nagios_server` ADD COLUMN `description` VARCHAR(50) DEFAULT NULL;
 
 -- Ticket #4201
-
 DELETE FROM cb_list WHERE cb_field_id = '6'; 
 INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '6', 'no');
 DELETE FROM cb_list WHERE cb_field_id = '25'; 
@@ -164,5 +163,10 @@ INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'A
 INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('1', 'No', 'no');
 INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('1', 'Yes', 'yes');
 
+-- Ticket #4938
+
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'int', NULL);
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES (1, 46, 'yes');
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (3, 46, 1, 8), (10, 46, 1, 8);
 
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;
