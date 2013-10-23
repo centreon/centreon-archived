@@ -11,6 +11,7 @@ use Digest::MD5 qw(md5_hex);
 my @operstatus = ("up", "down", "testing", "unknown", "dormant", "notPresent", "lowerLayerDown");
 my %oids_hrStorageTable = (
     'hrstoragedescr' => '.1.3.6.1.2.1.25.2.3.1.3',
+    'hrfsmountpoint' => '.1.3.6.1.2.1.25.3.8.1.2',
     'hrstoragetype' => '.1.3.6.1.2.1.25.2.3.1.2',
 );
 
@@ -58,12 +59,12 @@ sub check_options {
        $self->{output}->option_exit();
     }
     $self->{option_results}->{oid_filter} = lc($self->{option_results}->{oid_filter});
-    if ($self->{option_results}->{oid_filter} !~ /^(hrstoragedescr)$/) {
+    if ($self->{option_results}->{oid_filter} !~ /^(hrstoragedescr|hrfsmountpoint)$/) {
        $self->{output}->add_option_msg(short_msg => "Unsupported --oid-filter option.");
        $self->{output}->option_exit();
     }
     $self->{option_results}->{oid_display} = lc($self->{option_results}->{oid_display});
-    if ($self->{option_results}->{oid_display} !~ /^(hrstoragedescr)$/) {
+    if ($self->{option_results}->{oid_display} !~ /^(hrstoragedescr|hrfsmountpoint)$/) {
        $self->{output}->add_option_msg(short_msg => "Unsupported --oid-display option.");
        $self->{output}->option_exit();
     }
@@ -352,11 +353,11 @@ Time in seconds before reloading cache file (default: 180).
 
 =item B<--oid-filter>
 
-Choose OID used to filter storage (default: hrstoragedescr) (values: hrstoragedescr).
+Choose OID used to filter storage (default: hrStorageDescr) (values: hrStorageDescr, hrFSRemoteMountPoint).
 
 =item B<--oid-display>
 
-Choose OID used to display storage (default: hrstoragedescr) (values: hrstoragedescr).
+Choose OID used to display storage (default: hrStorageDescr) (values: hrStorageDescr, hrFSRemoteMountPoint).
 
 =item B<--display-transform-src>
 
