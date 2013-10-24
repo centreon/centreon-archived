@@ -12,9 +12,11 @@ sub new {
 
     $self->{version} = '0.1';
     %{$self->{modes}} = (
-                         'traffic' => 'snmp_standard::mode::traffic',
+                         'cpu' => 'snmp_standard::mode::cpu',
+                         'load' => 'snmp_standard::mode::loadaverage',
+                         'processcount' => 'snmp_standard::mode::processcount',
                          'storage' => 'snmp_standard::mode::storage',
-                         'load' => 'snmp_standard::mode::loadaverage'
+                         'traffic' => 'snmp_standard::mode::traffic',
                          );
     #$self->{default} = [{option_mode => 'traffic', option_name => 'warning', option_value => '-1'}];
 
