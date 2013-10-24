@@ -1,4 +1,4 @@
-package os_linux::snmp;
+package plugin::example::snmp;
 
 use strict;
 use warnings;
@@ -11,9 +11,9 @@ sub new {
     # $options->{options} = options object
 
     $self->{version} = '0.1';
-    %{$self->{modes}} = ('traffic' => 'snmp_standard::traffic');
-    %{$self->{modes}} = ('storage' => 'snmp_standard::storage');
-    #$self->{default} = [{option_mode => 'traffic', option_name => 'warning', option_value => '-1'}];
+    %{$self->{modes}} = (
+                         'getvalue' => 'plugin::example::mode::getvalue'
+                         );
 
     return $self;
 }
@@ -24,6 +24,6 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check Linux Operating systems in SNMP.
+An example of SNMP plugin type.
 
 =cut

@@ -2,6 +2,7 @@ package centreon::plugins::mode;
 
 use strict;
 use warnings;
+use centreon::plugins::perfdata;
 
 sub new {
     my ($class, %options) = @_;

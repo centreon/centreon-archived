@@ -1,11 +1,10 @@
-package snmp_standard::storage;
+package snmp_standard::mode::storage;
 
 use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
 use centreon::plugins::statefile;
-use centreon::plugins::perfdata;
 use Digest::MD5 qw(md5_hex);
 
 my @operstatus = ("up", "down", "testing", "unknown", "dormant", "notPresent", "lowerLayerDown");
@@ -118,7 +117,7 @@ sub run {
             $threshold_value = $prct_used;
             $threshold_value = $prct_free if (defined($self->{option_results}->{free}));
         } 
-        $exit = $self->{perfdata}->threshold_check(value => $threshold_value, threshold => [ { label => 'warning', 'exit_litteral' => 'warning' }, { label => 'critical', exit_litteral => 'critical' } ]);
+        $exit = $self->{perfdata}->threshold_check(value => $threshold_value, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
 
         my ($total_size_value, $total_size_unit) = $self->{perfdata}->change_bytes(value => $total_size);
         my ($total_used_value, $total_used_unit) = $self->{perfdata}->change_bytes(value => $total_used);

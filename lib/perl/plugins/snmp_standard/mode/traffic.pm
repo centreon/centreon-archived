@@ -1,11 +1,10 @@
-package snmp_standard::traffic;
+package snmp_standard::mode::traffic;
 
 use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
 use centreon::plugins::statefile;
-use centreon::plugins::perfdata;
 use Digest::MD5 qw(md5_hex);
 
 my @operstatus = ("up", "down", "testing", "unknown", "dormant", "notPresent", "lowerLayerDown");
@@ -23,8 +22,10 @@ sub new {
     $self->{version} = '1.0';
     $options{options}->add_options(arguments =>
                                 { 
-                                  "warning:s"               => { name => 'warning' },
-                                  "critical:s"              => { name => 'critical' },
+                                  "warning-in:s"            => { name => 'warning_in' },
+                                  "critical-in:s"           => { name => 'critical_in' },
+                                  "warning-out:s"           => { name => 'warning_out' },
+                                  "critical-out:s"          => { name => 'critical_out' },
                                   "reload-cache-time:s"     => { name => 'reload_cache_time' },
                                   "name"                    => { name => 'use_name' },
                                   "interface:s"             => { name => 'interface' },
@@ -50,12 +51,20 @@ sub check_options {
     my ($self, %options) = @_;
     $self->SUPER::init(%options);
 
-    if (($self->{perfdata}->threshold_validate(label => 'warning', value => $self->{option_results}->{warning})) == 0) {
-        $self->{output}->add_option_msg(short_msg => "Wrong warning threshold '" . $self->{option_results}->{warning} . "'.");
+    if (($self->{perfdata}->threshold_validate(label => 'warning-in', value => $self->{option_results}->{warning_in})) == 0) {
+        $self->{output}->add_option_msg(short_msg => "Wrong warning 'in' threshold '" . $self->{option_results}->{warning_in} . "'.");
         $self->{output}->option_exit();
     }
-    if (($self->{perfdata}->threshold_validate(label => 'critical', value => $self->{option_results}->{critical})) == 0) {
-        $self->{output}->add_option_msg(short_msg => "Wrong critical threshold '" . $self->{option_results}->{critical} . "'.");
+    if (($self->{perfdata}->threshold_validate(label => 'critical-in', value => $self->{option_results}->{critical_in})) == 0) {
+        $self->{output}->add_option_msg(short_msg => "Wrong critical 'in' threshold '" . $self->{option_results}->{critical_in} . "'.");
+        $self->{output}->option_exit();
+    }
+    if (($self->{perfdata}->threshold_validate(label => 'warning-out', value => $self->{option_results}->{warning_out})) == 0) {
+        $self->{output}->add_option_msg(short_msg => "Wrong warning 'out' threshold '" . $self->{option_results}->{warning_out} . "'.");
+        $self->{output}->option_exit();
+    }
+    if (($self->{perfdata}->threshold_validate(label => 'critical-out', value => $self->{option_results}->{critical_out})) == 0) {
+        $self->{output}->add_option_msg(short_msg => "Wrong critical 'out' threshold '" . $self->{option_results}->{critical_out} . "'.");
         $self->{output}->option_exit();
     }
     $self->{option_results}->{oid_filter} = lc($self->{option_results}->{oid_filter});
@@ -186,8 +195,8 @@ sub run {
         ###########
         # Manage Output
         ###########
-        my $exit1 = $self->{perfdata}->threshold_check(value => $in_prct, threshold => [ { label => 'warning', 'exit_litteral' => 'warning' }, { label => 'critical', exit_litteral => 'critical' } ]);
-        my $exit2 = $self->{perfdata}->threshold_check(value => $out_prct, threshold => [ { label => 'warning', 'exit_litteral' => 'warning' }, { label => 'critical', exit_litteral => 'critical' } ]);
+        my $exit1 = $self->{perfdata}->threshold_check(value => $in_prct, threshold => [ { label => 'critical-in', 'exit_litteral' => 'critical' }, { label => 'warning-in', exit_litteral => 'warning' } ]);
+        my $exit2 = $self->{perfdata}->threshold_check(value => $out_prct, threshold => [ { label => 'critical-out', 'exit_litteral' => 'critical' }, { label => 'warning-out', exit_litteral => 'warning' } ]);
 
         my ($in_value, $in_unit) = $self->{perfdata}->change_bytes(value => $in_absolute_per_sec, network => 1);
         my ($out_value, $out_unit) = $self->{perfdata}->change_bytes(value => $out_absolute_per_sec, network => 1);
@@ -206,13 +215,13 @@ sub run {
         $extra_label = '_' . $display_value if (!defined($self->{option_results}->{interface}) || defined($self->{option_results}->{use_regexp}));
         $self->{output}->perfdata_add(label => 'traffic_in' . $extra_label, unit => 'b/s',
                                       value => sprintf("%.2f", $in_absolute_per_sec),
-                                      warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning', total => $interface_speed),
-                                      critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical', total => $interface_speed),
+                                      warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning-in', total => $interface_speed),
+                                      critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical-in', total => $interface_speed),
                                       min => 0, max => $interface_speed);
         $self->{output}->perfdata_add(label => 'traffic_out' . $extra_label, unit => 'b/s',
                                       value => sprintf("%.2f", $out_absolute_per_sec),
-                                      warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning', total => $interface_speed),
-                                      critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical', total => $interface_speed),
+                                      warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning-out', total => $interface_speed),
+                                      critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical-out', total => $interface_speed),
                                       min => 0, max => $interface_speed);
     }
 
@@ -365,13 +374,21 @@ __END__
 
 =over 8
 
-=item B<--warning>
+=item B<--warning-in>
 
-Threshold warning in percent.
+Threshold warning in percent for 'in' traffic.
 
-=item B<--critical>
+=item B<--critical-in>
 
-Threshold critical in percent.
+Threshold critical in percent for 'in' traffic.
+
+=item B<--warning-out>
+
+Threshold warning in percent for 'out' traffic.
+
+=item B<--critical-out>
+
+Threshold critical in percent for 'out' traffic.
 
 =item B<--interface>
 
