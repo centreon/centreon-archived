@@ -8,15 +8,33 @@ sub new {
     my $self  = {};
     bless $self, $class;
 
+    if (defined($options{options})) {
+        $options{options}->add_options(arguments =>
+                                {
+                                  "memcached:s"         => { name => 'memcached' },
+                                });
+        $options{options}->add_help(package => __PACKAGE__, sections => 'RETENTION OPTIONS', once => 1);
+    }
+    
     $self->{output} = $options{output};
     $self->{statefile_dir} = '/var/lib/centreon/centplugins';
     $self->{datas} = {};
-
+    $self->{memcached} = undef;
+    
     return $self;
 }
 
+sub check_options {
+    my ($self, %options) = @_;
+
+    if (defined($options{option_results}) && defined($options{option_results}->{memcached})) {
+        $self->{memcached} = $options{option_results}->{memcached};
+    }
+
+}
+
 sub read {
-    my ($self, %options) = @_;  
+    my ($self, %options) = @_;
     $self->{statefile_dir} = defined($options{statefile_dir}) ? $options{statefile_dir} : $self->{statefile_dir};
     $self->{statefile} =  defined($options{statefile}) ? $options{statefile} : $self->{statefile};
 
@@ -37,11 +55,11 @@ sub read {
             $self->{output}->option_exit();
         }
         unless (defined($return)) {
-        $self->{output}->add_option_msg(short_msg => "Couldn't do '" . $self->{statefile_dir} . "/" . $self->{statefile} . "': $!");
+            $self->{output}->add_option_msg(short_msg => "Couldn't do '" . $self->{statefile_dir} . "/" . $self->{statefile} . "': $!");
             $self->{output}->option_exit();
         }
         unless ($return) {
-        $self->{output}->add_option_msg(short_msg => "Couldn't run '" . $self->{statefile_dir} . "/" . $self->{statefile} . "': $!");
+            $self->{output}->add_option_msg(short_msg => "Couldn't run '" . $self->{statefile_dir} . "/" . $self->{statefile} . "': $!");
             $self->{output}->option_exit();
         }
     }
@@ -85,6 +103,14 @@ Statefile class
 =head1 SYNOPSIS
 
 -
+
+=head1 RETENTION OPTIONS
+
+=over 8
+
+=item B<--memcached>
+
+Memcached server to use (only one server).
 
 =head1 DESCRIPTION
 

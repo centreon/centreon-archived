@@ -43,7 +43,9 @@ sub new {
                                 });
 
     $self->{interface_id_selected} = [];
-
+    $self->{statefile_cache} = centreon::plugins::statefile->new(%options);
+    $self->{statefile_value} = centreon::plugins::statefile->new(%options);
+    
     return $self;
 }
 
@@ -77,6 +79,9 @@ sub check_options {
         $self->{output}->add_option_msg(short_msg => "Unsupported --oid-display option.");
         $self->{output}->option_exit();
     }
+    
+    $self->{statefile_cache}->check_options(%options);
+    $self->{statefile_value}->check_options(%options);
 }
 
 sub run {
@@ -97,7 +102,6 @@ sub run {
     my $oid_out64 = '.1.3.6.1.2.1.31.1.1.1.10'; # in B
 
     my $new_datas = {};
-    $self->{statefile_value} = centreon::plugins::statefile->new(output => $self->{output});
     $self->{statefile_value}->read(statefile_dir => $self->{option_results}->{statefiledir_values},
                                 statefile => $self->{hostname}  . '_' . $self->{mode} . '_' . (defined($self->{option_results}->{interface}) ? md5_hex($self->{option_results}->{interface}) : md5_hex('all')));
     
@@ -281,7 +285,6 @@ sub manage_selection {
     my ($self, %options) = @_;
 
     # init cache file
-    $self->{statefile_cache} = centreon::plugins::statefile->new(output => $self->{output});
     my $has_cache_file = $self->{statefile_cache}->read(statefile_dir => $self->{option_results}->{statefiledir_cache},
                                                         statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
     if (defined($self->{option_results}->{show_cache})) {

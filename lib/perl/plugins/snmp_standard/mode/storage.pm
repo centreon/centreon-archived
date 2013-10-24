@@ -41,7 +41,8 @@ sub new {
                                 });
 
     $self->{storage_id_selected} = [];
-
+    $self->{statefile_cache} = centreon::plugins::statefile->new(%options);
+    
     return $self;
 }
 
@@ -67,6 +68,8 @@ sub check_options {
        $self->{output}->add_option_msg(short_msg => "Unsupported --oid-display option.");
        $self->{output}->option_exit();
     }
+    
+    $self->{statefile_cache}->check_options(%options);
 }
 
 sub run {
@@ -202,7 +205,6 @@ sub manage_selection {
     my ($self, %options) = @_;
 
     # init cache file
-    $self->{statefile_cache} = centreon::plugins::statefile->new(output => $self->{output});
     my $has_cache_file = $self->{statefile_cache}->read(statefile_dir => $self->{option_results}->{statefiledir_cache},
                                                         statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
     if (defined($self->{option_results}->{show_cache})) {

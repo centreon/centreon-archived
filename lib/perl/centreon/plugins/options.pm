@@ -14,6 +14,7 @@ sub new {
     $self->{options_stored} = {};
     $self->{options} = {};
     @{$self->{pod_package}} = ();
+    $self->{pod_packages_once} = {};
     return $self;
 }
 
@@ -46,12 +47,19 @@ sub add_help {
     # $options{package} = string package
     # $options{sections} = string sections
     # $options{help_first} = put at the beginning
+    # $options{once} = put help only one time for a package
+    
+    if (defined($options{once}) && defined($self->{pod_packages_once}->{$options{package}})) {
+        return ;
+    }
     
     if (defined($options{help_first})) {
         shift @{$self->{pod_package}}, {package => $options{package}, sections => $options{sections}};
     } else {
         push @{$self->{pod_package}}, {package => $options{package}, sections => $options{sections}};
     }
+    
+    $self->{pod_packages_once}->{$options{package}} = 1;
 }
 
 sub add_options {
