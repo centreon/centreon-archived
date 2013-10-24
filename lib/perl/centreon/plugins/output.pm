@@ -17,6 +17,7 @@ sub new {
                                   "verbose"                 => { name => 'verbose' },
                                   "opt-exit:s"              => { name => 'opt_exit', default => 'unknown' },
                                   "output-xml"              => { name => 'output_xml' },
+                                  "output-json"             => { name => 'output_json' },
                                   "disco-format"            => { name => 'disco_format' },
                                   "disco-show"              => { name => 'disco_show' },
                                 });
@@ -25,6 +26,7 @@ sub new {
     $self->{option_msg} = [];
     
     $self->{is_output_xml} = 0;
+    $self->{is_output_json} = 0;
     $self->{errors} = {OK => 0, WARNING => 1, CRITICAL => 2, UNKNOWN => 3, PENDING => 4};
     $self->{myerrors} = {0 => "OK", 1 => "WARNING", 3 => "CRITICAL", 7 => "UNKNOWN"};
     $self->{myerrors_mask} = {CRITICAL => 3, WARNING => 1, UNKNOWN => 7, OK => 0};
@@ -55,7 +57,10 @@ sub check_options {
     }
     # Go in XML Mode
     if ($self->is_disco_show() || $self->is_disco_format()) {
-        $self->{option_results}->{output_xml} = 1;
+        # By Default XML
+        if (!defined($self->{option_results}->{output_json})) {
+            $self->{option_results}->{output_xml} = 1;
+        }
     }
 }
 
@@ -90,7 +95,7 @@ sub output_add {
     my $options = {%args, %params};
     
     if (defined($options->{short_msg})) {
-    chomp $options->{short_msg};
+        chomp $options->{short_msg};
         if (defined($self->{global_short_concat_outputs}->{uc($options->{severity})})) {
             $self->{global_short_concat_outputs}->{uc($options->{severity})} .= $options->{separator} . $options->{short_msg};
         } else {
@@ -111,6 +116,55 @@ sub perfdata_add {
     my $perfdata = {'label' => '', 'value' => '', unit => '', warning => '', critical => '', min => '', max => ''}; 
     $perfdata = {%$perfdata, %options};
     push @{$self->{perfdatas}}, $perfdata;
+}
+
+sub output_json {
+    my ($self, %options) = @_;
+    my $json_content = {plugin => {
+                                   name => $self->{plugin},
+                                   mode => $self->{mode},
+                                   exit => $options{exit_litteral},
+                                   outputs => [],
+                                   perfdatas => []
+                                  }
+                        };    
+
+    foreach my $code_litteral (keys %{$self->{global_short_outputs}}) {
+        foreach (@{$self->{global_short_outputs}->{$code_litteral}}) {
+            my ($child_output, $child_type, $child_msg, $child_exit);
+            my $lcode_litteral = ($code_litteral eq 'UNQUALIFIED_YET' ? uc($options{exit_litteral}) : $code_litteral);
+
+            push @{$json_content->{plugin}->{outputs}}, {
+                                                           type => 1,
+                                                           msg => ($options{nolabel} == 0 ? ($lcode_litteral . ': ') : '') . $_,
+                                                           exit => $lcode_litteral
+                                                        };
+        }
+    }
+
+    if (defined($self->{option_results}->{verbose}) || defined($options{force_long_output})) {
+        foreach (@{$self->{global_long_output}}) {
+            push @{$json_content->{plugin}->{outputs}}, {
+                                                           type => 2,
+                                                           msg => $_,
+                                                        };
+        }
+    }
+
+    if (!defined($self->{option_results}->{ignore_perfdata}) && !defined($options{force_ignore_perfdata})) {
+        foreach (@{$self->{perfdatas}}) {
+            my %values = ();
+            foreach my $key (keys %$_) {
+                $values{$key} = $_->{$key};
+            }
+            
+            push @{$json_content->{plugin}->{perfdatas}}, {
+                                                           %values
+                                                        };
+        }
+    }
+
+    print $self->{json_output}->encode($json_content);
 }
 
 sub output_xml {
@@ -139,7 +193,7 @@ sub output_xml {
     $root->addChild($child_plugin_perfdata);
 
     foreach my $code_litteral (keys %{$self->{global_short_outputs}}) {
-    foreach (@{$self->{global_short_outputs}->{$code_litteral}}) {
+        foreach (@{$self->{global_short_outputs}->{$code_litteral}}) {
             my ($child_output, $child_type, $child_msg, $child_exit);
             my $lcode_litteral = ($code_litteral eq 'UNQUALIFIED_YET' ? uc($options{exit_litteral}) : $code_litteral);
 
@@ -161,7 +215,7 @@ sub output_xml {
     }
 
     if (defined($self->{option_results}->{verbose}) || defined($options{force_long_output})) {
-    foreach (@{$self->{global_long_output}}) {
+        foreach (@{$self->{global_long_output}}) {
             my ($child_output, $child_type, $child_msg);
         
             $child_output = $self->{xml_output}->createElement("output");
@@ -239,12 +293,17 @@ sub display {
         $self->create_xml_document();
         if ($self->{is_output_xml}) {
             $self->output_xml(exit_litteral => $self->get_litteral_status());
-        } else {
-            $self->output_txt(exit_litteral => $self->get_litteral_status());
+            return ;
         }
-    } else {
-        $self->output_txt(exit_litteral => $self->get_litteral_status());
-    }
+    } elsif (defined($self->{option_results}->{output_json})) {
+        $self->create_json_document();
+        if ($self->{is_output_json}) {
+            $self->output_json(exit_litteral => $self->get_litteral_status());
+            return ;
+        }
+    } 
+    
+    $self->output_txt(exit_litteral => $self->get_litteral_status());
 }
 
 sub option_exit {
@@ -258,13 +317,17 @@ sub option_exit {
         $self->create_xml_document();
         if ($self->{is_output_xml}) {
             $self->output_xml(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1, force_long_output => 1);
-        } else {
-            $self->output_txt(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1, force_long_output => 1);
+            $self->exit(exit_litteral => $exit_litteral);
         }
-    } else {
-        $self->output_txt(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1, force_long_output => 1);
-    }
-    
+    } elsif (defined($self->{option_results}->{output_json})) {
+        $self->create_json_document();
+        if ($self->{is_output_json}) {
+            $self->output_json(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1, force_long_output => 1);
+            $self->exit(exit_litteral => $exit_litteral);
+        }
+    } 
+
+    $self->output_txt(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1, force_long_output => 1);
     $self->exit(exit_litteral => $exit_litteral);
 }
 
@@ -332,6 +395,14 @@ sub is_litteral_status {
     return 0;
 }
 
+sub create_json_document {
+    my ($self) = @_;
+
+    require JSON;
+    $self->{is_output_json} = 1;
+    $self->{json_output} = JSON->new->utf8();
+}
+
 sub create_xml_document {
     my ($self) = @_;
 
@@ -369,37 +440,61 @@ sub add_disco_format {
 sub display_disco_format {
     my ($self, %options) = @_;
     
-    $self->create_xml_document();
+    if (defined($self->{option_results}->{output_xml})) {
+        $self->create_xml_document();
     
-    my $root = $self->{xml_output}->createElement('data');
-    $self->{xml_output}->setDocumentElement($root);
+        my $root = $self->{xml_output}->createElement('data');
+        $self->{xml_output}->setDocumentElement($root);
 
-    foreach (@{$self->{disco_elements}}) {
-        my $child = $self->{xml_output}->createElement("element");
-        $child->appendText($_);
-        $root->addChild($child);
+        foreach (@{$self->{disco_elements}}) {
+            my $child = $self->{xml_output}->createElement("element");
+            $child->appendText($_);
+            $root->addChild($child);
+        }
+
+        print $self->{xml_output}->toString(1);
+    } elsif (defined($self->{option_results}->{output_json})) {
+        $self->create_json_document();
+        my $json_content = {data => [] };
+        foreach (@{$self->{disco_elements}}) {
+            push @{$json_content->{data}}, $_;
+        }
+        
+        print $self->{json_output}->encode($json_content);
     }
-
-    print $self->{xml_output}->toString(1);
 }
 
 sub display_disco_show {
     my ($self, %options) = @_;
     
-    $self->create_xml_document();
-    
-    my $root = $self->{xml_output}->createElement('data');
-    $self->{xml_output}->setDocumentElement($root);
+     if (defined($self->{option_results}->{output_xml})) {
+        $self->create_xml_document();
+        
+        my $root = $self->{xml_output}->createElement('data');
+        $self->{xml_output}->setDocumentElement($root);
 
-    foreach (@{$self->{disco_entries}}) {
-        my $child = $self->{xml_output}->createElement("label");
-        foreach my $key (keys %$_) {
-            $child->setAttribute($key, $_->{$key});
+        foreach (@{$self->{disco_entries}}) {
+            my $child = $self->{xml_output}->createElement("label");
+            foreach my $key (keys %$_) {
+                $child->setAttribute($key, $_->{$key});
+            }
+            $root->addChild($child);
         }
-        $root->addChild($child);
-    }
 
-    print $self->{xml_output}->toString(1);
+        print $self->{xml_output}->toString(1);
+    } elsif (defined($self->{option_results}->{output_json})) {
+        $self->create_json_document();
+        my $json_content = {data => [] };
+        foreach (@{$self->{disco_entries}}) {
+            my %values = ();
+            foreach my $key (keys %$_) {
+                $values{$key} = $_->{$key};
+            }
+            push @{$json_content->{data}}, {%values};
+        }
+        
+        print $self->{json_output}->encode($json_content);
+    }
 }
 
 sub add_disco_entry {
@@ -457,6 +552,10 @@ Exit code for an option error, usage (default: unknown).
 =item B<--output-xml>
 
 Display output in XML Format.
+
+=item B<--output-json>
+
+Display output in JSON Format.
 
 =item B<--disco-format>
 
