@@ -55,7 +55,7 @@ CREATE TABLE `config` (
 
 LOCK TABLES `config` WRITE;
 /*!40000 ALTER TABLE `config` DISABLE KEYS */;
-INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'0','@MONITORING_VAR_LOG@/service-perfdata.tmp','@MONITORING_VAR_LOG@/service-perfdata','1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1');
+INSERT INTO `config` VALUES (1,'@CENTSTORAGE_RRD@/metrics/','@CENTSTORAGE_RRD@/status/','@CENTSTORAGE_RRD@/nagios-perf/',180,180,'1',10,360,2,NULL,'@MONITORING_VAR_LOG@/service-perfdata','1',31,365,'@MONITORING_VAR_LOG@/nagios.log',0,'1');
 /*!40000 ALTER TABLE `config` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -458,8 +458,6 @@ LOCK TABLES `log_traps_args` WRITE;
 /*!40000 ALTER TABLE `log_traps_args` ENABLE KEYS */;
 UNLOCK TABLES;
 
-
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
