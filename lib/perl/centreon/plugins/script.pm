@@ -47,28 +47,26 @@ sub handle_DIE {
 sub get_plugin {
     my $self = shift;
     
+    ######
+    # Need to load global 'Output' and 'Options'
+    ######
     $self->{options} = centreon::plugins::options->new();
     $self->{output} = centreon::plugins::output->new(options => $self->{options});
     $self->{options}->set_output(output => $self->{output});
 
     $self->{options}->add_options(arguments => {
                                                 'plugin:s' => { name => 'plugin' }, 
-                                                'mode:s' => { name => 'mode' },
                                                 'help' => { name => 'help' },
-                                                'list' => { name => 'list' },
                                                 'version' => { name => 'version' } } );
 
     $self->{options}->parse_options();
 
     $self->{plugin} = $self->{options}->get_option(argument => 'plugin' );
-    $self->{mode} = $self->{options}->get_option(argument => 'mode' );
-    $self->{list} = $self->{options}->get_option(argument => 'list' );
     $self->{help} = $self->{options}->get_option(argument => 'help' );
     $self->{version} = $self->{options}->get_option(argument => 'version' );
 
     $self->{output}->mode(name => $self->{mode});
     $self->{output}->plugin(name => $self->{plugin});
-
     $self->{output}->check_options(option_results => $self->{options}->get_options());
 
     $self->{options}->clean();
@@ -92,31 +90,18 @@ sub run {
 
     $self->get_plugin();
 
+    if (defined($self->{help}) && !defined($self->{plugin})) {
+        $self->display_local_help();
+        $self->{output}->option_exit();
+    }
     if (!defined($self->{plugin}) || $self->{plugin} eq '') {
         $self->{output}->add_option_msg(short_msg => "Need to specify '--plugin' option.");
-        $self->display_local_help();
         $self->{output}->option_exit();
     }
     (my $file = $self->{plugin} . ".pm") =~ s{::}{/}g;
     require $file;
     my $plugin = $self->{plugin}->new(options => $self->{options}, output => $self->{output});
-
-    if (defined($self->{version}) && !defined($self->{mode})) {
-        $plugin->version();
-    }
-    if (defined($self->{list})) {
-        $plugin->list();
-    }    
-    if (!defined($self->{mode}) || $self->{mode} eq '') {
-        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' option.");
-        $self->display_local_help();
-        $self->{output}->option_exit();
-    }
-
-    $plugin->is_mode(mode => $self->{mode});
-
-    $plugin->init(mode => $self->{mode},
-                  help => $self->{help},
+    $plugin->init(help => $self->{help},
                   version => $self->{version});
     $plugin->run();
 }

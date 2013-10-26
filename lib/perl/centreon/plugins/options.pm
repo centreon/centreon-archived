@@ -29,7 +29,7 @@ sub display_help {
     
     foreach (@{$self->{pod_package}}) {
         my $stdout;
-
+       
         {
             local *STDOUT;
             open STDOUT, '>', \$stdout;

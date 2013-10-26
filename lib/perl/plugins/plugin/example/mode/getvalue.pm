@@ -46,7 +46,7 @@ sub run {
     $self->{snmp} = $options{snmp};
     $self->{hostname} = $self->{snmp}->get_hostname();
 
-    my $result = $self->{snmp}->get_leef(oids => [$self->{option_results}->{oid}]);
+    my $result = $self->{snmp}->get_leef(oids => [$self->{option_results}->{oid}], nothing_quit => 1);
     my $value = $result->{$self->{option_results}->{oid}};
     
     my $exit = $self->{perfdata}->threshold_check(value => $value, 

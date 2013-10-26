@@ -23,14 +23,6 @@ centreon_plugins.pl [options]
 
 Specify the path to the plugin.
 
-=item B<--mode>
-
-Specify the mode of the plugin.
-
-=item B<--list>
-
-List mode available for the plugin.
-
 =item B<--version>
 
 Print plugin version.

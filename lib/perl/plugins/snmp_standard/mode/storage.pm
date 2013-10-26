@@ -31,8 +31,6 @@ sub new {
                                   "storage:s"               => { name => 'storage' },
                                   "regexp"                  => { name => 'use_regexp' },
                                   "regexp-isensitive"       => { name => 'use_regexpi' },
-                                  "statefiledir-cache:s"    => { name => 'statefiledir_cache' },
-                                  "statefiledir-values:s"   => { name => 'statefiledir_values' },
                                   "oid-filter:s"            => { name => 'oid_filter', default => 'hrStorageDescr'},
                                   "oid-display:s"           => { name => 'oid_display', default => 'hrStorageDescr'},
                                   "display-transform-src:s" => { name => 'display_transform_src' },
@@ -205,8 +203,7 @@ sub manage_selection {
     my ($self, %options) = @_;
 
     # init cache file
-    my $has_cache_file = $self->{statefile_cache}->read(statefile_dir => $self->{option_results}->{statefiledir_cache},
-                                                        statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
+    my $has_cache_file = $self->{statefile_cache}->read(statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
     if (defined($self->{option_results}->{show_cache})) {
         $self->{output}->add_option_msg(long_msg => $self->{statefile_cache}->get_string_content());
         $self->{output}->option_exit();
@@ -339,14 +336,6 @@ Allows to use regexp to filter storage (with option --name).
 =item B<--regexp-isensitive>
 
 Allows to use regexp non case-sensitive (with --regexp).
-
-=item B<--statefiledir-cache>
-
-Directory path of statefile 'cache'.
-
-=item B<--statefiledir-values>
-
-Directory path of statefile 'values'.
 
 =item B<--reload-cache-time>
 

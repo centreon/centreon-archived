@@ -12,14 +12,15 @@ sub new {
         $options{options}->add_options(arguments =>
                                 {
                                   "memcached:s"         => { name => 'memcached' },
+                                  "statefile-dir:s"     => { name => 'statefile_dir', default => '/var/lib/centreon/centplugins' },
                                 });
         $options{options}->add_help(package => __PACKAGE__, sections => 'RETENTION OPTIONS', once => 1);
     }
     
     $self->{output} = $options{output};
-    $self->{statefile_dir} = '/var/lib/centreon/centplugins';
     $self->{datas} = {};
     $self->{memcached} = undef;
+    $self->{statefile_dir} = undef;
     
     return $self;
 }
@@ -30,7 +31,7 @@ sub check_options {
     if (defined($options{option_results}) && defined($options{option_results}->{memcached})) {
         $self->{memcached} = $options{option_results}->{memcached};
     }
-
+    $self->{statefile_dir} = $options{option_results}->{statefile_dir};
 }
 
 sub read {
@@ -111,6 +112,12 @@ Statefile class
 =item B<--memcached>
 
 Memcached server to use (only one server).
+
+=item B<--statefile-dir>
+
+Directory for statefile (Default: '/var/lib/centreon/centplugins').
+
+=back
 
 =head1 DESCRIPTION
 
