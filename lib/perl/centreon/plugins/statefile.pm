@@ -20,6 +20,7 @@ sub new {
     $self->{output} = $options{output};
     $self->{datas} = {};
     $self->{memcached} = undef;
+    
     $self->{statefile_dir} = undef;
     
     return $self;
@@ -29,7 +30,9 @@ sub check_options {
     my ($self, %options) = @_;
 
     if (defined($options{option_results}) && defined($options{option_results}->{memcached})) {
-        $self->{memcached} = $options{option_results}->{memcached};
+        require Memcached::libmemcached;
+        $self->{memcached} = Memcached::libmemcached->new();
+        Memcached::libmemcached::memcached_server_add($self->{memcached}, $options{option_results}->{memcached});
     }
     $self->{statefile_dir} = $options{option_results}->{statefile_dir};
 }
@@ -39,9 +42,24 @@ sub read {
     $self->{statefile_dir} = defined($options{statefile_dir}) ? $options{statefile_dir} : $self->{statefile_dir};
     $self->{statefile} =  defined($options{statefile}) ? $options{statefile} : $self->{statefile};
 
+    if (defined($self->{memcached})) {
+        # if "SUCCESS" or "NOT FOUND" is ok. Other with use the file
+        my $val = Memcached::libmemcached::memcached_get($self->{memcached}, $self->{statefile_dir} . "/" . $self->{statefile});
+        if (defined($self->{memcached}->errstr) && $self->{memcached}->errstr =~ /^SUCCESS|NOT FOUND$/i) {
+            if (defined($val)) {
+                eval( $val );
+                $self->{datas} = $datas;
+                $datas = {};
+                return 1;
+            }
+            return 0;
+        }
+        $self->{memcached_ok} = 0;
+    }
+    
     if (! -e $self->{statefile_dir} . "/" . $self->{statefile}) {
         if (! -w $self->{statefile_dir}) {
-        $self->{output}->add_option_msg(short_msg =>  "Cannot write statefile '" . $self->{statefile_dir} . "/" . $self->{statefile} . "'. Need write permissions on directory.");
+            $self->{output}->add_option_msg(short_msg =>  "Cannot write statefile '" . $self->{statefile_dir} . "/" . $self->{statefile} . "'. Need write permissions on directory.");
             $self->{output}->option_exit();
         }
         return 0;
@@ -88,6 +106,13 @@ sub get {
 sub write {
     my ($self, %options) = @_;
 
+    if (defined($self->{memcached})) {
+        Memcached::libmemcached::memcached_set($self->{memcached}, $self->{statefile_dir} . "/" . $self->{statefile}, 
+                                               Data::Dumper->Dump([$options{data}], ["datas"]));
+        if (defined($self->{memcached}->errstr) && $self->{memcached}->errstr =~ /^SUCCESS$/i) {
+            return ;
+        }
+    }
     open FILE, ">", $self->{statefile_dir} . "/" . $self->{statefile};
     print FILE Data::Dumper->Dump([$options{data}], ["datas"]);
     close FILE;
