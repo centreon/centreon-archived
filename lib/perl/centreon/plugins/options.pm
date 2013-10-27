@@ -80,12 +80,9 @@ sub parse_options {
     my $self = shift;
     #%{$self->{options_stored}} = ();
 
-    # Need to save to check multiples times (centos 5 Getopt don't have 'GetOptionsFromArray'
-    my @save_argv = @ARGV;
     GetOptions(
        %{$self->{options}}
     );
-    @ARGV = @save_argv;
     %{$self->{options}} = ();
 }
 

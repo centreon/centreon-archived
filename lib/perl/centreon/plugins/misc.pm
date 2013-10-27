@@ -6,6 +6,7 @@ use warnings;
 sub backtick {
     my %arg = (
         command => undef,
+        arguments => [],
         timeout => 30,
         wait_exit => 0,
         @_,
@@ -60,7 +61,11 @@ sub backtick {
         # kill -9 will kill it and all its descendents
         setpgrp( 0, 0 );
 
-        exec($arg{command});
+        if (scalar(@{$arg{arguments}}) <= 0) {
+            exec($arg{command});
+        } else {
+            exec($arg{command}, @{$arg{arguments}});
+        }
         exit(0);
     }
 

@@ -1,3 +1,4 @@
+#!/usr/bin/perl
 
 use strict;
 use warnings;
@@ -30,6 +31,14 @@ Print plugin version.
 =item B<--help>
 
 Print a brief help message and exits.
+
+=item B<--runas>
+
+Run the script as a different user (prefer to use directly the good user).
+
+=item B<--environment>
+
+Set environment variables for the script (prefer to set it before running it for better performance).
 
 =back
 

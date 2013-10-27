@@ -4,6 +4,7 @@ use strict;
 use warnings;
 use centreon::plugins::options;
 use centreon::plugins::output;
+use centreon::plugins::misc;
 use FindBin;
 use Pod::Usage;
 
@@ -57,13 +58,18 @@ sub get_plugin {
     $self->{options}->add_options(arguments => {
                                                 'plugin:s' => { name => 'plugin' }, 
                                                 'help' => { name => 'help' },
-                                                'version' => { name => 'version' } } );
+                                                'version' => { name => 'version' },
+                                                'runas:s' => { name => 'runas' },
+                                                'environment:s%' => { name => 'environment' },
+                                                } );
 
     $self->{options}->parse_options();
 
     $self->{plugin} = $self->{options}->get_option(argument => 'plugin' );
     $self->{help} = $self->{options}->get_option(argument => 'help' );
     $self->{version} = $self->{options}->get_option(argument => 'version' );
+    $self->{runas} = $self->{options}->get_option(argument => 'runas' );
+    $self->{environment} = $self->{options}->get_option(argument => 'environment' );
 
     $self->{output}->mode(name => $self->{mode});
     $self->{output}->plugin(name => $self->{plugin});
@@ -85,6 +91,68 @@ sub display_local_help {
     $self->{output}->add_option_msg(long_msg => $stdout) if (defined($stdout));
 }
 
+sub check_relaunch {
+    my $self = shift;
+    my $need_restart = 0;
+    my $cmd = $FindBin::Bin . "/" . $FindBin::Script;
+    my @args = ();
+    
+    if (defined($self->{environment})) {
+        foreach (keys %{$self->{environment}}) {
+            if ($_ ne '' && (!defined($ENV{$_}) || $ENV{$_} ne $self->{environment}->{$_})) {
+                $ENV{$_} = $self->{environment}->{$_};
+                $need_restart = 1;
+            }
+        }
+    }
+    
+    if (defined($self->{runas}) && $self->{runas} ne '') {
+        # Check if it's already me and user exist ;)
+        my ($name, $passwd, $uid) = getpwnam($self->{runas});
+        if (!defined($uid)) {
+            $self->{output}->add_option_msg(short_msg => "Runas user '" . $self->{runas} . "' not exist.");
+            $self->{output}->option_exit();
+        }
+        if ($uid != $>) {
+            if ($> == 0) {
+                unshift @args, "-s", "/bin/bash", "-l", $self->{runas}, "-c", join(" ", $cmd, "--plugin=" . $self->{plugin}, @ARGV);
+                $cmd = "su";
+            } else {
+                unshift @args, "-S", "-u", $self->{runas}, $cmd, "--plugin=" . $self->{plugin}, @ARGV;
+                $cmd = "sudo";
+            }
+            $need_restart = 1;
+        }
+    }
+
+    if ($need_restart == 1) {
+        if (scalar(@args) <= 0) {
+            unshift @args, @ARGV, "--plugin=" . $self->{plugin}
+        }
+
+        my ($lerror, $stdout, $exit_code) = centreon::plugins::misc::backtick(
+                                                 command => $cmd,
+                                                 arguments => [@args],
+                                                 timeout => 30,
+                                                 wait_exit => 1
+                                                 );
+        if ($exit_code <= -1000) {
+            if ($exit_code == -1000) {
+                $self->{output}->output_add(severity => 'UNKNOWN', 
+                                            short_msg => $stdout);
+            }
+            $self->{output}->display();
+            $self->{output}->exit();
+        }
+        print $stdout;
+        # We put unknown
+        if (!($exit_code >= 0 && $exit_code <= 4)) {
+            exit 3;
+        }
+        exit $exit_code;
+    }
+}
+
 sub run {
     my $self = shift;
 
@@ -98,6 +166,9 @@ sub run {
         $self->{output}->add_option_msg(short_msg => "Need to specify '--plugin' option.");
         $self->{output}->option_exit();
     }
+
+    $self->check_relaunch();
+    
     (my $file = $self->{plugin} . ".pm") =~ s{::}{/}g;
     require $file;
     my $plugin = $self->{plugin}->new(options => $self->{options}, output => $self->{output});
