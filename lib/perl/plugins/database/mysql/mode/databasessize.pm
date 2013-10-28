@@ -15,6 +15,7 @@ sub new {
                                 { 
                                   "warning:s"               => { name => 'warning', },
                                   "critical:s"              => { name => 'critical', },
+                                  "filter:s"                => { name => 'filter', },
                                 });
 
     return $self;
@@ -44,19 +45,32 @@ sub run {
             FROM information_schema.tables
             GROUP BY table_schema');
     my $result = $self->{sql}->fetchall_arrayref();
-    use Data::Dumper;
-    print Data::Dumper::Dumper($result);
     
+    if (!($self->{sql}->is_version_minimum(version => '5'))) {
+        $self->{output}->add_option_msg(short_msg => "MySQL version '" . $self->{sql}->{version} . "' is not supported.");
+        $self->{output}->option_exit();
+    } 
     
-    #    my $exit_code = $self->{perfdata}->threshold_check(value => $milliseconds, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
-    #    $self->{output}->output_add(severity => $exit_code,
-    #                                short_msg => sprintf("Connection established in %.3fs.", $milliseconds / 1000));
-    #    $self->{output}->perfdata_add(label => 'connection_time', unit => 'ms',
-    #                                  value => $milliseconds,
-    #                                  warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning'),
-    #                                  critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical'),
-    #                                  min => 0);
-    #}
+    $self->{output}->output_add(severity => 'OK',
+                                short_msg => "All databases are ok.");
+    foreach my $row (@$result) {
+        next if (defined($self->{option_results}->{filter}) && 
+                 $$row[0] !~ /$self->{option_results}->{filter}/);
+    
+        my $exit_code = $self->{perfdata}->threshold_check(value => $$row[1], threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
+        
+        my ($value, $value_unit) = $self->{perfdata}->change_bytes(value => $$row[1]);
+        $self->{output}->output_add(long_msg => sprintf("DB '" . $$row[0] . "' size: %.3f%s", $value, $value_unit));
+        if (!$self->{output}->is_status(value => $exit_code, compare => 'ok', litteral => 1)) {
+            $self->{output}->output_add(severity => $exit_code,
+                                        short_msg => sprintf("DB '" . $$row[0] . "' size: %.3f%s", $value, $value_unit));
+        }
+        $self->{output}->perfdata_add(label => $$row[0] . '_size',
+                                      value => $$row[1],
+                                      warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning'),
+                                      critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical'),
+                                      min => 0);
+    }
     
     $self->{output}->display();
     $self->{output}->exit();
@@ -79,6 +93,10 @@ Threshold warning in bytes.
 =item B<--critical>
 
 Threshold critical in bytes.
+
+=item B<--filter>
+
+Filter database to checks.
 
 =back
 

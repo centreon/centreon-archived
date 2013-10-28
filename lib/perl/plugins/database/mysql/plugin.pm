@@ -20,6 +20,13 @@ sub new {
     %{$self->{modes}} = (
                          'connection-time' => 'database::mysql::mode::connectiontime',
                          'databases-size' => 'database::mysql::mode::databasessize',
+                         'queries' => 'database::mysql::mode::queries',
+                         'slow-queries' => 'database::mysql::mode::slowqueries',
+                         'threads-connected' => 'database::mysql::mode::threadsconnected',
+                         'uptime' => 'database::mysql::mode::uptime',
+                         'open-files' => 'database::mysql::mode::openfiles',
+                         'innodb-bufferpool-hitrate' => 'database::mysql::mode::innodbbufferpoolhitrate',
+                         'myisam-keycache-hitrate' => 'database::mysql::mode::myisamkeycachehitrate',
                          );
     $self->{sql_modes}{mysqlcmd} = 'database::mysql::mysqlcmd';
 
