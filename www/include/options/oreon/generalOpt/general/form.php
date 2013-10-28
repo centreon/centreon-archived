@@ -131,7 +131,7 @@ $form->addGroup($options4, 'strict_hostParent_poller_management', _("Enable stri
 /*
  * Support Email
  */
-$form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText2);
+$form->addElement('text', 'centreon_support_email', _("Centreon Support Email"), $attrsText);
 
 /*
  * Form Rules
