@@ -1,4 +1,4 @@
-package plugin::linux::snmp;
+package plugin::os::windows::snmp;
 
 use strict;
 use warnings;
@@ -17,8 +17,8 @@ sub new {
                          'processcount' => 'snmp_standard::mode::processcount',
                          'storage' => 'snmp_standard::mode::storage',
                          'traffic' => 'snmp_standard::mode::traffic',
+                         'uptime' => 'snmp_standard::mode::uptime',
                          );
-    #$self->{default} = [{option_mode => 'traffic', option_name => 'warning', option_value => '-1'}];
 
     return $self;
 }
@@ -29,6 +29,6 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check Linux Operating systems in SNMP.
+Check Windows operating systems in SNMP.
 
 =cut
