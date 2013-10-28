@@ -9,6 +9,7 @@ sub backtick {
         arguments => [],
         timeout => 30,
         wait_exit => 0,
+        redirect_stderr => 0,
         @_,
     );
     my @output;
@@ -23,10 +24,11 @@ sub backtick {
         $sig_do = 'DEFAULT';
     }
     local $SIG{CHLD} = $sig_do;
+
     if (!defined($pid = open( KID, "-|" ))) {
         return (-1001, "Cant fork: $!", -1);
     }
-    
+
     if ($pid) {
         
         eval {
@@ -61,6 +63,10 @@ sub backtick {
         # kill -9 will kill it and all its descendents
         setpgrp( 0, 0 );
 
+        if ($arg{redirect_stderr} == 1) {
+            open STDERR, ">&STDOUT";
+        }
+        open STDERR, ">&STDOUT";
         if (scalar(@{$arg{arguments}}) <= 0) {
             exec($arg{command});
         } else {

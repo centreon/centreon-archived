@@ -1,4 +1,4 @@
-package plugin::os::linux::snmp;
+package os::linux::plugin;
 
 use strict;
 use warnings;
@@ -19,7 +19,7 @@ sub new {
                          'traffic' => 'snmp_standard::mode::traffic',
                          'uptime' => 'snmp_standard::mode::uptime',
                          );
-    #$self->{default} = [{option_mode => 'traffic', option_name => 'warning', option_value => '-1'}];
+    #$self->{default} = { traffic => { warning => '-1'} };
 
     return $self;
 }

@@ -25,9 +25,13 @@ sub init {
     %{$self->{option_results}} = %{$options{option_results}};
     # Manage default value
     return if (!defined($options{default}));
-    foreach (@{$options{default}}) {
-        if (defined($_->{option_mode}) && $_->{option_mode} eq $self->{mode} && !defined($self->{option_results}->{$_->{option_name}})) {
-            $self->{option_results}->{$_->{option_name}} = $_->{option_value};
+    foreach (keys %{$options{default}}) {
+        if ($_ eq $self->{mode}) {
+            foreach my $value (keys %{$options{default}->{$_}}) {
+                if (!defined($self->{option_results}->{$value})) {
+                    $self->{option_results}->{$value} = $options{default}->{$_}->{$value};
+                }
+            }
         }
     }
 }

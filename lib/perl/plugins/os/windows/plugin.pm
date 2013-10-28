@@ -1,4 +1,4 @@
-package plugin::os::windows::snmp;
+package os::windows::plugin;
 
 use strict;
 use warnings;

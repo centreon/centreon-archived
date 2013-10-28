@@ -1,4 +1,4 @@
-package plugin::example::snmp;
+package example::plugin_snmp;
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ sub new {
 
     $self->{version} = '0.1';
     %{$self->{modes}} = (
-                         'getvalue' => 'plugin::example::mode::getvalue'
+                         'getvalue' => 'example::mode::getvalue'
                          );
 
     return $self;

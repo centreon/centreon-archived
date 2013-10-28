@@ -1,4 +1,4 @@
-package plugin::example::command;
+package example::plugin_command;
 
 use strict;
 use warnings;
@@ -12,7 +12,7 @@ sub new {
 
     $self->{version} = '0.1';
     %{$self->{modes}} = (
-                         'launchcmd' => 'plugin::example::mode::launchcmd'
+                         'launchcmd' => 'example::mode::launchcmd'
                          );
 
     return $self;
