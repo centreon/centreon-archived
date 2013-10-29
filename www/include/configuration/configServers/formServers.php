@@ -140,7 +140,6 @@ $form->addElement('select', 'monitoring_engine', _("Engine"), array_map("monitor
  */
 $form->addElement('header', 'information', _("Satellite configuration"));
 $form->addElement('text', 'name', _("Poller Name"), $attrsText);
-$form->addElement('text', 'description', _("Description"), $attrsText);
 $form->addElement('text', 'ns_ip_address', _("IP Address"), $attrsText);
 $form->addElement('text', 'init_script', _("Monitoring Engine Init Script"), $attrsText);
 

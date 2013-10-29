@@ -148,7 +148,7 @@
 	/*
 	 * Nagios list
 	 */
-	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, description, ns_activate, ns_ip_address, localhost, is_default
+	$rq = "SELECT SQL_CALC_FOUND_ROWS id, name, ns_activate, ns_ip_address, localhost, is_default
            FROM `nagios_server` $LCASearch ".
            $oreon->user->access->queryBuilder($LCASearch ? 'AND' : 'WHERE', 'id', $pollerstring).
            " ORDER BY name
@@ -190,8 +190,8 @@
 		$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
 
 		/*
-                 * Manage flag for update time
-                 */
+         * Manage flag for update time
+         */
 		$lastUpdateTimeFlag = 0;
 		if (!isset($nagiosInfo[$config["name"]]["last_alive"])) {
 		  $lastUpdateTimeFlag = 0;
@@ -203,7 +203,6 @@
 				     "MenuClass" => "list_".$style,
 				     "RowMenu_select" => $selectedElements->toHtml(),
 				     "RowMenu_name" => $config["name"],
-                                     "RowMenu_description" => $config["description"],
 				     "RowMenu_ip_address" => $config["ns_ip_address"],
 				     "RowMenu_link" => "?p=".$p."&o=c&server_id=".$config['id'],
 				     "RowMenu_localisation" => $config["localhost"] ? _("Yes") : "-",
