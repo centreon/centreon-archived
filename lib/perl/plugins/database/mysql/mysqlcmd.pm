@@ -93,7 +93,7 @@ sub check_options {
         $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }
     
-    $self->{args} = ['--batch', '--raw', '--skip-column-names', '--host', $self->{host}];
+    $self->{args} = ['--batch', '--raw', '--host', $self->{host}];
     if (defined($self->{port})) {
         push @{$self->{args}}, "--port", $self->{port};
     }
@@ -127,6 +127,17 @@ sub is_version_minimum {
     
     return 1;
 }
+
+sub get_id {
+    my ($self, %options) = @_;
+    
+    my $msg = $self->{host};
+    if (defined($self->{port})) {
+        $msg .= ":" . $self->{port};
+    }
+    return $msg;
+}
+
 
 sub get_unique_id4save {
     my ($self, %options) = @_;
@@ -189,6 +200,10 @@ sub fetchall_arrayref {
     my ($self, %options) = @_;
     my $array_ref = [];
     
+    if (!defined($self->{columns})) {
+        $self->{stdout} =~ s/^(.*?)(\n|$)//;
+        @{$self->{columns}} = split(/\t/, $1);
+    }
     foreach (split /\n/, $self->{stdout}) {
         push @$array_ref, [map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $_))];
     }
@@ -200,6 +215,10 @@ sub fetchrow_array {
     my ($self, %options) = @_;
     my @array_result = ();
     
+    if (!defined($self->{columns})) {
+        $self->{stdout} =~ s/^(.*?)(\n|$)//;
+        @{$self->{columns}} = split(/\t/, $1);
+    }
     if (($self->{stdout} =~ s/^(.*?)(\n|$)//)) {
         push @array_result, map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $1));
     }
@@ -207,9 +226,33 @@ sub fetchrow_array {
     return @array_result;
 }
 
+sub fetchrow_hashref {
+    my ($self, %options) = @_;
+    my $array_result = undef;
+    
+    if (!defined($self->{columns})) {
+        $self->{stdout} =~ s/^(.*?)(\n|$)//;
+        @{$self->{columns}} = split(/\t/, $1);
+    }
+    if ($self->{stdout} ne '' && $self->{stdout} =~ s/^(.*?)(\n|$)//) {
+        $array_result = {};
+        my @values = split(/\t/, $1);
+        for (my $i = 0; $i < scalar(@values); $i++) {
+            my $value = $values[$i];
+            $value =~ s/\\n/\x{0a}/g;
+            $value =~ s/\\t/\x{09}/g;
+            $value =~ s/\\/\x{5c}/g;
+            $array_result->{$self->{columns}[$i]} = $value;
+        }
+    }
+    
+    return $array_result;
+}
+
 sub query {
     my ($self, %options) = @_;
     
+    $self->{columns} = undef;
     (my $exit_code, $self->{stdout}) = $self->command_execution(request => $options{query});
     
     if ($exit_code != 0) {

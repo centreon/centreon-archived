@@ -22,6 +22,7 @@ sub new {
                          'open-files' => 'database::mysql::mode::openfiles',
                          'innodb-bufferpool-hitrate' => 'database::mysql::mode::innodbbufferpoolhitrate',
                          'myisam-keycache-hitrate' => 'database::mysql::mode::myisamkeycachehitrate',
+                         'replication-master-slave' => 'database::mysql::mode::replicationmasterslave',
                          );
     $self->{sql_modes}{mysqlcmd} = 'database::mysql::mysqlcmd';
 

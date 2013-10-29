@@ -145,6 +145,12 @@ sub connect {
     return 0;
 }
 
+sub get_id {
+    my ($self, %options) = @_;
+    
+    return $self->{data_source};
+}
+
 sub get_unique_id4save {
     my ($self, %options) = @_;
 
@@ -161,6 +167,12 @@ sub fetchrow_array {
     my ($self, %options) = @_;
     
     return $self->{statement_handle}->fetchrow_array();
+}
+
+sub fetchrow_hashref {
+    my ($self, %options) = @_;
+    
+    return $self->{statement_handle}->fetchrow_hashref();
 }
 
 sub query {
