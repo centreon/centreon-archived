@@ -4,6 +4,7 @@ package centreon::plugins::dbi;
 use strict;
 use warnings;
 use DBI;
+use Digest::MD5 qw(md5_hex);
 
 sub new {
     my ($class, %options) = @_;
@@ -70,7 +71,24 @@ sub quote {
     return undef;
 }
 
-# Connection initializer
+sub is_version_minimum {
+    my ($self, %options) = @_;
+    # $options{version} = string version to check
+    
+    my @version_src = split /\./, $self->{version};
+    my @versions = split /\./, $options{version};
+    for (my $i = 0; $i < scalar(@versions); $i++) {
+        return 1 if ($versions[$i] eq 'x');
+        return 1 if (!defined($version_src[$i]));
+        $version_src[$i] =~ /^([0-9]*)/;
+        next if ($versions[$i] == int($1));
+        return 0 if ($versions[$i] > int($1));
+        return 1 if ($versions[$i] < int($1));
+    }
+    
+    return 1;
+}
+    
 sub connect {
     my ($self, %options) = @_;
     my $dontquit = (defined($options{dontquit}) && $options{dontquit} == 1) ? 1 : 0;
@@ -94,10 +112,22 @@ sub connect {
     return 0;
 }
 
+sub get_unique_id4save {
+    my ($self, %options) = @_;
+
+    return md5_hex($self->{option_results}->{data_source});
+}
+
 sub fetchall_arrayref {
     my ($self, %options) = @_;
     
     return $self->{statement_handle}->fetchall_arrayref();
+}
+
+sub fetchrow_array {
+    my ($self, %options) = @_;
+    
+    return $self->{statement_handle}->fetchrow_array();
 }
 
 sub query {

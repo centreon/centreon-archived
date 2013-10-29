@@ -4,6 +4,7 @@ package database::mysql::mysqlcmd;
 use strict;
 use warnings;
 use centreon::plugins::misc;
+use Digest::MD5 qw(md5_hex);
 
 sub new {
     my ($class, %options) = @_;
@@ -74,6 +75,34 @@ sub check_options {
     }
 }
 
+sub is_version_minimum {
+    my ($self, %options) = @_;
+    # $options{version} = string version to check
+    
+    my @version_src = split /\./, $self->{version};
+    my @versions = split /\./, $options{version};
+    for (my $i = 0; $i < scalar(@versions); $i++) {
+        return 1 if ($versions[$i] eq 'x');
+        return 1 if (!defined($version_src[$i]));
+        $version_src[$i] =~ /^([0-9]*)/;
+        next if ($versions[$i] == int($1));
+        return 0 if ($versions[$i] > int($1));
+        return 1 if ($versions[$i] < int($1));
+    }
+    
+    return 1;
+}
+
+sub get_unique_id4save {
+    my ($self, %options) = @_;
+
+    my $msg = $self->{option_results}->{host};
+    if (defined($self->{option_results}->{port})) {
+        $msg .= ":" . $self->{option_results}->{port};
+    }
+    return md5_hex($msg);
+}
+
 sub quote {
     my $self = shift;
 
@@ -130,6 +159,17 @@ sub fetchall_arrayref {
     }
     
     return $array_ref;
+}
+
+sub fetchrow_array {
+    my ($self, %options) = @_;
+    my @array_result = ();
+    
+    if (($self->{stdout} =~ s/^(.*?)(\n|$)//)) {
+        push @array_result, map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $1));
+    }
+    
+    return @array_result;
 }
 
 sub query {
