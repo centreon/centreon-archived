@@ -15,10 +15,11 @@ sub new {
     
     $self->{options}->add_options(
                                    arguments => {
-                                                'mode:s' => { name => 'mode_name' },
-                                                'list-mode' => { name => 'list_mode' },
-                                                'sqlmode:s' => { name => 'sqlmode_name', default => 'dbi' },
+                                                'mode:s'       => { name => 'mode_name' },
+                                                'list-mode'    => { name => 'list_mode' },
+                                                'sqlmode:s'    => { name => 'sqlmode_name', default => 'dbi' },
                                                 'list-sqlmode' => { name => 'list_sqlmode' },
+                                                'multiple'     => { name => 'multiple' },
                                                 }
                                   );
     $self->{version} = '1.0';
@@ -26,11 +27,13 @@ sub new {
     %{$self->{sql_modes}} = ('dbi' => 'centreon::plugins::dbi');
     $self->{default} = undef;
     $self->{sqldefault} = {};
+    $self->{sqlmode_current} = undef;
+    $self->{sqlmode_stored} = [];
     
     $self->{options}->parse_options();
     $self->{option_results} = $self->{options}->get_options();
     foreach (keys %{$self->{option_results}}) {
-         $self->{$_} = $self->{option_results}->{$_};
+        $self->{$_} = $self->{option_results}->{$_};
     }
     $self->{options}->clean();
 
@@ -72,7 +75,8 @@ sub init {
     # Load Sql-Mode
     (my $file = $self->{sql_modes}{$self->{sqlmode_name}} . ".pm") =~ s{::}{/}g;
     require $file;
-    $self->{sqlmode} = $self->{sql_modes}{$self->{sqlmode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{sqlmode_name});
+
+    $self->{sqlmode_current} = $self->{sql_modes}{$self->{sqlmode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{sqlmode_name});
     
     # Load mode
     ($file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
@@ -92,7 +96,15 @@ sub init {
     $self->{options}->parse_options();
     $self->{option_results} = $self->{options}->get_options();
 
-    $self->{sqlmode}->check_options(option_results => $self->{option_results}, default => $self->{sqldefault});
+    push @{$self->{sqlmode_stored}}, $self->{sqlmode_current};
+    $self->{sqlmode_current}->set_options(option_results => $self->{option_results});
+    $self->{sqlmode_current}->set_defaults(default => $self->{sqldefault});
+
+    while ($self->{sqlmode_current}->check_options()) {
+        $self->{sqlmode_current} = $self->{sql_modes}{$self->{sqlmode_name}}->new(noptions => 1, options => $self->{options}, output => $self->{output}, mode => $self->{sqlmode_name});
+        $self->{sqlmode_current}->set_options(option_results => $self->{option_results});
+        push @{$self->{sqlmode_stored}}, $self->{sqlmode_current};
+    }
     $self->{mode}->check_options(option_results => $self->{option_results}, default => $self->{default});
 }
 
@@ -106,11 +118,19 @@ sub run {
     }
 
     if ($self->{output}->is_disco_show()) {
-        $self->{mode}->disco_show(sql => $self->{sqlmode});
+        if (defined($self->{multiple})) {
+            $self->{mode}->disco_show(sql => $self->{sqlmode});
+        } else {
+            $self->{mode}->disco_show(sql => $self->{sqlmode_stored}[0]);
+        }
         $self->{output}->display_disco_show();
         $self->{output}->exit(exit_litteral => 'ok');
     } else {
-        $self->{mode}->run(sql => $self->{sqlmode});
+        if (defined($self->{multiple})) {
+            $self->{mode}->run(sql => $self->{sqlmode_stored});
+        } else {
+            $self->{mode}->run(sql => $self->{sqlmode_stored}[0]);
+        }
     }
 }
 
@@ -194,6 +214,10 @@ Choose a sql mode (Default: "dbi").
 =item B<--list-sqlmode>
 
 List available sql modes.
+
+=item B<--multiple>
+
+Multiple database connections (some mode needs it).
 
 =back
 
