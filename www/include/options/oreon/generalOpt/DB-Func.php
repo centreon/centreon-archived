@@ -31,28 +31,26 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon))
-		exit();
+if (!isset($oreon)) {
+    exit();
+}
 
-	function updateOption($pearDB, $key, $value) {
-		/*
-		 * Purge
-		 */
-		$DBRESULT = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
-
-		/*
-		 * Add
-		 */
-		if (!is_null($value) && $value != 'NULL') {
-		    $value = "'$value'";
-		}
-		$DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
-	}
+function updateOption($pearDB, $key, $value) {
+    /*
+     * Purge
+     */
+    $DBRESULT = $pearDB->query("DELETE FROM `options` WHERE `key` = '$key'");
+    
+    /*
+     * Add
+     */
+    if (!is_null($value) && $value != 'NULL') {
+        $value = "'$value'";
+    }
+    $DBRESULT = $pearDB->query("INSERT INTO `options` (`key`, `value`) VALUES ('$key', $value)");
+}
 
 	function is_valid_path_images($path) {
 	    if (trim($path) == '') {
@@ -179,7 +177,7 @@
         updateOption($db, "enable_perfdata_sync", isset($ret["enable_perfdata_sync"]) && $ret['enable_perfdata_sync'] ? 1 : 0);
         updateOption($db, "enable_logs_sync", isset($ret["enable_logs_sync"]) && $ret['enable_logs_sync'] ? 1 : 0);
         updateOption($db, "enable_broker_stats", isset($ret["enable_broker_stats"]) && $ret['enable_broker_stats'] ? 1 : 0);
-        updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? 1 : 0);
+        updateOption($db, "centcore_cmd_timeout", isset($ret["centcore_cmd_timeout"]) && $ret['centcore_cmd_timeout'] ? $ret['centcore_cmd_timeout'] : 0);
         $centreon->initOptGen($db);
     }
         
