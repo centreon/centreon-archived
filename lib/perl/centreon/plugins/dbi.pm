@@ -13,22 +13,26 @@ sub new {
     # $options{options} = options object
     # $options{output} = output object
     # $options{exit_value} = integer
-    
+    # $options{noptions} = integer
+
     if (!defined($options{output})) {
-        print "Class SNMP: Need to specify 'output' argument.\n";
+        print "Class DBI: Need to specify 'output' argument.\n";
         exit 3;
     }
     if (!defined($options{options})) {
         $options{output}->add_option_msg(short_msg => "Class DBI: Need to specify 'options' argument.");
         $options{output}->option_exit();
     }
-    $options{options}->add_options(arguments => 
-                { "datasource:s"             => { name => 'data_source' },
-                  "username:s"               => { name => 'username' },
-                  "password:s"               => { name => 'password' },
-                  "sql-errors-exit:s"        => { name => 'sql-errors-exit', default => 'unknown' },
-    });
-    $options{options}->add_help(package => __PACKAGE__, sections => 'DBI OPTIONS');
+    
+    if (!defined($options{noptions})) {
+        $options{options}->add_options(arguments => 
+                    { "datasource:s@"      => { name => 'data_source' },
+                      "username:s@"        => { name => 'username' },
+                      "password:s@"        => { name => 'password' },
+                      "sql-errors-exit:s"  => { name => 'sql_errors_exit', default => 'unknown' },
+        });
+    }
+    $options{options}->add_help(package => __PACKAGE__, sections => 'DBI OPTIONS', once => 1);
 
     $self->{output} = $options{output};
     $self->{mode} = $options{mode};
@@ -36,30 +40,59 @@ sub new {
     $self->{statement_handle} = undef;
     $self->{version} = undef;
     
+    $self->{data_source} = undef;
+    $self->{username} = undef;
+    $self->{password} = undef;
+    
     return $self;
 }
 
-sub check_options {
+# Method to manage multiples
+sub set_options {
     my ($self, %options) = @_;
-    # options{default} = { 'mode_name' => { option_name => opt_value } }
+    # options{options_result}
 
-    %{$self->{option_results}} = %{$options{option_results}};
+    $self->{option_results} = $options{option_results};
+}
+
+# Method to manage multiples
+sub set_defaults {
+    my ($self, %options) = @_;
+    # options{default}
+    
     # Manage default value
-    return if (!defined($options{default}));
     foreach (keys %{$options{default}}) {
         if ($_ eq $self->{mode}) {
-            foreach my $value (keys %{$options{default}->{$_}}) {
-                if (!defined($self->{option_results}->{$value})) {
-                    $self->{option_results}->{$value} = $options{default}->{$_}->{$value};
+            for (my $i = 0; $i < scalar(@{$options{default}->{$_}}); $i++) {
+                foreach my $opt (keys %{$options{default}->{$_}[$i]}) {
+                    if (!defined($self->{option_results}->{$opt}[$i])) {
+                        $self->{option_results}->{$opt}[$i] = $options{default}->{$_}[$i]->{$opt};
+                    }
                 }
             }
         }
     }
+}
 
-    if (!defined($self->{option_results}->{data_source}) || $self->{option_results}->{data_source} eq '') {
+sub check_options {
+    my ($self, %options) = @_;
+    # return 1 = ok still data_source
+    # return 0 = no data_source left
+    
+    $self->{data_source} = (defined($self->{option_results}->{data_source})) ? shift(@{$self->{option_results}->{data_source}}) : undef;
+    $self->{username} = (defined($self->{option_results}->{username})) ? shift(@{$self->{option_results}->{username}}) : undef;
+    $self->{password} = (defined($self->{option_results}->{password})) ? shift(@{$self->{option_results}->{password}}) : undef;
+    $self->{sql_errors_exit} = $self->{option_results}->{sql_errors_exit};
+    
+    if (!defined($self->{data_source}) || $self->{data_source} eq '') {
         $self->{output}->add_option_msg(short_msg => "Need to specify database arguments.");
-        $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+        $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }
+    
+    if (scalar(@{$self->{option_results}->{data_source}}) == 0) {
+        return 0;
+    }
+    return 1;
 }
 
 sub quote {
@@ -94,16 +127,16 @@ sub connect {
     my $dontquit = (defined($options{dontquit}) && $options{dontquit} == 1) ? 1 : 0;
 
     $self->{instance} = DBI->connect(
-        "DBI:". $self->{option_results}->{data_source},
-        $self->{option_results}->{username},
-        $self->{option_results}->{password},
+        "DBI:". $self->{data_source},
+        $self->{username},
+        $self->{password},
         { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
     );
 
     if (!defined($self->{instance})) {
         if ($dontquit == 0) {
             $self->{output}->add_option_msg(short_msg => "Cannot connect: " . $DBI::errstr);
-            $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+            $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
         }
         return (-1, "Cannot connect: " . $DBI::errstr);
     }
@@ -112,10 +145,16 @@ sub connect {
     return 0;
 }
 
+sub get_id {
+    my ($self, %options) = @_;
+    
+    return $self->{data_source};
+}
+
 sub get_unique_id4save {
     my ($self, %options) = @_;
 
-    return md5_hex($self->{option_results}->{data_source});
+    return md5_hex($self->{data_source});
 }
 
 sub fetchall_arrayref {
@@ -130,19 +169,25 @@ sub fetchrow_array {
     return $self->{statement_handle}->fetchrow_array();
 }
 
+sub fetchrow_hashref {
+    my ($self, %options) = @_;
+    
+    return $self->{statement_handle}->fetchrow_hashref();
+}
+
 sub query {
     my ($self, %options) = @_;
     
     $self->{statement_handle} = $self->{instance}->prepare($options{query});
     if (!defined($self->{statement_handle})) {
         $self->{output}->add_option_msg(short_msg => "Cannot execute query: " . $self->{instance}->errstr);
-        $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+        $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }
 
     my $rv = $self->{statement_handle}->execute;
     if (!$rv) {
         $self->{output}->add_option_msg(short_msg => "Cannot execute query: " . $self->{statement_handle}->errstr);
-        $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+        $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }    
 }
 

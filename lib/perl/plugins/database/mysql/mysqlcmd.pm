@@ -13,24 +13,27 @@ sub new {
     # $options{options} = options object
     # $options{output} = output object
     # $options{exit_value} = integer
+    # $options{noptions} = integer
     
     if (!defined($options{output})) {
-        print "Class SNMP: Need to specify 'output' argument.\n";
+        print "Class mysqlcmd: Need to specify 'output' argument.\n";
         exit 3;
     }
     if (!defined($options{options})) {
         $options{output}->add_option_msg(short_msg => "Class Mysqlcmd: Need to specify 'options' argument.");
         $options{output}->option_exit();
     }
-    $options{options}->add_options(arguments => 
-                { "mysql-cmd:s"              => { name => 'mysql_cmd', default => '/usr/bin/mysql' },
-                  "host:s"                   => { name => 'host' },
-                  "port:s"                   => { name => 'port' },
-                  "username:s"               => { name => 'username' },
-                  "password:s"               => { name => 'password' },
-                  "sql-errors-exit:s"        => { name => 'sql-errors-exit', default => 'unknown' },
-    });
-    $options{options}->add_help(package => __PACKAGE__, sections => 'MYSQLCMD OPTIONS');
+    if (!defined($options{noptions})) {
+        $options{options}->add_options(arguments => 
+                    { "mysql-cmd:s"              => { name => 'mysql_cmd', default => '/usr/bin/mysql' },
+                      "host:s@"                  => { name => 'host' },
+                      "port:s@"                  => { name => 'port' },
+                      "username:s@"              => { name => 'username' },
+                      "password:s@"              => { name => 'password' },
+                      "sql-errors-exit:s"        => { name => 'sql_errors_exit', default => 'unknown' },
+        });
+    }
+    $options{options}->add_help(package => __PACKAGE__, sections => 'MYSQLCMD OPTIONS', once => 1);
 
     $self->{output} = $options{output};
     $self->{mode} = $options{mode};
@@ -38,41 +41,73 @@ sub new {
     $self->{stdout} = undef;
     $self->{version} = undef;
     
+    $self->{host} = undef;
+    $self->{port} = undef;
+    $self->{username} = undef;
+    $self->{password} = undef;
+    
     return $self;
 }
 
-sub check_options {
+# Method to manage multiples
+sub set_options {
     my ($self, %options) = @_;
-    # options{default} = { 'mode_name' => { option_name => opt_value } }
+    # options{options_result}
 
-    %{$self->{option_results}} = %{$options{option_results}};
+    $self->{option_results} = $options{option_results};
+}
+
+# Method to manage multiples
+sub set_defaults {
+    my ($self, %options) = @_;
+    # options{default}
+    
     # Manage default value
-    return if (!defined($options{default}));
     foreach (keys %{$options{default}}) {
         if ($_ eq $self->{mode}) {
-            foreach my $value (keys %{$options{default}->{$_}}) {
-                if (!defined($self->{option_results}->{$value})) {
-                    $self->{option_results}->{$value} = $options{default}->{$_}->{$value};
+            for (my $i = 0; $i < scalar(@{$options{default}->{$_}}); $i++) {
+                foreach my $opt (keys %{$options{default}->{$_}[$i]}) {
+                    if (!defined($self->{option_results}->{$opt}[$i])) {
+                        $self->{option_results}->{$opt}[$i] = $options{default}->{$_}[$i]->{$opt};
+                    }
                 }
             }
         }
     }
+}
 
-    if (!defined($self->{option_results}->{host}) || $self->{option_results}->{host} eq '') {
+sub check_options {
+    my ($self, %options) = @_;
+    # return 1 = ok still data_source
+    # return 0 = no data_source left
+    
+    $self->{host} = (defined($self->{option_results}->{host})) ? shift(@{$self->{option_results}->{host}}) : undef;
+    $self->{port} = (defined($self->{option_results}->{port})) ? shift(@{$self->{option_results}->{port}}) : undef;
+    $self->{username} = (defined($self->{option_results}->{username})) ? shift(@{$self->{option_results}->{username}}) : undef;
+    $self->{password} = (defined($self->{option_results}->{password})) ? shift(@{$self->{option_results}->{password}}) : undef;
+    $self->{sql_errors_exit} = $self->{option_results}->{sql_errors_exit};
+    $self->{mysql_cmd} = $self->{option_results}->{mysql_cmd};
+ 
+    if (!defined($self->{host}) || $self->{host} eq '') {
         $self->{output}->add_option_msg(short_msg => "Need to specify host argument.");
-        $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+        $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }
     
-    $self->{args} = ['--batch', '--raw', '--skip-column-names', '--host', $self->{option_results}->{host}];
-    if (defined($self->{option_results}->{port})) {
-        push @{$self->{args}}, "--port", $self->{option_results}->{port};
+    $self->{args} = ['--batch', '--raw', '--host', $self->{host}];
+    if (defined($self->{port})) {
+        push @{$self->{args}}, "--port", $self->{port};
     }
-    if (defined($self->{option_results}->{username})) {
-        push @{$self->{args}}, "--user", $self->{option_results}->{username};
+    if (defined($self->{username})) {
+        push @{$self->{args}}, "--user", $self->{username};
     }
-    if (defined($self->{option_results}->{password}) && $self->{option_results}->{password} ne '') {
-        push @{$self->{args}}, "-p" . $self->{option_results}->{password};
+    if (defined($self->{password}) && $self->{password} ne '') {
+        push @{$self->{args}}, "-p" . $self->{password};
     }
+
+    if (scalar(@{$self->{option_results}->{host}}) == 0) {
+        return 0;
+    }
+    return 1;
 }
 
 sub is_version_minimum {
@@ -93,12 +128,23 @@ sub is_version_minimum {
     return 1;
 }
 
+sub get_id {
+    my ($self, %options) = @_;
+    
+    my $msg = $self->{host};
+    if (defined($self->{port})) {
+        $msg .= ":" . $self->{port};
+    }
+    return $msg;
+}
+
+
 sub get_unique_id4save {
     my ($self, %options) = @_;
 
-    my $msg = $self->{option_results}->{host};
-    if (defined($self->{option_results}->{port})) {
-        $msg .= ":" . $self->{option_results}->{port};
+    my $msg = $self->{host};
+    if (defined($self->{port})) {
+        $msg .= ":" . $self->{port};
     }
     return md5_hex($msg);
 }
@@ -113,7 +159,7 @@ sub command_execution {
     my ($self, %options) = @_;
     
     my ($lerror, $stdout, $exit_code) = centreon::plugins::misc::backtick(
-                                                 command => $self->{option_results}->{mysql_cmd},
+                                                 command => $self->{mysql_cmd},
                                                  arguments =>  [@{$self->{args}}, '-e', $options{request}],
                                                  timeout => 30,
                                                  wait_exit => 1,
@@ -140,7 +186,7 @@ sub connect {
     if ($exit_code != 0) {
         if ($dontquit == 0) {
             $self->{output}->add_option_msg(short_msg => "Cannot connect: " . $stdout);
-            $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+            $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
         }
         return (-1, "Cannot connect: " . $stdout);
     }
@@ -154,6 +200,10 @@ sub fetchall_arrayref {
     my ($self, %options) = @_;
     my $array_ref = [];
     
+    if (!defined($self->{columns})) {
+        $self->{stdout} =~ s/^(.*?)(\n|$)//;
+        @{$self->{columns}} = split(/\t/, $1);
+    }
     foreach (split /\n/, $self->{stdout}) {
         push @$array_ref, [map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $_))];
     }
@@ -165,6 +215,10 @@ sub fetchrow_array {
     my ($self, %options) = @_;
     my @array_result = ();
     
+    if (!defined($self->{columns})) {
+        $self->{stdout} =~ s/^(.*?)(\n|$)//;
+        @{$self->{columns}} = split(/\t/, $1);
+    }
     if (($self->{stdout} =~ s/^(.*?)(\n|$)//)) {
         push @array_result, map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $1));
     }
@@ -172,14 +226,38 @@ sub fetchrow_array {
     return @array_result;
 }
 
+sub fetchrow_hashref {
+    my ($self, %options) = @_;
+    my $array_result = undef;
+    
+    if (!defined($self->{columns})) {
+        $self->{stdout} =~ s/^(.*?)(\n|$)//;
+        @{$self->{columns}} = split(/\t/, $1);
+    }
+    if ($self->{stdout} ne '' && $self->{stdout} =~ s/^(.*?)(\n|$)//) {
+        $array_result = {};
+        my @values = split(/\t/, $1);
+        for (my $i = 0; $i < scalar(@values); $i++) {
+            my $value = $values[$i];
+            $value =~ s/\\n/\x{0a}/g;
+            $value =~ s/\\t/\x{09}/g;
+            $value =~ s/\\/\x{5c}/g;
+            $array_result->{$self->{columns}[$i]} = $value;
+        }
+    }
+    
+    return $array_result;
+}
+
 sub query {
     my ($self, %options) = @_;
     
+    $self->{columns} = undef;
     (my $exit_code, $self->{stdout}) = $self->command_execution(request => $options{query});
     
     if ($exit_code != 0) {
         $self->{output}->add_option_msg(short_msg => "Cannot execute query: " . $self->{stdout});
-        $self->{output}->option_exit(exit_litteral => $self->{option_results}->{sql_errors_exit});
+        $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }
 
 }

@@ -6,12 +6,7 @@ use base qw(centreon::plugins::script_sql);
 
 sub new {
     my ($class, %options) = @_;
-    $options{options}->add_options(
-                                   arguments => {
-                                                'host:s' => { name => 'db_host' },
-                                                'port:s' => { name => 'db_port' },
-                                                }
-                                  );    
+    
     my $self = $class->SUPER::new(package => __PACKAGE__, %options);
     bless $self, $class;
     # $options->{options} = options object
@@ -27,19 +22,40 @@ sub new {
                          'open-files' => 'database::mysql::mode::openfiles',
                          'innodb-bufferpool-hitrate' => 'database::mysql::mode::innodbbufferpoolhitrate',
                          'myisam-keycache-hitrate' => 'database::mysql::mode::myisamkeycachehitrate',
+                         'replication-master-slave' => 'database::mysql::mode::replicationmasterslave',
                          );
     $self->{sql_modes}{mysqlcmd} = 'database::mysql::mysqlcmd';
 
-    if (defined($self->{db_host}) && $self->{db_host} ne '') {
-        $self->{sqldefault}->{dbi} = { data_source => 'mysql:host=' . $self->{db_host} };
-        $self->{sqldefault}->{mysqlcmd} = { host => $self->{db_host} };
-        if (defined($self->{db_port}) && $self->{db_port} ne '') {
-            $self->{sqldefault}->{dbi}->{data_source} .= ';port=' . $self->{db_port};
-            $self->{sqldefault}->{mysqlcmd}->{port} = $self->{db_port};
+    return $self;
+}
+
+sub init {
+    my ($self, %options) = @_;
+
+    $self->{options}->add_options(
+                                   arguments => {
+                                                'host:s@'  => { name => 'db_host' },
+                                                'port:s@'  => { name => 'db_port' },
+                                                }
+                                  );
+    $self->{options}->parse_options();
+    my $options_result = $self->{options}->get_options();
+    $self->{options}->clean();
+
+    if (defined($options_result->{db_host})) {
+        @{$self->{sqldefault}->{dbi}} = ();
+        @{$self->{sqldefault}->{mysqlcmd}} = ();
+        for (my $i = 0; $i < scalar(@{$options_result->{db_host}}); $i++) {
+            $self->{sqldefault}->{dbi}[$i] = { data_source => 'mysql:host=' . $options_result->{db_host}[$i] };
+            $self->{sqldefault}->{mysqlcmd}[$i] = { host => $options_result->{db_host}[$i] };
+            if (defined($options_result->{db_port}[$i])) {
+                $self->{sqldefault}->{dbi}[$i]->{data_source} .= ';port=' . $options_result->{db_port}[$i];
+                $self->{sqldefault}->{mysqlcmd}[$i]->{port} = $options_result->{db_port}[$i];
+            }
         }
     }
 
-    return $self;
+    $self->SUPER::init(%options);    
 }
 
 1;
