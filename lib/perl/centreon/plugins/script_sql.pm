@@ -16,6 +16,7 @@ sub new {
     $self->{options}->add_options(
                                    arguments => {
                                                 'mode:s'       => { name => 'mode_name' },
+                                                'dyn-mode:s'   => { name => 'dynmode_name' },
                                                 'list-mode'    => { name => 'list_mode' },
                                                 'sqlmode:s'    => { name => 'sqlmode_name', default => 'dbi' },
                                                 'list-sqlmode' => { name => 'list_sqlmode' },
@@ -48,11 +49,11 @@ sub init {
     # $options{version} = string version
     # $options{help} = string help
 
-    if (defined($options{help}) && !defined($self->{mode_name})) {
+    if (defined($options{help}) && !defined($self->{mode_name}) && !defined($self->{dynmode_name})) {
         $self->{options}->display_help();
         $self->{output}->option_exit();
     }
-    if (defined($options{version}) && !defined($self->{mode_name})) {
+    if (defined($options{version}) && !defined($self->{mode_name})&& !defined($self->{dynmode_name})) {
         $self->version();
     }
     if (defined($self->{list_mode})) {
@@ -62,11 +63,13 @@ sub init {
         $self->list_sqlmode();
     }
     
-    if (!defined($self->{mode_name}) || $self->{mode_name} eq '') {
-        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' option.");
+    if ((!defined($self->{mode_name}) || $self->{mode_name} eq '') && (!defined($self->{dynmode_name}))) {
+        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' or '--dyn-mode' option.");
         $self->{output}->option_exit();
     }
-    $self->is_mode(mode => $self->{mode_name});
+    if (defined($self->{mode_name})) {
+        $self->is_mode(mode => $self->{mode_name});
+    }
     $self->is_sqlmode(sqlmode => $self->{sqlmode_name});
 
     # Output HELP
@@ -79,9 +82,15 @@ sub init {
     $self->{sqlmode_current} = $self->{sql_modes}{$self->{sqlmode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{sqlmode_name});
     
     # Load mode
-    ($file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
-    require $file;
-    $self->{mode} = $self->{modes}{$self->{mode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    if (defined($self->{mode_name})) {
+        ($file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
+        require $file;
+        $self->{mode} = $self->{modes}{$self->{mode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    } else {
+        ($file = $self->{dynmode_name} . ".pm") =~ s{::}{/}g;
+        require $file;
+        $self->{mode} = $self->{dynmode_name}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    }
 
     if (defined($options{help})) {
         $self->{options}->add_help(package => $self->{modes}{$self->{mode_name}}, sections => 'MODE');
@@ -201,11 +210,15 @@ __END__
 
 =item B<--mode>
 
-Choose a mode (required).
+Choose a mode.
 
 =item B<--list-mode>
 
 List available modes.
+
+=item B<--dyn-mode>
+
+Specify a mode with the path (separated by '::').
 
 =item B<--sqlmode>
 

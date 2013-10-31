@@ -16,8 +16,9 @@ sub new {
     
     $self->{options}->add_options(
                                    arguments => {
-                                                'mode:s' => { name => 'mode' },
-                                                'list-mode' => { name => 'list_mode' },
+                                                'mode:s'       => { name => 'mode' },
+                                                'dyn-mode:s'   => { name => 'dynmode_name' },
+                                                'list-mode'    => { name => 'list_mode' },
                                                 }
                                   );
     $self->{version} = '1.0';
@@ -50,11 +51,13 @@ sub init {
     if (defined($self->{list_mode})) {
         $self->list_mode();
     }
-    if (!defined($self->{mode_name}) || $self->{mode_name} eq '') {
-        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' option.");
+    if ((!defined($self->{mode_name}) || $self->{mode_name} eq '') && (!defined($self->{dynmode_name}))) {
+        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' or '--dyn-mode' option.");
         $self->{output}->option_exit();
     }
-    $self->is_mode(mode => $self->{mode_name});
+    if (defined($self->{mode_name})) {
+        $self->is_mode(mode => $self->{mode_name});
+    }
 
     # Output HELP
     $self->{options}->add_help(package => 'centreon::plugins::output', sections => 'OUTPUT OPTIONS');
@@ -63,9 +66,15 @@ sub init {
     $self->{snmp} = centreon::plugins::snmp->new(options => $self->{options}, output => $self->{output});
     
     # Load mode
-    (my $file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
-    require $file;
-    $self->{mode} = $self->{modes}{$self->{mode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    if (defined($self->{mode_name})) {
+        (my $file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
+        require $file;
+        $self->{mode} = $self->{modes}{$self->{mode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    } else {
+        (my $file = $self->{dynmode_name} . ".pm") =~ s{::}{/}g;
+        require $file;
+        $self->{mode} = $self->{dynmode_name}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    }
 
     if (defined($options{help})) {
         $self->{options}->add_help(package => $self->{modes}{$self->{mode_name}}, sections => 'MODE');
@@ -148,7 +157,11 @@ __END__
 
 =item B<--mode>
 
-Choose a mode (required).
+Choose a mode.
+
+=item B<--dyn-mode>
+
+Specify a mode with the path (separated by '::').
 
 =item B<--list-mode>
 
