@@ -14,9 +14,10 @@ sub new {
     %{$self->{modes}} = (
                          'cpu' => 'snmp_standard::mode::cpu',
                          'load' => 'snmp_standard::mode::loadaverage',
-                         'processcount' => 'snmp_standard::mode::processcount',
                          'memory' => 'os::linux::mode::memory',
+                         'processcount' => 'snmp_standard::mode::processcount',
                          'storage' => 'snmp_standard::mode::storage',
+                         'swap' => 'os::linux::mode::swap',
                          'traffic' => 'snmp_standard::mode::traffic',
                          'uptime' => 'snmp_standard::mode::uptime',
                          );

@@ -5,12 +5,6 @@ use base qw(centreon::plugins::mode);
 use strict;
 use warnings;
 
-my %oids_hrStorageTable = (
-    'hrstoragedescr' => '.1.3.6.1.2.1.25.2.3.1.3',
-    'hrfsmountpoint' => '.1.3.6.1.2.1.25.3.8.1.2',
-    'hrstoragetype' => '.1.3.6.1.2.1.25.2.3.1.2',
-);
-
 sub new {
     my ($class, %options) = @_;
     my $self = $class->SUPER::new(package => __PACKAGE__, %options);
