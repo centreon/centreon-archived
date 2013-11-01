@@ -50,26 +50,23 @@ sub init {
     if (defined($self->{list_mode})) {
         $self->list_mode();
     }
-    if ((!defined($self->{mode_name}) || $self->{mode_name} eq '') && (!defined($self->{dynmode_name}))) {
-        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' or '--dyn-mode' option.");
-        $self->{output}->option_exit();
-    }
-    if (defined($self->{mode_name})) {
-        $self->is_mode(mode => $self->{mode_name});
-    }
 
     # Output HELP
     $self->{options}->add_help(package => 'centreon::plugins::output', sections => 'OUTPUT OPTIONS');
     
     # Load mode
-    if (defined($self->{mode_name})) {
-        (my $file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
-        require $file;
+    if (defined($self->{mode_name}) && $self->{mode_name} ne '') {
+        $self->is_mode(mode => $self->{mode_name});
+        centreon::plugins::misc::mymodule_load(output => $self->{output}, module => $self->{modes}{$self->{mode_name}}, 
+                                               error_msg => "Cannot load module --mode.");
         $self->{mode} = $self->{modes}{$self->{mode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
-    } else {
-        (my $file = $self->{dynmode_name} . ".pm") =~ s{::}{/}g;
-        require $file;
+    } elsif (defined($self->{dynmode_name}) && $self->{dynmode_name} ne '') {
+        centreon::plugins::misc::mymodule_load(output => $self->{output}, module => $self->{dynmode_name}, 
+                                               error_msg => "Cannot load module --dyn-mode.");
         $self->{mode} = $self->{dynmode_name}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    } else {
+        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' or '--dyn-mode' option.");
+        $self->{output}->option_exit();
     }
 
     if (defined($options{help})) {

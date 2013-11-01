@@ -2,6 +2,7 @@ package centreon::plugins::script_sql;
 
 use strict;
 use warnings;
+use centreon::plugins::misc;
 
 sub new {
     my ($class, %options) = @_;
@@ -62,34 +63,33 @@ sub init {
     if (defined($self->{list_sqlmode})) {
         $self->list_sqlmode();
     }
-    
-    if ((!defined($self->{mode_name}) || $self->{mode_name} eq '') && (!defined($self->{dynmode_name}))) {
-        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' or '--dyn-mode' option.");
-        $self->{output}->option_exit();
-    }
-    if (defined($self->{mode_name})) {
-        $self->is_mode(mode => $self->{mode_name});
-    }
-    $self->is_sqlmode(sqlmode => $self->{sqlmode_name});
 
     # Output HELP
     $self->{options}->add_help(package => 'centreon::plugins::output', sections => 'OUTPUT OPTIONS');
 
-    # Load Sql-Mode
-    (my $file = $self->{sql_modes}{$self->{sqlmode_name}} . ".pm") =~ s{::}{/}g;
-    require $file;
-
-    $self->{sqlmode_current} = $self->{sql_modes}{$self->{sqlmode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{sqlmode_name});
+    if (defined($self->{sqlmode_name}) && $self->{sqlmode_name} ne '') {
+        $self->is_sqlmode(sqlmode => $self->{sqlmode_name});
+        centreon::plugins::misc::mymodule_load(output => $self->{output}, module => $self->{sql_modes}{$self->{sqlmode_name}}, 
+                                               error_msg => "Cannot load module --sqlmode.");
+        $self->{sqlmode_current} = $self->{sql_modes}{$self->{sqlmode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{sqlmode_name});
+    } else {
+        $self->{output}->add_option_msg(short_msg => "Need to specify '--sqlmode'.");
+        $self->{output}->option_exit();
+    }
     
     # Load mode
-    if (defined($self->{mode_name})) {
-        ($file = $self->{modes}{$self->{mode_name}} . ".pm") =~ s{::}{/}g;
-        require $file;
+    if (defined($self->{mode_name}) && $self->{mode_name} ne '') {
+        $self->is_mode(mode => $self->{mode_name});
+        centreon::plugins::misc::mymodule_load(output => $self->{output}, module => $self->{modes}{$self->{mode_name}}, 
+                                               error_msg => "Cannot load module --mode.");
         $self->{mode} = $self->{modes}{$self->{mode_name}}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
-    } else {
-        ($file = $self->{dynmode_name} . ".pm") =~ s{::}{/}g;
-        require $file;
+    } elsif (defined($self->{dynmode_name}) && $self->{dynmode_name} ne '') {
+        centreon::plugins::misc::mymodule_load(output => $self->{output}, module => $self->{dynmode_name}, 
+                                               error_msg => "Cannot load module --dyn-mode.");
         $self->{mode} = $self->{dynmode_name}->new(options => $self->{options}, output => $self->{output}, mode => $self->{mode_name});
+    } else {
+        $self->{output}->add_option_msg(short_msg => "Need to specify '--mode' or '--dyn-mode' option.");
+        $self->{output}->option_exit();
     }
 
     if (defined($options{help})) {

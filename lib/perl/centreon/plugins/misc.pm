@@ -3,6 +3,22 @@ package centreon::plugins::misc;
 use strict;
 use warnings;
 
+sub mymodule_load {
+    my (%options) = @_;
+    my $file;
+    ($file = $options{module} . ".pm") =~ s{::}{/}g;
+     
+    eval {
+        local $SIG{__DIE__} = 'IGNORE';
+        require $file;
+    };
+    if ($@) {
+        $options{output}->add_option_msg(long_msg => $@);
+        $options{output}->add_option_msg(short_msg => $options{error_msg});
+        $options{output}->option_exit();
+    }
+}
+
 sub backtick {
     my %arg = (
         command => undef,
