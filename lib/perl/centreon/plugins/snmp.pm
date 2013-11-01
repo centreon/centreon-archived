@@ -235,6 +235,8 @@ sub get_table {
     # $options{end} = string (example: '.1.2')
     
     my ($dont_quit) = (defined($options{dont_quit}) && $options{dont_quit} == 1) ? 1 : 0;
+    my ($nothing_quit) = (defined($options{nothing_quit}) && $options{nothing_quit} == 1) ? 1 : 0;
+    
     if (defined($options{start})) {
         $options{start} = $self->clean_oid($options{start});
     }
@@ -321,6 +323,11 @@ sub get_table {
             $results->{$complete_oid} = ${$entry}[2];
             $last_oid = $complete_oid;
         }
+    }
+    
+    if ($nothing_quit == 1 && scalar(keys %$results) == 0) {
+        $self->{output}->add_option_msg(short_msg => "SNMP Table Request: Cant get a single value.");
+        $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
     }
     
     return (0, $results);

@@ -15,6 +15,7 @@ sub new {
                          'cpu' => 'snmp_standard::mode::cpu',
                          'load' => 'snmp_standard::mode::loadaverage',
                          'processcount' => 'snmp_standard::mode::processcount',
+                         'memory' => 'os::linux::mode::memory',
                          'storage' => 'snmp_standard::mode::storage',
                          'traffic' => 'snmp_standard::mode::traffic',
                          'uptime' => 'snmp_standard::mode::uptime',

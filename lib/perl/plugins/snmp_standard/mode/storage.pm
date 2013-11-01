@@ -7,7 +7,6 @@ use warnings;
 use centreon::plugins::statefile;
 use Digest::MD5 qw(md5_hex);
 
-my @operstatus = ("up", "down", "testing", "unknown", "dormant", "notPresent", "lowerLayerDown");
 my %oids_hrStorageTable = (
     'hrstoragedescr' => '.1.3.6.1.2.1.25.2.3.1.3',
     'hrfsmountpoint' => '.1.3.6.1.2.1.25.3.8.1.2',

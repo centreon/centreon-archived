@@ -194,7 +194,7 @@ sub change_bytes {
         $unit = defined($options{network}) ? 'Mb' : 'MB';
     }
     if (($options{value} / $divide) >= 1) {
-        $value = $options{value} / $divide;
+        $options{value} = $options{value} / $divide;
         $unit = defined($options{network}) ? 'Gb' : 'GB';
     }
     return (sprintf("%.2f", $options{value}), $unit);
