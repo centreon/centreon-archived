@@ -326,7 +326,7 @@ sub manage_selection {
             }
         }
         
-        if (scalar(@{$self->{interface_id_selected}}) < 0) {
+        if (scalar(@{$self->{interface_id_selected}}) <= 0) {
             $self->{output}->add_option_msg(short_msg => "No interface found for name '" . $self->{option_results}->{interface} . "' (maybe you should reload cache file).");
             $self->{output}->option_exit();
         }

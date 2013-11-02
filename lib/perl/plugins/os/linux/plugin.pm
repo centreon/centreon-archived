@@ -13,6 +13,7 @@ sub new {
     $self->{version} = '0.1';
     %{$self->{modes}} = (
                          'cpu' => 'snmp_standard::mode::cpu',
+                         'diskio' => 'snmp_standard::mode::diskio',
                          'load' => 'snmp_standard::mode::loadaverage',
                          'memory' => 'os::linux::mode::memory',
                          'processcount' => 'snmp_standard::mode::processcount',
@@ -21,7 +22,6 @@ sub new {
                          'traffic' => 'snmp_standard::mode::traffic',
                          'uptime' => 'snmp_standard::mode::uptime',
                          );
-    #$self->{default} = { traffic => { warning => '-1'} };
 
     return $self;
 }
