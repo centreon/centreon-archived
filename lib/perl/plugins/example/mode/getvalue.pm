@@ -1,4 +1,4 @@
-package plugin::example::mode::getvalue;
+package example::mode::getvalue;
 
 use base qw(centreon::plugins::mode);
 

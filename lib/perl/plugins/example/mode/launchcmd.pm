@@ -1,4 +1,4 @@
-package plugin::example::mode::launchcmd;
+package example::mode::launchcmd;
 
 use base qw(centreon::plugins::mode);
 
