@@ -12,7 +12,7 @@
 . /etc/init.d/functions
   
 binary=@CENTCORE_BINDIR@/centcore
-servicename=$(basename "$0")
+servicename=centcore
 user=@CENTREON_USER@
 timeout=60
 start_timeout=5
