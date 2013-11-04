@@ -40,6 +40,28 @@
 		exit();
 	}
 
+        
+        /*
+         * QuickForm Rules
+         */
+        function testDowntimeNameExistence($downtimeName = NULL) {
+            global $pearDB, $form;
+            
+            $id = NULL;
+	    if (isset($form)) {
+                $id = $form->getSubmitValue('dt_id');
+            }
+            $res = $pearDB->query("SELECT dt_id FROM downtime WHERE dt_name = '".$pearDB->escape($downtimeName)."'");
+            $d = $res->fetchRow();
+            $nbRes = $res->numRows();
+            if ($nbRes && $d["dt_id"] == $id) {
+            	return true;
+            } elseif ($nbRes && $d["dt_id"] != $id) {
+            	return false;
+            }
+            return true;
+        }
+        
 	if (($o == 'c' || $o == 'w') && isset($_GET['dt_id'])) {
 		$id = $_GET['dt_id'];
 	} else {
@@ -168,6 +190,9 @@
 	echo $am_svcgroup->getElementJs(false);
 
 	$form->addRule('downtime_name', _("Name"), 'required');
+        $form->registerRule('exist', 'callback', 'testDowntimeNameExistence');
+	$form->addRule('downtime_name', _("Name is already in use"), 'exist');
+        
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
 	if ($o == "c" || $o == 'w') {
