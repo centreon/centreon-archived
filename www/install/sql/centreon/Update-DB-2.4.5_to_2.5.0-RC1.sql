@@ -169,4 +169,9 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES (1, 46, 'yes');
 INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (3, 46, 1, 8), (10, 46, 1, 8);
 
+-- Ticket #4923
+
+ALTER TABLE `on_demand_macro_host` ADD COLUMN `is_password` TINYINT(2) DEFAULT NULL AFTER `host_macro_value`;
+ALTER TABLE `on_demand_macro_service` ADD COLUMN `is_password` TINYINT(2) DEFAULT NULL AFTER `svc_macro_value`;
+
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;
