@@ -930,7 +930,7 @@
 			/*
                          * Get the contact_id
                          */
-                        $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $tmpContacts["dn"][$select_key] ."'";
+                        $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $pearDB->escape($tmpContacts["dn"][$select_key]) ."'";
                         $res = $pearDB->query($query);
                         if (PEAR::isError($res)) {
                             return false;
