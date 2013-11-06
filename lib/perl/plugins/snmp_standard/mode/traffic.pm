@@ -100,7 +100,7 @@ sub run {
     my $oid_out64 = '.1.3.6.1.2.1.31.1.1.1.10'; # in B
 
     my $new_datas = {};
-    $self->{statefile_value}->read(statefile => $self->{hostname}  . '_' . $self->{mode} . '_' . (defined($self->{option_results}->{interface}) ? md5_hex($self->{option_results}->{interface}) : md5_hex('all')));
+    $self->{statefile_value}->read(statefile => "snmpstandard_" . $self->{hostname}  . '_' . $self->{mode} . '_' . (defined($self->{option_results}->{interface}) ? md5_hex($self->{option_results}->{interface}) : md5_hex('all')));
     
     foreach (@{$self->{interface_id_selected}}) {
         $self->{snmp}->load(oids => [$oid_adminstatus . "." . $_, $oid_operstatus . "." . $_, $oid_in32 . "." . $_, $oid_out32 . "." . $_]);
@@ -282,7 +282,7 @@ sub manage_selection {
     my ($self, %options) = @_;
 
     # init cache file
-    my $has_cache_file = $self->{statefile_cache}->read(statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
+    my $has_cache_file = $self->{statefile_cache}->read(statefile => 'cache_snmpstandard_' . $self->{hostname}  . '_' . $self->{mode});
     if (defined($self->{option_results}->{show_cache})) {
         $self->{output}->add_option_msg(long_msg => $self->{statefile_cache}->get_string_content());
         $self->{output}->option_exit();

@@ -59,7 +59,7 @@ sub run {
         $self->{output}->option_exit();
     }
 
-    $self->{statefile_value}->read(statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
+    $self->{statefile_value}->read(statefile => 'bluecoat_' . $self->{hostname}  . '_' . $self->{mode});
     my ($exit, $result) = $self->{snmp}->get_leef(oids => ['.1.3.6.1.4.1.3417.2.11.3.1.1.1.0', 
                                                            '.1.3.6.1.4.1.3417.2.11.3.1.1.2.0',
                                                            '.1.3.6.1.4.1.3417.2.11.3.1.1.3.0',
