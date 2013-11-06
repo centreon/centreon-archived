@@ -146,7 +146,9 @@ if (($o == "c" || $o == "w") && $service_id) {
                             FROM service_categories sc, service_categories_relation scr
                             WHERE scr.service_service_id = " . $pearDB->escape($service_id). "
                             AND scr.sc_id = sc.sc_id
-                            AND sc.level IS NOT NULL");
+                            AND sc.level IS NOT NULL
+                            ORDER BY sc.level ASC
+                            LIMIT 1");
     if ($res->numRows()) {
         $cr = $res->fetchRow();
         $service['criticality_id'] = $cr['sc_id'];

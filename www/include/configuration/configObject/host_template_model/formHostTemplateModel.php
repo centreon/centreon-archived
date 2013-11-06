@@ -112,7 +112,9 @@
                             FROM hostcategories hc, hostcategories_relation hcr
                             WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
                             AND hcr.hostcategories_hc_id = hc.hc_id
-                            AND hc.level IS NOT NULL");
+                            AND hc.level IS NOT NULL
+                            ORDER BY hc.level ASC
+                            LIMIT 1");
                         if ($res->numRows()) {
                             $cr = $res->fetchRow();
                             $host['criticality_id'] = $cr['hc_id'];
