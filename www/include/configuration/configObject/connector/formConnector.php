@@ -196,6 +196,7 @@ try {
         $connectorValues['description'] = $tab['connector_description'];
         $connectorValues['command_line'] = $tab['command_line'];
         $connectorValues['enabled'] = (int)$tab['connector_status']['connector_status'];
+        $connectorValues['command_id'] = $tab['command_id'];
         $connectorId = $tab['connector_id'];
         
         if ($form->getSubmitValue("submitA")) {
