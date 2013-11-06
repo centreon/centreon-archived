@@ -242,7 +242,7 @@ $tpl->assign("mon_status_information", _("Status information"));
 			    $action_list[74] = _("Services: Set Downtime");
 			if ($action_name == "host_acknowledgement")
 				$action_list[72] = _("Hosts : Acknowledge");
-			if ($action_name == "host_acknowledgement")
+			if ($action_name == "host_disacknowledgement")
 				$action_list[73] = _("Hosts : Disacknowledge");
 			if ($action_name == "host_notifications")
 				$action_list[82] = _("Hosts : Enable Notification");
