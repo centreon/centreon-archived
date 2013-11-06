@@ -317,12 +317,12 @@ $tpl->assign("mon_status_information", _("Status information"));
         }
 
         $criticality = new CentreonCriticality($pearDB);
-        $crits = $criticality->getList();
+        $crits = $criticality->getList(null, "level", 'ASC', null, null, true);
         $critArray = array(0 => "");
         foreach($crits as $critId => $crit) {
             $critArray[$critId] = $crit['name']. " ({$crit['level']})";
         }
-        $form->addElement('select', 'criticality', _('Criticality'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
+        $form->addElement('select', 'criticality', _('Severity'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
         $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
         
 	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
