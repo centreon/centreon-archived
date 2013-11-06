@@ -1,7 +1,7 @@
 <div id="{$cloneId}_controls">
     <div id="{$cloneId}_add">
         <span style="cursor:pointer;">
-            {t}Add a new macro{/t} <img src="./img/icones/16x16/navigate_plus.gif">
+            {t}Add a new entry{/t} <img src="./img/icones/16x16/navigate_plus.gif">
         </span>
     </div>
 </div>
