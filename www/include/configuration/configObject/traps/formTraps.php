@@ -195,7 +195,7 @@
         }
         $form->addElement('select', 'severity', _("Default Severity"), $severityArr);
         $form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
-	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
+	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment'));
 	$form->setDefaults(0);
 
 	/* *******************************************************************
