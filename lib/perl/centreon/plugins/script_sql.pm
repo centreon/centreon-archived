@@ -216,6 +216,10 @@ Choose a mode.
 
 List available modes.
 
+=item B<--version>
+
+Display plugin version.
+
 =item B<--dyn-mode>
 
 Specify a mode with the path (separated by '::').
