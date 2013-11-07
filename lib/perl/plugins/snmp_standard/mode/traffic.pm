@@ -115,7 +115,7 @@ sub run {
         }
     }
 
-    my $result = $self->{snmp}->get_leef();
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
     $new_datas->{last_timestamp} = time();
     my $old_timestamp;
     if (!defined($self->{option_results}->{interface}) || defined($self->{option_results}->{use_regexp})) {
@@ -350,7 +350,7 @@ sub disco_show {
 
     $self->manage_selection();
     $self->{snmp}->load(oids => [$oid_operstatus, $oid_speed32], instances => $self->{interface_id_selected});
-    my $result = $self->{snmp}->get_leef();
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
     foreach (sort @{$self->{interface_id_selected}}) {
         my $display_value = $self->get_display_value(id => $_);
         my $interface_speed = int($result->{$oid_speed32 . "." . $_} / 1000 / 1000);

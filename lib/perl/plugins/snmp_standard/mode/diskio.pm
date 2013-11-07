@@ -82,7 +82,7 @@ sub run {
 
     $self->{snmp}->load(oids => [$oid_diskIONReadX, $oid_diskIONWrittenX], 
                         instances => $self->{device_id_selected});
-    my $result = $self->{snmp}->get_leef();
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
     $new_datas->{last_timestamp} = time();
     my $old_timestamp = $self->{statefile_value}->get(name => 'last_timestamp');
     if (!defined($self->{option_results}->{device}) || defined($self->{option_results}->{use_regexp})) {

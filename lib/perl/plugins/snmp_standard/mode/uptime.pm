@@ -42,7 +42,7 @@ sub run {
     $self->{snmp} = $options{snmp};
     
     my $oid_hrSystemUptime = '.1.3.6.1.2.1.25.1.1.0';
-    my $result = $self->{snmp}->get_leef(oids => [ $oid_hrSystemUptime ]);
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef(oids => [ $oid_hrSystemUptime ]);
     
     my $exit_code = $self->{perfdata}->threshold_check(value => floor($result->{$oid_hrSystemUptime} / 100), 
                               threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);    

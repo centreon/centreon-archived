@@ -40,7 +40,7 @@ sub run {
     $self->{snmp} = $options{snmp};
     
     my $oid_cputable = '.1.3.6.1.2.1.25.3.3.1.2';
-    my $result = $self->{snmp}->get_table(oid => $oid_cputable);
+    my ($exit_snmp, $result) = $self->{snmp}->get_table(oid => $oid_cputable);
     
     my $cpu = 0;
     my $i = 0;
