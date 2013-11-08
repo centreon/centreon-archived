@@ -117,6 +117,9 @@ while ($row = $res->fetchRow()) {
     $xml->writeAttribute('class', $rowClass);
     $xml->writeElement('author', $row['author']);
     $xml->writeElement('start', $centreonGMT->getDate('d/m/Y H:i:s', $row['actual_start_time']));
+    if (!$row['fixed']) {
+        $row['end_time'] = (int)$row['actual_start_time'] + (int)$row['duration'];
+    }
     $xml->writeElement('end', $centreonGMT->getDate('d/m/Y H:i:s', $row['end_time']));
     $xml->writeElement('comment', $row['comment_data']);
     $xml->writeElement('duration', CentreonDuration::toString($row['duration']));
