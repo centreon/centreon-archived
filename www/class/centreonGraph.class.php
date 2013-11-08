@@ -619,7 +619,11 @@ class CentreonGraph {
 
                     $escaped_chars_nb = 0;
                     if (isset($ds_data["ds_legend"]) && strlen($ds_data["ds_legend"]) > 0 ) {
-                        $this->metrics[$metric["metric_id"]]["legend"] = str_replace('"', '\"', html_entity_decode($ds_data["ds_legend"], ENT_COMPAT, 'UTF-8'), $escaped_chars_nb);
+                        $counter = 0;
+                        $this->metrics[$metric["metric_id"]]["legend"] = str_replace('"', '\"', html_entity_decode($ds_data["ds_legend"], ENT_COMPAT, 'UTF-8'), $counter);
+                        $escaped_chars_nb += $counter;
+                        $this->metrics[$metric["metric_id"]]["legend"] = str_replace(":", "\:", $tm["legend"], $counter);
+                        $escaped_chars_nb += $counter;
                     } else {
                         if (!isset($ds_data["ds_name"]) || !preg_match('/DS/', $ds_data["ds_name"], $matches)){
                             $this->metrics[$metric["metric_id"]]["legend"] = $this->cleanupDsNameForLegend($metric["metric_name"], true);
@@ -796,7 +800,7 @@ class CentreonGraph {
             }
 
             if (!$this->checkcurve) {
-                $arg .= str_replace(":", "\:", $tm["legend"]);
+                $arg .= $tm["legend"];
                 for ($i = $tm["legend_len"]; $i <= $this->longer; $i++) {
                     $arg .= " ";
                 }
