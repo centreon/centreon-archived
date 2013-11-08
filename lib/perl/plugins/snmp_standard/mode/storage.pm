@@ -85,7 +85,7 @@ sub run {
     my $oid_hrStorageNetworkDisk = '.1.3.6.1.2.1.25.2.1.10';
 
     $self->{snmp}->load(oids => [$oid_hrStorageAllocationUnits, $oid_hrStorageSize, $oid_hrStorageUsed], instances => $self->{storage_id_selected});
-    my $result = $self->{snmp}->get_leef();
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
 
     if (!defined($self->{option_results}->{storage}) || defined($self->{option_results}->{use_regexp})) {
         $self->{output}->output_add(severity => 'OK',
@@ -202,7 +202,7 @@ sub manage_selection {
     my ($self, %options) = @_;
 
     # init cache file
-    my $has_cache_file = $self->{statefile_cache}->read(statefile => 'cache_' . $self->{hostname}  . '_' . $self->{mode});
+    my $has_cache_file = $self->{statefile_cache}->read(statefile => 'cache_snmpstandard_' . $self->{hostname}  . '_' . $self->{mode});
     if (defined($self->{option_results}->{show_cache})) {
         $self->{output}->add_option_msg(long_msg => $self->{statefile_cache}->get_string_content());
         $self->{output}->option_exit();
@@ -284,7 +284,7 @@ sub disco_show {
 
     $self->manage_selection();
     $self->{snmp}->load(oids => [$oid_hrStorageAllocationUnits, $oid_hrStorageSize], instances => $self->{storage_id_selected});
-    my $result = $self->{snmp}->get_leef();
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
     foreach (sort @{$self->{storage_id_selected}}) {
         my $display_value = $self->get_display_value(id => $_);
         my $storage_type = $self->{statefile_cache}->get(name => "type_" . $_);

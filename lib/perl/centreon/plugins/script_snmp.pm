@@ -165,6 +165,10 @@ Specify a mode with the path (separated by '::').
 
 List available modes.
 
+=item B<--version>
+
+Display plugin version.
+
 =back
 
 =head1 DESCRIPTION

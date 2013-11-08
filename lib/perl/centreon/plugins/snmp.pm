@@ -196,7 +196,7 @@ sub get_leef {
     if ($self->{session}->{ErrorNum}) {
         my $msg = 'SNMP GET Request : ' . $self->{session}->{ErrorStr};
         
-        if ($dont_quit == 1) {
+        if ($dont_quit == 0) {
             $self->{output}->add_option_msg(short_msg => $msg);
             $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
         }

@@ -77,7 +77,7 @@ sub run {
         }
     }
 
-    my $result = $self->{snmp}->get_table(oid => $oids->{$oid2check_filter});
+    my ($exit_snmp, $result) = $self->{snmp}->get_table(oid => $oids->{$oid2check_filter});
     my $instances_keep = {};
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         my $val = $self->{option_results}->{'process_' . $oid2check_filter};
@@ -91,7 +91,7 @@ sub run {
 
     if (scalar(keys %$instances_keep) > 0) {
         $self->{snmp}->load(oids => $more_oids, instances => [keys %$instances_keep ]);
-        my $result2 = $self->{snmp}->get_leef();
+        ($exit_snmp, my $result2) = $self->{snmp}->get_leef();
     
         foreach my $key (keys %$instances_keep) {
             # 1 = running, 2 = runnable, 3 = notRunnable, 4 => invalid

@@ -62,7 +62,7 @@ sub run {
     my $oid_CpuLoad5m = '.1.3.6.1.4.1.2021.10.1.3.2';
     my $oid_CpuLoad15m = '.1.3.6.1.4.1.2021.10.1.3.3';
 
-    my $result = $self->{snmp}->get_leef(oids => [$oid_CpuLoad1m, $oid_CpuLoad5m, $oid_CpuLoad15m]);
+    my ($exit_snmp, $result) = $self->{snmp}->get_leef(oids => [$oid_CpuLoad1m, $oid_CpuLoad5m, $oid_CpuLoad15m]);
     
     my $exit1 = $self->{perfdata}->threshold_check(value => $result->{$oid_CpuLoad1m}, 
                                threshold => [ { label => 'crit1', 'exit_litteral' => 'critical' }, { label => 'warn1', exit_litteral => 'warning' } ]);
