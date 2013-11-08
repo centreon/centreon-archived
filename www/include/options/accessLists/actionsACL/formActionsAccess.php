@@ -102,7 +102,8 @@
 	// Services
 	$form->addElement('checkbox', 'service_checks', _("Enable/Disable Checks for a service"));
 	$form->addElement('checkbox', 'service_notifications', _("Enable/Disable Notifications for a service"));
-	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge/Disacknowledge a service"));
+	$form->addElement('checkbox', 'service_acknowledgement', _("Acknowledge a service"));
+        $form->addElement('checkbox', 'service_disacknowledgement', _("Disacknowledge a service"));
 	$form->addElement('checkbox', 'service_schedule_check', _("Re-schedule the next check for a service"));
 	$form->addElement('checkbox', 'service_schedule_forced_check', _("Re-schedule the next check for a service (Forced)"));
 	$form->addElement('checkbox', 'service_schedule_downtime', _("Schedule downtime for a service"));
@@ -115,7 +116,8 @@
 	// Hosts
 	$form->addElement('checkbox', 'host_checks', _("Enable/Disable Checks for a host"));
 	$form->addElement('checkbox', 'host_notifications', _("Enable/Disable Notifications for a host"));
-	$form->addElement('checkbox', 'host_acknowledgement', _("Acknowledge/Disaknowledge a host"));
+	$form->addElement('checkbox', 'host_acknowledgement', _("Acknowledge a host"));
+        $form->addElement('checkbox', 'host_disacknowledgement', _("Disaknowledge a host"));
 	$form->addElement('checkbox', 'host_schedule_check', _("Schedule the check for a host"));
 	$form->addElement('checkbox', 'host_schedule_forced_check', _("Schedule the check for a host (Forced)"));
 	$form->addElement('checkbox', 'host_schedule_downtime', _("Schedule downtime for a host"));

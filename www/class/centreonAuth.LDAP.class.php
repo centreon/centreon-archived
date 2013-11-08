@@ -244,7 +244,7 @@ class CentreonAuthLDAP {
                 $this->CentreonLog->insertLog(3, "LDAP AUTH : Update user DN for user " . html_entity_decode($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8'));
                 $queryUpdateExtInfos = "UPDATE contact SET
 					contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "',
-					contact_name = '" . $userDisplay . "',
+					contact_name = '" . $this->pearDB->escape($userDisplay, false) . "',
 					contact_email = " . $userEmail . ",
 					contact_pager = " . $userPager . ",
                                         ar_id = ".$this->arId."
@@ -276,8 +276,8 @@ class CentreonAuthLDAP {
                 /*
                  * Insert user in database
                  */
-                $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, ar_id, contact_email, contact_pager, contact_oreon, contact_activate, contact_register)
-		        	VALUES (" . $tmplId . ", '" . htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" . htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', ".$this->arId.", " . $userEmail . ", " . $userPager . ", '1', '1', 1)";
+                $query = "INSERT INTO contact (contact_template_id, contact_alias, contact_name, contact_auth_type, contact_ldap_dn, ar_id, contact_email, contact_pager, contact_oreon, contact_activate, contact_register, contact_enable_notifications)
+		        	VALUES (" . $tmplId . ", '" . htmlentities($this->contactInfos['contact_alias'], ENT_QUOTES, 'UTF-8') . "', '" . htmlentities($userDisplay, ENT_QUOTES, 'UTF-8') . "', 'ldap', '" . $userDn . "', ".$this->arId.", " . $userEmail . ", " . $userPager . ", '1', '1', '1', '2')";
                 if (false === PEAR::isError($this->pearDB->query($query))) {
                     /*
                      * Get the contact_id

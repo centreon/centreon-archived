@@ -12,7 +12,7 @@
 . /etc/init.d/functions
 
 binary=@CENTREONTRAPD_BINDIR@/centreontrapd
-servicename=$(basename "$0")
+servicename=centreontrapd
 user=@CENTREON_USER@
 timeout=60
 start_timeout=5

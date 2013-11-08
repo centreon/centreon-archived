@@ -190,8 +190,8 @@
 		$hasChanged = checkChangeState($config['id'], $nagios_restart[$config['id']]);
 
 		/*
-                 * Manage flag for update time
-                 */
+         * Manage flag for update time
+         */
 		$lastUpdateTimeFlag = 0;
 		if (!isset($nagiosInfo[$config["name"]]["last_alive"])) {
 		  $lastUpdateTimeFlag = 0;
@@ -249,7 +249,7 @@
 				"else if (this.form.elements['o1'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o1'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
+    $form->addElement('select', 'o1', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
 	$form->setDefaults(array('o1' => NULL));
 	$o1 = $form->getElement('o1');
 	$o1->setValue(NULL);
@@ -263,7 +263,7 @@
 				"else if (this.form.elements['o2'].selectedIndex == 3) {" .
 				" 	setO(this.form.elements['o2'].value); submit();} " .
 				"");
-    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete")), $attrs);
+    $form->addElement('select', 'o2', NULL, array(NULL=>_("More actions..."), "m"=>_("Duplicate"), "d"=>_("Delete"), "i"=>_("Update informations")), $attrs);
 	$form->setDefaults(array('o2' => NULL));
 
 	$o2 = $form->getElement('o2');

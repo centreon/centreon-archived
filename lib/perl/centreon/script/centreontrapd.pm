@@ -4,6 +4,7 @@ package centreon::script::centreontrapd;
 use strict;
 use warnings;
 use POSIX;
+use Storable;
 use centreon::script;
 use centreon::common::db;
 use centreon::common::misc;
@@ -24,7 +25,7 @@ sub new {
 
     bless $self, $class;
     $self->add_options(
-        "config-extra" => \$self->{opt_extra},
+        "config-extra=s" => \$self->{opt_extra},
     );
 
     %{$self->{centreontrapd_default_config}} =
@@ -59,16 +60,31 @@ sub new {
        log_purge_time => 600
     );
    
-    $self->{htmlentities} = 0;
-    @{$self->{var}} = undef;                      # Variables of trap received by SNMPTRAPD
-    @{$self->{entvar}} = undef;                   # Enterprise variable values of trap received by SNMPTRAPD
-    @{$self->{entvarname}} = undef;               # Enterprise variable names of trap received by SNMPTRAPD
-    @{$self->{preexec}} = ();                     # Result from PREEXEC
-    $self->{agent_dns_name} = undef;
-    $self->{trap_date} = undef;
-    $self->{trap_time} = undef;
-    $self->{trap_date_time} = undef;
-    $self->{trap_date_time_epoch} = undef;
+    # save trap_data
+    @{$self->{trap_data_save}} = ();
+   
+    $self->{trap_data} = {
+        var => [],                      # Variables of trap received by SNMPTRAPD
+        entvar => [],                   # Enterprise variable values of trap received by SNMPTRAPD
+        entvarname => [],               # Enterprise variable names of trap received by SNMPTRAPD
+        preexec => [],                  # Result from PREEXEC
+        agent_dns_name => undef,
+        trap_date => undef,
+        trap_time => undef,
+        trap_date_time => undef,
+        trap_date_time_epoch => undef,
+        
+        ref_oids => undef,
+        ref_hosts => undef,
+        ref_services => undef,
+        ref_macro_hosts => undef,
+        
+        current_trap_id => undef,
+        current_host_id => undef,
+        current_service_id => undef
+    };
+   
+    $self->{htmlentities} = 0;   
     %{$self->{duplicate_traps}} = ();
     $self->{timetoreload} = 0;
     @{$self->{filenames}} = undef;
@@ -76,15 +92,16 @@ sub new {
     $self->{last_cache_time} = undef;
     $self->{whoami} = undef;
 
-    $self->{ref_oids} = undef;
-    $self->{ref_hosts} = undef;
-    $self->{ref_services} = undef;
-    $self->{ref_macro_hosts} = undef;
-    
+ 
     # Fork manage
     %{$self->{return_child}} = ();
     %{$self->{running_processes}} = ();
+    $self->{sequential_processes} = {
+                                     pid => {},
+                                     trap_id => {}
+                                    };
     %{$self->{last_time_exec}} = ('oid' => {}, 'host' => {});
+    
     # Current ID of working
     $self->{current_host_id} = undef;
     $self->{current_hostname} = undef;
@@ -102,7 +119,7 @@ sub new {
     
     $self->{current_alarm_timeout} = undef;
     
-    #
+    # After in fork
     $self->{traps_global_output} = undef;
     $self->{traps_global_status} = undef;
     $self->{traps_global_severity_id} = undef;
@@ -311,7 +328,7 @@ sub create_logdb_child {
     $self->{logdb_pipes}{'reader'} = \*$reader_pipe;
     $self->{logdb_pipes}{'writer'} = \*$writer_pipe;
     
-    $self->{logger}->writeLogInfo("Create delete child");
+    $self->{logger}->writeLogInfo("Create logdb child");
     my $current_pid = fork();
     if (!$current_pid) {
         # Unhandle die in child
@@ -342,8 +359,14 @@ sub create_logdb_child {
 sub manage_pool {
     my $self = shift;
     my ($create_pool) = @_;
-    
+        
     foreach my $child_pid (keys %{$self->{return_child}}) {
+    
+        if (defined($self->{sequential_processes}->{pid}->{$child_pid})) {
+            delete $self->{sequential_processes}->{trap_id}->{ $self->{sequential_processes}->{pid}->{$child_pid} };
+            delete $self->{sequential_processes}->{pid}->{$child_pid};
+        }
+    
         if (defined($self->{running_processes}->{$child_pid})) {
             delete $self->{running_processes}->{$child_pid};
             delete $self->{return_child}->{$child_pid};
@@ -361,48 +384,95 @@ sub manage_pool {
 }
 
 ###############################
+## Save and Play functions
+#
+
+sub set_current_values {
+    my $self = shift;
+    
+    $self->{current_trap_id} = $self->{trap_data}->{current_trap_id};
+    $self->{current_host_id} = $self->{trap_data}->{current_host_id};
+    $self->{current_service_id} = $self->{trap_data}->{current_service_id};
+    
+    $self->{current_ip} = ${$self->{trap_data}->{var}}[1];
+    $self->{current_oid} = ${$self->{trap_data}->{var}}[3];
+    $self->{current_trap_log} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_log};
+    $self->{current_trap_name} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_name};
+    $self->{current_vendor_name} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{name};
+    $self->{current_server_id} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{nagios_server_id};
+    $self->{current_server_ip_address} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{ns_ip_address};
+    $self->{current_hostname} = $self->{trap_data}->{ref_hosts}->{ $self->{current_host_id} }->{host_name};
+    $self->{current_service_desc} = $self->{trap_data}->{ref_services}->{ $self->{current_service_id} }->{service_description};
+}
+
+sub check_sequential_can_exec {
+    my $self = shift;
+
+    if (defined($self->{sequential_processes}->{trap_id}->{$self->{current_host_id} . "_" . $self->{current_trap_id}})) {
+        # We save data
+        $self->{logger}->writeLogInfo("Put trap in queue...");
+        push @{$self->{trap_data_save}}, Storable::dclone($self->{trap_data});
+        return 1;
+    }
+    return 0;
+}
+
+sub check_sequential_todo {
+    my $self = shift;
+    
+    for (my $i = 0; $i <= $#{$self->{trap_data_save}}; $i++) {
+        if (!defined($self->{sequential_processes}->{trap_id}->{ ${$self->{trap_data_save}}[$i]->{current_host_id} . "_" . ${$self->{trap_data_save}}[$i]->{current_trap_id} })) {
+            $self->{logger}->writeLogInfo("Exec trap in queue...");
+            $self->{trap_data} = splice @{$self->{trap_data_save}}, $i, 1;
+            $i--;
+            $self->manage_exec();
+        }
+    }
+}
+
+###############################
 ## Execute a command Nagios or Centcore
 #
 sub do_exec {
     my $self = shift;
     my $matching_result = 0;
     
-    $self->{traps_global_status} = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_status};
-    $self->{traps_global_severity_id} = $self->{ref_oids}->{ $self->{current_trap_id} }->{sc_id};
-    $self->{traps_global_severity_name} = $self->{ref_oids}->{ $self->{current_trap_id} }->{sc_name};
-    $self->{traps_global_severity_level} = $self->{ref_oids}->{ $self->{current_trap_id} }->{level};
+    $self->{traps_global_status} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_status};
+    $self->{traps_global_severity_id} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{sc_id};
+    $self->{traps_global_severity_name} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{sc_name};
+    $self->{traps_global_severity_level} = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{level};
     
     # PREEXEC commands
     $self->execute_preexec();
 
-    $self->{traps_global_output} = $self->substitute_string($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_args});    
+    $self->{traps_global_output} = $self->substitute_string($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_args});
     
     ######################################################################
     # Advanced matching rules
-    if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment}) && 
-        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment} == 1) {
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment}) && 
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment} == 1) {
         $matching_result = $self->checkMatchingRules();
     }
 
     #####################################################################
     # Submit value to passive service
-    if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable}) && 
-        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable} == 1 &&
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable}) && 
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_submit_result_enable} == 1 &&
         $matching_result == 0) {
         $self->submitResult();
     }
 
     ######################################################################
     # Force service execution with external command
-    if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_reschedule_svc_enable}) && 
-        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_reschedule_svc_enable} == 1) {
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_reschedule_svc_enable}) && 
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_reschedule_svc_enable} == 1) {
         $self->forceCheck();
     }
 
     ######################################################################
     # Execute special command
-    if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable}) && 
-        $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable} == 1) {
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable}) && 
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command_enable} == 1) {
         $self->executeCommand();
     }
     
@@ -410,12 +480,12 @@ sub do_exec {
         centreon::trapd::lib::send_logdb(pipe => $self->{logdb_pipes}{'writer'},
                                         id => $self->{id_logdb},
                                         cdb => $self->{cdb},
-                                        trap_time => $self->{trap_date_time_epoch},
+                                        trap_time => $self->{trap_data}->{trap_date_time_epoch},
                                         timeout => 0,
-                                        host_name => ${$self->{var}}[0],
+                                        host_name => ${$self->{trap_data}->{var}}[0],
                                         ip_address => $self->{current_ip},
-                                        agent_host_name => $self->{agent_dns_name},
-                                        agent_ip_address => ${$self->{var}}[4],
+                                        agent_host_name => $self->{trap_data}->{agent_dns_name},
+                                        agent_ip_address => ${$self->{trap_data}->{var}}[4],
                                         trap_oid => $self->{current_oid},
                                         trap_name => $self->{current_trap_name},
                                         vendor => $self->{current_vendor_name},
@@ -423,22 +493,23 @@ sub do_exec {
                                         severity_id => $self->{traps_global_severity_id},
                                         severity_name => $self->{traps_global_severity_name},
                                         output_message => $self->{traps_global_output},
-                                        entvar => \@{$self->{entvar}},
-                                        entvarname => \@{$self->{entvarname}});
+                                        entvar => \@{$self->{trap_data}->{entvar}},
+                                        entvarname => \@{$self->{trap_data}->{entvarname}});
     }
 }
 
 sub manage_exec {
     my $self = shift;
 
-    $self->{id_logdb}++;
+    $self->set_current_values();
     
     #### Fork And manage exec ####
     ####### Check Interval ######
-    if (defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type}) && 
-        defined($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type}) && 
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} ne '' &&
+        defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
         # OID type
-        if ($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 1 &&
+        if ($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 1 &&
             defined($self->{last_time_exec}{oid}->{$self->{current_oid}}) &&
             $self->{trap_date_time_epoch} < ($self->{last_time_exec}{oid}->{$self->{current_oid}} + $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
             $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "': time interval");
@@ -446,13 +517,18 @@ sub manage_exec {
         }
         
         # Host type
-        if ($self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 2 &&
+        if ($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval_type} == 2 &&
             defined($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}}) &&
-            $self->{trap_date_time_epoch} < ($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} + $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
+            $self->{trap_date_time_epoch} < ($self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} + $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_interval})) {
             $self->{logger}->writeLogInfo("Skipping trap '" . $self->{current_trap_id} . "' for host ID '" . $self->{current_host_id} . "': time interval");
             return 1;
         }
     }
+    
+    ### Check Sequential exec ###
+    return 1 if ($self->check_sequential_can_exec() == 1);
+    
+    $self->{id_logdb}++;
     
     my $current_pid = fork();
     if (!$current_pid) {
@@ -471,6 +547,15 @@ sub manage_exec {
     }
     
     $self->{logger}->writeLogInfo("CHLD command launched: $current_pid");
+    
+    ####
+    # Save to say it's sequential
+    if (defined($self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_method}) && 
+        $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_exec_method} == 1) {
+        $self->{sequential_processes}->{pid}->{$current_pid} = $self->{current_host_id} . "_" . $self->{current_trap_id};
+        $self->{sequential_processes}->{trap_id}->{$self->{current_host_id} . "_" . $self->{current_trap_id}} = $current_pid;
+    }
+
     $self->{running_processes}->{$current_pid} = 1;
     $self->{last_time_exec}{oid}->{$self->{current_oid}} = $self->{trap_date_time_epoch};
     $self->{last_time_exec}{host}->{$self->{current_host_id} . ";" . $self->{current_oid}} = $self->{trap_date_time_epoch};
@@ -556,8 +641,8 @@ sub submitResult {
 sub execute_preexec {
     my $self = shift;
 
-    foreach my $tpe_order (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
-        my $tpe_string = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}->{$tpe_order}->{tpe_string};
+    foreach my $tpe_order (keys %{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}}) {
+        my $tpe_string = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_preexec}->{$tpe_order}->{tpe_string};
         $tpe_string = $self->substitute_string($tpe_string);
         $tpe_string = $self->substitute_centreon_var($tpe_string);
         
@@ -573,10 +658,10 @@ sub execute_preexec {
         }
         if (defined($output)) {
             chomp $output;
-            push @{$self->{preexec}}, $output;
+            push @{$self->{trap_data}->{preexec}}, $output;
             $self->{logger}->writeLogInfo("EXEC preexec: Output : $output");
         } else {
-            push @{$self->{preexec}}, "";
+            push @{$self->{trap_data}->{preexec}}, "";
         }
     }
 }
@@ -602,35 +687,35 @@ sub substitute_string {
     my $str = $_[0];
     
     # Substitute @{oid_value} and $1, $2,...
-    for (my $i=0; $i <= $#{$self->{entvar}}; $i++) {
+    for (my $i=0; $i <= $#{$self->{trap_data}->{entvar}}; $i++) {
         my $x = $i + 1;
-        $str =~ s/\@\{${$self->{entvarname}}[$i]\}/${$self->{entvar}}[$i]/g;
-        $str =~ s/\$$x([^0-9]|$)/${$self->{entvar}}[$i]$1/g;
+        $str =~ s/\@\{${$self->{trap_data}->{entvarname}}[$i]\}/${$self->{trap_data}->{entvar}}[$i]/g;
+        $str =~ s/\$$x([^0-9]|$)/${$self->{trap_data}->{entvar}}[$i]$1/g;
     }
     
     # Substitute preexec var
-    for (my $i=0; $i <= $#{$self->{preexec}}; $i++) {
+    for (my $i=0; $i <= $#{$self->{trap_data}->{preexec}}; $i++) {
         my $x = $i + 1;
-        $str =~ s/\$p$x([^0-9]|$)/${$self->{preexec}}[$i]$1/g;
+        $str =~ s/\$p$x([^0-9]|$)/${$self->{trap_data}->{preexec}}[$i]$1/g;
     }
 
     # Substitute $*
-    my $sub_str = join($self->{centreontrapd_config}->{separator}, @{$self->{entvar}});
+    my $sub_str = join($self->{centreontrapd_config}->{separator}, @{$self->{trap_data}->{entvar}});
     $str =~ s/\$\*/$sub_str/g;
     
     # $A
-    $str =~ s/\$A/$self->{agent_dns_name}/g;
+    $str =~ s/\$A/$self->{trap_data}->{agent_dns_name}/g;
     
     # $aA (Trap agent IP Adress)
-    $str =~ s/\$aA/${$self->{var}}[4]/g;
+    $str =~ s/\$aA/${$self->{trap_data}->{var}}[4]/g;
     
     # $R, $r (Trap Hostname)
-    $str =~ s/\$R/${$self->{var}}[0]/g;
-    $str =~ s/\$r/${$self->{var}}[0]/g;
+    $str =~ s/\$R/${$self->{trap_data}->{var}}[0]/g;
+    $str =~ s/\$r/${$self->{trap_data}->{var}}[0]/g;
     
     # $aR, $ar (IP Adress)
-    $str =~ s/\$aR/${$self->{var}}[1]/g;
-    $str =~ s/\$ar/${$self->{var}}[1]/g;
+    $str =~ s/\$aR/${$self->{trap_data}->{var}}[1]/g;
+    $str =~ s/\$ar/${$self->{trap_data}->{var}}[1]/g;
     
     # Clean OID
     $str =~ s/\@\{[\.0-9]*\}//g;
@@ -643,14 +728,14 @@ sub substitute_centreon_var {
 
     $str =~ s/\@HOSTNAME\@/$self->{current_hostname}/g;
     $str =~ s/\@HOSTADDRESS\@/$self->{current_ip}/g;
-    $str =~ s/\@HOSTADDRESS2\@/$self->{agent_dns_name}/g;
+    $str =~ s/\@HOSTADDRESS2\@/$self->{trap_data}->{agent_dns_name}/g;
     $str =~ s/\@SERVICEDESC\@/$self->{current_service_desc}/g;
     $str =~ s/\@TRAPOUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@OUTPUT\@/$self->{traps_global_output}/g;
     $str =~ s/\@STATUS\@/$self->{traps_global_status}/g;
     $str =~ s/\@SEVERITYNAME\@/$self->{traps_global_severity_name}/g;
     $str =~ s/\@SEVERITYLEVEL\@/$self->{traps_global_severity_level}/g;
-    $str =~ s/\@TIME\@/$self->{trap_date_time_epoch}/g;
+    $str =~ s/\@TIME\@/$self->{trap_data}->{trap_date_time_epoch}/g;
     $str =~ s/\@POLLERID\@/$self->{current_server_id}/g;
     $str =~ s/\@POLLERADDRESS\@/$self->{current_server_ip_address}/g;
     $str =~ s/\@CMDFILE\@/$self->{cmdFile}/g;
@@ -685,13 +770,13 @@ sub checkMatchingRules {
     my $matching_boolean = 0;
     
     # Check matching options 
-    foreach my $tmo_id (keys %{$self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}}) {
-        my $tmoString = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_string};
-        my $regexp = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_regexp};
-        my $tmoStatus = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_status};
-        my $severity_level = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{level};
-        my $severity_name = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_name};
-        my $severity_id = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_id};
+    foreach my $tmo_id (keys %{$self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}}) {
+        my $tmoString = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_string};
+        my $regexp = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_regexp};
+        my $tmoStatus = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{tmo_status};
+        my $severity_level = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{level};
+        my $severity_name = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_name};
+        my $severity_id = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_matching_properties}->{$tmo_id}->{sc_id};
         
         $self->{logger}->writeLogDebug("[$tmoString][$regexp] => $tmoStatus");
         
@@ -739,7 +824,7 @@ sub checkMatchingRules {
     }
     
     # Dont do submit if no matching
-    if ($matching_boolean == 0 && $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
+    if ($matching_boolean == 0 && $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_advanced_treatment_default} == 1) {
         return 1;
     }
     return 0;
@@ -751,7 +836,7 @@ sub checkMatchingRules {
 sub executeCommand {
     my $self = shift;
     my $datetime = time();
-    my $traps_execution_command = $self->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
+    my $traps_execution_command = $self->{trap_data}->{ref_oids}->{ $self->{current_trap_id} }->{traps_execution_command};
     
     $traps_execution_command = $self->substitute_string($traps_execution_command);
     
@@ -797,61 +882,52 @@ sub executeCommand {
 sub getTrapsInfos {
     my $self = shift;
     my ($fstatus);
-
-    $self->{current_ip} = ${$self->{var}}[1];
-    $self->{current_oid} = ${$self->{var}}[3];
-    # Use $self->{agent_dns_name} (IP or HOSTNAME with split)
     
     ### Get OIDS 
-    ($fstatus, $self->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, $self->{current_oid});
+    ($fstatus, $self->{trap_data}->{ref_oids}) = centreon::trapd::lib::get_oids($self->{cdb}, ${$self->{trap_data}->{var}}[3]);
     return 0 if ($fstatus == -1);
-    foreach my $trap_id (keys %{$self->{ref_oids}}) {
-        $self->{current_trap_id} = $trap_id;
-        $self->{current_trap_log} = $self->{ref_oids}->{$trap_id}->{traps_log};
-        $self->{current_trap_name} = $self->{ref_oids}->{$trap_id}->{traps_name};
-        $self->{current_vendor_name} = $self->{ref_oids}->{$trap_id}->{name};
-        ($fstatus, $self->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
+    foreach my $trap_id (keys %{$self->{trap_data}->{ref_oids}}) {
+        $self->{trap_data}->{current_trap_id} = $trap_id;
+
+        ($fstatus, $self->{trap_data}->{ref_hosts}) = centreon::trapd::lib::get_hosts(logger => $self->{logger},
                                                                  cdb => $self->{cdb},
-                                                                 trap_info => $self->{ref_oids}->{$trap_id},
-                                                                 agent_dns_name => $self->{agent_dns_name},
-                                                                 ip_address => $self->{current_ip},
-                                                                 entvar => \@{$self->{entvar}},
-                                                                 entvarname => \@{$self->{entvarname}},
+                                                                 trap_info => $self->{trap_data}->{ref_oids}->{$trap_id},
+                                                                 agent_dns_name => $self->{trap_data}->{agent_dns_name},
+                                                                 ip_address => ${$self->{trap_data}->{var}}[1],
                                                                  centreontrapd => $self);
         return 0 if ($fstatus == -1);
-        foreach my $host_id (keys %{$self->{ref_hosts}}) {
-            if (!defined($self->{ref_hosts}->{$host_id}->{nagios_server_id})) {
+        foreach my $host_id (keys %{$self->{trap_data}->{ref_hosts}}) {
+            if (!defined($self->{trap_data}->{ref_hosts}->{$host_id}->{nagios_server_id})) {
                 $self->{logger}->writeLogError("Cant get server associated for host '" . $self->{ref_hosts}->{$host_id}->{host_name} . "'");
                 next;
             }
-            $self->{current_host_id} = $host_id;
-            $self->{current_server_id} = $self->{ref_hosts}->{$host_id}->{nagios_server_id};
-            $self->{current_server_ip_address} = $self->{ref_hosts}->{$host_id}->{ns_ip_address};
-            $self->{current_hostname} = $self->{ref_hosts}->{$host_id}->{host_name};
+            $self->{trap_data}->{current_host_id} = $host_id;
 
             #### Get Services ####
-            ($fstatus, $self->{ref_services}) = centreon::trapd::lib::get_services($self->{cdb}, $trap_id, $host_id);
+            ($fstatus, $self->{trap_data}->{ref_services}) = centreon::trapd::lib::get_services($self->{cdb}, $trap_id, $host_id);
             return 0 if ($fstatus == -1);
             
             #### If none, we stop ####
-            my $size = keys %{$self->{ref_services}};
+            my $size = keys %{$self->{trap_data}->{ref_services}};
             if ($size < 1) {
-                $self->{logger}->writeLogDebug("Trap without service associated for host " . $self->{current_hostname} . ". Skipping...");
+                $self->{logger}->writeLogDebug("Trap without service associated for host " . $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . ". Skipping...");
                 next;
             }
             
             #### Check if macro $_HOST*$ needed
-            $self->{ref_macro_hosts} = undef;
-            if (defined($self->{ref_oids}->{$trap_id}->{traps_execution_command_enable}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command_enable} == 1 &&
-                defined($self->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST.*?\$/) {
-                ($fstatus, $self->{ref_macro_hosts}) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
+            $self->{trap_data}->{ref_macro_hosts} = undef;
+            if (defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_execution_command_enable}) && $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_execution_command_enable} == 1 &&
+                defined($self->{trap_data}->{ref_oids}->{$trap_id}->{traps_execution_command}) && $self->{trap_data}->{ref_oids}->{$trap_id}->{traps_execution_command} =~ /\$_HOST.*?\$/) {
+                ($fstatus, $self->{trap_data}->{ref_macro_hosts}) = centreon::trapd::lib::get_macros_host($self->{cdb}, $host_id);
                 return 0 if ($fstatus == -1);
             }
             
-            foreach my $service_id (keys %{$self->{ref_services}}) {
-                $self->{current_service_id} = $service_id;
-                $self->{current_service_desc} = $self->{ref_services}->{$service_id}->{service_description};
-                $self->{logger}->writeLogDebug("Trap found on service '" . $self->{ref_services}->{$service_id}->{service_description} . "' for host '" . $self->{ref_hosts}->{$host_id}->{host_name} . "'.");
+            foreach my $service_id (keys %{$self->{trap_data}->{ref_services}}) {
+                $self->{trap_data}->{current_service_id} = $service_id;
+                $self->{logger}->writeLogDebug("Trap found on service '" . 
+                                        $self->{trap_data}->{ref_services}->{$service_id}->{service_description} . 
+                                        "' for host '" . 
+                                        $self->{trap_data}->{ref_hosts}->{$host_id}->{host_name} . "'.");
                 $self->manage_exec();
             }
         }
@@ -911,27 +987,31 @@ sub run {
                 }
             }
             
+            ### Check pool finish and check old ones
+            $self->manage_pool(1);
+            $self->check_sequential_todo();
+            
             if (open FILE, $self->{centreontrapd_config}->{spool_directory} . $file) {
                 my $unlink_trap = 1;
                 my $trap_is_a_duplicate = 0;
                 my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
                                                                      config => $self->{centreontrapd_config},
                                                                      handle => \*FILE,
-                                                                     agent_dns_name => \$self->{agent_dns_name},
-                                                                     trap_date => \$self->{trap_date},
-                                                                     trap_time => \$self->{trap_time},
-                                                                     trap_date_time => \$self->{trap_date_time},
-                                                                     trap_date_time_epoch => \$self->{trap_date_time_epoch},
+                                                                     agent_dns_name => \$self->{trap_data}->{agent_dns_name},
+                                                                     trap_date => \$self->{trap_data}->{trap_date},
+                                                                     trap_time => \$self->{trap_data}->{trap_time},
+                                                                     trap_date_time => \$self->{trap_data}->{trap_date_time},
+                                                                     trap_date_time_epoch => \$self->{trap_data}->{trap_date_time_epoch},
                                                                      duplicate_traps => \%{$self->{duplicate_traps}},
                                                                      digest_trap => \$self->{digest_trap},
-                                                                     var => \@{$self->{var}},
-                                                                     entvar => \@{$self->{entvar}},
-                                                                     entvarname => \@{$self->{entvarname}});
+                                                                     var => \@{$self->{trap_data}->{var}},
+                                                                     entvar => \@{$self->{trap_data}->{entvar}},
+                                                                     entvarname => \@{$self->{trap_data}->{entvarname}});
                 
                 if ($readtrap_result == 1) {
                     if (centreon::trapd::lib::check_known_trap(logger => $self->{logger},
                                                                config => $self->{centreontrapd_config},
-                                                               oid2verif => ${$self->{var}}[3],      
+                                                               oid2verif => ${$self->{trap_data}->{var}}[3],      
                                                                cdb => $self->{cdb},
                                                                last_cache_time => \$self->{last_cache_time},
                                                                oids_cache => \$self->{oids_cache}) == 1) {
@@ -978,7 +1058,10 @@ sub run {
         if ($self->{timetoreload} == 1) {
             $self->reload();
         }
+        
+        ### Check pool finish and check old ones
         $self->manage_pool(1);
+        $self->check_sequential_todo();
     }
 }
 

@@ -8,10 +8,21 @@
 	</tr>
 </table>
 <br />
-<table class="ListTableSmall">
-	<tr class="ListHeader">				
-		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>	
-		<td	class="ListColHeaderCenter" style="white-space:nowrap;">{$object_name}</td>
+<table class="ToolbarTable">
+        <tr class="ToolbarTR">
+                <td style='width:30%;' class='Toolbar_TDSelectAction_Top'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+                {php}
+                   include('./include/common/pagination.php');
+                {/php}
+        </tr>
+</table>
+<table class="ListTable">
+	<tr class="ListHeader">
+		<td class="ListColHeaderCenter" style='width:120px'>{$time}</td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;">Event type</td>		
+		<td class="ListColHeaderCenter" style="white-space:nowrap;">{$type}</td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;">{$object_name}</td>
+		<td class="ListColHeaderCenter" style="white-space:nowrap;">Author</td>
 	</tr>
 	{assign var='classStyle' value='list_two'}
 	{foreach key=key item=item from=$tabz_obj_name}
@@ -21,14 +32,42 @@
 			{assign var='classStyle' value='list_two'}
 		{/if}
 		<tr class='{$classStyle}'>
-			<td>
-				<a href="./main.php?p={$p}&object_type={$tabz_obj_type.$key}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_type.$key}</a>
+			<td class='ListColCenter'>{$tabz_obj_time.$key}</td>
+			{assign var=currenttype value=$tabz_event_type.$key}
+			<td class='ListColCenter' style='width:120px;background-color:{$color.$currenttype}'><b>{$tabz_event_type.$key}</b></td>
+			<td class='ListColCenter'>{$tabz_obj_type.$key}</td>
+			<td class='ListColLeft'>
+			<a href="./main.php?p={$p}&object_type={$tabz_obj_type.$key}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">
+			{if $tabz_host.$key}
+			    {$tabz_host.$key} - 
+			{/if}
+			{$tabz_obj_name.$key}</a> 
+			
+			{if $tabz_hosts.$key}
+			(
+			{assign var=flag value=0}
+			{foreach key=key2 item=item2 from=$tabz_hosts}
+				 {assign var=flag value=1}
+				 {if $flag == 1} / {/if}
+				 {$item2}
+			{/foreach}
+			)
+			{/if}
+			
 			</td>
-			<td>
-				<a href="./main.php?p={$p}&object_type={$tabz_obj_type.$key}&object_id={$tabz_obj_id.$key}&searchU={$searchU}&searchO={$searchO}&otype={$type_id}">{$tabz_obj_name.$key}</a>
-			</td>
+			<td class='ListColCenter'>{$tabz_contact.$key}</td>
 		</tr>
 	{/foreach}
 </table>
+<table class="ToolbarTable">
+        <tr class="ToolbarTR">
+                <td style='width:30%;' class='Toolbar_TDSelectAction_Bottom'><input name="p" value="{$p}" type="hidden">&nbsp;</td>
+                {php}
+                   include('./include/common/pagination.php');
+                {/php}
+        </tr>
+</table>
+<input type='hidden' name='o' id='o' value='42'>
+<input type='hidden' id='limit' name='limit' value='{$limit}'>
 {$form.hidden}
 </form>

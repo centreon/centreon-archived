@@ -28,8 +28,8 @@
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_storage_type">{$form.storage_type.label}</td><td class="FormRowValue">{$form.storage_type.html}</td></tr>
 	
 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_down.gif'>&nbsp;&nbsp;{$form.header.Drop}</td></tr>
-	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_drop_data_in_another_file">{$form.auto_drop.label}</td><td class="FormRowValue">{$form.auto_drop.html}</td></tr>
-	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_drop_file">{$form.drop_file.label}</td><td class="FormRowValue">{$form.drop_file.html}</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_drop_data_in_another_file">{$form.centstorage_auto_drop.label}</td><td class="FormRowValue">{$form.centstorage_auto_drop.html}</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_drop_file">{$form.centstorage_drop_file.label}</td><td class="FormRowValue">{$form.centstorage_drop_file.html}</td></tr>
  	
  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_code.gif'>&nbsp;&nbsp;{$form.header.logs}</td></tr>
 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_archive_nagios_logs">{$form.archive_log.label}</td><td class="FormRowValue">{$form.archive_log.html}</td></tr>

@@ -31,62 +31,60 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    if (!isset($oreon)) {
-		exit();
-	}
+if (!isset($oreon)) {
+    exit();
+ }
 
-	if (!isset($_GET['tag']) || !isset($_GET['pos']) || !isset($_GET['blockId'])) {
-	    exit();
-	}
+if (!isset($_GET['tag']) || !isset($_GET['pos']) || !isset($_GET['blockId'])) {
+    exit();
+ }
 
-	/*
-	 * Cast the block id in int
-	 */
-	try {
-	    $id = (string)$_GET['blockId'];
-	    $tag = (string)$_GET['tag'];
-	    $pos = (int)$_GET['pos'];
-	} catch (Exception $e) {
-	    exit();
-	}
+/*
+ * Cast the block id in int
+ */
+try {
+    $id = (string)$_GET['blockId'];
+    $tag = (string)$_GET['tag'];
+    $pos = (int)$_GET['pos'];
+} catch (Exception $e) {
+    exit();
+}
 
-	$cbObj = new CentreonConfigCentreonBroker($pearDB);
+$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-	$form = $cbObj->quickFormById($id, $_GET['p'], $pos);
+$form = $cbObj->quickFormById($id, $_GET['p'], $pos);
 
-	$helps = array();
-	list($tagId, $typeId) = explode('_', $id);
-	$typeName = $cbObj->getTypeName($typeId);
-	$fields = $cbObj->getBlockInfos($typeId);
-	$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
-	$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
-	foreach ($fields as $field) {
-	    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
-	}
+$helps = array();
+list($tagId, $typeId) = explode('_', $id);
+$typeName = $cbObj->getTypeName($typeId);
+$fields = $cbObj->getBlockInfos($typeId);
+$helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
+$helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
+foreach ($fields as $field) {
+    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
+}
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-	/*
-	 * Apply a template definition
-	 */
-	$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-	$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-	$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-	$form->accept($renderer);
-	$tpl->assign('formBlock', $renderer->toArray());
-	$tpl->assign('typeName', $typeName);
-	$tpl->assign('tagBlock', $tag);
-	$tpl->assign('posBlock', $pos);
-	$tpl->assign('helps', $helps);
+/*
+ * Apply a template definition
+ */
+$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+$form->accept($renderer);
+$tpl->assign('formBlock', $renderer->toArray());
+$tpl->assign('typeName', $typeName);
+$tpl->assign('tagBlock', $tag);
+$tpl->assign('posBlock', $pos);
+$tpl->assign('helps', $helps);
 
-	$tpl->display("blockConfig.ihtml");
+$tpl->display("blockConfig.ihtml");
+
 ?>

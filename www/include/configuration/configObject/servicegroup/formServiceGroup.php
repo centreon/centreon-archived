@@ -86,7 +86,7 @@ while ($elem = $DBRESULT->fetchRow())   {
 }
 $DBRESULT->free();
 
-$initialValues = array();
+$initialValues = array('sg_hServices' => array(), 'sg_hgServices' => array());
 
 /*
  * Database retrieve information for ServiceGroup
@@ -151,7 +151,10 @@ if (($o == "c" || $o == "w") && $sg_id)	{
     $res = $pearDB->query($query);
     while ($row = $res->fetchRow()) {
         $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-        $hServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
+        $k = $row['host_id']."-".$row['service_id'];
+        if (!in_array($k, $initialValues['sg_hServices']) && !in_array($k, $initialValues['sg_hgServices'])) {
+            $hServices[$k] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
+        }
     }
 }
 

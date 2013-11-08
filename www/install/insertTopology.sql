@@ -108,7 +108,7 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (98,'Options',NULL,5,501,10,1,'./include/options/oreon/myAccount/formMyAccount.php','&o=c','0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (99,'Options','./img/icones/16x16/tool.gif',501,50101,10,1,'./include/options/oreon/generalOpt/generalOpt.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (100,'Checks','./img/icones/16x16/gear_run.gif',607,60706,60,33,'./include/configuration/configObject/command/command.php','&type=2','0','0','0',NULL,NULL,NULL,'1');
-INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (101,'Modules',NULL,5,507,10,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
+INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (101,'Extensions',NULL,5,507,10,1,NULL,NULL,'0','0','1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (102,'Modules',NULL,507,NULL,NULL,1,NULL,NULL,NULL,NULL,'1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (103,'Setup','./img/icones/16x16/press.gif',507,50701,10,1,'./include/options/oreon/modules/modules.php',NULL,NULL,NULL,'1',NULL,NULL,NULL,'1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES (104,'ACL',NULL,5,502,10,1,'./include/options/LCA/define/lca.php',NULL,'0','0','1',NULL,NULL,NULL,'1');
@@ -213,11 +213,6 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 	(NULL, 'Wizard', NULL, 60909, 6090901, 40, 11, './include/configuration/configCentreonBroker/wizard.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1'),
 	(NULL, 'WizardAjax', NULL, 60909, 6090902, 40, 11, './include/configuration/configCentreonBroker/wizard_ajax.php', NULL, '0', '0', '0', NULL, NULL, NULL, '1');
 
-INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
-                       ('Extra', NULL, 602, NULL, NULL, 10, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
-                       ('Extra', NULL, 601, NULL, 20, 2, NULL, NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
-                       ('Criticality', './img/icones/16x16/scroll_warning.gif', 602, 60228, 10, 10, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1'),
-                       ('Criticality', './img/icones/16x16/scroll_warning.gif', 601, 60107, 10, 2, './include/configuration/configObject/criticality/index.php', NULL, NULL, NULL, '1', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
 (NULL, 'Broker Statistics', './img/icones/16x16/document_gear.gif', 102, 10205, 15, 1, './include/Administration/brokerPerformance/brokerPerformance.php', NULL, '0', '0', '1', NULL, NULL, NULL, '1');
 INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES
@@ -232,11 +227,11 @@ INSERT INTO `topology` (`topology_id`, `topology_name`, `topology_icone`, `topol
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`,`topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) 
 VALUES ('Contact Templates','./img/icones/16x16/user1_information.png',603,60306,13,1,'./include/configuration/configObject/contact_template_model/contact_template.php','0','0','1',NULL,NULL,NULL,'0');
 
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('CentCore',NULL,50101,5010110,25,1,'./include/options/oreon/generalOpt/generalOpt.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
-LOCK TABLES `topology_JS` WRITE;
-/*!40000 ALTER TABLE `topology_JS` DISABLE KEYS */;
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (1,2,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (2,2020301,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (3,2020302,NULL,'./include/common/javascript/ajaxMonitoring.js','initM');
@@ -461,8 +456,42 @@ INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VAL
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (223,60703,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_t_js`, `id_page`, `o`, `PathName_js`, `Init`) VALUES (224,60703,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
 
-INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60306, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60901,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60901,'./include/common/javascript/centreon/doClone.js',NULL);
 
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60306, './include/common/javascript/changetab.js', 'initChangeTab');
+INSERT INTO `topology_JS` (`id_page`, `PathName_js`, `Init`) VALUES (60101,'./include/common/javascript/centreon/hostResolve.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
 /*!40000 ALTER TABLE `topology_JS` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;

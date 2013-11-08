@@ -195,7 +195,7 @@
         }
         $form->addElement('select', 'severity', _("Default Severity"), $severityArr);
         $form->addElement('text', 'traps_args', _("Output Message"), $attrsText);
-	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment', 'onclick' => "toggleParams(this.checked);"));
+	$form->addElement('checkbox', 'traps_advanced_treatment', _("Advanced matching mode"), null, array('id' => 'traps_advanced_treatment'));
 	$form->setDefaults(0);
 
 	/* *******************************************************************
@@ -352,7 +352,11 @@
         $excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("None"), '0');
 	$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID"), '1');
 	$excecution_type[] = HTML_QuickForm::createElement('radio', 'traps_exec_interval_type', null, _("By OID and Host"), '2');
-	$form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution t ype"), '&nbsp;');
+	$form->addGroup($excecution_type, 'traps_exec_interval_type', _("Execution type"), '&nbsp;');
+        
+        $excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Parallel"), '0');
+	$excecution_method[] = HTML_QuickForm::createElement('radio', 'traps_exec_method', null, _("Sequential"), '1');
+	$form->addGroup($excecution_method, 'traps_exec_method', _("Execution method"), '&nbsp;');
         
         /*
          * Pre exec 

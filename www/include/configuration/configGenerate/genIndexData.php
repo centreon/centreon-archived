@@ -47,7 +47,7 @@ $retentionRes = $pearDB->query("SELECT host_host_id as id, MAX(hg_rrd_retention)
                                 WHERE hostgroup.hg_id = hostgroup_relation.hostgroup_hg_id
                                 GROUP BY host_host_id");
 while ($row = $retentionRes->fetchRow()) {
-    if (!isset($retentionCache[$row['id']])) {
+    if (!isset($retentionCache[$row['id']]) && $row['retention']) {
         $retentionCache[$row['id']] = $row['retention'] * DAY_SECS;
     }
 }
@@ -62,13 +62,15 @@ WHERE hsr.host_host_id IS NOT NULL
 AND hsr.host_host_id = h.host_id
 AND h.host_activate = '1'
 AND hsr.service_service_id = s.service_id
+AND s.service_register = '1'
 UNION
 SELECT host_id, service_id, host_name, service_description
 FROM host_service_relation hsr, hostgroup_relation hgr, host h, service s
 WHERE hsr.hostgroup_hg_id = hgr.hostgroup_hg_id
 AND hgr.host_host_id = h.host_id
 AND h.host_activate = '1'
-AND hsr.service_service_id = s.service_id";
+AND hsr.service_service_id = s.service_id
+AND s.service_register = '1'";
 $hostSvcRes = $pearDB->query($hostSvcSql);
 $hostSvc = array();
 while ($hostSvcRow = $hostSvcRes->fetchRow()) {
@@ -84,7 +86,7 @@ while ($hostSvcRow = $hostSvcRes->fetchRow()) {
 
     $host_id = $hostSvcRow['host_id'];
     if (isset($retentionCache[$host_id])) {
-        $serviceRetention[$retentionCache[$host_id]] = $host_id.';'.$hostSvcRow['service_id'];
+        $serviceRetention[$retentionCache[$host_id]][] = $host_id.';'.$hostSvcRow['service_id'];
     }
 }
 

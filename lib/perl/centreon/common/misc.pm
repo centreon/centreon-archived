@@ -170,16 +170,6 @@ sub get_line_pipe {
     return -1;
 }
 
-sub plop {
-    my $child_pid;
-
-    while (($child_pid = waitpid(-1, &WNOHANG)) > 0) {
-        print "SIGCHLD received: $child_pid\n";
-    }
-    print "SIGCHLD received: $child_pid\n";
-    #print "LAAAAAAAAAAAAAAAAAA\n";
-}
-
 sub backtick {
     my %arg = (
         command => undef,

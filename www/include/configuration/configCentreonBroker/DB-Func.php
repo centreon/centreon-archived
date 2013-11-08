@@ -119,28 +119,30 @@
 	function getCentreonBrokerInformation($id) {
 	    global $pearDB;
 
-	    $query = "SELECT config_name, config_filename, config_write_timestamp, config_activate, ns_nagios_server, event_queue_max_size
+	    $query = "SELECT config_name, config_filename, config_write_timestamp, config_write_thread_id, config_activate, ns_nagios_server, event_queue_max_size
                       FROM cfg_centreonbroker 
                       WHERE config_id = " . $id;
 	    $res = $pearDB->query($query);
 	    if (PEAR::isError($res)) {
 	        return array(
         		"name" => '',
-	                "filename" => '',
+                "filename" => '',
                 "write_timestamp" => '1',
+                "write_thread_id" => "1",
         		"activate" => '1',
-                        "event_queue_max_size" => ''
+                "event_queue_max_size" => ''
     		);
 	    }
 	    $row = $res->fetchRow();
 	    return array(
 	    		"id" => $id,
         		"name" => $row['config_name'],
-	                "filename" => $row['config_filename'],
+                "filename" => $row['config_filename'],
                 "write_timestamp" => $row['config_write_timestamp'],
+                "write_thread_id" => $row['config_write_thread_id'],
         		"activate" =>  $row['config_activate'],
-	                "ns_nagios_server" => $row['ns_nagios_server'],
-                        "event_queue_max_size" => $row['event_queue_max_size']
+                "ns_nagios_server" => $row['ns_nagios_server'],
+                "event_queue_max_size" => $row['event_queue_max_size']
 	    );
 	}
 

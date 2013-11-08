@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
 /*
  *  Get Poller List
@@ -87,8 +85,9 @@ $form->addElement('checkbox', 'gen', _("Generate Configuration Files"), null, ar
 $form->setDefaults(array('gen' => '1'));
 $form->addElement('checkbox', 'move', _("Move Export Files"), null, array('id' => 'nmove'));
 $form->addElement('checkbox', 'restart', _("Restart Monitoring Engine"), null, array('id' => 'nrestart'));
+$form->addElement('checkbox', 'postcmd', _('Post generation command'), null, array('id' => 'npostcmd'));
 
-$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 3 => _("External Command"));
+$tab_restart_mod = array(2 => _("Restart"), 1 => _("Reload"), 4 => _("Force Reload"), 3 => _("External Command"));
 $form->addElement('select', 'restart_mode', _("Method"), $tab_restart_mod, array('id' => 'nrestart_mode', 'style' => 'width: 220px;'));
 $form->setDefaults(array('restart_mode' => '2'));
 
@@ -109,7 +108,9 @@ $tpl->assign("consoleLabel", _("Console"));
 $tpl->assign("progressLabel", _("Progress"));
 $tpl->assign("helpattr", 'TITLE, "' . _("Help") . '", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"');
 $helptext = "";
+
 include_once("help.php");
+
 foreach ($help as $key => $text) {
     $helptext .= '<span style="display:none" id="help:' . $key . '">' . $text . '</span>' . "\n";
 }
@@ -136,19 +137,24 @@ $tpl->display("formGenerateFiles.ihtml");
     var restartOption;
     var restartMode;
     var exportBtn;
+    var steps = new Array();
+    var stepProgress;
+    var curProgress;
+    var postcmdOption;
 
     var tooltip = new CentreonToolTip();
     var session_id = "<?php echo session_id(); ?>";
     tooltip.render();
     var progressBar;
     var msgTab = new Array();
-    msgTab['start'] = "<?php echo _("Preparing environment"); ?>";
-    msgTab['gen'] = "<?php echo _("Generating files"); ?>";
-    msgTab['debug'] = "<?php echo _("Running debug mode"); ?>";
-    msgTab['move'] = "<?php echo _("Moving files"); ?>";
-    msgTab['restart'] = "<?php echo _("Restarting engine"); ?>";
-    msgTab['abort'] = "<?php echo _("Aborted."); ?>";
-    msgTab['noPoller'] = "<?php echo _("No poller selected"); ?>";
+    msgTab['start'] = "<?php echo addslashes(_("Preparing environment")); ?>";
+    msgTab['gen'] = "<?php echo addslashes(_("Generating files")); ?>";
+    msgTab['debug'] = "<?php echo addslashes(_("Running debug mode")); ?>";
+    msgTab['move'] = "<?php echo addslashes(_("Moving files")); ?>";
+    msgTab['restart'] = "<?php echo addslashes(_("Restarting engine")); ?>";
+    msgTab['abort'] = "<?php echo addslashes(_("Aborted.")); ?>";
+    msgTab['noPoller'] = "<?php echo addslashes(_("No poller selected")); ?>";
+    msgTab['postcmd'] = "<?php echo addslashes(_("Executing command")); ?>";
 
     jQuery(function() {
         initProgressBar();
@@ -179,29 +185,36 @@ $tpl->display("formGenerateFiles.ihtml");
     }
 
     /**
+     * Next step
+     * 
+     * @returns void
+     */
+    function nextStep() {
+        var func = window[steps.shift()];
+        if (typeof(func) === 'function') {
+            updateProgress();
+            func();
+        } else {
+            // no more step
+            exportBtn.disabled = false;
+        }
+    }
+
+    /**
      * Generation process
      *
      * @return void
      */
     function generationProcess()
     {
-        updateProgress(0);
+        updateProgress();
         cleanErrorPhp();
         document.getElementById('console').style.visibility = 'visible';
         $('consoleContent').update(msgTab['start'] + "... ");
         $('consoleDetails').update("");
         initEnvironment();
-        if (selectedPoller != "-1") {
-            updateProgress(10);
-            if (generateOption || debugOption) {
-                generateFiles();
-            } else if (moveOption) {
-                moveFiles();
-            } else if (restartOption) {
-                restartPollers();
-            } else {
-                updateProgress(100);
-            }
+        if (selectedPoller !== "-1") {
+            nextStep();
         }
     }
 
@@ -214,9 +227,27 @@ $tpl->display("formGenerateFiles.ihtml");
         commentOption  = document.getElementById('ncomment').checked;
         debugOption = document.getElementById('ndebug').checked;
         generateOption = document.getElementById('ngen').checked;
+        if (generateOption) {
+            steps.push("generateFiles");
+        }
         moveOption = document.getElementById('nmove').checked;
+        if (moveOption) {
+            steps.push("moveFiles");
+        }
         restartOption = document.getElementById('nrestart').checked;
+        if (restartOption) {
+            steps.push("restartPollers");
+        }
         restartMode = document.getElementById('nrestart_mode').value;
+        postcmdOption = 0;
+        if (document.getElementById('npostcmd')) {
+            postcmdOption = document.getElementById('npostcmd').checked;
+        }
+        if (postcmdOption) {
+            steps.push("executeCommand");
+        }
+        stepProgress = 100 / steps.length;
+        curProgress = 0;
         exportBtn = document.getElementById('exportBtn');
         exportBtn.disabled = true;
         if (selectedPoller == "-1") {
@@ -254,16 +285,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-                if (moveOption) {
-                    updateProgress(33);
-                    moveFiles();
-                } else if (restartOption) {
-                    updateProgress(50);
-                    restartPollers();
-                } else {
-                    updateProgress(100);
-                    exportBtn.disabled = false;
-                }
+                nextStep();
             }
         });
     }
@@ -288,13 +310,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-                if (restartOption) {
-                    updateProgress(67);
-                    restartPollers();
-                } else {
-                    updateProgress(100);
-                    exportBtn.disabled = false;
-                }
+                nextStep();
             }
         });
     }
@@ -320,8 +336,29 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
-                updateProgress(100);
-                exportBtn.disabled = false;
+                nextStep();
+            }
+        });
+    }
+
+    /**
+     * Execute commands
+     */
+    function executeCommand() {
+        $('consoleContent').insert(msgTab['postcmd'] + "... ");
+        new Ajax.Request('./include/configuration/configGenerate/xml/postcommand.php', {
+            method: 'post',
+            parameters: {
+                sid: session_id,
+                poller: selectedPoller
+            },
+            onSuccess: function (response) {
+                displayPostExecutionCommand(response.responseXML);
+                if (isError(response.responseXML) == "1") {
+                    abortProgress();
+                    return null;
+                }
+                nextStep();
             }
         });
     }
@@ -356,6 +393,22 @@ $tpl->display("formGenerateFiles.ihtml");
         }
         str += "<br/>";
         $('consoleDetails').insert(str);
+    }
+
+    /**
+     * Display post command result and output
+     */
+    function displayPostExecutionCommand(responseXML) {
+        var xml = responseXML.getElementsByTagName("result");
+        var xmlStatus = responseXML.getElementsByTagName("status");
+        var str;
+        str = "";
+        if (xml.length && xml.item(0).firstChild.data) {
+            str += xml.item(0).firstChild.data;
+        }
+        str += "<br/>";
+        $('consoleDetails').insert(str);
+        $('consoleContent').insert(xmlStatus.item(0).firstChild.data);
     }
 
     /**
@@ -443,10 +496,15 @@ $tpl->display("formGenerateFiles.ihtml");
     /**
      * Updates progress
      */
-    function updateProgress(val)
+    function updateProgress()
     {
-        progressBar.setPercentage(val);
-        $('progressPct').update(val + "%");
+        var pct = 0;
+        if (typeof(curProgress) != 'undefined' && typeof(stepProgress) != 'undefined') {
+            pct = curProgress + stepProgress;
+            curProgress += stepProgress;
+        }
+        progressBar.setPercentage(pct);
+        $('progressPct').update(pct + "%");
     }
 
     /**
@@ -464,5 +522,6 @@ $tpl->display("formGenerateFiles.ihtml");
     {
         $('consoleContent').insert(msgTab['abort']);
         exportBtn.disabled = false;
+        steps = new Array();
     }
 </script>

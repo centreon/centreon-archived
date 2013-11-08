@@ -115,7 +115,7 @@ class CentreonDB {
                 $this->debug = 1;
             }
         } catch (Exception $e) {
-            if (false === $silent) {
+            if (false === $silent && php_sapi_name() != "cli") {
                 $this->displayConnectionErrorPage($e->getMessage());
             } else {
                 throw new Exception($e->getMessage());

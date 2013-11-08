@@ -489,7 +489,7 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
          * @param array $macroValue
          * @return void
          */
-        public function insertMacro($hostId, $macroInput = array(), $macroValue = array()) {
+        public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array()) {
             $this->db->query("DELETE FROM on_demand_macro_host 
                 WHERE host_host_id = ".$this->db->escape($hostId));
             
@@ -499,8 +499,8 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
             foreach ($macros as $key => $value) {
                 if ($value != "" && 
                     !isset($stored[strtolower($value)])) {
-                        $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `host_host_id`) 
-                                VALUES ('\$_HOST". strtoupper($value) ."\$', '". $this->db->escape($macrovalues[$key]) ."', ". $hostId .")");
+                        $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `host_host_id`) 
+                                VALUES ('\$_HOST". strtoupper($value) ."\$', '". $this->db->escape($macrovalues[$key]) ."', ".(isset($macroPassword[$key]) ? 1 : 'NULL') .", ". $hostId .")");
                         $stored[strtolower($value)] = true;
                 }
             }
@@ -516,7 +516,7 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
             $arr = array();
             $i = 0;
             if (!isset($_REQUEST['macroInput']) && $hostId) {
-                $res = $this->db->query("SELECT host_macro_name, host_macro_value
+                $res = $this->db->query("SELECT host_macro_name, host_macro_value, is_password
                                 FROM on_demand_macro_host
                                 WHERE host_host_id = " . 
                                 $this->db->escape($hostId) . "
@@ -525,6 +525,7 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
                     if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
                         $arr[$i]['macroInput_#index#'] = $matches[1];
                         $arr[$i]['macroValue_#index#'] = $row['host_macro_value'];
+                        $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
                         $i++;
                     }
                 }
@@ -532,6 +533,7 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
                 foreach($_REQUEST['macroInput'] as $key => $val) {
                     $arr[$i]['macroInput_#index#'] = $val;
                     $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
+                    $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
                     $i++;
                 }
             }
@@ -586,7 +588,7 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
             $str = "";
             $i = 1;
             foreach ($templates as $templateId) {
-                if ($stored[$tempateId]) {
+                if (!isset($templateId) || !$templateId || isset($stored[$templateId])) {
                     continue;
                 }
                 if ($str != "") {

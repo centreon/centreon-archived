@@ -251,7 +251,9 @@
                             FROM hostcategories hc, hostcategories_relation hcr
                             WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
                             AND hcr.hostcategories_hc_id = hc.hc_id
-                            AND hc.level IS NOT NULL");
+                            AND hc.level IS NOT NULL
+                            ORDER BY hc.level ASC
+                            LIMIT 1");
                 if ($res->numRows()) {
                     $cr = $res->fetchRow();
                     $host['criticality_id'] = $cr['hc_id'];
@@ -503,6 +505,16 @@
                     'size' => 25
                 )
                 );
+        $cloneSetMacro[] = $form->addElement(
+                'checkbox',
+                'macroPassword[#index#]',
+                _('Password'),
+                null,
+                array(
+                    'id' => 'macroPassword_#index#',
+                    'onClick' => 'javascript:change_macro_input_type(this, false)'
+                )
+        );
         
         $cloneSetTemplate = array();
         $cloneSetTemplate[] = $form->addElement(
@@ -916,20 +928,22 @@
 	if ($o != "mc")	{
             $form->applyFilter('host_name', 'myReplace');
             $form->addRule('host_name', _("Compulsory Name"), 'required');
-            $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
-            $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
+            
+            if (isset($oreon->optGen["strict_hostParent_poller_management"]) && $centreon->optGen["strict_hostParent_poller_management"] == 1) {
+                $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
+                $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+                $form->addRule('host_parents', _("Some hosts parent has not the same instance"), 'validate_parents');
+                $form->addRule('host_childs', _("Some hosts child has not the same instance"), 'validate_childs');
+            }
             /*
              * Test existence
              */
             $form->registerRule('testModule', 'callback', 'testHostName');
             $form->addRule('host_name', _("_Module_ is not a legal expression"), 'testModule');
             $form->registerRule('existTemplate', 'callback', 'testHostTplExistence');
-	    $form->registerRule('exist', 'callback', 'testHostExistence');
-	    $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
-	    $form->addRule('host_name', _("Host name is already in use"), 'exist');
-
-            $form->registerRule('testPollerDep', 'callback', 'testPollerDep');
-            $form->addRule('nagios_server_id', _("Impossible to change server due to parentship with other hosts"), 'testPollerDep');
+            $form->registerRule('exist', 'callback', 'testHostExistence');
+            $form->addRule('host_name', _("Template name is already in use"), 'existTemplate');
+            $form->addRule('host_name', _("Host name is already in use"), 'exist');            
             $form->addRule('host_address', _("Compulsory Address"), 'required');
 
             /*
@@ -1015,7 +1029,10 @@
 	$tpl->assign("sort3", _("Data Processing"));
 	$tpl->assign("sort4", _("Host Extended Infos"));
 	$tpl->assign("sort5", _("Macros"));
-	$tpl->assign('javascript', '<script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>' );
+	$tpl->assign('javascript', '
+            <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+        ');
         $tpl->assign('accessgroups', _('Access groups'));
 
 	# prepare help texts
@@ -1093,8 +1110,8 @@
 		$tpl->display("formHost.ihtml");
 ?>
 <script type="text/javascript">
-		showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
-		showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
-		showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
+    showLogo('ehi_icon_image_img', document.getElementById('ehi_icon_image').value);
+    showLogo('ehi_vrml_image_img', document.getElementById('ehi_vrml_image').value);
+    showLogo('ehi_statusmap_image_img', document.getElementById('ehi_statusmap_image').value);
 </script>
 <?php } ?>

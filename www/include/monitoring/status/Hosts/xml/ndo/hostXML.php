@@ -48,7 +48,11 @@
 	 */
 	$obj = new CentreonXMLBGRequest($_GET["sid"], 1, 1, 0, 1);
 	CentreonSession::start();
-
+        if (isset($_SESSION['centreon'])) {
+            $centreon = $_SESSION['centreon'];
+        } else {
+            exit;
+        }
         $criticality = new CentreonCriticality($obj->DB);
 	$instanceObj = new CentreonInstance($obj->DB);
         $media = new CentreonMedia($obj->DB);
@@ -316,6 +320,10 @@
         $obj->XML->writeElement("pce", 	$ndo["passive_checks_enabled"]);
         $obj->XML->writeElement("ace", 	$ndo["active_checks_enabled"]);
         $obj->XML->writeElement("lsc", 	($duration ? $duration : "N/A"));
+        $msgdata['last_state_change'] = $ndo['last_state_change'];
+        $msgdata['state'] = $ndo['current_state'];
+        $msgdata['name'] = $ndo['host_name'];
+        $obj->XML->writeElement("notifmsg", $obj->getHostNotificationMessage($msgdata, $centreon->optGen));
         $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
         $obj->XML->writeElement("ha", 	$ndo["problem_has_been_acknowledged"]);
         $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);

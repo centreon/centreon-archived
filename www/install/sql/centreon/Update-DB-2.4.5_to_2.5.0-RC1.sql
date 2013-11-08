@@ -7,6 +7,7 @@ ALTER TABLE `traps` ADD COLUMN `traps_exec_interval_type` enum('0','1','2') DEFA
 ALTER TABLE `traps` ADD COLUMN `traps_log` enum('0','1') DEFAULT '0' AFTER `traps_exec_interval_type`;
 ALTER TABLE `traps` ADD COLUMN `traps_routing_mode` enum('0','1') DEFAULT '0' AFTER `traps_log`;
 ALTER TABLE `traps` ADD COLUMN `traps_routing_value` varchar(255) DEFAULT NULL AFTER `traps_routing_mode`;
+ALTER TABLE `traps` ADD COLUMN `traps_exec_method` enum('0','1') DEFAULT '0' AFTER `traps_routing_value`;
 ALTER TABLE `traps` ADD COLUMN `traps_advanced_treatment_default` enum('0','1') DEFAULT '0' AFTER `traps_advanced_treatment`;
 
 ALTER TABLE `cfg_nagios` ADD COLUMN `use_setpgid` enum('0','1','2') DEFAULT NULL AFTER `enable_environment_macros`;
@@ -26,6 +27,8 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (501010
 
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60101,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60101,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60101,NULL,'./include/common/javascript/centreon/hostResolve.js',NULL);
+
 
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60103,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60103,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
@@ -55,30 +58,6 @@ UPDATE `topology` SET `readonly` = '0' WHERE `topology_parent` = '608' AND `topo
 -- ticket #2329
 ALTER TABLE  `traps` CHANGE  `traps_args`  `traps_args` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 
--- ticket #4536
-UPDATE `service` SET `service_alias` = 'Swap' WHERE `service_description` = 'SNMP-Linux-Swap' AND `service_alias` = 'Memory';
-
--- Ticket #4201
-INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUE (2, 'BBDO Protocol', 'bbdo');
-
--- Add Centreon Broker configuration
-INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES 
-(42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
-(43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
-(44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
-(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL);
-
-INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
-(1, 42, 'yes'),
-(1, 44, 'yes'),
-(1, 45, 'yes');
-
-INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES
-(13, 42, 1, 5),
-(13, 43, 1, 6),
-(13, 44, 1, 5),
-(13, 45, 1, 6);
-
 -- Add option to not inherit host contacts and contactgroups Ticket #4498
 ALTER TABLE `service` ADD COLUMN `service_inherit_contacts_from_host` enum('0','1') DEFAULT '1' AFTER `service_notifications_enabled`;
 
@@ -105,13 +84,94 @@ ALTER TABLE `traps` ADD CONSTRAINT `traps_ibfk_2` FOREIGN KEY (`severity_id`) RE
 ALTER TABLE `traps_matching_properties` ADD COLUMN `severity_id` int(11) DEFAULT NULL AFTER `tmo_status`;
 ALTER TABLE `traps_matching_properties` ADD CONSTRAINT `traps_matching_properties_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE;
 
--- Ticket #3765
-ALTER TABLE `cfg_centreonbroker` ADD COLUMN `config_write_timestamp` enum('0','1') DEFAULT '1' AFTER `config_filename`;
-
 -- Ticket #4623
 ALTER TABLE `nagios_server` ADD COLUMN `snmp_trapd_path_conf` VARCHAR(255) DEFAULT NULL AFTER `init_script_snmptt`;
 UPDATE `nagios_server` SET snmp_trapd_path_conf = (SELECT `value` FROM `options` WHERE `key` = 'snmp_trapd_path_conf');
 DELETE FROM `options` WHERE `key` = 'snmp_trapd_path_conf';
 DELETE FROM `topology` WHERE `topology_page` = 5010104 AND topology_name = 'SNMP';
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('CentCore',NULL,50101,5010110,25,1,'./include/options/oreon/generalOpt/generalOpt.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
 
-UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.4' LIMIT 1;
+-- Ticket #4222
+ALTER TABLE `nagios_server` ADD COLUMN `engine_name` VARCHAR(255) DEFAULT NULL AFTER `snmp_trapd_path_conf`;
+ALTER TABLE `nagios_server` ADD COLUMN `engine_version` VARCHAR(255) DEFAULT NULL AFTER `engine_name`;
+
+INSERT INTO `options` (`key`, `value`) VALUES ('monitoring_dwt_duration_scale', 's');
+
+-- Ticket #4666
+CREATE TABLE `poller_command_relations` (
+  `poller_id` int(11) NOT NULL,
+  `command_id` int(11) NOT NULL,
+  `command_order` tinyint (3) DEFAULT NULL,
+  KEY `poller_id` (`poller_id`),
+  KEY `command_id` (`command_id`),
+  CONSTRAINT `poller_command_relations_fk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `poller_command_relations_fk_2` FOREIGN KEY (`command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60901,NULL,'./include/common/javascript/jquery/plugins/sheepit/jquery.sheepItPlugin.min.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60901,NULL,'./include/common/javascript/centreon/doClone.js',NULL);
+
+UPDATE `topology` SET `topology_name` = 'Extensions' WHERE `topology_name` = 'Modules' AND `topology_page` = 507;
+
+-- noty
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20215,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20202,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (201,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20105,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20103,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
+INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (20102,NULL,'./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js',NULL);
+-- end of noty
+
+-- Ticket #4611
+ALTER TABLE `nagios_server` ADD COLUMN `description` VARCHAR(50) DEFAULT NULL;
+
+-- Ticket #4201
+DELETE FROM cb_list WHERE cb_field_id = '6'; 
+INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '6', 'no');
+DELETE FROM cb_list WHERE cb_field_id = '25'; 
+INSERT INTO cb_list (cb_list_id, cb_field_id, default_value) VALUES ('5', '25', 'no');
+
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'No', 'no');
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'Yes', 'yes');
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('5', 'Auto', 'auto');
+
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('1', 'No', 'no');
+INSERT INTO cb_list_values (cb_list_id, value_name, value_value) VALUES ('1', 'Yes', 'yes');
+
+-- Ticket #4938
+
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL);
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES (1, 46, 'yes');
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (3, 46, 1, 8), (10, 46, 1, 8);
+
+-- Ticket #4923
+
+ALTER TABLE `on_demand_macro_host` ADD COLUMN `is_password` TINYINT(2) DEFAULT NULL AFTER `host_macro_value`;
+ALTER TABLE `on_demand_macro_service` ADD COLUMN `is_password` TINYINT(2) DEFAULT NULL AFTER `svc_macro_value`;
+
+UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

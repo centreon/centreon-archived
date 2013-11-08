@@ -66,7 +66,7 @@
 
 <link rel="stylesheet" type="text/css" href="./include/common/javascript/jquery/plugins/qtip/jquery-qtip.css" />
 <script type="text/javascript">
-    {literal}
+{literal}
     function CheckModule()
     {
         jQuery(document).ready(function()
@@ -134,7 +134,7 @@
                 criticalModalBox += '</div>';
                 statusMessage += '<br />Click to check available actions to fix it.';
                 tooltipReferer = '#img_critical_'+ module["name"];
-                jQuery('#action'+ module["name"]).empty();
+                //jQuery('#action'+ module["name"]).empty();
                 jQuery('body').append(criticalModalBox);
                 jQuery('#' + modalBoxId).dialog({ autoOpen: false });
                 jQuery('#' + modalBoxId).dialog( "option", "show", { effect: 'drop', direction: "up" } );

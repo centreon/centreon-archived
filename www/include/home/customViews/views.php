@@ -121,6 +121,7 @@ jQuery(function() {
     	if (!permission) {
     		jQuery('.addWidget').button('disable');
     		jQuery('.editView').button('disable');
+            wrenchSpan = '<span></span>';
     		trashSpan = '<span></span>';
     	} else {
     		jQuery('.shareView').button('enable');

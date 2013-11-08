@@ -9,7 +9,7 @@ INSERT INTO `informations` (`key` ,`value`) VALUES ('version', '2.5.0-RC1');
 -- Contenu de la table `contact`
 --
 
-INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, 'Supervisor', 'admin', MD5('@ADMIN_PASSWORD@'), 'en_US', 'n', 'n', 'root@localhost', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
+INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`, `contact_enable_notifications`) VALUES(1, 1, 1, '@firstname@ @lastname@', 'admin', MD5('@ADMIN_PASSWORD@'), 'en_US', 'n', 'n', '@email@', NULL, NULL, '1', '1', 'txt', '1', 'local', NULL, '1');
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(17, 1, 1, 'Guest', 'guest', NULL, 'en_US', 'n', 'n', 'guest@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 INSERT INTO `contact` (`contact_id`, `timeperiod_tp_id`, `timeperiod_tp_id2`, `contact_name`, `contact_alias`, `contact_passwd`, `contact_lang`, `contact_host_notification_options`, `contact_service_notification_options`, `contact_email`, `contact_pager`, `contact_comment`, `contact_oreon`, `contact_admin`, `contact_type_msg`, `contact_activate`, `contact_auth_type`, `contact_ldap_dn`) VALUES(18, 1, 1, 'User', 'user', NULL, 'en_US', 'n', 'n', 'user@localhost', NULL, NULL, '0', '0', 'txt', '0', 'local', NULL);
 
@@ -145,6 +145,7 @@ INSERT INTO `options` (`key`, `value`) VALUES
 ('display_autologin_shortcut','1'),
 ('monitoring_ack_svc', '1'),
 ('monitoring_dwt_duration', '3600'),
+('monitoring_dwt_duration_scale', 's'),
 ('monitoring_ack_active_checks', '1'),
 ('monitoring_ack_persistent', '1'),
 ('monitoring_ack_notify', '0'),
@@ -743,26 +744,28 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (42, 'store_in_data_bin', 'Store in performance data in data_bin', 'It should be enabled to control whether or not Centreon Broker should insert performance data in the data_bin table.', 'radio', NULL),
 (43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
-(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL);
+(45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
+(46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL);
 
 --
 -- Contenu de la table `cb_list`
 --
 
 INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
-(1, 6, 'no'),
+(5, 6, 'no'),
 (1, 20, 'yes'),
 (1, 21, 'no'),
 (1, 22, 'yes'),
 (1, 23, 'no'),
-(1, 25, 'no'),
+(5, 25, 'no'),
 (2, 12, NULL),
 (3, 15, NULL),
 (4, 24, NULL),
 (1, 39, 'no'),
 (1, 42, 'yes'),
 (1, 44, 'yes'),
-(1, 45, 'yes');
+(1, 45, 'yes'),
+(1, 46, 'yes');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -783,7 +786,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (3, 'Sysbase', 'tds'),
 (4, 'Base', 'low'),
 (4, 'Detailed', 'medium'),
-(4, 'Very detailed', 'high');
+(4, 'Very detailed', 'high'), 
+(5, 'No', 'no'),
+(5, 'Yes', 'yes'),
+(5, 'Auto', 'auto');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -843,6 +849,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (3, 4, 0, 5),
 (3, 5, 0, 6),
 (3, 6, 1, 4),
+(3, 46, 1, 8),
 (3, 12, 1, 3),
 (10, 1, 1, 1),
 (10, 2, 0, 2),
@@ -850,6 +857,7 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (10, 4, 0, 5),
 (10, 5, 0, 6),
 (10, 6, 1, 4),
+(10, 46, 1, 8),
 (10, 12, 1, 3),
 (11, 11, 1, 1),
 (11, 12, 1, 2),

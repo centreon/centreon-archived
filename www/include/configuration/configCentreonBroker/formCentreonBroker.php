@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/configuration/configNdo2db/formNdo2db.php $
- * SVN : $Id: formNdo2db.php 11685 2011-02-14 16:14:15Z jmathis $
- *
  */
 
 if (!isset($oreon)) {
@@ -106,6 +103,11 @@ $timestamp = array();
 $timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("Yes"), 1);
 $timestamp[] = HTML_QuickForm::createElement('radio', 'write_timestamp', null, _("No"), 0);
 $form->addGroup($timestamp, 'write_timestamp', _("Write timestamp"), '&nbsp;');
+
+$thread_id = array();
+$thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("Yes"), 1);
+$thread_id[] = HTML_QuickForm::createElement('radio', 'write_thread_id', null, _("No"), 0);
+$form->addGroup($thread_id, 'write_thread_id', _("Write thread id"), '&nbsp;');
     
 $status = array();
 $status[] = HTML_QuickForm::createElement('radio', 'activate', null, _("Enabled"), 1);
@@ -131,6 +133,7 @@ if (isset($_GET["o"]) && $_GET["o"] == 'a'){
     $form->setDefaults(array(
         "name" => '',
         "write_timestamp" => '1',
+        "write_thread_id" => '1',
         "activate" => '1'
     ));
     $tpl->assign('config_id', 0);
@@ -168,19 +171,19 @@ if ($o == "w")  {
         $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&id=".$ndo2db_id."'"));
     }
     $form->freeze();
-} else if ($o == "c")   {
+ } else if ($o == "c")   {
     /*
      * Modify a Centreon Broker information
      */
     $subC = $form->addElement('submit', 'submitC', _("Save"));
     $res = $form->addElement('reset', 'reset', _("Reset"));
-} else if ($o == "a")   {
+ } else if ($o == "a")   {
     /*
      * Add a nagios information
      */
     $subA = $form->addElement('submit', 'submitA', _("Save"));
     $res = $form->addElement('reset', 'reset', _("Reset"));
-}
+ }
 
 $valid = false;
 if ($form->validate())  {
@@ -193,9 +196,9 @@ if ($form->validate())  {
     $o = NULL;
     $valid = true;
 }
-if ($valid)
+if ($valid) {
     require_once($path."listCentreonBroker.php");
-else {
+ } else {
     /*
      * Apply a template definition
      */

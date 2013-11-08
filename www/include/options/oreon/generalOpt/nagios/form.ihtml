@@ -9,10 +9,6 @@
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_images_directory">&nbsp;{$form.nagios_path_img.label}</td><td class="FormRowValue">{$form.nagios_path_img.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_plugins_directory">&nbsp;{$form.nagios_path_plugins.label}</td><td class="FormRowValue">{$form.nagios_path_plugins.html}</td></tr>
 		
-		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$genOpt_centcore}</td></tr>
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_perfdata_sync">&nbsp;{$form.enable_perfdata_sync.label}</td><td class="FormRowValue">{$form.enable_perfdata_sync.html}</td></tr>
-		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_logs_sync">&nbsp;{$form.enable_logs_sync.label}</td><td class="FormRowValue">{$form.enable_logs_sync.html}</td></tr>		
-		
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/data_into.gif'>&nbsp;&nbsp;{$genOpt_dbLayer}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_broker_engine_used_by_centreon">&nbsp;{$form.broker.label}</td><td class="FormRowValue">{$form.broker.html}</td></tr>
 		
@@ -37,7 +33,17 @@
 		<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/warning.gif'>&nbsp;&nbsp;{$downtime_default_settings}</td></tr>
 		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_fixed">&nbsp;{$form.monitoring_dwt_fixed.label}</td><td class="FormRowValue">{$form.monitoring_dwt_fixed.html}</td></tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_set_downtimes_on_services_attached_to_hosts">&nbsp;{$form.monitoring_dwt_svc.label}</td><td class="FormRowValue">{$form.monitoring_dwt_svc.html}</td></tr>		
-		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_duration">&nbsp;{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$seconds}</td></tr>
+		<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_duration">&nbsp;{$form.monitoring_dwt_duration.label}</td><td class="FormRowValue">{$form.monitoring_dwt_duration.html}&nbsp;{$form.monitoring_dwt_duration_scale.html}</td></tr>
+
+                <tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/gear.gif'>&nbsp;&nbsp;{t}Misc{/t}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_console_notification">&nbsp;{$form.monitoring_console_notification.label}</td><td class="FormRowValue">{$form.monitoring_console_notification.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_host_notification_0">&nbsp;{$form.monitoring_host_notification_0.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_0.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_host_notification_1">&nbsp;{$form.monitoring_host_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_1.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_host_notification_2">&nbsp;{$form.monitoring_host_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_host_notification_2.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_0">&nbsp;{$form.monitoring_svc_notification_0.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_0.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_1">&nbsp;{$form.monitoring_svc_notification_1.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_1.html}</td></tr>
+                <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_2">&nbsp;{$form.monitoring_svc_notification_2.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_2.html}</td></tr>
+                <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_svc_notification_3">&nbsp;{$form.monitoring_svc_notification_3.label}</td><td class="FormRowValue">{$form.monitoring_svc_notification_3.html}</td></tr>
 		<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2">{$form.required._note}</td></tr>
 	</table>
 	{if !$valid}

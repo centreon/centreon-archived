@@ -98,6 +98,9 @@
 		case "reporting" : 
 			require_once $path."reporting/form.php" ; 
 			break;
+                case "centcore" :
+                    require_once $path.'centcore/centcore.php';
+                    break;
 		default : 
 			require_once $path."general/form.php" ; 
 			break;

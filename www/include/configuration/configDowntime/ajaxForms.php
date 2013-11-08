@@ -51,6 +51,8 @@
 	} else {
 		$form = "general";
 	}
+    
+    require_once "HTML/QuickForm.php";
 
 	$path = "./include/configuration/configDowntime/";
 
@@ -63,6 +65,8 @@
 	$tpl->assign("period_tab", $period_tab);
 
 	$tpl->assign("days", _("Days"));
+    $tpl->assign("hours", _("Hours"));
+    $tpl->assign("minutes", _("Minutes"));
 	$tpl->assign("seconds", _("Seconds"));
 	$tpl->assign("downtime_type", _("Downtime type"));
 	$tpl->assign("fixed", _("Fixed"));

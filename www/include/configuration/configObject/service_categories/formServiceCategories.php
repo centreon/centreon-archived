@@ -211,6 +211,7 @@
 	$form->addRule('sc_name', _("Name is already in use"), 'existName');
         
         $form->addRule('sc_severity_level', _("Must be a number"), 'numeric');
+        $form->addFormRule('checkSeverity');
         
 	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 

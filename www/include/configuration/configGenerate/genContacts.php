@@ -79,7 +79,7 @@
 			$DBRESULT2 = $pearDB->query("SELECT cg.cg_name, cg.cg_id FROM contactgroup_contact_relation ccr, contactgroup cg WHERE ccr.contact_contact_id = '".$contact["contact_id"]."' AND ccr.contactgroup_cg_id = cg.cg_id ORDER BY `cg_name`");
 			while ($contactGroup = $DBRESULT2->fetchRow())	{
 				if (isset($gbArr[1][$contactGroup["cg_id"]]))
-					$strTemp != NULL ? $strTemp .= ", ".$contactGroup["cg_name"] : $strTemp = $contactGroup["cg_name"];
+					$strTemp != NULL ? $strTemp .= ", ".str_replace(" ", "_", $contactGroup["cg_name"]) : $strTemp = str_replace(" ", "_", $contactGroup["cg_name"]);
 			}
 			$DBRESULT2->free();
 			if ($strTemp)

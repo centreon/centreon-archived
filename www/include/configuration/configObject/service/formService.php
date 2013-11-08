@@ -254,7 +254,9 @@
                             FROM service_categories sc, service_categories_relation scr
                             WHERE scr.service_service_id = " . $pearDB->escape($service_id). "
                             AND scr.sc_id = sc.sc_id
-                            AND sc.level IS NOT NULL");
+                            AND sc.level IS NOT NULL
+                            ORDER BY sc.level ASC
+                            LIMIT 1");
                 if ($res->numRows()) {
                     $cr = $res->fetchRow();
                     $service['criticality_id'] = $cr['sc_id'];
@@ -449,6 +451,16 @@
                     'size' => 25
                 )
                 );
+        $cloneSetMacro[] = $form->addElement(
+                'checkbox',
+                'macroPassword[#index#]',
+                _('Password'),
+                null,
+                array(
+                    'id' => 'macroPassword_#index#',
+                    'onClick' => 'javascript:change_macro_input_type(this, false)'
+                )
+        );
         
 	##
 	## Notification informations
@@ -918,7 +930,10 @@
 	$tpl->assign("sort3", _("Data Processing"));
 	$tpl->assign("sort4", _("Service Extended Info"));
 	$tpl->assign("sort5", _("Macros"));
-	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
+	$tpl->assign('javascript', '
+            <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+        ');
 	$tpl->assign('time_unit', " * ".$oreon->optGen["interval_length"]." "._("seconds"));
 	$tpl->assign("p", $p);
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
@@ -990,6 +1005,7 @@
 		$tpl->display("formService.ihtml");
 ?>
 <script type="text/javascript">
-	showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
+    setTimeout('transformForm()', 200);
+    showLogo('esi_icon_image_img', document.getElementById('esi_icon_image').value);
 </script>
 <?php } ?>

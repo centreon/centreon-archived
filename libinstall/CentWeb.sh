@@ -417,6 +417,71 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 	$CENTREON_BINDIR/centFillTrapDB >> $LOG_FILE 2>&1
 check_result $? "$(gettext "Install centFillTrapDB")"
 
+## Install centreon_trap_send
+log "INFO" "$(gettext "Prepare centreon_trap_send")"
+cp $TMP_DIR/src/bin/centreon_trap_send \
+	$TMP_DIR/final/bin/centreon_trap_send >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare centreon_trap_send")"
+
+log "INFO" "$(gettext "Install centreon_trap_send")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centreon_trap_send \
+	$CENTREON_BINDIR/centreon_trap_send >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install centreon_trap_send")"
+
+## Install centreon_check_perfdata
+log "INFO" "$(gettext "Prepare centreon_check_perfdata")"
+cp $TMP_DIR/src/bin/centreon_check_perfdata \
+	$TMP_DIR/final/bin/centreon_check_perfdata >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare centreon_check_perfdata")"
+
+log "INFO" "$(gettext "Install centreon_check_perfdata")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centreon_check_perfdata \
+	$CENTREON_BINDIR/centreon_check_perfdata >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install centreon_check_perfdata")"
+
+## Install centreonSyncPlugins
+log "INFO" "$(gettext "Prepare centreonSyncPlugins")"
+cp $TMP_DIR/src/bin/centreonSyncPlugins \
+	$TMP_DIR/final/bin/centreonSyncPlugins >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare centreonSyncPlugins")"
+
+log "INFO" "$(gettext "Install centreonSyncPlugins")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centreonSyncPlugins \
+	$CENTREON_BINDIR/centreonSyncPlugins >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install centreonSyncPlugins")"
+
+## Install centreonSyncArchives
+log "INFO" "$(gettext "Prepare centreonSyncArchives")"
+cp $TMP_DIR/src/bin/centreonSyncArchives \
+	$TMP_DIR/final/bin/centreonSyncArchives >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare centreonSyncArchives")"
+
+log "INFO" "$(gettext "Install centreonSyncArchives")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/centreonSyncArchives \
+	$CENTREON_BINDIR/centreonSyncArchives >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install centreonSyncArchives")"
+
+## Install generateSqlLite
+log "INFO" "$(gettext "Prepare generateSqlLite")"
+cp $TMP_DIR/src/bin/generateSqlLite \
+	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
+check_result $? "$(gettext "Prepare generateSqlLite")"
+
+log "INFO" "$(gettext "Install generateSqlLite")"
+$INSTALL_DIR/cinstall $cinstall_opts \
+	-m 755 \
+	$TMP_DIR/final/bin/generateSqlLite \
+	$CENTREON_BINDIR/generateSqlLite >> $LOG_FILE 2>&1
+check_result $? "$(gettext "Install generateSqlLite")"
+
 ## Install binaries for check indexes
 log "INFO" "$(gettext "Prepare export-mysql-indexes")"
 cp $TMP_DIR/src/bin/export-mysql-indexes \

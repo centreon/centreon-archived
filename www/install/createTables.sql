@@ -418,6 +418,7 @@ CREATE TABLE `cfg_centreonbroker` (
   `config_name` varchar(100) NOT NULL,
   `config_filename` varchar(255) NOT NULL,
   `config_write_timestamp` enum('0','1') DEFAULT '1',
+  `config_write_thread_id` enum('0','1') DEFAULT '1',
   `config_activate` enum('0','1') DEFAULT '0',
   `ns_nagios_server` int(11) NOT NULL,
   `event_queue_max_size` int(11) DEFAULT '50000',
@@ -1778,6 +1779,8 @@ CREATE TABLE `nagios_server` (
   `ssh_private_key` varchar(255) DEFAULT NULL,
   `init_script_snmptt` varchar(255) DEFAULT NULL,
   `snmp_trapd_path_conf` varchar(255) DEFAULT NULL,
+  `engine_name` varchar(255) DEFAULT NULL,
+  `engine_version` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1811,6 +1814,7 @@ CREATE TABLE `on_demand_macro_host` (
   `host_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `host_macro_name` varchar(255) NOT NULL,
   `host_macro_value` varchar(255) NOT NULL,
+  `is_password` tinyint(2) DEFAULT NULL,
   `host_host_id` int(11) NOT NULL,
   PRIMARY KEY (`host_macro_id`),
   KEY `host_host_id` (`host_host_id`),
@@ -1823,6 +1827,7 @@ CREATE TABLE `on_demand_macro_service` (
   `svc_macro_id` int(11) NOT NULL AUTO_INCREMENT,
   `svc_macro_name` varchar(255) NOT NULL,
   `svc_macro_value` varchar(255) NOT NULL,
+  `is_password` tinyint(2) DEFAULT NULL,
   `svc_svc_id` int(11) NOT NULL,
   PRIMARY KEY (`svc_macro_id`),
   KEY `svc_svc_id` (`svc_svc_id`),
@@ -1835,6 +1840,18 @@ CREATE TABLE `options` (
   `key` varchar(255) DEFAULT NULL,
   `value` varchar(255) DEFAULT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `poller_command_relations` (
+  `poller_id` int(11) NOT NULL,
+  `command_id` int(11) NOT NULL,
+  `command_order` tinyint (3) DEFAULT NULL,
+  KEY `poller_id` (`poller_id`),
+  KEY `command_id` (`command_id`),
+  CONSTRAINT `poller_command_relations_fk_1` FOREIGN KEY (`poller_id`) REFERENCES `nagios_server` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `poller_command_relations_fk_2` FOREIGN KEY (`command_id`) REFERENCES `command` (`command_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -2082,10 +2099,12 @@ CREATE TABLE `traps` (
   `traps_log` enum('0','1') DEFAULT '0',
   `traps_routing_mode` enum('0','1') DEFAULT '0',
   `traps_routing_value` varchar(255) DEFAULT NULL,
+  `traps_exec_method` enum('0', '1') DEFAULT '0',
   `traps_comments` text,
   UNIQUE KEY `traps_name` (`traps_name`,`traps_oid`),
   KEY `traps_id` (`traps_id`),
   KEY `traps_ibfk_1` (`manufacturer_id`),
+  KEY `traps_ibfk_2` (`severity_id`),
   CONSTRAINT `traps_ibfk_1` FOREIGN KEY (`manufacturer_id`) REFERENCES `traps_vendor` (`id`) ON DELETE CASCADE,
   CONSTRAINT `traps_ibfk_2` FOREIGN KEY (`severity_id`) REFERENCES `service_categories` (`sc_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

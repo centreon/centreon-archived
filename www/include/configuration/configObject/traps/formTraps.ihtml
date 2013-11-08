@@ -109,6 +109,10 @@
                         <td class="FormRowField"><img class="helpTooltip" name="traps_exec_interval_type">&nbsp;{$form.traps_exec_interval_type.label}</td>
                         <td class="FormRowValue">{$form.traps_exec_interval_type.html}</td>
                     </tr>
+                    <tr class="list_one">
+                        <td class="FormRowField"><img class="helpTooltip" name="traps_exec_method">&nbsp;{$form.traps_exec_method.label}</td>
+                        <td class="FormRowValue">{$form.traps_exec_method.html}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>

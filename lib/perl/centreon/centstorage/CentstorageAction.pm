@@ -176,6 +176,7 @@ sub delete_rrd_file {
 
 sub purge_mysql_and_rrd {
     my $self = shift;
+    my $pipe_write = $_[0];
     my ($status, $stmt, $rows, $data);
     my %cache_index_data = ();
     my %cache_services = ();
@@ -212,7 +213,7 @@ sub purge_mysql_and_rrd {
         $self->{logger}->writeLogError("Can't opendir " . $self->{"rrd_status_path"} . ": $!");
     }
     
-    ($status, $stmt) = $self->{dbcentstorage}->query("SELECT host_id, service_id, id FROM index_data");
+    ($status, $stmt) = $self->{dbcentstorage}->query("SELECT host_id, service_id, id, host_name, service_description FROM index_data");
     return -1 if ($status);
     $rows = [];
     while ($data = (shift(@$rows) ||
@@ -226,6 +227,8 @@ sub purge_mysql_and_rrd {
                 $self->delete_rrd_file($self->{"rrd_metrics_path"}, $data2->{metric_id});
             }
             $self->{dbcentstorage}->query("DELETE FROM index_data WHERE id = '" . $$data[2] . "'");
+            print $pipe_write "DELETECLEAN\t" . $$data[3] . "\t" . $$data[4] . "\n";
+            
             $self->{logger}->writeLogInfo("Delete MySQL metrics " . $$data[0] . "/" . $$data[1]);
             $self->delete_rrd_file($self->{rrd_status_path}, $$data[2]);
         }
@@ -281,12 +284,13 @@ sub get_centstorage_information {
 
 sub check_purge {
     my $self = shift;
+    my $pipe_write = $_[0];
 
     if (time() < ($self->{last_purge_time} + $self->{purge_delay})) {
         return ;
     }
 
-    $self->purge_mysql_and_rrd();
+    $self->purge_mysql_and_rrd($pipe_write);
     $self->{last_purge_time} = time();
 }
 
@@ -326,7 +330,7 @@ sub main {
         } else {
             $self->check_rebuild($pipe_write);
             $self->check_deleted($pipe_write);
-            $self->check_purge();
+            $self->check_purge($pipe_write);
         }
         
         if ($self->{reload} == 0) {

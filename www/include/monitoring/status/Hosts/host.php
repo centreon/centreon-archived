@@ -161,7 +161,7 @@
 		foreach($authorized_actions as $action_name) {
 			if($action_name == "host_acknowledgement")
 				$action_list[72] = _("Hosts : Acknowledge");
-			if($action_name == "host_acknowledgement")
+			if($action_name == "host_disacknowledgement")
 				$action_list[73] = _("Hosts : Disacknowledge");
 			if($action_name == "host_notifications")
 				$action_list[82] = _("Hosts : Enable Notification");
@@ -228,9 +228,9 @@
         $crits = $criticality->getList();
         $critArray = array(0 => "");
         foreach($crits as $critId => $crit) {
-            $critArray[$critId] = $crit['name']. " ({$crit['level']})";
+            $critArray[$critId] = $crit['hc_name']. " ({$crit['level']})";
         }
-        $form->addElement('select', 'criticality', _('Criticality'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
+        $form->addElement('select', 'criticality', _('Severity'), $critArray, array('id' => 'critFilter', 'onChange' => "filterCrit(this.value);"));
         $form->setDefaults(array('criticality' => isset($_SESSION['criticality_id']) ? $_SESSION['criticality_id'] : "0"));
 
 	$tpl->assign('limit', $limit);

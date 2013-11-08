@@ -31,15 +31,15 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
- 	if (!isset($centreon))
-		exit;
+if (!isset($centreon)) {
+    exit;
+}
 
-	?><div>
+require_once("./class/centreonData.class.php");
+
+?><div>
 		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
 			<tr><td id="footerline1"></td></tr>
 			<tr><td id="footerline2"></td></tr>
@@ -47,13 +47,20 @@
 		<div id="footer">
 			<table cellpadding='0' cellspacing='0' width='100%' border='0'>
 				<tr>
-					<td align='center' class='copyRight'><a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | Copyright &copy; 2004-2013 <a href="http://www.merethis.com">Merethis</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?></td>
-				</tr>
+					<td align='center' class='copyRight'>
+                        <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
+                        <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
+                        Copyright &copy; 2004-2013 <a href="http://www.merethis.com">Merethis</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+                        <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
+                        | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a></td>
+                        <?php } ?>
+                </tr>
 			</table>
 		</div>
 		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer'); xhr = new XMLHttpRequest(); xhr.open('GET','./menu/userMenuPreferences.php?uid=<?php echo $centreon->user->user_id; ?>&div=footer', true);xhr.send(null);" style="position:absolute;left:5px;" title="<?php echo _("Hide Footer"); ?>" />
 	</div>
 <?php
+
 if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 ?>
 	<script type="text/javascript">
@@ -83,16 +90,14 @@ jQuery(function() {
 /**
  * Init whole page
  */
-function initWholePage()
-{
+function initWholePage() {
 	setQuickSearchPosition();
 }
 
 /**
  * set quick search position
  */
-function setQuickSearchPosition()
-{
+function setQuickSearchPosition() {
     if ($('QuickSearch')) {
         if ($('header').visible()) {
             $('QuickSearch').setStyle({ top: '86px' });
@@ -109,8 +114,10 @@ function setQuickSearchPosition()
 </html>
 <?php
 
-	if (isset($pearDB) && is_object($pearDB))
-		$pearDB->disconnect();
-	if (isset($pearDBO) && is_object($pearDBO))
-		$pearDBO->disconnect();
+if (isset($pearDB) && is_object($pearDB)) {
+    $pearDB->disconnect();
+}
+if (isset($pearDBO) && is_object($pearDBO)) {
+    $pearDBO->disconnect();
+}
 ?>

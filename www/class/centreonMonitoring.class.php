@@ -385,6 +385,4 @@ class CentreonMonitoring {
 		$DBRESULT->free();
 		return $tab;
 	}
-
 }
-?>

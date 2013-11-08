@@ -112,7 +112,9 @@
                             FROM hostcategories hc, hostcategories_relation hcr
                             WHERE hcr.host_host_id = " . $pearDB->escape($host_id). "
                             AND hcr.hostcategories_hc_id = hc.hc_id
-                            AND hc.level IS NOT NULL");
+                            AND hc.level IS NOT NULL
+                            ORDER BY hc.level ASC
+                            LIMIT 1");
                         if ($res->numRows()) {
                             $cr = $res->fetchRow();
                             $host['criticality_id'] = $cr['hc_id'];
@@ -330,6 +332,16 @@
                     'size' => 25
                 )
                 );
+        $cloneSetMacro[] = $form->addElement(
+                'checkbox',
+                'macroPassword[#index#]',
+                _('Password'),
+                null,
+                array(
+                    'id' => 'macroPassword_#index#',
+                    'onClick' => 'javascript:change_macro_input_type(this, false)'
+                )
+        );
         
         $cloneSetTemplate = array();
         $cloneSetTemplate[] = $form->addElement(
@@ -735,7 +747,10 @@
 							init();
 							initAutoComplete('Form','city_name','sub');
 							});</script>");
-	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
+	$tpl->assign('javascript', '
+            <script type="text/javascript" src="./include/common/javascript/showLogo.js"></script>
+            <script type="text/javascript" src="./include/common/javascript/centreon/macroPasswordField.js"></script>
+        ');
 	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 
 	# prepare help texts

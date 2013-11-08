@@ -76,7 +76,9 @@ class CentreonCriticality {
         if (!isset($data[$critId])) {
             $sql = "SELECT hc_id, hc_name, level, icon_id, hc_comment
                     FROM hostcategories 
-                    WHERE level IS NOT NULL";            
+                    WHERE level IS NOT NULL
+                    ORDER BY level ASC
+                    LIMIT 1";
             $res = $this->db->query($sql);
             while ($row = $res->fetchRow()) {
                 if (!isset($data[$row['hc_id']])) {
@@ -103,7 +105,9 @@ class CentreonCriticality {
         if (!isset($data[$critId])) {
             $sql = "SELECT sc_id, sc_name, level, icon_id, sc_description
                     FROM service_categories 
-                    WHERE level IS NOT NULL";            
+                    WHERE level IS NOT NULL
+                    ORDER BY level ASC
+                    LIMIT 1";
             $res = $this->db->query($sql);
             while ($row = $res->fetchRow()) {
                 if (!isset($data[$row['sc_id']])) {

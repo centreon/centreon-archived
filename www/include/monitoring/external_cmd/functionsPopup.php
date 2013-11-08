@@ -181,6 +181,30 @@
 			isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
+            isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
+            
+            if ($duration > 0)
+            {
+                switch ($duration_scale)
+                {
+                    default:
+                    case 's':
+                        $duration = $duration;
+                        break;
+
+                    case 'm':
+                        $duration = $duration * 60;
+                        break;
+
+                    case 'h':
+                        $duration = $duration * 60 * 60;
+                        break;
+
+                    case 'd':
+                        $duration = $duration * 60 * 60 * 24;
+                        break;
+                }
+            }
 
 			$res = preg_split("/ /", $start);
 			if (count($res) != 2) {
@@ -252,7 +276,31 @@
 			isset($_GET['comment']) && $_GET['comment'] ? $comment = str_replace('\'', ' ', $_GET["comment"]) : $comment = "";
 			isset($_GET['fixed']) && $_GET['fixed'] == "true" ? $fixed = 1 : $fixed = 0;
 			isset($_GET['duration']) && $_GET['duration'] && is_numeric($_GET['duration']) ? $duration = $_GET['duration'] : $duration = 0;
+            isset($_GET['duration_scale']) && $_GET['duration_scale'] ? $duration_scale = $_GET['duration_scale'] : $duration_scale = "s";
+            
+            if ($duration > 0)
+            {
+                switch ($duration_scale)
+                {
+                    default:
+                    case 's':
+                        $duration = $duration;
+                        break;
 
+                    case 'm':
+                        $duration = $duration * 60;
+                        break;
+
+                    case 'h':
+                        $duration = $duration * 60 * 60;
+                        break;
+
+                    case 'd':
+                        $duration = $duration * 60 * 60 * 24;
+                        break;
+                }
+            }
+            
 			$res = preg_split("/ /", $start);
         	if (count($res) != 2) {
 				throw new Exception('Start date format is not valid');

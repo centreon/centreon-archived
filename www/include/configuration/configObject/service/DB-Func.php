@@ -31,14 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	if (!isset($oreon) && !isset($centreon)) {
-		exit ();
-	}
+if (!isset($oreon) && !isset($centreon)) {
+    exit ();
+ }
 
 	/**
 	 * For ACL
@@ -595,7 +592,7 @@ function divideHostsToHost($service_id) {
 								$macName = str_replace("\$", "", $sv["svc_macro_name"]);
 							    $macVal = $sv['svc_macro_value'];
 								$mTpRq2 = "INSERT INTO `on_demand_macro_service` (`svc_svc_id`, `svc_macro_name`, `svc_macro_value`) VALUES " .
-											"('".$maxId["MAX(service_id)"]."', '\$".$macName."\$', '". $pearDB->escape($macVal) ."')";
+											"('".$maxId["MAX(service_id)"]."', '\$".$pearDB->escape($macName)."\$', '". $pearDB->escape($macVal) ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 								$fields["_".strtoupper($macName)."_"] = $sv['svc_macro_value'];
 							}
@@ -610,18 +607,6 @@ function divideHostsToHost($service_id) {
 											"('".$maxId["MAX(service_id)"]."', '". $sv['sc_id'] ."')";
 						 		$DBRESULT4 = $pearDB->query($mTpRq2);
 							}
-
-                            /*
-                             * Criticality
-                             */
-                            $sql = "SELECT criticality_id
-                                        FROM criticality_resource_relations
-                                        WHERE service_id = ".$pearDB->escape($key);
-                            $res = $pearDB->query($sql);
-                            if ($res->numRows()) {
-                                $cr = $res->fetchRow();
-                                setServiceCriticality($maxId['MAX(service_id)'], $cr['criticality_id']);
-                            }
 
 							/*
 							 *  get svc desc
@@ -902,7 +887,8 @@ function divideHostsToHost($service_id) {
                     $service->insertMacro(
                             $service_id["MAX(service_id)"],
                             $_REQUEST['macroInput'],
-                            $_REQUEST['macroValue']
+                            $_REQUEST['macroValue'],
+                            $_REQUEST['macroPassword']
                             );
                 }
 
@@ -1213,19 +1199,18 @@ function divideHostsToHost($service_id) {
 		$DBRESULT = $pearDB->query($rq);
                 
 		/*
-		 *  Update demand macros
+		 * Update demand macros
 		 */
 		if (isset($_REQUEST['macroInput']) && 
-                        isset($_REQUEST['macroValue'])) {
-                    $service->insertMacro(
-                            $service_id,
-                            $_REQUEST['macroInput'],
-                            $_REQUEST['macroValue']
-                            );
-                }
-                if (isset($ret['criticality_id'])) {
-                    setServiceCriticality($service_id, $ret['criticality_id']);
-                }
+            isset($_REQUEST['macroValue'])) {
+            $service->insertMacro($service_id, $_REQUEST['macroInput'], $_REQUEST['macroValue'], $_REQUEST['macroPassword']);
+        } else {
+            $pearDB->query("DELETE FROM on_demand_macro_service WHERE svc_svc_id = '".CentreonDB::escape($service_id)."'");
+        }
+        
+        if (isset($ret['criticality_id'])) {
+            setServiceCriticality($service_id, $ret['criticality_id']);
+        }
 
 		$fields["service_template_model_stm_id"] = $ret["service_template_model_stm_id"];
 		$fields["command_command_id"] = $ret["command_command_id"];
@@ -1499,7 +1484,8 @@ function divideHostsToHost($service_id) {
                     $service->insertMacro(
                             $service_id,
                             $_REQUEST['macroInput'],
-                            $_REQUEST['macroValue']
+                            $_REQUEST['macroValue'],
+                            $_REQUEST['macroPassword']
                             );
                 }
 

@@ -1,3 +1,96 @@
+## Centreon 2.4.5
+
+Enhancements
+============
+#3616: Centreon Broker : new fields ("warn_low", "warn_threshold_mode", "crit_low", "crit_threshold_mode") added in metrics table (centreon_storage database)
+#3765: Centreon Broker configuration : new option "log_timestamp" added
+#3767: Centreon Broker configuration : new option "write_metrics" added
+#4203: Centreon Broker : new fields ("actual_start_time", "actual_end_time") added in downtimes table (centreon_storage database)
+#4440: Centreon Broker configuration : new option "store_in_data_bin" added
+#4579: Improve connector form (for Centreon Engine 1.3+)
+#4586: Centreon Broker configuration : new option "insert_in_index_data" added
+#4651: Centreon Broker configuration : new option "log_thread_id" added
+
+Bug fixes
+=========
+#4620: Service groups are displayed twice in "Service Details"
+#4652: Fix issues in connector form
+#4658: Problem when adding new poller
+
+
+## Centreon 2.4.4
+
+Enhancements
+============
+#3782: Handle ABSOLUTE and DERIVE graphs
+#4402: Contact list label inconsistency
+#4500: Possibility to copy and paste generated password
+#4506: Snmp configuration files get overwritten
+#4549: Possibility to choose display order on monitoring consoles
+#4568: Enhances generation time of configuration files
+
+Bug fixes
+=========
+#4319: Malformed long output on host/service detail pages - /w Centreon Broker
+#4454: Services are not created after import of configuration
+#4483: RRD status graphs not displayed in detail page
+#4485: Fixes LDAP connection and import issues
+#4486: Filter problem with hostgroup and centreon-broker
+#4487: import-mysql-indexes : Failed to drop index 'PRIMARY' for table 'timeperiod_exclude_relations
+#4488: Autologin in main page does not work
+#4489: init.d scripts not compatible with SLES
+#4494: Missing tooltip in «Configuration > Centreon > Pollers»
+#4496: Curve's «Legend Name» cannot contain «:»
+#4497: Status graph, not resized with default template
+#4504: centcore blocked due to blocking named pipes
+#4522: Special chars are converted to html entities in check commands
+#4524: Plugin outputs not displayed properly
+#4533: setgid flag for the filesGeneration directory
+#4536: Rename default Swap template name
+#4537: "Display all services for this host" does not working
+#4542: MetaService not visible with a non admin user
+#4544: Fixe default configuration on main.cfg
+#4555: [monitoring] Ack in host details page + Blank page
+#4570: MetaService graphs not displayed when negative values are involved
+#4577: Pending state labels not shown in Home > Global health for hosts
+
+
+## Centreon 2.4.3
+
+Enhancements
+============
+#4389: Set max value for CPU Graph template
+#4406: Centreon broker statistics.
+#4472: Display the link between resource macro and poller
+
+Bug fixes
+=========
+#4120: IsRunning NO
+#4340: Move configuration files errors (images)
+#4343: Default SNMP Traps not submitted by default since 2.4.0
+#4356: Services associated with service categories
+#4364: Special characters and htmlentities function
+#4368: Centreon generate check_period with value _GMT
+#4384: [Virtual metric] issue with metric name
+#4391: Load Nagios Configuration produces unusable services.cfg
+#4400: Issue with hostgroup filter in all services
+#4409: Useless field into administration, monitoring options.
+#4412: Default configuration.
+#4413: [move] File config move
+#4417: service with multiple servigroups linked to different escalations : escalations not correctly generated
+#4426: [upgrade] some issue in SQL upgrade
+#4431: [dashboard] Quick search for host
+#4452: Possibility to execute scripts through some form input fields
+#4459: Blank page for the statistics of Centreon Broker if the file of statistics is not configured
+#4460: configuration > recurrent downtime - display issues
+#4462: [ldap][contactgroup] Form listing and sync when you remove user from ldap group
+#4464: No translation for icons in "monitoring -> services"
+#4465: Missing tooltips help in "Configuration -> Users -> Contacts / Users -> user_definition"
+#4466: No translation in graphs for Daily/Weekly/Monthly/Yearly
+#4467: No translation for icons in host details
+#4468: No translation for hosts and services status colors configuration
+
+
 ## Centreon 2.4.2
 
 Enhancements
