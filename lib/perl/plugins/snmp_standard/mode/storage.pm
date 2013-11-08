@@ -1,3 +1,38 @@
+################################################################################
+# Copyright 2005-2013 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+# 
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# Authors : Quentin Garnier <qgarnier@merethis.com>
+#
+####################################################################################
+
 package snmp_standard::mode::storage;
 
 use base qw(centreon::plugins::mode);
@@ -85,7 +120,7 @@ sub run {
     my $oid_hrStorageNetworkDisk = '.1.3.6.1.2.1.25.2.1.10';
 
     $self->{snmp}->load(oids => [$oid_hrStorageAllocationUnits, $oid_hrStorageSize, $oid_hrStorageUsed], instances => $self->{storage_id_selected});
-    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
+    my $result = $self->{snmp}->get_leef();
 
     if (!defined($self->{option_results}->{storage}) || defined($self->{option_results}->{use_regexp})) {
         $self->{output}->output_add(severity => 'OK',
@@ -167,7 +202,7 @@ sub reload_cache {
 
     $datas->{oid_filter} = $self->{option_results}->{oid_filter};
     $datas->{oid_display} = $self->{option_results}->{oid_display};
-    my ($exit, $result) = $self->{snmp}->get_table(oid => $oids_hrStorageTable{$self->{option_results}->{oid_filter}});
+    my $result = $self->{snmp}->get_table(oid => $oids_hrStorageTable{$self->{option_results}->{oid_filter}});
     my $last_num = 0;
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         next if ($key !~ /\.([0-9]+)$/);
@@ -181,14 +216,14 @@ sub reload_cache {
     }
 
     if ($self->{option_results}->{oid_filter} ne $self->{option_results}->{oid_display}) {
-        ($exit, $result) = $self->{snmp}->get_table(oid => $oids_hrStorageTable{$self->{option_results}->{oid_display}});
+        $result = $self->{snmp}->get_table(oid => $oids_hrStorageTable{$self->{option_results}->{oid_display}});
         foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
             next if ($key !~ /\.([0-9]+)$/);
             $datas->{$self->{option_results}->{oid_display} . "_" . $1} = $result->{$key};
         }
     }
     
-    ($exit, $result) = $self->{snmp}->get_table(oid => $oids_hrStorageTable{hrstoragetype});
+    $result = $self->{snmp}->get_table(oid => $oids_hrStorageTable{hrstoragetype});
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         next if ($key !~ /\.([0-9]+)$/);
         $datas->{"type_" . $1} = $result->{$key};
@@ -284,7 +319,7 @@ sub disco_show {
 
     $self->manage_selection();
     $self->{snmp}->load(oids => [$oid_hrStorageAllocationUnits, $oid_hrStorageSize], instances => $self->{storage_id_selected});
-    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
+    my $result = $self->{snmp}->get_leef();
     foreach (sort @{$self->{storage_id_selected}}) {
         my $display_value = $self->get_display_value(id => $_);
         my $storage_type = $self->{statefile_cache}->get(name => "type_" . $_);

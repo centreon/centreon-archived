@@ -1,3 +1,38 @@
+################################################################################
+# Copyright 2005-2013 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+# 
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# Authors : Quentin Garnier <qgarnier@merethis.com>
+#
+####################################################################################
+
 package snmp_standard::mode::processcount;
 
 use base qw(centreon::plugins::mode);
@@ -77,7 +112,7 @@ sub run {
         }
     }
 
-    my ($exit_snmp, $result) = $self->{snmp}->get_table(oid => $oids->{$oid2check_filter});
+    my $result = $self->{snmp}->get_table(oid => $oids->{$oid2check_filter});
     my $instances_keep = {};
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         my $val = $self->{option_results}->{'process_' . $oid2check_filter};
@@ -91,7 +126,7 @@ sub run {
 
     if (scalar(keys %$instances_keep) > 0) {
         $self->{snmp}->load(oids => $more_oids, instances => [keys %$instances_keep ]);
-        ($exit_snmp, my $result2) = $self->{snmp}->get_leef();
+        my $result2 = $self->{snmp}->get_leef();
     
         foreach my $key (keys %$instances_keep) {
             # 1 = running, 2 = runnable, 3 = notRunnable, 4 => invalid

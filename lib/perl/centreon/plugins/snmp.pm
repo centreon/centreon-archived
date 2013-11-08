@@ -1,5 +1,37 @@
-
-# use net-snmp api.
+################################################################################
+# Copyright 2005-2013 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+# 
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# Authors : Quentin Garnier <qgarnier@merethis.com>
+#
+####################################################################################
 
 package centreon::plugins::snmp;
 
@@ -57,6 +89,9 @@ sub new {
     $self->{RetryNoSuch} = 1;
     # Dont try to translate OID (we keep value)
     $self->{UseNumeric} = 1;
+    
+    $self->{error_msg} = undef;
+    $self->{error_status} = 0;
     
     return $self;
 }
@@ -122,11 +157,13 @@ sub get_leef {
     
     my ($dont_quit) = (defined($options{dont_quit}) && $options{dont_quit} == 1) ? 1 : 0;
     my ($nothing_quit) = (defined($options{nothing_quit}) && $options{nothing_quit} == 1) ? 1 : 0;
+    $self->set_error();
     
     if (!defined($options{oids})) {
         if ($#{$self->{oids_loaded}} < 0) {
             if ($dont_quit == 1) {
-                return (-1, undef, "Need to specify OIDs");
+                $self->set_error(error_status => -1, error_msg => "Need to specify OIDs");
+                return undef;
             }
             $self->{output}->add_option_msg(short_msg => 'Need to specify OIDs');
             $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
@@ -201,7 +238,8 @@ sub get_leef {
             $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
         }
         
-        return (-1, undef, $msg);
+        $self->set_error(error_status => -1, error_msg => $msg);
+        return undef;
     }
     
     my $total = 0;
@@ -224,7 +262,7 @@ sub get_leef {
         $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
     }
     
-    return (0, $results);
+    return $results;
 }
 
 sub get_table {
@@ -236,6 +274,7 @@ sub get_table {
     
     my ($dont_quit) = (defined($options{dont_quit}) && $options{dont_quit} == 1) ? 1 : 0;
     my ($nothing_quit) = (defined($options{nothing_quit}) && $options{nothing_quit} == 1) ? 1 : 0;
+    $self->set_error();
     
     if (defined($options{start})) {
         $options{start} = $self->clean_oid($options{start});
@@ -257,7 +296,8 @@ sub get_table {
     # Transform asking
     if ($options{oid} !~ /(.*)\.(\d+)([\.\s]*)$/) {
         if ($dont_quit == 1) {
-            return (-1, undef, "Method 'get_table': Wrong OID '" . $options{oid} . "'.");
+            $self->set_error(error_status => -1, error_msg => "Method 'get_table': Wrong OID '" . $options{oid} . "'.");
+            return undef;
         }
         $self->{output}->add_option_msg(short_msg => "Method 'get_table': Wrong OID '" . $options{oid} . "'.");
         $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
@@ -300,8 +340,9 @@ sub get_table {
                 $self->{output}->add_option_msg(short_msg => $msg);
                 $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
             }
-        
-            return (-1, undef, $msg);
+            
+            $self->set_error(error_status => -1, error_msg => $msg);
+            return undef;
         }
         
         # Manage
@@ -330,7 +371,7 @@ sub get_table {
         $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
     }
     
-    return (0, $results);
+    return $results;
 }
 
 sub is_snmpv1 {
@@ -456,6 +497,27 @@ sub check_options {
             $self->{snmp_params}->{PrivProto} = $options{option_results}->{snmp_priv_protocol};
         }
     }
+}
+
+sub set_error {
+    my ($self, %options) = @_;
+    # $options{error_msg} = string error
+    # $options{error_status} = integer status
+    
+    $self->{error_status} = defined($options{error_status}) ? $options{error_status} : 0;
+    $self->{error_msg} = defined($options{error_msg}) ? $options{error_msg} : undef;
+}
+
+sub error_status {
+     my ($self) = @_;
+    
+    return $self->{error_status};
+}
+
+sub error {
+    my ($self) = @_;
+    
+    return $self->{error_msg};
 }
 
 sub get_hostname {

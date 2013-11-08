@@ -1,3 +1,38 @@
+################################################################################
+# Copyright 2005-2013 MERETHIS
+# Centreon is developped by : Julien Mathis and Romain Le Merlus under
+# GPL Licence 2.0.
+# 
+# This program is free software; you can redistribute it and/or modify it under 
+# the terms of the GNU General Public License as published by the Free Software 
+# Foundation ; either version 2 of the License.
+# 
+# This program is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A 
+# PARTICULAR PURPOSE. See the GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License along with 
+# this program; if not, see <http://www.gnu.org/licenses>.
+# 
+# Linking this program statically or dynamically with other modules is making a 
+# combined work based on this program. Thus, the terms and conditions of the GNU 
+# General Public License cover the whole combination.
+# 
+# As a special exception, the copyright holders of this program give MERETHIS 
+# permission to link this program with independent modules to produce an executable, 
+# regardless of the license terms of these independent modules, and to copy and 
+# distribute the resulting executable under terms of MERETHIS choice, provided that 
+# MERETHIS also meet, for each linked independent module, the terms  and conditions 
+# of the license of that module. An independent module is a module which is not 
+# derived from this program. If you modify this program, you may extend this 
+# exception to your version of the program, but you are not obliged to do so. If you
+# do not wish to do so, delete this exception statement from your version.
+# 
+# For more information : contact@centreon.com
+# Authors : Quentin Garnier <qgarnier@merethis.com>
+#
+####################################################################################
+
 package snmp_standard::mode::traffic;
 
 use base qw(centreon::plugins::mode);
@@ -33,8 +68,8 @@ sub new {
                                   "skip"                    => { name => 'skip' },
                                   "regexp"                  => { name => 'use_regexp' },
                                   "regexp-isensitive"       => { name => 'use_regexpi' },
-                                  "oid-filter:s"            => { name => 'oid_filter', default => 'ifDesc'},
-                                  "oid-display:s"           => { name => 'oid_display', default => 'ifDesc'},
+                                  "oid-filter:s"            => { name => 'oid_filter', default => 'ifname'},
+                                  "oid-display:s"           => { name => 'oid_display', default => 'ifname'},
                                   "display-transform-src:s" => { name => 'display_transform_src' },
                                   "display-transform-dst:s" => { name => 'display_transform_dst' },
                                   "show-cache"              => { name => 'show_cache' },
@@ -115,7 +150,7 @@ sub run {
         }
     }
 
-    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
+    my $result = $self->{snmp}->get_leef();
     $new_datas->{last_timestamp} = time();
     my $old_timestamp;
     if (!defined($self->{option_results}->{interface}) || defined($self->{option_results}->{use_regexp})) {
@@ -253,7 +288,7 @@ sub reload_cache {
 
     $datas->{oid_filter} = $self->{option_results}->{oid_filter};
     $datas->{oid_display} = $self->{option_results}->{oid_display};
-    my ($exit, $result) = $self->{snmp}->get_table(oid => $oids_iftable{$self->{option_results}->{oid_filter}});
+    my $result = $self->{snmp}->get_table(oid => $oids_iftable{$self->{option_results}->{oid_filter}});
     my $last_num = 0;
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         next if ($key !~ /\.([0-9]+)$/);
@@ -267,7 +302,7 @@ sub reload_cache {
     }
 
     if ($self->{option_results}->{oid_filter} ne $self->{option_results}->{oid_display}) {
-       ($exit, $result) = $self->{snmp}->get_table(oid => $oids_iftable{$self->{option_results}->{oid_display}});
+       $result = $self->{snmp}->get_table(oid => $oids_iftable{$self->{option_results}->{oid_display}});
        foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
             next if ($key !~ /\.([0-9]+)$/);
             $datas->{$self->{option_results}->{oid_display} . "_" . $1} = $result->{$key};
@@ -350,7 +385,7 @@ sub disco_show {
 
     $self->manage_selection();
     $self->{snmp}->load(oids => [$oid_operstatus, $oid_speed32], instances => $self->{interface_id_selected});
-    my ($exit_snmp, $result) = $self->{snmp}->get_leef();
+    my $result = $self->{snmp}->get_leef();
     foreach (sort @{$self->{interface_id_selected}}) {
         my $display_value = $self->get_display_value(id => $_);
         my $interface_speed = int($result->{$oid_speed32 . "." . $_} / 1000 / 1000);
@@ -419,11 +454,11 @@ Time in seconds before reloading cache file (default: 180).
 
 =item B<--oid-filter>
 
-Choose OID used to filter interface (default: ifDesc) (values: ifDesc, ifAlias, ifName).
+Choose OID used to filter interface (default: ifName) (values: ifDesc, ifAlias, ifName).
 
 =item B<--oid-display>
 
-Choose OID used to display interface (default: ifDesc) (values: ifDesc, ifAlias, ifName).
+Choose OID used to display interface (default: ifName) (values: ifDesc, ifAlias, ifName).
 
 =item B<--display-transform-src>
 
