@@ -211,7 +211,7 @@ function insertCommand($ret = array())
     $rq = "INSERT INTO `command` (`command_name`, `command_line`, `enable_shell`, `command_example`, `command_type`, `graph_id`, `connector_id`, `command_comment`) ";
     $rq .= "VALUES ('".$pearDB->escape($ret["command_name"])."', '".$pearDB->escape($ret["command_line"]) . "', '" . $pearDB->escape($ret['enable_shell']) . "', '".$pearDB->escape($ret["command_example"])."', '".$ret["command_type"]["command_type"]."', '".$ret["graph_id"]."', ";
     $rq .= (isset($ret["connectors"]) && !empty($ret["connectors"])? "'".$ret['connectors']."'" : "NULL");
-    $rq .= ", '".$pearDB->escape($ret["command_name"])."'";
+    $rq .= ", '".$pearDB->escape($ret["command_comment"])."'";
     $rq .= ")";
     
     $DBRESULT = $pearDB->query($rq);
