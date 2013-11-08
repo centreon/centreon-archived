@@ -87,7 +87,7 @@
                 },
                 error: function(jqXHR, textStatus, errorThrown)
                 {
-                    alert('Erreur de connexion');
+                    console.log("Internal error. Check your apache logs.");
                 }
             });
         });
