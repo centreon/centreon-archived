@@ -45,7 +45,7 @@ my %conditions = (1 => ['other', 'CRITICAL'],
                   3 => ['degraded', 'WARNING'], 
                   4 => ['failed', 'CRITICAL']);
 my %present_map = (1 => 'other',
-                    2 => 'absent',
+                   2 => 'absent',
                    3 => 'present',
                    4 => 'Weird!!!', # for blades it can return 4, which is NOT spesified in MIB
 );
@@ -192,6 +192,7 @@ sub check_managers {
     if ($self->{output}->is_status(compare => 'ok', litteral => 1)) {
         return ;
     }
+    $self->{output}->output_add(long_msg => "Checking managers");
     
     my $oid_cpqRackCommonEnclosureManagerIndex = '.1.3.6.1.4.1.232.22.2.3.1.6.1.3';
     my $oid_cpqRackCommonEnclosureManagerPartNumber = '.1.3.6.1.4.1.232.22.2.3.1.6.1.6';
@@ -201,6 +202,7 @@ sub check_managers {
     my $oid_cpqRackCommonEnclosureManagerCondition = '.1.3.6.1.4.1.232.22.2.3.1.6.1.12';
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackCommonEnclosureManagerIndex);
+    return if (scalar(keys %$result) <= 0);
     
     $self->{snmp}->load(oids => [$oid_cpqRackCommonEnclosureManagerPartNumber, $oid_cpqRackCommonEnclosureManagerSparePartNumber,
                                 $oid_cpqRackCommonEnclosureManagerSerialNum, $oid_cpqRackCommonEnclosureManagerRole,
@@ -231,12 +233,13 @@ sub check_managers {
 sub check_fans {
     my ($self) = @_;
 
+    $self->{output}->output_add(long_msg => "Checking fans");
     return if ($self->check_exclude('fans'));
 
     my $oid_cpqRackCommonEnclosureHasFans = '.1.3.6.1.4.1.232.22.2.3.1.1.1.21.1';
     if (defined($map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasFans}}) && 
         $map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasFans}} =~ /^false$/i) {
-        $self->{output}->output_add(long_msg => sprintf("Skipping Fans: enclosure cannot house fans (??!!)."));
+        $self->{output}->output_add(long_msg => "Skipping Fans: enclosure cannot house fans (??!!).");
         return ;
     }
     
@@ -247,6 +250,7 @@ sub check_fans {
     my $oid_cpqRackCommonEnclosureFanCondition = '.1.3.6.1.4.1.232.22.2.3.1.3.1.11';
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackCommonEnclosureFanPresent);
+    return if (scalar(keys %$result) <= 0);
     my @get_oids = ();
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
@@ -279,12 +283,13 @@ sub check_fans {
 sub check_blades {
     my ($self) = @_;
 
+    $self->{output}->output_add(long_msg => "Checking blades");
     return if ($self->check_exclude('blades'));
 
     my $oid_cpqRackCommonEnclosureHasServerBlades = '.1.3.6.1.4.1.232.22.2.3.1.1.1.17.1';
     if (defined($map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasServerBlades}}) &&
         $map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasServerBlades}} =~ /^false$/i) {
-        $self->{output}->output_add(long_msg => sprintf("Skipping Blades: enclosure cannot house blades (??!!)."));
+        $self->{output}->output_add(long_msg => "Skipping Blades: enclosure cannot house blades (??!!).");
         return ;
     }
     
@@ -298,6 +303,7 @@ sub check_blades {
     my $oid_cpqRackServerBladeFaultDiagnosticString = '.1.3.6.1.4.1.232.22.2.4.1.1.1.24'; # v2
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackServerBladePresent);
+    return if (scalar(keys %$result) <= 0);
     my @get_oids = ();
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
@@ -348,12 +354,13 @@ sub check_blades {
 sub check_iom {
     my ($self) = @_;
 
+    $self->{output}->output_add(long_msg => "Checking network connectors");
     return if ($self->check_exclude('network'));
 
     my $oid_cpqRackCommonEnclosureHasNetConnectors = '.1.3.6.1.4.1.232.22.2.3.1.1.1.19.1';
     if (defined($map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasNetConnectors}}) &&
         $map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasNetConnectors}} =~ /^false$/i) {
-        $self->{output}->output_add(long_msg => sprintf("Skipping Network Connectors: enclosure cannot house network connectors (??!!)."));
+        $self->{output}->output_add(long_msg => "Skipping Network Connectors: enclosure cannot house network connectors (??!!).");
         return ;
     }
     
@@ -366,6 +373,7 @@ sub check_iom {
     my $oid_cpqRackNetConnectorDeviceType = '.1.3.6.1.4.1.232.22.2.6.1.1.1.17';
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackNetConnectorPresent);
+    return if (scalar(keys %$result) <= 0);
     my @get_oids = ();
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
@@ -402,12 +410,13 @@ sub check_psu {
     # We dont check 'cpqRackPowerEnclosureTable' (the overall power system status)
     # We check 'cpqRackPowerSupplyTable' (unitary)
 
+    $self->{output}->output_add(long_msg => "Checking power supplies");
     return if ($self->check_exclude('psu'));
 
     my $oid_cpqRackCommonEnclosureHasPowerSupplies = '.1.3.6.1.4.1.232.22.2.3.1.1.1.18.1';
     if (defined($map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasPowerSupplies}}) &&
         $map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasPowerSupplies}} =~ /^false$/i) {
-        $self->{output}->output_add(long_msg => sprintf("Skipping PSU: enclosure cannot house power supplies (??!!)."));
+        $self->{output}->output_add(long_msg => "Skipping PSU: enclosure cannot house power supplies (??!!).");
         return ;
     }
     
@@ -424,6 +433,7 @@ sub check_psu {
     my $oid_cpqRackPowerSupplyExhaustTemp = '.1.3.6.1.4.1.232.22.2.5.1.1.1.13';
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackPowerSupplyPresent);
+    return if (scalar(keys %$result) <= 0);
     my @get_oids = ();
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
@@ -485,12 +495,13 @@ sub check_psu {
 sub check_temperatures {
     my ($self) = @_;
 
+    $self->{output}->output_add(long_msg => "Checking temperatures");
     return if ($self->check_exclude('temperatures'));
 
     my $oid_cpqRackCommonEnclosureHasTempSensors = '.1.3.6.1.4.1.232.22.2.3.1.1.1.20.1';
     if (defined($map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasTempSensors}}) &&
         $map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasTempSensors}} =~ /^false$/i) {
-        $self->{output}->output_add(long_msg => sprintf("Skipping Temperatures: enclosure doesnt contain temperatures sensors."));
+        $self->{output}->output_add(long_msg => "Skipping Temperatures: enclosure doesnt contain temperatures sensors.");
         return ;
     }
     
@@ -503,6 +514,7 @@ sub check_temperatures {
     my $oid_cpqRackCommonEnclosureTempType = '.1.3.6.1.4.1.232.22.2.3.1.2.1.9';
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackCommonEnclosureTempSensorIndex);
+    return if (scalar(keys %$result) <= 0);
     my @get_oids = ();
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
@@ -544,12 +556,13 @@ sub check_temperatures {
 sub check_fuse {
     my ($self) = @_;
 
+    $self->{output}->output_add(long_msg => "Checking fuse");
     return if ($self->check_exclude('fuse'));
-
+    
     my $oid_cpqRackCommonEnclosureHasFuses = '.1.3.6.1.4.1.232.22.2.3.1.1.1.22.1';
     if (defined($map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasFuses}}) &&
         $map_has{$self->{global_results}->{$oid_cpqRackCommonEnclosureHasFuses}} =~ /^false$/i) {
-        $self->{output}->output_add(long_msg => sprintf("Skipping Fuse: enclosure doesnt contain fuse."));
+        $self->{output}->output_add(long_msg => "Skipping Fuse: enclosure doesnt contain fuse.");
         return ;
     }
     
@@ -560,6 +573,7 @@ sub check_fuse {
     my $oid_cpqRackCommonEnclosureFuseCondition = '.1.3.6.1.4.1.232.22.2.3.1.4.1.7';
     
     my $result = $self->{snmp}->get_table(oid => $oid_cpqRackCommonEnclosureFusePresent);
+    return if (scalar(keys %$result) <= 0);
     my @get_oids = ();
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
