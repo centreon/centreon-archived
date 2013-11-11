@@ -39,6 +39,7 @@ use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
+use centreon::plugins::misc;
 
 my %cpustatus = (
     1 => ['unknown', 'UNKNOWN'], 
@@ -81,7 +82,7 @@ my %psustatus = (
     15 => 'nvramInvalid',
     16 => 'calibrationTableInvalid',
 );
-my %fan_location = (
+my %location_map = (
     1 => "other",
     2 => "unknown",
     3 => "system",
@@ -101,6 +102,43 @@ my %fanspeed = (
     2 => "normal",
     3 => "high",
 );
+my %map_pnic_role = (
+    1 => "unknown",
+    2 => "primary",
+    3 => "secondary",
+    4 => "member",
+    5 => "txRx",
+    6 => "tx",
+    7 => "standby",
+    8 => "none",
+    255 => "notApplicable",
+);
+my %map_nic_state = (
+    1 => "unknown",
+    2 => "ok",
+    3 => "standby",
+    4 => "failed",
+);
+my %map_pnic_status = (
+    1 => "unknown",
+    2 => "ok",
+    3 => "generalFailure",
+    4 => "linkFailure",
+);
+my %map_lnic_status = (
+    1 => "unknown",
+    2 => "ok",
+    3 => "primaryFailed",
+    4 => "standbyFailed",
+    5 => "groupFailed",
+    6 => "redundancyReduced",
+    7 => "redundancyLost",
+);
+my %map_nic_duplex = (
+    1 => "unknown",
+    2 => "half",
+    3 => "full",
+);
 
 sub new {
     my ($class, %options) = @_;
@@ -113,6 +151,9 @@ sub new {
                                   "exclude"        => { name => 'exclude' },
                                 });
 
+    $self->{product_name} = undef;
+    $self->{serial} = undef;
+    $self->{romversion} = undef;
     return $self;
 }
 
@@ -130,16 +171,18 @@ sub run {
     $self->{components_psu} = 0;
     $self->{components_pc} = 0;
     $self->{components_fan} = 0;
-    
-    # In 'CPQSINFO-MIB'
-    # my $cpqSiSysSerialNum = "1.3.6.1.4.1.232.2.2.2.1.0";
-    # my $cpqSiProductName = "1.3.6.1.4.1.232.2.2.4.2.0";
-    # my $cpqSeSysRomVer = "1.3.6.1.4.1.232.1.2.6.1.0";
-    
+    $self->{components_temperature} = 0;
+    $self->{components_pnic} = 0;
+    $self->{components_lnic} = 0;
+
+    $self->get_system_information();
     $self->check_cpu();
     $self->check_psu();
     $self->check_pc();
     $self->check_fan();
+    $self->check_temperature();
+    $self->check_pnic();
+    $self->check_lnic();
     
 #    $self->{output}->output_add(severity => 'OK',
 #                                short_msg => sprintf("All %d components [%d fans, %d blades, %d network connectors, %d psu, %d temperatures, %d fuses] are ok.", 
@@ -148,6 +191,21 @@ sub run {
     
     $self->{output}->display();
     $self->{output}->exit();
+}
+
+sub get_system_information {
+    my ($self) = @_;
+    
+    # In 'CPQSINFO-MIB'
+    my $oid_cpqSiSysSerialNum = "1.3.6.1.4.1.232.2.2.2.1.0";
+    my $oid_cpqSiProductName = "1.3.6.1.4.1.232.2.2.4.2.0";
+    my $oid_cpqSeSysRomVer = "1.3.6.1.4.1.232.1.2.6.1.0";
+    
+    my $result = $self->{snmp}->get_leef(oids => [$oid_cpqSiSysSerialNum, $oid_cpqSiProductName, $oid_cpqSeSysRomVer]);
+    
+    $self->{product_name} = defined($result->{$oid_cpqSiProductName}) ? centreon::plugins::misc::trim($result->{$oid_cpqSiProductName}) : 'unknown';
+    $self->{serial} = defined($result->{$oid_cpqSiSysSerialNum}) ? centreon::plugins::misc::trim($result->{$oid_cpqSiSysSerialNum}) : 'unknown';
+    $self->{romversion} = defined($result->{$oid_cpqSeSysRomVer}) ? centreon::plugins::misc::trim($result->{$oid_cpqSeSysRomVer}) : 'unknown';
 }
 
 sub check_cpu {
@@ -186,7 +244,7 @@ sub check_cpu {
                                         short_msg => sprintf("cpu %d is %s", 
                                             $result->{$key}, ${$cpustatus{$cpu_status}}[0]));
         }
-    }    
+    }
 }
 
 sub check_psu {
@@ -213,21 +271,20 @@ sub check_psu {
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         next if ($present_map{$result->{$key}} ne 'present');
-        $key =~ /\.([0-9]+)$/;
+        # Chassis + Bay
+        $key =~ /(\d+\.\d+)$/;
         my $oid_end = $1;
         
         push @oids_end, $oid_end;
-        push @get_oids, $oid_cpqHeFltTolPowerSupplyChassis . "." . $oid_end, $oid_cpqHeFltTolPowerSupplyBay . "." . $oid_end,
+        push @get_oids,
                 $oid_cpqHeFltTolPowerSupplyCondition . "." . $oid_end, $oid_cpqHeFltTolPowerSupplyStatus . "." . $oid_end,
                 $oid_cpqHeFltTolPowerSupplyRedundant . "." . $oid_end, $oid_cpqHeFltTolPowerSupplyCapacityUsed . "." . $oid_end,
                 $oid_cpqHeFltTolPowerSupplyCapacityMaximum . "." . $oid_end, $oid_cpqHeFltTolPowerSupplyMainVoltage . "." . $oid_end,
                 $oid_cpqHeFltTolPowerSupplyRedundantPartner . "." . $oid_end;
     }
     $result = $self->{snmp}->get_leef(oids => \@get_oids);
-    my $total_watts = 0;
     foreach (@oids_end) {
-        my $psu_chassis = $result->{$oid_cpqHeFltTolPowerSupplyChassis . '.' . $_};
-        my $psu_bay = $result->{$oid_cpqHeFltTolPowerSupplyBay . '.' . $_};
+        my ($psu_chassis, $psu_bay) = split /\./;
         my $psu_condition = $result->{$oid_cpqHeFltTolPowerSupplyCondition . '.' . $_};
         my $psu_status = $result->{$oid_cpqHeFltTolPowerSupplyStatus . '.' . $_};
         my $psu_redundant = $result->{$oid_cpqHeFltTolPowerSupplyRedundant . '.' . $_};
@@ -276,23 +333,22 @@ sub check_pc {
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         next if ($present_map{$result->{$key}} ne 'present');
-        $key =~ /\.([0-9]+)$/;
+        # Chassis + index
+        $key =~ /(\d+\.\d+)$/;
         my $oid_end = $1;
         
         push @oids_end, $oid_end;
-        push @get_oids, $oid_cpqHePwrConvIndex . "." . $oid_end, $oid_cpqHePwrConvChassis . "." . $oid_end,
-                $oid_cpqHePwrConvCondition . "." . $oid_end, $oid_cpqHePwrConvRedundant . "." . $oid_end,
+        push @get_oids, $oid_cpqHePwrConvCondition . "." . $oid_end, $oid_cpqHePwrConvRedundant . "." . $oid_end,
                 $oid_cpqHePwrConvRedundantGroupId . "." . $oid_end;
     }
     $result = $self->{snmp}->get_leef(oids => \@get_oids);
     foreach (@oids_end) {
-        my $pc_chassis = $result->{$oid_cpqHePwrConvChassis . '.' . $_};
-        my $pc_index = $result->{$oid_cpqHePwrConvIndex . '.' . $_};
+        my ($pc_chassis, $pc_index) = split /\./;
         my $pc_condition = $result->{$oid_cpqHePwrConvIndex . '.' . $_};
         my $pc_redundant = $result->{$oid_cpqHePwrConvRedundant . '.' . $_};
         my $pc_redundantgroup = $result->{$oid_cpqHePwrConvRedundantGroupId . '.' . $_};
 
-        $self->{components_psu}++;
+        $self->{components_pc}++;
         $self->{output}->output_add(long_msg => sprintf("powerconverter %d status is %s [chassis: %s, redundance: %s, redundant group: %s].",
                                     $pc_index, ${$conditions{$pc_condition}}[0],
                                     $pc_chassis, $redundant_map{$pc_redundant}, $pc_redundantgroup
@@ -328,20 +384,18 @@ sub check_fan {
     my @oids_end = ();
     foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
         next if ($present_map{$result->{$key}} ne 'present');
-        $key =~ /\.([0-9]+)$/;
+        # Chassis + index
+        $key =~ /(\d+\.\d+)$/;
         my $oid_end = $1;
         
         push @oids_end, $oid_end;
-        push @get_oids, $oid_cpqHeFltTolFanChassis . "." . $oid_end, $oid_cpqHeFltTolFanIndex . "." . $oid_end,
-                $oid_cpqHeFltTolFanLocale . "." . $oid_end, $oid_cpqHeFltTolFanCondition . "." . $oid_end,
+        push @get_oids, $oid_cpqHeFltTolFanLocale . "." . $oid_end, $oid_cpqHeFltTolFanCondition . "." . $oid_end,
                 $oid_cpqHeFltTolFanCurrentSpeed . "." . $oid_end, $oid_cpqHeFltTolFanSpeed . "." . $oid_end, 
                 $oid_cpqHeFltTolFanRedundant . "." . $oid_end, $oid_cpqHeFltTolFanRedundantPartner . "." . $oid_end;
     }
     $result = $self->{snmp}->get_leef(oids => \@get_oids);
-    my $total_watts = 0;
     foreach (@oids_end) {
-        my $fan_chassis = $result->{$oid_cpqHeTemperatureCelsius . '.' . $_};
-        my $fan_index = $result->{$oid_cpqHeFltTolFanIndex . '.' . $_};
+        my ($fan_chassis, $fan_index) = split /\./;
         my $fan_locale = $result->{$oid_cpqHeFltTolFanLocale . '.' . $_};
         my $fan_condition = $result->{$oid_cpqHeFltTolFanCondition . '.' . $_};
         my $fan_speed = $result->{$oid_cpqHeFltTolFanSpeed . '.' . $_};
@@ -352,7 +406,7 @@ sub check_fan {
         $self->{components_fan}++;
         $self->{output}->output_add(long_msg => sprintf("fan %d status is %s, speed is %s [chassis: %s, location: %s, redundance: %s, redundant partner: %s].",
                                     $fan_index, ${$conditions{$fan_condition}}[0], $fanspeed{$fan_speed},
-                                    $fan_chassis, $fan_location{$fan_locale},
+                                    $fan_chassis, $location_map{$fan_locale},
                                     $redundant_map{$fan_redundant}, $fan_redundantpartner
                                     ));
         if ($fan_condition != 2) {
@@ -363,6 +417,142 @@ sub check_fan {
 
         $self->{output}->perfdata_add(label => "fan_" . $fan_index . "_speed", unit => 'rpm',
                                       value => $fan_currentspeed);
+    }
+}
+
+sub check_temperature {
+    my ($self) = @_;
+    # In MIB 'CPQSTDEQ-MIB.mib'
+    
+    $self->{output}->output_add(long_msg => "Checking temperatures");
+    return if ($self->check_exclude('temperature'));
+    
+    my $oid_cpqHeTemperatureEntry = '.1.3.6.1.4.1.232.6.2.6.8.1';
+    my $oid_cpqHeTemperatureCondition = '.1.3.6.1.4.1.232.6.2.6.8.1.6';
+    my $oid_cpqHeTemperatureLocale = '.1.3.6.1.4.1.232.6.2.6.8.1.3';
+    my $oid_cpqHeTemperatureCelsius = '.1.3.6.1.4.1.232.6.2.6.8.1.4';
+    my $oid_cpqHeTemperatureThreshold = '.1.3.6.1.4.1.232.6.2.6.8.1.5';
+    
+    my $result = $self->{snmp}->get_table(oid => $oid_cpqHeTemperatureEntry);
+    return if (scalar(keys %$result) <= 0);
+
+    foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
+        # work when we have condition
+        next if ($key !~ /^$oid_cpqHeTemperatureCondition/);
+        # Chassis + index
+        $key =~ /(\d+)\.(\d+)$/;
+        my $temp_chassis = $1;
+        my $temp_index = $2;
+        my $instance = $temp_chassis . "." . $temp_index;
+    
+        my $temp_condition = $result->{$key};
+        my $temp_current = $result->{$oid_cpqHeTemperatureCelsius . '.' . $instance};
+        my $temp_threshold = $result->{$oid_cpqHeTemperatureThreshold . '.' . $instance};
+        my $temp_locale = $result->{$oid_cpqHeTemperatureLocale . '.' . $instance};
+        
+        $self->{components_temperature}++;
+        $self->{output}->output_add(long_msg => sprintf("%s %s temperature is %dC (%d max) (status is %s).", 
+                                    $temp_index, $location_map{$temp_locale}, $temp_current,
+                                    $temp_threshold,
+                                    ${$conditions{$temp_condition}}[0]));
+        if (${$conditions{$temp_condition}}[1] ne 'OK') {
+            $self->{output}->output_add(severity => ${$conditions{$temp_condition}}[1],
+                                        short_msg => sprintf("temperature %d %s status is %s", 
+                                            $temp_index, $location_map{$temp_locale}, ${$conditions{$temp_condition}}[0]));
+        }
+        
+        $self->{output}->perfdata_add(label => "temp_" . $temp_index . "_" . $location_map{$temp_locale}, unit => 'C',
+                                      value => $temp_current,
+                                      critical => (($temp_threshold != -1) ? $temp_threshold : -1));
+    }
+}
+
+sub check_pnic {
+    my ($self) = @_;
+    # In MIB 'CPQNIC-MIB.mib'
+    
+    $self->{output}->output_add(long_msg => "Checking physical nics");
+    return if ($self->check_exclude('pnic'));
+    
+    my $oid_cpqNicIfPhysAdapterIndex = '.1.3.6.1.4.1.232.18.2.3.1.1.1';
+    my $oid_cpqNicIfPhysAdapterRole = '.1.3.6.1.4.1.232.18.2.3.1.1.3';
+    my $oid_cpqNicIfPhysAdapterCondition = '.1.3.6.1.4.1.232.18.2.3.1.1.12';
+    my $oid_cpqNicIfPhysAdapterState = '.1.3.6.1.4.1.232.18.2.3.1.1.13';
+    my $oid_cpqNicIfPhysAdapterStatus = '.1.3.6.1.4.1.232.18.2.3.1.1.14';
+    my $oid_cpqNicIfPhysAdapterDuplexState = '.1.3.6.1.4.1.232.18.2.3.1.1.11';
+    
+    my $result = $self->{snmp}->get_table(oid => $oid_cpqNicIfPhysAdapterIndex);
+    return if (scalar(keys %$result) <= 0);
+    
+    $self->{snmp}->load(oids => [$oid_cpqNicIfPhysAdapterRole, $oid_cpqNicIfPhysAdapterCondition,
+                                 $oid_cpqNicIfPhysAdapterState, $oid_cpqNicIfPhysAdapterStatus,
+                                 $oid_cpqNicIfPhysAdapterDuplexState],
+                        instances => [keys %$result]);
+    my $result2 = $self->{snmp}->get_leef();
+    foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
+        $key =~ /(\d+)$/;
+        my $instance = $1;
+    
+        my $nic_index = $result->{$key};
+        my $nic_role = $result2->{$oid_cpqNicIfPhysAdapterRole . '.' . $instance};
+        my $nic_condition = $result2->{$oid_cpqNicIfPhysAdapterCondition . '.' . $instance};
+        my $nic_state = $result2->{$oid_cpqNicIfPhysAdapterState . '.' . $instance};
+        my $nic_status = $result2->{$oid_cpqNicIfPhysAdapterStatus . '.' . $instance};
+        my $nic_duplex = $result2->{$oid_cpqNicIfPhysAdapterDuplexState . '.' . $instance};
+        
+        $self->{components_pnic}++;
+        $self->{output}->output_add(long_msg => sprintf("physical nic %s [duplex: %s, role: %s, state: %s, status: %s] condition is %s.", 
+                                    $nic_index, $map_nic_duplex{$nic_duplex}, $map_pnic_role{$nic_role},
+                                    $map_nic_state{$nic_state}, $map_pnic_status{$nic_status},
+                                    ${$conditions{$nic_condition}}[0]));
+        if (${$conditions{$nic_condition}}[1] ne 'OK') {
+            $self->{output}->output_add(severity => ${$conditions{$nic_condition}}[1],
+                                        short_msg => sprintf("physical nic %d is %s", 
+                                            $nic_index, ${$conditions{$nic_condition}}[0]));
+        }
+    }
+}
+
+sub check_lnic {
+    my ($self) = @_;
+    # In MIB 'CPQNIC-MIB.mib'
+    
+    $self->{output}->output_add(long_msg => "Checking logical nics");
+    return if ($self->check_exclude('pnic'));
+    
+    my $oid_cpqNicIfLogMapIndex = '.1.3.6.1.4.1.232.18.2.2.1.1.1';
+    my $oid_cpqNicIfLogMapDescription = '.1.3.6.1.4.1.232.18.2.2.1.1.3';
+    my $oid_cpqNicIfLogMapAdapterCount = '.1.3.6.1.4.1.232.18.2.2.1.1.5';
+    my $oid_cpqNicIfLogMapCondition = '.1.3.6.1.4.1.232.18.2.2.1.1.10';
+    my $oid_cpqNicIfLogMapStatus = '.1.3.6.1.4.1.232.18.2.2.1.1.11';
+    
+    my $result = $self->{snmp}->get_table(oid => $oid_cpqNicIfLogMapIndex);
+    return if (scalar(keys %$result) <= 0);
+    
+    $self->{snmp}->load(oids => [$oid_cpqNicIfLogMapDescription, $oid_cpqNicIfLogMapAdapterCount,
+                                 $oid_cpqNicIfLogMapCondition, $oid_cpqNicIfLogMapStatus],
+                        instances => [keys %$result]);
+    my $result2 = $self->{snmp}->get_leef();
+    foreach my $key ($self->{snmp}->oid_lex_sort(keys %$result)) {
+        $key =~ /(\d+)$/;
+        my $instance = $1;
+    
+        my $nic_index = $result->{$key};
+        my $nic_description = centreon::plugins::misc::trim($result2->{$oid_cpqNicIfLogMapDescription . '.' . $instance});
+        my $nic_count = $result2->{$oid_cpqNicIfLogMapAdapterCount . '.' . $instance};
+        my $nic_condition = $result2->{$oid_cpqNicIfLogMapCondition . '.' . $instance};
+        my $nic_status = $result2->{$oid_cpqNicIfLogMapStatus . '.' . $instance};
+        
+        $self->{components_lnic}++;
+        $self->{output}->output_add(long_msg => sprintf("logical nic %s [adapter count: %s, description: %s, status: %s] condition is %s.", 
+                                    $nic_index, $nic_count, $nic_description,
+                                    $map_lnic_status{$nic_status},
+                                    ${$conditions{$nic_condition}}[0]));
+        if (${$conditions{$nic_condition}}[0] !~ /^other|ok$/i) {
+            $self->{output}->output_add(severity => ${$conditions{$nic_condition}}[1],
+                                        short_msg => sprintf("logical nic %d is %s (%s)", 
+                                            $nic_index, ${$conditions{$nic_condition}}[0], $map_lnic_status{$nic_status}));
+        }
     }
 }
 

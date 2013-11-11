@@ -129,6 +129,14 @@ sub backtick {
     return (0, join("\n", @output), $return_code);
 }
 
+sub trim {
+    # Sometimes there is a null character
+    $_[0] =~ s/\x00$//;
+    $_[0] =~ s/^[ \t]+//;
+    $_[0] =~ s/[ \t]+$//;
+    return $_[0];
+}
+
 1;
 
 __END__
