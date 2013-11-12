@@ -555,22 +555,28 @@ echo -e "\n$line"
 echo -e "$(gettext "Pear Modules")"
 echo -e "$line"
 pear_module="0"
+first=1
 while [ "$pear_module" -eq 0 ] ; do 
 	check_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
 	if [ "$?" -ne 0 ] ; then
-    if [ "${PEAR_AUTOINST:-0}" -eq 0 ]; then
+            if [ "${PEAR_AUTOINST:-0}" -eq 0 ]; then
+                if [ "$first" -eq 0 ] ; then
+                    echo_info "$(gettext "Unable to upgrade PEAR modules. You seem to have a connection problem.")"
+                fi
   		yes_no_default "$(gettext "Do you want me to install/upgrade your PEAR modules")" "$yes"
-      [ "$?" -eq 0 ] && PEAR_AUTOINST=1
-    fi
-  	if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
-  		upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-  		install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
-  	else
-  			pear_module="1"
-  	fi
+                [ "$?" -eq 0 ] && PEAR_AUTOINST=1
+            fi
+  	    if [ "${PEAR_AUTOINST:-0}" -eq 1 ] ; then
+  	        upgrade_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+                install_pear_module "$INSTALL_VARS_DIR/$PEAR_MODULES_LIST"
+                PEAR_AUTOINST=0
+                first=0
+            else
+  	        pear_module="1"
+            fi
  	else 
-  	echo_success "$(gettext "All PEAR modules")" "$ok"
- 		pear_module="1"
+  	    echo_success "$(gettext "All PEAR modules")" "$ok"
+ 	    pear_module="1"
  	fi
 done
 
