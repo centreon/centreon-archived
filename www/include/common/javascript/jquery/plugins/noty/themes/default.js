@@ -135,7 +135,7 @@
 					this.$buttons.css({borderTop: '1px solid #FFC237'}); break;
 				case 'error':
 					this.$bar.css({backgroundColor: 'red', borderColor: 'darkred', color: '#FFF'});
-					this.$message.css({fontWeight: 'bold'});
+					this.$message.css({fontWeight: 'bold', color: '#FFF'});
 					this.$buttons.css({borderTop: '1px solid darkred'}); break;
 				case 'information':
 					this.$bar.css({backgroundColor: '#57B7E2', borderColor: '#0B90C4', color: '#FFF'});
