@@ -313,7 +313,10 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '1') {
+                if ($service["service_inherit_contacts_from_host"] === '0' && 
+                    !isset($cgSCache[$service["service_id"]])) {
+                    print_line("contact_groups", "null");
+                } else {
                     if (isset($cgSCache[$service["service_id"]])) {
                         $strTMPTemp = "";
                         foreach ($cgSCache[$service["service_id"]] as $cg_name) {
@@ -331,14 +334,14 @@
                         unset($strTMPTemp);
                     }
                 }
-                else {
-                    $strTMP .= print_line("contact_groups", "null");
-                }
 
 				/*
 				 * Contact Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '1') {
+                if ($service["service_inherit_contacts_from_host"] === '0' &&
+                    !isset($cctSCache[$service["service_id"]])) {
+                    $strTMP .= print_line("contacts", "null");
+                } else {
                     if (isset($cctSCache[$service["service_id"]])) {
                         $strTMPTemp = "";
                         foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
@@ -355,9 +358,6 @@
                         }
                         unset($strTMPTemp);
                     }
-                }
-                else {
-                    $strTMP .= print_line("contacts", "null");
                 }
 
 				if ($service["service_stalking_options"]) {
@@ -670,7 +670,10 @@
 				/*
 				 * Contact Group Relation
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '1') {
+                if ($service["service_inherit_contacts_from_host"] === '0' &&
+                    !isset($cgSCache[$service["service_id"]])) {
+                    $strTMP .= print_line("contact_groups", "null");
+                } else {
                     if (isset($cgSCache[$service["service_id"]])) {
                         $strTMPTemp = "";
                         foreach ($cgSCache[$service["service_id"]] as $cg_name) {
@@ -688,14 +691,14 @@
                         unset($strTMPTemp);
                     }
                 }
-                else {
-                    $strTMP .= print_line("contact_groups", "null");
-                }
 
 				/*
 				 * Contact Relation only for Nagios 3
 				 */
-                if ($service["service_inherit_contacts_from_host"] === '1') {
+                if ($service["service_inherit_contacts_from_host"] === '0' &&
+                    !isset($cctSCache[$service["service_id"]])) {
+                    $strTMP .= print_line("contacts", "null");
+                } else {
                     if (isset($cctSCache[$service["service_id"]])) {
                         $strTMPTemp = "";
                         foreach ($cctSCache[$service["service_id"]] as $cct_id => $cct_name) {
@@ -712,9 +715,6 @@
                         }
                         unset($strTMPTemp);
                     }
-                }
-                else {
-                    $strTMP .= print_line("contacts", "null");
                 }
                 
 
