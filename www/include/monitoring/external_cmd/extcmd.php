@@ -53,17 +53,11 @@
 			$destination = "/var/lib/centreon/centcore.cmd";
 
 		$cmd = str_replace("`", "&#96;", $cmd);
-		$cmd = str_replace("'", "&#39;", $cmd);
+		//$cmd = str_replace("'", "&#39;", $cmd);
 
 		$cmd = str_replace("\n", "<br>", $cmd);
 		$informations = preg_split("/\;/", $key);
-		if ($poller && isPollerLocalhost($pearDB, $poller)) {
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
-		} else if (isHostLocalhost($pearDB, $informations[0])) {
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $centreon->Nagioscfg["command_file"];
-		} else {
-			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . $destination;
-		}
+                $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . $destination;
 		return passthru($str);
 	}
 

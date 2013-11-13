@@ -28,12 +28,7 @@
 		$str = NULL;
 
 		$informations = preg_split("/\;/", $key);
-		if ($poller && isPollerLocalhost($pearDB, $poller))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		else if (isHostLocalhost($pearDB, $informations[0]))
-			$str = "echo '[" . time() . "]" . $cmd . "\n' >> " . $oreon->Nagioscfg["command_file"];
-		else
-			$str = "echo 'EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n' >> " . "@CENTREON_VARLIB@/centcore.cmd";
+                $str = "echo ". escapeshellarg("EXTERNALCMD:$poller:[" . time() . "]" . $cmd . "\n") . " >> " . "@CENTREON_VARLIB@/centcore.cmd";
 		return passthru($str);
 	}
 
