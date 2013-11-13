@@ -394,7 +394,7 @@ class CentreonXMLBGRequest
                 return '';
             }
             $interval = $options['AjaxTimeReloadMonitoring'];
-            if ((time() - $data["last_state_change"]) <= $interval) {
+            if ((time() - $data["last_state_change"]) <= ($interval + ($interval / 2))) {
                     $msgTypeArr = array(
                       0 => 'success',
                       1 => 'error',
