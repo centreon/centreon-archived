@@ -229,6 +229,9 @@ VALUES ('Contact Templates','./img/icones/16x16/user1_information.png',603,60306
 
 INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('CentCore',NULL,50101,5010110,25,1,'./include/options/oreon/generalOpt/generalOpt.php','&o=centcore','0','0','1',NULL,NULL,NULL,'1');
 
+INSERT INTO `topology` (`topology_name`, `topology_icone`, `topology_parent`, `topology_page`, `topology_order`, `topology_group`, `topology_url`, `topology_url_opt`, `topology_popup`, `topology_modules`, `topology_show`, `topology_style_class`, `topology_style_id`, `topology_OnClick`, `readonly`) VALUES ('Documentation','./img/icones/16x16/book_green.gif',506,50608,25,80,'http://documentation.centreon.com/',NULL,'1','0','1',NULL,NULL,NULL,'0');
+
+
 /*!40000 ALTER TABLE `topology` ENABLE KEYS */;
 UNLOCK TABLES;
 
