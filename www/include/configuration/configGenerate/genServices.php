@@ -141,9 +141,11 @@
          */
         $critCache = array();
         $critRes = $pearDB->query("SELECT scr.sc_id, scr.service_service_id
-                                   FROM service_categories_relation scr , service s
+                                   FROM service_categories_relation scr , service s, service_categories sc
                                    WHERE scr.service_service_id = s.service_id
-                                   AND s.service_register = '1'");
+                                   AND scr.sc_id = sc.sc_id
+                                   AND s.service_register = '1'
+                                   ORDER BY level DESC");
         while ($critRow = $critRes->fetchRow()) {
             $critCache[$critRow['service_service_id']] = $critRow['sc_id'];
         }
