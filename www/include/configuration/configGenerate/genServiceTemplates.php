@@ -66,6 +66,7 @@
                                    WHERE scr.service_service_id = s.service_id
                                    AND scr.sc_id = sc.sc_id
                                    AND s.service_register = '0'
+                                   AND level IS NOT NULL
                                    ORDER BY level DESC");
         while ($critRow = $critRes->fetchRow()) {
             $critCache[$critRow['service_service_id']] = $critRow['sc_id'];

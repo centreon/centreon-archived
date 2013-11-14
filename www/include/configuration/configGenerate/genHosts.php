@@ -136,6 +136,7 @@ $critRes = $pearDB->query("SELECT hcr.hostcategories_hc_id, hcr.host_host_id
                                    WHERE hcr.host_host_id = h.host_id
                                    AND hcr.hostcategories_hc_id = hc.hc_id
                                    AND h.host_register = '1'
+                                   AND level IS NOT NULL
                                    ORDER BY level DESC");
         while ($critRow = $critRes->fetchRow()) {
             $critCache[$critRow['host_host_id']] = $critRow['hostcategories_hc_id'];

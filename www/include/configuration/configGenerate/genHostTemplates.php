@@ -124,6 +124,7 @@
                                    WHERE hcr.host_host_id = h.host_id
                                    AND hcr.hostcategories_hc_id = hc.hc_id
                                    AND h.host_register = '0'
+                                   AND level IS NOT NULL
                                    ORDER BY level DESC");
         while ($critRow = $critRes->fetchRow()) {
             $critCache[$critRow['host_host_id']] = $critRow['hostcategories_hc_id'];
