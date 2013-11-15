@@ -65,6 +65,12 @@
                                             WHERE contact_id = '".$oreon->user->get_id()."' LIMIT 1");
 		// Set base value
 		$cct = array_map("myDecode", $DBRESULT->fetchRow());
+                $res = $pearDB->query("SELECT cp_key, cp_value 
+                                       FROM contact_param 
+                                       WHERE cp_contact_id = '".$pearDB->escape($oreon->user->get_id())."'");
+                while ($row = $res->fetchRow()) {
+                    $cct[$row['cp_key']] = $row['cp_value'];
+                }
 	}
         
 	/*
@@ -91,6 +97,33 @@
         $form->addElement('button','contact_gen_akey',_("Generate"), array( 'onclick' => 'generatePassword("aKey");'));
         $form->addElement('select', 'contact_lang', _("Language"), $langs);
         $form->addElement('checkbox', 'contact_js_effects', _("Animation effects"), null, $attrsText);
+
+
+        $form->addElement('checkbox', 'monitoring_host_notification_0', _('Show Up status'));
+        $form->addElement('checkbox', 'monitoring_host_notification_1', _('Show Down status'));
+        $form->addElement('checkbox', 'monitoring_host_notification_2', _('Show Unreachable status'));
+        $form->addElement('checkbox', 'monitoring_svc_notification_0', _('Show OK status'));
+        $form->addElement('checkbox', 'monitoring_svc_notification_1', _('Show Warning status'));
+        $form->addElement('checkbox', 'monitoring_svc_notification_2', _('Show Critical status'));
+        $form->addElement('checkbox', 'monitoring_svc_notification_3', _('Show Unknown status'));
+
+        $sound_files = scandir($centreon_path."www/sounds/");
+        $sounds = array(null => null);
+        foreach ($sound_files as $f) {
+            if($f == "." || $f == "..") {
+                continue;
+            }
+            $info = pathinfo($f);
+            $fname = basename($f, ".".$info['extension']);
+            $sounds[$fname] = $fname;
+        }
+        $form->addElement('select', 'monitoring_sound_host_notification_0', _("Sound for Up status"), $sounds);
+        $form->addElement('select', 'monitoring_sound_host_notification_1', _("Sound for Down status"), $sounds);
+        $form->addElement('select', 'monitoring_sound_host_notification_2', _("Sound for Unreachable status"), $sounds);
+        $form->addElement('select', 'monitoring_sound_svc_notification_0', _("Sound for OK status"), $sounds);
+        $form->addElement('select', 'monitoring_sound_svc_notification_1', _("Sound for Warning status"), $sounds);
+        $form->addElement('select', 'monitoring_sound_svc_notification_2', _("Sound for Critical status"), $sounds);
+        $form->addElement('select', 'monitoring_sound_svc_notification_3', _("Sound for Unknown status"), $sounds);
 
 	$redirect = $form->addElement('hidden', 'o');
 	$redirect->setValue($o);

@@ -183,9 +183,6 @@
 	    <td class="ListColRight"><xsl:value-of select="lc"/></td>
 	    <td class="ListColRight">
                 <xsl:value-of select="lsc"/>
-                <xsl:if test="notifmsg != ''">
-                    <div style="display:none" class="notifmsg"><xsl:value-of select="notifmsg"/></div>
-                </xsl:if>
             </td>
 		<xsl:if test = "//i/o = 'h_unhandled' or //i/o = 'hpb'">
 			<td class="ListColRight" style="white-space:nowrap;">

@@ -538,7 +538,6 @@
 		}
 		$obj->XML->writeElement("d", $duration);
                 $obj->XML->writeElement("rd", (time() - $data["last_state_change"])); //raw duration
-                $obj->XML->writeElement("notifmsg", $obj->getServiceNotificationMessage($data, $centreon->optGen));
 		$obj->XML->writeElement("last_hard_state_change", $hard_duration);
 
 		/**

@@ -68,6 +68,11 @@
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/colorbox/jquery.colorbox-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/jeditable/jquery.jeditable-min.js"></script>
 <script type="text/javascript" src="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/jquery.noty.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/themes/default.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/noty/layouts/bottomRight.js"></script>
+<script type="text/javascript" src="./include/common/javascript/jquery/plugins/buzz/buzz.min.js"></script>
+<script type="text/javascript" src="./include/common/javascript/centreon/notifier.js"></script>
 
 <?php } ?>
 <script type="text/javascript" src="./class/centreonToolTip.js"></script>
