@@ -76,10 +76,30 @@
 			return true;
 	}
 	
+        function updateNotificationOptions($contact_id) {
+            global $form, $pearDB;
+
+            $pearDB->query("DELETE FROM contact_param 
+                WHERE cp_contact_id = ".$pearDB->escape($contact_id)."
+                AND cp_key LIKE 'monitoring%notification%'");
+            $data = $form->getSubmitValues();
+            foreach ($data as $k => $v) {
+                if (preg_match("/^monitoring_(host|svc)_notification/", $k)) {
+                        $pearDB->query("INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) 
+                            VALUES ('".$pearDB->escape($k)."', '1', ".$pearDB->escape($contact_id).")");
+                } elseif (preg_match("/^monitoring_sound/", $k)) {
+                        $pearDB->query("INSERT INTO contact_param (cp_key, cp_value, cp_contact_id) 
+                            VALUES ('".$pearDB->escape($k)."', '".$pearDB->escape($v)."', ".$pearDB->escape($contact_id).")");
+                }
+            }
+            unset($_SESSION['centreon_notification_preferences']);
+        }
+
 	function updateContactInDB ($contact_id = NULL)	{
 		if (!$contact_id) 
 			return;
 		updateContact($contact_id);
+                updateNotificationOptions($contact_id);
 	}
 	
 	function updateContact($contact_id = null)	{
