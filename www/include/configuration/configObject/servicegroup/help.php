@@ -5,6 +5,7 @@ $help["servicegroup_name"] = dgettext("help", "Define a short name for the servi
 $help["alias"] = dgettext("help", "Define a longer name or description for the service group here.");
 $help["members"] = dgettext("help", "This is a list of host-bound services that should be included in this service group.");
 $help["hg_members"] = dgettext("help", "This is a list of host group-bound services that should be included in this service group.");
+$help["st_members"] = dgettext("help", "This is a list of service templates that should be included in this service group. Service template needs to be associated with a host template in order to show up here.");
 
 /*
  * unsupported in Centreon
