@@ -141,17 +141,6 @@ if (($o == "c" || $o == "w") && $sg_id)	{
     }
     $DBRESULT->free();
     
-     $query = "SELECT host_id, host_name, service_id, service_description
-             FROM host, service, host_service_relation
-             WHERE host_id = host_host_id
-             AND service_id = service_service_id
-             AND host_register = '0'";
-    $res = $pearDB->query($query);
-    while ($row = $res->fetchRow()) {
-        $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
-        $tServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
-    }
-    
     $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation, host WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL AND host_host_id = host_id AND host_register = '0' ORDER BY service_service_id");
     for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $sg["sg_tServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
@@ -172,6 +161,17 @@ if (($o == "c" || $o == "w") && $sg_id)	{
             $hServices[$k] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
         }
     }
+}
+
+$query = "SELECT host_id, host_name, service_id, service_description
+             FROM host, service, host_service_relation
+             WHERE host_id = host_host_id
+             AND service_id = service_service_id
+             AND host_register = '0'";
+$res = $pearDB->query($query);
+while ($row = $res->fetchRow()) {
+    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+    $tServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
 }
 
 #
