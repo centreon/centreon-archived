@@ -35,7 +35,7 @@
 
 if (!isset($centreon)) {
     exit();
- }
+}
 
 global $centreon_path;
 
@@ -2189,13 +2189,22 @@ function generateHostServiceMultiTemplate($hID, $hID2 = null, $antiLoop = null) 
         $DBRESULT2 = $pearDB->query($rq2);
         while ($hTpl2 = $DBRESULT2->fetchRow()) {
             $alias = getMyServiceAlias($hTpl2["service_service_id"]);
+    
+            $service_sgs = array();
+            $DBRESULT3 = $pearDB->query("SELECT DISTINCT servicegroup_sg_id FROM servicegroup_relation WHERE service_service_id = '".$hTpl2["service_service_id"]."'");
+            for ($i = 0; $sg = $DBRESULT3->fetchRow(); $i++) {
+                $service_sgs[$i] = $sg["servicegroup_sg_id"];
+            }
+            $DBRESULT3->free();
+
             if (testServiceExistence($alias, array(0 => $hID))) {
                 $service = array(
                                  "service_template_model_stm_id" => $hTpl2["service_service_id"],
                                  "service_description" => $alias,
                                  "service_register" => array("service_register" => ($hTpl2["service_register"] + 1)),
                                  "service_activate" => array("service_activate" => 1),
-                                 "service_hPars" => array("0" => $hID));
+                                 "service_hPars" => array("0" => $hID), 
+                                 "service_sgs" => $service_sgs);
                 $service_id = insertServiceInDB($service);
             }
         }

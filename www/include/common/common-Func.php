@@ -212,7 +212,7 @@
 			return true;
 		} else {
 			return false;
-		}
+	mul	}
 	}
 
 	function getMyHostAddress($host_id = NULL)	{

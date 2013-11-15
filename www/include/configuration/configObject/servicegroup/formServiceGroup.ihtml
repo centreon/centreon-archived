@@ -24,6 +24,7 @@
 			</td>
 		</tr>
 		<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="hg_members"> {$form.sg_hgServices.label}</td><td class="FormRowValue">{$form.sg_hgServices.html}</td></tr>
+        <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="st_members"> {$form.sg_tServices.label}</td><td class="FormRowValue">{$form.sg_tServices.html}</td></tr> 
 		
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/cookies.gif'>&nbsp;&nbsp;{$form.header.furtherInfos}</td></tr>
 		<tr class="list_one"><td class="FormRowField">{$form.sg_activate.label}</td><td class="FormRowValue">{$form.sg_activate.html}</td></tr>
