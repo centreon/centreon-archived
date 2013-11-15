@@ -33,7 +33,7 @@
  *
  */
 
-require_once "/etc/centreon/centreon.conf.php";
+require_once "@CENTREON_ETC@/centreon.conf.php";
 require_once $centreon_path."www/class/centreonXMLBGRequest.class.php";
 
 if (!isset($_GET['sid']) || !isset($_GET['refresh_rate'])) {
