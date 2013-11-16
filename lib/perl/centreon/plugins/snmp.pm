@@ -58,15 +58,15 @@ sub new {
     }
 
     $options{options}->add_options(arguments => 
-                { "H|hostname|host:s"         => { name => 'host' },
-                  "C|community:s"             => { name => 'snmp_community', default => 'public' },
-                  "v|snmp|snmp-version:s"     => { name => 'snmp_version', default => 1 },
-                  "P|snmpport|snmp-port:i"    => { name => 'snmp_port', default => 161 },
+                { "hostname|host:s"           => { name => 'host' },
+                  "snmp-community:s"          => { name => 'snmp_community', default => 'public' },
+                  "snmp-version:s"            => { name => 'snmp_version', default => 1 },
+                  "snmp-port:s"               => { name => 'snmp_port', default => 161 },
                   "snmp-timeout:s"            => { name => 'snmp_timeout', default => 1 },
                   "snmp-retries:s"            => { name => 'snmp_retries', default => 5 },
                   "maxrepetitions:s"          => { name => 'maxrepetitions', default => 50 },
                   "subsetleef:s"              => { name => 'subsetleef', default => 50 },
-                  "u|username:s"              => { name => 'snmp_security_name' },
+                  "snmp-username:s"           => { name => 'snmp_security_name' },
                   "authpassphrase:s"          => { name => 'snmp_auth_passphrase' },
                   "authprotocol:s"            => { name => 'snmp_auth_protocol' },
                   "privpassphrase:s"          => { name => 'snmp_priv_passphrase' },
@@ -434,7 +434,7 @@ sub check_options {
     # $options{option_results} = ref to options result
     
     if (!defined($options{option_results}->{host})) {
-        $self->{output}->add_option_msg(short_msg => "Missing parameter -H (--host).");
+        $self->{output}->add_option_msg(short_msg => "Missing parameter --hostname.");
         $self->{output}->option_exit();
     }
 
@@ -589,7 +589,7 @@ snmp class
 
 Hostname to query (required).
 
-=item B<--community>
+=item B<--snmp-community>
 
 Read community (defaults to public).
 
@@ -617,7 +617,7 @@ Max repititions value (default: 50) (only for SNMP v2 and v3).
 
 How many oid values per SNMP request (default: 50) (for get_leef method. Be cautious whe you set it. Prefer to let the default value).
 
-=item B<--username>
+=item B<--snmp-username>
 
 Security name (only for SNMP v3).
 
