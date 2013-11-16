@@ -65,6 +65,7 @@ sub new {
                   "snmp-timeout:s"            => { name => 'snmp_timeout', default => 1 },
                   "snmp-retries:s"            => { name => 'snmp_retries', default => 5 },
                   "maxrepetitions:s"          => { name => 'maxrepetitions', default => 50 },
+                  "subsetleef:s"              => { name => 'subsetleef', default => 50 },
                   "u|username:s"              => { name => 'snmp_security_name' },
                   "authpassphrase:s"          => { name => 'snmp_auth_passphrase' },
                   "authprotocol:s"            => { name => 'snmp_auth_protocol' },
@@ -174,13 +175,24 @@ sub get_leef {
     
     my $results = {};
     my @array_ref_ar = ();
+    my $subset_current = 0;
+    my $subset_construct = [];
     foreach my $oid (@{$options{oids}}) {
         # Get last value
         next if ($oid !~ /(.*)\.(\d+)([\.\s]*)$/);
         
         my ($oid, $instance) = ($1, $2);
         $results->{$oid . "." . $instance} = undef;
-        push @array_ref_ar, [$oid, $instance];
+        push @$subset_construct, [$oid, $instance];
+        $subset_current++;
+        if ($subset_current == $self->{subsetleef}) {
+            push @array_ref_ar, \@$subset_construct;
+            $subset_construct = [];
+            $subset_current = 0;
+        }
+    }
+    if ($subset_current) {
+        push @array_ref_ar, \@$subset_construct;
     }
     
     ############################
@@ -228,33 +240,43 @@ sub get_leef {
     #       ], 'SNMP::Varbind' )
     ############################
     
-    my $vb = new SNMP::VarList(@array_ref_ar);
-    $self->{session}->get($vb);
-    if ($self->{session}->{ErrorNum}) {
-        my $msg = 'SNMP GET Request : ' . $self->{session}->{ErrorStr};
-        
-        if ($dont_quit == 0) {
-            $self->{output}->add_option_msg(short_msg => $msg);
-            $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
-        }
-        
-        $self->set_error(error_status => -1, error_msg => $msg);
-        return undef;
-    }
-    
     my $total = 0;
-    foreach my $entry (@$vb) {
-        if ($#$entry < 3) {
-            # Can be snmpv1 not find
-            next;
-        }
-        if (${$entry}[2] eq 'NOSUCHOBJECT' || ${$entry}[2] eq 'NOSUCHINSTANCE') {
-            # Error in snmp > 1
-            next;
-        }
+    foreach (@array_ref_ar) {
+        my $vb = new SNMP::VarList(@{$_});
+        $self->{session}->get($vb);
+        if ($self->{session}->{ErrorNum}) {
+            # 0    noError       Pas d'erreurs.
+            # 1    tooBig        Reponse de taille trop grande.
+            # 2    noSuchName    Variable inexistante.
+            if ($self->{session}->{ErrorNum} == 2) {
+                # We are at the end with snmpv1. We next.
+                next;
+            }
         
-        $total++;
-        $results->{${$entry}[0] . "." . ${$entry}[1]} = ${$entry}[2];
+            my $msg = 'SNMP GET Request : ' . $self->{session}->{ErrorStr};
+            
+            if ($dont_quit == 0) {
+                $self->{output}->add_option_msg(short_msg => $msg);
+                $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
+            }
+            
+            $self->set_error(error_status => -1, error_msg => $msg);
+            return undef;
+        }
+
+        foreach my $entry (@$vb) {
+            if ($#$entry < 3) {
+                # Can be snmpv1 not find
+                next;
+            }
+            if (${$entry}[2] eq 'NOSUCHOBJECT' || ${$entry}[2] eq 'NOSUCHINSTANCE') {
+                # Error in snmp > 1
+                next;
+            }
+            
+            $total++;
+            $results->{${$entry}[0] . "." . ${$entry}[1]} = ${$entry}[2];
+        }
     }
     
     if ($nothing_quit == 1 && $total == 0) {
@@ -327,8 +349,8 @@ sub get_table {
         
         # Error
         if ($self->{session}->{ErrorNum}) {
-            # 0    noError    Pas d'erreurs.
-            # 1    tooBig    Rénse de taille trop grande.
+            # 0    noError       Pas d'erreurs.
+            # 1    tooBig        Reponse de taille trop grande.
             # 2    noSuchName    Variable inexistante.
             if ($self->{session}->{ErrorNum} == 2) {
                 # We are at the end with snmpv1. We quit.
@@ -423,6 +445,7 @@ sub check_options {
     }
 
     $self->{maxrepetitions} = $options{option_results}->{maxrepetitions};
+    $self->{subsetleef} = (defined($options{option_results}->{subsetleef}) && $options{option_results}->{subsetleef} =~ /^[0-9]+$/) ? $options{option_results}->{subsetleef} : 50;
     $self->{snmp_errors_exit} = $options{option_results}->{snmp_errors_exit};
 
     %{$self->{snmp_params}} = (DestHost => $options{option_results}->{host},
@@ -589,6 +612,10 @@ Set the number of retries (default: 5) before failure.
 =item B<--maxrepetitions>
 
 Max repititions value (default: 50) (only for SNMP v2 and v3).
+
+=item B<--subsetleef>
+
+How many oid values per SNMP request (default: 50) (for get_leef method. Be cautious whe you set it. Prefer to let the default value).
 
 =item B<--username>
 
