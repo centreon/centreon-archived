@@ -1,4 +1,3 @@
-#!/usr/bin/perl
 ################################################################################
 # Copyright 2005-2013 MERETHIS
 # Centreon is developped by : Julien Mathis and Romain Le Merlus under
@@ -34,54 +33,33 @@
 #
 ####################################################################################
 
+package network::cisco::3750::plugin;
+
 use strict;
 use warnings;
-use centreon::plugins::script;
-use FindBin;
-use lib "$FindBin::Bin";
+use base qw(centreon::plugins::script_snmp);
 
-centreon::plugins::script->new()->run();
+sub new {
+    my ($class, %options) = @_;
+    my $self = $class->SUPER::new(package => __PACKAGE__, %options);
+    bless $self, $class;
+    # $options->{options} = options object
+
+    $self->{version} = '1.0';
+    %{$self->{modes}} = (
+                         'environment' => 'network::cisco::common::mode::environment',
+                         'traffic' => 'snmp_standard::mode::traffic',
+                         );
+
+    return $self;
+}
+
+1;
 
 __END__
 
-=head1 NAME
+=head1 PLUGIN DESCRIPTION
 
-centreon_plugins.pl - main program to call Merethis plugins.
-
-=head1 SYNOPSIS
-
-centreon_plugins.pl [options]
-
-=head1 OPTIONS
-
-=over 8
-
-=item B<--plugin>
-
-Specify the path to the plugin.
-
-=item B<--version>
-
-Print plugin version.
-
-=item B<--help>
-
-Print a brief help message and exits.
-
-=item B<--runas>
-
-Run the script as a different user (prefer to use directly the good user).
-
-=item B<--environment>
-
-Set environment variables for the script (prefer to set it before running it for better performance).
-
-=back
-
-=head1 DESCRIPTION
-
-B<centreon_plugins.pl> .
+Check Cisco 3750 in SNMP.
 
 =cut
-
-
