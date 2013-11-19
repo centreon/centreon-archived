@@ -547,6 +547,22 @@ if ($o == "a") {
 
 $form->addElement('header', 'links', _("Relations"));
 
+if ($o == "mc") {
+    $mc_mod_sgs = array();
+    $mc_mod_sgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Incremental"), '0');
+    $mc_mod_sgs[] = HTML_QuickForm::createElement('radio', 'mc_mod_sgs', null, _("Replacement"), '1');
+    $form->addGroup($mc_mod_sgs, 'mc_mod_sgs', _("Update mode"), '&nbsp;');
+    $form->setDefaults(array('mc_mod_sgs'=>'0'));
+}
+$ams3 = $form->addElement('advmultiselect', 'service_sgs', array(_("Parent Service Groups"), _("Available"), _("Selected")), $sgs, $attrsAdvSelect, SORT_ASC);
+$ams3->setButtonAttributes('add', array('value' =>  _("Add")));
+$ams3->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams3->setElementTemplate($eTemplate);
+if ($sgReadOnly === true) {
+    $ams3->freeze();
+}
+echo $ams3->getElementJs(false);
+
 if ($o == "mc")	{
     $mc_mod_traps = array();
     $mc_mod_traps[] = HTML_QuickForm::createElement('radio', 'mc_mod_traps', null, _("Incremental"), '0');

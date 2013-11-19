@@ -31,23 +31,21 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
-    if (!$oreon->user->admin) {
-        if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
-            $msg = new CentreonMsg();
-            $msg->setImage("./img/icones/16x16/warning.gif");
-            $msg->setTextStyle("bold");
-            $msg->setText(_('You are not allowed to access this service group'));
-            return null;
-        }
+if (!$centreon->user->admin) {
+    if ($sg_id && false === strpos($sgString, "'".$sg_id."'")) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this service group'));
+        return null;
     }
+}
 
 
 /*
@@ -59,7 +57,7 @@ $hgServices = array();
 
 $aclFrom = "";
 $aclCond = "";
-if (!$oreon->user->admin) {
+if (!$centreon->user->admin) {
     $aclFrom = ", hostgroup_relation hgr, $aclDbName.centreon_acl acl ";
     $aclCond = " AND hg.hg_id = hgr.hostgroup_hg_id
         AND hgr.host_host_id = acl.host_id
@@ -74,11 +72,11 @@ $DBRESULT = $pearDB->query( "SELECT DISTINCT hg.hg_name, hg.hg_id, sv.service_de
         "AND hg.hg_id = hsr.hostgroup_hg_id " . $aclCond .
         "ORDER BY hg.hg_name, sv.service_description");
 while ($elem = $DBRESULT->fetchRow())   {
-// If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
+    // If the description of our Service is in the Template definition, we have to catch it, whatever the level of it :-)
     if (!$elem["service_description"]) {
         $elem["service_description"] = getMyServiceName($elem['service_template_model_stm_id']);
     }
-
+    
     $elem["service_description"] = str_replace("#S#", "/", $elem["service_description"]);
     $elem["service_description"] = str_replace("#BS#", "\\", $elem["service_description"]);
 
@@ -113,11 +111,11 @@ if (($o == "c" || $o == "w") && $sg_id)	{
             $aclHs[$aclRow['host_host_id']."-".$aclRow['service_service_id']] = true;
         }
     }
-    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id
-            FROM servicegroup_relation
-            WHERE servicegroup_sg_id = '".$sg_id."'
-            AND host_host_id IS NOT NULL
-            ORDER BY service_service_id");
+    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id 
+                                FROM servicegroup_relation, host 
+                                WHERE servicegroup_sg_id = '".$sg_id."' 
+                                      AND host_host_id IS NOT NULL AND host_host_id = host_id 
+                                      AND host_register = '1' ORDER BY service_service_id");
     for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
         $hkey = $host["host_host_id"]."-".$host["service_service_id"];
         if (isset($aclHs) && !isset($aclHs[$hkey])) {
@@ -142,11 +140,18 @@ if (($o == "c" || $o == "w") && $sg_id)	{
         }
     }
     $DBRESULT->free();
-
+    
+    $DBRESULT = $pearDB->query("SELECT host_host_id, service_service_id FROM servicegroup_relation, host WHERE servicegroup_sg_id = '".$sg_id."' AND host_host_id IS NOT NULL AND host_host_id = host_id AND host_register = '0' ORDER BY service_service_id");
+    for ($i = 0; $host = $DBRESULT->fetchRow(); $i++) {
+        $sg["sg_tServices"][$i] = $host["host_host_id"]."-".$host["service_service_id"];
+    }
+    $DBRESULT->free();
+    
     $query = "SELECT host_id, host_name, service_id, service_description
         FROM service s, servicegroup_relation sgr, host h
         WHERE s.service_id = sgr.service_service_id
         AND sgr.host_host_id = h.host_id
+        AND h.host_register = '1'
         AND sgr.servicegroup_sg_id = "  . $sg_id;
     $res = $pearDB->query($query);
     while ($row = $res->fetchRow()) {
@@ -156,6 +161,17 @@ if (($o == "c" || $o == "w") && $sg_id)	{
             $hServices[$k] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
         }
     }
+}
+
+$query = "SELECT host_id, host_name, service_id, service_description
+             FROM host, service, host_service_relation
+             WHERE host_id = host_host_id
+             AND service_id = service_service_id
+             AND host_register = '0'";
+$res = $pearDB->query($query);
+while ($row = $res->fetchRow()) {
+    $row['service_description'] = str_replace("#S#", "/", $row['service_description']);
+    $tServices[$row["host_id"]."-".$row['service_id']] = $row["host_name"]."&nbsp;-&nbsp;".$row['service_description'];
 }
 
 #
@@ -213,6 +229,13 @@ $ams1 = $form->addElement('advmultiselect', 'sg_hgServices', array(_("Linked Hos
 $ams1->setButtonAttributes('add', array('value' =>  _("Add")));
 $ams1->setButtonAttributes('remove', array('value' => _("Remove")));
 $ams1->setElementTemplate($eTemplate);
+
+$form->addElement('header', 'relation', _("Relations"));
+$ams1 = $form->addElement('advmultiselect', 'sg_tServices', array(_("Linked Service Templates"), _("Available"), _("Selected")), $tServices, $attrsAdvSelect, SORT_ASC);
+$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setElementTemplate($eTemplate);
+echo $ams1->getElementJs(false);
 
 /*
  * Further informations

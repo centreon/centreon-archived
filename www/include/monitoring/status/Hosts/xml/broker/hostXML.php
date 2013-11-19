@@ -321,7 +321,6 @@
         $obj->XML->writeElement("pce", 	$ndo["passive_checks"]);
         $obj->XML->writeElement("ace", 	$ndo["active_checks"]);
         $obj->XML->writeElement("lsc", 	($duration ? $duration : "N/A"));
-        $obj->XML->writeElement("notifmsg", $obj->getHostNotificationMessage($ndo, $centreon->optGen));
         $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
         $obj->XML->writeElement("ha", 	$ndo["acknowledged"]);
         $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);

@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once $centreon_path . 'www/class/centreonInstance.class.php';
@@ -41,8 +38,8 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
  /*
   *  Class that contains various methods for managing hosts
   */
- class CentreonHost
- {
+class CentreonHost
+{
  	protected $db;
  	protected $instanceObj;
 
@@ -67,16 +64,16 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
  	public function getList($enable = false, $template = false)
  	{
  	    $hostType = 1;
-            if ($template) {
-                $hostType = 0;
-            }
-            $queryList = "SELECT host_id, host_alias
+        if ($template) {
+            $hostType = 0;
+        }
+        $queryList = "SELECT host_id, host_alias
  	    	FROM host
  	    	WHERE host_register = '$hostType'";
  	    if ($enable) {
  	        $queryList .= " AND host_activate = '1'";
  	    }
-            $queryList .= " ORDER BY host_alias";
+        $queryList .= " ORDER BY host_alias";
  	    $res = $this->db->query($queryList);
  	    if (PEAR::isError($res)) {
  	        return array();
@@ -481,127 +478,165 @@ require_once $centreon_path . 'www/class/centreonInstance.class.php';
 		return $string;
 	}
         
-        /**
-         * Insert macro
-         * 
-         * @param int $hostId
-         * @param array $macroInput
-         * @param array $macroValue
-         * @return void
-         */
-        public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array()) {
-            $this->db->query("DELETE FROM on_demand_macro_host 
+    /**
+     * Insert macro
+     * 
+     * @param int $hostId
+     * @param array $macroInput
+     * @param array $macroValue
+     * @return void
+     */
+    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array()) {
+        $this->db->query("DELETE FROM on_demand_macro_host 
                 WHERE host_host_id = ".$this->db->escape($hostId));
             
-            $macros = $macroInput;
-            $macrovalues = $macroValue;
-            $stored = array();
-            foreach ($macros as $key => $value) {
-                if ($value != "" && 
-                    !isset($stored[strtolower($value)])) {
-                        $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `host_host_id`) 
+        $macros = $macroInput;
+        $macrovalues = $macroValue;
+        $stored = array();
+        foreach ($macros as $key => $value) {
+            if ($value != "" && 
+                !isset($stored[strtolower($value)])) {
+                $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `host_host_id`) 
                                 VALUES ('\$_HOST". strtoupper($value) ."\$', '". $this->db->escape($macrovalues[$key]) ."', ".(isset($macroPassword[$key]) ? 1 : 'NULL') .", ". $hostId .")");
-                        $stored[strtolower($value)] = true;
-                }
+                $stored[strtolower($value)] = true;
             }
         }
+    }
         
-        /**
-         * Get host custom macro
-         * 
-         * @param int $hostId
-         * @return array
-         */
-        public function getCustomMacro($hostId = null) {
-            $arr = array();
-            $i = 0;
-            if (!isset($_REQUEST['macroInput']) && $hostId) {
-                $res = $this->db->query("SELECT host_macro_name, host_macro_value, is_password
+    /**
+     * Get host custom macro
+     * 
+     * @param int $hostId
+     * @return array
+     */
+    public function getCustomMacro($hostId = null) {
+        $arr = array();
+        $i = 0;
+        if (!isset($_REQUEST['macroInput']) && $hostId) {
+            $res = $this->db->query("SELECT host_macro_name, host_macro_value, is_password
                                 FROM on_demand_macro_host
                                 WHERE host_host_id = " . 
-                                $this->db->escape($hostId) . "
+                                    $this->db->escape($hostId) . "
                                 ORDER BY host_macro_name");
-                while ($row = $res->fetchRow()) {
-                    if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
-                        $arr[$i]['macroInput_#index#'] = $matches[1];
-                        $arr[$i]['macroValue_#index#'] = $row['host_macro_value'];
-                        $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
-                        $i++;
-                    }
-                }
-            } elseif (isset($_REQUEST['macroInput'])) {
-                foreach($_REQUEST['macroInput'] as $key => $val) {
-                    $arr[$i]['macroInput_#index#'] = $val;
-                    $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
-                    $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
+            while ($row = $res->fetchRow()) {
+                if (preg_match('/\$_HOST(.*)\$$/', $row['host_macro_name'], $matches)) {
+                    $arr[$i]['macroInput_#index#'] = $matches[1];
+                    $arr[$i]['macroValue_#index#'] = $row['host_macro_value'];
+                    $arr[$i]['macroPassword_#index#'] = $row['is_password'] ? 1 : NULL;
                     $i++;
                 }
             }
-            return $arr;
-        }
-        
-        /**
-         * Get list of template linked to a given host
-         * 
-         * @param int $hostId
-         * @return array
-         */
-        public function getTemplates($hostId = null) {
-            $arr = array();
-            $i = 0;
-            if (!isset($_REQUEST['tpSelect']) && $hostId) {
-                $res = $this->db->query("SELECT host_tpl_id
-                                FROM host_template_relation
-                                WHERE host_host_id = " . 
-                                $this->db->escape($hostId) . "
-                                ORDER BY `order`");
-                while ($row = $res->fetchRow()) {
-                    $arr[$i]['tpSelect_#index#'] = $row['host_tpl_id'];
-                    $i++;
-                }
-            } else {
-                foreach($_REQUEST['tpSelect'] as $val) {
-                    $arr[$i]['tpSelect_#index#'] = $val;
-                    $i++;
-                }
-            }
-            return $arr;
-        }
-        
-        /**
-         * Set templates
-         * 
-         * @param int $hostId
-         * @param array $templates
-         * @return void
-         */
-        public function setTemplates($hostId, $templates = array(), $remaining = array()) {
-            $sql = "DELETE FROM host_template_relation 
-                WHERE host_host_id = ".$this->db->escape($hostId);
-            $stored = array();
-            if (count($remaining)) {
-                $sql .= " AND host_tpl_id NOT IN (".implode(',', $remaining).") ";
-                $stored = $remaining;
-            }
-            $this->db->query($sql);
-            
-            $str = "";
-            $i = 1;
-            foreach ($templates as $templateId) {
-                if (!isset($templateId) || !$templateId || isset($stored[$templateId])) {
-                    continue;
-                }
-                if ($str != "") {
-                    $str .= ", ";
-                }
-                $str .= "({$this->db->escape($hostId)}, {$this->db->escape($templateId)}, {$i})";
-                $stored[$templateId] = true;
+        } elseif (isset($_REQUEST['macroInput'])) {
+            foreach($_REQUEST['macroInput'] as $key => $val) {
+                $arr[$i]['macroInput_#index#'] = $val;
+                $arr[$i]['macroValue_#index#'] = $_REQUEST['macroValue'][$key];
+                $arr[$i]['macroPassword_#index#'] = isset($_REQUEST['is_password'][$key]) ? 1 : NULL;
                 $i++;
             }
-            if ($str) {
-                $this->db->query("INSERT INTO host_template_relation (host_host_id, host_tpl_id, `order`) VALUES $str");
+        }
+        return $arr;
+    }
+        
+    /**
+     * Get list of template linked to a given host
+     * 
+     * @param int $hostId
+     * @return array
+     */
+    public function getTemplates($hostId = null) {
+        $arr = array();
+        $i = 0;
+        if (!isset($_REQUEST['tpSelect']) && $hostId) {
+            $res = $this->db->query("SELECT host_tpl_id
+                                FROM host_template_relation
+                                WHERE host_host_id = " . 
+                                    $this->db->escape($hostId) . "
+                                ORDER BY `order`");
+            while ($row = $res->fetchRow()) {
+                $arr[$i]['tpSelect_#index#'] = $row['host_tpl_id'];
+                $i++;
+            }
+        } else {
+            foreach($_REQUEST['tpSelect'] as $val) {
+                $arr[$i]['tpSelect_#index#'] = $val;
+                $i++;
             }
         }
+        return $arr;
+    }
+        
+    /**
+     * Set templates
+     * 
+     * @param int $hostId
+     * @param array $templates
+     * @return void
+     */
+    public function setTemplates($hostId, $templates = array(), $remaining = array()) {
+        $sql = "DELETE FROM host_template_relation 
+                WHERE host_host_id = ".$this->db->escape($hostId);
+        $stored = array();
+        if (count($remaining)) {
+            $sql .= " AND host_tpl_id NOT IN (".implode(',', $remaining).") ";
+            $stored = $remaining;
+        }
+        $this->db->query($sql);
+            
+        $str = "";
+        $i = 1;
+        foreach ($templates as $templateId) {
+            if (!isset($templateId) || !$templateId || isset($stored[$templateId])) {
+                continue;
+            }
+            if ($str != "") {
+                $str .= ", ";
+            }
+            $str .= "({$this->db->escape($hostId)}, {$this->db->escape($templateId)}, {$i})";
+            $stored[$templateId] = true;
+            $i++;
+        }
+        if ($str) {
+            $this->db->query("INSERT INTO host_template_relation (host_host_id, host_tpl_id, `order`) VALUES $str");
+        }
+    }
+    
+     /**
+     * Get Host contactgroup list
+     * 
+     * @param int $host_id
+     * @param array $cg
+     * @return void
+     */
+    public function getContactGroupList($host_id, $cg) {
+        $request = "SELECT * FROM host";
+        $res = $this->db->query($sql);
+        while ($data = $res->fetchRow()) {
+            
+        }
+        return $cg;
+
+        $rq = "SELECT host_tpl_id " .
+			"FROM host_template_relation " .
+			"WHERE host_host_id = '".$host_id."' " .
+			"ORDER BY `order`";
+		$DBRESULT = $pearDB->query($rq);
+		while ($row = $DBRESULT->fetchRow()) {
+			$rq2 = "SELECT $field " .
+				"FROM host " .
+				"WHERE host_id = '".$row['host_tpl_id']."' LIMIT 1";
+			$DBRESULT2 = $pearDB->query($rq2);
+			$row2 = $DBRESULT2->fetchRow();
+			if (isset($row2[$field]) && $row2[$field])
+				return $row2[$field];
+			else {
+				if ($result_field = getMyHostFieldFromMultiTemplates($row['host_tpl_id'], $field)) {
+					return $result_field;
+				}
+			}
+		}
+        
+    }
+    
 }
 
 ?>

@@ -37,6 +37,8 @@
 use strict;
 use warnings;
 use centreon::plugins::script;
+use FindBin;
+use lib "$FindBin::Bin";
 
 centreon::plugins::script->new()->run();
 

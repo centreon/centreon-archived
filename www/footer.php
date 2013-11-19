@@ -92,6 +92,10 @@ jQuery(function() {
  */
 function initWholePage() {
 	setQuickSearchPosition();
+        jQuery().centreon_notify({
+            sid: "<?php echo session_id();?>", 
+            refresh_rate: <?php echo ($centreon->optGen['AjaxTimeReloadMonitoring'] * 1000);?>
+        });
 }
 
 /**

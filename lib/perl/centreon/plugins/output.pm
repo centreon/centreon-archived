@@ -34,6 +34,8 @@
 ####################################################################################
 
 package centreon::plugins::output;
+use Encode;
+use centreon::plugins::misc;
 
 sub new {
     my ($class, %options) = @_;
@@ -529,6 +531,12 @@ sub display_disco_show {
         
         print $self->{json_output}->encode($json_content);
     }
+}
+
+sub to_utf8 {
+    my ($self, $value) = @_;
+    
+    return centreon::plugins::misc::trim(Encode::decode('UTF-8', $value, Encode::PERLQQ));
 }
 
 sub add_disco_entry {

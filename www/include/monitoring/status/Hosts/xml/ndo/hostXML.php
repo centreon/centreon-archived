@@ -323,7 +323,6 @@
         $msgdata['last_state_change'] = $ndo['last_state_change'];
         $msgdata['state'] = $ndo['current_state'];
         $msgdata['name'] = $ndo['host_name'];
-        $obj->XML->writeElement("notifmsg", $obj->getHostNotificationMessage($msgdata, $centreon->optGen));
         $obj->XML->writeElement("lhs", 	($hard_duration ? $hard_duration : "N/A"));
         $obj->XML->writeElement("ha", 	$ndo["problem_has_been_acknowledged"]);
         $obj->XML->writeElement("hdtm", $ndo["scheduled_downtime_depth"]);

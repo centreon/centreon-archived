@@ -150,6 +150,7 @@
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
 		{else}
 			<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="host_templates"> {$form.service_hPars.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_hPars.html}</p></td></tr>
+            <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="servicegroups"> {$form.service_sgs.label}</td><td class="FormRowValue"><p  class="oreonbutton">{$form.service_sgs.html}</p></td></tr>
 		{/if}
 	 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/funnel_new.gif'>&nbsp;&nbsp;{$form.header.traps}</td></tr>
 		{if $o == "mc"}
