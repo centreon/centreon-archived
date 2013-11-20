@@ -578,11 +578,11 @@ sub forceCheck {
     
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = "/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile};
+        $submit = '/bin/echo "' . $prefix .  "[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
     
     my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
@@ -613,11 +613,11 @@ sub submitResult_do {
     
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = "/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile};
+        $submit = '/bin/echo "' . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"" . $prefix . "[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
     my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
                                                              logger => $self->{logger},
