@@ -571,14 +571,18 @@ sub forceCheck {
     my $submit;
 
     my $str = "SCHEDULE_FORCED_SVC_CHECK;$self->{current_hostname};$self->{current_service_desc};$datetime";
+    my $prefix = "";
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+        $prefix = "EXTERNALCMD:$self->{current_server_id}:";
+    }
     
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile};
+        $submit = "/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
     
     my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
@@ -602,13 +606,18 @@ sub submitResult_do {
     my $datetime = time();
     my $submit;
 
+    my $prefix = "";
+    if ($self->{centreontrapd_config}->{mode} == 0) {
+        $prefix = "EXTERNALCMD:$self->{current_server_id}:";
+    }
+    
     if ($self->{whoami} eq $self->{centreontrapd_config}->{centreon_user}) {
         $str =~ s/"/\\"/g;
-        $submit = "/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile};
+        $submit = "/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile};
     } else {
         $str =~ s/'/'\\''/g;
         $str =~ s/"/\\"/g;
-        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"EXTERNALCMD:$self->{current_server_id}:[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
+        $submit = "su -l " . $self->{centreontrapd_config}->{centreon_user} . " -c '/bin/echo \"$prefix[$datetime] $str\" >> " . $self->{cmdFile} . "' 2>&1";
     }
     my ($lerror, $stdout) = centreon::common::misc::backtick(command => $submit,
                                                              logger => $self->{logger},
