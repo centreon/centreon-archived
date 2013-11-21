@@ -42,6 +42,7 @@ use centreon::plugins::output;
 use centreon::plugins::misc;
 use FindBin;
 use Pod::Usage;
+use Pod::Find qw(pod_where);
 
 my %handlers = ('DIE' => {});
 
@@ -122,7 +123,7 @@ sub display_local_help {
     if ($self->{help}) {
         local *STDOUT;
         open STDOUT, '>', \$stdout;
-        pod2usage(-exitval => "NOEXIT", -input => $FindBin::Bin . "/" . $FindBin::Script);
+        pod2usage(-exitval => "NOEXIT", -input => pod_where({-inc => 1}, __PACKAGE__));
     }
     
     $self->{output}->add_option_msg(long_msg => $stdout) if (defined($stdout));
@@ -220,6 +221,40 @@ __END__
 
 =head1 NAME
 
-Class global script.
+centreon_plugins.pl - main program to call Merethis plugins.
+
+=head1 SYNOPSIS
+
+centreon_plugins.pl [options]
+
+=head1 OPTIONS
+
+=over 8
+
+=item B<--plugin>
+
+Specify the path to the plugin.
+
+=item B<--version>
+
+Print plugin version.
+
+=item B<--help>
+
+Print a brief help message and exits.
+
+=item B<--runas>
+
+Run the script as a different user (prefer to use directly the good user).
+
+=item B<--environment>
+
+Set environment variables for the script (prefer to set it before running it for better performance).
+
+=back
+
+=head1 DESCRIPTION
+
+B<centreon_plugins.pl> .
 
 =cut
