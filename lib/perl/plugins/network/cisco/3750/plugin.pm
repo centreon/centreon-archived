@@ -47,7 +47,9 @@ sub new {
 
     $self->{version} = '1.0';
     %{$self->{modes}} = (
+                         'cpu' => 'network::cisco::common::mode::cpu',
                          'environment' => 'network::cisco::common::mode::environment',
+                         'memory' => 'network::cisco::common::mode::memory',
                          'traffic' => 'snmp_standard::mode::traffic',
                          );
 
