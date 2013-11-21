@@ -342,6 +342,33 @@ sub display {
     $self->output_txt(exit_litteral => $self->get_litteral_status());
 }
 
+sub die_exit {
+    my ($self, %options) = @_;
+    # $options{exit_litteral} = string litteral exit
+    # $options{nolabel} = interger label display
+    my $exit_litteral = defined($options{exit_litteral}) ? $options{exit_litteral} : $self->{option_results}->{opt_exit};
+    my $nolabel = defined($options{nolabel}) ? 1 : 0;
+    # ignore long output in the following case
+    $self->{option_results}->{verbose} = undef;
+
+    if (defined($self->{option_results}->{output_xml})) {
+        $self->create_xml_document();
+        if ($self->{is_output_xml}) {
+            $self->output_xml(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1);
+            $self->exit(exit_litteral => $exit_litteral);
+        }
+    } elsif (defined($self->{option_results}->{output_json})) {
+        $self->create_json_document();
+        if ($self->{is_output_json}) {
+            $self->output_json(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1);
+            $self->exit(exit_litteral => $exit_litteral);
+        }
+    } 
+
+    $self->output_txt(exit_litteral => $exit_litteral, nolabel => $nolabel, force_ignore_perfdata => 1);
+    $self->exit(exit_litteral => $exit_litteral);
+}
+
 sub option_exit {
     my ($self, %options) = @_;
     # $options{exit_litteral} = string litteral exit

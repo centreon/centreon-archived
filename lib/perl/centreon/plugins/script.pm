@@ -76,8 +76,10 @@ sub class_handle_DIE {
 sub handle_DIE {
     my ($self, $msg) = @_;
 
+    # For 'mod_perl'
+    die $msg if $^S;
     $self->{output}->add_option_msg(short_msg => $msg);
-    $self->{output}->option_exit();
+    $self->{output}->die_exit();
 }
 
 sub get_plugin {
