@@ -130,7 +130,7 @@ sub run {
     my $oid_speed32 = '.1.3.6.1.2.1.2.2.1.5'; # in b/s
     my $oid_in32 = '.1.3.6.1.2.1.2.2.1.10'; # in B
     my $oid_out32 = '.1.3.6.1.2.1.2.2.1.16'; # in B
-    my $oid_speed64 = '.1.3.6.1.2.1.31.1.1.1.15'; # in b/s
+    my $oid_speed64 = '.1.3.6.1.2.1.31.1.1.1.15'; # need multiple by '1000000'
     my $oid_in64 = '.1.3.6.1.2.1.31.1.1.1.6'; # in B
     my $oid_out64 = '.1.3.6.1.2.1.31.1.1.1.10'; # in B
 
@@ -163,7 +163,7 @@ sub run {
 
         my $interface_speed;
         if (defined($self->{option_results}->{speed}) && $self->{option_results}->{speed} ne '') {
-            $interface_speed = $self->{option_results}->{speed} * 1024 * 1024;
+            $interface_speed = $self->{option_results}->{speed} * 1000000;
         } else {
             if ((!defined($result->{$oid_speed32 . "." . $_}) || $result->{$oid_speed32 . "." . $_} !~ /^[0-9]+$/) && 
                 (!defined($result->{$oid_speed64 . "." . $_}) || $result->{$oid_speed64 . "." . $_} !~ /^[0-9]+$/)) {
@@ -171,7 +171,7 @@ sub run {
                                             short_msg => "Interface '" . $display_value . "' Speed is null or incorrect. You should force the value with --speed option");
                 next;
             }
-            $interface_speed = (defined($result->{$oid_speed64 . "." . $_}) && $result->{$oid_speed64 . "." . $_} ne '' ? ($result->{$oid_speed64 . "." . $_}) : ($result->{$oid_speed32 . "." . $_}));
+            $interface_speed = (defined($result->{$oid_speed64 . "." . $_}) && $result->{$oid_speed64 . "." . $_} ne '' ? ($result->{$oid_speed64 . "." . $_} * 1000000) : ($result->{$oid_speed32 . "." . $_}));
             if ($interface_speed == 0) {
                 next;
             }
