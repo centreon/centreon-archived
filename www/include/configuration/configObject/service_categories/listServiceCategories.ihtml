@@ -24,6 +24,7 @@
 			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_desc}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_linked_svc}</td>
+			<td class="ListColHeaderCenter">{$headerMenu_sc_type}</td>
 			<td class="ListColHeaderCenter">{$headerMenu_status}</td>
 			<td class="ListColHeaderRight">{$headerMenu_options}</td>
 		</tr>
@@ -33,6 +34,7 @@
 			<td class="ListColLeft"><a href="{$elemArr[elem].sc_link}">{$elemArr[elem].sc_name}</a></td>
 			<td class="ListColCenter"><a href="{$elemArr[elem].sc_link}">{$elemArr[elem].sc_description}</a></td>
 			<td class="ListColCenter">{$elemArr[elem].svc_linked}</td>
+                        <td class="ListColCenter">{$elemArr[elem].sc_type}</td>
 			<td class="ListColCenter">{$elemArr[elem].sc_activated}</td>
 			<td class="ListColRight">{if $mode_access == 'w' }{$elemArr[elem].RowMenu_options}{else}&nbsp;{/if}</td>
 		</tr>

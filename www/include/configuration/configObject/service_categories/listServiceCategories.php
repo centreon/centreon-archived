@@ -87,6 +87,7 @@
 	$tpl->assign("headerMenu_desc", _("Description"));
 	$tpl->assign("headerMenu_status", _("Status"));
 	$tpl->assign("headerMenu_linked_svc", _("Number of linked services"));
+	$tpl->assign("headerMenu_sc_type", _("Type"));
 	$tpl->assign("headerMenu_options", _("Options"));
 
 	/*
@@ -130,6 +131,7 @@
 							"sc_link" => "?p=".$p."&o=c&sc_id=".$sc['sc_id'],
 							"sc_description" => htmlentities($sc["sc_description"], ENT_QUOTES, "UTF-8"),
 							"svc_linked" => $nb_svc["COUNT(*)"],
+                                                        "sc_type" => ($sc['level'] ? _('Severity') . ' ('.$sc['level'].')' : _('Regular')),
 							"sc_activated" => $sc["sc_activate"] ? _("Enabled") : _("Disabled"),
 							"RowMenu_options" => $moptions);
 		$style != "two" ? $style = "two" : $style = "one";

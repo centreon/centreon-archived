@@ -87,6 +87,7 @@
 	$tpl->assign("headerMenu_name", _("Name"));
 	$tpl->assign("headerMenu_desc", _("Description"));
 	$tpl->assign("headerMenu_status", _("Status"));
+	$tpl->assign("headerMenu_hc_type", _("Type"));
 	$tpl->assign("headerMenu_hostAct", _("Enabled Hosts"));
 	$tpl->assign("headerMenu_hostDeact", _("Disabled Hosts"));
 	$tpl->assign("headerMenu_options", _("Options"));
@@ -94,7 +95,7 @@
 	/*
 	 * Hostgroup list
 	 */
-    $rq = "SELECT hc_id, hc_name, hc_alias, hc_activate FROM hostcategories $SearchTool $hcFilter ORDER BY hc_name LIMIT ".$num * $limit .", $limit";
+    $rq = "SELECT hc_id, hc_name, hc_alias, level, hc_activate FROM hostcategories $SearchTool $hcFilter ORDER BY hc_name LIMIT ".$num * $limit .", $limit";
 	$DBRESULT = $pearDB->query($rq);
 
 	$search = tidySearchKey($search, $advanced_search);
@@ -157,6 +158,7 @@
 						"RowMenu_name"=>$hc["hc_name"],
 						"RowMenu_link"=>"?p=".$p."&o=c&hc_id=".$hc['hc_id'],
 						"RowMenu_desc"=>$hc["hc_alias"],
+                                                "RowMenu_hc_type"=>($hc["level"] ? _('Severity') . ' ('.$hc['level'].')' : _('Regular')),
 						"RowMenu_status"=>$hc["hc_activate"] ? _("Enabled") : _("Disabled"),
 						"RowMenu_hostAct"=>$nbrhostAct,
 						"RowMenu_hostDeact"=>$nbrhostDeact,
