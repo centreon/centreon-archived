@@ -47,7 +47,9 @@ sub new {
 
     $self->{version} = '1.0';
     %{$self->{modes}} = (
+                         'cpu' => 'network::alteon::common::mode::cpu',
                          'hardware' => 'network::alteon::common::mode::hardware',
+                         'memory' => 'network::alteon::common::mode::memory',
                          );
 
     return $self;
