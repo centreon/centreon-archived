@@ -113,6 +113,9 @@ INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (60901,
 
 UPDATE `topology` SET `topology_name` = 'Extensions' WHERE `topology_name` = 'Modules' AND `topology_page` = 507;
 
+-- ticket #4985
+UPDATE `topology` SET `topology_name` = 'Documentation', `topology_url` = 'http://documentation.centreon.com' WHERE `topology_name` = 'Wiki' AND `topology_page` = 50604;
+
 -- noty
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/jquery.noty.js',NULL);
 INSERT INTO `topology_JS` (`id_page`, `o`, `PathName_js`, `Init`) VALUES (202,NULL,'./include/common/javascript/jquery/plugins/noty/themes/default.js',NULL);
