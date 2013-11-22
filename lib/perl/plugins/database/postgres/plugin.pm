@@ -55,6 +55,7 @@ sub new {
                          'query-time' => 'database::postgres::mode::querytime',
                          'timesync' => 'database::postgres::mode::timesync',
                          );
+    $self->{sql_modes}{psqlcmd} = 'database::postgres::psqlcmd';
     return $self;
 }
 
@@ -65,7 +66,7 @@ sub init {
                                    arguments => {
                                                 'host:s@'      => { name => 'db_host' },
                                                 'port:s@'      => { name => 'db_port' },
-                                                'database:s@'  => { name => 'db_name', default => 'postgres' },
+                                                'database:s@'  => { name => 'db_name' },
                                                 }
                                   );
     $self->{options}->parse_options();
@@ -74,19 +75,19 @@ sub init {
 
     if (defined($options_result->{db_host})) {
         @{$self->{sqldefault}->{dbi}} = ();
+        @{$self->{sqldefault}->{psqlcmd}} = ();
         for (my $i = 0; $i < scalar(@{$options_result->{db_host}}); $i++) {
             $self->{sqldefault}->{dbi}[$i] = { data_source => 'Pg:host=' . $options_result->{db_host}[$i] };
+            $self->{sqldefault}->{psqlcmd}[$i] = { host => $options_result->{db_host}[$i] };
             if (defined($options_result->{db_port}[$i])) {
                 $self->{sqldefault}->{dbi}[$i]->{data_source} .= ';port=' . $options_result->{db_port}[$i];
+                $self->{sqldefault}->{psqlcmd}[$i]->{port} = $options_result->{db_port}[$i];
             }
-            if (defined($options_result->{db_name}[$i])) {
-                $self->{sqldefault}->{dbi}[$i]->{data_source} .= ';database=' . $options_result->{db_name}[$i];
-            }
+            $options_result->{db_name}[$i] = (defined($options_result->{db_name}[$i])) ? $options_result->{db_name}[$i] : 'postgres';
+            $self->{sqldefault}->{dbi}[$i]->{data_source} .= ';database=' . $options_result->{db_name}[$i];
+            $self->{sqldefault}->{psqlcmd}[$i]->{dbname} = $options_result->{db_name}[$i];
         }
     }
-
-    # If we want a command line: password with variable "PGPASSWORD".
-    #  psql  -d template1 -A -R '-====-' -F '#====#' -c "select code from films"
     
     $self->SUPER::init(%options);    
 }
