@@ -73,6 +73,9 @@ sub main {
 		exit(1);
     }
     my $last_oid = "";
+    my $nb_inserted = 0;
+    my $nb_updated = 0;
+
 	while (<FILE>) {	
 		if ($_ =~ /^EVENT\ ([a-zA-Z0-9\_\-]+)\ ([0-9\.]+)\ (\"[A-Za-z\ \_\-]+\")\ ([a-zA-Z]+)/) {
 			my ($name,$oid,$type,$val) = ($1, $2, $3, $4);
@@ -83,9 +86,11 @@ sub main {
 				$val = getStatus($val,$name);
 				my ($status, $sth) = $self->{centreon_dbc}->query("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES (" . $self->{centreon_dbc}->quote($name) . ", " . $self->{centreon_dbc}->quote($oid) . ", " . $self->{centreon_dbc}->quote($val) . ", " . $self->{centreon_dbc}->quote($manuf) . ", '1')");
 				$last_oid = $oid;
+                        $nb_inserted++;
 		    }
 		} elsif ($_ =~/^FORMAT\ (.*)/ && $last_oid ne "") {
 		    my ($status, $sth) = $self->{centreon_dbc}->query("UPDATE `traps` set `traps_args` = '$1' WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($last_oid));
+                    $nb_updated++;
 		} elsif ($_ =~ /^SDESC(.*)/ && $last_oid ne "") {	    
 		    my $temp_val = $1;
 		    my $desc = "";
@@ -107,9 +112,11 @@ sub main {
 		    }
 		    if ($desc ne "") {
 				my ($status, $sth) = $self->{centreon_dbc}->query("UPDATE `traps` SET `traps_comments` = '$desc' WHERE `traps_oid` = " .  $self->{centreon_dbc}->quote($last_oid));
+                        $nb_updated++;
 		    }
 		}
     }
+    $self->{logger}->writeLogInfo("$nb_inserted entries inserted, $nb_updated entries updated");
 }
 
 sub run {
