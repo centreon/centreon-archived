@@ -36,7 +36,7 @@
  *
  */
 
-	if (!isset($oreon))
+	if (!isset($centreon))
 		exit();
 
 	function testExistence ($name = null, $instanceId = null) {
