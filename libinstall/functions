@@ -940,7 +940,7 @@ function locate_snmp_etcdir() {
 #----
 function locate_centreontrapd_bindir() {
 	if [ -z "$CENTREONTRAPD_BINDIR" ] ; then
-		answer_with_createdir "$(gettext "Where is your CentreonTrapd binaries directory")" "$DEFAULT_CENTREONTRAPD_BINDIR" "CENTREONTRAPD_BINDIR"
+		answer_with_createdir "$(gettext "Where is your CentreonTrapd binaries directory")" "$DEFAULT_CENTREON_BINDIR" "CENTREONTRAPD_BINDIR"
 		echo_success "$CENTREONTRAPD_BINDIR" "$ok"
 	fi
 	CENTREONTRAPD_BINDIR=`trim ${CENTREONTRAPD_BINDIR%/}`
