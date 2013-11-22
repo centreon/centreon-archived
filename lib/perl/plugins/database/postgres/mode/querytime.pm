@@ -33,13 +33,12 @@
 #
 ####################################################################################
 
-package database::mysql::mode::queries;
+package database::postgres::mode::querytime;
 
 use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use centreon::plugins::statefile;
 
 sub new {
     my ($class, %options) = @_;
@@ -51,8 +50,8 @@ sub new {
                                 { 
                                   "warning:s"               => { name => 'warning', },
                                   "critical:s"              => { name => 'critical', },
+                                  "exclude:s"               => { name => 'exclude', },
                                 });
-    $self->{statefile_cache} = centreon::plugins::statefile->new(%options);
 
     return $self;
 }
@@ -69,8 +68,6 @@ sub check_options {
        $self->{output}->add_option_msg(short_msg => "Wrong critical threshold '" . $self->{critical} . "'.");
        $self->{output}->option_exit();
     }
-    
-    $self->{statefile_cache}->check_options(%options);
 }
 
 sub run {
@@ -79,55 +76,59 @@ sub run {
     $self->{sql} = $options{sql};
 
     $self->{sql}->connect();
-    $self->{sql}->query(query => q{
-        SHOW /*!50000 global */ STATUS WHERE Variable_name IN ('Queries', 'Com_update', 'Com_delete', 'Com_insert', 'Com_truncate', 'Com_select') 
-    });
-    my $result = $self->{sql}->fetchall_arrayref();
-    
-    if (!($self->{sql}->is_version_minimum(version => '5.0.76'))) {
-        $self->{output}->add_option_msg(short_msg => "MySQL version '" . $self->{sql}->{version} . "' is not supported (need version >= '5.0.76').");
-        $self->{output}->option_exit();
+
+    my $query;
+    if ($self->{sql}->is_version_minimum(version => '9.2')) {
+        $query = q{
+SELECT datname, datid, pid, usename, client_addr, query AS current_query, state AS state,
+       CASE WHEN client_port < 0 THEN 0 ELSE client_port END AS client_port,
+       COALESCE(ROUND(EXTRACT(epoch FROM now()-query_start)),0) AS seconds
+FROM pg_stat_activity WHERE (query_start IS NOT NULL AND (state NOT LIKE 'idle%' OR state IS NULL))
+ORDER BY query_start, pid DESC
+};
+    } else {
+        $query = q{
+SELECT datname, datid, procpid AS pid, usename, client_addr, current_query AS current_query, '' AS state,
+       CASE WHEN client_port < 0 THEN 0 ELSE client_port END AS client_port,
+       COALESCE(ROUND(EXTRACT(epoch FROM now()-query_start)),0) AS seconds
+FROM pg_stat_activity WHERE (query_start IS NOT NULL AND current_query NOT LIKE '<IDLE>%')
+ORDER BY query_start, procpid DESC
+};
     }
     
-    my $new_datas = {};
-    $self->{statefile_cache}->read(statefile => 'mysql_' . $self->{mode} . '_' . $self->{sql}->get_unique_id4save());
-    my $old_timestamp = $self->{statefile_cache}->get(name => 'last_timestamp');
-    $new_datas->{last_timestamp} = time();
-    
-    if (defined($old_timestamp) && $new_datas->{last_timestamp} - $old_timestamp == 0) {
-        $self->{output}->add_option_msg(short_msg => "Need at least one second between two checks.");
-        $self->{output}->option_exit();
-    }
-    
-    foreach my $row (@{$result}) {
-        next if ($$row[0] !~ /^(Queries|Com_update|Com_delete|Com_insert|Com_truncate|Com_select)/i);
-    
-        $new_datas->{$$row[0]} = $$row[1];
-        my $old_val = $self->{statefile_cache}->get(name => $$row[0]);
-        next if (!defined($old_val) || $$row[1] < $old_val);
-        
-        my $value = int(($$row[1] - $old_val) / ($new_datas->{last_timestamp} - $old_timestamp));
-        if ($$row[0] ne 'Queries') {
-            $self->{output}->perfdata_add(label => $$row[0] . '_requests',
-                                      value => $value,
-                                      min => 0);
+    $self->{sql}->query(query => $query);
+
+    $self->{output}->output_add(severity => 'OK',
+                                short_msg => "All databases queries time are ok.");
+    my $dbquery = {};
+    while ((my $row = $self->{sql}->fetchrow_hashref())) {
+        if (defined($self->{option_results}->{exclude}) && $row->{datname} !~ /$self->{option_results}->{exclude}/) {
             next;
         }
         
-        my $exit_code = $self->{perfdata}->threshold_check(value => $value, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
-        $self->{output}->output_add(severity => $exit_code,
-                                    short_msg => sprintf("Total requests = %d.", $value));
-        $self->{output}->perfdata_add(label => 'total_requests',
-                                      value => $value,
+        use Data::Dumper;
+        print Data::Dumper::Dumper($row);
+        
+        my $exit_code = $self->{perfdata}->threshold_check(value => $row->{seconds}, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
+        if ($self->{output}->is_status(value => $exit_code, compare => 'ok', litteral => 1)) {
+            $self->{output}->output_add(long_msg => sprintf("Request from client '%s' too long (%d sec) on database '%s': %s",
+                                                            $row->{client_addr}, $row->{seconds}, $row->{datname}, $row->{current_query}));
+            $dbquery->{$row->{datname}}->{total}++;
+            $dbquery->{$row->{datname}}->{code}->{$exit_code}++;
+        }
+    }
+    
+    foreach my $dbname (keys %$dbquery) {
+        $self->{output}->perfdata_add(label => $dbname . '_qtime_num',
+                                      value => $dbquery->{$dbname}->{total},
                                       warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning'),
                                       critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical'),
                                       min => 0);
-    }
-    
-    $self->{statefile_cache}->write(data => $new_datas); 
-    if (!defined($old_timestamp)) {
-        $self->{output}->output_add(severity => 'OK',
-                                    short_msg => "Buffer creation...");
+        foreach my $exit_code (keys %{$dbquery->{$dbname}->{code}}) {
+            $self->{output}->output_add(severity => $exit_code,
+                                        short_msg => sprintf("%d request exceed " . lc($exit_code) . " threshold on database '%s'",
+                                                             $dbquery->{$dbname}->{code}->{$exit_code}, $dbname));
+        }
     }
 
     $self->{output}->display();
@@ -140,17 +141,21 @@ __END__
 
 =head1 MODE
 
-Check average number of queries executed.
+Checks the time of running queries for one or more databases
 
 =over 8
 
 =item B<--warning>
 
-Threshold warning.
+Threshold warning in seconds.
 
 =item B<--critical>
 
-Threshold critical.
+Threshold critical in seconds.
+
+=item B<--exclude>
+
+Filter databases.
 
 =back
 

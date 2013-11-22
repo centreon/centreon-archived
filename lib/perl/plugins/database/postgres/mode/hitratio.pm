@@ -33,7 +33,7 @@
 #
 ####################################################################################
 
-package database::mysql::mode::queries;
+package database::postgres::mode::hitratio;
 
 use base qw(centreon::plugins::mode);
 
@@ -51,6 +51,8 @@ sub new {
                                 { 
                                   "warning:s"               => { name => 'warning', },
                                   "critical:s"              => { name => 'critical', },
+                                  "lookback"                => { name => 'lookback', },
+                                  "exclude:s"               => { name => 'exclude', },
                                 });
     $self->{statefile_cache} = centreon::plugins::statefile->new(%options);
 
@@ -69,7 +71,7 @@ sub check_options {
        $self->{output}->add_option_msg(short_msg => "Wrong critical threshold '" . $self->{critical} . "'.");
        $self->{output}->option_exit();
     }
-    
+
     $self->{statefile_cache}->check_options(%options);
 }
 
@@ -79,49 +81,67 @@ sub run {
     $self->{sql} = $options{sql};
 
     $self->{sql}->connect();
+    
     $self->{sql}->query(query => q{
-        SHOW /*!50000 global */ STATUS WHERE Variable_name IN ('Queries', 'Com_update', 'Com_delete', 'Com_insert', 'Com_truncate', 'Com_select') 
+SELECT sd.blks_hit, sd.blks_read, d.datname
+FROM pg_stat_database sd, pg_database d
+WHERE d.oid=sd.datid
     });
+
+    $self->{statefile_cache}->read(statefile => 'postgres_' . $self->{mode} . '_' . $self->{sql}->get_unique_id4save());
+    my $old_timestamp = $self->{statefile_cache}->get(name => 'last_timestamp');
+    
+    my $database_check = 0;
+    my $new_datas = {};
+    $new_datas->{last_timestamp} = time();
     my $result = $self->{sql}->fetchall_arrayref();
     
-    if (!($self->{sql}->is_version_minimum(version => '5.0.76'))) {
-        $self->{output}->add_option_msg(short_msg => "MySQL version '" . $self->{sql}->{version} . "' is not supported (need version >= '5.0.76').");
-        $self->{output}->option_exit();
-    }
-    
-    my $new_datas = {};
-    $self->{statefile_cache}->read(statefile => 'mysql_' . $self->{mode} . '_' . $self->{sql}->get_unique_id4save());
-    my $old_timestamp = $self->{statefile_cache}->get(name => 'last_timestamp');
-    $new_datas->{last_timestamp} = time();
-    
-    if (defined($old_timestamp) && $new_datas->{last_timestamp} - $old_timestamp == 0) {
-        $self->{output}->add_option_msg(short_msg => "Need at least one second between two checks.");
-        $self->{output}->option_exit();
-    }
+    $self->{output}->output_add(severity => 'OK',
+                                short_msg => "All databases hitratio are ok.");
+
     
     foreach my $row (@{$result}) {
-        next if ($$row[0] !~ /^(Queries|Com_update|Com_delete|Com_insert|Com_truncate|Com_select)/i);
-    
-        $new_datas->{$$row[0]} = $$row[1];
-        my $old_val = $self->{statefile_cache}->get(name => $$row[0]);
-        next if (!defined($old_val) || $$row[1] < $old_val);
+        $new_datas->{$$row[2] . '_blks_hit'} = $$row[0];
+        $new_datas->{$$row[2] . '_blks_read'} = $$row[1];
         
-        my $value = int(($$row[1] - $old_val) / ($new_datas->{last_timestamp} - $old_timestamp));
-        if ($$row[0] ne 'Queries') {
-            $self->{output}->perfdata_add(label => $$row[0] . '_requests',
-                                      value => $value,
-                                      min => 0);
+        if (defined($self->{option_results}->{exclude}) && $$row[2] !~ /$self->{option_results}->{exclude}/) {
+            $self->{output}->output_add(long_msg => "Skipping database '" . $$row[2] . '"');
             next;
         }
+
+        my $old_blks_hit = $self->{statefile_cache}->get(name => $$row[2] . '_blks_hit');
+        my $old_blks_read = $self->{statefile_cache}->get(name => $$row[2] . '_blks_read');
         
-        my $exit_code = $self->{perfdata}->threshold_check(value => $value, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
-        $self->{output}->output_add(severity => $exit_code,
-                                    short_msg => sprintf("Total requests = %d.", $value));
-        $self->{output}->perfdata_add(label => 'total_requests',
-                                      value => $value,
+        next if (!defined($old_blks_hit) || !defined($old_blks_read));
+        $old_blks_hit = 0 if ($$row[0] <= $old_blks_hit);
+        $old_blks_read = 0 if ($$row[1] <= $old_blks_read);
+        
+        $database_check++;
+        my %prcts = ();
+        my $total_read_requests = $new_datas->{$$row[2] . '_blks_hit'} - $old_blks_hit;
+        my $total_read_disk = $new_datas->{$$row[2] . '_blks_read'} - $old_blks_read;
+        $prcts{hitratio_now} = ($total_read_requests == 0) ? 100 : ($total_read_requests - $total_read_disk) * 100 / $total_read_requests;
+        $prcts{hitratio} = ($new_datas->{$$row[2] . '_blks_hit'} == 0) ? 100 : ($new_datas->{$$row[2] . '_blks_hit'} - $new_datas->{$$row[2] . '_blks_read'}) * 100 / $new_datas->{$$row[2] . '_blks_hit'};
+        
+        my $exit_code = $self->{perfdata}->threshold_check(value => $prcts{'hitratio' . ((defined($self->{option_results}->{lookback})) ? '_now' : '' )}, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
+        $self->{output}->output_add(long_msg => sprintf("Database '%s' hitratio at %.2f%%", 
+                                                    $$row[2], $prcts{'hitratio' . ((defined($self->{option_results}->{lookback})) ? '' : '_now')})
+                                    );
+        
+        if (!$self->{output}->is_status(value => $exit_code, compare => 'ok', litteral => 1)) {
+            $self->{output}->output_add(severity => $exit_code,
+                                        short_msg => sprintf("Database '%s' hitratio at %.2f%%", 
+                                                    $$row[2], $prcts{'hitratio' . ((defined($self->{option_results}->{lookback})) ? '' : '_now')})
+                                        );
+        }
+        $self->{output}->perfdata_add(label => $$row[2] . '_hitratio' . ((defined($self->{option_results}->{lookback})) ? '' : '_now'), unit => '%',
+                                      value => sprintf("%.2f", $prcts{'hitratio' . ((defined($self->{option_results}->{lookback})) ? '_now' : '')}),
                                       warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning'),
                                       critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical'),
-                                      min => 0);
+                                      min => 0, max => 100);
+        $self->{output}->perfdata_add(label => $$row[2] . '_hitratio' . ((defined($self->{option_results}->{lookback})) ? '_now' : ''), unit => '%',
+                                      value => sprintf("%.2f", $prcts{'hitratio' . ((defined($self->{option_results}->{lookback})) ? '_now' : '')}),
+                                      min => 0, max => 100);
     }
     
     $self->{statefile_cache}->write(data => $new_datas); 
@@ -129,7 +149,11 @@ sub run {
         $self->{output}->output_add(severity => 'OK',
                                     short_msg => "Buffer creation...");
     }
-
+    if (defined($old_timestamp) && $database_check == 0) {
+        $self->{output}->output_add(severity => 'UNKNOWN',
+                                    short_msg => 'No database checked. (permission or a wrong exclude filter)');
+    }
+    
     $self->{output}->display();
     $self->{output}->exit();
 }
@@ -140,7 +164,7 @@ __END__
 
 =head1 MODE
 
-Check average number of queries executed.
+Check hitratio (in buffer cache) for databases.
 
 =over 8
 
@@ -151,6 +175,14 @@ Threshold warning.
 =item B<--critical>
 
 Threshold critical.
+
+=item B<--lookback>
+
+Threshold isn't on the percent calculated from the difference ('xxx_hitratio_now').
+
+=item B<--exclude>
+
+Filter databases.
 
 =back
 

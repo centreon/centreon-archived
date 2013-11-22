@@ -182,11 +182,11 @@ Check system number of processes.
 
 =item B<--warning>
 
-Threshold warning in percent.
+Threshold warning.
 
 =item B<--critical>
 
-Threshold critical in percent.
+Threshold critical.
 
 =item B<--process-name>
 
