@@ -78,10 +78,7 @@
         
         $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
         $hgString = CentreonUtils::toStringWithQuotes($hgs);            
-        $sgs = $acl->getServiceGroupAclConf(array('fields'  => array('sg_id', 'sg_name'),
-                                                  'keys'    => array('sg_id'),
-                                                  'get_row' => 'sg_name',
-                                                  'order'   => array('sg_name')));
+        $hgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
         $sgString = CentreonUtils::toStringWithQuotes($sgs);
         
 	switch ($o)	{
