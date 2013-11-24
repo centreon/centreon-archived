@@ -64,6 +64,7 @@ sub new {
                                   "name"                    => { name => 'use_name' },
                                   "interface:s"             => { name => 'interface' },
                                   "speed:s"                 => { name => 'speed' },
+                                  "filter-status:s"         => { name => 'filter_status' },
                                   "regexp"                  => { name => 'use_regexp' },
                                   "regexp-isensitive"       => { name => 'use_regexpi' },
                                   "oid-filter:s"            => { name => 'oid_filter', default => 'ifname'},
@@ -109,6 +110,9 @@ sub run {
         my $interface_speed = (defined($result->{$oid_speed64 . "." . $_}) && $result->{$oid_speed64 . "." . $_} ne '' ? ($result->{$oid_speed64 . "." . $_}) : (int($result->{$oid_speed32 . "." . $_} / 1000 / 1000)));        
         if (defined($self->{option_results}->{speed}) && $self->{option_results}->{speed} ne '') {
             $interface_speed = $self->{option_results}->{speed};
+        }
+        if (defined($self->{option_results}->{filter_status}) && $operstatus[$result->{$oid_operstatus . "." . $_} - 1] !~ /$self->{option_results}->{filter_status}/i) {
+            next;
         }
 
         $interfaces_display .= $interfaces_display_append . "name = $display_value [speed = $interface_speed, status = " . $operstatus[$result->{$oid_operstatus . "." . $_} - 1] . ", id = $_]";
@@ -225,6 +229,9 @@ sub disco_show {
         if (defined($self->{option_results}->{speed}) && $self->{option_results}->{speed} ne '') {
             $interface_speed = $self->{option_results}->{speed};
         }
+        if (defined($self->{option_results}->{filter_status}) && $operstatus[$result->{$oid_operstatus . "." . $_} - 1] !~ /$self->{option_results}->{filter_status}/i) {
+            next;
+        }
 
         $self->{output}->add_disco_entry(name => $display_value,
                                          total => $interface_speed,
@@ -260,6 +267,10 @@ Allows to use regexp non case-sensitive (with --regexp).
 =item B<--speed>
 
 Set interface speed (in Mb).
+
+=item B<--filter-status>
+
+Display interfaces matching the filter (example: 'up').
 
 =item B<--oid-filter>
 
