@@ -373,38 +373,6 @@ sub manage_selection {
     }
 }
 
-sub disco_format {
-    my ($self, %options) = @_;
-    
-    $self->{output}->add_disco_format(elements => ['name', 'total', 'status', 'interfaceid']);
-}
-
-sub disco_show {
-    my ($self, %options) = @_;
-    # $options{snmp} = snmp object
-    $self->{snmp} = $options{snmp};
-    $self->{hostname} = $self->{snmp}->get_hostname();
-
-    my $oid_operstatus = '.1.3.6.1.2.1.2.2.1.8';
-    my $oid_speed32 = '.1.3.6.1.2.1.2.2.1.5'; # in b/s
-
-    $self->manage_selection();
-    $self->{snmp}->load(oids => [$oid_operstatus, $oid_speed32], instances => $self->{interface_id_selected});
-    my $result = $self->{snmp}->get_leef();
-    foreach (sort @{$self->{interface_id_selected}}) {
-        my $display_value = $self->get_display_value(id => $_);
-        my $interface_speed = int($result->{$oid_speed32 . "." . $_} / 1000 / 1000);
-        if (defined($self->{option_results}->{speed}) && $self->{option_results}->{speed} ne '') {
-            $interface_speed = $self->{option_results}->{speed};
-        }
-
-        $self->{output}->add_disco_entry(name => $display_value,
-                                         total => $interface_speed,
-                                         status => $result->{$oid_operstatus . "." . $_},
-                                         interfaceid => $_);
-    }
-}
-
 1;
 
 __END__
