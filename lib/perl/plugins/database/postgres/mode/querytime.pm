@@ -106,9 +106,6 @@ ORDER BY query_start, procpid DESC
             next;
         }
         
-        use Data::Dumper;
-        print Data::Dumper::Dumper($row);
-        
         my $exit_code = $self->{perfdata}->threshold_check(value => $row->{seconds}, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
         if ($self->{output}->is_status(value => $exit_code, compare => 'ok', litteral => 1)) {
             $self->{output}->output_add(long_msg => sprintf("Request from client '%s' too long (%d sec) on database '%s': %s",

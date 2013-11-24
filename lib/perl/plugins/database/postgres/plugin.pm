@@ -52,6 +52,7 @@ sub new {
                          'connection-time' => 'database::postgres::mode::connectiontime',
                          'hitratio' => 'database::postgres::mode::hitratio',
                          'locks' => 'database::postgres::mode::locks',
+                         'list-databases' => 'database::postgres::mode::listdatabases',
                          'query-time' => 'database::postgres::mode::querytime',
                          'timesync' => 'database::postgres::mode::timesync',
                          );
