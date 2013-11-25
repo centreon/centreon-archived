@@ -155,7 +155,7 @@ sub run {
     my $old_timestamp;
     if (!defined($self->{option_results}->{interface}) || defined($self->{option_results}->{use_regexp})) {
         $self->{output}->output_add(severity => 'OK',
-                                    short_msg => 'All traffic are ok.');
+                                    short_msg => 'All traffic are ok');
     }
 
     foreach (sort @{$self->{interface_id_selected}}) {
@@ -184,6 +184,11 @@ sub run {
                 $self->{output}->output_add(severity => 'CRITICAL',
                                             short_msg => "Interface '" . $display_value . "' is not ready: " . $operstatus[$result->{$oid_operstatus . "." . $_} - 1]);
             } else {
+                # Avoid getting "buffer creation..." alone
+                if (defined($self->{option_results}->{interface}) && !defined($self->{option_results}->{use_regexp})) {
+                    $self->{output}->output_add(severity => 'OK',
+                                                short_msg => "Interface '" . $display_value . "' is not up (normal state)");
+                }
                 $self->{output}->output_add(long_msg => "Skip interface '" . $display_value . "'.");
             }
             next;
