@@ -52,6 +52,7 @@ sub new {
                          'memory' => 'os::windows::mode::memory',
                          'packet-errors' => 'snmp_standard::mode::packeterrors',
                          'processcount' => 'snmp_standard::mode::processcount',
+                         'service' => 'os::windows::mode::service',
                          'storage' => 'snmp_standard::mode::storage',
                          'swap' => 'os::windows::mode::swap',
                          'traffic' => 'snmp_standard::mode::traffic',
