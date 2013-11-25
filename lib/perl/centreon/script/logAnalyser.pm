@@ -7,6 +7,18 @@ use centreon::script;
 
 use base qw(centreon::script);
 
+=head2 $self->log_and_exit($msg)
+
+Logs a message and exits script.
+
+=cut
+sub log_and_exit($$) {
+    my ($self, $msg) = @_;
+
+    $self->{logger}->writeLogError($msg);
+    exit 1;
+}
+
 sub new {
     my $class = shift;
     my $self = $class->SUPER::new("logAnalyser",
@@ -33,18 +45,18 @@ sub read_config {
 
     goto error if $status == -1;
     if ($sth->fetchrow_hashref()->{value} eq "broker") {
-        die "This script is only suitable for NDO";
+        $self->log_and_exit("This script is only suitable for NDO");
     }
     ($status, $sth) = $self->{csdb}->query(<<"EOQ");
 SELECT archive_log, archive_retention FROM config
 EOQ
     goto error if $status == -1;
     $self->{config} = $sth->fetchrow_hashref();
-    die "No configuration found in database" if !defined $self->{config}->{archive_log};
+    $self->log_and_exit("No configuration found in database") if !defined $self->{config}->{archive_log};
     return;
 
   error:
-    die "Failed to read configuration from database"
+    $self->log_and_exit("Failed to read configuration from database")
 }
 
 =head2 date_to_time($date)
@@ -76,7 +88,7 @@ sub reset_position_flag {
     my $status = $self->{csdb}->do(<<"EOQ");
 UPDATE instance SET log_flag = '0' WHERE instance_id = '$instance'
 EOQ
-    die "Failed to reset the position flag into database" if $status == -1;
+    $self->log_and_exit("Failed to reset the position flag into database") if $status == -1;
 }
 
 sub commit_to_log {
@@ -109,7 +121,7 @@ sub parse_file($$$) {
     my ($status, $sth) = $self->{csdb}->query(<<"EOQ");
 SELECT `log_flag`,`last_ctime` FROM `instance` WHERE `instance_id`='$instance'
 EOQ
-    die "Cannot read previous run information from database" if $status == -1;
+    $self->log_and_exit("Cannot read previous run information from database") if $status == -1;
     my $prev_run_info = $sth->fetchrow_hashref();
 
     # Get History Flag
@@ -225,7 +237,7 @@ EOQ
     close FILE;
     if ($@) {
         $self->{csdb}->rollback;
-        die "Database error: $@";
+        $self->log_and_exit("Database error: $@");
     }
     $self->{csdb}->transaction_mode(0);
 }
@@ -248,7 +260,7 @@ AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id`
 AND `nagios_server`.`ns_activate` = '1' 
 AND `cfg_nagios`.`nagios_activate` = '1'
 EOQ
-        die "Failed to read instance configuration" if $status == -1;
+        $self->log_and_exit("Failed to read instance configuration") if $status == -1;
         $archives = $sth->fetchrow_hashref()->{log_archive_path};
     } else {
         $archives = "$self->{centreon_config}->{VarLib}/log/$instance/archives/";
@@ -304,12 +316,12 @@ AND `nagios_server`.`id` = `cfg_nagios`.`nagios_server_id`
 AND `nagios_server`.`ns_activate` = '1' 
 AND `cfg_nagios`.`nagios_activate` = '1'
 EOQ
-        die "Cannot read logfile from database" if $status == -1;
+        $self->log_and_exit("Cannot read logfile from database") if $status == -1;
         my $data = $sth->fetchrow_hashref();
         $logfile = $data->{log_file};
         $archivepath = $data->{log_archive_path};
         $archivepath .= "/" if ($archivepath !~ /\/$/);
-        die "Failed to open $logfile" if !-r $logfile;
+        $self->log_and_exit("Failed to open $logfile") if !-r $logfile;
 
         my @now = localtime();
         my $archname = "$archivepath/nagios-" . $self->time_to_date($self->{launch_time}) . "-$now[2].log";
@@ -371,27 +383,27 @@ sub run {
     my ($status, $list_sth) = $self->{cdb}->query(<<"EOQ");
 SELECT `id`, `name`, `localhost` FROM `nagios_server` WHERE `ns_activate`=1
 EOQ
-    die "Cannot read pollers list from database" if $status == -1;
+    $self->log_and_exit("Cannot read pollers list from database") if $status == -1;
 
     while (my $ns_server = $list_sth->fetchrow_hashref()) {
         my $sth;
         ($status, $sth) = $self->{csdb}->query(<<"EOQ");
 SELECT `instance_name` FROM `instance` WHERE `instance_id` = '$ns_server->{id}' LIMIT 1
 EOQ
-        die "Cannot read instance name from database" if $status == -1;
+        $self->log_and_exit("Cannot read instance name from database") if $status == -1;
         if (!$sth->rows()) {
             $status = $self->{csdb}->do(<<"EOQ");
 INSERT INTO `instance` 
 (`instance_id`, `instance_name`, `log_flag`)
 VALUES ('$ns_server->{id}', '$ns_server->{name}', '0')
 EOQ
-            die "Cannot save instance to database" if $status == -1;
+            $self->log_and_exit("Cannot save instance to database") if $status == -1;
         } else {
             $status = $self->{csdb}->do(<<"EOQ");
 UPDATE `instance` SET `instance_name` = '$ns_server->{name}' 
 WHERE `instance_id` = '$ns_server->{id}' LIMIT 1
 EOQ
-            die "Cannot update instance from database" if $status == -1;
+            $self->log_and_exit("Cannot update instance from database") if $status == -1;
         }
         $self->{logger}->writeLogInfo("Poller: $ns_server->{name}");
         if ($self->{opt_a}) {
