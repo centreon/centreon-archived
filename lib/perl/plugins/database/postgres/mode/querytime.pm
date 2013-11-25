@@ -51,6 +51,7 @@ sub new {
                                   "warning:s"               => { name => 'warning', },
                                   "critical:s"              => { name => 'critical', },
                                   "exclude:s"               => { name => 'exclude', },
+                                  "exclude-user:s"          => { name => 'exclude_user', },
                                 });
 
     return $self;
@@ -105,6 +106,9 @@ ORDER BY query_start, procpid DESC
         if (defined($self->{option_results}->{exclude}) && $row->{datname} !~ /$self->{option_results}->{exclude}/) {
             next;
         }
+        if (defined($self->{option_results}->{exclude_user}) && $row->{usename} !~ /$self->{option_results}->{exclude_user}/) {
+            next;
+        }
         
         my $exit_code = $self->{perfdata}->threshold_check(value => $row->{seconds}, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
         if ($self->{output}->is_status(value => $exit_code, compare => 'ok', litteral => 1)) {
@@ -153,6 +157,10 @@ Threshold critical in seconds.
 =item B<--exclude>
 
 Filter databases.
+
+=item B<--exclude-user>
+
+Filter users.
 
 =back
 
