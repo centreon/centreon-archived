@@ -63,14 +63,16 @@
 					WHERE 
 						hsr.hostgroup_hg_id IS NULL AND 
 						h.host_id = hsr.host_host_id AND 
-						s.service_id = hsr.service_service_id 
+						s.service_id = hsr.service_service_id AND
+				                s.service_register = '1'
 					UNION 
 					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
 					FROM service s, hostgroup_relation hgr, host h, host_service_relation hsr 
 					WHERE 
 						hsr.hostgroup_hg_id = hgr.hostgroup_hg_id AND
 						hgr.host_host_id = h.host_id AND
-						s.service_id = hsr.service_service_id 
+						s.service_id = hsr.service_service_id AND
+						s.service_register = '1'
 				) AS res
 				ORDER BY res.host_name, res.service_description");
 		} else if ($_POST["host_id"] == -2) {
@@ -84,7 +86,8 @@
 						hsr.hostgroup_hg_id IS NULL AND 
 						h.host_id = '" . $pearDB->escape($_POST["host_id"]). "' AND 
 						h.host_id = hsr.host_host_id AND 
-						s.service_id = hsr.service_service_id 
+						s.service_id = hsr.service_service_id AND
+						s.service_register = '1'
 					UNION 
 					SELECT s.service_id, s.service_description, h.host_name, h.host_id 
 					FROM service s, host h, host_service_relation hsr 
@@ -92,7 +95,8 @@
 						hsr.host_host_id IS NULL AND 
 						hsr.hostgroup_hg_id IN (SELECT hostgroup_hg_id FROM hostgroup_relation WHERE host_host_id = '" . $pearDB->escape($_POST["host_id"]). "') AND 
 						h.host_id = '" . $pearDB->escape($_POST["host_id"]). "' AND
-						s.service_id = hsr.service_service_id 
+						s.service_id = hsr.service_service_id AND
+                                                s.service_register = '1'
 				) AS res
 				ORDER BY res.host_name, res.service_description");
 		}
