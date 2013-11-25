@@ -33,13 +33,14 @@
 #
 ####################################################################################
 
-package database::mysql::mode::queries;
+package database::postgres::mode::connectiontime;
 
 use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use centreon::plugins::statefile;
+use Time::HiRes;
+use POSIX;
 
 sub new {
     my ($class, %options) = @_;
@@ -52,7 +53,6 @@ sub new {
                                   "warning:s"               => { name => 'warning', },
                                   "critical:s"              => { name => 'critical', },
                                 });
-    $self->{statefile_cache} = centreon::plugins::statefile->new(%options);
 
     return $self;
 }
@@ -69,8 +69,6 @@ sub check_options {
        $self->{output}->add_option_msg(short_msg => "Wrong critical threshold '" . $self->{critical} . "'.");
        $self->{output}->option_exit();
     }
-    
-    $self->{statefile_cache}->check_options(%options);
 }
 
 sub run {
@@ -78,58 +76,26 @@ sub run {
     # $options{sql} = sqlmode object
     $self->{sql} = $options{sql};
 
-    $self->{sql}->connect();
-    $self->{sql}->query(query => q{
-        SHOW /*!50000 global */ STATUS WHERE Variable_name IN ('Queries', 'Com_update', 'Com_delete', 'Com_insert', 'Com_truncate', 'Com_select') 
-    });
-    my $result = $self->{sql}->fetchall_arrayref();
+    my $now = Time::HiRes::time();
+    my ($exit, $msg_error) = $self->{sql}->connect(dontquit => 1);
+    my $now2 = Time::HiRes::time();
     
-    if (!($self->{sql}->is_version_minimum(version => '5.0.76'))) {
-        $self->{output}->add_option_msg(short_msg => "MySQL version '" . $self->{sql}->{version} . "' is not supported (need version >= '5.0.76').");
-        $self->{output}->option_exit();
-    }
-    
-    my $new_datas = {};
-    $self->{statefile_cache}->read(statefile => 'mysql_' . $self->{mode} . '_' . $self->{sql}->get_unique_id4save());
-    my $old_timestamp = $self->{statefile_cache}->get(name => 'last_timestamp');
-    $new_datas->{last_timestamp} = time();
-    
-    if (defined($old_timestamp) && $new_datas->{last_timestamp} - $old_timestamp == 0) {
-        $self->{output}->add_option_msg(short_msg => "Need at least one second between two checks.");
-        $self->{output}->option_exit();
-    }
-    
-    foreach my $row (@{$result}) {
-        next if ($$row[0] !~ /^(Queries|Com_update|Com_delete|Com_insert|Com_truncate|Com_select)/i);
-    
-        $new_datas->{$$row[0]} = $$row[1];
-        my $old_val = $self->{statefile_cache}->get(name => $$row[0]);
-        next if (!defined($old_val) || $$row[1] < $old_val);
-        
-        my $value = int(($$row[1] - $old_val) / ($new_datas->{last_timestamp} - $old_timestamp));
-        if ($$row[0] ne 'Queries') {
-            $self->{output}->perfdata_add(label => $$row[0] . '_requests',
-                                      value => $value,
-                                      min => 0);
-            next;
-        }
-        
-        my $exit_code = $self->{perfdata}->threshold_check(value => $value, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
+    if ($exit == -1) {
+        $self->{output}->output_add(severity => 'CRITICAL',
+                                    short_msg => $msg_error);
+    } else {
+        my $milliseconds = $now2 - $now;
+        $milliseconds = floor($milliseconds * 1000);
+        my $exit_code = $self->{perfdata}->threshold_check(value => $milliseconds, threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
         $self->{output}->output_add(severity => $exit_code,
-                                    short_msg => sprintf("Total requests = %d.", $value));
-        $self->{output}->perfdata_add(label => 'total_requests',
-                                      value => $value,
+                                    short_msg => sprintf("Connection established in %.3fs.", $milliseconds / 1000));
+        $self->{output}->perfdata_add(label => 'connection_time', unit => 'ms',
+                                      value => $milliseconds,
                                       warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning'),
                                       critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical'),
                                       min => 0);
     }
     
-    $self->{statefile_cache}->write(data => $new_datas); 
-    if (!defined($old_timestamp)) {
-        $self->{output}->output_add(severity => 'OK',
-                                    short_msg => "Buffer creation...");
-    }
-
     $self->{output}->display();
     $self->{output}->exit();
 }
@@ -140,17 +106,17 @@ __END__
 
 =head1 MODE
 
-Check average number of queries executed.
+Check Postgres connection time.
 
 =over 8
 
 =item B<--warning>
 
-Threshold warning.
+Threshold warning in milliseconds.
 
 =item B<--critical>
 
-Threshold critical.
+Threshold critical in milliseconds.
 
 =back
 

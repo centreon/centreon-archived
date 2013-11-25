@@ -33,7 +33,7 @@
 #
 ####################################################################################
 
-package database::mysql::mysqlcmd;
+package database::postgres::psqlcmd;
 
 use strict;
 use warnings;
@@ -50,24 +50,25 @@ sub new {
     # $options{noptions} = integer
     
     if (!defined($options{output})) {
-        print "Class mysqlcmd: Need to specify 'output' argument.\n";
+        print "Class psqlcmd: Need to specify 'output' argument.\n";
         exit 3;
     }
     if (!defined($options{options})) {
-        $options{output}->add_option_msg(short_msg => "Class Mysqlcmd: Need to specify 'options' argument.");
+        $options{output}->add_option_msg(short_msg => "Class psqlcmd: Need to specify 'options' argument.");
         $options{output}->option_exit();
     }
     if (!defined($options{noptions})) {
         $options{options}->add_options(arguments => 
-                    { "mysql-cmd:s"              => { name => 'mysql_cmd', default => '/usr/bin/mysql' },
+                    { "psql-cmd:s"               => { name => 'psql_cmd', default => '/usr/bin/psql' },
                       "host:s@"                  => { name => 'host' },
                       "port:s@"                  => { name => 'port' },
                       "username:s@"              => { name => 'username' },
                       "password:s@"              => { name => 'password' },
+                      "dbname:s@"                => { name => 'dbname' },
                       "sql-errors-exit:s"        => { name => 'sql_errors_exit', default => 'unknown' },
         });
     }
-    $options{options}->add_help(package => __PACKAGE__, sections => 'MYSQLCMD OPTIONS', once => 1);
+    $options{options}->add_help(package => __PACKAGE__, sections => 'PSQLCMD OPTIONS', once => 1);
 
     $self->{output} = $options{output};
     $self->{mode} = $options{mode};
@@ -80,6 +81,10 @@ sub new {
     $self->{port} = undef;
     $self->{username} = undef;
     $self->{password} = undef;
+    $self->{dbname} = undef;
+    
+    $self->{record_separator} = '-====-';
+    $self->{field_separator} = '#====#';
     
     return $self;
 }
@@ -120,23 +125,30 @@ sub check_options {
     $self->{port} = (defined($self->{option_results}->{port})) ? shift(@{$self->{option_results}->{port}}) : undef;
     $self->{username} = (defined($self->{option_results}->{username})) ? shift(@{$self->{option_results}->{username}}) : undef;
     $self->{password} = (defined($self->{option_results}->{password})) ? shift(@{$self->{option_results}->{password}}) : undef;
+    $self->{dbname} = (defined($self->{option_results}->{dbname})) ? shift(@{$self->{option_results}->{dbname}}) : undef;
     $self->{sql_errors_exit} = $self->{option_results}->{sql_errors_exit};
-    $self->{mysql_cmd} = $self->{option_results}->{mysql_cmd};
+    $self->{psql_cmd} = $self->{option_results}->{psql_cmd};
+    
+    # If we want a command line: password with variable "PGPASSWORD".
+    #  psql -d template1 -A -R '-====-' -F '#====#' -c "select code from films"
  
     if (!defined($self->{host}) || $self->{host} eq '') {
         $self->{output}->add_option_msg(short_msg => "Need to specify host argument.");
         $self->{output}->option_exit(exit_litteral => $self->{sql_errors_exit});
     }
     
-    $self->{args} = ['--batch', '--raw', '--host', $self->{host}];
+    $self->{args} = ['-A', '-R', $self->{record_separator}, '-F', $self->{field_separator}, '--pset', 'footer=off', '-h', $self->{host}];
     if (defined($self->{port})) {
-        push @{$self->{args}}, "--port", $self->{port};
+        push @{$self->{args}}, "-p", $self->{port};
     }
     if (defined($self->{username})) {
-        push @{$self->{args}}, "--user", $self->{username};
+        push @{$self->{args}}, "-U", $self->{username};
     }
     if (defined($self->{password}) && $self->{password} ne '') {
-        push @{$self->{args}}, "-p" . $self->{password};
+        $ENV{PGPASSWORD} = $self->{password};
+    }
+    if (defined($self->{dbname}) && $self->{dbname} ne '') {
+        push @{$self->{args}}, "-d", $self->{dbname};
     }
 
     if (scalar(@{$self->{option_results}->{host}}) == 0) {
@@ -194,8 +206,8 @@ sub command_execution {
     my ($self, %options) = @_;
     
     my ($lerror, $stdout, $exit_code) = centreon::plugins::misc::backtick(
-                                                 command => $self->{mysql_cmd},
-                                                 arguments =>  [@{$self->{args}}, '-e', $options{request}],
+                                                 command => $self->{psql_cmd},
+                                                 arguments =>  [@{$self->{args}}, '-c', $options{request}],
                                                  timeout => 30,
                                                  wait_exit => 1,
                                                  redirect_stderr => 1
@@ -216,8 +228,8 @@ sub command_execution {
 sub connect {
     my ($self, %options) = @_;
     my $dontquit = (defined($options{dontquit}) && $options{dontquit} == 1) ? 1 : 0;
-
-    (my $exit_code, $self->{stdout}) = $self->command_execution(request => "SHOW VARIABLES LIKE 'version'");
+    
+    (my $exit_code, $self->{stdout}) = $self->command_execution(request => "SELECT current_setting('server_version') as version");
     if ($exit_code != 0) {
         if ($dontquit == 0) {
             $self->{output}->add_option_msg(short_msg => "Cannot connect: " . $self->{stdout});
@@ -227,7 +239,7 @@ sub connect {
     }
     
     my $row = $self->fetchrow_hashref();
-    $self->{version} = $row->{Value};
+    $self->{version} = $row->{version};
 
     return 0;
 }
@@ -237,11 +249,11 @@ sub fetchall_arrayref {
     my $array_ref = [];
     
     if (!defined($self->{columns})) {
-        $self->{stdout} =~ s/^(.*?)(\n|$)//;
-        @{$self->{columns}} = split(/\t/, $1);
+        $self->{stdout} =~ s/^(.*?)\Q$self->{record_separator}\E//ms;
+        @{$self->{columns}} = split(/\Q$self->{field_separator}\E/, $1);
     }
-    foreach (split /\n/, $self->{stdout}) {
-        push @$array_ref, [map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $_))];
+    foreach (split /\Q$self->{record_separator}\E/, $self->{stdout}) {
+        push @$array_ref, [split(/\Q$self->{field_separator}\E/, $_)];
     }
     
     return $array_ref;
@@ -252,11 +264,11 @@ sub fetchrow_array {
     my @array_result = ();
     
     if (!defined($self->{columns})) {
-        $self->{stdout} =~ s/^(.*?)(\n|$)//;
-        @{$self->{columns}} = split(/\t/, $1);
+        $self->{stdout} =~ s/^(.*?)\Q$self->{record_separator}\E//ms;
+        @{$self->{columns}} = split(/\Q$self->{field_separator}\E/, $1);
     }
-    if (($self->{stdout} =~ s/^(.*?)(\n|$)//)) {
-        push @array_result, map({ s/\\n/\x{0a}/g; s/\\t/\x{09}/g; s/\\/\x{5c}/g; $_; } split(/\t/, $1));
+    if (($self->{stdout} =~ s/^(.*?)\Q$self->{record_separator}\E//ms)) {
+        push @array_result, split(/\Q$self->{field_separator}\E/, $1);
     }
     
     return @array_result;
@@ -267,17 +279,14 @@ sub fetchrow_hashref {
     my $array_result = undef;
     
     if (!defined($self->{columns})) {
-        $self->{stdout} =~ s/^(.*?)(\n|$)//;
-        @{$self->{columns}} = split(/\t/, $1);
+        $self->{stdout} =~ s/^(.*?)\Q$self->{record_separator}\E//ms;
+        @{$self->{columns}} = split(/\Q$self->{field_separator}\E/, $1);
     }
-    if ($self->{stdout} ne '' && $self->{stdout} =~ s/^(.*?)(\n|$)//) {
+    if ($self->{stdout} ne '' && $self->{stdout} =~ s/^(.*?)\Q$self->{record_separator}\E//ms) {
         $array_result = {};
-        my @values = split(/\t/, $1);
+        my @values = split(/\Q$self->{field_separator}\E/, $1);
         for (my $i = 0; $i < scalar(@values); $i++) {
             my $value = $values[$i];
-            $value =~ s/\\n/\x{0a}/g;
-            $value =~ s/\\t/\x{09}/g;
-            $value =~ s/\\/\x{5c}/g;
             $array_result->{$self->{columns}[$i]} = $value;
         }
     }
@@ -304,19 +313,19 @@ __END__
 
 =head1 NAME
 
-mysqlcmd global
+psqlcmd global
 
 =head1 SYNOPSIS
 
-mysqlcmd class
+psqlcmd class
 
-=head1 MYSQLCMD OPTIONS
+=head1 PSQLCMD OPTIONS
 
 =over 8
 
-=item B<--mysql-cmd>
+=item B<--psql-cmd>
 
-mysql command (Default: '/usr/bin/mysql').
+postgres command (Default: '/usr/bin/psql').
 
 =item B<--host>
 
@@ -325,6 +334,10 @@ Database hostname.
 =item B<--port>
 
 Database port.
+
+=item B<--dbname>
+
+Database name to connect (default: postgres).
 
 =item B<--username>
 
@@ -342,6 +355,6 @@ Exit code for DB Errors (default: unknown)
 
 =head1 DESCRIPTION
 
-B<snmp>.
+B<>.
 
 =cut

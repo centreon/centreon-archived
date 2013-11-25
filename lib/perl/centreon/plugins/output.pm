@@ -324,22 +324,23 @@ sub output_txt {
 
 sub display {
     my ($self, %options) = @_;
+    my $nolabel = defined($options{nolabel}) ? 1 : 0;
 
     if (defined($self->{option_results}->{output_xml})) {
         $self->create_xml_document();
         if ($self->{is_output_xml}) {
-            $self->output_xml(exit_litteral => $self->get_litteral_status());
+            $self->output_xml(exit_litteral => $self->get_litteral_status(), nolabel => $nolabel);
             return ;
         }
     } elsif (defined($self->{option_results}->{output_json})) {
         $self->create_json_document();
         if ($self->{is_output_json}) {
-            $self->output_json(exit_litteral => $self->get_litteral_status());
+            $self->output_json(exit_litteral => $self->get_litteral_status(), nolabel => $nolabel);
             return ;
         }
     } 
     
-    $self->output_txt(exit_litteral => $self->get_litteral_status());
+    $self->output_txt(exit_litteral => $self->get_litteral_status(), nolabel => $nolabel);
 }
 
 sub die_exit {

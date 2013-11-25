@@ -161,6 +161,7 @@ sub run {
     foreach (sort @{$self->{interface_id_selected}}) {
         my $display_value = $self->get_display_value(id => $_);
 
+        # Manage interface speed
         my $interface_speed;
         if (defined($self->{option_results}->{speed}) && $self->{option_results}->{speed} ne '') {
             $interface_speed = $self->{option_results}->{speed} * 1000000;
@@ -176,6 +177,8 @@ sub run {
                 next;
             }
         }
+        
+        
         if ($operstatus[$result->{$oid_operstatus . "." . $_} - 1] ne "up") {
             if (!defined($self->{option_results}->{skip}) && (!defined($result->{$oid_adminstatus . "." . $_}) || $operstatus[$result->{$oid_adminstatus . "." . $_} - 1] eq 'up') ) {
                 $self->{output}->output_add(severity => 'CRITICAL',
@@ -185,21 +188,23 @@ sub run {
             }
             next;
         }
-        my $old_mode = $self->{statefile_value}->get(name => 'mode');
-        $new_datas->{mode} = '32';
+        
+        my $old_mode = $self->{statefile_value}->get(name => 'mode_' . $_);
+        $new_datas->{'mode_' . $_} = '32';
  
         $new_datas->{'in_' . $_} = $result->{$oid_in32 . "." . $_} * 8;
-        if (defined($result->{$oid_in64 . "." . $_}) && $result->{$oid_in64 . "." . $_} ne '') {
+        if (defined($result->{$oid_in64 . "." . $_}) && $result->{$oid_in64 . "." . $_} ne '' && $result->{$oid_in64 . "." . $_} != 0) {
             $new_datas->{'in_' . $_} = $result->{$oid_in64 . "." . $_} * 8;
-            $new_datas->{mode} = '64';
+            $new_datas->{'mode_' . $_} = '64';
         }
         $new_datas->{'out_' . $_} = $result->{$oid_out32 . "." . $_} * 8;
-        if (defined($result->{$oid_out64 . "." . $_}) && $result->{$oid_out64 . "." . $_} ne '') {
+        if (defined($result->{$oid_out64 . "." . $_}) && $result->{$oid_out64 . "." . $_} ne '' && $result->{$oid_out64 . "." . $_} != 0) {
             $new_datas->{'out_' . $_} = $result->{$oid_out64 . "." . $_} * 8;
-            $new_datas->{mode} = '64';
+            $new_datas->{'mode_' . $_} = '64';
         }
+        
         # We change mode. need to recreate a buffer
-        if (!defined($old_mode) || $new_datas->{mode} ne $old_mode) {
+        if (!defined($old_mode) || $new_datas->{'mode_' . $_} ne $old_mode) {
             next;
         }
         
@@ -220,8 +225,8 @@ sub run {
 
         my $time_delta = $new_datas->{last_timestamp} - $old_timestamp;
         if ($time_delta <= 0) {
-         # At least one second. two fast calls ;)
-             $time_delta = 1;
+            # At least one second. two fast calls ;)
+            $time_delta = 1;
         }
         my $in_absolute_per_sec = ($new_datas->{'in_' . $_} - $old_in) / $time_delta;
         my $out_absolute_per_sec = ($new_datas->{'out_' . $_} - $old_out) / $time_delta;
@@ -365,38 +370,6 @@ sub manage_selection {
             $self->{output}->add_option_msg(short_msg => "No interface found for name '" . $self->{option_results}->{interface} . "' (maybe you should reload cache file).");
             $self->{output}->option_exit();
         }
-    }
-}
-
-sub disco_format {
-    my ($self, %options) = @_;
-    
-    $self->{output}->add_disco_format(elements => ['name', 'total', 'status', 'interfaceid']);
-}
-
-sub disco_show {
-    my ($self, %options) = @_;
-    # $options{snmp} = snmp object
-    $self->{snmp} = $options{snmp};
-    $self->{hostname} = $self->{snmp}->get_hostname();
-
-    my $oid_operstatus = '.1.3.6.1.2.1.2.2.1.8';
-    my $oid_speed32 = '.1.3.6.1.2.1.2.2.1.5'; # in b/s
-
-    $self->manage_selection();
-    $self->{snmp}->load(oids => [$oid_operstatus, $oid_speed32], instances => $self->{interface_id_selected});
-    my $result = $self->{snmp}->get_leef();
-    foreach (sort @{$self->{interface_id_selected}}) {
-        my $display_value = $self->get_display_value(id => $_);
-        my $interface_speed = int($result->{$oid_speed32 . "." . $_} / 1000 / 1000);
-        if (defined($self->{option_results}->{speed}) && $self->{option_results}->{speed} ne '') {
-            $interface_speed = $self->{option_results}->{speed};
-        }
-
-        $self->{output}->add_disco_entry(name => $display_value,
-                                         total => $interface_speed,
-                                         status => $result->{$oid_operstatus . "." . $_},
-                                         interfaceid => $_);
     }
 }
 

@@ -33,41 +33,95 @@
 #
 ####################################################################################
 
-package os::windows::plugin;
+package database::postgres::mode::listdatabases;
+
+use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use base qw(centreon::plugins::script_snmp);
+use Time::HiRes;
 
 sub new {
     my ($class, %options) = @_;
     my $self = $class->SUPER::new(package => __PACKAGE__, %options);
     bless $self, $class;
-    # $options->{options} = options object
-
-    $self->{version} = '0.1';
-    %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'load' => 'snmp_standard::mode::loadaverage',
-                         'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'memory' => 'os::windows::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::windows::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
-                         );
+    
+    $self->{version} = '1.0';
+    $options{options}->add_options(arguments =>
+                                { 
+                                  "exclude:s"               => { name => 'exclude', },
+                                });
 
     return $self;
+}
+
+sub check_options {
+    my ($self, %options) = @_;
+    $self->SUPER::init(%options);
+}
+
+sub manage_selection {
+    my ($self, %options) = @_;
+    
+    $self->{sql}->connect();
+
+    $self->{sql}->query(query => q{
+SELECT datname FROM pg_database
+});
+    $self->{list_db} = [];
+    while ((my $row = $self->{sql}->fetchrow_hashref())) {
+        if (defined($self->{option_results}->{exclude}) && $row->{datname} !~ /$self->{option_results}->{exclude}/) {
+            next;
+        }
+        push @{$self->{list_db}}, $row->{datname};
+    }
+}
+
+sub run {
+    my ($self, %options) = @_;
+    # $options{sql} = sqlmode object
+    $self->{sql} = $options{sql};
+
+    $self->manage_selection();
+    
+    $self->{output}->output_add(severity => 'OK',
+                                short_msg => "List of databases: " . join(', ', @{$self->{list_db}}));
+
+    $self->{output}->display();
+    $self->{output}->exit();
+}
+
+sub disco_format {
+    my ($self, %options) = @_;
+    
+    $self->{output}->add_disco_format(elements => ['name']);
+}
+
+sub disco_show {
+    my ($self, %options) = @_;
+    # $options{snmp} = snmp object
+    $self->{sql} = $options{sql};
+
+    $self->manage_selection();
+    foreach (sort @{$self->{list_db}}) {
+        $self->{output}->add_disco_entry(name => $_);
+    }
 }
 
 1;
 
 __END__
 
-=head1 PLUGIN DESCRIPTION
+=head1 MODE
 
-Check Windows operating systems in SNMP.
+Display databases
+
+=over 8
+
+=item B<--exclude>
+
+Filter databases.
+
+=back
 
 =cut
