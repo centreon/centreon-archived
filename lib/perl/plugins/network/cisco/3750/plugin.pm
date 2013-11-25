@@ -52,6 +52,7 @@ sub new {
                          'list-interfaces' => 'snmp_standard::mode::listinterfaces',
                          'memory' => 'network::cisco::common::mode::memory',
                          'packet-errors' => 'snmp_standard::mode::packeterrors',
+                         'stack' => 'network::cisco::common::mode::stack',
                          'traffic' => 'snmp_standard::mode::traffic',
                          );
 

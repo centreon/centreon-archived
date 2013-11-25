@@ -48,7 +48,6 @@ sub new {
     $self->{version} = '0.1';
     %{$self->{modes}} = (
                          'cpu' => 'snmp_standard::mode::cpu',
-                         'load' => 'snmp_standard::mode::loadaverage',
                          'list-interfaces' => 'snmp_standard::mode::listinterfaces',
                          'memory' => 'os::windows::mode::memory',
                          'packet-errors' => 'snmp_standard::mode::packeterrors',
