@@ -49,6 +49,7 @@ my %oids_iftable = (
     'ifname' => '.1.3.6.1.2.1.31.1.1.1.1'
 );
 
+my $oid_adminstatus = '.1.3.6.1.2.1.2.2.1.7';
 my $oid_operstatus = '.1.3.6.1.2.1.2.2.1.8';
 my $oid_speed32 = '.1.3.6.1.2.1.2.2.1.5'; # in b/s
 my $oid_speed64 = '.1.3.6.1.2.1.31.1.1.1.15';
@@ -65,6 +66,7 @@ sub new {
                                   "interface:s"             => { name => 'interface' },
                                   "speed:s"                 => { name => 'speed' },
                                   "filter-status:s"         => { name => 'filter_status' },
+                                  "use-adminstatus"         => { name => 'use_adminstatus' },
                                   "regexp"                  => { name => 'use_regexp' },
                                   "regexp-isensitive"       => { name => 'use_regexpi' },
                                   "oid-filter:s"            => { name => 'oid_filter', default => 'ifname'},
@@ -114,6 +116,9 @@ sub run {
         if (defined($self->{option_results}->{filter_status}) && $operstatus[$result->{$oid_operstatus . "." . $_} - 1] !~ /$self->{option_results}->{filter_status}/i) {
             next;
         }
+        if (defined($self->{option_results}->{use_adminstatus}) && $operstatus[$result->{$oid_adminstatus . "." . $_} - 1] ne 'up') {
+            next;
+        }
 
         $interfaces_display .= $interfaces_display_append . "name = $display_value [speed = $interface_speed, status = " . $operstatus[$result->{$oid_operstatus . "." . $_} - 1] . ", id = $_]";
         $interfaces_display_append = ', ';
@@ -128,7 +133,7 @@ sub run {
 sub get_additional_information {
     my ($self, %options) = @_;
 
-    my $oids = [$oid_operstatus, $oid_speed32];
+    my $oids = [$oid_adminstatus, $oid_operstatus, $oid_speed32];
     if (!$self->{snmp}->is_snmpv1()) {
         push @$oids, $oid_speed64;
     }
@@ -232,7 +237,10 @@ sub disco_show {
         if (defined($self->{option_results}->{filter_status}) && $operstatus[$result->{$oid_operstatus . "." . $_} - 1] !~ /$self->{option_results}->{filter_status}/i) {
             next;
         }
-
+        if (defined($self->{option_results}->{use_adminstatus}) && $operstatus[$result->{$oid_adminstatus . "." . $_} - 1] ne 'up') {
+            next;
+        }
+        
         $self->{output}->add_disco_entry(name => $display_value,
                                          total => $interface_speed,
                                          status => $result->{$oid_operstatus . "." . $_},
@@ -271,6 +279,10 @@ Set interface speed (in Mb).
 =item B<--filter-status>
 
 Display interfaces matching the filter (example: 'up').
+
+=item B<--use-adminstatus>
+
+Display interfaces with AdminStatus 'up'.
 
 =item B<--oid-filter>
 
