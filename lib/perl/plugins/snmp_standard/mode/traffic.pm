@@ -144,7 +144,7 @@ sub run {
         }
         if (!$self->{snmp}->is_snmpv1()) {
             $self->{snmp}->load(oids => [$oid_in64 . "." . $_, $oid_out64 . "." . $_]);
-        if (!defined($self->{option_results}->{speed}) || $self->{option_results}->{speed} eq '') {
+            if (!defined($self->{option_results}->{speed}) || $self->{option_results}->{speed} eq '') {
                 $self->{snmp}->load(oids => [$oid_speed64 . "." . $_]);
             }
         }
