@@ -55,6 +55,7 @@ sub new {
                          'list-filesys' => 'storage::netapp::mode::listfilesys',
                          'ndmpsessions' => 'storage::netapp::mode::ndmpsessions',
                          'nvram' => 'storage::netapp::mode::nvram',
+                         'partnerstatus' => 'storage::netapp::mode::partnerstatus',
                          'psu' => 'storage::netapp::mode::psu',
                          'shelf' => 'storage::netapp::mode::shelf',
                          'snapmirrorlag' => 'storage::netapp::mode::snapmirrorlag',
