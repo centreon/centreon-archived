@@ -403,7 +403,7 @@
 				<br />
                 <table class="ListTable">
                     <tr class='ListHeader'>
-                        <td class="ListColHeaderLeft"><img src="./img/icones/16x16/link.gif">&nbsp;{$notifications}</td>
+                        <td class="ListColHeaderLeft"><img src="./img/icones/16x16/mailer.gif">&nbsp;{$notifications}</td>
                     </tr>
                     <tr class='list_one'>
                         <td class="ListColLeft">
