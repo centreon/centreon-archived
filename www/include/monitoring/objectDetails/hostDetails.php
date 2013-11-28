@@ -528,6 +528,14 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $tpl->assign("contactgroups", $contactGroups);
         }
 
+       /*
+        * Contacts Display
+        */
+       $tpl->assign("contacts_label", _("Contacts notified for this host"));
+       if (isset($contacts)) {
+           $tpl->assign("contacts", $contacts);
+       }
+
         /*
          * Macros
          */
