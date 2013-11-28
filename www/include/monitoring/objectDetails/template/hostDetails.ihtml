@@ -386,7 +386,29 @@
 						</td>
 					</tr>
 				</table>
-				<br>
+				<br />
+                <table class="ListTable">
+                    <tr class='ListHeader'>
+                        <td class="ListColHeaderLeft"><img src="./img/icones/16x16/link.gif">&nbsp;{$notifications}</td>
+                    </tr>
+                    <tr class='list_one'>
+                        <td class="ListColLeft">
+                        {$contactgroups_label} :<br>
+                        {foreach item=cg from=$contactgroups}
+                                &nbsp;&nbsp;&nbsp;-&nbsp;{$cg}<br>
+                        {/foreach}
+                        </td>
+                    </tr>
+                    <tr class='list_two'>
+                        <td class="ListColLeft">
+                        {$contacts_label} :<br>
+                        {foreach item=c from=$contacts}
+                                &nbsp;&nbsp;&nbsp;-&nbsp;{$c}<br>
+                        {/foreach}
+                        </td>
+                    </tr>
+                </table>
+				<br />
 				{if ($proc_warning && $proc_warning != "NO_ACTION") || ($proc_critical && $proc_critical != "NO_ACTION")}
 				<table class="ListTable">
 					<tr class='ListHeader'>
