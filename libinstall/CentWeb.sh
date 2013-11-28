@@ -371,11 +371,11 @@ check_result $? "$(gettext "Change macros for downtimeManager.php")"
 cp -f $TMP_DIR/work/cron/downtimeManager.php \
 	$TMP_DIR/final/cron/downtimeManager.php >> "$LOG_FILE" 2>&1
 
-cp -f $TMP_DIR/work/cron/eventReportBuilder \
-	$TMP_DIR/final/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
+#cp -f $TMP_DIR/work/cron/eventReportBuilder \
+#	$TMP_DIR/final/cron/eventReportBuilder >> "$LOG_FILE" 2>&1
 
-cp -f $TMP_DIR/work/cron/dashboardBuilder \
-	$TMP_DIR/final/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
+#cp -f $TMP_DIR/work/cron/dashboardBuilder \
+#	$TMP_DIR/final/cron/dashboardBuilder >> "$LOG_FILE" 2>&1
 
 log "INFO" "$(gettext "Install cron directory")"
 $INSTALL_DIR/cinstall $cinstall_opts \
@@ -509,8 +509,8 @@ check_result $? "$(gettext "Install import-mysql-indexes")"
 
 ## Install indexes schema
 log "INFO" "$(gettext "Prepare indexes schema")"
-cp $TMP_DIR/src/data/* \
-	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
+#cp $TMP_DIR/src/data/* \
+#	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Prepare indexes schema")"
 
 log "INFO" "$(gettext "Install indexes schema")"
