@@ -126,9 +126,6 @@
             }
 
             // Look for contactgroups
-            echo "SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
-                WHERE cgsr.contactgroup_cg_id = cg.cg_id AND cgsr.service_service_id IN (".implode(',', $serviceToLookFor).")
-                GROUP BY cg_name";
             $DBRESULT = $pearDB->query("SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
                 WHERE cgsr.contactgroup_cg_id = cg.cg_id AND cgsr.service_service_id IN (".implode(',', $serviceToLookFor).")
                 GROUP BY cg_name");
