@@ -129,7 +129,7 @@ sub run {
 
     my $num_disk_check = 0;
     foreach (sort @{$self->{storage_id_selected}}) {
-    # Skipped disks
+        # Skipped disks
         my $storage_type = $self->{statefile_cache}->get(name => "type_" . $_);
         next if (!defined($storage_type) || ($storage_type ne $oid_hrStorageFixedDisk && $storage_type ne $oid_hrStorageNetworkDisk));
 

@@ -33,7 +33,7 @@
 #
 ####################################################################################
 
-package os::windows::plugin;
+package storage::netapp::plugin;
 
 use strict;
 use warnings;
@@ -45,18 +45,22 @@ sub new {
     bless $self, $class;
     # $options->{options} = options object
 
-    $self->{version} = '0.1';
+    $self->{version} = '1.0';
     %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'memory' => 'os::windows::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'service' => 'os::windows::mode::service',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::windows::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
+                         'cpuload' => 'storage::netapp::mode::cpuload',
+                         'diskfailed' => 'storage::netapp::mode::diskfailed',
+                         'fan' => 'storage::netapp::mode::fan',
+                         'filesys' => 'storage::netapp::mode::filesys',
+                         'globalstatus' => 'storage::netapp::mode::globalstatus',
+                         'list-filesys' => 'storage::netapp::mode::listfilesys',
+                         'ndmpsessions' => 'storage::netapp::mode::ndmpsessions',
+                         'nvram' => 'storage::netapp::mode::nvram',
+                         'partnerstatus' => 'storage::netapp::mode::partnerstatus',
+                         'psu' => 'storage::netapp::mode::psu',
+                         'shelf' => 'storage::netapp::mode::shelf',
+                         'snapmirrorlag' => 'storage::netapp::mode::snapmirrorlag',
+                         'temperature' => 'storage::netapp::mode::temperature',
+                         'volumeoptions' => 'storage::netapp::mode::volumeoptions',
                          );
 
     return $self;
@@ -68,6 +72,6 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check Windows operating systems in SNMP.
+Check Netapp in SNMP (Some Check needs ONTAP 8.x).
 
 =cut

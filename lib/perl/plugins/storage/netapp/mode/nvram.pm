@@ -33,41 +33,67 @@
 #
 ####################################################################################
 
-package os::windows::plugin;
+package storage::netapp::mode::nvram;
+
+use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use base qw(centreon::plugins::script_snmp);
+
+my %states = (
+    1 => ['ok', 'OK'], 
+    2 => ['partially discharged', 'WARNING'], 
+    3 => ['fully discharged', 'CRITICAL'], 
+    4 => ['not present', 'CRITICAL'],
+    5 => ['near end of life', 'WARNING'],
+    6 => ['at end of life', 'CRITICAL'],
+    7 => ['unknown', 'UNKNOWN'],
+);
 
 sub new {
     my ($class, %options) = @_;
     my $self = $class->SUPER::new(package => __PACKAGE__, %options);
     bless $self, $class;
-    # $options->{options} = options object
-
-    $self->{version} = '0.1';
-    %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'memory' => 'os::windows::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'service' => 'os::windows::mode::service',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::windows::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
-                         );
+    
+    $self->{version} = '1.0';
+    $options{options}->add_options(arguments =>
+                                {
+                                });
 
     return $self;
+}
+
+sub check_options {
+    my ($self, %options) = @_;
+    $self->SUPER::init(%options);
+}
+
+sub run {
+    my ($self, %options) = @_;
+    # $options{snmp} = snmp object
+    $self->{snmp} = $options{snmp};
+
+    my $oid_nvramBatteryStatus = '.1.3.6.1.4.1.789.1.2.5.1.0';
+    my $result = $self->{snmp}->get_leef(oids => [$oid_nvramBatteryStatus], nothing_quit => 1);
+    
+    $self->{output}->output_add(severity =>  ${$states{$result->{$oid_nvramBatteryStatus}}}[1],
+                                short_msg => sprintf("NVRAM Batteries status is '%s'.", ${$states{$result->{$oid_nvramBatteryStatus}}}[0]));
+
+    $self->{output}->display();
+    $self->{output}->exit();
 }
 
 1;
 
 __END__
 
-=head1 PLUGIN DESCRIPTION
+=head1 MODE
 
-Check Windows operating systems in SNMP.
+Check current status of the NVRAM batteries.
+
+=over 8
+
+=back
 
 =cut
+    

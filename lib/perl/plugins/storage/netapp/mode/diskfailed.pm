@@ -33,41 +33,67 @@
 #
 ####################################################################################
 
-package os::windows::plugin;
+package storage::netapp::mode::diskfailed;
+
+use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use base qw(centreon::plugins::script_snmp);
 
 sub new {
     my ($class, %options) = @_;
     my $self = $class->SUPER::new(package => __PACKAGE__, %options);
     bless $self, $class;
-    # $options->{options} = options object
-
-    $self->{version} = '0.1';
-    %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'memory' => 'os::windows::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'service' => 'os::windows::mode::service',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::windows::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
-                         );
+    
+    $self->{version} = '1.0';
+    $options{options}->add_options(arguments =>
+                                {
+                                });
 
     return $self;
+}
+
+sub check_options {
+    my ($self, %options) = @_;
+    $self->SUPER::init(%options);
+}
+
+sub run {
+    my ($self, %options) = @_;
+    # $options{snmp} = snmp object
+    $self->{snmp} = $options{snmp};
+
+    my $oid_diskFailedCount = '.1.3.6.1.4.1.789.1.6.4.7.0';
+    my $oid_diskFailedMessage = '.1.3.6.1.4.1.789.1.6.4.10.0';
+    my $result = $self->{snmp}->get_leef(oids => [$oid_diskFailedCount], nothing_quit => 1);
+    
+    $self->{output}->output_add(severity => 'OK',
+                                short_msg => 'Disks are ok.');
+    if ($result->{$oid_diskFailedCount} != 0) {
+        $self->{output}->output_add(severity => 'CRITICAL',
+                                    short_msg => sprintf("'%d' fans are failed [message: %s].", 
+                                                    $result->{$oid_diskFailedCount}, $result->{$oid_diskFailedMessage}));
+    }
+
+    $self->{output}->perfdata_add(label => 'failed',
+                                  value => $result->{$oid_diskFailedCount},
+                                  min => 0);
+    
+    $self->{output}->display();
+    $self->{output}->exit();
 }
 
 1;
 
 __END__
 
-=head1 PLUGIN DESCRIPTION
+=head1 MODE
 
-Check Windows operating systems in SNMP.
+Check the current number of disk broken.
+
+=over 8
+
+=back
 
 =cut
+    

@@ -112,7 +112,7 @@ sub run {
     my ($total_value, $total_unit) = $self->{perfdata}->change_bytes(value => $total_size);
     
     $self->{output}->output_add(severity => $exit,
-                                short_msg => sprintf("Swap Total: %s Used: %s (%.2f%%) Free: %s (%d%%)",
+                                short_msg => sprintf("Swap Total: %s Used: %s (%.2f%%) Free: %s (%.2f%%)",
                                             $total_value . " " . $total_unit,
                                             $swap_used_value . " " . $swap_used_unit, $prct_used,
                                             $swap_free_value . " " . $swap_free_unit, 100 - $prct_used));

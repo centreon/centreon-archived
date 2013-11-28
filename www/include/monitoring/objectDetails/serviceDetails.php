@@ -107,6 +107,42 @@
                 $proc_critical =  getMyServiceMacro($service_id, "PROC_CRITICAL");
             }
             
+            // Get all templates
+            $serviceStack = array();
+            $serviceToLookFor = array();
+
+            // 
+            $serviceStack[] = $service_id;
+            $serviceToLookFor[] = $service_id;
+
+            foreach ($serviceStack as $currentservice) {
+                array_pop($serviceStack);
+                $DBRESULT = $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$currentservice."'");
+                for ($i = 0; $s = $DBRESULT->fetchrow(); $i++) {
+                    $serviceStack[] = $s["service_template_model_stm_id"];
+                    $serviceToLookFor[] = $s["service_template_model_stm_id"];
+                }
+                $DBRESULT->free();
+            }
+
+            // Look for contactgroups
+            $DBRESULT = $pearDB->query("SELECT cg_name FROM contactgroup cg, contactgroup_service_relation cgsr
+                WHERE cgsr.contactgroup_cg_id = cg.cg_id AND cgsr.service_service_id IN (".implode(',', $serviceToLookFor).")
+                GROUP BY cg_name");
+            for ($i = 0; $cg = $DBRESULT->fetchrow(); $i++) {
+                $contactGroups[] = $cg["cg_name"];
+            }
+            $DBRESULT->free();
+
+            // Look for contacts
+            $DBRESULT = $pearDB->query("SELECT contact_name FROM contact c, contact_service_relation csr
+                WHERE csr.contact_id = c.contact_id AND csr.service_service_id IN (".implode(',', $serviceToLookFor).")
+                GROUP BY contact_name");
+            for ($i = 0; $c = $DBRESULT->fetchrow(); $i++) {
+                $contacts[] = $c["contact_name"];
+            }
+            $DBRESULT->free();
+            
             /*
              * Get servicegroups list
              */
@@ -131,6 +167,11 @@
                 }
             }
 
+            /**
+             * 
+             */
+            
+            
             $tab_status = array();
 
             /*
@@ -497,6 +538,7 @@
             $tpl->assign("secondes", _("seconds"));
             $tpl->assign("m_mon_ticket", "Open Ticket");
             $tpl->assign("links", _("Links"));
+            $tpl->assign("notifications", _("Notifications"));
 
             $tpl->assign("m_mon_services_en_check_active", _("Active Checks"));
             $tpl->assign("m_mon_services_en_check_passif", _("Passive Checks"));
@@ -559,6 +601,23 @@
             $tpl->assign("status_str", _("Status Graph"));
             $tpl->assign("detailed_graph", _("Detailed Graph"));
 
+            /*
+             * Contactgroups Display
+             */
+            $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
+            if (isset($contactGroups)) {
+                $tpl->assign("contactgroups", $contactGroups);
+            }
+
+            /*
+             * Contacts Display
+             */
+            $tpl->assign("contacts_label", _("Contacts notified for this host"));
+            if (isset($contacts)) {
+                $tpl->assign("contacts", $contacts);
+            }
+
+            
             /*
              * Hostgroups Display
              */

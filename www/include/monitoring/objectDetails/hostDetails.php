@@ -96,7 +96,43 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
             $hostGroups[] = getMyHostGroupName($hg["hostgroup_hg_id"]);
         }
         $DBRESULT->free();
+        
+        // Get all templates
+        $hostStack = array();
+        $hostToLookFor = array();
 
+        // 
+        $hostStack[] = $host_id;
+        $hostToLookFor[] = $host_id;
+
+        foreach ($hostStack as $currentHost) {
+            array_pop($hostStack);
+            $DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$currentHost."'");
+            for ($i = 0; $h = $DBRESULT->fetchRow(); $i++) {
+                $hostStack[] = $h["host_tpl_id"];
+                $hostToLookFor[] = $h["host_tpl_id"];
+            }
+            $DBRESULT->free();
+        }
+
+        // Look for contactgroups
+        $DBRESULT = $pearDB->query("SELECT cg_name FROM contactgroup cg, contactgroup_host_relation cghr
+            WHERE cghr.contactgroup_cg_id = cg.cg_id AND cghr.host_host_id IN (".implode(',', $hostToLookFor).")
+            GROUP BY cg_name");
+        for ($i = 0; $cg = $DBRESULT->fetchRow(); $i++) {
+            $contactGroups[] = $cg["cg_name"];
+        }
+        $DBRESULT->free();
+
+        // Look for contacts
+        $DBRESULT = $pearDB->query("SELECT contact_name FROM contact c, contact_host_relation chr
+            WHERE chr.contact_id = c.contact_id AND chr.host_host_id IN (".implode(',', $hostToLookFor).")
+            GROUP BY contact_name");
+        for ($i = 0; $c = $DBRESULT->fetchRow(); $i++) {
+            $contacts[] = $c["contact_name"];
+        }
+        $DBRESULT->free();
+        
         if (isset($host_id)) {
             $proc_warning = getMyHostMacro($host_id, "PROC_WARNING");
             $proc_critical = getMyHostMacro($host_id, "PROC_CRITICAL");
@@ -159,7 +195,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
                 " AND s.enabled = 1 ";
             $DBRESULT = $pearDBO->query($rq);
         }
-        while ($ndo = $DBRESULT->fetchRow())	{
+        while ($ndo = $DBRESULT->fetchRow()){
             if (!isset($tab_status[$ndo["current_state"]])) {
                 $tab_status[$tab_status_service[$ndo["current_state"]]] = 0;
             }
@@ -407,6 +443,7 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         $tpl->assign("m_mon_acknowledge", _("Acknowledge problem"));
         $tpl->assign("seconds", _("seconds"));
         $tpl->assign("links", _("Links"));
+        $tpl->assign("notified", _("Notified"));
         $tpl->assign("m_mon_host_comment", _("Comments"));
 
         $tpl->assign("m_mon_obsess_over_host", _("Obsess Over Host"));
@@ -484,12 +521,20 @@ if (!$is_admin && !isset($lcaHost["LcaHost"][$host_name])){
         }
 
         /*
-         * Hostgroups Display
+         * Contactgroups Display
          */
         $tpl->assign("contactgroups_label", _("Contact groups notified for this host"));
         if (isset($contactGroups)) {
-            $tpl->assign("concatgroups", $contactGroups);
+            $tpl->assign("contactgroups", $contactGroups);
         }
+
+       /*
+        * Contacts Display
+        */
+       $tpl->assign("contacts_label", _("Contacts notified for this host"));
+       if (isset($contacts)) {
+           $tpl->assign("contacts", $contacts);
+       }
 
         /*
          * Macros
