@@ -117,7 +117,7 @@ check_rrd_right
 #################################
 	 
 log "INFO" "$(gettext "Copying CentStorage binary in final directory")"
-cp $TMP_DIR/work/bin/centstorage $TMP_DIR/final/bin/centstorage >> $LOG_FILE 2>&1
+#cp $TMP_DIR/work/bin/centstorage $TMP_DIR/final/bin/centstorage >> $LOG_FILE 2>&1
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
 	$TMP_DIR/src/bin/centstorage $CENTSTORAGE_BINDIR/centstorage \
@@ -283,7 +283,7 @@ fi
 
 ## Purge
 
-cp $TMP_DIR/work/cron/centstorage_purge $TMP_DIR/final/cron/centstorage_purge >> $LOG_FILE 2>&1
+#cp $TMP_DIR/work/cron/centstorage_purge $TMP_DIR/final/cron/centstorage_purge >> $LOG_FILE 2>&1
 log "INFO" "$(gettext "Install centstorage_purge")"
 $INSTALL_DIR/cinstall $cinstall_opts \
 	-u "$CENTREON_USER" -g "$CENTREON_GROUP" -m 755 \
