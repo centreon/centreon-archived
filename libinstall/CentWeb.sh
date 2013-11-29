@@ -510,8 +510,8 @@ check_result $? "$(gettext "Install import-mysql-indexes")"
 
 ## Install indexes schema
 log "INFO" "$(gettext "Prepare indexes schema")"
-#cp $TMP_DIR/src/data/* \
-#	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
+cp $TMP_DIR/src/data/* \
+	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
 check_result $? "$(gettext "Prepare indexes schema")"
 
 log "INFO" "$(gettext "Install indexes schema")"
