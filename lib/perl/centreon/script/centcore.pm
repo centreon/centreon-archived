@@ -362,8 +362,9 @@ sub sendExternalCommand($$){
                 $self->{logger}->writeLogError("Cannot write external command on central server : \"".$cmd."\"");
             }
         } else {
+	    $cmd =~ s/\'/\'\\\'\'/g;
             $self->{logger}->writeLogInfo("External command : ".$server_info->{'ns_ip_address'}." ($id) : \"".$cmd."\"");
-            $cmd2 = "$self->{ssh} -q ". $server_info->{'ns_ip_address'} ." -p $port '$self->{echo} \"".$cmd."\" >> ".$command_file."'";
+	    $cmd2 = "$self->{ssh} -q ". $server_info->{'ns_ip_address'} ." -p $port \"$self->{echo} '".$cmd."' >> ".$command_file."\"";
             ($lerror, $stdout) = centreon::common::misc::backtick(command => $cmd2,
                                                                   logger => $self->{logger},
                                                                   timeout => $self->{cmd_timeout}
