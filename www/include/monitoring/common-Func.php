@@ -175,7 +175,7 @@
         
         // Get Service Notifications options
         $additive = false;
-        $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance
+        $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host
             FROM service WHERE service_id = '". service_id ."'");
         $host_notification_options = $DBRESULT->fetchRow();
         
@@ -216,7 +216,7 @@
                 get_contacts_for_services($serviceToLookFor, &$contacts);
             }
 
-            if ((count($contacts) == 0) && (count($contactGroups) == 0)) {
+            if ((count($contacts) == 0) && (count($contactGroups) == 0) && ($host_notification_options['service_inherit_contacts_from_hosts'] == 1)) {
                 return get_notified_infos_for_host($host_id);
             } else {
                 return array('contacts' => $contacts,
