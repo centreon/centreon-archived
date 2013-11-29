@@ -78,7 +78,7 @@
         
         $hgs = $acl->getHostGroupAclConf(null, $oreon->broker->getBroker());
         $hgString = CentreonUtils::toStringWithQuotes($hgs);            
-        $hgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
+        $sgs = $acl->getServiceGroupAclConf(null, $oreon->broker->getBroker());
         $sgString = CentreonUtils::toStringWithQuotes($sgs);
         
 	switch ($o)	{
