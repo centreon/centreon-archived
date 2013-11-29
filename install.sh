@@ -78,7 +78,7 @@ if [ -z "${BASE_DIR#/}" ] ; then
 	echo -e "I think it is not right to have Centreon source on slash"
 	exit 1
 fi
-INSTALL_DIR="$BASE_DIR/libinstall"
+INSTALL_DIR="$BASE_DIR/varinstall/libinstall"
 export INSTALL_DIR
 INSTALL_VARS_DIR="$BASE_DIR/varinstall"
 export INSTALL_VARS_DIR
