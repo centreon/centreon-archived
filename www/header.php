@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 	/*
 	 * Bench
@@ -56,7 +53,7 @@
 	/*
 	 * Include
 	 */
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+	require_once "../config/centreon.conf.php";
 
 	require_once "$classdir/centreonDB.class.php";
 	require_once "$classdir/centreonLang.class.php";
@@ -71,8 +68,6 @@
 	 */
 	$pearDB 	= new CentreonDB();
 	$pearDBO 	= new CentreonDB("centstorage");
-
-	ini_set("session.gc_maxlifetime", "31536000");
 
 	CentreonSession::start();
 

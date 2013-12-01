@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
     ini_set('display_errors', 'Off');
@@ -88,11 +85,6 @@
 		$error_msg = "Installation Directory '". getcwd() ."/install/' is accessible. Delete this directory to prevent security problem.";
 		$file_install_acces = 1;
 	}
-
-	/*
-	 * Set PHP Session Expiration time
-	 */
-	ini_set("session.gc_maxlifetime", "31536000");
 
 	CentreonSession::start();
 
