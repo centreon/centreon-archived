@@ -354,6 +354,7 @@ CREATE TABLE `metrics` (
   `metric_name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL,
   `data_source_type` enum('0','1','2','3') DEFAULT NULL,
   `unit_name` varchar(32) DEFAULT NULL,
+  `current_value` float DEFAULT NULL,
   `warn` float DEFAULT NULL,
   `warn_low` float DEFAULT NULL,
   `warn_threshold_mode` enum('0','1') DEFAULT NULL,

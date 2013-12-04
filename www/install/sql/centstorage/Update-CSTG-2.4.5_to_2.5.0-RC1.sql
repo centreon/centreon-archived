@@ -31,3 +31,7 @@ CREATE TABLE `log_traps` (
 ) ENGINE=INNODB DEFAULT CHARSET=utf8;
 
 DROP TABLE `log_snmptt`;
+
+ALTER TABLE instances ADD COLUMN `deleted` int(11) DELFAULT '0' AFTER `version`;
+
+ALTER TABLE metrics ADD COLUMN `current_value` float DELFAULT NULL AFTER `unit_name`;
