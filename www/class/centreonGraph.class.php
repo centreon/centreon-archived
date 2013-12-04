@@ -586,7 +586,7 @@ class CentreonGraph {
                         /** *******************************************
                         * Get default info in default template
                         */
-                        $DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+                        $DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_minmax_int, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
                         if ($DBRESULT3->numRows()) {
                             foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
                                 $ds[$key] = $ds_val;
