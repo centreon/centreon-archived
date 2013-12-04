@@ -285,7 +285,7 @@ class CentreonGraph {
     */
     protected function cleanupDsNameForLegend($dsname, $reverse = false)
     {
-        $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#", "\\"), array("/", "\\", "%", "\:", "#", "\\\\"), $dsname);
+        $newDsName = str_replace(array("slash_", "bslash_", "pct_",  "#", "\\"), array("/", "\\", "%", "#", "\\\\"), $dsname);
         if (mb_detect_encoding($newDsName) != "UTF-8") {
             $newDsName = mb_convert_encoding($newDsName, "UTF-8");
         }
@@ -630,6 +630,8 @@ class CentreonGraph {
                         } else {
                             $this->metrics[$metric["metric_id"]]["legend"] = (isset($ds_data["ds_name"]) ? $ds_data["ds_name"] : "");
                         }
+                        $this->metrics[$metric["metric_id"]]["legend"] = str_replace(":", "\:", $this->metrics[$metric["metric_id"]]["legend"], $counter);
+                        $escaped_chars_nb += $counter;
                     }
 
                     if ($metric["unit_name"] != "") {
