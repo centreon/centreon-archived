@@ -172,7 +172,7 @@
         // Get Service Notifications options
         $additive = false;
         $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host
-            FROM service WHERE service_id = '". service_id ."'");
+            FROM service WHERE service_id = '". $service_id ."'");
         $host_notification_options = $DBRESULT->fetchRow();
         
         if($host_notification_options['contact_additive_inheritance'] == 1)
