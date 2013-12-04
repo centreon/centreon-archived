@@ -73,11 +73,9 @@
     function get_notified_infos_for_host($host_id) {
         global $pearDB;
         
-        // Get all templates
+        // Init vars
         $hostStack = array();
         $hostToLookFor = array();
-        
-        //
         $contacts = array();
         $contactGroups = array();
         
@@ -165,11 +163,9 @@
     function get_notified_infos_for_service($service_id, $host_id) {
         global $pearDB;
         
-        // Get all templates
+        // Init vars
         $serviceStack = array();
         $serviceToLookFor = array();
-        
-        //
         $contacts = array();
         $contactGroups = array();
         
@@ -191,9 +187,7 @@
         // Look for contacts
         get_contacts_for_services($service_id, &$contacts);
         
-        
         if (((count($contacts) == 0) && (count($contactGroups) == 0) || ($additive))) {
-            // 
             $serviceStack[] = $service_id;
 
             foreach ($serviceStack as $currentservice) {
@@ -216,7 +210,7 @@
                 get_contacts_for_services($serviceToLookFor, &$contacts);
             }
 
-            if ((count($contacts) == 0) && (count($contactGroups) == 0) && ($host_notification_options['service_inherit_contacts_from_hosts'] == 1)) {
+            if ((count($contacts) == 0) && (count($contactGroups) == 0) && ($host_notification_options['service_inherit_contacts_from_host'] == 1)) {
                 return get_notified_infos_for_host($host_id);
             } else {
                 return array('contacts' => $contacts,
