@@ -179,7 +179,10 @@ sub run {
         my $extra_label = '';
         $extra_label = '_' . $name_storage if (!defined($self->{option_results}->{storage}) || defined($self->{option_results}->{use_regexp}));
         my %total_options = ();
-        $total_options{total} = $total_size if ($self->{option_results}->{units} eq '%');
+        if ($self->{option_results}->{units} eq '%') {
+            $total_options{total} = $total_size;
+            $total_options{cast_int} = 1; 
+        }
         $self->{output}->perfdata_add(label => $label . $extra_label, unit => 'o',
                                       value => $value_perf,
                                       warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning', %total_options),
