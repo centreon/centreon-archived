@@ -123,6 +123,7 @@ sub load {
     # $options{oids} = ref to array of oids (example: ['.1.2', '.1.2'])
     # $options{instances} = ref to array of oids instances
     # $options{begin}, $args->{end} = integer instance end
+    # $options{instance_regexp} = str
     # 3 way to use: with instances, with end, none
     
     if (defined($options{end})) {
@@ -135,8 +136,9 @@ sub load {
     }
     
     if (defined($options{instances})) {
+        $options{instance_regexp} = defined($options{instance_regexp}) ? $options{instance_regexp} : '(\d+)$';
         foreach my $instance (@{$options{instances}}) {
-            $instance =~ /(\d+)$/;
+            $instance =~ /$options{instance_regexp}/;
             foreach (@{$options{oids}}) {
                 push @{$self->{oids_loaded}}, $_ . "." . $1;
             }

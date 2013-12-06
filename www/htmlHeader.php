@@ -57,6 +57,15 @@
 <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet" type="text/css" media="screen"/>
 <link href="<?php echo $skin; ?>jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>jquery-ui/jquery-ui-centreon.css" rel="stylesheet" type="text/css"/>
+<?php
+
+    // == Declare CSS for modules
+    foreach ($oreon->modules as $module_name => $infos) {
+        if (file_exists($centreon_path."www/modules/".$module_name."/static/css/styles.css")) {
+            print "<link href='./modules/".$module_name."/static/css/styles.css' rel='stylesheet' type='text/css' />\n";
+        }
+	}
+?>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/prototype.js"></script>
 <?php if (!isset($_REQUEST['iframe']) || (isset($_REQUEST['iframe']) && $_REQUEST['iframe'] != 1)) { ?>
 <script type="text/javascript" src="./include/common/javascript/scriptaculous/scriptaculous.js?load=effects,dragdrop"></script>
