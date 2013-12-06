@@ -48,7 +48,7 @@ sub new {
 
     bless $self, $class;
     $self->add_options(
-        "f=s" => \$self->{opt_f}, "file" => \$self->{opt_f},
+        "f=s" => \$self->{opt_f}, "file=s" => \$self->{opt_f},
         "m=s" => \$self->{opt_m}, "man=s" => \$self->{opt_m}
     );
     return $self;
