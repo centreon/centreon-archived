@@ -36,6 +36,8 @@ package centreon::script::centFillTrapDB;
 use strict;
 use warnings;
 use centreon::script;
+use File::Basename;
+use File::Spec;
 
 use base qw(centreon::script);
 
@@ -147,6 +149,12 @@ sub main {
     # From snmpconvertmib
     # Copyright 2002-2013 Alex Burger
     # alex_b@users.sourceforge.net
+    
+    # Get complete path of input file (MIB) in a portable way (needed for -m switch for snmptranslate)
+    my $dirname = dirname $self->{opt_f};
+    my $basename = basename $self->{opt_f};
+    my $input = File::Spec->catfile($dirname, $basename);
+    $ENV{MIBS} = $input;
     
     $self->check_snmptranslate_version();
     my @mibfile;
