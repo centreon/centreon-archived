@@ -86,7 +86,7 @@ sub check_snmptranslate_version {
 
         chomp ($snmptranslatever);
 
-        print "snmptranslate version: " . $snmptranslatever. "\n";
+        $self->{logger}->writeLogInfo("snmptranslate version: " . $snmptranslatever);
 
         if ($snmptranslatever =~ /UCD/i || $snmptranslatever =~ /NET-SNMP version: 5.0.1/i) {
             $self->{snmptranslate_use_On} = 0;
@@ -95,13 +95,10 @@ sub check_snmptranslate_version {
     }
 }
 
-#########################################
-## TEST IF OID ALREADY EXISTS IN DATABASE
-#
 sub existsInDB {
     my $self = shift;
-    my ($oid, $name) = @_;
-    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($oid) . " AND `traps_name` = " . $self->{centreon_dbc}->quote($name) . " LIMIT 1");
+
+    my ($status, $sth) = $self->{centreon_dbc}->query("SELECT `traps_id` FROM `traps` WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($self->{trap_oid}) . " AND `traps_name` = " . $self->{centreon_dbc}->quote($self->{trap_name}) . " LIMIT 1");
     if ($status == -1) {
         return 0;
     }
@@ -111,27 +108,36 @@ sub existsInDB {
     return 0;
 }
 
-#####################################
-## RETURN ENUM FROM STRING FOR STATUS
-#
-sub getStatus($$) {
-    my ($val, $name) = @_;
-    if ($val =~ /up/i) {
+sub getStatus {
+    my ($self) = @_;
+
+    if ($self->{trap_severity} =~ /up/i) {
         return 0;
-    } elsif ($val =~ /warning|degraded|minor/i) {
+    } elsif ($self->{trap_severity} =~ /warning|degraded|minor/i) {
         return 1;
-    } elsif ($val =~ /critical|major|failure|error|down/i) {
+    } elsif ($self->{trap_severity} =~ /critical|major|failure|error|down/i) {
         return 2;
-    }else {
-        if ($name =~ /normal|up/i || $name =~ /on$/i) {
+    } else {
+        if ($self->{trap_name} =~ /normal|up/i || $self->{trap_name} =~ /on$/i) {
             return 0;
-        } elsif ($name =~ /warning|degraded|minor/i) {
+        } elsif ($self->{trap_name} =~ /warning|degraded|minor/i) {
             return 1;
-        } elsif ($name =~ /critical|major|fail|error|down|bad/i | $name =~ /off|low$/i) {
+        } elsif ($self->{trap_name} =~ /critical|major|fail|error|down|bad/i || $self->{trap_name} =~ /off|low$/i) {
             return 2;
         }
     }
     return 3;
+}
+
+sub insert_into_centreon {
+    my $self = shift;
+    my $last_oid = "";
+    my ($status, $sth);
+
+    if (!$self->existsInDB()) {
+        ($status, $sth) = $self->{centreon_dbc}->query("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES (" . $self->{centreon_dbc}->quote($self->{trap_name}) . ", " . $self->{centreon_dbc}->quote($self->{trap_oid}) . ", " . $self->getStatus() . ", " . $self->{centreon_dbc}->quote($self->{opt_m}) . ", '1')");
+    }
+    ($status, $sth) = $self->{centreon_dbc}->query("UPDATE `traps` SET `traps_args` = " . $self->{centreon_dbc}->quote($self->{trap_format}) . ", `traps_comments` = " . $self->{centreon_dbc}->quote($self->{trap_description}) . " WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($self->{trap_oid}));
 }
 
 ################
@@ -139,7 +145,6 @@ sub getStatus($$) {
 #
 sub main {
     my $self = shift;
-    my $manuf = $self->{opt_m};
     
     if (!open(FILE, $self->{opt_f})) {
 		$self->{logger}->writeLogError("Cannot get mib file : $self->{opt_f}");
@@ -202,18 +207,18 @@ sub main {
         # only a single word with whitespace around it.
         if ($currentline > 0 && $line =~ /^\s*DEFINITIONS\s*::=\s*BEGIN\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\S+)\s*$/) {
             # We should have found the mib name
-            print "\n\nSplit line DEFINITIONS ::= BEGIN found ($1).\n";
+            $self->{logger}->writeLogInfo("Split line DEFINITIONS ::= BEGIN found ($1).");
 
             $mib_name = $1;
             $mib_name =~ s/\s+//g;
-            print "Processing MIB:         $mib_name\n";
+            $self->{logger}->writeLogInfo("Processing MIB:         $mib_name");
 
             $currentline++; # Increment to the next line
             next;
         } elsif ($line =~ /(.*)DEFINITIONS\s*::=\s*BEGIN/) {
             $mib_name = $1;
             $mib_name =~ s/\s+//g;
-            print "\n\nProcessing MIB:         $mib_name\n";
+            $self->{logger}->writeLogInfo("Processing MIB:         $mib_name");
 
             $currentline++; # Increment to the next line
             next;
@@ -246,7 +251,7 @@ sub main {
 
             my @variables = ();
 
-            print "#\n";
+            $self->{logger}->writeLogInfo("#");
 
             # Sometimes the TRAP-TYPE / NOTIFICATION-TYPE will appear on the line following the trap name
             # Look for xxx-TYPE with nothing (white space allowed) around it and a previous line with only a single word
@@ -255,10 +260,10 @@ sub main {
             ($currentline > 0 && $line =~ /^\s*NOTIFICATION-TYPE\s*$/ && $mibfile[$currentline-1] =~ /^\s*(\S+)\s*$/) ) {
                 # We should have found the trap name
                 $trapname = $1;
-                print "Split line TRAP-TYPE / NOTIFICATION-TYPE found ($1).\n";
+                $self->{logger}->writeLogInfo("Split line TRAP-TYPE / NOTIFICATION-TYPE found ($1).");
             } elsif ( $line =~ /^\s+TRAP-TYPE.*/ || $line =~ /^\s+NOTIFICATION-TYPE.*/  || $line =~ /^.*,.*NOTIFICATION-TYPE.*/ ) {
                 # If the TRAP-TYPE / NOTIFICATION-TYPE line starts with white space, it's probably a import line, so ignore
-                print "skipping a TRAP-TYPE / NOTIFICATION-TYPE line - probably an import line.\n";
+                $self->{logger}->writeLogInfo("skipping a TRAP-TYPE / NOTIFICATION-TYPE line - probably an import line.");
                 $currentline++; # Increment to the next line
                 $line = $mibfile[$currentline]; # Get next line
                 next;
@@ -268,11 +273,11 @@ sub main {
             $trapname =~ /\s*([A-Za-z0-9_-]+)\s*/;
             $trapname = $1;
 
-            print "Line: $currentline\n";
+            $self->{logger}->writeLogInfo("Line: $currentline");
             if ($trapversion eq 'TRAP') {
-                print "TRAP-TYPE: $1\n";		# If trapsummary blank, use trapsummary line for FORMAT and EXEC
+                $self->{logger}->writeLogInfo("TRAP-TYPE: $1");		# If trapsummary blank, use trapsummary line for FORMAT and EXEC
             } else {
-                print "NOTIFICATION-TYPE: $1\n";	# If trapsummary blank, use trapsummary line for FORMAT and EXEC
+                $self->{logger}->writeLogInfo("NOTIFICATION-TYPE: $1");	# If trapsummary blank, use trapsummary line for FORMAT and EXEC
             }
 
             $currentline++; # Increment to the next line
@@ -280,6 +285,13 @@ sub main {
 
             my $end_of_definition = 0;
 
+            $self->{trap_name} = '';
+            $self->{trap_oid} = '';
+            $self->{trap_severity} = '';
+            $self->{trap_format} = '';
+            $self->{trap_description} = '';
+            
+            
             my $traptype = "";
             my $trapsummary = "";
             my @description = ();
@@ -340,7 +352,7 @@ sub main {
                     $templine =~ s/\s//g;	# Remove any white space
                     $templine =~ /\{(.*)\}/; # Remove brackets
                     @variables = split /\,/, $1;
-                    print "Variables: @variables\n";
+                    $self->{logger}->writeLogInfo("Variables: @variables");
                 }
 
                 if ($line3 =~ /DESCRIPTION(.*)/s) {
@@ -501,7 +513,7 @@ sub main {
                             $_ = $1;
                             s( )()g;
                             $enterprise = $_;
-                            print "Enterprise: $enterprise\n";
+                            $self->{logger}->writeLogInfo("Enterprise: $enterprise");
                         }
                     }
                 }
@@ -520,7 +532,7 @@ sub main {
             } else {
                 $trap_lookup = "$mib_name\:\:$trapname";
             }
-            print "Looking up via snmptranslate: $trap_lookup\n";
+            $self->{logger}->writeLogInfo("Looking up via snmptranslate: $trap_lookup");
 
             my $trapoid;
             if ($self->{snmptranslate_use_On} == 1) {
@@ -531,8 +543,10 @@ sub main {
 
             chomp $trapoid;
             if ($trapoid ne "") {
-                print OUTPUTFILE "#\n#\n#\n";
-                print OUTPUTFILE "EVENT $trapname $trapoid \"Status Events\" $trap_severity\n";
+                $self->{trap_name} = $trapname;
+                $self->{trap_oid} = $trapoid;
+                $self->{trap_severity} = $trap_severity;
+                #print OUTPUTFILE "EVENT $trapname $trapoid \"Status Events\" $trap_severity\n";
 
                 # Loop through trapsummary and replace the %s and %d etc with %1 to %n
 
@@ -643,24 +657,30 @@ sub main {
                 }
 
                 if ($formatexec ne '') {
-                    print OUTPUTFILE "FORMAT $formatexec\n";
+                    $self->{trap_format} = $formatexec;
+                    #print OUTPUTFILE "FORMAT $formatexec\n";
                 } else {
-                    print OUTPUTFILE "FORMAT \$*\n";
+                    $self->{trap_format} = '$*';
+                    #print OUTPUTFILE "FORMAT \$*\n";
                 }
 
                 if ($self->{no_description} == 0) {
-                    print OUTPUTFILE "SDESC\n";
+                    #print OUTPUTFILE "SDESC\n";
                     #print OUTPUTFILE "$descriptionline1\n";
                     for (my $i=0; $i <= $#description; $i++) {
-                        print OUTPUTFILE "$description[$i]";
+                        $self->{trap_description} .= "$description[$i]";
+                        #print OUTPUTFILE "$description[$i]";
                     }
 
                     # If net_snmp_perl is enabled, lookup each variable
                     if (@variables && $self->{no_variables} == 0 && $self->{net_snmp_perl} == 1) {
-                        print OUTPUTFILE "Variables:\n";
+                        $self->{trap_description} .= "Variables:\n";
+                        #print OUTPUTFILE "Variables:\n";
                         for (my $i=0; $i <= $#variables; $i++) {
-                            printf OUTPUTFILE "%3d: %s\n",$i+1,$variables[$i];
-                            printf OUTPUTFILE "     Syntax=\"" . $SNMP::MIB{$variables[$i]}{type} . "\"\n";
+                            $self->{trap_description} .= sprintf("%3d: %s\n",$i+1,$variables[$i]);
+                            $self->{trap_description} .= "     Syntax=\"" . $SNMP::MIB{$variables[$i]}{type} . "\"\n";
+                            #printf OUTPUTFILE "%3d: %s\n",$i+1,$variables[$i];
+                            #printf OUTPUTFILE "     Syntax=\"" . $SNMP::MIB{$variables[$i]}{type} . "\"\n";
                             if (uc $SNMP::MIB{$variables[$i]}{type} =~ /INTEGER/) {
                                 my $b = $SNMP::MIB{$variables[$i]}{enums};
                                 my %hash = %$b;
@@ -673,31 +693,40 @@ sub main {
                                 }
                                 # Print out the entries in the hash
                                 foreach my $c (sort keys %temphash) {
-                                    print OUTPUTFILE "       " . $c . ": $temphash{$c}\n";
+                                    $self->{trap_description} .= "       " . $c . ": $temphash{$c}\n";
+                                    #print OUTPUTFILE "       " . $c . ": $temphash{$c}\n";
                                 }
                             }
                             if ($SNMP::MIB{$variables[$i]}{description}) {
-                                print OUTPUTFILE "     Descr=\"" . $SNMP::MIB{$variables[$i]}{description} . "\"\n";
+                                $self->{trap_description} .= "     Descr=\"" . $SNMP::MIB{$variables[$i]}{description} . "\"\n";
+                                #print OUTPUTFILE "     Descr=\"" . $SNMP::MIB{$variables[$i]}{description} . "\"\n";
                             }
                         }
                     } elsif (@variables ne "" && $self->{no_variables} == 0  && $self->{net_snmp_perl} == 0) {
-                        print OUTPUTFILE "Variables:\n";
+                        $self->{trap_description} .= "Variables:\n";
+                        #print OUTPUTFILE "Variables:\n";
                         for (my $i=0; $i <= $#variables; $i++) {
-                            print OUTPUTFILE "  " . ($i+1) . ": " . $variables[$i] . "\n";
+                            $self->{trap_description} .= "  " . ($i+1) . ": " . $variables[$i] . "\n";
+                            #print OUTPUTFILE "  " . ($i+1) . ": " . $variables[$i] . "\n";
                         }
                     }
-                    print OUTPUTFILE "EDESC\n";
+                    #print OUTPUTFILE "EDESC\n";
                 }
-
+                #print "Name= " . $self->{trap_name} . "==\n";
+                #print "OID= " . $self->{trap_oid} . "==\n";
+                #print "Severity= " . $self->{trap_severity} . "==\n";
+                #print "Format= " . $self->{trap_format} . "==\n";
+                #print "Description= " . $self->{trap_description} . "==\n";
                 $currentline--;
             }
 
-            print "OID: $trapoid\n";
+            $self->{logger}->writeLogInfo("OID: $trapoid");
 
             $self->{total_translations}++;
             if ($trapoid eq '') {
                 $self->{failed_translations}++;
             } else {
+                $self->insert_into_centreon();
                 $self->{successful_translations}++;
             }
 
@@ -708,74 +737,10 @@ sub main {
         $currentline++; # Increment to the next line
     }
     
-    print "\n\nDone\n\n";
-    print "Total translations:        $self->{total_translations}\n";
-    print "Successful translations:   $self->{successful_translations}\n";
-    print "Failed translations:       $self->{failed_translations}\n";
-    
-    exit(1);
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    my $last_oid = "";
-    my $nb_inserted = 0;
-    my $nb_updated = 0;
-
-	while (<FILE>) {	
-		if ($_ =~ /^EVENT\ ([a-zA-Z0-9\_\-]+)\ ([0-9\.]+)\ (\"[A-Za-z\ \_\-]+\")\ ([a-zA-Z]+)/) {
-			my ($name,$oid,$type,$val) = ($1, $2, $3, $4);
-		    if ($self->existsInDB($oid, $name)) {
-				$self->{logger}->writeLogInfo("Trap oid : $name => $oid already exists in database");
-				$last_oid = $oid;
-		    } else {
-				$val = getStatus($val,$name);
-				my ($status, $sth) = $self->{centreon_dbc}->query("INSERT INTO `traps` (`traps_name`, `traps_oid`, `traps_status`, `manufacturer_id`, `traps_submit_result_enable`) VALUES (" . $self->{centreon_dbc}->quote($name) . ", " . $self->{centreon_dbc}->quote($oid) . ", " . $self->{centreon_dbc}->quote($val) . ", " . $self->{centreon_dbc}->quote($manuf) . ", '1')");
-				$last_oid = $oid;
-                        $nb_inserted++;
-		    }
-		} elsif ($_ =~/^FORMAT\ (.*)/ && $last_oid ne "") {
-		    my ($status, $sth) = $self->{centreon_dbc}->query("UPDATE `traps` set `traps_args` = '$1' WHERE `traps_oid` = " . $self->{centreon_dbc}->quote($last_oid));
-                    $nb_updated++;
-		} elsif ($_ =~ /^SDESC(.*)/ && $last_oid ne "") {	    
-		    my $temp_val = $1;
-		    my $desc = "";
-		    if (! ($temp_val =~ /\s+/)){
-				$temp_val =~ s/\"/\\\"/g;
-				$temp_val =~ s/\'/\\\'/g;
-				$desc .= $temp_val;
-		    }
-		    my $found = 0;
-		    while (!$found) {
-				my $line = <FILE>;
-				if ($line =~ /^EDESC/) {
-				    $found = 1;
-				} else {
-					$line =~ s/\"/\\\"/g;
-					$line =~ s/\'/\\\'/g;
-				 	$desc .= $line;
-				}
-		    }
-		    if ($desc ne "") {
-				my ($status, $sth) = $self->{centreon_dbc}->query("UPDATE `traps` SET `traps_comments` = '$desc' WHERE `traps_oid` = " .  $self->{centreon_dbc}->quote($last_oid));
-                        $nb_updated++;
-		    }
-		}
-    }
-    $self->{logger}->writeLogInfo("$nb_inserted entries inserted, $nb_updated entries updated");
+    $self->{logger}->writeLogInfo("Done");
+    $self->{logger}->writeLogInfo("Total translations:        $self->{total_translations}");
+    $self->{logger}->writeLogInfo("Successful translations:   $self->{successful_translations}");
+    $self->{logger}->writeLogInfo("Failed translations:       $self->{failed_translations}");
 }
 
 sub run {
@@ -793,6 +758,9 @@ sub run {
                                                       password => $self->{centreon_config}->{db_passwd},
                                                       force => 0,
                                                       logger => $self->{logger});
+    if ($self->{centreon_dbc}->connect() == -1) {
+        exit(1);
+    }
     
     $self->main();
     exit(0);
