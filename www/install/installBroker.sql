@@ -562,6 +562,7 @@ CREATE TABLE `servicegroups` (
   `alias` varchar(255) DEFAULT NULL,
   `notes` varchar(160) DEFAULT NULL,
   `notes_url` varchar(160) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`servicegroup_id`),
   KEY `instance_id` (`instance_id`),
   CONSTRAINT `servicegroups_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE
