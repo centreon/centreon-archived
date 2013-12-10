@@ -33,7 +33,7 @@
 #
 ####################################################################################
 
-package os::linux::plugin;
+package network::juniper::srx::plugin;
 
 use strict;
 use warnings;
@@ -45,20 +45,19 @@ sub new {
     bless $self, $class;
     # $options->{options} = options object
 
-    $self->{version} = '0.1';
+    $self->{version} = '1.0';
     %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'diskio' => 'snmp_standard::mode::diskio',
-                         'load' => 'snmp_standard::mode::loadaverage',
+                         'hardware' => 'network::juniper::common::mode::hardware',
+                         'cpu-routing' => 'network::juniper::common::mode::cpurouting', # routing engine
+                         'cpu-forwarding' => 'network::juniper::common::mode::cpuforwarding', # packet forwarding engine
+                         'memory-routing' => 'network::juniper::common::mode::memoryrouting', # routing engine
+                         'memory-forwarding' => 'network::juniper::common::mode::memoryforwarding', # packet forwarding engine
+                         'cp-sessions' => 'network::juniper::common::mode::cpsessions', # CP = 'central point'
+                         'flow-sessions' => 'network::juniper::common::mode::flowsessions',
+                         'traffic' => 'snmp_standard::mode::traffic',
                          'list-interfaces' => 'snmp_standard::mode::listinterfaces',
                          'list-storages' => 'snmp_standard::mode::liststorages',
-                         'memory' => 'os::linux::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
                          'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::linux::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
                          );
 
     return $self;
@@ -70,6 +69,6 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check Linux operating systems in SNMP.
+Check Juniper SRX in SNMP.
 
 =cut

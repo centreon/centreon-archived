@@ -33,7 +33,7 @@
 #
 ####################################################################################
 
-package os::linux::plugin;
+package network::cisco::asa::plugin;
 
 use strict;
 use warnings;
@@ -45,20 +45,15 @@ sub new {
     bless $self, $class;
     # $options->{options} = options object
 
-    $self->{version} = '0.1';
+    $self->{version} = '1.0';
     %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'diskio' => 'snmp_standard::mode::diskio',
-                         'load' => 'snmp_standard::mode::loadaverage',
+                         'cpu' => 'network::cisco::common::mode::cpu',
+                         'failover' => 'network::cisco::asa::mode::failover',
                          'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'list-storages' => 'snmp_standard::mode::liststorages',
-                         'memory' => 'os::linux::mode::memory',
+                         'memory' => 'network::cisco::common::mode::memory',
                          'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::linux::mode::swap',
+                         'sessions' => 'network::cisco::asa::mode::sessions',
                          'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
                          );
 
     return $self;
@@ -70,6 +65,7 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check Linux operating systems in SNMP.
+Check Cisco ASA in SNMP.
+!!! Be careful: Cisco ASA had an internal SNMP buffer of 512B. Use --subsetleef=20 (or lower) option !!!
 
 =cut

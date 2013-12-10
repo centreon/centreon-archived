@@ -192,6 +192,7 @@ CREATE TABLE `hostgroups` (
   `alias` varchar(255) DEFAULT NULL,
   `notes` varchar(160) DEFAULT NULL,
   `notes_url` varchar(160) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`hostgroup_id`),
   UNIQUE KEY `name` (`name`,`instance_id`),
   KEY `instance_id` (`instance_id`),

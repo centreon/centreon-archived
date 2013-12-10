@@ -39,8 +39,6 @@ use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use centreon::plugins::statefile;
-use Digest::MD5 qw(md5_hex);
 
 my @operstatus = ("up", "down", "testing", "unknown", "dormant", "notPresent", "lowerLayerDown");
 my %oids_iftable = (
