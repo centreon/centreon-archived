@@ -56,6 +56,7 @@ sub new {
                          'flow-sessions' => 'network::juniper::common::mode::flowsessions',
                          'traffic' => 'snmp_standard::mode::traffic',
                          'list-interfaces' => 'snmp_standard::mode::listinterfaces',
+                         'list-storages' => 'snmp_standard::mode::liststorages',
                          'storage' => 'snmp_standard::mode::storage',
                          );
 

@@ -302,38 +302,6 @@ sub get_display_value {
     return $value;
 }
 
-sub disco_format {
-    my ($self, %options) = @_;
-    
-    $self->{output}->add_disco_format(elements => ['name', 'total', 'storageid']);
-}
-
-sub disco_show {
-    my ($self, %options) = @_;
-    # $options{snmp} = snmp object
-    $self->{snmp} = $options{snmp};
-    $self->{hostname} = $self->{snmp}->get_hostname();
-
-    my $oid_hrStorageAllocationUnits = '.1.3.6.1.2.1.25.2.3.1.4';
-    my $oid_hrStorageSize = '.1.3.6.1.2.1.25.2.3.1.5';
-    my $oid_hrStorageType = '.1.3.6.1.2.1.25.2.3.1.2';
-    my $oid_hrStorageFixedDisk = '.1.3.6.1.2.1.25.2.1.4';
-    my $oid_hrStorageNetworkDisk = '.1.3.6.1.2.1.25.2.1.10';
-
-    $self->manage_selection();
-    $self->{snmp}->load(oids => [$oid_hrStorageAllocationUnits, $oid_hrStorageSize], instances => $self->{storage_id_selected});
-    my $result = $self->{snmp}->get_leef();
-    foreach (sort @{$self->{storage_id_selected}}) {
-        my $display_value = $self->get_display_value(id => $_);
-        my $storage_type = $self->{statefile_cache}->get(name => "type_" . $_);
-        next if (!defined($storage_type) || ($storage_type ne $oid_hrStorageFixedDisk && $storage_type ne $oid_hrStorageNetworkDisk));
-
-        $self->{output}->add_disco_entry(name => $display_value,
-                                         total => $result->{$oid_hrStorageSize . "." . $_} * $result->{$oid_hrStorageAllocationUnits . "." . $_},
-                                         storageid => $_);
-    }
-}
-
 1;
 
 __END__

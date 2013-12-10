@@ -53,8 +53,8 @@ sub new {
     my $self = {%defaults, %options};
     $self->{type} = 'mysql' if (!defined($self->{type}));
 
-    $self->{"instance"} = undef;
-    $self->{"args"} = [];
+    $self->{instance} = undef;
+    $self->{args} = [];
     bless $self, $class;
     return $self;
 }
@@ -63,63 +63,63 @@ sub new {
 sub type {
     my $self = shift;
     if (@_) {
-        $self->{"type"} = shift;
+        $self->{type} = shift;
     }
-    return $self->{"type"};
+    return $self->{type};
 }
 
 # Getter/Setter DB name
 sub db {
     my $self = shift;
     if (@_) {
-        $self->{"db"} = shift;
+        $self->{db} = shift;
     }
-    return $self->{"db"};
+    return $self->{db};
 }
 
 # Getter/Setter DB host
 sub host {
     my $self = shift;
     if (@_) {
-        $self->{"host"} = shift;
+        $self->{host} = shift;
     }
-    return $self->{"host"};
+    return $self->{host};
 }
 
 # Getter/Setter DB port
 sub port {
     my $self = shift;
     if (@_) {
-        $self->{"port"} = shift;
+        $self->{port} = shift;
     }
-    return $self->{"port"};
+    return $self->{port};
 }
 
 # Getter/Setter DB user
 sub user {
     my $self = shift;
     if (@_) {
-        $self->{"user"} = shift;
+        $self->{user} = shift;
     }
-    return $self->{"user"};
+    return $self->{user};
 }
 
 # Getter/Setter DB force
 sub force {
     my $self = shift;
     if (@_) {
-        $self->{"force"} = shift;
+        $self->{force} = shift;
     }
-    return $self->{"force"};
+    return $self->{force};
 }
 
 # Getter/Setter DB password
 sub password {
     my $self = shift;
     if (@_) {
-        $self->{"password"} = shift;
+        $self->{password} = shift;
     }
-    return $self->{"password"};
+    return $self->{password};
 }
 
 sub last_insert_id {
@@ -130,19 +130,19 @@ sub last_insert_id {
 sub quote {
     my $self = shift;
 
-    if (defined($self->{'instance'})) {
-        return $self->{'instance'}->quote($_[0]);
+    if (defined($self->{instance})) {
+        return $self->{instance}->quote($_[0]);
     }
-    my $num = scalar(@{$self->{"args"}});
-    push @{$self->{"args"}}, $_[0];
+    my $num = scalar(@{$self->{args}});
+    push @{$self->{args}}, $_[0];
     return "##__ARG__$num##";
 }
 
 sub set_inactive_destroy {
     my $self = shift;
 
-    if (defined($self->{'instance'})) {
-        $self->{'instance'}->{InactiveDestroy} = 1;
+    if (defined($self->{instance})) {
+        $self->{instance}->{InactiveDestroy} = 1;
     }
 }
 
@@ -165,12 +165,12 @@ sub rollback { shift->{instance}->rollback; }
 sub kill {
     my $self = shift;
 
-    if (defined($self->{'instance'})) {
-        $self->{"logger"}->writeLogInfo("KILL QUERY\n");
-        my $rv = $self->{'instance'}->do("KILL QUERY " . $self->{'instance'}->{'mysql_thread_id'});
+    if (defined($self->{instance})) {
+        $self->{logger}->writeLogInfo("KILL QUERY\n");
+        my $rv = $self->{instance}->do("KILL QUERY " . $self->{instance}->{'mysql_thread_id'});
         if (!$rv) {
             my ($package, $filename, $line) = caller;
-            $self->{'logger'}->writeLogError("MySQL error : " . $self->{'instance'}->errstr . " (caller: $package:$filename:$line)");
+            $self->{logger}->writeLogError("MySQL error : " . $self->{instance}->errstr . " (caller: $package:$filename:$line)");
         }
     }
 }
@@ -182,33 +182,33 @@ sub connect() {
     my $status = 0;
 
     while (1) {
-        $self->{port} = 3306 if (!defined($self->{port}) && $self->{"type"} eq 'mysql');
-        if ($self->{"type"} =~ /SQLite/i) {
-            $self->{"instance"} = DBI->connect(
-                "DBI:".$self->{"type"} 
-                    .":".$self->{"db"},
-                $self->{"user"},
-                $self->{"password"},
+        $self->{port} = 3306 if (!defined($self->{port}) && $self->{type} eq 'mysql');
+        if ($self->{type} =~ /SQLite/i) {
+            $self->{instance} = DBI->connect(
+                "DBI:".$self->{type} 
+                    .":".$self->{db},
+                $self->{user},
+                $self->{password},
                 { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
             );
         } else {
-            $self->{"instance"} = DBI->connect(
-                "DBI:".$self->{"type"} 
-                    .":".$self->{"db"}
-                    .":".$self->{"host"}
-                    .":".$self->{"port"},
-                $self->{"user"},
-                $self->{"password"},
+            $self->{instance} = DBI->connect(
+                "DBI:".$self->{type} 
+                    .":".$self->{db}
+                    .":".$self->{host}
+                    .":".$self->{port},
+                $self->{user},
+                $self->{password},
                 { "RaiseError" => 0, "PrintError" => 0, "AutoCommit" => 1 }
             );
         }
-        if (defined($self->{"instance"})) {
+        if (defined($self->{instance})) {
             last;
         }
 
         my ($package, $filename, $line) = caller;
-        $logger->writeLogError("MySQL error : cannot connect to database " . $self->{"db"} . ": " . $DBI::errstr . " (caller: $package:$filename:$line)");
-        if ($self->{'force'} == 0) {
+        $logger->writeLogError("MySQL error : cannot connect to database " . $self->{db} . ": " . $DBI::errstr . " (caller: $package:$filename:$line)");
+        if ($self->{force} == 0) {
             $status = -1;
             last;
         }
@@ -220,10 +220,10 @@ sub connect() {
 # Destroy connection
 sub disconnect {
     my $self = shift;
-    my $instance = $self->{"instance"};
+    my $instance = $self->{instance};
     if (defined($instance)) {
         $instance->disconnect;
-        $self->{"instance"} = undef;
+        $self->{instance} = undef;
     }
 }
 
@@ -251,7 +251,7 @@ MySQL error: $error (caller: $package:$filename:$line)
 Query: $query
 EOE
     $self->disconnect();
-    $self->{"instance"} = undef;
+    $self->{instance} = undef;
 }
 
 sub query {
@@ -262,26 +262,26 @@ sub query {
     my $statement_handle;
 
     while (1) {
-        if (!defined($self->{"instance"})) {
+        if (!defined($self->{instance})) {
             $status = $self->connect();
             if ($status != -1) {
-                for (my $i = 0; $i < scalar(@{$self->{"args"}}); $i++) {
-                    my $str_quoted = $self->quote(${$self->{"args"}}[0]);
+                for (my $i = 0; $i < scalar(@{$self->{args}}); $i++) {
+                    my $str_quoted = $self->quote(${$self->{args}}[0]);
                     $query =~ s/##__ARG__$i##/$str_quoted/;
                 }
-                $self->{"args"} = [];
+                $self->{args} = [];
             }
-            if ($status == -1 && $self->{'force'} == 0) {
-                $self->{"args"} = [];
+            if ($status == -1 && $self->{force} == 0) {
+                $self->{args} = [];
                 last;
             }
         }
 
-        $statement_handle = $self->{"instance"}->prepare($query);
+        $statement_handle = $self->{instance}->prepare($query);
         if (!defined $statement_handle) {
-            $self->error($self->{"instance"}->errstr, $query);
+            $self->error($self->{instance}->errstr, $query);
             $status = -1;
-            last if $self->{'force'} == 0;
+            last if $self->{force} == 0;
             next;
         }
 
