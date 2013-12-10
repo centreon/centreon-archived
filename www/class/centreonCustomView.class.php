@@ -33,6 +33,8 @@
  *
  */
 
+require_once $centreon_path .'www/class/centreonLDAP.class.php';
+require_once $centreon_path .'www/class/centreonContactgroup.class.php';
 
 /**
  * Centreon Custom View Exception
@@ -76,7 +78,8 @@ class CentreonCustomView
         if ($res->numRows()) {
             $row = $res->fetchRow();
             $this->defaultView = $row['custom_view_id'];
-        }
+	}
+	$this->cg = new CentreonContactgroup($db);
     }
 
     /**
@@ -293,7 +296,10 @@ class CentreonCustomView
             		  AND wp.user_id = " . $this->userId . ")";
             $this->db->query($query);
         } elseif (isset($userGroupId) && $userGroupId) {
-            $query = "SELECT contact_contact_id
+   	    if (!is_numeric($userGroupId)) {
+                $userGroupId = $this->cg->insertLdapGroup($userGroupId);
+	    }	    
+	    $query = "SELECT contact_contact_id
             		  FROM contactgroup_contact_relation
             		  WHERE contactgroup_cg_id = " . $this->db->escape($userGroupId);
             $res = $this->db->query($query);
