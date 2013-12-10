@@ -310,6 +310,29 @@ class CentreonCustomView
     }
 
     /**
+     * Sync custom view with locked users
+     *
+     * @param int custom_view_id
+     * @return void
+     */
+    public function syncCustomView($custom_view_id) {
+        if (!$this->checkOwnership($custom_view_id)) {
+	    return null;
+	}
+        $sql = "SELECT user_id, usergroup_id FROM custom_view_user_relation 
+		WHERE custom_view_id = ".$this->db->escape($custom_view_id)."
+		AND locked = 1";
+	$res = $this->db->query($sql);
+	while ($row = $res->fetchRow()) {
+            $this->copyPreferences(
+		    $custom_view_id, 
+		    $row['user_id'], 
+		    $row['usergroup_id']
+	    );
+	}
+    }
+
+    /**
      * Share Custom View
      *
      * @param array $params

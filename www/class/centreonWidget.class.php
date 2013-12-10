@@ -34,6 +34,7 @@
  */
 
 require_once $centreon_path . "www/class/centreonUtils.class.php";
+require_once $centreon_path . "www/class/centreonCustomView.class.php";
 
 /**
  * Centreon Widget Exception
@@ -69,7 +70,8 @@ class CentreonWidget
         $res = $this->db->query($query);
         while ($row = $res->fetchRow()) {
             $this->userGroups[$row['contactgroup_cg_id']] = $row['contactgroup_cg_id'];
-        }
+	}
+	$this->customView = new CentreonCustomView($centreon, $db);
     }
 
     /**
@@ -419,7 +421,8 @@ class CentreonWidget
         if ($str != "") {
             $query = "INSERT INTO widget_preferences (widget_view_id, parameter_id, preference_value, user_id) VALUES $str";
         }
-        $this->db->query($query);
+	$this->db->query($query);
+	$this->customView->syncCustomView($params['custom_view_id']);
     }
 
     /**
