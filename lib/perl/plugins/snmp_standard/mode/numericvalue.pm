@@ -52,6 +52,7 @@ sub new {
                                 { 
                                   "oid:s"                   => { name => 'oid' },
                                   "oid-type:s"              => { name => 'oid_type', default => 'gauge' },
+                                  "counter-per-seconds"     => { name => 'counter_per_seconds' },
                                   "warning:s"               => { name => 'warning' },
                                   "critical:s"              => { name => 'critical' },
                                   "format:s"                => { name => 'format', default => 'current value is %s' },
@@ -74,6 +75,15 @@ sub check_options {
        $self->{output}->add_option_msg(short_msg => "Need to specify an OID.");
        $self->{output}->option_exit(); 
     }
+    if ($self->{option_results}->{oid_type} !~ /^gauge|counter$/i) {
+       $self->{output}->add_option_msg(short_msg => "Wrong --oid-type argument '" . $self->{option_results}->{oid_type} . "' ('gauge' or 'counter').");
+       $self->{output}->option_exit();
+    }
+    if ($self->{option_results}->{format_scale_unit} !~ /^other|network$/i) {
+       $self->{output}->add_option_msg(short_msg => "Wrong --format-scale-unit argument '" . $self->{option_results}->{format_scale_unit} . "' ('other' or 'network').");
+       $self->{output}->option_exit();
+    }
+    
     if (($self->{perfdata}->threshold_validate(label => 'warning', value => $self->{option_results}->{warning})) == 0) {
        $self->{output}->add_option_msg(short_msg => "Wrong warning threshold '" . $self->{option_results}->{warning} . "'.");
        $self->{output}->option_exit();
@@ -83,8 +93,9 @@ sub check_options {
        $self->{output}->option_exit();
     }
     
-    
-    #$self->{statefile_cache}->check_options(%options);
+    if ($self->{option_results}->{oid_type} =~ /^counter$/i)  {
+        $self->{statefile_cache}->check_options(%options);
+    }
 }
 
 sub run {
@@ -93,23 +104,53 @@ sub run {
     $self->{snmp} = $options{snmp};
     $self->{hostname} = $self->{snmp}->get_hostname();
 
-    
-    #$self->{statefile_value}->read(statefile => "snmpstandard_" . $self->{hostname}  . '_' . $self->{mode} . '_' . (defined($self->{option_results}->{interface}) ? md5_hex($self->{option_results}->{interface}) : md5_hex('all')));
-
-    
     my $result = $self->{snmp}->get_leef(oids => [$self->{option_results}->{oid}], nothing_quit => 1);
     my $value = $result->{$self->{option_results}->{oid}};
     
+    if ($self->{option_results}->{oid_type} =~ /^counter$/i)  {
+        my $datas = {};
+
+        $self->{statefile_cache}->read(statefile => "snmpstandard_" . $self->{hostname}  . '_' . $self->{mode} . '_' . md5_hex($self->{option_results}->{oid}));
+        my $old_timestamp = $self->{statefile_cache}->get(name => 'timestamp');
+        my $old_value = $self->{statefile_cache}->get(name => 'value');
+        
+        $datas->{timestamp} = time();
+        $datas->{value} = $value;
+        $self->{statefile_cache}->write(data => $datas);
+        if (!defined($old_timestamp)) {
+            $self->{output}->output_add(severity => 'OK',
+                                        short_msg => "Buffer creation...");
+            $self->{output}->display();
+            $self->{output}->exit();
+        }
+        
+        $value = $value - $old_value;
+        if (defined($self->{option_results}->{counter_per_seconds})) {
+            my $delta_time = $datas->{timestamp} - $old_timestamp;
+            $delta_time = 1 if ($delta_time == 0); # at least 1 sec
+            $value = $value / $delta_time;
+        }
+    }
+    
     my $exit = $self->{perfdata}->threshold_check(value => $value, 
                                threshold => [ { label => 'critical', 'exit_litteral' => 'critical' }, { label => 'warning', exit_litteral => 'warning' } ]);
-    $self->{output}->output_add(severity => $exit,
-                                short_msg => sprintf("SNMP Value is %s.", $value));    
+    if (defined($self->{option_results}->{format_scale})) {
+        my ($value_mod, $value_unit) = $self->{perfdata}->change_bytes(value => $value);
+        if ($self->{option_results}->{format_scale} =~ /^network$/i) {
+            ($value_mod, $value_unit) = $self->{perfdata}->change_bytes(value => $value, network => 1);
+        }
+        $self->{output}->output_add(severity => $exit,
+                                    short_msg => sprintf($self->{option_results}->{format}, $value_mod . $value_unit));
+    } else {
+        $self->{output}->output_add(severity => $exit,
+                                    short_msg => sprintf($self->{option_results}->{format}, $value));
+    }
 
-    $self->{output}->perfdata_add(label => 'value', unit => undef,
+    $self->{output}->perfdata_add(label => $self->{option_results}->{perfdata_name}, unit => $self->{option_results}->{perfdata_unit},
                                   value => $value,
                                   warning => $self->{perfdata}->get_perfdata_for_output(label => 'warning'),
                                   critical => $self->{perfdata}->get_perfdata_for_output(label => 'critical'),
-                                  min => undef, max => undef);
+                                  min => $self->{option_results}->{perfdata_min}, max => $self->{option_results}->{perfdata_max});
 
     $self->{output}->display();
     $self->{output}->exit();
@@ -122,6 +163,10 @@ __END__
 =head1 MODE
 
 Check an SNMP numeric value: can be a Counter, Integer, Gauge, TimeTicks.
+Use 'stringvalue' mode if you want to check: 
+- 'warning' value is 2, 4 and 5.
+- 'critical' value is 1.
+- 'ok' value is 10.
 
 =over 8
 
@@ -141,6 +186,10 @@ Threshold critical.
 
 Type of the OID (Default: 'gauge').
 Can be 'counter' also. 'counter' will use a retention file.
+
+=item B<--counter-per-seconds>
+
+Convert counter value on a value per seconds (only with type 'counter'.
 
 =item B<--format>
 
