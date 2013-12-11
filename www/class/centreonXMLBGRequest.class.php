@@ -330,6 +330,9 @@ class CentreonXMLBGRequest
 	{
 		if (isset($name) && isset($tab)) {
 			if (isset($tab[$name])) {
+				if ($name == 'num' && $tab[$name] < 0) {
+					$tab[$name] = 0;
+				}
 				return CentreonDB::escape($tab[$name]);
 			}
 			else {
