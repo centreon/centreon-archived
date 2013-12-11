@@ -33,43 +33,58 @@
 #
 ####################################################################################
 
-package os::linux::plugin;
+package example::mode::testcustom;
+
+use base qw(centreon::plugins::mode);
 
 use strict;
 use warnings;
-use base qw(centreon::plugins::script_snmp);
+use centreon::plugins::misc;
 
 sub new {
     my ($class, %options) = @_;
     my $self = $class->SUPER::new(package => __PACKAGE__, %options);
     bless $self, $class;
-    # $options->{options} = options object
-
-    $self->{version} = '0.1';
-    %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'diskio' => 'snmp_standard::mode::diskio',
-                         'load' => 'snmp_standard::mode::loadaverage',
-                         'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'list-storages' => 'snmp_standard::mode::liststorages',
-                         'memory' => 'os::linux::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::linux::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
-                         );
+    
+    $self->{version} = '1.0';
+    $options{options}->add_options(arguments =>
+                                { 
+                                  "timeout:s" => { name => 'timeout', default => 30 }
+                                });
 
     return $self;
+}
+
+sub check_options {
+    my ($self, %options) = @_;
+    $self->SUPER::init(%options);
+
+}
+
+sub run {
+    my ($self, %options) = @_;
+    my $custom = $options{custom};
+    
+    $custom->test();
+    
+    #$self->{output}->display();
+    $self->{output}->exit();
 }
 
 1;
 
 __END__
 
-=head1 PLUGIN DESCRIPTION
+=head1 MODE
 
-Check Linux operating systems in SNMP.
+For custom mode example test.
+
+=over 8
+
+=item B<--timeout>
+
+Timeout in seconds.
+
+=back
 
 =cut

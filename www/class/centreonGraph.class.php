@@ -285,7 +285,7 @@ class CentreonGraph {
     */
     protected function cleanupDsNameForLegend($dsname, $reverse = false)
     {
-        $newDsName = str_replace(array("slash_", "bslash_", "pct_", ":", "#", "\\"), array("/", "\\", "%", "\:", "#", "\\\\"), $dsname);
+        $newDsName = str_replace(array("slash_", "bslash_", "pct_",  "#", "\\"), array("/", "\\", "%", "#", "\\\\"), $dsname);
         if (mb_detect_encoding($newDsName) != "UTF-8") {
             $newDsName = mb_convert_encoding($newDsName, "UTF-8");
         }
@@ -586,7 +586,7 @@ class CentreonGraph {
                         /** *******************************************
                         * Get default info in default template
                         */
-                        $DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
+                        $DBRESULT3 = $this->DB->query("SELECT ds_min, ds_max, ds_minmax_int, ds_last, ds_average, ds_total, ds_tickness, ds_color_line_mode, ds_color_line FROM giv_components_template WHERE default_tpl1 = '1' LIMIT 1");
                         if ($DBRESULT3->numRows()) {
                             foreach ($DBRESULT3->fetchRow() as $key => $ds_val) {
                                 $ds[$key] = $ds_val;
@@ -630,6 +630,8 @@ class CentreonGraph {
                         } else {
                             $this->metrics[$metric["metric_id"]]["legend"] = (isset($ds_data["ds_name"]) ? $ds_data["ds_name"] : "");
                         }
+                        $this->metrics[$metric["metric_id"]]["legend"] = str_replace(":", "\:", $this->metrics[$metric["metric_id"]]["legend"], $counter);
+                        $escaped_chars_nb += $counter;
                     }
 
                     if ($metric["unit_name"] != "") {

@@ -33,7 +33,7 @@
 #
 ####################################################################################
 
-package os::linux::plugin;
+package snmp_standard::plugin;
 
 use strict;
 use warnings;
@@ -47,18 +47,8 @@ sub new {
 
     $self->{version} = '0.1';
     %{$self->{modes}} = (
-                         'cpu' => 'snmp_standard::mode::cpu',
-                         'diskio' => 'snmp_standard::mode::diskio',
-                         'load' => 'snmp_standard::mode::loadaverage',
-                         'list-interfaces' => 'snmp_standard::mode::listinterfaces',
-                         'list-storages' => 'snmp_standard::mode::liststorages',
-                         'memory' => 'os::linux::mode::memory',
-                         'packet-errors' => 'snmp_standard::mode::packeterrors',
-                         'processcount' => 'snmp_standard::mode::processcount',
-                         'storage' => 'snmp_standard::mode::storage',
-                         'swap' => 'os::linux::mode::swap',
-                         'traffic' => 'snmp_standard::mode::traffic',
-                         'uptime' => 'snmp_standard::mode::uptime',
+                         'numeric-value' => 'snmp_standard::mode::numericvalue',
+                         'string-value' => 'snmp_standard::mode::stringvalue',
                          );
 
     return $self;
@@ -70,6 +60,6 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check Linux operating systems in SNMP.
+Check SNMP values (string or numeric).
 
 =cut
