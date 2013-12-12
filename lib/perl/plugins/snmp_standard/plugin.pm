@@ -49,7 +49,7 @@ sub new {
     %{$self->{modes}} = (
                          'numeric-value'          => 'snmp_standard::mode::numericvalue',
                          'string-value'           => 'snmp_standard::mode::stringvalue',
-                         'exec-remote-command'    => 'snmp_standard::mode::execremotecommand',
+                         'dynamic-command'    => 'snmp_standard::mode::dynamiccommand',
                          );
 
     return $self;
@@ -61,6 +61,6 @@ __END__
 
 =head1 PLUGIN DESCRIPTION
 
-Check SNMP values (string, numeric or execute a command).
+Check SNMP values (string, numeric or execute commands).
 
 =cut
