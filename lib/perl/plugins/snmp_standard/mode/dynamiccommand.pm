@@ -84,6 +84,7 @@ sub run {
     my $oid_nsExtendArgs = '.1.3.6.1.4.1.8072.1.3.2.2.1.3';
     my $oid_nsExtendStatus = '.1.3.6.1.4.1.8072.1.3.2.2.1.21'; # 4 = CreateAndGo
     my $oid_nsExtendCommand = '.1.3.6.1.4.1.8072.1.3.2.2.1.2';
+    my $oid_nsExtendStorage = '.1.3.6.1.4.1.8072.1.3.2.2.1.20'; # 2 = Volatile (what we want)
     my $oid_nsExtendExecType = '.1.3.6.1.4.1.8072.1.3.2.2.1.6'; # 1 = exec, 2 = sub shell
     
     my $oid_nsExtendOutput1Line = '.1.3.6.1.4.1.8072.1.3.2.3.1.1';
