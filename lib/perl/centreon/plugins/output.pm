@@ -156,6 +156,7 @@ sub perfdata_add {
 
 sub output_json {
     my ($self, %options) = @_;
+    my $force_ignore_perfdata = defined($options{force_ignore_perfdata}) ? 1 : 0;
     my $json_content = {plugin => {
                                    name => $self->{plugin},
                                    mode => $self->{mode},
@@ -187,7 +188,7 @@ sub output_json {
         }
     }
 
-    if (!defined($self->{option_results}->{ignore_perfdata}) && !defined($options{force_ignore_perfdata})) {
+    if (!defined($self->{option_results}->{ignore_perfdata}) && $options{force_ignore_perfdata} == 1) {
         foreach (@{$self->{perfdatas}}) {
             my %values = ();
             foreach my $key (keys %$_) {
@@ -205,6 +206,7 @@ sub output_json {
 
 sub output_xml {
     my ($self, %options) = @_;
+    my $force_ignore_perfdata = defined($options{force_ignore_perfdata}) ? 1 : 0;
     my ($child_plugin_name, $child_plugin_mode, $child_plugin_exit, $child_plugin_output, $child_plugin_perfdata); 
 
     my $root = $self->{xml_output}->createElement('plugin');
@@ -268,7 +270,7 @@ sub output_xml {
         }
     }
 
-    if (!defined($self->{option_results}->{ignore_perfdata}) && !defined($options{force_ignore_perfdata})) {
+    if (!defined($self->{option_results}->{ignore_perfdata}) && $options{force_ignore_perfdata} == 1) {
         foreach (@{$self->{perfdatas}}) {
             my ($child_perfdata);
             $child_perfdata = $self->{xml_output}->createElement("perfdata");
@@ -286,6 +288,7 @@ sub output_xml {
 
 sub output_txt {
     my ($self, %options) = @_;
+    my $force_ignore_perfdata = defined($options{force_ignore_perfdata}) ? 1 : 0;
 
     if (defined($self->{global_short_concat_outputs}->{UNQUALIFIED_YET})) {
         $self->output_add(severity => uc($options{exit_litteral}), short_msg => $self->{global_short_concat_outputs}->{UNQUALIFIED_YET});
@@ -304,7 +307,7 @@ sub output_txt {
         print (($options{nolabel} == 0 ? 'OK: ' : '') . $self->{global_short_concat_outputs}->{OK});
     }
 
-    if (defined($options{force_ignore_perfdata}) || defined($self->{option_results}->{ignore_perfdata})) {
+    if ($force_ignore_perfdata == 1 || defined($self->{option_results}->{ignore_perfdata})) {
         print "\n";
     } else {
         print "|";
@@ -325,22 +328,26 @@ sub output_txt {
 sub display {
     my ($self, %options) = @_;
     my $nolabel = defined($options{nolabel}) ? 1 : 0;
+    my $force_ignore_perfdata = defined($options{force_ignore_perfdata}) ? 1 : 0;
 
     if (defined($self->{option_results}->{output_xml})) {
         $self->create_xml_document();
         if ($self->{is_output_xml}) {
-            $self->output_xml(exit_litteral => $self->get_litteral_status(), nolabel => $nolabel);
+            $self->output_xml(exit_litteral => $self->get_litteral_status(), 
+                              nolabel => $nolabel, force_ignore_perfdata => $force_ignore_perfdata);
             return ;
         }
     } elsif (defined($self->{option_results}->{output_json})) {
         $self->create_json_document();
         if ($self->{is_output_json}) {
-            $self->output_json(exit_litteral => $self->get_litteral_status(), nolabel => $nolabel);
+            $self->output_json(exit_litteral => $self->get_litteral_status(), 
+                               nolabel => $nolabel, force_ignore_perfdata => $force_ignore_perfdata);
             return ;
         }
     } 
     
-    $self->output_txt(exit_litteral => $self->get_litteral_status(), nolabel => $nolabel);
+    $self->output_txt(exit_litteral => $self->get_litteral_status(), 
+                      nolabel => $nolabel, force_ignore_perfdata => $force_ignore_perfdata);
 }
 
 sub die_exit {
@@ -419,8 +426,15 @@ sub get_most_critical {
 
 sub get_litteral_status {
     my ($self, %options) = @_;
-
-    return $self->{myerrors}->{$self->{global_status}};
+    
+    if (defined($options{status})) {
+        if (defined($self->{myerrors}->{$options{status}})) {
+            return $self->{myerrors}->{$options{status}};
+        }
+        return $options{status};
+    } else {
+        return $self->{myerrors}->{$self->{global_status}};
+    }
 }
 
 sub is_status {

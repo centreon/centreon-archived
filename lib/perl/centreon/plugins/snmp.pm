@@ -398,6 +398,44 @@ sub get_table {
     return $results;
 }
 
+sub set {
+    my ($self, %options) = @_;
+    # $options{dont_quit} = integer
+    # $options{oids} = ref to hash table
+    my ($dont_quit) = (defined($options{dont_quit}) && $options{dont_quit} == 1) ? 1 : 0;
+    $self->set_error();
+
+    my $vars = [];
+    foreach my $oid (keys %{$options{oids}}) {
+        # Get last value
+        next if ($oid !~ /(.*)\.(\d+)([\.\s]*)$/);
+        
+        my $value = $options{oids}->{$oid};
+        my ($oid, $instance) = ($1, $2);
+       
+        push @$vars, [$oid, $instance, $value];
+    }
+    
+    $self->{session}->set($vars);
+    if ($self->{session}->{ErrorNum}) {
+        # 0    noError       Pas d'erreurs.
+        # 1    tooBig        Reponse de taille trop grande.
+        # 2    noSuchName    Variable inexistante.
+    
+        my $msg = 'SNMP SET Request : ' . $self->{session}->{ErrorStr};
+        
+        if ($dont_quit == 0) {
+            $self->{output}->add_option_msg(short_msg => $msg);
+            $self->{output}->option_exit(exit_litteral => $self->{option_results}->{snmp_errors_exit});
+        }
+        
+        $self->set_error(error_status => -1, error_msg => $msg);
+        return undef;
+    }
+
+    return 0;
+}
+
 sub is_snmpv1 {
     my $self = shift;
     
