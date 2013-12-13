@@ -145,16 +145,17 @@ $tpl = initSmartyTpl($path, $tpl);
 
 $form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 
-// Toolbar select
-
+/*
+ * Toolbar select
+ */
 ?>
 <script type="text/javascript">
 var confirm_messages = [
-    '<? echo _("Do you confirm the deletion ?") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
+    '<?php echo _("Do you confirm the deletion ?") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
 ];
 
 function setO(_i) {
