@@ -15,7 +15,13 @@
 <tr class="{$classEl}">
   <td class="FormRowField">
   	<img class="helpTooltip" name="{$element.name}" />
-  	<label for="{$element.name}">{$element.label}</label>
+  	<label for="{$element.name}">
+        {if $element.label|is_array}
+        {$element.label[0]}
+        {else}
+        {$element.label}
+        {/if}
+        </label>
   </td>
   <td class="FormRowValue">{$element.html}</td>
 </tr>
