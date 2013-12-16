@@ -236,7 +236,7 @@ class CentreonContactgroup
                 $queryUpdateTime = "UPDATE `options` SET `value` = '" . time() . "' WHERE `key` = 'ldap_last_acl_update'";
                 $this->db->query($queryUpdateTime);
             } else {
-                $msg[] = "Unable to connect to LDAP server. I keep building ACL ...";
+                $msg[] = "Unable to connect to LDAP server.";
             }
         }
         return $msg;
