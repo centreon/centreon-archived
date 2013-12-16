@@ -303,6 +303,14 @@ CREATE TABLE `auth_ressource_info` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_fieldset` (
+  `cb_fieldset_id` INT NOT NULL,
+  `fieldset_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY(`cb_fieldset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cb_field` (
   `cb_field_id` int(11) NOT NULL AUTO_INCREMENT,
   `fieldname` varchar(100) NOT NULL,
@@ -310,6 +318,7 @@ CREATE TABLE `cb_field` (
   `description` varchar(255) DEFAULT NULL,
   `fieldtype` varchar(255) NOT NULL DEFAULT 'text',
   `external` varchar(255) DEFAULT NULL,
+  `cb_fieldgroup_id` INT DEFAULT NULL,
   PRIMARY KEY (`cb_field_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -402,6 +411,7 @@ CREATE TABLE `cb_type` (
 CREATE TABLE `cb_type_field_relation` (
   `cb_type_id` int(11) NOT NULL,
   `cb_field_id` int(11) NOT NULL,
+  `cb_fieldset_id` INT,
   `is_required` int(11) NOT NULL DEFAULT '0',
   `order_display` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`cb_type_id`,`cb_field_id`),
@@ -433,6 +443,9 @@ CREATE TABLE `cfg_centreonbroker_info` (
   `config_value` varchar(255) NOT NULL,
   `config_group` varchar(50) NOT NULL,
   `config_group_id` int(11) DEFAULT NULL,
+  `grp_level` INT NOT NULL DEFAULT 0,
+  `subgrp_id` INT DEFAULT NULL,
+  `parent_grp_id` INT DEFAULT NULL,
   KEY `cfg_centreonbroker_info_idx01` (`config_id`),
   KEY `cfg_centreonbroker_info_idx02` (`config_id`,`config_group`),
   CONSTRAINT `cfg_centreonbroker_info_ibfk_01` FOREIGN KEY (`config_id`) REFERENCES `cfg_centreonbroker` (`config_id`) ON DELETE CASCADE

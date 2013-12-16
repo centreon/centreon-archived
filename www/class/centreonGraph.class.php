@@ -693,7 +693,7 @@ class CentreonGraph {
         if (isset($this->metrics)) {
             foreach ($this->metrics as $key => &$tm) {
                 if (!isset($tm["virtual"]) && isset($tm["need"]) && $tm["need"] == 1) {
-                    $this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE");
+                    $this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:value:AVERAGE");
                     $this->vname[$tm["metric"]] = "v".$cpt;
                     $cpt++;
                     continue;
@@ -707,13 +707,13 @@ class CentreonGraph {
                         /* Switching RRD options lower-limit & upper-limit */
                         if ($this->onecurve && isset($this->_RRDoptions["lower-limit"]) && $this->_RRDoptions["lower-limit"] && isset($this->_RRDoptions["upper-limit"]) && $this->_RRDoptions["upper-limit"])
                             $this->switchRRDLimitOption($this->_RRDoptions["lower-limit"],$this->_RRDoptions["upper-limit"]);
-                        $this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
+                        $this->addArgument("DEF:vi".$cpt."=".$this->dbPath.$key.".rrd:value:AVERAGE CDEF:v".$cpt."=vi".$cpt.",-1,*");
                         if (isset($tm["warn"]) && $tm["warn"] != 0)
                             $tm["warn"] *= -1;
                         if (isset($tm["crit"]) && $tm["crit"] != 0)
                             $tm["crit"] *= -1;
                     } else
-                        $this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:".substr($tm["metric"],0,19).":AVERAGE");
+                        $this->addArgument("DEF:v".$cpt."=".$this->dbPath.$key.".rrd:value:AVERAGE");
                     if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
                         $l_CMP = "," . $this->get_cmp_operator($tm) . ",";
                         $this->addArgument("CDEF:ok".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP.$tm["warn"].",v".$cpt.",IF");

@@ -745,7 +745,13 @@ INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`
 (43, 'insert_in_index_data', 'Insert in index data', 'Whether or not Broker should create entries in the index_data table. This process should be done by Centreon and this option should only be enabled by advanced users knowing what they\'re doing', 'text', 'T=options:C=value:CK=key:K=index_data'),
 (44, 'write_metrics', 'Write metrics', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
 (45, 'write_status', 'Write status', 'This can be used to disable graph update and therefore reduce I/O', 'radio', NULL),
-(46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL);
+(46, 'negociation', 'Enable negociation', 'Enable negociation option (use only for version of Centren Broker >= 2.5)', 'radio', NULL),
+(48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL);
+
+INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `group_parent_id`) VALUES (1, 'filters', NULL);
+
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES
+(47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1);
 
 --
 -- Contenu de la table `cb_list`
@@ -765,7 +771,9 @@ INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES
 (1, 42, 'yes'),
 (1, 44, 'yes'),
 (1, 45, 'yes'),
-(1, 46, 'yes');
+(1, 46, 'yes'),
+(6, 47, NULL),
+(1, 48, 'no');
 
 --
 -- Contenu de la table `cb_list_values`
@@ -789,7 +797,10 @@ INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES
 (4, 'Very detailed', 'high'), 
 (5, 'No', 'no'),
 (5, 'Yes', 'yes'),
-(5, 'Auto', 'auto');
+(5, 'Auto', 'auto'),
+(6, 'Neb', 'neb'),
+(6, 'Storage', 'storage'),
+(6, 'Correlation', 'correlation');
 
 --
 -- Contenu de la table `cb_module_relation`
@@ -935,7 +946,19 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 (13, 42, 1, 5),
 (13, 43, 1, 6),
 (13, 44, 1, 5),
-(13, 45, 1, 6);
+(13, 45, 1, 6),
+(3, 47, 0, 17),
+(10, 47, 0, 17),
+(11, 47, 0, 17),
+(12, 47, 0, 17),
+(13, 47, 0, 17),
+(14, 47, 0, 17),
+(15, 47, 0, 17),
+(16, 47, 0, 17),
+(3, 48, 0, 16),
+(10, 48, 0, 16),
+(12, 48, 0, 16),
+(15, 48, 0, 16);
 
 --
 -- Contenu de la table `widget_parameters_field_type`

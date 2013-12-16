@@ -36,6 +36,66 @@
  *
  */
 
+function getChildren($infos) {
+    global $pearDB;
+    if ($infos['subgrp_id'] == '') {
+        return null;
+    }
+    $children = array();
+    $level = $infos['grp_level'] + 1;
+    $query = "SELECT config_key, config_value, config_id, config_group, config_group_id, grp_level, subgrp_id
+        FROM cfg_centreonbroker_info
+        WHERE grp_level = " . $level . "
+        AND config_id = " . $infos['config_id'] . "
+        AND config_group = '" . $infos['config_group'] . "'
+	AND config_group_id = " . $infos['config_group_id'] . "
+	AND parent_grp_id = " . $infos['subgrp_id'];
+    $res = $pearDB->query($query);
+    if (PEAR::isError($res)) {
+        return null;
+    }
+    while ($row = $res->fetchRow()) {
+        if (!isset($children[$row['config_key']])) {
+            $children[$row['config_key']] = array(
+		'key' => $row['config_key'],
+	        'children' => getChildren($row),
+		'values' => $row['config_value']
+            );
+	} else {
+            if (!is_array($children[$row['config_key']]['values'])) {
+                $children[$row['config_key']]['values'] = array($children[$row['config_key']]['values']);
+	    }
+            $children[$row['config_key']]['values'][] = $row['config_value'];
+	}
+    }
+    $result = array();
+    foreach ($children as $key => $child) {
+        $result[] = $child;
+    }
+    if (count($result) === 0) {
+        return null;
+    }
+    return $result;
+}
+
+function writeElement($xml, $element) {
+    if ($element['key'] != 'blockId') {
+	if (!is_null($element['children'])) {
+            $xml->startElement($element['key']);
+	    foreach ($element['children'] as $child) {
+                writeElement($xml, $child);
+            }
+	    $xml->endElement();
+	} elseif (is_array($element['values'])) {
+            foreach ($element['values'] as $value) {
+                $xml->writeElement($element['key'], $value);
+            }
+	} elseif (trim($element['values']) != '') {
+            $xml->writeElement($element['key'], $element['values']);
+	}
+    }
+}
+
     if (!isset($oreon)) {
 		exit();
 	}
@@ -76,14 +136,14 @@
 	 */
 	$cbObj = new CentreonConfigCentreonBroker($pearDB);
 
-	$query = "SELECT cs.config_filename, cs.config_write_thread_id, cs.config_write_timestamp, cs.event_queue_max_size, csi.config_key, csi.config_value, csi.config_group, csi.config_group_id, ns.name
+	$query = "SELECT cs.config_filename, cs.config_write_thread_id, cs.config_write_timestamp, cs.event_queue_max_size, csi.config_key, csi.config_value, csi.config_id, csi.config_group, csi.config_group_id, csi.grp_level, csi.subgrp_id , ns.name
 		FROM cfg_centreonbroker_info csi, cfg_centreonbroker cs, nagios_server ns
-		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND cs.ns_nagios_server = " . $ns_id;
+		WHERE csi.config_id = cs.config_id AND cs.config_activate = '1' AND cs.ns_nagios_server = ns.id AND csi.grp_level = 0 AND cs.ns_nagios_server = " . $ns_id;
 
 	$res = $pearDB->query($query);
 
 	$blocks = array();
-    if (false === PEAR::isError($res) && $res->numRows()) {
+        if (false === PEAR::isError($res) && $res->numRows()) {
 	    $ns_name = null;
 	    while ($row = $res->fetchRow()) {
     	    $filename = $row['config_filename'];
@@ -92,30 +152,36 @@
                     $files[$filename][$tagName] = array();
                 }
             }
-	        if (is_null($ns_name)) {
-	            $ns_name = $row['name'];
+	    if (is_null($ns_name)) {
+	        $ns_name = $row['name'];
+	    }
+	    if ($row['config_key'] == 'blockId') {
+	        if (false === isset($blocks[$row['config_value']])) {
+	            $blocks[$row['config_value']] = array();
 	        }
-	        if ($row['config_key'] == 'blockId') {
-	            if (false === isset($blocks[$row['config_value']])) {
-	                $blocks[$row['config_value']] = array();
-	            }
-	            $blocks[$row['config_value']][] = array(
-	                'filename' => $filename,
-	                'config_group' => $row['config_group'],
-	                'config_group_id' => $row['config_group_id']
-	            );
-	        }
-	        $files[$filename][$row['config_group']][$row['config_group_id']][$row['config_key']] = $row['config_value'];
+	        $blocks[$row['config_value']][] = array(
+	            'filename' => $filename,
+	            'config_group' => $row['config_group'],
+	            'config_group_id' => $row['config_group_id']
+	        );
+	    }
+	    $infos = array(
+                'key' => $row['config_key'],
+		'children' => getChildren($row),
+		'values' => $row['config_value']
+	    );
+	    $files[$filename][$row['config_group']][$row['config_group_id']][] = $infos;
             $eventQueueMaxSize[$filename] = $row['event_queue_max_size'];
             $logTimestamp[$filename] = $row['config_write_timestamp'];
             $logThreadId[$filename] = $row['config_write_thread_id'];
-	    }
+        }
 
-	    /*
-	     * Replace globals values
-	     */
-	    foreach ($blocks as $blockId => $block) {
-	        list($tagId, $typeId) = explode('_', $blockId);
+	/*
+	 * Replace globals values
+	 */
+	// @TODO
+	/* foreach ($blocks as $blockId => $block) {
+	    list($tagId, $typeId) = explode('_', $blockId);
             $fields = $cbObj->getBlockInfos($typeId);
             foreach ($fields as $field) {
                 if (!is_null($field['value'])) {
@@ -127,7 +193,7 @@
                     }
                 }
             }
-	    }
+	} */
 
     	/*
 	     * Delete all old files.
@@ -136,6 +202,7 @@
 	        unlink($filename);
 	    }
 
+	    
 	    foreach ($files as $filename => $groups) {
     	    $fileXml = new CentreonXML(true);
     	    $fileXml->startElement('centreonBroker');
@@ -163,13 +230,8 @@
     	        if (count($listInfos) > 0) {
         	        foreach ($listInfos as $key2 => $infos) {
         	            $fileXml->startElement($group);
-        	            foreach ($infos as $key => $value) {
-        	                if (trim($value) != '' && $key != 'blockId') {
-        	                	$fileXml->writeElement($key, $value);
-        	                    if ($key == "type") {
-		 							$type = $value;
-				   				}
-        	            	}
+        	            foreach ($infos as $value) {
+			        writeElement($fileXml, $value);
         	            }
         	            $fileXml->endElement();
         	        }
