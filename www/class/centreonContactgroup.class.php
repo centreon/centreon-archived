@@ -130,7 +130,7 @@ class CentreonContactgroup
          * Check if contactgroup is not in databas
          */
         $queryCheck = "SELECT cg_id FROM contactgroup
-            WHERE cg_name = '" . $cg_name . "' AND ar_id = " . $ar_id;
+            WHERE cg_name = '" . $this->db->escape($cg_name) . "'";
         $res = $this->db->query($queryCheck);
         if ($res->numRows() == 1) {
             $row = $res->fetchRow();
