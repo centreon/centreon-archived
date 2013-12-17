@@ -213,7 +213,7 @@ sub add_metric {
         }
         my $ltimestamp = $self->get_last_update($self->{metric_path}, $metric_id);
         return if ($ltimestamp == -2);
-        $self->{metric_info}->{$metric_id} = {metric_name => $metric_name,
+        $self->{metric_info}->{$metric_id} = {metric_name => 'value',
                             interval => $interval,
                             data_source_type => $data_source_type,
                             last_timestamp => $ltimestamp,

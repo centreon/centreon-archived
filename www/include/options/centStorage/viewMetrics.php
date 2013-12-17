@@ -31,13 +31,11 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-if (!isset($oreon))
+if (!isset($centreon)) {
     exit();
+}
 
 require_once './class/centreonBroker.class.php';
         
@@ -46,12 +44,14 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
         $selected = $_POST["select"];
         $listMetricsId = array_keys($selected);
         if (count($listMetricsId) > 0) {
-            $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
-            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
             $brk = new CentreonBroker($pearDB);
             if ($brk->getBroker() == 'broker') {
+                $pearDBO->query("UPDATE metrics SET to_delete = 1 WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
                 $brk->reload();
+            } else {
+                $pearDBO->query("DELETE FROM metrics WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
             }
+            $pearDB->query("DELETE FROM ods_view_details WHERE metric_id IN (" . join(', ', $listMetricsId) . ")");
         }
     } else if ($_POST["o1"] == "hg" || $_POST["o2"] == "hg") {
         $selected = $_POST["select"];
@@ -97,8 +97,9 @@ if ((isset($_POST["o1"]) && $_POST["o1"]) || (isset($_POST["o2"]) && $_POST["o2"
 }
 
 $search_string = "";
-if (isset($search) && $search)
+if (isset($search) && $search) {
     $search_string = " WHERE `host_name` LIKE '%$search%' OR `service_description` LIKE '%$search%'";
+}
 
 $DBRESULT = $pearDBO->query("SELECT COUNT(*) FROM metrics WHERE to_delete = 0 AND index_id = '".$_GET["index_id"]."'");
 $tmp = $DBRESULT->fetchRow();
@@ -134,24 +135,27 @@ for ($im = 0;$metrics = $DBRESULT2->fetchRow();$im++) {
     unset($metric);
 }
 
-include("./include/common/checkPagination.php");
+include_once "./include/common/checkPagination.php";
 
-// Smarty template Init
+/*
+ * Smarty template Init
+ */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $form = new HTML_QuickForm('form', 'POST', "?p=".$p);
 
-// Toolbar select
-
+/*
+ * Toolbar select
+ */
 ?>
 <script type="text/javascript">
 var confirm_messages = [
-    '<? echo _("Do you confirm the deletion ?") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
-    '<? echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
+    '<?php echo _("Do you confirm the deletion ?") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>',
+    '<?php echo _("Do you confirm the change of the RRD data source type ? If yes, you must rebuild the RRD Database") ?>'
 ];
 
 function setO(_i) {
@@ -218,4 +222,5 @@ $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
 $tpl->assign('form', $renderer->toArray());
 $tpl->display("viewMetrics.ihtml");
+
 ?>
