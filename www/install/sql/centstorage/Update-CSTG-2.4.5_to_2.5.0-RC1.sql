@@ -32,7 +32,7 @@ CREATE TABLE `log_traps` (
 
 DROP TABLE `log_snmptt`;
 
-ALTER TABLE instances ADD COLUMN `deleted` int(11) DEFAULT '0' AFTER `version`;
+ALTER TABLE instances ADD COLUMN `deleted` boolean NOT NULL default false AFTER `version`;
 
 ALTER TABLE metrics ADD COLUMN `current_value` float DEFAULT NULL AFTER `unit_name`;
 
@@ -41,3 +41,4 @@ ALTER TABLE servicegroups ADD COLUMN `enabled` tinyint(1) NOT NULL DEFAULT '1' A
 
 -- Ticket #4863
 ALTER TABLE metrics MODIFY metric_name VARCHAR (255) COLLATE utf8_bin;
+
