@@ -907,6 +907,9 @@
                 $ldapInstances = array();
                 $contactTemplates = array();
 		foreach ($tmpContacts["select"] as $select_key => $select_value) {
+                        if ($tmpContacts['contact_name'][$select_key] == '-') {
+                            $tmpContacts['contact_name'][$select_key] = $tmpContacts["contact_alias"][$select_key];
+                        }
                         $tmpContacts["contact_name"][$select_key] = str_replace(array(" ", ","), array("_", "_"), $tmpContacts["contact_name"][$select_key]);
 			$arId = $tmpContacts["ar_id"][$select_key];
                         if (isset($tmpContacts["contact_name"][$select_key]) && testContactExistence($tmpContacts["contact_name"][$select_key]))	{
@@ -950,12 +953,14 @@
                         } else {
                             $ldap = $ldapInstances[$arId];
                         }
-                        $sqlUpdate = "UPDATE contact SET ar_id = ".$pearDB->escape($arId)." %s  WHERE contact_id = ".$contact_id;
-                        $tmplSql = "";
-                        if (isset($contactTemplates[$arId])) {
-                            $tmplSql = ", contact_template_id = " . $pearDB->escape($contactTemplates[$arId]);
+                        if ($contact_id) {
+                            $sqlUpdate = "UPDATE contact SET ar_id = ".$pearDB->escape($arId)." %s  WHERE contact_id = ".$contact_id;
+                            $tmplSql = "";
+                            if (isset($contactTemplates[$arId])) {
+                                $tmplSql = ", contact_template_id = " . $pearDB->escape($contactTemplates[$arId]);
+                            }
+                            $pearDB->query(sprintf($sqlUpdate, $tmplSql));
                         }
-                        $pearDB->query(sprintf($sqlUpdate, $tmplSql));
                         $listGroup = $ldap->listGroupsForUser($tmpContacts["dn"][$select_key]);
                         if (count($listGroup) > 0) {
                             $query = "SELECT cg_id FROM contactgroup WHERE cg_name IN ('" . join("','", $listGroup) . "')";
