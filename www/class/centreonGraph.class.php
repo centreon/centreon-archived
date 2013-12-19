@@ -795,7 +795,7 @@ class CentreonGraph {
                 } else {
                     $arg = "LINE".$tm["ds_tickness"].":vc".$cpt;
                 }
-                $arg .= $tm["ds_color_line"].":\"";
+                $arg .= $tm["ds_color_line"].":'";
             }
 
             if (!$this->checkcurve) {
@@ -807,7 +807,7 @@ class CentreonGraph {
                 if (!$this->onecurve && isset($tm["ds_hidecurve"]) && $tm["ds_hidecurve"] == 1) {
                     $arg .= "  ";
                 }
-                $arg .= "\"";
+                $arg .= "'";
                 $this->addArgument($arg);
 
                 $vdefs = "";
