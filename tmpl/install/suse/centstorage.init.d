@@ -74,7 +74,7 @@ start() {
 stop() {
 	echo -n $"Stopping $servicename: "
 	if [ ! -e "$pidfile" ] || [ -z "$(cat $pidfile)" ] ; then
-		killproc -p "$pidfile" -d $timeout "$binary" 
+		killproc -t$timeout "$binary" 
 	else
 		killproc -p "$pidfile" -t$timeout "$binary" 
 	fi
