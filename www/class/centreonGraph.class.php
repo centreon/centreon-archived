@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /*
@@ -1453,63 +1450,68 @@ class CentreonGraph {
                 if (is_null($v_id)) {
                     $l_vmetric["need"] = 1; /* 1 : Need this virtual metric : Hidden */
                 }
-
-
-
-
-                                /* Find Host/Service For this metric_id */
-                                $l_poqy = $this->DBC->query("SELECT host_id, service_id FROM index_data WHERE id = '".$l_vmetric["index_id"]."'");
-                                $l_indd = $l_poqy->fetchRow();
-                                $l_poqy->free();
-                                /* Check for real or virtual metric(s) in the RPN function */
-                                $l_mlist = preg_split("/\,/", $l_vmetric["rpn_function"]);
-                                foreach ( $l_mlist as $l_mnane ) {
-                                        /* Check for a real metric */
+                /* 
+                 * Find Host/Service For this metric_id
+                 */
+                $l_poqy = $this->DBC->query("SELECT host_id, service_id FROM index_data WHERE id = '".$l_vmetric["index_id"]."'");
+                $l_indd = $l_poqy->fetchRow();
+                $l_poqy->free();
+                /* Check for real or virtual metric(s) in the RPN function */
+                $l_mlist = preg_split("/\,/", $l_vmetric["rpn_function"]);
+                foreach ( $l_mlist as $l_mnane ) {
+                    /* 
+                     * Check for a real metric 
+                     */
                     $l_poqy = $this->DBC->query("SELECT host_id, service_id, metric_id, metric_name, unit_name, replace(format(warn,9),',','') warn, replace(format(crit,9),',','') crit FROM metrics AS m, index_data as i WHERE index_id = id AND index_id = '".$l_vmetric["index_id"]."' AND metric_name = '".$l_mnane."'");
-                                        if ( $l_poqy->numRows() == 1) {
-                                                /* Find a real metric in the RPN function */
-                                                $l_rmetric = $l_poqy->fetchrow();
-                                                $l_poqy->free();
-                                                $l_rmetric["need"] = 1; /* 1 : Need this real metric - hidden */
-                                                if ( !isset($this->mlist[$l_rmetric["metric_id"]]) ) {
-                                                        $this->mlist[$l_rmetric["metric_id"]] = $this->mpointer[0]++;
-                                                        $this->rmetrics[] = $l_rmetric;
-                                                } else {
-                                                        /* We Already Find the real metrics in the array */
-                                                        /* Make sure, it's add */
-                                                        $l_pointer = $this->mlist[$l_rmetric["metric_id"]];
-                                                        if ( !isset($this->rmetrics[$l_pointer]["need"]) )
-                                                                $this->rmetrics[$l_pointer]["need"] = 0;
-                                                }
-                                        } elseif ( $l_poqy->numRows() == 0 ) {
-                                                /* key : id or vname and iid */
-                                                $l_poqy->free();
-                                                $this->manageVMetric(NULL, $l_mnane, $l_vmetric["index_id"]);
-                                        } else
-                                                $l_poqy->free();
-                                }
-                                $l_vmetric["metric_id"] = "v".$l_vmetric["metric_id"];
-                                $l_vmetric["host_id"] = $l_indd["host_id"];
-                                $l_vmetric["service_id"] = $l_indd["service_id"];
-                                $l_vmetric["virtual"] = 1;
-                                $l_vmetric["cdef_order"]=$this->mpointer[1];
-                                $this->mlist[$l_vmetric["metric_id"]] = $this->mpointer[1]++;
-                                $this->vmetrics[] = $l_vmetric;
+                    if ( $l_poqy->numRows() == 1) {
+                        /* Find a real metric in the RPN function */
+                        $l_rmetric = $l_poqy->fetchrow();
+                        $l_poqy->free();
+                        $l_rmetric["need"] = 1; /* 1 : Need this real metric - hidden */
+                        if ( !isset($this->mlist[$l_rmetric["metric_id"]]) ) {
+                            $this->mlist[$l_rmetric["metric_id"]] = $this->mpointer[0]++;
+                            $this->rmetrics[] = $l_rmetric;
                         } else {
-                                /* We Already Find the virtual metrics in the array */
-                                /* Make sure, it's add */
-                                $l_pointer = $this->mlist["v".$l_vmetric["metric_id"]];
-                                if ( is_null($v_id) )
-                                        if ( !isset($this->vmetrics[$l_pointer]["need"]) || $this->vmetrics[$l_pointer]["need"] != 1 )
-                                                $this->vmetrics[$l_pointer]["need"] = 0;
-                                else
-                                        if ( !isset($this->vmetrics[$l_pointer]["need"]) || $this->vmetrics[$l_pointer]["need"] == 1 )
-                                                $this->vmetrics[$l_pointer]["need"] = 0;
+                            /* We Already Find the real metrics in the array */
+                            /* Make sure, it's add */
+                            $l_pointer = $this->mlist[$l_rmetric["metric_id"]];
+                            if (!isset($this->rmetrics[$l_pointer]["need"])) {
+                                $this->rmetrics[$l_pointer]["need"] = 0;
+                            }           
                         }
-                } else {
-                        $l_pqy->free();
+                    } elseif ( $l_poqy->numRows() == 0 ) {
+                            /* key : id or vname and iid */
+                            $l_poqy->free();
+                            $this->manageVMetric(NULL, $l_mnane, $l_vmetric["index_id"]);
+                    } else {
+                        $l_poqy->free();
+                    }                           
                 }
+                $l_vmetric["metric_id"] = "v".$l_vmetric["metric_id"];
+                $l_vmetric["host_id"] = $l_indd["host_id"];
+                $l_vmetric["service_id"] = $l_indd["service_id"];
+                $l_vmetric["virtual"] = 1;
+                $l_vmetric["cdef_order"]=$this->mpointer[1];
+                $this->mlist[$l_vmetric["metric_id"]] = $this->mpointer[1]++;
+                $this->vmetrics[] = $l_vmetric;
+            } else {
+                /* We Already Find the virtual metrics in the array */
+                /* Make sure, it's add */
+                $l_pointer = $this->mlist["v".$l_vmetric["metric_id"]];
+                if (is_null($v_id)) {
+                    if ( !isset($this->vmetrics[$l_pointer]["need"]) || $this->vmetrics[$l_pointer]["need"] != 1) {
+                        $this->vmetrics[$l_pointer]["need"] = 0;
+                    } else {
+                        if ( !isset($this->vmetrics[$l_pointer]["need"]) || $this->vmetrics[$l_pointer]["need"] == 1) {
+                            $this->vmetrics[$l_pointer]["need"] = 0; 
+                        }
+                    }
+                }                                    
+            }
+        } else {
+            $l_pqy->free();
         }
+    }
 
     /**
      *
@@ -1517,8 +1519,9 @@ class CentreonGraph {
      * @param unknown_type $message
      */
     private function _log($message) {
-        if ($this->general_opt['debug_rrdtool'])
+        if ($this->general_opt['debug_rrdtool']) {
             error_log("[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
+        }
     }
 
     /**
@@ -1544,6 +1547,7 @@ class CentreonGraph {
             || $this->general_opt['rrdcached_enable'] == 0) {
             return true;
         }
+
         /*
          * Connect to rrdcached
          */
