@@ -86,5 +86,4 @@ $tpl->assign('posBlock', $pos);
 $tpl->assign('helps', $helps);
 
 $tpl->display("blockConfig.ihtml");
-
 ?>

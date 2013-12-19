@@ -41,7 +41,7 @@ if (!isset($oreon))
 function checkRRDGraphData($v_id = null, $force = 0) {
     if (!isset($v_id)) null;
     
-    global $pearDB;
+    global $pearDB, $oreon;
     /* Check if already Valid */
     
     $l_pqy = $pearDB->query("SELECT vmetric_id, def_type FROM virtual_metrics WHERE vmetric_id = '$v_id' AND ( ck_state <> '1' OR ck_state IS NULL );");
@@ -72,7 +72,7 @@ function checkRRDGraphData($v_id = null, $force = 0) {
         /**
          * Display Images Binary Data
          */
-        $lastline = exec($obj->displayImageFlow() . " 2>&1", $result, $rc);
+        $lastline = exec($oreon->optGen["rrdtool_path_bin"] . $obj->displayImageFlow() . " 2>&1", $result, $rc);
         $ckstate = (!$rc) ? '1' : '2';
         $pearDB->query("UPDATE `virtual_metrics` SET `ck_state` = '$ckstate' WHERE `vmetric_id` ='$v_id';");
         return array($rc, $lastline);

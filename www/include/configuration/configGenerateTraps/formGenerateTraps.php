@@ -132,7 +132,7 @@
 				$host_list[$key] = $value;
 			}
 		}
-		if ($ret["host"] == 0 || $ret["host"]) {
+		if ($ret["host"] == 0 || $ret["host"] != -1) {
 			/*
 			 * Create Server List to snmptt generation file
 			 */

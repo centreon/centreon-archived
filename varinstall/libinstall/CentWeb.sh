@@ -189,7 +189,7 @@ check_result $flg_error "$(gettext "Change macros for sql update files")"
 ### Step 2: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
-macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@"
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
 find_macros_in_dir "$macros" "$TMP_DIR/src/" "www" "*.php" "file_php_temp"
 
 log "INFO" "$(gettext "Apply macros")"
@@ -202,7 +202,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 	${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
 		-e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
 		-e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
-		-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREONTRAPD_BINDIR"'|g' \
+		-e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
 		-e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
 		-e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
 		$TMP_DIR/src/$file > $TMP_DIR/work/$file
@@ -509,17 +509,17 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install import-mysql-indexes")"
 
 ## Install indexes schema
-log "INFO" "$(gettext "Prepare indexes schema")"
+#log "INFO" "$(gettext "Prepare indexes schema")"
 #cp $TMP_DIR/src/data/* \
 #	$TMP_DIR/final/data/ >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Prepare indexes schema")"
+#check_result $? "$(gettext "Prepare indexes schema")"
 
-log "INFO" "$(gettext "Install indexes schema")"
-$INSTALL_DIR/cinstall $cinstall_opts \
-	-m 644 \
-	$TMP_DIR/final/data/* \
-	$CENTREON_DATADIR/ >> $LOG_FILE 2>&1
-check_result $? "$(gettext "Install indexes schema")"
+#log "INFO" "$(gettext "Install indexes schema")"
+#$INSTALL_DIR/cinstall $cinstall_opts \
+#	-m 644 \
+#	$TMP_DIR/final/data/* \
+#	$CENTREON_DATADIR/ >> $LOG_FILE 2>&1
+#check_result $? "$(gettext "Install indexes schema")"
 
 # Install centreon perl lib
     $INSTALL_DIR/cinstall $cinstall_opts -m 755 \

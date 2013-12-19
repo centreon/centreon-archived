@@ -182,7 +182,7 @@
 		isset($ret["ds_filled"]) && $ret["ds_filled"] != NULL ? $rq .= "'".htmlentities($ret["ds_filled"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_max"]) && $ret["ds_max"] != NULL ? $rq .= "'".htmlentities($ret["ds_max"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_min"]) && $ret["ds_min"] != NULL ? $rq .= "'".htmlentities($ret["ds_min"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
-		isset($ret["ds_min"]) && $ret["ds_minmax_int"] != NULL ? $rq .= "'".htmlentities($ret["ds_minmax_int"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
+		isset($ret["ds_minmax_int"]) && $ret["ds_minmax_int"] != NULL ? $rq .= "'".htmlentities($ret["ds_minmax_int"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_average"]) && $ret["ds_average"] != NULL ? $rq .= "'".htmlentities($ret["ds_average"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_last"]) && $ret["ds_last"] != NULL ? $rq .= "'".htmlentities($ret["ds_last"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";
 		isset($ret["ds_total"]) && $ret["ds_total"] != NULL ? $rq .= "'".htmlentities($ret["ds_total"], ENT_QUOTES, "UTF-8")."', ": $rq .= "NULL, ";

@@ -121,9 +121,9 @@
 			$msg .= "<br />Moving traps in DataBase...";
 
 			if ($debug)
-				print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." 2>&1");
+				print("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
 
-			$stdout = shell_exec("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." 2>&1");
+			$stdout = shell_exec("@CENTREONTRAPD_BINDIR@/centFillTrapDB -f '".$values["tmp_name"]."' -m ".htmlentities($ret["mnftr"], ENT_QUOTES, "UTF-8")." --severity=info 2>&1");
 			unlink($values['tmp_name']);
 			$msg .= "<br />".str_replace ("\n", "<br />", $stdout);
 			$msg .= "<br />Generate Traps configuration files from Monitoring Engine configuration form!";

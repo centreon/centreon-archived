@@ -192,6 +192,7 @@ CREATE TABLE `hostgroups` (
   `alias` varchar(255) DEFAULT NULL,
   `notes` varchar(160) DEFAULT NULL,
   `notes_url` varchar(160) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`hostgroup_id`),
   UNIQUE KEY `name` (`name`,`instance_id`),
   KEY `instance_id` (`instance_id`),
@@ -409,6 +410,7 @@ CREATE TABLE `instances` (
   `running` tinyint(1) DEFAULT NULL,
   `start_time` int(11) DEFAULT NULL,
   `version` varchar(16) DEFAULT NULL,
+  `deleted` boolean NOT NULL default false, 
   PRIMARY KEY (`instance_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -560,6 +562,7 @@ CREATE TABLE `servicegroups` (
   `alias` varchar(255) DEFAULT NULL,
   `notes` varchar(160) DEFAULT NULL,
   `notes_url` varchar(160) DEFAULT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`servicegroup_id`),
   KEY `instance_id` (`instance_id`),
   CONSTRAINT `servicegroups_ibfk_1` FOREIGN KEY (`instance_id`) REFERENCES `instances` (`instance_id`) ON DELETE CASCADE

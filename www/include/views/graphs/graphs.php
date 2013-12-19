@@ -100,7 +100,7 @@
 			$value = $_GET[$str];
 		if (isset($_POST[$str]) && $_POST[$str])
 			$value = $_POST[$str];
-		return $value;
+		return urldecode($value);
 	}
 
 	/*

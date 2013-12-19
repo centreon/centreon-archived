@@ -433,7 +433,7 @@ function answer_with_createuser() {
 			yes_no_default "$(gettext "Do you want me to create this user ?") [$res]"
 			if [ $? -eq 0 ]; then
 				group_id=$(grep "^$CENTREON_GROUP:" /etc/group | awk -F: '{ print $3 }')
-				useradd -r -c "Centreon User" -d "$CENTREON_VARLIB" -g $group_id $res
+				useradd -r -c "Centreon User" -s /bin/bash -d "$CENTREON_VARLIB" -g $group_id $res
 				if [ $? -ne 0 ]; then
 					echo_passed "$(gettext "Could not create user")" "$critical"
 				fi

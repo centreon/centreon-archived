@@ -136,8 +136,17 @@ try {
     $correlationPath = $brokerObj->getCorrelationFile();
     $localId = getLocalhostId();
     if (false !== $correlationPath && false !== $localId) {
-        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
-        @copy($tmpFilename, $correlationPath);
+        $tmpFilename = $centreonBrokerPath . '/' . $localId . '/correlation_*.xml';
+	/* Purge file */
+	$listRemovesFiles = glob($correlationPath . '/correlation_*.xml');
+	foreach ($listRemovesFiles as $file) {
+	    @unlink($file);
+	}
+	/* Copy file */
+	$listFiles = glob($tmpFilename);
+	foreach ($listFiles as $file) {
+            @copy($file, $correlationPath);
+	}
     }
 
 

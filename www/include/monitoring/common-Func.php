@@ -75,7 +75,6 @@
         
         // Init vars
         $hostStack = array();
-        $hostToLookFor = array();
         $contacts = array();
         $contactGroups = array();
         
@@ -83,51 +82,58 @@
         $additive = false;
         $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance
             FROM host WHERE host_id = '". $host_id ."'");
-        $host_notification_options = $DBRESULT->fetchRow();
+        $hostParam = $DBRESULT->fetchRow();
         
-        if($host_notification_options['contact_additive_inheritance'] == 1)
-            $additive = true;
+        $hostStack[] = array("host_id" => $host_id, "hostParam" => $hostParam);
         
-        if($host_notification_options['cg_additive_inheritance'] == 1)
-            $additive = true;
-        
-        // Look for contactgroups
-        get_contactgroups_for_hosts($host_id, &$contactGroups);
-
-        // Look for contacts
-        get_contacts_for_hosts($host_id, &$contacts);
-        
-        if (((count($contacts) == 0) && (count($contactGroups) == 0) || ($additive))) {
-            $hostStack[] = $host_id;
-
-            foreach ($hostStack as $currentHost) {
-                array_pop($hostStack);
-                $DBRESULT = $pearDB->query("SELECT host_tpl_id FROM host_template_relation WHERE host_host_id = '".$currentHost."'");
-                for ($i = 0; $h = $DBRESULT->fetchRow(); $i++) {
-                    $hostStack[] = $h["host_tpl_id"];
-                    $hostToLookFor[] = $h["host_tpl_id"];
-                }
-                $DBRESULT->free();
-            }
-
+        $firstTime = true;
+        while (count($hostStack) > 0) {
+            
+            $myHost = $hostStack[count($hostStack)-1];
+            $currentHost = $myHost["host_id"];
+            $hostParam = $myHost["hostParam"];
+            array_pop($hostStack);
+            
+            $DBRESULT = $pearDB->query("SELECT host_tpl_id, contact_additive_inheritance, cg_additive_inheritance
+                FROM host h, host_template_relation htr WHERE htr.host_host_id=h.host_id AND h.host_id = '". $currentHost ."'");
+            
             // Look for contactgroups
-            if($host_notification_options['cg_additive_inheritance'] == 1) {
-                get_contactgroups_for_hosts($hostToLookFor, &$contactGroups);
+            if(($hostParam['cg_additive_inheritance'] == 1) || $firstTime) {
+                if (!$firstTime || ($hostParam['cg_additive_inheritance'] == 1)) {
+                    $additive = true;
+                }
+                get_contactgroups_for_hosts($currentHost, $contactGroups);
             }
 
             // Look for contacts
-            if($host_notification_options['contact_additive_inheritance'] == 1) {
-                get_contacts_for_hosts($hostToLookFor, &$contacts);
+            if(($hostParam['contact_additive_inheritance'] == 1) || $firstTime) {
+                if (!$firstTime || ($hostParam['contact_additive_inheritance'] == 1)) {
+                    $additive = true;
+                }
+                get_contacts_for_hosts($currentHost, $contacts);
             }
+        
+            $firstTime = false;
+        
+            if (((count($contacts) == 0) && (count($contactGroups) == 0) || ($additive))) {
 
-            return array('contacts' => $contacts,
-                         'contactGroups' => $contactGroups);
-        } else {
-            return array('contacts' => $contacts,
-                         'contactGroups' => $contactGroups);
+                for ($i = 0; $h = $DBRESULT->fetchRow(); $i++) {
+                    if ($h["host_tpl_id"] != "") {
+                        $hostStack[] = array("host_id" => $h["host_tpl_id"],
+                            "hostParam" => array(
+                            "contact_additive_inheritance" => $h["contact_additive_inheritance"],
+                            "cg_additive_inheritance" => $h["cg_additive_inheritance"])
+                        );
+		            }
+                }
+                $DBRESULT->free();
+            }
         }
+        
+        return array('contacts' => $contacts,
+                     'contactGroups' => $contactGroups);
     }
-    
+ 
     function get_contactgroups_for_hosts($host_list, &$contactGroups) {
         global $pearDB;
         
@@ -165,60 +171,69 @@
         
         // Init vars
         $serviceStack = array();
-        $serviceToLookFor = array();
         $contacts = array();
         $contactGroups = array();
         
         // Get Service Notifications options
         $additive = false;
         $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, cg_additive_inheritance, service_inherit_contacts_from_host
-            FROM service WHERE service_id = '". service_id ."'");
-        $host_notification_options = $DBRESULT->fetchRow();
+            FROM service WHERE service_id = '". $service_id ."'");
+        $serviceParam = $DBRESULT->fetchRow();
+        $inherit_from_host = $serviceParam["service_inherit_contacts_from_host"];
         
-        if($host_notification_options['contact_additive_inheritance'] == 1)
-            $additive = true;
-        
-        if($host_notification_options['cg_additive_inheritance'] == 1)
-            $additive = true;
-        
-        // Look for contactgroups
-        get_contactgroups_for_services($service_id, &$contactGroups);
+        $serviceStack[] = array("service_id" => $service_id,
+            "serviceParam" => $serviceParam);
 
-        // Look for contacts
-        get_contacts_for_services($service_id, &$contacts);
-        
-        if (((count($contacts) == 0) && (count($contactGroups) == 0) || ($additive))) {
-            $serviceStack[] = $service_id;
-
-            foreach ($serviceStack as $currentservice) {
-                array_pop($serviceStack);
-                $DBRESULT = $pearDB->query("SELECT service_template_model_stm_id FROM service WHERE service_id = '".$currentservice."'");
-                for ($i = 0; $s = $DBRESULT->fetchrow(); $i++) {
-                    $serviceStack[] = $s["service_template_model_stm_id"];
-                    $serviceToLookFor[] = $s["service_template_model_stm_id"];
-                }
-                $DBRESULT->free();
-            }
-
-            // Look for contactgroups
-            if($host_notification_options['cg_additive_inheritance'] == 1) {
-                get_contactgroups_for_services($serviceToLookFor, &$contactGroups);
-            }
+        $firstTime = true;
+        while (count($serviceStack) > 0) {
+            $myService = $serviceStack[count($serviceStack)-1];
+            $currentservice = $myService["service_id"];
+            $serviceParam = $myService["serviceParam"];
+            array_pop($serviceStack);
+            
+            
+            $DBRESULT = $pearDB->query("SELECT contact_additive_inheritance, "
+                    . "cg_additive_inheritance, service_template_model_stm_id "
+                    . "FROM service WHERE service_id = '".$currentservice."'");
 
             // Look for contacts
-            if($host_notification_options['contact_additive_inheritance'] == 1) {
-                get_contacts_for_services($serviceToLookFor, &$contacts);
+            if($serviceParam['contact_additive_inheritance'] == 1 || $firstTime) {
+                if (!$firstTime || ($serviceParam['contact_additive_inheritance'] == 1)) {
+                    $additive = true;
+                }
+                get_contacts_for_services($currentservice, $contacts);
             }
+            
+            // Look for contactgroups
+            if($serviceParam['cg_additive_inheritance'] == 1 || $firstTime) {
+                if (!$firstTime || ($serviceParam['cg_additive_inheritance'] == 1)) {
+                    $additive = true;
+                }
+                get_contactgroups_for_services($currentservice, $contactGroups);
+            }
+        
+            $firstTime = false;
 
-            if ((count($contacts) == 0) && (count($contactGroups) == 0) && ($host_notification_options['service_inherit_contacts_from_hosts'] == 1)) {
-                return get_notified_infos_for_host($host_id);
-            } else {
-                return array('contacts' => $contacts,
-                         'contactGroups' => $contactGroups);
+            if ((count($contacts) == 0) || (count($contactGroups) == 0) || ($additive)) {
+                for ($i = 0; $s = $DBRESULT->fetchrow(); $i++) {
+                    if ($s["service_template_model_stm_id"] != "") {
+                        $serviceStack[] = array("service_id" => $s["service_template_model_stm_id"],
+                            "serviceParam" => array(
+                            "contact_additive_inheritance" => $s["contact_additive_inheritance"],
+                            "cg_additive_inheritance" => $s["cg_additive_inheritance"])
+                        );
+		    }
+                }
+                $additive = false;
+                $DBRESULT->free();
             }
+        }
+        
+        if ((count($contacts) == 0) && (count($contactGroups) == 0) && ($inherit_from_host)) {
+            return get_notified_infos_for_host($host_id);
         } else {
             return array('contacts' => $contacts,
-                         'contactGroups' => $contactGroups);
+                     'contactGroups' => $contactGroups);
         }
     }
     
