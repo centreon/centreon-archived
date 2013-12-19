@@ -31,16 +31,13 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 ?><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
 <title>Centreon - IT & Network Monitoring</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2011 Open Source Matters. All rights reserved." />
+<meta name="Generator" content="Centreon - Copyright (C) 2005 - 2013 Open Source Matters. All rights reserved." />
 <meta name="robots" content="index, nofollow" />
 <link href="<?php echo $skin; ?>login.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="./img/favicon.ico">
@@ -69,7 +66,7 @@
 ?>
 <p align="center">
 	<div style='text-align:center;align:center;padding-top:90px;'>
-	       <table id="logintab1" style="text-align:center;" align="center">
+	    <table id="logintab1" style="text-align:center;" align="center">
 		<tr>
 			<td class="LoginInvitLogo" colspan="2"><img src="img/centreon.gif" alt="Centreon Logo" title="Centreon Logo" style="" /></td>
 		</tr>
@@ -107,7 +104,7 @@
 				</td>
 			</tr>
 			<tr>
-				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2013 <a href="mailto:infos@centreon.com">Centreon</a></td>
+				<td id="LoginInvitcpy" colspan="2"><br />&copy; 2005-2014 <a href="mailto:infos@centreon.com">Centreon</a></td>
 			</tr>
 		</table>
 	</div>
