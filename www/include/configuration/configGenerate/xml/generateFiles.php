@@ -299,8 +299,12 @@ try {
         $correlationPath = $brokerObj->getCorrelationFile();
         $localId = getLocalhostId();
         if (false !== $correlationPath && false !== $localId) {
-            $tmpFilename = $centreonBrokerPath . '/' . $localId . '/' . basename($correlationPath);
-            generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $pearDB);
+            $tmpFilename = $centreonBrokerPath . '/' . $localId . '/';
+	    $query = "SELECT id FROM nagios_server";
+	    $res = $pearDB->query($query);
+	    while ($row = $res->fetchRow()) {
+                generateCentreonBrokerCorrelation($brokerObj, $tmpFilename, $row['id'], $pearDB);
+	    }
         }
     }
 
