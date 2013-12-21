@@ -59,19 +59,6 @@ sub new {
     return $self;
 }
 
-sub get_ds_name {
-    my $self = shift;
-
-    $_[0] =~ s/\//slash\_/g;
-    $_[0] =~ s/\\/bslash\_/g;
-    $_[0] =~ s/\%/pct\_/g;
-    $_[0] =~ s/\#S\#/slash\_/g;
-    $_[0] =~ s/\#BS\#/bslash\_/g;
-    $_[0] =~ s/\#P\#/pct\_/g;
-    $_[0] =~ s/[^0-9_\-a-zA-Z]/-/g;
-    return $_[0];
-}
-
 sub create_rrd_database {
     my $self = shift;
     my ($RRDdatabase_path, $metric_id, $begin, $interval, $metric_name, $my_len_storage_rrd, $data_source_type) = @_;
@@ -222,8 +209,8 @@ sub add_metric {
             my $interval_hb = $interval * 10;            
 
             $self->create_rrd_database($self->{metric_path}, $metric_id, $timestamp - 200, $interval,
-                           $self->get_ds_name($metric_name), $my_len_storage_rrd, $data_source_type);
-            $self->tune_rrd_database($self->{metric_path}, $metric_id, $self->get_ds_name($metric_name), $interval_hb);
+                           'value', $my_len_storage_rrd, $data_source_type);
+            $self->tune_rrd_database($self->{metric_path}, $metric_id, 'value', $interval_hb);
             $self->{metric_info}->{$metric_id}->{last_timestamp} = $timestamp - 200;
         }
     }
@@ -294,9 +281,9 @@ sub flush_metric {
                 $self->create_rrd_database($self->{metric_path}, $metric_id,
                                $self->{metric_info}->{$metric_id}->{last_timestamp} - 200, 
                                $self->{metric_info}->{$metric_id}->{interval},
-                               $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $my_len_storage_rrd,
+                               'value', $my_len_storage_rrd,
                                $self->{metric_info}->{$metric_id}->{data_source_type});
-                $self->tune_rrd_database($self->{metric_path}, $metric_id, $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $interval_hb);
+                $self->tune_rrd_database($self->{metric_path}, $metric_id, 'value', $interval_hb);
             } else {
                 $self->{logger}->writeLogError("ERROR while updating '" . $self->{metric_path} . "/" . $metric_id . ".rrd' $ERR");
             }
@@ -356,9 +343,9 @@ sub flush_all {
                 $self->create_rrd_database($self->{metric_path}, $metric_id,
                                $self->{metric_info}->{$metric_id}->{last_timestamp} - 200, 
                                $self->{metric_info}->{$metric_id}->{interval},
-                               $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $my_len_storage_rrd,
+                               'value', $my_len_storage_rrd,
                                $self->{metric_info}->{$metric_id}->{data_source_type});
-                $self->tune_rrd_database($self->{metric_path}, $metric_id, $self->get_ds_name($self->{metric_info}->{$metric_id}->{metric_name}), $interval_hb);
+                $self->tune_rrd_database($self->{metric_path}, $metric_id, 'value', $interval_hb);
             } else {
                 $self->{logger}->writeLogError("ERROR while updating '" . $self->{metric_path} . "/" . $metric_id . ".rrd' $ERR");
             }
