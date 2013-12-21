@@ -36,6 +36,19 @@ use RRDs;
 use vars qw($centreon_config);
 require "@CENTREON_ETC@/centreon-config.pm";
 
+sub get_ds_name {
+    my $ds_name = shift;
+
+    $ds_name =~ s/\//slash\_/g;
+    $ds_name =~ s/\\/bslash\_/g;
+    $ds_name =~ s/\%/pct\_/g;
+    $ds_name =~ s/\#S\#/slash\_/g;
+    $ds_name =~ s/\#BS\#/bslash\_/g;
+    $ds_name =~ s/\#P\#/pct\_/g;
+    $ds_name =~ s/[^0-9_\-a-zA-Z]/-/g;
+    return $ds_name;
+}
+
 my $dbh = DBI->connect(
     "DBI:mysql:database=" . $centreon_config->{centstorage_db} . ";host=" . $centreon_config->{db_host},
     $centreon_config->{db_user},
@@ -49,7 +62,7 @@ my $sth = $dbh->prepare($query);
 die "Error : " . $dbh->errstr . "\n" if (!$sth);
 $sth->execute();
 my $row = $sth->fetchrow_hashref();
-my $metric_path = $row->{'RRDdatabase_path'};
+my $metric_path = $row->{RRDdatabase_path};
 
 
 # Get the list of metrics to convert
@@ -61,13 +74,14 @@ $sth->execute();
 die "Error : " . $dbh->errstr . "\n" if (!$sth);
 
 while ($row = $sth->fetchrow_hashref()) {
-  my $filename = $metric_path . '/' . $row->{'metric_id'} . '.rrd';
-  my $metric_name = substr($row->{'metric_name'}, 0, 19);
+  my $filename = $metric_path . '/' . $row->{metric_id} . '.rrd';
+  my $metric_name = get_ds_name($row->{metric_name});
+  $metric_name = substr($metric_name, 0, 19);
   if (-w $filename) {
     RRDs::tune($filename, "-r", $metric_name . ":value");
     my $rrdError = RRDs::error;
     if ($rrdError) {
-        print "Error in metric " . $row->{'metric_id'} . " : " . $rrdError . "\n";
+        print "Error in metric " . $row->{metric_id} . " : " . $rrdError . "\n";
     }
   }
 }
