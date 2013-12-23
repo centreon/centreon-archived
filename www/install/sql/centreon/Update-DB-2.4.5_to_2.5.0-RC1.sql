@@ -177,4 +177,52 @@ INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`
 ALTER TABLE `on_demand_macro_host` ADD COLUMN `is_password` TINYINT(2) DEFAULT NULL AFTER `host_macro_value`;
 ALTER TABLE `on_demand_macro_service` ADD COLUMN `is_password` TINYINT(2) DEFAULT NULL AFTER `svc_macro_value`;
 
+-- Change Centreon Broker configuration table
+CREATE TABLE `cb_fieldgroup` (
+  `cb_fieldgroup_id` INT NOT NULL AUTO_INCREMENT,
+  `groupname` VARCHAR(100) NOT NULL,
+  `group_parent_id` INT DEFAULT NULL,
+  PRIMARY KEY(`cb_fieldgroup_id`),
+  FOREIGN KEY(`group_parent_id`) REFERENCES `cb_fieldgroup` (`cb_fieldgroup_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cb_fieldset` (
+  `cb_fieldset_id` INT NOT NULL,
+  `fieldset_name` VARCHAR(255) NOT NULL,
+  PRIMARY KEY(`cb_fieldset_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `cb_type_field_relation` ADD COLUMN `cb_fieldset_id` INT AFTER `cb_field_id`;
+ALTER TABLE `cb_field` ADD COLUMN `cb_fieldgroup_id` INT DEFAULT NULL;
+
+INSERT INTO `cb_fieldgroup` (`cb_fieldgroup_id`, `groupname`, `group_parent_id`) VALUES (1, 'filters', NULL);
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`, `cb_fieldgroup_id`) VALUES (47,  "category", "Filter category", "Category filter for flux in output", "multiselect", NULL, 1);
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES (6, 47, NULL);
+INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES (6, 'Neb', 'neb');
+INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES (6, 'Storage', 'storage');
+INSERT INTO `cb_list_values` (`cb_list_id`, `value_name`, `value_value`) VALUES (6, 'Correlation', 'correlation');
+
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (3, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (10, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (11, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (12, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (13, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (14, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (15, 47, 0, 17);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (16, 47, 0, 17);
+
+INSERT INTO `cb_field` (`cb_field_id`, `fieldname`, `displayname`, `description`, `fieldtype`, `external`) VALUES (48, "one_peer_retention_mode", "One peer retention", "This allows the retention to work even if the socket is listening", "radio", NULL);
+INSERT INTO `cb_list` (`cb_list_id`, `cb_field_id`, `default_value`) VALUES (1, 48, 'no');
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (3, 48, 0, 16);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (10, 48, 0, 16);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (12, 48, 0, 16);
+INSERT INTO `cb_type_field_relation` (`cb_type_id`, `cb_field_id`, `is_required`, `order_display`) VALUES (15, 48, 0, 16);
+
+ALTER TABLE `cfg_centreonbroker_info` ADD COLUMN
+  (`grp_level` INT NOT NULL DEFAULT 0,
+  `subgrp_id` INT DEFAULT NULL,
+  `parent_grp_id` INT DEFAULT NULL);
+
+-- Update version
+
 UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

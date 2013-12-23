@@ -210,11 +210,11 @@ if [ "$write_snmp_conf" = "1" ]; then
             $SNMP_ETC/snmptrapd.conf >> $LOG_FILE 2>&1
     check_result $? "$(gettext "Install") : snmptrapd.conf"
 
-    log "INFO" "$(gettext "Install") : snmp.conf"
-    $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
-            $TMP_DIR/work/snmptrapd/snmp.conf \
-            $SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
-    check_result $? "$(gettext "Install") : snmp.conf"
+#    log "INFO" "$(gettext "Install") : snmp.conf"
+#    $INSTALL_DIR/cinstall $cinstall_opts -m 644 \
+#            $TMP_DIR/work/snmptrapd/snmp.conf \
+#            $SNMP_ETC/snmp.conf >> $LOG_FILE 2>&1
+#    check_result $? "$(gettext "Install") : snmp.conf"
 fi
 ## End ##
 
