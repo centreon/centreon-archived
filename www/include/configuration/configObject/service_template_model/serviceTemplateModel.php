@@ -77,7 +77,6 @@
 	 * PHP functions
 	 */
 	require_once $path2."DB-Func.php";
-	require_once "./include/common/common-Func.php";
 
         $serviceObj = new CentreonService($pearDB);
         $lockedElements = $serviceObj->getLockedServiceTemplates();

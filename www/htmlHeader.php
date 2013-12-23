@@ -59,7 +59,7 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 
     // == Declare CSS for modules
     foreach ($oreon->modules as $module_name => $infos) {
-        if (file_exists($centreon_path."www/modules/".$module_name."/static/css/styles.css")) {
+        if (file_exists("./modules/".$module_name."/static/css/styles.css")) {
             print "<link href='./modules/".$module_name."/static/css/styles.css' rel='stylesheet' type='text/css' />\n";
         }
     }

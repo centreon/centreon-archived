@@ -35,13 +35,13 @@
 
 ini_set('display_errors', 'Off');
 
-$etc = "@CENTREON_ETC@";
+$etc = "/etc/centreon";;
 
 clearstatcache(true, "$etc/centreon.conf.php");
-if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
+if (!file_exists("$etc/centreon.conf.php") && is_dir('./install') && 0) {
   header("Location: ./install/setup.php");
   return;
-} elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
+} elseif (file_exists("$etc/centreon.conf.php") && is_dir('install') && 0) {
   require_once ("$etc/centreon.conf.php");
   header("Location: ./install/upgrade.php");
 } else {
@@ -55,11 +55,13 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
   }
 }
 
-require_once "$classdir/centreon.class.php";
-require_once "$classdir/centreonSession.class.php";
-require_once "$classdir/centreonAuth.SSO.class.php";
-require_once "$classdir/centreonLog.class.php";
-require_once "$classdir/centreonDB.class.php";
+$classdir = "/srv/centreon-3/www/class";
+
+require_once "centreon.class.php";
+require_once "centreonSession.class.php";
+require_once "centreonAuth.SSO.class.php";
+require_once "centreonLog.class.php";
+require_once "centreonDB.class.php";
 
 /*
  * Get auth type
@@ -113,9 +115,6 @@ if (isset($_SESSION["centreon"])) {
   $centreon = & $_SESSION["centreon"];
   
   header('Location: main.php');
-  /*
-   * Init log class
-   */
 }
 
 if (isset($_POST["submit"])
@@ -127,14 +126,14 @@ if (isset($_POST["submit"])
    */
   $CentreonLog = new CentreonUserLog(-1, $pearDB);
   
-  if (isset($_POST['p']))
+  if (isset($_POST['p'])) {
     $_GET["p"] = $_POST["p"];
+  }
   
   /*
    * Get Connexion parameters
    */
   isset($_GET["autologin"]) ? $autologin = $_GET["autologin"] : $autologin = 0;
-  
   isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = NULL;
   isset($_POST["useralias"]) ? $useraliasP = $_POST["useralias"] : $useraliasP = NULL;
   $useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;

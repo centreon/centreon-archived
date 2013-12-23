@@ -64,8 +64,6 @@
 	require_once "./class/centreonDowntime.class.php";
 	$downtime = new CentreonDowntime($pearDB);
 
-	require_once "./include/common/common-Func.php";
-
 	if (isset($_POST["o1"]) && isset($_POST["o2"])){
 		if ($_POST["o1"] != "") {
 			$o = $_POST["o1"];
