@@ -1235,13 +1235,14 @@ class CentreonGraph {
             $commandLine .= " ".$arg." ";
         }
 
-        $commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
+	$commandLine = preg_replace("/(\\\$|`)/", "", $commandLine);
+	$gmt_export = "";
         if ($this->GMT->used()){
             $offset = -1 * ($this->GMT->getMyGMT() + date('Z') / 60 / 60);
             if($offset > 0){
                 $offset = '+' . $offset;
             }
-            $commandLine = "export TZ='GMT" . $offset . "' ; " . $commandLine;
+            $gmt_export = "export TZ='GMT" . $offset . "' ; ";
         }
 
         $this->_log($commandLine);
@@ -1255,7 +1256,7 @@ class CentreonGraph {
                                 2 => array("file", $this->general_opt["debug_path"] . "/rrdtool.log", "a") // stderr est un fichier
                             );
 
-            $process = proc_open($this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
+            $process = proc_open($gmt_export . $this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
             if (is_resource($process)) {
                 fwrite($pipes[0], $commandLine);
                 fclose($pipes[0]);
