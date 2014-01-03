@@ -109,8 +109,8 @@ $form->addElement('header', 'ldapinfo', _("LDAP Information"));
 
 $form->addElement('header', 'ldapserver', _('LDAP Servers'));
 
-$form->addElement('text', 'bind_dn', _("Bind user"), $attrsText);
-$form->addElement('password', 'bind_pass', _("Bind password"), $attrsText);
+$form->addElement('text', 'bind_dn', _("Bind user"), array("size" => "40", "autocomplete" => "off"));
+$form->addElement('password', 'bind_pass', _("Bind password"), array("size" => "40", "autocomplete" => "off"));
 $form->addElement('select', 'protocol_version', _("Protocol version"), array('2' => 2, '3' => 3));
 $form->addElement('select', 'ldap_template', _("Template"), array('0' => "", 'Posix' => _("Posix"), 'Active Directory' => _("Active Directory")), array('id' => 'ldap_template', 'onchange' => 'applyTemplate(this.value);'));
 $form->addElement('text', 'user_base_search', _("Search user base DN"), $attrsText);
