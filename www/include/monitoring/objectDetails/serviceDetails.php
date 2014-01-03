@@ -315,7 +315,8 @@ if (!is_null($host_id)) {
 
         /*
          * Ajust data for beeing displayed in template
-         */
+	 */
+	$oreon->CentreonGMT->getMyGMTFromSession(session_id(), $pearDB);
         $service_status[$host_name."_".$svc_description]["status_color"] = $oreon->optGen["color_".strtolower($service_status[$host_name."_".$svc_description]["current_state"])];
         $service_status[$host_name."_".$svc_description]["last_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["last_check"]);
         $service_status[$host_name."_".$svc_description]["next_check"] = $oreon->CentreonGMT->getDate(_("Y/m/d - H:i:s"), $service_status[$host_name."_".$svc_description]["next_check"]);
