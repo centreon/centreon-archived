@@ -282,7 +282,7 @@ class CentreonAuthLDAP {
                     /*
                      * Get the contact_id
                      */
-                    $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $pearDB->escape($userDn, false) . "'";
+                    $query = "SELECT contact_id FROM contact WHERE contact_ldap_dn = '" . $this->pearDB->escape($userDn, false) . "'";
                     $res = $this->pearDB->query($query);
                     $row = $res->fetchRow();
                     $contact_id = $row['contact_id'];
