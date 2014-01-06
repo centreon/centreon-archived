@@ -66,7 +66,7 @@
 	 * Get user list
 	 */
 	$contact = array("" => null);
-	$DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact ORDER BY contact_name");
+	$DBRESULT = $pearDB->query("SELECT contact_id, contact_alias FROM contact ORDER BY contact_alias");
 	while ($ct = $DBRESULT->fetchRow()) {
 		$contact[$ct["contact_id"]] = $ct["contact_alias"];
 	}
