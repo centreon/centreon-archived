@@ -504,7 +504,7 @@ $tpl->display("formGenerateFiles.ihtml");
             curProgress += stepProgress;
         }
         progressBar.setPercentage(pct);
-        $('progressPct').update(pct + "%");
+        $('progressPct').update(Math.round(pct) + "%");
     }
 
     /**
