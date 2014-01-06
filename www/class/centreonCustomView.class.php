@@ -312,7 +312,13 @@ class CentreonCustomView
             		       AND wp.user_id = " . $this->userId . ")";
                 $this->db->query($query2);
             }
-        }
+	}
+	if (!is_null($userId)) {
+	    return $userId;
+	} elseif (!is_null($userGroupId)) {
+	    return $userGroupId;
+	}
+	return null;
     }
 
     /**
@@ -365,9 +371,9 @@ class CentreonCustomView
                 foreach ($params['usergroup_id'] as $usergroupId) {
                     if ($str != "") {
                         $str .= ", ";
-                    }
+		    }
+                    $usergroupId = $this->copyPreferences($params['custom_view_id'], null, $usergroupId);
                     $str .= "(" . $params['custom_view_id'] . ", " . $usergroupId . ", " . $params['locked']['locked'] . ")";
-                    $this->copyPreferences($params['custom_view_id'], null, $usergroupId);
                 }
             }
             if ($str != "") {
