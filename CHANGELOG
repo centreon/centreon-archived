@@ -1,3 +1,21 @@
+## Centreon 2.5.0
+
+Features
+========
+#4176: ACL on configuration objects
+#4678: UI notification and sound alerts
+#3768: Advanced features on SNMP traps handling
+#4666: Possibility to execute a command upon restart of monitoring engine
+#1728: SSO authentication
+#1845: Additive inheritance is handled on host and service templates
+#4997: Service groups can be linked to service templates
+
+Enhancements
+============
+#4507: Code refactoring
+#4662: Downtime duration can now be expressed in minutes
+#3768: UI - new draggable dynamic input fields
+
 ## Centreon 2.4.5
 
 Enhancements

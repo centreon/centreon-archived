@@ -1,31 +1,36 @@
-Upgrade from 2.1.x
-=====================
-After Web upgrade
----------------------
-Make sure to restart centstorage, hosts and/or services which contain unicode characters were renamed
-# /etc/init.d/centstorage restart
-
-Upgrade from 2.0.x
-=====================
-Before Web upgrade
----------------------
-As MySQL root user, grant some additional privileges to user Centreon user
-#~> mysql -u root [-p]
-#mysql~> GRANT ALTER ON ndo.* TO 'centreon'@'localhost';
-(ndo database, centreon user and host names could differ depending on your settings)
-
-After Web upgrade
----------------------
-1) 	Modify the logs retention period in Centreon interface : Administration > Options > Centstorage > Options > Logs retention duration
-	The retention duration must cover the oldest nagios log archive file in the folder nagios/var/archives/
-
-2) 	then execute the following command lines in Centreon directory :
-	# ./bin/logAnalyser -a
-	# ./cron/archiveDayLog -r
-
-3) reset the logs retention period to the previous value
+===============================================================================
+                                   License
+===============================================================================
+Centreon is brought to you under GPLv2. For more infomation regarding this 
+license, read the LICENSE file or visit the following URL:
+* http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
 
 
-More
-=====================
-Read "INSTALL" for more information.
+===============================================================================
+                                 Installation
+===============================================================================
+Please note that Centreon can be installed from the sources or from our RPM 
+packages. Either way, make sure to read our installation documentation:
+* http://documentation.centreon.com/docs/centreon/en/latest/
+
+
+===============================================================================
+                                Official links
+===============================================================================
+Below is a list of official links that may be useful to you:
+* Official website: http://www.centreon.com
+* Bug tracker: http://forge.centreon.com/projects/centreon
+* Forum: http://forum.centreon.com
+* Documentation: http://documentation.centreon.com
+
+
+===============================================================================
+                                   Contact
+===============================================================================
+You can contact us at the following e-mail address:
+* contact@centreon.com
+
+You can also follow us on Twitter:
+* https://twitter.com/Centreon
+
+Thank you for choosing Centreon.
