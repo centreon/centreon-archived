@@ -1,0 +1,284 @@
+136
+a:4:{s:8:"template";a:1:{s:14:"listHost.ihtml";b:1;}s:9:"timestamp";i:1389020089;s:7:"expires";i:1389023689;s:13:"cache_serials";a:0:{}}<script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<form name='form' method='POST'>
+<table class="ajaxOption">
+	<tr>
+		<td>Hosts : <input type='text' name='searchH' value="" /></td>
+        <td>&nbsp;&nbsp;Poller : <select name='poller'><option value='0'>All Pollers</option><option value='1' >Central</option></select></td>
+		<td>&nbsp;&nbsp;Hostgroup : <select name='hostgroup'><option value='0'></options><option value='60' >Firewall</option><option value='53' >Linux-Servers</option><option value='55' >Networks</option><option value='56' >Printers</option><option value='58' >Routers</option><option value='59' >Switchs</option><option value='61' >Unix-Servers</option><option value='54' >Windows-Servers</option></select></td>
+		<td>&nbsp;&nbsp;Template : <select name='template'><option value='0'></options><option value='2' >generic-host</option><option value='12' >Printers</option><option value='10' >Router-Cisco</option><option value='11' >Router-HP</option><option value='3' >Servers-Linux</option><option value='4' >Servers-Win2K</option><option value='5' >Servers-Win2K3</option><option value='7' >Switchs-3Com</option><option value='6' >Switchs-Cisco</option><option value='8' >Switchs-HP</option><option value='9' >Switchs-NORTEL</option><option value='13' >UPS</option><option value='27' >website</option></select></td>
+		<td>&nbsp;&nbsp;Status : <select name='status' ><option value='' selected> </option><option value='1'>Enable</option><option value='0'>Disable</option></select></td>
+        <td><input type='submit' name='SearchB' value='Search' /></td>
+	</tr>
+</table>
+<br>
+<table class="ToolbarTable">
+	<tr class="ToolbarTR">
+				<td class="Toolbar_TDSelectAction_Top">
+			 <select onchange="javascript: if (this.form.elements['o1'].selectedIndex == 1 &amp;&amp; confirm('Do you confirm the duplication ?')) { 	setO(this.form.elements['o1'].value); submit();} else if (this.form.elements['o1'].selectedIndex == 2 &amp;&amp; confirm('Do you confirm the deletion ?')) { 	setO(this.form.elements['o1'].value); submit();} else if (this.form.elements['o1'].selectedIndex == 3 || this.form.elements['o1'].selectedIndex == 4 ||this.form.elements['o1'].selectedIndex == 5){ 	setO(this.form.elements['o1'].value); submit();} this.form.elements['o1'].selectedIndex = 0" name="o1">
+	<option value="" selected="selected">More actions...</option>
+	<option value="m">Duplicate</option>
+	<option value="d">Delete</option>
+	<option value="mc">Massive Change</option>
+	<option value="ms">Enable</option>
+	<option value="mu">Disable</option>
+</select>&nbsp;&nbsp;&nbsp;<a href="?p=601&o=a">Add</a>
+		</td>
+				<input name="p" value="" type="hidden">
+		<script type="text/javascript">
+	function setL(_this){
+		var _l = document.getElementsByName('l');
+		document.forms['form'].elements['limit'].value = _this;
+		_l[0].value = _this;
+		_l[1].value = _this;
+	}
+	</SCRIPT>
+	<td class="ToolbarPagination">
+					
+		
+</td>
+<td class="Toolbar_pagelimit">Rows</b>&nbsp;<select onchange="setL(this.value);  this.form.submit()" name="l">
+	<option value="10">10</option>
+	<option value="12">12</option>
+	<option value="20">20</option>
+	<option value="30" selected="selected">30</option>
+	<option value="40">40</option>
+	<option value="50">50</option>
+	<option value="60">60</option>
+	<option value="70">70</option>
+	<option value="80">80</option>
+	<option value="90">90</option>
+	<option value="100">100</option>
+</select>&nbsp;&nbsp;Page&nbsp;1/1</td>
+<input name="p" type="hidden" value="6" />
+<input name="search" type="hidden" value="" />
+<input name="num" type="hidden" value="0" />
+<input name="order" type="hidden" value="" />
+<input name="type" type="hidden" value="" />
+<input name="sort_types" type="hidden" value="" />
+	</tr>
+</table>
+<table class="ListTable">
+	<tr class="ListHeader">
+		<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+		<td class="ListColHeaderLeft">Name</td>
+		<td class="ListColHeaderLeft" style="width:20px;">&nbsp;</td>
+		<td class="ListColHeaderLeft">Description</td>
+		<td class="ListColHeaderCenter">IP Address / DNS</td>
+		<td class="ListColHeaderCenter">Poller</td>
+		<td class="ListColHeaderCenter">Templates</td>
+		<td class="ListColHeaderCenter">Status</td>
+		<td class="ListColHeaderRight">Options</td>
+	</tr>
+					<tr class="list_one">
+		<td class="ListColPicker"><input name="select[20]" type="checkbox" value="1" id="qf_356358" /></td>
+		<td class="ListColLeft">
+						<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=20">jenny.vpntunnel.se</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=jenny.vpntunnel.se'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=20">jenny.vpntunnel.se</a></td>
+		<td class="ListColCenter">jenny.vpntunnel.se</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=20&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[20]'></input></td>
+	</tr>
+				<tr class="list_two">
+		<td class="ListColPicker"><input name="select[14]" type="checkbox" value="1" id="qf_99efd6" /></td>
+		<td class="ListColLeft">
+						<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=14">ks365247</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=ks365247'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=14">OVH Server</a></td>
+		<td class="ListColCenter">127.0.0.1</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=14&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[14]'></input></td>
+	</tr>
+				<tr class="list_one">
+		<td class="ListColPicker"><input name="select[19]" type="checkbox" value="1" id="qf_ee5993" /></td>
+		<td class="ListColLeft">
+						<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=19">maison</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=maison'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=19">maison</a></td>
+		<td class="ListColCenter">82.227.143.176</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=19&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[19]'></input></td>
+	</tr>
+								<tr class="list_lvl_1"><td class="ListColLeft" colspan="9"><b>www.</b></td></tr>
+						<tr class="list_two">
+		<td class="ListColPicker"><input name="select[18]" type="checkbox" value="1" id="qf_1f8004" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=18">www.centreon.com</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.centreon.com'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=18">centreon.com</a></td>
+		<td class="ListColCenter">www.centreon.com</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a></td>
+		<td class="ListColCenter">Disabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=18&o=s&limit=30&num=0&search='><img src='img/icones/16x16/element_next.gif' border='0' alt='Enabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[18]'></input></td>
+	</tr>
+				<tr class="list_one">
+		<td class="ListColPicker"><input name="select[16]" type="checkbox" value="1" id="qf_4113d1" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=16">www.enviedelunettes.com</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.enviedelunettes.com'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=16">Serveur Web Enviedelunettes.com</a></td>
+		<td class="ListColCenter">213.186.33.87</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=16&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[16]'></input></td>
+	</tr>
+				<tr class="list_two">
+		<td class="ListColPicker"><input name="select[17]" type="checkbox" value="1" id="qf_e5e4eb" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=17">www.google.fr</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.google.fr'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=17">Accès google.fr</a></td>
+		<td class="ListColCenter">www.google.fr</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=17&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[17]'></input></td>
+	</tr>
+				<tr class="list_one">
+		<td class="ListColPicker"><input name="select[25]" type="checkbox" value="1" id="qf_7c4555" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=25">www.icinga.org</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.icinga.org'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=25">Serveur Web shinken-monitoring.org</a></td>
+		<td class="ListColCenter">www.icinga.org</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=25&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[25]'></input></td>
+	</tr>
+				<tr class="list_two">
+		<td class="ListColPicker"><input name="select[28]" type="checkbox" value="1" id="qf_706e3e" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=28">www.jmathis.fr</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.jmathis.fr'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=28">Serveur Web jmathis.fr</a></td>
+		<td class="ListColCenter">www.jmathis.fr</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=28&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[28]'></input></td>
+	</tr>
+				<tr class="list_one">
+		<td class="ListColPicker"><input name="select[24]" type="checkbox" value="1" id="qf_331100" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=24">www.nagios.org</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.nagios.org'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=24">Serveur Web nagios.org</a></td>
+		<td class="ListColCenter">www.nagios.org</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=24&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[24]'></input></td>
+	</tr>
+				<tr class="list_two">
+		<td class="ListColPicker"><input name="select[23]" type="checkbox" value="1" id="qf_b76274" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=23">www.shinken-monitoring.org</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.shinken-monitoring.org'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=23">Serveur Web shinken-monitoring.org</a></td>
+		<td class="ListColCenter">www.shinken-monitoring.org</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=23&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[23]'></input></td>
+	</tr>
+				<tr class="list_one">
+		<td class="ListColPicker"><input name="select[26]" type="checkbox" value="1" id="qf_f1983a" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=26">www.tilap.net</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.tilap.net'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=26">Serveur Web tilap.net</a></td>
+		<td class="ListColCenter">www.tilap.net</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=2'>generic-host</a>&nbsp;|&nbsp;<a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=26&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[26]'></input></td>
+	</tr>
+				<tr class="list_two">
+		<td class="ListColPicker"><input name="select[29]" type="checkbox" value="1" id="qf_a4ade1" /></td>
+		<td class="ListColLeft">
+			&nbsp;&nbsp;&nbsp;&nbsp;			<img src="./img/icones/16x16/server_network.gif" style='width:16px;height:16px;' />&nbsp;<a href="?p=601&o=c&host_id=29">www.zoologis.com</a>
+		</td>
+		<td class="ListColCenter"><a href='./main.php?p=602&search_h=www.zoologis.com'><img src="./img/icones/16x16/gear_view.gif" title='Display all Services fo this host'></a></td>
+		<td class="ListColLeft"><a href="?p=601&o=c&host_id=29">www.zoologis.com</a></td>
+		<td class="ListColCenter">www.zoologis.com</td>
+		<td class="ListColCenter">Central</td>
+		<td class="ListColRight"><a href='main.php?p=60103&o=c&host_id=27'>website</a></td>
+		<td class="ListColCenter">Enabled</td>
+		<td class="ListColRight"><a href='main.php?p=601&host_id=29&o=u&limit=30&num=0&search='><img src='img/icones/16x16/element_previous.gif' border='0' alt='Disabled'></a>&nbsp;&nbsp;&nbsp;<input onKeypress="if(event.keyCode > 31 && (event.keyCode < 45 || event.keyCode > 57)) event.returnValue = false; if(event.which > 31 && (event.which < 45 || event.which > 57)) return false;" maxlength="3" size="3" value='1' style="margin-bottom:0px;" name='dupNbr[29]'></input></td>
+	</tr>
+	</table>
+<table class="ToolbarTable">
+	<tr>
+				<td class="Toolbar_TDSelectAction_Bottom">
+			 <select onchange="javascript: if (this.form.elements['o2'].selectedIndex == 1 &amp;&amp; confirm('Do you confirm the duplication ?')) { 	setO(this.form.elements['o2'].value); submit();} else if (this.form.elements['o2'].selectedIndex == 2 &amp;&amp; confirm('Do you confirm the deletion ?')) { 	setO(this.form.elements['o2'].value); submit();} else if (this.form.elements['o2'].selectedIndex == 3 || this.form.elements['o2'].selectedIndex == 4 ||this.form.elements['o2'].selectedIndex == 5){ 	setO(this.form.elements['o2'].value); submit();} this.form.elements['o2'].selectedIndex = 0" name="o2">
+	<option value="" selected="selected">More actions...</option>
+	<option value="m">Duplicate</option>
+	<option value="d">Delete</option>
+	<option value="mc">Massive Change</option>
+	<option value="ms">Enable</option>
+	<option value="mu">Disable</option>
+</select>&nbsp;&nbsp;&nbsp;<a href="?p=601&o=a">Add</a>
+		</td>
+				<input name="p" value="" type="hidden">
+		<script type="text/javascript">
+	function setL(_this){
+		var _l = document.getElementsByName('l');
+		document.forms['form'].elements['limit'].value = _this;
+		_l[0].value = _this;
+		_l[1].value = _this;
+	}
+	</SCRIPT>
+	<td class="ToolbarPagination">
+					
+		
+</td>
+<td class="Toolbar_pagelimit">Rows</b>&nbsp;<select onchange="setL(this.value);  this.form.submit()" name="l">
+	<option value="10">10</option>
+	<option value="12">12</option>
+	<option value="20">20</option>
+	<option value="30" selected="selected">30</option>
+	<option value="40">40</option>
+	<option value="50">50</option>
+	<option value="60">60</option>
+	<option value="70">70</option>
+	<option value="80">80</option>
+	<option value="90">90</option>
+	<option value="100">100</option>
+</select>&nbsp;&nbsp;Page&nbsp;1/1</td>
+<input name="p" type="hidden" value="6" />
+<input name="search" type="hidden" value="" />
+<input name="num" type="hidden" value="0" />
+<input name="order" type="hidden" value="" />
+<input name="type" type="hidden" value="" />
+<input name="sort_types" type="hidden" value="" />
+	</tr>
+</table>
+<input type='hidden' name='o' id='o' value='42'>
+<input type='hidden' id='limit' name='limit' value='30'>	
+
+</form>
+
+<script type='text/javascript'>
+	setDisabledRowStyle();
+</script>

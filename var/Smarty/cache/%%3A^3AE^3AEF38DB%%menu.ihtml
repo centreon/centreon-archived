@@ -1,0 +1,35 @@
+132
+a:4:{s:8:"template";a:1:{s:10:"menu.ihtml";b:1;}s:9:"timestamp";i:1389020089;s:7:"expires";i:1389023689;s:13:"cache_serials";a:0:{}}<div id="forMenuAjax">
+	<div id="menu1_bgcolor">
+		    <div id="menu_1">
+		        <ul>
+		        		      			      	<li><div id="id_1"><a href='#' onClick="loadAjax(1); return false;">Home</a></div></li>
+		      							      			      	<li><div id="id_2"><a href='#' onClick="loadAjax(2); return false;">Monitoring</a></div></li>
+		      							      			      	<li><div id="id_4"><a href='#' onClick="loadAjax(4); return false;">Views</a></div></li>
+		      							      			      	<li><div id="id_3"><a href='#' onClick="loadAjax(3); return false;">Reporting</a></div></li>
+		      							      			      	<li><div id="menu1_bgimg"><a href='#' onClick="loadAjax(6); return false;">Configuration</a></div></li>
+		      							      			      	<li><div id="id_5"><a href='#' onClick="loadAjax(5); return false;">Administration</a></div></li>
+		      							        </ul>
+		    </div>
+	</div>
+	<div id="menu_2">
+	    <div id="menu2_bgcolor">
+	        	            <span class="separator_menu2">&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=601' style="white-space:nowrap;">Hosts</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=602' style="white-space:nowrap;">Services</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=603' style="white-space:nowrap;">Users</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=608' style="white-space:nowrap;">Commands</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=604' style="white-space:nowrap;">Notifications</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=617' style="white-space:nowrap;">SNMP Traps</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=607' style="white-space:nowrap;">Monitoring Engines</a></span>
+				            <span class="separator_menu2">&nbsp;|&nbsp;</span>
+	            <span class="span2"><a href='main.php?p=609' style="white-space:nowrap;">Centreon</a></span>
+				    </div>
+	</div>
+</div>

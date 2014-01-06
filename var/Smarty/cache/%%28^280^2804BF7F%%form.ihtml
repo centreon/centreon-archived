@@ -1,0 +1,107 @@
+132
+a:4:{s:8:"template";a:1:{s:10:"form.ihtml";b:1;}s:9:"timestamp";i:1389020081;s:7:"expires";i:1389023681;s:13:"cache_serials";a:0:{}}
+
+<form  action="?p=501" method="post" name="Form" id="Form">
+<table class="ListTable">
+ 	<tr class="ListHeader"><td class="FormHeader" colspan="2">&nbsp;<img src='./img/icones/16x16/tool.gif'>&nbsp;Modify General Options</td></tr>
+ 	
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/oreon.gif'>&nbsp;&nbsp;Centreon information</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_directory">Directory</td><td class="FormRowValue"><input size="40" name="oreon_path" type="text" value="/usr/share/centreon/" /></td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_web_directory">Centreon Web Directory</td><td class="FormRowValue"><input size="40" name="oreon_web_path" type="text" value="/centreon3/" /></td></tr>
+ 	
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/window_split_hor.gif'>&nbsp;&nbsp;Maximum page size</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page">Limit per page (default)</td><td class="FormRowValue"><input size="5" name="maxViewConfiguration" type="text" value="30" /></td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_limit_per_page_for_monitoring">Limit per page for Monitoring</td><td class="FormRowValue"><select name="maxViewMonitoring">
+	<option value="10">10</option>
+	<option value="20">20</option>
+	<option value="30" selected="selected">30</option>
+	<option value="40">40</option>
+	<option value="50">50</option>
+	<option value="60">60</option>
+	<option value="70">70</option>
+	<option value="80">80</option>
+	<option value="90">90</option>
+	<option value="100">100</option>
+	<option value="200">200</option>
+	<option value="300">300</option>
+	<option value="400">400</option>
+	<option value="500">500</option>
+</select></td></tr>
+	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;Sessions Properties</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sessions_expiration_time">Sessions Expiration Time</td><td class="FormRowValue"><input size="5" name="session_expire" type="text" value="120" />&nbsp;minutes</td></tr>
+	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/refresh.gif'>&nbsp;&nbsp;Refresh Properties</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval">Refresh Interval</td><td class="FormRowValue"><input size="5" name="oreon_refresh" type="text" value="60" />&nbsp;seconds</td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_statistics">Refresh Interval for statistics</td><td class="FormRowValue"><input size="5" name="AjaxTimeReloadStatistic" type="text" value="15" />&nbsp;seconds</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_refresh_interval_for_monitoring">Refresh Interval for monitoring</td><td class="FormRowValue"><input size="5" name="AjaxTimeReloadMonitoring" type="text" value="15" />&nbsp;seconds</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_first_refresh_delay_for_statistics">First Refresh delay for statistics</td><td class="FormRowValue"><input size="5" name="AjaxFirstTimeReloadStatistic" type="text" value="0" />&nbsp;seconds</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_first_refresh_delay_for_monitoring">First Refresh delay for monitoring</td><td class="FormRowValue"><input size="5" name="AjaxFirstTimeReloadMonitoring" type="text" value="0" />&nbsp;seconds</td></tr> 	
+ 	
+ 	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/text_rich_colored.gif'>&nbsp;&nbsp;Display Options</td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_template">Display Template</td><td class="FormRowValue"><select name="template">
+	<option value="Centreon-2" selected="selected">Centreon-2</option>
+</select></td></tr>
+ 	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/row_delete.gif'>&nbsp;&nbsp;Problem display properties</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_sort_problems_by">Sort problems by</td><td class="FormRowValue"><select name="problem_sort_type">
+	<option value="last_state_change" selected="selected">Duration</option>
+	<option value="host_name">Hosts</option>
+	<option value="service_description">Services</option>
+	<option value="current_state">Status</option>
+	<option value="last_check">Last check</option>
+	<option value="plugin_output">Output</option>
+</select></td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_order_sort_problems">Order sort problems</td><td class="FormRowValue"><select name="problem_sort_order">
+	<option value="ASC" selected="selected">Ascending</option>
+	<option value="DESC">Descending</option>
+</select></td></tr>
+	
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/lock.gif'>&nbsp;&nbsp;Authentification properties</td></tr>
+	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_autologin">Enable Autologin</td><td class="FormRowValue"><input name="enable_autologin[yes]" type="checkbox" value="1" id="qf_c8747d" /></td></tr>
+	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_display_autologin_shortcut">Display Autologin shortcut</td><td class="FormRowValue"><input name="display_autologin_shortcut[yes]" type="checkbox" value="1" id="qf_4ef224" checked="checked" /></td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_enable">Enable SSO authentication</td><td class="FormRowValue"><input name="sso_enable[yes]" type="checkbox" value="1" id="qf_fff7a8" /></td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_mode">SSO mode</td><td class="FormRowValue"><input name="sso_mode[sso_mode]" value="0" type="radio" id="qf_730a1b" /><label for="qf_730a1b">SSO only</label>&nbsp;<input name="sso_mode[sso_mode]" value="1" type="radio" id="qf_2e9f79" checked="checked" /><label for="qf_2e9f79">Mixed</label></td></tr>
+    <tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="sso_trusted_clients">SSO trusted client addresses</td><td class="FormRowValue"><input size="50" name="sso_trusted_clients" type="text" /></td></tr>
+    <tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="sso_header_username">SSO login header</td><td class="FormRowValue"><input size="30" name="sso_header_username" type="text" value="HTTP_AUTH_USER" /></td></tr>
+
+	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;Time Zone</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_enable_timezone_management">Enable Timezone management</td><td class="FormRowValue"><input name="enable_gmt[yes]" type="checkbox" value="1" id="qf_58adc3" /></td></tr>
+ 	<tr class="list_two"><td class="FormRowField"><img class="helpTooltip" name="tip_default_timezone">Default host timezone</td><td class="FormRowValue"><input size="5" name="gmt" type="text" value="1" /></td></tr>
+ 	
+  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;Configuration UI behavior</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="strict_hostParent_poller_management">Enable strict mode for host partnership management</td><td class="FormRowValue"><input name="strict_hostParent_poller_management[yes]" type="checkbox" value="1" id="qf_9eed91" /></td></tr>
+
+  	<tr class="list_lvl_1"><td class="ListColLvl1_name" colspan="2">&nbsp;<img src='./img/icones/16x16/stopwatch.gif'>&nbsp;&nbsp;Support Information</td></tr>
+ 	<tr class="list_one"><td class="FormRowField"><img class="helpTooltip" name="tip_centreon_support_email">Centreon Support Email</td><td class="FormRowValue"><input size="40" name="centreon_support_email" type="text" /></td></tr>
+
+ 	<tr class="list_lvl_2"><td class="ListColLvl2_name" colspan="2"></td></tr>
+ </table>
+	<div id="validForm" class="oreonbutton">
+		<p><input name="submitC" value="Save" type="submit" />&nbsp;&nbsp;&nbsp;<input name="reset" value="Reset" type="reset" /></p>
+	</div>
+
+</form>
+<span style="display:none" id="help:tip_directory">Application directory of Centreon.</span>
+<span style="display:none" id="help:tip_centreon_web_directory">Centreon Web URI.</span>
+<span style="display:none" id="help:tip_limit_per_page">Default number of displayed elements in listing pages.</span>
+<span style="display:none" id="help:tip_limit_per_page_for_monitoring">Default number of displayed elements in monitoring consoles.</span>
+<span style="display:none" id="help:tip_sessions_expiration_time">Life duration of sessions.</span>
+<span style="display:none" id="help:tip_refresh_interval">Refresh interval.</span>
+<span style="display:none" id="help:tip_refresh_interval_for_statistics">Refresh interval used for statistics (top counters).</span>
+<span style="display:none" id="help:tip_refresh_interval_for_monitoring">Refresh interval used in monitoring consoles.</span>
+<span style="display:none" id="help:tip_first_refresh_delay_for_statistics">First refresh delay for statistics (top counters).</span>
+<span style="display:none" id="help:tip_first_refresh_delay_for_monitoring">First refresh delay for monitoring.</span>
+<span style="display:none" id="help:tip_display_template">CSS theme.</span>
+<span style="display:none" id="help:tip_sort_problems_by">Default sort in monitoring consoles.</span>
+<span style="display:none" id="help:tip_order_sort_problems">Default order in monitoring consoles.</span>
+<span style="display:none" id="help:tip_enable_autologin">Enables Autologin.</span>
+<span style="display:none" id="help:tip_display_autologin_shortcut">Displays Autologin shortcut.</span>
+<span style="display:none" id="help:tip_enable_timezone_management">Enables timezone management.</span>
+<span style="display:none" id="help:tip_default_timezone">Default host timezone.</span>
+<span style="display:none" id="help:sso_enable">Whether SSO authentication is enabled.</span>
+<span style="display:none" id="help:sso_mode">Authentication can be solely based on SSO or it can work with both SSO and local authentication systems.</span>
+<span style="display:none" id="help:sso_trusted_clients">IP/DNS of trusted clients. Use coma as delimiter in case of multiple clients.</span>
+<span style="display:none" id="help:sso_header_username">The header variable that will be used as login. i.e: $_SERVER['HTTP_AUTH_USER']</span>
+<span style="display:none" id="help:strict_hostParent_poller_management">This option enable a strict mode for the management of parent links between hosts on different pollers. Some hosts can have a parent link between them even if they are not monitored by the same poller. Select yes if you want to block the UI in order to oblige user to let host with a declared relation on the same poller. if you select No, during the generation process, relation will be broken and not generated but kept with Centreon Broker Correlation module.</span>
+<span style="display:none" id="help:tip_centreon_support_email">Company Support email : this email is uses in the Centreon footer in order to have a quick link in order to open an issue to your help desk.</span>
