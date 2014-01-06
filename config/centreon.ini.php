@@ -30,6 +30,9 @@ ini_set("display_errors", "On");
  */
 ini_set("session.gc_maxlifetime", "31536000");
 
-
+/*
+ * Set Smarty Cache/Compil directory
+ */
+$smartyDirectory = $centreon_path."/var/Smarty/";
 
 ?>
