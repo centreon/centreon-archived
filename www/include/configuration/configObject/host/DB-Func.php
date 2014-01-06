@@ -2121,12 +2121,12 @@ function updateHostHostCategory($host_id, $ret = array()) {
         return;
     }
 
-    $rq = "DELETE FROM hostcategories_relation hcr ";
-    $rq .= "WHERE hcr.host_host_id = '".$host_id."' ";
+    $rq = "DELETE FROM hostcategories_relation ";
+    $rq .= "WHERE host_host_id = '".$host_id."' ";
     $rq .= "AND NOT EXISTS(
                             SELECT hc_id 
                             FROM hostcategories hc 
-                            WHERE hc.hc_id = hcr.hostcategories_hc_id
+                            WHERE hc.hc_id = hostcategories_relation.hostcategories_hc_id
                             AND hc.level IS NOT NULL) ";
     $DBRESULT = $pearDB->query($rq);
 
@@ -2377,12 +2377,12 @@ function updateNagiosServerRelation_MC($host_id, $ret = array()) {
 function setHostCriticality($hostId, $criticalityId) {
     global $pearDB;
 
-    $pearDB->query("DELETE FROM hostcategories_relation hcr 
+    $pearDB->query("DELETE FROM hostcategories_relation  
                 WHERE host_host_id = " . $pearDB->escape($hostId) . "
                 AND NOT EXISTS(
                     SELECT hc_id 
                     FROM hostcategories hc 
-                    WHERE hc.hc_id = hcr.hostcategories_hc_id
+                    WHERE hc.hc_id = hostcategories_relation.hostcategories_hc_id
                     AND hc.level IS NULL)");
     if ($criticalityId) {
         $pearDB->query("INSERT INTO hostcategories_relation (hostcategories_hc_id, host_host_id)

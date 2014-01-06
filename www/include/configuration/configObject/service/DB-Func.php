@@ -2121,12 +2121,12 @@ function divideHostsToHost($service_id) {
 	function updateServiceCategories($service_id = null, $ret = array())	{
 		if (!$service_id) return;
 		global $form, $pearDB;
-		$rq = "DELETE FROM service_categories_relation scr
-                    WHERE scr.service_service_id = '".$service_id."'
+		$rq = "DELETE FROM service_categories_relation
+                    WHERE service_service_id = '".$service_id."'
                     AND NOT EXISTS(
                         SELECT sc_id
                         FROM service_categories sc
-                        WHERE sc.sc_id = scr.sc_id
+                        WHERE sc.sc_id = service_categories_relation.sc_id
                         AND sc.level IS NOT NULL
                     )";
 		$DBRESULT = $pearDB->query($rq);
@@ -2155,12 +2155,12 @@ function divideHostsToHost($service_id) {
         function setServiceCriticality($serviceId, $criticalityId) {
             global $pearDB;
 
-            $pearDB->query("DELETE FROM service_categories_relation scr 
-                WHERE scr.service_service_id = " . $pearDB->escape($serviceId) . "
+            $pearDB->query("DELETE FROM service_categories_relation 
+                WHERE service_service_id = " . $pearDB->escape($serviceId) . "
                 AND NOT EXISTS(
                     SELECT sc_id 
                     FROM service_categories sc 
-                    WHERE sc.sc_id = scr.sc_id
+                    WHERE sc.sc_id = service_categories_relation.sc_id
                     AND sc.level IS NULL)");
             if ($criticalityId) {
                 $pearDB->query("INSERT INTO service_categories_relation (sc_id, service_service_id)
