@@ -786,4 +786,64 @@ Modified for Oreon by Christophe Coraboeuf
 	function getIndexesId($infos) {
 	    return $infos['id'];
 	}
+
+        function getChildren($infos) {
+            global $pearDB;
+            if ($infos['subgrp_id'] == '') {
+                return null;
+            }
+            $children = array();
+            $level = $infos['grp_level'] + 1;
+            $query = "SELECT config_key, config_value, config_id, config_group, config_group_id, grp_level, subgrp_id
+                FROM cfg_centreonbroker_info
+                WHERE grp_level = " . $level . "
+                AND config_id = " . $infos['config_id'] . "
+                AND config_group = '" . $infos['config_group'] . "'
+                AND config_group_id = " . $infos['config_group_id'] . "
+                AND parent_grp_id = " . $infos['subgrp_id'];
+            $res = $pearDB->query($query);
+            if (PEAR::isError($res)) {
+                return null;
+            }
+            while ($row = $res->fetchRow()) {
+                if (!isset($children[$row['config_key']])) {
+                    $children[$row['config_key']] = array(
+                        'key' => $row['config_key'],
+                        'children' => getChildren($row),
+                        'values' => $row['config_value']
+                    );
+                } else {
+                    if (!is_array($children[$row['config_key']]['values'])) {
+                        $children[$row['config_key']]['values'] = array($children[$row['config_key']]['values']);
+                    }
+                    $children[$row['config_key']]['values'][] = $row['config_value'];
+                }
+            }
+            $result = array();
+            foreach ($children as $key => $child) {
+                $result[] = $child;
+            }
+            if (count($result) === 0) {
+                return null;
+            }
+        return $result;
+    }
+
+    function writeElement($xml, $element) {
+        if ($element['key'] != 'blockId') {
+            if (!is_null($element['children'])) {
+                $xml->startElement($element['key']);
+                foreach ($element['children'] as $child) {
+                    writeElement($xml, $child);
+                }
+                $xml->endElement();
+            } elseif (is_array($element['values'])) {
+                foreach ($element['values'] as $value) {
+                    $xml->writeElement($element['key'], $value);
+                }
+            } elseif (trim($element['values']) != '') {
+                $xml->writeElement($element['key'], $element['values']);
+            }
+        }
+    }
 ?>
