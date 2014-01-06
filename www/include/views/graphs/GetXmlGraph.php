@@ -33,6 +33,8 @@
  *
  */
 
+include_once "../../../../config/centreon.ini.php";
+
 if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) {
     header("Content-type: application/xhtml+xml");
 } else {

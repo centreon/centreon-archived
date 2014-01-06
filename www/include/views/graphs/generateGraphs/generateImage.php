@@ -31,21 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 /**
  * Include config file
  */
-include "@CENTREON_ETC@/centreon.conf.php";
 
-require_once $centreon_path . '/www/class/centreon.class.php';
-require_once $centreon_path . '/www/class/centreonACL.class.php';
-require_once $centreon_path . '/www/class/centreonGraph.class.php';
-require_once $centreon_path . '/www/class/centreonDB.class.php';
-require_once $centreon_path . '/www/class/centreonBroker.class.php';
+include_once "../../../../../config/centreon.ini.php";
+
+require_once 'centreon.class.php';
+require_once 'centreonACL.class.php';
+require_once 'centreonGraph.class.php';
+require_once 'centreonDB.class.php';
+require_once 'centreonBroker.class.php';
 
 
 $pearDB = new CentreonDB();

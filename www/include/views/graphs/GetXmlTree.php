@@ -31,160 +31,155 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	/**
-	 * Include config file
-	 */
-    include_once "@CENTREON_ETC@/centreon.conf.php";
+/**
+ * Include config file
+ */
+include_once "../../../../config/centreon.ini.php";
 
-	/*
-	 * Include Dependancies
-	 */
-	require_once $centreon_path . "www/class/centreonDB.class.php";
-	require_once $centreon_path . "www/class/centreonSession.class.php";
-	require_once $centreon_path . "www/class/centreon.class.php";
-	require_once $centreon_path . "www/class/centreonLang.class.php";
-	require_once $centreon_path . "www/class/centreonBroker.class.php";
+/*
+ * Include Dependancies
+ */
+require_once "centreonDB.class.php";
+require_once "centreonSession.class.php";
+require_once "centreon.class.php";
+require_once "centreonLang.class.php";
+require_once "centreonBroker.class.php";
 
-	/*
-	 * Database Connection
-	 */
-	$pearDB 	= new CentreonDB();
-	$pearDBO 	= new CentreonDB("centstorage");
+/*
+ * Database Connection
+ */
+$pearDB 	= new CentreonDB();
+$pearDBO 	= new CentreonDB("centstorage");
 
-	/*
-	 * Get Broker Engine
-	 */
-	$objBroker = new CentreonBroker($pearDB);
-	if ($objBroker->getBroker() == "ndo") {
-            $pearDBndo = new CentreonDB("ndo");
-	} else {
-            $pearDBndo = new CentreonDB('centstorage');
+/*
+ * Get Broker Engine
+ */
+$pearDBndo = new CentreonDB('centstorage');
+
+/*
+ * PHP functions
+ */
+include_once $centreon_path . "www/include/views/graphs/common-Func.php";
+
+CentreonSession::start();
+$oreon = $_SESSION["centreon"];
+
+/*
+ * Tanslation
+ */
+$centreonLang = new CentreonLang($centreon_path, $oreon);
+$centreonLang->bindLang();
+
+/**
+ * Include Access Class
+ */
+include_once "centreonACL.class.php";
+include_once "centreonXML.class.php";
+
+if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) {
+    header("Content-type: application/xhtml+xml");
+} else {
+    header("Content-type: text/xml");
+}
+
+global $is_admin, $user_id;
+
+$is_admin = isUserAdmin($_GET["sid"]);
+if (isset($_GET["sid"]) && $_GET["sid"]){
+    $DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
+    $session = $DBRESULT->fetchRow();
+    $access = new CentreonAcl($session["user_id"], $is_admin);
+    $lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
+    
+    $hoststr = $access->getHostsString("ID", $pearDBndo);
+    $servicestr = $access->getServicesString("ID", $pearDBndo);
+} else {
+    exit();
+}
+
+$normal_mode = 1;
+
+/**
+ * Get Parameters
+ */
+(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES, "UTF-8") : $normal_mode = 1;
+(isset($_GET["meta"])) ? $meta = htmlentities($_GET["meta"], ENT_QUOTES, "UTF-8") : $meta = 0;
+(isset($_GET["id"])) ? $url_var = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $url_var = 0;
+(isset($_GET["search"])) ? $search = htmlentities($_GET["search"], ENT_QUOTES, "UTF-8") : $search = 0;
+(isset($_GET["search_host"])) ? $search = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search = 0;
+(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = 0;
+(isset($_GET["lock_tree"])) ? $lockTree = $_GET['lock_tree'] : $lockTree = 0;
+
+/**
+ * Create hostCahe
+ */
+$hostCache = array();
+$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
+while ($data = $DBRESULT->fetchRow()) {
+    $hostCache[$data["host_id"]] = $data["host_name"];
+}
+$DBRESULT->free();
+unset($data);
+
+/**
+ * Create serviceCahe
+ */
+function setServiceCache($pearDB) {
+    $serviceCache = array();
+    $DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
+    while ($data = $DBRESULT->fetchRow()) {
+        $serviceCache[$data["service_id"]] = db2str($data["service_description"]);
+    }
+    $DBRESULT->free();
+    unset($data);
+    return $serviceCache;
+}
+
+/**
+ * Create hgCahe
+ */
+$hgCache = array();
+$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ hg_id, hg_name FROM hostgroup");
+while ($data = $DBRESULT->fetchRow()) {
+    $hgCache[$data["hg_id"]] = $data["hg_name"];
+}
+$DBRESULT->free();
+unset($data);
+
+/**
+ * Create cache host/hostgroup
+ */
+function sethgHCache($pearDB) {
+    $hgHCache = array();
+    $DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ hostgroup_hg_id, host_host_id FROM hostgroup_relation hr, host h WHERE hr.host_host_id = h.host_id and h.host_register = '1'");
+    while ($data = $DBRESULT->fetchRow()) {
+        if (!isset($hgHCache[$data["hostgroup_hg_id"]])) {
+            $hgHCache[$data["hostgroup_hg_id"]] = array();
         }
+        $hgHCache[$data["hostgroup_hg_id"]][$data["host_host_id"]] = 1;
+    }
+    $DBRESULT->free();
+    unset($data);
+    return $hgHCache;
+}
 
+$type = "root";
+$id = "0";
+if (strlen($url_var) > 1){
+    $id = "42";
+    $type = substr($url_var, 0, 2);
+    $id = substr($url_var, 3, strlen($url_var));
+}
 
-	/*
-	 * PHP functions
-	 */
-	include_once $centreon_path . "www/include/views/graphs/common-Func.php";
-
-	CentreonSession::start();
-	$oreon = $_SESSION["centreon"];
-
-	/*
-	 * Tanslation
-	 */
-	$centreonLang = new CentreonLang($centreon_path, $oreon);
-	$centreonLang->bindLang();
-
-	/**
-	 * Include Access Class
-	 */
-	include_once $centreon_path . "www/class/centreonACL.class.php";
-	include_once $centreon_path . "www/class/centreonXML.class.php";
-
-	if (stristr($_SERVER["HTTP_ACCEPT"],"application/xhtml+xml")) {
-		header("Content-type: application/xhtml+xml");
-	} else {
-		header("Content-type: text/xml");
-	}
-
-	global $is_admin, $user_id;
-
-	$is_admin = isUserAdmin($_GET["sid"]);
-	if (isset($_GET["sid"]) && $_GET["sid"]){
-		$DBRESULT = $pearDB->query("SELECT user_id FROM session where session_id = '".$_GET["sid"]."'");
-		$session = $DBRESULT->fetchRow();
-		$access = new CentreonAcl($session["user_id"], $is_admin);
-		$lca = array("LcaHost" => $access->getHostServices($pearDBndo), "LcaHostGroup" => $access->getHostGroups(), "LcaSG" => $access->getServiceGroups());
-
-		$hoststr = $access->getHostsString("ID", $pearDBndo);
-		$servicestr = $access->getServicesString("ID", $pearDBndo);
-	} else {
-		exit();
-	}
-
-	$normal_mode = 1;
-
-	/**
-	 * Get Parameters
-	 */
-	(isset($_GET["mode"])) ? $normal_mode = htmlentities($_GET["mode"], ENT_QUOTES, "UTF-8") : $normal_mode = 1;
-	(isset($_GET["meta"])) ? $meta = htmlentities($_GET["meta"], ENT_QUOTES, "UTF-8") : $meta = 0;
-	(isset($_GET["id"])) ? $url_var = htmlentities($_GET["id"], ENT_QUOTES, "UTF-8") : $url_var = 0;
-	(isset($_GET["search"])) ? $search = htmlentities($_GET["search"], ENT_QUOTES, "UTF-8") : $search = 0;
-	(isset($_GET["search_host"])) ? $search = htmlentities($_GET["search_host"], ENT_QUOTES, "UTF-8") : $search = 0;
-	(isset($_GET["search_service"])) ? $search_service = htmlentities($_GET["search_service"], ENT_QUOTES, "UTF-8") : $search_service = 0;
-	(isset($_GET["lock_tree"])) ? $lockTree = $_GET['lock_tree'] : $lockTree = 0;
-
-	/**
-	 * Create hostCahe
-	 */
-	$hostCache = array();
-	$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ host_id, host_name FROM host WHERE host_register = '1'");
-	while ($data = $DBRESULT->fetchRow())
-		$hostCache[$data["host_id"]] = $data["host_name"];
-	$DBRESULT->free();
-	unset($data);
-
-	/**
-	 * Create serviceCahe
-	 */
-	function setServiceCache($pearDB) {
-		$serviceCache = array();
-		$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ service_id, service_description FROM service WHERE service_register = '1'");
-		while ($data = $DBRESULT->fetchRow())
-			$serviceCache[$data["service_id"]] = db2str($data["service_description"]);
-		$DBRESULT->free();
-		unset($data);
-		return $serviceCache;
-	}
-
-	/**
-	 * Create hgCahe
-	 */
-	$hgCache = array();
-	$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ hg_id, hg_name FROM hostgroup");
-	while ($data = $DBRESULT->fetchRow())
-		$hgCache[$data["hg_id"]] = $data["hg_name"];
-	$DBRESULT->free();
-	unset($data);
-
-	/**
-	 * Create cache host/hostgroup
-	 */
-	function sethgHCache($pearDB) {
-		$hgHCache = array();
-		$DBRESULT = $pearDB->query("SELECT /** SQL_CACHE */ hostgroup_hg_id, host_host_id FROM hostgroup_relation hr, host h WHERE hr.host_host_id = h.host_id and h.host_register = '1'");
-		while ($data = $DBRESULT->fetchRow()) {
-			if (!isset($hgHCache[$data["hostgroup_hg_id"]]))
-				$hgHCache[$data["hostgroup_hg_id"]] = array();
-			$hgHCache[$data["hostgroup_hg_id"]][$data["host_host_id"]] = 1;
-		}
-		$DBRESULT->free();
-		unset($data);
-		return $hgHCache;
-	}
-
-	$type = "root";
-	$id = "0";
-	if (strlen($url_var) > 1){
-		$id = "42";
-		$type = substr($url_var, 0, 2);
-		$id = substr($url_var, 3, strlen($url_var));
-	}
-
-	/**
-	 * Initiate XML
-	 */
-	$buffer = new CentreonXML();
-	if ($normal_mode){
-		$i = 0;
-		$buffer->startElement("tree");
+/**
+ * Initiate XML
+ */
+$buffer = new CentreonXML();
+if ($normal_mode){
+    $i = 0;
+    $buffer->startElement("tree");
 		$buffer->writeAttribute("id", $url_var);
 
 		if ($type == "HG") {

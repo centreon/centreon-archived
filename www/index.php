@@ -57,6 +57,8 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install') && 0) {
 
 $classdir = "/srv/centreon-3/www/class";
 
+require_once "../config/centreon.ini.php";
+
 require_once "centreon.class.php";
 require_once "centreonSession.class.php";
 require_once "centreonAuth.SSO.class.php";
