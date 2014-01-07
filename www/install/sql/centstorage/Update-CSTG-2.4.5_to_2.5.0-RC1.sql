@@ -42,3 +42,7 @@ ALTER TABLE servicegroups ADD COLUMN `enabled` tinyint(1) NOT NULL DEFAULT '1' A
 -- Ticket #4863
 ALTER TABLE metrics MODIFY metric_name VARCHAR (255) COLLATE utf8_bin;
 
+ALTER TABLE `downtimes` ADD INDEX `downtimeManager_hostList` (`host_id`, `start_time`);
+
+ALTER TABLE `instance` ADD `last_ctime` int(11) DEFAULT 0 AFTER `log_md5`;
+
