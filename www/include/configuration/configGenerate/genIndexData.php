@@ -62,7 +62,7 @@ WHERE hsr.host_host_id IS NOT NULL
 AND hsr.host_host_id = h.host_id
 AND h.host_activate = '1'
 AND hsr.service_service_id = s.service_id
-AND s.service_register = '1'
+AND s.service_register IN ('1', '2')
 UNION
 SELECT host_id, service_id, host_name, service_description
 FROM host_service_relation hsr, hostgroup_relation hgr, host h, service s
