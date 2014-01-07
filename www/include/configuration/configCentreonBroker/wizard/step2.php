@@ -80,6 +80,7 @@
             $lang['informations'] = _('Information');
             $lang['configuration_name'] = _('Configuration name');
             $lang['additional_daemon'] = _('Additional daemon');
+            $lang['protocol'] = _('Serialization protocol');
             $lang['none'] = _('None');
             $tpl->assign('requester', $requester['name']);
             $tpl->assign('requester_id', $requester['id']);
@@ -96,6 +97,7 @@
             $lang['informations'] = _('Information');
             $lang['prefix_configuration_name'] = _('Prefix configuration name');
             $lang['additional_daemon'] = _('Additional daemon');
+            $lang['protocol'] = _('Serialization protocol');
             $tpl->assign('requester', $requester['name']);
             $tpl->assign('requester_id', $requester['id']);
             $page = 'step2_central_with_poller.ihtml';
@@ -115,6 +117,7 @@
             $lang['central_address'] = _('Central address');
             $lang['additional_daemon'] = _('Additional daemon');
             $lang['communication_port'] = _('Communication port');
+            $lang['protocol'] = _('Serialization protocol');
             $lang['none'] = _('None');
             $tpl->assign('requesters', $requester_list);
             $page = 'step2_poller.ihtml';
