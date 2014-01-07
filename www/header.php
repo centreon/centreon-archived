@@ -49,7 +49,7 @@ $advanced_search = 0;
 /*
  * Define
  */
-define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
+define('SMARTY_DIR', realpath('../application/class/public/Smarty/libs/') . '/');
 
 /*
  * Include

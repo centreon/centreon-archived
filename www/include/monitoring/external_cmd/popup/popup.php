@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL
- * SVN : $Id$
- *
  */
 
 	require_once "@CENTREON_ETC@/centreon.conf.php";
@@ -65,7 +62,7 @@
 		exit;
 	}
 
-	define('SMARTY_DIR', $centreon_path . 'GPL_LIB/Smarty/libs/');
+	define('SMARTY_DIR', $centreon_path . 'application/class/public/Smarty/libs/');
 
 	require_once SMARTY_DIR . "Smarty.class.php";
 

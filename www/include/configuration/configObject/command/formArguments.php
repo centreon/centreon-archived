@@ -92,14 +92,14 @@ $subS = $form->addElement('button', 'close', _("Close"), array("onClick"=>"close
 /*
  *  Smarty template
  */
-define('SMARTY_DIR', "$centreon_path/GPL_LIB/Smarty/libs/");
+define('SMARTY_DIR', "$centreon_path/application/class/public/Smarty/libs/");
 require_once SMARTY_DIR."Smarty.class.php";
 
 $tpl = new Smarty();
 $tpl->template_dir = $path;
-$tpl->compile_dir = "$centreon_path/GPL_LIB/SmartyCache/compile";
-$tpl->config_dir = "$centreon_path/GPL_LIB/SmartyCache/config";
-$tpl->cache_dir = "$centreon_path/GPL_LIB/SmartyCache/cache";
+$tpl->compile_dir = "$centreon_path/var/Smarty/compile";
+$tpl->config_dir = "$centreon_path/var/Smarty/config";
+$tpl->cache_dir = "$centreon_path/var/Smarty/cache";
 $tpl->caching = 0;
 $tpl->compile_check = true;
 $tpl->force_compile = true;
