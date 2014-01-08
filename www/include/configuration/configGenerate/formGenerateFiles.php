@@ -502,7 +502,10 @@ $tpl->display("formGenerateFiles.ihtml");
         if (typeof(curProgress) != 'undefined' && typeof(stepProgress) != 'undefined') {
             pct = curProgress + stepProgress;
             curProgress += stepProgress;
-        }
+	}
+	if (pct > 100) {
+	    pct = 100;
+	}
         progressBar.setPercentage(pct);
         $('progressPct').update(Math.round(pct) + "%");
     }
