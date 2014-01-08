@@ -311,6 +311,16 @@ CREATE TABLE `cb_fieldset` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cb_fieldgroup` (
+  `cb_fieldgroup_id` INT NOT NULL AUTO_INCREMENT,
+  `groupname` VARCHAR(100) NOT NULL,
+  `group_parent_id` INT DEFAULT NULL,
+  PRIMARY KEY(`cb_fieldgroup_id`),
+  FOREIGN KEY(`group_parent_id`) REFERENCES `cb_fieldgroup` (`cb_fieldgroup_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cb_field` (
   `cb_field_id` int(11) NOT NULL AUTO_INCREMENT,
   `fieldname` varchar(100) NOT NULL,
