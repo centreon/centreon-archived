@@ -4,11 +4,13 @@
 Installation
 ============
 
-*****
-Setup
-*****
+*************
+Using Sources
+*************
 
-Widget packages (.tgz) are to be unpackaged in the centreon/www/widgets directory::
+All widgets can be download on this page : `<http://www.centreon.com/Content-Download/download-centreon-widgets>`_
+
+Widget packages (.tgz) have to be unpackaged in the centreon/www/widgets directory::
 
   [root@localhost widgets]# ll
   total 32
@@ -20,6 +22,19 @@ Widget packages (.tgz) are to be unpackaged in the centreon/www/widgets director
   drwxr-xr-x 4 centreon centreon 4096 Aug 24 15:47 servicegroup-monitoring
   drwxr-xr-x 4 centreon centreon 4096 Aug 24 15:47 service-monitoring
 
+**************
+Using Packages
+**************
+
+You can download all widgets running the following command::
+
+   $ yum install centreon-widget*
+
+It's also possible to install widget one by one replacing centreon-widget* by the name of the widget
+
+****************
+Web installation
+****************
 
 Then, you need to log in the Centreon web UI and go to [Administration] > [Modules] > [Widget] > [Setup]
 
