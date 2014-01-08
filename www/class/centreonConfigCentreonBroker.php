@@ -40,8 +40,8 @@
  */
 class CentreonConfigCentreonBroker
 {
+    public $nbSubGroup = 1;
     private $db;
-    private $nbSubGroup = 1;
     private $attrText = array("size"=>"120");
     private $attrInt = array("size"=>"10", "class" => "v_number");
 
@@ -662,6 +662,7 @@ class CentreonConfigCentreonBroker
      */
     public function getHelps($config_id, $tag)
     {
+        $this->nbSubGroup = 1;
         $query = "SELECT config_value
         	FROM cfg_centreonbroker_info
         	WHERE config_id = %d AND config_group = '%s'
@@ -680,7 +681,12 @@ class CentreonConfigCentreonBroker
             $help[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
         	$help[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
         	foreach ($fields as $field) {
-        	    $help[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
+                $fieldname = '';
+                if ($field['group'] !== '') {
+                    $fieldname .= $this->getParentGroups($field['group']);
+                }
+                $fieldname .= $field['fieldname'];
+        	    $help[] = array('name' => $tag . '[' . $pos . '][' . $fieldname . ']', 'desc' => _($field['description']));
         	}
         	$helps[] = $help;
         	$pos++;
@@ -913,7 +919,7 @@ class CentreonConfigCentreonBroker
             $elementName .= $this->getParentGroups($field['group']);
         }
         $elementName .= $field['fieldname']. ']';
-	return $elementName;
+	    return $elementName;
     }
 
     /**
@@ -922,18 +928,18 @@ class CentreonConfigCentreonBroker
      * @param int $groupId The group id
      * @return string
      */
-    private function getParentGroups($groupId) {
-	$elemStr = '';
-	$res = $this->db->query(sprintf("SELECT groupname, group_parent_id FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d", $groupId));
-        if (PEAR::isError($res)) {
-            return '';
-        }
-	$row = $res->fetchRow();
-	if ($row['group_parent_id'] !== '') {
-	    $elemStr .= $this->getParentGroups($row['group_parent_id']);
-	}
-	$elemStr .=  $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
-	return $elemStr;
+    public function getParentGroups($groupId) {
+	    $elemStr = '';
+	    $res = $this->db->query(sprintf("SELECT groupname, group_parent_id FROM cb_fieldgroup WHERE cb_fieldgroup_id = %d", $groupId));
+            if (PEAR::isError($res)) {
+                return '';
+            }
+	    $row = $res->fetchRow();
+	    if ($row['group_parent_id'] !== '') {
+	        $elemStr .= $this->getParentGroups($row['group_parent_id']);
+	    }
+	    $elemStr .=  $row['groupname'] . '__' . $this->nbSubGroup++ . '__';
+	    return $elemStr;
     }
 
     /**
