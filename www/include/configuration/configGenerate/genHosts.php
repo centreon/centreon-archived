@@ -380,7 +380,7 @@ $critRes = $pearDB->query("SELECT hcr.hostcategories_hc_id, hcr.host_host_id
                     if ($host['cg_additive_inheritance']) {
                         $strTemp = "+".$strTemp;
                     }
-                    $str .= print_line("contact_groups", $strTemp);
+                    $str .= print_line("contact_groups", str_replace(" ", "_", $strTemp));
                 }
                 unset($strTemp);
             }
