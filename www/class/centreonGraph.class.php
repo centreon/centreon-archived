@@ -715,7 +715,8 @@ class CentreonGraph {
                         $l_CMP = "," . $this->get_cmp_operator($tm) . ",";
                         $this->addArgument("CDEF:ok".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP.$tm["warn"].",v".$cpt.",IF");
                         $this->addArgument("CDEF:oc".$cpt."=v".$cpt.",".$tm["crit"].$l_CMP."v".$cpt.",".$tm["crit"].",-,0,IF");
-                        $this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP."v".$cpt.",".$tm["warn"].",-,oc".$cpt.",-,0,IF");
+			$this->addArgument("CDEF:ow".$cpt."=v".$cpt.",".$tm["warn"].$l_CMP."v".$cpt.",".$tm["warn"].",-,oc".$cpt.",-,0,IF");
+			$this->areaNb = $cpt;
                     }
                     $this->vname[$tm["metric"]] = "v".$cpt;
                     $cpt++;
@@ -769,7 +770,10 @@ class CentreonGraph {
                     if ($this->onecurve && isset($tm["warn"]) && $tm["warn"] != 0 && isset($tm["crit"]) && $tm["crit"] != 0) {
                         $nb=$cpt;
                         if (isset($tm["virtual"]))
-                            $nb=substr($this->vname[$tm["metric"]],2,strlen($this->vname[$tm["metric"]])-2);
+			    $nb=substr($this->vname[$tm["metric"]],2,strlen($this->vname[$tm["metric"]])-2);
+                        if (isset($this->areaNb)) {
+			    $nb = $this->areaNb;
+			}
                         $arg = "AREA:ok".$nb.$tm["ds_color_area"];
                     } else
                         $arg = "AREA:".$this->vname[$tm["metric"]].$tm["ds_color_area"];
