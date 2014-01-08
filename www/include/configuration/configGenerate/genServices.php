@@ -332,7 +332,7 @@
                             if ($service['cg_additive_inheritance']) {
                                 $strTMPTemp = "+".$strTMPTemp;
                             }
-                            $strTMP .= print_line("contact_groups", $strTMPTemp);
+                            $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
                         }
                         unset($strTMPTemp);
                     }
@@ -689,7 +689,7 @@
                             if ($service['cg_additive_inheritance']) {
                                 $strTMPTemp = "+".$strTMPTemp;
                             }
-                            $strTMP .= print_line("contact_groups", $strTMPTemp);
+                            $strTMP .= print_line("contact_groups", str_replace(" ", "_", $strTMPTemp));
                         }
                         unset($strTMPTemp);
                     }
