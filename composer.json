@@ -1,0 +1,17 @@
+{
+    "name": "centreon/centreon",
+    "description": "Monitoring Web User Interface",
+    "require": {
+        "smarty/smarty": "3.1.*",
+        "smarty-gettext/smarty-gettext": "1.1.*",
+        "openpsa/quickform": "3.3.0-rc.1"
+    },
+    "license": "GPLv2",
+    "authors": [
+        {
+            "name": "Maximilien Bersoult",
+            "email": "mbersoult@merethis.com"
+        }
+    ],
+    "minimum-stability": "stable"
+}
