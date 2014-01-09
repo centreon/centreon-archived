@@ -36,46 +36,48 @@
  * 
  */
 		
-	require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "../../../../../config/centreon.conf.php";
+
+require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
+require_once "centreonDuration.class.php";
+require_once "centreonXML.class.php";
+require_once "centreonDB.class.php";
+require_once $centreon_path."www/include/reporting/dashboard/xmlInformations/common-Func.php";
+
+$buffer = new CentreonXML();
+$buffer->startElement("data");	
+
+$pearDB 	= new CentreonDB();
+$pearDBO 	= new CentreonDB("centstorage");
+
+$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['session'], ENT_QUOTES, "UTF-8") . "'");
+if (!$DBRESULT->numRows()) {
+    exit();
+}
+
+/*
+ * Definition of status
+ */
+$state 		= array("UP" => _("UP"), "DOWN" => _("DOWN"), "UNREACHABLE" => _("UNREACHABLE"), "UNDETERMINED" => _("UNDETERMINED"));
+$statesTab 	= array("UP", "DOWN", "UNREACHABLE");
+
+if (isset($_GET["id"]) && isset($_GET["color"])) {
+    $color = array();
+    foreach ($_GET["color"] as $key => $value) {
+        $color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
+    }
 	
-	require_once $centreon_path."www/include/reporting/dashboard/common-Func.php";
-	require_once $centreon_path."www/class/centreonDuration.class.php";
-	require_once $centreon_path."www/class/centreonXML.class.php";
-	require_once $centreon_path."www/class/centreonDB.class.php";
-	require_once $centreon_path."www/include/reporting/dashboard/xmlInformations/common-Func.php";
-		
-	$buffer = new CentreonXML();
-	$buffer->startElement("data");	
+    $DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_host` WHERE host_id = " . $_GET["id"] . " order by date_start desc");
+    while ($row = $DBRESULT->fetchRow()) {
+        fillBuffer($statesTab, $row, $color);
+    }
+} else {
+    $buffer->writeElement("error", "error");		
+}
 
-	$pearDB 	= new CentreonDB();
-	$pearDBO 	= new CentreonDB("centstorage");
+$buffer->endElement();	
 
-	$DBRESULT = $pearDB->query("SELECT * FROM session WHERE session_id = '" . htmlentities($_GET['session'], ENT_QUOTES, "UTF-8") . "'");
-	if (!$DBRESULT->numRows())
-		exit();
+header('Content-Type: text/xml');
 
-	/*
-	 * Definition of status
-	 */
-	$state 		= array("UP" => _("UP"), "DOWN" => _("DOWN"), "UNREACHABLE" => _("UNREACHABLE"), "UNDETERMINED" => _("UNDETERMINED"));
-	$statesTab 	= array("UP", "DOWN", "UNREACHABLE");
-		
-	if (isset($_GET["id"]) && isset($_GET["color"])){
-
-		$color = array();
-		foreach ($_GET["color"] as $key => $value) {
-			$color[$key] = htmlentities($value, ENT_QUOTES, "UTF-8");
-		}
-		
-		$DBRESULT = $pearDBO->query("SELECT  * FROM `log_archive_host` WHERE host_id = " . $_GET["id"] . " order by date_start desc");
-		while ($row = $DBRESULT->fetchRow()) {
-			fillBuffer($statesTab, $row, $color);
-		}
-	} else {
-		$buffer->writeElement("error", "error");		
-	}
-
-	$buffer->endElement();	
-	header('Content-Type: text/xml');
-	$buffer->output();
+$buffer->output();
 ?>
