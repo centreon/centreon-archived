@@ -39,13 +39,13 @@ What's new
 ACL on configuration objects
 ============================
 
-ACL rules are now applied to configuration objects. For more information regarding this feature, be sure to checkout our blog post: `http://blog.centreon.com/configuration-acl-with-centreon-2-5-2/`_
+ACL rules are now applied to configuration objects. For more information regarding this feature, be sure to checkout our blog post: `<http://blog.centreon.com/configuration-acl-with-centreon-2-5-2/>`_
 
 
 UI and sound notifications
 ==========================
 
-It is now possible to get UI and sound notifications on Centreon, you can set your preferences in your profile page. A quick overview there: `http://blog.centreon.com/centreon-ui-notification-system/`_
+It is now possible to get UI and sound notifications on Centreon, you can set your preferences in your profile page. A quick overview there: `<http://blog.centreon.com/centreon-ui-notification-system/>`_
 
 
 New system with SNMP traps
