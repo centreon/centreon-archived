@@ -31,17 +31,14 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
-	include_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-	include_once $centreon_path . "www/class/centreonInstance.class.php";
-    include_once $centreon_path . "www/class/centreonCriticality.class.php";
-    include_once $centreon_path . "www/class/centreonMedia.class.php";
-	include_once $centreon_path . "www/include/common/common-Func.php";
+include_once "../../../../../../../centreon.ini.php";
+include_once "centreonXMLBGRequest.class.php";
+include_once "centreonInstance.class.php";
+include_once "centreonCriticality.class.php";
+include_once "centreonMedia.class.php";
+include_once $centreon_path . "www/include/common/common-Func.php";
 
 	/*
 	 * Create XML Request Objects

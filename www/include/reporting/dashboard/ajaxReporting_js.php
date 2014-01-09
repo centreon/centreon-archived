@@ -31,25 +31,30 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
 	
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	
-	if ($type == "Service") {
-		$arg = "id=".$service_id."&host_id=".$host_id;
-	} else {
-		$arg = "id=".$id;
-	}
+require_once "../config/centreon.ini.php";
 
-	$arg .= "&session=".session_id()."&color[UP]=".$oreon->optGen["color_up"]."&color[UNDETERMINED]=".$oreon->optGen["color_undetermined"].
-			"&color[DOWN]=".$oreon->optGen["color_down"]."&color[UNREACHABLE]=".$oreon->optGen["color_unreachable"].
-			"&color[OK]=".$oreon->optGen["color_ok"]."&color[WARNING]=".$oreon->optGen["color_warning"].
-			"&color[CRITICAL]=".$oreon->optGen["color_critical"]."&color[UNKNOWN]=".$oreon->optGen["color_unknown"];
-	$arg = str_replace("#", "%23", $arg);
-	$url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
+if ($type == "Service") {
+    $arg = "id=".$service_id."&host_id=".$host_id;
+} else {
+    $arg = "id=".$id;
+}
+
+$arg .= 
+    "&session=".session_id()."&color[UP]=".$oreon->optGen["color_up"].
+    "&color[UNDETERMINED]=".$oreon->optGen["color_undetermined"].
+    "&color[DOWN]=".$oreon->optGen["color_down"].
+    "&color[UNREACHABLE]=".$oreon->optGen["color_unreachable"].
+    "&color[OK]=".$oreon->optGen["color_ok"].
+    "&color[WARNING]=".$oreon->optGen["color_warning"].
+    "&color[CRITICAL]=".$oreon->optGen["color_critical"].
+    "&color[UNKNOWN]=".$oreon->optGen["color_unknown"];
+
+$arg = str_replace("#", "%23", $arg);
+
+$url = "./include/reporting/dashboard/xmlInformations/GetXml".$type.".php?".$arg;
+
 ?>
 <script type="text/javascript">
 
@@ -81,5 +86,4 @@ function initTimeline() {
 	
 	Timeline.loadXML('<?php echo $url ?>', function(xml, url) { eventSource.loadXML(xml, url); });
 }
-
 </script>

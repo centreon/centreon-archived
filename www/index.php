@@ -33,20 +33,20 @@
  *
  */
 
+ini_set('display_errors', 'On');
 
-ini_set('display_errors', 'Off');
-
-$etc = "@CENTREON_ETC@";
+$etc = "/etc/centreon";;
 
 clearstatcache(true, "$etc/centreon.conf.php");
-if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
+
+if (!file_exists("$etc/centreon.conf.php") && is_dir('./install') && 0) {
     header("Location: ./install/setup.php");
     return;
-} elseif (file_exists("$etc/centreon.conf.php") && is_dir('install')) {
+} elseif (file_exists("$etc/centreon.conf.php") && is_dir('install') && 0) {
     require_once ("$etc/centreon.conf.php");
     header("Location: ./install/upgrade.php");
 } else {
-    if (file_exists("$etc/centreon.conf.php")) {
+    if (file_exists("$etc/centreon.conf.php")){
         require_once ("$etc/centreon.conf.php");
         $freeze = 0;
     } else {
@@ -56,11 +56,15 @@ if (!file_exists("$etc/centreon.conf.php") && is_dir('./install')) {
     }
 }
 
-require_once "$classdir/centreon.class.php";
-require_once "$classdir/centreonSession.class.php";
-require_once "$classdir/centreonAuth.SSO.class.php";
-require_once "$classdir/centreonLog.class.php";
-require_once "$classdir/centreonDB.class.php";
+$classdir = "/srv/centreon-3/www/class";
+
+require_once "../config/centreon.ini.php";
+
+require_once "centreon.class.php";
+require_once "centreonSession.class.php";
+require_once "centreonAuth.SSO.class.php";
+require_once "centreonLog.class.php";
+require_once "centreonDB.class.php";
 
 /*
  * Get auth type
@@ -83,43 +87,38 @@ $skin = "./Themes/".$generalOptions["template"]."/";
  * detect installation dir
  */
 $file_install_acces = 0;
-if (file_exists("./install/setup.php")){
-    $error_msg = "Installation Directory '". getcwd() ."/install/' is accessible. Delete this directory to prevent security problem.";
-    $file_install_acces = 1;
+if (file_exists("./install/setup.php") && 0) {
+  $error_msg = "Installation Directory '". getcwd() ."/install/' is accessible. Delete this directory to prevent security problem.";
+  $file_install_acces = 1;
 }
-
-/*
- * Set PHP Session Expiration time
- */
-ini_set("session.gc_maxlifetime", "31536000");
 
 CentreonSession::start();
 
 if (isset($_GET["disconnect"])) {
+  
+  $centreon = $_SESSION["centreon"];
+  
+  /*
+   * Init log class
+   */
+  if (is_object($centreon)) {
+    $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
+    $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
     
-    $centreon = & $_SESSION["centreon"];
+    $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
     
-    /*
-     * Init log class
-     */
-    if (is_object($centreon)) {
-        $CentreonLog = new CentreonUserLog($centreon->user->get_id(), $pearDB);
-        $CentreonLog->insertLog(1, "Contact '".$centreon->user->get_alias()."' logout");
-
-        $pearDB->query("DELETE FROM session WHERE session_id = '".session_id()."'");
-
-        CentreonSession::stop();
-        CentreonSession::start();
-    }
+    CentreonSession::stop();
+    CentreonSession::start();
+  }
 }
 
 /*
  * already connected
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = & $_SESSION["centreon"];
-
-    header('Location: main.php');
+  $centreon = & $_SESSION["centreon"];
+  
+  header('Location: main.php');
 }
 
 if (isset($_POST["submit"])
@@ -131,9 +130,9 @@ if (isset($_POST["submit"])
      * Init log class
      */
     $CentreonLog = new CentreonUserLog(-1, $pearDB);
-
+        
     if (isset($_POST['p'])) {
-        $_GET["p"] = $_POST["p"];			
+        $_GET["p"] = $_POST["p"];
     }
     
     /*
@@ -143,31 +142,30 @@ if (isset($_POST["submit"])
     isset($_GET["useralias"]) ? $useraliasG = $_GET["useralias"] : $useraliasG = NULL;
     isset($_POST["useralias"]) ? $useraliasP = $_POST["useralias"] : $useraliasP = NULL;
     $useraliasG ? $useralias = $useraliasG : $useralias = $useraliasP;
-    
+        
     isset($_GET["password"]) ? $passwordG = $_GET["password"] : $passwordG = NULL;
     isset($_POST["password"]) ? $passwordP = $_POST["password"] : $passwordP = NULL;
     $passwordG ? $password = $passwordG : $password = $passwordP;
-
+        
     $token = "";
     if (isset($_REQUEST['token']) && $_REQUEST['token']) {
         $token = $_REQUEST['token'];
     }
-
+        
     if (!isset($encryptType)) {
         $encryptType = 1;
     }
-
+        
     $centreonAuth = new CentreonAuthSSO($useralias, $password, $autologin, $pearDB, $CentreonLog, $encryptType, $token, $generalOptions);
-
-    if ($centreonAuth->passwdOk == 1) {
-
+        
+    if ($centreonAuth->passwdOk == 1) {       
         $centreon = new Centreon($centreonAuth->userInfos, $generalOptions["nagios_version"]);
         $_SESSION["centreon"] = $centreon;
         $pearDB->query("INSERT INTO `session` (`session_id` , `user_id` , `current_page` , `last_reload`, `ip_address`) VALUES ('".session_id()."', '".$centreon->user->user_id."', '1', '".time()."', '".$_SERVER["REMOTE_ADDR"]."')");
         if (!isset($_POST["submit"]))	{
             $args = NULL;
             foreach ($_GET as $key => $value) {
-                $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;					
+                $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
             }
             header("Location: ./main.php?".$args."");
         } else {
@@ -175,7 +173,7 @@ if (isset($_POST["submit"])
         }
         $connect = true;
     } else {
-        $connect = false;	    	
+        $connect = false;
     }
 }
 
@@ -185,8 +183,8 @@ if (isset($_POST["submit"])
  *  Centreon 2.x doesn't support PHP < 5
  *
  */
-if (version_compare(phpversion(), '5.0') < 0){
-    echo "<div class='msg'> PHP version is < 5.0. Please Upgrade PHP</div>";
+if (version_compare(phpversion(), '5.3') < 0) {
+    echo "<div class='msg'> PHP version is < 5.3. Please Upgrade PHP</div>";
 } else {
     include_once("./login.php");
 }

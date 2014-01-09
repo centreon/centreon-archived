@@ -36,7 +36,7 @@
  * 
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "../../../../../config/centreon.ini.php";
 
 header("Content-type: text/css");
 

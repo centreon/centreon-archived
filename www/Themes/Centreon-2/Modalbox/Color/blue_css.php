@@ -36,11 +36,12 @@
  * 
  */
 
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "../../../../../config/centreon.ini.php";
 
 header("Content-type: text/css");
 
 $bg_image_header = "../../Images/bg_header.gif";
 
 require_once $centreon_path . "www/Themes/Centreon-2/Modalbox/modalbox_css.php";
+
 ?>

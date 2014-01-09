@@ -36,6 +36,8 @@ if (!isset($centreon_path)) {
     die ('Centreon path not set.');
 }
 
+$centreon_path = '/srv/centreon-3/';
+
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath($centreon_path . '/www/class'),
     get_include_path(),

@@ -117,51 +117,29 @@
 		return $search;
 	}
 
-	#
-	## SMARTY
-	#
+/*
+ * Smarty Init Function
+ */
 
-	function initSmartyTpl($path = NULL, $tpl = NULL, $subDir = NULL)	{
-		if (!$tpl)
-			return;
-		$tpl->template_dir = $path . $subDir;
-		$tpl->compile_dir = "../GPL_LIB/SmartyCache/compile";
-		$tpl->config_dir = "../GPL_LIB/SmartyCache/config";
-		$tpl->cache_dir = "../GPL_LIB/SmartyCache/cache";
+function initSmartyTpl($path = NULL, $tpl = NULL, $subDir = NULL)	{
+    global $smartyDirectory;
+    if (!$tpl) {
+        return;
+    }
+    $tpl->template_dir = $path . $subDir;
+    $tpl->compile_dir = $smartyDirectory."compile";
+    $tpl->config_dir = $smartyDirectory."config";
+    $tpl->cache_dir = $smartyDirectory."cache";
+    
+    $tpl->caching = 0;
+    $tpl->compile_check = true;
+    $tpl->force_compile = true;
+    return $tpl;
+}
 
-		$tpl->caching = 0;
-		$tpl->compile_check = true;
-		$tpl->force_compile = true;
-		return $tpl;
-	}
-
-	function initSmartyTplForPopup($path = NULL, $tpl = NULL, $subDir = NULL, $centreon_path = NULL)	{
-		if (!$tpl)
-			return;
-		$tpl->template_dir = $path . $subDir;
-		$tpl->compile_dir = "$centreon_path/GPL_LIB/SmartyCache/compile";
-		$tpl->config_dir = "$centreon_path/GPL_LIB/SmartyCache/config";
-		$tpl->cache_dir = "$centreon_path/GPL_LIB/SmartyCache/cache";
-
-		$tpl->caching = 0;
-		$tpl->compile_check = true;
-		$tpl->force_compile = true;
-		return $tpl;
-	}
-
-	function initSmartyTplForLogs($path = NULL, $tpl = NULL)	{
-		if (!$tpl)
-			return;
-		$tpl->template_dir = $path;
-		$tpl->compile_dir = "../../../GPL_LIB/SmartyCache/compile";
-		$tpl->config_dir = "../../../GPL_LIB/SmartyCache/config";
-		$tpl->cache_dir = "../../../GPL_LIB/SmartyCache/cache";
-
-		$tpl->caching = 0;
-		$tpl->compile_check = true;
-		$tpl->force_compile = true;
-		return $tpl;
-	}
+function initSmartyTplForPopup($path = NULL, $tpl = NULL, $subDir = NULL, $centreon_path = NULL)    {
+    return initSmartyTpl($path, $tpl, $subdir);
+}
 
 	/*
 	 * FORM VALIDATION

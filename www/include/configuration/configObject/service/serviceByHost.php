@@ -72,7 +72,6 @@
 	 * PHP functions
 	 */
 	require_once $path."DB-Func.php";
-	require_once "./include/common/common-Func.php";
 
 	/*
 	 * Create a suffix for file name in order to redirect service by hostgroup

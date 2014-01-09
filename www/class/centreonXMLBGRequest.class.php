@@ -39,7 +39,7 @@
 /*
  * Need Centreon Configuration file
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
+  //require_once "/centreon.conf.php";
 require_once $centreon_path . '/www/autoloader.php';
 
 /** *****************************

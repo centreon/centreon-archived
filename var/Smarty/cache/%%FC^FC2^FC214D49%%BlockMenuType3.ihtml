@@ -1,0 +1,55 @@
+142
+a:4:{s:8:"template";a:1:{s:20:"BlockMenuType3.ihtml";b:1;}s:9:"timestamp";i:1389020089;s:7:"expires";i:1389023689;s:13:"cache_serials";a:0:{}}<div id="contener"><!-- begin contener -->
+<table id="Tcontener">
+	<tr>
+		<td id="Tmenu" class="TcTD">
+			<div id="menu_3">
+				<div class="menuLeft">
+								
+					<div style="margin:3px;"><img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;' alt='icon_design' />&nbsp;Hosts</div>
+					<div style="margin:0px;padding-top:6px;">
+						<ul>
+															<li id="menu_60101">
+								<img src='./img/icones/16x16/server_network.gif' title="Hosts" style="padding-left:5px;" />																	<a href=main.php?p=60101 title="Hosts">Hosts</a>																</li>
+								<ul>
+																</ul>															<li id="menu_60102">
+								<img src='./img/icones/16x16/clients.gif' title="Host Groups" style="padding-left:5px;" />																	<a href=main.php?p=60102 title="Host Groups">Host Groups</a>																</li>
+								<ul>
+																</ul>															<li id="menu_60103">
+								<img src='./img/icones/16x16/server_client_ext.gif' title="Templates" style="padding-left:5px;" />																	<a href=main.php?p=60103 title="Templates">Templates</a>																</li>
+								<ul>
+																</ul>															<li id="menu_60104">
+								<img src='./img/icones/16x16/cube_green.gif' title="Categories" style="padding-left:5px;" />																	<a href=main.php?p=60104 title="Categories">Categories</a>																</li>
+								<ul>
+																</ul>															<li id="menu_60106">
+								<img src='./img/icones/16x16/warning.gif' title="Downtimes" style="padding-left:5px;" />																	<a href=main.php?p=60106&type=h title="Downtimes">Downtimes</a>																</li>
+								<ul>
+																</ul>											        </ul>
+					</div>
+												
+					<div style="margin:3px;"><br /><img src='./img/icones/12x12/doublearrowsnav.gif' style='padding-bottom:2px;' alt='icon_design' />&nbsp;Extra</div>
+					<div style="margin:0px;padding-top:6px;">
+						<ul>
+															<li id="menu_60107">
+								<img src='./img/icones/16x16/scroll_warning.gif' title="Criticality" style="padding-left:5px;" />																	<a href=main.php?p=60107 title="Criticality">Criticality</a>																</li>
+								<ul>
+																</ul>											        </ul>
+					</div>
+												<br />		
+				</div>
+								<div class="menuLeft">
+					<div style="margin:3px;"><img src='./img/icones/12x12/doublearrowsnav.gif' title='' style='padding-bottom:2px;' alt='icon_design' />&nbsp;Connected</div>
+	  	            <div  style="margin:0px;padding-top:6px;">
+	  	             	<ul>
+		  	            		  	            	<li>
+		  	             				  	             		<img src='./img/icones/16x16/guard.gif' title='46.218.140.50' style='padding:1px;' />
+										  	             				 	       					<a href="main.php?p=50104&o=c">admin</a>
+		  	             				  	             	</li>
+		  	             
+						</ul><br />
+					</div>
+				</div>
+							</div>
+		</td>
+		<td id="Tmainpage" class="TcTD" valign="top">
+		<img src="./img/icones/7x7/sort_left.gif" onclick="new Effect.toggle('menu_3'); xhr = new XMLHttpRequest(); xhr.open('GET','./menu/userMenuPreferences.php?uid=1&div=menu_3', true);xhr.send(null);" style="position:relative;bottom:10px;left:-10px;" alt="hide_or_show_menu" /><img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('menu_2');Effect.toggle('menu1_bgcolor');" style="float:right;position:relative;top:2px;right:3px" alt="hide_or_show_menu" />
