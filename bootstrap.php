@@ -45,6 +45,6 @@ $centreon_path = __DIR__;
 ini_set('display_errors', 'On');
 
 /* Add classpath to include path */
-set_include_path($centreon_path . '/application/class/private' . PATH_SEPARATOR . get_include_path());
+set_include_path($centreon_path . '/application/class/Centreon' . PATH_SEPARATOR . get_include_path());
 
 require_once 'vendor/autoload.php';
