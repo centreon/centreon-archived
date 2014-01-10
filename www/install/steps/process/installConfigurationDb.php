@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -67,7 +64,7 @@ if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !
  * Create tables
  */
 mysql_select_db($_SESSION['CONFIGURATION_DB']);
-$result = splitQueries('../../createTables.sql', ';', null, '../../tmp/createTables');
+$result = splitQueries('../../install/sql/createTables.sql', ';', null, '../../tmp/createTables');
 if ("0" != $result) {
     exitProcess(PROCESS_ID, 1, $result);
 }
