@@ -37,7 +37,7 @@
  */
 
 ini_set("display_errors", "Off");
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "/srv/centreon-3/config/centreon.ini.php";
 
 if (!isset($_POST['poller']) || !isset($_POST['comment']) || !isset($_POST['debug']) || !isset($_POST['sid'])) {
     exit;
@@ -57,6 +57,7 @@ function printDebug($xml, $tabs)
             $tab_server[$tab["id"]] = array("id" => $tab["id"], "name" => $tab["name"], "localhost" => $tab["localhost"]);
         }
     }
+    
     foreach ($tab_server as $host) {
         $stdout = shell_exec("sudo ".$nagios_bin["nagios_bin"] . " -v ".$nagiosCFGPath.$host["id"]."/nagiosCFG.DEBUG 2>&1");
         $stdout = htmlentities($stdout);
@@ -231,8 +232,6 @@ try {
                 }
                 require $path."genCGICFG.php";
                 require $path."genNagiosCFG.php";
-                require $path."genNdomod.php";
-                require $path."genNdo2db.php";
                 require $path."genCentreonBroker.php";
                 require $path."genNagiosCFG-DEBUG.php";
                 require $path."genResourceCFG.php";
