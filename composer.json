@@ -6,6 +6,9 @@
         "smarty-gettext/smarty-gettext": "1.1.*",
         "openpsa/quickform": "3.3.0-rc.1"
     },
+    "require-dev": {
+        "phpunit/phpunit": "3.7.*"
+    },
     "license": "GPLv2",
     "authors": [
         {
