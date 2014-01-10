@@ -47,6 +47,8 @@ UI and sound notifications
 
 It is now possible to get UI and sound notifications on Centreon, you can set your preferences in your profile page. A quick overview there: `<http://blog.centreon.com/centreon-ui-notification-system/>`_
 
+Only available if you are using Centreon Broker as of now.
+
 
 New system with SNMP traps
 ==========================
