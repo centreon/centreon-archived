@@ -1,2 +1,8 @@
 /vendor/
+/var/Smarty/cache/
+/var/Smarty/compile/
+/var/Smarty/config/
+/var/tmp/filesGeneration/centreon-engine/
+/var/tmp/filesGeneration/centreon-broker/
+/var/tmp/filesUpload/images/
 composer.lock

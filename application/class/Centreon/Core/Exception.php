@@ -33,39 +33,11 @@
  *
  */
 
-session_start();
-require_once '../functions.php';
-define('PROCESS_ID', 'dbconf');
-
-// because some monitoring engines don't seem to have /var/lib dir
-if (isset($_SESSION['MONITORING_VAR_LOG']) && !isset($_SESSION['MONITORING_VAR_LIB'])) {
-    $_SESSION['MONITORING_VAR_LIB'] = $_SESSION['MONITORING_VAR_LOG'];
-}
-
-$link = myConnect();
-if (false === $link) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
-if (!isset($_SESSION['CONFIGURATION_DB'])) {
-    exitProcess(PROCESS_ID, 1, _('Could not find configuration database. Session probably expired.'));
-}
-// checks for innodb engine
-$res = mysql_query("SHOW VARIABLES LIKE 'innodb_file_per_table'");
-$row = mysql_fetch_assoc($res);
-mysql_free_result($res);
-if (strtolower($row['Value']) == 'off') {
-    exitProcess(PROCESS_ID, 1, _('Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server.'));
-}
-if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !is_file('../../tmp/createTables')) {
-    exitProcess(PROCESS_ID, 1, mysql_error());
-}
+namespace Centreon\Core;
 
 /**
- * Create tables
+ * Exception
+ *
+ * @todo extend this class so that it can handle logging methods
  */
-mysql_select_db($_SESSION['CONFIGURATION_DB']);
-$result = splitQueries('../../install/sql/createTables.sql', ';', null, '../../tmp/createTables');
-if ("0" != $result) {
-    exitProcess(PROCESS_ID, 1, $result);
-}
-exitProcess(PROCESS_ID, 0, "OK");
+class Exception extends \Exception {}

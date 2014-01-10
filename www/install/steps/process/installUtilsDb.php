@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 session_start();
@@ -52,7 +49,7 @@ if (false === mysql_query("CREATE DATABASE ".$_SESSION['UTILS_DB']) && !is_file(
 }
 mysql_select_db($_SESSION['UTILS_DB']);
 mysql_query('BEGIN');
-$result = splitQueries('../../createNDODB.sql', ';', null, '../../tmp/createNDODB');
+$result = splitQueries('../../install/sql/createNDODB.sql', ';', null, '../../tmp/createNDODB');
 if ("0" != $result) {
     mysql_query('ROLLBACK');
     exitProcess(PROCESS_ID, 1, $result);
