@@ -52,6 +52,16 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
     }
 });
 
+spl_autoload_register(function ($classname) use ($centreon_path) {
+    $classname = strtolower($classname);
+    $tmp = explode("\\", $classname);
+    $shortname = $tmp[(count($tmp) - 1)];
+    $filename = $centreon_path . '/application/' . str_replace('\\', '/', $classname) . '/'. $shortname .'.php';
+    if (file_exists($filename)) {
+        require $filename;
+    }
+});
+
 try {
     $di = new \Centreon\Core\Di();
     /* Load configuration */
