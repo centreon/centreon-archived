@@ -45,7 +45,7 @@ namespace Centreon\Core;
  */
 class Config
 {
-    const FILE_GROUP = array('db_centreon', 'db_storage');
+    private $file_groups = array('db_centreon', 'db_storage');
     private $config = null;
 
     /**
@@ -56,10 +56,13 @@ class Config
      */
     public function __construct($filename)
     {
-        if (is_readable($filename)) {
+        if (false === is_readable($filename)) {
             throw new Exception("The configuration file is not readable.");
         }
-        $this->config = parse_ini_file($filename);
+        $this->config = parse_ini_file($filename, true);
+        if (false === $this->config) {
+            throw new Exception("Error when parsing configuration file.");
+        }
     }
 
     /**
@@ -97,12 +100,12 @@ class Config
      */
     public function set($group, $var, $value)
     {
-        if (in_array($group, self::FILE_GROUP)) {
+        if (in_array($group, $this->file_groups)) {
             throw new Exception("This configuration group is not permit.");
         }
         /* @Todo save into DB */
         /* @Todo update cache */
-        if (false === isset($this->config[$group)) {
+        if (false === isset($this->config[$group])) {
             $this->config[$group] = array();
         }
         $this->config[$group][$var] = $value;

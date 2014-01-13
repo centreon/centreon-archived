@@ -9,3 +9,5 @@ set_include_path(
 );
 
 require $root_dir . '/vendor/autoload.php';
+
+define('DATA_DIR', __DIR__ . '/data');
