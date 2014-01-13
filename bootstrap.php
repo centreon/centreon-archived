@@ -36,10 +36,6 @@
 /* Define the path to configuration files */
 define('CENTREON_ETC', '@CENTREON_ETC@');
 
-if (file_exists(CENTREON_ETC . '/centreon.conf.php')) {
-    require_once CENTREON_ETC . '/centreon.conf.php';
-}
-
 $centreon_path = __DIR__;
 
 ini_set('display_errors', 'On');
@@ -48,3 +44,37 @@ ini_set('display_errors', 'On');
 set_include_path($centreon_path . '/application/class/Centreon' . PATH_SEPARATOR . get_include_path());
 
 require_once 'vendor/autoload.php';
+
+spl_autoload_register(function ($classname) use ($centreon_path) {
+    $filename = $centreon_path . '/application/class/' . str_replace('\\', '/', $classname) . '.php';
+    if (file_exists($filename)) {
+        require $filename;
+    }
+});
+
+try {
+    $di = new \Centreon\Core\Di();
+    /* Load configuration */
+    $config = new \Centreon\Core\Config(CENTREON_ETC . '/centreon.ini');
+    $di->setShared('config', $config);
+
+    /* Prepare database connections */
+    $di->set('db_centreon', function () use ($config) {
+        return new \Centreon\Core\Db(
+            $config->get('db_centreon', 'dsn'),
+            $config->get('db_centreon', 'username'),
+            $config->get('db_centreon', 'password')
+        );
+        /* @Todo attach event for profiler */
+    });
+    $di->set('db_storage', function () use ($config) {
+        return new \Centreon\Core\Db(
+            $config->get('db_storage', 'dsn'),
+            $config->get('db_storage', 'username'),
+            $config->get('db_storage', 'password')
+        );
+        /* @Todo attach event for profiler */
+    });
+} catch (\Exception $e) {
+    echo $e;
+}
