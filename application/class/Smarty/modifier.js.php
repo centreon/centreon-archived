@@ -11,7 +11,7 @@
 function smarty_modifier_js($jsFile) {
     $di = \Centreon\Core\Di::getDefault();
     $config = $di->get('config');
-    $jsPath = $config['jsPath'];
+    $jsPath = $config->get('main','jsPath');
     $jsIncludeLine = '<script src="'.$jsPath.$jsFile.'"></script>';
     return $jsIncludeLine;
 }

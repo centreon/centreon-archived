@@ -65,12 +65,13 @@ class Template extends \Smarty
      * @var array 
      */
     private $exclusionList;
-
+    
     /**
      * 
      * @param string $newTemplateFile
      */
-    public function __construct($newTemplateFile = "") {
+    public function __construct($newTemplateFile = "")
+    {
         $this->templateFile = $newTemplateFile;
         $this->cssResources = array();
         $this->jsResources = array();
@@ -83,29 +84,24 @@ class Template extends \Smarty
      * 
      * @param type $config
      */
-    public function initConfig() {
+    public function initConfig()
+    {
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
-        $this->template_dir = $config['templateDir'];
-        $this->compile_dir = $config['compileDir'];
-        $this->config_dir = $config['configDir'];
-        $this->cache_dir = $config['cacheDir'];
+        $this->template_dir = $config->get('template', 'templateDir');
+        $this->compile_dir = $config->get('template', 'compileDir');
+        $this->config_dir = $config->get('template', 'configDir');
+        $this->cache_dir = $config->get('template', 'cacheDir');
         $this->caching = 0;
         $this->compile_check = true;
         $this->force_compile = true;
     }
     
     /**
-     * 
-     */
-    public function initQuickform() {
-        ;
-    }
-    
-    /**
      * @todo Maybe load this list from a config file
      */
-    private function buildExclusionList() {
+    private function buildExclusionList()
+    {
         $this->exclusionList = array(
             'cssFileList',
             'jsFileList'
@@ -116,7 +112,8 @@ class Template extends \Smarty
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function display() {
+    public function display()
+    {
         if ($this->templateFile === "") {
             throw new Exception ("Template file missing", 404);
         }
@@ -136,7 +133,8 @@ class Template extends \Smarty
      * 
      * @param string $fileName CSS file to add
      */
-    public function addCss($fileName) {
+    public function addCss($fileName)
+    {
         if (!in_array($fileName, $this->cssResources)) {
             $this->cssResources[] = $fileName;
         }
@@ -146,7 +144,8 @@ class Template extends \Smarty
      * 
      * @param string $fileName Javascript file to add
      */
-    public function addJs($fileName) {
+    public function addJs($fileName)
+    {
         if (!in_array($fileName, $this->jsResources)) {
             $this->jsResources[] = $fileName;
         }
@@ -158,7 +157,8 @@ class Template extends \Smarty
      * @param mixed $varValue Value of the variable to add
      * @throws \Centreon\Exception If variable name is reserved
      */
-    public function assign($varName, $varValue) {
+    public function assign($varName, $varValue)
+    {
         if (in_array($varName, $this->exclusionList)) {
             throw new Exception('This variable name is reserved', 403);
         }
