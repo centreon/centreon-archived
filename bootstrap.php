@@ -85,6 +85,9 @@ try {
         );
         /* @Todo attach event for profiler */
     });
+    $di->setShared('action_hooks', function () {
+        return new Evenement\EventEmitter();
+    });
 } catch (\Exception $e) {
     echo $e;
 }

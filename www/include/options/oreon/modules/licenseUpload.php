@@ -31,7 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/options/oreon/modules/licenseUpload.php $
  * 
  */
 

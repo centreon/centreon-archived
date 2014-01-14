@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/class/centreonDowntime.Ndo.class.php $
- * SVN : $Id: centreonDowntime.Ndo.class.php 11678 2011-02-14 15:34:15Z jmathis $
  *
  */
 
