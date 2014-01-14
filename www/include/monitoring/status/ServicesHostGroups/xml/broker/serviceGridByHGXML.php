@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/ServicesHostGroups/xml/serviceGridByHGXML.php $
- * SVN : $Id: serviceGridByHGXML.php 11683 2011-02-14 16:10:44Z jmathis $
  *
  */
 
