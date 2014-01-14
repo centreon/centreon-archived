@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/monitoring/status/Meta/xml/metaServiceXML.php $
- * SVN : $Id: metaServiceXML.php 11683 2011-02-14 16:10:44Z jmathis $
  *
  */
 

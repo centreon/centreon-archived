@@ -104,6 +104,20 @@ class Config
     }
 
     /**
+     * Get a full section informaiton
+     *
+     * @param $group string The group of configuration
+     * @return array
+     */
+    public function getGroup($group)
+    {
+        if (isset($this->config[$group])) {
+            return $this->config[$group];
+        }
+        return array();
+    }
+
+    /**
      * Set a configuration variable
      *
      * @param $group string The group of configuration

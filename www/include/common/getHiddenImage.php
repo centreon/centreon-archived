@@ -31,8 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
  * 
  */
 	require_once ("@CENTREON_ETC@/centreon.conf.php");		
