@@ -109,9 +109,10 @@ class Bootstrap
      */
     private function initActionHooks()
     {
-        $this->di->setShared('action_hooks', function () {
-            return new Evenement\EventEmitter();
-        });
+        $this->di->set('action_hooks', function () {
+	    return new \Evenement\EventEmitter();
+	});
+	Hook::initActionListeners();
     }
 
     /**
