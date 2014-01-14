@@ -72,6 +72,19 @@ class Config
     {
         $di = Di::getDefault();
         /* @Todo test if in cache and load from cache */
+        $dbconn = $di->get('db_centreon');
+        $stmt = $dbconn->query("SELECT `group`, `key`, `value`
+            FROM `options`
+            ORDER BY `group`, `key`");
+        while ($row = $stmt->fetch()) {
+            if (false === in_array($row['group'], $this->file_groups)) {
+                if (false === isset($this->config[$row['group']])) {
+                    $this->config[$row['group']] = array();
+                }
+                $this->config[$row['group']][$row['key']] = $row['value'];
+            }
+        }
+        $stmt->closeCursor();
     }
 
     /**
@@ -103,7 +116,16 @@ class Config
         if (in_array($group, $this->file_groups)) {
             throw new Exception("This configuration group is not permit.");
         }
-        /* @Todo save into DB */
+        $di = Di::getDefault();
+        /* Save information in database */
+        $dbconn = $di->get('db_centreon');
+        $stmt = $dbconn->prepare("UPDATE `options`
+            SET `value` = :value
+            WHERE `group` = :group
+                AND `key` = :key");
+        $stmt->bindParam(':group', $group, \PDO::PARAM_STR);
+        $stmt->bindParam(':key', $key, \PDO::PARAM_STR);
+        $stmt->execute();
         /* @Todo update cache */
         if (false === isset($this->config[$group])) {
             $this->config[$group] = array();

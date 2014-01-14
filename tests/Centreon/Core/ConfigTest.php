@@ -2,13 +2,38 @@
 
 namespace Test\Centreon\Centreon;
 
-require 'Centreon/Core/Config.php';
-require 'Centreon/Core/Exception.php';
-
 use \Centreon\Core\Config;
 
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
 {
+    private $conn = null;
+
+    public function setUp()
+    {
+    parent::setUp();
+    }
+
+    public function getConnection()
+    {
+        if (is_null($this->conn)) {
+            $dbconn = new \Centreon\Core\Db('sqlite::memory:');
+            $dbconn->exec("CREATE TABLE `options` (
+                `group` VARCHAR(255) NOT NULL DEFAULT 'default',
+                `key` VARCHAR(255) NULL,
+                `value` VARCHAR(255) NULL
+            )");
+            $di = new \Centreon\Core\Di();
+            \Centreon\Core\Di::getDefault()->setShared('db_centreon', $dbconn);
+            $this->conn = $this->createDefaultDBConnection($dbconn, 'memory');
+        }
+        return $this->conn;
+    }
+
+    public function getDataSet()
+    {
+        return $this->createFlatXMLDataSet(DATA_DIR . '/test-config.xml');
+    }
+
     public function testFile()
     {
         $filename = DATA_DIR . '/test-config.ini';
@@ -16,5 +41,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('user1', $config->get('db_centreon', 'username'));
         $this->assertEquals(null, $config->get('db_centreon', 'novar'));
         $this->assertEquals('default', $config->get('nosection', 'novar', 'default'));
+    }
+
+    public function testDbGet()
+    {
+        $filename = DATA_DIR . '/test-config.ini';
+        $config = new Config($filename);
+        $config->loadFromDb();
+        $this->assertEquals('value1', $config->get('default', 'variable1'));
+        $this->assertEquals('value2', $config->get('default', 'variable2'));
     }
 }
