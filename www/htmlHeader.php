@@ -54,6 +54,9 @@ print "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n";
 <link href="./include/common/javascript/jquery/plugins/timepicker/jquery.ui.timepicker.css" rel="stylesheet" type="text/css" media="screen"/>
 <link href="<?php echo $skin; ?>jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css"/>
 <link href="<?php echo $skin; ?>jquery-ui/jquery-ui-centreon.css" rel="stylesheet" type="text/css"/>
+
+<link href="./static/css/dataTables.css" rel="stylesheet" type="text/css"/>
+
 <link href="./include/common/javascript/jquery/plugins/colorbox/colorbox.css" rel="stylesheet" type="text/css"/>
 <?php
 
