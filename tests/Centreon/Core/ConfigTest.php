@@ -34,13 +34,25 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
         return $this->createFlatXMLDataSet(DATA_DIR . '/test-config.xml');
     }
 
-    public function testFile()
+    public function testFileGet()
     {
         $filename = DATA_DIR . '/test-config.ini';
         $config = new Config($filename);
         $this->assertEquals('user1', $config->get('db_centreon', 'username'));
         $this->assertEquals(null, $config->get('db_centreon', 'novar'));
         $this->assertEquals('default', $config->get('nosection', 'novar', 'default'));
+    }
+
+    public function testGetGroup()
+    {
+        $filename = DATA_DIR . '/test-config.ini';
+        $config = new Config($filename);
+        $values = array(
+            'dsn' => 'sqlite::memory:',
+            'username' => 'user1'
+        );
+        $this->assertEquals($values, $config->getGroup('db_centreon'));
+        $this->assertEquals(array(), $config->getGroup('no_section'));
     }
 
     public function testDbGet()
