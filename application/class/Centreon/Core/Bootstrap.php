@@ -59,7 +59,7 @@ class Bootstrap
         $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if (preg_match('/^init/', $method->name)) {
-                $this->{$method->name}(); 
+                $this->{$method->name}();
             }
         }
     }

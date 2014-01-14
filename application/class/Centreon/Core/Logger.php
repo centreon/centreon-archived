@@ -116,7 +116,9 @@ class Logger
     {
         /* Init relfextion */
         if (!isset($reflectionHandler[$info['type']])) {
-            self::$reflectionHandler[$info['type']] = new \ReflectionClass(self::$loggerHandler[$info['type']]['class']);
+            self::$reflectionHandler[$info['type']] = new \ReflectionClass(
+                self::$loggerHandler[$info['type']]['class']
+            );
         }
         /* Prepare args */
         $args = array();

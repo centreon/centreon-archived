@@ -64,7 +64,7 @@ class Statement extends \PDOStatement
      * @param $parameters array The input parameters
      * @return bool
      */
-    public function execute($parameters=array())
+    public function execute($parameters = array())
     {
         // @Todo emit event before
         $return = parent::execute($parameters);
