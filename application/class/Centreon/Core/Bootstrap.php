@@ -37,6 +37,12 @@ namespace Centreon\Core;
 class Bootstrap
 {
     /**
+     *
+     * @var \Centreon\Core\Di
+     */
+    private $di;
+    
+    /**
      * Constructor
      */
     public function __construct()
@@ -53,11 +59,11 @@ class Bootstrap
     {
         $class = new \ReflectionClass(__CLASS__);
         $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
-	foreach ($methods as $method) {
-	    if (preg_match('/^init/', $method->name)) {
-                $this->{$method->name}(); 
-	    }
-	}
+        foreach ($methods as $method) {
+            if (preg_match('/^init/', $method->name)) {
+                    $this->{$method->name}(); 
+            }
+        }
     }
 
     /**
@@ -67,8 +73,8 @@ class Bootstrap
      */
     private function initConfiguration()
     {
-	$this->config = new Config(CENTREON_ETC . '/centreon.ini');
-	$this->di->setShared('config', $this->config);
+        $this->config = new Config(CENTREON_ETC . '/centreon.ini');
+        $this->di->setShared('config', $this->config);
     }
 
     /**
@@ -79,21 +85,21 @@ class Bootstrap
      */
     private function initDatabase()
     {
-	$config = $this->config;
-	$this->di->set('db_centreon', function () use ($config) {
-	    return new \Centreon\Core\Db(
-	        $config->get('db_centreon', 'dsn'),
-	        $config->get('db_centreon', 'username'),
-	        $config->get('db_centreon', 'password')
-	    );
-	});
-	$this->di->set('db_storage', function () use ($config) {
+        $config = $this->config;
+        $this->di->set('db_centreon', function () use ($config) {
             return new \Centreon\Core\Db(
-	        $config->get('db_storage', 'dsn'),
-		$config->get('db_storage', 'username'),
-		$config->get('db_storage', 'password')
-	    );
-	});
+                $config->get('db_centreon', 'dsn'),
+                $config->get('db_centreon', 'username'),
+                $config->get('db_centreon', 'password')
+            );
+        });
+        $this->di->set('db_storage', function () use ($config) {
+                return new \Centreon\Core\Db(
+                $config->get('db_storage', 'dsn'),
+            $config->get('db_storage', 'username'),
+            $config->get('db_storage', 'password')
+            );
+        });
     }
 
     /**
@@ -104,8 +110,8 @@ class Bootstrap
     private function initActionHooks()
     {
         $this->di->setShared('action_hooks', function () {
-	    return new Evenement\EventEmitter();
-	});
+            return new Evenement\EventEmitter();
+        });
     }
 
     /**
@@ -115,6 +121,8 @@ class Bootstrap
      */
     private function initTemplate()
     {
-
+        $this->di->setShared('template', function () {
+            return new Template();
+        });
     }
 }
