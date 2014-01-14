@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -47,6 +47,16 @@ require_once 'vendor/autoload.php';
 
 spl_autoload_register(function ($classname) use ($centreon_path) {
     $filename = $centreon_path . '/application/class/' . str_replace('\\', '/', $classname) . '.php';
+    if (file_exists($filename)) {
+        require $filename;
+    }
+});
+
+spl_autoload_register(function ($classname) use ($centreon_path) {
+    $classname = strtolower($classname);
+    $tmp = explode("\\", $classname);
+    $shortname = $tmp[(count($tmp) - 1)];
+    $filename = $centreon_path . '/application/' . str_replace('\\', '/', $classname) . '/'. $shortname .'.php';
     if (file_exists($filename)) {
         require $filename;
     }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 require_once("centreonUser.class.php");
@@ -43,7 +40,6 @@ require_once("centreonExternalCommand.class.php");
 require_once("centreonObjects.class.php");
 require_once("centreonCache.class.php");
 require_once("centreonBroker.class.php");
-
 require_once("centreonHostgroups.class.php");
 
 class Centreon	{
