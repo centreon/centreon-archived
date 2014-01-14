@@ -32,56 +32,60 @@
  * For more information : contact@centreon.com
  *
  */
+namespace Centreon\Core;
 
-namespace Centreon\Core\Db;
-
-/**
- * Class for manage database connection
- *
- * @see http://www.php.net/manual/en/class.pdostatement.php
- * @authors Maximilien Bersoult
- * @package Centreon
- * @subpackage Core
- */
-class Statement extends \PDOStatement
+class Hook
 {
-    protected $connection;
+    const DISPLAY_PREFIX = 'display';
 
     /**
-     * Consturctor
+     * Register a hook
      *
-     * @param $connection \PDO The database connection
+     * @param int $moduleId
+     * @param string $hookName
+     * @param string $blockName
+     * @param string $blockDescription
      */
-    protected function __construct(\PDO $connection)
-    {
-        $this->connection = $connection;
+    public static function register($moduleId, $hookName, $blockName, $blockDescription) {
+        $db = Di::getDefault()->get('db_centreon');
     }
 
     /**
-     * Execute a prepare statement
+     * Unregister a hook
      *
-     * @see http://www.php.net/manual/en/pdostatement.execute.php
-     * @param $parameters array The input parameters
-     * @return bool
      */
-    public function execute($parameters=array())
-    {
-        // @Todo emit event before
-        $return = parent::execute($parameters);
-        // @Todo emit event after
-        return $return;
+    public static function unregister($moduleId, $blockName) {
+        $db = Di::getDefault()->get('db_centreon');
     }
 
     /**
-     * Fetch a line from SQL cursor
-     * 
-     * Alias to the method fetch
+     * Execute a hook
      *
-     * @deprecated
-     * @return mixed
+     * @param string $hookName
+     * @param array $params
+     * @todo retrieve registered hooks from modules
+     * @return array
      */
-    public function fetchRow()
-    {
-        return $this->fetch();
+    public static function execute($hookName, $params) {
+        if (!preg_match('/^'.self::DISPLAY_PREFIX.'/', $hookName)) {
+            throw new Exception(sprintf('Invalid hook name %s', $hookName));
+        }
+        $db = Di::getDefault()->get('db_centreon');
+        $hooks = array(
+            array('module' => 'Dummy')
+        );
+        $hookData = array();
+        $i = 0;
+        foreach ($hooks as $hook) {
+            $data = call_user_func(array("\\Modules\\".$hook['module'], $hookName), $params);
+            if (is_array($data) && count($data) && is_file($data[0])) {
+                $hookData[$i]['template'] = $data[0];
+                if (isset($data[1]) && is_array($data[1])) {
+                    $hookData[$i]['variables'] = $data[1];
+                }
+                $i++;
+            }
+	}
+        return $hookData;
     }
 }

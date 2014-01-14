@@ -32,56 +32,59 @@
  * For more information : contact@centreon.com
  *
  */
+namespace Centreon\Core;
 
-namespace Centreon\Core\Db;
-
-/**
- * Class for manage database connection
- *
- * @see http://www.php.net/manual/en/class.pdostatement.php
- * @authors Maximilien Bersoult
- * @package Centreon
- * @subpackage Core
- */
-class Statement extends \PDOStatement
+class Module
 {
-    protected $connection;
+    public $moduleId;
 
     /**
-     * Consturctor
-     *
-     * @param $connection \PDO The database connection
+     * Constructor
      */
-    protected function __construct(\PDO $connection)
-    {
-        $this->connection = $connection;
+    public function __construct() {
+
     }
 
     /**
-     * Execute a prepare statement
+     * Install module
      *
-     * @see http://www.php.net/manual/en/pdostatement.execute.php
-     * @param $parameters array The input parameters
-     * @return bool
+     * @todo inserts module into database
      */
-    public function execute($parameters=array())
-    {
-        // @Todo emit event before
-        $return = parent::execute($parameters);
-        // @Todo emit event after
-        return $return;
+    public function install() {
+
     }
 
     /**
-     * Fetch a line from SQL cursor
-     * 
-     * Alias to the method fetch
+     * Uninstall module
      *
-     * @deprecated
-     * @return mixed
+     * @todo remove module from database
+     * @todo remove hooks from database
      */
-    public function fetchRow()
-    {
-        return $this->fetch();
+    public function uninstall() {
+    }
+
+    /**
+     * Register hook
+     *
+     * @param string $hookName
+     * @param string $blockName
+     * @param string $blockDescription
+     */
+    public function registerHook($hookName, $blockName, $blockDescription) {
+        Hook::register(
+            $this->moduleId,
+            $hookName,
+            $blockName,
+            $blockDescription
+        );
+    }
+
+    /**
+     * Unregister hook
+     *
+     * @param string $blockName
+     */
+    public function unregisterHook($blockName) {
+        Hook::unregister($this->moduleId, $blockName);
     }
 }
