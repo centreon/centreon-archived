@@ -32,39 +32,89 @@
  * For more information : contact@centreon.com
  *
  */
+namespace Centreon\Core;
 
-/* Define the path to configuration files */
-define('CENTREON_ETC', '@CENTREON_ETC@');
-
-$centreon_path = __DIR__;
-
-ini_set('display_errors', 'On');
-
-/* Add classpath to include path */
-set_include_path($centreon_path . '/application/class/Centreon' . PATH_SEPARATOR . get_include_path());
-
-require_once 'vendor/autoload.php';
-
-spl_autoload_register(function ($classname) use ($centreon_path) {
-    $filename = $centreon_path . '/application/class/' . str_replace('\\', '/', $classname) . '.php';
-    if (file_exists($filename)) {
-        require $filename;
+class Bootstrap
+{
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->di = new Di();
     }
-});
 
-spl_autoload_register(function ($classname) use ($centreon_path) {
-    $classname = strtolower($classname);
-    $tmp = explode("\\", $classname);
-    $shortname = $tmp[(count($tmp) - 1)];
-    $filename = $centreon_path . '/application/' . str_replace('\\', '/', $classname) . '/'. $shortname .'.php';
-    if (file_exists($filename)) {
-        require $filename;
+    /**
+     * Init method
+     *
+     * @return void
+     */
+    public function init()
+    {
+        $class = new \ReflectionClass(__CLASS__);
+        $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
+	foreach ($methods as $method) {
+	    if (preg_match('/^init/', $method->name)) {
+                $this->{$method->name}(); 
+	    }
+	}
     }
-});
 
-try {
-    $bootstrap = new \Centreon\Core\Bootstrap();
-    $bootstrap->init();
-} catch (\Exception $e) {
-    echo $e;
+    /**
+     * Init configuration object
+     *
+     * @return void
+     */
+    private function initConfiguration()
+    {
+	$this->config = new Config(CENTREON_ETC . '/centreon.ini');
+	$this->di->setShared('config', $this->config);
+    }
+
+    /**
+     * Init database objects
+     *
+     * @return void
+     * @todo add profiler
+     */
+    private function initDatabase()
+    {
+	$config = $this->config;
+	$this->di->set('db_centreon', function () use ($config) {
+	    return new \Centreon\Core\Db(
+	        $config->get('db_centreon', 'dsn'),
+	        $config->get('db_centreon', 'username'),
+	        $config->get('db_centreon', 'password')
+	    );
+	});
+	$this->di->set('db_storage', function () use ($config) {
+            return new \Centreon\Core\Db(
+	        $config->get('db_storage', 'dsn'),
+		$config->get('db_storage', 'username'),
+		$config->get('db_storage', 'password')
+	    );
+	});
+    }
+
+    /**
+     * Init action hooks
+     *
+     * @return void
+     */
+    private function initActionHooks()
+    {
+        $this->di->setShared('action_hooks', function () {
+	    return new Evenement\EventEmitter();
+	});
+    }
+
+    /**
+     * Init template object
+     *
+     * @return void
+     */
+    private function initTemplate()
+    {
+
+    }
 }
