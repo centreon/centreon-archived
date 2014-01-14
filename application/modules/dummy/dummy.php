@@ -15,6 +15,11 @@ class Dummy extends \Centreon\Core\Module
             'dummyBlock',
 	    'dummy block'
         );
+	$this->registerHook(
+	    'actionHostAfterCreate',
+            'dummyAction',
+	    'dummy action'
+        );
     }
 
     public function uninstall() {
@@ -28,5 +33,9 @@ class Dummy extends \Centreon\Core\Module
 	        'message' => 'hello world'
 	    )
 	);
+    }
+
+    public static function actionHostAfterCreate($params) {
+        echo "i'm executed right after a host creation<br/>";
     }
 }

@@ -91,4 +91,25 @@ class Hook
 	}
         return $hookData;
     }
+
+    /**
+     * Init action listeners of modules
+     *
+     * @todo retrieve list of registered action hooks
+     */
+    public static function initActionListeners()
+    {
+        $hooks = array(
+	    array(
+	        'module' => 'Dummy',
+		'hook_name' => 'actionHostAfterCreate'
+	    )
+	);
+	$emitter = Di::getDefault()->get('action_hooks');
+	foreach ($hooks as $hook) {
+ 	    $emitter->on($hook['hook_name'], function($params) use ($hook) {
+                call_user_func(array("\\Modules\\".$hook['module'], $hook['hook_name']), $params);
+	    });
+	}
+    }
 }
