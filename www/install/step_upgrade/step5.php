@@ -31,8 +31,6 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/install/step_upgrade/step4.php $
- * SVN : $Id: step4.php 13580 2012-10-18 09:39:31Z shotamchay $
  * 
  */
 

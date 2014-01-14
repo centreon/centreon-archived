@@ -46,7 +46,8 @@ class Hook
      * @param string $blockName
      * @param string $blockDescription
      */
-    public static function register($moduleId, $hookName, $blockName, $blockDescription) {
+    public static function register($moduleId, $hookName, $blockName, $blockDescription)
+    {
         $db = Di::getDefault()->get('db_centreon');
     }
 
@@ -54,7 +55,8 @@ class Hook
      * Unregister a hook
      *
      */
-    public static function unregister($moduleId, $blockName) {
+    public static function unregister($moduleId, $blockName)
+    {
         $db = Di::getDefault()->get('db_centreon');
     }
 
@@ -66,7 +68,8 @@ class Hook
      * @todo retrieve registered hooks from modules
      * @return array
      */
-    public static function execute($hookName, $params) {
+    public static function execute($hookName, $params)
+    {
         if (!preg_match('/^'.self::DISPLAY_PREFIX.'/', $hookName)) {
             throw new Exception(sprintf('Invalid hook name %s', $hookName));
         }

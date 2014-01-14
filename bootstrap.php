@@ -63,28 +63,8 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
 });
 
 try {
-    $di = new \Centreon\Core\Di();
-    /* Load configuration */
-    $config = new \Centreon\Core\Config(CENTREON_ETC . '/centreon.ini');
-    $di->setShared('config', $config);
-
-    /* Prepare database connections */
-    $di->set('db_centreon', function () use ($config) {
-        return new \Centreon\Core\Db(
-            $config->get('db_centreon', 'dsn'),
-            $config->get('db_centreon', 'username'),
-            $config->get('db_centreon', 'password')
-        );
-        /* @Todo attach event for profiler */
-    });
-    $di->set('db_storage', function () use ($config) {
-        return new \Centreon\Core\Db(
-            $config->get('db_storage', 'dsn'),
-            $config->get('db_storage', 'username'),
-            $config->get('db_storage', 'password')
-        );
-        /* @Todo attach event for profiler */
-    });
+    $bootstrap = new \Centreon\Core\Bootstrap();
+    $bootstrap->init();
 } catch (\Exception $e) {
     echo $e;
 }

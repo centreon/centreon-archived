@@ -32,8 +32,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/trunk/centreon/www/include/Administration/corePerformance/processInfo.php $
- * SVN : $Id: processInfo.php 12790 2011-12-15 15:32:42Z shotamchay $
  *
  */
 
