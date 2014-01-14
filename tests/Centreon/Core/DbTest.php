@@ -2,9 +2,6 @@
 
 namespace Test\Centreon\Centreon;
 
-require 'Centreon/Core/Db.php';
-require 'Centreon/Core/Db/Statement.php';
-
 use \Centreon\Core\Db;
 
 class DbTest extends \PHPUnit_Framework_TestCase

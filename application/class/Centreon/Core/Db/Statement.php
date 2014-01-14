@@ -77,6 +77,7 @@ class Statement extends \PDOStatement
      * 
      * Alias to the method fetch
      *
+     * @deprecated
      * @return mixed
      */
     public function fetchRow()

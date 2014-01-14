@@ -2,8 +2,6 @@
 
 namespace Test\Centreon\Centreon;
 
-require 'Centreon/Core/Di.php';
-
 use \Centreon\Core\Di;
 
 class DiTest extends \PHPUnit_Framework_TestCase
