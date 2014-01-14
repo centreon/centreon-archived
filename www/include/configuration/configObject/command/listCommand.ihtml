@@ -1,5 +1,7 @@
 <script type="text/javascript" src="./include/common/javascript/tool.js"></script>
+<script type="text/javascript" src="./static/js/jquery.dataTables.min.js"></script>
 <form name='form' method='POST'>
+    <!--
 	<table class="ToolbarTable">
 		<tr class="ToolbarTR">
 			{ if $mode_access=='w' }
@@ -15,37 +17,27 @@
 			{/php}
 		</tr>
 	</table>
-	<table class="ListTable">
-		<tr class="ListHeader">
-			<td class="ListColHeaderPicker"><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
-			<td class="ListColHeaderLeft">{$headerMenu_name}</td>
-			<td class="ListColHeaderLeft">{$headerMenu_desc}</td>
-			<td class="ListColHeaderCenter">{$headerMenu_type}</td>
+    -->
+	<table class="ListTable" id='tableListing'>
+		<thead>
+        <tr class="ListHeader">
+			<td><input type="checkbox" name="checkall" onclick="checkUncheckAll(this);"/></td>
+			<td>{$headerMenu_name}</td>
+			<td>{$headerMenu_desc}</td>
+			<td>{$headerMenu_type}</td>
 			{if $type == 2}
-			<td class="ListColHeaderCenter">{$headerMenu_huse}</td>
-			<td class="ListColHeaderCenter">{$headerMenu_suse}</td>
+			<td>{$headerMenu_huse}</td>
+			<td>{$headerMenu_suse}</td>
 			{/if}
-			<td class="ListColHeaderRight">{$headerMenu_options}</td>
+			<td>{$headerMenu_options}</td>
 		</tr>
+        </thead>
 		{assign var=pattern_mode value=0}
 		{section name=elem loop=$elemArr}
-			{if $elemArr[elem].pattern != $pattern_value}
-				{assign var=pattern_mode value=0}
-			{/if}
-			{if $elemArr[elem].pattern && $pattern_mode == 0}
-				<tr class="list_lvl_1">
-					<td class="ListColLeft" colspan="7"><b>{$elemArr[elem].pattern}</b></td>
-				</tr>
-				{assign var=pattern_mode value=1}
-				{assign var=pattern_value value=$elemArr[elem].pattern}
-			{/if}
 			<tr class="{$elemArr[elem].MenuClass}">
 				<td class="ListColPicker">{$elemArr[elem].RowMenu_select}</td>
 				<td class="ListColLeft">
-					{if $elemArr[elem].pattern}
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					{/if}
-					<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
+                		<a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_name}</a>
 				</td>
 				<td class="ListColLeft"><a href="{$elemArr[elem].RowMenu_link}">{$elemArr[elem].RowMenu_desc}</a></td>
 				<td class="ListColCenter">{$elemArr[elem].RowMenu_type}</td>
@@ -57,22 +49,20 @@
 			</tr>
 		{/section}
 	</table>
-	<table class="ToolbarTable">
-		<tr>
-			{ if $mode_access == 'w' }
-			<td class="Toolbar_TDSelectAction_Bottom">
-				{$msg.options}{$form.o2.html}&nbsp;&nbsp;&nbsp;<a href="{$msg.addL}">{$msg.addT}</a>
-			</td>
-			{ else }
-			<td>&nbsp;</td>
-			{ /if }
-			<input name="p" value="{$p}" type="hidden">
-			{php}
-			   include('./include/common/pagination.php');
-			{/php}
-		</tr>
-	</table>
 	<input type='hidden' name='o' id='o' value='42'>
 	<input type='hidden' id='limit' name='limit' value='{$limit}'>	
 {$form.hidden}
 </form>
+
+{literal}
+<script type="text/javascript" charset="utf-8">
+    jQuery(document).ready(function() {
+        jQuery('#tableListing').dataTable({
+               "bStateSave": true,
+               "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
+               "sPaginationType": "full_numbers",
+               "sDom": '<"top"lp<"clear">>rt<"bottom"lpi<"clear">>'
+        });
+    } );
+</script>
+{/literal}
