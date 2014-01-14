@@ -106,6 +106,15 @@ class Bootstrap
     }
 
     /**
+     * Init cache
+     */
+    private function initCache()
+    {
+        $cache = Cache::load($this-config);
+        $this->di->setShared('cache', $cache);
+    }
+
+    /**
      * Init action hooks
      */
     private function initActionHooks()
