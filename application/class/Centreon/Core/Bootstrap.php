@@ -34,61 +34,87 @@
  */
 namespace Centreon\Core;
 
-class Hook
+class Bootstrap
 {
-    const DISPLAY_PREFIX = 'display';
-
     /**
-     * Register a hook
-     *
-     * @param int $moduleId
-     * @param string $hookName
-     * @param string $blockName
-     * @param string $blockDescription
+     * Constructor
      */
-    public static function register($moduleId, $hookName, $blockName, $blockDescription)
+    public function __construct()
     {
-        $db = Di::getDefault()->get('db_centreon');
+        $this->di = new Di();
     }
 
     /**
-     * Unregister a hook
+     * Init method
      *
+     * @return void
      */
-    public static function unregister($moduleId, $blockName)
+    public function init()
     {
-        $db = Di::getDefault()->get('db_centreon');
-    }
-
-    /**
-     * Execute a hook
-     *
-     * @param string $hookName
-     * @param array $params
-     * @todo retrieve registered hooks from modules
-     * @return array
-     */
-    public static function execute($hookName, $params)
-    {
-        if (!preg_match('/^'.self::DISPLAY_PREFIX.'/', $hookName)) {
-            throw new Exception(sprintf('Invalid hook name %s', $hookName));
-        }
-        $db = Di::getDefault()->get('db_centreon');
-        $hooks = array(
-            array('module' => 'Dummy')
-        );
-        $hookData = array();
-        $i = 0;
-        foreach ($hooks as $hook) {
-            $data = call_user_func(array("\\Modules\\".$hook['module'], $hookName), $params);
-            if (is_array($data) && count($data) && is_file($data[0])) {
-                $hookData[$i]['template'] = $data[0];
-                if (isset($data[1]) && is_array($data[1])) {
-                    $hookData[$i]['variables'] = $data[1];
-                }
-                $i++;
-            }
+        $class = new \ReflectionClass(__CLASS__);
+        $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
+	foreach ($methods as $method) {
+	    if (preg_match('/^init/', $method->name)) {
+                $this->{$method->name}(); 
+	    }
 	}
-        return $hookData;
+    }
+
+    /**
+     * Init configuration object
+     *
+     * @return void
+     */
+    private function initConfiguration()
+    {
+	$this->config = new Config(CENTREON_ETC . '/centreon.ini');
+	$this->di->setShared('config', $this->config);
+    }
+
+    /**
+     * Init database objects
+     *
+     * @return void
+     * @todo add profiler
+     */
+    private function initDatabase()
+    {
+	$config = $this->config;
+	$this->di->set('db_centreon', function () use ($config) {
+	    return new \Centreon\Core\Db(
+	        $config->get('db_centreon', 'dsn'),
+	        $config->get('db_centreon', 'username'),
+	        $config->get('db_centreon', 'password')
+	    );
+	});
+	$this->di->set('db_storage', function () use ($config) {
+            return new \Centreon\Core\Db(
+	        $config->get('db_storage', 'dsn'),
+		$config->get('db_storage', 'username'),
+		$config->get('db_storage', 'password')
+	    );
+	});
+    }
+
+    /**
+     * Init action hooks
+     *
+     * @return void
+     */
+    private function initActionHooks()
+    {
+        $this->di->setShared('action_hooks', function () {
+	    return new Evenement\EventEmitter();
+	});
+    }
+
+    /**
+     * Init template object
+     *
+     * @return void
+     */
+    private function initTemplate()
+    {
+
     }
 }

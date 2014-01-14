@@ -41,7 +41,8 @@ class Module
     /**
      * Constructor
      */
-    public function __construct() {
+    public function __construct()
+    {
 
     }
 
@@ -50,7 +51,8 @@ class Module
      *
      * @todo inserts module into database
      */
-    public function install() {
+    public function install()
+    {
 
     }
 
@@ -60,7 +62,8 @@ class Module
      * @todo remove module from database
      * @todo remove hooks from database
      */
-    public function uninstall() {
+    public function uninstall()
+    {
     }
 
     /**
@@ -70,7 +73,8 @@ class Module
      * @param string $blockName
      * @param string $blockDescription
      */
-    public function registerHook($hookName, $blockName, $blockDescription) {
+    public function registerHook($hookName, $blockName, $blockDescription)
+    {
         Hook::register(
             $this->moduleId,
             $hookName,
@@ -84,7 +88,8 @@ class Module
      *
      * @param string $blockName
      */
-    public function unregisterHook($blockName) {
+    public function unregisterHook($blockName)
+    {
         Hook::unregister($this->moduleId, $blockName);
     }
 }
