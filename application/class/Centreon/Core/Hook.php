@@ -88,7 +88,7 @@ class Hook
                 }
                 $i++;
             }
-	}
+        }
         return $hookData;
     }
 
@@ -100,16 +100,16 @@ class Hook
     public static function initActionListeners()
     {
         $hooks = array(
-	    array(
-	        'module' => 'Dummy',
-		'hook_name' => 'actionHostAfterCreate'
-	    )
-	);
-	$emitter = Di::getDefault()->get('action_hooks');
-	foreach ($hooks as $hook) {
- 	    $emitter->on($hook['hook_name'], function($params) use ($hook) {
+            array(
+                'module' => 'Dummy',
+                'hook_name' => 'actionHostAfterCreate'
+            )
+        );
+        $emitter = Di::getDefault()->get('action_hooks');
+        foreach ($hooks as $hook) {
+            $emitter->on($hook['hook_name'], function($params) use ($hook) {
                 call_user_func(array("\\Modules\\".$hook['module'], $hook['hook_name']), $params);
-	    });
-	}
+            });
+        }
     }
 }
