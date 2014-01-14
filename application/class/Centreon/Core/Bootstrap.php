@@ -41,7 +41,7 @@ class Bootstrap
      * @var \Centreon\Core\Di
      */
     private $di;
-    
+
     /**
      * Constructor
      */
@@ -59,7 +59,7 @@ class Bootstrap
         $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if (preg_match('/^init/', $method->name)) {
-                    $this->{$method->name}(); 
+                $this->{$method->name}(); 
             }
         }
     }
@@ -97,10 +97,10 @@ class Bootstrap
             );
         });
         $this->di->set('db_storage', function () use ($config) {
-                return new \Centreon\Core\Db(
+            return new \Centreon\Core\Db(
                 $config->get('db_storage', 'dsn'),
-            $config->get('db_storage', 'username'),
-            $config->get('db_storage', 'password')
+                $config->get('db_storage', 'username'),
+                $config->get('db_storage', 'password')
             );
         });
     }
