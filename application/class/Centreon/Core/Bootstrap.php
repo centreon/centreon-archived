@@ -115,6 +115,14 @@ class Bootstrap
     }
 
     /**
+     * Load configuration from database
+     */
+    private function initConfigFromDb()
+    {
+        $this->di->get('config')->loadFromDb();
+    }
+
+    /**
      * Init action hooks
      */
     private function initActionHooks()
