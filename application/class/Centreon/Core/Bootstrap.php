@@ -41,7 +41,7 @@ class Bootstrap
      * @var \Centreon\Core\Di
      */
     private $di;
-    
+
     /**
      * Constructor
      */
@@ -52,8 +52,6 @@ class Bootstrap
 
     /**
      * Init method
-     *
-     * @return void
      */
     public function init()
     {
@@ -61,15 +59,13 @@ class Bootstrap
         $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if (preg_match('/^init/', $method->name)) {
-                    $this->{$method->name}(); 
+                $this->{$method->name}();
             }
         }
     }
 
     /**
      * Init configuration object
-     *
-     * @return void
      */
     private function initConfiguration()
     {
@@ -78,9 +74,16 @@ class Bootstrap
     }
 
     /**
+     * Init the logger
+     */
+    private function initLogger()
+    {
+        Logger::load($this->config);
+    }
+
+    /**
      * Init database objects
      *
-     * @return void
      * @todo add profiler
      */
     private function initDatabase()
@@ -94,31 +97,36 @@ class Bootstrap
             );
         });
         $this->di->set('db_storage', function () use ($config) {
-                return new \Centreon\Core\Db(
+            return new \Centreon\Core\Db(
                 $config->get('db_storage', 'dsn'),
-            $config->get('db_storage', 'username'),
-            $config->get('db_storage', 'password')
+                $config->get('db_storage', 'username'),
+                $config->get('db_storage', 'password')
             );
         });
     }
 
     /**
+     * Init cache
+     */
+    private function initCache()
+    {
+        $cache = Cache::load($this-config);
+        $this->di->setShared('cache', $cache);
+    }
+
+    /**
      * Init action hooks
-     *
-     * @return void
      */
     private function initActionHooks()
     {
         $this->di->set('action_hooks', function () {
-	    return new \Evenement\EventEmitter();
-	});
-	Hook::initActionListeners();
+            return new \Evenement\EventEmitter();
+        });
+        Hook::initActionListeners();
     }
 
     /**
      * Init template object
-     *
-     * @return void
      */
     private function initTemplate()
     {

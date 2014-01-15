@@ -73,9 +73,11 @@ class Config
         $di = Di::getDefault();
         /* @Todo test if in cache and load from cache */
         $dbconn = $di->get('db_centreon');
-        $stmt = $dbconn->query("SELECT `group`, `key`, `value`
-            FROM `options`
-            ORDER BY `group`, `key`");
+        $stmt = $dbconn->query(
+            "SELECT `group`, `key`, `value`
+                FROM `options`
+                ORDER BY `group`, `key`"
+        );
         while ($row = $stmt->fetch()) {
             if (false === in_array($row['group'], $this->file_groups)) {
                 if (false === isset($this->config[$row['group']])) {
@@ -95,7 +97,7 @@ class Config
      * @param $default mixed The default value if the variable doesn't exists
      * @return mixed
      */
-    public function get($group, $var, $default=null)
+    public function get($group, $var, $default = null)
     {
         if (isset($this->config[$group]) && isset($this->config[$group][$var])) {
             return $this->config[$group][$var];
@@ -133,10 +135,12 @@ class Config
         $di = Di::getDefault();
         /* Save information in database */
         $dbconn = $di->get('db_centreon');
-        $stmt = $dbconn->prepare("UPDATE `options`
-            SET `value` = :value
-            WHERE `group` = :group
-                AND `key` = :key");
+        $stmt = $dbconn->prepare(
+            "UPDATE `options`
+                SET `value` = :value
+                WHERE `group` = :group
+                    AND `key` = :key"
+        );
         $stmt->bindParam(':group', $group, \PDO::PARAM_STR);
         $stmt->bindParam(':key', $key, \PDO::PARAM_STR);
         $stmt->execute();
