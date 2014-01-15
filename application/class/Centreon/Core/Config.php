@@ -45,7 +45,7 @@ namespace Centreon\Core;
  */
 class Config
 {
-    private $file_groups = array('db_centreon', 'db_storage');
+    private $file_groups = array('db_centreon', 'db_storage', 'logger', 'cache');
     private $config = null;
 
     /**
@@ -126,11 +126,15 @@ class Config
      * @param $var string The variable name
      * @param $value mixed The value to store
      * @throws The group is not permit for store in database
+     * @throws If the configuration is not set in database
      */
     public function set($group, $var, $value)
     {
         if (in_array($group, $this->file_groups)) {
             throw new Exception("This configuration group is not permit.");
+        }
+        if (false === isset($this->config[$group]) || false === isset($this->config[$group][$var])) {
+            throw new Exception("This configuration $group - $var does not exists into database.");
         }
         $di = Di::getDefault();
         /* Save information in database */
@@ -141,13 +145,11 @@ class Config
                 WHERE `group` = :group
                     AND `key` = :key"
         );
+        $stmt->bindParam(':value', $value, \PDO::PARAM_STR);
         $stmt->bindParam(':group', $group, \PDO::PARAM_STR);
-        $stmt->bindParam(':key', $key, \PDO::PARAM_STR);
+        $stmt->bindParam(':key', $var, \PDO::PARAM_STR);
         $stmt->execute();
-        /* @Todo update cache */
-        if (false === isset($this->config[$group])) {
-            $this->config[$group] = array();
-        }
         $this->config[$group][$var] = $value;
+        /* @Todo update cache */
     }
 }
