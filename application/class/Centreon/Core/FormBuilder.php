@@ -222,6 +222,8 @@ class FormBuilder
                         $additionalParameters['help']);
                 break;
         }
+        
+        return $this;
     }
     
     /**
