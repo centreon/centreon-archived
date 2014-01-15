@@ -67,7 +67,11 @@ class Statement extends \PDOStatement
     public function execute($parameters = array())
     {
         // @Todo emit event before
-        $return = parent::execute($parameters);
+        if (count($parameters) === 0) {
+            $return = parent::execute();
+        } else {
+            $return = parent::execute($parameters);
+        }
         // @Todo emit event after
         return $return;
     }

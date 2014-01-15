@@ -58,6 +58,7 @@ class Db extends \PDO
     {
         parent::__construct($dsn, $username, $password, $driver_options);
         $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('\Centreon\Core\Db\Statement', array($this)));
+        $this->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
     }
 
     /**
