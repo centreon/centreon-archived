@@ -70,7 +70,7 @@ class Template extends \Smarty
      * 
      * @param string $newTemplateFile
      */
-    public function __construct($newTemplateFile = "", $enableCaching = 0)
+    public function __construct($newTemplateFile = '', $enableCaching = 0)
     {
         $this->templateFile = $newTemplateFile;
         $this->caching = $enableCaching;
@@ -139,6 +139,10 @@ class Template extends \Smarty
      */
     public function addCss($fileName)
     {
+        if (isStaticFileExist('css', $fileName)) {
+            throw new Exception(_('The given file does not exist'));
+        }
+        
         if (!in_array($fileName, $this->cssResources)) {
             $this->cssResources[] = $fileName;
         }
@@ -151,6 +155,10 @@ class Template extends \Smarty
      */
     public function addJs($fileName)
     {
+        if (isStaticFileExist('js', $fileName)) {
+            throw new Exception(_('The given file does not exist'));
+        }
+            
         if (!in_array($fileName, $this->jsResources)) {
             $this->jsResources[] = $fileName;
         }
@@ -166,9 +174,45 @@ class Template extends \Smarty
     public function assign($varName, $varValue)
     {
         if (in_array($varName, $this->exclusionList)) {
-            throw new \Centreon\Core\Exception('This variable name is reserved');
+            throw new \Centreon\Core\Exception(_('This variable name is reserved'));
         }
         parent::assign($varName, $varValue);
         return $this;
+    }
+    
+    /**
+     * 
+     * @param string $type
+     * @param string $filename
+     * @return boolean
+     * @throws \Centreon\Core\Exception
+     */
+    public function isStaticFileExist($type, $filename)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $config = $di->get('config');
+        $basePath = trim($config->get('global','base_path'), '/');
+        
+        switch(strtolower($type)) {
+            case 'css':
+                $staticFilePath = trim($config->get('static_file','css_path'), '/');
+                break;
+            
+            case 'js':
+                $staticFilePath = trim($config->get('static_file','js_path'), '/');
+                break;
+            
+            case 'img':
+                $staticFilePath = trim($config->get('static_file','img_path'), '/');
+                break;
+            
+            default: throw new Exception(_('The given filetype is not supported'));
+        }
+        
+        if (!file_exists($basePath.'/'.$staticFilePath.'/'.$filename)) {
+            return false;
+        }
+        
+        return true;
     }
 }
