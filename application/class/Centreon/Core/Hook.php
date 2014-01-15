@@ -53,8 +53,9 @@ class Hook
         if (!isset(self::$hookCache)) {
             self::$hookCache = array('id' => array(), 'name' => array());
             $sql = "SELECT hook_id, hook_name, hook_description FROM hooks";
-            $res = $db->query($sql);
-            $rows = $res->fetchAll();
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
             foreach ($rows as $row) {
                 self::$hookCache['id'][$row['hook_id']] = $row;
                 self::$hookCache['name'][$row['hook_name']] = $row;
@@ -75,8 +76,9 @@ class Hook
             self::$moduleHookCache = array();
             $sql = "SELECT module_id, hook_id, module_hook_name, module_hook_description
                 FROM module_hooks";
-            $res = $db->query($sql);
-            $rows = $res->fetchAll();
+            $stmt = $db->prepare($sql);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
             foreach ($rows as $row) {
                 $unique = implode("_", array(
                         $row['module_id'], 
@@ -149,7 +151,8 @@ class Hook
             'module_hook_name' => $moduleHookName,
             'module_hook_description' => $moduleHookDescription
         );
-        $db->query($sql, $arr);
+        $stmt = $db->prepare($sql);
+        $stmt->execute($arr);
         self::$moduleHookCache[$unique] = $arr;
     }
 
@@ -170,12 +173,11 @@ class Hook
             throw new Exception(sprintf(_('Could not find module hook named %s'), $moduleHookName));
         }
         $db = Di::getDefault()->get('db_centreon');
-        $db->query("DELETE FROM module_hooks 
+        $db->prepare("DELETE FROM module_hooks 
             WHERE module_id = ? 
             AND hook_id = ? 
-            AND module_hook_name = ?",
-            array($moduleId, $hookId, $moduleHookName)
-        );
+            AND module_hook_name = ?");
+        $db->execute(array($moduleId, $hookId, $moduleHookName));
         unset(self::$moduleHookCache[$unique]);
     }
 
@@ -201,8 +203,9 @@ class Hook
             $filters[] = $hookType;
         }
         $db = Di::getDefault()->get('db_centreon');
-        $res = $db->query($sql, $filters);
-        return $res->fetchAll();
+        $stmt = $db->prepare($sql);
+        $stmt->execute($filters);
+        return $stmt->fetchAll();
     }
 
     /**
