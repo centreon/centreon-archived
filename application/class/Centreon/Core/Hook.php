@@ -152,7 +152,11 @@ class Hook
             'module_hook_description' => $moduleHookDescription
         );
         $stmt = $db->prepare($sql);
-        $stmt->execute($arr);
+        $sqlarr = array();
+        foreach ($arr as $elem) {
+            $sqlarr[] = $elem;
+        }
+        $stmt->execute($sqlarr);
         self::$moduleHookCache[$unique] = $arr;
     }
 
