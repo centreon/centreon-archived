@@ -78,8 +78,8 @@ class Template extends \Smarty
         $this->cssResources = array();
         $this->jsResources = array();
         $this->buildExclusionList();
-        $this->initConfig();
         parent::__construct();
+        $this->initConfig();
     }
     
     /**
