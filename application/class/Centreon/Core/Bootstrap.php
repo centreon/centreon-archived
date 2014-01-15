@@ -110,7 +110,7 @@ class Bootstrap
      */
     private function initCache()
     {
-        $cache = Cache::load($this-config);
+        $cache = Cache::load($this->config);
         $this->di->setShared('cache', $cache);
     }
 
