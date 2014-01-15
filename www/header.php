@@ -159,33 +159,6 @@ default : $level1= $p; break;
 }
 
 /*
- * Skin path
- */
-$DBRESULT = $pearDB->query("SELECT value FROM `options` WHERE `key` = 'template' LIMIT 1");
-$data = $DBRESULT->fetchRow();
-$skin = "./Themes/".$data["value"]."/";
-
-$tab_file_css = array();
-$i = 0;
-if ($handle  = @opendir($skin."Color"))	{
-  while ($file = @readdir($handle)) {
-    if (is_file($skin."Color"."/$file"))
-      $tab_file_css[$i++] = $file;
-  }
-  @closedir($handle);
-}
-
-$colorfile = "Color/". $tab_file_css[0];
-
-/*
- * Get CSS Order and color
- */
-$DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
-if ($DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow())) {
-  $colorfile = "Color/".$elem["css_name"];
-}
-
-/*
  * Update Session Table For last_reload and current_page row
  */
 $DBRESULT = $pearDB->query("UPDATE `session` SET `current_page` = '".$level1.$level2.$level3.$level4."', `last_reload` = '".time()."', `ip_address` = '".$_SERVER["REMOTE_ADDR"]."' WHERE CONVERT(`session_id` USING utf8) = '".session_id()."' AND `user_id` = '".$centreon->user->user_id."'");
