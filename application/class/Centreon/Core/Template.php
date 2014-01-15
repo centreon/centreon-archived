@@ -115,10 +115,10 @@ class Template extends \Smarty
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function display()
+    public function display($templateFile)
     {
         if ($this->templateFile === "") {
-            throw new Exception ("Template file missing");
+            $this->templateFile = $templateFile;
         }
         $this->loadResources();
         parent::display($this->templateFile);
