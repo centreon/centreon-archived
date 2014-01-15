@@ -36,7 +36,7 @@
 namespace Centreon\Core;
 
 
-class FormBuilder
+class Form
 {
     /**
      *

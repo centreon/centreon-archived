@@ -91,10 +91,10 @@ class Template extends \Smarty
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
         
-        $this->template_dir = $config->get('template', 'templateDir');
-        $this->compile_dir = $config->get('template', 'compileDir');
-        $this->config_dir = $config->get('template', 'configDir');
-        $this->cache_dir = $config->get('template', 'cacheDir');
+        $this->template_dir = $config->get('template', 'template_dir');
+        $this->compile_dir = $config->get('template', 'compile_dir');
+        $this->config_dir = $config->get('template', 'config_dir');
+        $this->cache_dir = $config->get('template', 'cache_dir');
         
         $this->compile_check = true;
         $this->force_compile = true;
@@ -118,7 +118,7 @@ class Template extends \Smarty
     public function display()
     {
         if ($this->templateFile === "") {
-            throw new Exception ("Template file missing", 404);
+            throw new Exception ("Template file missing");
         }
         $this->loadResources();
         parent::display($this->templateFile);
@@ -165,7 +165,7 @@ class Template extends \Smarty
     public function assign($varName, $varValue)
     {
         if (in_array($varName, $this->exclusionList)) {
-            throw new Exception('This variable name is reserved', 403);
+            throw new \Centreon\Core\Exception('This variable name is reserved');
         }
         parent::assign($varName, $varValue);
         return $this;
