@@ -45,7 +45,15 @@ namespace Centreon\Core;
  */
 class Config
 {
-    private $file_groups = array('db_centreon', 'db_storage', 'logger', 'cache');
+    private $file_groups = array(
+        'db_centreon',
+        'db_storage',
+        'loggers',
+        'cache',
+        'template',
+        'static_file',
+        'global'
+    );
     private $config = null;
 
     /**
