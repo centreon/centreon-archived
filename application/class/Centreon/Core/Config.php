@@ -59,7 +59,11 @@ class Config
         if (false === is_readable($filename)) {
             throw new Exception("The configuration file is not readable.");
         }
-        $this->config = parse_ini_file($filename, true);
+        try {
+            $this->config = parse_ini_file($filename, true);
+        } catch (\Exception $e) {
+            throw new Exception("Error when parsing configuration file.", 0, $e);
+        }
         if (false === $this->config) {
             throw new Exception("Error when parsing configuration file.");
         }

@@ -75,4 +75,34 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
         $datasetTest = $this->createFlatXmlDataSet(DATA_DIR . '/test-config-set.xml')->getTable('options');
         $this->assertTablesEqual($datasetTest, $datasetDb);
     }
+
+    public function testConstructFileNotExists()
+    {
+        $this->setExpectedException('\Centreon\Core\Exception', "The configuration file is not readable.");
+        new Config('nofile.ini');
+    }
+
+    public function testConstructFileHasErrors()
+    {
+        $this->setExpectedException('\Centreon\Core\Exception', "Error when parsing configuration file.");
+        new Config(DATA_DIR . '/test-config-errors.ini');
+    }
+
+    public function testSetExceptionBadGroup()
+    {
+        $filename = DATA_DIR . '/test-config.ini';
+        $config = new Config($filename);
+        $config->loadFromDb();
+        $this->setExpectedException('\Centreon\Core\Exception', "This configuration group is not permit."); 
+        $config->set('cache', 'test', 'test');
+    }
+
+    public function testSetExceptionBadVariable()
+    {
+        $filename = DATA_DIR . '/test-config.ini';
+        $config = new Config($filename);
+        $config->loadFromDb();
+        $this->setExpectedException('\Centreon\Core\Exception', "This configuration default - novariable does not exists into database."); 
+        $config->set('default', 'novariable', 'test');
+    }
 }
