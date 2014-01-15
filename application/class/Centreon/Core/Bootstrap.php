@@ -130,7 +130,7 @@ class Bootstrap
      */
     private function initTemplate()
     {
-        $this->di->setShared('template', function () {
+        $this->di->set('template', function () {
             return new Template();
         });
     }
