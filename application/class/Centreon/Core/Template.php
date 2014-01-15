@@ -94,7 +94,7 @@ class Template extends \Smarty
         $this->setTemplateDir($config->get('template', 'template_dir'));
         $this->setCompileDir($config->get('template', 'compile_dir'));
         $this->setConfigDir($config->get('template', 'config_dir'));
-        $this->setCache_dir($config->get('template', 'cache_dir'));
+        $this->setCacheDir($config->get('template', 'cache_dir'));
         $this->addPluginsDir($config->get('template', 'plugins_dir'));
         
         $this->compile_check = $config->get('template', 'compile_check');
