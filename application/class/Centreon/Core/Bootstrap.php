@@ -59,7 +59,7 @@ class Bootstrap
         $methods = $class->getMethods(\ReflectionMethod::IS_PRIVATE);
         foreach ($methods as $method) {
             if (preg_match('/^init/', $method->name)) {
-                $this->{$method->name}(); 
+                $this->{$method->name}();
             }
         }
     }
@@ -103,6 +103,15 @@ class Bootstrap
                 $config->get('db_storage', 'password')
             );
         });
+    }
+
+    /**
+     * Init cache
+     */
+    private function initCache()
+    {
+        $cache = Cache::load($this-config);
+        $this->di->setShared('cache', $cache);
     }
 
     /**
