@@ -124,7 +124,7 @@ class Logger
         $args = array();
         foreach (self::$loggerHandler[$info['type']]['extraArgs'] as $argName) {
             if (false === isset($info[$argName])) {
-                throw Exception("The configuration value $argName for logger $loggerName is not set.");
+                throw new Exception("The configuration value $argName for logger $loggerName is not set.");
             }
             $args[] = $info[$argName];
         }
