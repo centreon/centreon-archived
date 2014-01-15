@@ -60,6 +60,10 @@ class Cache
                 break;
             case 'memcached':
                 $driver = new \Desarrolla2\Cache\Adapter\MemCache();
+                foreach ($config->get('cache', 'servers') as $server) {
+                    list($serverHost, $serverPort) = explode(':', $server);
+                    $driver->addServer($serverHost, $serverPort);
+                }
                 break;
             case null:
             default:
