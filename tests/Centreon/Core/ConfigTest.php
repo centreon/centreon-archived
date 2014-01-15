@@ -71,8 +71,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
         $config->loadFromDb();
         $config->set('default', 'variable2', 'test');
         $this->assertEquals('test', $config->get('default', 'variable2'));
-        copy('/tmp/toto', '/tmp/titi');
-        $datasetDb = $this->getConnection()->createQueryTable('testQuery', 'SELECT * FROM options');
+        $datasetDb = $this->getConnection()->createQueryTable('options', 'SELECT * FROM options');
         $datasetTest = $this->createFlatXmlDataSet(DATA_DIR . '/test-config-set.xml')->getTable('options');
         $this->assertTablesEqual($datasetTest, $datasetDb);
     }
