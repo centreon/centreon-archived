@@ -40,4 +40,6 @@ namespace Centreon\Core;
  *
  * @todo extend this class so that it can handle logging methods
  */
-class Exception extends \Exception {}
+class Exception extends \Exception
+{
+}

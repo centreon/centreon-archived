@@ -77,7 +77,7 @@ class Di
      *        \Closure: A function which return a variable
      * @param $shared bool If the service is shared, the definition can be mixed
      */
-    public function set($name, $definition, $shared=false)
+    public function set($name, $definition, $shared = false)
     {
         if ($shared) {
             $this->setShared($name, $definition);

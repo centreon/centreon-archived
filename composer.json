@@ -6,7 +6,8 @@
         "smarty-gettext/smarty-gettext": "1.1.*",
         "openpsa/quickform": "3.3.0-rc.1",
         "evenement/evenement": "1.0.*",
-        "monolog/monolog": "dev-master"
+        "monolog/monolog": "dev-master",
+        "desarrolla2/cache": "1.7.0"
     },
     "require-dev": {
         "phpunit/phpunit": "3.7.*",

@@ -70,9 +70,11 @@ class Template extends \Smarty
      * 
      * @param string $newTemplateFile
      */
-    public function __construct($newTemplateFile = "")
+    public function __construct($newTemplateFile = "", $enableCaching = 0)
     {
         $this->templateFile = $newTemplateFile;
+        $this->caching = $enableCaching;
+        
         $this->cssResources = array();
         $this->jsResources = array();
         $this->buildExclusionList();
@@ -88,11 +90,12 @@ class Template extends \Smarty
     {
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
+        
         $this->template_dir = $config->get('template', 'templateDir');
         $this->compile_dir = $config->get('template', 'compileDir');
         $this->config_dir = $config->get('template', 'configDir');
         $this->cache_dir = $config->get('template', 'cacheDir');
-        $this->caching = 0;
+        
         $this->compile_check = true;
         $this->force_compile = true;
     }

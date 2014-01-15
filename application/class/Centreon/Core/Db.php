@@ -54,7 +54,7 @@ class Db extends \PDO
      * @param $password string The database password
      * @param $driver_options array The driver options
      */
-    public function __construct($dsn, $username='', $password='', $driver_options=array())
+    public function __construct($dsn, $username = '', $password = '', $driver_options = array())
     {
         parent::__construct($dsn, $username, $password, $driver_options);
         $this->setAttribute(\PDO::ATTR_STATEMENT_CLASS, array('\Centreon\Core\Db\Statement', array($this)));
@@ -67,7 +67,7 @@ class Db extends \PDO
      * @param $query string The SQL query
      * @return \Centreon\Core\Db\Statement|bool Return false on failure
      */
-    public function query($query, $fetchType=\PDO::FETCH_BOTH, $extraArgs1=null, $extraArgs2=null)
+    public function query($query, $fetchType = \PDO::FETCH_BOTH, $extraArgs1 = null, $extraArgs2 = null)
     {
         // @Todo emit event before
         if ($fetchType == \PDO::FETCH_COLUMN || $fetchType == \PDO::FETCH_INTO) {

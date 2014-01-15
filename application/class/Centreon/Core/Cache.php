@@ -33,55 +33,41 @@
  *
  */
 
-namespace Centreon\Core\Db;
+namespace Centreon\Core;
 
 /**
- * Class for manage database connection
+ * Class for loading cache informations
  *
- * @see http://www.php.net/manual/en/class.pdostatement.php
+ * @see http://www.php.net/manual/en/class.pdo.php
  * @authors Maximilien Bersoult
  * @package Centreon
  * @subpackage Core
  */
-class Statement extends \PDOStatement
+class Cache
 {
-    protected $connection;
-
     /**
-     * Consturctor
+     * Create cache object
      *
-     * @param $connection \PDO The database connection
+     * @param $config \Centreon\Core\Config The application configuration
+     * @return \Desarrolla2\Cache\Cache
      */
-    protected function __construct(\PDO $connection)
+    public static function load($config)
     {
-        $this->connection = $connection;
-    }
-
-    /**
-     * Execute a prepare statement
-     *
-     * @see http://www.php.net/manual/en/pdostatement.execute.php
-     * @param $parameters array The input parameters
-     * @return bool
-     */
-    public function execute($parameters = array())
-    {
-        // @Todo emit event before
-        $return = parent::execute($parameters);
-        // @Todo emit event after
-        return $return;
-    }
-
-    /**
-     * Fetch a line from SQL cursor
-     * 
-     * Alias to the method fetch
-     *
-     * @deprecated
-     * @return mixed
-     */
-    public function fetchRow()
-    {
-        return $this->fetch();
+        $cacheType = $config->get('cache', 'type');
+        switch ($cacheType) {
+            case 'apc':
+                $driver = new \Desarrolla2\Cache\Adapter\Apc();
+                break;
+            case 'memcached':
+                $driver = new \Desarrolla2\Cache\Adapter\MemCache();
+                break;
+            case null:
+            default:
+                $driver = new \Desarrolla2\Cache\Adapter\NotCache();
+                break;
+        }
+        $ttl = $config->get('cache', 'ttl', 3600);
+        $driver->setOption('ttl', $ttl);
+        return new \Desarrolla2\Cache\Cache($driver);
     }
 }

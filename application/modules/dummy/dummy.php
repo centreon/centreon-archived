@@ -10,10 +10,15 @@ class Dummy extends \Centreon\Core\Module
 
     public function install() {
         parent::__install();
-	$this->registerHook(
-	    'displayMonitoringDetailPageLeft',
+        $this->registerHook(
+            'displayMonitoringDetailPageLeft',
             'dummyBlock',
-	    'dummy block'
+            'dummy block'
+        );
+        $this->registerHook(
+            'actionHostAfterCreate',
+            'dummyAction',
+            'dummy action'
         );
     }
 
@@ -24,9 +29,13 @@ class Dummy extends \Centreon\Core\Module
     public static function displayMonitoringDetailPageLeft($params) {
         return array(
             realpath(dirname(__FILE__)) . '/templates/dummy.tpl',
-	    array(
-	        'message' => 'hello world'
-	    )
-	);
+            array(
+                'message' => 'hello world'
+            )
+        );
+    }
+
+    public static function actionHostAfterCreate($params) {
+        echo "i'm executed right after a host creation<br/>";
     }
 }
