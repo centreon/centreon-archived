@@ -3,6 +3,8 @@
 namespace Test\Centreon\Centreon;
 
 use \Centreon\Core\Config;
+use \Centreon\Core\Cache;
+use \Centreon\Core\Di;
 
 class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
 {
@@ -10,6 +12,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
 
     public function setUp()
     {
+        new Di();
         parent::setUp();
     }
 
@@ -59,6 +62,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $filename = DATA_DIR . '/test-config.ini';
         $config = new Config($filename);
+        Di::getDefault()->setShared('cache', Cache::load($config));
         $config->loadFromDb();
         $this->assertEquals('value1', $config->get('default', 'variable1'));
         $this->assertEquals('value2', $config->get('default', 'variable2'));
@@ -68,6 +72,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $filename = DATA_DIR . '/test-config.ini';
         $config = new Config($filename);
+        Di::getDefault()->setShared('cache', Cache::load($config));
         $config->loadFromDb();
         $config->set('default', 'variable2', 'test');
         $this->assertEquals('test', $config->get('default', 'variable2'));
@@ -92,6 +97,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $filename = DATA_DIR . '/test-config.ini';
         $config = new Config($filename);
+        Di::getDefault()->setShared('cache', Cache::load($config));
         $config->loadFromDb();
         $this->setExpectedException('\Centreon\Core\Exception', "This configuration group is not permit."); 
         $config->set('cache', 'test', 'test');
@@ -101,6 +107,7 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
     {
         $filename = DATA_DIR . '/test-config.ini';
         $config = new Config($filename);
+        Di::getDefault()->setShared('cache', Cache::load($config));
         $config->loadFromDb();
         $this->setExpectedException('\Centreon\Core\Exception', "This configuration default - novariable does not exists into database."); 
         $config->set('default', 'novariable', 'test');

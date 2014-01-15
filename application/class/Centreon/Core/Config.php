@@ -45,7 +45,7 @@ namespace Centreon\Core;
  */
 class Config
 {
-    private $file_groups = array(
+    private $fileGroups = array(
         'db_centreon',
         'db_storage',
         'loggers',
@@ -83,7 +83,18 @@ class Config
     public function loadFromDb()
     {
         $di = Di::getDefault();
-        /* @Todo test if in cache and load from cache */
+        /* Load from cache if exists */
+        if ($di->get('cache')->has('app:config')) {
+            $configTmp = $di->get('cache')->get('app:config');
+            foreach ($configTmp as $group => $configGroup) {
+                if (false === in_array($group, $this->fileGroups)) {
+                    $this->config[$group] = $configGroup;
+                }
+            }
+            return;
+        }
+
+        /* Load from database */
         $dbconn = $di->get('db_centreon');
         $stmt = $dbconn->query(
             "SELECT `group`, `key`, `value`
@@ -91,7 +102,7 @@ class Config
                 ORDER BY `group`, `key`"
         );
         while ($row = $stmt->fetch()) {
-            if (false === in_array($row['group'], $this->file_groups)) {
+            if (false === in_array($row['group'], $this->fileGroups)) {
                 if (false === isset($this->config[$row['group']])) {
                     $this->config[$row['group']] = array();
                 }
@@ -99,6 +110,8 @@ class Config
             }
         }
         $stmt->closeCursor();
+        /* Save config into cache */
+        $di->get('cache')->set('app:cache', $this->config);
     }
 
     /**
@@ -142,7 +155,7 @@ class Config
      */
     public function set($group, $var, $value)
     {
-        if (in_array($group, $this->file_groups)) {
+        if (in_array($group, $this->fileGroups)) {
             throw new Exception("This configuration group is not permit.");
         }
         if (false === isset($this->config[$group]) || false === isset($this->config[$group][$var])) {
@@ -162,6 +175,7 @@ class Config
         $stmt->bindParam(':key', $var, \PDO::PARAM_STR);
         $stmt->execute();
         $this->config[$group][$var] = $value;
-        /* @Todo update cache */
+        /* Save config into cache */
+        $di->get('cache')->set('app:cache', $this->config);
     }
 }
