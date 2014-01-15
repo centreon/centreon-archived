@@ -118,7 +118,7 @@ class Template extends \Smarty
     public function display()
     {
         if ($this->templateFile === "") {
-            throw new Exception ("Template file missing", 404);
+            throw new Exception ("Template file missing");
         }
         $this->loadResources();
         parent::display($this->templateFile);
@@ -165,7 +165,7 @@ class Template extends \Smarty
     public function assign($varName, $varValue)
     {
         if (in_array($varName, $this->exclusionList)) {
-            throw new Exception('This variable name is reserved', 403);
+            throw new \Centreon\Core\Exception('This variable name is reserved');
         }
         parent::assign($varName, $varValue);
         return $this;
