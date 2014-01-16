@@ -419,7 +419,7 @@ sub get_trap {
     while ((my $file = shift @{$args{filenames}})) {
         next if ($file eq ".");
         next if ($file eq "..");
-        next if (! -f $args{config}->{spool_directory} . $file);
+        next if (! -f $args{config}->{spool_directory} . '/' . $file);
         return $file;
     }
     return undef;
