@@ -135,6 +135,19 @@ class Template extends \Smarty
     
     /**
      * 
+     * @throws \Centreon\Exception If the template file is not defined
+     */
+    public function fetch($templateFile)
+    {
+        if ($this->templateFile === "") {
+            $this->templateFile = $templateFile;
+        }
+        $this->loadResources();
+        return parent::fetch($this->templateFile);
+    }
+    
+    /**
+     * 
      */
     private function loadResources()
     {
@@ -156,6 +169,7 @@ class Template extends \Smarty
         if (!in_array($fileName, $this->cssResources)) {
             $this->cssResources[] = $fileName;
         }
+        
         return $this;
     }
     
@@ -208,7 +222,7 @@ class Template extends \Smarty
      * @return boolean
      * @throws \Centreon\Core\Exception
      */
-    public function isStaticFileExist($type, $filename)
+    private function isStaticFileExist($type, $filename)
     {
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
