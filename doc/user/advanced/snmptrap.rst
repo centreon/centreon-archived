@@ -203,7 +203,7 @@ The listing of variables:
 
  @HOSTADDRESS2@            Hostname of trap sender 
                            (if 'centreontrapd' succeed to reverse DNS. 
-						   Otherwise, like  @HOSTADDRESS@)
+                           Otherwise, like  @HOSTADDRESS@)
 
  @SERVICEDESC@             Service Name
 
