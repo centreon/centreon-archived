@@ -79,7 +79,6 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
-    $self->init();
 
     # Create file in spool directory based on current time
     my ($s, $usec) = gettimeofday;
