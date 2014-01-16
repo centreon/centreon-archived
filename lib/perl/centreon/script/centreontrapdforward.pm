@@ -94,7 +94,7 @@ sub run {
     $self->{logger}->writeLogDebug("s_pad = $s_pad, usec_pad = $usec_pad");
     $self->{logger}->writeLogDebug("Data received:");
 
-    my $spoolfile = $self->{centreontrapd_config}->{spool_directory} . '#centreon-trap-'.$s_pad.$usec_pad;
+    my $spoolfile = $self->{centreontrapd_config}->{spool_directory} . '/' . '#centreon-trap-'.$s_pad.$usec_pad;
 
     unless (open SPOOL, ">$spoolfile") {
         $self->{logger}->writeLogError("Could not write to file file $spoolfile!  Trap will be lost!");
