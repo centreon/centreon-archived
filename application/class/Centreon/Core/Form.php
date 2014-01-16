@@ -40,7 +40,7 @@ class Form
 {
     /**
      *
-     * @var HTML_QuickForm 
+     * @var \HTML_QuickForm 
      */
     private $formProcessor;
     
@@ -124,7 +124,7 @@ class Form
      */
     public function __construct($name, $options = null)
     {
-        $this->formProcessor = new HTML_QuickForm($name, 'post');
+        $this->formProcessor = new \HTML_QuickForm($name, 'post');
         $this->options = $options;
         $this->init();
         $this->defaultValue = array();
@@ -149,77 +149,85 @@ class Form
                 $this->checkParameters($additionalParameters, array('params' => array()));
                 $this->addElementButton($name, $label, $additionalParameters['params']);
                 break;
-            
             case 'checkbox':
                 $this->checkParameters($additionalParameters, array('params' => array()));
                 $this->addCheckBox($name, $label, $additionalParameters['params']);
                 break;
-            
             case 'hidden':
                 $this->checkParameters($additionalParameters, array('value' => ''));
                 $this->addElementHidden($name, $additionalParameters['value']);
                 break;
-            
             case 'radio':
-                $this->checkParameters($additionalParameters, array(
-                    'elements' => array(),
-                    'defaultValue' => null
-                ));
-                $this->addElementRadio($name,
-                        $label,
-                        $additionalParameters['elements'],
-                        $additionalParameters['defaultValue']);
+                $this->checkParameters(
+                    $additionalParameters,
+                    array(
+                        'elements' => array(),
+                        'defaultValue' => null
+                    )
+                );
+                $this->addElementRadio(
+                    $name,
+                    $label,
+                    $additionalParameters['elements'],
+                    $additionalParameters['defaultValue']
+                );
                 break;
-            
             case 'reset':
                 $this->checkParameters($additionalParameters, array('params' => array()));
                 $this->addElementReset($name, $label, $additionalParameters['params']);
                 break;
-            
             case 'select':
-                $this->checkParameters($additionalParameters, array(
-                    'multiple' => false,
-                    'data' => array(),
-                    'style' => null
-                ));
+                $this->checkParameters(
+                    $additionalParameters,
+                    array(
+                        'multiple' => false,
+                        'data' => array(),
+                        'style' => null
+                    )
+                );
                 if ($additionalParameters['multiple']) {
-                    $this->addElementMultiSelect($name,
+                    $this->addElementMultiSelect(
+                        $name,
                         $label,
-                        $additionalParameters['data']);
+                        $additionalParameters['data']
+                    );
                 } else {
-                    $this->addElementSelect($name,
+                    $this->addElementSelect(
+                        $name,
                         $label,
                         $additionalParameters['data'],
-                        $additionalParameters['style']);
+                        $additionalParameters['style']
+                    );
                 }
                 break;
-                
             case 'submit':
                 $this->checkParameters($additionalParameters, array('params' => array()));
                 $this->addElementSubmit($name, $label, $additionalParameters['params']);
                 break;
-            
             case 'submitbar':
                 $this->checkParameters($additionalParameters, array('cancel' => true));
                 $this->addSubmitBar($name = 'submitbar', $additionalParameters['cancel']);
                 break;
-                
             case 'textarea':
                 $this->addElementTextarea($name, $label);
                 break;
-            
             default:
             case 'text':
-                $this->checkParameters($additionalParameters, array(
-                    'style' => null,
-                    'placeholder' => null,
-                    'help' => null
-                ));
-                $this->addElementText($name,
-                        $label,
-                        $additionalParameters['style'],
-                        $additionalParameters['placeholder'],
-                        $additionalParameters['help']);
+                $this->checkParameters(
+                    $additionalParameters,
+                    array(
+                        'style' => null,
+                        'placeholder' => null,
+                        'help' => null
+                    )
+                );
+                $this->addElementText(
+                    $name,
+                    $label,
+                    $additionalParameters['style'],
+                    $additionalParameters['placeholder'],
+                    $additionalParameters['help']
+                );
                 break;
         }
         
@@ -247,7 +255,7 @@ class Form
      * @param string $label The label of element
      * @param string|null $style The input style (prefix by input-)
      *                           if null the style is medium
-     * @return HTML_QuickForm_Element_InputText
+     * @return \HTML_QuickForm_Element_InputText
      */
     private function addElementText($name, $label, $style = null, $placeholder = null, $help = null)
     {
@@ -261,7 +269,8 @@ class Form
         if (!is_null($help)) {
             $param['_help'] = $help;
         }
-        $elem = $this->formProcessor->addElement('text', $name, $param)
+        $elem = $this->formProcessor
+            ->addElement('text', $name, $param)
             ->setId($name)
             ->addClass("input-".$style)
             ->setLabel($label);
@@ -275,7 +284,7 @@ class Form
      * @param string $label The label of element
      * @param array $params The list of options in option group
      * @param string $defaultValue The default value for radio
-     * @return HTML_QuickForm_Container_Group
+     * @return \HTML_QuickForm_Container_Group
      * @todo Default
      */
     private function addElementRadio($name, $label, $elements, $defaultValue = null)
@@ -284,7 +293,10 @@ class Form
             ->setId($name)
             ->setLabel($label);
         foreach ($elements as $key => $value) {
-            $elem->addRadio($name, array('value' => $key))
+            $elem->addRadio(
+                $name,
+                array('value' => $key)
+            )
                 ->setContent($value);
         }
         $this->defaultValue[$name] = $defaultValue;
@@ -299,7 +311,7 @@ class Form
      * @param array $data The list for options
      * @param string|null $style The input style (prefix by input-)
      *                           if null the style is medium
-     * @return HTML_QuickForm_Element_Select
+     * @return \HTML_QuickForm_Element_Select
      */
     private function addElementSelect($name, $label, $data, $style = null)
     {
@@ -322,7 +334,7 @@ class Form
      * @param array $data The list for options
      * @param string|null $style The input style (prefix by input-)
      *                           if null the style is medium
-     * @return HTML_QuickForm_Element_Select
+     * @return \HTML_QuickForm_Element_Select
      */
     private function addElementMultiSelect($name, $label, $data)
     {
@@ -344,7 +356,7 @@ class Form
      * @param string $name The name and the id of element
      * @param string $label The label of element
      * @param array $params The list of options in option group
-     * @return HTML_QuickForm_Container_Group
+     * @return \HTML_QuickForm_Container_Group
      */
     private function addCheckBox($name, $label, $params = array())
     {
@@ -373,7 +385,7 @@ class Form
      *
      * @param string $name The name and the id of element
      * @param string $label The label of element
-     * @return HTML_QuickForm_Element_Textarea
+     * @return \HTML_QuickForm_Element_Textarea
      */
     private function addElementTextarea($name, $label)
     {
@@ -389,7 +401,7 @@ class Form
      *
      * @param string $name The name of hidden element
      * @param string $value The value of hidden element
-     * @return HTML_QuickForm_Element_InputHidden
+     * @return \HTML_QuickForm_Element_InputHidden
      */
     private function addElementHidden($name, $value)
     {
@@ -406,7 +418,7 @@ class Form
      * @param string $name The name of button
      * @param string $value The value of button
      * @param array $param Additionnal param
-     * @return HTML_QuickForm_Element_Button
+     * @return \HTML_QuickForm_Element_Button
      */
     private function addElementButton($name, $label, $params = array())
     {
@@ -422,7 +434,7 @@ class Form
      * @param string $name The name of submit
      * @param string $value The value of submit
      * @param array $param Additionnal param
-     * @return HTML_QuickForm_Element_InputSubmit
+     * @return \HTML_QuickForm_Element_InputSubmit
      */
     private function addElementSubmit($name, $label, $params = array())
     {
@@ -439,7 +451,7 @@ class Form
      * @param string $name The name of reset
      * @param string $value The value of reset
      * @param array $param Additionnal param
-     * @return HTML_QuickForm_Element_InputReset
+     * @return \HTML_QuickForm_Element_InputReset
      */
     private function addElementReset($name, $label, $params = array())
     {
@@ -487,7 +499,7 @@ class Form
      * @param string $label
      * @param array $options
      * @param string $style
-     * @return HTML_QuickForm_Element
+     * @return \HTML_QuickForm_Element
      */
     private function addClonableElement($type, $name, $label, $options = array(), $style = null)
     {
@@ -532,7 +544,7 @@ class Form
      * Add a fieldset into the form
      *
      * @param string $label The legend
-     * @return HTML_QuickForm_Container_Fieldset
+     * @return \HTML_QuickForm_Container_Fieldset
      */
     public function addFieldSet($label)
     {
@@ -549,7 +561,7 @@ class Form
     public function display()
     {
         $this->setDefaults($this->defaultValue);
-        $renderer = HTML_QuickForm_Renderer::factory('centreon');
+        $renderer = \HTML_QuickForm_Renderer::factory('centreon');
         $this->formProcessor->render($renderer);
 
         $this->formProcessor->addRecursiveFilter("trim");
@@ -570,8 +582,7 @@ class Form
      */
     public function addHelps($helps)
     {
-        foreach ($helps as $element => $help)
-        {
+        foreach ($helps as $element => $help) {
             $formEl = $this->formProcessor->getElementsByName($element);
             if (count($formEl) > 0) {
                 $formEl[0]->setAttribute('_help', $help);
@@ -587,10 +598,12 @@ class Form
      */
     public function registerRule($name, $function)
     {
-        HTML_QuickForm_Factory::registerRule($name,
-            'HTML_QuickForm_Rule_Callback',
+        \HTML_QuickForm_Factory::registerRule(
+            $name,
+            '\HTML_QuickForm_Rule_Callback',
             'HTML/QuickForm/Rule/Callback.php',
-            $function);
+            $function
+        );
     }
 
     /**
@@ -601,10 +614,10 @@ class Form
      */
     public function registerJsRule($name, $file)
     {
-        if (!in_array($ruleName, $this->jsRulesRegister)) {
-           $tmpl = Centreon_Template::getInstance();
-           $tmpl->addJavascript($file);
-           $this->jsRulesRegister[] = $name;
+        if (!in_array($name, $this->jsRulesRegister)) {
+            $tmpl = Centreon_Template::getInstance();
+            $tmpl->addJavascript($file);
+            $this->jsRulesRegister[] = $name;
         }
     }
 
@@ -620,7 +633,7 @@ class Form
     public function addRule($ruleName, $field, $msg, $jsExt = null)
     {
         /* If Quickform rule exists */
-        if (HTML_QuickForm_Factory::isRuleRegistered($ruleName)) {
+        if (\HTML_QuickForm_Factory::isRuleRegistered($ruleName)) {
             $elements = $this->formProcessor->getElementsByName($field);
             foreach ($elements as $element) {
                 $this->formProcessor->addRule($ruleName, $msg);
@@ -648,7 +661,15 @@ class Form
     public function addMassiveChangeUpdateOption($name, $defaultValue, $o)
     {
         if ($o == "mc") {
-            $this->formProcessor->addElementRadio($name, _("Update mode"), array(0 => _("Incremental"), 1 => _("Replacement")), $defaultValue);
+            $this->formProcessor->addElementRadio(
+                $name,
+                _("Update mode"),
+                array(
+                    0 => _("Incremental"),
+                    1 => _("Replacement")
+                ),
+                $defaultValue
+            );
         }
     }
 
@@ -660,8 +681,8 @@ class Form
      
     public function setDefaults($values)
     {
-        //$this->formProcessor->addDataSource(new HTML_QuickForm_DataSource_Array($values));
-        //$this->formProcessor->addDataSource(new HTML_QuickForm_DataSource_Array($values));
+        //$this->formProcessor->addDataSource(new \HTML_QuickForm_DataSource_Array($values));
+        //$this->formProcessor->addDataSource(new \HTML_QuickForm_DataSource_Array($values));
         
     }
 
@@ -685,9 +706,9 @@ class Form
     }
     
     /**
-     *
-     *
-     *
+     * 
+     * @param type $elem
+     * @return string
      */
     public function getSubmitValue($elem = null)
     {
@@ -775,21 +796,21 @@ class Form
         $this->style = array();
     
         $this->basicSeparator = '&nbsp;';
-	
-        HTML_QuickForm_Factory::registerElement(
+        
+        \HTML_QuickForm_Factory::registerElement(
             'inputlist',
             'Centreon_InputList'
         );
-        HTML_QuickForm_Factory::registerElement(
+        \HTML_QuickForm_Factory::registerElement(
             'tabs',
             'QuickForm_Container_Tab'
         );
-        HTML_QuickForm_Factory::registerElement(
+        \HTML_QuickForm_Factory::registerElement(
             'submitbar',
             'Centreon_SubmitBar'
         );
 
-        HTML_QuickForm_Renderer::register(
+        \HTML_QuickForm_Renderer::register(
             'centreon',
             'QuickForm_Renderer_Centreon_Horizontal'
         );

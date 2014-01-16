@@ -80,8 +80,10 @@ class Hook
             $stmt->execute();
             $rows = $stmt->fetchAll();
             foreach ($rows as $row) {
-                $unique = implode("_", array(
-                        $row['module_id'], 
+                $unique = implode(
+                    "_",
+                    array(
+                        $row['module_id'],
                         $row['hook_id'],
                         $row['module_hook_name']
                     )
@@ -137,7 +139,7 @@ class Hook
     public static function register($moduleId, $hookName, $moduleHookName, $moduleHookDescription)
     {
         $unique = implode("_", array($moduleId, self::getHookId($hookName), $moduleHookName));
-        $moduleHookCache = self::getModuleHookCache(); 
+        $moduleHookCache = self::getModuleHookCache();
         if (isset($moduleHookCache[$unique])) {
             throw new Exception(_('Hook already registered'));
         }
@@ -170,17 +172,19 @@ class Hook
      */
     public static function unregister($moduleId, $hookName, $moduleHookName)
     {
-        $hookId = self::getHookId($hookName); 
+        $hookId = self::getHookId($hookName);
         $unique = implode("_", array($moduleId, $hookId, $moduleHookName));
         $moduleHookCache = self::getModuleHookCache();
         if (!isset($moduleHookCache[$unique])) {
             throw new Exception(sprintf(_('Could not find module hook named %s'), $moduleHookName));
         }
         $db = Di::getDefault()->get('db_centreon');
-        $db->prepare("DELETE FROM module_hooks 
+        $db->prepare(
+            "DELETE FROM module_hooks 
             WHERE module_id = ? 
             AND hook_id = ? 
-            AND module_hook_name = ?");
+            AND module_hook_name = ?"
+        );
         $db->execute(array($moduleId, $hookId, $moduleHookName));
         unset(self::$moduleHookCache[$unique]);
     }
@@ -251,9 +255,12 @@ class Hook
         $hooks = self::getModulesFromHook(self::TYPE_ACTION);
         $emitter = Di::getDefault()->get('action_hooks');
         foreach ($hooks as $hook) {
-            $emitter->on($hook['hook_name'], function($params) use ($hook) {
-                call_user_func(array("\\Modules\\".$hook['module'], $hook['hook_name']), $params);
-            });
+            $emitter->on(
+                $hook['hook_name'],
+                function ($params) use ($hook) {
+                    call_user_func(array("\\Modules\\".$hook['module'], $hook['hook_name']), $params);
+                }
+            );
         }
     }
 }
