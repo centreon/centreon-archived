@@ -6,4 +6,4 @@ Advanced
 
    advanced/autologin
    advanced/ldap
-   
+   advanced/snmptrap
