@@ -50,7 +50,7 @@ sub new {
     );
     bless $self, $class;
     $self->add_options(
-        "config-extra" => \$self->{opt_extra},
+        "config-extra:s" => \$self->{opt_extra},
     );
     %{$self->{centreontrapd_default_config}} =
       (
@@ -79,7 +79,6 @@ sub run {
     my $self = shift;
 
     $self->SUPER::run();
-    $self->init();
 
     # Create file in spool directory based on current time
     my ($s, $usec) = gettimeofday;
