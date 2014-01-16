@@ -63,7 +63,8 @@
 	$form->addElement('checkbox', 'debug_rrdtool', _("RRDTool debug"));
 	$form->addElement('checkbox', 'debug_ldap_import', _("LDAP User Import debug"));
 	$form->addElement('checkbox', 'debug_centcore', _("Centcore Engine debug"));
-        $form->addElement('checkbox', 'debug_centstorage', _("Centstorage debug"));
+    $form->addElement('checkbox', 'debug_centstorage', _("Centstorage debug"));
+    $form->addElement('checkbox', 'debug_centreontrapd', _("Centreontrapd debug"));
 
 	function slash($elem = NULL)	{
 		if ($elem)

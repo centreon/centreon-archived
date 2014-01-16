@@ -13,3 +13,4 @@ $help['tip_ldap_user_import_debug'] = dgettext('help', 'Enables LDAP user import
 $help['tip_sql_debug'] = dgettext('help', 'Enables SQL debug.');
 $help['tip_centcore_debug'] = dgettext('help', 'Enables Centcore debug.');
 $help['tip_centstorage_debug'] = dgettext('help', 'Enables Centstorage debug.');
+$help['tip_centreontrapd_debug'] = dgettext('help', 'Enables Centreontrapd debug.');
