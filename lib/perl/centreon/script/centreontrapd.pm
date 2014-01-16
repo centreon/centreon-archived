@@ -1018,8 +1018,8 @@ sub run {
             $self->{logger}->writeLogDebug("Processing file: $file");
             
             # Test can delete before. Dont go after if we cant
-            if (! -w $self->{centreontrapd_config}->{spool_directory} . $file) {
-                $self->{logger}->writeLogError("Dont have write permission on '" . $self->{centreontrapd_config}->{spool_directory} . $file . "' file.");
+            if (! -w $self->{centreontrapd_config}->{spool_directory} . '/' . $file) {
+                $self->{logger}->writeLogError("Dont have write permission on '" . $self->{centreontrapd_config}->{spool_directory} . '/' . $file . "' file.");
                 if ($self->{centreontrapd_config}->{policy_trap} == 1) {
                     unshift @{$self->{filenames}}, $file;
                     # We're waiting. We are in a loop
@@ -1032,7 +1032,7 @@ sub run {
             $self->manage_pool(1);
             $self->check_sequential_todo();
             
-            if (open FILE, $self->{centreontrapd_config}->{spool_directory} . $file) {
+            if (open FILE, $self->{centreontrapd_config}->{spool_directory} . '/' . $file) {
                 my $unlink_trap = 1;
                 my $trap_is_a_duplicate = 0;
                 my $readtrap_result = centreon::trapd::lib::readtrap(logger => $self->{logger},
@@ -1067,7 +1067,7 @@ sub run {
                 
                 close FILE;
                 if ($self->{centreontrapd_config}->{policy_trap} == 0 || ($self->{centreontrapd_config}->{policy_trap} == 1 && $unlink_trap == 1)) {
-                    unless (unlink($self->{centreontrapd_config}->{spool_directory} . $file)) {
+                    unless (unlink($self->{centreontrapd_config}->{spool_directory} . '/' . $file)) {
                         $self->{logger}->writeLogError("Unable to delete trap file $file from spool dir:$!");
                     }
                 } else {
@@ -1080,7 +1080,7 @@ sub run {
                     sleep $self->{centreontrapd_config}->{sleep};
                 }
             } else {
-                $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . "$file: ($!)");
+                $self->{logger}->writeLogError("Could not open trap file " . $self->{centreontrapd_config}->{spool_directory} . '/' . "$file: ($!)");
                 if ($self->{centreontrapd_config}->{policy_trap} == 1) {
                     $self->{logger}->writeLogError("Dont skip trap. Need to solve the error.");
                     # we reput in
