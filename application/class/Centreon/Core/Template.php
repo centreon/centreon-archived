@@ -58,7 +58,13 @@ class Template extends \Smarty
      *
      * @var array 
      */
-    private $jsResources;
+    private $jsTopResources;
+    
+    /**
+     *
+     * @var array 
+     */
+    private $jsBottomResources;
     
     /**
      *
@@ -76,7 +82,8 @@ class Template extends \Smarty
         $this->caching = $enableCaching;
         
         $this->cssResources = array();
-        $this->jsResources = array();
+        $this->jsTopResources = array();
+        $this->jsBottomResources = array();
         $this->buildExclusionList();
         parent::__construct();
         $this->initConfig();
@@ -108,7 +115,8 @@ class Template extends \Smarty
     {
         $this->exclusionList = array(
             'cssFileList',
-            'jsFileList'
+            'jsTopFileList',
+            'jsBottomFileList'
         );
     }
     
@@ -128,9 +136,11 @@ class Template extends \Smarty
     /**
      * 
      */
-    private function loadResources() {
+    private function loadResources()
+    {
         parent::assign('cssFileList', $this->cssResources);
-        parent::assign('jsFileList', $this->jsResources);
+        parent::assign('jsTopFileList', $this->jsTopResources);
+        parent::assign('jsBottomFileList', $this->jsBottomResources);
     }
     
     /**
@@ -139,7 +149,7 @@ class Template extends \Smarty
      */
     public function addCss($fileName)
     {
-        if (isStaticFileExist('css', $fileName)) {
+        if ($this->isStaticFileExist('css', $fileName)) {
             throw new Exception(_('The given file does not exist'));
         }
         
@@ -153,15 +163,26 @@ class Template extends \Smarty
      * 
      * @param string $fileName Javascript file to add
      */
-    public function addJs($fileName)
+    public function addJs($fileName, $loadingLocation = 'bottom')
     {
-        if (isStaticFileExist('js', $fileName)) {
+        if ($this->isStaticFileExist('js', $fileName)) {
             throw new Exception(_('The given file does not exist'));
         }
-            
-        if (!in_array($fileName, $this->jsResources)) {
-            $this->jsResources[] = $fileName;
+        
+        switch(strtolower($loadingLocation)) {
+            case 'bottom':
+            default:
+                $jsArray = 'jsBottomResources';
+                break;
+            case 'top':
+                $jsArray = 'jsTopResources';
+                break;
         }
+        
+        if (!in_array($fileName, $this->$jsArray)) {
+            $this->{$jsArray}[] = $fileName;
+        }
+        
         return $this;
     }
 
@@ -191,22 +212,20 @@ class Template extends \Smarty
     {
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
-        $basePath = trim($config->get('global','base_path'), '/');
+        $basePath = trim($config->get('global', 'base_path'), '/');
         
         switch(strtolower($type)) {
             case 'css':
-                $staticFilePath = trim($config->get('static_file','css_path'), '/');
+                $staticFilePath = trim($config->get('static_file', 'css_path'), '/');
                 break;
-            
             case 'js':
-                $staticFilePath = trim($config->get('static_file','js_path'), '/');
+                $staticFilePath = trim($config->get('static_file', 'js_path'), '/');
                 break;
-            
             case 'img':
-                $staticFilePath = trim($config->get('static_file','img_path'), '/');
+                $staticFilePath = trim($config->get('static_file', 'img_path'), '/');
                 break;
-            
-            default: throw new Exception(_('The given filetype is not supported'));
+            default:
+                throw new Exception(_('The given filetype is not supported'));
         }
         
         if (!file_exists($basePath.'/'.$staticFilePath.'/'.$filename)) {

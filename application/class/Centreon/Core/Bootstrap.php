@@ -89,20 +89,26 @@ class Bootstrap
     private function initDatabase()
     {
         $config = $this->config;
-        $this->di->set('db_centreon', function () use ($config) {
-            return new \Centreon\Core\Db(
-                $config->get('db_centreon', 'dsn'),
-                $config->get('db_centreon', 'username'),
-                $config->get('db_centreon', 'password')
-            );
-        });
-        $this->di->set('db_storage', function () use ($config) {
-            return new \Centreon\Core\Db(
-                $config->get('db_storage', 'dsn'),
-                $config->get('db_storage', 'username'),
-                $config->get('db_storage', 'password')
-            );
-        });
+        $this->di->set(
+            'db_centreon',
+            function () use ($config) {
+                return new \Centreon\Core\Db(
+                    $config->get('db_centreon', 'dsn'),
+                    $config->get('db_centreon', 'username'),
+                    $config->get('db_centreon', 'password')
+                );
+            }
+        );
+        $this->di->set(
+            'db_storage',
+            function () use ($config) {
+                return new \Centreon\Core\Db(
+                    $config->get('db_storage', 'dsn'),
+                    $config->get('db_storage', 'username'),
+                    $config->get('db_storage', 'password')
+                );
+            }
+        );
     }
 
     /**
@@ -127,9 +133,12 @@ class Bootstrap
      */
     private function initActionHooks()
     {
-        $this->di->set('action_hooks', function () {
-            return new \Evenement\EventEmitter();
-        });
+        $this->di->set(
+            'action_hooks',
+            function () {
+                return new \Evenement\EventEmitter();
+            }
+        );
         Hook::initActionListeners();
     }
 
@@ -138,8 +147,11 @@ class Bootstrap
      */
     private function initTemplate()
     {
-        $this->di->set('template', function () {
-            return new Template();
-        });
+        $this->di->set(
+            'template',
+            function () {
+                return new Template();
+            }
+        );
     }
 }
