@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -35,6 +35,8 @@
 if (!isset($centreon_path)) {
     die ('Centreon path not set.');
 }
+
+$centreon_path = '/srv/centreon-3/';
 
 set_include_path(implode(PATH_SEPARATOR, array(
     realpath($centreon_path . '/www/class'),

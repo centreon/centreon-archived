@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -32,13 +32,13 @@
  * For more information : contact@centreon.com
  *
  */
-
+  
 /*
  * Bench
  */
-function microtime_float()  {
-    list($usec, $sec) = explode(" ", microtime());
-    return ((float)$usec + (float)$sec);
+function microtime_float() 	{
+  list($usec, $sec) = explode(" ", microtime());
+  return ((float)$usec + (float)$sec);
 }
 
 set_time_limit(60);
@@ -49,17 +49,17 @@ $advanced_search = 0;
 /*
  * Define
  */
-define('SMARTY_DIR', realpath('../GPL_LIB/Smarty/libs/') . '/');
+define('SMARTY_DIR', realpath('../application/class/public/Smarty/libs/') . '/');
 
 /*
  * Include
  */
-require_once "@CENTREON_ETC@/centreon.conf.php";
+require_once "../config/centreon.ini.php";
 
-require_once "$classdir/centreonDB.class.php";
-require_once "$classdir/centreonLang.class.php";
-require_once "$classdir/centreonSession.class.php";
-require_once "$classdir/centreon.class.php";
+require_once "centreonDB.class.php";
+require_once "centreonLang.class.php";
+require_once "centreonSession.class.php";
+require_once "centreon.class.php";
 require_once SMARTY_DIR."Smarty.class.php";
 
 /*
@@ -67,10 +67,8 @@ require_once SMARTY_DIR."Smarty.class.php";
  *  - centreon
  *  - centstorage
  */
-$pearDB     = new CentreonDB();
-$pearDBO    = new CentreonDB("centstorage");
-
-ini_set("session.gc_maxlifetime", "31536000");
+$pearDB 	= new CentreonDB();
+$pearDBO 	= new CentreonDB("centstorage");
 
 CentreonSession::start();
 
@@ -80,7 +78,7 @@ CentreonSession::start();
 $DBRESULT = $pearDB->query("SELECT * FROM `options` WHERE `key` = 'session_expire' LIMIT 1");
 $session_expire = $DBRESULT->fetchRow();
 if (!isset($session_expire["value"]) || !$session_expire["value"]) {
-    $session_expire["value"] = 2;
+  $session_expire["value"] = 2;
 }
 $time_limit = time() - ($session_expire["value"] * 60);
 
@@ -90,34 +88,35 @@ $DBRESULT = $pearDB->query("DELETE FROM `session` WHERE `last_reload` < '".$time
  * Get session and Check if session is not expired
  */
 $DBRESULT = $pearDB->query("SELECT `user_id` FROM `session` WHERE `session_id` = '".session_id()."'");
+
 if (!$DBRESULT->numRows()) {
-    header("Location: index.php?disconnect=2");
+  header("Location: index.php?disconnect=2");
 }
 
-/*
- * Check autologin here
- */
+// Check autologin here
+
+
 if (!isset($_SESSION["centreon"])) {
-    if (!isset($_GET['autologin'])) {
-        header("Location: index.php?disconnect=1");
-    } else {
-        $args = NULL;
-        foreach ($_GET as $key=>$value) { 
-            $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
-        }
-        header("Location: index.php?".$args."");
-    }
+  if (!isset($_GET['autologin'])) {
+    header("Location: index.php?disconnect=1");
+  } else {
+    $args = NULL;
+    foreach ($_GET as $key=>$value)
+      $args ? $args .= "&".$key."=".$value : $args = $key."=".$value;
+            
+    header("Location: index.php?".$args."");
+  }
 }
 
 /*
  * Define Oreon var alias
  */
 if (isset($_SESSION["centreon"])) {
-    $centreon = $_SESSION["centreon"];
-    $oreon = $centreon;
+  $centreon = $_SESSION["centreon"];
+  $oreon = $centreon;
 }
 if (!isset($centreon) || !is_object($centreon)) {
-    exit();
+  exit();
 }
 
 /*
@@ -129,18 +128,18 @@ unset($centreon->optGen);
 $centreon->initOptGen($pearDB);
 
 if (!$p) {
-    $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
-    if (isset($root_menu["topology_page"])) {
-        $p = $root_menu["topology_page"];
-    } else {
-        $p = NULL;
+  $root_menu = get_my_first_allowed_root_menu($centreon->user->access->topologyStr);
+  if (isset($root_menu["topology_page"])) {
+    $p = $root_menu["topology_page"];
+  } else {
+    $p = NULL;
+  }
+  if (isset($root_menu["topology_url_opt"])) {
+    $tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
+    if (isset($tab[1])) {
+      $o = $tab[1];
     }
-    if (isset($root_menu["topology_url_opt"])) {
-        $tab = preg_split("/\=/", $root_menu["topology_url_opt"]);
-        if (isset($tab[1])) {
-            $o = $tab[1];
-        }
-    }
+  }
 }
 
 /*
@@ -150,13 +149,13 @@ $level1 = NULL;
 $level2 = NULL;
 $level3 = NULL;
 $level4 = NULL;
-switch (strlen($p)) {
-    case 1 :  $level1= $p; break;
-    case 3 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
-    case 5 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
-    case 6 :  $level1 = substr($p, 0, 2); $level2 = substr($p, 2, 2); $level3 = substr($p, 3, 2); break;
-    case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
-    default : $level1= $p; break;
+switch (strlen($p))	{
+case 1 :  $level1= $p; break;
+case 3 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
+case 5 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); break;
+case 6 :  $level1 = substr($p, 0, 2); $level2 = substr($p, 2, 2); $level3 = substr($p, 3, 2); break;
+case 7 :  $level1 = substr($p, 0, 1); $level2 = substr($p, 1, 2); $level3 = substr($p, 3, 2); $level4 = substr($p, 5, 2); break;
+default : $level1= $p; break;
 }
 
 /*
@@ -168,12 +167,12 @@ $skin = "./Themes/".$data["value"]."/";
 
 $tab_file_css = array();
 $i = 0;
-if ($handle  = @opendir($skin."Color")) {
-    while ($file = @readdir($handle)) {
-        if (is_file($skin."Color"."/$file"))
-            $tab_file_css[$i++] = $file;
-    }
-    @closedir($handle);
+if ($handle  = @opendir($skin."Color"))	{
+  while ($file = @readdir($handle)) {
+    if (is_file($skin."Color"."/$file"))
+      $tab_file_css[$i++] = $file;
+  }
+  @closedir($handle);
 }
 
 $colorfile = "Color/". $tab_file_css[0];
@@ -183,7 +182,7 @@ $colorfile = "Color/". $tab_file_css[0];
  */
 $DBRESULT = $pearDB->query("SELECT `css_name` FROM `css_color_menu` WHERE `menu_nb` = '".$level1."'");
 if ($DBRESULT->numRows() && ($elem = $DBRESULT->fetchRow())) {
-    $colorfile = "Color/".$elem["css_name"];
+  $colorfile = "Color/".$elem["css_name"];
 }
 
 /*

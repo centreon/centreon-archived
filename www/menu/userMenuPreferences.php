@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -30,16 +30,12 @@
  * do not wish to do so, delete this exception statement from your version.
  * 
  * For more information : contact@centreon.com
- * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
  
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path."/www/class/centreonDB.class.php";
-	require_once $centreon_path."/www/class/centreon.class.php";
-	require_once $centreon_path."/www/class/centreonSession.class.php";
+	require_once "../../config/centreon.ini.php";
+	require_once "centreonDB.class.php";
+	require_once "centreon.class.php";
+	require_once "centreonSession.class.php";
 	
 	session_start();
 	if(!isset($_SESSION['centreon']) || !isset($_GET['div']) || !isset($_GET['uid']))

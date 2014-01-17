@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,322 +31,319 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-	ini_set("display_errors", "Off");
+ini_set("display_errors", "Off");
 
-	$debug = 0;
+$debug = 0;
 
-	include_once "@CENTREON_ETC@/centreon.conf.php";
+include_once "../../../../../../../config/centreon.ini.php";
 
-	require_once $centreon_path . "www/class/centreonXMLBGRequest.class.php";
-    require_once $centreon_path . 'www/class/centreonLang.class.php';
-	include_once $centreon_path . "www/include/common/common-Func.php";
+require_once "centreonXMLBGRequest.class.php";
+require_once 'centreonLang.class.php';
+include_once $centreon_path."www/include/common/common-Func.php";
 
-	session_start();
-    if (!isset($_SESSION['centreon'])) {
-		exit();
-	}
-    $centreon = $_SESSION['centreon'];
+session_start();
+if (!isset($_SESSION['centreon'])) {
+    exit();
+}
+$centreon = $_SESSION['centreon'];
 
-	$centreonLang = new CentreonLang($centreon_path, $centreon);
-	$centreonLang->bindLang();
+$centreonLang = new CentreonLang($centreon_path, $centreon);
+$centreonLang->bindLang();
 
-	/*
-	 * Create XML Request Objects
-	 */
-	$obj = new CentreonXMLBGRequest((isset($_POST["sid"]) ? $_POST["sid"] : $_GET["sid"]), 1, 1, 0, $debug);
+/*
+ * Create XML Request Objects
+ */
+$obj = new CentreonXMLBGRequest((isset($_POST["sid"]) ? $_POST["sid"] : $_GET["sid"]), 1, 1, 0, $debug);
 
-	if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
-		$obj->reloadSession();
-	} else {
-		print "Bad Session ID";
-		exit();
-	}
+if (isset($obj->session_id) && CentreonSession::checkSession($obj->session_id, $obj->DB)) {
+    $obj->reloadSession();
+} else {
+    print "Bad Session ID";
+    exit();
+}
 
-	/* *********************************************
-	 * Get active poller only
-	 */
-	$pollerList = "";
-	$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
-	$DBRESULT = $obj->DB->query($request);
-	while ($d = $DBRESULT->fetchRow()) {
-		if ($pollerList != "") {
-			$pollerList .= ", ";
-		}
-		$pollerList .= "'".$d["name"]."'";
-	}
-	$DBRESULT->free();
+/* *********************************************
+ * Get active poller only
+ */
+$pollerList = "";
+$request = "SELECT name FROM nagios_server WHERE ns_activate = '1'";
+$DBRESULT = $obj->DB->query($request);
+while ($d = $DBRESULT->fetchRow()) {
+    if ($pollerList != "") {
+        $pollerList .= ", ";
+    }
+    $pollerList .= "'".$d["name"]."'";
+}
+$DBRESULT->free();
 
-	/* *********************************************
-	 * Get Host stats
-	 */
-	$rq1 = 	" SELECT count(DISTINCT name), state " .
-			" FROM hosts ";
-	if (!$obj->is_admin) {
-		$rq1 .= " , centreon_acl ";
-	}
-	$rq1 .= " WHERE name NOT LIKE '_Module_%' ";
-	if (!$obj->is_admin) {
-		$rq1 .= " AND hosts.host_id = centreon_acl.host_id ";
-	}
-	$rq1 .= " AND hosts.enabled = 1 ";
-	$rq1 .= $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
-			" GROUP BY state";
+/* *********************************************
+ * Get Host stats
+ */
+$rq1 = 	" SELECT count(DISTINCT name), state " .
+    " FROM hosts ";
+if (!$obj->is_admin) {
+    $rq1 .= " , centreon_acl ";
+}
+$rq1 .= " WHERE name NOT LIKE '_Module_%' ";
+if (!$obj->is_admin) {
+    $rq1 .= " AND hosts.host_id = centreon_acl.host_id ";
+}
+$rq1 .= " AND hosts.enabled = 1 ";
+$rq1 .= $obj->access->queryBuilder("AND", "centreon_acl.group_id", $obj->grouplistStr) .
+    " GROUP BY state";
 
-	$hostCounter = 0;
-	$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4=> 0);
-	$DBRESULT = $obj->DBC->query($rq1);
-	while ($data = $DBRESULT->fetchRow()) {
-		$host_stat[$data["state"]] = $data["count(DISTINCT name)"];
-		$hostCounter += $host_stat[$data["state"]];
-	}
-	$DBRESULT->free();
-	unset($data);
+$hostCounter = 0;
+$host_stat = array(0 => 0, 1 => 0, 2 => 0, 3 => 0, 4=> 0);
+$DBRESULT = $obj->DBC->query($rq1);
+while ($data = $DBRESULT->fetchRow()) {
+    $host_stat[$data["state"]] = $data["count(DISTINCT name)"];
+    $hostCounter += $host_stat[$data["state"]];
+}
+$DBRESULT->free();
+unset($data);
 
-	/* *********************************************
-	 * Get Service stats
-	 */
-	if (!$obj->is_admin) {
-		$rq2 = 	" SELECT COUNT(DISTINCT CONCAT(hosts.host_id,';', services.service_id)) as count, services.state" .
-				" FROM services, hosts, centreon_acl " .
-				" WHERE hosts.name NOT LIKE '_Module_%' ".
-				" AND hosts.host_id = services.host_id".
-				" AND services.host_id = centreon_acl.host_id ".
-				" AND services.service_id = centreon_acl.service_id " .
-				" AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
-		        " AND hosts.enabled = 1 " .
-		        " AND services.enabled = 1 " .
-				" GROUP BY services.state";
-	} else {
-		$rq2 = 	" SELECT count(services.state) AS count, services.state" .
-				" FROM services, hosts" .
-				" WHERE hosts.name NOT LIKE '_Module_%' ".
-				" AND hosts.host_id = services.host_id".
-				" AND hosts.enabled = 1 " .
-		        " AND services.enabled = 1 " .
-				" GROUP BY services.state";
-	}
-	$serviceCounter = 0;
-	$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
-	$DBRESULT = $obj->DBC->query($rq2);
-	while ($data = $DBRESULT->fetchRow()) {
-		$svc_stat[$data["state"]] = $data["count"];
-		$serviceCounter += $svc_stat[$data["state"]];
-	}
-	$DBRESULT->free();
-	unset($ndo);
+/* *********************************************
+ * Get Service stats
+ */
+if (!$obj->is_admin) {
+    $rq2 = 	" SELECT COUNT(DISTINCT CONCAT(hosts.host_id,';', services.service_id)) as count, services.state" .
+        " FROM services, hosts, centreon_acl " .
+        " WHERE hosts.name NOT LIKE '_Module_%' ".
+        " AND hosts.host_id = services.host_id".
+        " AND services.host_id = centreon_acl.host_id ".
+        " AND services.service_id = centreon_acl.service_id " .
+        " AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
+        " AND hosts.enabled = 1 " .
+        " AND services.enabled = 1 " .
+        " GROUP BY services.state";
+} else {
+    $rq2 = 	" SELECT count(services.state) AS count, services.state" .
+        " FROM services, hosts" .
+        " WHERE hosts.name NOT LIKE '_Module_%' ".
+        " AND hosts.host_id = services.host_id".
+        " AND hosts.enabled = 1 " .
+        " AND services.enabled = 1 " .
+        " GROUP BY services.state";
+}
+$serviceCounter = 0;
+$svc_stat = array(0=>0, 1=>0, 2=>0, 3=>0, 4=>0, 6=>0, 7=>0, 8=>0);
+$DBRESULT = $obj->DBC->query($rq2);
+while ($data = $DBRESULT->fetchRow()) {
+    $svc_stat[$data["state"]] = $data["count"];
+    $serviceCounter += $svc_stat[$data["state"]];
+}
+$DBRESULT->free();
+unset($ndo);
 
-	/* ********************************************
-	 *  Get Real non-ok Status
-	 */
-	if (!$obj->is_admin) {
-        $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
-		    	"FROM services s, `hosts` h, centreon_acl " .
-    			"WHERE s.host_id IS NOT NULL " .
-				" 	AND s.host_id = h.host_id " .
-				"	AND s.scheduled_downtime_depth = '0' " .
-				"	AND s.acknowledged = '0' " .
-				"	AND s.state <> '0' " .
-            	"   AND s.host_id = centreon_acl.host_id ".
-				"   AND s.service_id = centreon_acl.service_id " .
-        		"   AND s.enabled = 1 " .
-				"   AND h.enabled = 1 " .
-        		"   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
-				"	AND h.state = '0' " .
-				" GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
-	} else {
-	    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
-		    	"FROM services s, `hosts` h " .
-    			"WHERE s.host_id IS NOT NULL " .
-	    		" 	AND s.host_id = h.host_id " .
-				"	AND s.scheduled_downtime_depth = '0' " .
-				"	AND s.acknowledged = '0' " .
-				"	AND s.state <> '0' " .
-				"	AND h.state = '0' " .
-	    		"   AND s.enabled = 1 " .
-	    		"   AND h.enabled = 1 " .
-				" GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
-	}
-	$DBRESULT = $obj->DBC->query($rq3);
-	while ($ndo = $DBRESULT->fetchRow()) {
-		$svc_stat[$ndo["state"] + 5] = $ndo["number"];
-	}
-	$DBRESULT->free();
-	unset($ndo);
+/* ********************************************
+ *  Get Real non-ok Status
+ */
+if (!$obj->is_admin) {
+    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
+        "FROM services s, `hosts` h, centreon_acl " .
+        "WHERE s.host_id IS NOT NULL " .
+        " 	AND s.host_id = h.host_id " .
+        "	AND s.scheduled_downtime_depth = '0' " .
+        "	AND s.acknowledged = '0' " .
+        "	AND s.state <> '0' " .
+        "   AND s.host_id = centreon_acl.host_id ".
+        "   AND s.service_id = centreon_acl.service_id " .
+        "   AND s.enabled = 1 " .
+        "   AND h.enabled = 1 " .
+        "   AND centreon_acl.group_id IN (".$obj->grouplistStr.") ".
+        "	AND h.state = '0' " .
+        " GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
+} else {
+    $rq3 =  "SELECT COUNT(DISTINCT CONCAT(s.service_id,';', s.host_id)) as number, s.state_type, s.acknowledged, s.scheduled_downtime_depth, s.state " .
+        "FROM services s, `hosts` h " .
+        "WHERE s.host_id IS NOT NULL " .
+        " 	AND s.host_id = h.host_id " .
+        "	AND s.scheduled_downtime_depth = '0' " .
+        "	AND s.acknowledged = '0' " .
+        "	AND s.state <> '0' " .
+        "	AND h.state = '0' " .
+        "   AND s.enabled = 1 " .
+        "   AND h.enabled = 1 " .
+        " GROUP BY s.state, s.acknowledged, s.scheduled_downtime_depth";
+}
+$DBRESULT = $obj->DBC->query($rq3);
+while ($ndo = $DBRESULT->fetchRow()) {
+    $svc_stat[$ndo["state"] + 5] = $ndo["number"];
+}
+$DBRESULT->free();
+unset($ndo);
 
-	/* ********************************************
-	 * Check Poller Status
-	 */
-	$status = 0;
-	$latency = 0;
-	$activity = 0;
-	$error = "";
-	$pollerListInError = "";
-        $pollersWithLatency = array();
+/* ********************************************
+ * Check Poller Status
+ */
+$status = 0;
+$latency = 0;
+$activity = 0;
+$error = "";
+$pollerListInError = "";
+$pollersWithLatency = array();
 
-	/*
-	 * Get minimum check interval
-	 */
-	$request = "SELECT MIN(check_interval) FROM services WHERE active_checks = 1";
-	$DBRESULT = $obj->DBC->query($request);
-	if (isset($DBRESULT) && $DBRESULT->numRows()) {
-		$data = $DBRESULT->fetchRow();
-		$minInterval = $data["MIN(check_interval)"];
-	} else {
-		$minInterval = 5;
-	}
+/*
+ * Get minimum check interval
+ */
+$request = "SELECT MIN(check_interval) FROM services WHERE active_checks = 1";
+$DBRESULT = $obj->DBC->query($request);
+if (isset($DBRESULT) && $DBRESULT->numRows()) {
+    $data = $DBRESULT->fetchRow();
+    $minInterval = $data["MIN(check_interval)"];
+} else {
+    $minInterval = 5;
+}
 
-	/*
-	 * Get minimin interval lenght
-	 */
-	$request = "SELECT MIN(interval_length) FROM cfg_nagios";
-	$DBRESULT = $obj->DB->query($request);
-	$data = $DBRESULT->fetchRow();
-	$intervalLength = $data["MIN(interval_length)"];
+/*
+ * Get minimin interval lenght
+ */
+$request = "SELECT MIN(interval_length) FROM cfg_nagios";
+$DBRESULT = $obj->DB->query($request);
+$data = $DBRESULT->fetchRow();
+$intervalLength = $data["MIN(interval_length)"];
 
-	/* *****************************************************
-	 * Unit Time
-	 */
-	$timeUnit = $minInterval * $intervalLength;
+/* *****************************************************
+ * Unit Time
+ */
+$timeUnit = $minInterval * $intervalLength;
 
-	if ($pollerList != "") {
-		$request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id " .
-					"FROM instances " .
-					"WHERE name IN ($pollerList)";
-		$DBRESULT = $obj->DBC->query($request);
-		$inactivInstance = "";
-		while ($ndo = $DBRESULT->fetchRow()) {
-			/*
-			 * Running
-			 */
-			if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 5))) {
-				$status = 1;
-				if ($pollerListInError != "") {
-					$pollerListInError .= ", ";
-				}
-				$pollerListInError .= $ndo["name"];
-			}
-			if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 2)) {
-				$status = 2;
-				if ($pollerListInError != "") {
-					$pollerListInError .= ", ";
-				}
-				$pollerListInError .= $ndo["name"];
-			}
-			/*
-			 * Activity
-			 */
-			if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
-				$activity = 2;
-				if ($inactivInstance != "") {
-	            	$inactivInstance .= ",";
-	            }
-	            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
-			} else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
-				$activity = 1;
-				if ($inactivInstance != "") {
-	            	$inactivInstance .= ",";
-	            }
-	            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
-			}
+if ($pollerList != "") {
+    $request = 	"SELECT `last_alive` AS last_update, `running`, name, instance_id " .
+        "FROM instances " .
+        "WHERE name IN ($pollerList)";
+    $DBRESULT = $obj->DBC->query($request);
+    $inactivInstance = "";
+    while ($ndo = $DBRESULT->fetchRow()) {
+        /*
+         * Running
+         */
+        if ($status != 2 && ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 5))) {
+            $status = 1;
+            if ($pollerListInError != "") {
+                $pollerListInError .= ", ";
+            }
+            $pollerListInError .= $ndo["name"];
+        }
+        if ($ndo["running"] == 0 || (time() - $ndo["last_update"] >= $timeUnit * 2)) {
+            $status = 2;
+            if ($pollerListInError != "") {
+                $pollerListInError .= ", ";
+            }
+            $pollerListInError .= $ndo["name"];
+        }
+        /*
+         * Activity
+         */
+        if ($activity != 2 && (time() - $ndo["last_update"] >= $timeUnit * 4)) {
+            $activity = 2;
+            if ($inactivInstance != "") {
+                $inactivInstance .= ",";
+            }
+            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+        } else if ((time() - $ndo["last_update"] >= $timeUnit * 2)) {
+            $activity = 1;
+            if ($inactivInstance != "") {
+                $inactivInstance .= ",";
+            }
+            $inactivInstance .= $ndo["name"]." [".(time() - $ndo["last_update"])."s / ".($timeUnit * 2)."s]";
+        }
 	
-		}
-		$DBRESULT->free();
+    }
+    $DBRESULT->free();
 	
-		$error = "Pollers $pollerListInError not running.";
+    $error = "Pollers $pollerListInError not running.";
 		
-		$request = 	"SELECT stat_value, i.instance_id, name " .
-						"FROM `nagios_stats` ns, instances i " .
-						"WHERE ns.stat_label = 'Service Check Latency' " .
-						"	AND ns.stat_key LIKE 'Average' " .
-						"	AND ns.instance_id = i.instance_id" .
-						"	AND i.name IN ($pollerList)";
-		$DBRESULT = $obj->DBC->query($request);
-		while ($ndo = $DBRESULT->fetchRow()) {
-			if (!$latency && $ndo["stat_value"] >= 60) {
-				$latency = 1;
-                                $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
-			}
-			if ($ndo["stat_value"] >= 120) {
-				$latency = 2;
-                                $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
-			}
-		}
-		$DBRESULT->free();
-		unset($ndo);
+    $request = 	"SELECT stat_value, i.instance_id, name " .
+        "FROM `nagios_stats` ns, instances i " .
+        "WHERE ns.stat_label = 'Service Check Latency' " .
+        "	AND ns.stat_key LIKE 'Average' " .
+        "	AND ns.instance_id = i.instance_id" .
+        "	AND i.name IN ($pollerList)";
+    $DBRESULT = $obj->DBC->query($request);
+    while ($ndo = $DBRESULT->fetchRow()) {
+        if (!$latency && $ndo["stat_value"] >= 60) {
+            $latency = 1;
+            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+        }
+        if ($ndo["stat_value"] >= 120) {
+            $latency = 2;
+            $pollersWithLatency[$ndo['instance_id']] = $ndo['name'];
+        }
+    }
+    $DBRESULT->free();
+    unset($ndo);
 		
-	} else {
-		$pollerListInError = "";
-		$inactivInstance = "";
-	}
+} else {
+    $pollerListInError = "";
+    $inactivInstance = "";
+}
 	
-	/* ********************************************
-	 * Error Messages
-	 */
-	if ($status != 0) {
-		$errorPstt = "$error";
-	} else {
-		$errorPstt = _("OK: all pollers are running");
-	}
+/* ********************************************
+ * Error Messages
+ */
+if ($status != 0) {
+    $errorPstt = "$error";
+} else {
+    $errorPstt = _("OK: all pollers are running");
+}
 
-	if ($latency && count($pollersWithLatency)) {
-            $errorLtc = sprintf(_("Latency detected on %s; check configuration for better optimisation"), implode(',', $pollersWithLatency));
-	} else {
-            $errorLtc = _("OK: no latency detected on your platform");
-	}
+if ($latency && count($pollersWithLatency)) {
+    $errorLtc = sprintf(_("Latency detected on %s; check configuration for better optimisation"), implode(',', $pollersWithLatency));
+} else {
+    $errorLtc = _("OK: no latency detected on your platform");
+}
 
-	if ($activity != 0) {
-		$errorAct = _("Some database poller updates are not active; check your nagios platform");
-	} else {
-		$errorAct = _("OK: all database poller updates are active");
-	}
+if ($activity != 0) {
+    $errorAct = _("Some database poller updates are not active; check your nagios platform");
+} else {
+    $errorAct = _("OK: all database poller updates are active");
+}
 
-	/* *********************************************
-	 * Create Buffer
-	 */
-	$obj->XML = new CentreonXML();
-	$obj->XML->startElement("reponse");
-	$obj->XML->startElement("infos");
-	$obj->XML->writeElement("filetime", time());
-	$obj->XML->endElement();
-	$obj->XML->startElement("s");
-	$obj->XML->writeElement("th", $hostCounter);
-	$obj->XML->writeElement("ts", $serviceCounter);
-	$obj->XML->writeElement("o", $svc_stat["0"]);
-	$obj->XML->writeElement("w", $svc_stat["1"]);
-	$obj->XML->writeElement("wU", $svc_stat["6"]);
-	$obj->XML->writeElement("c", $svc_stat["2"]);
-	$obj->XML->writeElement("cU", $svc_stat["7"]);
-	$obj->XML->writeElement("un1", $svc_stat["3"]);
-	$obj->XML->writeElement("un1U", $svc_stat["8"]);
-	$obj->XML->writeElement("p1", $svc_stat["4"]);
-	$obj->XML->writeElement("up", $host_stat["0"]);
-	$obj->XML->writeElement("d", $host_stat["1"]);
-	$obj->XML->writeElement("un2", $host_stat["2"]);
-	$obj->XML->writeElement("p2", $host_stat["4"]);
-	$obj->XML->endElement();
-	$obj->XML->startElement("m");
-	$obj->XML->writeElement("pstt", $status);
-	$obj->XML->writeElement("ltc", $latency);
-	$obj->XML->writeElement("act", $activity);
-	$obj->XML->writeElement("errorPstt", $errorPstt);
-	$obj->XML->writeElement("errorLtc", $errorLtc);
-	$obj->XML->writeElement("errorAct", $errorAct);
-	$obj->XML->endElement();
-	$obj->XML->endElement();
+/* *********************************************
+ * Create Buffer
+ */
+$obj->XML = new CentreonXML();
+$obj->XML->startElement("reponse");
+$obj->XML->startElement("infos");
+$obj->XML->writeElement("filetime", time());
+$obj->XML->endElement();
+$obj->XML->startElement("s");
+$obj->XML->writeElement("th", $hostCounter);
+$obj->XML->writeElement("ts", $serviceCounter);
+$obj->XML->writeElement("o", $svc_stat["0"]);
+$obj->XML->writeElement("w", $svc_stat["1"]);
+$obj->XML->writeElement("wU", $svc_stat["6"]);
+$obj->XML->writeElement("c", $svc_stat["2"]);
+$obj->XML->writeElement("cU", $svc_stat["7"]);
+$obj->XML->writeElement("un1", $svc_stat["3"]);
+$obj->XML->writeElement("un1U", $svc_stat["8"]);
+$obj->XML->writeElement("p1", $svc_stat["4"]);
+$obj->XML->writeElement("up", $host_stat["0"]);
+$obj->XML->writeElement("d", $host_stat["1"]);
+$obj->XML->writeElement("un2", $host_stat["2"]);
+$obj->XML->writeElement("p2", $host_stat["4"]);
+$obj->XML->endElement();
+$obj->XML->startElement("m");
+$obj->XML->writeElement("pstt", $status);
+$obj->XML->writeElement("ltc", $latency);
+$obj->XML->writeElement("act", $activity);
+$obj->XML->writeElement("errorPstt", $errorPstt);
+$obj->XML->writeElement("errorLtc", $errorLtc);
+$obj->XML->writeElement("errorAct", $errorAct);
+$obj->XML->endElement();
+$obj->XML->endElement();
 
-	/*
-	 * Send headers
-	 */
-	$obj->header();
+/*
+ * Send headers
+ */
+$obj->header();
 
-	/*
-	 * Display XML data
-	 */
-	$obj->XML->output();
+/*
+ * Display XML data
+ */
+$obj->XML->output();
 
 ?>

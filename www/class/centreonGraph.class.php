@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -36,13 +36,13 @@
 /*
  * this class need also others classes
  */
-require_once $centreon_path."www/class/centreonDuration.class.php";
-require_once $centreon_path."www/class/centreonGMT.class.php";
-require_once $centreon_path."www/class/centreonACL.class.php";
-require_once $centreon_path."www/class/centreonDB.class.php";
-require_once $centreon_path."www/class/centreonHost.class.php";
-require_once $centreon_path."www/class/centreonService.class.php";
-require_once $centreon_path."www/class/centreonSession.class.php";
+require_once "centreonDuration.class.php";
+require_once "centreonGMT.class.php";
+require_once "centreonACL.class.php";
+require_once "centreonDB.class.php";
+require_once "centreonHost.class.php";
+require_once "centreonService.class.php";
+require_once "centreonSession.class.php";
 require_once $centreon_path."www/include/common/common-Func.php";
 
 /*

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,43 +31,43 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
-    ini_set("display_errors", "Off");
+ini_set("display_errors", "Off");
 
-	require_once "@CENTREON_ETC@/centreon.conf.php";
-	require_once $centreon_path . "www/class/centreonSession.class.php";
-	require_once $centreon_path . "www/class/centreon.class.php";
-	require_once $centreon_path . "www/class/centreonDB.class.php";
-	require_once $centreon_path . "www/class/centreonXML.class.php";
-	require_once $centreon_path . "www/class/centreonGMT.class.php";
+require_once "../../../../config/centreon.ini.php";
+require_once "centreonSession.class.php";
+require_once "centreon.class.php";
+require_once "centreonDB.class.php";
+require_once "centreonXML.class.php";
+require_once "centreonGMT.class.php";
 
-	$pearDB = new CentreonDB();
-	$buffer = new CentreonXML();
-	$buffer->startElement("entry");
+$pearDB = new CentreonDB();
+$buffer = new CentreonXML();
+$buffer->startElement("entry");
 
-	session_start();
-	if (isset($_SESSION['centreon'])) {
-	    $oreon = $_SESSION['centreon'];
-    	$currentTime = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
-    	$DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . htmlentities($_GET['sid'], ENT_QUOTES, "UTF-8") . "'");
-    	if ($DBRESULT->numRows()) {
-    		$buffer->writeElement("state", "ok");
-    	} else {
-    		$buffer->writeElement("state", "nok");
-    	}
-	} else {
-        $currentTime = date(_("Y/m/d G:i"));
-	    $buffer->writeElement("state", "nok");
-	}
-	$buffer->writeElement("time", $currentTime);
-	$buffer->endElement();
-	header('Content-Type: text/xml');
-	header('Pragma: no-cache');
-	header('Expires: 0');
-	header('Cache-Control: no-cache, must-revalidate');
-	$buffer->output();
+session_start();
+if (isset($_SESSION['centreon'])) {
+    $oreon = $_SESSION['centreon'];
+    $currentTime = $oreon->CentreonGMT->getDate(_("Y/m/d G:i"), time(), $oreon->user->getMyGMT());
+    $DBRESULT = $pearDB->query("SELECT user_id FROM session WHERE session_id = '" . htmlentities($_GET['sid'], ENT_QUOTES, "UTF-8") . "'");
+    if ($DBRESULT->numRows()) {
+        $buffer->writeElement("state", "ok");
+    } else {
+        $buffer->writeElement("state", "nok");
+    }
+} else {
+    $currentTime = date(_("Y/m/d G:i"));
+    $buffer->writeElement("state", "nok");
+}
+$buffer->writeElement("time", $currentTime);
+$buffer->endElement();
+
+header('Content-Type: text/xml');
+header('Pragma: no-cache');
+header('Expires: 0');
+header('Cache-Control: no-cache, must-revalidate');
+
+$buffer->output();
+
 ?>

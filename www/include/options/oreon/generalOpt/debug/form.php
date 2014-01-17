@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
@@ -63,8 +61,9 @@
 	$form->addElement('checkbox', 'debug_rrdtool', _("RRDTool debug"));
 	$form->addElement('checkbox', 'debug_ldap_import', _("LDAP User Import debug"));
 	$form->addElement('checkbox', 'debug_centcore', _("Centcore Engine debug"));
-        $form->addElement('checkbox', 'debug_centstorage', _("Centstorage debug"));
-
+    $form->addElement('checkbox', 'debug_centstorage', _("Centstorage debug"));
+    $form->addElement('checkbox', 'debug_centreontrapd', _("Centreontrapd debug"));
+    
 	function slash($elem = NULL)	{
 		if ($elem)
 			return rtrim($elem, "/")."/";

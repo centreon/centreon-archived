@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -30,9 +30,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
@@ -67,7 +64,7 @@ if (false === mysql_query("CREATE DATABASE ".$_SESSION['CONFIGURATION_DB']) && !
  * Create tables
  */
 mysql_select_db($_SESSION['CONFIGURATION_DB']);
-$result = splitQueries('../../createTables.sql', ';', null, '../../tmp/createTables');
+$result = splitQueries('../../install/sql/createTables.sql', ';', null, '../../tmp/createTables');
 if ("0" != $result) {
     exitProcess(PROCESS_ID, 1, $result);
 }

@@ -1,6 +1,6 @@
 <?php
 /*
-* Copyright 2005-2011 MERETHIS
+* Copyright 2005-2014 MERETHIS
 * Centreon is developped by : Julien Mathis and Romain Le Merlus under
 * GPL Licence 2.0.
 *
@@ -62,8 +62,8 @@ $elemArr = array(1 => array(), 2 => array(), 3 => array(), 4 => array());
 $auth = NULL;
 
 require_once("./menu/MenuJS.php");
-require_once $centreon_path . 'www/class/centreonMenu.class.php';
-require_once $centreon_path . 'www/class/centreonLang.class.php';
+require_once 'centreonMenu.class.php';
+//require_once $centreon_path . 'www/class/centreonLang.class.php';
 
 $centreonMenu = new CentreonMenu(new CentreonLang($centreon_path, $oreon));
 

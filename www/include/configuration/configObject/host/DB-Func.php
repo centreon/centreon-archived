@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -39,9 +39,9 @@ if (!isset($centreon)) {
 
 global $centreon_path;
 
-require_once $centreon_path . 'www/class/centreonLDAP.class.php';
-require_once $centreon_path . 'www/class/centreonContactgroup.class.php';
-require_once $centreon_path . 'www/class/centreonACL.class.php';
+require_once 'centreonLDAP.class.php';
+require_once 'centreonContactgroup.class.php';
+//require_once 'centreonACL.class.php';
 
 /**
  * Quickform rule that checks whether or not monitoring server can be set

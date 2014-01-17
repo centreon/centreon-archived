@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -30,9 +30,6 @@
  * do not wish to do so, delete this exception statement from your version.
  *
  * For more information : contact@centreon.com
- *
- * SVN : $URL
- * SVN : $Id$
  *
  */
 
@@ -65,7 +62,7 @@
 		exit;
 	}
 
-	define('SMARTY_DIR', $centreon_path . 'GPL_LIB/Smarty/libs/');
+	define('SMARTY_DIR', $centreon_path . 'application/class/public/Smarty/libs/');
 
 	require_once SMARTY_DIR . "Smarty.class.php";
 

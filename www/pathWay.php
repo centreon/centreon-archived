@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  * 
@@ -31,108 +31,110 @@
  * 
  * For more information : contact@centreon.com
  * 
- * SVN : $URL$
- * SVN : $Id$
- * 
  */
   
-	if (!isset($centreon))
-		exit();
+if (!isset($centreon)) {
+    exit();
+}
 
-	function getTopologyParent($p)	{
-		global $pearDB;
-		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
-		$DBRESULT = $pearDB->query($rqPath);
-		
-		$redirectPath = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		return $redirectPath;
-	}
+function getTopologyParent($p)	{
+    global $pearDB;
+    
+    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
+    $DBRESULT = $pearDB->query($rqPath);
 	
-	function getTopologyDataPage($p)	{
-		global $pearDB;
-		$rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
-		$DBRESULT = $pearDB->query($rqPath);
-		$redirectPath = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		return $redirectPath;
-	}
-	
-	function getTopologyParentPage($p)	{
-		global $pearDB;
-		$rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
-		$DBRESULT = $pearDB->query($rqPath);
-		$redirectPath = $DBRESULT->fetchRow();
-		$DBRESULT->free();
-		return $redirectPath["topology_parent"];
-	}
-	
-	
-	$tab = getTopologyParent($p);
-	$tabPath = array();
+    $redirectPath = $DBRESULT->fetchRow();
+    $DBRESULT->free();
+    return $redirectPath;
+}
 
-	$NameTopology = _($tab["topology_name"]);
+function getTopologyDataPage($p)	{
+    global $pearDB;
+    
+    $rqPath = "SELECT `topology_url`, `topology_url_opt`, `topology_parent`, `topology_name`, `topology_page` FROM `topology` WHERE `topology_page` = '".$p."' ORDER BY `topology_page`";
+    $DBRESULT = $pearDB->query($rqPath);
+    $redirectPath = $DBRESULT->fetchRow();
+    $DBRESULT->free();
+    return $redirectPath;
+}
 
-	$tabPath[$tab["topology_page"]] = array();
-	$tabPath[$tab["topology_page"]]["name"] = $NameTopology;
-	$tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
-	$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
-	$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
-
-	while ($tab["topology_parent"]){
-		$tab = getTopologyParent($tab["topology_parent"]);
-		$tabPath[$tab["topology_page"]] = array();
-		$tabPath[$tab["topology_page"]]["name"] = _($tab["topology_name"]);
-		$tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
-		$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
-		$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
-	}
-	ksort($tabPath);
-
-	$DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
-	$current = $DBRESULT->fetchRow();
-	$DBRESULT->free();
+function getTopologyParentPage($p)	{
+    global $pearDB;
 	
-	$page = $p;
-	if (isset($tabPath[$p]) && !$tabPath[$p]["url"])
-		while (1){
-			$DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
-			if (!$DBRESULT->numRows())
-				break;
-			$new_url = $DBRESULT->fetchRow();
-			$DBRESULT->free();
-			$tabPath[$new_url["topology_page"]] = array();
-			$tabPath[$new_url["topology_page"]]["name"] = _($new_url["topology_name"]);
-			$tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
-			$tabPath[$new_url["topology_page"]]["page"] = $new_url["topology_page"];
-			$page = $new_url["topology_page"];
-			if (isset($new_url["topology_url"]) && $new_url["topology_url"])
-				break;
-		}
-		
-	/**
-     * Not displaying two entries in a row having the same name
-     */
-	$tmpLastTabKeyAndName = null;
-        foreach ($tabPath as $pageNumber => $tabInPath) {
-            if($tmpLastTabKeyAndName && $tabInPath['name'] === $tmpLastTabKeyAndName['name']){
-                unset($tabPath[$tmpLastTabKeyAndName['key']]);
-            }
-            $tmpLastTabKeyAndName = array('key' => $pageNumber, 'name' => $tabInPath['name']);
-        }
+	$rqPath = "SELECT `topology_parent` FROM `topology` WHERE `topology_page` = '".$p."'";
+    $DBRESULT = $pearDB->query($rqPath);
+    $redirectPath = $DBRESULT->fetchRow();
+    $DBRESULT->free();
+    return $redirectPath["topology_parent"];
+}
 
-	if ($centreon->user->access->page($p)){	
-		$flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
-		foreach ($tabPath as $cle => $valeur){
-			echo $flag;
-			?><a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php print $valeur["name"]; ?></a><?php
-			$flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
-		}
+
+$tab = getTopologyParent($p);
+$tabPath = array();
+
+$NameTopology = _($tab["topology_name"]);
+
+$tabPath[$tab["topology_page"]] = array();
+$tabPath[$tab["topology_page"]]["name"] = $NameTopology;
+$tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
+$tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
+$tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
+
+while ($tab["topology_parent"]){
+    $tab = getTopologyParent($tab["topology_parent"]);
+    $tabPath[$tab["topology_page"]] = array();
+    $tabPath[$tab["topology_page"]]["name"] = _($tab["topology_name"]);
+    $tabPath[$tab["topology_page"]]["opt"] = $tab["topology_url_opt"];
+    $tabPath[$tab["topology_page"]]["page"] = $tab["topology_page"];
+    $tabPath[$tab["topology_page"]]["url"] = $tab["topology_url"];
+}
+ksort($tabPath);
+
+$DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page = '".$p."'");
+$current = $DBRESULT->fetchRow();
+$DBRESULT->free();
+
+$page = $p;
+if (isset($tabPath[$p]) && !$tabPath[$p]["url"]) {
+    while (1) {
+        $DBRESULT = $pearDB->query("SELECT * FROM topology WHERE topology_page LIKE '".$page."%' AND topology_parent = '$page' ORDER BY topology_order, topology_page ASC");
+        if (!$DBRESULT->numRows())
+            break;
+        $new_url = $DBRESULT->fetchRow();
+        $DBRESULT->free();
+        $tabPath[$new_url["topology_page"]] = array();
+        $tabPath[$new_url["topology_page"]]["name"] = _($new_url["topology_name"]);
+        $tabPath[$new_url["topology_page"]]["opt"] = $new_url["topology_url_opt"];
+        $tabPath[$new_url["topology_page"]]["page"] = $new_url["topology_page"];
+        $page = $new_url["topology_page"];
+        if (isset($new_url["topology_url"]) && $new_url["topology_url"])
+            break;
+    }
+}
+
+/**
+ * Not displaying two entries in a row having the same name
+ */
+$tmpLastTabKeyAndName = null;
+foreach ($tabPath as $pageNumber => $tabInPath) {
+    if($tmpLastTabKeyAndName && $tabInPath['name'] === $tmpLastTabKeyAndName['name']){
+        unset($tabPath[$tmpLastTabKeyAndName['key']]);
+    }
+    $tmpLastTabKeyAndName = array('key' => $pageNumber, 'name' => $tabInPath['name']);
+}
+
+if ($centreon->user->access->page($p)){	
+    $flag = '<img src="./img/icones/8x14/pathWayBlueStart.gif" class="imgPathWay">&nbsp;';
+    foreach ($tabPath as $cle => $valeur){
+        echo $flag;
+        ?><a href="main.php?p=<?php echo $cle.$valeur["opt"]; ?>" class="pathWay" ><?php print $valeur["name"]; ?></a><?php
+                                                                                                                        $flag = '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
+    }
 	
-		if (isset($_GET["host_id"]))	{
-			echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
-			echo getMyHostName(htmlentities($_GET["host_id"], ENT_QUOTES, "UTF-8"));
-		}
-	}
+    if (isset($_GET["host_id"]))	{
+        echo '&nbsp;<img src="./img/icones/8x14/pathWayBlue.gif" class="imgPathWay">&nbsp;';
+        echo getMyHostName(htmlentities($_GET["host_id"], ENT_QUOTES, "UTF-8"));
+    }
+}
 ?>
 <hr>

@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -220,7 +220,8 @@ function updateDebugConfigData($gopt_id = null)	{
     updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
     updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
     updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
-
+    updateOption($pearDB, "debug_centreontrapd", isset($ret["debug_centreontrapd"]) && $ret['debug_centreontrapd'] ? 1 : 0);
+    
     $oreon->initOptGen($pearDB);
 }
 

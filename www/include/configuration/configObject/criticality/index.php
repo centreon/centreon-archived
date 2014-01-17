@@ -31,9 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
 if (!isset($oreon)) {
@@ -61,7 +58,7 @@ if (isset($_REQUEST['dupNbr'])) {
 require_once 'HTML/QuickForm.php';
 require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
-require_once './class/centreonCriticality.class.php';
+require_once 'centreonCriticality.class.php';
 
 /*
  * Path to the configuration dir

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -34,8 +34,8 @@
  */
 
 
-require_once $centreon_path . 'www/class/centreonDB.class.php';
-require_once $centreon_path . 'www/class/centreonGMT.class.php';
+require_once 'centreonDB.class.php';
+require_once 'centreonGMT.class.php';
 
 class CentreonUtils
 {

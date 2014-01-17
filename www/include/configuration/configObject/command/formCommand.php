@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,250 +31,263 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
- 	if (!isset($oreon))
- 		exit();
+if (!isset($centreon)) {
+    exit();
+}
 
- 	include_once $path . "commandType.php";
+include_once $path . "commandType.php";
 
- 	/*
-	 * Form Rules
-	 */
+/*
+ * Form Rules
+ */
 
-	function myReplace()	{
-		global $form;
-		$ret = $form->getSubmitValues();
-		return (str_replace(" ", "_", $ret["command_name"]));
-	}
+function myReplace() {
+    global $form;
 
-	require_once $centreon_path . "www/include/configuration/configObject/command/javascript/commandJs.php";
+    $ret = $form->getSubmitValues();
+    return (str_replace(" ", "_", $ret["command_name"]));
+}
 
-	/*
-	 * Database retrieve information for Command
-	 */
+require_once $centreon_path . "www/include/configuration/configObject/command/javascript/commandJs.php";
 
-	$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
-	$cmd = array();
+/*
+ * Database retrieve information for Command
+ */
 
-	$nbRow = "10";
-	$strArgDesc = "";
+$plugins_list = return_plugin($oreon->optGen["nagios_path_plugins"]);
+$cmd = array();
 
-	if (($o == "c" || $o == "w") && $command_id)	{
-		$DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+$strArgDesc = "";
 
-		# Set base value
-		$cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
-	    $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
-		$strArgDesc = "";
-		$nbRow = 0;
-	    while ($row = $DBRESULT->fetchRow()) {
-			$strArgDesc .= $row['macro_name'] . " : " . html_entity_decode($row['macro_description']) . "\n";
-			$nbRow++;
-		}
-	}
+if (($o == "c" || $o == "w") && $command_id) {
+    $DBRESULT = $pearDB->query("SELECT * FROM `command` WHERE `command_id` = '".$command_id."' LIMIT 1");
+  
+    /*
+     * Set base value
+     */
+    $cmd = array_map("myDecodeCommand", $DBRESULT->fetchRow());
+    $DBRESULT = $pearDB->query("SELECT * FROM `command_arg_description` WHERE `cmd_id` = '".$command_id."'");
+    $strArgDesc = "";
+    $nbRow = 0;
+    while ($row = $DBRESULT->fetchRow()) {
+        $strArgDesc .= $row['macro_name'] . " : " . html_entity_decode($row['macro_description']) . "\n";
+        $nbRow++;
+    }
+}
 
-	/*
-	 * Resource Macro
-	 */
+/*
+ * Resource Macro
+ */
 
-	$resource = array();
-	$DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
-	while ($row = $DBRESULT->fetchRow()){
-		$resource[$row["resource_name"]] = $row["resource_name"];
-		if (isset($row["resource_comment"]) && $row["resource_comment"] != "")
-			 $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
-	}
-	unset($row);
-	$DBRESULT->free();
+$resource = array();
+$DBRESULT = $pearDB->query("SELECT DISTINCT `resource_name`, `resource_comment` FROM `cfg_resource` ORDER BY `resource_line`");
+while ($row = $DBRESULT->fetchRow()) {
+    $resource[$row["resource_name"]] = $row["resource_name"];
+    if (isset($row["resource_comment"]) && $row["resource_comment"] != "") {
+        $resource[$row["resource_name"]] .= " (".$row["resource_comment"].")";
+    }
+}
+unset($row);
+$DBRESULT->free();
+
+/*
+ * Connectors
+ */
+
+$connectors = array();
+$DBRESULT = $pearDB->query("SELECT `id`, `name` FROM `connector` WHERE `enabled` = '1' ORDER BY `name`");
+while ($row = $DBRESULT->fetchRow()) {
+    $connectors[$row["id"]] = $row["name"];
+}
+unset($row);
+$DBRESULT->free();
+
+/*
+ * Graphs Template comes from DB -> Store in $graphTpls Array
+ */
+$graphTpls = array(NULL=>NULL);
+$DBRESULT = $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
+while ($graphTpl = $DBRESULT->fetchRow()) {
+    $graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
+}
+unset($graphTpl);
+$DBRESULT->free();
+
+/*
+ * Nagios Macro
+ */
+$macros = array();
+$DBRESULT = $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
+while ($row = $DBRESULT->fetchRow()) {
+    $macros[$row["macro_name"]] = $row["macro_name"];
+}
+unset($row);
+$DBRESULT->free();
+
+$attrsText 		= array("size"=>"35");
+$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
+$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
+$attrsTextarea3	= array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
+
+/*
+ * Form begin
+ */
+$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+if ($o == "a") {
+    $form->addElement('header', 'title', _("Add a Command"));
+} else if ($o == "c") {
+    $form->addElement('header', 'title', _("Modify a Command"));
+} else if ($o == "w") {
+    $form->addElement('header', 'title', _("View a Command"));
+}
+
+/*
+ * Command information
+ */
+if (isset($tabCommandType[$type])) {
+    $form->addElement('header', 'information', $tabCommandType[$type]);
+} else {
+    $form->addElement('header', 'information', _("Information"));
+}
+$form->addElement('header', 'furtherInfos', _("Additional Information"));
+
+if (isset($tabCommandType)) {
+    foreach ($tabCommandType as $id => $name) {
+        $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);
+    }
+} else {
+    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
+    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
+    $cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
+}
+$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
+
+if (isset($type) && $type != "") {
+    $form->setDefaults(array('command_type' => $type));
+} else {
+    $form->setDefaults(array('command_type' => '2'));
+}
+
+if (isset($cmd['connector_id']) && is_numeric($cmd['connector_id'])) {
+    $form->setDefaults(array('connectors' => $cmd['connector_id']));
+} else {
+  
+    $form->setDefaults(array('connectors' => ""));
+    
+    $form->addElement('text', 'command_name', _("Command Name"), $attrsText);
+    $form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
+    $form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
+    $form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
+    $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null , $attrsText);
+    $argListObj = $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
+    $argListObj->setAttribute("readonly");
+    $form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
+    
+    $form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
+    $form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick"=>"clearArgs();"));
+    
+    $form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
+    
+    $tab = array();
+    $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+    $tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+    $form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
+    $form->setDefaults(array('action' => '1'));
+    $form->setDefaults(array("listOfArg"=>$strArgDesc));
+    
+    $connectors[NULL] = _("Select a connector...");
+    $form->addElement('select', 'resource', null, $resource);
+    $form->addElement('select', 'connectors', _("Connectors"), $connectors);
+    $form->addElement('select', 'macros', null, $macros);
+    
+    ksort($plugins_list);
+    $form->addElement('select', 'plugins', null, $plugins_list);
     
     /*
-	 * Connectors
-	 */
-
-	$connectors = array();
-	$DBRESULT = $pearDB->query("SELECT `id`, `name` FROM `connector` WHERE `enabled` = '1' ORDER BY `name`");
-	while ($row = $DBRESULT->fetchRow())
-		$connectors[$row["id"]] = $row["name"];
-	unset($row);
-	$DBRESULT->free();
-
-	/*
-	 * Graphs Template comes from DB -> Store in $graphTpls Array
-	 */
-	$graphTpls = array(NULL=>NULL);
-	$DBRESULT = $pearDB->query("SELECT `graph_id`, `name` FROM `giv_graphs_template` ORDER BY `name`");
-	while ($graphTpl = $DBRESULT->fetchRow())
-		$graphTpls[$graphTpl["graph_id"]] = $graphTpl["name"];
-	unset($graphTpl);
-	$DBRESULT->free();
-
-	/*
-	 * Nagios Macro
-	 */
-	$macros = array();
-	$DBRESULT = $pearDB->query("SELECT `macro_name` FROM `nagios_macro` ORDER BY `macro_name`");
-	while ($row = $DBRESULT->fetchRow())
-		$macros[$row["macro_name"]] = $row["macro_name"];
-	unset($row);
-	$DBRESULT->free();
-
-	$attrsText 		= array("size"=>"35");
-	$attrsTextarea 	= array("rows"=>"9", "cols"=>"65", "id"=>"command_line");
-	$attrsTextarea2 = array("rows"=>"$nbRow", "cols"=>"100", "id"=>"listOfArg");
-	$attrsTextarea3	= array("rows"=>"5", "cols"=>"50", "id"=>"command_comment");
-
-	/*
-	 * Form begin
-	 */
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Command"));
-	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Command"));
-	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Command"));
-
-	/*
-	 * Command information
-	 */
-	if (isset($tabCommandType[$type]))
-		$form->addElement('header', 'information', $tabCommandType[$type]);
-	else
-		$form->addElement('header', 'information', _("Information"));
-	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-
-	if (isset($tabCommandType)) {
-		foreach ($tabCommandType as $id => $name) {
-			$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, $name, $id);
-		}
-	} else {
-		$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Notification"), '1');
-		$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Check"), '2');
-		$cmdType[] = HTML_QuickForm::createElement('radio', 'command_type', null, _("Misc"), '3');
-	}
-	$form->addGroup($cmdType, 'command_type', _("Command Type"), '&nbsp;&nbsp;');
-
-	if (isset($type) && $type != "")
-		$form->setDefaults(array('command_type' => $type));
-	else
-		$form->setDefaults(array('command_type' => '2'));
+     * Further informations
+     */
+    $form->addElement('hidden', 'command_id');
+    $redirectType = $form->addElement('hidden', 'type');
+    $redirectType->setValue($type);
+    $redirect = $form->addElement('hidden', 'o');
+    $redirect->setValue($o);
     
-    if (isset($cmd['connector_id']) && is_numeric($cmd['connector_id']))
-        $form->setDefaults(array('connectors' => $cmd['connector_id']));
-    else
-        $form->setDefaults(array('connectors' => ""));
-
-	$form->addElement('text', 'command_name', _("Command Name"), $attrsText);
-	$form->addElement('text', 'command_example', _("Argument Example"), $attrsText);
-	$form->addElement('text', 'command_hostaddress', _("\$HOSTADDRESS\$"), $attrsText);
-	$form->addElement('textarea', 'command_line', _("Command Line"), $attrsTextarea);
-    $form->addElement('checkbox', 'enable_shell', _("Enable shell"), null , $attrsText);
-	$argListObj = $form->addElement('textarea', 'listOfArg', _("Argument Descriptions"), $attrsTextarea2);
-	$argListObj->setAttribute("readonly");
-	$form->addElement('select', 'graph_id', _("Graph template"), $graphTpls);
-
-	$form->addElement('button', 'desc_arg', _("Describe arguments"), array("onClick"=>"goPopup();"));
-    $form->addElement('button', 'clear_arg', _("Clear arguments"), array("onClick"=>"clearArgs();"));
-
-	$form->addElement('textarea', 'command_comment', _("Comment"), $attrsTextarea2);
-
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-	$form->setDefaults(array('action' => '1'));
-	$form->setDefaults(array("listOfArg"=>$strArgDesc));
-
-    $connectors[NULL] = _("Select a connector...");
-	$form->addElement('select', 'resource', null, $resource);
-    $form->addElement('select', 'connectors', _("Connectors"), $connectors);
-	$form->addElement('select', 'macros', null, $macros);
-
-	ksort($plugins_list);
-	$form->addElement('select', 'plugins', null, $plugins_list);
-
-	/*
-	 * Further informations
-	 */
-	$form->addElement('hidden', 'command_id');
-	$redirectType = $form->addElement('hidden', 'type');
-	$redirectType->setValue($type);
-	$redirect = $form->addElement('hidden', 'o');
-	$redirect->setValue($o);
-
-	$form->applyFilter('__ALL__', 'myTrim');
-	$form->applyFilter('command_name', 'myReplace');
-	$form->applyFilter('__ALL__', 'myTrim');
-	$form->addRule('command_name', _("Compulsory Name"), 'required');
-	$form->addRule('command_line', _("Compulsory Command Line"), 'required');
-	$form->registerRule('exist', 'callback', 'testCmdExistence');
-	$form->addRule('command_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
-
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
-
-	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
-	# prepare help texts
-	$helptext = "";
-	include_once("help.php");
-	foreach ($help as $key => $text) {
-		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
-	}
-	$tpl->assign("helptext", $helptext);
-
-	/*
-	 * Just watch a Command information
-	 */
-	if ($o == "w")	{
-		if ($centreon->user->access->page($p) != 2)
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
-	    $form->setDefaults($cmd);
-		$form->freeze();
-	} else if ($o == "c")	{
-		/*
-		 * Modify a Command information
-		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	    $form->setDefaults($cmd);
-	} else if ($o == "a")	{
-		/*
-		 * Add a Command information
-		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	}
-
-	$tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
-	$tpl->assign('cmd_help',_("Plugin Help"));
-	$tpl->assign('cmd_play',_("Test the plugin"));
-
-	$valid = false;
-	if ($form->validate())	{
-		$cmdObj = $form->getElement('command_id');
-		if ($form->getSubmitValue("submitA"))
-			$cmdObj->setValue(insertCommandInDB());
-		else if ($form->getSubmitValue("submitC"))
-			updateCommandInDB($cmdObj->getValue());
-		$o = NULL;
-		$cmdObj = $form->getElement('command_id');
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$cmdObj->getValue()."'"));
-		$form->freeze();
-		$valid = true;
-	}
-
-	?><script type='text/javascript'>
-	<!--
-	function insertValueQuery(elem) {
-	    var myQuery = document.Form.command_line;
+    $form->applyFilter('__ALL__', 'myTrim');
+    $form->applyFilter('command_name', 'myReplace');
+    $form->applyFilter('__ALL__', 'myTrim');
+    $form->addRule('command_name', _("Compulsory Name"), 'required');
+    $form->addRule('command_line', _("Compulsory Command Line"), 'required');
+    $form->registerRule('exist', 'callback', 'testCmdExistence');
+    $form->addRule('command_name', _("Name is already in use"), 'exist');
+    $form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+  
+    /*
+     * Smarty template Init
+     */
+    $tpl = new Smarty();
+    $tpl = initSmartyTpl($path, $tpl);
+    
+    $tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+    
+    /* 
+     * prepare help texts
+     */
+    $helptext = "";
+    include_once("help.php");
+    foreach ($help as $key => $text) {
+        $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+    }
+    $tpl->assign("helptext", $helptext);
+    
+    /*
+     * Just watch a Command information
+     */
+    if ($o == "w") {
+        if ($centreon->user->access->page($p) != 2)
+            $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$command_id."&type=".$type."'"));
+        $form->setDefaults($cmd);
+        $form->freeze();
+    } else if ($o == "c") {
+        /*
+         * Modify a Command information
+         */
+        $subC = $form->addElement('submit', 'submitC', _("Save"));
+        $res = $form->addElement('reset', 'reset', _("Reset"));
+        $form->setDefaults($cmd);
+    } else if ($o == "a") {
+        /*
+         * Add a Command information
+         */
+        $subA = $form->addElement('submit', 'submitA', _("Save"));
+        $res = $form->addElement('reset', 'reset', _("Reset"));
+    }
+    
+    $tpl->assign('msg', array ("comment"=>_("Commands definitions can contain Macros but they have to be valid.")));
+    $tpl->assign('cmd_help',_("Plugin Help"));
+    $tpl->assign('cmd_play',_("Test the plugin"));
+    
+    $valid = false;
+    if ($form->validate()) {
+        $cmdObj = $form->getElement('command_id');
+        if ($form->getSubmitValue("submitA")) {
+            $cmdObj->setValue(insertCommandInDB());
+        } else if ($form->getSubmitValue("submitC")) {
+            updateCommandInDB($cmdObj->getValue());
+        }
+        $o = NULL;
+        $cmdObj = $form->getElement('command_id');
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&command_id=".$cmdObj->getValue()."'"));
+        $form->freeze();
+        $valid = true;
+    }
+    
+    ?><script type='text/javascript'>
+           <!--
+           function insertValueQuery(elem) {
+        var myQuery = document.Form.command_line;
 		if(elem == 1)	{
 			var myListBox = document.Form.resource;
 		} else if (elem == 2)	{
@@ -312,22 +325,23 @@
 	    }
 	}
 	//-->
-	</script><?php
+	</script>
+          <?php
+          
+    $action = $form->getSubmitValue("action");
+    if ($valid && $action["action"]["action"]) {
+        require_once($path."listCommand.php");
+    } else {
+        /*
+         * Apply a template definition
+         */
+        $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
+        $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+        $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+        $form->accept($renderer);
 
-	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"])
-		require_once($path."listCommand.php");
-	else	{
-		/*
-		 * Apply a template definition
-		 */
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
-		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);
-		$tpl->assign('form', $renderer->toArray());
-		$tpl->assign('o', $o);
-		$tpl->assign('arg_desc_label', _("Argument Descriptions"));
-		$tpl->display("formCommand.ihtml");
-	}
-?>
+        $tpl->assign('form', $renderer->toArray());
+        $tpl->assign('o', $o);
+        $tpl->assign('arg_desc_label', _("Argument Descriptions"));
+        $tpl->display("formCommand.ihtml");
+    }

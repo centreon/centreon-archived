@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -62,8 +62,14 @@ $typeName = $cbObj->getTypeName($typeId);
 $fields = $cbObj->getBlockInfos($typeId);
 $helps[] = array('name' => $tag . '[' . $pos . '][name]', 'desc' => _('The name of block configuration'));
 $helps[] = array('name' => $tag . '[' . $pos . '][type]', 'desc' => _('The type of block configuration'));
+$cbObj->nbSubGroup = 1;
 foreach ($fields as $field) {
-    $helps[] = array('name' => $tag . '[' . $pos . '][' . $field['fieldname'] . ']', 'desc' => _($field['description']));
+    $fieldname = '';
+    if ($field['group'] !== '') {
+        $fieldname .= $cbObj->getParentGroups($field['group']);
+    }
+    $fieldname .= $field['fieldname'];
+    $helps[] = array('name' => $tag . '[' . $pos . '][' . $fieldname . ']', 'desc' => _($field['description']));
 }
 
 /*

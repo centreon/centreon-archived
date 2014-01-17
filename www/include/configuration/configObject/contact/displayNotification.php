@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL: http://svn.centreon.com/branches/centreon-2.3.x/www/include/options/accessLists/resourcesACL/showUsersAccess.php $
- * SVN : $Id: showUsersAccess.php 12517 2011-09-20 08:26:49Z shotamchay $
  *
  */
 

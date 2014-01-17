@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright 2005-2011 MERETHIS
+ * Copyright 2005-2014 MERETHIS
  * Centreon is developped by : Julien Mathis and Romain Le Merlus under
  * GPL Licence 2.0.
  *
@@ -31,8 +31,6 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
  *
  */
 
@@ -67,9 +65,12 @@ class CentreonDB {
      */
     public function __construct($db = "centreon", $retry = 3, $silent = false) {
         try {
-            include("@CENTREON_ETC@/centreon.conf.php");
+            include("/srv/centreon-3/config/centreon.ini.php");
 
-            require_once $centreon_path . "/www/class/centreonLog.class.php";
+            // TODO : find a better solution
+            if (!class_exists("CentreonLog")) {
+              require_once "centreonLog.class.php";  
+            }
             $this->log = new CentreonLog();
 
             $this->centreon_path = $centreon_path;
