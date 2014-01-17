@@ -245,6 +245,17 @@
         "columns": [
             {
                 "length": null,
+                "name": "id_metric"
+            }
+        ],
+        "indexName": "index_metric",
+        "tableName": "data_bin",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
                 "name": "metric_id"
             }
         ],
@@ -306,6 +317,21 @@
         "indexName": "PRIMARY",
         "tableName": "data_stats_yearly",
         "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "host_id"
+            },
+            {
+                "length": null,
+                "name": "start_time"
+            }
+        ],
+        "indexName": "downtimeManager_hostList",
+        "tableName": "downtimes",
+        "unique": false
     },
     {
         "columns": [
@@ -477,6 +503,17 @@
         "indexName": "host_id",
         "tableName": "hosts",
         "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "name"
+            }
+        ],
+        "indexName": "host_name",
+        "tableName": "hosts",
+        "unique": false
     },
     {
         "columns": [
@@ -1196,9 +1233,31 @@
                 "name": "trap_id"
             }
         ],
-        "indexName": "PRIMARY",
-        "tableName": "log_snmptt",
-        "unique": true
+        "indexName": "trap_id",
+        "tableName": "log_traps",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "trap_time"
+            }
+        ],
+        "indexName": "trap_time",
+        "tableName": "log_traps",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "fk_log_traps"
+            }
+        ],
+        "indexName": "fk_log_traps",
+        "tableName": "log_traps_args",
+        "unique": false
     },
     {
         "columns": [
@@ -1325,6 +1384,17 @@
         "indexName": "host_id",
         "tableName": "services",
         "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "description"
+            }
+        ],
+        "indexName": "service_description",
+        "tableName": "services",
+        "unique": false
     },
     {
         "columns": [
