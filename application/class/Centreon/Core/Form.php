@@ -271,9 +271,13 @@ class Form
         }
         $elem = $this->formProcessor
             ->addElement('text', $name, $param)
-            ->setId($name)
-            ->addClass("input-".$style)
-            ->setLabel($label);
+            ->updateAttributes(
+                array(
+                    'id'=>$name,
+                    'class' => "input-".$style,
+                    'label' => $label
+                )
+            );
         return $elem;
     }
     
@@ -290,8 +294,12 @@ class Form
     private function addElementRadio($name, $label, $elements, $defaultValue = null)
     {
         $elem = $this->formProcessor->addInputList($name)
-            ->setId($name)
-            ->setLabel($label);
+            ->updateAttributes(
+                array(
+                    'id'=>$name,
+                    'label'=> $label
+                )
+            );
         foreach ($elements as $key => $value) {
             $elem->addRadio(
                 $name,
@@ -317,8 +325,7 @@ class Form
     {
         $elem = $this->formProcessor
                         ->addElement('select', $name, array('type' => 'select-one'))
-                        ->setId($name)
-                        ->setLabel($label)
+                        ->updateAttributes(array('id'=>$name, 'label'=>$label))
                         ->loadOptions($data);
         if (!is_null($style)) {
             $elem->addClass($style);
@@ -342,11 +349,15 @@ class Form
         $this->tpl->addJs('jquery/chosen/chosen.jquery.min.js');
         $this->tpl->addJs('centreon/formMultiSelect.js');
         $elem = $this->formProcessor
-                        ->addElement('select', $name, array('multiple' => 'multiple'))
-                        ->setLabel($label)
-                        ->setId($name)
-                        ->addClass('chzn-select')
-                        ->loadOptions($data);
+                    ->addElement('select', $name, array('multiple' => 'multiple'))
+                    ->updateAttributes(
+                        array(
+                            'id'=>$name,
+                            'class'=>'chzn-select',
+                            'label'=>$label
+                        )
+                    )
+                    ->loadOptions($data);
         return $elem;
     }
     
@@ -362,19 +373,17 @@ class Form
     {
         if (!is_null($params) && count($params)) {
             $cbg = $this->formProcessor->addInputList($name)
-                ->setId($name)
-                ->setLabel($label);
+                ->updateAttributes(array('id'=>$name, 'label'=>$label));
             foreach ($params as $key => $value) {
                 $cbg->addCheckbox($name)
-                        ->setValue($key)
-                        ->setContent($value);
+                    ->setValue($key)
+                    ->setContent($value);
             }
         } else {
             $cbg = $this->formProcessor->addInputList('ctn_'.$name)
-                    ->setId('ctn_'.$name)
-                    ->setLabel($label);
+                    ->updateAttributes(array('id'=>'ctn_'.$name, 'label'=>$label));
             $cbg->addCheckbox($name)
-                    ->setId($name)
+                    ->updateAttributes(array('id'=>$name))
                     ->setValue($name);
         }
         return $cbg;
@@ -390,9 +399,8 @@ class Form
     private function addElementTextarea($name, $label)
     {
         $elem = $this->formProcessor
-                        ->addElement('textarea', $name, $this->template['textarea'])
-                        ->setLabel($label)
-                        ->setId($name);
+                    ->addElement('textarea', $name, $this->template['textarea'])
+                    ->updateAttributes(array('id'=>$name, 'label'=>$label));
         return $elem;
     }
     
@@ -406,9 +414,9 @@ class Form
     private function addElementHidden($name, $value)
     {
         $elem = $this->formProcessor
-                        ->addElement('hidden', $name)
-                        ->setId($name)
-                        ->setValue($value);
+                    ->addElement('hidden', $name)
+                    ->updateAttributes(array('id'=>$name))
+                    ->setValue($value);
         return $elem;
     }
     
@@ -423,8 +431,7 @@ class Form
     private function addElementButton($name, $label, $params = array())
     {
         $elem = $this->formProcessor->addElement('button', $name, $params)
-            ->setId($name)
-            ->setLabel($label);
+                    ->updateAttributes(array('id'=>$name, 'label'=>$label));
         return $elem;
     }
 
@@ -439,9 +446,7 @@ class Form
     private function addElementSubmit($name, $label, $params = array())
     {
         $elem = $this->formProcessor->addElement('submit', $name, $params)
-            ->setId($name)
-            ->setLabel($label)
-            ->addClass('btn-primary');
+                    ->updateAttributes(array('id'=>$name, 'label'=>$label, 'class'=>'btn-primary'));
         return $elem;
     }
 
@@ -457,8 +462,7 @@ class Form
     {
         $elem = $this->formProcessor
                         ->addElement('reset', $name, $params)
-                        ->setId($name)
-                        ->setLabel($label);
+                        ->updateAttributes(array('id'=>$name, 'label'=>$label));
         return $elem;
     }
     
@@ -473,19 +477,16 @@ class Form
     {
         $submitbar = $this->formProcessor
                             ->addElement('submitbar', $name)
-                            ->setId($name);
+                            ->updateAttributes(array('id'=>$name));
         
         $submitbar
             ->addElement('submit', 'submit')
-            ->setLabel(_('Save changes'))
-            ->setId('submit')
-            ->addClass('btn-primary');
+            ->updateAttributes(array('id'=>'submit', 'label'=>_('Save changes'), 'class'=>'btn-primary'));
         
         if ($cancel) {
             $submitbar
                 ->addElement('reset', 'reset')
-                ->setLabel(_('Cancel'))
-                ->setId('reset');
+                ->updateAttributes(array('id'=>'reset', 'label'=>_('Cancel')));
         }
         
         return $submitbar;
@@ -519,7 +520,7 @@ class Form
         }
         
         $elem
-            ->setId($name."_#index#")
+            ->updateAttributes(array('id'=>$name."_#index#"))
             ->setName($name."[#index#]");
         
         return $elem;
@@ -536,8 +537,7 @@ class Form
     {
         return $this->formProcessor
                         ->addElement('tabs', $label)
-                        ->setId($id)
-                        ->setLabel($label);
+                        ->updateAttributes(array('id'=>$id, 'label'=>$label));
     }
 
     /**
@@ -797,7 +797,7 @@ class Form
     
         $this->basicSeparator = '&nbsp;';
         
-        \HTML_QuickForm_Factory::registerElement(
+        /*\HTML_QuickForm_Factory::registerElement(
             'inputlist',
             'Centreon_InputList'
         );
@@ -813,6 +813,6 @@ class Form
         \HTML_QuickForm_Renderer::register(
             'centreon',
             'QuickForm_Renderer_Centreon_Horizontal'
-        );
+        );*/
     }
 }
