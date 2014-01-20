@@ -17,8 +17,8 @@ If you are using Centreon Broker
 * Stop the centreon-broker daemon
 * Upgrade Centreon-Broker on all the pollers
 * Restart all the engines
-* Upgrade Centreon (web install)
 * Execute /path/to/centreon/www/install/tools/migration/changeRrdDsName.pl
+* Upgrade Centreon (web install)
 * Check that your graphs are showing properly on the web interface
 * Start the centreon-broker daemon
 
