@@ -642,28 +642,7 @@ for ($i = 1; $i <= 2; $i++) { ?>
 		var l = document.createTextNode(i);
 		k.appendChild(l);
 	}
-	for (i = 200; i <= 500 ; i += 100, j++) {
-		var k = document.createElement('option');
-		k.value = i;
-		sel1.appendChild(k);
-		if (_limit == i) {
-			_index = j;
-		}
-		var l = document.createTextNode(i);
-		k.appendChild(l);
-	}
-
 	for (i = 10, j = 0; i <= 100 ; i += 10, j++) {
-		var k = document.createElement('option');
-		k.value = i;
-		sel2.appendChild(k);
-		if (_limit == i) {
-			_index = j;
-		}
-		var l = document.createTextNode(i);
-		k.appendChild(l);
-	}
-	for (i = 200; i <= 500 ; i += 100, j++) {
 		var k = document.createElement('option');
 		k.value = i;
 		sel2.appendChild(k);
