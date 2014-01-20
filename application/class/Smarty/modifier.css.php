@@ -11,10 +11,9 @@
 function smarty_modifier_css($cssFile) {
     $di = \Centreon\Core\Di::getDefault();
     $config = $di->get('config');
-    $baseWebPath = trim($config->get('global','base_web_path'), '/');
-    $cssPath = trim($config->get('static_file','css_path'), '/');
+    $cssPath = trim($config->get('global','base_url'), '/').'/static/centreon/css/';
     $cssIncludeLine = '<link href="'.
-            $baseWebPath.'/'.$cssPath.'/'.$cssFile.
+            $cssPath.$cssFile.
             '" rel="stylesheet" type="text/css"/>';
     return $cssIncludeLine;
 }
