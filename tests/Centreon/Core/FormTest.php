@@ -8,13 +8,24 @@ use Centreon\Core\Config,
 
 class FormTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAddButton()
+    public function setUp()
     {
         $config = new Config(DATA_DIR . '/test-template.ini');
         $di = new Di();
         $di->setShared('config', $config);
         $tpl = new Template();
         $di->setShared('template', $tpl);
+        parent::setUp();
+    }
+    
+    public function tearDown()
+    {
+        Di::reset();
+    }
+    
+    public function testAddButton()
+    {
+        $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
         $form->add('testClassiqueInput', 'button' , _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
@@ -32,11 +43,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     
     public function testAddHidden()
     {
-        $config = new Config(DATA_DIR . '/test-template.ini');
-        $di = new Di();
-        $di->setShared('config', $config);
-        $tpl = new Template();
-        $di->setShared('template', $tpl);
+        $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
         $form->add('o', 'hidden', '', array('value' => '0'));
         $tpl->assign('form', $form->toSmarty());
@@ -53,11 +60,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     
     public function testAddReset()
     {
-        $config = new Config(DATA_DIR . '/test-template.ini');
-        $di = new Di();
-        $di->setShared('config', $config);
-        $tpl = new Template();
-        $di->setShared('template', $tpl);
+        $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
         $form->add('testClassiqueInput', 'reset', _("Reset"));
         $tpl->assign('form', $form->toSmarty());
@@ -75,11 +78,7 @@ class FormTest extends \PHPUnit_Framework_TestCase
     
     public function testAddText()
     {
-        $config = new Config(DATA_DIR . '/test-template.ini');
-        $di = new Di();
-        $di->setShared('config', $config);
-        $tpl = new Template();
-        $di->setShared('template', $tpl);
+        $tpl = Di::getDefault()->get('template');
         $form = new Form('testForm');
         $form->add('testClassiqueInput');
         $tpl->assign('form', $form->toSmarty());
