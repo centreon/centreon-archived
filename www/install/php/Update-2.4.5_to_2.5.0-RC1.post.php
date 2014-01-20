@@ -33,6 +33,7 @@
  * 
  * 
  */
+
 if (isset($pearDB)) {
     /*
      * Host severity
@@ -115,10 +116,10 @@ if (isset($pearDB)) {
                       "central", 
                       "@CENTREON_VARLIB@");
     
-    $centreonConfPmFile = '@CENTREON_ETC@/centreon-config.pm';
+    $centreonConfPmFile = '@CENTREON_ETC@/conf.pm';
     $contents = file_get_contents('../../var/configFilePmTemplate');
     $contents = preg_replace($patterns, $replacements, $contents);
     file_put_contents($centreonConfPmFile, $contents);
-    @unlink('@CENTREON_ETC@/conf.pm');
+    //@unlink('@CENTREON_ETC@/conf.pm');
 }
 ?>
