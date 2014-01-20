@@ -7,11 +7,21 @@ use \Centreon\Core\Config,
 
 class TemplateTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAddCss()
+    public function setUp()
     {
         $config = new Config(DATA_DIR . '/test-template.ini');
         $di = new Di();
         $di->setShared('config', $config);
+        parent::setUp();
+    }
+
+    public function tearDown()
+    {
+        Di::reset();
+    }
+
+    public function testAddCss()
+    {
         $tpl = new Template();
         $tpl->addCss('styles.css');
         $printedResult = $tpl->fetch('template/testAddCss.tpl');
@@ -20,9 +30,6 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
     
     public function testAddJs()
     {
-        $config = new Config(DATA_DIR . '/test-template.ini');
-        $di = new Di();
-        $di->setShared('config', $config);
         $tpl = new Template();
         $tpl->addJs('jquery.min.js')
             ->addJs('bootstrap.min.js');

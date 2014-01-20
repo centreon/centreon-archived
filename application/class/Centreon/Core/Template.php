@@ -99,9 +99,10 @@ class Template extends \Smarty
         $config = $di->get('config');
         
         // Fixed configuration
-        $this->setTemplateDir('../application/views/');
+	$appPath = realpath(__DIR__ . '/../../../');
+        $this->setTemplateDir($appPath . '/views/');
         $this->setConfigDir('');
-        $this->addPluginsDir('../application/class/Smarty/');
+        $this->addPluginsDir($appPath . '/class/Smarty/');
         
         // Custom configuration
         $this->setCompileDir($config->get('template', 'compile_dir'));
