@@ -43,6 +43,7 @@ use centreon::common::db;
 use centreon::common::lock;
 
 use vars qw($centreon_config);
+use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 
 $SIG{__DIE__} = sub {
     my $error = shift;
@@ -54,7 +55,7 @@ sub new {
     my ($class, $name, %options) = @_;
     my %defaults = 
       (
-       config_file => "/etc/centreon/centreon-config.pm",
+       config_file => "/etc/centreon/conf.pm",
        log_file => undef,
        centreon_db_conn => 0,
        centstorage_db_conn => 0,
