@@ -220,6 +220,7 @@ function updateDebugConfigData($gopt_id = null)	{
     updateOption($pearDB, "debug_sql", isset($ret["debug_sql"]) && $ret['debug_sql'] ? 1 : 0);
     updateOption($pearDB, "debug_centcore", isset($ret["debug_centcore"]) && $ret['debug_centcore'] ? 1 : 0);
     updateOption($pearDB, "debug_centstorage", isset($ret["debug_centstorage"]) && $ret['debug_centstorage'] ? 1 : 0);
+    updateOption($pearDB, "debug_centreontrapd", isset($ret["debug_centreontrapd"]) && $ret['debug_centreontrapd'] ? 1 : 0);
 
     $oreon->initOptGen($pearDB);
 }
