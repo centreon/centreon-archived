@@ -134,10 +134,10 @@ class Template extends \Smarty
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function display($templateFile, $cache_id = null, $compile_id = null, $parent = null)
+    public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
     {
         if ($this->templateFile === "") {
-            $this->templateFile = $templateFile;
+            $this->templateFile = $template;
         }
         $this->loadResources();
         parent::display($this->templateFile, $cache_id = null, $compile_id = null, $parent = null);
@@ -147,12 +147,12 @@ class Template extends \Smarty
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function fetch($templateFile, $cache_id = null, $compile_id = null,
+    public function fetch($template = null, $cache_id = null, $compile_id = null,
                             $parent = null, $display = false,
                             $merge_tpl_vars = true, $no_output_filter = false)
     {
         if ($this->templateFile === "") {
-            $this->templateFile = $templateFile;
+            $this->templateFile = $template;
         }
         $this->loadResources();
         return parent::fetch($this->templateFile, $cache_id = null, $compile_id = null,
