@@ -221,12 +221,12 @@ class Template extends \Smarty
      * @param mixed $varValue Value of the variable to add
      * @throws \Centreon\Exception If variable name is reserved
      */
-    public function assign($varName, $varValue)
+    public function assign($varName, $varValue = null, $nocache = false)
     {
         if (in_array($varName, $this->exclusionList)) {
             throw new \Centreon\Core\Exception(_('This variable name is reserved'));
         }
-        parent::assign($varName, $varValue);
+        parent::assign($varName, $varValue, $nocache);
         return $this;
     }
     
