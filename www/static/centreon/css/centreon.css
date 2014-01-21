@@ -1,0 +1,121 @@
+.topbar {
+    margin-bottom: 0;
+    position: relative;
+}
+
+
+aside {
+    display: block;
+    width: 220px;
+    overflow: hidden;
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+}
+
+#left-panel {
+    position: absolute;
+    left: 0;
+    top: 51px;
+    border-right-width: 1px;
+    border-right-style: solid;
+}
+
+.btn-light {
+    color: #777;
+    background-color: #f8f8f8;
+    border-color: #e7e7e7;
+}
+
+.btn-dark {
+    color: #999;
+    background-color: #222;
+    border-color: #080808;
+}
+
+.btn-dark:hover {
+    color: #000;
+}
+
+.environment {
+    font-size: 16px;
+    height: 39px;
+    line-height: 39px;
+}
+
+.environment span {
+    display: block;
+    height: 38px;
+    padding: 0 10px;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.environment .fa-dashboard {
+    font-size: 20px;
+}
+
+.environment .fa-chevron-right {
+    font-size: 12px;
+}
+
+.environment .env-menu {
+    padding-left: 10px;
+    width: 100%;
+}
+
+#environment-menu {
+    width: 100%;
+    height: 150px;
+    background-color: #f8f8f8;
+    background-color: rgba(248, 248, 248, 0.8);
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.content {
+    display: block;
+    margin: 0;
+    margin-left: 220px;
+    padding: 0;
+}
+
+/* Footer */
+
+.bottombar {
+    margin-bottom: 0;
+    min-height: 40px;
+    height: 40px;
+    overflow: hidden;
+    transition: height 1s;
+}
+
+.bottombar .footer {
+    height: 40px;
+}
+
+.bottombar .footer div,
+.bottombar .footer a {
+    color: #5e5e5e;
+    padding: 12px 15px;
+    font: 14px;
+    line-height: 16px;
+}
+
+/**************/
+/* DARK THEME */
+
+body.dark .navbar-default {
+    background-color: #222;
+    border-color: #080808;
+}
+
+body.dark .navbar-default .navbar-brand,
+body.dark .navbar-default .navbar-nav>li>a {
+    color: #999;
+}
+
+body.dark aside {
+    background-color: #222;
+    border-color: #080808;
+}
