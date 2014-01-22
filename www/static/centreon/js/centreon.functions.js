@@ -100,7 +100,7 @@ function generateMenu($elParent, menu) {
         if (menu[i].children.length > 0) {
             $('<i></i>').addClass('fa').addClass('fa-plus-square-o').addClass('toggle').addClass('pull-right').appendTo($link);
             $link.addClass('accordion-toggle').addClass('collapsed');
-            var $childList = $('<ul></ul>').addClass('collapse').appendTo($li);
+            var $childList = $('<ul></ul>').addClass('collapse').addClass('nav').addClass('submenu').appendTo($li);
             $childList.collapse({ toggle: false });
             generateMenu($childList, menu[i].children);
         }
