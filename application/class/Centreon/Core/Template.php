@@ -98,14 +98,24 @@ class Template extends \Smarty
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
         
-        $this->setTemplateDir($config->get('template', 'template_dir'));
+        // Fixed configuration
+	$appPath = realpath(__DIR__ . '/../../../');
+        $this->setTemplateDir($appPath . '/views/');
+        $this->setConfigDir('');
+        $this->addPluginsDir($appPath . '/class/Smarty/');
+        
+        // Custom configuration
         $this->setCompileDir($config->get('template', 'compile_dir'));
-        $this->setConfigDir($config->get('template', 'config_dir'));
         $this->setCacheDir($config->get('template', 'cache_dir'));
+        
+        // additional plugin-dir set by user
         $this->addPluginsDir($config->get('template', 'plugins_dir'));
         
-        $this->compile_check = $config->get('template', 'compile_check');
-        $this->force_compile = $config->get('template', 'force_compile');
+        if ($config->get('template', 'debug')) {
+            $this->compile_check = true;
+            $this->force_compile = true;
+            $this->setTemplateDir($config->get('template', 'template_dir'));
+        }
     }
     
     /**
@@ -124,26 +134,31 @@ class Template extends \Smarty
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function display($templateFile)
+    public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
     {
         if ($this->templateFile === "") {
-            $this->templateFile = $templateFile;
+            $this->templateFile = $template;
         }
         $this->loadResources();
-        parent::display($this->templateFile);
+        parent::display($this->templateFile, $cache_id = null, $compile_id = null, $parent = null);
     }
     
     /**
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function fetch($templateFile)
+    public function fetch($template = null, $cache_id = null, $compile_id = null,
+                            $parent = null, $display = false,
+                            $merge_tpl_vars = true, $no_output_filter = false)
     {
         if ($this->templateFile === "") {
-            $this->templateFile = $templateFile;
+            $this->templateFile = $template;
         }
         $this->loadResources();
-        return parent::fetch($this->templateFile);
+        return parent::fetch($this->templateFile, $cache_id = null, $compile_id = null,
+                                $parent = null, $display = false, $merge_tpl_vars = true,
+                                $no_output_filter = false
+        );
     }
     
     /**
@@ -206,12 +221,12 @@ class Template extends \Smarty
      * @param mixed $varValue Value of the variable to add
      * @throws \Centreon\Exception If variable name is reserved
      */
-    public function assign($varName, $varValue)
+    public function assign($varName, $varValue = null, $nocache = false)
     {
         if (in_array($varName, $this->exclusionList)) {
             throw new \Centreon\Core\Exception(_('This variable name is reserved'));
         }
-        parent::assign($varName, $varValue);
+        parent::assign($varName, $varValue, $nocache);
         return $this;
     }
     

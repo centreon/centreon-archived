@@ -40,9 +40,15 @@ class Form
 {
     /**
      *
-     * @var \HTML_QuickForm 
+     * @var \HTML_QuickForm
      */
     private $formProcessor;
+    
+    /**
+     *
+     * @var HTML_QuickForm_Renderer_ArraySmarty
+     */
+    private $formRenderer;
     
     /**
      *
@@ -134,6 +140,47 @@ class Form
     
     /**
      * 
+     * @return \HTML_QuickForm
+     */
+    public function toSmarty()
+    {
+        $this->formRenderer = new \HTML_QuickForm_Renderer_ArraySmarty($this->tpl, true);
+        $this->formRenderer->setRequiredTemplate('{label}<font color="red" size="1">*</font>');
+        $this->formRenderer->setErrorTemplate('<font color="red">{error}</font><br />{html}');
+        $this->formProcessor->accept($this->formRenderer);
+        return $this->formatForSmarty();
+    }
+    
+    /**
+     * 
+     * @param array $smartyArray
+     */
+    private function formatForSmarty()
+    {
+        $smartyArray = $this->formRenderer->toArray();
+        $finalArray = array (
+            'frozen' => $smartyArray['frozen'],
+            'javascript' => $smartyArray['javascript'],
+            'attributes' => $smartyArray['attributes'],
+            'requirednote' => $smartyArray['requirednote'],
+            'errors' => $smartyArray['errors'],
+            'hidden' => $smartyArray['hidden']
+        );
+        
+        if (isset($smartyArray['elements'])) {
+            foreach ($smartyArray['elements'] as $element) {
+                $finalArray[$element['name']] = array();
+                foreach ($element as $key => $value) {
+                    $finalArray[$element['name']][$key] = $value;
+                }
+            }
+        }
+        
+        return $finalArray;
+    }
+    
+    /**
+     * 
      * @param type $name
      * @param type $fieldType
      * @param type $additionalParameters
@@ -151,11 +198,11 @@ class Form
                 break;
             case 'checkbox':
                 $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addCheckBox($name, $label, $additionalParameters['params']);
+                $this->formProcessor->addElement($name, $label, $additionalParameters['params']);
                 break;
             case 'hidden':
                 $this->checkParameters($additionalParameters, array('value' => ''));
-                $this->addElementHidden($name, $additionalParameters['value']);
+                $this->formProcessor->addElement('hidden', $name, $additionalParameters['value']);
                 break;
             case 'radio':
                 $this->checkParameters(
@@ -165,7 +212,7 @@ class Form
                         'defaultValue' => null
                     )
                 );
-                $this->addElementRadio(
+                $this->addElement(
                     $name,
                     $label,
                     $additionalParameters['elements'],
@@ -430,9 +477,8 @@ class Form
      */
     private function addElementButton($name, $label, $params = array())
     {
-        $elem = $this->formProcessor->addElement('button', $name, $params)
-                    ->updateAttributes(array('id'=>$name, 'label'=>$label));
-        return $elem;
+        $params['id'] = $name;
+        $this->formProcessor->addElement('button', $name, $label, $params);
     }
 
     /**
@@ -445,9 +491,8 @@ class Form
      */
     private function addElementSubmit($name, $label, $params = array())
     {
-        $elem = $this->formProcessor->addElement('submit', $name, $params)
-                    ->updateAttributes(array('id'=>$name, 'label'=>$label, 'class'=>'btn-primary'));
-        return $elem;
+        $this->formProcessor->addElement('submit', $name, $label, $params)
+                ->updateAttributes(array('id'=>$name, 'class'=>'btn-primary'));
     }
 
     /**
@@ -461,8 +506,8 @@ class Form
     private function addElementReset($name, $label, $params = array())
     {
         $elem = $this->formProcessor
-                        ->addElement('reset', $name, $params)
-                        ->updateAttributes(array('id'=>$name, 'label'=>$label));
+                        ->addElement('reset', $name, $label, $params)
+                        ->updateAttributes(array('id'=>$name));
         return $elem;
     }
     

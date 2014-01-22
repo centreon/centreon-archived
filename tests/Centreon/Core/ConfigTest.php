@@ -16,6 +16,12 @@ class ConfigTest extends \PHPUnit_Extensions_Database_TestCase
         parent::setUp();
     }
 
+    public function tearDown()
+    {
+        Di::reset();
+        parent::tearDown();
+    }
+
     public function getConnection()
     {
         if (is_null($this->conn)) {
