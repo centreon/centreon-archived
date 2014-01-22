@@ -321,7 +321,7 @@ class Form
             $param['_help'] = $help;
         }
         $elem = $this->formProcessor
-            ->addElement('text', $name, $param)
+            ->addElement('text', $name, $label ,$param)
             ->updateAttributes(
                 array(
                     'id'=>$name,
@@ -430,7 +430,7 @@ class Form
             $cbg = array();
             foreach ($params as $key => $value) {
                 $cbg[] = $this->formProcessor->createElement("checkbox", $name, $label)
-                            ->updateAttributes(array('id'=>$name));->addCheckbox($name)
+                            ->updateAttributes(array('id'=>$name))->addCheckbox($name)
                     ->setValue($key)
                     ->setContent($value);
             }
