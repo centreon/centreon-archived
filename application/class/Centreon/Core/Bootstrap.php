@@ -156,6 +156,19 @@ class Bootstrap
     }
 
     /**
+     * Init menus
+     */
+    private function initMenus()
+    {
+        $this->di->set(
+            'menu',
+            function () {
+                return new Menu();
+            }
+        );
+    }
+
+    /**
      * Init routes
      *
      */
