@@ -81,3 +81,48 @@ function toggleFooter() {
         $('#footer-button i').removeClass('fa-chevron-circle-up').addClass('fa-chevron-circle-down');
     }
 }
+
+/* Generate menu */
+function generateMenu($elParent, menu) {
+    var i = 0;
+    var lenMenu = menu.length;
+    for (; i < lenMenu; i++) {
+        var $li = $('<li></li>');
+        $li.appendTo($elParent);
+        var $link = $('<a></a>').attr('href', menu[i].url);
+        if (menu[i].icon_class != '') {
+            $('<i></i>').addClass(menu[i].icon_class).appendTo($link);
+        } else if (menu[i].icon_img != '') {
+            $('<img>').attr('src',menu[i].icon_img).addClass('').appendTo($link);
+        }
+        $('<span></span>').text(menu[i].name).appendTo($link);
+        $li.append($link);
+        if (menu[i].children.length > 0) {
+            $('<i></i>').addClass('fa').addClass('fa-plus-square-o').addClass('toggle').addClass('pull-right').appendTo($link);
+            $link.addClass('accordion-toggle').addClass('collapsed');
+            var $childList = $('<ul></ul>').addClass('collapse').appendTo($li);
+            $childList.collapse({ toggle: false });
+            generateMenu($childList, menu[i].children);
+        }
+    }
+}
+
+/* Load menu */
+function loadMenu(envName) {
+    $.ajax({
+        'url': 'testmenu.json',
+        'data': {
+            'name': envName
+        },
+        'dataType': 'json',
+        'type': 'GET',
+        'success': function(data, textStatus, jqXHR) {
+            if (!data.success) {
+                // @todo flash error
+                return;
+            }
+            var $menuUl = $('#menu1');
+            generateMenu($menuUl, data.menu);
+        }
+    });
+}
