@@ -95,7 +95,7 @@ centreontrapd
 
 'centreontrapd' daemon use two configuration files:
  
-   * '/etc/centreon/centreon-config.pm': database configuration
+   * '/etc/centreon/conf.pm': database configuration
    * '/etc/centreon/centreontrapd.pm': internal configuration
 
 You shouldn't change internal configuration except:
@@ -144,7 +144,7 @@ But we'll describe internal daemon configuration. You can set configuration in '
 
     1;
 
-In central architecture, 'centreontrapd' uses MySQL database in file '/etc/centreon/centreon-config.pm'::
+In central architecture, 'centreontrapd' uses MySQL database in file '/etc/centreon/conf.pm'::
 
   $centreon_config = {
        VarLib => "/var/lib/centreon",
@@ -158,7 +158,7 @@ In central architecture, 'centreontrapd' uses MySQL database in file '/etc/centr
 
   1;
 
-In poller architecture, 'centreontrapd' can use MySQL database (see above) or local sqlite database in file '/etc/centreon/centreon-config.pm'::
+In poller architecture, 'centreontrapd' can use MySQL database (see above) or local sqlite database in file '/etc/centreon/conf.pm'::
 
   $centreon_config = {
        VarLib => "/var/lib/centreon",

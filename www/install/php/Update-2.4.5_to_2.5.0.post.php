@@ -93,7 +93,7 @@ if (isset($pearDB)) {
     $pearDB->query("DROP TABLE criticality");
     
     /**
-     * centreon-config.pm
+     * conf.pm
      */
     
     $patterns = array('/--ADDRESS--/',
