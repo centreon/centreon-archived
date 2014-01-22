@@ -33,6 +33,42 @@ aside {
     color: #5e5e5e;
 }
 
+.submenu {
+    position: relative;
+}
+
+.submenu li {
+    background-color: #eee;
+}
+
+.submenu:before {
+    content: "";
+    display: block;
+    width: 8px;
+    left: 23px;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid #777;
+    position: absolute;
+    z-index: 1;
+}
+
+.submenu li:before {
+    content: "";
+    display: block;
+    width: 8px;
+    left: 23px;
+    top: 16px;
+    border-top: 1px solid #777;
+    position: absolute;
+    z-index: 1;
+}
+
+.submenu li > a {
+    padding: 8px 0;
+    padding-left: 32px;
+}
+
 .btn-light {
     color: #777;
     background-color: #f8f8f8;
