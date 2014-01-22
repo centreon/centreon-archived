@@ -668,6 +668,39 @@
         "columns": [
             {
                 "length": null,
+                "name": "group_parent_id"
+            }
+        ],
+        "indexName": "group_parent_id",
+        "tableName": "cb_fieldgroup",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "cb_fieldgroup_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "cb_fieldgroup",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "cb_fieldset_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "cb_fieldset",
+        "unique": true
+    },
+    {
+        "columns": [
+            {
+                "length": null,
                 "name": "cb_field_id"
             }
         ],
@@ -1698,50 +1731,6 @@
         ],
         "indexName": "service_index",
         "tableName": "contact_service_relation",
-        "unique": false
-    },
-    {
-        "columns": [
-            {
-                "length": null,
-                "name": "icon_id"
-            }
-        ],
-        "indexName": "fk_criticality_icon_id",
-        "tableName": "criticality",
-        "unique": false
-    },
-    {
-        "columns": [
-            {
-                "length": null,
-                "name": "criticality_id"
-            }
-        ],
-        "indexName": "PRIMARY",
-        "tableName": "criticality",
-        "unique": true
-    },
-    {
-        "columns": [
-            {
-                "length": null,
-                "name": "host_id"
-            }
-        ],
-        "indexName": "fk_crit_host_id",
-        "tableName": "criticality_resource_relations",
-        "unique": false
-    },
-    {
-        "columns": [
-            {
-                "length": null,
-                "name": "service_id"
-            }
-        ],
-        "indexName": "fk_crit_svc_id",
-        "tableName": "criticality_resource_relations",
         "unique": false
     },
     {
@@ -3366,20 +3355,9 @@
         "columns": [
             {
                 "length": null,
-                "name": "dv_id"
-            }
-        ],
-        "indexName": "PRIMARY",
-        "tableName": "ods_view_details",
-        "unique": true
-    },
-	{
-        "columns": [
-            {
-                "length": null,
                 "name": "index_id"
             },
-			{
+            {
                 "length": null,
                 "name": "metric_id"
             }
@@ -3387,6 +3365,17 @@
         "indexName": "index_metric_mult",
         "tableName": "ods_view_details",
         "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "dv_id"
+            }
+        ],
+        "indexName": "PRIMARY",
+        "tableName": "ods_view_details",
+        "unique": true
     },
     {
         "columns": [
@@ -3430,6 +3419,28 @@
         ],
         "indexName": "svc_svc_id",
         "tableName": "on_demand_macro_service",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "command_id"
+            }
+        ],
+        "indexName": "command_id",
+        "tableName": "poller_command_relations",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "poller_id"
+            }
+        ],
+        "indexName": "poller_id",
+        "tableName": "poller_command_relations",
         "unique": false
     },
     {
@@ -3836,6 +3847,17 @@
         "columns": [
             {
                 "length": null,
+                "name": "severity_id"
+            }
+        ],
+        "indexName": "traps_ibfk_2",
+        "tableName": "traps",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
                 "name": "traps_id"
             }
         ],
@@ -3873,11 +3895,33 @@
         "columns": [
             {
                 "length": null,
+                "name": "severity_id"
+            }
+        ],
+        "indexName": "traps_matching_properties_ibfk_2",
+        "tableName": "traps_matching_properties",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
                 "name": "trap_id"
             }
         ],
         "indexName": "trap_id",
         "tableName": "traps_matching_properties",
+        "unique": false
+    },
+    {
+        "columns": [
+            {
+                "length": null,
+                "name": "trap_id"
+            }
+        ],
+        "indexName": "trap_id",
+        "tableName": "traps_preexec",
         "unique": false
     },
     {

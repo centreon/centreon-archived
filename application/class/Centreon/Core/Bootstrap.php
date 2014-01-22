@@ -154,4 +154,32 @@ class Bootstrap
             }
         );
     }
+
+    /**
+     * Init menus
+     */
+    private function initMenus()
+    {
+        $this->di->set(
+            'menu',
+            function () {
+                return new Menu();
+            }
+        );
+    }
+
+    /**
+     * Init routes
+     *
+     */
+    private function initRoutes()
+    {
+        $router = new \Centreon\Core\Router();
+        $this->di->set('router', $router);
+        $router->parseRoutes(
+            '\\Controllers',
+            'application/controllers/'
+        );
+        $router->dispatch();
+    }
 }

@@ -20,3 +20,20 @@ CREATE TABLE `module_hooks` (
 	CONSTRAINT `fk_hook_id` FOREIGN KEY (`hook_id`) REFERENCES `hooks` (`hook_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 --
+
+-- Ticket #5137
+CREATE TABLE `menus` (
+  `menu_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `short_name` varchar(100) NOT NULL,
+  `parent_id` int(11),
+  `url` varchar(255) NOT NULL,
+  `icon_class`varchar(100),
+  `icon` varchar(255),
+  `is_module` tinyint(1) DEFAULT 0,
+  `menu_order` tinyint(5) DEFAULT 0,
+  PRIMARY KEY(`menu_id`),
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `fk_menu_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`menu_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--

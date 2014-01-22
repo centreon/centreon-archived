@@ -1701,6 +1701,23 @@ CREATE TABLE `informations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `menus` (
+  `menu_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `short_name` varchar(100) NOT NULL,
+  `parent_id` int(11),
+  `url` varchar(255) NOT NULL,
+  `icon_class` varchar(100),
+  `icon` varchar(255),
+  `is_module` tinyint(1) DEFAULT 0,
+  `menu_order` tinyint(5) DEFAULT 0,
+  PRIMARY KEY(`menu_id`),
+  KEY `parent_id` (`parent_id`),
+  CONSTRAINT `fk_menu_parent_id` FOREIGN KEY (`parent_id`) REFERENCES `menus` (`menu_id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `meta_contactgroup_relation` (
   `mcr_id` int(11) NOT NULL AUTO_INCREMENT,
   `meta_id` int(11) DEFAULT NULL,
