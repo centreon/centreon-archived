@@ -5,7 +5,7 @@
 # chkconfig: 2345 71 31
 # description: centstorage is a Centreon program that manage perfs
 # processname: centstorage
-# config: @CENTREON_ETC@/centreon-config.pm
+# config: @CENTREON_ETC@/conf.pm
 # pidfile: ${centstorageRunDir}/centstorage.pid
 
 # Source function library.

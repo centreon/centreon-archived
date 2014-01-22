@@ -21,7 +21,7 @@ centreonSyncArchives [options]
 
 =item B<--config>
 
-Specify the path to the main configuration file (default: /etc/centreon/centreon-config.pm).
+Specify the path to the main configuration file (default: /etc/centreon/conf.pm).
 
 =item B<--help>
 

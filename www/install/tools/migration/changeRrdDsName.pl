@@ -34,7 +34,7 @@ use RRDs;
 
 # Include Centreon DB Configuration Variables
 use vars qw($centreon_config);
-require "@CENTREON_ETC@/centreon-config.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 sub get_ds_name {
     my $ds_name = shift;

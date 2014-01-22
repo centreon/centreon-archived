@@ -5,7 +5,7 @@
 # chkconfig: 2345 71 31
 # description: centreontrapd is a Centreon program that manage traps
 # processname: centreontrapd
-# config: @CENTREON_ETC@/centreon-config.pm
+# config: @CENTREON_ETC@/conf.pm
 # pidfile: ${centstorageRunDir}/centreontrapd.pid
 
 # Source function library.

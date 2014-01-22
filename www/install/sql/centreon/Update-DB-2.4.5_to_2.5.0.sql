@@ -225,4 +225,4 @@ ALTER TABLE `cfg_centreonbroker_info` ADD COLUMN
 
 -- Update version
 
-UPDATE `informations` SET `value` = '2.5.0-RC1' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;
+UPDATE `informations` SET `value` = '2.5.0' WHERE CONVERT( `informations`.`key` USING utf8 )  = 'version' AND CONVERT ( `informations`.`value` USING utf8 ) = '2.4.5' LIMIT 1;

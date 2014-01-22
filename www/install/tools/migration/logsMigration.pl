@@ -36,7 +36,7 @@ use Time::Local;
 
 # Include Centreon DB Configuration Variables
 use vars qw($centreon_config);
-require "@CENTREON_ETC@/centreon-config.pm";
+require "@CENTREON_ETC@/conf.pm";
 
 #Hash tables that will contain host and services availability stats by day
 my %hosts;

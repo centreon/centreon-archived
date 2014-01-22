@@ -77,9 +77,9 @@ $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfFile, $contents);
 
 /**
- * centreon-config.pm
+ * conf.pm
  */
-$centreonConfPmFile = rtrim($_SESSION['CENTREON_ETC'], '/').'/centreon-config.pm';
+$centreonConfPmFile = rtrim($_SESSION['CENTREON_ETC'], '/').'/conf.pm';
 $contents = file_get_contents('../../var/configFilePmTemplate');
 $contents = preg_replace($patterns, $replacements, $contents);
 file_put_contents($centreonConfPmFile, $contents);
