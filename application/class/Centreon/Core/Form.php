@@ -35,7 +35,11 @@
 
 namespace Centreon\Core;
 
-
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Form
 {
     /**
@@ -418,11 +422,15 @@ class Form
      */
     private function addCheckBox($name, $label, $params = array())
     {
+        $this->formProcessor->addElement("checkbox", $name, $label)
+                            ->updateAttributes(array('id'=>$name));
+        
         if (!is_null($params) && count($params)) {
-            $cbg = $this->formProcessor->addInputList($name)
-                ->updateAttributes(array('id'=>$name, 'label'=>$label));
+            
+            $cbg = array();
             foreach ($params as $key => $value) {
-                $cbg->addCheckbox($name)
+                $cbg[] = $this->formProcessor->createElement("checkbox", $name, $label)
+                            ->updateAttributes(array('id'=>$name));->addCheckbox($name)
                     ->setValue($key)
                     ->setContent($value);
             }
@@ -561,7 +569,6 @@ class Form
                 break;
             default:
                 throw new Centreon_Exception_Core('Element type cannot be cloned');
-                break;
         }
         
         $elem
@@ -581,8 +588,8 @@ class Form
     public function addTab($id, $label)
     {
         return $this->formProcessor
-                        ->addElement('tabs', $label)
-                        ->updateAttributes(array('id'=>$id, 'label'=>$label));
+                    ->addElement('tabs', $label)
+                    ->updateAttributes(array('id'=>$id, 'label'=>$label));
     }
 
     /**
@@ -594,8 +601,8 @@ class Form
     public function addFieldSet($label)
     {
         return $this->formProcessor
-                        ->addElement('fieldset', $label)
-                        ->setLabel($label);
+                    ->addElement('fieldset', $label)
+                    ->setLabel($label);
     }
 
     /**
@@ -660,8 +667,7 @@ class Form
     public function registerJsRule($name, $file)
     {
         if (!in_array($name, $this->jsRulesRegister)) {
-            $tmpl = Centreon_Template::getInstance();
-            $tmpl->addJavascript($file);
+            $this->tpl->addJavascript($file);
             $this->jsRulesRegister[] = $name;
         }
     }
@@ -695,9 +701,8 @@ class Form
                 'info' => $jsExt
             );
             /* Add javascript for initialize the form rules */
-            $tmpl = Centreon_Template::getInstance();
-            $tmpl->addJavascript('jquery/validate/jquery.validate.min.js');
-            $tmpl->addJavascript('centreon/formRules.js');
+            $this->tpl->addJavascript('jquery/validate/jquery.validate.min.js');
+            $this->tpl->addJavascript('centreon/formRules.js');
         }
     }
 

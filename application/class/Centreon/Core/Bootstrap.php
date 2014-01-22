@@ -178,7 +178,7 @@ class Bootstrap
         $this->di->set('router', $router);
         $router->parseRoutes(
             '\\Controllers',
-            'application/controllers/'
+            '../application/controllers/'
         );
         $router->dispatch();
     }

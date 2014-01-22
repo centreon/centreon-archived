@@ -13,6 +13,8 @@
   </nav>
 </aside>
 <div class="content" id="main">
+{block name="content"}
+{/block}
 </div>
 <div id="environment-menu" style="display: none;">
 <ul class="list-inline">

@@ -11,7 +11,7 @@
 function smarty_modifier_img($imgFile) {
     $di = \Centreon\Core\Di::getDefault();
     $config = $di->get('config');
-    $baseUrl = trim($config->get('global','base_url'), '/').'/static/centreon/img/';
+    $baseUrl = rtrim($config->get('global','base_url'), '/').'/static/centreon/img/';
     $imgIncludeLine = '<img alt="'.$imgFile.'"'
         . 'src="'.$baseUrl.$imgFile.'" />';
     return $imgIncludeLine;
