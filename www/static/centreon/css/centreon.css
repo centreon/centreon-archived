@@ -1,3 +1,40 @@
+/* Login panel */
+.panel-login {
+    margin-top: 200px;
+    border-radius: 0;
+}
+
+.panel-login .panel-title {
+    padding-bottom: 5px;
+    border-bottom: 1px solid #ddd;
+}
+
+.panel-login input,
+.panel-login span.input-group-addon {
+    border-radius: 0;
+}
+
+.panel-login span.input-group-addon {
+    background-color: #fff;
+}
+
+.panel-login .panel-footer {
+    border: 0;
+    background-color: #fff;
+}
+
+.panel-login .panel-footer .buttons {
+    padding-top: 5px;
+    height: 38px;
+    border-top: 1px solid #ddd;
+}
+
+.panel-login .btn-login {
+    background-color: #3fb11e;
+    border-color: #3d9623;
+    color: #fff;
+}
+
 .topbar {
     margin-bottom: 0;
     position: relative;
