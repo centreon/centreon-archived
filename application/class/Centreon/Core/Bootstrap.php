@@ -175,7 +175,7 @@ class Bootstrap
     private function initRoutes()
     {
         $router = new \Centreon\Core\Router();
-        $this->di->set('router', $router);
+        $this->di->setShared('router', $router);
         $router->parseRoutes(
             '\\Controllers',
             '../application/controllers/'
