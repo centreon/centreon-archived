@@ -35,7 +35,11 @@
 
 namespace Centreon\Core;
 
-
+/**
+ * @author Lionel Assepo <lassepo@merethis.com>
+ * @package Centreon
+ * @subpackage Core
+ */
 class Form
 {
     /**
@@ -157,6 +161,7 @@ class Form
      */
     private function formatForSmarty()
     {
+        
         $smartyArray = $this->formRenderer->toArray();
         $finalArray = array (
             'frozen' => $smartyArray['frozen'],
@@ -173,12 +178,50 @@ class Form
                 foreach ($element as $key => $value) {
                     $finalArray[$element['name']][$key] = $value;
                 }
+                $this->renderAsHtml($finalArray[$element['name']]);
             }
         }
         
         return $finalArray;
     }
     
+    public function renderAsHtml(&$element)
+    {
+        
+        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
+            $element['label'] = $element['name'];
+        }
+        
+        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
+            $element['placeholder'] = $element['name'];
+        }
+        
+        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
+            $element['id'] = $element['name'];
+        }
+        
+        switch ($element['type']) {
+            case 'text':
+            case 'button':
+            case 'password':
+            default:
+                $element['input'] = '<input '.
+                            'id="'.$element['id'].'" '.
+                            'type="'.$element['type'].'" '.
+                            'name="'.$element['name'].'" '.
+                            'class="form-controler" '.
+                            'placeholder="'.$element['placeholder'].'" '.
+                            '/>';
+                break;
+        }
+        
+        $element['label'] = '<label class="sr-only" for="'.$element['id'].'">'.$element['label'].'</label>';
+        $element['html'] = '<div class="form-group">'.
+                        $element['label'].
+                        $element['input'].
+                        '</div>';
+    }
+
     /**
      * 
      * @param type $name
@@ -194,7 +237,7 @@ class Form
         switch (strtolower($fieldType)) {
             case 'button':
                 $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addElementButton($name, $label, $additionalParameters['params']);
+                $this->addButton($name, $label, $additionalParameters['params']);
                 break;
             case 'checkbox':
                 $this->checkParameters($additionalParameters, array('params' => array()));
@@ -221,7 +264,7 @@ class Form
                 break;
             case 'reset':
                 $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addElementReset($name, $label, $additionalParameters['params']);
+                $this->addReset($name, $label, $additionalParameters['params']);
                 break;
             case 'select':
                 $this->checkParameters(
@@ -233,13 +276,13 @@ class Form
                     )
                 );
                 if ($additionalParameters['multiple']) {
-                    $this->addElementMultiSelect(
+                    $this->addMultiSelect(
                         $name,
                         $label,
                         $additionalParameters['data']
                     );
                 } else {
-                    $this->addElementSelect(
+                    $this->addSelect(
                         $name,
                         $label,
                         $additionalParameters['data'],
@@ -249,14 +292,14 @@ class Form
                 break;
             case 'submit':
                 $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addElementSubmit($name, $label, $additionalParameters['params']);
+                $this->addSubmit($name, $label, $additionalParameters['params']);
                 break;
             case 'submitbar':
                 $this->checkParameters($additionalParameters, array('cancel' => true));
                 $this->addSubmitBar($name = 'submitbar', $additionalParameters['cancel']);
                 break;
             case 'textarea':
-                $this->addElementTextarea($name, $label);
+                $this->addTextarea($name, $label);
                 break;
             default:
             case 'text':
@@ -268,7 +311,7 @@ class Form
                         'help' => null
                     )
                 );
-                $this->addElementText(
+                $this->addText(
                     $name,
                     $label,
                     $additionalParameters['style'],
@@ -304,7 +347,7 @@ class Form
      *                           if null the style is medium
      * @return \HTML_QuickForm_Element_InputText
      */
-    private function addElementText($name, $label, $style = null, $placeholder = null, $help = null)
+    public function addText($name, $label, $style = null, $placeholder = null, $help = null)
     {
         if (is_null($style)) {
             $style = "medium";
@@ -317,7 +360,7 @@ class Form
             $param['_help'] = $help;
         }
         $elem = $this->formProcessor
-            ->addElement('text', $name, $param)
+            ->addElement('text', $name, $label ,$param)
             ->updateAttributes(
                 array(
                     'id'=>$name,
@@ -338,7 +381,7 @@ class Form
      * @return \HTML_QuickForm_Container_Group
      * @todo Default
      */
-    private function addElementRadio($name, $label, $elements, $defaultValue = null)
+    public function addElementRadio($name, $label, $elements, $defaultValue = null)
     {
         $elem = $this->formProcessor->addInputList($name)
             ->updateAttributes(
@@ -368,7 +411,7 @@ class Form
      *                           if null the style is medium
      * @return \HTML_QuickForm_Element_Select
      */
-    private function addElementSelect($name, $label, $data, $style = null)
+    public function addSelect($name, $label, $data, $style = null)
     {
         $elem = $this->formProcessor
                         ->addElement('select', $name, array('type' => 'select-one'))
@@ -390,7 +433,7 @@ class Form
      *                           if null the style is medium
      * @return \HTML_QuickForm_Element_Select
      */
-    private function addElementMultiSelect($name, $label, $data)
+    public function addMultiSelect($name, $label, $data)
     {
         $this->tpl->addCss('jquery-chosen.css');
         $this->tpl->addJs('jquery/chosen/chosen.jquery.min.js');
@@ -416,13 +459,17 @@ class Form
      * @param array $params The list of options in option group
      * @return \HTML_QuickForm_Container_Group
      */
-    private function addCheckBox($name, $label, $params = array())
+    public function addCheckBox($name, $label, $params = array())
     {
+        $this->formProcessor->addElement("checkbox", $name, $label)
+                            ->updateAttributes(array('id'=>$name));
+        
         if (!is_null($params) && count($params)) {
-            $cbg = $this->formProcessor->addInputList($name)
-                ->updateAttributes(array('id'=>$name, 'label'=>$label));
+            
+            $cbg = array();
             foreach ($params as $key => $value) {
-                $cbg->addCheckbox($name)
+                $cbg[] = $this->formProcessor->createElement("checkbox", $name, $label)
+                            ->updateAttributes(array('id'=>$name))->addCheckbox($name)
                     ->setValue($key)
                     ->setContent($value);
             }
@@ -443,7 +490,7 @@ class Form
      * @param string $label The label of element
      * @return \HTML_QuickForm_Element_Textarea
      */
-    private function addElementTextarea($name, $label)
+    public function addTextarea($name, $label)
     {
         $elem = $this->formProcessor
                     ->addElement('textarea', $name, $this->template['textarea'])
@@ -458,7 +505,7 @@ class Form
      * @param string $value The value of hidden element
      * @return \HTML_QuickForm_Element_InputHidden
      */
-    private function addElementHidden($name, $value)
+    public function addElementHidden($name, $value)
     {
         $elem = $this->formProcessor
                     ->addElement('hidden', $name)
@@ -475,7 +522,7 @@ class Form
      * @param array $param Additionnal param
      * @return \HTML_QuickForm_Element_Button
      */
-    private function addElementButton($name, $label, $params = array())
+    public function addButton($name, $label, $params = array())
     {
         $params['id'] = $name;
         $this->formProcessor->addElement('button', $name, $label, $params);
@@ -489,7 +536,7 @@ class Form
      * @param array $param Additionnal param
      * @return \HTML_QuickForm_Element_InputSubmit
      */
-    private function addElementSubmit($name, $label, $params = array())
+    public function addSubmit($name, $label, $params = array())
     {
         $this->formProcessor->addElement('submit', $name, $label, $params)
                 ->updateAttributes(array('id'=>$name, 'class'=>'btn-primary'));
@@ -503,7 +550,7 @@ class Form
      * @param array $param Additionnal param
      * @return \HTML_QuickForm_Element_InputReset
      */
-    private function addElementReset($name, $label, $params = array())
+    public function addReset($name, $label, $params = array())
     {
         $elem = $this->formProcessor
                         ->addElement('reset', $name, $label, $params)
@@ -518,7 +565,7 @@ class Form
      * @param boolean $cancel If include the cancel button
      * @return Centreon_SubmitBar
      */
-    private function addSubmitBar($name = 'submitbar', $cancel = true)
+    public function addSubmitBar($name = 'submitbar', $cancel = true)
     {
         $submitbar = $this->formProcessor
                             ->addElement('submitbar', $name)
@@ -547,21 +594,20 @@ class Form
      * @param string $style
      * @return \HTML_QuickForm_Element
      */
-    private function addClonableElement($type, $name, $label, $options = array(), $style = null)
+    public function addClonableElement($type, $name, $label, $options = array(), $style = null)
     {
         switch (strtolower($type)) {
             case 'text':
-                $elem = $this->addElementText($name, $label, $style);
+                $elem = $this->addText($name, $label, $style);
                 break;
             case 'select':
-                $elem = $this->addElementSelect($name, $label, $options, $style);
+                $elem = $this->addSelect($name, $label, $options, $style);
                 break;
             case 'checkbox':
                 $elem = $this->addCheckBox($name, $label, $options);
                 break;
             default:
                 throw new Centreon_Exception_Core('Element type cannot be cloned');
-                break;
         }
         
         $elem
@@ -581,8 +627,8 @@ class Form
     public function addTab($id, $label)
     {
         return $this->formProcessor
-                        ->addElement('tabs', $label)
-                        ->updateAttributes(array('id'=>$id, 'label'=>$label));
+                    ->addElement('tabs', $label)
+                    ->updateAttributes(array('id'=>$id, 'label'=>$label));
     }
 
     /**
@@ -594,8 +640,8 @@ class Form
     public function addFieldSet($label)
     {
         return $this->formProcessor
-                        ->addElement('fieldset', $label)
-                        ->setLabel($label);
+                    ->addElement('fieldset', $label)
+                    ->setLabel($label);
     }
 
     /**
@@ -660,8 +706,7 @@ class Form
     public function registerJsRule($name, $file)
     {
         if (!in_array($name, $this->jsRulesRegister)) {
-            $tmpl = Centreon_Template::getInstance();
-            $tmpl->addJavascript($file);
+            $this->tpl->addJavascript($file);
             $this->jsRulesRegister[] = $name;
         }
     }
@@ -695,9 +740,8 @@ class Form
                 'info' => $jsExt
             );
             /* Add javascript for initialize the form rules */
-            $tmpl = Centreon_Template::getInstance();
-            $tmpl->addJavascript('jquery/validate/jquery.validate.min.js');
-            $tmpl->addJavascript('centreon/formRules.js');
+            $this->tpl->addJavascript('jquery/validate/jquery.validate.min.js');
+            $this->tpl->addJavascript('centreon/formRules.js');
         }
     }
 

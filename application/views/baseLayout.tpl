@@ -51,9 +51,25 @@
     </div>
 </div>
 <div class="footer-extended">
-    <div class="center-block">
-        <a href="http://forge.centreon.com">Forge</a>
-        <a href="http://forge.centreon.com/projects/centreon/issues/new">Found a bug</a>
+    <div>
+        <ul class="center-block list-inline">
+            <li><a href="http://documentation.centreon.com/">{t}Documentation{/t}</a></li>
+            <li><a href="http://forge.centreon.com/projects/centreon/issues/new">{t}Found a bug ?{/t}</a></li>
+            <li><a href="http://forge.centreon.com">{t}Forge{/t}</a></li>
+        </ul>
+    </div>
+    <div>
+        <ul class="center-block list-inline">
+            <li><a href="http://www.centreon.com/">Centreon</a></li>
+            <li><a href="http://www.merethis.com/">Merethis</a></li>
+        </ul>
+    </div>
+    <div>
+        <ul class="center-block list-inline">
+            <li><a href="https://twitter.com/Centreon"><i class="fa fa-twitter-square"></i></a></li>
+            <li><a href="https://plus.google.com/u/0/s/centreon"><i class="fa fa-google-plus-square"></i></a></li>
+            <li><a href="https://www.facebook.com/groups/6316094758/?fref=ts"><i class="fa fa-facebook-square"></i></a></li>
+        </ul>
     </div>
 </div>
 </nav>

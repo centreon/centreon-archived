@@ -3,6 +3,7 @@
     position: relative;
 }
 
+/* Side left bar */
 
 aside {
     display: block;
@@ -18,6 +19,54 @@ aside {
     top: 51px;
     border-right-width: 1px;
     border-right-style: solid;
+}
+
+#left-panel .nav > li > a > span {
+    margin-left: 5px;
+}
+
+#left-panel .nav > li > a {
+    color: #777;
+}
+
+#left-panel .nav > li > a:hover {
+    color: #5e5e5e;
+}
+
+.submenu {
+    position: relative;
+}
+
+.submenu li {
+    background-color: #eee;
+}
+
+.submenu:before {
+    content: "";
+    display: block;
+    width: 8px;
+    left: 23px;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid #777;
+    position: absolute;
+    z-index: 1;
+}
+
+.submenu li:before {
+    content: "";
+    display: block;
+    width: 8px;
+    left: 23px;
+    top: 16px;
+    border-top: 1px solid #777;
+    position: absolute;
+    z-index: 1;
+}
+
+.submenu li > a {
+    padding: 8px 0;
+    padding-left: 32px;
 }
 
 .btn-light {
@@ -73,6 +122,41 @@ aside {
     z-index: 1000;
 }
 
+#environment-menu li {
+    color: #fff;
+    width: 110px;
+    height: 110px;
+    margin: 20px 10px;
+    border: 1px #000 solid;
+    cursor: pointer;
+}
+
+#environment-menu li.active {
+    border: 1px #4395de solid;
+}
+
+#environment-menu li:first-child {
+    margin-left: 20px;
+}
+
+#environment-menu li .icon {
+    height: 80px;
+    padding-left: 2px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+#environment-menu li .icon i {
+    font-size: 76px;
+}
+
+#environment-menu li .name {
+    font-size: 14px;
+    line-height: 18px;
+    height: 18px;
+    padding-left: 5px;
+}
+
 .content {
     display: block;
     margin: 0;
@@ -90,16 +174,57 @@ aside {
     transition: height 1s;
 }
 
+.bottombar a {
+    color: #5e5e5e;
+    font: 14px;
+}
+
 .bottombar .footer {
     height: 40px;
 }
 
+.bottombar .footer div {
+    color: #5e5e5e;
+    font: 14px;
+}
+
 .bottombar .footer div,
 .bottombar .footer a {
-    color: #5e5e5e;
     padding: 12px 15px;
-    font: 14px;
     line-height: 16px;
+}
+
+.bottombar .footer-extended div:last-child {
+    padding-bottom: 5px;
+}
+
+.bottombar .footer-extended ul {
+    width: auto;
+    min-width: 0;
+    display: table;
+}
+
+.bottombar .footer-extended ul li + li:before {
+    color: #5e5e5e;
+    font: 14px;
+    content: "-";
+    padding-right: 10px;
+}
+
+.bottombar .footer-extended .fa {
+    font-size: 24px;
+}
+
+.bottombar .fa-twitter-square {
+    color: #9ae4e8;
+}
+
+.bottombar .fa-google-plus-square {
+    color: #d34836;
+}
+
+.bottombar .fa-facebook-square {
+    color: #3b5998;
 }
 
 /**************/

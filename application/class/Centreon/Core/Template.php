@@ -140,7 +140,7 @@ class Template extends \Smarty
             $this->templateFile = $template;
         }
         $this->loadResources();
-        parent::display($this->templateFile, $cache_id = null, $compile_id = null, $parent = null);
+        parent::display($this->templateFile, $cache_id, $compile_id, $parent);
     }
     
     /**
@@ -155,9 +155,9 @@ class Template extends \Smarty
             $this->templateFile = $template;
         }
         $this->loadResources();
-        return parent::fetch($this->templateFile, $cache_id = null, $compile_id = null,
-                                $parent = null, $display = false, $merge_tpl_vars = true,
-                                $no_output_filter = false
+        return parent::fetch($this->templateFile, $cache_id, $compile_id,
+                                $parent, $display, $merge_tpl_vars,
+                                $no_output_filter
         );
     }
     
