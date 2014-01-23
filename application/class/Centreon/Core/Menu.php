@@ -42,10 +42,14 @@ class Menu
     /**
      * Init menu
      *
-     * @todo add cache
      */
     private function setMenu()
     {
+        $cache = Di::getDefault()->get('cache');
+        if ($cache->has('app:menu')) {
+            $this->tree = $cache->get('app:menu');
+            return null;
+        }
         $db = Di::getDefault()->get('db_centreon');
         $this->tree = array();
         $stmt = $db->prepare("
@@ -55,6 +59,7 @@ class Menu
         $stmt->execute();
         $menus = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         $this->tree = $this->buildTree($menus);
+        $cache->set('app:menu', $this->tree);
     }
 
     /**
