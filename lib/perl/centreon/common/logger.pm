@@ -213,7 +213,7 @@ sub writeLogError {
 
 sub DESTROY {
     my $self = shift;
-
+    
     if (defined $self->{filehandler}) {
         $self->{filehandler}->close();
     }

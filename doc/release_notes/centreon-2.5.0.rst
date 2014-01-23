@@ -17,7 +17,7 @@ If you are using Centreon Broker
 * Stop the centreon-broker daemon
 * Upgrade Centreon-Broker on all the pollers
 * Restart all the engines
-* Execute /path/to/centreon/www/install/tools/migration/changeRrdDsName.pl
+* Execute /path/to/centreon/bin/changeRrdDsName.pl
 * Upgrade Centreon (web install)
 * Check that your graphs are showing properly on the web interface
 * Start the centreon-broker daemon
@@ -28,7 +28,7 @@ If you are using NDO
 
 * Stop centstorage
 * Upgrade Centreon (web install)
-* Execute /path/to/centreon/www/install/tools/migration/changeRrdDsName.pl
+* Execute /path/to/centreon/bin/changeRrdDsName.pl
 * Start centstorage
 
 
