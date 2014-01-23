@@ -3,13 +3,26 @@ namespace Centreon\Core;
 
 class Menu
 {
+    /**
+     * @var array
+     */
     private $tree;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->setMenu();
     }
 
+    /**
+     * Takes a set of results and build a tree from it
+     *
+     * @param array $elements
+     * @param int $parentId
+     * @return array
+     */
     private function buildTree(array $elements, $parentId = 0) 
     {
         $branch = array();
@@ -26,6 +39,11 @@ class Menu
         return $branch;
     }
 
+    /**
+     * Init menu
+     *
+     * @todo add cache
+     */
     private function setMenu()
     {
         $db = Di::getDefault()->get('db_centreon');
@@ -39,6 +57,15 @@ class Menu
         $this->tree = $this->buildTree($menus);
     }
 
+    /**
+     * Get menu, can be recursive if $menuId is set.
+     * When $menuId is set, the method will return a 
+     * specific branch
+     *
+     * @param int $menuId
+     * @param array $tree
+     * @return array
+     */
     public function getMenu($menuId = null, $tree = null)
     {
         if (is_null($menuId)) {
@@ -56,5 +83,16 @@ class Menu
             }
         }
         return array();
+    }
+
+    /**
+     * Get menu and returns json string
+     *
+     * @param int $menuId
+     * @return string
+     */
+    public function getMenuJson($menuId = null)
+    {
+        return json_encode($this->getMenu($menuId));
     }
 }
