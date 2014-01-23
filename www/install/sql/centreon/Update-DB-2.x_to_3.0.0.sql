@@ -25,11 +25,11 @@ CREATE TABLE `module_hooks` (
 CREATE TABLE `menus` (
   `menu_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
-  `short_name` varchar(100) NOT NULL,
   `parent_id` int(11),
   `url` varchar(255) NOT NULL,
   `icon_class`varchar(100),
   `icon` varchar(255),
+  `bgcolor` varchar(55),
   `is_module` tinyint(1) DEFAULT 0,
   `menu_order` tinyint(5) DEFAULT 0,
   PRIMARY KEY(`menu_id`),
