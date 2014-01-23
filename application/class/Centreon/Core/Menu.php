@@ -8,7 +8,6 @@ class Menu
     public function __construct()
     {
         $this->setMenu();
-        echo "<pre>",print_r($this->getMenu(3), true),"<pre>";
     }
 
     private function buildTree(array $elements, $parentId = 0) 
