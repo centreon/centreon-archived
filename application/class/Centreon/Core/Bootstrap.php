@@ -160,12 +160,8 @@ class Bootstrap
      */
     private function initMenus()
     {
-        $this->di->set(
-            'menu',
-            function () {
-                return new Menu();
-            }
-        );
+        $menu = new Menu();
+        $this->di->set('menu', $menu);
     }
 
     /**
