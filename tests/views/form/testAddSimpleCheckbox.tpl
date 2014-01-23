@@ -8,5 +8,5 @@
 
 {block name=appContent}
     {$form.hidden}
-    {$form.testClassiqueInput.html}
+    {$form.testClassiqueCheckbox.html}
 {/block}

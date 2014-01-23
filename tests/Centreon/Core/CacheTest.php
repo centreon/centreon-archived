@@ -32,7 +32,7 @@ class CacheTest extends \PHPUnit_Framework_TestCase
 
     public function testApc()
     {
-        if (false === extension_loaded('apc') || ini_get('apc.enable_cli') == 0) {
+        if (false === extension_loaded('apc') || ini_get('apc.enable_cli') == 1) {
             $this->markTestIncomplete("APC extensions not found");
         }
         $config = new Config(DATA_DIR . '/test-apc.ini');
