@@ -186,7 +186,7 @@ ${CAT} "$file_sql_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for sql update files")"
 
-### Step 2: Change right on Centreon WebFront
+### Step 2.0: Change right on Centreon WebFront
 
 ## use this step to change macros on php file...
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
@@ -212,7 +212,7 @@ ${CAT} "$file_php_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for php files")"
 
-### Step 2 bis: replace macro for migration scripts
+### Step 2.1 : replace macro for migration scripts
 
 ## use this step to change macros on php file...
 macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
@@ -238,6 +238,32 @@ ${CAT} "$file_migration_temp" | while read file ; do
 done
 check_result $flg_error "$(gettext "Change macros for migration scripts")"
 
+
+### Step 2.2 : replace macro for perl binary
+
+## use this step to change macros on perl file...
+macros="@CENTREON_ETC@,@CENTREON_GENDIR@,@CENTPLUGINSTRAPS_BINDIR@,@CENTREON_LOG@,@CENTREON_VARLIB@,@CENTREONTRAPD_BINDIR@"
+find_macros_in_dir "$macros" "$TMP_DIR/src" "bin/" "*" "file_perl_temp"
+
+log "INFO" "$(gettext "Apply macros")"
+
+flg_error=0
+${CAT} "$file_perl_temp" | while read file ; do
+        log "MACRO" "$(gettext "Change macro for") : $file"
+        [ ! -d $(dirname $TMP_DIR/work/$file) ] && \
+                mkdir -p  $(dirname $TMP_DIR/work/$file) >> $LOG_FILE 2>&1
+        ${SED} -e 's|@CENTREON_ETC@|'"$CENTREON_ETC"'|g' \
+                -e 's|@CENTREON_GENDIR@|'"$CENTREON_GENDIR"'|g' \
+                -e 's|@CENTPLUGINSTRAPS_BINDIR@|'"$CENTPLUGINSTRAPS_BINDIR"'|g' \
+                -e 's|@CENTREONTRAPD_BINDIR@|'"$CENTREON_BINDIR"'|g' \
+                -e 's|@CENTREON_VARLIB@|'"$CENTREON_VARLIB"'|g' \
+                -e 's|@CENTREON_LOG@|'"$CENTREON_LOG"'|g' \
+                $TMP_DIR/src/$file > $TMP_DIR/work/$file
+                [ $? -ne 0 ] && flg_error=1
+        log "MACRO" "$(gettext "Copy in final dir") : $file"
+        cp -f $TMP_DIR/work/$file $TMP_DIR/final/$file >> $LOG_FILE 2>&1
+done
+check_result $flg_error "$(gettext "Change macros for perl binary")"
 
 ### Step 3: Change right on monitoringengine_etcdir
 log "INFO" "$(gettext "Change right on") $MONITORINGENGINE_ETC" 
@@ -498,10 +524,10 @@ $INSTALL_DIR/cinstall $cinstall_opts \
 check_result $? "$(gettext "Install centreonSyncArchives")"
 
 ## Install generateSqlLite
-log "INFO" "$(gettext "Prepare generateSqlLite")"
-cp $TMP_DIR/src/bin/generateSqlLite \
-	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
-check_result $? "$(gettext "Prepare generateSqlLite")"
+#log "INFO" "$(gettext "Prepare generateSqlLite")"
+#cp $TMP_DIR/src/bin/generateSqlLite \
+#	$TMP_DIR/final/bin/generateSqlLite >> "$LOG_FILE" 2>&1
+#check_result $? "$(gettext "Prepare generateSqlLite")"
 
 log "INFO" "$(gettext "Install generateSqlLite")"
 $INSTALL_DIR/cinstall $cinstall_opts \
