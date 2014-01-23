@@ -1,6 +1,6 @@
 {extends file="../baseLayout.tpl"}
 
-{block name=title}Test Add Button{/block}
+{block name=title}Test Add Simple Select{/block}
 
 {block name=appMenu}
     My Menu
@@ -8,5 +8,5 @@
 
 {block name=appContent}
     {$form.hidden}
-    {$form.testClassiqueInput.html}
+    {$form.testClassiqueSelect.html}
 {/block}
