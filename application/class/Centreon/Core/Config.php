@@ -111,7 +111,7 @@ class Config
         }
         $stmt->closeCursor();
         /* Save config into cache */
-        $di->get('cache')->set('app:cache', $this->config);
+        $di->get('cache')->set('app:config', $this->config);
     }
 
     /**
