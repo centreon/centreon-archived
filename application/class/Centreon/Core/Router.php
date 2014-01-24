@@ -36,13 +36,13 @@ class Router extends \Klein\Klein
                                 }
                             );
                         }
-                    } elseif (is_dir($dir.$dirname)) {
-                        $this->parseRoutes($pref.'\\'.ucfirst($dirname), $dir.$dirname);
+                    } elseif (is_dir($dir . '/' . $dirname)) {
+                        $this->parseRoutes($pref . '\\' . ucfirst($dirname), $dir . '/' . $dirname);
                     }
                 }
             }
+            closedir($handle);
         }
-        closedir($handle);
     }
 
     /**
@@ -72,7 +72,7 @@ class Router extends \Klein\Klein
      */
     public function getPathFor($route_name, array $params = null, $flatten_regex = true)
     {
-        $path = $route_name;
+        $path = rtrim(Di::getDefault()->get('config')->get('global', 'base_url'), '/').$route_name;
         $validPath = false;
         foreach ($this->routes as $routeArr) {
             foreach ($routeArr as $v) {

@@ -34,6 +34,8 @@
  */
 namespace Centreon\Core;
 
+use \Centreon\Core\Di;
+
 /**
  * Class for manage session
  *
@@ -125,6 +127,25 @@ class Session
      */
     public function write($sessionId, $data)
     {
+        if (isset($_SESSION['user_id'])) {
+            /* Update session in db */
+            $dbconn = Di::getDefault()->get('db_centreon');
+            try {
+                $router = Di::getDefault()->get('router');
+                $route = $router->request()->pathname();
+                $stmt = $dbconn->prepare(
+                    'UPDATE `session` SET
+                        last_reload = :now,
+                        route = :route
+                        WHERE session_id = :session_id'
+                );
+                $stmt->bindParam(':now', time());
+                $stmt->bindParam(':route', $route);
+                $stmt->bindParam(':session_id', $sessionId);
+                $stmt->execute();
+            } catch (\Exception $e) {
+            }
+        }
         if ($this->useCache) {
             try {
                 Di::getDefault()->get('cache')->set('session::' . $sessionId, $data, session_cache_expire());

@@ -170,16 +170,16 @@ class Bootstrap
 
     /**
      * Init routes
-     *
      */
     private function initRoutes()
     {
-        $router = new \Centreon\Core\Router();
-        $this->di->setShared('router', $router);
-        $router->parseRoutes(
-            '\\Controllers',
-            '../application/controllers/'
-        );
-        $router->dispatch();
+        $this->di->set('router', function() {
+            $router = new \Centreon\Core\Router();
+            $router->parseRoutes(
+                '\\Controllers',
+                realpath(__DIR__ . '/../../..//controllers/')
+            );
+	    return $router;
+        });
     }
 }
