@@ -50,7 +50,7 @@ require_once("./class/centreonData.class.php");
 					<td align='center' class='copyRight'>
                         <a href="http://support.centreon.com" title="Centreon Support Access" target='_blank'>Centreon Support</a> - 
                         <a href="http://www.centreon.com" title='Centreon Services Overview' target='_blank'>Centreon Services</a> | 
-                        Copyright &copy; 2004-2013 <a href="http://www.merethis.com">Merethis</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
+                        Copyright &copy; 2005-2014 <a href="http://www.merethis.com">Merethis</a><br /><?php print _("Generated in "); $time_end = microtime_float(); $now = $time_end - $time_start; print round($now,3) . " " . _("seconds"); ?>
                         <?php if (isset($oreon->optGen["centreon_support_email"]) && $oreon->optGen["centreon_support_email"] != "") { ?>
                         | <a href='mailto:<?php print $oreon->optGen["centreon_support_email"]; ?>'><?php print _("Help Desk"); ?></a></td>
                         <?php } ?>
