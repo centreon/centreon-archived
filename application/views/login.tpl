@@ -14,7 +14,7 @@
         <div class="col-sm-4 col-sm-offset-4">
             <div class="panel panel-default panel-login"> 
                 <form action="" method="POST" role="form">
-                <input type="hidden" name="crsf" value="{$csrf}">
+                <input type="hidden" name="csrf" value="{$csrf}">
                 <!-- <div class="panel-heading">
                     <h3 class="panel-title">{t}Log in{/t}</h3>
                 </div>-->
