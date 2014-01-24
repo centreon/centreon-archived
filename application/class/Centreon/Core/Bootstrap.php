@@ -177,8 +177,9 @@ class Bootstrap
             $router = new \Centreon\Core\Router();
             $router->parseRoutes(
                 '\\Controllers',
-                realpath(__DIR__ . '/../application/controllers/')
+                realpath(__DIR__ . '/../../..//controllers/')
             );
+	    return $router;
         });
     }
 }

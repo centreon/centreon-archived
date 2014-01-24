@@ -36,13 +36,13 @@ class Router extends \Klein\Klein
                                 }
                             );
                         }
-                    } elseif (is_dir($dir.$dirname)) {
-                        $this->parseRoutes($pref.'\\'.ucfirst($dirname), $dir.$dirname);
+                    } elseif (is_dir($dir . '/' . $dirname)) {
+                        $this->parseRoutes($pref . '\\' . ucfirst($dirname), $dir . '/' . $dirname);
                     }
                 }
             }
+            closedir($handle);
         }
-        closedir($handle);
     }
 
     /**
