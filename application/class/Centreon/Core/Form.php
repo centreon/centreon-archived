@@ -306,7 +306,7 @@ class Form
      */
     private function addSecurity()
     {
-        $token = uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true);
+        $token = self::getSecurityToken();
         $_SESSION['form_token'] = $token;
         $_SESSION['form_token_time'] = time();
         $this->addHidden('token', $token);
@@ -348,20 +348,11 @@ class Form
     }
     
     /**
-     * 
-     * @return array
-     * @throws Exception
+     * Return 
      */
     public static function getSecurityToken()
     {
-        if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
-            return array(
-                'token' => $_SESSION['form_token'],
-                'token_time' => $_SESSION['form_token_time']
-            );
-        } else {
-            throw new Exception;
-        }
+        return uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true);
     }
 
     /**
