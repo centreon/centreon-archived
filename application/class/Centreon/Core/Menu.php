@@ -53,7 +53,7 @@ class Menu
         $db = Di::getDefault()->get('db_centreon');
         $this->tree = array();
         $stmt = $db->prepare("
-            SELECT menu_id, name, short_name, parent_id, url, icon_class, icon, bgcolor, menu_order
+            SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order
             FROM menus"
         );
         $stmt->execute();

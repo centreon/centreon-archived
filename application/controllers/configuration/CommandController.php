@@ -9,7 +9,7 @@ class CommandController extends \Centreon\Core\Controller
      * List commands
      *
      * @method get
-     * @route /configuration/command/list
+     * @route /configuration/command
      */
     public function listAction()
     {
@@ -45,7 +45,7 @@ class CommandController extends \Centreon\Core\Controller
     {
         echo \Centreon\Core\Datatable::getDatas(
                 'command',
-                array('fields' => array('command_name', 'command_line', 'command_type'),
+                array('fields' => array('command_type', 'command_name', 'command_line'),
                 'sEcho' => 1
             )
         );

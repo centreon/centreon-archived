@@ -140,6 +140,7 @@ class Form
         $this->defaultValue = array();
         $this->di = \Centreon\Core\Di::getDefault();
         $this->tpl = $this->di->get('template');
+        $this->addSecurity();
     }
     
     /**
@@ -185,48 +186,189 @@ class Form
         return $finalArray;
     }
     
-    public function renderAsHtml(&$element)
+    /**
+     * 
+     * @param array $element
+     */
+    private function renderAsHtml(&$element)
     {
-        
-        if (!isset($element['label']) || (isset($element['label']) && empty($element['label']))) {
-            $element['label'] = $element['name'];
-        }
-        
-        if (!isset($element['placeholder']) || (isset($element['placeholder']) && empty($element['placeholder']))) {
-            $element['placeholder'] = $element['name'];
-        }
-        
-        if (!isset($element['id']) || (isset($element['id']) && empty($element['id']))) {
-            $element['id'] = $element['name'];
-        }
-        
         switch ($element['type']) {
             case 'text':
-            case 'button':
             case 'password':
             default:
-                $element['input'] = '<input '.
-                            'id="'.$element['id'].'" '.
-                            'type="'.$element['type'].'" '.
-                            'name="'.$element['name'].'" '.
-                            'class="form-controler" '.
-                            'placeholder="'.$element['placeholder'].'" '.
-                            '/>';
+                $element['input'] = $this->renderHtmlInput($element);
+                break;
+            
+            case 'button':
+            case 'submit':
+            case 'reset':
+                $element['input'] = $this->renderHtmlInput($element, true, false);
+                break;
+            
+            case 'select':
+                $element['input'] = $this->renderHtmlSelect($element);
+                break;
+            
+            case 'checkbox':
+                $element['input'] = $this->renderHtmlInput($element, false, false);
+                break;
+            
+            case 'radio':
+                $element['input'] = $this->renderHtmlInput($element, true, false);
+                break;
+            
+            case 'group':
+                $element['input'] = '<div class="input-group">';
+                foreach($element['elements'] as $groupElement) {
+                    if ($groupElement['type'] == 'checkbox') {
+                        $element['input'] .= $this->renderHtmlInput($groupElement, false, false);
+                    } else {
+                        $element['input'] .= $this->renderHtmlInput($groupElement, true, false);
+                    }
+                }
+                $element['input'] .= '</div>';
                 break;
         }
         
-        $element['label'] = '<label class="sr-only" for="'.$element['id'].'">'.$element['label'].'</label>';
-        $element['html'] = '<div class="form-group">'.
-                        $element['label'].
-                        $element['input'].
-                        '</div>';
+        $element['label'] = $this->renderHtmlLabel($element);
+        $element['html'] = '<div class="form-group">'.$element['label'].$element['input'].'</div>';
+    }
+    
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
+    public function renderHtmlLabel($inputElement)
+    {
+        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
+            $inputElement['label'] = $inputElement['name'];
+        }
+        
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<label class="sr-only" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
+        
+        return $inputHtml;
+    }
+    
+    /**
+     * 
+     * @param array $inputElement
+     */
+    public function renderHtmlSelect($inputElement)
+    {
+        return $inputElement['html'];
+    }
+    
+    /**
+     * 
+     * @param array $inputElement
+     * @param boolean $useValue
+     * @param boolean $usePlaceholder
+     * @return string
+     */
+    public function renderHtmlInput($inputElement, $useValue = true, $usePlaceholder = true)
+    {
+        ((isset($inputElement['value']) && $useValue) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        
+        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
+            $inputElement['label'] = $inputElement['name'];
+        }
+        
+        if ($usePlaceholder) {
+            if (!isset($inputElement['placeholder']) || (isset($inputElement['placeholder']) && empty($inputElement['placeholder']))) {
+                $placeholder = 'placeholder="'.$inputElement['name'].'" ';
+            }
+        } else {
+            $placeholder = '';
+        }
+        
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<input '.
+                            'id="'.$inputElement['id'].'" '.
+                            'type="'.$inputElement['type'].'" '.
+                            'name="'.$inputElement['name'].'" '.
+                            $value.
+                            'class="form-controler" '.
+                            $placeholder.
+                            '/>';
+        return $inputHtml;
     }
 
     /**
      * 
-     * @param type $name
-     * @param type $fieldType
-     * @param type $additionalParameters
+     */
+    private function addSecurity()
+    {
+        $token = uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true);
+        $_SESSION['form_token'] = $token;
+        $_SESSION['form_token_time'] = time();
+        $this->addHidden('token', $token);
+    }
+    
+    /**
+     * 
+     * @param type $token
+     * @return boolean
+     * @throws Exception
+     */
+    public static function validateSecurity($token)
+    {
+        if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
+            if ($token == $_SESSION['form_token']) {
+                $oldTimestamp = time() - (15*60);
+                if ($_SESSION['token_time'] < $oldTimestamp) {
+                    throw new Exception;
+                }
+            } else {
+                throw new Exception;
+            }
+        } else {
+            throw new Exception;
+        }
+        
+        return true;
+    }
+
+    /**
+     * 
+     * @return boolean
+     * @throws Exception
+     */
+    private function checkSecurity()
+    {
+        $submittedToken = $this->formProcessor->getSubmitValue('token');
+        return self::validateSecurity($submittedToken);
+    }
+    
+    /**
+     * 
+     * @return array
+     * @throws Exception
+     */
+    public static function getSecurityToken()
+    {
+        if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
+            return array(
+                'token' => $_SESSION['form_token'],
+                'token_time' => $_SESSION['form_token_time']
+            );
+        } else {
+            throw new Exception;
+        }
+    }
+
+    /**
+     * 
+     * @param string $name
+     * @param string $fieldType
+     * @param array $additionalParameters
      */
     public function add($name, $fieldType = 'text', $label = "", $additionalParameters = array())
     {
@@ -240,8 +382,14 @@ class Form
                 $this->addButton($name, $label, $additionalParameters['params']);
                 break;
             case 'checkbox':
-                $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->formProcessor->addElement($name, $label, $additionalParameters['params']);
+                $this->checkParameters(
+                    $additionalParameters,
+                    array(
+                        'params' => array('value' => $name),
+                        'separators' => "&nbsp;",
+                    )
+                );
+                $this->addCheckBox($name, $label, $additionalParameters['separators'], $additionalParameters['params']);
                 break;
             case 'hidden':
                 $this->checkParameters($additionalParameters, array('value' => ''));
@@ -252,12 +400,14 @@ class Form
                     $additionalParameters,
                     array(
                         'elements' => array(),
+                        'separators' => "&nbsp;",
                         'defaultValue' => null
                     )
                 );
-                $this->addElement(
+                $this->addRadio(
                     $name,
                     $label,
+                    $additionalParameters['separators'],
                     $additionalParameters['elements'],
                     $additionalParameters['defaultValue']
                 );
@@ -339,6 +489,16 @@ class Form
     }
     
     /**
+     * 
+     * @param string $name
+     * @param string $value
+     */
+    public function addHidden($name, $value)
+    {
+        $this->formProcessor->addElement('hidden', $name, $value);
+    }
+    
+    /**
      * Add a input text element
      *
      * @param string $name The name and the id of element
@@ -372,36 +532,6 @@ class Form
     }
     
     /**
-     * Add a radio to the form
-     *
-     * @param string $name The name and the id of element
-     * @param string $label The label of element
-     * @param array $params The list of options in option group
-     * @param string $defaultValue The default value for radio
-     * @return \HTML_QuickForm_Container_Group
-     * @todo Default
-     */
-    public function addElementRadio($name, $label, $elements, $defaultValue = null)
-    {
-        $elem = $this->formProcessor->addInputList($name)
-            ->updateAttributes(
-                array(
-                    'id'=>$name,
-                    'label'=> $label
-                )
-            );
-        foreach ($elements as $key => $value) {
-            $elem->addRadio(
-                $name,
-                array('value' => $key)
-            )
-                ->setContent($value);
-        }
-        $this->defaultValue[$name] = $defaultValue;
-        return $elem;
-    }
-    
-    /**
      * Add a select
      *
      * @param string $name The name and the id of element
@@ -414,12 +544,7 @@ class Form
     public function addSelect($name, $label, $data, $style = null)
     {
         $elem = $this->formProcessor
-                        ->addElement('select', $name, array('type' => 'select-one'))
-                        ->updateAttributes(array('id'=>$name, 'label'=>$label))
-                        ->loadOptions($data);
-        if (!is_null($style)) {
-            $elem->addClass($style);
-        }
+                     ->addElement('select', $name, $label, $data, null, array('type' => 'select-one'));
         return $elem;
     }
     
@@ -446,8 +571,7 @@ class Form
                             'class'=>'chzn-select',
                             'label'=>$label
                         )
-                    )
-                    ->loadOptions($data);
+                    );
         return $elem;
     }
     
@@ -459,26 +583,60 @@ class Form
      * @param array $params The list of options in option group
      * @return \HTML_QuickForm_Container_Group
      */
-    public function addCheckBox($name, $label, $params = array())
+    public function addCheckBox($name, $label, $separators = '&nbsp;', $params = array())
     {
-        $this->formProcessor->addElement("checkbox", $name, $label)
-                            ->updateAttributes(array('id'=>$name));
-        
-        if (!is_null($params) && count($params)) {
-            
-            $cbg = array();
-            foreach ($params as $key => $value) {
-                $cbg[] = $this->formProcessor->createElement("checkbox", $name, $label)
-                            ->updateAttributes(array('id'=>$name))->addCheckbox($name)
-                    ->setValue($key)
-                    ->setContent($value);
+        if (isset($params['list']) && count($params['list'])) {
+            $cbList = array();
+            foreach ($params['list'] as $cb) {
+                $cbList[] = $this->formProcessor->createElement(
+                    "checkbox",
+                    $cb['name'],
+                    $cb['label'],
+                    $cb['label']
+                );
             }
+            $cbg = $this->formProcessor->addGroup($cbList, $name, $label, $separators);
         } else {
-            $cbg = $this->formProcessor->addInputList('ctn_'.$name)
-                    ->updateAttributes(array('id'=>'ctn_'.$name, 'label'=>$label));
-            $cbg->addCheckbox($name)
-                    ->updateAttributes(array('id'=>$name))
-                    ->setValue($name);
+            $cbg = $this->formProcessor->addElement(
+                'checkbox',
+                $name,
+                $label,
+                $label
+            );
+        }
+        return $cbg;
+    }
+    
+    /**
+     * 
+     * @param string $name
+     * @param string $label
+     * @param string $separators
+     * @param array $params
+     * @return type
+     */
+    public function addRadio($name, $label, $value, $separators = '&nbsp;', $params = array())
+    {
+        if (isset($params['list']) && count($params['list'])) {
+            $cbList = array();
+            foreach ($params['list'] as $cb) {
+                $cbList[] = $this->formProcessor->createElement(
+                    'radio',
+                    $cb['name'],
+                    $cb['label'],
+                    $value,
+                    $cb['label']
+                );
+            }
+            $cbg = $this->formProcessor->addGroup($cbList, $name, $label, $separators);
+        } else {
+            $cbg = $this->formProcessor->addElement(
+                'radio',
+                $name,
+                $label,
+                $value,
+                $label
+            );
         }
         return $cbg;
     }
@@ -495,22 +653,6 @@ class Form
         $elem = $this->formProcessor
                     ->addElement('textarea', $name, $this->template['textarea'])
                     ->updateAttributes(array('id'=>$name, 'label'=>$label));
-        return $elem;
-    }
-    
-    /**
-     * Add a hidden element
-     *
-     * @param string $name The name of hidden element
-     * @param string $value The value of hidden element
-     * @return \HTML_QuickForm_Element_InputHidden
-     */
-    public function addElementHidden($name, $value)
-    {
-        $elem = $this->formProcessor
-                    ->addElement('hidden', $name)
-                    ->updateAttributes(array('id'=>$name))
-                    ->setValue($value);
         return $elem;
     }
     
@@ -630,6 +772,16 @@ class Form
                     ->addElement('tabs', $label)
                     ->updateAttributes(array('id'=>$id, 'label'=>$label));
     }
+    
+    /**
+     * 
+     * @param type $title
+     * @param type $label
+     */
+    public function addHeader($title, $label)
+    {
+        $this->formProcessor->addElement('header', $title, $label);
+    }
 
     /**
      * Add a fieldset into the form
@@ -706,7 +858,7 @@ class Form
     public function registerJsRule($name, $file)
     {
         if (!in_array($name, $this->jsRulesRegister)) {
-            $this->tpl->addJavascript($file);
+            $this->tpl->addJs($file);
             $this->jsRulesRegister[] = $name;
         }
     }
@@ -740,8 +892,8 @@ class Form
                 'info' => $jsExt
             );
             /* Add javascript for initialize the form rules */
-            $this->tpl->addJavascript('jquery/validate/jquery.validate.min.js');
-            $this->tpl->addJavascript('centreon/formRules.js');
+            $this->tpl->addJs('jquery/validate/jquery.validate.min.js')
+                      ->addJs('centreon/formRules.js');
         }
     }
 
@@ -768,11 +920,9 @@ class Form
         //$this->formProcessor->addFilter($field, array($this, $function));
     }
      
-    public function setDefaults($values)
+    public function setDefaults($defaultValues, $filter)
     {
-        //$this->formProcessor->addDataSource(new \HTML_QuickForm_DataSource_Array($values));
-        //$this->formProcessor->addDataSource(new \HTML_QuickForm_DataSource_Array($values));
-        
+       $this->formProcessor->setDefaults($defaultValues, $filter);
     }
 
     /**
@@ -802,9 +952,9 @@ class Form
     public function getSubmitValue($elem = null)
     {
         if (!isset($elem)) {
-            return ""; //$this->formProcessor->getSubmitValue();
+            return $this->formProcessor->getSubmitValue();
         } else {
-            return "" ; //$this->formProcessor->getSubmitValue($elem);
+            return $this->formProcessor->getSubmitValue($elem);
         }
     }
 
@@ -846,6 +996,7 @@ class Form
      */
     public function validate()
     {
+        $this->checkSecurity();
         return $this->formProcessor->validate();
     }
 
@@ -885,23 +1036,5 @@ class Form
         $this->style = array();
     
         $this->basicSeparator = '&nbsp;';
-        
-        /*\HTML_QuickForm_Factory::registerElement(
-            'inputlist',
-            'Centreon_InputList'
-        );
-        \HTML_QuickForm_Factory::registerElement(
-            'tabs',
-            'QuickForm_Container_Tab'
-        );
-        \HTML_QuickForm_Factory::registerElement(
-            'submitbar',
-            'Centreon_SubmitBar'
-        );
-
-        \HTML_QuickForm_Renderer::register(
-            'centreon',
-            'QuickForm_Renderer_Centreon_Horizontal'
-        );*/
     }
 }

@@ -7,5 +7,6 @@
 {/block}
 
 {block name=appContent}
+    {$form.hidden}
     {$form.testClassiqueInput.html}
 {/block}

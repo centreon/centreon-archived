@@ -8,4 +8,5 @@
 
 {block name=appContent}
     {$form.hidden}
+    {$form.hidden}
 {/block}

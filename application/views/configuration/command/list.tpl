@@ -3,29 +3,28 @@
 {block name="title"}Command{/block}
 
 {block name="content"}
-    <input type="button" id="mycheckbutton" value="Check" />
-    &nbsp;&nbsp;
-    <input type="button" id="mynotifbutton" value="Notifications" />
-    &nbsp;&nbsp;
-    <input type="button" id="mymiscbutton" value="Miscellaneous" />
     <table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="myDatatableTest">
 
         <thead>
             <tr>
+                <th>
+                    <select id="search_type" name="search_type">
+                        <option value="2">Check</option>
+                        <option value="1">Notifications</option>
+                        <option value="3">Miscelleanous</option>
+                    </select>
+                </th>
                 <th>
                     <input type="text" name="search_name" placeholder="Identifiant" class="search_init" size='10' />
                 </th>
                 <th>
                     <input type="text" name="search_line" placeholder="Identifiant" class="search_init" size='10' />
                 </th>
-                <th>
-                    <input type="text" name="search_type" placeholder="Identifiant" class="search_init" size='10' />
-                </th>
             </tr>
             <tr>
+                <th>Type</th>
                 <th>Name</th>
                 <th>Command Line</th>
-                <th>Type</th>
             </tr>
         </thead>
 
@@ -35,13 +34,15 @@
         <tfoot>
             <tr>
                 <th>
+                    <select id="search_type_2" name="search_type_2">
+                        <option value="2">Check</option>
+                        <option value="1">Notifications</option>
+                        <option value="3">Miscelleanous</option>
+                    </select>
                     <input type="text" name="search_name" placeholder="Identifiant" class="search_init" size='10' />
                 </th>
                 <th>
                     <input type="text" name="search_line" placeholder="Identifiant" class="search_init" size='10' />
-                </th>
-                <th>
-                    <input type="text" name="search_type" placeholder="Identifiant" class="search_init" size='10' />
                 </th>
             </tr>
         </tfoot>
@@ -54,14 +55,14 @@
         $(document).ready(function() {
             oTable = $('#myDatatableTest').dataTable( {
                 "bProcessing": true,
-                "sAjaxSource": 'datatable',
+                "sAjaxSource": "{url_for url='/configuration/command/datatable'}",
                 "bStateSave": true,
                 "iDisplayLength": 50,
                 "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
                 "sPaginationType": "bootstrap",
-                "sDom": "<'row-fluid'T<'clear'><'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+                "sDom": "<'row-fluid'T<'clear'><'span6'l><'span6'f>t<'row-fluid'<'span6'i><'span6'p>>",
                 "oTableTools": {
-                    "sSwfPath": "static/centreon/swf/dataTables/copy_csv_xls_pdf.swf"
+                    "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}"
                 }
             });
 
@@ -90,21 +91,12 @@
     </script>
 
     <script>
-        $("#mynotifbutton").click(function() {
-            //Creating of our own filtering function
-            console.log(jQuery("tfoot input").index(this));
-
-            oTable.fnFilter('1', 2)
+        $("#search_type").click(function() {
+             oTable.fnFilter(this.value, 2);
         });
-        $("#mycheckbutton").click(function() {
-            //Creating of our own filtering function
-            console.log(jQuery("tfoot input").index(this));
-            oTable.fnFilter('2', 2)
-        });
-        $("#mymiscbutton").click(function() {
-            //Creating of our own filtering function
-            console.log(jQuery("tfoot input").index(this));
-            oTable.fnFilter('3', 2)
+        
+        $("#search_type_2").click(function() {
+             oTable.fnFilter(this.value, 2);
         });
     </script>
 
