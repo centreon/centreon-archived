@@ -352,7 +352,10 @@ class Form
      */
     public static function getSecurityToken()
     {
-        return uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true);
+        $token = md5(uniqid(Di::getDefault()->get('config')->get('global', 'secret'), true));
+        $_SESSION['form_token'] = $token;
+        $_SESSION['form_token_time'] = time();
+        return $token;
     }
 
     /**
