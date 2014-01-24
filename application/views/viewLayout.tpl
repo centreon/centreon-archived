@@ -27,9 +27,8 @@ $(document).ready(function() {
         leftPanelHeight();
     });
     loadMenu('configuration');
-    $('body').on('click', '#environment-menu', function(e) {
-        var target = e.currentTarget;
-        loadMenu($(e).data('menu'));
+    $('li.envmenu').on('click', function(e) {
+        loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'));
     });
     $('.env-menu').on('click', function(e) {
         e.stopPropagation();

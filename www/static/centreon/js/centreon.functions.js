@@ -108,11 +108,11 @@ function generateMenu($elParent, menu) {
 }
 
 /* Load menu */
-function loadMenu(envName) {
+function loadMenu(menuUrl, envName) {
     $.ajax({
-        'url': 'testmenu.json',
+        'url': menuUrl,
         'data': {
-            'name': envName
+            'menu_id': envName
         },
         'dataType': 'json',
         'type': 'GET',
@@ -122,6 +122,7 @@ function loadMenu(envName) {
                 return;
             }
             var $menuUl = $('#menu1');
+            $menuUl.html("");
             generateMenu($menuUl, data.menu);
         }
     });

@@ -32,8 +32,10 @@ class Menu
                 $children = $this->buildTree($elements, $element['menu_id']);
                 if ($children) {
                     $element['children'] = $children;
+                } else {
+                    $element['children'] = array();
                 }
-                $branch[$element['menu_id']] = $element;
+                $branch[] = $element;
             }
         }
         return $branch;
@@ -79,8 +81,8 @@ class Menu
         if (is_null($tree)) {
             $tree = $this->tree;
         }
-        foreach ($tree as $k => $v) {
-            if ($k == $menuId) {
+        foreach ($tree as $v) {
+            if ($v['menu_id'] == $menuId) {
                 return $v;
             }
             if (isset($v['children'])) {
