@@ -99,7 +99,7 @@ class Template extends \Smarty
         $config = $di->get('config');
         
         // Fixed configuration
-	$appPath = realpath(__DIR__ . '/../../../');
+        $appPath = realpath(__DIR__ . '/../../../');
         $this->setTemplateDir($appPath . '/views/');
         $this->setConfigDir('');
         $this->addPluginsDir($appPath . '/class/Smarty/');
@@ -116,6 +116,23 @@ class Template extends \Smarty
             $this->force_compile = true;
             $this->setTemplateDir($config->get('template', 'template_dir'));
         }
+    }
+
+    /**
+     * Load statics file (css/js)
+     *
+     * jQuery, bootstrap, font-awesome and centreon
+     */
+    public function initStaticFiles()
+    {
+        /* Load css */
+        $this->addCss('bootstrap.min.css');
+        $this->addCss('font-awesome.min.css');
+        $this->addCss('centreon.css');
+        /* Load javascript */
+        $this->addJs('jquery.min.js');
+        $this->addJs('bootstrap.min.js');
+        $this->addJs('centreon.functions.js');
     }
     
     /**
