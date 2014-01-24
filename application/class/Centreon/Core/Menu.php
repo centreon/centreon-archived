@@ -56,7 +56,8 @@ class Menu
         $this->tree = array();
         $stmt = $db->prepare("
             SELECT menu_id, name, parent_id, url, icon_class, icon, bgcolor, menu_order
-            FROM menus"
+            FROM menus
+            ORDER BY menu_order ASC"
         );
         $stmt->execute();
         $menus = $stmt->fetchAll(\PDO::FETCH_ASSOC);
