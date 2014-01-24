@@ -127,7 +127,7 @@ class Session
      */
     public function write($sessionId, $data)
     {
-        if ($_SESSION['user_id']) {
+        if (isset($_SESSION['user_id'])) {
             /* Update session in db */
             $dbconn = Di::getDefault()->get('db_centreon');
             try {
