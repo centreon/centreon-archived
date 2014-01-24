@@ -9,7 +9,7 @@ class CommandController extends \Centreon\Core\Controller
      * List commands
      *
      * @method get
-     * @route /configuration/command/list
+     * @route /configuration/command
      */
     public function listAction()
     {

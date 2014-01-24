@@ -55,7 +55,7 @@
         $(document).ready(function() {
             oTable = $('#myDatatableTest').dataTable( {
                 "bProcessing": true,
-                "sAjaxSource": 'datatable',
+                "sAjaxSource": "{url_for url='/configuration/command/datatable'}",
                 "bStateSave": true,
                 "iDisplayLength": 50,
                 "aLengthMenu": [[10, 25, 50], [10, 25, 50]],

@@ -10,15 +10,15 @@
  */
 function smarty_function_url_for($params) {
 
-    $finalRoute = \Centreon\Core\Di::getDefault()
+   /* $finalRoute = \Centreon\Core\Di::getDefault()
         ->get('config')
-        ->get('global', 'base_url');
+        ->get('global', 'base_url');*/
     if (isset($params['url'])) {
         $routeParams = array();
         if (isset($params['params']) && is_array($params['params'])) {
             $routeParams = $params['params'];
         }
-        $finalRoute .= \Centreon\Core\Di::getDefault()
+        $finalRoute = \Centreon\Core\Di::getDefault()
             ->get('router')
             ->getPathFor($params['url'], $routeParams);
     }
