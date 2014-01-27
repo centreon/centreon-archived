@@ -53,7 +53,13 @@ Only available if you are using Centreon Broker as of now.
 New system with SNMP traps
 ==========================
 
-todo
+Centreon has evolved with a eaysiest way to handle SNMP traps. Some advantages of the new system:
+
+* No more ‘snmptt’
+* More advanced configuration in SQL Database
+* Local database (sqlite) on Pollers
+
+You have to look on the centreon documentation in order to configure Centreon using this new system. Go in section : User guide > Advanced > SNMP TRAPS 
 
 
 ***************
