@@ -307,8 +307,6 @@ class Form
     private function addSecurity()
     {
         $token = self::getSecurityToken();
-        $_SESSION['form_token'] = $token;
-        $_SESSION['form_token_time'] = time();
         $this->addHidden('token', $token);
     }
     
