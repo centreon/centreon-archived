@@ -46,7 +46,6 @@ class CommandController extends \Centreon\Core\Controller
         echo \Centreon\Core\Datatable::getDatas(
             'command',
             array(
-                'fields' => array('command_type', 'command_name', 'command_line'),
                 'sEcho' => 1
             )
         );
@@ -73,6 +72,6 @@ class CommandController extends \Centreon\Core\Controller
      */
     public function updateAction()
     {
-
+        
     }
 }

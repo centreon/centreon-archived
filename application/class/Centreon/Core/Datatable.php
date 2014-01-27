@@ -65,4 +65,11 @@ class Datatable
         
         return $finalDatas;
     }
+    
+    public static function getConfiguration($object)
+    {
+        // Get connection
+        $objectToCall = '\\Centreon\\Repository\\'.ucwords(strtolower($object)).'Repository';
+        return $objectToCall::getParametersForDatatable();
+    }
 }

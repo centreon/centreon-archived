@@ -42,8 +42,6 @@ namespace Centreon\Repository;
  */
 interface RepositoryInterface
 {
-    public function __construct();
-    
     public static function getCustomDatas($params);
     
     public static function getDatasForDatatable($params);

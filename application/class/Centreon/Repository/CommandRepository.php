@@ -42,13 +42,50 @@ namespace Centreon\Repository;
  */
 class CommandRepository implements \Centreon\Repository\RepositoryInterface
 {
-    public function __construct()
-    {
-        ;
-    }
+    /**
+     *
+     * @var array Default column for datatable
+     */
+    public static $datatableColumn = array(
+        'Type' => 'command_type',
+        'Name' => 'command_name',
+        'Line' => 'command_line'
+    );
     
+    public static $datatableHeader = array(
+        'select' => array(
+            'Check' => '2',
+            'Notifications' => '1',
+            'Miscelleanous' => '3'
+        ),
+        'search' => '',
+        'search' => ''
+    );
+    
+    public static $datatableFooter = array(
+        'select' => array(
+            'Check' => '2',
+            'Notifications' => '1',
+            'Miscelleanous' => '3'
+        ),
+        'search' => '',
+        'search' => ''
+    );
+    
+    public static function  getParametersForDatatable()
+    {
+        return array(
+            'column' => self::$datatableColumn,
+            'header' => self::$datatableHeader,
+            'footer' => self::$datatableFooter
+        );
+    }
+
     public static function getDatasForDatatable($params)
     {
+        if (!isset($params['fields']) || count($params['fields']) === 0) {
+            $params['fields'] = self::$datatableColumn;
+        }
         return self::getCustomDatas($params);
     }
     
