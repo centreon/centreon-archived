@@ -34,6 +34,8 @@
               <button type="button" class="btn btn-dark">Dark</button>
             </div>
           </li>
+          <li class="divider"></li>
+          <li><a href="#" id="logout">{t}Logout{/t}</a></li>
         </ul>
       </li>
     </ul>
@@ -89,6 +91,19 @@ $(document).ready(function() {
         e.preventDefault();
         e.stopPropagation();
         toggleFooter();
+    });
+    $('#logout').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $.ajax({
+            url: "{url_for url='/logout'}",
+            type: "GET",
+            success: function(data, textStatus, jqXHR) {
+                if (data.status) {
+                    window.location.href = "{url_for url='/login'}";
+                }
+            }
+        });
     });
     $(window).on('resize', function() {
         resizeContent();

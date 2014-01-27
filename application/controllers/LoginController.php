@@ -102,4 +102,22 @@ class LoginController extends \Centreon\Core\Controller
             )
         );
     }
+
+    /**
+     * Logout the user
+     *
+     * @method GET
+     * @route /logout
+     */
+    public function logoutAction()
+    {
+        session_regenerate_id(true);
+        \Centreon\Core\Di::getDefault()
+            ->get('router')
+            ->response()->json(
+                array(
+                    'status' => true
+                )
+            );
+    }
 }
