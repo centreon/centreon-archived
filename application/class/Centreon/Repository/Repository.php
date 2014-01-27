@@ -116,7 +116,7 @@ abstract class Repository
         $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
         
         // Building the final request
-        $finalRequest = "SELECT $field_list FROM command $additionalTables $conditions $sort $limitations";
+        $finalRequest = "SELECT $field_list FROM ".static::$tableName." $additionalTables $conditions $sort $limitations";
         
         // Executing the request
         $stmt = $dbconn->query($finalRequest);
@@ -149,6 +149,8 @@ abstract class Repository
         $conditions = '';
         $sort = '';
         
+        $tbName = static::$tableName;
+        
         // Getting table column
         $c = array_values(static::$datatableColumn);
         
@@ -170,7 +172,8 @@ abstract class Repository
         $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
         
         // Building the final request
-        $request = "SELECT COUNT('id') as nbCommand FROM command $conditions $sort";
+        $request = "SELECT COUNT('id') as nb".ucwords(static::$tableName).
+            " FROM ".static::$tableName." $conditions $sort";
         
         // Executing the request
         $stmt = $dbconn->query($request);

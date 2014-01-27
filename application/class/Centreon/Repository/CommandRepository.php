@@ -44,6 +44,12 @@ class CommandRepository extends \Centreon\Repository\Repository
 {
     /**
      *
+     * @var string
+     */
+    public static $tableName = 'command';
+    
+    /**
+     *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
