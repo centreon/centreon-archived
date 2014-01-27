@@ -130,18 +130,18 @@ class Session
         if (isset($_SESSION['user_id'])) {
             /* Update session in db */
             $dbconn = Di::getDefault()->get('db_centreon');
+            $router = Di::getDefault()->get('router');
+            $route = $router->request()->pathname();
             try {
-                $router = Di::getDefault()->get('router');
-                $route = $router->request()->pathname();
                 $stmt = $dbconn->prepare(
                     'UPDATE `session` SET
                         last_reload = :now,
                         route = :route
                         WHERE session_id = :session_id'
                 );
-                $stmt->bindParam(':now', time());
-                $stmt->bindParam(':route', $route);
-                $stmt->bindParam(':session_id', $sessionId);
+                $stmt->bindParam(':now', time(), \PDO::PARAM_INT);
+                $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+                $stmt->bindParam(':session_id', $sessionId, \PDO::PARAM_STR);
                 $stmt->execute();
             } catch (\Exception $e) {
             }
@@ -200,5 +200,34 @@ class Session
             }
         }
         return true;
+    }
+
+    /**
+     * Initialize the user session in database
+     *
+     * @param $userId int The user ID
+     */
+    public static function init($userId)
+    {
+        $dbconn = Di::getDefault()->get('db_centreon');
+        $router = Di::getDefault()->get('router');
+        $route = $router->request()->pathname();
+        $ipAddress = $router->request()->ip();
+        try {
+            $stmt = $dbconn->prepare(
+                'INSERT INTO `session`
+                (session_id, user_id, session_start_time, last_reload, ip_address, route)
+                VALUES (:session_id, :user_id, :start_time, :last_reload, :ip_address, :route)'
+            );
+            $time = time();
+            $stmt->bindParam(':session_id', session_id(), \PDO::PARAM_STR);
+            $stmt->bindParam(':user_id', $userId, \PDO::PARAM_INT);
+            $stmt->bindParam(':start_time', $time, \PDO::PARAM_INT);
+            $stmt->bindParam(':last_reload', $time, \PDO::PARAM_INT);
+            $stmt->bindParam(':ip_address', $ipAddress, \PDO::PARAM_STR);
+            $stmt->bindParam(':route', $route, \PDO::PARAM_STR);
+            $stmt->execute();
+        } catch (\Exception $e) {
+        }
     }
 }
