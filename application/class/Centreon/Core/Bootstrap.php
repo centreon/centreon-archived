@@ -150,7 +150,9 @@ class Bootstrap
         $this->di->set(
             'template',
             function () {
-                return new Template();
+                $tmpl = new Template();
+                $tmpl->initStaticFiles();
+                return $tmpl;
             }
         );
     }
@@ -179,7 +181,7 @@ class Bootstrap
                 '\\Controllers',
                 realpath(__DIR__ . '/../../..//controllers/')
             );
-	    return $router;
+        return $router;
         });
     }
 }

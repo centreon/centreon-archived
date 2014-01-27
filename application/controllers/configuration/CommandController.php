@@ -18,19 +18,14 @@ class CommandController extends \Centreon\Core\Controller
         $tpl = $di->get('template');
 
         // Load CssFile
-        $tpl->addCss('bootstrap.css')
-            ->addCss('dataTables.css')
+        $tpl->addCss('dataTables.css')
             ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css')
-            ->addCss('centreon.css');
+            ->addCss('dataTables-TableTools.css');
 
         // Load JsFile
-        $tpl->addJs('jquery.min.js')
-            ->addJs('jquery.dataTables.min.js')
+        $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('bootstrap.min.js')
-            ->addJs('centreon.functions.js');
+            ->addJs('bootstrap-dataTables-paging.js');
         
         // Display page
         $tpl->display('configuration/command/list.tpl');
