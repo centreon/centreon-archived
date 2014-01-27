@@ -321,7 +321,7 @@ class Form
         if (isset($_SESSION['form_token']) && isset($_SESSION['form_token_time'])) {
             if ($token == $_SESSION['form_token']) {
                 $oldTimestamp = time() - (15*60);
-                if ($_SESSION['token_time'] < $oldTimestamp) {
+                if ($_SESSION['form_token_time'] < $oldTimestamp) {
                     throw new Exception;
                 }
             } else {
