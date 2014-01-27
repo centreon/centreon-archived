@@ -46,5 +46,5 @@ interface RepositoryInterface
     
     public static function getDatasForDatatable($params);
     
-    public static function getTotalRecords();
+    public static function getTotalRecords($params);
 }

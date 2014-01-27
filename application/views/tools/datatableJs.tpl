@@ -8,7 +8,7 @@
             "iDisplayLength": 50,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
             "sPaginationType": "bootstrap",
-            'sDom': "<'row-fluid'Tr<'clear'><'span6'l><'span6'f>t<'row-fluid'<'span6'i><'span6'p>>",
+            'sDom': "<'row-fluid'Tr<'clear'><'span6'l><'span6'>t<'row-fluid'<'span6'i><'span6'p>>",
             "oTableTools": {
                 "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}"
             }
@@ -27,7 +27,13 @@
         "sSortable": "header"
     } );
     
-    $(".search_type").click(function() {
-         oTable.fnFilter(this.value, 2);
-    });
+    {foreach $datatableParameters.header as $header}
+        {foreach $header as $headerType=>$headerData}
+            {if $headerType === 'select'}
+                $(".search_type").click(function() {
+                    oTable.fnFilter(this.value, {$smarty.foreach.count.index + 1});
+               });
+            {/if}
+        {/foreach}
+    {/foreach}
 </script>

@@ -118,6 +118,11 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
             $field_list = "*";
         }
         
+        // Conditions
+        if (!empty($params['sSearch_1'])) {
+            $conditions = "WHERE command_type = '".$params['sSearch_1']."'";
+        }
+        
         // Sort
         $c = array_values(self::$datatableColumn);
         $sort = 'ORDER BY '.$c[$params['sSearch_2']].' '.$params['sSortDir_0'];
@@ -135,14 +140,26 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
         return $stmt->fetchAll();
     }
     
-    public static function getTotalRecords()
+    public static function getTotalRecords($params)
     {
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
+        $conditions = '';
+        $sort = '';
+        
+        // Conditions
+        if (!empty($params['sSearch_1'])) {
+            $conditions = "WHERE command_type = '".$params['sSearch_1']."'";
+        }
+        
+        // Sort
+        $c = array_values(self::$datatableColumn);
+        $sort = 'ORDER BY '.$c[$params['sSearch_2']].' '.$params['sSortDir_0'];
+        
         // Building the final request
-        $request = "SELECT COUNT('id') as nbCommand FROM command";
+        $request = "SELECT COUNT('id') as nbCommand FROM command $conditions $sort";
         
         // Executing the request
         $stmt = $dbconn->query($request);
