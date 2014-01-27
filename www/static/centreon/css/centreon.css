@@ -1,6 +1,14 @@
 /* Login panel */
-.panel-login {
+.login-box {
     margin-top: 200px;
+}
+
+.login-title {
+    font-size: 18px;
+}
+
+.panel-login {
+    margin-top: 30px;
     border-radius: 0;
 }
 
