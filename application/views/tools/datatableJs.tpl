@@ -5,7 +5,7 @@
             "sAjaxSource": "{url_for url=$objectUrl}",
             "bStateSave": true,
             "bServerSide": true,
-            "iDisplayLength": 50,
+            "iDisplayLength": 25,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
             "sPaginationType": "bootstrap",
             'sDom': "<'row-fluid'Tr<'clear'><'span6'l><'span6'>t<'row-fluid'<'span6'i><'span6'p>>",
