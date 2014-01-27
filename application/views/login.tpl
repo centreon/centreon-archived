@@ -3,7 +3,7 @@
 <head>
     <title>{t}Log in{/t} - Centreon : IT Monitoring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="" type="image/x-icon">
+    <link rel="icon" href="{url_static url='/centreon/img/favicon_centreon.ico'}" type="image/x-icon">
     {foreach from=$cssFileList item='cssFile'}
     {$cssFile|css}
     {/foreach}
@@ -11,13 +11,15 @@
 <body>
 <div class="container">
     <div class="row">
-        <div class="col-sm-4 col-sm-offset-4">
+        <div class="col-sm-4 col-sm-offset-4 login-box">
+            <div class="login-title">{t}Centreon{/t}</div>
             <div class="panel panel-default panel-login"> 
                 <form action="" method="POST" role="form">
                 <input type="hidden" name="csrf" value="{$csrf}">
-                <!-- <div class="panel-heading">
-                    <h3 class="panel-title">{t}Log in{/t}</h3>
-                </div>-->
+                <input type="hidden" name="redirect" value="{$redirect}">
+                <div class="panel-body">
+                    <div class="alert alert-danger" style="display: none;" id="login_error"></div>
+                </div>
                 <div class="panel-body">
                     <div class="form-group">
                         <label for="login">{t}Login{/t}</label>
@@ -29,7 +31,7 @@
                     <div class="form-group">
                         <label for="passwd">{t}Password{/t}</label>
                         <div class="input-group">
-                            <input type="passwd" class="form-control" id="passwd" placeholder="Password">
+                            <input type="password" class="form-control" id="passwd" placeholder="Password">
                             <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                         </div>
                     </div>
@@ -47,5 +49,33 @@
 {foreach from=$jsBottomFileList item='jsFile'}
 {$jsFile|js}
 {/foreach}
+<script>
+function logIn() {
+    $.ajax({
+        url: "{url_for url='/login'}",
+        type: "POST",
+        dataType: "json",
+        data: {
+            login: $("#login").val(),
+            passwd: $("#passwd").val(),
+            csrf: $("input[name='csrf']").val()
+        },
+        success: function(data, textStatus, jqXHR) {
+            if (data.status) {
+                window.location.href = $("input[name='redirect']").val();
+            } else {
+                $("#login_error").text(data.error).show();
+            }
+        }
+    });
+}
+
+$(function() {
+    $("form").on('submit', function(e) {
+        e.preventDefault();
+        logIn();
+    });
+});
+</script>
 </body>
 </html>

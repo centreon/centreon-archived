@@ -51,8 +51,55 @@ class LoginController extends \Centreon\Core\Controller
     public function loginAction()
     {
         $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $redirectUrl = $router->request()->param('redirect', '/');
         $tmpl = $di->get('template');
         $tmpl->assign('csrf', \Centreon\Core\Form::getSecurityToken());
+        $tmpl->assign('redirect', $redirectUrl);
         $tmpl->display('login.tpl');
+    }
+
+    /**
+     * Action ajax for login
+     *
+     * @method POST
+     * @route /login
+     */
+    public function loginPostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $username = $router->request()->param('login');
+        $password = $router->request()->param('passwd');
+        $csrf = $router->request()->param('csrf');
+        /* Validate CSRF */
+        try {
+            \Centreon\Core\Form::validateSecurity($csrf);
+        } catch (\Exception $e) {
+            $router->response()->json(
+                array(
+                    'status' => false,
+                    'error' => _("Security key does not match.")
+                )
+            );
+            return;
+        }
+        $auth = new \Centreon\Core\Auth\Sso($username, $password, 0);
+        if (1 === $auth->passwdOk) {
+            $_SESSION['user_id'] = $auth->userInfos['contact_id'];
+            \Centreon\Core\Session::init($_SESSION['user_id']);
+            $router->response()->json(
+                array(
+                    'status' => true
+                )
+            );
+            return;
+        }
+        $router->response()->json(
+            array(
+                'status' => false,
+                'error' => _("Authentication failed.")
+            )
+        );
     }
 }
