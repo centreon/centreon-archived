@@ -58,7 +58,7 @@ class Datatable
             array(
                 "sEcho" => intval($params['sEcho']),
                 "iTotalRecords" => count($datasToSend),
-                "iTotalDisplayRecords" => $objectToCall::getTotalRecords($params),
+                "iTotalDisplayRecords" => $objectToCall::getTotalRecordsForDatatable($params),
                 "aaData" => $datasToSend
             )
         );

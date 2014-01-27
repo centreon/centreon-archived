@@ -22,7 +22,8 @@
                         <th>
                             <input 
                                 type="text" 
-                                name="search_name" 
+                                id="search_{$headerData|lower}"
+                                name="search_{$headerData|lower}" 
                                 placeholder="Identifiant" 
                                 class="search_init" 
                                 size='10' 
@@ -58,7 +59,8 @@
                         <th>
                             <input 
                                 type="text" 
-                                name="search_name" 
+                                id="search_{$headerData|lower}"
+                                name="search_{$headerData|lower}" 
                                 placeholder="Identifiant" 
                                 class="search_init" 
                                 size='10' 

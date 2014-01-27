@@ -40,7 +40,7 @@ namespace Centreon\Repository;
  * @package Centreon
  * @subpackage Repository
  */
-class CommandRepository implements \Centreon\Repository\RepositoryInterface
+class CommandRepository extends \Centreon\Repository\Repository
 {
     /**
      *
@@ -52,6 +52,10 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
         'Line' => 'command_line'
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $datatableHeader = array(
         array('select' => array(
                 'Check' => '2',
@@ -59,10 +63,14 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
                 'Miscelleanous' => '3'
             )
         ),
-        'search',
-        'search'
+        'search_name',
+        'search_line'
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $datatableFooter = array(
         array('select' => array(
                 'Check' => '2',
@@ -74,100 +82,4 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
         'search'
     );
     
-    public static function  getParametersForDatatable()
-    {
-        return array(
-            'column' => self::$datatableColumn,
-            'header' => self::$datatableHeader,
-            'footer' => self::$datatableFooter
-        );
-    }
-
-    public static function getDatasForDatatable($params)
-    {
-        if (!isset($params['fields']) || count($params['fields']) === 0) {
-            $params['fields'] = self::$datatableColumn;
-        }
-        return self::getCustomDatas($params);
-    }
-    
-    public static function getCustomDatas($params)
-    {
-        //
-        $field_list = '';
-        $additionalTables = '';
-        $conditions = '';
-        $limitations = '';
-        $sort = '';
-        
-        // Initializing connection
-        $di = \Centreon\Core\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        // Getting selected field(s)
-        if (isset($params['fields'])) {
-            if (is_array($params['fields'])) {
-                foreach ($params['fields'] as $field) {
-                    $field_list .= $field.',';
-                }
-                $field_list = trim($field_list, ',');
-            } else {
-                $field_list = $params['fields'];
-            }
-        } else {
-            $field_list = "*";
-        }
-        
-        // Conditions
-        if (!empty($params['sSearch_1'])) {
-            $conditions = "WHERE command_type = '".$params['sSearch_1']."'";
-        }
-        
-        // Sort
-        $c = array_values(self::$datatableColumn);
-        $sort = 'ORDER BY '.$c[$params['sSearch_2']].' '.$params['sSortDir_0'];
-        
-        // Processing the limit
-        $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
-        
-        // Building the final request
-        $finalRequest = "SELECT $field_list FROM command $additionalTables $conditions $sort $limitations";
-        
-        // Executing the request
-        $stmt = $dbconn->query($finalRequest);
-        
-        // Returning the result
-        return $stmt->fetchAll();
-    }
-    
-    public static function getTotalRecords($params)
-    {
-        // Initializing connection
-        $di = \Centreon\Core\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        $conditions = '';
-        $sort = '';
-        
-        // Conditions
-        if (!empty($params['sSearch_1'])) {
-            $conditions = "WHERE command_type = '".$params['sSearch_1']."'";
-        }
-        
-        // Sort
-        $c = array_values(self::$datatableColumn);
-        $sort = 'ORDER BY '.$c[$params['sSearch_2']].' '.$params['sSortDir_0'];
-        
-        // Building the final request
-        $request = "SELECT COUNT('id') as nbCommand FROM command $conditions $sort";
-        
-        // Executing the request
-        $stmt = $dbconn->query($request);
-        
-        // Getting the result
-        $result = $stmt->fetchAll();
-        
-        // Returing the result
-        return $result[0]['nbCommand'];
-    }
 }

@@ -17,7 +17,6 @@
     
     $("tfoot input").keyup( function () {
         /* Filter on the column (the index) of this element */
-        console.log(jQuery("tfoot input").index(this));
         oTable.fnFilter( this.value, jQuery("tfoot input").index(this) );
     });
     

@@ -7,7 +7,6 @@ $.extend(true, $.fn.dataTable.defaults, {
   },
   "fnInitComplete": function (oSettings, json) {
     var currentId = $(this).attr('id');
-    console.log(currentId);
     if (currentId) {
  
       var thisLength = $('#' + currentId + '_length');
