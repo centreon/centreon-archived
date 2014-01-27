@@ -3,7 +3,7 @@
 <head>
     <title>{t}Log in{/t} - Centreon : IT Monitoring</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/centreon-devel/static/centreon/img/favicon_centreon.ico" type="image/x-icon">
+    <link rel="icon" href="{url_static url='/centreon/img/favicon_centreon.ico'}" type="image/x-icon">
     {foreach from=$cssFileList item='cssFile'}
     {$cssFile|css}
     {/foreach}
