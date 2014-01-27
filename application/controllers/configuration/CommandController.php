@@ -40,9 +40,7 @@ class CommandController extends \Centreon\Core\Controller
     {
         echo \Centreon\Core\Datatable::getDatas(
             'command',
-            array(
-                'sEcho' => 1
-            )
+            $this->getParams('get')
         );
 
     }

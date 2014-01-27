@@ -1,27 +1,35 @@
-<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="dataTable{$object}">
+<table cellpadding="0" 
+       cellspacing="0" 
+       border="0" 
+       class="table table-striped table-bordered" 
+       width="100%" 
+       id="datatable{$object}"
+       >
 
     <thead>
         <tr>
-            {foreach $datatableParameters.header as $headerType=>$header}
-                {if $headerType === 'select'}
-                    <th>
-                        <select class="search_type" id="search_type" name="search_type">
-                            {foreach $header as $optName=>$optValue}
-                                <option value="{$optValue}">{$optName}</option>
-                            {/foreach}
-                        </select>
-                    </th>
-                {else}
-                    <th>
-                        <input 
-                            type="text" 
-                            name="search_name" 
-                            placeholder="Identifiant" 
-                            class="search_init" 
-                            size='10' 
-                            />
-                    </th>
-                {/if}
+            {foreach $datatableParameters.header as $header}
+                {foreach $header as $headerType=>$headerData}
+                    {if $headerType === 'select'}
+                        <th>
+                            <select class="search_type" id="search_type" name="search_type">
+                                {foreach $headerData as $optName=>$optValue}
+                                    <option value="{$optValue}">{$optName}</option>
+                                {/foreach}
+                            </select>
+                        </th>
+                    {else}
+                        <th>
+                            <input 
+                                type="text" 
+                                name="search_name" 
+                                placeholder="Identifiant" 
+                                class="search_init" 
+                                size='10' 
+                                />
+                        </th>
+                    {/if}
+                {/foreach}
             {/foreach}
         </tr>
         <tr>
@@ -36,26 +44,28 @@
 
     <tfoot>
         <tr>
-            {foreach $datatableParameters.footer as $footerType=>$footer}
-                {if $footerType === 'select'}
-                    <th>
-                        <select class="search_type" id="search_type" name="search_type">
-                            {foreach $footer as $optName=>$optValue}
-                                <option value="{$optValue}">{$optName}</option>
-                            {/foreach}
-                        </select>
-                    </th>
-                {else}
-                    <th>
-                        <input 
-                            type="text" 
-                            name="search_name" 
-                            placeholder="Identifiant" 
-                            class="search_init" 
-                            size='10' 
-                            />
-                    </th>
-                {/if}
+            {foreach $datatableParameters.footer as $footer}
+                {foreach $footer as $footerType=>$footerData}
+                    {if $footerType === 'select'}
+                        <th>
+                            <select class="search_type" id="search_type" name="search_type">
+                                {foreach $footerData as $optName=>$optValue}
+                                    <option value="{$optValue}">{$optName}</option>
+                                {/foreach}
+                            </select>
+                        </th>
+                    {else}
+                        <th>
+                            <input 
+                                type="text" 
+                                name="search_name" 
+                                placeholder="Identifiant" 
+                                class="search_init" 
+                                size='10' 
+                                />
+                        </th>
+                    {/if}
+                {/foreach}
             {/foreach}
         </tr>
     </tfoot>

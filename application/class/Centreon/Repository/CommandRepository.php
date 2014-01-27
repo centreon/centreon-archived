@@ -53,23 +53,25 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
     );
     
     public static $datatableHeader = array(
-        'select' => array(
-            'Check' => '2',
-            'Notifications' => '1',
-            'Miscelleanous' => '3'
+        array('select' => array(
+                'Check' => '2',
+                'Notifications' => '1',
+                'Miscelleanous' => '3'
+            )
         ),
-        'search' => '',
-        'search' => ''
+        'search',
+        'search'
     );
     
     public static $datatableFooter = array(
-        'select' => array(
-            'Check' => '2',
-            'Notifications' => '1',
-            'Miscelleanous' => '3'
+        array('select' => array(
+                'Check' => '2',
+                'Notifications' => '1',
+                'Miscelleanous' => '3'
+            )
         ),
-        'search' => '',
-        'search' => ''
+        'search',
+        'search'
     );
     
     public static function  getParametersForDatatable()
@@ -95,6 +97,8 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
         $field_list = '';
         $additionalTables = '';
         $conditions = '';
+        $limitations = '';
+        $sort = '';
         
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
@@ -114,8 +118,15 @@ class CommandRepository implements \Centreon\Repository\RepositoryInterface
             $field_list = "*";
         }
         
+        // Sort
+        $c = array_values(self::$datatableColumn);
+        $sort = 'ORDER BY '.$c[$params['sSearch_2']].' '.$params['sSortDir_0'];
+        
+        // Processing the limit
+        $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
+        
         // Building the final request
-        $finalRequest = "SELECT $field_list FROM command $additionalTables $conditions";
+        $finalRequest = "SELECT $field_list FROM command $additionalTables $conditions $sort $limitations";
         
         // Executing the request
         $stmt = $dbconn->query($finalRequest);
