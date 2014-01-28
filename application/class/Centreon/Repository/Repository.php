@@ -62,35 +62,23 @@ abstract class Repository
      */
     public static function getDatasForDatatable($params)
     {
-        // Initi  vars
-        $field_list = '';
+        // Init vars
         $additionalTables = '';
         $conditions = '';
         $limitations = '';
         $sort = '';
-        
-        //
-        if (!isset($params['fields'])) {
-            $params['fields'] = static::$datatableColumn;
-        }
         
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
         // Getting selected field(s)
-        if (isset($params['fields'])) {
-            if (is_array($params['fields'])) {
-                foreach ($params['fields'] as $field) {
-                    $field_list .= $field.',';
-                }
-                $field_list = trim($field_list, ',');
-            } else {
-                $field_list = $params['fields'];
-            }
-        } else {
-            $field_list = "*";
+        $field_list = '';
+        foreach (static::$datatableColumn as $field) {
+            $field_list .= $field.',';
         }
+        $field_list = trim($field_list, ',');
+
         
         // Getting table column
         $c = array_values(static::$datatableColumn);
@@ -99,7 +87,7 @@ abstract class Repository
         foreach ($params as $paramName=>$paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue)) {
-                    $colNumber = substr($paramName, strlen('sSearch_')) - 1;
+                    $colNumber = substr($paramName, strlen('sSearch_'));
                     if (empty($conditions)) {
                         $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
                     } else {
@@ -118,8 +106,12 @@ abstract class Repository
         // Building the final request
         $finalRequest = "SELECT $field_list FROM ".static::$tableName." $additionalTables $conditions $sort $limitations";
         
-        // Executing the request
-        $stmt = $dbconn->query($finalRequest);
+        try {
+            // Executing the request
+            $stmt = $dbconn->query($finalRequest);
+        } catch (Exception $e) {
+            
+        }
         
         // Returning the result
         return $stmt->fetchAll();
@@ -158,7 +150,7 @@ abstract class Repository
         foreach ($params as $paramName=>$paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue)) {
-                    $colNumber = substr($paramName, strlen('sSearch_')) - 1;
+                    $colNumber = substr($paramName, strlen('sSearch_'));
                     if (empty($conditions)) {
                         $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
                     } else {

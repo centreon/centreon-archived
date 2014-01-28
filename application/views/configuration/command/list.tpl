@@ -7,5 +7,5 @@
 {/block}
 
 {block name="javascript-bottom" append}
-    {datatablejs object='Command' objectUrl='/configuration/command/datatable'}
+    {datatablejs object='Command' objectUrl='/configuration/command/list'}
 {/block}

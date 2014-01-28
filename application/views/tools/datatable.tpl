@@ -1,18 +1,15 @@
-<table cellpadding="0" 
-       cellspacing="0" 
-       border="0" 
-       class="table table-striped table-bordered" 
-       width="100%" 
-       id="datatable{$object}"
-       >
+
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="datatable{$object}">
 
     <thead>
         <tr>
+            {$counter = 0}
+            {$counterCol = 0}
             {foreach $datatableParameters.header as $header}
                 {foreach $header as $headerType=>$headerData}
                     {if $headerType === 'select'}
                         <th>
-                            <select class="search_type" id="search_type" name="search_type">
+                            <select class="search_type c{$counterCol}" id="select_{$counter}" name="select_{$counter++}">
                                 {foreach $headerData as $optName=>$optValue}
                                     <option value="{$optValue}">{$optName}</option>
                                 {/foreach}
@@ -20,14 +17,7 @@
                         </th>
                     {else}
                         <th>
-                            <input 
-                                type="text" 
-                                id="search_{$headerData|lower}"
-                                name="search_{$headerData|lower}" 
-                                placeholder="Identifiant" 
-                                class="search_init" 
-                                size='10' 
-                                />
+                            <input type="text" id="search_{$counter}" name="search_{$counter++}" placeholder="Identifiant" class="search_field c{$counterCol}" size='10' />
                         </th>
                     {/if}
                 {/foreach}
@@ -45,11 +35,12 @@
 
     <tfoot>
         <tr>
+            {$counterCol = 0}
             {foreach $datatableParameters.footer as $footer}
                 {foreach $footer as $footerType=>$footerData}
                     {if $footerType === 'select'}
                         <th>
-                            <select class="search_type" id="search_type" name="search_type">
+                            <select class="search_type {$counterCol++} c{$counterCol}" id="select_{$counter}" name="select_{$counter++}">
                                 {foreach $footerData as $optName=>$optValue}
                                     <option value="{$optValue}">{$optName}</option>
                                 {/foreach}
@@ -57,14 +48,7 @@
                         </th>
                     {else}
                         <th>
-                            <input 
-                                type="text" 
-                                id="search_{$headerData|lower}"
-                                name="search_{$headerData|lower}" 
-                                placeholder="Identifiant" 
-                                class="search_init" 
-                                size='10' 
-                                />
+                            <input type="text" id="search_{$counter}" name="search_{$counter++}" placeholder="Identifiant" class="search_field c{$counterCol}" size='10' />
                         </th>
                     {/if}
                 {/foreach}

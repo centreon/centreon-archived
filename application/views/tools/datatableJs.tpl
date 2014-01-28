@@ -15,9 +15,9 @@
         });
     });
     
-    $("tfoot input").keyup( function () {
-        /* Filter on the column (the index) of this element */
-        oTable.fnFilter( this.value, jQuery("tfoot input").index(this) );
+    $(".search_field").keyup( function () {
+        row = $(this).parent().parent().children().index($(this).parent());
+        oTable.fnFilter(this.value, row);
     });
     
     $.extend( $.fn.dataTableExt.oStdClasses, {
@@ -25,14 +25,8 @@
         "sSortDesc": "header headerSortUp",
         "sSortable": "header"
     } );
-    
-    {foreach $datatableParameters.header as $header}
-        {foreach $header as $headerType=>$headerData}
-            {if $headerType === 'select'}
-                $(".search_type").click(function() {
-                    oTable.fnFilter(this.value, {$smarty.foreach.count.index + 1});
-               });
-            {/if}
-        {/foreach}
-    {/foreach}
+
+    $(".search_type").change(function() {
+        oTable.fnFilter(this.value, jQuery(".search_type").index(this));
+    });
 </script>

@@ -34,7 +34,7 @@ class CommandController extends \Centreon\Core\Controller
     /**
      * 
      * @method get
-     * @route /configuration/command/datatable
+     * @route /configuration/command/list
      */
     public function datatableAction()
     {
