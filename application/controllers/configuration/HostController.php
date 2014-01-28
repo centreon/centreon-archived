@@ -6,7 +6,7 @@ class HostController extends \Centreon\Core\Controller
 {
 
     /**
-     * List commands
+     * List hosts
      *
      * @method get
      * @route /configuration/host
@@ -34,7 +34,7 @@ class HostController extends \Centreon\Core\Controller
     /**
      * 
      * @method get
-     * @route /configuration/command/datatable
+     * @route /configuration/host/list
      */
     public function datatableAction()
     {
@@ -46,10 +46,10 @@ class HostController extends \Centreon\Core\Controller
     }
     
     /**
-     * Create a new command
+     * Create a new host
      *
      * @method post
-     * @route /configuration/command/create
+     * @route /configuration/host/create
      */
     public function createAction()
     {
@@ -57,11 +57,11 @@ class HostController extends \Centreon\Core\Controller
     }
 
     /**
-     * Update a command
+     * Update a host
      *
      *
      * @method put
-     * @route /configuration/command/update
+     * @route /configuration/host/update
      */
     public function updateAction()
     {

@@ -86,7 +86,7 @@ abstract class Repository
         // Conditions (Recherche)
         foreach ($params as $paramName=>$paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
-                if (!empty($paramValue)) {
+                if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
                     if (empty($conditions)) {
                         $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
@@ -114,7 +114,8 @@ abstract class Repository
         }
         
         // Returning the result
-        return $stmt->fetchAll();
+        $resultSet = array_values(array_map("self::castColumn", $stmt->fetchAll(\PDO::FETCH_ASSOC)));
+        return self::array_values_recursive($resultSet);
     }
     
     /**
@@ -149,7 +150,7 @@ abstract class Repository
         // Conditions (Recherche)
         foreach ($params as $paramName=>$paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
-                if (!empty($paramValue)) {
+                if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
                     if (empty($conditions)) {
                         $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
@@ -174,7 +175,35 @@ abstract class Repository
         $result = $stmt->fetchAll();
         
         // Returing the result
-        return $result[0]['nbCommand'];
+        return $result[0]['nb'.ucwords(static::$tableName)];
+    }
+    
+    public static function castColumn($element)
+    {
+        $elementField = array_keys($element);
+        foreach (static::$columnCast as $castField=>$castValues) {
+            if (in_array($castField, $elementField)) {
+                $element[$castField] = $castValues[$element[$castField]];
+            }
+        }
+        return $element;
+    }
+    
+    /**
+     * 
+     * @param type $array
+     * @return type
+     */
+    public static function array_values_recursive($array)
+    {
+        $array = array_values( $array );
+        for ( $i = 0, $n = count( $array ); $i < $n; $i++ ) {
+            $element = $array[$i];
+            if ( is_array( $element ) ) {
+                $array[$i] = self::array_values_recursive( $element );
+            }
+        }
+        return $array;
     }
     
     /**
