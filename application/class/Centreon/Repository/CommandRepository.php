@@ -62,6 +62,18 @@ class CommandRepository extends \Centreon\Repository\Repository
      *
      * @var array 
      */
+    public static $columnCast = array(
+        'command_type' => array(
+            '1' => 'Notifications',
+            '2' => 'Check',
+            '3' => 'Miscelleanous',
+        )
+    );
+    
+    /**
+     *
+     * @var array 
+     */
     public static $datatableHeader = array(
         array('select' => array(
                 'Check' => '2',
