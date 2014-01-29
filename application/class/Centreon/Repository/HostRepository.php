@@ -53,10 +53,10 @@ class HostRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        'Status' => 'host_activate',
         'Name' => 'host_name',
         'Description' => 'host_alias',
         'IP Address / DNS' => 'host_address',
+        'Status' => 'host_activate'
     );
     
     /**
@@ -64,15 +64,15 @@ class HostRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableHeader = array(
+        'search_name',
+        'search_description',
+        'search_address',
         array('select' => array(
                 'Enabled' => '1',
                 'Disabled' => '0',
                 'Trash' => '2'
             )
-        ),
-        'search_name',
-        'search_description',
-        'search_address',
+        )
     );
     
     /**
@@ -84,7 +84,9 @@ class HostRepository extends \Centreon\Repository\Repository
             '0' => 'Disabled',
             '1' => 'Enabled',
             '2' => 'Trash',
-        )
+        ),
+        'host_id' => '<input class="allHostBox" id="host::host_id::" name="host[]" type="checkbox" value="::host_id::"/>',
+        'host_name' => '<a href="/centreon-devel/configuration/host/::host_id::">::host_name::</a>'
     );
     
     /**
@@ -92,15 +94,16 @@ class HostRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableFooter = array(
-        array('select' => array(
+        'search_name',
+        'search_description',
+        'search_address',
+        array(
+            'select' => array(
                 'Enabled' => '1',
                 'Disabled' => '0',
                 'Trash' => '2'
             )
-        ),
-        'search_name',
-        'search_description',
-        'search_address',
+        )
     );
     
 }

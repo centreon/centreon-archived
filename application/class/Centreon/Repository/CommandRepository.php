@@ -53,9 +53,10 @@ class CommandRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        'Type' => 'command_type',
+        '<input id="allCommand" type="checkbox">' => 'command_id',
         'Name' => 'command_name',
-        'Line' => 'command_line'
+        'Line' => 'command_line',
+        'Type' => 'command_type'
     );
     
     /**
@@ -67,7 +68,9 @@ class CommandRepository extends \Centreon\Repository\Repository
             '1' => 'Notifications',
             '2' => 'Check',
             '3' => 'Miscelleanous',
-        )
+        ),
+        'command_id' => '<input class="allCommandBox" id="command::command_id::" name="command[]" type="checkbox" value="::command_id::"/>',
+        'command_name' => '<a href="/centreon-devel/configuration/command/::command_id::">::command_name::</a>'
     );
     
     /**
@@ -75,14 +78,15 @@ class CommandRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableHeader = array(
-        array('select' => array(
+        'search_name',
+        'search_line',
+        array(
+            'select' => array(
                 'Check' => '2',
                 'Notifications' => '1',
                 'Miscelleanous' => '3'
             )
-        ),
-        'search_name',
-        'search_line'
+        )
     );
     
     /**
@@ -90,14 +94,14 @@ class CommandRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableFooter = array(
+        'search',
+        'search',
         array('select' => array(
                 'Check' => '2',
                 'Notifications' => '1',
                 'Miscelleanous' => '3'
             )
-        ),
-        'search',
-        'search'
+        )
     );
     
 }

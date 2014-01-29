@@ -54,7 +54,7 @@ abstract class Repository
             'footer' => static::$datatableFooter
         );
     }
-
+    
     /**
      * 
      * @param array $params
@@ -181,9 +181,15 @@ abstract class Repository
     public static function castColumn($element)
     {
         $elementField = array_keys($element);
+        $originalElement = $element;
         foreach (static::$columnCast as $castField=>$castValues) {
-            if (in_array($castField, $elementField)) {
-                $element[$castField] = $castValues[$element[$castField]];
+            if (is_array($castValues)) {
+                if (\in_array($castField, $elementField)) {
+                    $element[$castField] = $castValues[$element[$castField]];
+                }
+            } else {
+                $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
+                $element[$castField] = str_replace($castedElement, $originalElement, $castValues);
             }
         }
         return $element;
