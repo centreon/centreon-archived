@@ -53,6 +53,7 @@ class HostRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
+        '<input id="allHost" type="checkbox">' => 'host_id',
         'Name' => 'host_name',
         'Description' => 'host_alias',
         'IP Address / DNS' => 'host_address',
