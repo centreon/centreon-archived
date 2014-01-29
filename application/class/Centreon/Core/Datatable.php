@@ -72,4 +72,61 @@ class Datatable
         $objectToCall = '\\Centreon\\Repository\\'.ucwords(strtolower($object)).'Repository';
         return $objectToCall::getParametersForDatatable();
     }
+    
+    public static function castResult($element, $object)
+    {
+        $elementField = array_keys($element);
+        $object = ucwords(strtolower($object));
+        $objectToCall = '\\Centreon\\Repository\\'.$object.'Repository';
+        foreach ($objectToCall::$columnCast as $castField=>$castParameters) {
+            $subCaster = 'add'.ucwords($castParameters['type']);
+            $element[$castField] = self::$subCaster(
+                $object,
+                $castField,
+                $castParameters['parameters'],
+                $elementField,
+                $element
+            );
+        }
+        return $element;
+    }
+
+
+    public static function addUrl($object, $fields, $values, $elementField, $element)
+    {
+        $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
+        
+        $routeParams = array();
+        if (isset($values['routeParams']) && is_array($values['routeParams'])) {
+            $routeParams = str_replace($castedElement, $element, $values['routeParams']);
+        }
+        $finalRoute = str_replace(
+            "//",
+            "/",
+            \Centreon\Core\Di::getDefault()
+                ->get('router')
+                ->getPathFor($values['route'], $routeParams)
+        );
+        
+        $linkName =  str_replace($castedElement, $element, $values['linkName']);
+        
+        return '<a href="'. $finalRoute .'">'. $linkName .'</a>';
+    }
+    
+    public static function addCheckbox($object, $fields, $values, $elementField, $element)
+    {
+        $input = '<input class="all'. $object .'Box" '
+            . 'id="'. $object .'::'. $fields .'::" '
+            . 'name="'. $object .'[]" '
+            . 'type="checkbox" '
+            . 'value="::'. $fields .'::" '
+            . '/>';
+        $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
+        return str_replace($castedElement, $element, $input);
+    }
+    
+    public static function addSelect($object, $fields, $values, $elementField, $element)
+    {
+        return $values[$element[$fields]];
+    }
 }

@@ -50,6 +50,12 @@ class CommandRepository extends \Centreon\Repository\Repository
     
     /**
      *
+     * @var string
+     */
+    public static $objectName = 'Command';
+    
+    /**
+     *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
@@ -59,18 +65,29 @@ class CommandRepository extends \Centreon\Repository\Repository
         'Type' => 'command_type'
     );
     
-    /**
-     *
-     * @var array 
-     */
     public static $columnCast = array(
         'command_type' => array(
-            '1' => 'Notifications',
-            '2' => 'Check',
-            '3' => 'Miscelleanous',
+            'type' => 'select',
+            'parameters' => array(
+                '1' => 'Notifications',
+                '2' => 'Check',
+                '3' => 'Miscelleanous',
+            )
         ),
-        'command_id' => '<input class="allCommandBox" id="command::command_id::" name="command[]" type="checkbox" value="::command_id::"/>',
-        'command_name' => '<a href="/centreon-devel/configuration/command/::command_id::">::command_name::</a>'
+        'command_id' => array(
+            'type' => 'checkbox',
+            'parameters' => array()
+        ),
+        'command_name' => array(
+            'type' => 'url',
+            'parameters' => array(
+                'route' => '/configuration/command/update',
+                'routeParams' => array(
+                    'id' => '::command_id::'
+                ),
+                'linkName' => '::command_name::'
+            )
+        )
     );
     
     /**
@@ -78,6 +95,7 @@ class CommandRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableHeader = array(
+        'none',
         'search_name',
         'search_line',
         array(
@@ -94,6 +112,7 @@ class CommandRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableFooter = array(
+        'none',
         'search',
         'search',
         array('select' => array(

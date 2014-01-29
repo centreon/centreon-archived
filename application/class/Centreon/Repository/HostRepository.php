@@ -50,6 +50,12 @@ class HostRepository extends \Centreon\Repository\Repository
     
     /**
      *
+     * @var string
+     */
+    public static $objectName = 'Host';
+    
+    /**
+     *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
@@ -65,6 +71,7 @@ class HostRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableHeader = array(
+        'none',
         'search_name',
         'search_description',
         'search_address',
@@ -76,18 +83,29 @@ class HostRepository extends \Centreon\Repository\Repository
         )
     );
     
-    /**
-     *
-     * @var array 
-     */
     public static $columnCast = array(
         'host_activate' => array(
-            '0' => 'Disabled',
-            '1' => 'Enabled',
-            '2' => 'Trash',
+            'type' => 'select',
+            'parameters' =>array(
+                '0' => 'Disabled',
+                '1' => 'Enabled',
+                '2' => 'Trash',
+        )
         ),
-        'host_id' => '<input class="allHostBox" id="host::host_id::" name="host[]" type="checkbox" value="::host_id::"/>',
-        'host_name' => '<a href="/centreon-devel/configuration/host/::host_id::">::host_name::</a>'
+        'host_id' => array(
+            'type' => 'checkbox',
+            'parameters' => array()
+        ),
+        'host_name' => array(
+            'type' => 'url',
+            'parameters' => array(
+                'route' => '/configuration/host/update',
+                'routeParams' => array(
+                    'id' => '::host_id::'
+                ),
+                'linkName' => '::host_name::'
+            )
+        )
     );
     
     /**
@@ -95,6 +113,7 @@ class HostRepository extends \Centreon\Repository\Repository
      * @var array 
      */
     public static $datatableFooter = array(
+        'none',
         'search_name',
         'search_description',
         'search_address',

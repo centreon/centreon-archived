@@ -15,6 +15,8 @@
                                 {/foreach}
                             </select>
                         </th>
+                    {elseif $headerType === 'none'}
+                        <th>&nbsp;</th>
                     {else}
                         <th>
                             <input type="text" id="search_{$counter}" name="search_{$counter++}" placeholder="Identifiant" class="search_field c{$counterCol}" size='10' />
@@ -38,6 +40,7 @@
             {$counterCol = 0}
             {foreach $datatableParameters.footer as $footer}
                 {foreach $footer as $footerType=>$footerData}
+                    {$footerType}
                     {if $footerType === 'select'}
                         <th>
                             <select class="search_type {$counterCol++} c{$counterCol}" id="select_{$counter}" name="select_{$counter++}">
@@ -46,6 +49,8 @@
                                 {/foreach}
                             </select>
                         </th>
+                    {elseif $footerData === 'none'}
+                        <th>&nbsp;</th>
                     {else}
                         <th>
                             <input type="text" id="search_{$counter}" name="search_{$counter++}" placeholder="Identifiant" class="search_field c{$counterCol}" size='10' />

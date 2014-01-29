@@ -114,8 +114,21 @@ abstract class Repository
         }
         
         // Returning the result
-        $resultSet = array_values(array_map("self::castColumn", $stmt->fetchAll(\PDO::FETCH_ASSOC)));
-        return self::array_values_recursive($resultSet);
+        $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $countTab = count($resultSet);
+        $objectTab = array();
+        for($i=0; $i<$countTab; $i++) {
+            $objectTab[] = static::$objectName;
+        }
+        return self::array_values_recursive(
+            \array_values(
+                \array_map(
+                    "\\Centreon\\Core\\Datatable::castResult",
+                    $resultSet,
+                    $objectTab
+                )
+            )
+        );
     }
     
     /**

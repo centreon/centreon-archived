@@ -13,7 +13,7 @@
                 "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}"
             },
             "aoColumnDefs": [
-                { "bSortable": false, "aTargets": [0] }
+                { "bAutoWidth" : false, "bSortable": false, "sWidth": "10px", "aTargets": [0] }
             ]
         });
     });
@@ -40,7 +40,7 @@
     $(document).on('click', ".all{$object}Box", function() {
         if (this.checked === false) {
             $('#all{$object}').prop('checked', false);
-        }        
+        }
     });
 
     $(".search_type").change(function() {
