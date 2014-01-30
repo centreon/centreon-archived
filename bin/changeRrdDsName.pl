@@ -38,7 +38,7 @@ require "@CENTREON_ETC@/conf.pm";
 
 sub get_ds_name {
     my $ds_name = shift;
-
+    
     $ds_name =~ s/\//slash\_/g;
     $ds_name =~ s/\\/bslash\_/g;
     $ds_name =~ s/\%/pct\_/g;
@@ -54,36 +54,54 @@ my $dbh = DBI->connect(
     $centreon_config->{db_user},
     $centreon_config->{db_passwd},
     { 'RaiseError' => 0, 'PrintError' => 0, 'AutoCommit' => 1}
-);
+    );
 
 # Get path to metrics file
-my $query  = "SELECT RRDdatabase_path FROM config";
+my $query  = "SELECT RRDdatabase_path, RRDdatabase_status_path FROM config";
 my $sth = $dbh->prepare($query);
 die "Error : " . $dbh->errstr . "\n" if (!$sth);
 $sth->execute();
 my $row = $sth->fetchrow_hashref();
 my $metric_path = $row->{RRDdatabase_path};
+my $status_path = $row->{RRDdatabase_status_path};
 
 
 # Get the list of metrics to convert
-$query = "SELECT metric_id, metric_name
-  FROM metrics";
+$query = "SELECT metric_id, metric_name FROM metrics";
 $sth = $dbh->prepare($query);
 die "Error : " . $dbh->errstr . "\n" if (!$sth);
 $sth->execute();
 die "Error : " . $dbh->errstr . "\n" if (!$sth);
 
 while ($row = $sth->fetchrow_hashref()) {
-  my $filename = $metric_path . '/' . $row->{metric_id} . '.rrd';
-  my $metric_name = get_ds_name($row->{metric_name});
-  $metric_name = substr($metric_name, 0, 19);
-  if (-w $filename) {
-    RRDs::tune($filename, "-r", $metric_name . ":value");
-    my $rrdError = RRDs::error;
-    if ($rrdError) {
-        print "Error in metric " . $row->{metric_id} . " : " . $rrdError . "\n";
+    my $filename = $metric_path . '/' . $row->{metric_id} . '.rrd';
+    my $metric_name = get_ds_name($row->{metric_name});
+    $metric_name = substr($metric_name, 0, 19);
+    if (-w $filename) {
+        RRDs::tune($filename, "-r", $metric_name . ":value");
+        my $rrdError = RRDs::error;
+        if ($rrdError) {
+            print "Error in metric " . $row->{metric_id} . " : " . $rrdError . "\n";
+        }
     }
-  }
+}
+
+# Get the list of index_data id to convert
+$query = "SELECT id FROM index_data";
+$sth = $dbh->prepare($query);
+die "Error : " . $dbh->errstr . "\n" if (!$sth);
+$sth->execute();
+die "Error : " . $dbh->errstr . "\n" if (!$sth);
+
+while ($row = $sth->fetchrow_hashref()) {
+    my $filename = $status_path . '/' . $row->{id} . '.rrd';
+    if (-w $filename) {
+        RRDs::tune($filename, "-r", "status:value");
+        my $rrdError = RRDs::error;
+        if ($rrdError) {
+            print "Error in index " . $row->{id} . " : " . $rrdError . "\n";
+        }
+    }
 }
 
 $dbh->disconnect();

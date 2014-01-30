@@ -206,7 +206,7 @@
 
 		$command_line .= "--upper-limit 105 ";
 		$command_line .= "--lower-limit 0 --rigid ";
-		$command_line .= " DEF:v1=".$RRDdatabase_path.$index.".rrd:status:AVERAGE ";
+		$command_line .= " DEF:v1=".$RRDdatabase_path.$index.".rrd:value:AVERAGE ";
 
 		$command_line .= " CDEF:vname=v1,3600,TREND ";
 		$command_line .= " CDEF:crit=v1,75,LT,100,0,IF ";
