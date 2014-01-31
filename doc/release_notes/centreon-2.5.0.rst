@@ -13,12 +13,13 @@ of the RRD graphs. Not following this may cause your graphs to malfunction!
 If you are using Centreon Broker
 ================================
 
+* Check right of conf.pm file. Apache must have the right to modify conf.pm file
 * Stop all the centreon-engine services
 * Stop the centreon-broker daemon
 * Upgrade Centreon-Broker on all the pollers
 * Restart all the engines
-* Execute /path/to/centreon/bin/changeRrdDsName.pl
 * Upgrade Centreon (web install)
+* Execute /path/to/centreon/bin/changeRrdDsName.pl
 * Check that your graphs are showing properly on the web interface
 * Start the centreon-broker daemon
 
