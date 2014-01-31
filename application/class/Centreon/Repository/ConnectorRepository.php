@@ -40,33 +40,55 @@ namespace Centreon\Repository;
  * @package Centreon
  * @subpackage Repository
  */
-class HostRepository extends \Centreon\Repository\Repository
+class ConnectorRepository extends \Centreon\Repository\Repository
 {
     /**
      *
      * @var string
      */
-    public static $tableName = 'host';
+    public static $tableName = 'connector';
     
     /**
      *
      * @var string
      */
-    public static $objectName = 'Host';
+    public static $objectName = 'Connector';
     
     /**
      *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHost" type="checkbox">' => 'host_id',
-        'Name' => 'host_name',
-        'Description' => 'host_alias',
-        'IP Address / DNS' => 'host_address',
-        'Status' => 'host_activate'
+        '<input id="allConnector" type="checkbox">' => 'id',
+        'Name' => 'name',
+        'Description' => 'description',
+        'Command Line' => 'command_line',
+        'Status' => 'enabled'
     );
     
-    public static $specificConditions = "host_register = '1' ";
+    public static $columnCast = array(
+        'enabled' => array(
+            'type' => 'select',
+            'parameters' => array(
+                '1' => 'Enabled',
+                '0' => 'Disabled',
+            )
+        ),
+        'id' => array(
+            'type' => 'checkbox',
+            'parameters' => array()
+        ),
+        'name' => array(
+            'type' => 'url',
+            'parameters' => array(
+                'route' => '/configuration/connector/[i:id]',
+                'routeParams' => array(
+                    'id' => '::id::'
+                ),
+                'linkName' => '::name::'
+            )
+        )
+    );
     
     /**
      *
@@ -76,36 +98,11 @@ class HostRepository extends \Centreon\Repository\Repository
         'none',
         'search_name',
         'search_description',
-        'search_address',
-        array('select' => array(
+        'search_line',
+        array(
+            'select' => array(
                 'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
-            )
-        )
-    );
-    
-    public static $columnCast = array(
-        'host_activate' => array(
-            'type' => 'select',
-            'parameters' =>array(
-                '0' => 'Disabled',
-                '1' => 'Enabled',
-                '2' => 'Trash',
-        )
-        ),
-        'host_id' => array(
-            'type' => 'checkbox',
-            'parameters' => array()
-        ),
-        'host_name' => array(
-            'type' => 'url',
-            'parameters' => array(
-                'route' => '/configuration/host/update',
-                'routeParams' => array(
-                    'id' => '::host_id::'
-                ),
-                'linkName' => '::host_name::'
+                'Disabled' => '0'
             )
         )
     );
@@ -118,12 +115,10 @@ class HostRepository extends \Centreon\Repository\Repository
         'none',
         'search_name',
         'search_description',
-        'search_address',
-        array(
-            'select' => array(
+        'search_line',
+        array('select' => array(
                 'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
+                'Disabled' => '0'
             )
         )
     );

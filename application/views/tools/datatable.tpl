@@ -15,7 +15,7 @@
                                 {/foreach}
                             </select>
                         </th>
-                    {elseif $headerType === 'none'}
+                    {elseif $headerData === 'none'}
                         <th>&nbsp;</th>
                     {else}
                         <th>
@@ -40,7 +40,6 @@
             {$counterCol = 0}
             {foreach $datatableParameters.footer as $footer}
                 {foreach $footer as $footerType=>$footerData}
-                    {$footerType}
                     {if $footerType === 'select'}
                         <th>
                             <select class="search_type {$counterCol++} c{$counterCol}" id="select_{$counter}" name="select_{$counter++}">

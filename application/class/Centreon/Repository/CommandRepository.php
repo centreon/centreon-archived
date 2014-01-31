@@ -61,7 +61,7 @@ class CommandRepository extends \Centreon\Repository\Repository
     public static $datatableColumn = array(
         '<input id="allCommand" type="checkbox">' => 'command_id',
         'Name' => 'command_name',
-        'Line' => 'command_line',
+        'Command Line' => 'command_line',
         'Type' => 'command_type'
     );
     
@@ -72,6 +72,7 @@ class CommandRepository extends \Centreon\Repository\Repository
                 '1' => 'Notifications',
                 '2' => 'Check',
                 '3' => 'Miscelleanous',
+                '4' => 'Discovery',
             )
         ),
         'command_id' => array(
@@ -81,7 +82,7 @@ class CommandRepository extends \Centreon\Repository\Repository
         'command_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/command/update',
+                'route' => '/configuration/command/[i:id]',
                 'routeParams' => array(
                     'id' => '::command_id::'
                 ),
@@ -102,7 +103,8 @@ class CommandRepository extends \Centreon\Repository\Repository
             'select' => array(
                 'Check' => '2',
                 'Notifications' => '1',
-                'Miscelleanous' => '3'
+                'Miscelleanous' => '3',
+                'Discovery' => '4'
             )
         )
     );
@@ -118,7 +120,8 @@ class CommandRepository extends \Centreon\Repository\Repository
         array('select' => array(
                 'Check' => '2',
                 'Notifications' => '1',
-                'Miscelleanous' => '3'
+                'Miscelleanous' => '3',
+                'Discovery' => '4'
             )
         )
     );

@@ -83,6 +83,10 @@ abstract class Repository
         // Getting table column
         $c = array_values(static::$datatableColumn);
         
+        if (!empty(static::$specificConditions)) {
+            $conditions = "WHERE ".static::$specificConditions;
+        }
+        
         // Conditions (Recherche)
         foreach ($params as $paramName=>$paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
@@ -159,6 +163,10 @@ abstract class Repository
         
         // Getting table column
         $c = array_values(static::$datatableColumn);
+        
+        if (!empty(static::$specificConditions)) {
+            $conditions = "WHERE ".static::$specificConditions;
+        }
         
         // Conditions (Recherche)
         foreach ($params as $paramName=>$paramValue) {

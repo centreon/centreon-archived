@@ -19,10 +19,19 @@ class Controller
      */
     protected function getParams($type = "")
     {
-        if (strtolower($type) == "get") {
-            return $this->request->paramsGet();
+        switch(strtolower($type)) {
+            default:
+                return $this->request->params();
+                
+            case 'get':
+                return $this->request->paramsGet();
+            
+            case 'post':
+                return $this->request->paramsPost();
+                
+            case 'named':
+                return $this->request->paramsNamed();
         }
-        return $this->request->paramsPost();
     }
 
     /**

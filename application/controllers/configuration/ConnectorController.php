@@ -4,14 +4,14 @@ namespace Controllers\Configuration;
 
 use \Centreon\Core\Form;
 
-class CommandController extends \Centreon\Core\Controller
+class ConnectorController extends \Centreon\Core\Controller
 {
 
     /**
-     * List commands
+     * List connectors
      *
      * @method get
-     * @route /configuration/command
+     * @route /configuration/connector
      */
     public function listAction()
     {
@@ -30,40 +30,40 @@ class CommandController extends \Centreon\Core\Controller
             ->addJs('bootstrap-dataTables-paging.js');
         
         // Display page
-        $tpl->display('configuration/command/list.tpl');
+        $tpl->display('configuration/connector/list.tpl');
     }
 
     /**
      * 
      * @method get
-     * @route /configuration/command/list
+     * @route /configuration/connector/list
      */
     public function datatableAction()
     {
         echo \Centreon\Core\Datatable::getDatas(
-            'command',
+            'connector',
             $this->getParams('get')
         );
 
     }
     
     /**
-     * Create a new command
+     * Create a new connector
      *
      * @method post
-     * @route /configuration/command/create
+     * @route /configuration/connector/create
      */
     public function createAction()
     {
-        
+        var_dump($this->getParams('get'));
     }
 
     /**
-     * Update a command
+     * Update a connector
      *
      *
      * @method put
-     * @route /configuration/command/update
+     * @route /configuration/connector/update
      */
     public function updateAction()
     {
@@ -71,11 +71,11 @@ class CommandController extends \Centreon\Core\Controller
     }
     
     /**
-     * Update a command
+     * Update a connector
      *
      *
      * @method get
-     * @route /configuration/command/[i:id]
+     * @route /configuration/connector/[i:id]
      */
     public function editAction()
     {
@@ -83,41 +83,29 @@ class CommandController extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $tpl = $di->get('template');
         
-        $form = new Form('commandForm');
+        $form = new Form('connectorForm');
         $form->addText('name', _('Name'));
+        $form->addText('description', _('Description'));
         $form->addTextarea('command_line', _('Commande Line'));
+        
         $radios['list'] = array(
-            array(
-              'name' => 'Notification',
-              'label' => 'Notification',
+          array(
+              'name' => 'Enabled',
+              'label' => 'Enabled',
               'value' => '1'
-            ),
-            array(
-                'name' => 'Check',
-                'label' => 'Check',
-                'value' => '2'
-            ),
-            array(
-                'name' => 'Misc',
-                'label' => 'Misc',
-                'value' => '3'
-            ),
-            array(
-                'name' => 'Discovery',
-                'label' => 'Discovery',
-                'value' => '4'
-            ),
-          
+          ),
+          array(
+              'name' => 'Disabled',
+              'label' => 'Disabled',
+              'value' => '0'
+          )
         );
-        $form->addRadio('command_type', _("Command type"), 'command_type', '&nbsp;', $radios);
-        $form->addCheckbox('enable_shell', _("Enable shell"));
-        $form->addTextarea('argument_description', _('Argument Description'));
+        $form->addRadio('status', _("Status"), 'status', '&nbsp;', $radios);
+        
         $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
         
-        var_dump($form);
-        
         // Display page
-        $tpl->display('configuration/command/edit.tpl');
+        $tpl->display('configuration/connector/edit.tpl');
     }
 }

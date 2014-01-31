@@ -76,6 +76,7 @@ class Datatable
     public static function castResult($element, $object)
     {
         $elementField = array_keys($element);
+        $originalElement = $element;
         $object = ucwords(strtolower($object));
         $objectToCall = '\\Centreon\\Repository\\'.$object.'Repository';
         foreach ($objectToCall::$columnCast as $castField=>$castParameters) {
@@ -85,7 +86,7 @@ class Datatable
                 $castField,
                 $castParameters['parameters'],
                 $elementField,
-                $element
+                $originalElement
             );
         }
         return $element;
@@ -100,6 +101,7 @@ class Datatable
         if (isset($values['routeParams']) && is_array($values['routeParams'])) {
             $routeParams = str_replace($castedElement, $element, $values['routeParams']);
         }
+        
         $finalRoute = str_replace(
             "//",
             "/",

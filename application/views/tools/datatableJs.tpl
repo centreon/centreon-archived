@@ -3,7 +3,7 @@
         oTable = $('#datatable{$object}').dataTable( {
             "bProcessing": true,
             "sAjaxSource": "{url_for url=$objectUrl}",
-            "bStateSave": true,
+            "bStateSave": false,
             "bServerSide": true,
             "iDisplayLength": 25,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],

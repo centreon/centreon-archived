@@ -197,24 +197,40 @@ class Form
             case 'password':
             default:
                 $element['input'] = $this->renderHtmlInput($element);
+                $element['label'] = $this->renderHtmlLabel($element);
+                $element['html'] = $this->renderFinalHtml($element);
+                break;
+            
+            case 'textarea':
+                $element['input'] = $this->renderHtmlTextarea($element);
+                $element['label'] = $this->renderHtmlLabel($element);
+                $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'button':
             case 'submit':
             case 'reset':
-                $element['input'] = $this->renderHtmlInput($element, true, false);
+                $element['input'] = $this->renderHtmlButton($element);
+                $element['label'] = "";
+                $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'select':
                 $element['input'] = $this->renderHtmlSelect($element);
+                $element['label'] = $this->renderHtmlLabel($element);
+                $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'checkbox':
                 $element['input'] = $this->renderHtmlInput($element, false, false);
+                $element['label'] = $this->renderHtmlLabel($element);
+                $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'radio':
-                $element['input'] = $this->renderHtmlInput($element, true, false);
+                $element['input'] = $this->renderHtmlRadio($element, true, false);
+                $element['label'] = $this->renderHtmlLabel($element);
+                $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'group':
@@ -223,16 +239,24 @@ class Form
                     if ($groupElement['type'] == 'checkbox') {
                         $element['input'] .= $this->renderHtmlInput($groupElement, false, false);
                     } else {
-                        $element['input'] .= $this->renderHtmlInput($groupElement, true, false);
+                        $element['input'] .= $this->renderHtmlRadio($groupElement, $element['name']).'&nbsp;&nbsp;';
                     }
                 }
                 $element['input'] .= '</div>';
+                $element['label'] = $this->renderHtmlLabel($element);
+                $element['html'] = $this->renderFinalHtml($element);
                 break;
         }
-        
-        $element['label'] = $this->renderHtmlLabel($element);
-        $element['html'] = '<div class="form-group">'.$element['label'].$element['input'].'</div>';
     }
+    
+    public function renderFinalHtml($inputElement)
+    {
+            return '<div class="form-group">'.
+                    '<div class="col-sm-2">'.$inputElement['label'].'</div>'.
+                    '<div class="col-sm-10">'.$inputElement['input'].'</div>'.
+                    '</div>';
+    }
+    
     
     /**
      * 
@@ -249,7 +273,7 @@ class Form
             $inputElement['id'] = $inputElement['name'];
         }
         
-        $inputHtml = '<label class="sr-only" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
+        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
         
         return $inputHtml;
     }
@@ -263,6 +287,72 @@ class Form
         return $inputElement['html'];
     }
     
+    public function renderHtmlRadio($inputElement, $parentName)
+    {
+        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        
+        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
+            $inputElement['label'] = $inputElement['name'];
+        }
+        
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">&nbsp;'.
+                        '<input '.'id="'.$inputElement['id'].'" '.
+                        'type="'.$inputElement['type'].'" '.'name="'.$parentName.'" '.
+                        $value.'class="form-control" '.
+                        '/>'.' '.$inputElement['label'].
+                        '</label>';
+        return $inputHtml;
+    }
+    
+    public function renderHtmlButton($inputElement)
+    {
+        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<input '.
+                            'id="'.$inputElement['id'].'" '.
+                            'type="'.$inputElement['type'].'" '.
+                            'name="'.$inputElement['name'].'" '.
+                            $value.
+                            'class="btn btn-default" '.
+                            '/>';
+        return $inputHtml;
+    }
+    
+    public function renderHtmlTextarea($inputElement)
+    {
+        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        
+        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
+            $inputElement['label'] = $inputElement['name'];
+        }
+        
+        if (!isset($inputElement['placeholder']) || (isset($inputElement['placeholder']) && empty($inputElement['placeholder']))) {
+            $placeholder = 'placeholder="'.$inputElement['name'].'" ';
+        }
+        
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<textarea '.
+                            'id="'.$inputElement['id'].'" '.
+                            'name="'.$inputElement['name'].'" '.
+                            'class="form-control" '.
+                            'rows="3" '.
+                            $placeholder.
+                            '>'.$value.'</textarea>';
+        return $inputHtml;
+    }
+
+
     /**
      * 
      * @param array $inputElement
@@ -295,7 +385,7 @@ class Form
                             'type="'.$inputElement['type'].'" '.
                             'name="'.$inputElement['name'].'" '.
                             $value.
-                            'class="form-controler" '.
+                            'class="form-control" '.
                             $placeholder.
                             '/>';
         return $inputHtml;

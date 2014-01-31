@@ -40,7 +40,7 @@ namespace Centreon\Repository;
  * @package Centreon
  * @subpackage Repository
  */
-class HostRepository extends \Centreon\Repository\Repository
+class HostTemplateRepository extends \Centreon\Repository\Repository
 {
     /**
      *
@@ -52,21 +52,25 @@ class HostRepository extends \Centreon\Repository\Repository
      *
      * @var string
      */
-    public static $objectName = 'Host';
+    public static $objectName = 'HostTemplate';
     
     /**
      *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHost" type="checkbox">' => 'host_id',
+        '<input id="allHostTemplate" type="checkbox">' => 'host_id',
         'Name' => 'host_name',
         'Description' => 'host_alias',
         'IP Address / DNS' => 'host_address',
         'Status' => 'host_activate'
     );
     
-    public static $specificConditions = "host_register = '1' ";
+    /**
+     *
+     * @var string 
+     */
+    public static $specificConditions = "host_register = '0' ";
     
     /**
      *
