@@ -87,6 +87,10 @@ abstract class Repository
             $conditions = "WHERE ".static::$specificConditions;
         }
         
+        if (!empty(static::$linkedTables)) {
+            $additionalTables = ', '.static::$linkedTables;
+        }
+        
         // Conditions (Recherche)
         foreach ($params as $paramName=>$paramValue) {
             if (strpos($paramName, 'sSearch_') !== false) {
@@ -108,7 +112,7 @@ abstract class Repository
         $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
         
         // Building the final request
-        $finalRequest = "SELECT $field_list FROM ".static::$tableName." $additionalTables $conditions $sort $limitations";
+        $finalRequest = "SELECT $field_list FROM ".static::$tableName."$additionalTables $conditions $sort $limitations";
         
         try {
             // Executing the request
@@ -158,14 +162,17 @@ abstract class Repository
         
         $conditions = '';
         $sort = '';
-        
-        $tbName = static::$tableName;
+        $additionalTables = '';
         
         // Getting table column
         $c = array_values(static::$datatableColumn);
         
         if (!empty(static::$specificConditions)) {
             $conditions = "WHERE ".static::$specificConditions;
+        }
+        
+        if (!empty(static::$linkedTables)) {
+            $additionalTables = ', '.static::$linkedTables;
         }
         
         // Conditions (Recherche)
@@ -187,7 +194,7 @@ abstract class Repository
         
         // Building the final request
         $request = "SELECT COUNT('id') as nb".ucwords(static::$tableName).
-            " FROM ".static::$tableName." $conditions $sort";
+            " FROM ".static::$tableName."$additionalTables $conditions $sort";
         
         // Executing the request
         $stmt = $dbconn->query($request);
