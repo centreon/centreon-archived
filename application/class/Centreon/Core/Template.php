@@ -132,6 +132,7 @@ class Template extends \Smarty
         /* Load javascript */
         $this->addJs('jquery.min.js');
         $this->addJs('bootstrap.min.js');
+        $this->addJs('jquery.ba-resize.js');
         $this->addJs('centreon.functions.js');
     }
     

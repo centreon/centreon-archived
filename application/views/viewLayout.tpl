@@ -23,6 +23,9 @@
 <script>
 $(document).ready(function() {
     leftPanelHeight();
+    $('#main').on('resize', function() {
+        leftPanelHeight();
+    });
     $(window).on('resize', function() {
         leftPanelHeight();
     });

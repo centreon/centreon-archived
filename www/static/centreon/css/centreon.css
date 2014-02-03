@@ -272,6 +272,21 @@ aside {
     color: #3b5998;
 }
 
+.content .first-content {
+    margin-top: 10px;
+}
+
+/* Datatable */
+.centreon_table {
+    margin: 0 20px;
+    padding-top: 20px;
+    padding-bottom: 60px; /* For floating pagination */
+}
+
+.centreon_table table td {
+    font-size: 12px;
+}
+
 /**************/
 /* DARK THEME */
 
