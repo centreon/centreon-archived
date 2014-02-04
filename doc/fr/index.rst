@@ -3,30 +3,27 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Centreon's documentation!
-====================================
+Bienvenue dans la documentation Centreon!
+=========================================
 
-Centreon is an Open Source software package that lets you supervise
-all the infrastructures and applications comprising your information
-system. 
+Centreon est un logiciel open source qui vous permet de superviser
+l'ensemble des éléments appartenant à votre système d'informations.
 
-Contents:
+Sommaire :
 
 .. toctree::
    :maxdepth: 2
 
-   release_notes/index
-   installation/index
-   upgrade/index
-   user/index
-   exploitation/index
-   extending/index
-   faq/index
+   a_propos/index
+   concepts/index
+   guide_utilisateur/index
+   guide_exploitation/index
+   administration/index
 
-Additional online resource:
+Ressources en ligne supplémentaires:
 
 * `Demo <http://demo.centreon.com>`_
-* `Screenshots <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
+* `Captures d'écran <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
 
 Indices and tables
 ==================

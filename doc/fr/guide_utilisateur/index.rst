@@ -1,0 +1,9 @@
+#############
+Guide utilisateur
+#############
+
+.. toctree::
+   :glob:
+
+   *
+   configuration/index
