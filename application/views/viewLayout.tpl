@@ -47,6 +47,11 @@ $(document).ready(function() {
             $(target).find('i.toggle').removeClass('fa-minus-square-o');
             $(target).find('i.toggle').addClass('fa-plus-square-o');
         }
+        
+        var targetUrl = $(target).find('a').attr('href');
+        if (targetUrl !== undefined) {
+            document.location.href = targetUrl;
+        }
     });
 });
 </script>
