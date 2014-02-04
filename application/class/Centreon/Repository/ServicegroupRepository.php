@@ -40,31 +40,32 @@ namespace Centreon\Repository;
  * @package Centreon
  * @subpackage Repository
  */
-class ServiceRepository extends \Centreon\Repository\Repository
+class ServicegroupRepository extends \Centreon\Repository\Repository
 {
     /**
      *
      * @var string
      */
-    public static $tableName = 'service';
+    public static $tableName = 'servicegroup';
     
     /**
      *
      * @var string
      */
-    public static $objectName = 'Service';
+    public static $objectName = 'Servicegroup';
     
     /**
      *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allService" type="checkbox">' => 'service_id',
-        'Name' => 'service_description',
-        'Status' => 'service_activate'
+        '<input id="allServicegroup" type="checkbox">' => 'sg_id',
+        'Name' => 'sg_name',
+        'Alias' => 'sg_alias',
+        'Status' => 'sg_activate'
     );
     
-    public static $specificConditions = "service_register = '1' ";
+    public static $specificConditions = "";
     
     public static $linkedTables = "";
     
@@ -75,35 +76,34 @@ class ServiceRepository extends \Centreon\Repository\Repository
     public static $datatableHeader = array(
         'none',
         'search_name',
+        'search_alias',
         array('select' => array(
                 'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
+                'Disabled' => '0'
             )
         )
     );
     
     public static $columnCast = array(
-        'service_activate' => array(
+        'sg_activate' => array(
             'type' => 'select',
             'parameters' =>array(
                 '0' => 'Disabled',
                 '1' => 'Enabled',
-                '2' => 'Trash',
-        )
+            )
         ),
-        'service_id' => array(
+        'sg_id' => array(
             'type' => 'checkbox',
             'parameters' => array()
         ),
-        'service_description' => array(
+        'sg_name' => array(
             'type' => 'url',
             'parameters' => array(
-                'route' => '/configuration/service/update',
+                'route' => '/configuration/servicegroup/[i:id]',
                 'routeParams' => array(
-                    'id' => '::service_id::'
+                    'id' => '::sg_id::'
                 ),
-                'linkName' => '::service_description::'
+                'linkName' => '::sg_alias::'
             )
         )
     );
@@ -115,12 +115,13 @@ class ServiceRepository extends \Centreon\Repository\Repository
     public static $datatableFooter = array(
         'none',
         'search_name',
+        'search_alias',
         array(
             'select' => array(
                 'Enabled' => '1',
-                'Disabled' => '0',
-                'Trash' => '2'
+                'Disabled' => '0'
             )
         )
     );
+    
 }
