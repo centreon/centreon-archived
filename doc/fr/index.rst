@@ -16,7 +16,6 @@ Sommaire :
 
    a_propos/index
    concepts/index
-   installation/index
    guide_utilisateur/index
    guide_exploitation/index
    administration/index
