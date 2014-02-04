@@ -6,3 +6,4 @@ Guide utilisateur
    :glob:
 
    *
+   configuration/index
