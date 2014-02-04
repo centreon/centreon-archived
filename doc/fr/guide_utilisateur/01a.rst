@@ -1,45 +1,231 @@
-==================================
-Premi�re configuration de CES 3.0
-==================================
+========================
+Premier pas avec CES 3.0
+========================
 
 *************************
-Diff�rences avec CES 2.2
+Comparaison avec CES 2.2
 *************************
+
+Le tableau suivant compare CES 2.2 à CES 3.0 :
+
++------------------------+-------------------------+
+|       CES 2.2          |         CES 3.0         | 
++========================+=========================+
+|       CentOS 5         |         CentOS 6        |
++------------------------+-------------------------+
+| Centreon 2.4           |  Centreon 2.5           |
++------------------------+-------------------------+
+| MySQL 5.1              |  MariaDB 5.5            |
++------------------------+-------------------------+
+| Centreon Engine 1.2    |  Centreon Engine 1.3.2  |
++------------------------+-------------------------+
+| Centreon Broker 2.1    |  Centreon Broker 2.5.0  |
++------------------------+-------------------------+
+
+La liste des nouvelles fonctionnalités est disponible aux adresses suivantes :
+
+ *	`Forge Centreon <https://forge.centreon.com/projects/centreon/roadmap>`_
+ *	`Forge Centreon Engine <https://forge.centreon.com/projects/centreon-engine/roadmap>`_
+ *	`Forge Centreon Broker <https://forge.centreon.com/projects/centreon-broker/roadmap>`_
 
 Pourquoi choisir Centreon Engine et Broker ?
-=============================================
+============================================
 
 Performances
 ------------
+Les différents tests effectués par les équipes de MERETHIS et quelques blogueurs indépendants démontrent sans équivoque
+que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performants que le couple Nagios/NDOUtils.
 
-
-Meilleure int�gration � Centreon
+Meilleure intégration à Centreon
 --------------------------------
+L'interface de Centreon est de plus en plus orienté Centreon Engine/Centreon Broker. Quelques exemples :
 
+ *	Il existe un assistant de configuration pour Centreon Broker
+ *	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
+ *	[AUTRES ARGUMENTS ??]
 
-Nouvelles fonctionnalit�s
+Nouvelles fonctionnalités
 -------------------------
+Plusieurs nouvelles fonctionnalités font leur apparitions avec Centreon Broker :
 
-***************
-Configuration
-***************
+ *	Possibilité de chiffrer les données de supervision qui remontent vers le serveur Central
+ *	Possibilité de compresser les données de supervision afin de ne pas surcharger la bande passante
+ *	Utilisation d'un nouveau protocole d'encodage des données (Le protocole BBDO) plus performant que le protocole NDO
+ 
+**********
+Pré-requis
+**********
 
+Le tableau ci-dessous donne les pré-requis pour l'installation de CES 3.0 :
+
++------------------------+-------------------------+-------------------------------+---------------------------------+
+|  Nombre de services    |  Nombre de collecteurs  | Processeur du serveur central | Mémoire vive du serveur central |
++========================+=========================+===============================+=================================+
+|        < 500           |        1 central        |          1 * 2,5 Ghz          |               1 Go              |
++------------------------+-------------------------+-------------------------------+---------------------------------+
+|      500 - 1000        |        1 central        |          2 * 2,5 Ghz          |               2 Go              |
++------------------------+-------------------------+-------------------------------+---------------------------------+
+|      1000 - 2000       |        1 central        |          4 * 2,5 Ghz          |               4 Go              |
++------------------------+-------------------------+-------------------------------+---------------------------------+
+|      2000 - 5000       | 1 central + 1 satellite |       2 * 4 * 2,5 Ghz         |            2 * 8 Go             |
++------------------------+-------------------------+-------------------------------+---------------------------------+
+|      5000 - 10000      |1 central + 2 satellites |       3 * 4 * 2,5 Ghz         |            3 * 8 Go             |
++------------------------+-------------------------+-------------------------------+---------------------------------+
+
+************
 Installation
-==============
+************
 
-Lors de l'installation avec l'iso veillez bien � choisir les options suivantes :
-* Pour "Which server type would you like to install ?" l'option "Centreon Server with database"
-* Pour "Which monitoring engine and broer would you like to install ?" l'option "Centreon Engine and Centreon Broker"
-
-
-Configuration r�seau
+Etape 1 : Démarrage
 ====================
 
+Afin d'installer Centreon, démarrez votre serveur sur le CD de Centreon Enterprise Server.
 
-D�couverte de l'interface web
+Démarrez avec l'option Install or upgrade an existing system [METTRE CAPTURE D'ECRAN DE L'ECRAN DE BOOT]
+
+Etape 2 : Choix de la langue
+============================
+
+Cliquez sur **Next**, choisissez votre langue et cliquez sur **Next**.
+
+[PLACER LA CAPTURE D'ECRAN]
+
+Sélectionnez le clavier utilisé par votre système puis cliquez sur **Suivant**.
+
+[METTRE CAPTURE D'ECRAN]
+
+Etape 3 : Configuration générale
+================================
+
+En fonction du type de stockage désiré, choisissez les options nécessaires pour disposer du partitionnement qui vous convient le mieux.
+
+[CAPTURE D'ECRAN]
+
+Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
+
+Sélectionnez la carte réseau que vous souhaitez configurer et rendez-vous dans l'onglet "Paramètres IPv4" ou "Paramètres IPv6" (en fonction du besoin) 
+afin de configurer vos adresses IP. Cliquez sur **Appliquer...** afin d'enregistrer les modifications.
+
+[METTRE UNE CAPTURE D'ECRAN DE l'ONGLET "Paramètres IPv4"]
+
+Cliquez sur **Fermer** puis sur **Suivant** afin de continuer.
+
+Sélectionnez votre fuseau horaire puis cliquez sur **Suivant**.
+
+[METTRE UNE CAPTURE D'ECRAN]
+
+Entrez le mot de passe root voulu, puis cliquez sur **Suivant**.
+
+Sélectionnez les options de partitionnement qui vous conviennent le mieux. Puis validez.
+
+Etape 4 : Choix des ordonnanceurs et broker
+===========================================
+
+Choix du type de serveur
+------------------------
+
+Il est possible de choisir différentes options à la question **Which server type would you like to install ?** :
+
+[METTRE UNE CAPTURE D'ECRAN]
+
+ *	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
+ *	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
+ *	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
+ *	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
+
+Dans notre cas, nous allons choisir l'option **Centreon Server with database**.
+
+Choix de l'ordonnanceur et du broker
+------------------------------------
+
+Lors du choix de l'ordonnanceur et du broker il est possible de choisir entre le couple Centreon Engine/Centreon Broker et le couple Nagios/NDOUtils
+
+Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Broker**.
+
+[METTRE UNE CAPTURE D'ECRAN]
+
+Une fois toutes ces options choisies, l'installation se lance. Lorsque l'installation est terminée, le serveur redémarre automatiquement.
+
+*************
+Configuration
+*************
+
+Découverte de l'interface web
 =============================
 
+Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
+L'assistant de fin d'installation de Centreon s'affiche. Cliquez sur **Next** jusqu'à arrivé au choix du moteur de supervision.
+Choisissez l'option **centreon-engine**. 
 
-D�marrer la supervision
+[ METTRE UNE CAPTURE D'ECRAN DE MONITORING ENGINE INFORMATION ]
+
+Cliquez sur **Next**. Lors du choix du broker, choisissez **centreon-broker**.
+
+[ METTRE UNE CAPTURE D'ECRAN DE BROKER MODULE INFORMATION ]
+
+Cliquez sur **Next**. Définissez les informations concernant l'utilisateur admin. 
+
+[ METTRE UNE CAPTURE D'ECRAN]
+
+Cliquez sur **Next**. Par défaut, le serveur localhost est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
+Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon.
+
+[METTRE UNE CAPTURE D'ECRAN]
+
+Cliquez sur **Next**.
+
+Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
+Effectuez l'opération ci-dessous :
+
+ *	Connectez vous avec l'utilisateur root sur votre serveur
+ *	Editez le fichier suivant ::
+
+	/etc/my.cnf
+
+ *	Ajoutez les lignes suivantes au fichier :: 
+
+	[mysqld] 
+    innodb_file_per_table=1
+	
+ *	Redémarrez le service mysql ::
+
+	/etc/init.d/mysql restart
+ *	Cliquez sur **Refresh**
+
+Cliquez sur **Next** jusqu'à arrivé à l'étape **Installation finished**.
+
+Configuration de base
+=====================
+
+Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
+
+ *	Logguez-vous en tant que root sur le serveur de supervision
+ *	Installez le paquet français avec la commande suivante ::
+
+	yum -y install centreon-lang-fr_FR
+	
+ *	Rendez-vous dans **Administration** ==> **Options**
+ *	Dans le menu de gauche cliquez sur **My Account**
+ *	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
+ *	Cliquez sur **Save**
+ *	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
+
+[METTRE UNE CAPTURE D'ECRAN]
+
+Démarrer la supervision
 =======================
 
+Pour démarrer l'ordonnanceur de supervision :
+
+ *	Logguez-vous en tant que root
+ *	Démarrez Centreon Broker::
+ 
+	/etc/init.d/cbd start
+ 
+ *	Sur l'interface web, rendez-vous dans **Configuration** ==> **Moteur de supervision**
+ *	Laissez les options par défaut, et cliquez sur **Exporter**
+ *	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+ *	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+ *	Cliquez à nouveau sur **Exporter**
+
+La supervision fonctionne. 

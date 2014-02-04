@@ -7,7 +7,7 @@ Bienvenue dans la documentation Centreon!
 =========================================
 
 Centreon est un logiciel open source qui vous permet de superviser
-l'ensemble des éléments appartenant à votre système d'informations.
+l'ensemble des Ã©lÃ©ments appartenant Ã  votre systÃ¨me d'informations.
 
 Sommaire :
 
@@ -21,10 +21,10 @@ Sommaire :
    guide_exploitation/index
    administration/index
 
-Ressources en ligne supplémentaires:
+Ressources en ligne supplÃ©mentaires:
 
 * `Demo <http://demo.centreon.com>`_
-* `Captures d'écran <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
+* `Captures d'Ã©cran <http://www.centreon.com/Content-Products-IT-network-monitoring/screenshots-for-centreon-it-monitoring-centreon>`_
 
 Indices and tables
 ==================
