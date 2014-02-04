@@ -19,9 +19,9 @@ $.extend(true, $.fn.dataTable.defaults, {
  
       // Re-arrange the records selection for a form-horizontal layout
       thisLength.addClass('form-group');
-      thisLengthLabel.addClass('control-label col-xs-12 col-sm-7 col-md-6').attr('for', currentId + '_length_select').css('text-align', 'left');
+      thisLengthLabel.addClass('control-label col-xs-12 col-sm-8 col-md-10').attr('for', currentId + '_length_select').css('text-align', 'left').css('padding-left', '20%');
       thisLengthSelect.addClass('form-control input-sm').attr('id', currentId + '_length_select');
-      thisLengthSelect.prependTo(thisLength).wrap('<div class="col-xs-12 col-sm-5 col-md-6" />');
+      thisLengthSelect.prependTo(thisLength).wrap('<div class="col-xs-12 col-sm-4 col-md-2" />');
       // Re-arrange the search input for a form-horizontal layout
       thisFilter.addClass('form-group');
       thisFilterLabel.addClass('control-label col-xs-4 col-sm-3 col-md-3').attr('for', currentId + '_filter_input');
@@ -32,7 +32,7 @@ $.extend(true, $.fn.dataTable.defaults, {
 });
  
 $.extend($.fn.dataTableExt.oStdClasses, {
-  "sWrapper": "dataTables_wrapper form-horizontal"
+  "sWrapper": "dataTables_wrapper form-horizontal centreon_table"
 });
  
 /* API method to get paging information */
@@ -89,12 +89,25 @@ $.extend($.fn.dataTableExt.oPagination, {
           $('li:gt(1)', an[i]).filter(':not(.next,.last)').remove();
  
           // Add the new list items and their event handlers
-          for (j = iStart; j <= iEnd; j++) { sClass = j == oPaging.iPage + 1 ? 'class="active"' : ""; $("<li " + sClass + '><a href="#">' + j + "</a></li>").insertBefore($(".next,.last", an[i])[0]).bind("click", function (a) { a.preventDefault(); oSettings._iDisplayStart = (parseInt($("a", this).text(), 10) - 1) * oPaging.iLength; fnDraw(oSettings) }) }
+          for (j = iStart; j <= iEnd; j++) {
+            sClass = j == oPaging.iPage + 1 ? 'class="active"' : "";
+            $("<li " + sClass + '><a href="#">' + j + "</a></li>").insertBefore($(".next,.last", an[i])[0]).bind("click", function (a) {
+                a.preventDefault(); oSettings._iDisplayStart = (parseInt($("a", this).text(), 10) - 1) * oPaging.iLength; fnDraw(oSettings);
+            });
+          }
  
           // Add / remove disabled classes from the static elements
-          if (oPaging.iPage === 0) $(".first,.prev", an[i]).addClass("disabled"); else $(".first,.prev", an[i]).removeClass("disabled")
+          if (oPaging.iPage === 0) { 
+            $(".first,.prev", an[i]).addClass("disabled");
+          } else {
+            $(".first,.prev", an[i]).removeClass("disabled");
+          }
  
-          if (oPaging.iPage === oPaging.iTotalPages - 1 || oPaging.iTotalPages === 0) $(".next,.last", an[i]).addClass("disabled"); else $(".next,.last", an[i]).removeClass("disabled")
+          if (oPaging.iPage === oPaging.iTotalPages - 1 || oPaging.iTotalPages === 0) {
+            $(".next,.last", an[i]).addClass("disabled");
+          } else {
+            $(".next,.last", an[i]).removeClass("disabled");
+          }
         }
     }
   }
@@ -109,7 +122,7 @@ if ($.fn.DataTable.TableTools) {
   // Set the classes that TableTools uses to something suitable for Bootstrap
   // Set the classes that TableTools uses to something suitable for Bootstrap
   $.extend(true, $.fn.DataTable.TableTools.classes, {
-    "container": "DTTT btn-group",
+    "container": "DTTT btn-group pull-right",
     "buttons": {
       "normal": "btn btn-default",
       "disabled": "disabled"

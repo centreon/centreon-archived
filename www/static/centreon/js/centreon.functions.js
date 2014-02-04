@@ -73,6 +73,7 @@ function toggleFooter() {
             $('#footer-button i').removeClass('fa-chevron-circle-down').addClass('fa-chevron-circle-up');
         }
     } else {
+        /* @todo fix bottom 0 */
         $('.bottombar').css('position', 'absolute')
             .css('bottom', 0)
             .css('left', 0)

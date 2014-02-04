@@ -8,9 +8,16 @@
             "iDisplayLength": 25,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
             "sPaginationType": "bootstrap",
-            'sDom': "<'row-fluid'Tr<'clear'><'span6'l><'span6'>t<'row-fluid'<'span6'i><'span6'p>>",
+            'sDom': "<'row'r<'clear'><'col-sm-6'l><'col-sm-6'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "oTableTools": {
-                "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}"
+                "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}",
+                "aButtons": [
+                    {
+                        "sExtends": "collection",
+                        "sButtonText": "Export",
+                        "aButtons": [ "copy", "csv", "xls", "pdf", "print" ]
+                    }
+                ]
             },
             "aoColumnDefs": [
                 { "bAutoWidth" : false, "bSortable": false, "sWidth": "10px", "aTargets": [0] }
@@ -46,4 +53,13 @@
     $(".search_type").change(function() {
         oTable.fnFilter(this.value, jQuery(".search_type").index(this));
     });
+    /*{foreach $datatableParameters.header as $header}
+        {foreach $header as $headerType=>$headerData}
+            {if $headerType === 'select'}
+                $(".search_type").click(function() {
+                    oTable.fnFilter(this.value, {$smarty.foreach.count.index + 1});
+               });
+            {/if}
+        {/foreach}
+    {/foreach}*/
 </script>
