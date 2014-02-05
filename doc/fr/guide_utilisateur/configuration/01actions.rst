@@ -13,7 +13,7 @@ L'ajout d'un nouvel objet se fait via l'instruction **Ajouter** à coté du menu
 Pour supprimer un objet :
 
  *	Sélectionnez le ou les objets que vous souhaitez supprimer en cochant la ou les cases près du nom de celui-ci
- *	Dans le menu **More actions...* cliquez sur **Supprimer**
+ *	Dans le menu **More actions...** cliquez sur **Supprimer**
 
 Attention : La suppression d'un objet est définitive. Si vous avez supprimer un objet par accident, il vous faudra le recréer.
 De même, la suppression d'un objet supprime automatiquement tous les objets qui sont liés à lui.
