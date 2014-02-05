@@ -12,12 +12,14 @@ L'ajout d'un nouvel objet se fait via l'instruction **Ajouter** à coté du menu
 
 Pour supprimer un objet :
 
- *	Sélectionnez le ou les objets que vous souhaitez supprimer en cochant la ou les cases près du nom de celui-ci
- *	Dans le menu **More actions...** cliquez sur **Supprimer**
+ #.	Sélectionnez le ou les objets que vous souhaitez supprimer en cochant la ou les cases près du nom de celui-ci
+ #.	Dans le menu **More actions...** cliquez sur **Supprimer**
 
 Attention : La suppression d'un objet est définitive. Si vous avez supprimer un objet par accident, il vous faudra le recréer.
 De même, la suppression d'un objet supprime automatiquement tous les objets qui sont liés à lui.
 Exemple : La suppression d'un hôte entraine la suppression de tous les services associés à cet hôte.
+
+Pour modifier un objet, cliquez sur son nom.
 
 *********
 Dupliquer
@@ -40,12 +42,12 @@ Pratique
 
 Pour dupliquer un hôte :
 
- *	Sélectionnez l'hôte que vous souhaitez dupliquer
- *	Dans la colonne **Options**, entrez le nombre de duplication que vous souhaitez obtenir
+ 1.	Sélectionnez l'hôte que vous souhaitez dupliquer
+ 2.	Dans la colonne **Options**, entrez le nombre de duplication que vous souhaitez obtenir
+ 
+[METTRE UNE CAPTURE D'ECRAN avec le champ Options au dessus de 1] 
 
-[METTRE UNE CAPTURE D'ECRAN avec le champ Options au dessus de 1]
-
- *	Dans le menu **More actions...** cliquez sur **Dupliquer**
+ 3.	Dans le menu **More actions...** cliquez sur **Dupliquer**
 
 [METTRE UNE CAPTURE D'ECRAN des objets dupliqués]
 
@@ -57,7 +59,8 @@ Principe
 --------
 
 Les changements massifs permettent d'appliquer un changement sur plusieurs objets.
-Exemple : L'ensemble des serveurs web précèdement créé changent de communauté SNMP.
+
+Exemple : L'ensemble des serveurs web précèdement créés changent de communauté SNMP.
 Un changement massif permet de modifier cette communauté sans avoir la peine de modifier chaque fiche de chaque hôte.
 
 Pratique
@@ -65,8 +68,8 @@ Pratique
 
 Pour effectuer un changement massif :
 
- *	Sélectionnez les objets que vous souhaitez modifier
- *	Dans le menu **More actions...** cliquez sur **Changement massif**
+ #.	Sélectionnez les objets que vous souhaitez modifier
+ #.	Dans le menu **More actions...** cliquez sur **Changement massif**
 
 La fenêtre de changement s'ouvre, il existe deux types de changements :
 
@@ -88,32 +91,11 @@ Pratique
 
 Pour activer/désactiver un objet :
 
- *	Sélectionnez les objets que vous souhaitez modifier
- *	Dans le menu **More actions...** cliquez sur Activer/Désactiver
+ #.	Sélectionnez les objets que vous souhaitez modifier
+ #.	Dans le menu **More actions...** cliquez sur Activer/Désactiver
 
-**************************
-Déployer une configuration
-**************************
+Il est également possible d'activer ou de désactiver un hôte via le champ Statut de l'objet (voir la fiche de l'objet).
+Ou en utilisant les icônes suivantes :
 
-Procédure
----------
-
-Lors de la création/suppression/modification des objets via l'interface de configuration, les changements effectués ne sont pas appliqués de manière automatique aux serveurs de supervsion.
-Afin de pouvoir appliquer les modifications effectuées, il est nécessaire de suivre la procédure suivante :
-
- *	Rendez-vous dans **Configuration** ==> **Moteurs de supervision**
- *	Le champ **Collecteur** vous permet de choisir le serveur de supervision (central ou serveur satellite) sur lequel vous souhaitez exporter la configuration
- *	Laissez les options par défaut, et cliquez sur **Exporter**
- *	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
- *	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
- *	Cliquez à nouveau sur **Exporter**
-
-Explications
-------------
-
-Au sein de la page de génération de la configuration, plusieurs options sont disponibles :
-
- *	**Générer les fichiers de configuration** : Génère les fichiers de configuration de l'ordonnanceur dans un répertoire temporaire. Cette configuration est générée à partir des objets configurés via l'interface web
- *	**Lancer le débogage du moteur de supervision (-v)** : Permet à l'ordonnanceur de vérifier la configuration générée
- *	**Déplacer les fichiers générés** : Déplace les fichiers de configuration du répertoire temporaire vers le répertoire de l'ordonnanceur
- *	**Redémarrer l'ordonnanceur** : Redémarre l'ordonnanceur afin d'appliquer les nouveaux fichiers de configuration
+ *	[METTRE L'IMAGE] pour activer
+ *	[METTRE L'IMAGE] pour désactiver

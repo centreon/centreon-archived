@@ -177,20 +177,20 @@ Cliquez sur **Next**.
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
 
- *	Connectez vous avec l'utilisateur root sur votre serveur
- *	Editez le fichier suivant ::
+ 1.	Connectez vous avec l'utilisateur root sur votre serveur
+ 2.	Editez le fichier suivant ::
 
 	/etc/my.cnf
 
- *	Ajoutez les lignes suivantes au fichier :: 
+ 3.	Ajoutez les lignes suivantes au fichier :: 
 
 	[mysqld] 
     innodb_file_per_table=1
 	
- *	Redémarrez le service mysql ::
+ 4.	Redémarrez le service mysql ::
 
 	/etc/init.d/mysql restart
- *	Cliquez sur **Refresh**
+ 5.	Cliquez sur **Refresh**
 
 Cliquez sur **Next** jusqu'à arrivé à l'étape **Installation finished**.
 
@@ -199,16 +199,16 @@ Configuration de base
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
- *	Logguez-vous en tant que root sur le serveur de supervision
- *	Installez le paquet français avec la commande suivante ::
+ 1.	Logguez-vous en tant que root sur le serveur de supervision
+ 2.	Installez le paquet français avec la commande suivante ::
 
 	yum -y install centreon-lang-fr_FR
 	
- *	Rendez-vous dans **Administration** ==> **Options**
- *	Dans le menu de gauche cliquez sur **My Account**
- *	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
- *	Cliquez sur **Save**
- *	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
+ 3.	Rendez-vous dans **Administration** ==> **Options**
+ 4.	Dans le menu de gauche cliquez sur **My Account**
+ 5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
+ 6.	Cliquez sur **Save**
+ 7.	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
 
 [METTRE UNE CAPTURE D'ECRAN]
 
@@ -217,16 +217,16 @@ Démarrer la supervision
 
 Pour démarrer l'ordonnanceur de supervision :
 
- *	Logguez-vous en tant que root
- *	Démarrez Centreon Broker::
+ 1.	Logguez-vous en tant que root
+ 2.	Démarrez Centreon Broker::
  
 	/etc/init.d/cbd start
  
- *	Sur l'interface web, rendez-vous dans **Configuration** ==> **Moteur de supervision**
- *	Laissez les options par défaut, et cliquez sur **Exporter**
- *	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
- *	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
- *	Cliquez à nouveau sur **Exporter**
+ 3.	Sur l'interface web, rendez-vous dans **Configuration** ==> **Moteur de supervision**
+ 4.	Laissez les options par défaut, et cliquez sur **Exporter**
+ 5.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
+ 6.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
+ 7.	Cliquez à nouveau sur **Exporter**
 
 La supervision fonctionne. 
 
@@ -237,19 +237,19 @@ L'interface web de Centreon est composé de plusieurs menus, chaque menu a une f
 
 [METTRE UNE CAPTURE D'ECRAN DES MENUS]
 
- *	Accueil : Est le premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
- *	Supervision : Cette partie regroupe l'état de tous les éléments supervisés en temps réel et en différés (visualisation des logs)
- *	Vues : Ce menu permet de visualiser et de configurer les graphiques de performances pour chaque élément
- *	Rapports : Ce menu permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
- *	Configuration : Ce menu permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
- *	Administration : Cette partie permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
+ *	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
+ *	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différés au travers de la visualisation des logs
+ *	Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
+ *	Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
+ *	Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
+ *	Le menu **Administration** permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
 
 Avant d'aller plus loin
 =======================
 
 Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.0. Pour cela :
 
- *	Connectez-vous en tant que root sur le serveur central
- *	Tapez la commande yum -y update
+ #.	Connectez-vous en tant que root sur le serveur central
+ #.	Tapez la commande yum -y update
 
 Laissez la mise à jour se faire.
