@@ -39,6 +39,8 @@ if (!isset($centreon)) {
 
 require_once("./class/centreonData.class.php");
 
+if (!$min) {
+
 ?><div>
 		<table cellpadding="0" cellspacing="0" style="height:1px; width:100%;">
 			<tr><td id="footerline1"></td></tr>
@@ -60,8 +62,9 @@ require_once("./class/centreonData.class.php");
 		<img src="./img/icones/7x7/sort_asc.gif" onclick="new Effect.toggle('footer'); xhr = new XMLHttpRequest(); xhr.open('GET','./menu/userMenuPreferences.php?uid=<?php echo $centreon->user->user_id; ?>&div=footer', true);xhr.send(null);" style="position:absolute;left:5px;" title="<?php echo _("Hide Footer"); ?>" />
 	</div>
 <?php
+}
 
-if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
+if (isset($_GET["mini"]) && $_GET["mini"] == 1) {
 ?>
 	<script type="text/javascript">
 		new Effect.toggle('header');
@@ -75,11 +78,15 @@ if	(isset($_GET["mini"]) && $_GET["mini"] == 1)	{
 	if (!$centreon->user->showDiv("footer")) { ?> <script type="text/javascript">new Effect.toggle('footer', 'blind', { duration : 0 });</script> <?php }
 }
 
+/*
+ * Create Data Flow
+ */
 $cdata = CentreonData::getInstance();
 $jsdata = $cdata->getJsData();
 foreach ($jsdata as $k => $val) {
     echo "<span class=\"data hide\" id=\"".$k."\" data-".$k."=\"".$val."\"></span>";
 }
+
 ?>
 
 <script type='text/javascript'>
@@ -108,11 +115,11 @@ function setQuickSearchPosition() {
         } else {
             $('QuickSearch').setStyle({ top: '3px' });
         }
-    }
-    
+    }    
     jQuery(".timepicker").timepicker();
     jQuery(".datepicker").datepicker();
 }
+
 </script>
 </body>
 </html>

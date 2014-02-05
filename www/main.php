@@ -267,9 +267,11 @@
 	 */
 	if (!$min) {
         print "\t\t\t</td>\t\t</tr>\t</table>\n</div>";
-        print "<!-- Footer -->";
-		include_once "footer.php";
 	}
+
+    print "<!-- Footer -->";
+    include_once "footer.php";
+
 ?>
 <script type='text/javascript'>
 var centreonTooltip = new CentreonToolTip();
