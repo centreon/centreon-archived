@@ -81,10 +81,18 @@ abstract class Repository
 
         
         // Getting table column
-        $c = array_values(static::$datatableColumn);
+        $c = array_values(static::$researchIndex);
         
         if (!empty(static::$specificConditions)) {
             $conditions = "WHERE ".static::$specificConditions;
+        }
+        
+        if (!empty(static::$aclConditions)) {
+            if (empty($conditions)) {
+                $conditions = "WHERE ".static::$aclConditions;
+            } else {
+                $conditions = "AND ".static::$aclConditions;
+            }
         }
         
         if (!empty(static::$linkedTables)) {
@@ -112,7 +120,8 @@ abstract class Repository
         $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
         
         // Building the final request
-        $finalRequest = "SELECT $field_list FROM ".static::$tableName."$additionalTables $conditions $sort $limitations";
+        $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
+            . "$sort $limitations";
         
         try {
             // Executing the request
@@ -161,14 +170,21 @@ abstract class Repository
         $dbconn = $di->get('db_centreon');
         
         $conditions = '';
-        $sort = '';
         $additionalTables = '';
         
         // Getting table column
-        $c = array_values(static::$datatableColumn);
+        $c = array_values(static::$researchIndex);
         
         if (!empty(static::$specificConditions)) {
             $conditions = "WHERE ".static::$specificConditions;
+        }
+        
+        if (!empty(static::$aclConditions)) {
+            if (empty($conditions)) {
+                $conditions = "WHERE ".static::$aclConditions;
+            } else {
+                $conditions = "AND ".static::$aclConditions;
+            }
         }
         
         if (!empty(static::$linkedTables)) {
@@ -180,21 +196,25 @@ abstract class Repository
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
+                    
+                    if (substr($c[$colNumber], 0, 11) === '[SPECFIELD]') {
+                        $research = str_replace('::search_value::', '%'.$paramValue.'%', substr($c[$colNumber], 11));
                     } else {
-                        $conditions .= "AND ".$c[$colNumber]." like '%".$paramValue."%' ";
+                        $research = $c[$colNumber]." like '%".$paramValue."%' ";
+                    }
+                    
+                    if (empty($conditions)) {
+                        $conditions = "WHERE ".$research;
+                    } else {
+                        $conditions .= "AND ".$research;
                     }
                 }
             }
         }
         
-        // Sort
-        $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
-        
         // Building the final request
         $request = "SELECT COUNT('id') as nb".ucwords(static::$tableName).
-            " FROM ".static::$tableName."$additionalTables $conditions $sort";
+            " FROM ".static::$tableName."$additionalTables $conditions";
         
         // Executing the request
         $stmt = $dbconn->query($request);
@@ -204,6 +224,28 @@ abstract class Repository
         
         // Returing the result
         return $result[0]['nb'.ucwords(static::$tableName)];
+    }
+    
+     /**
+     * 
+     * @param array $params
+     * @return array
+     */
+    public static function newGetTotalRecordsForDatatable($params)
+    {
+        // Initializing connection
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $request = "SELECT FOUND_ROWS()";
+        // Executing the request
+        $stmt = $dbconn->query($request);
+        
+        // Getting the result
+        $result = $stmt->fetchAll();
+        
+        // Returing the result
+        return $result[0][0];
     }
     
     public static function castColumn($element)
@@ -247,5 +289,27 @@ abstract class Repository
     public static function getTotalRecords($params)
     {
         
+    }
+    
+    /**
+     * 
+     * @param array $array
+     * @return type
+     */
+    public static function array_depth(array $array)
+    {
+        $max_depth = 1;
+
+        foreach ($array as $value) {
+            if (is_array($value)) {
+                $depth = self::array_depth($value) + 1;
+
+                if ($depth > $max_depth) {
+                    $max_depth = $depth;
+                }
+            }
+        }
+
+        return $max_depth;
     }
 }

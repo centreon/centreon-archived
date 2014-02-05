@@ -65,6 +65,17 @@ class CommandRepository extends \Centreon\Repository\Repository
         'Type' => 'command_type'
     );
     
+    /**
+     *
+     * @var array Default column for datatable
+     */
+    public static $researchIndex = array(
+        'command_id',
+        'command_name',
+        'command_line',
+        'command_type'
+    );
+    
     public static $columnCast = array(
         'command_type' => array(
             'type' => 'select',

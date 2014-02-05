@@ -25,7 +25,8 @@ class HostcategoryController extends \Centreon\Core\Controller
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js');
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
         $tpl->display('configuration/hostcategory/list.tpl');
@@ -64,6 +65,30 @@ class HostcategoryController extends \Centreon\Core\Controller
      * @route /configuration/hostcategory/update
      */
     public function updateAction()
+    {
+        
+    }
+    
+    /**
+     * Add a hostcategory
+     *
+     *
+     * @method get
+     * @route /configuration/hostcategory/add
+     */
+    public function addAction()
+    {
+        
+    }
+    
+    /**
+     * Update a hostcategory
+     *
+     *
+     * @method get
+     * @route /configuration/hostcategory/[i:id]
+     */
+    public function editAction()
     {
         
     }

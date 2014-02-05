@@ -68,6 +68,18 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
     
     /**
      *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'host_id',
+        'host_name',
+        'host_alias',
+        'host_address',
+        'host_activate'
+    );
+    
+    /**
+     *
      * @var string 
      */
     public static $specificConditions = "host_register = '0' ";

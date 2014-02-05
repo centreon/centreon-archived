@@ -25,7 +25,8 @@ class ServicetemplateController extends \Centreon\Core\Controller
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js');
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
         $tpl->display('configuration/servicetemplate/list.tpl');
@@ -64,6 +65,30 @@ class ServicetemplateController extends \Centreon\Core\Controller
      * @route /configuration/servicetemplate/update
      */
     public function updateAction()
+    {
+        
+    }
+    
+    /**
+     * Add a service template
+     *
+     *
+     * @method get
+     * @route /configuration/servicetemplate/add
+     */
+    public function addAction()
+    {
+        
+    }
+    
+    /**
+     * Update a service template
+     *
+     *
+     * @method get
+     * @route /configuration/servicetemplate/[i:id]
+     */
+    public function editAction()
     {
         
     }

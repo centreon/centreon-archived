@@ -27,7 +27,8 @@ class ServicecategoryController extends \Centreon\Core\Controller
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js');
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
         $tpl->display('configuration/servicecategory/list.tpl');
@@ -68,6 +69,42 @@ class ServicecategoryController extends \Centreon\Core\Controller
     public function updateAction()
     {
         
+    }
+    
+    /**
+     * Add a servicecategory
+     *
+     *
+     * @method get
+     * @route /configuration/servicecategory/add
+     */
+    public function addAction()
+    {
+        // Init template
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
+        
+        $form = new Form('servicecategoryForm');
+        $form->addText('name', _('Service Category Name'));
+        $form->addText('description', _('Service Category Description'));
+        $radios['list'] = array(
+            array(
+              'name' => 'Enabled',
+              'label' => 'Enabled',
+              'value' => '1'
+            ),
+            array(
+                'name' => 'Disabled',
+                'label' => 'Disabled',
+                'value' => '0'
+            )
+        );
+        $form->addRadio('servicecategory_status', _("Status"), 'servicecategory_type', '&nbsp;', $radios);
+        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $tpl->assign('form', $form->toSmarty());
+        
+        // Display page
+        $tpl->display('configuration/servicecategory/edit.tpl');
     }
     
     /**

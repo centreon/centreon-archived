@@ -65,6 +65,17 @@ class HostgroupRepository extends \Centreon\Repository\Repository
         'Status' => 'hg_activate'
     );
     
+    /**
+     *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'hg_id',
+        'hg_name',
+        'hg_alias',
+        'hg_activate'
+    );
+    
     public static $specificConditions = "";
     
     /**

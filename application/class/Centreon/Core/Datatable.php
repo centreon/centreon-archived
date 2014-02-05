@@ -47,6 +47,12 @@ class Datatable
         
     }
     
+    /**
+     * 
+     * @param string $object
+     * @param array $params
+     * @return json
+     */
     public static function getDatas($object, $params = array())
     {
         // Get connection
@@ -66,6 +72,11 @@ class Datatable
         return $finalDatas;
     }
     
+    /**
+     * 
+     * @param string $object
+     * @return array
+     */
     public static function getConfiguration($object)
     {
         // Get connection
@@ -73,6 +84,24 @@ class Datatable
         return $objectToCall::getParametersForDatatable();
     }
     
+    
+    public static function removeUnwantedFields($object, $resultSet)
+    {
+        $objectToCall = '\\Centreon\\Repository\\'.ucwords(strtolower($object)).'Repository';
+        foreach ($objectToCall::$additionalColumn as $c) {
+            foreach ($resultSet as &$oneSet) {
+                unset($oneSet[$c]);
+            }
+        }
+        return $resultSet;
+    }
+    
+    /**
+     * 
+     * @param array $element
+     * @param string $object
+     * @return array
+     */
     public static function castResult($element, $object)
     {
         $elementField = array_keys($element);
@@ -92,7 +121,15 @@ class Datatable
         return $element;
     }
 
-
+    /**
+     * 
+     * @param type $object
+     * @param type $fields
+     * @param type $values
+     * @param type $elementField
+     * @param type $element
+     * @return type
+     */
     public static function addUrl($object, $fields, $values, $elementField, $element)
     {
         $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
@@ -115,6 +152,15 @@ class Datatable
         return '<a href="'. $finalRoute .'">'. $linkName .'</a>';
     }
     
+    /**
+     * 
+     * @param type $object
+     * @param type $fields
+     * @param type $values
+     * @param type $elementField
+     * @param type $element
+     * @return type
+     */
     public static function addCheckbox($object, $fields, $values, $elementField, $element)
     {
         $input = '<input class="all'. $object .'Box" '
@@ -127,6 +173,15 @@ class Datatable
         return str_replace($castedElement, $element, $input);
     }
     
+    /**
+     * 
+     * @param type $object
+     * @param type $fields
+     * @param type $values
+     * @param type $elementField
+     * @param type $element
+     * @return type
+     */
     public static function addSelect($object, $fields, $values, $elementField, $element)
     {
         return $values[$element[$fields]];

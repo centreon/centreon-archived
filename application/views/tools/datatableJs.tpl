@@ -22,6 +22,20 @@
             "aoColumnDefs": [
                 { "bAutoWidth" : false, "bSortable": false, "sWidth": "10px", "aTargets": [0] }
             ]
+        }).columnFilter({
+            aoColumns: [
+                {foreach $datatableParameters.header as $header}
+                    {foreach $header as $headerType=>$headerData}
+                        {if $headerType === 'select'}
+                            { type: "select", values: [ {foreach $headerData as $optName=>$optValue} { label:'{$optName}', value:'{$optValue}' } , {/foreach} ] },
+                        {elseif $headerData === 'none'}
+                            null,
+                        {else}
+                            { type: "text", },
+                        {/if}
+                    {/foreach}
+                {/foreach}
+            ]
         });
     });
     
@@ -53,13 +67,4 @@
     $(".search_type").change(function() {
         oTable.fnFilter(this.value, jQuery(".search_type").index(this));
     });
-    /*{foreach $datatableParameters.header as $header}
-        {foreach $header as $headerType=>$headerData}
-            {if $headerType === 'select'}
-                $(".search_type").click(function() {
-                    oTable.fnFilter(this.value, {$smarty.foreach.count.index + 1});
-               });
-            {/if}
-        {/foreach}
-    {/foreach}*/
 </script>

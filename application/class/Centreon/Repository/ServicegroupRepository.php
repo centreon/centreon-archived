@@ -65,6 +65,17 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
         'Status' => 'sg_activate'
     );
     
+    /**
+     *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'sg_id',
+        'sg_name',
+        'sg_alias',
+        'sg_activate'
+    );
+    
     public static $specificConditions = "";
     
     public static $linkedTables = "";

@@ -27,7 +27,8 @@ class CommandController extends \Centreon\Core\Controller
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js');
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
         $tpl->display('configuration/command/list.tpl');
@@ -68,6 +69,55 @@ class CommandController extends \Centreon\Core\Controller
     public function updateAction()
     {
         
+    }
+    
+    /**
+     * Add a command
+     *
+     *
+     * @method get
+     * @route /configuration/command/add
+     */
+    public function addAction()
+    {
+        // Init template
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
+        
+        $form = new Form('commandForm');
+        $form->addText('name', _('Name'));
+        $form->addTextarea('command_line', _('Commande Line'));
+        $radios['list'] = array(
+            array(
+              'name' => 'Notification',
+              'label' => 'Notification',
+              'value' => '1'
+            ),
+            array(
+                'name' => 'Check',
+                'label' => 'Check',
+                'value' => '2'
+            ),
+            array(
+                'name' => 'Misc',
+                'label' => 'Misc',
+                'value' => '3'
+            ),
+            array(
+                'name' => 'Discovery',
+                'label' => 'Discovery',
+                'value' => '4'
+            ),
+          
+        );
+        $form->addRadio('command_type', _("Command type"), 'command_type', '&nbsp;', $radios);
+        $form->addCheckbox('enable_shell', _("Enable shell"));
+        $form->addTextarea('argument_description', _('Argument Description'));
+        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
+        $tpl->assign('form', $form->toSmarty());
+        
+        // Display page
+        $tpl->display('configuration/command/edit.tpl');
     }
     
     /**
@@ -114,8 +164,6 @@ class CommandController extends \Centreon\Core\Controller
         $form->addTextarea('argument_description', _('Argument Description'));
         $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
         $tpl->assign('form', $form->toSmarty());
-        
-        var_dump($form);
         
         // Display page
         $tpl->display('configuration/command/edit.tpl');

@@ -25,7 +25,8 @@ class ServiceController extends \Centreon\Core\Controller
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js');
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
         $tpl->display('configuration/service/list.tpl');
@@ -64,6 +65,30 @@ class ServiceController extends \Centreon\Core\Controller
      * @route /configuration/service/update
      */
     public function updateAction()
+    {
+        
+    }
+    
+    /**
+     * Add a service
+     *
+     *
+     * @method get
+     * @route /configuration/service/add
+     */
+    public function addAction()
+    {
+        
+    }
+    
+    /**
+     * Update a service
+     *
+     *
+     * @method get
+     * @route /configuration/service/[i:id]
+     */
+    public function editAction()
     {
         
     }

@@ -65,6 +65,17 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         'Status' => 'hc_activate'
     );
     
+    /**
+     *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'hc_id',
+        'hc_name',
+        'hc_alias',
+        'hc_activate'
+    );
+    
     public static $specificConditions = "";
     
     public static $linkedTables = "";

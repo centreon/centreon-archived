@@ -66,6 +66,18 @@ class ConnectorRepository extends \Centreon\Repository\Repository
         'Status' => 'enabled'
     );
     
+    /**
+     *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'id',
+        'name',
+        'description',
+        'command_line',
+        'enabled'
+    );
+    
     public static $columnCast = array(
         'enabled' => array(
             'type' => 'select',

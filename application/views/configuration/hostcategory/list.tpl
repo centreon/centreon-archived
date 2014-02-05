@@ -3,7 +3,7 @@
 {block name="title"}Host Categories{/block}
 
 {block name="content"}
-    {datatable object='Hostcategory'}
+    {datatable object='Hostcategory' objectAddUrl='/configuration/hostcategory/add'}
 {/block}
 
 {block name="javascript-bottom" append}

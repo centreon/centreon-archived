@@ -3,7 +3,7 @@
 {block name="title"}Command{/block}
 
 {block name="content"}
-    {datatable object='Command'}
+    {datatable object='Command' objectAddUrl='/configuration/command/add'}
 {/block}
 
 {block name="javascript-bottom" append}

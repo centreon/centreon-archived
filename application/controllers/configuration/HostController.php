@@ -25,7 +25,8 @@ class HostController extends \Centreon\Core\Controller
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js');
+            ->addJs('bootstrap-dataTables-paging.js')
+            ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
         $tpl->display('configuration/host/list.tpl');
@@ -64,6 +65,30 @@ class HostController extends \Centreon\Core\Controller
      * @route /configuration/host/update
      */
     public function updateAction()
+    {
+        
+    }
+    
+    /**
+     * Add a host
+     *
+     *
+     * @method get
+     * @route /configuration/host/add
+     */
+    public function addAction()
+    {
+        
+    }
+    
+    /**
+     * Update a host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]
+     */
+    public function editAction()
     {
         
     }

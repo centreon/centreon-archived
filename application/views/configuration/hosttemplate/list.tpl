@@ -3,7 +3,7 @@
 {block name="title"}HostTemplate{/block}
 
 {block name="content"}
-    {datatable object='HostTemplate'}
+    {datatable object='HostTemplate' objectAddUrl='/configuration/hosttemplate/add'}
 {/block}
 
 {block name="javascript-bottom" append}

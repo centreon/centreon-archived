@@ -65,6 +65,17 @@ class ServicetemplateRepository extends \Centreon\Repository\Repository
         'Status' => 'service_activate'
     );
     
+    /**
+     *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'service_id',
+        'service_description',
+        'service_alias',
+        'service_activate'
+    );
+    
     public static $specificConditions = "service_register = '0' ";
     
     public static $linkedTables = "";

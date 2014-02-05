@@ -62,8 +62,23 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         '<input id="allServicecategory" type="checkbox">' => 'sc_id',
         'Name' => 'sc_name',
         'Alias' => 'sc_description',
+        'Number of linked services' => '[NBOBJECT]',
         'Status' => 'sc_activate'
     );
+    
+    /**
+     *
+     * @var array 
+     */
+    public static $researchIndex = array(
+        'sc_id',
+        'sc_name',
+        'sc_description',
+        '[NBOBJECT]',
+        'sc_activate'
+    );
+    
+    public static $aclConditions = "";
     
     public static $specificConditions = "";
     
@@ -77,6 +92,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         'none',
         'search_name',
         'search_description',
+        'none',
         array('select' => array(
                 'Enabled' => '1',
                 'Disabled' => '0'
@@ -116,6 +132,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         'none',
         'search_name',
         'search_description',
+        'none',
         array(
             'select' => array(
                 'Enabled' => '1',
@@ -124,4 +141,116 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         )
     );
     
+    public static function buildAclConditions()
+    {
+        static::$aclConditions = "";
+        /*if (!$oreon->user->admin && $scString != "''") {
+            if (is_null($SearchTool)) {
+                $clause = " WHERE ";
+            } else {
+                $clause = " AND ";
+            }
+            static::$aclConditions .= $acl->queryBuilder($clause, "sc_id", $scString);
+        }*/
+
+    }
+    
+    public static function getDatasForDatatable($params)
+    {
+       // Init vars
+        $additionalTables = '';
+        $conditions = '';
+        $limitations = '';
+        $sort = '';
+        
+        // Initializing connection
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        // Getting selected field(s)
+        $field_list = '';
+        foreach (static::$datatableColumn as $field) {
+            if ($field !== '[NBOBJECT]') {
+                $field_list .= $field.',';
+            }
+        }
+        $field_list = trim($field_list, ',');
+
+        
+        // Getting table column
+        $c = array_values(static::$datatableColumn);
+        
+        if (!empty(static::$specificConditions)) {
+            $conditions = "WHERE ".static::$specificConditions;
+        }
+        
+        if (!empty(static::$aclConditions)) {
+            if (empty($conditions)) {
+                $conditions = "WHERE ".static::$aclConditions;
+            } else {
+                $conditions = "AND ".static::$aclConditions;
+            }
+        }
+        
+        if (!empty(static::$linkedTables)) {
+            $additionalTables = ', '.static::$linkedTables;
+        }
+        
+        // Conditions (Recherche)
+        foreach ($params as $paramName=>$paramValue) {
+            if (strpos($paramName, 'sSearch_') !== false) {
+                if (!empty($paramValue) || $paramValue === "0") {
+                    $colNumber = substr($paramName, strlen('sSearch_'));
+                    if (empty($conditions)) {
+                        $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
+                    } else {
+                        $conditions .= "AND ".$c[$colNumber]." like '%".$paramValue."%' ";
+                    }
+                }
+            }
+        }
+        
+        // Sort
+        $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
+        
+        // Processing the limit
+        $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
+        
+        // Building the final request
+        $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
+            . "$sort $limitations";
+        
+        try {
+            // Executing the request
+            $stmt = $dbconn->query($finalRequest);
+        } catch (Exception $e) {
+            
+        }
+        
+        // Returning the result
+        $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $countTab = count($resultSet);
+        $objectTab = array();
+        for($i=0; $i<$countTab; $i++) {
+            $objectTab[] = static::$objectName;
+        }
+        
+        foreach ($resultSet as &$mySC) {
+            $stmt = $dbconn->query("SELECT COUNT(*) FROM `service_categories_relation` WHERE `sc_id` = '".$mySC['sc_id']."'");
+            $nb_svc = $stmt->fetch();
+            $save = array_pop($mySC);
+            $mySC['sc_linked_svc'] = $nb_svc[0];
+            $mySC['sc_activate'] = $save;
+        }
+        
+        return self::array_values_recursive(
+            \array_values(
+                \array_map(
+                    "\\Centreon\\Core\\Datatable::castResult",
+                    $resultSet,
+                    $objectTab
+                )
+            )
+        );
+    }
 }
