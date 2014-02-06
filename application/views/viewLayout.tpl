@@ -29,7 +29,7 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         leftPanelHeight();
     });
-    loadMenu('configuration');
+    loadMenu('{url_for url="/menu/getmenu/"}', 1);
     $('li.envmenu').on('click', function(e) {
         loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'));
     });
