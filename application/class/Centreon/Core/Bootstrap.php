@@ -118,6 +118,8 @@ class Bootstrap
     {
         $cache = Cache::load($this->config);
         $this->di->setShared('cache', $cache);
+        
+        //\Centreon\Repository\ServiceRepository::loadIconImage();
     }
 
     /**

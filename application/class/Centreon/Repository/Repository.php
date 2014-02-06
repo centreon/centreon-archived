@@ -43,6 +43,62 @@ namespace Centreon\Repository;
 abstract class Repository
 {
     /**
+     *
+     * @var string
+     */
+    public static $tableName = '';
+    
+    /**
+     *
+     * @var string
+     */
+    public static $objectName = '';
+    
+    /**
+     *
+     * @var array Default column for datatable
+     */
+    public static $datatableColumn = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $additionalColumn = array();
+    
+    public static $researchIndex = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $specificConditions = "";
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $linkedTables = "";
+    
+    /**
+     *
+     * @var array 
+     */
+    public static $datatableHeader = array();
+    
+    /**
+     *
+     * @var type 
+     */
+    public static $columnCast = array();
+    
+    /**
+     *
+     * @var array 
+     */
+    public static $datatableFooter = array();
+    
+    /**
      * 
      * @return array
      */
@@ -75,8 +131,17 @@ abstract class Repository
         // Getting selected field(s)
         $field_list = '';
         foreach (static::$datatableColumn as $field) {
+            if (!is_array($field)) {
+                if (substr($field, 0, 11) !== '[SPECFIELD]') {
+                    $field_list .= $field.',';
+                }
+            }
+        }
+        
+        foreach (static::$additionalColumn as $field) {
             $field_list .= $field.',';
         }
+        
         $field_list = trim($field_list, ',');
 
         
@@ -117,7 +182,9 @@ abstract class Repository
         $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
         
         // Processing the limit
-        $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
+        if ($params['iDisplayLength'] > 0) {
+            $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
+        }
         
         // Building the final request
         $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
@@ -137,15 +204,26 @@ abstract class Repository
         for($i=0; $i<$countTab; $i++) {
             $objectTab[] = static::$objectName;
         }
+        
+        static::formatDatas($resultSet);
+        
         return self::array_values_recursive(
             \array_values(
-                \array_map(
-                    "\\Centreon\\Core\\Datatable::castResult",
-                    $resultSet,
-                    $objectTab
+                \Centreon\Core\Datatable::removeUnwantedFields(
+                    static::$objectName,
+                    \array_map(
+                        "\\Centreon\\Core\\Datatable::castResult",
+                        $resultSet,
+                        $objectTab
+                    )
                 )
             )
         );
+    }
+    
+    public static function formatDatas(&$resultSet)
+    {
+        
     }
     
     /**

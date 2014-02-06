@@ -63,9 +63,9 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'Host Name' => 'host_name',
         'Name' => 'service_description',
         'Scheduling' => array(
-            'Normal Check Interval' => 'service_normal_check_interval',
-            'Retry Check Interval' => 'service_retry_check_interval',
-            'Max Check Attempts' => 'service_max_check_attempts'
+            'Interval' => 'service_normal_check_interval',
+            'Retry Interval' => 'service_retry_check_interval',
+            'Max Atp' => 'service_max_check_attempts'
         ),
         'Notifications' => '[SPECFIELD]',
         'Parent Template' => "[SPECFIELD]service_template_model_stm_id IN (SELECT service_id FROM service WHERE service_description LIKE '::search_value::')",
@@ -134,17 +134,17 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'service_activate' => array(
             'type' => 'select',
             'parameters' =>array(
-                '0' => 'Disabled',
-                '1' => 'Enabled',
-                '2' => 'Trash',
+                '0' => '<span class="label label-danger">Disabled</span>',
+                '1' => '<span class="label label-success">Enabled</span>',
+                '2' => '<span class="label label-warning">Trash</span>',
             )
         ),
         'service_notifications' => array(
             'type' => 'select',
             'parameters' =>array(
-                '0' => 'Disabled',
-                '1' => 'Enabled',
-                '2' => 'Default',
+                '0' => '<span class="label label-danger">Disabled</span>',
+                '1' => '<span class="label label-success">Enabled</span>',
+                '2' => '<span class="label label-info">Default</span>',
             )
         ),
         'service_id' => array(
@@ -194,122 +194,6 @@ class ServiceRepository extends \Centreon\Repository\Repository
         )
     );
     
-    /**
-     * 
-     * @param array $params
-     * @return array
-     */
-    public static function getDatasForDatatable($params)
-    {
-        // Init vars
-        $additionalTables = '';
-        $conditions = '';
-        $limitations = '';
-        $sort = '';
-        
-        // Initializing connection
-        $di = \Centreon\Core\Di::getDefault();
-        $dbconn = $di->get('db_centreon');
-        
-        // Getting selected field(s)
-        $field_list = '';
-        foreach (static::$datatableColumn as $field) {
-            if (!is_array($field)) {
-                if (substr($field, 0, 11) !== '[SPECFIELD]') {
-                    $field_list .= $field.',';
-                }
-            }
-        }
-        
-        foreach (static::$additionalColumn as $field) {
-            $field_list .= $field.',';
-        }
-        
-        $field_list = trim($field_list, ',');
-        
-        // Getting table column
-        $c = array_values(static::$researchIndex);
-        
-        if (!empty(static::$specificConditions)) {
-            $conditions = "WHERE ".static::$specificConditions;
-        }
-        
-        if (!empty(static::$aclConditions)) {
-            if (empty($conditions)) {
-                $conditions = "WHERE ".static::$aclConditions;
-            } else {
-                $conditions = "AND ".static::$aclConditions;
-            }
-        }
-        
-        if (!empty(static::$linkedTables)) {
-            $additionalTables = ', '.static::$linkedTables;
-        }
-        
-        // Conditions (Recherche)
-        foreach ($params as $paramName=>$paramValue) {
-            if (strpos($paramName, 'sSearch_') !== false) {
-                if (!empty($paramValue) || $paramValue === "0") {
-                    $colNumber = substr($paramName, strlen('sSearch_'));
-                    
-                    if (substr($c[$colNumber], 0, 11) === '[SPECFIELD]') {
-                        $research = str_replace('::search_value::', '%'.$paramValue.'%', substr($c[$colNumber], 11));
-                    } else {
-                        $research = $c[$colNumber]." like '%".$paramValue."%' ";
-                    }
-                    
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$research;
-                    } else {
-                        $conditions .= "AND ".$research;
-                    }
-                }
-            }
-        }
-        
-        // Sort
-        if (substr($c[$params['iSortCol_0']], 0, 11) !== '[SPECFIELD]') {
-            $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
-        }
-        
-        // Processing the limit
-        $limitations = 'LIMIT '.$params['iDisplayStart'].','.$params['iDisplayLength'];
-        
-        // Building the final request
-        $finalRequest = "SELECT $field_list FROM ".static::$tableName."$additionalTables $conditions "
-            . "$sort $limitations";
-        
-        try {
-            // Executing the request
-            $stmt = $dbconn->query($finalRequest);
-        } catch (Exception $e) {
-            
-        }
-        
-        // Returning the result
-        $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-        $countTab = count($resultSet);
-        $objectTab = array();
-        for($i=0; $i<$countTab; $i++) {
-            $objectTab[] = static::$objectName;
-        }
-        
-        self::formatDatas($resultSet);
-        
-        return self::array_values_recursive(
-            \array_values(
-                \Centreon\Core\Datatable::removeUnwantedFields(
-                    static::$objectName,
-                    \array_map(
-                        "\\Centreon\\Core\\Datatable::castResult",
-                        $resultSet,
-                        $objectTab
-                    )
-                )
-            )
-        );
-    }
-    
     public static function formatDatas(&$resultSet)
     {
         $previousHost = '';
@@ -324,6 +208,9 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
+                $myServiceSet['host_name'] = '<img src="'.
+                    \Centreon\Repository\HostRepository::getIconImage($myServiceSet['host_name']).
+                    '" />&nbsp;'.$myServiceSet['host_name'];
             }
             
             // Set Scheduling
@@ -333,8 +220,9 @@ class ServiceRepository extends \Centreon\Repository\Repository
             $myServiceSet['service_retry_check_interval'] = self::formatNotificationOptions(
                 self::getMyServiceField($myServiceSet['service_id'], 'service_normal_check_interval')
             );
-            $myServiceSet['service_max_check_attempts'] = self::formatNotificationOptions(
-                self::getMyServiceField($myServiceSet['service_id'], 'service_max_check_attempts')
+            $myServiceSet['service_max_check_attempts'] = self::getMyServiceField(
+                $myServiceSet['service_id'],
+                'service_max_check_attempts'
             );
             $myServiceSet['service_notifications'] = self::getNotificicationsStatus($myServiceSet['service_id']);
             
@@ -359,8 +247,11 @@ class ServiceRepository extends \Centreon\Repository\Repository
                     ->getPathFor('/configuration/servicetemplate/[i:id]', array('id' => $tplArr['id']))
             );
             
-            $tplStr .= "&nbsp;->&nbsp;<a href='".$tplRoute."'>".$tplArr['description']."</a>";
+            $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
             $myServiceSet['parent_template'] = $tplStr;
+            
+            $myServiceSet['service_description'] = '<img src="'.self::getIconImage($myServiceSet['service_id']).
+                '" />&nbsp;'.$myServiceSet['service_description'];
             
             $myServiceSet['service_activate'] = $save;
         }
@@ -369,7 +260,7 @@ class ServiceRepository extends \Centreon\Repository\Repository
     public static function formatNotificationOptions($interval)
     {
         // Initializing connection
-        $intervalLength = \Centreon\Core\Di::getDefault()->get('config')->get('global', 'interval_length');
+        $intervalLength = \Centreon\Core\Di::getDefault()->get('config')->get('default', 'interval_length');
         $interval *= $intervalLength;
         
 		if ($interval % 60 == 0) {
@@ -460,12 +351,8 @@ class ServiceRepository extends \Centreon\Repository\Repository
 		return $string;
 	}
     
-    public static function getMyServiceAlias($service_id = null)
+    public static function getMyServiceAlias($service_id)
     {
-		if (!$service_id) {
-            return;
-        }
-        
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
@@ -487,4 +374,34 @@ class ServiceRepository extends \Centreon\Repository\Repository
 			}
 		}
 	}
+    
+    public static function getIconImage($service_id)
+    {
+        // Initializing connection
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        
+        $config = \Centreon\Core\Di::getDefault()->get('config');
+        $finalRoute = rtrim($config->get('global','base_url'), '/');
+        
+        while (1) {
+            $stmt = $dbconn->query("SELECT esi_icon_image, service_template_model_stm_id "
+                . "FROM service, extended_service_information "
+                . "WHERE service_service_id = '$service_id' "
+                . "AND service_id = service_service_id");
+            $esiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+            if (!is_null($esiResult['esi_icon_image'])) {
+                $finalRoute .= $esiResult['esi_icon_image'];
+                break;
+            } elseif (is_null($esiResult['esi_icon_image']) && !is_null($esiResult['service_template_model_stm_id'])) {
+                $finalRoute .= '/static/centreon/img/icons/16x16/gear.gif';
+                break;
+            }
+            
+            $service_id = $esiResult['service_template_model_stm_id'];
+        }
+        
+        return $finalRoute;
+    }
 }

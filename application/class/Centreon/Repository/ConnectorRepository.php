@@ -82,8 +82,8 @@ class ConnectorRepository extends \Centreon\Repository\Repository
         'enabled' => array(
             'type' => 'select',
             'parameters' => array(
-                '1' => 'Enabled',
-                '0' => 'Disabled',
+                '1' => '<span class="label label-success">Enabled</span>',
+                '0' => '<span class="label label-danger">Disabled</span>',
             )
         ),
         'id' => array(

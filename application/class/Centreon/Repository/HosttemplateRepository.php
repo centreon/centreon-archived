@@ -105,8 +105,8 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         'host_activate' => array(
             'type' => 'select',
             'parameters' =>array(
-                '0' => 'Disabled',
-                '1' => 'Enabled',
+                '0' => '<span class="label label-danger">Disabled</span>',
+                '1' => '<span class="label label-success">Enabled</span>',
                 '2' => 'Trash',
         )
         ),
@@ -144,4 +144,12 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         )
     );
     
+    public static function formatDatas(&$resultSet)
+    {
+        foreach ($resultSet as &$myHostTemplateSet) {
+            $myHostTemplateSet['host_name'] = '<img src="'.
+                \Centreon\Repository\HostRepository::getIconImage($myHostTemplateSet['host_name']).
+                '" />&nbsp;'.$myHostTemplateSet['host_name'];
+        }
+    }
 }

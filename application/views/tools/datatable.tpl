@@ -25,18 +25,18 @@
       </div>
     </div>
 </div>
-<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered" width="100%" id="datatable{$object}" >
+<table cellpadding="0" cellspacing="0" border="0" class="table table-striped table-bordered table-hover" width="100%" id="datatable{$object}" >
     <thead>
         <tr>
         {foreach $datatableParameters.column.firstLevel as $column}
-            <th {$column.att}>{$column.lab}</th>
+            <th {$column.att} style="text-align: center;">{$column.lab}</th>
         {/foreach}
         </tr>
         
         {if isset($datatableParameters.column.secondLevel)}
             <tr>
             {foreach $datatableParameters.column.secondLevel as $column}
-                <th>{$column.lab}</th>
+                <th style="text-align: center;">{$column.lab}</th>
             {/foreach}
             </tr>
         {/if}
@@ -48,14 +48,14 @@
     <tfoot>
         <tr>
         {foreach $datatableParameters.column.firstLevel as $column}
-            <th {$column.att}>{$column.lab}</th>
+            <th {$column.att} style="text-align: center;">{$column.lab}</th>
         {/foreach}
         </tr>
         
         {if isset($datatableParameters.column.secondLevel)}
             <tr>
             {foreach $datatableParameters.column.secondLevel as $column}
-                <th>{$column.lab}</th>
+                <th style="text-align: center;">{$column.lab}</th>
             {/foreach}
             </tr>
         {/if}

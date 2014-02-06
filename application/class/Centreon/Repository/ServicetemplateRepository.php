@@ -100,8 +100,8 @@ class ServicetemplateRepository extends \Centreon\Repository\Repository
         'service_activate' => array(
             'type' => 'select',
             'parameters' =>array(
-                '0' => 'Disabled',
-                '1' => 'Enabled',
+                '0' => '<span class="label label-danger">Disabled</span>',
+                '1' => '<span class="label label-success">Enabled</span>',
                 '2' => 'Trash',
         )
         ),
