@@ -21,7 +21,7 @@
         </a>
       </li>
       <li class="time">
-        <span class=""></span>
+        <span class="clock"></span>
       </li>
       <li class="user">
         <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
@@ -108,6 +108,8 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         resizeContent();
     });
+    /* Timer */
+    topClock();
 });
 </script>
 {block name="javascript-bottom"}{/block}

@@ -291,6 +291,16 @@ aside {
     display: none;
 }
 
+/* Clock */
+.time .clock {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    line-height: 20px;
+    display: block;
+    color: #777;
+    font-weight: bold;
+}
+
 /**************/
 /* DARK THEME */
 

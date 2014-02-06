@@ -128,3 +128,22 @@ function loadMenu(menuUrl, envName) {
         }
     });
 }
+
+/* Add a 0 before if < 10 */
+function stringTwoDigit(val) {
+    if (val < 10) {
+        val = "0" + val;
+    }
+    return val;
+}
+
+/* Clock top */
+function topClock() {
+    var now = new Date();
+    var h = stringTwoDigit(now.getHours());
+    var m = stringTwoDigit(now.getMinutes());
+    var s = stringTwoDigit(now.getSeconds());
+
+    $('.time .clock').text(h + ':' + m + ':' + s);
+    setTimeout(function() { topClock(); }, 500);
+}
