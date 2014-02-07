@@ -47,7 +47,7 @@ Notification
  *	Le champ **Notification activée** permet d'activer ou de désactiver les notifications pour l'objet
  *	Si la case **Contact additive inheritance** [PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent
  *	La liste **Contacts liés** indique les contacts qui recevront les notifications
- *	Si la case **Contact group additive inheritance** [PAS DE TRADUCTION DISPONIBLE] : est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent
+ *	Si la case **Contact group additive inheritance** [PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent
  *	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications
  *	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification (si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification)
  *	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activés
