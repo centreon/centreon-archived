@@ -62,7 +62,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         '<input id="allServicecategory" type="checkbox">' => 'sc_id',
         'Name' => 'sc_name',
         'Alias' => 'sc_description',
-        'Number of linked services' => '[NBOBJECT]',
+        'Linked services' => '[NBOBJECT]',
         'Status' => 'sc_activate'
     );
     
@@ -77,12 +77,6 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         '[NBOBJECT]',
         'sc_activate'
     );
-    
-    public static $aclConditions = "";
-    
-    public static $specificConditions = "";
-    
-    public static $linkedTables = "";
     
     /**
      *
@@ -100,6 +94,10 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $columnCast = array(
         'sc_activate' => array(
             'type' => 'select',
@@ -141,20 +139,11 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         )
     );
     
-    public static function buildAclConditions()
-    {
-        static::$aclConditions = "";
-        /*if (!$oreon->user->admin && $scString != "''") {
-            if (is_null($SearchTool)) {
-                $clause = " WHERE ";
-            } else {
-                $clause = " AND ";
-            }
-            static::$aclConditions .= $acl->queryBuilder($clause, "sc_id", $scString);
-        }*/
-
-    }
-    
+    /**
+     * 
+     * @param array $params
+     * @return array
+     */
     public static function getDatasForDatatable($params)
     {
        // Init vars

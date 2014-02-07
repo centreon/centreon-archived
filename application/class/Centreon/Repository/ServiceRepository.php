@@ -81,6 +81,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
         'service_template_model_stm_id'
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $researchIndex = array(
         'service_id',
         'host_name',
@@ -95,13 +99,13 @@ class ServiceRepository extends \Centreon\Repository\Repository
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     public static $specificConditions = "h.host_id = hsr.host_host_id AND service_id=hsr.service_service_id AND service_register = '1' ";
     
     /**
      *
-     * @var type 
+     * @var string 
      */
     public static $linkedTables = "host h, host_service_relation hsr";
     
@@ -128,7 +132,7 @@ class ServiceRepository extends \Centreon\Repository\Repository
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     public static $columnCast = array(
         'service_activate' => array(
@@ -194,6 +198,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     * 
+     * @param array $resultSet
+     */
     public static function formatDatas(&$resultSet)
     {
         $previousHost = '';
@@ -257,6 +265,11 @@ class ServiceRepository extends \Centreon\Repository\Repository
         }
     }
     
+    /**
+     * 
+     * @param integer $interval
+     * @return string
+     */
     public static function formatNotificationOptions($interval)
     {
         // Initializing connection
@@ -275,11 +288,14 @@ class ServiceRepository extends \Centreon\Repository\Repository
         return $scheduling;
     }
     
-    public static function getMyServiceField($service_id = null, $field)
+    /**
+     * 
+     * @param integer $service_id
+     * @param string $field
+     * @return type
+     */
+    public static function getMyServiceField($service_id, $field)
     {
-		if (!$service_id){
-            return;
-        }
         
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
@@ -303,6 +319,11 @@ class ServiceRepository extends \Centreon\Repository\Repository
 		}
 	}
     
+    /**
+     * 
+     * @param integer $service_id
+     * @return type
+     */
     public function getNotificicationsStatus($service_id)
     {
         // Initializing connection
@@ -322,11 +343,13 @@ class ServiceRepository extends \Centreon\Repository\Repository
         
     }
     
-    public static function getMyServiceTemplateModels($service_template_id = null)
+    /**
+     * 
+     * @param type $service_template_id
+     * @return type
+     */
+    public static function getMyServiceTemplateModels($service_template_id)
     {
-		if (!$service_template_id) {
-            return;
-        }
         
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
@@ -341,6 +364,11 @@ class ServiceRepository extends \Centreon\Repository\Repository
 		return $tplArr;
 	}
     
+    /**
+     * 
+     * @param string $string
+     * @return string
+     */
     public static function db2str($string)
     {
 		$string = str_replace('#BR#', "\\n", $string);
@@ -351,6 +379,11 @@ class ServiceRepository extends \Centreon\Repository\Repository
 		return $string;
 	}
     
+    /**
+     * 
+     * @param integer $service_id
+     * @return type
+     */
     public static function getMyServiceAlias($service_id)
     {
         // Initializing connection
@@ -375,6 +408,11 @@ class ServiceRepository extends \Centreon\Repository\Repository
 		}
 	}
     
+    /**
+     * 
+     * @param integer $service_id
+     * @return string
+     */
     public static function getIconImage($service_id)
     {
         // Initializing connection

@@ -76,10 +76,6 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         'hc_activate'
     );
     
-    public static $specificConditions = "";
-    
-    public static $linkedTables = "";
-    
     /**
      *
      * @var array 
@@ -95,6 +91,10 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $columnCast = array(
         'hc_activate' => array(
             'type' => 'select',

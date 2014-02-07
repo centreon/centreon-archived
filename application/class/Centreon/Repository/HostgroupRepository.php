@@ -76,8 +76,6 @@ class HostgroupRepository extends \Centreon\Repository\Repository
         'hg_activate'
     );
     
-    public static $specificConditions = "";
-    
     /**
      *
      * @var array 

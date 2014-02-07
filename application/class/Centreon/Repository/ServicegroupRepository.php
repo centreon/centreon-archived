@@ -76,10 +76,6 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
         'sg_activate'
     );
     
-    public static $specificConditions = "";
-    
-    public static $linkedTables = "";
-    
     /**
      *
      * @var array 
@@ -95,6 +91,10 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $columnCast = array(
         'sg_activate' => array(
             'type' => 'select',

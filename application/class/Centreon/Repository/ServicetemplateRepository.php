@@ -76,9 +76,11 @@ class ServicetemplateRepository extends \Centreon\Repository\Repository
         'service_activate'
     );
     
+    /**
+     *
+     * @var string 
+     */
     public static $specificConditions = "service_register = '0' ";
-    
-    public static $linkedTables = "";
     
     /**
      *
@@ -96,6 +98,10 @@ class ServicetemplateRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $columnCast = array(
         'service_activate' => array(
             'type' => 'select',

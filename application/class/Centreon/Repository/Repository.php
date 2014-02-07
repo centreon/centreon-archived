@@ -62,23 +62,33 @@ abstract class Repository
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     public static $additionalColumn = array();
     
+    /**
+     *
+     * @var array This array should math the additional column variable
+     */
     public static $researchIndex = array();
     
     /**
      *
-     * @var type 
+     * @var string 
      */
-    public static $specificConditions = "";
+    public static $specificConditions = '';
     
     /**
      *
-     * @var type 
+     * @var string 
      */
-    public static $linkedTables = "";
+    public static $aclConditions = '';
+    
+    /**
+     *
+     * @var string 
+     */
+    public static $linkedTables = '';
     
     /**
      *
@@ -88,7 +98,7 @@ abstract class Repository
     
     /**
      *
-     * @var type 
+     * @var array 
      */
     public static $columnCast = array();
     
@@ -131,10 +141,8 @@ abstract class Repository
         // Getting selected field(s)
         $field_list = '';
         foreach (static::$datatableColumn as $field) {
-            if (!is_array($field)) {
-                if (substr($field, 0, 11) !== '[SPECFIELD]') {
-                    $field_list .= $field.',';
-                }
+            if (!is_array($field) && (substr($field, 0, 11) !== '[SPECFIELD]')) {
+                $field_list .= $field.',';
             }
         }
         
@@ -190,6 +198,8 @@ abstract class Repository
         $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
         
+        //echo $finalRequest;
+        
         try {
             // Executing the request
             $stmt = $dbconn->query($finalRequest);
@@ -221,6 +231,10 @@ abstract class Repository
         );
     }
     
+    /**
+     * 
+     * @param type $resultSet
+     */
     public static function formatDatas(&$resultSet)
     {
         
@@ -326,6 +340,11 @@ abstract class Repository
         return $result[0][0];
     }
     
+    /**
+     * 
+     * @param type $element
+     * @return type
+     */
     public static function castColumn($element)
     {
         $elementField = array_keys($element);

@@ -66,6 +66,10 @@ class HostRepository extends \Centreon\Repository\Repository
         'Status' => 'host_activate'
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $researchIndex = array(
         'host_id',
         'host_name',
@@ -93,6 +97,10 @@ class HostRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $columnCast = array(
         'host_activate' => array(
             'type' => 'select',
@@ -100,7 +108,7 @@ class HostRepository extends \Centreon\Repository\Repository
                 '0' => '<span class="label label-danger">Disabled</span>',
                 '1' => '<span class="label label-success">Enabled</span>',
                 '2' => 'Trash',
-        )
+            )
         ),
         'host_id' => array(
             'type' => 'checkbox',
@@ -136,6 +144,10 @@ class HostRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     * 
+     * @param array $resultSet
+     */
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myHostSet) {
@@ -145,6 +157,11 @@ class HostRepository extends \Centreon\Repository\Repository
         }
     }
     
+    /**
+     * 
+     * @param string $host_name
+     * @return string
+     */
     public static function getIconImage($host_name)
     {
         // Initializing connection

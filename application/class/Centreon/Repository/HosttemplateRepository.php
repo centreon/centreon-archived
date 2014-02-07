@@ -101,6 +101,10 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     *
+     * @var array 
+     */
     public static $columnCast = array(
         'host_activate' => array(
             'type' => 'select',
@@ -144,6 +148,10 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         )
     );
     
+    /**
+     * 
+     * @param array $resultSet
+     */
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myHostTemplateSet) {
