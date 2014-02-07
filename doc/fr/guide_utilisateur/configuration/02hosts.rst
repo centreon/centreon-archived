@@ -37,7 +37,7 @@ Propriétés du contrôle de l'hôte
  *	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôle à effectuer avant de valider le statut de l'hôte : lorsque le statut est validé, une notification est envoyée
  *	Le champ **Intervalle normal de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut de l'hôte est OK
  *	Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut de l'hôte est non-OK
- *	Les champs **Contrôle actif activé** et **Contrôle passif activé** active/Désactive les contrôles actifs et passifs
+ *	Les champs **Contrôle actif activé** et **Contrôle passif activé** activent/désactivent les contrôles actifs et passifs
 
 Macros
 ------
@@ -58,16 +58,16 @@ Notification
  *	Si la case **Contact group additive inheritance** [PAS DE TRADUCTION DISPONIBLE] : est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent
  *	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications
  *	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification (si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification)
- *	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activés
- *	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyé
+ *	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activées
+ *	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyée
  *	Le **Délai de première notification** est exprimé en minutes. Il fait référence au délai à respecter avant l'envoi d'une première notification
 
 ****************
 Onglet Relations
 ****************
 
- *	La liste **Groupes d'hôtes parents** définit les groupes d'hôtes auquel l'hôte appartient
- *	La liste **Catégorie d'hôtes parents** définit les catégories auquel l'hôte appartient
+ *	La liste **Groupes d'hôtes parents** définit les groupes d'hôtes auxquels l'hôte appartient
+ *	La liste **Catégorie d'hôtes parents** définit les catégories auxquelles l'hôte appartient
  *	La liste **Hôtes parents** définit les hôtes dont dépendant l'hôte
  *	La liste **Hôtes enfants** définit les hôtes qui dépendent de cet hôte
 
@@ -77,14 +77,14 @@ Traitement des données
 
  *	Si le **Contrôle de vérification de l'hôte** est activé, alors la commande de remontée des contrôles de l'hôte sera activée
  *	Le champ **Contrôler la fraicheur du résultat** permet d'activer ou de désactiver le contrôle de fraicheur du résultat
- *	Le champ **Seuil de fraicheur du résultat** est exprimé en secondes. Si durant cette durée il n'y a pas de changement d'état de l'hôte alors la commande de vérification est executée
+ *	Le champ **Seuil de fraicheur du résultat** est exprimé en secondes. Si durant cette période il n'y a pas de changement d'état de l'hôte alors la commande de vérification est executée
  *	Le champ **Détection de bagotage des status** permet d'activer ou de désactiver la détection du bagotage des statuts
  *	Les champs **Seuil bas de détection de bagotage des statuts** et **Seuil haut de détection de bagotage des statuts** définissent les seuils hauts et bas pour la détection du bagotage
  *	Le champ **Traitement des données de performances** permet d'activer ou de désactiver le traitement des données de performances (et donc la génération des graphiques de performances)
  *	Les champs **Rétention des informations de statut** et **Rétention et des informations concernant pas le statut** indiquent si les informations concernant ou ne concernant pas le statut sont sauvegardées après chaque relance de la commande de vérification
  *	Le champ **Options à enregistrer** définit les options à enregistrer si la rétention est activée
  *	Le champ **Gestionnaire d'évènements activé** permet d'activer ou de désactiver le gestionnaire d'évènements
- *	Le champ **Gestionnaire d'évènements** définit la commande à exécuter si le gestionnaire d'évènement est activé
+ *	Le champ **Gestionnaire d'évènements** définit la commande à exécuter si le gestionnaire d'évènements est activé
  *	Le champ **Arguments** définit les arguments à passer à la commande à exécuter
 
 *********************************

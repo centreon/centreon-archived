@@ -26,10 +26,10 @@ Etat du service
  *	Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut du service
  *	Le champ **Commande de vérification** indique la commande utilisée pour vérifier la disponibilité du service
  *	Le tableau **Arguments** définit les arguments donnés à la commande de vérification (le nombre d'arguments varie en fonction de la commande de vérification choisie)
- *	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôle à effectuer avant de valider le statut du service : lorsque le statut est validé, une notification est envoyée
+ *	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôles à effectuer avant de valider le statut du service : lorsque le statut est validé, une notification est envoyée
  *	Le champ **Intervalle normal de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut du service est OK
  *	Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut du service est non-OK
- *	Les champs **Contrôle actif activé** et **Contrôle passif activé** active/Désactive les contrôles actifs et passifs
+ *	Les champs **Contrôle actif activé** et **Contrôle passif activé** activent/désactivent les contrôles actifs et passifs
 
 Macros
 ------
@@ -50,8 +50,8 @@ Notification
  *	Si la case **Contact group additive inheritance** [PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle de service parent mais ajoute les groupes de contacts en complément des groupes de contacts définis au niveau du modèle parent
  *	Au sein de la liste **Groupe de contacts liés** tous les contacts appartenant aux groupes de contacts définis recevront les notifications
  *	Le champ **Intervalle de notification** est exprimé en minutes. Il indique la durée entre chaque envoi de notification (si la valeur est définie à 0 alors l'ordonnanceur envoie une seule notification)
- *	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activés
- *	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyé
+ *	Le champ **Période de notification** indique la période temporelle durant laquelle les notifications seront activées
+ *	Les **Options de notifications** définissent les statuts pour lesquels une notification sera envoyée
  *	Le **Délai de première notification** est exprimé en minutes. Il fait référence au délai à respecter avant l'envoi d'une première notification
 
 ****************
@@ -82,7 +82,7 @@ Traitement des données
  *	Les champs **Rétention des informations de statut** et **Rétention et des informations concernant pas le statut** indiquent si les informations concernant ou ne concernant pas le statut sont sauvegardées après chaque relance de la commande de vérification
  *	Le champ **Options à enregistrer** définit les options à enregistrer si la rétention est activée
  *	Le champ **Gestionnaire d'évènements activé** permet d'activer ou de désactiver le gestionnaire d'évènements
- *	Le champ **Gestionnaire d'évènements** définit la commande à exécuter si le gestionnaire d'évènement est activé
+ *	Le champ **Gestionnaire d'évènements** définit la commande à exécuter si le gestionnaire d'évènements est activé
  *	Le champ **Arguments** définit les arguments à passer à la commande à exécuter
 
 ***************************************

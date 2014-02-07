@@ -9,7 +9,7 @@ Définition
 Les contacts au sein de Centreon sont utilisés afin de :
 
  *	Pouvoir se connecter à l'interface web de Centreon : chaque contact dispose de ses propres droits afin de se connecter à l'interface web
- *	Etre alerté en cas de necessité
+ *	Etre alerté en cas de nécessité
 
 Afin d'ajouter un contact, il suffit de rendre dans **Configuration** ==> **Utilisateurs** ==> **Ajouter**.
 
@@ -38,7 +38,7 @@ Authentification Centreon
  *	Le champ **Langue par défaut** permet de définir la langue de l'interface Centreon pour cet utilisateur
  *	Le champ **Administrateur** définit si cet utilisateur est administrateur de la plateforme de supervision ou non
  *	Le champ **Clé d'auto-connexion** permet de définir une clé de connexion pour l'utilisateur. L'utilisateur n'aura plus besoin d'entrer son login et mot de passe mais utilisera directement cette clé pour se connecter. Syntaxe de connexion : http://[IP_DU_SERVEUR_CENTRAL]/index.php&autologin=1&useralias=[login_utilisateur]&token=[valeur_autologin]. Notez bien que l'auto login doit être activé dans **Administration** ==> **Options**.
- *	Le champ **Source d'authentification** spécifie si l'utilisateur est stocké en base de données Centreon ou que sa connexion est faites via un annuaire LDAP
+ *	Le champ **Source d'authentification** spécifie si l'utilisateur est stocké en base de données Centreon ou que sa connexion est faite via un annuaire LDAP
  *	Le champ **Groupes de liste d'accès** permet de définir un groupe d'accès pour un utilisateur
 
 ****************************

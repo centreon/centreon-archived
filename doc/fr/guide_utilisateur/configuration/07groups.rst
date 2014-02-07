@@ -26,7 +26,7 @@ Pour ajouter un groupe d'hôtes :
  *	Le champ **URL d'action** définit une URL habituellement utilisée pour donner des informations d'actions sur le groupe d'hôtes (maintenance...)
  *	Le champ **Icône** indique l'icône à utiliser pour le groupe d'hôtes
  *	Le champ **Icône pour la carte** est l'icône utilisée pour la cartographie
- *	Le champ **RRD retention** [PAS DE TRADUCTION DISPO] est exprimé en jours, il permet de définir la durée de rétention des services appartenant à ce groupe d'hôte au sein de la base de données RRD [QUESTION : Si vide, quelles valeurs est prise ? La valeur de configuration par défaut ?]
+ *	Le champ **RRD retention** [PAS DE TRADUCTION DISPO] est exprimé en jours, il permet de définir la durée de rétention des services appartenant à ce groupe d'hôte au sein de la base de données RRD [QUESTION : Si vide, quelle valeur est prise ? La valeur de configuration par défaut ?]
  *	Les champs **Statuts** et **Commentaires** permettent d'activer ou de désactiver le groupe d'hôtes et de commenter celui-ci.
 
 ***********************
