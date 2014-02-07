@@ -9,7 +9,7 @@ class Dummy extends \Centreon\Core\Module
     }
 
     public function install() {
-        parent::__install();
+        parent::install();
         $this->registerHook(
             'displayMonitoringDetailPageLeft',
             'dummyBlock',
@@ -23,7 +23,7 @@ class Dummy extends \Centreon\Core\Module
     }
 
     public function uninstall() {
-        parent::__uninstall();
+        parent::uninstall();
     }
 
     public static function displayMonitoringDetailPageLeft($params) {

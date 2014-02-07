@@ -11,6 +11,6 @@
 function smarty_modifier_url($url) {
     $di = \Centreon\Core\Di::getDefault();
     $config = $di->get('config');
-    $fullUrl = $config->get('main','baseUrl').$url;
+    $fullUrl = rtrim($config->get('global','base_url'), '/').$url;
     return $fullUrl;
 }

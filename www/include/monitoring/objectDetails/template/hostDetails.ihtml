@@ -203,12 +203,13 @@
 									<td class="ListColLeft">{$m_mon_services_en_acknowledge}</td>
 									<td class="ListColLeft"><font style='background-color:{$color_onoff[$host_data.problem_has_been_acknowledged]};'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{$en[$host_data.problem_has_been_acknowledged]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></td>
 									<td class="ListColLeft">
-                                                                            <a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
-                                                                            <img src={$img_en[$host_data.problem_has_been_acknowledged]}
-                                                                            alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"
-                                                                            onmouseover="Tip('{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}')"
-                                                                            onmouseout="UnTip()">
-                                                                            </img></a>
+                                    	<a href='./main.php?p={$p}&o=hak&cmd=14&host_name={$h.host_name|urlencode}&en={$en_acknowledge[$host_data.problem_has_been_acknowledged]}'>
+                                        	<img src={$img_en[$host_data.problem_has_been_acknowledged]}
+                                        		alt="{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}"
+	                                            onmouseover="Tip('{$en_acknowledge_text[$host_data.problem_has_been_acknowledged]}')"
+    	                                        onmouseout="UnTip()">
+        	                                </img>
+										</a>
 									</td>
 								</tr>
 							{/if}

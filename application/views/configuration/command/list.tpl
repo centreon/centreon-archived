@@ -1,0 +1,11 @@
+{extends file="../../viewLayout.tpl"}
+
+{block name="title"}Command{/block}
+
+{block name="content"}
+    {datatable object='Command' objectAddUrl='/configuration/command/add'}
+{/block}
+
+{block name="javascript-bottom" append}
+    {datatablejs object='Command' objectUrl='/configuration/command/list'}
+{/block}

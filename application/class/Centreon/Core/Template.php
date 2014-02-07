@@ -58,7 +58,13 @@ class Template extends \Smarty
      *
      * @var array 
      */
-    private $jsResources;
+    private $jsTopResources;
+    
+    /**
+     *
+     * @var array 
+     */
+    private $jsBottomResources;
     
     /**
      *
@@ -70,16 +76,17 @@ class Template extends \Smarty
      * 
      * @param string $newTemplateFile
      */
-    public function __construct($newTemplateFile = "", $enableCaching = 0)
+    public function __construct($newTemplateFile = '', $enableCaching = 0)
     {
         $this->templateFile = $newTemplateFile;
         $this->caching = $enableCaching;
         
         $this->cssResources = array();
-        $this->jsResources = array();
+        $this->jsTopResources = array();
+        $this->jsBottomResources = array();
         $this->buildExclusionList();
-        $this->initConfig();
         parent::__construct();
+        $this->initConfig();
     }
     
     /**
@@ -91,13 +98,42 @@ class Template extends \Smarty
         $di = \Centreon\Core\Di::getDefault();
         $config = $di->get('config');
         
-        $this->template_dir = $config->get('template', 'templateDir');
-        $this->compile_dir = $config->get('template', 'compileDir');
-        $this->config_dir = $config->get('template', 'configDir');
-        $this->cache_dir = $config->get('template', 'cacheDir');
+        // Fixed configuration
+        $appPath = realpath(__DIR__ . '/../../../');
+        $this->setTemplateDir($appPath . '/views/');
+        $this->setConfigDir('');
+        $this->addPluginsDir($appPath . '/class/Smarty/');
         
-        $this->compile_check = true;
-        $this->force_compile = true;
+        // Custom configuration
+        $this->setCompileDir($config->get('template', 'compile_dir'));
+        $this->setCacheDir($config->get('template', 'cache_dir'));
+        
+        // additional plugin-dir set by user
+        $this->addPluginsDir($config->get('template', 'plugins_dir'));
+        
+        if ($config->get('template', 'debug')) {
+            $this->compile_check = true;
+            $this->force_compile = true;
+            $this->setTemplateDir($config->get('template', 'template_dir'));
+        }
+    }
+
+    /**
+     * Load statics file (css/js)
+     *
+     * jQuery, bootstrap, font-awesome and centreon
+     */
+    public function initStaticFiles()
+    {
+        /* Load css */
+        $this->addCss('bootstrap.min.css');
+        $this->addCss('font-awesome.min.css');
+        $this->addCss('centreon.css');
+        /* Load javascript */
+        $this->addJs('jquery.min.js');
+        $this->addJs('bootstrap.min.js');
+        $this->addJs('jquery.ba-resize.js');
+        $this->addJs('centreon.functions.js');
     }
     
     /**
@@ -107,7 +143,8 @@ class Template extends \Smarty
     {
         $this->exclusionList = array(
             'cssFileList',
-            'jsFileList'
+            'jsTopFileList',
+            'jsBottomFileList'
         );
     }
     
@@ -115,21 +152,41 @@ class Template extends \Smarty
      * 
      * @throws \Centreon\Exception If the template file is not defined
      */
-    public function display()
+    public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
     {
         if ($this->templateFile === "") {
-            throw new Exception ("Template file missing", 404);
+            $this->templateFile = $template;
         }
         $this->loadResources();
-        parent::display($this->templateFile);
+        parent::display($this->templateFile, $cache_id, $compile_id, $parent);
+    }
+    
+    /**
+     * 
+     * @throws \Centreon\Exception If the template file is not defined
+     */
+    public function fetch($template = null, $cache_id = null, $compile_id = null,
+                            $parent = null, $display = false,
+                            $merge_tpl_vars = true, $no_output_filter = false)
+    {
+        if ($this->templateFile === "") {
+            $this->templateFile = $template;
+        }
+        $this->loadResources();
+        return parent::fetch($this->templateFile, $cache_id, $compile_id,
+                                $parent, $display, $merge_tpl_vars,
+                                $no_output_filter
+        );
     }
     
     /**
      * 
      */
-    private function loadResources() {
+    private function loadResources()
+    {
         parent::assign('cssFileList', $this->cssResources);
-        parent::assign('jsFileList', $this->jsResources);
+        parent::assign('jsTopFileList', $this->jsTopResources);
+        parent::assign('jsBottomFileList', $this->jsBottomResources);
     }
     
     /**
@@ -138,20 +195,42 @@ class Template extends \Smarty
      */
     public function addCss($fileName)
     {
+        if ($this->isStaticFileExist('css', $fileName)) {
+            throw new Exception(_('The given file does not exist'));
+        }
+        
         if (!in_array($fileName, $this->cssResources)) {
             $this->cssResources[] = $fileName;
         }
+        
+        return $this;
     }
     
     /**
      * 
      * @param string $fileName Javascript file to add
      */
-    public function addJs($fileName)
+    public function addJs($fileName, $loadingLocation = 'bottom')
     {
-        if (!in_array($fileName, $this->jsResources)) {
-            $this->jsResources[] = $fileName;
+        if ($this->isStaticFileExist('js', $fileName)) {
+            throw new Exception(_('The given file does not exist'));
         }
+        
+        switch(strtolower($loadingLocation)) {
+            case 'bottom':
+            default:
+                $jsArray = 'jsBottomResources';
+                break;
+            case 'top':
+                $jsArray = 'jsTopResources';
+                break;
+        }
+        
+        if (!in_array($fileName, $this->$jsArray)) {
+            $this->{$jsArray}[] = $fileName;
+        }
+        
+        return $this;
     }
 
     /**
@@ -160,11 +239,46 @@ class Template extends \Smarty
      * @param mixed $varValue Value of the variable to add
      * @throws \Centreon\Exception If variable name is reserved
      */
-    public function assign($varName, $varValue)
+    public function assign($varName, $varValue = null, $nocache = false)
     {
         if (in_array($varName, $this->exclusionList)) {
-            throw new Exception('This variable name is reserved', 403);
+            throw new \Centreon\Core\Exception(_('This variable name is reserved'));
         }
-        parent::assign($varName, $varValue);
+        parent::assign($varName, $varValue, $nocache);
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param string $type
+     * @param string $filename
+     * @return boolean
+     * @throws \Centreon\Core\Exception
+     */
+    private function isStaticFileExist($type, $filename)
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $config = $di->get('config');
+        $basePath = trim($config->get('global', 'base_path'), '/');
+        
+        switch(strtolower($type)) {
+            case 'css':
+                $staticFilePath = trim($config->get('static_file', 'css_path'), '/');
+                break;
+            case 'js':
+                $staticFilePath = trim($config->get('static_file', 'js_path'), '/');
+                break;
+            case 'img':
+                $staticFilePath = trim($config->get('static_file', 'img_path'), '/');
+                break;
+            default:
+                throw new Exception(_('The given filetype is not supported'));
+        }
+        
+        if (!file_exists($basePath.'/'.$staticFilePath.'/'.$filename)) {
+            return false;
+        }
+        
+        return true;
     }
 }

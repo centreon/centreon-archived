@@ -89,20 +89,26 @@ class Bootstrap
     private function initDatabase()
     {
         $config = $this->config;
-        $this->di->set('db_centreon', function () use ($config) {
-            return new \Centreon\Core\Db(
-                $config->get('db_centreon', 'dsn'),
-                $config->get('db_centreon', 'username'),
-                $config->get('db_centreon', 'password')
-            );
-        });
-        $this->di->set('db_storage', function () use ($config) {
-            return new \Centreon\Core\Db(
-                $config->get('db_storage', 'dsn'),
-                $config->get('db_storage', 'username'),
-                $config->get('db_storage', 'password')
-            );
-        });
+        $this->di->set(
+            'db_centreon',
+            function () use ($config) {
+                return new \Centreon\Core\Db(
+                    $config->get('db_centreon', 'dsn'),
+                    $config->get('db_centreon', 'username'),
+                    $config->get('db_centreon', 'password')
+                );
+            }
+        );
+        $this->di->set(
+            'db_storage',
+            function () use ($config) {
+                return new \Centreon\Core\Db(
+                    $config->get('db_storage', 'dsn'),
+                    $config->get('db_storage', 'username'),
+                    $config->get('db_storage', 'password')
+                );
+            }
+        );
     }
 
     /**
@@ -110,8 +116,18 @@ class Bootstrap
      */
     private function initCache()
     {
-        $cache = Cache::load($this-config);
+        $cache = Cache::load($this->config);
         $this->di->setShared('cache', $cache);
+        
+        //\Centreon\Repository\ServiceRepository::loadIconImage();
+    }
+
+    /**
+     * Load configuration from database
+     */
+    private function initConfigFromDb()
+    {
+        $this->di->get('config')->loadFromDb();
     }
 
     /**
@@ -119,9 +135,12 @@ class Bootstrap
      */
     private function initActionHooks()
     {
-        $this->di->set('action_hooks', function () {
-            return new \Evenement\EventEmitter();
-        });
+        $this->di->set(
+            'action_hooks',
+            function () {
+                return new \Evenement\EventEmitter();
+            }
+        );
         Hook::initActionListeners();
     }
 
@@ -130,8 +149,41 @@ class Bootstrap
      */
     private function initTemplate()
     {
-        $this->di->setShared('template', function () {
-            return new Template();
+        $this->di->set(
+            'template',
+            function () {
+                $tmpl = new Template();
+                $tmpl->initStaticFiles();
+                return $tmpl;
+            }
+        );
+    }
+
+    /**
+     * Init menus
+     */
+    private function initMenus()
+    {
+        $this->di->set(
+            'menu', 
+            function() {
+                return new Menu();
+            }
+        );
+    }
+
+    /**
+     * Init routes
+     */
+    private function initRoutes()
+    {
+        $this->di->set('router', function() {
+            $router = new \Centreon\Core\Router();
+            $router->parseRoutes(
+                '\\Controllers',
+                realpath(__DIR__ . '/../../..//controllers/')
+            );
+        return $router;
         });
     }
 }

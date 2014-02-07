@@ -53,13 +53,20 @@ class Cache
      */
     public static function load($config)
     {
-        $cacheType = $config->get('cache', 'type');
+        $cacheType = null;
+        if ($config->get('cache', 'enabled')) {
+            $cacheType = $config->get('cache', 'type');
+        }
         switch ($cacheType) {
             case 'apc':
                 $driver = new \Desarrolla2\Cache\Adapter\Apc();
                 break;
-            case 'memcached':
+            case 'memcache':
                 $driver = new \Desarrolla2\Cache\Adapter\MemCache();
+                foreach ($config->get('cache', 'servers') as $server) {
+                    list($serverHost, $serverPort) = explode(':', $server);
+                    $driver->addServer($serverHost, $serverPort);
+                }
                 break;
             case null:
             default:

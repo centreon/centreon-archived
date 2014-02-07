@@ -19,6 +19,8 @@ class DiTest extends \PHPUnit_Framework_TestCase
         $obj = new \StdClass();
         $di->setShared('test2', $obj);
         $this->assertSame($obj, $di->get('test2'));
+        $di->set('test3', $obj, true);
+        $this->assertSame($obj, $di->get('test3'));
     }
 
     public function testSet()
@@ -34,9 +36,28 @@ class DiTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('String', $di->get('testClosure'));
     }
 
+    public function testGetBadName()
+    {
+        $di = new Di();
+        $this->setExpectedException('\Centreon\Core\Exception', "The service injector is not defined.");
+        $di->get('no_service');
+    }
+
+    public function testGetBadServiceType()
+    {
+        $di = new Di();
+        $di->set('badservice', array());
+        $this->setExpectedException('\Centreon\Core\Exception', "Bad type of service");
+        $di->get('badservice');
+    }
+
     public function testInstance()
     {
         $di = new Di();
         $this->assertSame($di, Di::getDefault());
+        $di2 = new Di();
+        $this->assertNotSame($di2, Di::getDefault());
+        Di::setDefault($di2);
+        $this->assertSame($di2, Di::getDefault());
     }
 }
