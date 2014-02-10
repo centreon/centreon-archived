@@ -11,8 +11,8 @@ Ces périodes temporelles servent à activer les fonctionnalités de l'ordonnanc
 
 Les périodes temporelles s'appliquent à deux types d'actions :
 
- *	L'exécution des commandes de vérification
- *	L'envoi de notifications
+*	L'exécution des commandes de vérification
+*	L'envoi de notifications
 
 *************
 Configuration
@@ -23,25 +23,25 @@ La configuration des périodes temporelles se déroule dans **Configuration** ==
 Options basiques
 ----------------
 
- *	Les champs **Nom de la période temporelle** et **Alias** définissent respectivement le nom et l'alias de la période temporelle
- *	Les champs appartenant à la sous-catégorie **Période de temps** définissent les jours de semaine pour lesquels il est nécessaire de définir des plages horaires
- *	Le tableau **Exceptions** permet d'inclure des jours exclus de la période de temps
+*	Les champs **Nom de la période temporelle** et **Alias** définissent respectivement le nom et l'alias de la période temporelle
+*	Les champs appartenant à la sous-catégorie **Période de temps** définissent les jours de semaine pour lesquels il est nécessaire de définir des plages horaires
+*	Le tableau **Exceptions** permet d'inclure des jours exclus de la période de temps
 
 Syntaxe d'une période de temps
 ------------------------------
 
 Lors de la création d'une période temporelle, les caractères suivants permettent de définir les périodes temporelles :
 
- *	Le caractère ":" sépare les heures des minutes. Exemple : HH:MM
- *	Le caractère "-" indique une continuité entre deux horaires
- *	Le caractère "," permet de séparer deux plages horaires
+*	Le caractère ":" sépare les heures des minutes. Exemple : HH:MM
+*	Le caractère "-" indique une continuité entre deux horaires
+*	Le caractère "," permet de séparer deux plages horaires
 
 Quelques exemples :
 
- *	24 heures sur 24 et 7 jours sur 7 jours : **00:00-24:00** (à appliquer à tous les jours)
- *	De 08h00 à 12h00 et de 14h00 à 18h45 les jours de la semaine :  08:00-12:00,14:00-18:45 (à entrer au niveau des jours de semaines uniquement
+*	24 heures sur 24 et 7 jours sur 7 jours : **00:00-24:00** (à appliquer à tous les jours)
+*	De 08h00 à 12h00 et de 14h00 à 18h45 les jours de la semaine :  08:00-12:00,14:00-18:45 (à entrer au niveau des jours de semaines uniquement)
 
-[CAPTURE D'ECRAN DE LA PAGE DE CONFIGURATION NECESSAIRE]
+[ TODO CAPTURE D'ECRAN DE LA PAGE DE CONFIGURATION NECESSAIRE]
 
 Les exceptions
 --------------
@@ -50,13 +50,13 @@ Les exceptions permettent d'inclure à la plage temporaire des jours exceptionne
 
 Exemple : Un administrateur souhaite définir une période temporelle qui regroupe les heures de fermeture du bureau c'est à dire :
 
- *	De 18h00 à 07h59 les jours de semaines
- *	24 heures sur 24 les week end
- *	Les jours fériés, jours de fermeture exceptionnel
+*	De 18h00 à 07h59 les jours de semaines
+*	24 heures sur 24 les week end
+*	Les jours fériés, jours de fermeture exceptionnel
 
 Afin de pouvoir définir les jours fériés ainsi que les jours de fermeture exceptionnel il est nécessaire d'utiliser les exceptions.
 
-Pour ajouter une exception, cliquez sur [METTRE LE BOUTON].
+Pour ajouter une exception, cliquez sur [ TODO METTRE LE BOUTON].
 Par journée exceptionnelle, vous devez définir une plage horaire. Le tableau ci-dessous présente quelques exemples possibles :
 
 +-----------------------+-------------------------+-----------------------------------------------------------------+
@@ -83,7 +83,7 @@ Options avancées
 Au sein des options avancées, il est possible d'inclure ou d'exclure des périodes à la période temporelle.
 Exemple d'application. Prenons deux périodes temporelles :
 
- *	Une qui est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
- *	Une autre qui regroupe les horaires d'ouvertures du bureau appelé **working_hours**
+*	Une qui est définie 24 heures sur 24 / 7 jours sur 7 appelé **24x7**
+*	Une autre qui regroupe les horaires d'ouvertures du bureau appelé **working_hours**
 
 Pour obtenir les horaires de fermeture du bureau, je n'ai qu'à créer une période temporelle dans laquelle j'inclus la plage **24x7** et pour laquelle j'exclus la plage **working_hours**.

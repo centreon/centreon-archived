@@ -12,8 +12,8 @@ L'ajout d'un nouvel objet se fait via l'instruction **Ajouter** à coté du menu
 
 Pour supprimer un objet :
 
- #.	Sélectionnez le ou les objets que vous souhaitez supprimer en cochant la ou les cases près du nom de celui-ci
- #.	Dans le menu **More actions...** cliquez sur **Supprimer**
+#.	Sélectionnez le ou les objets que vous souhaitez supprimer en cochant la ou les cases près du nom de celui-ci
+#.	Dans le menu **More actions...** cliquez sur **Supprimer**
 
 Attention : La suppression d'un objet est définitive. Si vous avez supprimer un objet par accident, il vous faudra le recréer.
 De même, la suppression d'un objet supprime automatiquement tous les objets qui sont liés à lui.
@@ -31,9 +31,9 @@ Principe
 La duplication d'un objet permet de copier celui-ci afin de pouvoir réutiliser ses attributs pour la création d'un nouvel objet.
 Exemple : J'ai 10 serveurs web identiques à superviser :
 
- *	J'ajoute le premier serveur web avec tous les attributs nécessaires
- *	Je duplique cet hôte en 9 fois
- *	Je n'ai plus qu'à changer les noms d'hôtes et les adresses IP de chaque duplication pour les adapter au 9 autres serveurs web à superviser
+*	J'ajoute le premier serveur web avec tous les attributs nécessaires
+*	Je duplique cet hôte en 9 fois
+*	Je n'ai plus qu'à changer les noms d'hôtes et les adresses IP de chaque duplication pour les adapter au 9 autres serveurs web à superviser
 
 Grâce à cette méthode, je n'ai plus la peine de recréer chaque hôte.
 
@@ -42,14 +42,14 @@ Pratique
 
 Pour dupliquer un hôte :
 
- 1.	Sélectionnez l'hôte que vous souhaitez dupliquer
- 2.	Dans la colonne **Options**, entrez le nombre de duplication que vous souhaitez obtenir
+1.	Sélectionnez l'hôte que vous souhaitez dupliquer
+2.	Dans la colonne **Options**, entrez le nombre de duplication que vous souhaitez obtenir
  
-[METTRE UNE CAPTURE D'ECRAN avec le champ Options au dessus de 1] 
+[ TODO METTRE UNE CAPTURE D'ECRAN avec le champ Options au dessus de 1] 
 
- 3.	Dans le menu **More actions...** cliquez sur **Dupliquer**
+3.	Dans le menu **More actions...** cliquez sur **Dupliquer**
 
-[METTRE UNE CAPTURE D'ECRAN des objets dupliqués]
+[ TODO METTRE UNE CAPTURE D'ECRAN des objets dupliqués]
 
 *****************
 Changement massif
@@ -68,13 +68,13 @@ Pratique
 
 Pour effectuer un changement massif :
 
- #.	Sélectionnez les objets que vous souhaitez modifier
- #.	Dans le menu **More actions...** cliquez sur **Changement massif**
+#.	Sélectionnez les objets que vous souhaitez modifier
+#.	Dans le menu **More actions...** cliquez sur **Changement massif**
 
 La fenêtre de changement s'ouvre, il existe deux types de changements :
 
- *	Incrémentale signifie que la modification va s'ajouter aux options déjà existante
- *	Remplacement signifie que la modification va écraser les options déjà existantes
+*	Incrémentale signifie que la modification va s'ajouter aux options déjà existante
+*	Remplacement signifie que la modification va écraser les options déjà existantes
 
 ******************
 Activer/Désactiver
@@ -91,11 +91,11 @@ Pratique
 
 Pour activer/désactiver un objet :
 
- #.	Sélectionnez les objets que vous souhaitez modifier
- #.	Dans le menu **More actions...** cliquez sur Activer/Désactiver
+#.	Sélectionnez les objets que vous souhaitez modifier
+#.	Dans le menu **More actions...** cliquez sur Activer/Désactiver
 
 Il est également possible d'activer ou de désactiver un hôte via le champ Statut de l'objet (voir la fiche de l'objet).
 Ou en utilisant les icônes suivantes :
 
- *	[METTRE L'IMAGE] pour activer
- *	[METTRE L'IMAGE] pour désactiver
+*	[ TODO METTRE L'IMAGE] pour activer
+*	[ TODO METTRE L'IMAGE] pour désactiver

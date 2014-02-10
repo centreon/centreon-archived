@@ -24,9 +24,9 @@ Le tableau suivant compare CES 2.2 à CES 3.0 :
 
 La liste des nouvelles fonctionnalités est disponible aux adresses suivantes :
 
- *	`Forge Centreon <https://forge.centreon.com/projects/centreon/roadmap>`_
- *	`Forge Centreon Engine <https://forge.centreon.com/projects/centreon-engine/roadmap>`_
- *	`Forge Centreon Broker <https://forge.centreon.com/projects/centreon-broker/roadmap>`_
+*	`Forge Centreon <https://forge.centreon.com/projects/centreon/roadmap>`_
+*	`Forge Centreon Engine <https://forge.centreon.com/projects/centreon-engine/roadmap>`_
+*	`Forge Centreon Broker <https://forge.centreon.com/projects/centreon-broker/roadmap>`_
 
 Pourquoi choisir Centreon Engine et Broker ?
 ============================================
@@ -40,17 +40,17 @@ Meilleure intégration à Centreon
 --------------------------------
 L'interface de Centreon est de plus en plus orienté Centreon Engine/Centreon Broker. Quelques exemples :
 
- *	Il existe un assistant de configuration pour Centreon Broker
- *	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
- *	[AUTRES ARGUMENTS ??]
+*	Il existe un assistant de configuration pour Centreon Broker
+*	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
+*	[AUTRES ARGUMENTS ??]
 
 Nouvelles fonctionnalités
 -------------------------
 Plusieurs nouvelles fonctionnalités font leur apparitions avec Centreon Broker :
 
- *	Possibilité de chiffrer les données de supervision qui remontent vers le serveur Central
- *	Possibilité de compresser les données de supervision afin de ne pas surcharger la bande passante
- *	Utilisation d'un nouveau protocole d'encodage des données (Le protocole BBDO) plus performant que le protocole NDO
+*	Possibilité de chiffrer les données de supervision qui remontent vers le serveur Central
+*	Possibilité de compresser les données de supervision afin de ne pas surcharger la bande passante
+*	Utilisation d'un nouveau protocole d'encodage des données (Le protocole BBDO) plus performant que le protocole NDO
  
 **********
 Pré-requis
@@ -88,31 +88,31 @@ Etape 2 : Choix de la langue
 
 Cliquez sur **Next**, choisissez votre langue et cliquez sur **Next**.
 
-[PLACER LA CAPTURE D'ECRAN]
+[ TODO PLACER LA CAPTURE D'ECRAN]
 
 Sélectionnez le clavier utilisé par votre système puis cliquez sur **Suivant**.
 
-[METTRE CAPTURE D'ECRAN]
+[ TODO METTRE CAPTURE D'ECRAN]
 
 Etape 3 : Configuration générale
 ================================
 
 En fonction du type de stockage désiré, choisissez les options nécessaires pour disposer du partitionnement qui vous convient le mieux.
 
-[CAPTURE D'ECRAN]
+[ TODO CAPTURE D'ECRAN]
 
 Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
 
 Sélectionnez la carte réseau que vous souhaitez configurer et rendez-vous dans l'onglet "Paramètres IPv4" ou "Paramètres IPv6" (en fonction du besoin) 
 afin de configurer vos adresses IP. Cliquez sur **Appliquer...** afin d'enregistrer les modifications.
 
-[METTRE UNE CAPTURE D'ECRAN DE l'ONGLET "Paramètres IPv4"]
+[ TODO METTRE UNE CAPTURE D'ECRAN DE l'ONGLET "Paramètres IPv4"]
 
 Cliquez sur **Fermer** puis sur **Suivant** afin de continuer.
 
 Sélectionnez votre fuseau horaire puis cliquez sur **Suivant**.
 
-[METTRE UNE CAPTURE D'ECRAN]
+[ TODO METTRE UNE CAPTURE D'ECRAN]
 
 Entrez le mot de passe root voulu, puis cliquez sur **Suivant**.
 
@@ -126,12 +126,12 @@ Choix du type de serveur
 
 Il est possible de choisir différentes options à la question **Which server type would you like to install ?** :
 
-[METTRE UNE CAPTURE D'ECRAN]
+[ TODO METTRE UNE CAPTURE D'ECRAN]
 
- *	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
- *	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
- *	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
- *	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
+*	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
+*	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
+*	Poller server : Installe le serveur satellite (ordonnanceur et broker uniquement)
+*	Database server : Installe le serveur de base de données (utilisé en complément avec l'option **Central server without database**)
 
 Dans notre cas, nous allons choisir l'option **Centreon Server with database**.
 
@@ -142,7 +142,7 @@ Lors du choix de l'ordonnanceur et du broker il est possible de choisir entre le
 
 Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Broker**.
 
-[METTRE UNE CAPTURE D'ECRAN]
+[ TODO METTRE UNE CAPTURE D'ECRAN]
 
 Une fois toutes ces options choisies, l'installation se lance. Lorsque l'installation est terminée, le serveur redémarre automatiquement.
 
@@ -157,20 +157,20 @@ Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centr
 L'assistant de fin d'installation de Centreon s'affiche. Cliquez sur **Next** jusqu'à arrivé au choix du moteur de supervision.
 Choisissez l'option **centreon-engine**. 
 
-[ METTRE UNE CAPTURE D'ECRAN DE MONITORING ENGINE INFORMATION ]
+[ TODO METTRE UNE CAPTURE D'ECRAN DE MONITORING ENGINE INFORMATION ]
 
 Cliquez sur **Next**. Lors du choix du broker, choisissez **centreon-broker**.
 
-[ METTRE UNE CAPTURE D'ECRAN DE BROKER MODULE INFORMATION ]
+[ TODO METTRE UNE CAPTURE D'ECRAN DE BROKER MODULE INFORMATION ]
 
 Cliquez sur **Next**. Définissez les informations concernant l'utilisateur admin. 
 
-[ METTRE UNE CAPTURE D'ECRAN]
+[ TODO METTRE UNE CAPTURE D'ECRAN]
 
 Cliquez sur **Next**. Par défaut, le serveur localhost est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
 Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon.
 
-[METTRE UNE CAPTURE D'ECRAN]
+[ TODO METTRE UNE CAPTURE D'ECRAN]
 
 Cliquez sur **Next**.
 
@@ -219,7 +219,7 @@ Dans un premier temps, il est nécessaire de passer l'interface en version fran�
 6.	Cliquez sur **Save**
 7.	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
 
-[METTRE UNE CAPTURE D'ECRAN]
+[ TODO METTRE UNE CAPTURE D'ECRAN]
 
 Démarrer la supervision
 =======================
@@ -244,14 +244,14 @@ Découverte de l'interface web
 
 L'interface web de Centreon est composé de plusieurs menus, chaque menu a une fonction bien précise :
 
-[METTRE UNE CAPTURE D'ECRAN DES MENUS]
+[ TODO METTRE UNE CAPTURE D'ECRAN DES MENUS]
 
- *	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
- *	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différés au travers de la visualisation des logs
- *	Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
- *	Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
- *	Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
- *	Le menu **Administration** permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
+*	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
+*	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différés au travers de la visualisation des logs
+*	Le menu **Vues** permet de visualiser et de configurer les graphiques de performances pour chaque élément du système d'informations
+*	Le menu **Rapports** permet de visualiser de manière intuitive (via des diagrammes) l'évolution de la supervision sur une période donnée
+*	Le menu **Configuration** permet de configurer l'ensemble des éléments supervisés ainsi que l'infrastructure de supervision
+*	Le menu **Administration** permet de configurer l'interface web Centreon ainsi que de visualiser l'état général des serveurs
 
 Avant d'aller plus loin
 =======================
