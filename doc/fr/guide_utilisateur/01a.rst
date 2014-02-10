@@ -177,20 +177,27 @@ Cliquez sur **Next**.
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
 
- 1.	Connectez vous avec l'utilisateur root sur votre serveur
- 2.	Editez le fichier suivant ::
+1.	Connectez vous avec l'utilisateur root sur votre serveur
+2.	Editez le fichier suivant 
+
+::
 
 	/etc/my.cnf
 
- 3.	Ajoutez les lignes suivantes au fichier :: 
+3.	Ajoutez les lignes suivantes au fichier 
+
+:: 
 
 	[mysqld] 
-    innodb_file_per_table=1
-	
- 4.	Redémarrez le service mysql ::
+	innodb_file_per_table=1
+
+4.	Redémarrez le service mysql 
+
+::
 
 	/etc/init.d/mysql restart
- 5.	Cliquez sur **Refresh**
+
+5.	Cliquez sur **Refresh**
 
 Cliquez sur **Next** jusqu'à arrivé à l'étape **Installation finished**.
 
@@ -199,16 +206,18 @@ Configuration de base
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
- 1.	Logguez-vous en tant que root sur le serveur de supervision
- 2.	Installez le paquet français avec la commande suivante ::
+1.	Logguez-vous en tant que root sur le serveur de supervision
+2.	Installez le paquet français avec la commande suivante 
+
+::
 
 	yum -y install centreon-lang-fr_FR
-	
- 3.	Rendez-vous dans **Administration** ==> **Options**
- 4.	Dans le menu de gauche cliquez sur **My Account**
- 5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
- 6.	Cliquez sur **Save**
- 7.	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
+
+3.	Rendez-vous dans **Administration** ==> **Options**
+4.	Dans le menu de gauche cliquez sur **My Account**
+5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
+6.	Cliquez sur **Save**
+7.	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
 
 [METTRE UNE CAPTURE D'ECRAN]
 

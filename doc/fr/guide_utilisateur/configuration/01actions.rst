@@ -51,9 +51,9 @@ Pour dupliquer un hôte :
 
 [METTRE UNE CAPTURE D'ECRAN des objets dupliqués]
 
-****************
+*****************
 Changement massif
-****************
+*****************
 
 Principe
 --------
