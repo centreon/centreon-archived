@@ -2,7 +2,10 @@
 Les catégories
 ==============
 
-Les catégories sont utilisées afin de pouvoir définir des ACLs sur les hôtes et les services.
+Les catégories sont utilisées afin de pouvoir définir des ACLs sur les hôtes et les services. Le but est de pouvoir classer les hôtes ou les services au sein d'une même catégorie.
+
+Dans la version 2.4.x les niveaux de criticité étaient mis à part. A partir de la version 2.5.x, les niveaux de criticité sont liés à une catégorie.
+Un niveau de criticité est un indicateur permettant de définir la criticité d'un hôte ou d'un service. Le but est de pouvoir traiter les problèmes des hôtes ou des services par ordre de priorité.
 
 **********************
 Les catégories d'hôtes
