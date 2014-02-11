@@ -12,6 +12,7 @@ class CommandController extends \Centreon\Core\Controller
      *
      * @method get
      * @route /configuration/command
+     * @acl view
      */
     public function listAction()
     {

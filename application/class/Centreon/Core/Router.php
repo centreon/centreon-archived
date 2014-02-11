@@ -12,6 +12,13 @@ class Router extends \Klein\Klein
     const ROUTE_COMPILE_REGEX = '`(\\\?(?:/|\.|))(\[([^:\]]*+)(?::([^:\]]*+))?\])(\?|)`';
 
     /**
+     * Route info
+     * 
+     * @var array
+     */
+    protected $routes = array();
+
+    /**
      * Parse routes
      *
      * @param string $pref | class prefix
@@ -27,14 +34,18 @@ class Router extends \Klein\Klein
                         $controllerName = $pref.'\\'.$matches[1].'Controller';
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
-                            $this->respond(
-                                $data['method_type'],
-                                $baseUrl.$data['route'],
-                                function ($request, $response) use ($controllerName, $action) {
-                                    $obj = new $controllerName($request);
-                                    $obj->$action();
-                                }
-                            );
+                            $this->routes[] = $data;
+                            $acl = Di::getDefault()->getDefault()->get('acl');
+                            if ($acl->routeAllowed($data['route']), $data['acl']) {
+                                $this->respond(
+                                    $data['method_type'],
+                                    $baseUrl.$data['route'],
+                                    function ($request, $response) use ($controllerName, $action) {
+                                        $obj = new $controllerName($request);
+                                        $obj->$action();
+                                    }
+                                );
+                            }
                         }
                     } elseif (is_dir($dir . '/' . $dirname)) {
                         $this->parseRoutes($pref . '\\' . ucfirst($dirname), $dir . '/' . $dirname);
@@ -43,6 +54,16 @@ class Router extends \Klein\Klein
             }
             closedir($handle);
         }
+    }
+
+    /**
+     * Get routes
+     *
+     * @return array
+     */
+    public function getRoutes()
+    {
+        return $this->routes;
     }
 
     /**
