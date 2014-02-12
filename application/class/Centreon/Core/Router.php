@@ -16,7 +16,7 @@ class Router extends \Klein\Klein
      * 
      * @var array
      */
-    protected $routes = array();
+    protected $routesData = array();
 
     /**
      * Parse routes
@@ -34,8 +34,11 @@ class Router extends \Klein\Klein
                         $controllerName = $pref.'\\'.$matches[1].'Controller';
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
-                            $this->routes[] = $data;
+                            $this->routesData[] = $data;
                             $acl = Di::getDefault()->getDefault()->get('acl');
+                            if (!isset($data['acl'])) {
+                                $data['acl'] = "";
+                            }
                             if ($acl->routeAllowed($data['route'], $data['acl'])) {
                                 $this->respond(
                                     $data['method_type'],

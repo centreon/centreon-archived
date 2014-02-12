@@ -18,6 +18,7 @@ class Acl
      */
     public function __construct()
     {
+        /*
         $userId = "@todo";
         $sql = "SELECT route, permission 
             FROM acl_routes ar, acl_groups g, acl_group_contacts_relations r
@@ -28,6 +29,7 @@ class Acl
         $stmt = $db->prepare($sql);
         $stmt->execute(array($userId));
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+         */
     }
 
     /**
@@ -39,6 +41,7 @@ class Acl
      */
     public function routeAllowed($route, $requiredAccess)
     {
+        return true; // for dev purpose
         if ($this->isAdmin) {
             return true;
         }
