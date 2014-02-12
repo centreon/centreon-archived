@@ -302,7 +302,7 @@ class Form
         $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">&nbsp;'.
                         '<input '.'id="'.$inputElement['id'].'" '.
                         'type="'.$inputElement['type'].'" '.'name="'.$parentName.'" '.
-                        $value.'class="form-control" '.
+                        $value.' '.
                         '/>'.' '.$inputElement['label'].
                         '</label>';
         return $inputHtml;
@@ -328,7 +328,7 @@ class Form
     
     public function renderHtmlTextarea($inputElement)
     {
-        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        (isset($inputElement['value']) ? $value = $inputElement['value']:  $value = '');
         
         if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
             $inputElement['label'] = $inputElement['name'];
@@ -702,12 +702,13 @@ class Form
         if (isset($params['list']) && count($params['list'])) {
             $cbList = array();
             foreach ($params['list'] as $cb) {
+
                 $cbList[] = $this->formProcessor->createElement(
                     'radio',
                     $cb['name'],
                     $cb['label'],
-                    $value,
-                    $cb['label']
+                    $separators,
+                    $cb['value']
                 );
             }
             $cbg = $this->formProcessor->addGroup($cbList, $name, $label, $separators);
@@ -716,8 +717,8 @@ class Form
                 'radio',
                 $name,
                 $label,
-                $value,
-                $label
+                null,
+                $value
             );
         }
         return $cbg;
@@ -733,7 +734,7 @@ class Form
     public function addTextarea($name, $label)
     {
         $elem = $this->formProcessor
-                    ->addElement('textarea', $name, $this->template['textarea'])
+                    ->addElement('textarea', $name, $label, $this->template['textarea'])
                     ->updateAttributes(array('id'=>$name, 'label'=>$label));
         return $elem;
     }
@@ -1002,7 +1003,7 @@ class Form
         //$this->formProcessor->addFilter($field, array($this, $function));
     }
      
-    public function setDefaults($defaultValues, $filter)
+    public function setDefaults($defaultValues = null, $filter = null)
     {
        $this->formProcessor->setDefaults($defaultValues, $filter);
     }
