@@ -4,15 +4,12 @@
 
 {block name="content"}
     <div class="container">
-        <div class="row">
-            <form class="form-horizontal" role="form" {$form.attributes}>
-                {$form.name.html}
-                {$form.description.html}
-                {$form.command_line.html}
-                {$form.status.html}
-                {$form.hidden}
-                {$form.save_form.html}
-            </form>
-        </div>
+        {$form}
     </div>
+{/block}
+
+{block name="javascript-bottom" append}
+    <script>
+    {$formValidate}
+    </script>
 {/block}
