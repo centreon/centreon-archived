@@ -62,7 +62,7 @@ class Controller
                     } elseif (substr($str, 0, 7) == '@method') {
                         $method_type = strtoupper(substr($str, 7));
                         $tempo[$methodName]['method_type'] = trim($method_type);
-                    } elseif (substr($str, 0, 4, '@acl')) {
+                    } elseif (substr($str, 0, 4) == '@acl') {
                         $aclFlags = explode(",", trim(substr($str,4)));
                         $tempo[$methodName]['acl'] = Acl::convertAclFlags($aclFlags);
                     }
