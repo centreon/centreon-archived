@@ -36,7 +36,7 @@ class Router extends \Klein\Klein
                         foreach ($routesData as $action => $data) {
                             $this->routes[] = $data;
                             $acl = Di::getDefault()->getDefault()->get('acl');
-                            if ($acl->routeAllowed($data['route']), $data['acl']) {
+                            if ($acl->routeAllowed($data['route'], $data['acl']) {
                                 $this->respond(
                                     $data['method_type'],
                                     $baseUrl.$data['route'],
