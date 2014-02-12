@@ -49,8 +49,9 @@ abstract class Object
      */
     protected function getResult($sqlQuery, $sqlParams = array(), $fetchMethod = "fetchAll")
     {
-        $res = $this->db->query($sqlQuery, $sqlParams);
-        $result = $res->{$fetchMethod}();
+        $stmt = $this->db->prepare($sqlQuery);
+        $stmt->execute($sqlParams);
+        $result = $stmt->{$fetchMethod}();
         return $result;
     }
 
@@ -82,7 +83,8 @@ abstract class Object
         }
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
-            $this->db->query($sql, $sqlParams);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($sqlValues);
             return $this->db->lastInsertId($this->table, $this->primaryKey);
         }
         return null;
@@ -96,7 +98,8 @@ abstract class Object
     public function delete($objectId)
     {
         $sql = "DELETE FROM  $this->table WHERE $this->primaryKey = ?";
-        $this->db->query($sql, array($objectId));
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute(array($objectId));
     }
 
     /**
@@ -141,7 +144,8 @@ abstract class Object
         if ($sqlUpdate) {
             $sqlParams[] = $objectId;
             $sql .= $sqlUpdate . " WHERE $this->primaryKey = ?";
-            $this->db->query($sql, $sqlParams);
+            $stmt = $this->db->prepare($sql);
+            $stmt->execute($sqlParams);
         }
     }
 

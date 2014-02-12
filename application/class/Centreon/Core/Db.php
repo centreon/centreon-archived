@@ -96,4 +96,33 @@ class Db extends \PDO
         // @Todo emit event after
         return $nbRows;
     }
+
+    /**
+     * Builds a limit clause
+     *
+     * @param string $sql
+     * @param int $count
+     * @param int $offset
+     * @return string
+     */
+    public function limit($sql, $count, $offset)
+    {
+       return $sql . " LIMIT {$count} OFFSET {$offset}"; 
+    }
+
+    /**
+     * Returns last inserted id
+     *
+     * @param string $table
+     * @param string $primaryKey
+     * @return int
+     */
+    public function lastInsertId($table, $primaryKey)
+    {
+        $sql = "SELECT MAX({$primarykey}) AS last_id FROM {$table}";
+        $stmt = $this->prepare($sql);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        return $row['last_id'];
+    }
 }
