@@ -1,6 +1,6 @@
 <?php
 
-namespace \Models\Configuration;
+namespace Models\Configuration;
 
 /**
  * Used for interacting with Contact objects

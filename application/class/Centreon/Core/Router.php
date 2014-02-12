@@ -35,7 +35,7 @@ class Router extends \Klein\Klein
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
                             $this->routesData[] = $data;
-                            $acl = Di::getDefault()->getDefault()->get('acl');
+                            $acl = Di::getDefault()->get('acl');
                             if (!isset($data['acl'])) {
                                 $data['acl'] = "";
                             }
