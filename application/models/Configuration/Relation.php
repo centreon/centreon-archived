@@ -36,7 +36,7 @@ abstract class Relation
      */
     public function __construct()
     {
-        $this->db = Di::getDefault()->get('db_centreon');
+        $this->db = \Centreon\Core\Di::getDefault()->get('db_centreon');
     }
 
     /**

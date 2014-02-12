@@ -65,10 +65,17 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
 spl_autoload_register(function ($classname) use ($centreon_path) {
     $tmp = explode("\\", $classname);
     $myClassName = array_pop($tmp);
-    $path = strtolower(implode("/", $tmp));
+    $rawpath = implode("/", $tmp);
+    $path = strtolower($rawpath);
     $filename = $centreon_path . '/application/' . $path. '/' . $myClassName . '.php';
     if (file_exists($filename)) {
         require $filename;
+    } else {
+        $path = str_replace("Models", "models", $rawpath);
+        $filename = $centreon_path . '/application/' . $path. '/' . $myClassName . '.php';
+        if (file_exists($filename)) {
+            require $filename;
+        }
     }
 });
 
