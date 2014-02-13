@@ -27,7 +27,10 @@ function smarty_function_get_breadcrumb($params, $template)
     $stmt->closeCursor();
     if ($row !== false) {
         $parentId = $row['parent_id'];
-        $breadcrumb[] += $row['name'];
+	    $breadcrumb[] = array(
+		    'name' => $row['name'],
+            'url' => null
+        );
     } else {
         $route = dirname($route);
         $stmt = $db->prepare($queryFindRoute);
@@ -39,7 +42,7 @@ function smarty_function_get_breadcrumb($params, $template)
             return '';
         }
         $parentId = $row['parent_id'];
-        $breadcrumb[] += array(
+        $breadcrumb[] = array(
             'name' => $row['name'],
             'url' => null
         );
@@ -61,8 +64,9 @@ function smarty_function_get_breadcrumb($params, $template)
         ));
     }
     $nbLink = count($breadcrumb);
+    $string = '';
     for ($i = 0; $i < $nbLink; $i++) {
-        $string = '<li';
+        $string .= '<li';
         if ($i == $nbLink - 1) {
             $string .= ' class="active"';
         }
