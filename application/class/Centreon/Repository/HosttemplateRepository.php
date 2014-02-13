@@ -52,14 +52,14 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
      *
      * @var string
      */
-    public static $objectName = 'HostTemplate';
+    public static $objectName = 'Hosttemplate';
     
     /**
      *
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHostTemplate" type="checkbox">' => 'host_id',
+        '<input id="allHosttemplate" class="allHosttemplate" type="checkbox">' => 'host_id',
         'Name' => 'host_name',
         'Description' => 'host_alias',
         'IP Address / DNS' => 'host_address',

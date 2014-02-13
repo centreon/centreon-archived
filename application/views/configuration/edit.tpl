@@ -28,5 +28,10 @@
             });
             return false;
         });
+        
+        $(function () {
+            $('#formHeader a:first').tab('show')
+        });
+
     </script>
 {/block}

@@ -50,17 +50,19 @@
         "sSortable": "header"
     });
     
-    $('#all{$object}').click(function() {
+    $('.all{$object}').click(function() {
         if (this.checked) {
             $('.all{$object}Box').prop('checked', true);
+            $('.all{$object}').prop('checked', true);
         } else {
             $('.all{$object}Box').prop('checked', false);
+            $('.all{$object}').prop('checked', false);
         }
     });
     
     $(document).on('click', ".all{$object}Box", function() {
         if (this.checked === false) {
-            $('#all{$object}').prop('checked', false);
+            $('.all{$object}').prop('checked', false);
         }
     });
 

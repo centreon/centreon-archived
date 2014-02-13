@@ -224,20 +224,27 @@ class FormGenerator
         
         $htmlRendering .= '<form class="form-horizontal" role="form" '.$formElements['attributes'].'>';
         
+        $formRendering = '';
+        
+        $tabRendering = '<ul class="nav nav-tabs" id="formHeader">';
+        
         foreach ($this->formComponents as $sectionLabel=>$sectionComponents) {
-            $htmlRendering .= '<div>';
+            $tabRendering .= '<li><a href="#'.$sectionLabel.'" data-toggle="tab">'.$sectionLabel.'</a></li>';
+            $formRendering .= '<div>';
             foreach ($sectionComponents as $blockLabel=>$blockComponents) {
-                $htmlRendering .= '<div>';
+                $formRendering .= '<div>';
                 foreach($blockComponents as $component) {
-                    $htmlRendering .= $formElements[$component]['html'];
+                    $formRendering .= $formElements[$component]['html'];
                 }
-                $htmlRendering .= '</div>';
+                $formRendering .= '</div>';
             }
-            $htmlRendering .= '</div>';
+            $formRendering .= '</div>';
         }
         
-        $htmlRendering .= $formElements['hidden'];
-        $htmlRendering .= '</form></div>';
+        $tabRendering .= '</ul>';
+        
+        $formRendering .= $formElements['hidden'];
+        $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
         
         return $htmlRendering;
     }

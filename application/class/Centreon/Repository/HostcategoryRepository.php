@@ -59,7 +59,7 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHostcategory" type="checkbox">' => 'hc_id',
+        '<input id="allHostcategory" class="allHostcategory" type="checkbox">' => 'hc_id',
         'Name' => 'hc_name',
         'Alias' => 'hc_alias',
         'Status' => 'hc_activate'
