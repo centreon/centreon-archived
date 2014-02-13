@@ -1479,19 +1479,18 @@ function divideHostsToHost($service_id) {
 		/*
 		 *  Update on demand macros
 		 */
-		if (isset($_REQUEST['macroInput']) && 
-                        isset($_REQUEST['macroValue'])) {
-                    $service->insertMacro(
-                            $service_id,
-                            $_REQUEST['macroInput'],
-                            $_REQUEST['macroValue'],
-                            $_REQUEST['macroPassword']
-                            );
-                }
-
-                if (isset($ret['criticality_id']) && $ret['criticality_id']) {
-                    setServiceCriticality($service_id, $ret['criticality_id']);
-                }
+		if (isset($_REQUEST['macroInput']) && isset($_REQUEST['macroValue'])) {
+            $service->insertMacro(
+   	    	    $service_id,
+    	        $_REQUEST['macroInput'],
+            	$_REQUEST['macroValue'],
+				$_REQUEST['macroPassword'],
+				true
+    	    );
+        }
+        if (isset($ret['criticality_id']) && $ret['criticality_id']) {
+ 	       setServiceCriticality($service_id, $ret['criticality_id']);
+        }
 
 		$centreon->CentreonLogAction->insertLog("service", $service_id, getMyServiceName($service_id), "mc", $fields);
 	}
