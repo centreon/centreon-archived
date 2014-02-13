@@ -158,7 +158,13 @@ function alertMessage(msg, cls) {
 function alertClose() {
     var $alertBox = $('#flash-message'); 
     var $button = $alertBox.find('button.close');
+    var listClass = ['flash', 'alert', 'in', 'fade'];
     $alertBox.hide();
     $alertBox.text('');
     $alertBox.append($button);
+    $.each($alertBox[0].classList, function(k, v) {
+    	if (-1 === $.inArray(v, listClass)) {
+            $alertBox.removeClass(v);
+        }
+    });
 }
