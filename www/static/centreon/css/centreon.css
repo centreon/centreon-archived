@@ -209,6 +209,13 @@ aside {
     padding: 0;
 }
 
+/* Alert box */
+.content .flash {
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 /* Footer */
 
 .bottombar {
