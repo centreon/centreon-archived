@@ -123,9 +123,6 @@ class Menu
             if ($v['menu_id'] == $menuId) {
                 return $v;
             }
-            if (isset($v['children'])) {
-                return $this->getMenu($menuId, $v['children']);
-            }
         }
         return array();
     }
