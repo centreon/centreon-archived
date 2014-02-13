@@ -13,7 +13,7 @@
 LOCK TABLES `menus` WRITE;
 /*!40000 ALTER TABLE `menus` DISABLE KEYS */;
 
-INSERT INTO `menus` (`menu_id`, `name`, `parent_id`, `url`, `icon_class`, `icon`, `bgcolor`, ̀ is_module`, `menu_order`) VALUES
+INSERT INTO `menus` (`menu_id`, `name`, `parent_id`, `url`, `icon_class`, `icon`, `bgcolor`, `is_module`, `menu_order`) VALUES
 (1,'Configuration',NULL,NULL,'fa fa-gears',NULL,'#CCC',0,1),
 (2,'Commands',1,NULL,NULL,NULL,NULL,0,2),
 (3,'Hosts',1,NULL,NULL,NULL,NULL,0,1),

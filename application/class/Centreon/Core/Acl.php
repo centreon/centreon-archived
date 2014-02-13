@@ -18,7 +18,7 @@ class Acl
      */
     public function __construct()
     {
-        $userId = $_SESSION['user_id'];
+/*        $userId = $_SESSION['user_id'];
         $sql = "SELECT route, permission 
             FROM acl_routes ar, acl_groups g, acl_group_contacts_relations r
             WHERE ar.acl_group_id = g.acl_group_id
@@ -27,7 +27,7 @@ class Acl
         $db = Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare($sql);
         $stmt->execute(array($userId));
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);*/
     }
 
     /**
