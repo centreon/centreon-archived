@@ -13,6 +13,11 @@
   </nav>
 </aside>
 <div class="content" id="main">
+<div class="breadcrumb-bar">
+  <ol class="breadcrumb">
+    {get_breadcrumb}
+  </ol>
+</div>
 {block name="content"}
 {/block}
 </div>

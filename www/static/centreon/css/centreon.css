@@ -276,6 +276,18 @@ aside {
     margin-top: 10px;
 }
 
+/* Breadcrumb bar */
+.breadcrumb-bar {
+    font-size: 16px;
+    height: 38px;
+    background-color: #f8f8f8;
+    border-bottom: 1px solid #e7e7e7;
+}
+
+.breadcrumb {
+    background-color: transparent;
+}
+
 /* Datatable */
 .centreon_table {
     margin: 0 20px;
