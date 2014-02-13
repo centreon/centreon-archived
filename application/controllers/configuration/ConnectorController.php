@@ -33,7 +33,10 @@ class ConnectorController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/connector/list.tpl');
+        $tpl->assign('objectName', 'Connector');
+        $tpl->assign('objectAddUrl', '/configuration/connector/add');
+        $tpl->assign('objectListUrl', '/configuration/connector/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**
@@ -79,8 +82,7 @@ class ConnectorController extends \Centreon\Core\Controller
                 'command_line' => $givenParameters['command_line'],
                 'enabled' => $givenParameters['enabled'],
             );
-
-            //$connObj = new Connector();
+            
             $connObj = new \Models\Configuration\Connector();
             try {
                 $connObj->update($givenParameters['id'], $connector);
@@ -162,13 +164,14 @@ class ConnectorController extends \Centreon\Core\Controller
             $currentConnectorValues['enabled'] = '0';
         }
         
-        $myForm = new FormGenerator("/centreon-devel/configuration/connector/update");
+        $myForm = new FormGenerator("/configuration/connector/update");
         $myForm->setDefaultValues($currentConnectorValues);
         $myForm->addHiddenComponent('id', $requestParam['id']);
         
         // Display page
         $tpl->assign('form', $myForm->generate());
-        $tpl->assign('formValidate', $myForm->generateSubmitValidator());
-        $tpl->display('configuration/connector/edit.tpl');
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('validateUrl', '/configuration/connector/update');
+        $tpl->display('configuration/edit.tpl');
     }
 }

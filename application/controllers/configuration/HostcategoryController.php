@@ -29,7 +29,10 @@ class HostcategoryController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/hostcategory/list.tpl');
+        $tpl->assign('objectName', 'Hostcategory');
+        $tpl->assign('objectAddUrl', '/configuration/hostcategory/add');
+        $tpl->assign('objectListUrl', '/configuration/hostcategory/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**
