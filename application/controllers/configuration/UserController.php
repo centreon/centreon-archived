@@ -29,7 +29,10 @@ class UserController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/user/list.tpl');
+        $tpl->assign('objectName', 'User');
+        $tpl->assign('objectAddUrl', '/configuration/user/add');
+        $tpl->assign('objectListUrl', '/configuration/user/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**

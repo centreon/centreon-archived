@@ -59,7 +59,7 @@ class CommandRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allCommand" type="checkbox">' => 'command_id',
+        '<input id="allCommand" class="allCommand" type="checkbox">' => 'command_id',
         'Name' => 'command_name',
         'Command Line' => 'command_line',
         'Type' => 'command_type'

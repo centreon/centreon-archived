@@ -59,7 +59,7 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allServicecategory" type="checkbox">' => 'sc_id',
+        '<input id="allServicecategory" class="allServicecategory" type="checkbox">' => 'sc_id',
         'Name' => 'sc_name',
         'Alias' => 'sc_description',
         'Linked services' => '[NBOBJECT]',

@@ -59,7 +59,7 @@ class HostgroupRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allHostgroup" type="checkbox">' => 'hg_id',
+        '<input id="allHostgroup" class="allHostgroup" type="checkbox">' => 'hg_id',
         'Name' => 'hg_name',
         'Description' => 'hg_alias',
         'Status' => 'hg_activate'

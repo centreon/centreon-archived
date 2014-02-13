@@ -59,7 +59,7 @@ class UserRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allContact" type="checkbox">' => 'contact_id',
+        '<input id="allContact" class="allContact" type="checkbox">' => 'contact_id',
         'Alias / Login' => 'contact_name',
         'Full name' => 'contact_alias',
         'Email' => 'contact_email',

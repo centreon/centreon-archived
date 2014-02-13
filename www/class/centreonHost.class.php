@@ -484,11 +484,27 @@ class CentreonHost
      * @param int $hostId
      * @param array $macroInput
      * @param array $macroValue
+     * @param array $macroPassword
+     * @param bool $isMassiveChange
      * @return void
      */
-    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array()) {
-        $this->db->query("DELETE FROM on_demand_macro_host 
+    public function insertMacro($hostId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $isMassiveChange = false) {
+        if (false === $isMassiveChange) {
+            $this->db->query("DELETE FROM on_demand_macro_host 
                 WHERE host_host_id = ".$this->db->escape($hostId));
+        } else {
+            $macroList = "";
+            foreach ($macroInput as $v) {
+               $macroList .= "'\$_HOST".strtoupper($this->db->escape($v))."\$',";
+            }
+            if ($macroList) {
+                $macroList = rtrim($macroList, ",");
+                $this->db->query("DELETE FROM on_demand_macro_host
+                    WHERE host_host_id = ".$this->db->escape($hostId)."
+                    AND host_macro_name IN ({$macroList})"
+                );          
+            }
+        }
             
         $macros = $macroInput;
         $macrovalues = $macroValue;
@@ -497,7 +513,7 @@ class CentreonHost
             if ($value != "" && 
                 !isset($stored[strtolower($value)])) {
                 $this->db->query("INSERT INTO on_demand_macro_host (`host_macro_name`, `host_macro_value`, `is_password`, `host_host_id`) 
-                                VALUES ('\$_HOST". strtoupper($value) ."\$', '". $this->db->escape($macrovalues[$key]) ."', ".(isset($macroPassword[$key]) ? 1 : 'NULL') .", ". $hostId .")");
+                                VALUES ('\$_HOST". strtoupper($this->db->escape($value)) ."\$', '". $this->db->escape($macrovalues[$key]) ."', ".(isset($macroPassword[$key]) ? 1 : 'NULL') .", ". $this->db->escape($hostId) .")");
                 $stored[strtolower($value)] = true;
             }
         }

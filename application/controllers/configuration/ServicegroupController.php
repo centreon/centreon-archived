@@ -31,7 +31,10 @@ class ServicegroupController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/servicegroup/list.tpl');
+        $tpl->assign('objectName', 'Servicegroup');
+        $tpl->assign('objectAddUrl', '/configuration/servicegroup/add');
+        $tpl->assign('objectListUrl', '/configuration/servicegroup/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**

@@ -4,8 +4,16 @@ namespace Centreon\Core;
 
 class Controller
 {
+    /**
+     *
+     * @var type 
+     */
     protected $request;
 
+    /**
+     * 
+     * @param type $request
+     */
     public function __construct($request)
     {
         $this->init();

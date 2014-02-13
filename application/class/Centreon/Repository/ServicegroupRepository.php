@@ -59,7 +59,7 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allServicegroup" type="checkbox">' => 'sg_id',
+        '<input id="allServicegroup" class="allServicegroup" type="checkbox">' => 'sg_id',
         'Name' => 'sg_name',
         'Alias' => 'sg_alias',
         'Status' => 'sg_activate'

@@ -59,7 +59,7 @@ class ConnectorRepository extends \Centreon\Repository\Repository
      * @var array Default column for datatable
      */
     public static $datatableColumn = array(
-        '<input id="allConnector" type="checkbox">' => 'id',
+        '<input id="allConnector" class="allConnector" type="checkbox">' => 'id',
         'Name' => 'name',
         'Description' => 'description',
         'Command Line' => 'command_line',

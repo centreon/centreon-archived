@@ -29,7 +29,10 @@ class HostgroupController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/hostgroup/list.tpl');
+        $tpl->assign('objectName', 'Hostgroup');
+        $tpl->assign('objectAddUrl', '/configuration/hostgroup/add');
+        $tpl->assign('objectListUrl', '/configuration/hostgroup/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**

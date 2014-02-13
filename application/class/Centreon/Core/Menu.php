@@ -60,7 +60,7 @@ class Menu
     private function buildTree(array $elements, $parentId = 0) 
     {
         $branch = array();
-
+        $router = \Centreon\Core\Di::getDefault()->get('router');
         foreach ($elements as $element) {
             if ($element['parent_id'] == $parentId) {
                 $children = $this->buildTree($elements, $element['menu_id']);
@@ -68,6 +68,9 @@ class Menu
                     $element['children'] = $children;
                 } else {
                     $element['children'] = array();
+                }
+                if (false === is_null($element['url'])) {
+                    $element['url'] = $router->getPathFor($element['url']);
                 }
                 $branch[] = $element;
             }
