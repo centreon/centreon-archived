@@ -2,7 +2,9 @@
 
 namespace Controllers\Configuration;
 
-use \Centreon\Core\Form;
+use \Models\Configuration\Command,
+    \Centreon\Core\Form,
+    \Centreon\Core\Form\FormGenerator;
 
 class CommandController extends \Centreon\Core\Controller
 {
@@ -32,7 +34,10 @@ class CommandController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/command/list.tpl');
+        $tpl->assign('objectName', 'Command');
+        $tpl->assign('objectAddUrl', '/configuration/command/add');
+        $tpl->assign('objectListUrl', '/configuration/command/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**
@@ -64,7 +69,7 @@ class CommandController extends \Centreon\Core\Controller
      * Update a command
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/command/update
      */
     public function updateAction()
@@ -134,39 +139,32 @@ class CommandController extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $tpl = $di->get('template');
         
-        $form = new Form('commandForm');
-        $form->addText('name', _('Name'));
-        $form->addTextarea('command_line', _('Commande Line'));
-        $radios['list'] = array(
-            array(
-              'name' => 'Notification',
-              'label' => 'Notification',
-              'value' => '1'
-            ),
-            array(
-                'name' => 'Check',
-                'label' => 'Check',
-                'value' => '2'
-            ),
-            array(
-                'name' => 'Misc',
-                'label' => 'Misc',
-                'value' => '3'
-            ),
-            array(
-                'name' => 'Discovery',
-                'label' => 'Discovery',
-                'value' => '4'
-            ),
-          
+        $requestParam = $this->getParams('named');
+        $connObj = new Command();
+        $currentCommandValues = $connObj->getParameters($requestParam['id'], array(
+            'command_id',
+            'command_name',
+            'command_type',
+            'command_line',
+            'command_comment',
+            'enable_shell'
+            )
         );
-        $form->addRadio('command_type', _("Command type"), 'command_type', '&nbsp;', $radios);
-        $form->addCheckbox('enable_shell', _("Enable shell"));
-        $form->addTextarea('argument_description', _('Argument Description'));
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
+        
+        if (isset($currentCommandValues['enable_shell']) && is_numeric($currentCommandValues['enable_shell'])) {
+            $currentCommandValues['enable_shell'] = $currentCommandValues['enable_shell'];
+        } else {
+            $currentCommandValues['enable_shell'] = '0';
+        }
+        
+        $myForm = new FormGenerator('/configuration/command/update');
+        $myForm->setDefaultValues($currentCommandValues);
+        $myForm->addHiddenComponent('command_id', $requestParam['id']);
         
         // Display page
-        $tpl->display('configuration/command/edit.tpl');
+        $tpl->assign('form', $myForm->generate());
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('validateUrl', '/configuration/command/update');
+        $tpl->display('configuration/edit.tpl');
     }
 }

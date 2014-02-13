@@ -157,6 +157,10 @@ class FormGenerator
         $this->formHandler->addSubmit('save_form', _("Save"));
     }
     
+    /**
+     * 
+     * @param type $field
+     */
     private function addFieldToForm($field)
     {
         switch ($field['field_type']) {
@@ -187,15 +191,27 @@ class FormGenerator
                     $radioValues
                 );
                 break;
+                
+            case 'checkbox':
+                $this->formHandler->addCheckbox($field['field_name'], $field['field_label']);
+                break;
         }
     }
     
+    /**
+     * 
+     * @return type
+     */
     public function generate()
     {
         $finalHtml = $this->generateHtml();
         return $finalHtml;
     }
     
+    /**
+     * 
+     * @return string
+     */
     private function generateHtml()
     {
         $this->formHandler->setDefaults($this->formDefautls);
@@ -211,9 +227,11 @@ class FormGenerator
         foreach ($this->formComponents as $sectionLabel=>$sectionComponents) {
             $htmlRendering .= '<div>';
             foreach ($sectionComponents as $blockLabel=>$blockComponents) {
+                $htmlRendering .= '<div>';
                 foreach($blockComponents as $component) {
                     $htmlRendering .= $formElements[$component]['html'];
                 }
+                $htmlRendering .= '</div>';
             }
             $htmlRendering .= '</div>';
         }
@@ -226,36 +244,27 @@ class FormGenerator
     
     /**
      * 
+     * @return string
      */
-    public function generateSubmitValidator()
+    public function getName()
     {
-        $js = '$("#'.$this->formName.'").submit(function (event) {
-            $.ajax({
-                url: "'.$this->formRoute.'",
-                type: "POST",
-                data: $(this).serialize(),
-                context: document.body
-            })
-            .success(function(data, status, jqxhr) {
-                if (data === "success") {
-                    $("#formSuccess").css("display", "block");
-                    $("#formError").css("display", "none");
-                } else {
-                    $("#formError").css("display", "block");
-                    $("#formSuccess").css("display", "none");
-                }
-            });
-            return false;
-        });';
-        
-        return $js;
+        return $this->formName;
     }
     
+    /**
+     * 
+     * @param string $name
+     * @param string $value
+     */
     public function addHiddenComponent($name, $value)
     {
         $this->formHandler->addHidden($name, $value);
     }
     
+    /**
+     * 
+     * @param array $defaultValues
+     */
     public function setDefaultValues($defaultValues)
     {
         $this->formHandler->setDefaults($defaultValues);

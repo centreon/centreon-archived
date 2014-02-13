@@ -29,7 +29,10 @@ class ServicetemplateController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/servicetemplate/list.tpl');
+        $tpl->assign('objectName', 'Servicetemplate');
+        $tpl->assign('objectAddUrl', '/configuration/servicetemplate/add');
+        $tpl->assign('objectListUrl', '/configuration/servicetemplate/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**

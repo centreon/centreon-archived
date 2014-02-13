@@ -2,7 +2,9 @@
 
 namespace Controllers\Configuration;
 
-use \Centreon\Core\Form;
+use \Models\Configuration\Servicecategory,
+    \Centreon\Core\Form,
+    \Centreon\Core\Form\FormGenerator;
 
 class ServicecategoryController extends \Centreon\Core\Controller
 {
@@ -31,7 +33,10 @@ class ServicecategoryController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->display('configuration/servicecategory/list.tpl');
+        $tpl->assign('objectName', 'Servicecategory');
+        $tpl->assign('objectAddUrl', '/configuration/servicecategory/add');
+        $tpl->assign('objectListUrl', '/configuration/servicecategory/list');
+        $tpl->display('configuration/list.tpl');
     }
 
     /**
@@ -120,26 +125,30 @@ class ServicecategoryController extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $tpl = $di->get('template');
         
-        $form = new Form('servicecategoryForm');
-        $form->addText('name', _('Service Category Name'));
-        $form->addText('description', _('Service Category Description'));
-        $radios['list'] = array(
-            array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-            ),
-            array(
-                'name' => 'Disabled',
-                'label' => 'Disabled',
-                'value' => '0'
+        $requestParam = $this->getParams('named');
+        $scObj = new Servicecategory();
+        $currentServicecategoryValues = $scObj->getParameters($requestParam['id'], array(
+            'sc_id',
+            'sc_name',
+            'sc_description',
+            'sc_activate'
             )
         );
-        $form->addRadio('servicecategory_status', _("Status"), 'servicecategory_type', '&nbsp;', $radios);
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
+        
+        if (isset($currentServicecategoryValues['sc_activate']) && is_numeric($currentServicecategoryValues['sc_activate'])) {
+            $currentServicecategoryValues['sc_activate'] = $currentServicecategoryValues['sc_activate'];
+        } else {
+            $currentServicecategoryValues['sc_activate'] = '0';
+        }
+        
+        $myForm = new FormGenerator("/configuration/servicecategory/update");
+        $myForm->setDefaultValues($currentServicecategoryValues);
+        $myForm->addHiddenComponent('sc_id', $requestParam['id']);
         
         // Display page
-        $tpl->display('configuration/servicecategory/edit.tpl');
+        $tpl->assign('form', $myForm->generate());
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('validateUrl', '/configuration/connector/update');
+        $tpl->display('configuration/edit.tpl');
     }
 }
