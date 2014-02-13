@@ -303,11 +303,28 @@
          * @param int $serviceId
          * @param array $macroInput
          * @param array $macroValue
+         * @param array $macroPassword
+         * @param bool $isMassiveChange
          * @return void
          */
-        public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array()) {
-            $this->db->query("DELETE FROM on_demand_macro_service
-                WHERE svc_svc_id = ".$this->db->escape($serviceId));
+        public function insertMacro($serviceId, $macroInput = array(), $macroValue = array(), $macroPassword = array(), $isMassiveChange = false) {
+            if (false === $isMassiveChange) {
+                 $this->db->query("DELETE FROM on_demand_macro_service
+                    WHERE svc_svc_id = ".$this->db->escape($serviceId)
+                 );
+            } else {
+                 $macroList = "";
+                 foreach ($macroInput as $v) {
+                    $macroList .= "'\$_SERVICE".strtoupper($this->db->escape($v))."\$',";
+                 }
+                 if ($macroList) {
+                      $macroList = rtrim($macroList, ",");
+                      $this->db->query("DELETE FROM on_demand_macro_service
+                         WHERE svc_svc_id = ".$this->db->escape($serviceId)."
+                         AND svc_macro_name IN ({$macroList})"
+                      );
+                 }
+            }
             
             $macros = $macroInput;
             $macrovalues = $macroValue;
@@ -316,7 +333,7 @@
                 if ($value != "" && 
                     !isset($stored[strtolower($value)])) {
                         $this->db->query("INSERT INTO on_demand_macro_service (`svc_macro_name`, `svc_macro_value`, `is_password`, `svc_svc_id`) 
-                                VALUES ('\$_SERVICE".strtoupper($value)."\$', '".$this->db->escape($macrovalues[$key])."', ".(isset($macroPassword[$key]) ? 1 : 'NULL').", ".$serviceId .")");
+                                VALUES ('\$_SERVICE".strtoupper($this->db->escape($value))."\$', '".$this->db->escape($macrovalues[$key])."', ".(isset($macroPassword[$key]) ? 1 : 'NULL').", ".$this->db->escape($serviceId) .")");
                         $stored[strtolower($value)] = true;
                 }
             }
