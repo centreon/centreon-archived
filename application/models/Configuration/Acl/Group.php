@@ -1,13 +1,13 @@
 <?php
 
-namespace Models\Configuration;
+namespace Models\Configuration\Acl;
 
 /**
  * Used for interacting with Acl Groups
  *
  * @author sylvestre
  */
-class Acl\Group extends Object
+class Group extends \Models\Configuration\Object
 {
     protected $table = "acl_groups";
     protected $primaryKey = "acl_group_id";

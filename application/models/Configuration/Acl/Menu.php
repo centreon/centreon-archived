@@ -1,13 +1,13 @@
 <?php
 
-namespace Models\Configuration;
+namespace Models\Configuration\Acl;
 
 /**
  * Used for interacting with Acl Menus
  *
  * @author sylvestre
  */
-class Acl\Menu extends Object
+class Menu extends \Models\Configuration\Object
 {
     protected $table = "acl_topology";
     protected $primaryKey = "acl_topo_id";

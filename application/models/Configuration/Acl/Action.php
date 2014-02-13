@@ -1,13 +1,13 @@
 <?php
 
-namespace Models\Configuration;
+namespace Models\Configuration\Acl;
 
 /**
  * Used for interacting with Acl Actions
  *
  * @author sylvestre
  */
-class Acl\Action extends Object
+class Action extends \Models\Configuration\Object
 {
     protected $table = "acl_actions";
     protected $primaryKey = "acl_action_id";
