@@ -1705,7 +1705,7 @@ CREATE TABLE `menus` (
   `menu_id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `parent_id` int(11),
-  `url` varchar(255) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `icon_class` varchar(100),
   `icon` varchar(255),
   `bgcolor` varchar(55),
