@@ -18,6 +18,9 @@
     {get_breadcrumb}
   </ol>
 </div>
+<div class="flash alert fade in" id="flash-message" style="display: none;">
+  <button type="button" class="close" aria-hidden="true">&times;</button>
+</div>
 {block name="content"}
 {/block}
 </div>
@@ -42,6 +45,9 @@ $(document).ready(function() {
         e.stopPropagation();
         e.preventDefault();
         displayEnvironmentMenu();
+    });
+    $('#flash-message').on('click', 'button.close', function() {
+        alertClose();
     });
     $('body').on('click', '#menu1 li', function(e) {
         e.preventDefault();
