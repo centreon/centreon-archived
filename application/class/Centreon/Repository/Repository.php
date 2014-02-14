@@ -80,7 +80,7 @@ abstract class Repository
     
     /**
      *
-     * @var string 
+     * @var string Acl string
      */
     public static $aclConditions = '';
     
@@ -187,7 +187,9 @@ abstract class Repository
         }
         
         // Sort
-        $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
+        if ((substr($sort, 0, 11) !== '[SPECFIELD]')) {
+            $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
+        }
         
         // Processing the limit
         if ($params['iDisplayLength'] > 0) {
@@ -232,8 +234,8 @@ abstract class Repository
     }
     
     /**
-     * 
-     * @param type $resultSet
+     * Format datas before return to the calling script/function/object
+     * @param array $resultSet
      */
     public static function formatDatas(&$resultSet)
     {
@@ -253,7 +255,7 @@ abstract class Repository
     /**
      * 
      * @param array $params
-     * @return array
+     * @return integer
      */
     public static function getTotalRecordsForDatatable($params)
     {

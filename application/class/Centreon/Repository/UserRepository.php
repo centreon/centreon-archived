@@ -56,7 +56,7 @@ class UserRepository extends \Centreon\Repository\Repository
     
     /**
      *
-     * @var array Default column for datatable
+     * @var array Main database field to get
      */
     public static $datatableColumn = array(
         '<input id="allContact" class="allContact" type="checkbox">' => 'contact_id',
@@ -75,7 +75,7 @@ class UserRepository extends \Centreon\Repository\Repository
     
     /**
      *
-     * @var array Default column for datatable
+     * @var array Column name for the search index
      */
     public static $researchIndex = array(
         'contact_id',
@@ -90,8 +90,16 @@ class UserRepository extends \Centreon\Repository\Repository
         'contact_activate'
     );
     
+    /**
+     *
+     * @var string 
+     */
     public static $specificConditions = "contact_register = '1' ";
     
+    /**
+     * @inherit doc
+     * @var array 
+     */
     public static $columnCast = array(
         'contact_id' => array(
             'type' => 'checkbox',
@@ -194,7 +202,10 @@ class UserRepository extends \Centreon\Repository\Repository
         )
     );
     
-    
+    /**
+     * 
+     * @param array $resultSet
+     */
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myUserSet) {
@@ -217,6 +228,12 @@ class UserRepository extends \Centreon\Repository\Repository
         }
     }
     
+    /**
+     * 
+     * @param integer $contactId
+     * @param string $object
+     * @return string
+     */
     public static function getNotificationInfos($contactId, $object)
     {
         // Initializing connection
