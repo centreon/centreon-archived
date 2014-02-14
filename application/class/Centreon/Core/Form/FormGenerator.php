@@ -58,6 +58,18 @@ class FormGenerator
      *
      * @var type 
      */
+    private $formRedirect;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $formRedirectRoute;
+    
+    /**
+     *
+     * @var type 
+     */
     private $formComponents = array();
     
     /**
@@ -81,9 +93,8 @@ class FormGenerator
     public function __construct($formRoute, $advanced = 0)
     {
         $this->formRoute = $formRoute;
-        $fieldList = $this->getFormFromDatabase($advanced);
         $this->formHandler = new \Centreon\Core\Form($this->formName);
-        $this->prepareForm($fieldList);
+        $this->getFormFromDatabase($advanced);
     }
     
     /**
@@ -98,61 +109,53 @@ class FormGenerator
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $queryForm = "SELECT id, name FROM form WHERE route = '$this->formRoute'";
+        $queryForm = "SELECT id, name, redirect, redirect_route FROM form WHERE route = '$this->formRoute'";
         $stmtForm = $dbconn->query($queryForm);
         $formInfo = $stmtForm->fetchAll();
         
         $formId = $formInfo[0]['id'];
         $this->formName = $formInfo[0]['name'];
+        $this->formRedirect = $formInfo[0]['redirect'];
+        $this->formRedirectRoute = $formInfo[0]['redirect_route'];
         
-        $fieldQuery = 'SELECT fd.name AS "field_name", '
-            . 'fd.label AS "field_label", '
-            . 'fd.attributes AS "field_attributes", '
-            . 'fd.default_value AS "field_default_value", '
-            . 'fd.type AS "field_type", '
-            . 'fhf.section AS "field_section", '
-            . 'fhf.block AS "field_block", '
-            . 'fhf.rank AS "field_rank", '
-            . 'v.action AS "field_validator" '
-            . 'FROM field fd, form_has_field fhf, validator v '
-            . 'WHERE fhf.form_id =\''.$formId.'\''
-            . 'AND fd.id = fhf.field_id '
-            . 'AND fd.validator_id = v.id '
-            . 'AND fd.advanced = \''.$advanced.'\' '
-            . 'ORDER BY fhf.rank, fd.name';
+        $sectionQuery = 'SELECT id, name '
+            . 'FROM section '
+            . 'WHERE form_id='.$formId.' '
+            . 'ORDER BY rank ASC';
         
-        $fieldStmt = $dbconn->query($fieldQuery);
-        return $fieldStmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-    
-    /**
-     * 
-     * @param type $fieldList
-     */
-    private function prepareForm($fieldList)
-    {
-        foreach ($fieldList as $field) {
-            $section = $field['field_section'];
-            $block = $field['field_block'];
-            unset($field['field_section']);
-            unset($field['field_block']);
+        $sectionStmt = $dbconn->query($sectionQuery);
+        $sectionList = $sectionStmt->fetchAll(\PDO::FETCH_ASSOC);
+        
+        foreach($sectionList as $section) {
+            $blockQuery = 'SELECT id, name '
+            . 'FROM block '
+            . 'WHERE section_id='.$section['id'].' '
+            . 'ORDER BY rank ASC';
             
+            $blockStmt = $dbconn->query($blockQuery);
+            $blockList = $blockStmt->fetchAll(\PDO::FETCH_ASSOC);
+            $this->formComponents[$section['name']] = array();
             
-            $currentSection = array_keys($this->formComponents);
-            if (!in_array($section, $currentSection)) {
-                $this->formComponents[$section] = array();
+            foreach($blockList as $block) {
+                
+                $fieldQuery = 'SELECT name, label, default_value, attributes, type, help, mandatory '
+                    . 'FROM field f, block_has_field bhf '
+                    . 'WHERE bhf.block_id='.$block['id'].' '
+                    . 'AND bhf.field_id = f.id '
+                    . 'AND advanced = \''.$advanced.'\' '
+                    . 'ORDER BY rank ASC';
+                
+                $this->formComponents[$section['name']][$block['name']] = array();
+                $fieldStmt = $dbconn->query($fieldQuery);
+                $fieldList = $fieldStmt->fetchAll(\PDO::FETCH_ASSOC);
+                
+                foreach ($fieldList as $field) {
+                    $this->addFieldToForm($field);
+                    $this->formComponents[$section['name']][$block['name']][] = $field['name'];
+                    $this->formDefaults[$field['name']] = $field['default_value'];
+                }
             }
-            
-            $currentBlock = array_keys($this->formComponents[$section]);
-            if (!in_array($block, $currentBlock)) {
-                $this->formComponents[$section][$block] = array();
-            }
-            
-            $this->addFieldToForm($field);
-            $this->formComponents[$section][$block][] = $field['field_name'];
-            $this->formDefaults[$field['field_name']] = $field['field_default_value'];
         }
-        
         $this->formComponents['General']['Save'][] = 'save_form';
         $this->formHandler->addSubmit('save_form', _("Save"));
     }
@@ -163,18 +166,18 @@ class FormGenerator
      */
     private function addFieldToForm($field)
     {
-        switch ($field['field_type']) {
+        switch ($field['type']) {
             default:
             case 'text':
-                $this->formHandler->addText($field['field_name'], $field['field_label']);
+                $this->formHandler->addText($field['name'], $field['label']);
                 break;
             
             case 'textarea':
-                $this->formHandler->addTextarea($field['field_name'], $field['field_label']);
+                $this->formHandler->addTextarea($field['name'], $field['label']);
                 break;
             
             case 'radio':
-                $values = json_decode($field['field_attributes']);
+                $values = json_decode($field['attributes']);
                 $radioValues = array();
                 foreach ($values as $label=>$value) {
                     $radioValues['list'][] = array(
@@ -184,16 +187,16 @@ class FormGenerator
                     );
                 }
                 $this->formHandler->addRadio(
-                    $field['field_name'],
-                    $field['field_label'],
-                    $field['field_name'],
+                    $field['name'],
+                    $field['label'],
+                    $field['name'],
                     '&nbsp;',
                     $radioValues
                 );
                 break;
                 
             case 'checkbox':
-                $this->formHandler->addCheckbox($field['field_name'], $field['field_label']);
+                $this->formHandler->addCheckbox($field['name'], $field['label']);
                 break;
         }
     }
@@ -256,6 +259,24 @@ class FormGenerator
     public function getName()
     {
         return $this->formName;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getRedirect()
+    {
+        return $this->formRedirect;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getRedirectRoute()
+    {
+        return $this->formRedirectRoute;
     }
     
     /**

@@ -8,6 +8,7 @@
             "iDisplayLength": 25,
             "aLengthMenu": [[10, 25, 50], [10, 25, 50]],
             "sPaginationType": "bootstrap",
+            "bSortCellsTop": true,
             'sDom': "<'row'r<'clear'><'col-sm-6'l><'col-sm-6'T>>t<'row'<'col-sm-6'i><'col-sm-6'p>>",
             "oTableTools": {
                 "sSwfPath": "{'/static/centreon/swf/dataTables/copy_csv_xls_pdf.swf'|url}",
@@ -24,13 +25,14 @@
             ]
         }).columnFilter({
             sPlaceHolder: 'head:after',
+            nbFixedTr: {$datatableParameters.nbFixedTr},
             aoColumns: [
                 {foreach $datatableParameters.header as $header}
                     {foreach $header as $headerType=>$headerData}
                         {if $headerType === 'select'}
                             { type: "select", cls: "form-control", values: [ {foreach $headerData as $optName=>$optValue} { label:'{$optName}', value:'{$optValue}' } , {/foreach} ] },
                         {elseif $headerData === 'none'}
-                            null,
+                            { type: "cleanup" },
                         {else}
                             { type: "text", cls: "form-control"},
                         {/if}

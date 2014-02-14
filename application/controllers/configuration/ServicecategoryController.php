@@ -68,12 +68,30 @@ class ServicecategoryController extends \Centreon\Core\Controller
      * Update a servicecategory
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/servicecategory/update
      */
     public function updateAction()
     {
+        $givenParameters = $this->getParams('post');
         
+        if (Form::validateSecurity($givenParameters['token'])) {
+            $servicecategory = array(
+                'sc_name' => $givenParameters['sc_name'],
+                'sc_description' => $givenParameters['sc_description'],
+                'sc_activate' => $givenParameters['sc_activate'],
+            );
+            
+            $connObj = new \Models\Configuration\Servicecategory();
+            try {
+                $connObj->update($givenParameters['sc_id'], $servicecategory);
+            } catch (Exception $e) {
+                echo "fail";
+            }
+            echo 'success';
+        } else {
+            echo "fail";
+        }
     }
     
     /**
@@ -85,31 +103,7 @@ class ServicecategoryController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
         
-        $form = new Form('servicecategoryForm');
-        $form->addText('name', _('Service Category Name'));
-        $form->addText('description', _('Service Category Description'));
-        $radios['list'] = array(
-            array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-            ),
-            array(
-                'name' => 'Disabled',
-                'label' => 'Disabled',
-                'value' => '0'
-            )
-        );
-        $form->addRadio('servicecategory_status', _("Status"), 'servicecategory_type', '&nbsp;', $radios);
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/servicecategory/edit.tpl');
     }
     
     /**
@@ -148,7 +142,9 @@ class ServicecategoryController extends \Centreon\Core\Controller
         // Display page
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/configuration/connector/update');
+        $tpl->assign('formRedirect', $myForm->getRedirect());
+        $tpl->assign('formRedirectRoute', $myForm->getRedirectRoute());
+        $tpl->assign('validateUrl', '/configuration/servicecategory/update');
         $tpl->display('configuration/edit.tpl');
     }
 }
