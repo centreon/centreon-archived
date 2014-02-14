@@ -151,9 +151,8 @@ class HostRepository extends \Centreon\Repository\Repository
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myHostSet) {
-            $myHostSet['host_name'] = '<img src="'.
-                self::getIconImage($myHostSet['host_name']).
-                '" />&nbsp;'.$myHostSet['host_name'];
+            $myHostSet['host_name'] = self::getIconImage($myHostSet['host_name']).
+                '&nbsp;'.$myHostSet['host_name'];
         }
     }
     
@@ -186,10 +185,10 @@ class HostRepository extends \Centreon\Repository\Repository
             $tplResult = $stmtTpl->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($ehiResult['ehi_icon_image'])) {
-                $finalRoute .= $ehiResult['ehi_icon_image'];
+                $finalRoute .= "<img src='".$finalRoute.$ehiResult['ehi_icon_image']."'>";
                 break;
-            } elseif (is_null($ehiResult['ehi_icon_image']) && !is_null($tplResult['host_tpl_id'])) {
-                $finalRoute .= '/static/centreon/img/icons/16x16/server_network.gif';
+            } elseif (is_null($ehiResult['ehi_icon_image'])/* && !is_null($tplResult['host_tpl_id'])*/) {
+                $finalRoute = "<i class='fa fa-hdd-o'></i>";
                 break;
             }
             
