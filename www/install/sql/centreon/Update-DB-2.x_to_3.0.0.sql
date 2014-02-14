@@ -47,6 +47,6 @@ CREATE TABLE `session` (
     `last_reload` INT NOT NULL,
     `ip_address` VARCHAR(45) NOT NULL,
     `route` VARCHAR(255) NOT NULL,
-    `update_acl` ENUM('0', '1') DEFAULT 0,
+    `update_acl` ENUM('0', '1') DEFAULT '0',
     PRIMARY KEY(`session_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
