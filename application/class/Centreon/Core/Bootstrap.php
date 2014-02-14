@@ -173,19 +173,6 @@ class Bootstrap
     }
 
     /**
-     * Init Acl
-     */
-    private function initAcl()
-    {
-        $this->di->set(
-            'acl',
-            function() {
-                return new Acl();
-            }
-        );
-    }
-
-    /**
      * Init routes
      */
     private function initRoutes()
@@ -198,17 +185,5 @@ class Bootstrap
             );
         return $router;
         });
-    }
-
-    /**
-     * Init user
-     */
-    private function initUser()
-    {
-        $this->di->set('user', 
-            function() {
-                return new User();
-            }
-        );
     }
 }

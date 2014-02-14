@@ -35,20 +35,14 @@ class Router extends \Klein\Klein
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
                             $this->routesData[] = $data;
-                            $acl = Di::getDefault()->get('acl');
-                            if (!isset($data['acl'])) {
-                                $data['acl'] = "";
-                            }
-                            if ($acl->routeAllowed($data['route'], $data['acl'])) {
-                                $this->respond(
-                                    $data['method_type'],
-                                    $baseUrl.$data['route'],
-                                    function ($request, $response) use ($controllerName, $action) {
-                                        $obj = new $controllerName($request);
-                                        $obj->$action();
-                                    }
-                                );
-                            }
+                            $this->respond(
+                                $data['method_type'],
+                                $baseUrl.$data['route'],
+                                function ($request, $response) use ($controllerName, $action) {
+                                    $obj = new $controllerName($request);
+                                    $obj->$action();
+                                }
+                            );
                         }
                     } elseif (is_dir($dir . '/' . $dirname)) {
                         $this->parseRoutes($pref . '\\' . ucfirst($dirname), $dir . '/' . $dirname);

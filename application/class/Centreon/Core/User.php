@@ -87,18 +87,19 @@ class User
     public function init($userId)
     {
         $contactObj = new \Models\Configuration\Contact();
-        $params = $contactObj->getParameters(
-            $userId, 
-            array('contact_id', 'contact_name', 'contact_alias', 'contact_lang')
-        );
+        $paramArr = array('contact_id', 'contact_name', 'contact_alias', 'contact_lang', 'contact_email'); 
+        $params = $contactObj->getParameters($userId, $paramArr);
         if (!is_array($params) || !count($params)) {
             throw new Exception(_('Unknown user id'));
         }
-        $this->id = $params['contact_id'];
-        $this->name = $params['contact_name'];
-        $this->login = $params['contact_alias'];
-        $this->lang = $params['contact_lang'];
-        $this->admin = $params['contact_admin'];
+        list (
+            $this->id, 
+            $this->name, 
+            $this->login, 
+            $this->lang, 
+            $this->admin, 
+            $this->email
+        ) = $params;
     }
 
     /**
@@ -151,6 +152,19 @@ class User
             throw new Exception(self::NOT_INIT);
         }
         return $this->lang;
+    }
+
+    /**
+     * email getter
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        if (!isset($this->email)) {
+            throw new Exception(self::NOT_INIT);
+        }
+        return $this->email;
     }
 
     /**
