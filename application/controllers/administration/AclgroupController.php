@@ -160,14 +160,14 @@ class AclgroupController extends \Centreon\Core\Controller
             $currentaclgroupValues['enabled'] = '0';
         }
         
-        $myForm = new FormGenerator("/configuration/aclgroup/update");
+        $myForm = new FormGenerator("/administration/aclgroup/update");
         $myForm->setDefaultValues($currentaclgroupValues);
         $myForm->addHiddenComponent('id', $requestParam['id']);
         
         // Display page
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('validateUrl', '/configuration/aclgroup/update');
+        $tpl->assign('validateUrl', '/administration/aclgroup/update');
         $tpl->display('configuration/edit.tpl');
     }
 }
