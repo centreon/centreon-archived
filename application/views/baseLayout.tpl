@@ -31,7 +31,7 @@
       <li class="user">
         <a class="account dropdown-toggle" data-toggle="dropdown" href="#">
           <div class="avatar">
-            <img src="http://www.gravatar.com/avatar/{$md5Email}/?rating=PG&size=20&default=" alt="Avatar" class="img-circle">
+            <img src="http://www.gravatar.com/avatar/{$md5Email}/?rating=PG&size=24&default=" alt="Avatar" class="img-circle">
           </div>
         </a>
         <ul class="dropdown-menu">
