@@ -177,10 +177,17 @@ abstract class Repository
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
+                    if (substr($c[$colNumber], 0, 11) !== '[SPECFIELD]') {
+                        $searchString = $c[$colNumber]." like '%".$paramValue."%' ";
                     } else {
-                        $conditions .= "AND ".$c[$colNumber]." like '%".$paramValue."%' ";
+                        $customSearchString = substr($c[$colNumber], 11);
+                        $searchString = str_replace('::search_value::', '%'.$paramValue.'%', $customSearchString);
+                    }
+                    
+                    if (empty($conditions)) {
+                        $conditions = "WHERE ".$searchString;
+                    } else {
+                        $conditions .= "AND ".$searchString;
                     }
                 }
             }
@@ -199,8 +206,6 @@ abstract class Repository
         // Building the final request
         $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
-        
-        //echo $finalRequest;
         
         try {
             // Executing the request
