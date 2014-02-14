@@ -8,6 +8,7 @@ class Acl
     const DELETE = 2;
     const UPDATE = 4;
     const VIEW = 8;
+    const ADVANCED = 16;
 
     private $routes;
     private $isAdmin;
@@ -18,7 +19,7 @@ class Acl
      */
     public function __construct()
     {
-/*        $userId = $_SESSION['user_id'];
+/*        $userId = Di::getDefault()->get('user')->getId();
         $sql = "SELECT route, permission 
             FROM acl_routes ar, acl_groups g, acl_group_contacts_relations r
             WHERE ar.acl_group_id = g.acl_group_id
@@ -39,8 +40,8 @@ class Acl
      */
     public function routeAllowed($route, $requiredAccess)
     {
-        return true; // for dev purpose
-        if ($this->isAdmin) {
+        return true;
+        if (Di::getDefault()->get('user')->isAdmin()) {
             return true;
         }
         if (isset($this->routes[$route]) && 

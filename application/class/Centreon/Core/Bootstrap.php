@@ -199,4 +199,16 @@ class Bootstrap
         return $router;
         });
     }
+
+    /**
+     * Init user
+     */
+    private function initUser()
+    {
+        $this->di->set('user', 
+            function() {
+                return new User();
+            }
+        );
+    }
 }
