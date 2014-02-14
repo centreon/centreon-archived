@@ -40,25 +40,14 @@
             {/foreach}
             </tr>
         {/if}
+
+        <tr>
+        {foreach $datatableParameters.column.search as $column}
+            <th rowspan="1" colspan="1" style="text-align: center;">{$column.lab}</th>
+        {/foreach}
+        </tr>
     </thead>
 
     <tbody>
     </tbody>
-    
-    <tfoot>
-        <tr>
-        {foreach $datatableParameters.column.firstLevel as $column}
-            <th {$column.att} style="text-align: center;">{$column.lab}</th>
-        {/foreach}
-        </tr>
-        
-        {if isset($datatableParameters.column.secondLevel)}
-            <tr>
-            {foreach $datatableParameters.column.secondLevel as $column}
-                <th style="text-align: center;">{$column.lab}</th>
-            {/foreach}
-            </tr>
-        {/if}
-    </tfoot>
-
 </table>

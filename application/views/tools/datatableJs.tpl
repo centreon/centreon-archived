@@ -23,15 +23,16 @@
                 { "bAutoWidth" : false, "bSortable": false, "sWidth": "10px", "aTargets": [0] }
             ]
         }).columnFilter({
+            sPlaceHolder: 'head:after',
             aoColumns: [
                 {foreach $datatableParameters.header as $header}
                     {foreach $header as $headerType=>$headerData}
                         {if $headerType === 'select'}
-                            { type: "select", values: [ {foreach $headerData as $optName=>$optValue} { label:'{$optName}', value:'{$optValue}' } , {/foreach} ] },
+                            { type: "select", cls: "form-control", values: [ {foreach $headerData as $optName=>$optValue} { label:'{$optName}', value:'{$optValue}' } , {/foreach} ] },
                         {elseif $headerData === 'none'}
                             null,
                         {else}
-                            { type: "text", },
+                            { type: "text", cls: "form-control"},
                         {/if}
                     {/foreach}
                 {/foreach}
