@@ -95,10 +95,12 @@
             //return oTable.fnSettings().oApi._fnColumnIndexToVisible(oTable.fnSettings(), iColumnIndex);
         }
 
-        function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength, iMaxLenght) {
+        function fnCreateInput(oTable, regex, smart, bIsNumber, iFilterLength, iMaxLenght, cls) {
             var sCSSClass = "text_filter";
             if (bIsNumber)
                 sCSSClass = "number_filter";
+            if (cls != '')
+                sCSSClass += " " + cls
 
             label = label.replace(/(^\s*)|(\s*$)/g, "");
             var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
@@ -173,16 +175,19 @@
             });
         }
 
-        function fnCreateRangeInput(oTable) {
+        function fnCreateRangeInput(oTable, cls) {
+            sCSSClass = ''
+            if (cls != '')
+                sCSSClass += " " + cls
 
 			//var currentFilter = oTable.fnSettings().aoPreSearchCols[i].sSearch;
             th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
-            var from = $('<input type="text" class="number_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
+            var from = $('<input type="text" class="number_range_filter' + sCSSClass + '" id="' + sFromId + '" rel="' + i + '"/>');
             th.append(from);
             th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
-            var to = $('<input type="text" class="number_range_filter" id="' + sToId + '" rel="' + i + '"/>');
+            var to = $('<input type="text" class="number_range_filter' + sCSSClass + '" id="' + sToId + '" rel="' + i + '"/>');
             th.append(to);
             th.append(_fnRangeLabelPart(2));
             th.wrapInner('<span class="filter_column filter_number_range" />');
@@ -242,19 +247,22 @@
         }
 
 
-        function fnCreateDateRangeInput(oTable) {
+        function fnCreateDateRangeInput(oTable, cls) {
+            sCSSClass = ''
+            if (cls != '')
+                sCSSClass += " " + cls
 
             var aoFragments = sRangeFormat.split(/[}{]/);
 
             th.html("");
             //th.html(_fnRangeLabelPart(0));
             var sFromId = oTable.attr("id") + '_range_from_' + i;
-            var from = $('<input type="text" class="date_range_filter" id="' + sFromId + '" rel="' + i + '"/>');
+            var from = $('<input type="text" class="date_range_filter' + sCSSClass + '" id="' + sFromId + '" rel="' + i + '"/>');
             from.datepicker();
             //th.append(from);
             //th.append(_fnRangeLabelPart(1));
             var sToId = oTable.attr("id") + '_range_to_' + i;
-            var to = $('<input type="text" class="date_range_filter" id="' + sToId + '" rel="' + i + '"/>');
+            var to = $('<input type="text" class="date_range_filter' + sCSSClass + '" id="' + sToId + '" rel="' + i + '"/>');
             //th.append(to);
             //th.append(_fnRangeLabelPart(2));
 
@@ -330,7 +338,10 @@
 
         }
 
-        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel, bRegex, oSelected) {
+        function fnCreateColumnSelect(oTable, aData, iColumn, nTh, sLabel, bRegex, oSelected, cls) {
+            sCSSClass = ''
+            if (cls != '')
+                sCSSClass += " " + cls
             if (aData == null)
                 aData = _fnGetColumnValues(oTable.fnSettings(), iColumn, true, false, true);
             var index = iColumn;
@@ -338,7 +349,7 @@
             if (currentFilter == null || currentFilter == "")//Issue 81
                 currentFilter = oSelected;
 
-            var r = '<select class="search_init select_filter" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
+            var r = '<select class="search_init select_filter' + sCSSClass + '" rel="' + i + '"><option value="" class="search_init">' + sLabel + '</option>';
             var j = 0;
             var iLen = aData.length;
             for (j = 0; j < iLen; j++) {
@@ -383,7 +394,7 @@
                 oTable.fnFilter(unescape(currentFilter), iColumn);
         }
 
-        function fnCreateSelect(oTable, aData, bRegex, oSelected) {
+        function fnCreateSelect(oTable, aData, bRegex, oSelected, cls) {
             var oSettings = oTable.fnSettings();
             if (aData == null && oSettings.sAjaxSource != "" && !oSettings.oFeatures.bServerSide) {
                 // Add a function to the draw callback, which will check for the Ajax data having 
@@ -403,7 +414,7 @@
                 });
             }
             // Regardless of the Ajax state, build the select on first pass
-            fnCreateColumnSelect(oTable, aData, _fnColumnIndex(i), th, label, bRegex, oSelected); //Issue 37
+            fnCreateColumnSelect(oTable, aData, _fnColumnIndex(i), th, label, bRegex, oSelected, cls); //Issue 37
 
         }
 
@@ -689,7 +700,8 @@
                     bRegex: false,
                     bSmart: true,
                     iMaxLenght: -1,
-                    iFilterLength: 0
+                    iFilterLength: 0,
+                    cls: ''
                 };
                 if (properties.aoColumns != null) {
                     if (properties.aoColumns.length < i || properties.aoColumns[i] == null)
@@ -717,18 +729,18 @@
                         case "null":
                             break;
                         case "number":
-                            fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength, aoColumn.iMaxLenght);
+                            fnCreateInput(oTable, true, false, true, aoColumn.iFilterLength, aoColumn.iMaxLenght, aoColumn.cls);
                             break;
                         case "select":
                             if (aoColumn.bRegex != true)
                                 aoColumn.bRegex = false;
-                            fnCreateSelect(oTable, aoColumn.values, aoColumn.bRegex, aoColumn.selected);
+                            fnCreateSelect(oTable, aoColumn.values, aoColumn.bRegex, aoColumn.selected, aoColumn.cls);
                             break;
                         case "number-range":
-                            fnCreateRangeInput(oTable);
+                            fnCreateRangeInput(oTable, aoColumn.cls);
                             break;
                         case "date-range":
-                            fnCreateDateRangeInput(oTable);
+                            fnCreateDateRangeInput(oTable, aoColumn.cls);
                             break;
                         case "checkbox":
                             fnCreateCheckbox(oTable, aoColumn.values);
@@ -741,7 +753,7 @@
                         default:
                             bRegex = (aoColumn.bRegex == null ? false : aoColumn.bRegex);
                             bSmart = (aoColumn.bSmart == null ? false : aoColumn.bSmart);
-                            fnCreateInput(oTable, bRegex, bSmart, false, aoColumn.iFilterLength, aoColumn.iMaxLenght);
+                            fnCreateInput(oTable, bRegex, bSmart, false, aoColumn.iFilterLength, aoColumn.iMaxLenght, aoColumn.cls);
                             break;
 
                     }

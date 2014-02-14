@@ -23,9 +23,11 @@ function smarty_function_datatable($params, $smarty)
             $dCol['firstLevel'][$columnLabel]['lab'] = $columnLabel;
             $dCol['firstLevel'][$columnLabel]['att'] = 'colspan="'.count($columnContent).'"';
             foreach ($columnContent as $subColumnLabel => $subColumnName) {
+                $dCol['search'][$subColumnLabel]['lab'] = $subColumnLabel;
                 $dCol['secondLevel'][]['lab'] = $subColumnLabel;
             }
         } else {
+            $dCol['search'][$columnLabel]['lab'] = $columnLabel;
             $dCol['firstLevel'][$columnLabel]['lab'] = $columnLabel;
             $dCol['firstLevel'][$columnLabel]['att'] = 'rowspan="'.$depth.'"';
         }
