@@ -18,12 +18,15 @@
                 context: document.body
             })
             .success(function(data, status, jqxhr) {
+                alertClose();
                 if (data === "success") {
-                    $("#formSuccess").css("display", "block");
-                    $("#formError").css("display", "none");
+                    {if isset($formRedirect) && $formRedirect}
+                        window.location='{url_for url=$formRedirectRoute}';
+                    {else}
+                        alertMessage("The object has been successfully saved", "alert-success");
+                    {/if}
                 } else {
-                    $("#formError").css("display", "block");
-                    $("#formSuccess").css("display", "none");
+                    alertMessage("An error occured", "alert-danger");
                 }
             });
             return false;
