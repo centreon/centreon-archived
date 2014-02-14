@@ -613,7 +613,9 @@
             */
         }
 
-
+        function fnCleanup() {
+            th.text('');
+        }
 
 
         function _fnRangeLabelPart(iPlace) {
@@ -639,7 +641,8 @@
             aoColumns: null,
             sRangeFormat: "From {from} to {to}",
             sDateFromToken: "from",
-            sDateToToken: "to"
+            sDateToToken: "to",
+            nbFixedTr: 1
         };
 
         var properties = $.extend(defaults, options);
@@ -655,18 +658,25 @@
             var oHost = oTable.fnSettings().nTFoot; //Before fix for ColVis
             var sFilterRow = "tr"; //Before fix for ColVis
 
+            var trs = [];
             if (properties.sPlaceHolder == "head:after") {
-                var tr = $("tr:first", oTable.fnSettings().nTHead).detach();
+                for (var trPos = 0; trPos < properties.nbFixedTr; trPos++) {
+                     trs.push($("tr:first", oTable.fnSettings().nTHead).detach());
+                }
+                aoFilterCells = oTable.fnSettings().aoHeader[properties.nbFixedTr];
                 //tr.appendTo($(oTable.fnSettings().nTHead));
                 if (oTable.fnSettings().bSortCellsTop) {
-                    tr.prependTo($(oTable.fnSettings().nTHead));
+                    for (var trPos = trs.length - 1; trPos >= 0; trPos--) {
+                        trs[trPos].prependTo($(oTable.fnSettings().nTHead));
+                    }
                     //tr.appendTo($("thead", oTable));
-                    aoFilterCells = oTable.fnSettings().aoHeader[1];
                 }
                 else {
-                    tr.appendTo($(oTable.fnSettings().nTHead));
+                    for (var trPos = 0; trPos < trs.length; trPos++) {
+                        trs[trPos].appendTo($(oTable.fnSettings().nTHead));
+                    }
                     //tr.prependTo($("thead", oTable));
-                    aoFilterCells = oTable.fnSettings().aoHeader[0];
+                    //aoFilterCells = oTable.fnSettings().aoHeader[0];
                 }
 
                 sFilterRow = "tr:last";
@@ -748,6 +758,9 @@
 						case "twitter-dropdown":
 						case "dropdown":
                             fnCreateDropdown(aoColumn.values);
+                            break;
+                        case "cleanup":
+                            fnCleanup();
                             break;
                         case "text":
                         default:
