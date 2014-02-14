@@ -60,13 +60,11 @@ class Datatable
         $datasToSend = $objectToCall::getDatasForDatatable($params);
         
         // format the data before returning
-        $finalDatas = json_encode(
-            array(
-                "sEcho" => intval($params['sEcho']),
-                "iTotalRecords" => count($datasToSend),
-                "iTotalDisplayRecords" => $objectToCall::getTotalRecordsForDatatable($params),
-                "aaData" => $datasToSend
-            )
+        $finalDatas = array(
+            "sEcho" => intval($params['sEcho']),
+            "iTotalRecords" => count($datasToSend),
+            "iTotalDisplayRecords" => $objectToCall::getTotalRecordsForDatatable($params),
+            "aaData" => $datasToSend
         );
         
         return $finalDatas;

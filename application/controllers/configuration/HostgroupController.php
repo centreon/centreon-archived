@@ -42,11 +42,14 @@ class HostgroupController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        echo \Centreon\Core\Datatable::getDatas(
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $router->response()->json(\Centreon\Core\Datatable::getDatas(
             'hostgroup',
             $this->getParams('get')
+            )
         );
-
     }
     
     /**

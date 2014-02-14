@@ -80,7 +80,7 @@ abstract class Repository
     
     /**
      *
-     * @var string 
+     * @var string Acl string
      */
     public static $aclConditions = '';
     
@@ -177,17 +177,26 @@ abstract class Repository
             if (strpos($paramName, 'sSearch_') !== false) {
                 if (!empty($paramValue) || $paramValue === "0") {
                     $colNumber = substr($paramName, strlen('sSearch_'));
-                    if (empty($conditions)) {
-                        $conditions = "WHERE ".$c[$colNumber]." like '%".$paramValue."%' ";
+                    if (substr($c[$colNumber], 0, 11) !== '[SPECFIELD]') {
+                        $searchString = $c[$colNumber]." like '%".$paramValue."%' ";
                     } else {
-                        $conditions .= "AND ".$c[$colNumber]." like '%".$paramValue."%' ";
+                        $customSearchString = substr($c[$colNumber], 11);
+                        $searchString = str_replace('::search_value::', '%'.$paramValue.'%', $customSearchString);
+                    }
+                    
+                    if (empty($conditions)) {
+                        $conditions = "WHERE ".$searchString;
+                    } else {
+                        $conditions .= "AND ".$searchString;
                     }
                 }
             }
         }
         
         // Sort
-        $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
+        if ((substr($sort, 0, 11) !== '[SPECFIELD]')) {
+            $sort = 'ORDER BY '.$c[$params['iSortCol_0']].' '.$params['sSortDir_0'];
+        }
         
         // Processing the limit
         if ($params['iDisplayLength'] > 0) {
@@ -197,8 +206,6 @@ abstract class Repository
         // Building the final request
         $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
-        
-        //echo $finalRequest;
         
         try {
             // Executing the request
@@ -232,8 +239,8 @@ abstract class Repository
     }
     
     /**
-     * 
-     * @param type $resultSet
+     * Format datas before return to the calling script/function/object
+     * @param array $resultSet
      */
     public static function formatDatas(&$resultSet)
     {
@@ -253,7 +260,7 @@ abstract class Repository
     /**
      * 
      * @param array $params
-     * @return array
+     * @return integer
      */
     public static function getTotalRecordsForDatatable($params)
     {
