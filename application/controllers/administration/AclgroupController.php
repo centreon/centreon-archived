@@ -76,15 +76,14 @@ class AclgroupController extends \Centreon\Core\Controller
         
         if (Form::validateSecurity($givenParameters['token'])) {
             $aclgroup = array(
-                'name' => $givenParameters['name'],
-                'description' => $givenParameters['description'],
-                'command_line' => $givenParameters['command_line'],
-                'enabled' => $givenParameters['enabled'],
+                'acl_group_name' => $givenParameters['acl_group_name'],
+                'acl_group_alias' => $givenParameters['acl_group_alias'],
+                'acl_group_activate' => $givenParameters['acl_group_activate'],
             );
             
-            $connObj = new \Models\Configuration\aclgroup();
+            $aclgroupObj = new \Models\Configuration\Acl\Group();
             try {
-                $connObj->update($givenParameters['id'], $aclgroup);
+                $aclgroupObj->update($givenParameters['acl_group_id'], $aclgroup);
             } catch (Exception $e) {
                 echo "fail";
             }
@@ -162,7 +161,7 @@ class AclgroupController extends \Centreon\Core\Controller
         
         $myForm = new FormGenerator("/administration/aclgroup/update");
         $myForm->setDefaultValues($currentaclgroupValues);
-        $myForm->addHiddenComponent('id', $requestParam['id']);
+        $myForm->addHiddenComponent('acl_group_id', $requestParam['id']);
         
         // Display page
         $tpl->assign('form', $myForm->generate());
