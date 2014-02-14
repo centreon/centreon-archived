@@ -162,8 +162,8 @@ class Form
      */
     private function formatForSmarty()
     {
-        
         $smartyArray = $this->formRenderer->toArray();
+        
         $finalArray = array (
             'frozen' => $smartyArray['frozen'],
             'javascript' => $smartyArray['javascript'],
@@ -222,24 +222,27 @@ class Form
                 break;
             
             case 'checkbox':
-                $element['input'] = $this->renderHtmlInput($element, false, false);
+                $element['input'] = $this->renderHtmlCheckbox($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'radio':
-                $element['input'] = $this->renderHtmlRadio($element, true, false);
+                $element['input'] = $this->renderHtmlRadio($element, $element['name']);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             
             case 'group':
+                $selectedValues = array_keys($element['value']);
                 $element['input'] = '<div class="input-group">';
                 foreach($element['elements'] as $groupElement) {
                     if ($groupElement['type'] == 'checkbox') {
-                        $element['input'] .= $this->renderHtmlInput($groupElement, false, false);
+                        $element['input'] .= $this->renderHtmlCheckbox($groupElement);
                     } else {
-                        $element['input'] .= $this->renderHtmlRadio($groupElement, $element['name']).'&nbsp;&nbsp;';
+                        $currentElementName = substr($groupElement['name'], strlen($element['name'])+1, -1);
+                        $selected = in_array($currentElementName, $selectedValues);
+                        $element['input'] .= $this->renderHtmlRadio($groupElement, $element['name'], $selected).'&nbsp;&nbsp;';
                     }
                 }
                 $element['input'] .= '</div>';
@@ -251,10 +254,10 @@ class Form
     
     public function renderFinalHtml($inputElement)
     {
-            return '<div class="form-group">'.
-                    '<div class="col-sm-2">'.$inputElement['label'].'</div>'.
-                    '<div class="col-sm-10">'.$inputElement['input'].'</div>'.
-                    '</div>';
+        return '<div class="form-group">'.
+                '<div class="col-sm-2">'.$inputElement['label'].'</div>'.
+                '<div class="col-sm-10">'.$inputElement['input'].'</div>'.
+                '</div>';
     }
     
     
@@ -287,9 +290,14 @@ class Form
         return $inputElement['html'];
     }
     
-    public function renderHtmlRadio($inputElement, $parentName)
+    public function renderHtmlRadio($inputElement, $parentName, $selected = false)
     {
         (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        
+        $htmlSelected = '';
+        if ($selected) {
+            $htmlSelected = 'checked=checked';
+        }
         
         if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
             $inputElement['label'] = $inputElement['name'];
@@ -302,7 +310,7 @@ class Form
         $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">&nbsp;'.
                         '<input '.'id="'.$inputElement['id'].'" '.
                         'type="'.$inputElement['type'].'" '.'name="'.$parentName.'" '.
-                        $value.' '.
+                        $value.' '.$htmlSelected.' '.
                         '/>'.' '.$inputElement['label'].
                         '</label>';
         return $inputHtml;
@@ -351,6 +359,34 @@ class Form
                             '>'.$value.'</textarea>';
         return $inputHtml;
     }
+    
+    /**
+     * 
+     * @param array $inputElement
+     * @param boolean $useValue
+     * @param boolean $usePlaceholder
+     * @return string
+     */
+    public function renderHtmlCheckbox($inputElement)
+    {
+        (isset($inputElement['value']) && $inputElement['value']) ? $value = 'checked=checked' :  $value = '';
+        
+        if (!isset($inputElement['label']) || (isset($inputElement['label']) && empty($inputElement['label']))) {
+            $inputElement['label'] = $inputElement['name'];
+        }
+        
+        if (!isset($inputElement['id']) || (isset($inputElement['id']) && empty($inputElement['id']))) {
+            $inputElement['id'] = $inputElement['name'];
+        }
+        
+        $inputHtml = '<input '.
+                        'id="'.$inputElement['id'].'" '.
+                        'type="'.$inputElement['type'].'" '.
+                        'name="'.$inputElement['name'].'" '.
+                        $value.' '.
+                        '/>';
+        return $inputHtml;
+    }
 
 
     /**
@@ -360,7 +396,7 @@ class Form
      * @param boolean $usePlaceholder
      * @return string
      */
-    public function renderHtmlInput($inputElement, $useValue = true, $usePlaceholder = true)
+    public function renderHtmlInput($inputElement, $useValue = true, $usePlaceholder = true, $selected = false)
     {
         ((isset($inputElement['value']) && $useValue) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
         
@@ -381,13 +417,13 @@ class Form
         }
         
         $inputHtml = '<input '.
-                            'id="'.$inputElement['id'].'" '.
-                            'type="'.$inputElement['type'].'" '.
-                            'name="'.$inputElement['name'].'" '.
-                            $value.
-                            'class="form-control" '.
-                            $placeholder.
-                            '/>';
+                        'id="'.$inputElement['id'].'" '.
+                        'type="'.$inputElement['type'].'" '.
+                        'name="'.$inputElement['name'].'" '.
+                        $value.
+                        'class="form-control" '.
+                        $placeholder.
+                        '/>';
         return $inputHtml;
     }
 

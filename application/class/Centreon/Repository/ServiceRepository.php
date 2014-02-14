@@ -216,9 +216,8 @@ class ServiceRepository extends \Centreon\Repository\Repository
                 $myServiceSet['host_name'] = '';
             } else {
                 $previousHost = $myServiceSet['host_name'];
-                $myServiceSet['host_name'] = '<img src="'.
-                    \Centreon\Repository\HostRepository::getIconImage($myServiceSet['host_name']).
-                    '" />&nbsp;'.$myServiceSet['host_name'];
+                $myServiceSet['host_name'] = \Centreon\Repository\HostRepository::getIconImage($myServiceSet['host_name']).
+                    '&nbsp;'.$myServiceSet['host_name'];
             }
             
             // Set Scheduling
@@ -258,8 +257,8 @@ class ServiceRepository extends \Centreon\Repository\Repository
             $tplStr .= "<a href='".$tplRoute."'>".$tplArr['description']."</a>";
             $myServiceSet['parent_template'] = $tplStr;
             
-            $myServiceSet['service_description'] = '<img src="'.self::getIconImage($myServiceSet['service_id']).
-                '" />&nbsp;'.$myServiceSet['service_description'];
+            $myServiceSet['service_description'] = self::getIconImage($myServiceSet['service_id']).
+                '&nbsp;'.$myServiceSet['service_description'];
             
             $myServiceSet['service_activate'] = $save;
         }
@@ -430,10 +429,10 @@ class ServiceRepository extends \Centreon\Repository\Repository
             $esiResult = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if (!is_null($esiResult['esi_icon_image'])) {
-                $finalRoute .= $esiResult['esi_icon_image'];
+                $finalRoute .= "<img src='".$finalRoute.$esiResult['esi_icon_image'].">";
                 break;
             } elseif (is_null($esiResult['esi_icon_image']) && !is_null($esiResult['service_template_model_stm_id'])) {
-                $finalRoute .= '/static/centreon/img/icons/16x16/gear.gif';
+                $finalRoute = "<i class='fa fa-gear'></i>";
                 break;
             }
             

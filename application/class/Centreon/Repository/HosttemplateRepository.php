@@ -151,13 +151,12 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
     /**
      * 
      * @param array $resultSet
-     */
+     *
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myHostTemplateSet) {
-            $myHostTemplateSet['host_name'] = '<img src="'.
-                \Centreon\Repository\HostRepository::getIconImage($myHostTemplateSet['host_name']).
-                '" />&nbsp;'.$myHostTemplateSet['host_name'];
+            $myHostTemplateSet['host_name'] = \Centreon\Repository\HostRepository::getIconImage($myHostTemplateSet['host_name']).
+                '&nbsp;'.$myHostTemplateSet['host_name'];
         }
-    }
+    }*/
 }

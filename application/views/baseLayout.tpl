@@ -15,6 +15,11 @@
   </div>
   <div class="navbar-right">
     <ul class="nav navbar-nav navbar-left">
+      <li class="infraInfo">
+        <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
+          <i class="fa fa-gears"></i>
+        </a>
+      </li>
       <li class="notif">
         <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
           <i class="fa fa-envelope"></i>
@@ -24,18 +29,24 @@
         <span class="clock"></span>
       </li>
       <li class="user">
-        <a href="#" class="dropdown-toggle drop-avatar" data-toggle="dropdown">
-          <i class="fa fa-user"></i>
+        <a class="account dropdown-toggle" data-toggle="dropdown" href="#">
+          <div class="avatar">
+            <img src="http://www.gravatar.com/avatar/lkjkj?rating=PS&size=20&default=" alt="Avatar" class="img-circle">
+          </div>
         </a>
         <ul class="dropdown-menu">
+          <li><a href="#"><i class="fa fa-user"></i> {t}Profile{/t}</a></li>
+          <li><a href="#"><i class="fa fa-cog"></i> {t}Settings{/t}</a></li>
+          <li><a href="#"><i class="fa fa-envelope"></i> {t}Messages{/t}</a></li>
+          <li class='divider'></li>
           <li>
             <div class="btn-group btn-group-sm">
               <button type="button" class="btn btn-light">Light</button>
               <button type="button" class="btn btn-dark">Dark</button>
             </div>
           </li>
-          <li class="divider"></li>
-          <li><a href="#" id="logout">{t}Logout{/t}</a></li>
+          <li class='divider'></li>
+          <li><a href="#" id="logout"><i class="glyphicon glyphicon-off"></i> {t}Logout{/t}</a></li>
         </ul>
       </li>
     </ul>

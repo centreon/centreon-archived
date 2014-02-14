@@ -8,7 +8,6 @@ use \Models\Configuration\Command,
 
 class CommandController extends \Centreon\Core\Controller
 {
-
     /**
      * List commands
      *
@@ -47,11 +46,15 @@ class CommandController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        echo \Centreon\Core\Datatable::getDatas(
-            'command',
-            $this->getParams('get')
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $router->response()->json(
+            \Centreon\Core\Datatable::getDatas(
+                'command',
+                $this->getParams('get')
+            )
         );
-
     }
     
     /**
@@ -144,6 +147,7 @@ class CommandController extends \Centreon\Core\Controller
         $currentCommandValues = $connObj->getParameters($requestParam['id'], array(
             'command_id',
             'command_name',
+            'command_example',
             'command_type',
             'command_line',
             'command_comment',
