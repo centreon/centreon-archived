@@ -241,6 +241,18 @@ CREATE TABLE `acl_resources_sg_relations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `acl_routes` (
+  `acl_route_id` int(11) NOT NULL AUTO_INCREMENT,
+  `route` varchar(255) NOT NULL, 
+  `permission` int(11) NOT NULL,
+  `acl_group_id` int(11),
+  PRIMARY KEY (`acl_route_id`),
+  KEY `acl_group_id` (`acl_group_id`),
+  CONSTRAINT `fk_acl_route_group_id` FOREIGN KEY (`acl_group_id`) REFERENCES `acl_groups`(`acl_group_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_topology` (
   `acl_topo_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_topo_name` varchar(255) DEFAULT NULL,
