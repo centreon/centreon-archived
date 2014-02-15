@@ -7,3 +7,4 @@ Guide utilisateur
 
    *
    configuration/index
+   supervision/index
