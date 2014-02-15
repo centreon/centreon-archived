@@ -110,3 +110,8 @@ Sur le serveur central :
 ::
 
 	$ ssh centreon@[ADRESSE_IP_DU_POLLER]
+
+Exportation de la configuration
+-------------------------------
+
+Il ne reste plus qu'à exporter la configuration afin de vérifier que l'installation du serveur satellite s'est bien déroulée.
