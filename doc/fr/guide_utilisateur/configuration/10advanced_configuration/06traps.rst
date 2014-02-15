@@ -215,7 +215,8 @@ Il est également possible de créer manuellement des OID :
 * Le champ **Nom du constructeur** définit le nom du constructeur auquel appartient la trap
 * Le champ **Message de sortie** contient le message à afficher en cas de réception d'une trap contenant l'OID configuré au-dessus.
 Pour afficher le contenu de la trap on utilise la variable **$***. 
-Le champ **Commentaires** (dernier champ) contient en général des variables qui peuvent être affichée en cas de réception de la trap en utilisant la variable **$[Numéro de la variable]** [ TODO mettre une capture d'écran ?]
+Le champ **Commentaires** (dernier champ) contient la liste des variables qui peuvent être affichées en cas de réception de la trap. Pour faire appel à ces variables, il faut utiliser : **$[Numéro de la variable]** [ TODO mettre une capture d'écran ?]
+
 * Le champ **Statut par défaut** définit le statut par défaut du service en cas de réception de la trap
 * Le champ **Default Severity** [ TODO Pas de traduction : traduction proposée] permet de définir un niveau de criticité par défaut
 * Si la case **Mode de correspondance avancé** est cochée alors il est possible en fonction du message reçu de modifier le statut et la sévérité du statut
