@@ -6,7 +6,7 @@ Les escalades de notifications
 Définition
 **********
 
-Par défaut, une notification permet de contacter un ou plusieurs contacts (ou groupes de contacts) en cas de déclenchement d'une alerte. 
+D'une manière générale, en cas de déclenchement d'une alerte, une notification permet de contacter un ou plusieurs contacts (ou groupes de contacts). 
 De même, il est possible d'envoyer plusieurs notifications suivant un intervalle de temps régulier.
 
 Une escalade de notifications permet de contacter différents groupes de contacts au fil des notifications envoyées.

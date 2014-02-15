@@ -20,8 +20,7 @@ Les types de temps d'arrêts
 Il existe deux types de temps d'arrêts :
 
 * Les temps d'arrêts fixe : C'est à dire que le temps d'arrêt a lieu exactement pendant la période de temps définie
-* Les temps d'arrêts flexible : C'est à dire que si pendant la période de temps définie le service ou l'hôte retourne un statut non-OK alors le temps d'arrêt dure un 
-certain nombre de secondes (à définir dans le formulaire) à partir du moment où l'hôte ou le statut a retourné un statut non-OK.
+* Les temps d'arrêts flexible : C'est à dire que si pendant la période de temps définie le service ou l'hôte retourne un statut non-OK alors le temps d'arrêt dure un certain nombre de secondes (à définir dans le formulaire) à partir du moment où l'hôte ou le statut a retourné un statut non-OK.
 
 *************
 Configuration
