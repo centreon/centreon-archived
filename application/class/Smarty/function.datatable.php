@@ -18,7 +18,7 @@ function smarty_function_datatable($params, $smarty)
     
     // Process Column
     $dCol = array();
-    $depth = \Centreon\Repository\Repository::array_depth($datatableParameters['column']);
+    $depth = arrayDepth($datatableParameters['column']);
     foreach ($datatableParameters['column'] as $columnLabel => $columnContent) {
         if (is_array($columnContent)) {
             $datatableParameters['nbFixedTr'] = 2;

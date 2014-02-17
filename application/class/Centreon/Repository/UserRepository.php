@@ -209,14 +209,21 @@ class UserRepository extends \Centreon\Repository\Repository
     public static function formatDatas(&$resultSet)
     {
         foreach ($resultSet as &$myUserSet) {
-            $myUserSet['contact_host_notification_options'] = self::getNotificationInfos(
-                $myUserSet['contact_id'],
-                'host'
+            insertAfter(
+                $myUserSet,
+                'contact_email',
+                array(
+                    'contact_host_notification_options' => self::getNotificationInfos(
+                        $myUserSet['contact_id'],
+                        'host'
+                    ),
+                    'contact_service_notification_options' => self::getNotificationInfos(
+                        $myUserSet['contact_id'],
+                        'service'
+                    )
+                )
             );
-            $myUserSet['contact_service_notification_options'] = self::getNotificationInfos(
-                $myUserSet['contact_id'],
-                'service'
-            );
+
             if ($myUserSet['contact_email'] != "") {
                 $myUserSet['contact_name'] = "<img src='http://www.gravatar.com/avatar/".
                     md5($myUserSet['contact_email']).
