@@ -33,7 +33,7 @@
         });
         
         $(function () {
-            $('#formHeader a:first').tab('show')
+            $('#formHeader a:first').tab('show');
         });
 
     </script>

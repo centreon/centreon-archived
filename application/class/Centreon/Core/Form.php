@@ -234,7 +234,10 @@ class Form
                 break;
             
             case 'group':
-                $selectedValues = array_keys($element['value']);
+                $selectedValues = array();
+                if (is_array($element['value'])) {
+                    $selectedValues = array_keys($element['value']);
+                }
                 $element['input'] = '<div class="input-group">';
                 foreach($element['elements'] as $groupElement) {
                     if ($groupElement['type'] == 'checkbox') {
@@ -379,12 +382,16 @@ class Form
             $inputElement['id'] = $inputElement['name'];
         }
         
-        $inputHtml = '<input '.
+        (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
+        
+        $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">&nbsp;'.
+                        '<input '.
                         'id="'.$inputElement['id'].'" '.
                         'type="'.$inputElement['type'].'" '.
                         'name="'.$inputElement['name'].'" '.
                         $value.' '.
-                        '/>';
+                        '/>'.' '.$inputElement['label'].
+                        '</label>&nbsp;';
         return $inputHtml;
     }
 
@@ -703,6 +710,7 @@ class Form
      */
     public function addCheckBox($name, $label, $separators = '&nbsp;', $params = array())
     {
+        
         if (isset($params['list']) && count($params['list'])) {
             $cbList = array();
             foreach ($params['list'] as $cb) {

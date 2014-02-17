@@ -2,6 +2,9 @@
 
 namespace Controllers\Configuration;
 
+use \Models\Configuration\Host,
+    \Centreon\Core\Form\FormGenerator;
+
 class HostController extends \Centreon\Core\Controller
 {
 
@@ -67,7 +70,7 @@ class HostController extends \Centreon\Core\Controller
      * Update a host
      *
      *
-     * @method put
+     * @method post
      * @route /configuration/host/update
      */
     public function updateAction()
@@ -96,6 +99,59 @@ class HostController extends \Centreon\Core\Controller
      */
     public function editAction()
     {
+        // Init template
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
         
+        $requestParam = $this->getParams('named');
+        $connObj = new Host();
+        $currentHostValues = $connObj->getParameters($requestParam['id'], array(
+            'host_id',
+            'host_name',
+            'host_alias',
+            'host_address',
+            'host_active_checks_enabled',
+            'host_passive_checks_enabled',
+            'host_obsess_over_host',
+            'host_check_freshness',
+            'host_freshness_threshold',
+            'host_flap_detection_enabled',
+            'host_process_perf_data',
+            'host_retain_status_information',
+            'host_retain_nonstatus_information',
+            'host_stalking_options',
+            'host_activate',
+            'host_comment'
+            )
+        );
+        
+        if (isset($currentHostValues['host_activate']) && is_numeric($currentHostValues['host_activate'])) {
+            $currentHostValues['host_activate'] = $currentHostValues['host_activate'];
+        } else {
+            $currentHostValues['host_activate'] = '0';
+        }
+        
+        if (isset($currentHostValues['host_active_checks_enabled']) && is_numeric($currentHostValues['host_active_checks_enabled'])) {
+            $currentHostValues['host_active_checks_enabled'] = $currentHostValues['host_active_checks_enabled'];
+        } else {
+            $currentHostValues['host_active_checks_enabled'] = '2';
+        }
+        
+        if (isset($currentHostValues['host_passive_checks_enabled']) && is_numeric($currentHostValues['host_passive_checks_enabled'])) {
+            $currentHostValues['host_passive_checks_enabled'] = $currentHostValues['host_passive_checks_enabled'];
+        } else {
+            $currentHostValues['host_passive_checks_enabled'] = '2';
+        }
+        
+        $myForm = new FormGenerator('/configuration/host/update');
+        $myForm->setDefaultValues($currentHostValues);
+        $myForm->addHiddenComponent('host_id', $requestParam['id']);
+        
+        // Display page
+        $tpl->assign('form', $myForm->generate());
+        $tpl->assign('formName', $myForm->getName());
+        $tpl->assign('firstSection', $myForm->getFirstSection());
+        $tpl->assign('validateUrl', '/configuration/host/update');
+        $tpl->display('configuration/edit.tpl');
     }
 }
