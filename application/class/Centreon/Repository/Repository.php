@@ -207,12 +207,7 @@ abstract class Repository
         $finalRequest = "SELECT SQL_CALC_FOUND_ROWS $field_list FROM ".static::$tableName."$additionalTables $conditions "
             . "$sort $limitations";
         
-        try {
-            // Executing the request
-            $stmt = $dbconn->query($finalRequest);
-        } catch (Exception $e) {
-            
-        }
+        $stmt = $dbconn->query($finalRequest);
         
         // Returning the result
         $resultSet = $stmt->fetchAll(\PDO::FETCH_ASSOC);
@@ -393,27 +388,5 @@ abstract class Repository
     public static function getTotalRecords($params)
     {
         
-    }
-    
-    /**
-     * 
-     * @param array $array
-     * @return type
-     */
-    public static function array_depth(array $array)
-    {
-        $max_depth = 1;
-
-        foreach ($array as $value) {
-            if (is_array($value)) {
-                $depth = self::array_depth($value) + 1;
-
-                if ($depth > $max_depth) {
-                    $max_depth = $depth;
-                }
-            }
-        }
-
-        return $max_depth;
     }
 }

@@ -79,6 +79,8 @@ spl_autoload_register(function ($classname) use ($centreon_path) {
     }
 });
 
+require_once $centreon_path.'/application/functions/array.php';
+
 try {
     $bootstrap = new \Centreon\Core\Bootstrap();
     $bootstrap->init();
