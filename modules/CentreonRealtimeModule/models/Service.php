@@ -31,48 +31,19 @@
  *
  * For more information : contact@centreon.com
  *
+ *
  */
 
-namespace  CentreonConfiguration\Repository;
+namespace CentreonRealtime\Models;
 
 /**
- * Factory for ConfigGenerate Engine For commands
+ * Used for interacting with services
  *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
+ * @author sylvestre
  */
-class ConfigGenerateResourcesRepository
+class Service extends \Centreon\Models\CentreonBaseModel
 {
-    /** 
-     * Generate Resources.cfg
-     * @param  
-     * @return value
-     */
-    public function generateResources(& $filesList, $poller_id, $path, $filename) 
-    {
-        $di = \Centreon\Internal\Di::getDefault();
-
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resource r, cfg_resource_instance_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND rr.instance_id = 1 
-                                AND resource_activate = '$poller_id' 
-                  ORDER BY resource_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $content[$row["resource_name"]] = $row["resource_line"];
-        }
-
-        /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
-    }
+    protected static $table = "services";
+    protected static $primaryKey = "service_id";
+    protected static $uniqueLabelField = "description";
 }

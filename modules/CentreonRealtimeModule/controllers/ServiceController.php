@@ -32,47 +32,42 @@
  * For more information : contact@centreon.com
  *
  */
-
-namespace  CentreonConfiguration\Repository;
+namespace CentreonRealtime\Controllers;
 
 /**
- * Factory for ConfigGenerate Engine For commands
+ * Display service monitoring states
  *
- * @author Julien Mathis <jmathis@merethis.com>
- * @version 3.0.0
+ * @author Sylvestre Ho
+ * @package CentreonRealtime
+ * @subpackage Controllers
  */
-class ConfigGenerateResourcesRepository
+class ServiceController extends \Centreon\Internal\Controller
 {
-    /** 
-     * Generate Resources.cfg
-     * @param  
-     * @return value
+    /**
+     * The page structure for display
+     *
+     * @method get
+     * @route /realtime/service/list
      */
-    public function generateResources(& $filesList, $poller_id, $path, $filename) 
+    public function listAction()
     {
-        $di = \Centreon\Internal\Di::getDefault();
+        $router = \Centreon\Internal\Di::getDefault()->get('router');
+        $router->response()->json(
+            \Centreon\Internal\Datatable::getDatas(
+                'CentreonRealtime',
+                'service',
+                $this->getParams('get')
+            )
+        );
+    }
 
-        /* Get Database Connexion */
-        $dbconn = $di->get('db_centreon');
-
-        /* Init Content Array */
-        $content = array();
-        
-        /* Get information into the database. */
-        $query = "SELECT resource_name, resource_line 
-                        FROM cfg_resource r, cfg_resource_instance_relations rr 
-                        WHERE r.resource_id = rr.resource_id 
-                                AND rr.instance_id = 1 
-                                AND resource_activate = '$poller_id' 
-                  ORDER BY resource_name";
-        $stmt = $dbconn->prepare($query);
-        $stmt->execute();
-        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $content[$row["resource_name"]] = $row["resource_line"];
-        }
-
-        /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
-        unset($content);
+    /**
+     * Service detail page
+     *
+     * @method get
+     * @route /realtime/service/[i:id]
+     */
+    public function serviceDetailAction()
+    {
     }
 }

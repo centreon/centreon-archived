@@ -33,9 +33,25 @@
  *
  */
 
-var_dump($this->getWidgetParams());
-
 $tpl = $this->getTemplate();
+
+/* Load css */
 $tpl->addCss('dataTables.css')
 	->addCss('dataTables.bootstrap.css')
 	->addCss('dataTables-TableTools.css');
+
+/* Load js */
+$tpl->addJs('jquery.min.js')
+	->addJs('jquery.dataTables.min.js')
+	->addJs('jquery.dataTables.TableTools.min.js')
+	->addJs('bootstrap-dataTables-paging.js')
+	->addJs('jquery.dataTables.columnFilter.js')
+	->addJs('jquery.select2/select2.min.js')
+	->addJs('jquery.validate.min.js')
+	->addJs('additional-methods.min.js');
+
+/* Datatable */
+$tpl->assign('moduleName', 'CentreonRealtime');
+$tpl->assign('objectName', 'Service');
+$tpl->assign('objectListUrl', '/realtime/service/list');
+$tpl->display('file:[ServiceMonitoringWidget]console.tpl');

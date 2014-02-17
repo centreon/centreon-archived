@@ -234,7 +234,7 @@ class HostTemplateRepository extends \CentreonConfiguration\Repository\Repositor
         }
 
         /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $user = "API");
+        WriteConfigFileRepository::writeObjectFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
     

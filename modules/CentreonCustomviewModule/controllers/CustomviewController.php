@@ -54,6 +54,7 @@ class CustomviewController extends \Centreon\Internal\Controller
      */
     public function customviewAction()
     {
+        $baseUrl = rtrim(\Centreon\Internal\Di::getDefault()->get('config')->get('global', 'base_url'), '/');
         $template = \Centreon\Internal\Di::getDefault()->get('template');
         $template->addCss('jquery.gridster.min.css')
             ->addCss('centreon-widget.css')
@@ -79,17 +80,17 @@ class CustomviewController extends \Centreon\Internal\Controller
         }
         $gridJs = '
             $(function() {
-                '.$this->getJsFunctionSavePos().'
-                '.$this->getJsFunctionRemoveWidget().'
+                '.$this->getJsFunctionSavePos($baseUrl).'
+                '.$this->getJsFunctionRemoveWidget($baseUrl).'
                 '.$this->getJsInitGrid($jsonPosition, $jsonWidgets).'
-                '.$this->getJsEditView("#view_add", "/customview/updateview").'
-                '.$this->getJsEditView("#view_settings", "/customview/updateview/1").'
-                '.$this->getJsDeleteView().'
-                '.$this->getJsDefault().'
-                '.$this->getJsBookmark().'
-                '.$this->getJsWidgetList().'
+                '.$this->getJsEditView("#view_add", "$baseUrl/customview/updateview").'
+                '.$this->getJsEditView("#view_settings", "$baseUrl/customview/updateview/1").'
+                '.$this->getJsDeleteView($baseUrl).'
+                '.$this->getJsDefault($baseUrl).'
+                '.$this->getJsBookmark($baseUrl).'
+                '.$this->getJsWidgetList($baseUrl).'
                 '.$this->getJsRemoveWidget().'
-                '.$this->getJsWidgetSettings().'
+                '.$this->getJsWidgetSettings($baseUrl).'
             });';
         $template->addCustomJs($gridJs);
         $template->display('file:[CentreonCustomviewModule]customview.tpl');
@@ -356,9 +357,10 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for view deletion
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsDeleteView()
+    protected function getJsDeleteView($baseUrl)
     {
         return '$("#view_delete").click(function() {
                     bootbox.dialog({
@@ -375,7 +377,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "/customview/removeview",
+                                        url: "'.$baseUrl.'/customview/removeview",
                                         data: { view_id: 1 }
                                     });
                                 }
@@ -421,9 +423,10 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for widget settings
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsWidgetSettings()
+    protected function getJsWidgetSettings($baseUrl)
     {
         return '$(".widget-settings").click(function() {
                     var li = $(this).parents().closest("li"); 
@@ -435,7 +438,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         $(this).centreonWizard();
                     });
                     $("#modal").modal({
-                        "remote": "/customview/widgetsettings/" + $(li).data("widget-id")
+                        "remote": "'.$baseUrl.'/customview/widgetsettings/" + $(li).data("widget-id")
                     });
                 });';
 
@@ -444,9 +447,10 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for bookmark
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsBookmark()
+    protected function getJsBookmark($baseUrl)
     {
         return '$("#view_bookmark").click(function() {
                     bootbox.dialog({
@@ -463,7 +467,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "/customview/unbookmarkview",
+                                        url: "'.$baseUrl.'/customview/unbookmarkview",
                                         data: { view_id: 1 }
                                     });
                                 }
@@ -474,7 +478,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "/customview/bookmarkview",
+                                        url: "'.$baseUrl.'/customview/bookmarkview",
                                         data: { view_id: 1 }
                                     });
                                 }
@@ -487,9 +491,10 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for default set
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsDefault()
+    protected function getJsDefault($baseUrl)
     {
         return '$("#view_default").click(function() {
                     bootbox.dialog({
@@ -506,7 +511,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                                 callback: function() {
                                     $.ajax({
                                         type: "POST",
-                                        url: "/customview/setdefaultview",
+                                        url: "'.$baseUrl.'/customview/setdefaultview",
                                         data: { view_id: 1 }
                                     });
                                 }
@@ -519,9 +524,10 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js widget list
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsWidgetList()
+    protected function getJsWidgetList($baseUrl)
     {
         return '$("#view_widget").click(function() {
                     $("#modal").removeData("bs.modal");
@@ -531,7 +537,7 @@ class CustomviewController extends \Centreon\Internal\Controller
                         $(this).centreonWizard();
                     });
                     $("#modal").modal({
-                        "remote": "/customview/widgetlist/1"
+                        "remote": "'.$baseUrl.'/customview/widgetlist/1"
                     });
                 })';
     }
@@ -611,14 +617,15 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for position saving
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsFunctionSavePos() 
+    protected function getJsFunctionSavePos($baseUrl) 
     {
         return 'function savepos() {
                     $.ajax({
                         type: "POST",
-                        url: "/customview/saveposition",
+                        url: "'.$baseUrl.'/customview/saveposition",
                         data: { pos: gridster.serialize(), view_id: 1 }
                     });
                 }';
@@ -627,14 +634,15 @@ class CustomviewController extends \Centreon\Internal\Controller
     /**
      * Get js code for widget removal
      *
+     * @param string $baseUrl
      * @return string
      */
-    protected function getJsFunctionRemoveWidget()
+    protected function getJsFunctionRemoveWidget($baseUrl)
     {
         return 'function removeWidget(widgetId) {
                     $.ajax({
                         type: "POST",
-                        url: "/customview/removewidget",
+                        url: "'.$baseUrl.'/customview/removewidget",
                         data: {
                             widget_id: widgetId
                         }

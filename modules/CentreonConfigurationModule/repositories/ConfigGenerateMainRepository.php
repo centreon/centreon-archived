@@ -44,21 +44,25 @@ namespace  CentreonConfiguration\Repository;
 
 class ConfigGenerateMainRepository 
 {
-    /*
+    /**
      * Methode for generating Main configuration file
      * @return value
      */
     public static function generateMainFile(& $filesList, $poller_id, $path, $filename, $testing = 0) 
     {
         /* Get Content */
-        $content = static::getContent($poller_id);
+        $content = static::getContent($poller_id, $filesList);
         
-        /* Write Check-Command configuration file */    
-        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $user = "API");
+        /* Write Check-Command configuration file */
+        WriteConfigFileRepository::writeParamsFile($content, $path.$poller_id."/".$filename, $filesList, $user = "API");
         unset($content);
     }
 
-    private static function getContent($poller_id) 
+    /** 
+     * 
+     *
+     */
+    private static function getContent($poller_id, & $filesList) 
     {
         $di = \Centreon\Internal\Di::getDefault();
 
@@ -74,7 +78,7 @@ class ConfigGenerateMainRepository
         
         /* Get configuration files */
         $confFiles = static::getConfigFiles($poller_id);
-        foreach ($confFiles as $category => $data) {
+        foreach ($filesList as $category => $data) {
             foreach ($data as $path) {
                 if (!isset($content[$category])) {
                     $content[$category] = array();
@@ -83,6 +87,8 @@ class ConfigGenerateMainRepository
             }
         } 
         
+        $getCmd = static::getCommandIdField();
+
         /* Get information into the database. */
         $query = "SELECT * FROM cfg_nagios WHERE nagios_server_id = '$poller_id'";
         $stmt = $dbconn->prepare($query);
@@ -94,9 +100,12 @@ class ConfigGenerateMainRepository
                         ;
                     } else if (isset($commandId[$key]) && isset($value)) {
                         $content[$key] = CommandRepository::getCommandName($value);
-                    } else if ($key == "broker_module") {
-                        $broker = static::getBrokerConf($poller_id);
-                        $content[$key] = $broker;
+                    } else if ($key == "event_broker_options") {
+                        /* Get Brokers List */
+                        $content["broker_module"] = static::getBrokerConf($poller_id);
+
+                        /* Write param */
+                        $content[$key] = $value;
                     } else {
                         if ($value != "") {
                             $content[$key] = html_entity_decode($value);
@@ -108,9 +117,14 @@ class ConfigGenerateMainRepository
         return $content;
     }
 
+    /** 
+     * 
+     *
+     */
     private static function getConfigFiles($poller_id) 
     {
         $pathList = array();
+        $resList = array();
         $dirList = array();
         
         /* TODO : Change hardcoded path */
@@ -138,7 +152,7 @@ class ConfigGenerateMainRepository
         }
 
         /* Add fixed path files */
-        $pathList[] = $path."$poller_id/resources.cfg";
+        $resList[] = $path."$poller_id/resources.cfg";
         $pathList[] = $path."$poller_id/misc-command.cfg";
         $pathList[] = $path."$poller_id/check-command.cfg";
         $pathList[] = $path."$poller_id/timeperiods.cfg";
@@ -146,9 +160,13 @@ class ConfigGenerateMainRepository
         
         $dirList[] = $path."$poller_id/objects/";
 
-        return array("cfg_file" => $pathList, "cfg_dir" => $dirList);
+        return array("cfg_file" => $pathList, "resource_file" => $resList, "cfg_dir" => $dirList);
     }
 
+    /** 
+     * 
+     *
+     */
     private static function getBrokerConf($poller_id) 
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -163,11 +181,15 @@ class ConfigGenerateMainRepository
         $stmt = $dbconn->prepare("SELECT broker_module FROM `cfg_nagios_broker_module` WHERE `cfg_nagios_id` = '".$poller_id."'");
         $stmt->execute();
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $broker["broker_module"][] = $arBk;
+            $broker[] = $row["broker_module"];
         }
         return $broker;
     }
 
+    /** 
+     * 
+     *
+     */
     private static function getDefaultValue() 
     {
         /* Field that we don't write if value = 2 */
@@ -219,6 +241,10 @@ class ConfigGenerateMainRepository
         return $defaultValue;
     }
 
+    /** 
+     * 
+     *
+     */
     private static function getCommandIdField() 
     {
         $commandId = array();
@@ -233,6 +259,10 @@ class ConfigGenerateMainRepository
         return $commandId;
     }
 
+    /** 
+     * 
+     *
+     */
     private static function getDisabledField() 
     {
         /* Field that we don't want into the config file */
