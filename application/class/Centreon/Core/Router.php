@@ -40,9 +40,14 @@ class Router extends \Klein\Klein
                                 $data['acl'] = "";
                             }
                             if ($acl->routeAllowed($data['route'], $data['acl'])) {
+                                if (substr($data['route'], 0, 1) === '@') {
+                                    $routeName = $data['route'];
+                                } else {
+                                    $routeName = $baseUrl.$data['route'];
+                                }
                                 $this->respond(
                                     $data['method_type'],
-                                    $baseUrl.$data['route'],
+                                    $routeName,
                                     function ($request, $response) use ($controllerName, $action) {
                                         $obj = new $controllerName($request);
                                         $obj->$action();
