@@ -82,18 +82,18 @@ class ExtensionsController extends \Centreon\Internal\Controller
     {
         $router = $this->di->get('router');
         $config = $this->di->get('config');
-        $centreonPath = $config->get('global', 'centreon_path');
+        $centreonPath = rtrim($config->get('global', 'centreon_path'), '/');
         $params = $this->getParams();
         
         $commonName = str_replace(' ', '', ucwords(str_replace('-', ' ', $params['shortname'])));
         
         $moduleDirectory = $centreonPath
-            . 'modules/'
+            . '/modules/'
             . $commonName
             . 'Module/';
         
         if (!file_exists(realpath($moduleDirectory . 'install/config.json'))) {
-            throw new \Exception("The module is not valid because aof a missing configuration file");
+            throw new \Exception("The module is not valid because of a missing configuration file");
         }
         $moduleInfo = json_decode(file_get_contents($moduleDirectory . 'install/config.json'), true);
         // Launched Install
