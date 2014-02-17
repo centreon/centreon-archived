@@ -59,9 +59,11 @@ class ToolsController extends \Centreon\Core\Controller
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = str_replace($baseUrl, '/', $route);
         $route = str_replace('css', 'less', $route);
+	/* Remove min */
+	$route = str_replace('.min.', '.', $route);
         $centreonPath = realpath(__DIR__ . '/../../www/');
         if (false === file_exists($centreonPath . $route)) {
-            $responce->redirect('404', 404);
+            $response->redirect('404', 404);
             return;
         }
         
