@@ -5,7 +5,6 @@
         <column name="name" phpName="Name" type="VARCHAR" size="255" required="true"/>
         <column name="shortname" phpName="Shortname" type="VARCHAR" size="255" required="true"/>
         <column name="description" phpName="Description" type="VARCHAR" size="255" required="true"/>
-        <column name="url" phpName="Url" type="VARCHAR" size="255" required="true"/>
         <column name="version" phpName="Version" type="VARCHAR" size="255" required="true"/>
         <column name="directory" phpName="Directory" type="VARCHAR" size="255" required="true"/>
         <column name="author" phpName="Author" type="VARCHAR" size="255" required="true"/>
