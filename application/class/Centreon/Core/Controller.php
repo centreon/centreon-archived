@@ -47,7 +47,12 @@ class Controller
      */
     protected function init()
     {
+        $tpl = Di::getDefault()->get('template');
 
+        /*
+         * Set md5Email for Gravatar
+         */ 
+        $tpl->assign("md5Email", md5($_SESSION['user']->getEmail()));
     }
 
     /**

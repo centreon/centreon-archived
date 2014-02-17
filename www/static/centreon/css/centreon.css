@@ -320,6 +320,11 @@ aside {
     font-weight: bold;
 }
 
+.user .btn-group {
+    padding: 3px 30px;
+    padding-right: 0;
+}
+
 /**************/
 /* DARK THEME */
 

@@ -86,8 +86,10 @@ class LoginController extends \Centreon\Core\Controller
         }
         $auth = new \Centreon\Core\Auth\Sso($username, $password, 0);
         if (1 === $auth->passwdOk) {
-            $_SESSION['user_id'] = $auth->userInfos['contact_id'];
-            \Centreon\Core\Session::init($_SESSION['user_id']);
+            $user = new \Centreon\Core\User();
+            $user->init($auth->userInfos['contact_id']);
+            $_SESSION['user'] = $user;
+            \Centreon\Core\Session::init($user->getId());
             $router->response()->json(
                 array(
                     'status' => true

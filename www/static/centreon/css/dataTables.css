@@ -10,7 +10,7 @@ table.dataTable {
 
 table.dataTable thead th {
 	padding: 3px 18px 3px 10px;
-	border-bottom: 1px solid black;
+	border-bottom: 1px solid #DDD;
 	font-weight: bold;
 	cursor: pointer;
 	*cursor: hand;
@@ -218,3 +218,8 @@ table.dataTable thead td:active {
 	-webkit-overflow-scrolling: touch;
 }
 
+/* Table Skin */
+
+th.sorting_disabled, th.header, th {
+    background-color: #CCCCCC;
+}

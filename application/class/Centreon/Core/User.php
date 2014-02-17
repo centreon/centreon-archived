@@ -69,7 +69,7 @@ class User
      *
      * @const string
      */
-    const NOT_INIT = _('User not initialized properly');
+    public static $notInit = 'User not initialized properly';
 
     /**
      * Constructor
@@ -87,18 +87,19 @@ class User
     public function init($userId)
     {
         $contactObj = new \Models\Configuration\Contact();
-        $params = $contactObj->getParameters(
-            $userId, 
-            array('contact_id', 'contact_name', 'contact_alias', 'contact_lang')
-        );
-        if (!is_array($params) || !count($params)) {
+        $paramArr = array('contact_id', 'contact_name', 'contact_alias', 'contact_lang', 'contact_admin', 'contact_email'); 
+        $params = $contactObj->getParameters($userId, $paramArr);
+        if (!is_array($params) || !count($params)) {
             throw new Exception(_('Unknown user id'));
         }
-        $this->id = $params['contact_id'];
-        $this->name = $params['contact_name'];
-        $this->login = $params['contact_alias'];
-        $this->lang = $params['contact_lang'];
-        $this->admin = $params['contact_admin'];
+        list (
+            $this->id, 
+            $this->name, 
+            $this->login, 
+            $this->lang, 
+            $this->admin, 
+            $this->email
+        ) = $params;
     }
 
     /**
@@ -122,7 +123,7 @@ class User
     public function getName()
     {
         if (!isset($this->name)) {
-            throw new Exception(self::NOT_INIT);
+            throw new Exception(self::$notInit);
         }
         return $this->name;
     }
@@ -135,7 +136,7 @@ class User
     public function getLogin()
     {
         if (!isset($this->login)) {
-            throw new Exception(self::NOT_INIT);
+            throw new Exception(self::$notInit);
         }
         return $this->login;
     }
@@ -148,9 +149,22 @@ class User
     public function getLang()
     {
         if (!isset($this->lang)) {
-            throw new Exception(self::NOT_INIT);
+            throw new Exception(self::$notInit);
         }
         return $this->lang;
+    }
+
+    /**
+     * email getter
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        if (!isset($this->email)) {
+            throw new Exception(self::$notInit);
+        }
+        return $this->email;
     }
 
     /**
@@ -161,7 +175,7 @@ class User
     public function isAdmin()
     {
         if (!isset($this->admin)) {
-            throw new Exception(self::NOT_INIT);
+            throw new Exception(self::$notInit);
         }
         if ($this->admin) {
             return true;

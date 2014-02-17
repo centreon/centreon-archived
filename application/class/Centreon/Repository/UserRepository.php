@@ -56,7 +56,7 @@ class UserRepository extends \Centreon\Repository\Repository
     
     /**
      *
-     * @var array Default column for datatable
+     * @var array Main database field to get
      */
     public static $datatableColumn = array(
         '<input id="allContact" class="allContact" type="checkbox">' => 'contact_id',
@@ -75,7 +75,7 @@ class UserRepository extends \Centreon\Repository\Repository
     
     /**
      *
-     * @var array Default column for datatable
+     * @var array Column name for the search index
      */
     public static $researchIndex = array(
         'contact_id',
@@ -90,8 +90,16 @@ class UserRepository extends \Centreon\Repository\Repository
         'contact_activate'
     );
     
+    /**
+     *
+     * @var string 
+     */
     public static $specificConditions = "contact_register = '1' ";
     
+    /**
+     * @inherit doc
+     * @var array 
+     */
     public static $columnCast = array(
         'contact_id' => array(
             'type' => 'checkbox',
@@ -194,21 +202,38 @@ class UserRepository extends \Centreon\Repository\Repository
         )
     );
     
-    
+    /**
+     * 
+     * @param array $resultSet
+     */
     public static function formatDatas(&$resultSet)
     {
-        foreach ($resultSet as &$myServiceSet) {
-            $myServiceSet['contact_host_notification_options'] = self::getNotificationInfos(
-                $myServiceSet['contact_id'],
+        foreach ($resultSet as &$myUserSet) {
+            $myUserSet['contact_host_notification_options'] = self::getNotificationInfos(
+                $myUserSet['contact_id'],
                 'host'
             );
-            $myServiceSet['contact_service_notification_options'] = self::getNotificationInfos(
-                $myServiceSet['contact_id'],
+            $myUserSet['contact_service_notification_options'] = self::getNotificationInfos(
+                $myUserSet['contact_id'],
                 'service'
             );
+            if ($myUserSet['contact_email'] != "") {
+                $myUserSet['contact_name'] = "<img src='http://www.gravatar.com/avatar/".
+                    md5($myUserSet['contact_email']).
+                    "?rating=PG&size=16&default=' class='img-circle'>&nbsp;".
+                    $myUserSet['contact_name'];
+            } else {
+                $myUserSet['contact_name'] = "<i class='fa fa-user'></i>&nbsp;".$myUserSet['contact_name'];
+            }
         }
     }
     
+    /**
+     * 
+     * @param integer $contactId
+     * @param string $object
+     * @return string
+     */
     public static function getNotificationInfos($contactId, $object)
     {
         // Initializing connection
