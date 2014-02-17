@@ -35,11 +35,12 @@ class Router extends \Klein\Klein
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
                             $this->routesData[] = $data;
-                            $acl = Di::getDefault()->get('acl');
+/*                            $acl = Di::getDefault()->get('acl');
                             if (!isset($data['acl'])) {
                                 $data['acl'] = "";
                             }
-                            if ($acl->routeAllowed($data['route'], $data['acl'])) {
+*/
+//                            if ($acl->routeAllowed($data['route'], $data['acl'])) {
                                 if (substr($data['route'], 0, 1) === '@') {
                                     $routeName = $data['route'];
                                 } else {
@@ -53,7 +54,7 @@ class Router extends \Klein\Klein
                                         $obj->$action();
                                     }
                                 );
-                            }
+//                            }
                         }
                     } elseif (is_dir($dir . '/' . $dirname)) {
                         $this->parseRoutes($pref . '\\' . ucfirst($dirname), $dir . '/' . $dirname);
