@@ -16,32 +16,32 @@ Statut des hôtes
 
 Le tableau ci-dessous résume l'ensemble des statuts possibles pour un hôte.
 
-+------------------------------------------+------------------------------------+
++-------------------+----------------------+------------------------------------+
 | Statut	        |  Code de retour      | Description                        | 
-+==========================================+====================================+
++===================+======================+====================================+
 | UP 				|  0				   | L'hôte est disponible et joignable	|
-+------------------------------------------+------------------------------------+
++-------------------+----------------------+------------------------------------+
 | DOWN 				|  1				   | L'hôte est indisponible 			|
-+------------------------------------------+------------------------------------+
++-------------------+----------------------+------------------------------------+
 | UNREACHABLE		|  2				   | L'hôte est injoignable			    |
-+------------------------------------------+------------------------------------+
++-------------------+----------------------+------------------------------------+
 
 Statut des services
 -------------------
-
+ 
 Le tableau ci-dessous résume l'ensemble des statuts possibles pour un service.
 
-+------------------------------------------+---------------------------------------------------------------------------+
++-------------------+----------------------+---------------------------------------------------------------------------+
 | Statut	        |  Code de retour      | Description                        									   | 
-+==========================================+===========================================================================+
++===================+======================+===========================================================================+
 | OK 				|  0				   | Le service ne présente aucun problème									   |
-+------------------------------------------+---------------------------------------------------------------------------+
++-------------------+----------------------+---------------------------------------------------------------------------+
 | WARNING			|  1				   | Le service a dépassé le seuil d'alerte 								   |
-+------------------------------------------+---------------------------------------------------------------------------+
++-------------------+----------------------+---------------------------------------------------------------------------+
 | CRITIQUE			|  2				   | Le service a dépassé le seuil critique			    					   |
-+------------------------------------------+---------------------------------------------------------------------------+
++-------------------+----------------------+---------------------------------------------------------------------------+
 | UNKNOWN			|  3				   | Le statut du service ne peut être vérifier (exemple : agent SNMP DOWN...) |
-+------------------------------------------+---------------------------------------------------------------------------+
++-------------------+----------------------+---------------------------------------------------------------------------+
 
 Le statut FLAPPING (bagotant) est obtenu à partir de calculs effectués par le moteur de supervision.
 Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui n'a pas encore eu de première vérification.
@@ -174,7 +174,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
 | Numéro de notification actuel 		   | Affiche le nombre de notifications déjà envoyée                                     													 |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
-| Est-ce que le statut de l'hôte bagote ?  | Indique si l'hôte bagotte (est en état FLAPPING)                                    													 |
+| Est\-ce que le statut de l'hôte bagote ? | Indique si l'hôte bagotte (est en état FLAPPING)                                    													 |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
 | Pourcentage de changement d'état		   | Affiche le pourcentage de changement d'état                                    														 |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------------------------------------------+
@@ -193,7 +193,7 @@ Racourcis d'hôtes
 ^^^^^^^^^^^^^^^^^
 
 Le tableau ci-dessous résume la signification des icônes :
-
+ 
 +------------------------------------------+--------------------------------------------------------------------+
 |   Icône		           				   |   Description                                                      | 
 +==========================================+====================================================================+
@@ -211,7 +211,7 @@ Le tableau ci-dessous résume la signification des icônes :
 Outils
 ^^^^^^
 
-Le conteneur **Outils** permet de
+Le conteneur **Outils** permet :
 
 * D'envoyer un ping à l'hôte
 * D'effectuer un traceroute vers l'hôte
@@ -245,16 +245,22 @@ Le menu de gauche permet de modifier les services visibles au sein du tableau :
 * Pour visualiser tous les services rencontrant un problème, cliquez sur **Problèmes en cours**
 * Pour visualiser tous les services, cliquez sur **Tous les services**
 * Pour visualiser tous les services (classés par hôtes), cliquez sur **Détails** (en dessous d'hôtes)
+
 [ TODO Mettre une capture d'écran]
 * Pour visualiser le nombre de services (classés par hôtes et statuts), cliquez sur **Résumé** (en dessous d'hôtes)
+
 [ TODO Mettre une capture d'écran]
 * Pour visualiser tous les services (classés par groupes d'hôtes), cliquez sur **Détails** (en dessous de groupe d'hôtes)
+
 [ TODO Mettre une capture d'écran]
 * Pour visualiser le nombre de services (classés par groupes d'hôtes et statuts), cliquez sur **Résumé** (en dessous de groupe d'hôtes)
+
 [ TODO Mettre une capture d'écran]
 * Pour visualiser tous les services (classés par groupes de services), cliquez sur **Détails** (en dessous de groupe de services)
+
 [ TODO Mettre une capture d'écran]
 * Pour visualiser le nombre de services (classés par groupes de services et statuts), cliquez sur **Résumé** (en dessous de groupe de services)
+
 [ TODO Mettre une capture d'écran]
 
 * Pour visualiser les méta-services, cliquez sur **Méta-Services**
@@ -307,21 +313,21 @@ Tableaux des méta-services
 
 Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation des méta-services.
 
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-|   Nom de la colonne      |   Description                                                                                                                         | 
-+==========================+=======================================================================================================================================+
-| Méta-Services            | Affiche le nom du méta-service. L'icône [TODO Mettre l'icône) permet de visualiser le graphique de performance lié à ce méta-service. |
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-| Statut                   | Affiche le statut du méta-service																									   |
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-| Durée	                   | Affiche la durée depuis laquelle le méta-service n'a pas changé de statut 		   													   |
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-| Dernier contrôle         | Affiche la date et l'heure du dernier contrôle                                                      								   |
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-| Tentative			       | Affiche le nombre de tentatives effectuées avant de valider l'état	                                                                   |
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
-| Statut détaillé  	       | Affiche le message lié au statut                                                                			                           |
-+--------------------------+---------------------------------------------------------------------------------------------------------------------------------------+
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+|   Nom de la colonne      |   Description                                                                                                                            | 
++==========================+==========================================================================================================================================+
+| Méta\-Services           | Affiche le nom du méta\-service. L'icône [TODO Mettre l'icône] permet de visualiser le graphique de performance lié à ce méta\-service.  |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+| Statut                   | Affiche le statut du méta\-service																									      |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+| Durée	                   | Affiche la durée depuis laquelle le méta\-service n'a pas changé de statut 		   												      |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+| Dernier contrôle         | Affiche la date et l'heure du dernier contrôle                                                      								      |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+| Tentative			       | Affiche le nombre de tentatives effectuées avant de valider l'état	                                                                      |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+| Statut détaillé  	       | Affiche le message lié au statut                                                                			                           	  |
++--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
 
 **********************
 Moteurs de supervision
