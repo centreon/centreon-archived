@@ -50,7 +50,35 @@ Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui
 Etats SOFT et HARD
 ******************
 
+Un hôte ou un service peut avoir deux états :
 
+* SOFT : Signifie qu'un problème vient d'être détecté et qu'il y a besoin d'être confirmé
+* HARD : Signifie que le statut est confirmé. Lorsque le statut est confirmé une alerte est envoyée
+
+Comment confirmer un statut ?
+
+Un statut est confirmé à partir du moment où l'hôte ou le service n'a pas changé de statut durant les différents contrôles avant la validation de l'état.
+Un hôte ou un service ne peuvent être en état SOFT que si leurs statut n'est pas UP ou OK. Le retour au statut UP ou OK passe automatiquement l'hôte ou le service en état HARD.
+
+Exemple :
+
+Un service a les paramètres de vérifications suivantes :
+
+ * Nombre de contrôles avant validation de l'état : 3
+ * Intervalle normal de contrôle : 5 minutes
+ * Intervalle non-régulier de contrôle : 1 minute
+ 
+Imaginons le scénario suivant :
+
+ * Instant t + 0 : Le service est vérifié, il a le statut OK
+ * Instant t + 5 : La seconde vérification montre que le service a le statut CRITICAL. Le service passe en état SOFT
+ * Instant t + 6 : La troisième vérification a lieu, le service a toujours le statut CRITICAL.
+ * Instant t + 7 : La quatrième vérification montre que le service a toujours le statut CRITICAL. Comme cela fait 3 contrôles de suite que le service a le statut CRITICAL, il passe en état HARD : Une alerte est envoyée
+ * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD.
+ * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT
+ * Instant t + 14 : Le service a toujours le statut WARNING
+ * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut
+ ...
 
 ******************
 Actions génériques
