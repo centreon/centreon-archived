@@ -72,4 +72,11 @@
     $(".search_type").change(function() {
         oTable.fnFilter(this.value, jQuery(".search_type").index(this));
     });
+
+    $('table[id^="datatable"] thead input[id^="all"]').on('click', function(e) {
+        var $checkbox = $(e.currentTarget);
+        $checkbox.parents('table').find('tbody input[type="checkbox"][class^="all"]').each(function() {
+            $(this).prop("checked", $checkbox.is(':checked'));
+        });
+    });
 </script>
