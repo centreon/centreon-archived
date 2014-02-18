@@ -8,3 +8,4 @@ Guide utilisateur
    *
    configuration/index
    supervision/index
+   graphic_management/index

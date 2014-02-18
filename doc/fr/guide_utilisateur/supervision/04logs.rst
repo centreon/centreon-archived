@@ -6,9 +6,9 @@ Les journaux d'évènements
 Définition
 **********
 
-Les journaux d'évènement permettent de :
+Les journaux d'évènement (aussi appelés logs) permettent de :
 
-* Visualiser les différents statuts et états des objets supervisés.
+* Visualiser les différents statuts et états des objets supervisés
 * Voir les notifications envoyées ainsi que leurs destinataires
 
 Ces journaux peuvent être visualisées sur une période donnée.
@@ -21,7 +21,7 @@ Pour visualiser les journaux d'évènements, rendez-vous dans **Supervision** ==
 
 [ TODO Mettre l'image : images/02.png]
 
-Le menu de gauche permet de sélectionner les hôtes et/ou les services pour lesquels on souhaite visualiser les logs.
+Le menu de gauche permet de sélectionner les hôtes et/ou les services pour lesquels on souhaite visualiser les journaux d'évènements.
 
 La barre de recherche grise appelée **Période de visualisation** permet de sélectionner la période de temps pour laquelle on souhaite visualiser les logs.
 La liste déroulante permet de sélectionner des périodes de temps génériques. Si la liste déroulante est vide alors il est possible de choisir manuellement la période de temps en utilisant les champs **Du** et **Au**.

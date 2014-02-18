@@ -163,7 +163,7 @@ Le tableau ci-dessous donne une description de toutes les colonnes du tableau af
 Détails d'un hôte
 -----------------
 
-Lorsque vous cliquez sur un hôte, la fiche suivante s'affiche :
+Lorsque vous cliquez sur un hôte, la page suivante s'affiche :
 
 [ TODO Mettre une capture d'écran]
 
@@ -203,7 +203,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Numéro de notification actuel            | Affiche le nombre de notifications déjà envoyée                                                     |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Est\-ce que le statut de l'hôte bagote ? | Indique si l'hôte bagotte (est en état FLAPPING)                                                    |
+| Est\-ce que le statut de l'hôte bagote ? | Indique si l'hôte bagotte (a le statut FLAPPING)                                                    |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Pourcentage de changement d'état         | Affiche le pourcentage de changement d'état                                                         |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -230,7 +230,7 @@ Le tableau ci-dessous résume la signification des icônes :
 +------------------------+--------------------------------------------------------------------+
 | [ TODO Mettre l'icône] | Affiche le statut de tous les services liés à l'hôte               |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche les logs liés à l'hôte                                     |
+| [ TODO Mettre l'icône] | Affiche les journaux liés à l'hôte                                 |
 +------------------------+--------------------------------------------------------------------+
 | [ TODO Mettre l'icône] | Affiche le rapport lié à l'hôte                                    |
 +------------------------+--------------------------------------------------------------------+
@@ -248,7 +248,7 @@ Le conteneur **Outils** permet :
 Liens
 ^^^^^
 
-Le conteneur **Liens** permet de visualiser les groupes d'hôtes auquel l'hôte appartient.
+Le conteneur **Liens** permet de visualiser les groupes d'hôtes auxquels l'hôte appartient.
 
 Notifications
 ^^^^^^^^^^^^^
@@ -358,6 +358,108 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
 | Statut détaillé          | Affiche le message lié au statut                                                                                                         |
 +--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
+
+Détails d'un service
+--------------------
+
+Lorsque vous cliquez sur un service, la page suivante s'affiche :
+
+[ TODO Mettre une capture d'écran]
+
+Détails du statut
+^^^^^^^^^^^^^^^^^
+
+Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
+
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+|   Attributs                              |   Description                                                                                       | 
++==========================================+=====================================================================================================+
+| Statut du service                        | Affiche le statut du service                                                                        |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Statut détaillé                          | Affiche le message associé au statut du service                                                     |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Informations d'état étendues             | Affiche le message long (plus de 255 caractères) associé au statut du service                       |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Données de performance                   | Affiche les données de performances renvoyée par la sonde                                           |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Tentative                                | Affiche le nombre de tentative avant validation de l'état                                           |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Type d'état                              | Affiche le type d'état                                                                              |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Dernier contrôle                         | Affiche la date et l'heure du dernier contrôle effectué sur le service                              |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Prochain contrôle                        | Affiche la date et l'heure du prochain contrôle effectué sur le service                             |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Latence                                  | Affiche le temps de latence entre la programmation de l'exécution et l'exécution réelle de la sonde |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Temps d'exécution                        | Affiche le temps d'éxécution de la sonde                                                            |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Changement du dernier état               | Affiche la date et l'heure depuis laquelle le servicee est dans l'état actuel                       |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Durée de l'état actuel                   | Affiche la durée depuis laquelle le service est dans l'état actuel                                  |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Dernier notification                     | Affiche la date et l'heure d'envoi de la dernière notification                                      |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Numéro de notification actuel            | Affiche le nombre de notifications déjà envoyée                                                     |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Est\-ce que l'état du service bagote ?   | Indique si le service bagotte (a le statut FLAPPING)                                                |
+| [ TODO : Est ce que le mot statut        |                                                                                                     |
+| n'est pas mieux que le mot état ?        |                                                                                                     |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Pourcentage de changement d'état         | Affiche le pourcentage de changement d'état                                                         |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Planification d'arrêt en cours?          | Indique si le service est concerné par un temps d'arrêt                                             |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+| Dernière mise à jour                     | Affiche la date et l'heure de la dernière mise à jour                                               |
++------------------------------------------+-----------------------------------------------------------------------------------------------------+
+
+Options et commandes du service
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Les options ainsi que les commandes du service permettent d'effectuer un certain nombre d'actions sur le service.
+Ces différentes options sont traitées au sein du **Guide d'exploitation**.
+
+Graphique détaillé et graphiques des statuts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Les parties **Graphique détaillé** et **Graphique des statuts** permettent respectivement de visualiser le graphique de performance ainsi que le graphique d'historique pour ce service.
+
+Racourcis d'hôte
+^^^^^^^^^^^^^^^^
+
+Les racourcis d'hôtes sont les mêmes que ceux de la fiche d'hôte.
+
+Racourcis de service
+^^^^^^^^^^^^^^^^^^^^
+
+Le tableau ci-dessous résume la signification des icônes :
+ 
++------------------------+--------------------------------------------------------------------+
+|  Icône                 |  Description                                                       | 
++========================+====================================================================+
+| [ TODO Mettre l'icône] | Redirige vers la page de configuration du service                  |
++------------------------+--------------------------------------------------------------------+
+| [ TODO Mettre l'icône] | Affiche le statut de tous les services liés à l'hôte               |
++------------------------+--------------------------------------------------------------------+
+| [ TODO Mettre l'icône] | Affiche les journaux liés au service                               |
++------------------------+--------------------------------------------------------------------+
+| [ TODO Mettre l'icône] | Affiche le rapport lié au service                                  |
++------------------------+--------------------------------------------------------------------+
+
+Liens
+^^^^^
+
+Le conteneur **Liens** permet de visualiser :
+
+* Les groupes d'hôtes auxquels l'hôte contenant le service appartient
+* Les groupes de services auxquels le service appartient
+* Les catégories de services auxquels le service appartient
+
+Notifications
+^^^^^^^^^^^^^
+
+Le conteneur **Notifications** permet de visualiser quels sont les contacts et les groupes de contacts qui seront alertés
+en cas d'envoi d'une notification.
 
 **********************
 Moteurs de supervision
