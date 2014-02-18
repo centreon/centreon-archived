@@ -28,8 +28,7 @@ Les traps sont ensuite reliées aux services passifs via l'onglet **Relations** 
 Architecture
 ************
 
-Avec Centreon 2.5.x, la gestion des traps SNMP a été complètement revue : l'architecture a été entièrement repensée. Deux nouveaux services entrent en jeu, centreontrapdforward et
-centreontrapd.
+Avec Centreon 2.5.x, la gestion des traps SNMP a été complètement revue : l'architecture a été entièrement repensée. Deux nouveaux services entrent en jeu, centreontrapdforward et centreontrapd.
 
 Traitement d'une trap par le serveur central
 --------------------------------------------
@@ -37,9 +36,8 @@ Traitement d'une trap par le serveur central
 Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements : il écoute sur le port 162 UDP
-#. Une fois la trap SNMP reçu, elle est envoyée au script centreontrapdforward qui va écrire les informations reçues dans un dossier de cache (par défaut : **/var/spool/centreontrapd/**)
-#. Le service centreontrapd lit les informations reçues dans le dossier de cache et interprète les différentes traps reçues en vérifiant dans la base de données Centreon les actions
-à entreprendre pour traiter les traps reçues
+#. Une fois la trap SNMP reçue, elle est envoyée au script centreontrapdforward qui va écrire les informations reçues dans un dossier de cache (par défaut : **/var/spool/centreontrapd/**)
+#. Le service centreontrapd lit les informations reçues dans le dossier de cache et interprète les différentes traps reçues en vérifiant dans la base de données Centreon les actions à entreprendre pour traiter les traps reçues
 #. Le service centreontrapd transmet les informations à Centreon Engine qui se charge d'interpréter la trap
 
 [ TODO Récupérer les schémas de la version anglaise]
@@ -47,13 +45,13 @@ Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
 Traitement d'une trap par un serveur satellite
 ----------------------------------------------
 
-Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLLite est chargée de garder en cache les informations de traps
-contenues dans la base de données MySQL. Cette base de données SQLLite est automatiquement générée par le serveur Central. Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
+Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
+Cette base de données SQLLite est automatiquement générée par le serveur Central. 
+Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements : il écoute sur le port 162 UDP
-#. Une fois la trap SNMP reçu, elle est envoyée au script centreontrapdforward qui va écrire les informations reçues dans un dossier de cache (par défaut : **/var/spool/centreontrapd/**)
-#. Le service centreontrapd lit les informations reçues dans le dossier de cache et interprète les différentes traps reçues en vérifiant dans la base de données SQLLite les actions
-à entreprendre pour traiter les traps reçues
+#. Une fois la trap SNMP reçue, elle est envoyée au script centreontrapdforward qui va écrire les informations reçues dans un dossier de cache (par défaut : **/var/spool/centreontrapd/**)
+#. Le service centreontrapd lit les informations reçues dans le dossier de cache et interprète les différentes traps reçues en vérifiant dans la base de données SQLLite les actions à entreprendre pour traiter les traps reçues
 #. Le service centreontrapd transmet les informations à Centreon Engine qui se charge d'interpréter la trap
 
 [ TODO Récupérer les schémas de la version anglaise]
@@ -65,30 +63,30 @@ Configuration des services
 Snmptrapd
 ---------
 
-Afin d'appeller le sript centreontrapdfoward, le fichier **/etc/snmp/snmptrapd.conf** doit contenir les lignes suivantes :
+Afin d'appeller le script centreontrapdfoward, le fichier **/etc/snmp/snmptrapd.conf** doit contenir les lignes suivantes :
 
 ::
 
-disableAuthorization yes
-traphandle default su -l centreon -c "/usr/share/centreon/bin/centreontrapdforward"
+	disableAuthorization yes
+	traphandle default su -l centreon -c "/usr/share/centreon/bin/centreontrapdforward"
 
 Vous pouvez optimiser les performances de snmptrapd en utilisant les options suivantes :
 
 * **-On** n'essaye pas de transformer les OIDs
-* **-t** ne log pas les traps au server syslog
+* **-t** ne log pas les traps au serveur syslog
 * **-n** n'essaye pas de transformer les adresses IP en nom d'hôtes
 
 Ces options peuvent être modifiées dans le fichier **/etc/sysconfig/snmptrapd**
 
 ::
 
-OPTIONS="-On -d -t -n -p /var/run/snmptrapd.pid"
+	OPTIONS="-On -d -t -n -p /var/run/snmptrapd.pid"
 
-Il est également possible de placer le dossier de cache snmptrapd au sein de la mémoire vive. Pour cela, ajoutez la ligne suivante dans le fichier **/etc/fstab** :
+Il est également possible de placer le dossier de cache snmptrapd en mémoire vive. Pour cela, ajoutez la ligne suivante dans le fichier **/etc/fstab** :
 
 ::
 
-tmpfs /var/run/snmpd                     tmpfs defaults,size=128m 0 0
+	tmpfs /var/run/snmpd                     tmpfs defaults,size=128m 0 0
 
 Centreontrapdforward
 --------------------
@@ -103,11 +101,11 @@ Pour modifier le dossier de cache vers lequel les informations seront écrites, 
 
 	1;
 
-Vous pouvez également mapper le dossier dans le cache au sein de la mémoire vive, en ajoutant la ligne suivante dans le fichier **/etc/fstab** :
+Vous pouvez également mapper le dossier dans le cache en mémoire vive, en ajoutant la ligne suivante dans le fichier **/etc/fstab** :
 
 ::
 
-tmpfs /var/spool/centreontrapd            tmpfs defaults,size=512m 0 0
+	tmpfs /var/spool/centreontrapd            tmpfs defaults,size=512m 0 0
 
 Centreontrapd
 -------------
@@ -120,7 +118,7 @@ Deux fichiers de configuration existent pour Centreontrapd :
 Configuration du service
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Au sein du fichier **/etc/centreon/centreontrapd.pm** il est conseillé de modifier uniquement trois paramètres (ci-nécessaire):
+Au sein du fichier **/etc/centreon/centreontrapd.pm** il est conseillé de modifier uniquement trois paramètres (si nécessaire):
 
 * Si l'option **mode** est définie à 1 alors centreontrapd fonctionne sur un serveur satelite, sinon il fonctionne sur un serveur central
 * L'option **centreon_user** permet de modifier l'utilisateur qui exécute les actions
@@ -214,6 +212,7 @@ Il est également possible de créer manuellement des OID :
 * Le champ **OID** définit l'OID à recevoir pour que cette trap soit considérée comme reçue
 * Le champ **Nom du constructeur** définit le nom du constructeur auquel appartient la trap
 * Le champ **Message de sortie** contient le message à afficher en cas de réception d'une trap contenant l'OID configuré au-dessus.
+
 Pour afficher le contenu de la trap on utilise la variable **$***. 
 Le champ **Commentaires** (dernier champ) contient la liste des variables qui peuvent être affichées en cas de réception de la trap. Pour faire appel à ces variables, il faut utiliser : **$[Numéro de la variable]** [ TODO mettre une capture d'écran ?]
 
@@ -222,7 +221,7 @@ Le champ **Commentaires** (dernier champ) contient la liste des variables qui pe
 * Si la case **Mode de correspondance avancé** est cochée alors il est possible en fonction du message reçu de modifier le statut et la sévérité du statut
 * Le champ **Disable submit result if no matched rules** [ TODO Pas de traduction : traduction proposée] désactive le traitement de la trap si le message reçu ne correspond à aucune règle avancée
 * Une entrée de **Règles de correspondance avancées** permet d'ajouter une règle de correspondance qui modifie le statut et la criticité du service en fonction de l'expression régulière retrouvée dans la chaine
-* Si la case **Envoyer le résultat** est cochée alors le résultat est soumi au moteur de supervision
+* Si la case **Envoyer le résultat** est cochée alors le résultat est soumis au moteur de supervision
 * Si la case **Reprogrammer les services associés** est cochée alors le service sera controlé de manière active après la réception de la trap
 * Si la case **Executer une commande spéciale** est cochée alors la commande définie dans **Commande spéciale** est exécutée
 

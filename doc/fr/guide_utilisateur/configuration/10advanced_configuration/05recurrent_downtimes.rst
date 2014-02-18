@@ -53,6 +53,6 @@ Relations
 ---------
 
 * La liste **Lié aux hôtes** permet de choisir le ou les hôtes concernés par le temps d'arrêt récurrent
-* Si un groupe d'hôte est choisit avec la liste **Lié avec le groupe d'hôtes** tous les hôtes appartenant à ce groupe sont concernés par le temps d'arrêt récurrent
+* Si un groupe d'hôte est choisi avec la liste **Lié avec le groupe d'hôtes** tous les hôtes appartenant à ce groupe sont concernés par le temps d'arrêt récurrent
 * La liste **Lié avec les services** permet de choisir le ou les services concernés par le temps d'arrêt récurrent
-* Si un groupe de service est choisit avec la liste **Linked with Service Groups** [ TODO Pas de traduction disponible : Traduction proposée] tous les services appartenant à ce groupe sont concernés par le temps d'arrêt récurrent
+* Si un groupe de service est choisi avec la liste **Linked with Service Groups** [ TODO Pas de traduction disponible : Traduction proposée] tous les services appartenant à ce groupe sont concernés par le temps d'arrêt récurrent

@@ -8,7 +8,7 @@ Définition
 
 Un méta-service est un service virtuel obtenu en effectuant des calculs mathématiques à partir des métriques issues d'autres services.
 Les méta-services sont gérées de la même manière qu'un service c'est à dire qu'il enverra des notifications, il génère un graphique de performance...
-Exemple : En agrégeant le traffic entrant de toutes les interfaces réseaux d'un switch il est possible de créer un méta-service effectuant la somme de tous les bandes passantes entrante sur le switch et de déclencher une alerte si un seuil est dépassé.
+Exemple : En agrégeant le traffic entrant de toutes les interfaces réseaux d'un switch il est possible de créer un méta-service effectuant la somme de tous les bandes passantes entrantes sur le switch et de déclencher une alerte si un seuil est dépassé.
 
 Les types de calcul
 -------------------
@@ -73,7 +73,7 @@ Notification
 * La liste **Groupes de contacts liés** permet de définir les groupes de contacts qui seront alertés
 * Le champ **Intervalle de notification** est exprimé en minutes et permet de définir l'intervalle de temps entre l'envoi de deux notifications
 * Le champ **Période de notification** permet de définir la période de notification
-* Le champ **Type de notification** définit les types de notifications envoyée
+* Le champ **Type de notification** définit les types de notifications envoyées
 
 Informations supplémentaires
 ----------------------------
@@ -87,7 +87,7 @@ Sélectionner manuellement des services
 
 Si vous avez choisit l'option **Sélectionner les services manuellement**, au sein de l'écran regroupant l'ensemble des méta-services :
 
-1. Cliquez sur [ TODO Mettre l'icône] pour sélectionner les métriques entrant en jeu dans le calcul du méta-service. Ces métriques sont appellées indicateurs.
+1. Cliquez sur [ TODO Mettre l'icône] pour sélectionner les métriques entrant en jeu dans le calcul du méta-service. Ces métriques sont appelées indicateurs.
 2. Cliquez sur **Ajouter**
 
 [ TODO Mettre une capture d'écran]

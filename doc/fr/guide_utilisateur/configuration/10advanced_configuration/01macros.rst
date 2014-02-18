@@ -26,18 +26,18 @@ Les macros personalisées
 Définition
 ----------
 
-Les macros personnalisées sont des macros créés par l'utilisateur lors de la création d'un hôte ou d'une service.
+Les macros personnalisées sont des macros créées par l'utilisateur lors de la création d'un hôte ou d'une service.
 Elles sont utilisées dans les commandes de vérifications.
 Les macros personnalisées commencent par $_HOST pour les macros personnalisées d'hôtes et par $_SERVICE pour les macros personnalisées de services.
 Il y a deux principaux avantages à utiliser les macros personnalisées à la place des arguments :
 
 * La fonction de la macro est définie dans le nom de celle-ci. La macro $_HOSTMOTDEPASSEINTRANET$ est plus facilement lisible que $ARG1$
-* Les macros héritent des modèles d'hôtes et de services la modification d'une seule macro est donc possible pour un hôte ou un service. En revanche, les arguments doivent être tous redéfinis en cas de modification d'un seul argument
-* Les arguments sont limités à 32 contrairement aux macros personnalisées qui sont infinies
+* Les macros héritent des modèles d'hôtes et de services, la modification d'une seule macro est donc possible pour un hôte ou un service. En revanche, les arguments doivent être tous redéfinis en cas de modification d'un seul argument
+* Le nombre d'arguments est limité à 32 contrairement aux macros personnalisées qui sont infinies
 
-Une macro d'hôte est utilisée pour définir une variable qui est propre à l'hôte et qui ne changera pas qu'importe le servce interrogé : Des identifiants de connexion à l'hôte, un port de connexion pour un service particulier, une communauté SNMP.
+Une macro d'hôte est utilisée pour définir une variable qui est propre à l'hôte et qui ne changera pas qu'importe le service interrogé : des identifiants de connexion à l'hôte, un port de connexion pour un service particulier, une communauté SNMP.
 
-Une macro de service est plutôt utilisée pour définir des paramètres propres à un service : Un seuil WARNING/CRITICAL, une partition à interroger...
+Une macro de service est plutôt utilisée pour définir des paramètres propres à un service : un seuil WARNING/CRITICAL, une partition à interroger...
 
 Exemple
 -------
@@ -78,14 +78,14 @@ Pour ajouter une macro de ressources :
 
 * Le champ **Nom de la ressource** définit le nom de la macro de ressources. Exemple : $USER3$
 * Le champ **Valeur de la ressource** définit la valeur de la macro.
-* La liste **Lié au collecteur** permet de définir quels seront les moteurs de supervision qui utiliserons cette macro.
+* La liste **Lié au collecteur** permet de définir quels seront les moteurs de supervision qui utiliseront cette macro.
 * Les champs **Statut** et **Commentaire** permettent d'activer/désactiver la macro ou de la commenter.
 
 ***************************
 Les macros d'environnements
 ***************************
 
-Les macros d'environnement (aussi appellées macros à la demande) permettent de récupérer des informations à partir de tous les objets de Centreon.
+Les macros d'environnement (aussi appelées macros à la demande) permettent de récupérer des informations à partir de tous les objets de Centreon.
 Elles sont utilisées afin de pouvoir récupérer à un instant "t" la valeur d'un objet.
 
 Elles sont complémentaires aux macros standards. Exemple :
