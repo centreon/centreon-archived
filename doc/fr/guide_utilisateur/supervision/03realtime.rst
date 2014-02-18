@@ -78,7 +78,6 @@ Imaginons le scénario suivant :
  * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT
  * Instant t + 14 : Le service a toujours le statut WARNING
  * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut
- ...
 
 ******************
 Actions génériques
@@ -266,7 +265,7 @@ Visualisation
 
 Pour visualiser le statut des services, rendez-vous dans **Supervision** ==> **Services**.
 
-[ TODO Mettre image : images/02.png]
+[ TODO Mettre une capture d'écran]
 
 La barre de recherche grise permet de filtrer les résultats affichés.
 Le menu de gauche permet de modifier les services visibles au sein du tableau :
