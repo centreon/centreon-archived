@@ -644,7 +644,7 @@ sub readtrap {
             }
 
             # Have quotes around it?
-            if ($line =~ /^\"/ && $line =~ /$\"/) {
+            if ($line =~ /^\"/ && $line =~ /\"$/) {
                 $line = substr($line,1,(length($line)-2));		# Remove quotes
                 push(@tempvar, "variable");
                 push(@tempvar, $line);
