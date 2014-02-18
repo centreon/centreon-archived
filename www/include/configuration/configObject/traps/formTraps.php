@@ -75,7 +75,7 @@
                  */
                 if (!$centreon->user->admin) {
                     $aclSql = "SELECT hsr.host_host_id, hsr.service_service_id
-                        FROM traps_service_relations tsr, $aclDbName.centreon_acl acl, host_service_relation hsr
+                        FROM traps_service_relation tsr, $aclDbName.centreon_acl acl, host_service_relation hsr
                         WHERE tsr.traps_id = '".$trapsId."'
                         AND tsr.service_id = hsr.service_service_id
                         AND hsr.host_host_id = acl.host_id
