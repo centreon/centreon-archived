@@ -83,6 +83,12 @@ class FormGenerator
      * @var type 
      */
     private $formHandler;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $firstSection;
 
 
     /**
@@ -126,7 +132,14 @@ class FormGenerator
         $sectionStmt = $dbconn->query($sectionQuery);
         $sectionList = $sectionStmt->fetchAll(\PDO::FETCH_ASSOC);
         
+        $firstSectionDetected = false;
+        
         foreach($sectionList as $section) {
+            if (!$firstSectionDetected) {
+                $this->firstSection = $section['name'];
+                $firstSectionDetected = true;
+            }
+            
             $blockQuery = 'SELECT id, name '
             . 'FROM block '
             . 'WHERE section_id='.$section['id'].' '
@@ -156,7 +169,6 @@ class FormGenerator
                 }
             }
         }
-        $this->formComponents['General']['Save'][] = 'save_form';
         $this->formHandler->addSubmit('save_form', _("Save"));
     }
     
@@ -196,7 +208,25 @@ class FormGenerator
                 break;
                 
             case 'checkbox':
-                $this->formHandler->addCheckbox($field['name'], $field['label']);
+                $values = json_decode($field['attributes']);
+                if (is_array($values) || is_object($values)) {
+                    $checkboxValues = array();
+                    foreach ($values as $label=>$value) {
+                        $checkboxValues['list'][] = array(
+                            'name' => $label,
+                            'label' => $label,
+                            'value' => $value
+                        );
+                    }
+                    $this->formHandler->addCheckBox(
+                        $field['name'],
+                        $field['label'],
+                        '&nbsp;',
+                        $checkboxValues
+                    );
+                } else { 
+                    $this->formHandler->addCheckbox($field['name'], $field['label']);
+                }
                 break;
         }
     }
@@ -232,19 +262,30 @@ class FormGenerator
         $tabRendering = '<ul class="nav nav-tabs" id="formHeader">';
         
         foreach ($this->formComponents as $sectionLabel=>$sectionComponents) {
-            $tabRendering .= '<li><a href="#'.$sectionLabel.'" data-toggle="tab">'.$sectionLabel.'</a></li>';
-            $formRendering .= '<div>';
+            $tabRendering .= '<li><a href="#'.str_replace(' ', '', $sectionLabel).'" data-toggle="tab">'.$sectionLabel.'</a></li>';
+        }
+        $formRendering .= '</ul>';
+        
+        $formRendering .= '<div class="tab-content">';
+        foreach ($this->formComponents as $sectionLabel=>$sectionComponents) {
+            $formRendering .= '<div class="tab-pane" id="'.str_replace(' ', '', $sectionLabel).'">';
             foreach ($sectionComponents as $blockLabel=>$blockComponents) {
-                $formRendering .= '<div>';
+                $formRendering .= '<div class="panel panel-default">';
+                $formRendering .= '<div class="panel-heading">';
+                $formRendering .= '<h3 class="panel-title">'.$blockLabel.'</h3>';
+                $formRendering .= '</div>';
+                $formRendering .= '<div class="panel-body">';
                 foreach($blockComponents as $component) {
                     $formRendering .= $formElements[$component]['html'];
                 }
                 $formRendering .= '</div>';
+                $formRendering .= '</div>';
             }
             $formRendering .= '</div>';
         }
+        $formRendering .= '</div>';
         
-        $tabRendering .= '</ul>';
+        $formRendering .= '<div>'.$formElements['save_form']['html'].'</div>';
         
         $formRendering .= $formElements['hidden'];
         $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
@@ -279,6 +320,16 @@ class FormGenerator
         return $this->formRedirectRoute;
     }
     
+    /**
+     * 
+     * @return string
+     */
+    public function getFirstSection()
+    {
+        return $this->firstSection;
+    }
+
+
     /**
      * 
      * @param string $name
