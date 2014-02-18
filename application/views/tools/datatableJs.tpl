@@ -30,11 +30,11 @@
                 {foreach $datatableParameters.header as $header}
                     {foreach $header as $headerType=>$headerData}
                         {if $headerType === 'select'}
-                            { type: "select", cls: "form-control", values: [ {foreach $headerData as $optName=>$optValue} { label:'{$optName}', value:'{$optValue}' } , {/foreach} ] },
+                            { type: "select", cls: "form-control input-sm", values: [ {foreach $headerData as $optName=>$optValue} { label:'{$optName}', value:'{$optValue}' } , {/foreach} ] },
                         {elseif $headerData === 'none'}
                             { type: "cleanup" },
                         {else}
-                            { type: "text", cls: "form-control"},
+                            { type: "text", cls: "form-control input-sm"},
                         {/if}
                     {/foreach}
                 {/foreach}
