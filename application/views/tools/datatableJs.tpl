@@ -53,22 +53,6 @@
         "sSortable": "header"
     });
     
-    $('.all{$object}').click(function() {
-        if (this.checked) {
-            $('.all{$object}Box').prop('checked', true);
-            $('.all{$object}').prop('checked', true);
-        } else {
-            $('.all{$object}Box').prop('checked', false);
-            $('.all{$object}').prop('checked', false);
-        }
-    });
-    
-    $(document).on('click', ".all{$object}Box", function() {
-        if (this.checked === false) {
-            $('.all{$object}').prop('checked', false);
-        }
-    });
-
     $(".search_type").change(function() {
         oTable.fnFilter(this.value, jQuery(".search_type").index(this));
     });
@@ -78,5 +62,15 @@
         $checkbox.parents('table').find('tbody input[type="checkbox"][class^="all"]').each(function() {
             $(this).prop("checked", $checkbox.is(':checked'));
         });
+    });
+
+    $('table[id^="datatable"] tbody').on('click', 'input[type="checkbox"][class^="all"]', function(e) {
+        var countElem = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]').length;
+        var countChecked = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').length;
+        if (countElem == countChecked) {
+            $('table[id^="datatable"] thead input[id^="all"]').prop("checked", true);
+        } else {
+            $('table[id^="datatable"] thead input[id^="all"]').prop("checked", false);
+        }
     });
 </script>
