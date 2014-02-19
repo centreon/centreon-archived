@@ -42,7 +42,7 @@ Propriétés du contrôle de l'hôte
 Macros
 ------
 
-La partie **Macros** permet d'ajouter des macros personnalisés.
+La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
 La case **Mot de passe** permet de cacher la valeur de la macro.
 
