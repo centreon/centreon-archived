@@ -45,8 +45,8 @@ Il est possible de choisir trois types de périodes :
 * Mensuel : Permet de choisir les jours dans un mois
 * Date spécifique : Permet de choisir des dates spécifiques
 
-* Le champ **Jours** permet de définir le ou les jours concernés.
-* Le champ **Période de temps** permet de définir la période de temps concernée (exprimée en HH:MM - HH:MM).
+* Le champ **Jours** définit le ou les jours concernés.
+* Le champ **Période de temps** contient la période de temps concernée (exprimée en HH:MM - HH:MM).
 * Le champ **Type de temps d'arrêt** définit le type de temps d'arrêt souhaité.
 
 Relations

@@ -6,7 +6,7 @@ Les périodes temporelles
 Définition
 **********
 
-Une période temporelle est la définition d'un intervalle de temps pour chacun des jorus de la smeaine.
+Une période temporelle est la définition d'un intervalle de temps pour chacun des jours de la semaine.
 Ces périodes temporelles servent à activer les fonctionnalités de l'ordonnanceur sur une période donnée.
 
 Les périodes temporelles s'appliquent à deux types d'actions :
