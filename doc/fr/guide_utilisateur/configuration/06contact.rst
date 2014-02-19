@@ -43,7 +43,7 @@ Authentification Centreon
 *	Le champ **Source d'authentification** spécifie si les informations de connexion proviennent d'un annuaire LDAP ou d'informaitons stockées localement sur le servuer.
 *	Le champ **Groupes de liste d'accès** permet de définir un groupe d'accès pour un utilisateur, groupe utilisé pour les contrôles d'accès (ACL).
 
-**Remarque** : un utiilisateur **Administrateur** ne peu souffire de contrôle d'accès même placé" dans un groupe d'accès.
+**Remarque** : un utiilisateur **Administrateur** ne peu souffrir de contrôle d'accès même placé" dans un groupe d'accès.
 
 ****************************
 Informations supplémentaires
