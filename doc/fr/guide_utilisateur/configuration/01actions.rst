@@ -15,8 +15,8 @@ Pour supprimer un objet :
 #.	Sélectionnez le ou les objets que vous souhaitez supprimer en cochant la ou les cases près du nom de celui-ci
 #.	Dans le menu **More actions...** cliquez sur **Supprimer**
 
-Attention : La suppression d'un objet est définitive. Si vous avez supprimer un objet par accident, il vous faudra le recréer.
-De même, la suppression d'un objet supprime automatiquement tous les objets qui sont liés à lui.
+**Attention** : La suppression d'un objet est définitive. Si vous avez supprimé un objet par accident, il vous faudra le recréer.
+De même, la suppression d'un objet supprime automatiquement tous les objets qui sont liés à lui et ne peuvent vivre sans.
 Exemple : La suppression d'un hôte entraine la suppression de tous les services associés à cet hôte.
 
 Pour modifier un objet, cliquez sur son nom.
@@ -28,14 +28,14 @@ Dupliquer
 Principe
 --------
 
-La duplication d'un objet permet de copier celui-ci afin de pouvoir réutiliser ses attributs pour la création d'un nouvel objet.
+La duplication d'un objet permet de copier/cloner celui-ci afin de pouvoir réutiliser ses attributs pour la création d'un nouvel objet.
 Exemple : J'ai 10 serveurs web identiques à superviser :
 
 *	J'ajoute le premier serveur web avec tous les attributs nécessaires
-*	Je duplique cet hôte en 9 fois
-*	Je n'ai plus qu'à changer les noms d'hôtes et les adresses IP de chaque duplication pour les adapter au 9 autres serveurs web à superviser
+*	Je duplique cet hôte 9 fois
+*	Je n'ai plus qu'à changer les noms d'hôtes et les adresses IP de chaque duplication pour les adapter aux 9 autres serveurs web à superviser
 
-Grâce à cette méthode, je n'ai plus la peine de recréer chaque hôte.
+Grâce à cette méthode, il n'estp lsu nécessaire de créer unitairement chaque hôte.
 
 Pratique
 --------
@@ -61,7 +61,7 @@ Principe
 Les changements massifs permettent d'appliquer un changement sur plusieurs objets.
 
 Exemple : L'ensemble des serveurs web précèdement créés changent de communauté SNMP.
-Un changement massif permet de modifier cette communauté sans avoir la peine de modifier chaque fiche de chaque hôte.
+Un changement massif permet de modifier cette communauté sans avoir la peine de modifier chaque fiche de chaque hôte unitairement.
 
 Pratique
 --------
@@ -73,8 +73,8 @@ Pour effectuer un changement massif :
 
 La fenêtre de changement s'ouvre, il existe deux types de changements :
 
-*	Incrémentale signifie que la modification va s'ajouter aux options déjà existante
-*	Remplacement signifie que la modification va écraser les options déjà existantes
+*	Incrémentale: signifie que la modification va s'ajouter aux options déjà existantes
+*	Remplacement: signifie que la modification va écraser les options déjà existantes
 
 ******************
 Activer/Désactiver
@@ -92,9 +92,9 @@ Pratique
 Pour activer/désactiver un objet :
 
 #.	Sélectionnez les objets que vous souhaitez modifier
-#.	Dans le menu **More actions...** cliquez sur Activer/Désactiver
+#.	Dans le menu **More actions...** cliquez sur **Activer/Désactiver**
 
-Il est également possible d'activer ou de désactiver un hôte via le champ Statut de l'objet (voir la fiche de l'objet).
+Il est également possible d'activer ou de désactiver un hôte via le champ "Statut" de l'objet (voir la fiche de l'objet).
 Ou en utilisant les icônes suivantes :
 
 *	[ TODO METTRE L'IMAGE] pour activer
