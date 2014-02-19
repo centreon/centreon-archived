@@ -1,7 +1,7 @@
 <div class="first-content">
     <div class="col-sm-12 col-md-6">
       <a href="{url_for url=$objectAddUrl}" class="btn btn-default">{t}Add{/t}</a>
-      <div class="btn-group" id="selected_option">
+      <div class="btn-group" id="selected_option" style="display: none;">
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             {t}Actions{/t}
@@ -12,16 +12,18 @@
             <li><a href="#">{t}Massive change{/t}</a></li>
           </ul>
         </div>
+        {if $datatableParameters.groupname || $datatableParameters.hasCategory}
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
             {t}Add to{/t}
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li><a href="#">{t}Hostgroup{/t}</a></li>
-            <li><a href="#">{t}Category{/t}</a></li>
+            {if $datatableParameters.groupname }<li><a href="#">{$datatableParameters.groupname}</a></li>{/if}
+            {if $datatableParameters.hasCategory}<li><a href="#">{t}Category{/t}</a></li>{/if}
           </ul>
         </div>
+        {/if}
       </div>
     </div>
 </div>

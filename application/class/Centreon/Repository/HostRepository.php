@@ -143,6 +143,16 @@ class HostRepository extends \Centreon\Repository\Repository
             )
         )
     );
+
+    /**
+     * @see \Centreon\Repository\Repository::$hasCategory
+     */
+    public static $hasCategory = true;
+
+    /**
+     * @see \Centreon\Repository\Repository:$groupname
+     */
+    public static $groupname = 'Hostgroup';
     
     /**
      * 
