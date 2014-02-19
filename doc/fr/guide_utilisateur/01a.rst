@@ -148,7 +148,7 @@ Dans notre cas, nous allons choisir l'option **Centreon Server with database**.
 Choix de l'ordonnanceur et du broker
 ------------------------------------
 
-Lors du choix de l'ordonnanceur et du broker il est possible de choisir entre le couple Centreon Engine/Centreon Broker et le couple Nagios/NDOUtils
+Lors du choix de l'ordonnanceur et du broker, il est possible de choisir entre le couple Centreon Engine/Centreon Broker ou le couple Nagios/NDOUtils
 
 Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Broker**.
 
@@ -173,12 +173,12 @@ Cliquez sur **Next**. Lors du choix du broker, choisissez **centreon-broker**.
 
 [ TODO METTRE UNE CAPTURE D'ECRAN DE BROKER MODULE INFORMATION ]
 
-Cliquez sur **Next**. Définissez les informations concernant l'utilisateur admin. 
+Cliquez sur **Next**. Définissez les informations concernant l'utilisateur admin.
 
 [ TODO METTRE UNE CAPTURE D'ECRAN]
 
-Cliquez sur **Next**. Par défaut, le serveur localhost est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
-Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon.
+Cliquez sur **Next**. Par défaut, le serveur 'localhost' est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
+Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon, à savoir 'centreon'.
 
 [ TODO METTRE UNE CAPTURE D'ECRAN]
 
@@ -187,14 +187,14 @@ Cliquez sur **Next**.
 Si le message d'erreur suivant apparait : **Add innodb_file_per_table=1 in my.cnf file under the [mysqld] section and restart MySQL Server**.
 Effectuez l'opération ci-dessous :
 
-1.	Connectez vous avec l'utilisateur root sur votre serveur
+1.	Connectez vous avec l'utilisateur 'root' sur votre serveur
 2.	Editez le fichier suivant 
 
 ::
 
 	/etc/my.cnf
 
-3.	Ajoutez les lignes suivantes au fichier 
+3.	Ajoutez la ligne suivante au fichier 
 
 :: 
 
@@ -209,15 +209,15 @@ Effectuez l'opération ci-dessous :
 
 5.	Cliquez sur **Refresh**
 
-Cliquez sur **Next** jusqu'à arrivé à l'étape **Installation finished**.
+Cliquez sur **Next** jusqu'à arriver à l'étape **Installation finished**.
 
 Configuration de base
 =====================
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
-1.	Logguez-vous en tant que root sur le serveur de supervision
-2.	Installez le paquet français avec la commande suivante 
+1.	Connectez vous avec l'utilisateur 'root' sur votre serveur
+2.	Installez le paquet de traduction en langue française avec la commande suivante 
 
 ::
 
@@ -227,7 +227,6 @@ Dans un premier temps, il est nécessaire de passer l'interface en version fran�
 4.	Dans le menu de gauche cliquez sur **My Account**
 5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
 6.	Cliquez sur **Save**
-7.	Déconnectez-vous (Log-out en haut à droite) et reconnectez-vous
 
 [ TODO METTRE UNE CAPTURE D'ECRAN]
 
@@ -236,18 +235,18 @@ Démarrer la supervision
 
 Pour démarrer l'ordonnanceur de supervision :
 
- 1.	Logguez-vous en tant que root
- 2.	Démarrez Centreon Broker::
+ 1.  Connectez vous avec l'utilisateur 'root' sur votre serveur
+ 2.	Démarrez le composant Centreon Broker::
  
 	/etc/init.d/cbd start
  
- 3.	Sur l'interface web, rendez-vous dans **Configuration** ==> **Moteur de supervision**
+ 3.	Sur l'interface web, rendez-vous dans le menu **Configuration** ==> **Moteur de supervision**
  4.	Laissez les options par défaut, et cliquez sur **Exporter**
  5.	Décochez **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
  6.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
  7.	Cliquez à nouveau sur **Exporter**
 
-La supervision fonctionne. 
+La supervision est maintenant opérationnelle.
 
 Découverte de l'interface web
 =============================
@@ -268,7 +267,12 @@ Avant d'aller plus loin
 
 Avant d'aller plus loin, il est nécessaire de faire une mise à jour du serveur CES 3.0. Pour cela :
 
- #.	Connectez-vous en tant que root sur le serveur central
- #.	Tapez la commande yum -y update
+ #.	Connectez-vous en tant que 'root' sur le serveur central
+ #.	Tapez la commande 
+
+::
+
+    yum -y update
+
 
 Laissez la mise à jour se faire.
