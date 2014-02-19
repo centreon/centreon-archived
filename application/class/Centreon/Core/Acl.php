@@ -17,7 +17,7 @@ class Acl
      * Constructor
      *
      */
-    public function __construct()
+    public function __construct($userId)
     {
 /*        $userId = Di::getDefault()->get('user')->getId();
         $sql = "SELECT route, permission 
@@ -29,6 +29,18 @@ class Acl
         $stmt = $db->prepare($sql);
         $stmt->execute(array($userId));
         $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);*/
+    }
+
+    /**
+     * Checks whether or not a flag is set
+     *
+     * @param int $values
+     * @param int $flag
+     * @return bool
+     */
+    public static function isFlagSet($values, $flag)
+    {
+        return (($values & $flag) === $flag);
     }
 
     /**
@@ -44,9 +56,8 @@ class Acl
         if (Di::getDefault()->get('user')->isAdmin()) {
             return true;
         }
-        if (isset($this->routes[$route]) && 
-            ($this->routes[$route] & $requiredAccess)) {
-            return true;
+        if (isset($this->routes[$route])) {
+            return self::isFlagSet($this->routes[$route], $requiredAccess);
         }
         return false;
     }
@@ -58,7 +69,7 @@ class Acl
      */
     public static function convertAclFlags($aclFlags)
     {
-        $flag = null;
+        $flag = 0;
         foreach ($aclFlags as $flag) {
             switch (strtolower($flag)) {
                 case "add": 
@@ -74,11 +85,7 @@ class Acl
                     $f = self::VIEW;
                     break;
             }
-            if (is_null($flag)) {
-                $flag = $f;
-            } else {
-                $flag |= $f;
-            }
+            $flag = $flag | $f;
         }
         return $flag;
     }

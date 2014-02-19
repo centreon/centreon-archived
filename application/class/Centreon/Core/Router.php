@@ -35,17 +35,23 @@ class Router extends \Klein\Klein
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
                             $this->routesData[] = $data;
-/*                            $acl = Di::getDefault()->get('acl');
                             if (!isset($data['acl'])) {
                                 $data['acl'] = "";
                             }
-*/
-//                            if ($acl->routeAllowed($data['route'], $data['acl'])) {
-                                if (substr($data['route'], 0, 1) === '@') {
-                                    $routeName = $data['route'];
-                                } else {
-                                    $routeName = $baseUrl.$data['route'];
-                                }
+                            if (substr($data['route'], 0, 1) === '@') {
+                                $routeName = $data['route'];
+                            } else {
+                                $routeName = $baseUrl.$data['route'];
+                            }
+                            if (isset($_SESSION['acl']) && 
+                                false === $_SESSION['acl']->routeAllowed($data['route'], $data['acl'])) {
+                                $this->respond(
+                                    $routeName, 
+                                    function($request, $response) {
+                                        $response->code(403);
+                                    }
+                                );
+                            } else {
                                 $this->respond(
                                     $data['method_type'],
                                     $routeName,
@@ -54,7 +60,7 @@ class Router extends \Klein\Klein
                                         $obj->$action();
                                     }
                                 );
-//                            }
+                            }
                         }
                     } elseif (is_dir($dir . '/' . $dirname)) {
                         $this->parseRoutes($pref . '\\' . ucfirst($dirname), $dir . '/' . $dirname);
