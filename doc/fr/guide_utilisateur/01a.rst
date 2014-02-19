@@ -6,21 +6,23 @@ Premier pas avec CES 3.0
 Comparaison avec CES 2.2
 *************************
 
-Le tableau suivant compare CES 2.2 à CES 3.0 :
+Le tableau suivant compare la version de CES 2.2 à la version de CES 3.0 :
 
-+------------------------+-------------------------+
-|       CES 2.2          |         CES 3.0         | 
-+========================+=========================+
-|       CentOS 5         |         CentOS 6        |
-+------------------------+-------------------------+
-| Centreon 2.4           |  Centreon 2.5           |
-+------------------------+-------------------------+
-| MySQL 5.1              |  MariaDB 5.5            |
-+------------------------+-------------------------+
-| Centreon Engine 1.2    |  Centreon Engine 1.3.2  |
-+------------------------+-------------------------+
-| Centreon Broker 2.1    |  Centreon Broker 2.5.0  |
-+------------------------+-------------------------+
++------------------------+-----------------------------+
+|       CES 2.2          |         CES 3.0             | 
++========================+=============================+
+|       CentOS 5         |         CentOS 6.5          |
++------------------------+-----------------------------+
+| Centreon 2.4           |  Centreon 2.5               |
++------------------------+-----------------------------+
+| MySQL 5.1              |  MariaDB 5.5                |
++------------------------+-----------------------------+
+| Centreon Engine 1.2    |  Centreon Engine 1.3.7      |
++------------------------+-----------------------------+
+| Centreon Broker 2.1    |  Centreon Broker 2.6.1      |
++------------------------+-----------------------------+
+| N/A                    |  Centreon Connecteur 1.0.2  |
++------------------------+-----------------------------+
 
 La liste des nouvelles fonctionnalités est disponible aux adresses suivantes :
 
@@ -38,11 +40,12 @@ que le couple Centreon Engine et Centreon Broker est 8 à 9 fois plus performant
 
 Meilleure intégration à Centreon
 --------------------------------
-L'interface de Centreon est de plus en plus orienté Centreon Engine/Centreon Broker. Quelques exemples :
+L'interface de Centreon est de plus en plus orientée vers l'utilisation du broker Centreon Broker. Quelques exemples :
 
 *	Il existe un assistant de configuration pour Centreon Broker
+*   Les performances d'affichage sont grandements améliorées
+*   Certains filtres de sélection ne sont disponibles qu'avec le broker Centreon Broker
 *	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
-*	[AUTRES ARGUMENTS ??]
 
 Nouvelles fonctionnalités
 -------------------------
@@ -51,6 +54,8 @@ Plusieurs nouvelles fonctionnalités font leur apparitions avec Centreon Broker 
 *	Possibilité de chiffrer les données de supervision qui remontent vers le serveur Central
 *	Possibilité de compresser les données de supervision afin de ne pas surcharger la bande passante
 *	Utilisation d'un nouveau protocole d'encodage des données (Le protocole BBDO) plus performant que le protocole NDO
+*   Possibilité de filter le type de flux entre les composants de Cetnreon Broker pour diminuer la charge et la bande passante
+*   Possibilité de flux unidirectionnels entre le serveur Centreon et ses collecteurs (uniquement des flux LAN vers DMZ)
  
 **********
 Pré-requis
