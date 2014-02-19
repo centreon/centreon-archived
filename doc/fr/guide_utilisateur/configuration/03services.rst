@@ -73,7 +73,7 @@ Le champ **Traps SNMP reliés au service** permet de définir les traps SNMP qui
 Traitement des données
 **********************
 
-*   Si le chmap **Exécuter une commande post contrôle**  est activé, alors la commande de remontée des contrôles de l'hôte sera activée.
+*   Si le champ **Exécuter une commande post contrôle**  est activé, alors la commande de remontée des contrôles de l'hôte sera activée.
 *	Le champ **Contrôler la fraicheur du résultat** permet d'activer ou de désactiver le contrôle de fraicheur du résultat.
 *	Le champ **Seuil de fraicheur du résultat** est exprimé en secondes. Si durant cette période aucune demande de changement de statut du service (commande passive) n'a été reçue alors la commande de vérification est exécutée.
 *   Le champ **Détection de bagotage des status** permet d'activer ou de désactiver la détection du bagotage des statuts (statut changant trop fréquement de valeur sur une période données).
