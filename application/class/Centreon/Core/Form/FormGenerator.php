@@ -89,6 +89,12 @@ class FormGenerator
      * @var type 
      */
     private $firstSection;
+    
+    /**
+     *
+     * @var type 
+     */
+    private $urlCastParemeter;
 
 
     /**
@@ -96,10 +102,11 @@ class FormGenerator
      * @param type $formRoute
      * @param type $advanced
      */
-    public function __construct($formRoute, $advanced = 0)
+    public function __construct($formRoute, $advanced = 0, $urlCastParameter = array())
     {
         $this->formRoute = $formRoute;
         $this->formHandler = new \Centreon\Core\Form($this->formName);
+        $this->urlCastParemeter = $urlCastParameter;
         $this->getFormFromDatabase($advanced);
     }
     
@@ -182,6 +189,10 @@ class FormGenerator
             default:
             case 'text':
                 $this->formHandler->addText($field['name'], $field['label']);
+                break;
+            
+            case 'select':
+                $this->formHandler->addSelect($field['name'], $field['label'], $field['attributes'], $this->urlCastParemeter);
                 break;
             
             case 'textarea':
@@ -291,6 +302,11 @@ class FormGenerator
         $htmlRendering .= $tabRendering.$formRendering.'</form></div>';
         
         return $htmlRendering;
+    }
+    
+    public function getSelect2Js()
+    {
+        return $this->formHandler->getJavascriptCall();
     }
     
     /**

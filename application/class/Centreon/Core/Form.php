@@ -127,6 +127,12 @@ class Form
     private $jsRules;
     
     /**
+     *
+     * @var type 
+     */
+    private $javascriptCall = "";
+    
+    /**
      * Constructor
      *
      * @param string $name The name of form
@@ -154,6 +160,11 @@ class Form
         $this->formRenderer->setErrorTemplate('<font color="red">{error}</font><br />{html}');
         $this->formProcessor->accept($this->formRenderer);
         return $this->formatForSmarty();
+    }
+    
+    public function getJavascriptCall()
+    {
+        return $this->javascriptCall;
     }
     
     /**
@@ -215,7 +226,7 @@ class Form
                 $element['html'] = $this->renderFinalHtml($element);
                 break;
             
-            case 'select':
+            case 'static':
                 $element['input'] = $this->renderHtmlSelect($element);
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
@@ -290,7 +301,34 @@ class Form
      */
     public function renderHtmlSelect($inputElement)
     {
-        return $inputElement['html'];
+        $myHtml = '<input class="form-control" id="'.$inputElement['name'].'" style="width: 500px;" value=" " />';
+        $this->javascriptCall .= ''
+            . '$("#'.$inputElement['name'].'").select2({'
+                . 'placeholder:"'.$inputElement['label_label'].'", '
+                . 'multiple:'.$inputElement['label_multiple'].', '
+                . 'formatResult: formatResult, '
+                . 'ajax: {'
+                    .'data: function(term, page) {'
+                        .'return { '
+                            .'q: term, '
+                        .'};'
+                    .'},'
+                    .'dataType: "json", '
+                    .'url:"'.$inputElement['label_defaultValuesRoute'].'", '
+                    .'results: function (data){ '
+                        .'return {results:data, more:false}; '
+                    .'}'
+                .'},'
+                .'initSelection: function(element, callback) { '
+                    .'var id=$(element).val();'
+                    .'if (id!=="") {
+                        $.ajax("'.$inputElement['label_listValuesRoute'].'", {
+                            dataType: "json"
+                        }).done(function(data) {callback(data); });
+                    }
+                },'
+            .'});'."\n";
+        return $myHtml;
     }
     
     public function renderHtmlRadio($inputElement, $parentName, $selected = false)
@@ -666,10 +704,31 @@ class Form
      *                           if null the style is medium
      * @return \HTML_QuickForm_Element_Select
      */
-    public function addSelect($name, $label, $data, $style = null)
+    public function addSelect($name, $label, $datas, $urlCastParemeter)
     {
-        $elem = $this->formProcessor
-                     ->addElement('select', $name, $label, $data, null, array('type' => 'select-one'));
+        $selectParameters = json_decode($datas, true);
+        
+        if (isset($selectParameters['type']) && $selectParameters['type'] == 'object') {
+            if (isset($selectParameters['defaultValuesRouteParams'])) {
+                
+            }
+            $selectParameters['defaultValuesRoute'] = \Centreon\Core\Di::getDefault()
+                            ->get('router')
+                            ->getPathFor($selectParameters['defaultValuesRoute'], $urlCastParemeter);
+            
+            if (isset($selectParameters['listValuesRouteParams'])) {
+                
+            }
+            $selectParameters['listValuesRoute'] = \Centreon\Core\Di::getDefault()
+                            ->get('router')
+                            ->getPathFor($selectParameters['listValuesRoute'], $urlCastParemeter);
+        }
+        
+        $selectParameters['label'] = $label;
+        
+        $elem = $this->formProcessor->addElement('static', $name, $selectParameters);
+        $elem->setValue($selectParameters);
+        
         return $elem;
     }
     
