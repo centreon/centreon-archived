@@ -107,6 +107,16 @@ abstract class Repository
      * @var array 
      */
     public static $datatableFooter = array();
+
+    /**
+     * @var bool If this object has category
+     */
+    public static $hasCategory = false;
+
+    /**
+     * @var string The name of group, if the object does not have group it's a empty string
+     */
+    public static $groupname = '';
     
     /**
      * 
@@ -117,7 +127,9 @@ abstract class Repository
         return array(
             'column' => static::$datatableColumn,
             'header' => static::$datatableHeader,
-            'footer' => static::$datatableFooter
+            'footer' => static::$datatableFooter,
+            'hasCategory' => static::$hasCategory,
+            'groupname' => _(static::$groupname)
         );
     }
     

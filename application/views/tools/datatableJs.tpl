@@ -41,6 +41,21 @@
             ]
         });
     });
+
+    function toggleSelectedAction() {
+        var countElem = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]').length;
+        var countChecked = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').length;
+        if (countElem == countChecked) {
+            $('table[id^="datatable"] thead input[id^="all"]').prop("checked", true);
+        } else {
+            $('table[id^="datatable"] thead input[id^="all"]').prop("checked", false);
+        }
+        if (countChecked > 0) {
+            $('#selected_option').show();
+        } else {
+            $('#selected_option').hide();
+        }
+    }
     
     $(".search_field").keyup(function() {
         row = $(this).parent().parent().children().index($(this).parent());
@@ -62,15 +77,10 @@
         $checkbox.parents('table').find('tbody input[type="checkbox"][class^="all"]').each(function() {
             $(this).prop("checked", $checkbox.is(':checked'));
         });
+        toggleSelectedAction();
     });
 
     $('table[id^="datatable"] tbody').on('click', 'input[type="checkbox"][class^="all"]', function(e) {
-        var countElem = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]').length;
-        var countChecked = $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').length;
-        if (countElem == countChecked) {
-            $('table[id^="datatable"] thead input[id^="all"]').prop("checked", true);
-        } else {
-            $('table[id^="datatable"] thead input[id^="all"]').prop("checked", false);
-        }
+        toggleSelectedAction();
     });
 </script>

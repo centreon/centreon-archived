@@ -90,6 +90,7 @@ class LoginController extends \Centreon\Core\Controller
             $user->init($auth->userInfos['contact_id']);
             $_SESSION['user'] = $user;
             \Centreon\Core\Session::init($user->getId());
+            $_SESSION['acl'] = new \Centreon\Core\Acl($user->getId());
             $router->response()->json(
                 array(
                     'status' => true
