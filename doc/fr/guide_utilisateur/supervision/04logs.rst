@@ -35,7 +35,7 @@ Filtrer les messages
 ********************
 
 Type de message
----------------
+===============
 
 Il est possible d'afficher plusieurs types de messages sur la période donnée:
 
@@ -45,7 +45,7 @@ Il est possible d'afficher plusieurs types de messages sur la période donnée:
 * Les notifications envoyées en cliquant sur **Notifications**
 
 Statut de l'hôte ou du service
-------------------------------
+==============================
 
 Notez bien que les choix effectuées ici influencent les cases cochées dans **Type de message**.
 Il est également possible de visualiser les différents messages en sélectionnant manuellement les statuts désirés pour les hôtes ou les services.

@@ -11,7 +11,7 @@ Les méta-services sont gérées de la même manière qu'un service c'est à dir
 Exemple : En agrégeant le traffic entrant de toutes les interfaces réseaux d'un switch il est possible de créer un méta-service effectuant la somme de tous les bandes passantes entrantes sur le switch et de déclencher une alerte si un seuil est dépassé.
 
 Les types de calcul
--------------------
+===================
 
 Plusieurs types de calculs sont possibles sur les métriques récupérées :
 
@@ -21,7 +21,7 @@ Plusieurs types de calculs sont possibles sur les métriques récupérées :
 * **Maximum** : Centreon récupère le maximum des données de performances
 
 Les types de sources de données
--------------------------------
+===============================
 
 Le type de source de données dépends du type de métrique de RRDTool :
 
@@ -45,7 +45,7 @@ Pour ajouter un méta-service :
 [ TODO Mettre une capture d'écran]
 
 Informations générales
-----------------------
+======================
 
 * Le champ **Nom du Méta-Service** correspond au nom du méta-service affiché dans l'interface
 * Le champ **Format de la chaîne de sortie (Formatage printf)** correspond au message retourné par le Méta Service. La valeur "%d" correspond à la valeur calculée par le méta-service
@@ -59,7 +59,7 @@ Si l'option **Recherche SQL** est sélectionnée alors les services utilisés se
 La métrique à utiliser sera dans ce cas à sélectionner dans la liste déroulante **Métrique**.
 
 Etat du Meta Service
---------------------
+====================
 
 * Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut du méta-service
 * Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôles à effectuer avant de valider le statut du méta-service : lorsque le statut est validé, une notification est envoyée
@@ -67,7 +67,7 @@ Etat du Meta Service
 * Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut du méta-service est non-OK
 
 Notification
-------------
+============
 
 * Le champ **Notification activée** permet d'activer les notifications
 * La liste **Groupes de contacts liés** permet de définir les groupes de contacts qui seront alertés
@@ -76,7 +76,7 @@ Notification
 * Le champ **Type de notification** définit les types de notifications envoyées
 
 Informations supplémentaires
-----------------------------
+============================
 
 * La liste **Modèle de graphique** définit le modèle de graphique utilisé par ce méta-service
 * Les champs **Statut** et **Commentaires** permettent d'activer/désactiver ou de commenter le méta-service

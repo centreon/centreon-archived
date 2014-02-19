@@ -26,7 +26,7 @@ Dupliquer
 *********
 
 Principe
---------
+========
 
 La duplication d'un objet permet de copier/cloner celui-ci afin de pouvoir réutiliser ses attributs pour la création d'un nouvel objet.
 Exemple : J'ai 10 serveurs web identiques à superviser :
@@ -38,7 +38,7 @@ Exemple : J'ai 10 serveurs web identiques à superviser :
 Grâce à cette méthode, il n'estp lsu nécessaire de créer unitairement chaque hôte.
 
 Pratique
---------
+========
 
 Pour dupliquer un hôte :
 
@@ -56,7 +56,7 @@ Changement massif
 *****************
 
 Principe
---------
+========
 
 Les changements massifs permettent d'appliquer un changement sur plusieurs objets.
 
@@ -64,7 +64,7 @@ Exemple : L'ensemble des serveurs web précèdement créés changent de communau
 Un changement massif permet de modifier cette communauté sans avoir la peine de modifier chaque fiche de chaque hôte unitairement.
 
 Pratique
---------
+========
 
 Pour effectuer un changement massif :
 
@@ -81,13 +81,13 @@ Activer/Désactiver
 ******************
 
 Principe
---------
+========
 
 L'activation et la désactivation des objets permet de prendre en compte ou non l'objet lors de la génération de la configuration.
 Le principal intérêt est de pouvoir garder la configuration d'un objet sans pour autant l'appliquer.
 
 Pratique
---------
+========
 
 Pour activer/désactiver un objet :
 

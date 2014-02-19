@@ -22,7 +22,7 @@ Toutes les manipulations ci-dessous se déroulent au sein de la page **Accueil**
 d'un utilisateur au sein de Centreon.
 
 Ajouter une vue
----------------
+===============
 
 Pour ajouter une vue, cliquez sur **Ajouter une vue**.
 
@@ -35,7 +35,7 @@ Pour modifier une vue existante, cliquez sur **Editer une vue**.
 Notez-bien : la diminution du nombre de colonnes enlève les widgets associées à la colonne.
 
 Partager une vue
-----------------
+================
 
 Il est possible de partager une vue existante avec un ou plusieurs utilisateurs.
 Pour cela, cliquez sur **Partager la vue**.
@@ -45,7 +45,7 @@ Pour cela, cliquez sur **Partager la vue**.
 * La liste **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels sont partagés la vue
 
 Insérer un widget
------------------
+=================
 
 Pour ajouter un widget, cliquez sur **Ajouter un widget**.
 
@@ -55,7 +55,7 @@ Pour ajouter un widget, cliquez sur **Ajouter un widget**.
 * Choisissez dans le tableau en dessous le type de widget que vous souhaitez ajouter
 
 Personnaliser son widget
-------------------------
+========================
 
 Il est possible de déplacer un widget en faisant un drag-and-drop depuis la barre de titre.
 Pour réduire un widget, cliquez sur [ TODO Mettre l'icône].
@@ -65,7 +65,7 @@ Pour les rafraîchir manuellement cliquez sur [ TODO Mettre l'icône].
 Pour personnaliser son widget, cliquez sur [ TODO Mettre l'icône].
 
 Supprimer un widget
--------------------
+===================
 
 Il est possible de supprimer le widget en cliquant sur [ TODO Mettre l'icône].
 
@@ -78,10 +78,10 @@ Les paragraphes ci-dessous détaillent les attributs de chaque widget après avo
 [ TODO Pas de traduction pour les widgets ?]
 
 Le widget d'hôtes
------------------
+=================
 
 Filters
-^^^^^^^
+-------
 
 * Le champ **Host Name Search** permet de faire une recherche sur un ou plusieurs noms d'hôtes
 * Si la case **Display Up** est cochée, les hôtes en statut UP seront affichés
@@ -94,7 +94,7 @@ Filters
 * La liste **Results** limite le nombre de résultats
 
 Columns
-^^^^^^^
+-------
 
 * Si la case **Display Host Name** est cochée alors le nom d'hôte sera affiché
 * Si la case **Display Output** est cochée alors le message associé au statut de l'hôte sera affiché
@@ -108,15 +108,15 @@ Columns
 * La liste **Order By** permet de classer les hôtes par ordre alphabétique suivant plusieurs paramètres
 
 Misc
-^^^^
+----
 
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
 Le widget de services
----------------------
+=====================
 
 Filters
-^^^^^^^
+-------
 
 * Le champ **Host Name** permet de faire une recherche sur un ou plusieurs noms d'hôtes
 * Le champ **Service Description** peret de faire une recherche sur un ou plusieurs noms de services
@@ -133,7 +133,7 @@ Filters
 * La liste **Results** limite le nombre de résultats
 
 Columns
-^^^^^^^
+-------
 
 * Si la case **Display Host Name** est cochée alors le nom d'hôte sera affiché
 * Si la case **Display Service Description** est cochée alors le nom du service sera affiché
@@ -147,19 +147,19 @@ Columns
 * La liste **Order By** permet de classer les services par ordre alphabétique suivant plusieurs paramètres
 
 Misc
-^^^^
+----
 
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
 Le widget de graphes
---------------------
+====================
 
 * Le champ **Service** permet de choisir le service pour lequel le graphe sera affiché
 * La liste **Graph period** permet de choisir la période de temps que le graphe doit afficher
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
 Le widget de groupe d'hôtes
----------------------------
+===========================
 
 * Le champ **Hostgroup Name Search** permet de choisir les groupes d'hôtes affichés
 * Si la case **Enable Detailed Mode** est cochée, alors tous les noms d'hôtes ainsi que les services associés à ces hôtes seront affichés pour les groupes d'hôtes sélectionnés
@@ -168,7 +168,7 @@ Le widget de groupe d'hôtes
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
 Le widget de groupes de services
---------------------------------
+================================
 
 * Le champ **Servicegroup Name Search** permet de choisir les groupes de services affichés
 * Si la case **Enable Detailed Mode** est cochée, alors tous les noms d'hôtes ainsi que les services associés à ces hôtes seront affichés pour les groupes de services sélectionnés
@@ -183,7 +183,7 @@ Créer son widget
 Dans ce chapitre, nous prendrons comme exemple un widget Centreon appellé Widget Dummy
 
 Structure du répertoire
------------------------
+=======================
 
 Afin de créer son widget, il est nécessaire de créer un dossier au sein du dossier web de Centreon :
 
@@ -192,7 +192,7 @@ Afin de créer son widget, il est nécessaire de créer un dossier au sein du do
 	$ centreon/www/widgets/nomDeVotreWidget
 
 Fichier de configuration
-------------------------
+========================
 
 Le fichier **configs.xml** est obligatoire au sein du dossier. Pour le widget Dummy, il contient les informations suivantes :
 
@@ -225,7 +225,7 @@ Le fichier **configs.xml** est obligatoire au sein du dossier. Pour le widget Du
 	</configs>
 
 Tags basiques
--------------
+=============
 
 Le tableau ci-dessous résume l'ensemble des tags qui peuvent être présents au sein du fichier **configs.xml** :
 
@@ -256,7 +256,7 @@ Le tableau ci-dessous résume l'ensemble des tags qui peuvent être présents au
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 
 Les attributs des paramètres
-----------------------------
+============================
 
 Les paramètres contiennent les champs qui seront affichés lors de la configuration du plugin au sein de Centreon (tag <preferences>).
 Le tableau ci-dessous résume les attributs pour un paramètre définit :
@@ -290,7 +290,7 @@ Pour le type range, les tags suivants sont obligatoires :
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 
 Les types de paramètres
------------------------
+=======================
 
 Il existe plusieurs types de paramètres. Chaque type de paramètres permet d'afficher un élément précis :
 
@@ -325,7 +325,7 @@ Le fichier **configs.xml** plus haut affiche la fenêtre de configuration suivan
 [ TODO Mettre l'image]
 
 Code Source
------------
+===========
 
 Dans le fichier PHP, nous pouvons récupérer l'ensemble des paramètres grâce au code suivant :
 

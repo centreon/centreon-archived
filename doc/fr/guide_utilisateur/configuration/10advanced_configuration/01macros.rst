@@ -24,7 +24,7 @@ Les macros personalisées
 ************************
 
 Définition
-----------
+==========
 
 Les macros personnalisées sont des macros créées par l'utilisateur lors de la création d'un hôte ou d'une service.
 Elles sont utilisées dans les commandes de vérifications.
@@ -40,7 +40,7 @@ Une macro d'hôte est utilisée pour définir une variable qui est propre à l'h
 Une macro de service est plutôt utilisée pour définir des paramètres propres à un service : un seuil WARNING/CRITICAL, une partition à interroger...
 
 Exemple
--------
+=======
 
 Lors de la définition d'un hôte, les macros suivantes sont créés :
 
@@ -55,7 +55,7 @@ Lors de la définition d'un service, les macros suivantes sont créés :
 Pour faire appel à ces macros dans une commande de vérification, il faudra les invoquer en utilisant les variables suivantes : $_SERVICEPARTITION$, $_SERVICEWARNING$, $_SERVICECRITICAL$.
 
 Cas particulier
----------------
+===============
 
 Le champ **Communauté SNMP et version** présent au sein d'une fiche d'hôte génèrent automatiquement les macros personnalisées suivantes : **$_HOSTSNMPCOMMUNITY$** et **$_HOSTSNMPVERSION$**.
 

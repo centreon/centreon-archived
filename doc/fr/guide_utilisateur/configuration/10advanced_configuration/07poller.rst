@@ -14,13 +14,13 @@ Mise en place
 *************
 
 Installation
-------------
+============
 
 L'installation se déroule de la même manière qu'un serveur central à l'exception d'un paramètre :
 A la question **Which server type would you like to install ?** il faut choisir l'option **Poller server**.
 
 Configuration de l'ordonnanceur
--------------------------------
+===============================
 
 Dans un premier temps, nous allons ajouter un nouveau serveur de supervision.
 
@@ -49,7 +49,7 @@ Maintenant, il est nécessaire de générer un fichier de configuration pour l'o
 * Dans l'onglet **Données** - Champ **Multiple module broker** modifiez le nom du fichier de configuration de Centreon Broker **central-module.xml**. Par exemple : poller1-module.xml
 
 Configuration de Centreon Broker
---------------------------------
+================================
 
 Il est nécessaire de générer un fichier de configuration pour Centreon Broker :
 
@@ -67,17 +67,17 @@ Il est nécessaire de générer un fichier de configuration pour Centreon Broker
 * Dans l'onglet **Output**, modifiez le champ **Host to connect to** [ TODO Pas de traduction disponible] en entrant l'adresse IP du serveur contenant votre base MySQL (dans notre cas le serveur central)
 
 Configuration de Centreontrapd
-------------------------------
+==============================
 
 Il est nécessaire de modifier les fichiers de configuration de Centreontrapd afin que le service puisse interroger la base de données SQLLite (voir le chapitre précédent).
 
 Synchronisation des sondes
---------------------------
+==========================
 
 Vous pouvez synchroniser les sondes entre votre serveur Central et vos serveurs satellites en utilisant l'utilitaire **rsync**.
 
 Echange de clés SSH
--------------------
+===================
 
 Afin que le serveur central puisse exporter les fichiers de configuration du moteur de supervision, il est nécessaire d'effectuer un échange de clé SSH entre le serveur central et le nouveau serveur satellite.
 
@@ -112,6 +112,6 @@ Sur le serveur central :
 	$ ssh centreon@[ADRESSE_IP_DU_POLLER]
 
 Exportation de la configuration
--------------------------------
+===============================
 
 Il ne reste plus qu'à exporter la configuration afin de vérifier que l'installation du serveur satellite s'est bien déroulée.

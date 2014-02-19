@@ -3,7 +3,7 @@ Les hôtes
 =========
 
 Un hôte est toute entité possédant une adresse IP correspondant à une ressource du système d'informations.
-Exemples : Un serveur, une imprimante réseau, un serveur NAS, une base de données, une sonde de temparatue, une caméra IP...
+Exemples : Un serveur, une imprimante réseau, un serveur NAS, une base de données, une sonde de température, une caméra IP...
 
 Tous les ajouts d'hôtes se font dans le menu **Configuration** ==> **Hôtes** ==> **Ajouter**.
 
@@ -14,7 +14,7 @@ Configuration de l'hôte
 ***********************
 
 Informations générales
-----------------------
+======================
 
 *	Le champ **Nom de l'hôte** définit le nom d'hôte qui sera utilisé par le moteur de supervision.
 *	Le champ **Alias** indique l'alias de l'hôte.
@@ -29,7 +29,7 @@ Informations générales
 *	Si le champ **Créer aussi les services liés au modèle** est définit à **Oui**, Centreon génère automatiquement les services en se basant sur les modèles de services liés aux modèles d'hôtes définis au dessus.
 
 Propriétés du contrôle de l'hôte
---------------------------------
+================================
 
 *	Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut.
 *	Le champ **Commande de vérification** indique la commande utilisée pour vérifier la disponibilité de l'hôte.
@@ -40,7 +40,7 @@ Propriétés du contrôle de l'hôte
 *	Les champs **Contrôles actifs activés** et **Contrôles passifs activés** activent/désactivent les contrôles actifs et passifs.
 
 Macros
-------
+======
 
 La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
@@ -50,7 +50,7 @@ Pour supprimer la macro, cliquez sur [ TODO METTRE UNE IMAGE].
 Pour déplacer l'ordre des macros, cliquez sur [ TODO METTRE UNE IMAGE].
 
 Notification
-------------
+============
 
 *	Le champ **Notification activée** permet d'activer ou de désactiver les notifications pour l'objet.
 *	Si la case **Contact additive inheritance** [ TODO PAS DE TRADUCTION DISPONIBLE] est cochée, alors Centreon n'écrase pas la configuration du modèle d'hôte parent mais ajoute les contacts en complément des contacts définis au niveau du modèle parent.
@@ -92,7 +92,7 @@ Informations détaillées de l'hôte
 *********************************
 
 Moteur de supervision
----------------------
+=====================
 
 *	Le champ **URL** définit une URL qui peut être utilisée pour donner davantage d'informations sur l'hôte.
 *	Le champ **Notes** permet d'ajouter des notes optionnelles concernant l'hôte.
@@ -108,7 +108,7 @@ Les champs présentés ci-dessous sont des champs utilisés uniquement par la CG
 *	Le champ **Coordonnées 2D et 3D** indiquent les coordonées 2D et 3D utilisées par la CGI.
  
 Informations supplémentaires
----------------------------- 
+============================
  
 *	Le champ **Statut** permet d'activer ou de désactiver l'hôte.
 *	Le champ **Commentaires** permet d'ajouter un commentaire concernant l'hôte.
