@@ -63,19 +63,24 @@ Pré-requis
 
 Le tableau ci-dessous donne les pré-requis pour l'installation de CES 3.0 :
 
-+------------------------+--------------------------+-------------------------------+---------------------------------+
-|  Nombre de services    |  Nombre de collecteurs   | Processeur du serveur central | Mémoire vive du serveur central |
-+========================+==========================+===============================+=================================+
-|        < 500           |        1 central         |          1 * 2,5 Ghz          |               1 Go              |
-+------------------------+--------------------------+-------------------------------+---------------------------------+
-|      500 - 1000        |        1 central         |          2 * 2,5 Ghz          |               2 Go              |
-+------------------------+--------------------------+-------------------------------+---------------------------------+
-|      1000 - 2000       |        1 central         |          4 * 2,5 Ghz          |               4 Go              |
-+------------------------+--------------------------+-------------------------------+---------------------------------+
-|      2000 - 5000       | 1 central + 1 satellite  |       2 * 4 * 2,5 Ghz         |            2 * 8 Go             |
-+------------------------+--------------------------+-------------------------------+---------------------------------+
-|      5000 - 10000      | 1 central + 2 satellites |       3 * 4 * 2,5 Ghz         |            3 * 8 Go             |
-+------------------------+--------------------------+-------------------------------+---------------------------------+
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+|  Nombre de services    |  Nombre de collecteurs   | Processeur du serveur central | Mémoire vive du serveur central | Processeur du serveur satellite | Mémoire vive du serveur satellite |
++========================+==========================+===============================+=================================+=================================+===================================+
+|        < 500           |        1 central         |          1 * 2,5 Ghz          |               1 Go              |                                 |                                   |
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+|      500 - 1000        |        1 central         |          2 * 2,5 Ghz          |               2 Go              |                                 |                                   |
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+|      1000 - 2000       |        1 central         |          4 * 2,5 Ghz          |               4 Go              |                                 |                                   |
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+|      2000 - 5000       |        1 central         |          8 * 2,5 Ghz          |               8 Go              |                                 |                                   |
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+|      5000 - 10000      | 1 central + 1 satellite  |          4 * 2,5 Ghz          |               8 Go              |           8 * 2,5 Ghz           |                4 Go               |
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+|     10000 - 25000      | 1 central + 1 satellite  |          4 * 2,5 Ghz          |               8 Go              |           8 * 2,5 Ghz           |                4 Go               |
++------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
+
+**Remarque** : ces informatuions tiennent comptes du fait que toutes les optimisations aient été réalisé pour l'ordonnanceur Centreon Engine, que les transactions aient été activé 
+dans Centreon Broker et que les optimisations aient été réalisé pour le SGBD MariaDB.  
 
 ************
 Installation
@@ -123,8 +128,8 @@ Entrez le mot de passe root voulu, puis cliquez sur **Suivant**.
 
 Sélectionnez les options de partitionnement qui vous conviennent le mieux. Puis validez.
 
-Etape 4 : Choix des ordonnanceurs et broker
-===========================================
+Etape 4 : Sélection des composants
+==================================
 
 Choix du type de serveur
 ------------------------
@@ -149,7 +154,7 @@ Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Brok
 
 [ TODO METTRE UNE CAPTURE D'ECRAN]
 
-Une fois toutes ces options choisies, l'installation se lance. Lorsque l'installation est terminée, le serveur redémarre automatiquement.
+Une fois toutes ces options choisies, l'installation commence. Lorsque l'installation est terminée, le serveur redémarre automatiquement.
 
 *************
 Configuration
@@ -159,7 +164,7 @@ Découverte de l'interface web
 =============================
 
 Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centreon.
-L'assistant de fin d'installation de Centreon s'affiche. Cliquez sur **Next** jusqu'à arrivé au choix du moteur de supervision.
+L'assistant de fin d'installation de Centreon s'affiche. Cliquez sur **Next** jusqu'à arriver au choix du moteur de supervision.
 Choisissez l'option **centreon-engine**. 
 
 [ TODO METTRE UNE CAPTURE D'ECRAN DE MONITORING ENGINE INFORMATION ]
