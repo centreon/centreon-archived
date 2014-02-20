@@ -35,30 +35,5 @@
         $(function () {
             $('#formHeader a:first').tab('show');
         });
-
-        
-        
-        {if isset($select2Call)}
-            function formatResult(item)
-            {
-                if(!item.id) {
-                  // return `text` for optgroup
-                  return item.text;
-                }
-
-                if (item.theming) {
-                    return item.theming;
-                } else {
-                    return item.text;
-                }
-            }
-
-            function formatSelection(item)
-            {
-                return item.text;
-            }
-            
-            {$select2Call}
-        {/if}
     </script>
 {/block}

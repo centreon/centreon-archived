@@ -38,6 +38,14 @@ class Select implements Custominterface
 {
     public static function renderHtmlInput(array $element)
     {
+        $tpl = \Centreon\Core\Di::getDefault()->get('template');
+        // Load CssFile
+        $tpl->addCss('select2.css')
+            ->addCss('select2-bootstrap.css');
+
+        // Load JsFile
+        $tpl->addJs('jquery.select2/select2.min.js');
+
         if (isset($element['label_object_type']) && $element['label_object_type'] == 'object') {
             $element['label_defaultValuesRoute'] = \Centreon\Core\Di::getDefault()
                             ->get('router')
@@ -51,7 +59,8 @@ class Select implements Custominterface
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
                 . 'multiple:'.$element['label_multiple'].', '
-                . 'formatResult: formatResult, '
+                . 'formatResult: select2_formatResult, '
+                . 'formatSelection: select2_formatSelection, '
                 . 'ajax: {'
                     .'data: function(term, page) {'
                         .'return { '

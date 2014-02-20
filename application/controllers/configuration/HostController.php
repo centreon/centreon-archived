@@ -7,7 +7,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Contactgroup,
     \Models\Configuration\Relation\Host\Hostgroup,
     \Models\Configuration\Relation\Host\Hostcategory,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class HostController extends \Centreon\Core\Controller
 {
@@ -175,23 +175,14 @@ class HostController extends \Centreon\Core\Controller
             $currentHostValues['host_passive_checks_enabled'] = '2';
         }
         
-        $myForm = new Generator('/configuration/host/update');
+        $myForm = new Generator('/configuration/host/update', 0, array('id' => $requestParam['id']));
         $myForm->setDefaultValues($currentHostValues);
         $myForm->addHiddenComponent('host_id', $requestParam['id']);
-        
-        // Load CssFile
-        $tpl->addCss('select2.css')
-            ->addCss('select2-bootstrap.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.select2/select2.min.js');
         
         // Display page
         $tpl->assign('pageTitle', "Host");
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
-        $tpl->assign('firstSection', $myForm->getFirstSection());
-        $tpl->assign('select2Call', $myForm->getSelect2Js());
         $tpl->assign('validateUrl', '/configuration/host/update');
         $tpl->display('configuration/edit.tpl');
     }

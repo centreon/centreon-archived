@@ -38,6 +38,6 @@ class Nestablecheckboxlist implements Custominterface
 {
     public static function renderHtmlInput(array $element)
     {
-        return "input";
+        return array('html' => 'input');
     }
 }

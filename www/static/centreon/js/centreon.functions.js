@@ -168,3 +168,27 @@ function alertClose() {
         }
     });
 }
+
+/**
+ * Used for select2
+ */
+function select2_formatResult(item) {
+    if(!item.id) {
+        // return `text` for optgroup
+        return item.text;
+    }
+
+    if (item.theming) {
+        return item.theming;
+    } else {
+        return item.text;
+    }
+}
+
+/**
+ * Used for select2
+ */
+function select2_formatSelection(item) {
+    return select2_formatResult(item);
+}
+
