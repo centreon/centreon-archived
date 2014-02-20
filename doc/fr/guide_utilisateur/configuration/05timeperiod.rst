@@ -6,7 +6,7 @@ Les périodes temporelles
 Définition
 **********
 
-Une période temporelle est la définition d'un intervalle de temps pour chacun des jorus de la smeaine.
+Une période temporelle est la définition d'un intervalle de temps pour chacun des jours de la semaine.
 Ces périodes temporelles servent à activer les fonctionnalités de l'ordonnanceur sur une période donnée.
 
 Les périodes temporelles s'appliquent à deux types d'actions :
@@ -21,14 +21,14 @@ Configuration
 La configuration des périodes temporelles se déroule dans le menu **Configuration** ==> **Utilisateurs** ==> **Périodes temporelles**.
 
 Options basiques
-----------------
+================
 
 *	Les champs **Nom de la période temporelle** et **Alias** définissent respectivement le nom et la descrption de la période temporelle.
 *	Les champs appartenant à la sous-catégorie **Période de temps** définissent les jours de la semaine pour lesquels il est nécessaire de définir des plages horaires.
 *	Le tableau **Exceptions** permet d'inclure des jours exclus de la période de temps
 
 Syntaxe d'une période de temps
-------------------------------
+==============================
 
 Lors de la création d'une période temporelle, les caractères suivants permettent de définir les périodes temporelles :
 
@@ -44,7 +44,7 @@ Quelques exemples :
 [ TODO CAPTURE D'ECRAN DE LA PAGE DE CONFIGURATION NECESSAIRE]
 
 Les exceptions
---------------
+==============
 
 Les exceptions permettent d'inclure à la plage temporaire des jours exceptionnels (surcharge de la définition du fonctionnement régulier de la journée).
 
@@ -78,7 +78,7 @@ Par journée exceptionnelle, vous devez définir une plage horaire. Le tableau c
 +-----------------------+-------------------------+-----------------------------------------------------------------+
 
 Options avancées
-----------------
+================
 
 Au sein des options avancées, il est possible d'**inclure** ou d'**exclure** des périodes à la période temporelle.
 Exemple d'application. Prenons deux périodes temporelles :

@@ -14,13 +14,13 @@ Configuration du service
 ************************
 
 Informations générales
-----------------------
+======================
 
 *	Le champ **Description** définit le nom du service.
 *	Le champ **Modèle de service** indique le modèle de service auquel le service est lié.
 
 Etat du service
----------------
+===============
 
 *	Le champ **Est volatile** indique si le service est volatile ou non (d'une manière générale uniquement les services passifs sont volatiles).
 *	Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut du service.
@@ -32,7 +32,7 @@ Etat du service
 *	Les champs **Contrôle actif activé** et **Contrôle passif activé** activent/désactivent le typ de contrôle du service.
 
 Macros
-------
+======
 
 La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
@@ -42,7 +42,7 @@ Pour supprimer la macro, cliquez sur [ TODO METTRE UNE IMAGE].
 Pour déplacer l'ordre des macros, cliquez sur [ TODO METTRE UNE IMAGE].
 
 Notification
-------------
+============
 
 *	Le champ **Notification activée** permet d'activer ou de désactiver les notifications pour l'objet.
 *	Le champ **Utiliser les contacts définis sur l'hôte** : j'ai proposé une traduction sur la plateforme] permet de faire hériter les contacts depuis la configuration de l'hôte.
@@ -59,13 +59,13 @@ Onglet Relations
 ****************
 
 Relations
----------
+=========
 
 *	La liste **Lié aux hôtes** permet de définir le ou les hôtes liés à ce service.
 *	La liste **Lié aux groupes de services** permet de lier le service à un ou plusieurs groupes de services.
 
 Traps SNMP
-----------
+==========
 
 Le champ **Traps SNMP reliés au service** permet de définir les traps SNMP qui seront affichés par le service.
 
@@ -90,13 +90,13 @@ Informations supplémentaires du service
 ***************************************
 
 Centreon
---------
+========
 
 *	**Modèle de graphique** : Définit le modèle de graphique à utiliser pour présenter les données de performances liées au service.
 *	**Catégories** : Définit la(les) catégorie(s) auxquelles le service appartient.
 
 Moteur de supervision
----------------------
+=====================
 
 *	Le champ **URL** définit une URL qui peut être utilisée pour donner davantage d'informations sur le service.
 *	Le champ **Notes** permet d'ajouter des notes optionnelles concernant le service.
@@ -106,7 +106,7 @@ Moteur de supervision
 *	Le champ **Niveau de criticité** indique le niveau de criticité du service.
 
 Informations supplémentaires
----------------------------- 
+============================ 
 
 *	Le champ **Statut** permet d'activer ou de désactiver le service.
 *	Le champ **Commentaires** permet d'ajouter un commentaire concernant le service.

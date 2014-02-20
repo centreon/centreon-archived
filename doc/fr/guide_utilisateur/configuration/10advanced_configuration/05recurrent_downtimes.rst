@@ -15,7 +15,7 @@ Exemple : Une sauvegarde des machines virtuelles est effectuée tous les jours d
 Il est nécessaire de programmer des temps d'arrêts récurrents sur les services concernés afin d'éviter de recevoir des notifications de 20h00 à minuit.
 
 Les types de temps d'arrêts
----------------------------
+===========================
 
 Il existe deux types de temps d'arrêts :
 
@@ -32,8 +32,8 @@ Pour ajouter un temps d'arrêt récurrent :
 #. Dans le menu de gauche, cliquez sur **Temps d'arrêt**
 #. Cliquez sur **Ajouter**
 
-Configuration des temps d'arrêt
--------------------------------
+Configuration des temps d'arrêts
+================================
 
 * Les champs **Nom** et **Description** permet de donner un nom et de décrire le temps d'arrêt récurrent
 * Le champ **Activer** permet d'activer ou de désactiver le temps d'arrêt
@@ -45,12 +45,12 @@ Il est possible de choisir trois types de périodes :
 * Mensuel : Permet de choisir les jours dans un mois
 * Date spécifique : Permet de choisir des dates spécifiques
 
-* Le champ **Jours** permet de définir le ou les jours concernés.
-* Le champ **Période de temps** permet de définir la période de temps concernée (exprimée en HH:MM - HH:MM).
+* Le champ **Jours** définit le ou les jours concernés.
+* Le champ **Période de temps** contient la période de temps concernée (exprimée en HH:MM - HH:MM).
 * Le champ **Type de temps d'arrêt** définit le type de temps d'arrêt souhaité.
 
 Relations
----------
+=========
 
 * La liste **Lié aux hôtes** permet de choisir le ou les hôtes concernés par le temps d'arrêt récurrent
 * Si un groupe d'hôte est choisi avec la liste **Lié avec le groupe d'hôtes** tous les hôtes appartenant à ce groupe sont concernés par le temps d'arrêt récurrent

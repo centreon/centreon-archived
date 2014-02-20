@@ -38,7 +38,7 @@ Les hôtes
 *********
 
 La gestion simple
------------------
+=================
 
 Au sein de l'onglet **Relations** d'une fiche de configuration d'hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**) il est possible de définir deux paramètres :
 
@@ -51,7 +51,7 @@ Exemple : Un hôte est connecté à un switch. Si ce switch tombe en panne, l'h�
 Le principal défaut de cette méthode de configuration est que les hôtes parents et les hôtes enfants doivent être supervisés par le même collecteur de supervision.
 
 La gestion avancée
-------------------
+==================
 
 Il est possible de gérer la dépendance entre les hôtes d'une manière plus intelligente. Pour cela :
 
@@ -102,7 +102,7 @@ Les groupes
 ***********
 
 Les groupes d'hôtes
--------------------
+===================
 
 Pour ajouter une dépendance au niveau des groupes d'hôtes :
 
@@ -123,7 +123,7 @@ Deux types de groupes d'hôtes : Un groupe d'hôtes est dit maitre s'il contrôl
 * Le champ **Commentaire** permet de commenter la dépendance
 
 Les groupes de services
------------------------
+=======================
 
 Pour ajouter une dépendance au niveau des groupes de services :
 

@@ -39,7 +39,7 @@ Pour ajouter une escalade de notification :
 * Le champ **Commentaire** permet de commenter l'escalade
 
 Application de l'escalade
--------------------------
+=========================
 
 Pour sélectionner les différents objets qui seront concernés par cette escalade, les onglets
 **Escalade des hôtes**, **Escalade des services**, **Escalade des groupes d'hôtes**, **Escalade des méta-services**, **Escalade des groupes de services**

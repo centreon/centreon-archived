@@ -32,7 +32,7 @@ Visualisation
 *************
 
 Les graphiques de performances
-------------------------------
+==============================
 
 Il y a plusieurs manières de visualiser les graphiques de performances :
 
@@ -41,14 +41,14 @@ Il y a plusieurs manières de visualiser les graphiques de performances :
 * Se rendre dans **Vues** ==> **Graphiques** pour visualiser plusieurs graphiques
 
 Les graphiques d'historique
----------------------------
+===========================
 
 Comme vu dans le chapitre **Supervision en temps-réel** il est possible de visualiser les graphiques d'historiques en visualisation les détails d'un service.
 
 Comme vu ci-dessous en cochant la case **Affichage de l'état**, il est possible de visualiser les graphiques d'historique liés aux graphiques de performances affichés.
 
 Visualiser plusieurs graphiques
--------------------------------
+===============================
 
 Pour visualiser l'ensemble des graphiques, rendez-vous dans **Vues** ==> **Graphiques**.
 

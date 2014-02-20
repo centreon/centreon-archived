@@ -31,7 +31,7 @@ Architecture
 Avec Centreon 2.5.x, la gestion des traps SNMP a été complètement revue : l'architecture a été entièrement repensée. Deux nouveaux services entrent en jeu, centreontrapdforward et centreontrapd.
 
 Traitement d'une trap par le serveur central
---------------------------------------------
+============================================
 
 Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
 
@@ -43,7 +43,7 @@ Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
 [ TODO Récupérer les schémas de la version anglaise]
 
 Traitement d'une trap par un serveur satellite
-----------------------------------------------
+==============================================
 
 Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
 Cette base de données SQLLite est automatiquement générée par le serveur Central. 
@@ -61,7 +61,7 @@ Configuration des services
 **************************
 
 Snmptrapd
----------
+=========
 
 Afin d'appeller le script centreontrapdfoward, le fichier **/etc/snmp/snmptrapd.conf** doit contenir les lignes suivantes :
 
@@ -89,7 +89,7 @@ Il est également possible de placer le dossier de cache snmptrapd en mémoire v
 	tmpfs /var/run/snmpd                     tmpfs defaults,size=128m 0 0
 
 Centreontrapdforward
---------------------
+====================
 
 Pour modifier le dossier de cache vers lequel les informations seront écrites, modifiez le fichier de configuration **/etc/centreon/centreontrapd.pm** :
 
@@ -108,7 +108,7 @@ Vous pouvez également mapper le dossier dans le cache en mémoire vive, en ajou
 	tmpfs /var/spool/centreontrapd            tmpfs defaults,size=512m 0 0
 
 Centreontrapd
--------------
+=============
 
 Deux fichiers de configuration existent pour Centreontrapd :
 
@@ -116,7 +116,7 @@ Deux fichiers de configuration existent pour Centreontrapd :
 * **/etc/centreon/centreontrapd.pm** contient la configuration du service centreontrapd
 
 Configuration du service
-^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------
 
 Au sein du fichier **/etc/centreon/centreontrapd.pm** il est conseillé de modifier uniquement trois paramètres (si nécessaire):
 
@@ -125,7 +125,7 @@ Au sein du fichier **/etc/centreon/centreontrapd.pm** il est conseillé de modif
 * L'option **spool_directory** permet de modifier le dossier de cache à lire (si vous l'avez modifié dans le fichier de configuration de centreontrapdforward)
 
 Configuration de la connexion à la base de données
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------------
 
 Il est possible de configurer le fichier **/etc/centreon/conf.pm** de deux manières :
 

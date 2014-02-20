@@ -12,7 +12,7 @@ Les statuts sont des indicateurs pour les hôtes ou les services. Chaque statut 
 Les statuts sont obtenus en fonction des codes de retours des plugins de supervision.
 
 Statut des hôtes
-----------------
+================
 
 Le tableau ci-dessous résume l'ensemble des statuts possibles pour un hôte.
 
@@ -27,7 +27,7 @@ Le tableau ci-dessous résume l'ensemble des statuts possibles pour un hôte.
 +-------------------+----------------------+------------------------------------+
 
 Statut des services
--------------------
+===================
  
 Le tableau ci-dessous résume l'ensemble des statuts possibles pour un service.
 
@@ -102,7 +102,7 @@ Hôtes
 *****
 
 Visualisation
--------------
+=============
 
 Pour visualiser le statut des hôtes, rendez-vous dans **Supervision** ==> **Hôtes**.
 
@@ -119,7 +119,7 @@ Le menu de gauche permet de modifier les hotes visibles au sein du tableau :
 [ TODO Mettre une capture d'écran]
 
 Tableaux d'hôtes
-----------------
+================
 
 Le tableau ci-dessous donne une description de toutes les colonnes du tableau affiché lors de la visualisation des hôtes :
 
@@ -146,7 +146,7 @@ Le tableau ci-dessous donne une description de toutes les colonnes du tableau af
 +--------------------------+----------------------------------------------------------------------------------------------------------------------------------+
 
 Tableau de groupes d'hôtes
---------------------------
+==========================
 
 Le tableau ci-dessous donne une description de toutes les colonnes du tableau affiché lors de la visualisation des groupes d'hôtes :
 
@@ -161,14 +161,14 @@ Le tableau ci-dessous donne une description de toutes les colonnes du tableau af
 +--------------------------+------------------------------------------------------------------------------------------------------------+
 
 Détails d'un hôte
------------------
+=================
 
 Lorsque vous cliquez sur un hôte, la page suivante s'affiche :
 
 [ TODO Mettre une capture d'écran]
 
 Détails du statut
-^^^^^^^^^^^^^^^^^
+-----------------
 
 Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 
@@ -213,13 +213,13 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 
 Options et Commandes disponibles
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 Les options ainsi que les commandes permettent d'effectuer un certain nombre d'actions sur l'hôte.
 Ces différentes options sont traitées au sein du **Guide d'exploitation**.
 
 Racourcis d'hôtes
-^^^^^^^^^^^^^^^^^
+-----------------
 
 Le tableau ci-dessous résume la signification des icônes :
  
@@ -238,7 +238,7 @@ Le tableau ci-dessous résume la signification des icônes :
 +------------------------+--------------------------------------------------------------------+
 
 Outils
-^^^^^^
+------
 
 Le conteneur **Outils** permet :
 
@@ -246,12 +246,12 @@ Le conteneur **Outils** permet :
 * D'effectuer un traceroute vers l'hôte
 
 Liens
-^^^^^
+-----
 
 Le conteneur **Liens** permet de visualiser les groupes d'hôtes auxquels l'hôte appartient.
 
 Notifications
-^^^^^^^^^^^^^
+-------------
 
 Le conteneur **Notifications** permet de visualiser quels sont les contacts et les groupes de contacts qui seront alertés
 en cas d'envoi d'une notification.
@@ -261,7 +261,7 @@ Services
 ********
 
 Visualisation
--------------
+=============
 
 Pour visualiser le statut des services, rendez-vous dans **Supervision** ==> **Services**.
 
@@ -297,7 +297,7 @@ Le menu de gauche permet de modifier les services visibles au sein du tableau :
 [ TODO Mettre une capture d'écran]
 
 Tableaux de services
---------------------
+====================
 
 Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation des services.
 
@@ -322,7 +322,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 Tableaux des groupes
---------------------
+====================
 
 Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation des services classées par groupes.
 
@@ -339,7 +339,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 
 Tableaux des méta-services
---------------------------
+==========================
 
 Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation des méta-services.
 
@@ -360,14 +360,14 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
 
 Détails d'un service
---------------------
+====================
 
 Lorsque vous cliquez sur un service, la page suivante s'affiche :
 
 [ TODO Mettre une capture d'écran]
 
 Détails du statut
-^^^^^^^^^^^^^^^^^
+-----------------
 
 Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 
@@ -414,23 +414,23 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 
 Options et commandes du service
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------
 
 Les options ainsi que les commandes du service permettent d'effectuer un certain nombre d'actions sur le service.
 Ces différentes options sont traitées au sein du **Guide d'exploitation**.
 
 Graphique détaillé et graphiques des statuts
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------------------
 
 Les parties **Graphique détaillé** et **Graphique des statuts** permettent respectivement de visualiser le graphique de performance ainsi que le graphique d'historique pour ce service.
 
 Racourcis d'hôte
-^^^^^^^^^^^^^^^^
+----------------
 
 Les racourcis d'hôtes sont les mêmes que ceux de la fiche d'hôte.
 
 Racourcis de service
-^^^^^^^^^^^^^^^^^^^^
+--------------------
 
 Le tableau ci-dessous résume la signification des icônes :
  
@@ -447,7 +447,7 @@ Le tableau ci-dessous résume la signification des icônes :
 +------------------------+--------------------------------------------------------------------+
 
 Liens
-^^^^^
+-----
 
 Le conteneur **Liens** permet de visualiser :
 
@@ -456,7 +456,7 @@ Le conteneur **Liens** permet de visualiser :
 * Les catégories de services auxquels le service appartient
 
 Notifications
-^^^^^^^^^^^^^
+-------------
 
 Le conteneur **Notifications** permet de visualiser quels sont les contacts et les groupes de contacts qui seront alertés
 en cas d'envoi d'une notification.
@@ -469,7 +469,7 @@ Pour les hôtes ou les services, il y a possibilités de visualiser les temps d'
 Pour plus d'informations sur les commentaires, rendez-vous dans le **Guide d'exploitation** [ TODO METTRE UNE ANCRE].
 
 Les temps d'arrêts
-------------------
+==================
 
 Pour visualiser les temps d'arrêts en cours sur les hôtes ou les services :
 
@@ -501,7 +501,7 @@ Le tableau ci-dessous décrit les colonnes de cette page.
 +------------------------------------------------+---------------------------------------------------+
 
 Les commentaires
-----------------
+================
 
 Pour visualiser les commentaires définis sur les hôtes :
 

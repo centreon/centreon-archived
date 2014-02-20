@@ -30,7 +30,7 @@ Les modèles d'hôtes
 *******************
 
 Héritage
---------
+========
 
 Un hôte ou un modèle d'hôte peut hériter d'un ou plusieurs modèles d'hôtes. Cet héritage peut être :
 
@@ -56,7 +56,7 @@ Le schéma ci-dessous présente un hôte héritant de plusieurs modèles d'hôte
 [ TODO Schéma explicatif : images/02.png]
 
 Configuration
--------------
+=============
 
 Pour ajouter un modèle d'hôtes :
 
@@ -69,14 +69,14 @@ Les modèles de services
 ***********************
 
 Héritage
---------
+========
 
 Un service ou un modèle de service ne peut hériter que d'un seul modèle de service (héritage de type Père-Fils).
 
 [ TODO Schéma explicatif : images/03.png]
 
 Configuration
--------------
+=============
 
 Pour ajouter un modèle de services :
 
@@ -91,7 +91,7 @@ Les bonnes pratiques
 [TODO EXPLICATION A REVOIR]
 
 Explications
-------------
+============
 
 La bonne pratique veut que des modèles de services soient associés à des modèles d'hôtes : lors de la création d'un hôte, les services sont générés automatiquement à partir des modèles d'hôtes.
 
@@ -113,7 +113,7 @@ Dans ce cas, il est nécessaire de désactiver les services inutilisés (et non 
 En cas de suppression des services, la regénération des services de l'hôte à partir des modèles d'hôtes recréera les services supprimés.
 
 Configuration
--------------
+=============
 
 La liaison des modèles de services avec les modèles d'hôtes a lieu dans l'onglet **Relations** des modèles de services ou des modèles d'hôtes.
 
@@ -126,7 +126,7 @@ Un contact ou un modèle de contact peut hériter d'un seul modèle de contacts.
 [ TODO Schéma explicatif : images/05.png]
 
 Configuration
--------------
+=============
 
 Pour ajouter un modèle de contacts :
 

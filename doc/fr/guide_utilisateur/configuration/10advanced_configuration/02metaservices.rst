@@ -12,7 +12,7 @@ Les méta-services sont gérés de la même manière qu'un service c'est à dire
 Exemple : Il est possible de déterminer la consommation totale de traffic WAN en additionnant au sein d'un méta-service l'ensemble des services supervisant le traffic WAN unitairement.
 
 Les types de calcul
--------------------
+===================
 
 Plusieurs types de calculs sont possibles sur les métriques récupérées :
 
@@ -22,7 +22,7 @@ Plusieurs types de calculs sont possibles sur les métriques récupérées :
 * **Maximum** : Centreon récupère le maximum des données de performances
 
 Les types de sources de données
--------------------------------
+===============================
 
 Le résultat du calcul est une données de performance (métrique) qui génèrera un graphique de performance.
 Afin de tracer au mieux le résutlat, il faut sélectionner le type de source de données (par dafaut **GAUGE**).
@@ -49,7 +49,7 @@ Pour ajouter un méta-service :
 [ TODO Mettre une capture d'écran]
 
 Informations générales
-----------------------
+======================
 
 * Le champ **Nom du Méta-Service** correspond au nom du méta-service affiché dans l'interface.
 * Le champ **Format de la chaîne de sortie (Formatage printf)** correspond au message de sortie ('output') visible dans Centreon. La valeur "%d" correspond à la valeur calculée par le méta-service
@@ -66,7 +66,7 @@ La métrique à utiliser sera dans ce cas à sélectionner dans la liste déroul
     Plus d'informations sur le formatage `PRINTF <http://en.wikipedia.org/wiki/Printf_format_string>`_
 
 Etat du Meta Service
---------------------
+====================
 
 * Le champ **Période de contrôle** définit la période temporelle durant laquelle l'ordonnanceur vérifie le statut du méta-service.
 * Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôles à effectuer avant de valider le statut du méta-service : lorsque le statut est validé, une notification est envoyée.
@@ -74,7 +74,7 @@ Etat du Meta Service
 * Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l’intervalle de validation du statut non-OK du méta-service.
 
 Notification
-------------
+============
 
 * Le champ **Notification activée** permet d'activer les notifications.
 * La liste **Groupes de contacts liés** permet de définir les groupes de contacts qui seront alertés.
@@ -83,7 +83,7 @@ Notification
 * Le champ **Type de notification** définit les types de notifications envoyées.
 
 Informations supplémentaires
-----------------------------
+============================
 
 * La liste **Modèle de graphique** définit le modèle de graphique utilisé par ce méta-service.
 * Les champs **Statut** et **Commentaires** permettent d'activer/désactiver ou de commenter le méta-service.
