@@ -85,7 +85,7 @@ class Acl
                     $f = self::VIEW;
                     break;
             }
-            $flag = $flag | $f;
+            $flag = $flag | $f;
         }
         return $flag;
     }
