@@ -4,7 +4,7 @@ namespace Controllers\Administration;
 
 use \Models\Configuration\Acl\Group,
     \Centreon\Core\Form,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class AclgroupController extends \Centreon\Core\Controller
 {
@@ -164,7 +164,7 @@ class AclgroupController extends \Centreon\Core\Controller
             $currentaclgroupValues['enabled'] = '0';
         }
         
-        $myForm = new FormGenerator("/administration/aclgroup/update");
+        $myForm = new Generator("/administration/aclgroup/update");
         $myForm->setDefaultValues($currentaclgroupValues);
         $myForm->addHiddenComponent('acl_group_id', $requestParam['id']);
         

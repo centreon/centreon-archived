@@ -4,7 +4,7 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Connector,
     \Centreon\Core\Form,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class ConnectorController extends \Centreon\Core\Controller
 {
@@ -167,7 +167,7 @@ class ConnectorController extends \Centreon\Core\Controller
             $currentConnectorValues['enabled'] = '0';
         }
         
-        $myForm = new FormGenerator("/configuration/connector/update");
+        $myForm = new Generator("/configuration/connector/update");
         $myForm->setDefaultValues($currentConnectorValues);
         $myForm->addHiddenComponent('id', $requestParam['id']);
         

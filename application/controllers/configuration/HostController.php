@@ -3,7 +3,7 @@
 namespace Controllers\Configuration;
 
 use \Models\Configuration\Host,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class HostController extends \Centreon\Core\Controller
 {
@@ -143,7 +143,7 @@ class HostController extends \Centreon\Core\Controller
             $currentHostValues['host_passive_checks_enabled'] = '2';
         }
         
-        $myForm = new FormGenerator('/configuration/host/update');
+        $myForm = new Generator('/configuration/host/update');
         $myForm->setDefaultValues($currentHostValues);
         $myForm->addHiddenComponent('host_id', $requestParam['id']);
         

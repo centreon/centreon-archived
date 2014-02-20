@@ -4,7 +4,7 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Command,
     \Centreon\Core\Form,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class CommandController extends \Centreon\Core\Controller
 {
@@ -161,7 +161,7 @@ class CommandController extends \Centreon\Core\Controller
             $currentCommandValues['enable_shell'] = '0';
         }
         
-        $myForm = new FormGenerator('/configuration/command/update');
+        $myForm = new Generator('/configuration/command/update');
         $myForm->setDefaultValues($currentCommandValues);
         $myForm->addHiddenComponent('command_id', $requestParam['id']);
         

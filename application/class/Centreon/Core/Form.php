@@ -62,12 +62,6 @@ class Form
     
     /**
      *
-     * @var type 
-     */
-    private $defaultValue;
-    
-    /**
-     *
      * @var \Centreon\Core\Template
      */
     private $tpl;
@@ -143,7 +137,6 @@ class Form
         $this->formProcessor = new \HTML_QuickForm($name, 'post');
         $this->options = $options;
         $this->init();
-        $this->defaultValue = array();
         $this->di = \Centreon\Core\Di::getDefault();
         $this->tpl = $this->di->get('template');
         $this->addSecurity();
@@ -227,9 +220,18 @@ class Form
                 break;
             
             case 'static':
-                $element['input'] = $this->renderHtmlSelect($element);
-                $element['label'] = $this->renderHtmlLabel($element);
-                $element['html'] = $this->renderFinalHtml($element);
+                $className = "\\Centreon\\Core\\Form\\Custom\\".ucfirst($element['label_type']);
+                if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
+                        $in = $className::renderHtmlInput($element);
+                        if (isset($in['html'])) {
+                            $element['input'] = $in['html'];
+                        }
+                        $element['label'] = $this->renderHtmlLabel($element);
+                        $element['html'] = $this->renderFinalHtml($element);
+                        if (isset($in['js'])) {
+                            $this->javascriptCall .= $in['js'];
+                        }
+                }
                 break;
             
             case 'checkbox':
@@ -693,7 +695,7 @@ class Form
             );
         return $elem;
     }
-    
+
     /**
      * Add a select
      *
@@ -732,6 +734,24 @@ class Form
         return $elem;
     }
     
+    /**
+     * Add custom inputs
+     *
+     * @param array $field
+     * @param array $extraParams
+     */
+    public function addStatic($field, $extraParams = array())
+    {
+        $params = array();
+        if (isset($field['attributes']) && $field['attributes']) {
+            $params = json_decode($field['attributes'], true);
+        }
+        $params['label'] = $field['label'];
+        $params['type'] = $field['type'];
+        $params['extra'] = $extraParams;
+        $elem = $this->formProcessor->addElement('static', $field['name'], $params);
+    }
+
     /**
      * Add a multiselect
      *
@@ -989,7 +1009,7 @@ class Form
      */
     public function display()
     {
-        $this->setDefaults($this->defaultValue);
+        $this->setDefaults();
         $renderer = \HTML_QuickForm_Renderer::factory('centreon');
         $this->formProcessor->render($renderer);
 

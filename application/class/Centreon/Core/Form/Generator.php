@@ -40,7 +40,7 @@ namespace Centreon\Core\Form;
  * @package Centreon
  * @subpackage Core
  */
-class FormGenerator
+class Generator
 {
     /**
      *
@@ -94,7 +94,7 @@ class FormGenerator
      *
      * @var type 
      */
-    private $urlCastParemeter;
+    private $extraParams;
 
 
     /**
@@ -102,11 +102,11 @@ class FormGenerator
      * @param type $formRoute
      * @param type $advanced
      */
-    public function __construct($formRoute, $advanced = 0, $urlCastParameter = array())
+    public function __construct($formRoute, $advanced = 0, $extraParams = array())
     {
         $this->formRoute = $formRoute;
         $this->formHandler = new \Centreon\Core\Form($this->formName);
-        $this->urlCastParemeter = $urlCastParameter;
+        $this->extraParams = $extraParams;
         $this->getFormFromDatabase($advanced);
     }
     
@@ -171,7 +171,7 @@ class FormGenerator
                 
                 foreach ($fieldList as $field) {
                     $this->addFieldToForm($field);
-                    $this->formComponents[$section['name']][$block['name']][] = $field['name'];
+                    $this->formComponents[$section['name']][$block['name']][] = $field;
                     $this->formDefaults[$field['name']] = $field['default_value'];
                 }
             }
@@ -187,14 +187,11 @@ class FormGenerator
     {
         switch ($field['type']) {
             default:
+                $this->formHandler->addStatic($field, $this->extraParams);
+                break;
             case 'text':
                 $this->formHandler->addText($field['name'], $field['label']);
                 break;
-            
-            case 'select':
-                $this->formHandler->addSelect($field['name'], $field['label'], $field['attributes'], $this->urlCastParemeter);
-                break;
-            
             case 'textarea':
                 $this->formHandler->addTextarea($field['name'], $field['label']);
                 break;
@@ -287,7 +284,9 @@ class FormGenerator
                 $formRendering .= '</div>';
                 $formRendering .= '<div class="panel-body">';
                 foreach($blockComponents as $component) {
-                    $formRendering .= $formElements[$component]['html'];
+                    if (isset($formElements[$component['name']]['html'])) {
+                        $formRendering .= $formElements[$component['name']]['html'];
+                    }
                 }
                 $formRendering .= '</div>';
                 $formRendering .= '</div>';
