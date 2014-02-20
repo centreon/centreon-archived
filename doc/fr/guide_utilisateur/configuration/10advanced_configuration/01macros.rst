@@ -29,7 +29,7 @@ Définition
 Les macros personnalisées sont des macros créées par l'utilisateur lors de la création d'un hôte ou d'une service.
 Elles sont utilisées dans les commandes de vérifications.
 Les macros personnalisées commencent par $_HOST pour les macros personnalisées d'hôtes et par $_SERVICE pour les macros personnalisées de services.
-Il y a deux principaux avantages à utiliser les macros personnalisées à la place des arguments :
+Il y a plusieurs avantages à utiliser les macros personnalisées à la place des arguments :
 
 * La fonction de la macro est définie dans le nom de celle-ci. La macro $_HOSTMOTDEPASSEINTRANET$ est plus facilement lisible que $ARG1$
 * Les macros héritent des modèles d'hôtes et de services, la modification d'une seule macro est donc possible pour un hôte ou un service. En revanche, les arguments doivent être tous redéfinis en cas de modification d'un seul argument
@@ -71,7 +71,7 @@ Par défaut, la macro $USER1$ est créé sa valeur est la suivante : /usr/lib/na
 
 Pour ajouter une macro de ressources :
 
-* Rendez-vous dans **Configuration** ==> **Moteurs de supervision**
+* Rendez-vous dans le menu **Configuration** ==> **Moteurs de supervision**
 * Cliquez sur **Ajouter**
 
 [ TODO Mettre une capture d'écran ]
@@ -94,4 +94,9 @@ Elles sont complémentaires aux macros standards. Exemple :
 * La macro d'environnement $CONTACTEMAIL:merethis$ retournera l'adresse email de l'utilisateur merethis
 
 La documentation complète des macros à la demande est disponible à cette adresse `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_.
-ATTENTION : L'activation du paramètre "Activation des optimisations pour les installations de grandes tailles" rend impossible l'utilisation des macros d'environnements.
+
+**Remarque** : L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommaeur en termes de ressoruces.
+
+.. warning::
+
+   L'activation du paramètre "Activation des optimisations pour les installations de grandes tailles" rend impossible l'utilisation des macros d'environnements.
