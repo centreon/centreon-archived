@@ -2,6 +2,8 @@
 
 namespace Controllers\Configuration;
 
+use \Models\Configuration\Host;
+
 class HostTemplateController extends \Centreon\Core\Controller
 {
 
@@ -33,6 +35,34 @@ class HostTemplateController extends \Centreon\Core\Controller
         $tpl->assign('objectAddUrl', '/configuration/hosttemplate/add');
         $tpl->assign('objectListUrl', '/configuration/hosttemplate/list');
         $tpl->display('configuration/list.tpl');
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/hosttemplate/formlist
+     */
+    public function formListAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        
+        $hostObj = new Host();
+        $filters = array('host_name' => $requestParams['q'].'%', 'host_register' => '0');
+        $hostList = $hostObj->getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
+        
+        $finalHostList = array();
+        foreach($hostList as $host) {
+            $finalHostList[] = array(
+                "id" => $host['host_id'],
+                "text" => $host['host_name'],
+                "theming" => \Centreon\Repository\HostRepository::getIconImage($host['host_name']).' '.$host['host_name']
+            );
+        }
+        
+        $router->response()->json($finalHostList);
     }
 
     /**

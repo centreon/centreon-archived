@@ -2,16 +2,16 @@
 
 namespace Controllers\Configuration;
 
-use Models\Configuration\Contact;
+use Models\Configuration\Contactgroup;
 
-class UserController extends \Centreon\Core\Controller
+class UsergroupController extends \Centreon\Core\Controller
 {
 
     /**
-     * List users
+     * List usergroups
      *
      * @method get
-     * @route /configuration/user
+     * @route /configuration/usergroup
      */
     public function listAction()
     {
@@ -31,16 +31,16 @@ class UserController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.columnFilter.js');
         
         // Display page
-        $tpl->assign('objectName', 'User');
-        $tpl->assign('objectAddUrl', '/configuration/user/add');
-        $tpl->assign('objectListUrl', '/configuration/user/list');
+        $tpl->assign('objectName', 'Usergroup');
+        $tpl->assign('objectAddUrl', '/configuration/usergroup/add');
+        $tpl->assign('objectListUrl', '/configuration/usergroup/list');
         $tpl->display('configuration/list.tpl');
     }
 
     /**
      * 
      * @method get
-     * @route /configuration/user/list
+     * @route /configuration/usergroup/list
      */
     public function datatableAction()
     {
@@ -48,7 +48,7 @@ class UserController extends \Centreon\Core\Controller
         $router = $di->get('router');
         
         $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'user',
+            'usergroup',
             $this->getParams('get')
             )
         );
@@ -57,7 +57,7 @@ class UserController extends \Centreon\Core\Controller
     /**
      * 
      * @method get
-     * @route /configuration/user/formlist
+     * @route /configuration/usergroup/formlist
      */
     public function formListAction()
     {
@@ -66,27 +66,26 @@ class UserController extends \Centreon\Core\Controller
         
         $requestParams = $this->getParams('get');
         
-        $contactObj = new Contact();
-        $filters = array('contact_name' => $requestParams['q'].'%');
-        $contactList = $contactObj->getList('contact_id, contact_name, contact_email', -1, 0, null, "ASC", $filters, "AND");
+        $contactgroupObj = new Contactgroup();
+        $filters = array('cg_name' => $requestParams['q'].'%');
+        $contactgroupList = $contactgroupObj->getList('cg_id, cg_name', -1, 0, null, "ASC", $filters, "AND");
         
-        $finalContactList = array();
-        foreach($contactList as $contact) {
-            $finalContactList[] = array(
-                "id" => $contact['contact_id'],
-                "text" => $contact['contact_name'],
-                "theming" => \Centreon\Repository\UserRepository::getUserIcon($contact['contact_name'], $contact['contact_email'])
+        $finalContactgroupList = array();
+        foreach($contactgroupList as $contactgroup) {
+            $finalContactgroupList[] = array(
+                "id" => $contactgroup['cg_id'],
+                "text" => $contactgroup['cg_name']
             );
         }
         
-        $router->response()->json($finalContactList);
+        $router->response()->json($finalContactgroupList);
     }
     
     /**
-     * Create a new user
+     * Create a new usergroup
      *
      * @method post
-     * @route /configuration/user/create
+     * @route /configuration/usergroup/create
      */
     public function createAction()
     {
@@ -94,11 +93,11 @@ class UserController extends \Centreon\Core\Controller
     }
 
     /**
-     * Update a user
+     * Update a usergroup
      *
      *
      * @method put
-     * @route /configuration/user/update
+     * @route /configuration/usergroup/update
      */
     public function updateAction()
     {
@@ -106,11 +105,11 @@ class UserController extends \Centreon\Core\Controller
     }
     
     /**
-     * Add a user
+     * Add a usergroup
      *
      *
      * @method get
-     * @route /configuration/user/add
+     * @route /configuration/usergroup/add
      */
     public function addAction()
     {
@@ -118,11 +117,11 @@ class UserController extends \Centreon\Core\Controller
     }
     
     /**
-     * Update a user
+     * Update a usergroup
      *
      *
      * @method get
-     * @route /configuration/user/[i:id]
+     * @route /configuration/usergroup/[i:id]
      */
     public function editAction()
     {

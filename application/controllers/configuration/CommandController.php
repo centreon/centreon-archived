@@ -166,6 +166,7 @@ class CommandController extends \Centreon\Core\Controller
         $myForm->addHiddenComponent('command_id', $requestParam['id']);
         
         // Display page
+        $tpl->assign('pageTitle', "Command");
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', '/configuration/command/update');

@@ -4,10 +4,10 @@ namespace Models\Configuration\Relation\Host;
 
 use \Models\Configuration\Relation;
 
-class Hostcategory extends Relation
+class Contact extends Relation
 {
-    protected $relationTable = "hostcategories_relation";
-    protected $firstKey = "hostcategories_hc_id";
+    protected $relationTable = "contact_host_relation";
+    protected $firstKey = "contact_id";
     protected $secondKey = "host_host_id";
 
     /**
@@ -18,7 +18,7 @@ class Hostcategory extends Relation
     public function __construct()
     {
         parent::__construct();
-        $this->firstObject = new \Models\Configuration\Hostcategory();
+        $this->firstObject = new \Models\Configuration\Contact();
         $this->secondObject = new \Models\Configuration\Host();
     }
 }

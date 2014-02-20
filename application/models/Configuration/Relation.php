@@ -80,7 +80,7 @@ abstract class Relation
     {
         $stmt = $this->db->prepare($sql);
         $stmt->execute($params);
-        $result = $res->fetchAll();
+        $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         return $result;
     }
 

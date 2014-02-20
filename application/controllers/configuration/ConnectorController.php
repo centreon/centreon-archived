@@ -172,6 +172,7 @@ class ConnectorController extends \Centreon\Core\Controller
         $myForm->addHiddenComponent('id', $requestParam['id']);
         
         // Display page
+        $tpl->assign('pageTitle', "Connector");
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', '/configuration/connector/update');

@@ -1,8 +1,10 @@
 <?php
 
-namespace Models\Configuration;
+namespace Models\Configuration\Relation\Host;
 
-class Relation\Host\Hostgroup extends Relation
+use \Models\Configuration\Relation;
+
+class Hostgroup extends Relation
 {
     protected $relationTable = "hostgroup_relation";
     protected $firstKey = "hostgroup_hg_id";
@@ -16,7 +18,7 @@ class Relation\Host\Hostgroup extends Relation
     public function __construct()
     {
         parent::__construct();
-        $this->firstObject = new Hostgroup();
-        $this->secondObject = new Host();
+        $this->firstObject = new \Models\Configuration\Hostgroup();
+        $this->secondObject = new \Models\Configuration\Host();
     }
 }

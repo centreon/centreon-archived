@@ -228,6 +228,7 @@ class Form
             
             case 'static':
                 $element['input'] = $this->renderHtmlSelect($element);
+                $element['label'] = $element['label_label'];
                 $element['label'] = $this->renderHtmlLabel($element);
                 $element['html'] = $this->renderFinalHtml($element);
                 break;

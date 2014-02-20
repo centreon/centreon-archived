@@ -224,14 +224,7 @@ class UserRepository extends \Centreon\Repository\Repository
                 )
             );
 
-            if ($myUserSet['contact_email'] != "") {
-                $myUserSet['contact_name'] = "<img src='http://www.gravatar.com/avatar/".
-                    md5($myUserSet['contact_email']).
-                    "?rating=PG&size=16&default=' class='img-circle'>&nbsp;".
-                    $myUserSet['contact_name'];
-            } else {
-                $myUserSet['contact_name'] = "<i class='fa fa-user'></i>&nbsp;".$myUserSet['contact_name'];
-            }
+            $myUserSet['contact_name'] = self::getUserIcon($myUserSet['contact_name'], $myUserSet['contact_email']);
         }
     }
     
@@ -268,5 +261,19 @@ class UserRepository extends \Centreon\Repository\Repository
         }
         
         return $return;
-    } 
+    }
+    
+    public static function getUserIcon($name, $email)
+    {
+        if ($email != "") {
+            $name = "<img src='http://www.gravatar.com/avatar/".
+                md5($email).
+                "?rating=PG&size=16&default=' class='img-circle'>&nbsp;".
+                $name;
+        } else {
+            $name = "<i class='fa fa-user'></i>&nbsp;".$name;
+        }
+        
+        return $name;
+    }
 }

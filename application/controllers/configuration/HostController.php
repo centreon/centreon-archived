@@ -3,6 +3,10 @@
 namespace Controllers\Configuration;
 
 use \Models\Configuration\Host,
+    \Models\Configuration\Relation\Host\Contact,
+    \Models\Configuration\Relation\Host\Contactgroup,
+    \Models\Configuration\Relation\Host\Hostgroup,
+    \Models\Configuration\Relation\Host\Hostcategory,
     \Centreon\Core\Form\FormGenerator;
 
 class HostController extends \Centreon\Core\Controller
@@ -36,6 +40,34 @@ class HostController extends \Centreon\Core\Controller
         $tpl->assign('objectAddUrl', '/configuration/host/add');
         $tpl->assign('objectListUrl', '/configuration/host/list');
         $tpl->display('configuration/list.tpl');
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/host/formlist
+     */
+    public function formListAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        
+        $hostObj = new Host();
+        $filters = array('host_name' => $requestParams['q'].'%', 'host_register' => '1');
+        $hostList = $hostObj->getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
+        
+        $finalHostList = array();
+        foreach($hostList as $host) {
+            $finalHostList[] = array(
+                "id" => $host['host_id'],
+                "text" => $host['host_name'],
+                "theming" => \Centreon\Repository\HostRepository::getIconImage($host['host_name']).' '.$host['host_name']
+            );
+        }
+        
+        $router->response()->json($finalHostList);
     }
 
     /**
@@ -143,15 +175,134 @@ class HostController extends \Centreon\Core\Controller
             $currentHostValues['host_passive_checks_enabled'] = '2';
         }
         
-        $myForm = new FormGenerator('/configuration/host/update');
+        $urlCastParam = array(
+            'id' => $requestParam['id']
+        );
+        $myForm = new FormGenerator('/configuration/host/update', 0, $urlCastParam);
         $myForm->setDefaultValues($currentHostValues);
         $myForm->addHiddenComponent('host_id', $requestParam['id']);
         
+        // Load CssFile
+        $tpl->addCss('select2.css')
+            ->addCss('select2-bootstrap.css');
+
+        // Load JsFile
+        $tpl->addJs('jquery.select2/select2.min.js');
+        
         // Display page
+        $tpl->assign('pageTitle', "Host");
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('firstSection', $myForm->getFirstSection());
+        $tpl->assign('select2Call', $myForm->getSelect2Js());
         $tpl->assign('validateUrl', '/configuration/host/update');
         $tpl->display('configuration/edit.tpl');
+    }
+    
+    /**
+     * Get list of contacts for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/contact
+     */
+    public function contactForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostContactObj = new Contact();
+        $contactList = $hostContactObj->getMergedParameters(array('contact_id', 'contact_name', 'contact_email'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        
+        $finalContactList = array();
+        foreach($contactList as $contact) {
+            $finalContactList[] = array(
+                "id" => $contact['contact_id'],
+                "text" => $contact['contact_name'],
+                "theming" => \Centreon\Repository\UserRepository::getUserIcon($contact['contact_name'], $contact['contact_email'])
+            );
+        }
+        
+        $router->response()->json($finalContactList);
+    }
+    
+    /**
+     * Get list of contact groups for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/contactgroup
+     */
+    public function contactgroupForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostContactgroupObj = new Contactgroup();
+        $contactgroupList = $hostContactgroupObj->getMergedParameters(array('cg_id', 'cg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        
+        $finalContactgroupList = array();
+        foreach($contactgroupList as $contactgroup) {
+            $finalContactgroupList[] = array(
+                "id" => $contactgroup['cg_id'],
+                "text" => $contactgroup['cg_name']
+            );
+        }
+        
+        $router->response()->json($finalContactgroupList);
+    }
+    
+    /**
+     * Get list of hostgroups for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/hostgroup
+     */
+    public function hostgroupForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostHostgroupObj = new Hostgroup();
+        $hostgroupList = $hostHostgroupObj->getMergedParameters(array('hg_id', 'hg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        
+        $finalHostgroupList = array();
+        foreach($hostgroupList as $hostgroup) {
+            $finalHostgroupList[] = array("id" => $hostgroup['hg_id'], "text" => $hostgroup['hg_name']);
+        }
+        
+        $router->response()->json($finalHostgroupList);
+    }
+    
+    /**
+     * Get list of hostcategories for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/hostcategory
+     */
+    public function hostcategoryForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostCategoryObj = new Hostcategory();
+        $hostcategoryList = $hostCategoryObj->getMergedParameters(array('hc_id', 'hc_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        
+        $finalHostcategoryList = array();
+        foreach($hostcategoryList as $hostcategory) {
+            $finalHostcategoryList[] = array("id" => $hostcategory['hc_id'], "text" => $hostcategory['hc_name']);
+        }
+        
+        $router->response()->json($finalHostcategoryList);
     }
 }

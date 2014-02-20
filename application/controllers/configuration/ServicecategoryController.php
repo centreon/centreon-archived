@@ -143,6 +143,7 @@ class ServicecategoryController extends \Centreon\Core\Controller
         $myForm->addHiddenComponent('sc_id', $requestParam['id']);
         
         // Display page
+        $tpl->assign('pageTitle', "Service Category");
         $tpl->assign('form', $myForm->generate());
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('formRedirect', $myForm->getRedirect());

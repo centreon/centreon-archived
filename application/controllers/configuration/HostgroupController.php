@@ -2,6 +2,8 @@
 
 namespace Controllers\Configuration;
 
+use Models\Configuration\Hostgroup;
+
 class HostgroupController extends \Centreon\Core\Controller
 {
 
@@ -33,6 +35,33 @@ class HostgroupController extends \Centreon\Core\Controller
         $tpl->assign('objectAddUrl', '/configuration/hostgroup/add');
         $tpl->assign('objectListUrl', '/configuration/hostgroup/list');
         $tpl->display('configuration/list.tpl');
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/hostgroup/formlist
+     */
+    public function formListAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        
+        $hostgroupObj = new Hostgroup();
+        $filters = array('hg_name' => $requestParams['q'].'%');
+        $hostgroupList = $hostgroupObj->getList('hg_id, hg_name', -1, 0, null, "ASC", $filters, "AND");
+        
+        $finalHostgroupList = array();
+        foreach($hostgroupList as $hostgroup) {
+            $finalHostgroupList[] = array(
+                "id" => $hostgroup['hg_id'],
+                "text" => $hostgroup['hg_name']
+            );
+        }
+        
+        $router->response()->json($finalHostgroupList);
     }
 
     /**
