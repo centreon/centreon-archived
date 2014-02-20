@@ -229,7 +229,7 @@ class Form
                         $element['label'] = $this->renderHtmlLabel($element);
                         $element['html'] = $this->renderFinalHtml($element);
                         if (isset($in['js'])) {
-                            $this->javascriptCall .= $in['js'];
+                            $this->tpl->addCustomJs($in['js']);
                         }
                 }
                 break;
@@ -295,42 +295,6 @@ class Form
         $inputHtml = '<label class="label-controller" for="'.$inputElement['id'].'">'.$inputElement['label'].'</label>';
         
         return $inputHtml;
-    }
-    
-    /**
-     * 
-     * @param array $inputElement
-     */
-    public function renderHtmlSelect($inputElement)
-    {
-        $myHtml = '<input class="form-control" id="'.$inputElement['name'].'" style="width: 500px;" value=" " />';
-        $this->javascriptCall .= ''
-            . '$("#'.$inputElement['name'].'").select2({'
-                . 'placeholder:"'.$inputElement['label_label'].'", '
-                . 'multiple:'.$inputElement['label_multiple'].', '
-                . 'formatResult: formatResult, '
-                . 'ajax: {'
-                    .'data: function(term, page) {'
-                        .'return { '
-                            .'q: term, '
-                        .'};'
-                    .'},'
-                    .'dataType: "json", '
-                    .'url:"'.$inputElement['label_defaultValuesRoute'].'", '
-                    .'results: function (data){ '
-                        .'return {results:data, more:false}; '
-                    .'}'
-                .'},'
-                .'initSelection: function(element, callback) { '
-                    .'var id=$(element).val();'
-                    .'if (id!=="") {
-                        $.ajax("'.$inputElement['label_listValuesRoute'].'", {
-                            dataType: "json"
-                        }).done(function(data) {callback(data); });
-                    }
-                },'
-            .'});'."\n";
-        return $myHtml;
     }
     
     public function renderHtmlRadio($inputElement, $parentName, $selected = false)

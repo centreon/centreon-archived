@@ -27,7 +27,7 @@
 {environment}
 {/block}
 
-{block name="javascript-bottom"}
+{block name="javascript-bottom" append}
 <script>
 $(document).ready(function() {
     leftPanelHeight();

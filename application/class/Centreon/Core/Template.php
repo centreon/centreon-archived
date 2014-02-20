@@ -71,7 +71,13 @@ class Template extends \Smarty
      * @var array 
      */
     private $exclusionList;
-    
+
+    /**
+     *
+     * @var string
+     */
+    private $customJs;
+
     /**
      * 
      * @param string $newTemplateFile
@@ -85,6 +91,7 @@ class Template extends \Smarty
         $this->jsTopResources = array();
         $this->jsBottomResources = array();
         $this->buildExclusionList();
+        $this->customJs = "";
         parent::__construct();
         $this->initConfig();
     }
@@ -158,6 +165,7 @@ class Template extends \Smarty
             $this->templateFile = $template;
         }
         $this->loadResources();
+        $this->assign('customJs', $this->customJs);
         parent::display($this->templateFile, $cache_id, $compile_id, $parent);
     }
     
@@ -173,6 +181,7 @@ class Template extends \Smarty
             $this->templateFile = $template;
         }
         $this->loadResources();
+        $this->assign('customJs', $this->customJs);
         return parent::fetch($this->templateFile, $cache_id, $compile_id,
                                 $parent, $display, $merge_tpl_vars,
                                 $no_output_filter
@@ -280,5 +289,15 @@ class Template extends \Smarty
         }
         
         return true;
+    }
+
+    /**
+     * Add custom js code
+     *
+     * @param string $jsStr
+     */
+    public function addCustomJs($jsStr)
+    {
+        $this->customJs .= $jsStr . "\n";
     }
 }

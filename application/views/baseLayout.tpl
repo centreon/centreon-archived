@@ -123,6 +123,8 @@ $(document).ready(function() {
     topClock();
 });
 </script>
-{block name="javascript-bottom"}{/block}
+{block name="javascript-bottom"}
+<script>{$customJs}</script>
+{/block}
 </body>
 </html>
