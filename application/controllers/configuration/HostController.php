@@ -175,10 +175,7 @@ class HostController extends \Centreon\Core\Controller
             $currentHostValues['host_passive_checks_enabled'] = '2';
         }
         
-        $urlCastParam = array(
-            'id' => $requestParam['id']
-        );
-        $myForm = new FormGenerator('/configuration/host/update', 0, $urlCastParam);
+        $myForm = new Generator('/configuration/host/update');
         $myForm->setDefaultValues($currentHostValues);
         $myForm->addHiddenComponent('host_id', $requestParam['id']);
         

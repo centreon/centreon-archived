@@ -4,7 +4,7 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Servicecategory,
     \Centreon\Core\Form,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class ServicecategoryController extends \Centreon\Core\Controller
 {
@@ -138,7 +138,7 @@ class ServicecategoryController extends \Centreon\Core\Controller
             $currentServicecategoryValues['sc_activate'] = '0';
         }
         
-        $myForm = new FormGenerator("/configuration/servicecategory/update");
+        $myForm = new Generator("/configuration/servicecategory/update");
         $myForm->setDefaultValues($currentServicecategoryValues);
         $myForm->addHiddenComponent('sc_id', $requestParam['id']);
         

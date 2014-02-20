@@ -4,7 +4,7 @@ namespace Controllers\Administration;
 
 use \Models\Configuration\Acl\Menu,
     \Centreon\Core\Form,
-    \Centreon\Core\Form\FormGenerator;
+    \Centreon\Core\Form\Generator;
 
 class AclmenuController extends \Centreon\Core\Controller
 {
@@ -163,7 +163,7 @@ class AclmenuController extends \Centreon\Core\Controller
             $currentaclmenuValues['enabled'] = '0';
         }
         
-        $myForm = new FormGenerator("/administration/aclmenu/update");
+        $myForm = new Generator("/administration/aclmenu/update");
         $myForm->setDefaultValues($currentaclmenuValues);
         $myForm->addHiddenComponent('acl_menu_id', $requestParam['id']);
         
