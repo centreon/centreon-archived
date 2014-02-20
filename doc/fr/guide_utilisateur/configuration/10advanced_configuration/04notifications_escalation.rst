@@ -9,7 +9,7 @@ Définition
 D'une manière générale, en cas de déclenchement d'une alerte, une notification permet de contacter un ou plusieurs contacts (ou groupes de contacts). 
 De même, il est possible d'envoyer plusieurs notifications suivant un intervalle de temps régulier.
 
-Une escalade de notifications permet de contacter différents groupes de contacts au fil des notifications envoyées.
+Une escalade de notifications permet de contacter différents groupes de contacts au fil des notifications envoyées ou de changer le moeyen de notification (remplacer les mails par un SMS).
 La définition d'une escalade de notification pour un hôte, un groupe d'hôte, un service, un groupe de services ou un méta-service écrase la configuration classique des notifications pour cet objet.
 
 Exemple : Un service A est paramétré pour envoyer des notifications à un groupe de contact "A" en cas de statut non-OK. Ces notifications sont envoyées toutes les 5 minutes.
@@ -24,19 +24,19 @@ Configuration
 
 Pour ajouter une escalade de notification :
 
-#. Rendez-vous dans **Configuration** ==> **Notifications**
+#. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Cliquez sur **Ajouter**
 
 [ TODO Mettre une capture d'écran]
 
-* Les champs **Nom d'escalade** et **Alias** permettent de définir un nom et un alias à l'escalade de notifications
-* Le champ **Première notification** permet de choisir le numéro de la notification à partir de laquelle le groupe de contact sera averti
+* Les champs **Nom d'escalade** et **Alias** permettent de définir un nom et un alias à l'escalade de notifications.
+* Le champ **Première notification** permet de choisir le numéro de la notification à partir de laquelle le groupe de contact sera averti.
 * Le champ **Dernière notification** permet de choisir le dernier numéro de la notification pour lequel ce groupe de contact sera averti. Si le groupe de contact est le dernier niveau de l'escalade. La valeur de ce champ est **0**.
-* Le champ **Intervalle de notification** définit l'intervalle de notifications entre chaque alerte
-* Le champ **Période d'escalade** définit la période temporelle de notifications
-* Les champs **Options d'escalade des hôtes** et **Options d'escalade des services** définissent les statuts d'hôte et de service pour laquelle l'escalade est utilisée
-* La liste **Groupes de contacts liés** définit le groupe de contact à contacter lors du déclenchement de l'escalade
-* Le champ **Commentaire** permet de commenter l'escalade
+* Le champ **Intervalle de notification** définit l'intervalle de notifications entre chaque alerte.
+* Le champ **Période d'escalade** définit la période temporelle de notifications.
+* Les champs **Options d'escalade des hôtes** et **Options d'escalade des services** définissent les statuts d'hôte et de service pour laquelle l'escalade est utilisée.
+* La liste **Groupes de contacts liés** définit le groupe de contact à contacter lors du déclenchement de l'escalade.
+* Le champ **Commentaire** permet de commenter l'escalade.
 
 Application de l'escalade
 =========================

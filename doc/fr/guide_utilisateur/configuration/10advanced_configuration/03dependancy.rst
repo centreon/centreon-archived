@@ -2,13 +2,16 @@
 Les dépendances
 ===============
 
+[TODO à revoir car je ne suis pas e naccord avec le contenu]
+
 ********
 Principe
 ********
 
 Les dépendances sont utilisées afin de répondre à deux besoins :
 
-* Limiter l'envoi de notifications
+*  Limiter l'envoi de notifications
+*  [ TODO il est ou le second ? ]
 
 Exemples :
 

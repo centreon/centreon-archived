@@ -105,4 +105,5 @@ Si vous avez choisit l'option **Sélectionner les services manuellement**, au se
 
 3. Répétez l'opération jusqu'à avoir ajouté tous les indicateurs nécessaires au calcul du méta-service.
 
-**Note** : un méta-service est à cnsidérer comme service régulier. Il est nécessaire de générer la configuration de l'ordonnanceur central, d'exporter cette dernière puis de redémarrer l'ordonnanceur.
+.. note::
+   Un méta-service est à considérer comme service régulier. Il est nécessaire de générer la configuration de l'ordonnanceur central, d'exporter cette dernière puis de redémarrer l'ordonnanceur.
