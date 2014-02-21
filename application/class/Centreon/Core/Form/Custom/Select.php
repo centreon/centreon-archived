@@ -36,6 +36,11 @@ namespace Centreon\Core\Form\Custom;
 
 class Select implements Custominterface
 {
+    /**
+     * 
+     * @param array $element
+     * @return array
+     */
     public static function renderHtmlInput(array $element)
     {
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
@@ -58,7 +63,7 @@ class Select implements Custominterface
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
-                . 'multiple:'.$element['label_multiple'].', '
+                . 'multiple:'.(int)$element['label_multiple'].', '
                 . 'formatResult: select2_formatResult, '
                 . 'formatSelection: select2_formatSelection, '
                 . 'ajax: {'
