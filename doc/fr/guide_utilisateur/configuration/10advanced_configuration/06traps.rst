@@ -32,12 +32,12 @@ Avec Centreon 2.5.x, la gestion des traps SNMP a été revue :
 
 *   les processus 'snmptt' et 'centtraphandler' ont été fusionnés au sein d'un unique processus 'centreontrapd'.
 *   le processus 'snmptthandler' est remplacé par le processus 'centreontrapdforward'.
-*   les satellites peuvent disposer de leur propre définition de Trap SNMP au sein d'une base dédiée SQLLite supprimant ainsi l'accès au serveur MySQL Centreon.
+*   les satellites peuvent disposer de leur propre définition de Trap SNMP au sein d'une base dédiée SQLite supprimant ainsi l'accès au serveur MySQL Centreon.
 
-Traitement d'une trap par le serveur central
-============================================
+Traitement d'un trap par le serveur central
+===========================================
 
-Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
+Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyés par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier de cache (par défaut : **/var/spool/centreontrapd/**).
@@ -47,16 +47,16 @@ Voici le processus de traitement d'une trap SNMP avec Centreon 2.5.x :
 .. image :: /images/configuration/10advanced_configuration/06_trap_centreon.png
    :align: center
 
-Traitement d'une trap par un serveur satellite
-==============================================
+Traitement d'un trap par un serveur satellite
+=============================================
 
-Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
-Cette base de données SQLLite est automatiquement générée par le serveur Central. 
+Afin de garder une copie de la configuration des traps SNMP sur chaque serveur satellite, une base de données SQLite est chargée de garder en cache les informations de traps contenues dans la base de données MySQL. 
+Cette base de données SQLite est automatiquement générée par le serveur Central. 
 Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 
 #. snmptrapd est le service permettant de récupérer les traps SNMP envoyées par les équipements (par défaut il écoute sur le port **UDP 162**).
 #. Une fois le trap SNMP reçu, il est envoyé au script 'centreontrapdforward' qui va écrire les informations reçues dans un dossier de cache (par défaut : **/var/spool/centreontrapd/**).
-#. Le service 'centreontrapd' lit les informations reçues dans le dossier de cache et interprète les différentes traps reçus en vérifiant dans la base de données SQLLite les actions à entreprendre pour traiter les traps reçues.
+#. Le service 'centreontrapd' lit les informations reçues dans le dossier de cache et interprète les différentes traps reçus en vérifiant dans la base de données SQLite les actions à entreprendre pour traiter les traps reçues.
 #. Le service 'centreontrapd' transmet les informations à l'ordonnanceur qui se charge de modifier le statut et les informations associées au service dont est lié le trap SNMP.
 
 .. image :: /images/configuration/10advanced_configuration/06_trap_poller.png
@@ -69,7 +69,7 @@ Configuration des services
 Snmptrapd
 =========
 
-Afin d'appeller le script 'centreontrapdfoward', le fichier **/etc/snmp/snmptrapd.conf** doit contenir les lignes suivantes :
+Afin d'appeler le script 'centreontrapdfoward', le fichier **/etc/snmp/snmptrapd.conf** doit contenir les lignes suivantes :
 
 ::
 
@@ -126,9 +126,52 @@ Configuration du service
 
 Au sein du fichier **/etc/centreon/centreontrapd.pm** il est conseillé de modifier uniquement trois paramètres (si nécessaire) :
 
-* Si l'option **mode** est définie à 1 alors centreontrapd fonctionne sur un serveur satelite, sinon il fonctionne sur un serveur central (Centreon).
+* Si l'option **mode** est définie à 1 alors centreontrapd fonctionne sur un serveur satellite, sinon il fonctionne sur un serveur central (Centreon).
 * L'option **centreon_user** permet de modifier l'utilisateur qui exécute les actions.
 * L'option **spool_directory** permet de modifier le dossier de cache à lire (si vous l'avez modifié dans le fichier de configuration de 'centreontrapdforward').
+
+Voici un exemple de configuration possible du fichier **/etc/centreon/centreontrapd.pm** (le fichier de configuration peut être modifiée avec '-config-extra = xxx') :
+
+::
+
+    our %centreontrapd_config = (
+        # Temps en secondes avant d'arrêter brutalement les sous processus
+        timeout_end => 30,
+        spool_directory => "/var/spool/centreontrapd/",
+        # Délai entre deux contrôles du répertoire de "spool" pour détecter de nouveaux fichiers à traiter
+        sleep => 2,
+        # 1 = utiliser la date et heure du traitement e l'évènement par centreontrapdforward
+        use_trap_time => 1,
+        net_snmp_perl_enable => 1,
+        mibs_environment => '',
+        remove_backslash_from_quotes => 1,
+        dns_enable => 0,
+        # Séparateur à appliquer lors de la substitution des arguments
+        separator => ' ',
+        strip_domain => 0,
+        strip_domain_list => [],
+        duplicate_trap_window => 1,
+        date_format => "",
+        time_format => "",
+        date_time_format => "",
+        # Utiliser le cache d'OID interne de la base de données
+        cache_unknown_traps_enable => 1,
+        # Temps en secondes avant de recharger le cache
+        cache_unknown_traps_retention => 600,
+        # 0 = central, 1 = poller
+        mode => 0,
+        cmd_timeout => 10,
+        centreon_user => "centreon",
+        # 0 => continuer en cas d'erreur MySQL | 1 => ne pas continuer le traitement (blocage) en cas d'erreur MySQL
+        policy_trap => 1,
+        # Enregistrement des journaux en base de données
+        log_trap_db => 0,
+        log_transaction_request_max => 500,
+        log_transaction_timeout => 10,
+        log_purge_time => 600
+    );
+    
+    1;
 
 Configuration de la connexion à la base de données
 --------------------------------------------------
@@ -151,7 +194,7 @@ Il est possible de configurer le fichier **/etc/centreon/conf.pm** de deux mani�
 
 	1;
 
-* Connecter centreontrapd à la base de données SQLLite locale. Contenu du fichier :
+* Connecter centreontrapd à la base de données SQLite locale. Contenu du fichier :
 
 ::
 
@@ -210,8 +253,8 @@ Il est également possible d'importer des OIDs à partir des MIBs fournies par l
 .. note::
    Une fois les traps SNMP importés, il est nécessaire de vérifier le statut "Supervision" associé aux évènements. Par défaut celui-ci sera "OK".
 
-Configuration manuel des traps
-==============================
+Configuration manuelle des traps
+================================
 
 Configuration basique
 ---------------------
@@ -242,14 +285,14 @@ Configuration avancée des traps
 -------------------------------
 
 Il est possible de détermine le statut d'un service à partir de la valeur d'un paramètre du trap SNMP plutôt qu'à partir de l'OID racine. Anciennement les constructeurs définissaient
-un trap SNMP (OID racine) par type d'évènement à envoyer (LinkUP / LinkDown). Aujourd'hui, la tendance est de définir un OID racine par catégorie d'évènements et de définir l'évènement 
+un trap SNMP (OID racine) par type d'évènement à envoyer (linkUp / linkDown). Aujourd'hui, la tendance est de définir un OID racine par catégorie d'évènements et de définir l'évènement 
 et donc son type via un ensemble de paramètre.
 
 Pour cela, il est possible de définir des **Règles de correspondance avancées** en cliquant sur le bouton "+" et de créer autant de règles que nécessaire.
 Pour chaque règle, définir les paramètres :
 
 *   **Chaine** définit l'élément sur lequel sera appliqué la recherche (@OUTPUT@ défini l'ensemble du **Message de sortie** traduit).
-*   **Expression régulière** définit le recherche de type REGEXP à appliquer
+*   **Expression régulière** définit la recherche de type REGEXP à appliquer
 *   **Statut** définit le statut du service en cas de concordance.
 
 .. note::
@@ -265,7 +308,7 @@ Pour chaque règle, définir les paramètres :
 Configuration très avancée des traps
 ------------------------------------
 
-L'onglet **Avancé** permet de configurer le comportement d'exécution du processus de traitement des traps SNMP lors de la réception de ce deriner.
+L'onglet **Avancé** permet de configurer le comportement d'exécution du processus de traitement des traps SNMP lors de la réception de ce dernier.
 
 *   **Enable routing** permet de [TODO]
 *   **Route definition** permet de [TODO]
@@ -276,9 +319,9 @@ Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)**
 
 *   **Définition de la commande PREEXEC** définit la commande à exécuter.
 
-Voici un exemple d'utilisatuion avec le trap LinkUP :
-Pour un équipement Cisco, $2 == ifDescr conteint le numéro de port de l'interface (GigabitEthernet0/1 par exemple). 
-La meilleure description de l'interface est contenu dans le champ champ SNMP ifAlias.
+Voici un exemple d'utilisation avec le trap linkUP :
+Pour un équipement Cisco, $2 == ifDescr contient le numéro de port de l'interface (GigabitEthernet0/1 par exemple). 
+La meilleure description de l'interface est contenue dans le champs champ SNMP ifAlias.
 
 La commande suivante permet de récupérer cette valeur
 
@@ -296,10 +339,10 @@ Exemple
 Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) linkUP. State: up
 
 *   Le champ **Activer le journal d'évènement** permet de [TODO]
-*   Le champ **Temps d'exécution maximum** exprimés en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prè-traitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
-*   Le champ **Intervalle d'exécution** exprimés en secondes, permet de définir le temps miniumu d'attente entre deux traitement d'un évènement.
-*   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions par **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
-*   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séqunetielle**, soit **Parallèle**
+*   Le champ **Temps d'exécution maximum** exprimé en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prètraitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
+*   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
+*   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
+*   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séquentielle**, soit **Parallèle**
 
 *************
 Les variables
@@ -344,11 +387,22 @@ Lors de l'ajout d'une règle de correspondance ou de l'exécution d'une commande
 | @CMDFILE@                | Chemin vers le fichier de commande de CentCore (central) ou de Centreon Engine (collecteur)                                               |
 +--------------------------+-------------------------------------------------------------------------------------------------------------------------------------------+
 
+De plus, il existe des variables spéciales pouvant être utilisées dans la section **Paramètres de routage** au niveau de la **Commande de routage** 
+si l'option **Activer le routage** est sélectionnée : 
+
++----------------------+-------------------------------------------------------------------------------------------------------------+
+|   Nom de la variable |   Description                                                                                               |
++======================+=============================================================================================================+
+| @GETHOSTBYADDR($1)@  | Résolution DNS inverse permettant de connaitre le nom DNS à partir de l'adresse IP (127.0.0.1 -> localhost) |
++----------------------+-------------------------------------------------------------------------------------------------------------+
+| @GETHOSTBYNAME($1)@  | Résolution DNS permettant de connaitre l'adresse IP à partir du nom DNS (localhost -> 127.0.0.1)            |
++----------------------+-------------------------------------------------------------------------------------------------------------+
+
 *************************
 Appliquer les changements
 *************************
 
-Pour pouvoir exporter les OID présents en base de données en fichier de configuration pour centreontrapdd, suivez la procédure suivante :
+Pour pouvoir exporter les OID présents en base de données en fichier de configuration pour centreontrapd, suivez la procédure suivante :
 
 #. Rendez-vous dans le menu **Configuration** ==> **Traps SNMP**
 #. Dans le menu de gauche, cliquez sur **Générer**
