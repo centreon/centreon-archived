@@ -1,4 +1,37 @@
 <?php
+/*
+ * Copyright 2005-2014 MERETHIS
+ * Centreon is developped by : Julien Mathis and Romain Le Merlus under
+ * GPL Licence 2.0.
+ *
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation ; either version 2 of the License.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ *
+ * Linking this program statically or dynamically with other modules is making a
+ * combined work based on this program. Thus, the terms and conditions of the GNU
+ * General Public License cover the whole combination.
+ *
+ * As a special exception, the copyright holders of this program give MERETHIS
+ * permission to link this program with independent modules to produce an executable,
+ * regardless of the license terms of these independent modules, and to copy and
+ * distribute the resulting executable under terms of MERETHIS choice, provided that
+ * MERETHIS also meet, for each linked independent module, the terms  and conditions
+ * of the license of that module. An independent module is a module which is not
+ * derived from this program. If you modify this program, you may extend this
+ * exception to your version of the program, but you are not obliged to do so. If you
+ * do not wish to do so, delete this exception statement from your version.
+ *
+ * For more information : contact@centreon.com
+ *
+ */
 
 namespace Controllers\Configuration;
 
@@ -6,6 +39,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Contact,
     \Models\Configuration\Relation\Host\Contactgroup,
     \Models\Configuration\Relation\Host\Hostgroup,
+    \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
     \Centreon\Core\Form\Generator;
 
@@ -292,5 +326,77 @@ class HostController extends \Centreon\Core\Controller
         }
         
         $router->response()->json($finalHostcategoryList);
+    }
+    
+    /**
+     * 
+     * @method get
+     * @route /configuration/host/[i:id]/parent
+     */
+    public function parentForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostParentObj = new Hostparent('parent');
+        $hostparentList = $hostParentObj->getMergedParameters(
+            array('host_id', 'host_name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host_hostparent_relation.host_host_id' => $requestParam['id']),
+            "AND"
+        );
+
+        $finalHostList = array();
+        foreach($hostparentList as $hostparent) {
+            $finalHostList[] = array(
+                "id" => $hostparent['host_id'],
+                "text" => $hostparent['host_name'],
+                "theming" => \Centreon\Repository\HostRepository::getIconImage($hostparent['host_name']).' '.$hostparent['host_name']
+            );
+        }
+        
+        $router->response()->json($finalHostList);
+    }
+
+    /**
+     * 
+     * @method get
+     * @route /configuration/host/[i:id]/child
+     */
+    public function childForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostChildObj = new Hostparent('child');
+        $hostchildList = $hostChildObj->getMergedParameters(
+            array('host_id', 'host_name'),
+            array(),
+            -1,
+            0,
+            null,
+            "ASC",
+            array('host_hostparent_relation.host_parent_hp_id' => $requestParam['id']),
+            "AND"
+        );
+
+        $finalHostList = array();
+        foreach($hostchildList as $hostchild) {
+            $finalHostList[] = array(
+                "id" => $hostchild['host_id'],
+                "text" => $hostchild['host_name'],
+                "theming" => \Centreon\Repository\HostRepository::getIconImage($hostchild['host_name']).' '.$hostchild['host_name']
+            );
+        }
+        
+        $router->response()->json($finalHostList);
     }
 }

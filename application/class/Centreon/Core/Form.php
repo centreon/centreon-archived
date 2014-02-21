@@ -222,15 +222,16 @@ class Form
             case 'static':
                 $className = "\\Centreon\\Core\\Form\\Custom\\".ucfirst($element['label_type']);
                 if (class_exists($className) && method_exists($className, 'renderHtmlInput')) {
-                        $in = $className::renderHtmlInput($element);
-                        if (isset($in['html'])) {
-                            $element['input'] = $in['html'];
-                        }
-                        $element['label'] = $this->renderHtmlLabel($element);
-                        $element['html'] = $this->renderFinalHtml($element);
-                        if (isset($in['js'])) {
-                            $this->tpl->addCustomJs($in['js']);
-                        }
+                    $element['label'] = $element['label_label'];
+                    $in = $className::renderHtmlInput($element);
+                    if (isset($in['html'])) {
+                        $element['input'] = $in['html'];
+                    }
+                    $element['label'] = $this->renderHtmlLabel($element);
+                    $element['html'] = $this->renderFinalHtml($element);
+                    if (isset($in['js'])) {
+                        $this->tpl->addCustomJs($in['js']);
+                    }
                 }
                 break;
             
@@ -297,6 +298,13 @@ class Form
         return $inputHtml;
     }
     
+    /**
+     * 
+     * @param array $inputElement
+     * @param string $parentName
+     * @param boolean $selected
+     * @return string
+     */
     public function renderHtmlRadio($inputElement, $parentName, $selected = false)
     {
         (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
@@ -323,6 +331,11 @@ class Form
         return $inputHtml;
     }
     
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
     public function renderHtmlButton($inputElement)
     {
         (isset($inputElement['value']) ? $value = 'value="'.$inputElement['value'].'" ' :  $value = '');
@@ -341,6 +354,11 @@ class Form
         return $inputHtml;
     }
     
+    /**
+     * 
+     * @param array $inputElement
+     * @return string
+     */
     public function renderHtmlTextarea($inputElement)
     {
         (isset($inputElement['value']) ? $value = $inputElement['value']:  $value = '');
@@ -483,7 +501,8 @@ class Form
     }
     
     /**
-     * Return 
+     * 
+     * @return string
      */
     public static function getSecurityToken()
     {

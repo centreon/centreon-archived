@@ -81,6 +81,7 @@ class Template extends \Smarty
     /**
      * 
      * @param string $newTemplateFile
+     * @param boolean $enableCaching
      */
     public function __construct($newTemplateFile = '', $enableCaching = 0)
     {
@@ -98,7 +99,6 @@ class Template extends \Smarty
     
     /**
      * 
-     * @param type $config
      */
     public function initConfig()
     {
@@ -157,6 +157,7 @@ class Template extends \Smarty
     
     /**
      * 
+     * {@inheritdoc}
      * @throws \Centreon\Exception If the template file is not defined
      */
     public function display($template = null, $cache_id = null, $compile_id = null, $parent = null)
@@ -171,7 +172,9 @@ class Template extends \Smarty
     
     /**
      * 
+     * {@inheritdoc}
      * @throws \Centreon\Exception If the template file is not defined
+     * @return type
      */
     public function fetch($template = null, $cache_id = null, $compile_id = null,
                             $parent = null, $display = false,
@@ -200,7 +203,9 @@ class Template extends \Smarty
     
     /**
      * 
-     * @param string $fileName CSS file to add
+     * @param string $fileName $fileName CSS file to add
+     * @return \Centreon\Core\Template
+     * @throws Exception
      */
     public function addCss($fileName)
     {
@@ -218,6 +223,9 @@ class Template extends \Smarty
     /**
      * 
      * @param string $fileName Javascript file to add
+     * @param string $loadingLocation
+     * @return \Centreon\Core\Template
+     * @throws Exception
      */
     public function addJs($fileName, $loadingLocation = 'bottom')
     {
@@ -244,9 +252,11 @@ class Template extends \Smarty
 
     /**
      * 
-     * @param string $varName Name of the variable to add
-     * @param mixed $varValue Value of the variable to add
-     * @throws \Centreon\Exception If variable name is reserved
+     * @param string $varName
+     * @param mixed $varValue
+     * @param boolean $nocache
+     * @return \Centreon\Core\Template
+     * @throws \Centreon\Core\Exception
      */
     public function assign($varName, $varValue = null, $nocache = false)
     {

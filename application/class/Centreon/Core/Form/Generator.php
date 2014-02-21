@@ -99,8 +99,9 @@ class Generator
 
     /**
      * 
-     * @param type $formRoute
-     * @param type $advanced
+     * @param sring $formRoute
+     * @param boolean $advanced
+     * @param array $extraParams
      */
     public function __construct($formRoute, $advanced = 0, $extraParams = array())
     {
@@ -112,9 +113,7 @@ class Generator
     
     /**
      * 
-     * @param type $formRoute
-     * @param type $advanced
-     * @return type
+     * @param boolean $advanced
      */
     private function getFormFromDatabase($advanced = 0)
     {
@@ -122,17 +121,17 @@ class Generator
         $di = \Centreon\Core\Di::getDefault();
         $dbconn = $di->get('db_centreon');
         
-        $queryForm = "SELECT id, name, redirect, redirect_route FROM form WHERE route = '$this->formRoute'";
+        $queryForm = "SELECT form_id, name, redirect, redirect_route FROM form WHERE route = '$this->formRoute'";
         $stmtForm = $dbconn->query($queryForm);
         $formInfo = $stmtForm->fetchAll();
         
-        $formId = $formInfo[0]['id'];
+        $formId = $formInfo[0]['form_id'];
         $this->formName = $formInfo[0]['name'];
         $this->formRedirect = $formInfo[0]['redirect'];
         $this->formRedirectRoute = $formInfo[0]['redirect_route'];
         
-        $sectionQuery = 'SELECT id, name '
-            . 'FROM section '
+        $sectionQuery = 'SELECT section_id, name '
+            . 'FROM form_section '
             . 'WHERE form_id='.$formId.' '
             . 'ORDER BY rank ASC';
         
@@ -147,9 +146,9 @@ class Generator
                 $firstSectionDetected = true;
             }
             
-            $blockQuery = 'SELECT id, name '
-            . 'FROM block '
-            . 'WHERE section_id='.$section['id'].' '
+            $blockQuery = 'SELECT block_id, name '
+            . 'FROM form_block '
+            . 'WHERE section_id='.$section['section_id'].' '
             . 'ORDER BY rank ASC';
             
             $blockStmt = $dbconn->query($blockQuery);
@@ -159,9 +158,9 @@ class Generator
             foreach($blockList as $block) {
                 
                 $fieldQuery = 'SELECT name, label, default_value, attributes, type, help, mandatory '
-                    . 'FROM field f, block_has_field bhf '
-                    . 'WHERE bhf.block_id='.$block['id'].' '
-                    . 'AND bhf.field_id = f.id '
+                    . 'FROM form_field f, form_block_field_relation bfr '
+                    . 'WHERE bfr.block_id='.$block['block_id'].' '
+                    . 'AND bfr.field_id = f.field_id '
                     . 'AND advanced = \''.$advanced.'\' '
                     . 'ORDER BY rank ASC';
                 
@@ -181,7 +180,7 @@ class Generator
     
     /**
      * 
-     * @param type $field
+     * @param array $field
      */
     private function addFieldToForm($field)
     {
@@ -241,7 +240,7 @@ class Generator
     
     /**
      * 
-     * @return type
+     * @return string
      */
     public function generate()
     {
@@ -302,12 +301,7 @@ class Generator
         
         return $htmlRendering;
     }
-    
-    public function getSelect2Js()
-    {
-        return $this->formHandler->getJavascriptCall();
-    }
-    
+
     /**
      * 
      * @return string
@@ -334,16 +328,6 @@ class Generator
     {
         return $this->formRedirectRoute;
     }
-    
-    /**
-     * 
-     * @return string
-     */
-    public function getFirstSection()
-    {
-        return $this->firstSection;
-    }
-
 
     /**
      * 
