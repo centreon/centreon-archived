@@ -9,7 +9,7 @@ namespace Models\Configuration\Acl;
  */
 class Menu extends \Models\Configuration\Object
 {
-    protected $table = "acl_menu";
+    protected $table = "acl_menus";
     protected $primaryKey = "acl_menu_id";
     protected $uniqueLabelField = "name";
 }
