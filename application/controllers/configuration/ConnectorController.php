@@ -14,6 +14,7 @@ class ConnectorController extends \Centreon\Core\Controller
      *
      * @method get
      * @route /configuration/connector
+     * @acl view
      */
     public function listAction()
     {
@@ -61,6 +62,7 @@ class ConnectorController extends \Centreon\Core\Controller
      *
      * @method post
      * @route /configuration/connector/create
+     * @acl add
      */
     public function createAction()
     {
@@ -73,6 +75,7 @@ class ConnectorController extends \Centreon\Core\Controller
      *
      * @method post
      * @route /configuration/connector/update
+     * @acl update
      */
     public function updateAction()
     {
@@ -104,6 +107,7 @@ class ConnectorController extends \Centreon\Core\Controller
      *
      * @method get
      * @route /configuration/connector/add
+     * @acl add
      */
     public function addAction()
     {
@@ -143,6 +147,7 @@ class ConnectorController extends \Centreon\Core\Controller
      *
      * @method get
      * @route /configuration/connector/[i:id]
+     * @acl update
      */
     public function editAction()
     {

@@ -34,10 +34,10 @@ class Router extends \Klein\Klein
                         $controllerName = $pref.'\\'.$matches[1].'Controller';
                         $routesData = $controllerName::getRoutes();
                         foreach ($routesData as $action => $data) {
-                            $this->routesData[] = $data;
                             if (!isset($data['acl'])) {
                                 $data['acl'] = "";
                             }
+                            $this->routesData[] = $data;
                             if (substr($data['route'], 0, 1) === '@') {
                                 $routeName = $data['route'];
                             } else {
@@ -78,7 +78,7 @@ class Router extends \Klein\Klein
      */
     public function getRoutes()
     {
-        return $this->routes;
+        return $this->routesData;
     }
 
     /**

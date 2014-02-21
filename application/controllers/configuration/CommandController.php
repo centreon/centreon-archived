@@ -62,6 +62,7 @@ class CommandController extends \Centreon\Core\Controller
      *
      * @method post
      * @route /configuration/command/create
+     * @acl view,add
      */
     public function createAction()
     {
@@ -74,6 +75,7 @@ class CommandController extends \Centreon\Core\Controller
      *
      * @method post
      * @route /configuration/command/update
+     * @acl view,update
      */
     public function updateAction()
     {
@@ -86,6 +88,7 @@ class CommandController extends \Centreon\Core\Controller
      *
      * @method get
      * @route /configuration/command/add
+     * @acl add
      */
     public function addAction()
     {
@@ -135,6 +138,7 @@ class CommandController extends \Centreon\Core\Controller
      *
      * @method get
      * @route /configuration/command/[i:id]
+     * @acl update
      */
     public function editAction()
     {
