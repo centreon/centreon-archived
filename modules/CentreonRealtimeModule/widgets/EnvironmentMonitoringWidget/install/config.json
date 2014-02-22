@@ -1,12 +1,12 @@
 {
-    "name": "Service monitoring",
-    "shortname": "service-monitoring",
+    "name": "Environment monitoring",
+    "shortname": "environment-monitoring",
     "author": "Merethis",
     "email": "contact@merethis.com",
     "website": "http://www.merethis.com",
-    "description": "Widget that displays monitored services",
-    "version": "2.0.0",
-    "keywords": "service, monitoring, centreon",
+    "description": "Widget that displays monitored services per environment",
+    "version": "1.0.0",
+    "keywords": "service, monitoring, centreon, environment",
     "screenshot": "",
     "thumbnail": "resources/logoCentreon.png",
     "preferences": [

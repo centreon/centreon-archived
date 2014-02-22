@@ -1,0 +1,82 @@
+.angled-headers {
+  text-align: center;
+}
+
+.angled-headers {
+  position: relative;
+  background-color: #FFFFFF;
+  font-size: 10px;
+  padding: 20px 90px 20px 20px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  border-radius: 4px;
+}
+
+.angled-headers a {
+  color: #333333;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.angled-headers table th.skew {
+  height: 60px;
+  width: 40px;
+  position: relative;
+  vertical-align: bottom;
+}
+
+.angled-headers table th.skew > div {
+  position: relative;
+  top: 0px;
+  left: 30px;
+  height: 100%;
+  transform:skew(-45deg,0deg);
+  -ms-transform:skew(-45deg,0deg);
+  -moz-transform:skew(-45deg,0deg);
+  -webkit-transform:skew(-45deg,0deg);
+  -o-transform:skew(-45deg,0deg);    
+  overflow: hidden;
+  border-top: 1px solid #CCCCCC;
+  border-left: 1px solid #CCCCCC;
+  border-right: 1px solid #CCCCCC;
+}
+
+.angled-headers table th.skew span {
+  transform:skew(45deg,0deg) rotate(315deg);
+  -ms-transform:skew(45deg,0deg) rotate(315deg);
+  -moz-transform:skew(45deg,0deg) rotate(315deg);
+  -webkit-transform:skew(45deg,0deg) rotate(315deg);
+  -o-transform:skew(45deg,0deg) rotate(315deg);        
+  position: absolute;
+  bottom: 15px;
+  left: 1px;
+  display: inline-block;
+  width: 100%;
+  text-align: left;
+}
+
+.angled-headers table td {
+  width: 40px;
+  height: 35px;
+  text-align: center;
+  vertical-align: middle;
+  border: 1px solid #CCCCCC;
+}
+
+.angled-headers table td a {
+  display: block;
+  width: 100%;
+  text-align: center;
+}
+
+.angled-headers table td.project-name {
+  width: auto;
+  text-align: right;
+  font-weight: bold;
+  border: none;
+  padding-right: 8px;
+}
+
+.angled-headers table .odd {
+  background-color: #E8E8E8;
+}

@@ -62,6 +62,23 @@ class ConfigGenerateMainRepository
      * 
      *
      */
+    private static function getFilesList(& $filesList, $content)
+    {
+        foreach ($filesList as $category => $data) {
+            foreach ($data as $path) {
+                if (!isset($content[$category])) {
+                    $content[$category] = array();
+                }
+                $content[$category][] = $path;
+            }
+        } 
+        return $content;
+    }
+
+    /** 
+     * 
+     *
+     */
     private static function getContent($poller_id, & $filesList) 
     {
         $di = \Centreon\Internal\Di::getDefault();
@@ -75,19 +92,10 @@ class ConfigGenerateMainRepository
         $disabledField = static::getDisabledField();
         $defaultValue = static::getDefaultValue();
         $command_id = static::getCommandIdField();
-        
-        /* Get configuration files */
-        $confFiles = static::getConfigFiles($poller_id);
-        foreach ($filesList as $category => $data) {
-            foreach ($data as $path) {
-                if (!isset($content[$category])) {
-                    $content[$category] = array();
-                }
-                $content[$category][] = $path;
-            }
-        } 
-        
         $getCmd = static::getCommandIdField();
+        
+        /* get configuration files */
+        $content = static::getFilesList($filesList, $content);
 
         /* Get information into the database. */
         $query = "SELECT * FROM cfg_nagios WHERE nagios_server_id = '$poller_id'";
