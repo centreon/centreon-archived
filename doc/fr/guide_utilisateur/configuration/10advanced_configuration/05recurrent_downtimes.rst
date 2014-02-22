@@ -53,7 +53,7 @@ Il est possible de choisir trois types de périodes :
 * Le champ **Type de temps d'arrêt** définit le type de temps d'arrêt souhaité.
 
 .. note::
-   Il est possible de combiner plusieurs types de préiodes au sein d'un seul teps d'arrêt.
+   Il est possible de combiner plusieurs types de périodes au sein d'un seul temps d'arrêt.
 
 Relations
 =========
