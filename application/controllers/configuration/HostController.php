@@ -42,6 +42,8 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
     \Models\Configuration\Timeperiod,
+    \Models\Configuration\Command,
+    \Centreon\Core\Form,
     \Centreon\Core\Form\Generator;
 
 class HostController extends \Centreon\Core\Controller
@@ -142,7 +144,11 @@ class HostController extends \Centreon\Core\Controller
      */
     public function updateAction()
     {
+        $givenParameters = $this->getParams('post');
         
+        if (Form::validateSecurity($givenParameters['token'])) {
+            echo '<pre>'; var_dump($givenParameters); echo '</pre>';
+        }
     }
     
     /**
@@ -425,7 +431,7 @@ class HostController extends \Centreon\Core\Controller
         
         $finalTimeperiodList = array(
             "id" => $timeperiodList[0]['tp_id'],
-            "text" => $timeperiodList[0]['tp_name']
+                "text" => $timeperiodList[0]['tp_name']
         );
         
         $router->response()->json($finalTimeperiodList);
@@ -453,14 +459,44 @@ class HostController extends \Centreon\Core\Controller
         $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id2']);
         $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
         
-        $finalTimeperiodList = array();
-        foreach($timeperiodList as $timeperiod) {
-            $finalTimeperiodList[] = array(
-                "id" => $timeperiod['tp_id'],
-                "text" => $timeperiod['tp_name']
+        $finalTimeperiodList = array(
+            "id" => $timeperiodList[0]['tp_id'],
+                "text" => $timeperiodList[0]['tp_name']
+        );
+        
+        $router->response()->json($finalTimeperiodList);
+    }
+    
+    /**
+     * Get list of Commands for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/eventhandler
+     */
+    public function eventHandlerForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostObj = new Host();
+        $filters = array('host.host_id' => $requestParam['id']);
+        $hostList = $hostObj->getList('command_command_id2', -1, 0, null, "ASC", $filters, "AND");
+        
+        $commandObj = new Command();
+        $filtersCommand = array('command_id' => $hostList[0]['command_command_id2']);
+        $commandList = $commandObj->getList('command_id, command_name', -1, 0, null, "ASC", $filtersCommand, "AND");
+        
+        $finalCommandList = array();
+        if (count($commandList) > 0) {
+            $finalCommandList = array(
+                "id" => $commandList[0]['command_id'],
+                "text" => $commandList[0]['command_name']
             );
         }
         
-        $router->response()->json($finalTimeperiodList);
+        $router->response()->json($finalCommandList);
     }
 }
