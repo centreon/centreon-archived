@@ -36,6 +36,15 @@ namespace Centreon\Core\Form\Custom;
 
 class Nestablemenuacl implements Custominterface
 {
+    private static $aclmenudata = array();
+
+    /**
+     * Get checkbox html
+     * 
+     * @param int $menuId
+     * @param string $uri
+     * @return string
+     */
     private static function getCheckboxHtml($menuId, $uri)
     {
         $routesData = \Centreon\Core\Di::getDefault()
@@ -48,26 +57,42 @@ class Nestablemenuacl implements Custominterface
                 $cbArray[$data['acl']] = true;
             }
         }
-        $tmp = "%s <input type=\"checkbox\" name=\"acl_%s[{$menuId}]\"></input> ";
+        $acldata = 0;
+        if (isset(self::$aclmenudata[$menuId])) {
+            $acldata = self::$aclmenudata[$menuId];
+        }
+        $tmp = "<span class=\"acl_cb\">%s <input type=\"checkbox\" name=\"acl_%s[{$menuId}]\" %s></input></span>";
         if (isset($cbArray[\Centreon\Core\Acl::ADD])) {
-            $str .= sprintf($tmp, _('Create'), 'create');
+            $checked = \Centreon\Core\Acl::isFlagSet($acldata, \Centreon\Core\Acl::ADD) ? 'checked' : '';
+            $str .= sprintf($tmp, _('Create'), 'create', $checked);
         }
         if (isset($cbArray[\Centreon\Core\Acl::DELETE])) {
-            $str .= sprintf($tmp, _('Delete'), 'delete');
+            $checked = \Centreon\Core\Acl::isFlagSet($acldata, \Centreon\Core\Acl::DELETE) ? 'checked' : '';
+            $str .= sprintf($tmp, _('Delete'), 'delete', $checked);
         }
         if (isset($cbArray[\Centreon\Core\Acl::UPDATE])) {
-            $str .= sprintf($tmp, _('Update'), 'update');
+            $checked = \Centreon\Core\Acl::isFlagSet($acldata, \Centreon\Core\Acl::UPDATE) ? 'checked' : '';
+            $str .= sprintf($tmp, _('Update'), 'update', $checked);
         }
         if (isset($cbArray[\Centreon\Core\Acl::VIEW])) {
-            $str .= sprintf($tmp, _('View'), 'view');
+            $checked = \Centreon\Core\Acl::isFlagSet($acldata, \Centreon\Core\Acl::VIEW) ? 'checked' : '';
+            $str .= sprintf($tmp, _('View'), 'view', $checked);
         }
         if (isset($cbArray[\Centreon\Core\Acl::ADVANCED])) {
-            $str .= sprintf($tmp, _('Advanced'), 'advanced');
+            $checked = \Centreon\Core\Acl::isFlagSet($acldata, \Centreon\Core\Acl::ADVANCED) ? 'checked' : '';
+            $str .= sprintf($tmp, _('Advanced'), 'advanced', $checked);
         }
         $str .= "</span>";
         return $str;
     }
 
+    /**
+     * Get menu html string
+     *
+     * @param array $menus
+     * @param int $menuId
+     * @return string
+     */
     private static function getMenuString($menus, $menuId)
     {
         $str = "";
@@ -100,6 +125,12 @@ class Nestablemenuacl implements Custominterface
         return $str;
     }
 
+    /**
+     * Render html input
+     *
+     * @param array $element
+     * @return array
+     */
     public static function renderHtmlInput(array $element)
     {
         $tpl = \Centreon\Core\Di::getDefault()->get('template');
@@ -107,6 +138,11 @@ class Nestablemenuacl implements Custominterface
         $tpl->addJs('jquery.nestable.js');
         $menus = \Centreon\Core\Di::getDefault()->get('menu')->getMenu();
         $menuStr = "";
+        if (isset($element['label_extra']) && isset($element['label_extra']['id'])) {
+            self::$aclmenudata = \Centreon\Repository\AclmenuRepository::getAclLevelByAclMenuId(
+                $element['label_extra']['id']
+            );
+        }
         foreach ($menus as $menu) {
             $menuStr .= self::getMenuString($menus, $menu['menu_id']);
         }

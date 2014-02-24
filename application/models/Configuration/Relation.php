@@ -94,15 +94,19 @@ abstract class Relation
      * @param string $sort
      * @param array $filters
      * @param string $filterType
+     * @param array $relationTableParams
      * @return array
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
+    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, 
+        $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR", 
+        $relationTableParams = array())
     {
         if (!isset($this->firstObject) || !isset($this->secondObject)) {
             throw new Exception('Unsupported method on this object');
         }
         $fString = "";
         $sString = "";
+        $rString = "";
         foreach ($firstTableParams as $fparams) {
             if ($fString != "") {
                 $fString .= ",";
@@ -115,7 +119,13 @@ abstract class Relation
             }
             $sString .= $this->secondObject->getTableName().".".$sparams;
         }
-        $sql = "SELECT ".$fString.$sString."
+        foreach ($relationTableParams as $rparams) {
+            if ($fString != "" || $sString != "" || $rString != "") {
+                $rString .= ",";
+            }
+            $rString .= $this->relationTable.".".$rparams;
+        }
+        $sql = "SELECT $fString $sString $rString
         		FROM ".$this->firstObject->getTableName().",".$this->secondObject->getTableName().",".$this->relationTable."
         		WHERE ".$this->firstObject->getTableName().".".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey."
         		AND ".$this->relationTable.".".$this->secondKey." = ".$this->secondObject->getTableName().".".$this->secondObject->getPrimaryKey();
