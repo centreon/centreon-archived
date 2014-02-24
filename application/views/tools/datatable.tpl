@@ -1,6 +1,6 @@
 <div class="first-content">
     <div class="col-sm-12 col-md-6">
-      <a href="{url_for url=$objectAddUrl}" class="btn btn-default">{t}Add{/t}</a>
+      <button data-toggle="modal" data-target="#modalAdd" class="btn btn-default" data-remote="{url_for url="/configuration/host/add"}">{t}Add{/t}</button>
       <div class="btn-group" id="selected_option" style="display: none;">
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -52,3 +52,10 @@
     <tbody>
     </tbody>
 </table>
+
+<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="addWizard" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    </div>
+  </div>
+</div>

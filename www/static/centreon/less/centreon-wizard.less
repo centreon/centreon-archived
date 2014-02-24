@@ -1,0 +1,174 @@
+@import "variables.less";
+
+.wizard {
+    position: relative;
+    overflow: hidden;
+    background-color: #f9f9f9;
+    border: 1px solid #d4d4d4;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.065);
+}
+
+.wizard:before, .wizard:after {
+    display: table;
+    line-height: 0;
+    content: "";
+}
+
+.wizard:after {
+    clear: both;
+}
+
+.wizard ul {
+    margin: 0;
+    padding: 0;
+    list-style: none outside none;
+}
+
+.wizard ul.previous-disabled li.complete {
+    cursor: default;
+}
+
+.wizard ul.previous-disabled li.complete:hover {
+    cursor: default;
+    color: #468847;
+    background: #f3f4f5;
+}
+
+.wizard ul.previous-disabled li.complete:hover .chevron:before {
+    border-left-color: #f3f4f5;
+}
+
+.wizard ul li {
+    position: relative;
+    float: left;
+    height: 46px;
+    padding: 0 20px 0 30px;
+    margin: 0;
+    font-size: 16px;
+    line-height: 46px;
+    color: #999999;
+    cursor: default;
+    background: #ededed;
+}
+
+.wizard ul li .chevron {
+    position: absolute;
+    top: 0;
+    right: -14px;
+    z-index: 1;
+    display: block;
+    border: 24px solid transparent;
+    border-right: 0;
+    border-left: 14px solid #d4d4d4;
+}
+
+.wizard ul li .chevron:before {
+    position: absolute;
+    top: -24px;
+    right: 1px;
+    display: block;
+    border: 24px solid transparent;
+    border-right: 0;
+    border-left: 14px solid #ededed;
+    content: "";
+}
+
+.wizard ul li.complete {
+    color: #468847;
+    background: #f3f4f5;
+}
+
+.wizard ul li.complete:hover {
+    cursor: pointer;
+    background: #e7eff8;
+}
+
+.wizard ul li.complete:hover .chevron:before {
+    border-left: 14px solid #e7eff8;
+}
+
+.wizard ul li.complete .chevron:before {
+    border-left: 14px solid #f3f4f5;
+}
+
+.wizard ul li.active {
+    color: #3a87ad;
+    background: #f1f6fc;
+}
+
+.wizard ul li.active .chevron:before {
+    border-left: 14px solid #3a87ad;
+}
+
+.wizard ul li .badge {
+    margin-right: 6px;
+}
+
+.wizard ul li.active .badge {
+    background: #3a87ad;
+}
+
+.wizard ul li.complete .badge {
+    background: #468847;
+}
+
+.wizard ul li:first-child {
+    padding-left: 20px;
+    border-radius: 4px 0 0 4px;
+}
+
+.wizard .actions {
+    position: absolute;
+    right: 0;
+    z-index: 1000;
+    float: right;
+    padding-right: 15px;
+    padding-left: 15px;
+    line-height: 46px;
+    vertical-align: middle;
+    background-color: #e5e5e5;
+    border-left: 1px solid #d4d4d4;
+}
+
+.step-content .step-pane {
+    display: none;
+    margin: 0 20px;
+}
+
+.step-content .active {
+    display: block;
+}
+
+.step-content .active .btn-group .active {
+    display: inline-block;
+}
+
+/* For wizard in modal */
+.modal .wizard ul li {
+    height: 38px;
+    padding: 0 22px 0 20px;
+    line-height: 38px;
+    font-size: 14px;
+}
+
+.modal .wizard ul li .chevron {
+    border: 20px solid transparent;
+    border-right: 0;
+    border-left: 14px solid #d4d4d4;
+}
+
+.modal .wizard ul li .chevron:before {
+    top: -20px;
+    border: 20px solid transparent;
+    border-right: 0;
+    border-left: 14px solid #ededed;
+}
+
+.modal .wizard ul li:first-child {
+    padding-left: 10px;
+}
+
+.modal .wizard .actions {
+    line-height: 38px;
+}

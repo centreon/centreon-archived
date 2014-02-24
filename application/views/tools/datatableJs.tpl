@@ -83,4 +83,8 @@
     $('table[id^="datatable"] tbody').on('click', 'input[type="checkbox"][class^="all"]', function(e) {
         toggleSelectedAction();
     });
+
+    $('#modalAdd').on('loaded.bs.modal', function(e) {
+        $(this).centreonWizard();
+    });
 </script>

@@ -46,13 +46,13 @@ class Generator
      *
      * @var type 
      */
-    private $formName = '';
+    protected $formName = '';
     
     /**
      *
      * @var type 
      */
-    private $formRoute;
+    protected $formRoute;
     
     /**
      *
@@ -70,19 +70,19 @@ class Generator
      *
      * @var type 
      */
-    private $formComponents = array();
+    protected $formComponents = array();
     
     /**
      *
      * @var type 
      */
-    private $formDefautls = array();
+    protected $formDefautls = array();
     
     /**
      *
      * @var type 
      */
-    private $formHandler;
+    protected $formHandler;
     
     /**
      *
@@ -94,7 +94,7 @@ class Generator
      *
      * @var type 
      */
-    private $extraParams;
+    protected $extraParams;
 
 
     /**
@@ -114,7 +114,7 @@ class Generator
      * 
      * @param boolean $advanced
      */
-    private function getFormFromDatabase($advanced = 0)
+    protected function getFormFromDatabase($advanced = 0)
     {
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
@@ -183,7 +183,7 @@ class Generator
      * 
      * @param array $field
      */
-    private function addFieldToForm($field)
+    protected function addFieldToForm($field)
     {
         switch ($field['type']) {
             default:
@@ -256,7 +256,7 @@ class Generator
      * 
      * @return string
      */
-    private function generateHtml()
+    protected function generateHtml()
     {
         $this->formHandler->setDefaults($this->formDefautls);
         $formElements = $this->formHandler->toSmarty();
