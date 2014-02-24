@@ -79,6 +79,7 @@ class Wizard extends Generator
         while ($row = $stmt->fetch()) {
             if ('' === $this->formName) {
                 $this->formName = $row['wizard_name'];
+		$this->formHandler = new \Centreon\Core\Form($this->formName);
             }
             if (false === isset($this->formComponents[$row['step_name']])) {
                 $this->formComponents[$row['step_name']] = array();
