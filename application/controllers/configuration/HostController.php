@@ -41,6 +41,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Hostgroup,
     \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
+    \Models\Configuration\Timeperiod,
     \Centreon\Core\Form\Generator;
 
 class HostController extends \Centreon\Core\Controller
@@ -398,5 +399,68 @@ class HostController extends \Centreon\Core\Controller
         }
         
         $router->response()->json($finalHostList);
+    }
+    
+    /**
+     * Get list of Timeperiods for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/checkperiod
+     */
+    public function checkPeriodForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostObj = new Host();
+        $filters = array('host.host_id' => $requestParam['id']);
+        $hostList = $hostObj->getList('timeperiod_tp_id', -1, 0, null, "ASC", $filters, "AND");
+        
+        $timeperiodObj = new Timeperiod();
+        $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id']);
+        $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
+        
+        $finalTimeperiodList = array(
+            "id" => $timeperiodList[0]['tp_id'],
+            "text" => $timeperiodList[0]['tp_name']
+        );
+        
+        $router->response()->json($finalTimeperiodList);
+    }
+    
+    /**
+     * Get list of Timeperiods for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/notificationperiod
+     */
+    public function notificationPeriodForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostObj = new Host();
+        $filters = array('host.host_id' => $requestParam['id']);
+        $hostList = $hostObj->getList('timeperiod_tp_id2', -1, 0, null, "ASC", $filters, "AND");
+        
+        $timeperiodObj = new Timeperiod();
+        $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id2']);
+        $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
+        
+        $finalTimeperiodList = array();
+        foreach($timeperiodList as $timeperiod) {
+            $finalTimeperiodList[] = array(
+                "id" => $timeperiod['tp_id'],
+                "text" => $timeperiod['tp_name']
+            );
+        }
+        
+        $router->response()->json($finalTimeperiodList);
     }
 }
