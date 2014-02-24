@@ -106,7 +106,6 @@ class Generator
     public function __construct($formRoute, $advanced = 0, $extraParams = array())
     {
         $this->formRoute = $formRoute;
-        $this->formHandler = new \Centreon\Core\Form($this->formName);
         $this->extraParams = $extraParams;
         $this->getFormFromDatabase($advanced);
     }
@@ -129,6 +128,8 @@ class Generator
         $this->formName = $formInfo[0]['name'];
         $this->formRedirect = $formInfo[0]['redirect'];
         $this->formRedirectRoute = $formInfo[0]['redirect_route'];
+        
+        $this->formHandler = new \Centreon\Core\Form($this->formName);
         
         $sectionQuery = 'SELECT section_id, name '
             . 'FROM form_section '
@@ -244,7 +245,10 @@ class Generator
      */
     public function generate()
     {
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
         $finalHtml = $this->generateHtml();
+        $tpl->assign('customValuesGetter', $this->formHandler->getJavascriptCall());
         return $finalHtml;
     }
     
