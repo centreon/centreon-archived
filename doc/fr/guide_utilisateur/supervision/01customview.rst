@@ -41,8 +41,8 @@ Il est possible de partager une vue existante avec un ou plusieurs utilisateurs.
 Pour cela, cliquez sur **Partager la vue**.
 
 * Si le champ **Vérrouillée** est définit à **Oui** alors les autres utilisateurs ne pourront pas modifier la vue
-* La liste **Liste des utilisateurs** permet de définir les utilisateurs avec lesquels sont partagés la vue
-* La liste **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels sont partagés la vue
+* La liste **Liste des utilisateurs** permet de définir les utilisateurs avec lesquels est partagée la vue
+* La liste **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels est partagée la vue
 
 Insérer un widget
 =================
@@ -119,7 +119,7 @@ Filters
 -------
 
 * Le champ **Host Name** permet de faire une recherche sur un ou plusieurs noms d'hôtes
-* Le champ **Service Description** peret de faire une recherche sur un ou plusieurs noms de services
+* Le champ **Service Description** permet de faire une recherche sur un ou plusieurs noms de services
 * Si la case **Display Ok** est cochée, les services en statut OK seront affichés
 * Si la case **Display Warning** est cochée, les services en statut WARNING seront affichés
 * Si la case **Display Critical** est cochée, les services en statut CRITICAL seront affichés

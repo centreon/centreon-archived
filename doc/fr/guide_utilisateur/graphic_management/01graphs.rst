@@ -12,7 +12,7 @@ Centreon permet de générer des graphiques à partir des informations de superv
 * Les graphiques d'historique (ou graphique des statuts) permettent de visualiser l'évolution des statuts d'un service.
 
 Les graphiques de performances ont toujours comme abscisse une période de temps et comme ordonnée une mesure (Volts, Octets...).
-Les graphiques d'historique ont toujours comme abscisse une période de temps, leurs ordonnées ne varie pas. Uniquement la couleur du graphique permet de visualiser le statut de l'objet :
+Les graphiques d'historique ont toujours comme abscisse une période de temps, leurs ordonnées ne varient pas. Uniquement la couleur du graphique permet de visualiser le statut de l'objet :
 
 * Vert pour le statut OK
 * Jaune pour le statut WARNING

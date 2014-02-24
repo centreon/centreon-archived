@@ -40,13 +40,13 @@ Le tableau ci-dessous résume l'ensemble des statuts possibles pour un service.
 +-------------------+----------------------+---------------------------------------------------------------------------+
 | CRITICAL          |  2                   | Le service a dépassé le seuil critique                                    |
 +-------------------+----------------------+---------------------------------------------------------------------------+
-| UNKNOWN           |  3                   | Le statut du service ne peut être vérifier (exemple : agent SNMP DOWN...) |
+| UNKNOWN           |  3                   | Le statut du service ne peut être vérifié (exemple : agent SNMP DOWN...)  |
 +-------------------+----------------------+---------------------------------------------------------------------------+
 
 Statuts avancés
 ===============
 
-Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui est fraîchemenet configuré mais n'a pas encore été contrôlé par l'ordonnanceur.
+Le statut PENDING est un statut qui est affiché pour un service ou un hôte qui est fraîchement configuré mais n'a pas encore été contrôlé par l'ordonnanceur.
 Le statut UNREACHABLE est un statut indiquant que l'hôte est situé (relation de parenté) en aval d'un hôte dans un statut DOWN.
 Le statut FLAPPING (bagotant) est un statut indiquant que le pourcentage de changement de statut de l'objet est très élevé. Ce pourcentage est obtenu à partir de calculs effectués par le moteur de supervision.
 Le statut ACKNOWLEDGED est un statut indiquant que l'incident du service ou de l'hôte est pris en compte par un utilisateur.
@@ -66,11 +66,11 @@ Confirmation d'un statut
 
 Un incident (statut non-OK) est confirmé à partir du moment ou le nombre d'essai de validation est arrivé à son terme.
 La configuration d'un objet (hôte ou service) implique un intervalle de contrôle régulier, un nombre d'essai pour valider un état non-OK ainsi qu'un intervalle non-régulier de contrôle.
-A la detectino du premier incident, le statut est dasn un état "SOFT" jusqu'à sa validation en état "HARD" déclenchant le processus de notification.
+A la détection du premier incident, le statut est dans un état "SOFT" jusqu'à sa validation en état "HARD" déclenchant le processus de notification.
 
 Exemple :
 
-Un service a les paramètres de vérifications suivantes :
+Un service a les paramètres de vérifications suivants :
 
  * Nombre de contrôles avant validation de l'état : 3
  * Intervalle normal de contrôle : 5 minutes
@@ -237,7 +237,7 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Prochaine notification                   | Affiche la date et l'heure d'envoi de la prochaine notification                                     |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Numéro de notification actuel            | Affiche le nombre de notifications déjà envoyée                                                     |
+| Numéro de notification actuel            | Affiche le nombre de notifications déjà envoyées                                                    |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Est\-ce que le statut de l'hôte bagote ? | Indique si l'hôte bagotte (a le statut FLAPPING)                                                    |
 +------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -414,7 +414,7 @@ Détails du statut
 Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-|   Attributs                               |   Description                                                                                       | 
+|   Attributs                               |   Description                                                                                       |
 +===========================================+=====================================================================================================+
 | Statut du service                         | Affiche le statut du service                                                                        |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
@@ -442,8 +442,8 @@ Le tableau ci-dessous résume l'ensemble des attributs de cette partie :
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Dernier notification                      | Affiche la date et l'heure d'envoi de la dernière notification                                      |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
-| Numéro de notification actuel             | Affiche le nombre de notifications déjà envoyée                                                     |
-+----------------------------------------- -+-----------------------------------------------------------------------------------------------------+
+| Numéro de notification actuel             | Affiche le nombre de notifications déjà envoyées                                                    |
++-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Est\-ce que le statut du service bagote ? | Indique si le service bagotte (a le statut FLAPPING)                                                |
 +-------------------------------------------+-----------------------------------------------------------------------------------------------------+
 | Pourcentage de changement de statut       | Affiche le pourcentage de changement d'état                                                         |
@@ -507,16 +507,16 @@ Moteurs de supervision
 **********************
 
 Ce menu contextuel permet de visualiser des informations complémentaires telle que la file d'attente des contrôle prévus 
-par l'ordonnanceur, les commentaires ou les temps d'arrêt ajouté aux objets .
+par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 
 .. note::
-    Pour plus d'informations sur les commentaires, rendez-vous dans le **Guide d'exploitation** [TODO mettre ref].
+	Pour plus d'informations sur les commentaires, rendez-vous dans le **Guide d'exploitation** [TODO mettre ref].
 	Pour plus d'informations sur les temps d'arrêt, rendez-vous dans le **Guide d'exploitation** [TODO mettre ref].
 
 File d'attente
 ==============
 
-La file d'attente présente l'ordonnancement prévu des contrôle à raliser par les ordonnanceurs de supervision.
+La file d'attente présente l'ordonnancement prévu des contrôles à raliser par les ordonnanceurs de supervision.
 
 Pour visuliser la file d'attente :
 
@@ -532,7 +532,7 @@ Le tableau ci-dessous décrit les colonnes de cette page.
 +====================+=================================================+
 | Hôtes              | Indique le nom de l'hôte                        |
 +--------------------+-------------------------------------------------+
-| Services           | Indique le nom du service                       |     
+| Services           | Indique le nom du service                       |
 +--------------------+-------------------------------------------------+
 | Dernier contrôle   | Affiche la date et l'heure du dernier contrôle  |
 +--------------------+-------------------------------------------------+
@@ -594,7 +594,7 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 * **Service** : permet de filtrer par le nom du service.
 * **Statut détaillé** : permet de filtrer par le statut détaillé des services.
 * **Auteur** : permet de filtrer par utilisateur ayant créé des commentaires.
-* **Afficher les temps d'arrêt terminés** : permet d'afficher en plsu les temps d'arrêt terminés.
+* **Afficher les temps d'arrêt terminés** : permet d'afficher en plus les temps d'arrêt terminés.
 * **Afficher le cycle de temps d'arrêt** : permet de [TODO]
 
 .. note::
@@ -636,5 +636,6 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 * **Nom de l'hôte** : permet de filtrer par nom d'hôte via une recherche de type SQL LIKE.
 * **Service** : permet de filtrer par le nom du service.
 * **Statut détaillé** : permet de filtrer par le statut détaillé des services.
+
 .. note::
     La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.

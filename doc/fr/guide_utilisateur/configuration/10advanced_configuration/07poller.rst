@@ -6,8 +6,8 @@ Les serveurs satellites
 Présentation
 ************
 
-Les serveurs satellites (aussi appellé collecteurs) sont des serveurs de supervision équipés d'un ordonnanceur et d'un module broker. Ils sont chargés de superviser les équipements et de renvoyer les
-résultats vers le serveur Centreon central (pour la visualition des résultats...).
+Les serveurs satellites (aussi appellé collecteurs) sont des serveurs de supervision équipés d'un ordonnanceur et d'un module broker. 
+Ils sont chargés de superviser les équipements et de renvoyer les résultats vers le serveur Centreon central (pour la visualisation des résultats...).
 
 *************
 Mise en place
@@ -16,7 +16,7 @@ Mise en place
 Installation
 ============
 
-Le processus d'instalaltino est identique à celui d'un servuer Centreon central.
+Le processus d'installation est identique à celui d'un serveur Centreon central.
 A la question **Which server type would you like to install ?** il faut choisir l'option **Poller server**.
 
 Configuration de l'ordonnanceur
