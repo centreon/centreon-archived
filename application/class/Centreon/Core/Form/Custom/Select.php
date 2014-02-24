@@ -59,6 +59,21 @@ class Select implements Custominterface
                             ->get('router')
                             ->getPathFor($element['label_listValuesRoute'], $element['label_extra']);
         }
+        
+        $addJs = '';
+        if (isset($element['label_ordered']) && $element['label_ordered']) {
+            $tpl->addCss('jquery-ui.min.css');
+            $tpl->addJs('jquery-ui.min.js');
+            
+            $addJs = '$("#'.$element['name'].'").on("change", function() { $("#'.$element['name'].'_val").html($("#'.$element['name'].'").val());});';
+
+            $addJs .= '$("#'.$element['name'].'").select2("container").find("ul.select2-choices").sortable({
+                    containment: "parent",
+                    start: function() { $("#'.$element['name'].'").select2("onSortStart"); },
+                    update: function() { $("#'.$element['name'].'").select2("onSortEnd"); }
+                  });'."\n";
+        }
+        
         $myHtml = '<input class="form-control" id="'.$element['name'].'" style="width: 500px;" value=" " />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
@@ -87,6 +102,8 @@ class Select implements Custominterface
                     }
                 },'
             .'});'."\n";
+        
+        $myJs .= $addJs;
         return array(
             'html' => $myHtml,
             'js' => $myJs
