@@ -9,7 +9,7 @@ Définition
 D'une manière générale, en cas de déclenchement d'une alerte, une notification permet de contacter un ou plusieurs contacts (ou groupes de contacts). 
 De même, il est possible d'envoyer plusieurs notifications suivant un intervalle de temps régulier.
 
-Une escalade de notifications permet de contacter différents groupes de contacts au fil des notifications envoyées ou de changer le moeyen de notification (remplacer les mails par un SMS).
+Une escalade de notifications permet de contacter différents groupes de contacts au fil des notifications envoyées ou de changer le moyen de notification (remplacer les mails par un SMS).
 La définition d'une escalade de notification pour un hôte, un groupe d'hôte, un service, un groupe de services ou un méta-service écrase la configuration classique des notifications pour cet objet.
 
 Exemple : Un service A est paramétré pour envoyer des notifications à un groupe de contact "A" en cas de statut non-OK. Ces notifications sont envoyées toutes les 5 minutes.

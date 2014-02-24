@@ -8,7 +8,7 @@ Présentation
 
 L'écran d'accueil se compose de deux éléments :
 
-* La **Vue d'ensemble** :  est une vue qui permet de visualiser de manière intuitive en temps réel l'évolution de son système d'informations en présentant les incidants non pris en compte.
+* La **Vue d'ensemble** :  est une vue qui permet de visualiser de manière intuitive en temps réel l'évolution de son système d'informations en présentant les incidents non pris en compte.
 * Les informations de **Santé globale** :  est une vue qui permet de visualiser sous forme de camembert l'état global des hôtes et des services en pourcentage par état.
 
 La vue d'ensemble

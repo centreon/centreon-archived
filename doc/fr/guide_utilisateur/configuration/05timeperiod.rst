@@ -23,7 +23,7 @@ La configuration des périodes temporelles se déroule dans le menu **Configurat
 Options basiques
 ================
 
-*	Les champs **Nom de la période temporelle** et **Alias** définissent respectivement le nom et la descrption de la période temporelle.
+*	Les champs **Nom de la période temporelle** et **Alias** définissent respectivement le nom et la description de la période temporelle.
 *	Les champs appartenant à la sous-catégorie **Période de temps** définissent les jours de la semaine pour lesquels il est nécessaire de définir des plages horaires.
 *	Le tableau **Exceptions** permet d'inclure des jours exclus de la période de temps
 
@@ -38,7 +38,7 @@ Lors de la création d'une période temporelle, les caractères suivants permett
 
 Quelques exemples :
 
-*	24 heures sur 24 et 7 jours sur 7 jours : **00:00-24:00** (à appliquer à tous les jours de la smeaine).
+*	24 heures sur 24 et 7 jours sur 7 jours : **00:00-24:00** (à appliquer à tous les jours de la semaine).
 *	De 08h00 à 12h00 et de 14h00 à 18h45 les jours de la semaine :  **08:00-12:00,14:00-18:45** (à entrer au niveau des jours de la semaine uniquement).
 
 [ TODO CAPTURE D'ECRAN DE LA PAGE DE CONFIGURATION NECESSAIRE]
@@ -51,7 +51,7 @@ Les exceptions permettent d'inclure à la plage temporaire des jours exceptionne
 Exemple : Un administrateur souhaite définir une période temporelle qui regroupe les heures de fermeture du bureau c'est à dire :
 
 *	De 18h00 à 07h59 les jours de semaines
-*	24 heures sur 24 les week end
+*	24 heures sur 24 les weekend
 *	Les jours fériés, jours de fermeture exceptionnelle
 
 Afin de pouvoir définir les jours fériés ainsi que les jours de fermeture exceptionnelle, il est nécessaire d'utiliser les exceptions.

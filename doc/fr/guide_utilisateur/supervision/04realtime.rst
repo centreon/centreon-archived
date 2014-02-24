@@ -81,8 +81,8 @@ Imaginons le scénario suivant :
  * Instant t + 0 : Le service est vérifié, il a le statut OK.
  * Instant t + 5 : La seconde vérification montre que le service a le statut CRITICAL. Le service passe en état SOFT (essai 1/3).
  * Instant t + 6 : La troisième vérification a lieu, le service a toujours le statut CRITICAL en état SOFT (essai 2/3).
- * Instant t + 7 : La quatrième vérification montre que le service a toujours le statut CRITICAL (essai 3/3). Le nombre d'essais a été atteint, le statut est configuré (état HARD). Le processus de notification est enclenchée.
- * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD. Le processus de notification est enclenchée.
+ * Instant t + 7 : La quatrième vérification montre que le service a toujours le statut CRITICAL (essai 3/3). Le nombre d'essais a été atteint, le statut est configuré (état HARD). Le processus de notification est enclenché.
+ * Instant t + 8 : Le service retrouve le statut OK. Il passe directement en état HARD. Le processus de notification est enclenché.
  * Instant t + 13 : Le service a le statut WARNING. Il passe en état SOFT (essai 1/3).
  * Instant t + 14 : Le service a toujours le statut WARNING (essai 2/3).
  * Instant t + 15 : Le service a le statut CRITICAL. Il reste en état SOFT car il a changé de statut [TODO vérifier]
@@ -92,7 +92,7 @@ Actions génériques
 ******************
 
 Par défaut, lors de la visualisation des statuts des hôtes ou des services, les données de supervision sont rafraichies automatiquement (15 secondes par défaut).
-Cependant, plusieurs icônes permettent de contrôler le rafrachissement des données.
+Cependant, plusieurs icônes permettent de contrôler le rafraichissement des données.
 Le tableau ci-dessous résume les différentes fonctions de ces icônes :
 
 +-------------------------+----------------------------------------------------------------------+
@@ -120,7 +120,7 @@ Pour visualiser le statut des hôtes, rendez-vous dans le menu **Supervision** =
 [TODO refaire capture car il manque la colonne et le filtre de criticité]
 
 La barre de recherche grise permet de filtrer les résultats affichés.
-Le menu de gauche permet de modifier les hotes visibles au sein du tableau :
+Le menu de gauche permet de modifier les hôtes visibles au sein du tableau :
 
 * Pour visualiser les hôtes rencontrant un problème mais étant non acquittés, cliquez sur **Problèmes non acquittés**
 * Pour visualiser tous les hôtes rencontrant un problème, cliquez sur **Problèmes en cours**
@@ -254,8 +254,8 @@ Options et Commandes disponibles
 Les options ainsi que les commandes permettent d'effectuer un certain nombre d'actions sur l'hôte.
 Ces différentes options sont traitées au sein du **Guide d'exploitation**. [TODO mettre ref]
 
-Racourcis d'hôtes
------------------
+Raccourcis d'hôtes
+------------------
 
 Le tableau ci-dessous résume la signification des icônes :
  
@@ -465,13 +465,13 @@ Graphique détaillé et graphiques des statuts
 Les parties **Graphique détaillé** et **Graphique des statuts** permettent respectivement de visualiser le graphique de performance 
 ainsi que le graphique d'historique de statut pour ce service.
 
-Racourcis d'hôte
-----------------
+Raccourcis d'hôte
+-----------------
 
-Les racourcis d'hôtes sont les mêmes que ceux de la fiche d'hôte.
+Les raccourcis d'hôtes sont les mêmes que ceux de la fiche d'hôte.
 
-Racourcis de service
---------------------
+Raccourcis de service
+---------------------
 
 Le tableau ci-dessous résume la signification des icônes :
  
@@ -506,7 +506,7 @@ en cas d'envoi d'une notification.
 Moteurs de supervision
 **********************
 
-Ce menu contextuel permet de visualiser des informations complémentaires telle que la file d'attente des contrôle prévus 
+Ce menu contextuel permet de visualiser des informations complémentaires telles que la file d'attente des contrôles prévus 
 par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 
 .. note::
@@ -516,9 +516,9 @@ par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 File d'attente
 ==============
 
-La file d'attente présente l'ordonnancement prévu des contrôles à raliser par les ordonnanceurs de supervision.
+La file d'attente présente l'ordonnancement prévu des contrôles à réaliser par les ordonnanceurs de supervision.
 
-Pour visuliser la file d'attente :
+Pour visualiser la file d'attente :
 
 #. Rendez-vous dans le menu **Supervision  ==> **Hôtes** ou **Services**
 #. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **File d'attente**
@@ -548,7 +548,7 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 
 * **Hôte** : permet de filtrer par nom d'hôte via une recherche de type SQL LIKE.
 * **Service** : permet de filtrer par le nom du service.
-* **Collecteur** : permet de filtrer par ordonnanceur. Seuless les ressources supervisées par cet ordonnanceur seront affichés.
+* **Collecteur** : permet de filtrer par ordonnanceur. Seules les ressources supervisées par cet ordonnanceur seront affichés.
 
 .. note::
     La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.

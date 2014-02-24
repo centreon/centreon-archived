@@ -6,7 +6,7 @@ Les catégories sont utilisées afin de pouvoir définir des ACLs sur les hôtes
 
 Centeon 2.4 avait intégré une nouvelle fonctionnalité appelée "Criticité". A parti de la version 2.5, les niveaux de criticité sont liés à une catégorie, ils sont devenus un type de catégorie.
 Un niveau de criticité est un indicateur permettant de définir la criticité d'un hôte ou d'un service. Le but est de pouvoir traiter les problèmes des hôtes ou des services par ordre de priorité.
-Grâce à ce système, il est ainsi possible de filter les objets dans les vues "Supervision" par criticité.
+Grâce à ce système, il est ainsi possible de filtrer les objets dans les vues "Supervision" par criticité.
 
 **********************
 Les catégories d'hôtes

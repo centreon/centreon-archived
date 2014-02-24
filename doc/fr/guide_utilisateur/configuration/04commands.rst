@@ -45,7 +45,7 @@ Les champs de configuration
 *	La case **Activer le shell** permet d'activer des fonctions propres à un shell tel que le pipe...
 *	Les champs **Exemple d'arguments** et **$HOSTADDRESS$** définissent respectivement des exemples d'arguments (chaque argument commence par un "!") et une adresse IP de test.
 	Ces champs permettent d'exécuter la ligne de commande définie au dessus via l'interface web en cliquant sur la flèche bleue[ TODO METTRE UNE IMAGE].
-*	Le bouton **Description des arguments** permet d'ajouter une descprition aux arguments de type "$ARGn$". Cette description sera visible lors de l'utilisation de la commande dans un formulaire d'hôte ou de service.
+*	Le bouton **Description des arguments** permet d'ajouter une description aux arguments de type "$ARGn$". Cette description sera visible lors de l'utilisation de la commande dans un formulaire d'hôte ou de service.
  
 [ TODO METTRE UNE CAPTURE D'ECRAN faisant le lien entre la description des arguments et la définition des arguments dans une fiche de service]
  
@@ -61,9 +61,9 @@ Arguments et macros
 Au sein du champ **Ligne de commande**, il est possible de faire appel à des macros [TODO ajouter lien/reférence au chapitre] ainsi qu'à des arguments.
 
 Les arguments sont utilisés afin de pouvoir passer différents paramètres aux scripts appelés par les commandes. 
-Lors de l'exécution de la commande par l'ordonnanceur, chacun des arguments et marcos sont remplacés par leur valeur respective.
+Lors de l'exécution de la commande par l'ordonnanceur, chacun des arguments et macros sont remplacées par leur valeur respective.
 Chaque argument se présente sous la forme **$ARGn$** où n est un entier naturel supérieur à 0.
 
 Exemple de ligne de commande utilisant les arguments : $USER1$/check-bench-process-DB -w $ARG1$ -c $ARG2$ -n $ARG3$
 
-**La bonne pratique veut que nous remplaçions les arguments par des macros personnalisées [TODO ajouter lien/reférence au chapitre].**
+**La bonne pratique veut que nous remplacions les arguments par des macros personnalisées [TODO ajouter lien/reférence au chapitre].**

@@ -23,7 +23,7 @@ Informations générales
 *	Le champ **Surveillé depuis le collecteur** indique quel est le serveur de supervision chargé de superviser cet hôte.
 *	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à l'hôte. Pour ajouter un modèle d'hôte, cliquer sur le symbole "+" [ TODO METTRE UNE IMAGE].
  
- En cas de conflits de paramètres présent sur plueieurs modèles, le modèle d'hôte au dessus écrase les modèles d'hôtes en dessous.
+ En cas de conflits de paramètres présent sur plusieurs modèles, le modèle d'hôte au dessus écrase les modèles d'hôtes en dessous.
  Le bouton [ TODO METTRE UNE IMAGE] permet de déplacer le modèle d'hôte. Le bouton [ TODO METTRE UNE IMAGE] permet de supprimer le modèle d'hôte.
  
 *	Si le champ **Créer aussi les services liés au modèle** est définit à **Oui**, Centreon génère automatiquement les services en se basant sur les modèles de services liés aux modèles d'hôtes définis au dessus.
@@ -85,7 +85,7 @@ Traitement des données
 *	Le champ **Options à enregistrer** définit les options à enregistrer si la rétention est activée.
 *	Le champ **Gestionnaire d'évènements activé** permet d'activer ou de désactiver le gestionnaire d'évènements.
 *	Le champ **Gestionnaire d'évènements** définit la commande à exécuter si le gestionnaire d'évènements est activé.
-*	Le champ **Arguments** définit les arguments de la commande du gestionnnaire d'évènements.
+*	Le champ **Arguments** définit les arguments de la commande du gestionnaire d'évènements.
 
 *********************************
 Informations détaillées de l'hôte
@@ -105,7 +105,7 @@ Les champs présentés ci-dessous sont des champs utilisés uniquement par la CG
 
 *	Le champ **Image VRML** définit le logo pour le moteur 3D de l'hôte.
 *	Le champ **Image de la carte des états** définit le logo pour la CGI de l'ordonnanceur.
-*	Le champ **Coordonnées 2D et 3D** indiquent les coordonées 2D et 3D utilisées par la CGI.
+*	Le champ **Coordonnées 2D et 3D** indiquent les coordonnées 2D et 3D utilisées par la CGI.
  
 Informations supplémentaires
 ============================

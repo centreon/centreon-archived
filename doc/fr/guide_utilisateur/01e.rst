@@ -24,7 +24,7 @@ Pour visualiser les rapports d'hôtes:
 * La liste **Hôtes** permet de sélectionner l'objet pour lequel on souhaite visualiser un rapport
 * La liste **Période de génération** permet de choisir la période de temps sur laquelle on souhaite visualiser les informations. La liste contient une liste de période générique si la liste est vide il est possible de personnaliser la période de temps en définissant les champs **Du** et **Au**
 * Les tableaux **Etat de l'hôte** et **Statuts des éléments du rapport** permettent de visualiser les statuts des différents objets (l'objet principal et ses éléments) au cours de la période définie
-* La frise chronologique permet de visualiser de manière intuitive le statut de l'objet au cour du temps
+* La frise chronologique permet de visualiser de manière intuitive le statut de l'objet au court du temps
 
 Il est également possible de visualiser des rapports web pour :
 

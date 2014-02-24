@@ -29,7 +29,7 @@ Etat du service
 *	Le champ **Nombre de contrôles avant validation de l'état** définit le nombre de contrôles à effectuer avant de valider le statut du service. Lorsque le statut est validé, une notification est envoyée.
 *	Le champ **Intervalle normal de contrôle** est exprimé en minutes. Il définit l'intervalle entre chaque vérification lorsque le statut du service est OK.
 *	Le champ **Intervalle non-régulier de contrôle** est exprimé en minutes. Il définit l'intervalle de validation du statut non-OK du service.
-*	Les champs **Contrôle actif activé** et **Contrôle passif activé** activent/désactivent le typ de contrôle du service.
+*	Les champs **Contrôle actif activé** et **Contrôle passif activé** activent/désactivent le type de contrôle du service.
 
 Macros
 ======
@@ -80,10 +80,10 @@ Traitement des données
 *   Les champs **Seuil bas de détection de bagotage des statuts** et **Seuil haut de détection de bagotage des statuts** définissent les seuils hauts et bas pour la détection du bagotage en pourcentage de changement.
 *	Le champ **Traitement des données de performances** permet d'activer ou de désactiver le traitement des données de performances (et donc la génération des graphiques de performances).
 *	Les champs **Rétention des informations de statut** et **Rétention et des informations concernant pas le statut** indiquent si les informations concernant ou ne concernant pas le statut sont sauvegardées après chaque relance de la commande de vérification.
-*	Le champ **Options à enregistrer** définit les options à enregistrer si la rétention est activé.e
+*	Le champ **Options à enregistrer** définit les options à enregistrer si la rétention est activée
 *	Le champ **Gestionnaire d'évènements activé** permet d'activer ou de désactiver le gestionnaire d'évènements.
 *	Le champ **Gestionnaire d'évènements** définit la commande à exécuter si le gestionnaire d'évènements est activé.
-*	Le champ **Arguments** définit les arguments de la commande du gestionnnaire d'évènements.
+*	Le champ **Arguments** définit les arguments de la commande du gestionnaire d'évènements.
 
 ***************************************
 Informations supplémentaires du service
@@ -115,10 +115,10 @@ Informations supplémentaires
 Détachement d'un service
 ************************
 
-Si un service est lié à plusieurs hôtes, alors il sera identique pour chacun deux. Il ne sera donc pas possible de modifier unitairement le service d'un hôte pour modifier une propiété.
+Si un service est lié à plusieurs hôtes, alors il sera identique pour chacun deux. Il ne sera donc pas possible de modifier unitairement le service d'un hôte pour modifier une propriété.
 C'est pourquoi il est possible de transformer ce service lié à plusieurs hôtes en un service unique pour chaque hôte :
 
-#.	Dans la liste des services, sélectionnez le service liés à plusieurs hôtes (habituellement ce service est surligné en orange)
+#.	Dans la liste des services, sélectionnez le service lié à plusieurs hôtes (habituellement ce service est surligné en orange)
 #.	Dans le menu **More actions...** cliquez sur **Détacher** puis validez
 
 Il existe maintenant un service unique par hôte.

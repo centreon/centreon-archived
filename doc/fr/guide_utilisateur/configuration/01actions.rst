@@ -35,7 +35,7 @@ Exemple : J'ai 10 serveurs web identiques à superviser :
 *	Je duplique cet hôte 9 fois
 *	Je n'ai plus qu'à changer les noms d'hôtes et les adresses IP de chaque duplication pour les adapter aux 9 autres serveurs web à superviser
 
-Grâce à cette méthode, il n'estp lsu nécessaire de créer unitairement chaque hôte.
+Grâce à cette méthode, il n'est plus nécessaire de créer unitairement chaque hôte.
 
 Pratique
 ========
@@ -60,7 +60,7 @@ Principe
 
 Les changements massifs permettent d'appliquer un changement sur plusieurs objets.
 
-Exemple : L'ensemble des serveurs web précèdement créés changent de communauté SNMP.
+Exemple : L'ensemble des serveurs web précédemment créés changent de communauté SNMP.
 Un changement massif permet de modifier cette communauté sans avoir la peine de modifier chaque fiche de chaque hôte unitairement.
 
 Pratique
@@ -83,7 +83,7 @@ Activer/Désactiver
 Principe
 ========
 
-L'activation et la désactivation des objets permet de prendre en compte ou non l'objet lors de la génération de la configuration.
+L'activation et la désactivation des objets permettent de prendre en compte ou non l'objet lors de la génération de la configuration.
 Le principal intérêt est de pouvoir garder la configuration d'un objet sans pour autant l'appliquer.
 
 Pratique

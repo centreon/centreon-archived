@@ -8,7 +8,7 @@ Définition
 
 Centreon permet de générer des graphiques à partir des informations de supervision. Il existe deux types de graphiques :
 
-* Les graphiques de performances permettent de visualiser l'évolution des services de manière intuitive. Exemples : niveau de remplissage d'un disque dur, traffic réseau...
+* Les graphiques de performances permettent de visualiser l'évolution des services de manière intuitive. Exemples : niveau de remplissage d'un disque dur, trafic réseau...
 * Les graphiques d'historique (ou graphique des statuts) permettent de visualiser l'évolution des statuts d'un service.
 
 Les graphiques de performances ont toujours comme abscisse une période de temps et comme ordonnée une mesure (Volts, Octets...).

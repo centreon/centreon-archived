@@ -24,7 +24,7 @@ Première étape
 Vérifier qu'aucune erreur n'apparait lors de la génération :
 
 .. note::
-    Si cela est la cas, corriger les erreurs et refaire la première étape.
+    Si cela est le cas, corriger les erreurs et refaire la première étape.
 
 Deuxième étape
 ==============

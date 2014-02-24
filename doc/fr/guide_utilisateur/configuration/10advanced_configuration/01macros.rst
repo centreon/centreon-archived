@@ -9,7 +9,7 @@ Une macro commence et se termine toujours par le signe "$".
 Les macros standards
 ********************
 
-Les macros standards sont des macros pré-définies dans le code source des moteurs de supervision.
+Les macros standards sont des macros prédéfinies dans le code source des moteurs de supervision.
 Ces différentes macros permettent de récupérer la valeur de différents objets au sein des commandes.
 
 Exemple :
@@ -19,14 +19,14 @@ Exemple :
 
 La liste complète des macros est disponible à l'adresse suivante : `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_
 
-************************
-Les macros personalisées
-************************
+*************************
+Les macros personnalisées
+*************************
 
 Définition
 ==========
 
-Les macros personnalisées sont des macros créées par l'utilisateur lors de la création d'un hôte ou d'une service.
+Les macros personnalisées sont des macros créées par l'utilisateur lors de la création d'un hôte ou d'un service.
 Elles sont utilisées dans les commandes de vérifications.
 Les macros personnalisées commencent par $_HOST pour les macros personnalisées d'hôtes et par $_SERVICE pour les macros personnalisées de services.
 Il y a plusieurs avantages à utiliser les macros personnalisées à la place des arguments :
@@ -42,13 +42,13 @@ Une macro de service est plutôt utilisée pour définir des paramètres propres
 Exemple
 =======
 
-Lors de la définition d'un hôte, les macros suivantes sont créés :
+Lors de la définition d'un hôte, les macros suivantes sont créées :
 
 [TODO images/01.png]
 
 Pour faire appel à ces macros dans une commande de vérification, il faudra les invoquer en utilisant les variables suivantes : $_HOSTUSERLOGIN$, $_HOSTUSERPASSWORD$.
 
-Lors de la définition d'un service, les macros suivantes sont créés :
+Lors de la définition d'un service, les macros suivantes sont créées :
 
 [TODO images/02.png]
 
@@ -95,7 +95,7 @@ Elles sont complémentaires aux macros standards. Exemple :
 
 La documentation complète des macros à la demande est disponible à cette adresse `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_.
 
-**Remarque** : L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommaeur en termes de ressoruces.
+**Remarque** : L'utilisation de ces macros n'est pas recommandé car la recherche d'une valeur d'un paramètre d'un objet depuis un autre objet est consommateur en termes de ressources.
 
 .. warning::
 

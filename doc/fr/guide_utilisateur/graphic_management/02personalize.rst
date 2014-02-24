@@ -84,14 +84,14 @@ Pour ajouter un nouveau modèle de courbes :
 * Le champ **Nom de la source de données** permet de sélectionner la métrique qui utilisera cette courbe (La liste **Liste des métriques connues** permet de choisir les métriques déjà existantes utilisées par les services)
 * Si la case **Empiler** est cochée, cette courbe s'empilera sur les autres (utile pour voir la proportion d'une métrique par rapport à une autre)
 * Si la case **Empiler** est cochée, la liste **Ordre** permet de définir l'ordre d'affichage de la courbe (plus le nombre est petit, plus il sera proche de l'abscisse)
-* Si la case **Inverser** est cochée, la courbe est inversée sur l'axe des ordonnées (utile pour voir la proportion du traffic entrant par rapport au traffic sortant)
+* Si la case **Inverser** est cochée, la courbe est inversée sur l'axe des ordonnées (utile pour voir la proportion du trafic entrant par rapport au trafic sortant)
 * La liste **Epaisseur** exprime l'épaisseur de la ligne de la courbe (exprimée en pixels)
 * Le champ **Couleur de la courbe** définit la couleur de la courbe
 * Le champ **Couleur de l'aire** concerne la couleur de remplissage de la courbe si l'option **Remplissage** est cochée (voir ci-dessous). Elle contient 3 champs qui correspondent respectivement aux couleurs du statut OK, WARNING et CRITICAL.
 * Le champ **Transparence** définit le niveau de transparence de la couleur du contour
 * Si la case **Remplissage** est cochée alors toute la courbe est remplie avec la couleur du contour
 
-Les attributs ci-dessous concernent les informations situées en desous du graphique.
+Les attributs ci-dessous concernent les informations situées en dessous du graphique.
 
 * Le champ **Légende** définit la légende de la courbe
 * Si la case **Afficher uniquement la légende** est cochée, la courbe sera masquée

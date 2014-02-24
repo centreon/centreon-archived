@@ -2,7 +2,7 @@
 Les dépendances
 ===============
 
-[TODO à revoir car je ne suis pas e naccord avec le contenu]
+[TODO à revoir car je ne suis pas en accord avec le contenu]
 
 ********
 Principe

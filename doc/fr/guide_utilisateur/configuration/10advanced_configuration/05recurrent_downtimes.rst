@@ -15,7 +15,7 @@ Exemple : Une sauvegarde des machines virtuelles est effectuée tous les jours d
 Il est nécessaire de programmer des temps d'arrêts récurrents sur les services concernés afin d'éviter de recevoir des notifications de 20h00 à minuit.
 
 .. note::
-   Les temps d'arrêts sont pris en comptes dans le calcul du taux de disponiblité de la ressource dans le menu "Tableau de bord".
+   Les temps d'arrêts sont pris en comptes dans le calcul du taux de disponibilité de la ressource dans le menu "Tableau de bord".
 
 Les types de temps d'arrêts
 ===========================

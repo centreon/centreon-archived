@@ -6,10 +6,10 @@ Les méta-services
 Définition
 **********
 
-Un méta-service est un service virtuel permettant l'aggrégation de métriques issues de différents services au travers d'une opération mathématique..
+Un méta-service est un service virtuel permettant l'agrégation de métriques issues de différents services au travers d'une opération mathématique..
 Les méta-services sont gérés de la même manière qu'un service c'est à dire qu'ils possèdent des seuils, un processus de notification, génèrent un graphique de performance...
 
-Exemple : Il est possible de déterminer la consommation totale de traffic WAN en additionnant au sein d'un méta-service l'ensemble des services supervisant le traffic WAN unitairement.
+Exemple : Il est possible de déterminer la consommation totale de trafic WAN en additionnant au sein d'un méta-service l'ensemble des services supervisant le trafic WAN unitairement.
 
 Les types de calcul
 ===================
@@ -24,8 +24,8 @@ Plusieurs types de calculs sont possibles sur les métriques récupérées :
 Les types de sources de données
 ===============================
 
-Le résultat du calcul est une données de performance (métrique) qui génèrera un graphique de performance.
-Afin de tracer au mieux le résutlat, il faut sélectionner le type de source de données (par dafaut **GAUGE**).
+Le résultat du calcul est une donnée de performance (métrique) qui génèrera un graphique de performance.
+Afin de tracer au mieux le résultat, il faut sélectionner le type de source de données (par défaut **GAUGE**).
 Les types de source de données disponibles sont :
 
 * Le type **GAUGE** enregistre une valeur instantanée (température, humidité, CPU, ...)
@@ -99,7 +99,7 @@ Si vous avez choisit l'option **Sélectionner les services manuellement**, au se
 
 [ TODO Mettre une capture d'écran]
 
-* Le champ **Hôte** permet de sélectionner l'hôte auquel le service à selectionner appartient.
+* Le champ **Hôte** permet de sélectionner l'hôte auquel le service à sélectionner appartient.
 * Le champ **Service** permet de choisir le service (première liste) ainsi que la métrique au sein de ce service (seconde liste).
 * Les champs **Statut** et **Commentaires** permettent d'activer/désactiver ou de commenter l'indicateur.
 

@@ -59,7 +59,7 @@ Personnaliser son widget
 
 Il est possible de déplacer un widget en faisant un drag-and-drop depuis la barre de titre.
 Pour réduire un widget, cliquez sur [ TODO Mettre l'icône].
-Par défaut les informations contenus au sein du widget sont rafraichies de manière régulière.
+Par défaut les informations contenues au sein du widget sont rafraichies de manière régulière.
 Pour les rafraîchir manuellement cliquez sur [ TODO Mettre l'icône].
 
 Pour personnaliser son widget, cliquez sur [ TODO Mettre l'icône].
@@ -101,7 +101,7 @@ Columns
 * La liste **Output Length** permet de limiter la longueur du message affiché
 * Si la case **Display Status** est cochée alors le statut de l'hôte est affiché
 * Si la case **Display IP** est cochée alors l'adresse IP de l'hôte est affiché
-* Si la case **Display Last Check** est cochée alors la date et l'horaire de la dernière vérificatin est affichée
+* Si la case **Display Last Check** est cochée alors la date et l'horaire de la dernière vérification est affichée
 * Si la case **Display Duration** est cochée alors la durée durant laquelle l'hôte a conservé son statut est affichée
 * Si la case **Display Hard State Duration** est cochée alors la durant laquelle l'hôte a conservé son état HARD est affichée
 * Si la case **Display Tries** est cochée alors le nombre d'essais avant la validation de l'état est affichée
@@ -140,7 +140,7 @@ Columns
 * Si la case **Display Output** est cochée alors le message associé au statut du service sera affiché
 * La liste **Output Length** permet de limiter la longueur du message affiché
 * Si la case **Display Status** est cochée alors le statut du service est affiché
-* Si la case **Display Last Check** est cochée alors la date et l'horaire de la dernière vérificatin est affichée
+* Si la case **Display Last Check** est cochée alors la date et l'horaire de la dernière vérification est affichée
 * Si la case **Display Duration** est cochée alors la durée durant laquelle le service a conservé son statut est affichée
 * Si la case **Display Hard State Duration** est cochée alors la durant laquelle le service a conservé son état HARD est affichée
 * Si la case **Display Tries** est cochée alors le nombre d'essais avant la validation de l'état est affichée

@@ -22,7 +22,7 @@ Les avantages sont :
 *   Définition simplifiée des éléments
 *   Pas de redondance d'information
 *   Facilité d'ajout de nouvelles ressources
-*   Configurations pré-définies assimilées à un « catalogue d'indicateurs»
+*   Configurations prédéfinies assimilées à un « catalogue d'indicateurs»
 *   Les modèles peuvent hériter d'autres modèles
 
 *******************
@@ -41,9 +41,9 @@ Héritage de type Père-Fils
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il s'agit d'une prédéfinition de paramètres à "n" niveaux. L'objet hérite de son modèle qui peut lui même hériter de son modèle.
-Si le fils redéfini un paramètre, ce dernier écrase celui défini dans lles modèles de niveaux supérieurs. Sinon il vient complèter le paramétrage.
+Si le fils redéfini un paramètre, ce dernier écrase celui défini dans les modèles de niveaux supérieurs. Sinon il vient compléter le paramétrage.
 
-Héritage de type associatifs
+Héritage de type associatif
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Il s'agit d'additionner plusieurs modèles au sein d'un même objet afin d'additionner l'ensemble des paramètres disponibles.

@@ -321,7 +321,7 @@ Pour cela, il est possible de définir des **Commande PREEXEC (de type SNMPTT)**
 
 Voici un exemple d'utilisation avec le trap linkUP :
 Pour un équipement Cisco, $2 == ifDescr contient le numéro de port de l'interface (GigabitEthernet0/1 par exemple). 
-La meilleure description de l'interface est contenue dans le champs champ SNMP ifAlias.
+La meilleure description de l'interface est contenue dans le champ SNMP ifAlias.
 
 La commande suivante permet de récupérer cette valeur
 
@@ -339,7 +339,7 @@ Exemple
 Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) linkUP. State: up
 
 *   Le champ **Activer le journal d'évènement** permet de [TODO]
-*   Le champ **Temps d'exécution maximum** exprimé en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prètraitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
+*   Le champ **Temps d'exécution maximum** exprimé en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prétraitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
 *   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
 *   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
 *   Le champ **Méthode d'exécution** permet de définir si lors de la réception de plusieurs mêmes évènements (OID racine). L'exécution est soit **Séquentielle**, soit **Parallèle**

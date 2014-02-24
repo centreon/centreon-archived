@@ -43,18 +43,18 @@ Meilleure intégration à Centreon
 L'interface de Centreon est de plus en plus orientée vers l'utilisation du broker Centreon Broker. Quelques exemples :
 
 *	Il existe un assistant de configuration pour Centreon Broker
-*   Les performances d'affichage sont grandements améliorées
+*   Les performances d'affichage sont grandement améliorées
 *   Certains filtres de sélection ne sont disponibles qu'avec le broker Centreon Broker
 *	La prochaine version majeure de Centreon ne supportera plus le couple Nagios/NDOUtils
 
 Nouvelles fonctionnalités
 -------------------------
-Plusieurs nouvelles fonctionnalités font leur apparitions avec Centreon Broker :
+Plusieurs nouvelles fonctionnalités font leurs apparitions avec Centreon Broker :
 
 *	Possibilité de chiffrer les données de supervision qui remontent vers le serveur Central
 *	Possibilité de compresser les données de supervision afin de ne pas surcharger la bande passante
 *	Utilisation d'un nouveau protocole d'encodage des données (Le protocole BBDO) plus performant que le protocole NDO
-*   Possibilité de filter le type de flux entre les composants de Cetnreon Broker pour diminuer la charge et la bande passante
+*   Possibilité de filtrer le type de flux entre les composants de Centreon Broker pour diminuer la charge et la bande passante
 *   Possibilité de flux unidirectionnels entre le serveur Centreon et ses collecteurs (uniquement des flux LAN vers DMZ)
  
 **********
@@ -79,7 +79,7 @@ Le tableau ci-dessous donne les pré-requis pour l'installation de CES 3.0 :
 |     10000 - 25000      | 1 central + 1 satellite  |          4 * 2,5 Ghz          |               8 Go              |           8 * 2,5 Ghz           |                4 Go               |
 +------------------------+--------------------------+-------------------------------+---------------------------------+---------------------------------+-----------------------------------+
 
-**Remarque** : ces informatuions tiennent comptes du fait que toutes les optimisations aient été réalisé pour l'ordonnanceur Centreon Engine, que les transactions aient été activé 
+**Remarque** : ces informations tiennent comptes du fait que toutes les optimisations aient été réalisé pour l'ordonnanceur Centreon Engine, que les transactions aient été activé 
 dans Centreon Broker et que les optimisations aient été réalisé pour le SGBD MariaDB.  
 
 ************
@@ -216,7 +216,7 @@ Configuration de base
 
 Dans un premier temps, il est nécessaire de passer l'interface en version française. Pour cela :
 
-1.	Connectez vous avec l'utilisateur 'root' sur votre serveur
+1.	Connectez-vous avec l'utilisateur 'root' sur votre serveur
 2.	Installez le paquet de traduction en langue française avec la commande suivante 
 
 ::
@@ -235,7 +235,7 @@ Démarrer la supervision
 
 Pour démarrer l'ordonnanceur de supervision :
 
- 1.  Connectez vous avec l'utilisateur 'root' sur votre serveur
+ 1.  Connectez-vous avec l'utilisateur 'root' sur votre serveur
  2.	Démarrez le composant Centreon Broker::
  
 	/etc/init.d/cbd start

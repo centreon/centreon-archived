@@ -11,7 +11,7 @@ Les journaux d'évènements (aussi appelés "Event logs") permettent de :
 * Visualiser les différents changements de statuts et états des objets supervisés
 * Voir les notifications envoyées ainsi que leurs destinataires
 
-Ces journaux peuvent être visualisées sur une période donnée.
+Ces journaux peuvent être visualisés sur une période donnée.
 
 *************
 Visualisation
@@ -26,7 +26,7 @@ Le menu de gauche permet de sélectionner les hôtes et/ou les services pour les
 La barre de recherche grise appelée **Période de visualisation** permet de sélectionner la période de temps pour laquelle on souhaite visualiser les évènements.
 La liste déroulante permet de sélectionner des périodes de temps génériques. Si la liste déroulante est vide alors il est possible de choisir manuellement la période de temps en utilisant les champs **Du** et **Au**.
 
-La barre de recherche grisée située en dessous permet de sélectionner filtres de recerche afin d'afficher les évènements souhaités.
+La barre de recherche grisée située en dessous permet de sélectionner filtres de recherche afin d'afficher les évènements souhaités.
 
 Le tableau permet de visualiser les résultats.
 
@@ -41,7 +41,7 @@ Il est possible d'afficher plusieurs types de messages sur la période donnée:
 
 * Les services ayant le statut WARNING en cochant **Alerte**
 * Les erreurs (hôtes non disponibles ou services ayant le statut CRITICAL) en cochant **Erreur**
-* Les incidants d'hôtes ou de service validés ('HARD') en cliquant sur **Etat Hard seulement**
+* Les incidents d'hôtes ou de service validés ('HARD') en cliquant sur **Etat Hard seulement**
 * Les notifications envoyées en cliquant sur **Notifications**
 
 Statut de l'hôte ou du service

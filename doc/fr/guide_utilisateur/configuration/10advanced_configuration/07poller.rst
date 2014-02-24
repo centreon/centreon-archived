@@ -6,7 +6,7 @@ Les serveurs satellites
 Présentation
 ************
 
-Les serveurs satellites (aussi appellé collecteurs) sont des serveurs de supervision équipés d'un ordonnanceur et d'un module broker. 
+Les serveurs satellites (aussi appelé collecteurs) sont des serveurs de supervision équipés d'un ordonnanceur et d'un module broker. 
 Ils sont chargés de superviser les équipements et de renvoyer les résultats vers le serveur Centreon central (pour la visualisation des résultats...).
 
 *************
