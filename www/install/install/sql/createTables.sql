@@ -69,6 +69,17 @@ CREATE TABLE `acl_group_contacts_relations` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `acl_group_menu_relations` (
+  `acl_group_id` int(11) NOT NULL,
+  `acl_menu_id` int(11) NOT NULL,
+  KEY `acl_group_id` (`acl_group_id`),
+  KEY `acl_menu_id` (`acl_menu_id`),
+  CONSTRAINT `acl_group_menu_relations_ibfk_1` FOREIGN KEY (`acl_group_id`) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
+  CONSTRAINT `acl_group_menu_relations_ibfk_2` FOREIGN KEY (`acl_menu_id`) REFERENCES `acl_menus` (`acl_menu_id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `acl_group_topology_relations` (
   `agt_id` int(11) NOT NULL AUTO_INCREMENT,
   `acl_group_id` int(11) DEFAULT NULL,
@@ -89,6 +100,28 @@ CREATE TABLE `acl_groups` (
   `acl_group_changed` int(11) NOT NULL,
   `acl_group_activate` enum('0','1','2') DEFAULT NULL,
   PRIMARY KEY (`acl_group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `acl_menus` (
+  `acl_menu_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `enabled` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`acl_menu_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `acl_menu_menu_relations` (
+  `acl_menu_id` int(11) DEFAULT NULL,
+  `menu_id` int(11) DEFAULT NULL,
+  `acl_level` tinyint(3) DEFAULT NULL,
+  KEY `acl_menu_id` (`acl_menu_id`),
+  KEY `menu_id` (`menu_id`),
+  CONSTRAINT `acl_menu_menu_relations_ibfk_1` FOREIGN KEY (`acl_menu_id`) REFERENCES `acl_menus` (`acl_menu_id`) ON DELETE CASCADE,
+  CONSTRAINT `acl_menu_menu_relations_ibfk_2` FOREIGN KEY (`menu_id`) REFERENCES `menus` (`menu_id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
