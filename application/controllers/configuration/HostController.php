@@ -61,13 +61,15 @@ class HostController extends \Centreon\Core\Controller
         // Load CssFile
         $tpl->addCss('dataTables.css')
             ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
+            ->addCss('dataTables-TableTools.css')
+            ->addCss('centreon-wizard.css');
 
         // Load JsFile
         $tpl->addJs('jquery.dataTables.min.js')
             ->addJs('jquery.dataTables.TableTools.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
+            ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('centreon-wizard.js');
         
         // Display page
         $tpl->assign('objectName', 'Host');
@@ -147,13 +149,13 @@ class HostController extends \Centreon\Core\Controller
     /**
      * Add a host
      *
-     *
      * @method get
      * @route /configuration/host/add
      */
     public function addAction()
     {
-        
+        $form = new \Centreon\Core\Form\Wizard('/configuration/host/add');
+        echo $form->generate();
     }
     
     /**
