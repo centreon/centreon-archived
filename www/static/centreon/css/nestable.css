@@ -100,3 +100,5 @@
 .socialite { display: block; float: left; height: 35px; }
 
 .nestable_cb { float: right;  left-margin: 20px; }
+
+span.acl_cb { padding-left: 10px; }

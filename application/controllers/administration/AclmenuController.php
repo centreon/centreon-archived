@@ -196,7 +196,13 @@ class AclmenuController extends \Centreon\Core\Controller
             $currentaclmenuValues['enabled'] = '0';
         }
         
-        $myForm = new Generator("/administration/aclmenu/update");
+        $myForm = new Generator(
+            "/administration/aclmenu/update", 
+            0, 
+            array(
+                'id' => $requestParam['id']
+            )
+        );
         $myForm->setDefaultValues($currentaclmenuValues);
         $myForm->addHiddenComponent('acl_menu_id', $requestParam['id']);
         

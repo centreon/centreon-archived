@@ -46,14 +46,14 @@ class AclmenuRepository extends \Centreon\Repository\Repository
      *
      * @var string
      */
-    public static $tableName = 'acl_menu';
-    
+    public static $tableName = 'acl_menus';
+
     /**
      *
      * @var string
      */
     public static $objectName = 'Aclmenu';
-    
+
     /**
      *
      * @var array Default column for datatable
@@ -64,7 +64,7 @@ class AclmenuRepository extends \Centreon\Repository\Repository
         'Description' => 'description',
         'Status' => 'enabled'
     );
-    
+
     /**
      *
      * @var array 
@@ -75,7 +75,7 @@ class AclmenuRepository extends \Centreon\Repository\Repository
         'description',
         'enabled'
     );
-    
+
     public static $columnCast = array(
         'enabled' => array(
             'type' => 'select',
@@ -99,7 +99,7 @@ class AclmenuRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
+
     /**
      *
      * @var array 
@@ -115,7 +115,7 @@ class AclmenuRepository extends \Centreon\Repository\Repository
             )
         )
     );
-    
+
     /**
      *
      * @var array 
@@ -125,10 +125,33 @@ class AclmenuRepository extends \Centreon\Repository\Repository
         'search_name',
         'search_alias',
         array('select' => array(
-                'Enabled' => '1',
-                'Disabled' => '0'
-            )
+            'Enabled' => '1',
+            'Disabled' => '0'
         )
-    );
-    
+    )
+);
+
+
+    /**
+     * Get ACL level by Acl Menu ID
+     *
+     * @param int $acl_menu_id
+     * @return array
+     */
+    public static function getAclLevelByAclMenuId($acl_menu_id)
+    {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $sql = "SELECT menu_id, acl_level
+            FROM acl_menu_menu_relations
+            WHERE acl_menu_id = ?";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($acl_menu_id));
+        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        $data = array();
+        foreach ($rows as $row) {
+            $data[$row['menu_id']] = $row['acl_level'];
+        }
+        return $data;
+    }
+
 }
