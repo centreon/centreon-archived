@@ -1,11 +1,7 @@
-{extends file="../baseLayout.tpl"}
+{extends file="../viewLayout.tpl"}
 
 {block name=title}Home{/block}
 
-{block name=appMenu}
-    My Menu
-{/block}
-
-{block name=appContent}
-    My Content
+{block name=content}
+    My home page
 {/block}

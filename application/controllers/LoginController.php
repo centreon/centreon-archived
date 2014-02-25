@@ -52,7 +52,10 @@ class LoginController extends \Centreon\Core\Controller
     {
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
-        $redirectUrl = $router->request()->param('redirect', $router->request()->uri());
+        $redirectUrl = $router->request()->param(
+            'redirect', 
+            str_replace('/login', '/home', $router->request()->uri())
+        );
         $tmpl = $di->get('template');
         $tmpl->assign('csrf', \Centreon\Core\Form::getSecurityToken());
         $tmpl->assign('redirect', $redirectUrl);
