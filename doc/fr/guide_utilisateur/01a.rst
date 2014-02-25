@@ -91,42 +91,56 @@ Etape 1 : Démarrage
 
 Afin d'installer Centreon, démarrez votre serveur sur le CD de Centreon Enterprise Server.
 
-Démarrez avec l'option Install or upgrade an existing system [METTRE CAPTURE D'ECRAN DE L'ECRAN DE BOOT]
+Démarrez avec l'option Install or upgrade an existing system 
+
+.. image :: /images/guide_utilisateur/abootmenu.png
+   :align: center
 
 Etape 2 : Choix de la langue
 ============================
 
 Cliquez sur **Next**, choisissez votre langue et cliquez sur **Next**.
 
-[ TODO PLACER LA CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/ainstalllanguage.png
+   :align: center
 
 Sélectionnez le clavier utilisé par votre système puis cliquez sur **Suivant**.
 
-[ TODO METTRE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/akeyboard.png
+   :align: center
 
 Etape 3 : Configuration générale
 ================================
 
 En fonction du type de stockage désiré, choisissez les options nécessaires pour disposer du partitionnement qui vous convient le mieux.
 
-[ TODO CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/adatastore1.png
+   :align: center
+   
+.. image :: /images/guide_utilisateur/adatastore2.png
+   :align: center
 
 Choisissez le nom d'hôte de votre machine et cliquez sur **Configurer le réseau** afin de pouvoir modifier les paramètres de votre carte réseau.
 
 Sélectionnez la carte réseau que vous souhaitez configurer et rendez-vous dans l'onglet "Paramètres IPv4" ou "Paramètres IPv6" (en fonction du besoin) 
 afin de configurer vos adresses IP. Cliquez sur **Appliquer...** afin d'enregistrer les modifications.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN DE l'ONGLET "Paramètres IPv4"]
+.. image :: /images/guide_utilisateur/anetworkconfig.png
+   :align: center
 
 Cliquez sur **Fermer** puis sur **Suivant** afin de continuer.
 
 Sélectionnez votre fuseau horaire puis cliquez sur **Suivant**.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/afuseauhoraire.png
+   :align: center
 
 Entrez le mot de passe root voulu, puis cliquez sur **Suivant**.
 
 Sélectionnez les options de partitionnement qui vous conviennent le mieux. Puis validez.
+
+.. image :: /images/guide_utilisateur/apartitionning.png
+   :align: center
 
 Etape 4 : Sélection des composants
 ==================================
@@ -136,7 +150,8 @@ Choix du type de serveur
 
 Il est possible de choisir différentes options à la question **Which server type would you like to install ?** :
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/aservertoinstall.png
+   :align: center
 
 *	Central server with database : Installe Centreon (interface web + base de données) ainsi que l'ordonnanceur et le broker
 *	Central server without database : Installe Centreon (interface web uniquement) ainsi que l'ordonnanceur et le broker
@@ -152,9 +167,10 @@ Lors du choix de l'ordonnanceur et du broker, il est possible de choisir entre l
 
 Dans notre cas, nous allons choisir l'option **Centreon Engine and Centreon Broker**.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/abrokertoinstall.png
+   :align: center
 
-Une fois toutes ces options choisies, l'installation commence. Lorsque l'installation est terminée, le serveur redémarre automatiquement.
+Une fois toutes ces options choisies, l'installation commence. Lorsque l'installation est terminée, cliquez sur **Redémarrer**.
 
 *************
 Configuration
@@ -167,20 +183,24 @@ Connectez-vous à l'interface web via http://[ADRESSE_IP_DE_VOTRE_SERVEUR]/centr
 L'assistant de fin d'installation de Centreon s'affiche. Cliquez sur **Next** jusqu'à arriver au choix du moteur de supervision.
 Choisissez l'option **centreon-engine**. 
 
-[ TODO METTRE UNE CAPTURE D'ECRAN DE MONITORING ENGINE INFORMATION ]
+.. image :: /images/guide_utilisateur/amonitoringengine.png
+   :align: center
 
 Cliquez sur **Next**. Lors du choix du broker, choisissez **centreon-broker**.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN DE BROKER MODULE INFORMATION ]
+.. image :: /images/guide_utilisateur/abrokerinformation.png
+   :align: center
 
 Cliquez sur **Next**. Définissez les informations concernant l'utilisateur admin.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/aadmininfo.png
+   :align: center
 
 Cliquez sur **Next**. Par défaut, le serveur 'localhost' est définit et le mot de passe root est vide. Si vous utilisez un serveur de base de données déporté, il convient de modifier ces deux informations.
 Dans notre cas, nous avons uniquement besoin de définir un mot de passe pour l'utilisateur de base de données centreon, à savoir 'centreon'.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/adbinfo.png
+   :align: center
 
 Cliquez sur **Next**.
 
@@ -228,7 +248,8 @@ Dans un premier temps, il est nécessaire de passer l'interface en version fran�
 5.	Dans le champ **Language**, remplacez **en_US** par **fr_FR.UTF-8**
 6.	Cliquez sur **Save**
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/alanguage.png
+   :align: center
 
 Démarrer la supervision
 =======================
@@ -253,7 +274,8 @@ Découverte de l'interface web
 
 L'interface web de Centreon est composé de plusieurs menus, chaque menu a une fonction bien précise :
 
-[ TODO METTRE UNE CAPTURE D'ECRAN DES MENUS]
+.. image :: /images/guide_utilisateur/amenu.png
+   :align: center
 
 *	Le menu **Accueil** permet d'accéder au premier écran d'accueil après s'être connecté. Il résume l'état général de la supervision.
 *	Le menu **Supervision** regroupe l'état de tous les éléments supervisés en temps réel et en différés au travers de la visualisation des logs
