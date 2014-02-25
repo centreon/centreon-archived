@@ -22,7 +22,7 @@ Informations générales
 *	Le champ **Adresse IP/DNS** : Adresse IP ou nom DNS de l'hôte. Le bouton **Resolve** permet de résoudre le nom de domaine en interrogeant le serveur DNS configuré sur le serveur central.
 *	Les champs **Communauté SNMP & Version** contiennent respectivement le nom de la communauté ainsi que la version de SNMP.
 *	Le champ **Surveillé depuis le collecteur** indique quel est le serveur de supervision chargé de superviser cet hôte.
-*	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à l'hôte. Pour ajouter un modèle d'hôte, cliquer sur le symbole "+".
+*	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à l'hôte. Pour ajouter un modèle d'hôte, cliquer sur le symbole "+" [TODO mettre icone].
  
  En cas de conflits de paramètres présent sur plusieurs modèles, le modèle d'hôte au dessus écrase les modèles d'hôtes en dessous.
  Le bouton |movelist| permet de déplacer le modèle d'hôte. Le bouton |deletelist| permet de supprimer le modèle d'hôte.
@@ -108,7 +108,12 @@ Les champs présentés ci-dessous sont des champs utilisés uniquement par la CG
 *	Le champ **Image VRML** définit le logo pour le moteur 3D de l'hôte.
 *	Le champ **Image de la carte des états** définit le logo pour la CGI de l'ordonnanceur.
 *	Le champ **Coordonnées 2D et 3D** indiquent les coordonnées 2D et 3D utilisées par la CGI.
- 
+
+Access groups
+=============
+
+*   Le champ **ACL Resource Groups**, visible que pour les utilisateurs non administreur, permet de lier l'hôte à un groupe afin de visualiser ce dernier. [TODO ajouter ref sur chapitre ACL].
+
 Informations supplémentaires
 ============================
  
