@@ -86,7 +86,6 @@ class LoginController extends \Centreon\Internal\Controller
                     'error' => _("Security key does not match.")
                 )
             );
-            return;
         }
         $auth = new \Centreon\Internal\Auth\Sso($username, $password, 0);
         if (1 === $auth->passwdOk) {
@@ -95,12 +94,13 @@ class LoginController extends \Centreon\Internal\Controller
             $_SESSION['user'] = $user;
             \Centreon\Internal\Session::init($user->getId());
             $_SESSION['acl'] = new \Centreon\Internal\Acl($user);
+            $backUrl = $user->getHomePage();
             $router->response()->json(
                 array(
-                    'status' => true
+                    'status' => true,
+                    'redirectRoute' => $backUrl
                 )
             );
-            return;
         }
         $router->response()->json(
             array(
@@ -118,7 +118,7 @@ class LoginController extends \Centreon\Internal\Controller
      */
     public function logoutAction()
     {
-        //        session_regenerate_id(true);
+        // session_regenerate_id(true);
         session_destroy();
         \Centreon\Internal\Di::getDefault()
             ->get('router')

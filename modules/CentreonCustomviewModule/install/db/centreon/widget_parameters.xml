@@ -10,6 +10,7 @@
         <column name="require_permission" phpName="RequirePermission" type="VARCHAR" size="255" required="true"/>
         <column name="widget_model_id" phpName="WidgetModelId" type="INTEGER" required="true"/>
         <column name="field_type_id" phpName="FieldTypeId" type="INTEGER" required="true"/>
+        <column name="is_filter" phpName="IsFilter" type="BOOLEAN" required="true" defaultValue="0"/>
         <foreign-key foreignTable="widget_models" name="fk_widget_param_widget_id" onDelete="CASCADE" onUpdate="RESTRICT">
             <reference local="widget_model_id" foreign="widget_model_id"/>
         </foreign-key>

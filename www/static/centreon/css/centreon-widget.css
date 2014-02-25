@@ -51,3 +51,27 @@ span.custom-owner-label {
 .custom-view-badge {
 	margin-left: 10px;
 }
+
+.filter_zone {
+	display; none;
+}
+
+.filter_zone input {
+	margin-bottom:5px;
+}
+
+.filter_zone select {
+	margin-bottom:5px;
+}
+
+.filter-div {
+	margin: 0px 4px 4px 0px;
+	border: 1px solid;
+	border-color: #ccc;
+	background-color: #e7e7e7;
+	border-radius: 5px;
+}
+
+.remove-filter {
+	margin-left: -11px;
+}

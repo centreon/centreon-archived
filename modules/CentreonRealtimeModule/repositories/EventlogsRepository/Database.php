@@ -60,7 +60,7 @@ class Database
         $di = \Centreon\Internal\Di::getDefault();
         $dbconn = $di->get('db_storage');
         
-        $query = "SELECT ctime, host_id, host_name, instance_name, output, service_description, service_id
+        $query = "SELECT ctime, host_id, host_name, instance_name, output, service_description, service_id, status, msg_type
             FROM logs";
         $wheres = array();
         if (false === is_null($fromTime)) {
@@ -102,7 +102,7 @@ class Database
         }
         $stmt = $dbconn->prepare($query);
         if (false === is_null($fromTime)) {
-            $stmt->bindValue(':ctime', $fromTime, \PDO::PARAM_INT);
+            $stmt->bindValue(':ctime', strtotime($fromTime), \PDO::PARAM_INT);
         }
         foreach ($values as $key => $value) {
             if (in_array($key, $listFullsearch)) {
@@ -114,33 +114,19 @@ class Database
 
         /* Data */
         $data = array();
-        /* Get number events for last time for remove duplicate */
-        $lastDateCount = 0;
-        $lastDate = null;
-        $firstDate = null;
         while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            if ($lastDate != $row['ctime']) {
-                $lastDate = $row['ctime'];
-                $lastDateCount = 0;
-            }
-            if (is_null($firstDate)) {
-                $firstDate = $row['ctime'];
-            }
-            $lastDateCount++;
             $data[] = array(
                 'datetime' => date('Y-m-d H:i:s', $row['ctime']),
+                'host_id' => $row['host_id'],
                 'host' => $row['host_name'],
+                'service_id' => $row['service_id'],
                 'service' => $row['service_description'],
                 'instance' => $row['instance_name'],
-                'output' => $row['output']
+                'output' => $row['output'],
+                'status' => $row['status'],
+                'msg_type' => $row['msg_type']
             );
         }
-        return  array(
-            'data' => $data,
-            'lastTimeEntry' => $lastDate,
-            'nbEntryForLastTime' => $lastDateCount,
-            'recentTime' => $firstDate,
-            'facets' => array()
-        );
+        return $data;
     }
 }

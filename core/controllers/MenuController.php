@@ -56,7 +56,7 @@ class MenuController extends \Centreon\Internal\Controller
         $menudata = $menu->getMenu($menu_id);
         $result = array(
             'success' => 1,
-            'menu' => $menudata['children']
+            'menu' => isset($menudata['children']) ? $menudata['children'] : array()
         );
         echo json_encode($result);
     }

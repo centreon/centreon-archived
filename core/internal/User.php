@@ -187,4 +187,12 @@ class User
         }
         return false;
     }
+    
+    public function getHomePage()
+    {
+        $di = \Centreon\Internal\Di::getDefault();
+        $router = $di->get('router');
+        $homePage = $router->getPathFor('/home');
+        return $homePage;
+    }
 }

@@ -662,12 +662,18 @@ class WidgetRepository
                         } else {
                             $attr['header'] = "'".$attr['header']."'";
                         }
+                        if (!isset($attr['isFilter'])) {
+                            $attr['isFilter'] = 0;
+                        } else {
+                            $attr['isFilter'] = (int)$attr['isFilter'];
+                        }
                         $stmt = $db->prepare("INSERT INTO widget_parameters (widget_model_id, field_type_id, parameter_name, 
-                            parameter_code_name, default_value, parameter_order, require_permission, header_title) 
-                            VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+                            parameter_code_name, default_value, parameter_order, require_permission, header_title, is_filter) 
+                            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
                         $stmt->execute(array(
                             $widgetModelId, $types[$attr['type']], $attr['label'], $attr['name'], 
-                            $attr['defaultValue'], $order, $attr['requiredPermission'], $attr['header']
+                            $attr['defaultValue'], $order, $attr['requiredPermission'], $attr['header'], 
+                            $attr['isFilter']
                         ));
                     } else {
                         $query = "UPDATE widget_parameters SET 
@@ -677,6 +683,7 @@ class WidgetRepository
                             parameter_order = :order,
                             require_permission = :permission,
                             header_title = :header
+                            is_filter = :is_filter
                             WHERE parameter_code_name = :code_name
                             AND widget_model_id = :model_id";
                         if (!isset($attr['requirePermission'])) {
@@ -684,6 +691,11 @@ class WidgetRepository
                         }
                         if (!isset($attr['header'])) {
                             $attr['header'] = null;
+                        }
+                        if (!isset($attr['isFilter'])) {
+                            $attr['isFilter'] = 0;
+                        } else {
+                            $attr['isFilter'] = (int)$attr['isFilter'];
                         }
                         $stmt = $db->prepare($query);
                         $stmt->bindParam(':code_name', $attr['name']);
@@ -694,6 +706,7 @@ class WidgetRepository
                         $stmt->bindParam(':order', $order);
                         $stmt->bindParam(':permission', $attr['requirePermission']);
                         $stmt->bindParam(':header', $attr['header']);
+                        $stmt->bindParam(':is_filter', $attr['isFilter']);
                         $stmt->execute();
                     }
                     $parameterId = self::getParameterIdByName($widgetModelId, $attr['name']);

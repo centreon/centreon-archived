@@ -55,7 +55,12 @@ class Installer extends \Centreon\Custom\Module\AbstractModule
      */
     public function customInstall()
     {
-        
+        \Centreon\Internal\Hook::register(
+            $this->moduleId,
+            'displayLeftMenu',
+            'displayBookmarkedViews',
+            'Display bookmarked views in left menu'
+        ); 
     }
     
     /**

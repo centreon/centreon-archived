@@ -67,6 +67,29 @@ class CustomviewRepository
     }
 
     /**
+     * Get all the filters that are used by widgets that present in the view
+     *
+     * @param int $viewId
+     * @return array
+     */
+    public static function getViewFilters($viewId)
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $sql = "SELECT DISTINCT parameter_name, parameter_code_name
+            FROM widget_parameters wp, widgets w
+            WHERE wp.widget_model_id = w.widget_model_id
+            AND w.custom_view_id = ?
+            AND wp.is_filter = 1";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(array($viewId));
+        $result = array();
+        while ($row = $stmt->fetch()) {
+            $result[$row['parameter_code_name']] = $row['parameter_name'];
+        }
+        return $result;
+    }
+
+    /**
      * Check Permission
      * Checks if user is allowed to modify view
      * Returns true if user can, false otherwise
@@ -164,7 +187,10 @@ class CustomviewRepository
 
         if (!isset($defaultView[$userId])) {
             $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
-            $stmt = $db->prepare("SELECT custom_view_id FROM custom_view_default WHERE user_id = ?");
+            $stmt = $db->prepare("SELECT custom_view_id 
+                FROM custom_view_user_relation 
+                WHERE user_id = ? 
+                AND is_default = 1");
             $stmt->execute(array($userId));
             if ($stmt->rowCount()) {
                 $row = $stmt->fetch();
@@ -183,21 +209,21 @@ class CustomviewRepository
      * @param int $userId
      * @return int
      */
-    public static function getCurrentView($userId)
+    public static function getCurrentView($userId, $params)
     {
         static $currentView = null;
 
         if (is_null($currentView)) {
-            if (isset($_REQUEST['currentView'])) {
-                $currentView = $_REQUEST['currentView'];
+            if (isset($params['id'])) {
+                $currentView = $params['id'];
             } else {
-                $views = self::getCustomViews($userId);
+                $views = self::getCustomViewsOfUser($userId);
                 $i = 0;
                 foreach ($views as $viewId => $view) {
                     if ($i == 0) {
                         $first = $viewId;
                     }
-                    if (self::defaultViewId() == $viewId) {
+                    if (self::getDefaultViewId($userId) == $viewId) {
                         $currentView = $viewId;
                         break;
                     }
@@ -334,5 +360,25 @@ class CustomviewRepository
         $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
         $stmt = $db->prepare("UPDATE custom_views SET position = ? WHERE custom_view_id = ?");
         $stmt->execute(array($position, $viewId));
+    }
+
+    /**
+     * Get public views
+     * 
+     * @return array
+     */
+    public static function getPublicViews()
+    {
+        $db = \Centreon\Internal\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare("SELECT custom_view_id, name, mode, locked, owner_id, position 
+            FROM custom_views 
+            WHERE mode = 1
+            ORDER BY name");
+        $stmt->execute();
+        $views = array();
+        while ($row = $stmt->fetch()) {
+            $views[$row['custom_view_id']] = $row;
+        }
+        return $views;
     }
 }
