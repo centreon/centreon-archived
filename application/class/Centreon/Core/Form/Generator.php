@@ -46,13 +46,13 @@ class Generator
      *
      * @var type 
      */
-    private $formName = '';
+    protected $formName = '';
     
     /**
      *
      * @var type 
      */
-    private $formRoute;
+    protected $formRoute;
     
     /**
      *
@@ -70,19 +70,19 @@ class Generator
      *
      * @var type 
      */
-    private $formComponents = array();
+    protected $formComponents = array();
     
     /**
      *
      * @var type 
      */
-    private $formDefautls = array();
+    protected $formDefautls = array();
     
     /**
      *
      * @var type 
      */
-    private $formHandler;
+    protected $formHandler;
     
     /**
      *
@@ -94,7 +94,7 @@ class Generator
      *
      * @var type 
      */
-    private $extraParams;
+    protected $extraParams;
 
 
     /**
@@ -106,7 +106,6 @@ class Generator
     public function __construct($formRoute, $advanced = 0, $extraParams = array())
     {
         $this->formRoute = $formRoute;
-        $this->formHandler = new \Centreon\Core\Form($this->formName);
         $this->extraParams = $extraParams;
         $this->getFormFromDatabase($advanced);
     }
@@ -115,7 +114,7 @@ class Generator
      * 
      * @param boolean $advanced
      */
-    private function getFormFromDatabase($advanced = 0)
+    protected function getFormFromDatabase($advanced = 0)
     {
         // Initializing connection
         $di = \Centreon\Core\Di::getDefault();
@@ -129,6 +128,8 @@ class Generator
         $this->formName = $formInfo[0]['name'];
         $this->formRedirect = $formInfo[0]['redirect'];
         $this->formRedirectRoute = $formInfo[0]['redirect_route'];
+        
+        $this->formHandler = new \Centreon\Core\Form($this->formName);
         
         $sectionQuery = 'SELECT section_id, name '
             . 'FROM form_section '
@@ -182,7 +183,7 @@ class Generator
      * 
      * @param array $field
      */
-    private function addFieldToForm($field)
+    protected function addFieldToForm($field)
     {
         switch ($field['type']) {
             default:
@@ -244,7 +245,10 @@ class Generator
      */
     public function generate()
     {
+        $di = \Centreon\Core\Di::getDefault();
+        $tpl = $di->get('template');
         $finalHtml = $this->generateHtml();
+        $tpl->assign('customValuesGetter', $this->formHandler->getJavascriptCall());
         return $finalHtml;
     }
     
@@ -252,7 +256,7 @@ class Generator
      * 
      * @return string
      */
-    private function generateHtml()
+    protected function generateHtml()
     {
         $this->formHandler->setDefaults($this->formDefautls);
         $formElements = $this->formHandler->toSmarty();
