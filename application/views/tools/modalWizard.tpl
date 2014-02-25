@@ -21,3 +21,8 @@
   <button class="btn btn-default btn-next" data-last="Finish">Next</button>
 </div>
 </form>
+<script>
+$(function() {
+  {$customJs}
+});
+</script>

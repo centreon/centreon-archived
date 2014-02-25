@@ -65,6 +65,8 @@ class HostController extends \Centreon\Core\Controller
         $tpl->addCss('dataTables.css')
             ->addCss('dataTables.bootstrap.css')
             ->addCss('dataTables-TableTools.css')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
 
         // Load JsFile
@@ -72,6 +74,7 @@ class HostController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.TableTools.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('jquery.select2/select2.min.js')
             ->addJs('centreon-wizard.js');
         
         // Display page

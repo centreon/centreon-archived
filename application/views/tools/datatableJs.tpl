@@ -84,7 +84,61 @@
         toggleSelectedAction();
     });
 
-    $('#modalAdd').on('loaded.bs.modal', function(e) {
-        $(this).centreonWizard();
+    $('#modalAdd').on('click', function(e) {
+        $('#modal .modal-content').text('');
+        $('#modal').one('loaded.bs.modal', function(e) {
+            $(this).centreonWizard();
+        });
+        $('#modal')
+            .removeData('bs.modal')
+            .modal({
+                'remote': '{url_for url=$objectAddUrl}'
+            });
+    });
+
+    $('#modalDelete').on('click', function(e) {
+        e.preventDefault();
+        $('#modal .modal-content').text('');
+
+        /* Delete modal header */
+        var $deleteHeader = $('<div></div>').addClass('modal-header');
+        $('<button></button>')
+            .attr('type', 'button')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('close')
+            .html('&times;')
+            .appendTo($deleteHeader);
+        $('<h4></h4>').addClass('modal-title').text("{t}Delete{/t}").appendTo($deleteHeader);
+        $deleteHeader.appendTo('#modal .modal-content');
+
+        /* Delete modal body */
+        var $deleteBody = $('<div></div>').addClass('modal-body');
+        $('<div></div>').text('{t}Are you sure to delete ?{/t}').appendTo($deleteBody);
+        var $listElement = $('<ul></ul>');
+        $('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked').each(function(k, v) {
+            $('<li></li>').html($(v).data('name')).appendTo($listElement);
+        });
+        $listElement.appendTo($deleteBody);
+        $deleteBody.appendTo('#modal .modal-content');
+
+        $deleteFooter = $('<div></div>').addClass('modal-footer');
+        $('<a></a>')
+            .attr('aria-hidden', 'true')
+            .attr('data-dismiss', 'modal')
+            .addClass('btn').addClass('btn-default')
+            .text('{t}Cancel{/t}')
+            .appendTo($deleteFooter);
+        $('<button></button>')
+            .attr('type', 'button')
+            .addClass('btn')
+            .addClass('btn-danger')
+            .text('{t}Delete{/t}')
+            .appendTo($deleteFooter);
+        $deleteFooter.appendTo('#modal .modal-content');
+        
+        $('#modal')
+            .removeData('bs.modal')
+            .modal();
     });
 </script>

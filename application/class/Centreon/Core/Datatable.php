@@ -166,6 +166,7 @@ class Datatable
             . 'name="'. $object .'[]" '
             . 'type="checkbox" '
             . 'value="::'. $fields .'::" '
+            . 'data-name="' . $values['displayName'] . '" '
             . '/>';
         $castedElement = \array_map(function($n) {return "::$n::";}, $elementField);
         return str_replace($castedElement, $element, $input);

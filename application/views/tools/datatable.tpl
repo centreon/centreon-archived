@@ -1,6 +1,6 @@
 <div class="first-content">
     <div class="col-sm-12 col-md-6">
-      <button data-toggle="modal" data-target="#modalAdd" class="btn btn-default" data-remote="{url_for url="/configuration/host/add"}">{t}Add{/t}</button>
+      <button class="btn btn-default" id="modalAdd">{t}Add{/t}</button>
       <div class="btn-group" id="selected_option" style="display: none;">
         <div class="btn-group">
           <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
@@ -8,7 +8,7 @@
             <span class="caret"></span>
           </button>
           <ul class="dropdown-menu">
-            <li><a href="#">{t}Delete{/t}</a></li>
+            <li><a href="#" id="modalDelete">{t}Delete{/t}</a></li>
             <li><a href="#">{t}Massive change{/t}</a></li>
           </ul>
         </div>
@@ -53,7 +53,7 @@
     </tbody>
 </table>
 
-<div class="modal fade" id="modalAdd" tabindex="-1" role="dialog" aria-labelledby="addWizard" aria-hidden="true">
+<div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="wizard" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
     </div>
