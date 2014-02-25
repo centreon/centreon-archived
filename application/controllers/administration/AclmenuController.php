@@ -102,6 +102,49 @@ class AclmenuController extends \Centreon\Core\Controller
     }
 
     /**
+     * Set Acl data
+     * 
+     * @param array $aclData
+     * @param array $params
+     */
+    private function setAclMenuData(&$aclData, $params)
+    {
+        $aclTypes = array('acl_create', 'acl_update', 'acl_delete', 'acl_view', 'acl_advanced');
+        foreach ($aclTypes as $aclType) {
+            if (isset($params[$aclType])) {
+                foreach ($params[$aclType] as $menuId => $on) {
+                    if (!isset($aclData[$menuId])) {
+                        $aclData[$menuId] = 0;
+                    } 
+                    switch ($aclType) {
+                        case 'acl_create':
+                            $flag = \Centreon\Core\Acl::ADD;
+                            break;
+                        case 'acl_update':
+                            $flag = \Centreon\Core\Acl::UPDATE;
+                            break;
+                        case 'acl_delete':
+                            $flag = \Centreon\Core\Acl::DELETE;
+                            break;
+                        case 'acl_view':
+                            $flag = \Centreon\Core\Acl::VIEW;
+                            break;
+                        case 'acl_advanced':
+                            $flag = \Centreon\Core\Acl::ADVANCED;
+                            break;
+                        default:
+                            throw new \Centreon\Core\Exception(
+                                sprintf('Unknown acl type %s', $aclType)
+                            );
+                            break;
+                    }
+                    $aclData[$menuId] = $aclData[$menuId] | $flag;
+                }
+            }
+        }
+    }
+
+    /**
      * Update an ACL menu
      *
      *
@@ -122,6 +165,12 @@ class AclmenuController extends \Centreon\Core\Controller
             $aclmenuObj = new \Models\Configuration\Acl\Menu();
             try {
                 $aclmenuObj->update($givenParameters['acl_menu_id'], $aclmenu);
+                $aclData = array();
+                $this->setAclMenuData($aclData, $givenParameters);
+                \Centreon\Repository\AclmenuRepository::updateAclLevel(
+                    $givenParameters['acl_menu_id'],
+                    $aclData
+                );
             } catch (Exception $e) {
                 echo "fail";
             }
