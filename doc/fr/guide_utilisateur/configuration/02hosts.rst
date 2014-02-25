@@ -7,7 +7,8 @@ Exemples : Un serveur, une imprimante réseau, un serveur NAS, une base de donn�
 
 Tous les ajouts d'hôtes se font dans le menu **Configuration** ==> **Hôtes** ==> **Ajouter**.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/02addhost.png
+   :align: center 
 
 ***********************
 Configuration de l'hôte
@@ -21,10 +22,10 @@ Informations générales
 *	Le champ **Adresse IP/DNS** : Adresse IP ou nom DNS de l'hôte. Le bouton **Resolve** permet de résoudre le nom de domaine en interrogeant le serveur DNS configuré sur le serveur central.
 *	Les champs **Communauté SNMP & Version** contiennent respectivement le nom de la communauté ainsi que la version de SNMP.
 *	Le champ **Surveillé depuis le collecteur** indique quel est le serveur de supervision chargé de superviser cet hôte.
-*	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à l'hôte. Pour ajouter un modèle d'hôte, cliquer sur le symbole "+" [ TODO METTRE UNE IMAGE].
+*	Le champ **Modèles d'hôte** permet d'associer un ou plusieurs modèles d'hôtes à l'hôte. Pour ajouter un modèle d'hôte, cliquer sur le symbole "+".
  
  En cas de conflits de paramètres présent sur plusieurs modèles, le modèle d'hôte au dessus écrase les modèles d'hôtes en dessous.
- Le bouton [ TODO METTRE UNE IMAGE] permet de déplacer le modèle d'hôte. Le bouton [ TODO METTRE UNE IMAGE] permet de supprimer le modèle d'hôte.
+ Le bouton |movelist| permet de déplacer le modèle d'hôte. Le bouton |deletelist| permet de supprimer le modèle d'hôte.
  
 *	Si le champ **Créer aussi les services liés au modèle** est définit à **Oui**, Centreon génère automatiquement les services en se basant sur les modèles de services liés aux modèles d'hôtes définis au dessus.
 
@@ -43,11 +44,12 @@ Macros
 ======
 
 La partie **Macros** permet d'ajouter des macros personnalisées.
-Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
-La case **Mot de passe** permet de cacher la valeur de la macro.
 
-Pour supprimer la macro, cliquez sur [ TODO METTRE UNE IMAGE].
-Pour déplacer l'ordre des macros, cliquez sur [ TODO METTRE UNE IMAGE].
+* Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
+* La case **Mot de passe** permet de cacher la valeur de la macro.
+
+Pour supprimer la macro, cliquez sur |deletelist|.
+Pour déplacer l'ordre des macros, cliquez sur |movelist|.
 
 Notification
 ============
@@ -113,3 +115,5 @@ Informations supplémentaires
 *	Le champ **Statut** permet d'activer ou de désactiver l'hôte.
 *	Le champ **Commentaires** permet d'ajouter un commentaire concernant l'hôte.
 
+.. |deletelist|    image:: /images/deletelist.png
+.. |movelist|    image:: /images/movelist.png

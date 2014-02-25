@@ -44,12 +44,14 @@ Pour dupliquer un hôte :
 
 1.	Sélectionnez l'hôte que vous souhaitez dupliquer
 2.	Dans la colonne **Options**, entrez le nombre de duplication que vous souhaitez obtenir
- 
-[ TODO METTRE UNE CAPTURE D'ECRAN avec le champ Options au dessus de 1] 
+
+.. image :: /images/guide_utilisateur/configuration/01duplicate.png
+   :align: center 
 
 3.	Dans le menu **More actions...** cliquez sur **Dupliquer**
 
-[ TODO METTRE UNE CAPTURE D'ECRAN des objets dupliqués]
+.. image :: /images/guide_utilisateur/configuration/01duplicateobjects.png
+   :align: center 
 
 *****************
 Changement massif
@@ -97,5 +99,8 @@ Pour activer/désactiver un objet :
 Il est également possible d'activer ou de désactiver un hôte via le champ "Statut" de l'objet (voir la fiche de l'objet).
 Ou en utilisant les icônes suivantes :
 
-*	[ TODO METTRE L'IMAGE] pour activer
-*	[ TODO METTRE L'IMAGE] pour désactiver
+*	|enabled| pour activer
+*	|disabled| pour désactiver
+
+.. |enabled|    image:: /images/enabled.png
+.. |disabled|    image:: /images/disabled.png
