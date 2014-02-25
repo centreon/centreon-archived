@@ -7,5 +7,5 @@ Supervision
    01customview
    02home
    03stats
-   03realtime
-   04logs
+   04realtime
+   05logs

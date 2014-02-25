@@ -44,7 +44,7 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 #. Le service 'centreontrapd' lit les informations reçues dans le dossier de cache et interprète les différents traps reçus en vérifiant dans la base de données Centreon les actions à entreprendre pour traiter ces évènements.
 #. Le service 'centreontrapd' transmet les informations à l'ordonnanceur ou au service 'centcore' (pour transmettre les informations à un ordonnanceur distant) qui se charge de modifier le statut et les informations associées au service dont est lié le trap SNMP.
 
-.. image :: /images/configuration/10advanced_configuration/06_trap_centreon.png
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_centreon.png
    :align: center
 
 Traitement d'un trap par un serveur satellite
@@ -59,7 +59,7 @@ Voici le processus de traitement d'un trap SNMP avec Centreon 2.5.x :
 #. Le service 'centreontrapd' lit les informations reçues dans le dossier de cache et interprète les différentes traps reçus en vérifiant dans la base de données SQLite les actions à entreprendre pour traiter les traps reçues.
 #. Le service 'centreontrapd' transmet les informations à l'ordonnanceur qui se charge de modifier le statut et les informations associées au service dont est lié le trap SNMP.
 
-.. image :: /images/configuration/10advanced_configuration/06_trap_poller.png
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06_trap_poller.png
    :align: center
 
 **************************
