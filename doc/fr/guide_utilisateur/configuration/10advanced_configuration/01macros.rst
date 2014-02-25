@@ -1,3 +1,5 @@
+.. _macros:
+
 ==========
 Les macros
 ==========
@@ -18,6 +20,8 @@ Exemple :
 * La macro **$CONTACTEMAIL$** permet de récupérer l'adresse mail du contact
 
 La liste complète des macros est disponible à l'adresse suivante : `Liste des macros <http://nagios.sourceforge.net/docs/3_0/macrolist.html>`_
+
+.. _custommacros:
 
 *************************
 Les macros personnalisées

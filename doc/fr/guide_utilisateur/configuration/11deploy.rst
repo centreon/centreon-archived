@@ -19,7 +19,8 @@ Première étape
  #.	Cochez les cases **Générer les fichiers de configuration** et **Lancer le débogage du moteur de supervision (-v)**
  #. Cliquez sur **Exporter**
  
- [TODO mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/configuration/11step1.png
+   :align: center 
 
 Vérifier qu'aucune erreur n'apparait lors de la génération :
 
@@ -32,7 +33,8 @@ Deuxième étape
  #.	Cochez **Déplacer les fichiers générés** ainsi que **Redémarrer l'ordonnanceur**
  #.	Cliquez sur **Exporter**
  
-[METTRE UNE CAPTURE D'ECRAN LORSQUE L'EXPORTATION EST TERMINEE]
+.. image :: /images/guide_utilisateur/configuration/11step2.png
+   :align: center 
 
 .. note::
     L'option **Commande exécutée post-génération** permet de demander l'exécution de la commande post-génération paramétrée au niveau de la configuration de l'ordonnanceur.

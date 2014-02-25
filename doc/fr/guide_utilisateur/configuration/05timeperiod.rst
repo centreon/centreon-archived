@@ -41,7 +41,8 @@ Quelques exemples :
 *	24 heures sur 24 et 7 jours sur 7 jours : **00:00-24:00** (à appliquer à tous les jours de la semaine).
 *	De 08h00 à 12h00 et de 14h00 à 18h45 les jours de la semaine :  **08:00-12:00,14:00-18:45** (à entrer au niveau des jours de la semaine uniquement).
 
-[ TODO CAPTURE D'ECRAN DE LA PAGE DE CONFIGURATION NECESSAIRE]
+.. image :: /images/guide_utilisateur/configuration/05timeperiod.png
+   :align: center 
 
 Les exceptions
 ==============
@@ -56,7 +57,7 @@ Exemple : Un administrateur souhaite définir une période temporelle qui regrou
 
 Afin de pouvoir définir les jours fériés ainsi que les jours de fermeture exceptionnelle, il est nécessaire d'utiliser les exceptions.
 
-Pour ajouter une exception, cliquez sur le bouton "+" bleu [ TODO METTRE LE BOUTON].
+Pour ajouter une exception, cliquez sur le bouton "+" bleu.
 Par journée exceptionnelle, vous devez définir une plage horaire. Le tableau ci-dessous présente quelques exemples possibles :
 
 +-----------------------+-------------------------+-----------------------------------------------------------------+

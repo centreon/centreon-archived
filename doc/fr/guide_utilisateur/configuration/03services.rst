@@ -7,7 +7,8 @@ Par exemple : Pourcentage d'utilisation partition sur un serveur, niveau d'encre
 
 Tous les ajouts de services se font dans le menu **Configuration** ==> **Services** ==> **Ajouter**.
 
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/03addservice.png
+   :align: center 
 
 ************************
 Configuration du service
@@ -38,8 +39,8 @@ La partie **Macros** permet d'ajouter des macros personnalisées.
 Les champs **Nom de la macro** et **Valeur de la macro** permettent respectivement de définir le nom et la valeur de la macro.
 La case **Mot de passe** permet de cacher la valeur de la macro.
 
-Pour supprimer la macro, cliquez sur [ TODO METTRE UNE IMAGE].
-Pour déplacer l'ordre des macros, cliquez sur [ TODO METTRE UNE IMAGE].
+Pour supprimer la macro, cliquez sur |deletelist|.
+Pour déplacer l'ordre des macros, cliquez sur |movelist|.
 
 Notification
 ============
@@ -123,3 +124,5 @@ C'est pourquoi il est possible de transformer ce service lié à plusieurs hôte
 
 Il existe maintenant un service unique par hôte.
 
+.. |deletelist|    image:: /images/deletelist.png
+.. |movelist|    image:: /images/movelist.png

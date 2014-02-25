@@ -18,7 +18,8 @@ Pour ajouter une catégorie d'hôtes :
 #.	Dans le menu de gauche, cliquez sur **Catégories**
 #.	Cliquez sur **Ajouter**
  
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/08hostcategory.png
+   :align: center 
 
 *	Les champs **Nom de la catégorie d'hôtes** et **Alias** contiennent respectivement le nom et l'alias de la catégorie d'hôte.
 *	La liste **Hôtes liés** permet d'ajouter des hôtes à la catégorie.
@@ -37,7 +38,8 @@ Pour ajouter une catégorie de services :
 #.	Dans le menu de gauche, cliquez sur **Catégories**
 #.	Cliquez sur **Ajouter**
  
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/08servicecategory.png
+   :align: center 
 
 *	Les champs **Nom** et **Description** définissent le nom et la description de la catégorie de service.
 *	Si un modèle de service appartient à **Liée aux modèles de services** alors tous les services appartenant à ce modèle de services font partie de cette catégorie.

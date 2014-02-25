@@ -17,7 +17,8 @@ Pour ajouter un groupe d'hôtes :
 #. Dans le menu de gauche, cliquez sur **Groupes d'hôtes**
 #. Cliquez sur **Ajouter**
  
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/07hostgroup.png
+   :align: center 
 
 *	Les champs **Nom du groupe d'hôtes** et **Alias** regroupent le nom et l'alias du groupe d'hôte.
 *	La liste **Hôtes liés** permet d'ajouter des hôtes au sein du nouveau groupe d'hôtes.
@@ -39,7 +40,8 @@ Pour ajouter un groupe de services :
 #. Dans le menu de gauche, cliquez sur **Groupes de services**
 #. Cliquez sur **Ajouter**
  
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/07servicegroup.png
+   :align: center 
 
 *	Les champs **Nom du groupe de services** et **Description** regroupent le nom et la description du groupe de services.
 *	La liste **Services d'hôtes liés** permet de choisir les différents services qui feront partie de ce groupe.
@@ -57,7 +59,8 @@ Pour ajouter un groupe de contacts :
 #. Dans le menu de gauche, cliquez sur **Groupes de contacts**
 #. Cliquez sur **Ajouter**
  
-[ TODO METTRE UNE CAPTURE D'ECRAN]
+.. image :: /images/guide_utilisateur/configuration/07contactgroup.png
+   :align: center 
 
 *	Les champs **Nom du groupe de contacts** et **Alias** définissent le nom et la description du groupe de contacts.
 *	La liste **Contacts liés** permet d'ajouter les contacts au groupe de contacts.
