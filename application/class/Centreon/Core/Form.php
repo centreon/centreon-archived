@@ -124,7 +124,7 @@ class Form
      *
      * @var type 
      */
-    private $javascriptCall = "";
+    private $customValidator = array();
     
     /**
      * Constructor
@@ -155,9 +155,9 @@ class Form
         return $this->formatForSmarty();
     }
     
-    public function getJavascriptCall()
+    public function getCustomValidator()
     {
-        return $this->javascriptCall;
+        return $this->customValidator;
     }
     
     /**
@@ -231,6 +231,10 @@ class Form
                     $element['html'] = $this->renderFinalHtml($element);
                     if (isset($in['js'])) {
                         $this->tpl->addCustomJs($in['js']);
+                    }
+                    
+                    if (isset($in['customGetter'])) {
+                        $this->customValidator[$in['customGetter']['name']] = $in['customGetter']['getter'];
                     }
                 }
                 break;

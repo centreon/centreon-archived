@@ -74,7 +74,7 @@ class Select implements Custominterface
                   });'."\n";
         }
         
-        $myHtml = '<input class="form-control" id="'.$element['name'].'" style="width: 500px;" value=" " />';
+        $myHtml = '<input class="form-control" id="'.$element['name'].'" style="width: 100%;" value=" " />';
         $myJs = ''
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
@@ -106,7 +106,8 @@ class Select implements Custominterface
         $myJs .= $addJs;
         return array(
             'html' => $myHtml,
-            'js' => $myJs
+            'js' => $myJs,
+            'customGetter' => array('name' => $element['name'], 'getter' => '$("#'.$element['name'].'").select2("val")')
         );
     }
 }
