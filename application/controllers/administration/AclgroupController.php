@@ -208,4 +208,31 @@ class AclgroupController extends \Centreon\Core\Controller
         $tpl->assign('validateUrl', '/administration/aclgroup/update');
         $tpl->display('configuration/edit.tpl');
     }
+
+    /**
+     * Retrieve list of acl groups for a form
+     *
+     * @method get
+     * @route /administration/aclgroup/formlist
+     */
+    public function formListAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        
+        $aclgroupObj = new Group();
+        $filters = array();
+        $aclgroupList = $aclgroupObj->getList('acl_group_id, acl_group_name', -1, 0, null, "ASC", $filters, "AND");
+        
+        $finalAclgroupList = array();
+        foreach($aclgroupList as $aclgroup) {
+            $finalAclgroupList[] = array(
+                "id" => $aclgroup['acl_group_id'],
+                "text" => $aclgroup['acl_group_name']
+            );
+        }
+         $router->response()->json($finalAclgroupList);
+    }
 }
