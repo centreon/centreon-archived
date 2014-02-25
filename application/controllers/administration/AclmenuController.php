@@ -295,10 +295,10 @@ class AclmenuController extends \Centreon\Core\Controller
             array('acl_menus.acl_menu_id' => $requestParam['id'])
         );
         $finalList = array();
-        if (count($list) > 0) {
-            $finalList = array(
-                "id" => $list[0]['acl_group_id'],
-                "text" => $list[0]['acl_group_name']
+        foreach ($list as $elem) {
+            $finalList[] = array(
+                "id" => $elem['acl_group_id'],
+                "text" => $elem['acl_group_name']
             );
         }
         $router->response()->json($finalList);
