@@ -52,7 +52,7 @@ class LoginController extends \Centreon\Core\Controller
     {
         $di = \Centreon\Core\Di::getDefault();
         $router = $di->get('router');
-        $redirectUrl = $router->request()->param('redirect', '/');
+        $redirectUrl = $router->request()->param('redirect', $router->request()->uri());
         $tmpl = $di->get('template');
         $tmpl->assign('csrf', \Centreon\Core\Form::getSecurityToken());
         $tmpl->assign('redirect', $redirectUrl);
@@ -114,7 +114,8 @@ class LoginController extends \Centreon\Core\Controller
      */
     public function logoutAction()
     {
-        session_regenerate_id(true);
+        //        session_regenerate_id(true);
+        session_destroy();
         \Centreon\Core\Di::getDefault()
             ->get('router')
             ->response()->json(
