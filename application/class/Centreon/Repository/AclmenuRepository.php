@@ -125,11 +125,11 @@ class AclmenuRepository extends \Centreon\Repository\Repository
         'search_name',
         'search_alias',
         array('select' => array(
-            'Enabled' => '1',
-            'Disabled' => '0'
+                'Enabled' => '1',
+                'Disabled' => '0'
+            )
         )
-    )
-);
+    );
 
 
     /**
@@ -154,4 +154,23 @@ class AclmenuRepository extends \Centreon\Repository\Repository
         return $data;
     }
 
+    /**
+     * Update Acl data
+     *
+     * @param int $acl_menu_id
+     * @param array $menus
+     */
+    public static function updateAclLevel($acl_menu_id, $menus)
+    {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare("DELETE FROM acl_menu_menu_relations WHERE acl_menu_id = ?");
+        $stmt->execute(array($acl_menu_id));
+        $sql = "INSERT INTO acl_menu_menu_relations (acl_menu_id, menu_id, acl_level) VALUES (?, ?, ?)";
+        $db->beginTransaction();
+        $stmt = $db->prepare($sql);
+        foreach ($menus as $menuId => $aclLevel) {
+            $stmt->execute(array($acl_menu_id, $menuId, $aclLevel));
+        }
+        $db->commit();
+    }
 }
