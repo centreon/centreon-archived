@@ -110,7 +110,7 @@ class User
     public function getId()
     {
         if (!isset($this->id)) {
-            throw new Exception(self::NOT_INIT);
+            throw new Exception(self::$notInit);
         }
         return $this->id;
     }

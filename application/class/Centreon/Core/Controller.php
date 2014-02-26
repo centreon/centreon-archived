@@ -50,7 +50,11 @@ class Controller
         $tpl = Di::getDefault()->get('template');
         $md5Email = "";
         if (isset($_SESSION['user'])) {
-            $md5Email = md5($_SESSION['user']->getEmail());
+            try {
+                $md5Email = md5($_SESSION['user']->getEmail());
+            } catch (Exception $e) {
+                ;
+            }
         }
         /*
          * Set md5Email for Gravatar
