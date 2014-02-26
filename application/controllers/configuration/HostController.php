@@ -41,6 +41,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Hostgroup,
     \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
+    \Models\Configuration\Relation\Host\Poller,
     \Models\Configuration\Timeperiod,
     \Models\Configuration\Command,
     \Centreon\Core\Form,
@@ -65,6 +66,8 @@ class HostController extends \Centreon\Core\Controller
         $tpl->addCss('dataTables.css')
             ->addCss('dataTables.bootstrap.css')
             ->addCss('dataTables-TableTools.css')
+            ->addCss('select2.css')
+            ->addCss('select2-bootstrap.css')
             ->addCss('centreon-wizard.css');
 
         // Load JsFile
@@ -72,12 +75,14 @@ class HostController extends \Centreon\Core\Controller
             ->addJs('jquery.dataTables.TableTools.min.js')
             ->addJs('bootstrap-dataTables-paging.js')
             ->addJs('jquery.dataTables.columnFilter.js')
+            ->addJs('jquery.select2/select2.min.js')
             ->addJs('centreon-wizard.js');
         
         // Display page
         $tpl->assign('objectName', 'Host');
         $tpl->assign('objectAddUrl', '/configuration/host/add');
         $tpl->assign('objectListUrl', '/configuration/host/list');
+        $tpl->assign('objectMcFields', '/configuration/host/mc_fields');
         $tpl->display('configuration/list.tpl');
     }
     
@@ -148,8 +153,13 @@ class HostController extends \Centreon\Core\Controller
     {
         $givenParameters = $this->getParams('post');
         
-        if (Form::validateSecurity($givenParameters['token'])) {
-            echo '<pre>'; var_dump($givenParameters); echo '</pre>';
+        if (!Form::validateSecurity($givenParameters['token'])) {
+            echo "fail";
+        }
+        unset($givenParameters['token']);
+        
+        foreach ($givenParameters as $paramName=>$paramValue) {
+            echo $paramName . " => " . $paramValue . "<br />";
         }
     }
     
@@ -161,7 +171,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Core\Form\Wizard('/configuration/host/add');
+        $form = new \Centreon\Core\Form\Wizard('/configuration/host/add', 0, array('id' => 0));
         echo $form->generate();
     }
     
@@ -500,5 +510,91 @@ class HostController extends \Centreon\Core\Controller
         }
         
         $router->response()->json($finalCommandList);
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/host/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $dbconn = $di->get('db_centreon');
+
+        $data = array(
+            'listMc' => array()
+        );
+
+        $stmt = $dbconn->prepare("SELECT f.field_id, f.label
+            FROM form_field f, form_massive_change_field_relation mcfr, form_massive_change mc
+            WHERE mc.route = :route
+                AND mc.massive_change_id = mcfr.massive_change_id
+                AND f.field_id = mcfr.field_id");
+        $stmt->bindValue(':route', '/configuration/host/mc_fields', \PDO::PARAM_STR);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            $data['listMc'][$row['field_id']] = $row['label'];
+        }
+
+        $router->response()->json($data);
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/host/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $dbconn = $di->get('db_centreon');
+        $tpl = $di->get('template');
+        
+        $requestParam = $this->getParams('named');
+
+        $stmt = $dbconn->prepare("SELECT name, label, default_value, attributes, type, help
+            FROM form_field
+            WHERE field_id = :id");
+        $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        $form = new \Centreon\Core\Form('default');
+        $form->add($row, array('id' => 0));
+        $formElements = $form->toSmarty();
+        $tpl->assign('field', $formElements[$row['name']]['html']);
+        $tpl->display('tools/mcField.tpl');
+    }
+    
+    /**
+     * Get list of pollers for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/poller
+     */
+    public function pollerForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostPollerObj = new Poller();
+        $pollerList = $hostPollerObj->getMergedParameters(array('id', 'name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        
+        $finalPollerList = array();
+        if (count($pollerList) > 0) {
+            $finalPollerList = array(
+                "id" => $pollerList[0]['id'],
+                "text" => $pollerList[0]['name']
+            );
+        }
+        
+        $router->response()->json($finalPollerList);
     }
 }

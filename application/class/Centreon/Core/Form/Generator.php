@@ -158,7 +158,8 @@ class Generator
             
             foreach($blockList as $block) {
                 
-                $fieldQuery = 'SELECT name, label, default_value, attributes, type, help, mandatory '
+                $fieldQuery = 'SELECT '
+                    . 'name, label, default_value, attributes, type, help, mandatory, parent_field, child_actions '
                     . 'FROM form_field f, form_block_field_relation bfr '
                     . 'WHERE bfr.block_id='.$block['block_id'].' '
                     . 'AND bfr.field_id = f.field_id '
@@ -248,7 +249,7 @@ class Generator
         $di = \Centreon\Core\Di::getDefault();
         $tpl = $di->get('template');
         $finalHtml = $this->generateHtml();
-        $tpl->assign('customValuesGetter', $this->formHandler->getJavascriptCall());
+        $tpl->assign('customValuesGetter', $this->formHandler->getCustomValidator());
         return $finalHtml;
     }
     
