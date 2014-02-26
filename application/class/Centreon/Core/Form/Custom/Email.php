@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Email extends Text
+class Email implements Custominterface
 {
     /**
      * 
@@ -77,7 +77,6 @@ class Email extends Text
             
             
         $myJs = '$("#'.$element['name'].'").blur(function(){
-                    console.log("Lose Control");
                     $.ajax({
                         url: "'.$validationUrl.'",
                         type: "POST",
