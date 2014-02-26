@@ -131,7 +131,7 @@ Configuration
 Pour ajouter un modèle de contacts :
 
 #. Rendez-vous dans le menu **Configuration** ==> **Utilisateurs**
-#. Dans le menu de gauche, cliquez sur **Contact Templates**  [ TODO Pas de traduction disponible]
+#. Dans le menu de gauche, cliquez sur **Modèles de contacts**
 #. Cliquez sur **Ajouter**
 
 **Remarque** : les modèles de contacts sont utilisés pour l'import automatique de profils via un annuaire LDAP [TODO rajouter lien/reférence vers IMPORT LDAP].
