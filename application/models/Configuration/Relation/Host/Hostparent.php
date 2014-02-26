@@ -9,7 +9,9 @@ class Hostparent extends Relation
     protected $relationTable = "host_hostparent_relation";
     protected $firstKey;
     protected $secondKey;
-    
+    protected $firstObject = "\\Models\\Configuration\\Host";
+    protected $secondObject = "\\Models\\Configuration\\Host";
+
     /**
      * 
      * @param type $relationType
@@ -24,8 +26,8 @@ class Hostparent extends Relation
             $this->secondKey = "host_host_id";
         }
         parent::__construct();
-        $this->firstObject = new \Models\Configuration\Host();
-        $this->secondObject = new \Models\Configuration\Host();
+        $this->firstObj = new $this->firstObject();
+        $this->secondObj = new $this->secondObject();
     }
     
     /**
@@ -42,7 +44,7 @@ class Hostparent extends Relation
      */
     public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
-        if (!isset($this->firstObject) || !isset($this->secondObject)) {
+        if (!isset($this->firstObj) || !isset($this->secondObj)) {
             throw new Exception('Unsupported method on this object');
         }
         $fString = "";
@@ -51,18 +53,18 @@ class Hostparent extends Relation
             if ($fString != "") {
                 $fString .= ",";
             }
-            $fString .= $this->firstObject->getTableName().".".$fparams;
+            $fString .= $this->firstObj->getTableName().".".$fparams;
         }
         foreach ($secondTableParams as $sparams) {
             if ($fString != "" || $sString != "") {
                 $sString .= ",";
             }
-            $sString .= $this->secondObject->getTableName().".".$sparams;
+            $sString .= $this->secondObj->getTableName().".".$sparams;
         }
         
         $sql = "SELECT ".$fString.$sString."
         		FROM host, ".$this->relationTable."
-        		WHERE ".$this->firstObject->getTableName().".".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey;
+        		WHERE ".$this->firstObj->getTableName().".".$this->firstObj->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
