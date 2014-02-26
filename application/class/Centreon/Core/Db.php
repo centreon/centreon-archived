@@ -119,7 +119,7 @@ class Db extends \PDO
      */
     public function lastInsertId($table, $primaryKey)
     {
-        $sql = "SELECT MAX({$primarykey}) AS last_id FROM {$table}";
+        $sql = "SELECT MAX({$primaryKey}) AS last_id FROM {$table}";
         $stmt = $this->prepare($sql);
         $stmt->execute();
         $row = $stmt->fetch();

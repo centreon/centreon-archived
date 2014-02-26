@@ -68,7 +68,7 @@ abstract class Object
         $sqlValues = "";
         $sqlParams = array();
         foreach ($params as $key => $value) {
-            if ($key == $this->primaryKey) {
+            if ($key == $this->primaryKey || is_null($value)) {
                 continue;
             }
             if ($sqlFields != "") {
@@ -162,18 +162,19 @@ abstract class Object
         if (isset($sourceParams[$this->primaryKey])) {
             unset($sourceParams[$this->primaryKey]);
         }
-        if (isset($sourceParams[$this->uniqueLabelField])) {
-            $originalName = $sourceParams[$this->uniqueLabelField];
-        }
         $originalName = $sourceParams[$this->uniqueLabelField];
-        for ($i = 1; $i <= $duplicateEntries; $i++) {
+        $i = 1;
+        $j = 1;
+        while ($i <= $duplicateEntries) {
             if (isset($sourceParams[$this->uniqueLabelField]) && isset($originalName)) {
-                $sourceParams[$this->uniqueLabelField] = $originalName . "_" . $i;
+                $sourceParams[$this->uniqueLabelField] = $originalName . "_" . $j;
             }
             $ids = $this->getIdByParameter($this->uniqueLabelField, array($sourceParams[$this->uniqueLabelField]));
             if (!count($ids)) {
                 $this->insert($sourceParams);
+                $i++;
             }
+            $j++;
         }
     }
 
