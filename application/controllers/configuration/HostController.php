@@ -614,7 +614,7 @@ class HostController extends \Centreon\Core\Controller
         foreach ($listDuplicate as $id => $nb) {
             $hostObj->duplicate($id, $nb);
         }
-        $di->get('router')->responce()->json(array(
+        $di->get('router')->response()->json(array(
             'success' => true
         ));
     }
