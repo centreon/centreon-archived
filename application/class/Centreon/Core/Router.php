@@ -44,7 +44,7 @@ class Router extends \Klein\Klein
                                 $routeName = $baseUrl.$data['route'];
                             }
                             if (isset($_SESSION['acl']) && 
-                                false === $_SESSION['acl']->routeAllowed($data['route'], $data['acl'])) {
+                                false === $_SESSION['acl']->routeAllowed($data['route'])) {
                                 $this->respond(
                                     $routeName, 
                                     function($request, $response) {

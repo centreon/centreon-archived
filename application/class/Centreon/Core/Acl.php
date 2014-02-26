@@ -12,23 +12,17 @@ class Acl
 
     private $routes;
     private $isAdmin;
+    private $userId;
 
     /**
      * Constructor
      *
+     * @param \Centreon\Core\User $userId
      */
-    public function __construct($userId)
+    public function __construct($user)
     {
-/*        $userId = Di::getDefault()->get('user')->getId();
-        $sql = "SELECT route, permission 
-            FROM acl_routes ar, acl_groups g, acl_group_contacts_relations r
-            WHERE ar.acl_group_id = g.acl_group_id
-            AND g.acl_group_id = r.acl_group_id
-            AND r.contact_contact_id = ?";
-        $db = Di::getDefault()->get('db_centreon');
-        $stmt = $db->prepare($sql);
-        $stmt->execute(array($userId));
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);*/
+        $this->userId = $user->getId();
+        $this->isAdmin = $user->isAdmin();
     }
 
     /**
@@ -44,22 +38,66 @@ class Acl
     }
 
     /**
-     * Check whether user is allowed to access route
+     * Get user ACL
      *
      * @param string $route
-     * @param int $requiredAccess
+     */
+    public function getUserAcl($route)
+    {
+        static $rules = null;
+
+        if (is_null($rules)) {
+            $rules = array();
+            $db = Di::getDefault()->get('db_centreon');
+            $stmt = $db->prepare(
+                "SELECT DISTINCT acl_level, url 
+                FROM acl_menu_menu_relations ammr, acl_group_menu_relations agmr, menus m
+                WHERE ammr.acl_menu_id = agmr.acl_menu_id
+                AND ammr.menu_id = m.menu_id
+                AND agmr.acl_group_id IN (
+                    SELECT acl_group_id 
+                    FROM acl_group_contacts_relations agcr
+                    WHERE agcr.contact_contact_id = :contactid
+                    UNION
+                    SELECT acl_group_id
+                    FROM acl_group_contactgroups_relations agcgr, contactgroup_contact_relation ccr
+                    WHERE agcgr.cg_cg_id = ccr.contactgroup_cg_id
+                    AND ccr.contact_contact_id = :contactid
+                ) "
+            );
+            $stmt->bindParam(':contactid', $this->userId);
+            $stmt->execute();
+            $rows = $stmt->fetchAll();
+            $aclFlag = 0;
+            foreach ($rows as $row) {
+                if (!isset($rules[$row['url']])) {
+                    $rules[$row['url']] = 0;
+                }
+                $rules[$row['url']] = $rules[$row['url']] | $row['acl_level'];
+            }
+        }
+        foreach ($rules as $uri => $acl) {
+            if (strstr($route, $uri)) {
+                return $acl;
+            }
+        }
+    }
+
+    /**
+     * Check whether user is allowed to access route
+     *
+     * @param array $data
      * @return bool
      */
-    public function routeAllowed($route, $requiredAccess)
+    public function routeAllowed($data)
     {
-        return true;
-        if (Di::getDefault()->get('user')->isAdmin()) {
+        if ($this->isAdmin) {
             return true;
         }
-        if (isset($this->routes[$route])) {
-            return self::isFlagSet($this->routes[$route], $requiredAccess);
+        if ($data['route'] && $data['acl']) {
+            return self::isFlagSet($this->getUserAcl($data['route']), $data['acl']);
         }
-        return false;
+        return true;
     }
 
     /**
