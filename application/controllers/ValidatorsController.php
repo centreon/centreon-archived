@@ -58,4 +58,38 @@ class ValidatorsController extends \Centreon\Core\Controller
             echo "fail";
         }
     }
+    
+    /**
+     * 
+     * @method post
+     * @route /validator/resolvedns
+     */
+    public function resolveDnsAction()
+    {
+        $params = $this->getParams('post');
+        
+        $ipAddress = gethostbyname($params['dnsname']);
+        
+        if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
+            echo $ipAddress;
+        } else {
+            echo "fail";
+        }
+    }
+    
+    /**
+     * 
+     * @method post
+     * @route /validator/ipaddress
+     */
+    public function ipAddressAction()
+    {
+        $params = $this->getParams('post');
+        
+        if (filter_var($params['ipaddress'], FILTER_VALIDATE_IP)) {
+            echo "success";
+        } else {
+            echo "fail";
+        }
+    }
 }
