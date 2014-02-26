@@ -564,10 +564,11 @@ class HostController extends \Centreon\Core\Controller
         $stmt->execute();
         $row = $stmt->fetch();
         $form = new \Centreon\Core\Form('default');
-        $form->add($row);
+        $form->add($row, array('id' => 0));
         $formElements = $form->toSmarty();
         $tpl->assign('field', $formElements[$row['name']]['html']);
         $tpl->display('tools/mcField.tpl');
+    }
     
     /**
      * Get list of pollers for a specific host
