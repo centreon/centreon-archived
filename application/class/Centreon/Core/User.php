@@ -92,14 +92,12 @@ class User
         if (!is_array($params) || !count($params)) {
             throw new Exception(_('Unknown user id'));
         }
-        list (
-            $this->id, 
-            $this->name, 
-            $this->login, 
-            $this->lang, 
-            $this->admin, 
-            $this->email
-        ) = $params;
+        $this->id = $params['contact_id'];
+        $this->name = $params['contact_name'];
+        $this->login = $params['contact_alias'];
+        $this->lang = $params['contact_lang'];
+        $this->admin = $params['contact_admin'];
+        $this->email = $params['contact_email'];
     }
 
     /**
