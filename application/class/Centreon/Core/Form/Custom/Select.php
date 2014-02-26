@@ -79,6 +79,7 @@ class Select implements Custominterface
             . '$("#'.$element['name'].'").select2({'
                 . 'placeholder:"'.$element['label_label'].'", '
                 . 'multiple:'.(int)$element['label_multiple'].', '
+                . 'allowClear: true, '
                 . 'formatResult: select2_formatResult, '
                 . 'formatSelection: select2_formatSelection, '
                 . 'ajax: {'
