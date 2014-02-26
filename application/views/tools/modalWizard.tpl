@@ -1,3 +1,7 @@
+<div class="modal-header">
+<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+<h4>Add</h4>
+</div>
 <div class="wizard" id="{$name}">
   <ul class="steps">
     {foreach $steps as $step}

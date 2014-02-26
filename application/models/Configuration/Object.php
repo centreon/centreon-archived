@@ -51,7 +51,7 @@ abstract class Object
     {
         $stmt = $this->db->prepare($sqlQuery);
         $stmt->execute($sqlParams);
-        $result = $stmt->{$fetchMethod}();
+        $result = $stmt->{$fetchMethod}(\PDO::FETCH_ASSOC);
         return $result;
     }
 
@@ -84,7 +84,7 @@ abstract class Object
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
             $stmt = $this->db->prepare($sql);
-            $stmt->execute($sqlValues);
+            $stmt->execute($sqlParams);
             return $this->db->lastInsertId($this->table, $this->primaryKey);
         }
         return null;

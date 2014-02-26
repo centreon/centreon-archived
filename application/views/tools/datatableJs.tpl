@@ -171,12 +171,13 @@
             $('<label></label>')
                 .addClass('col-sm-4')
                 .addClass('control-label')
-                .attr('for', 'duplicate[' + $(v).val() + ']')
+                .attr('for', 'duplicate_' + $(v).val())
                 .html($(v).data('name'))
                 .appendTo($group);
             $('<div></div>').addClass('col-sm-1').append(
                 $('<input></input>')
-                    .attr('id', 'duplicate[' + $(v).val() + ']')
+                    .attr('id', 'duplicate_' + $(v).val())
+                    .attr('name',  $(v).val())
                     .attr('type', 'text')
                     .val(1)
                     .addClass('form-control')
@@ -193,12 +194,33 @@
             .addClass('btn').addClass('btn-default')
             .text('{t}Cancel{/t}')
             .appendTo($duplicateFooter);
-        $('<button></button>')
+        $applyBtn = $('<button></button>')
             .attr('type', 'button')
             .addClass('btn')
             .addClass('btn-primary')
             .text('{t}Apply{/t}')
             .appendTo($duplicateFooter);
+        $applyBtn.on('click', function(e) {
+            var formValues = {};
+            $.each($form.serializeArray(), function(k, v) {
+                formValues[v.name] = v.value;
+            });
+            console.log(formValues);
+            $.ajax({
+                url: '{url_for url=$objectDuplicateUrl}',
+                type: 'POST',
+                dataType: 'json',
+                data: {
+                    'duplicate': JSON.stringify(formValues)
+                },
+                success: function(data, textStatus, jqXHR) {
+                    $('#modal').modal('hide');
+                    if (data.success) {
+                    } else {
+                    }
+                }
+            });
+        });
         $duplicateFooter.appendTo('#modal .modal-content');
 
         $('#modal').modal();
@@ -224,14 +246,26 @@
 
         /* MC modal body */
         var $mcBody = $('<div></div>').addClass('modal-body');
-        $('<span></span>').text('{t}Choose the attribute to change{/t}').appendTo($mcBody);
         var $form = $('<form></form>').attr('role', 'form').addClass('form-horizontal');
+        var $formGroup = $('<div></div>').addClass('form-group');
+        $('<div></div>')
+            .addClass('col-sm-4')
+            .addClass('text-right')
+            .append(
+                $('<label></label>')
+                    .attr('for', 'mcChooseAttr')
+                    .addClass('label-controller')
+                    .text('{t}Choose the attribute to change{/t}')
+            ).appendTo($formGroup);
         /* Get first select for choose attribute */
+        var $divSelect = $('<div></div>').addClass('col-sm-6');
         var $select = $('<select></select>')
             .attr('id', 'mcChooseAttr')
             .css('width', '100%')
             .append('<option></option>')
-            .appendTo($form);
+            .appendTo($divSelect);
+        $divSelect.appendTo($formGroup);
+        $formGroup.appendTo($form);
         $form.appendTo($mcBody);
         $mcBody.appendTo('#modal .modal-content');
 
@@ -251,7 +285,7 @@
         $mcFooter.appendTo('#modal .modal-content');
 
         $.ajax({
-            url: "{url_for url=$objectMcFields}",
+            url: "{url_for url=$objectMcFieldsUrl}",
             type: "GET",
             dataType: "json",
             success: function(data, textStatus, jqXHR) {
@@ -267,7 +301,7 @@
                         disabled: true
                     });
                     $.ajax({
-                        url: "{url_for url=$objectMcFields}/" + e.added.id,
+                        url: "{url_for url=$objectMcFieldsUrl}/" + e.added.id,
                         type: "GET",
                         dataType: "html",
                         success: function(data, textStatus, jqXHR) {

@@ -82,7 +82,8 @@ class HostController extends \Centreon\Core\Controller
         $tpl->assign('objectName', 'Host');
         $tpl->assign('objectAddUrl', '/configuration/host/add');
         $tpl->assign('objectListUrl', '/configuration/host/list');
-        $tpl->assign('objectMcFields', '/configuration/host/mc_fields');
+        $tpl->assign('objectMcFieldsUrl', '/configuration/host/mc_fields');
+        $tpl->assign('objectDuplicateUrl', '/configuration/host/duplicate');
         $tpl->display('configuration/list.tpl');
     }
     
@@ -596,5 +597,25 @@ class HostController extends \Centreon\Core\Controller
         }
         
         $router->response()->json($finalPollerList);
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/host/duplicate
+     */
+    public function duplicateHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
+
+        $hostObj = new Host();
+        foreach ($listDuplicate as $id => $nb) {
+            $hostObj->duplicate($id, $nb);
+        }
+        $di->get('router')->responce()->json(array(
+            'success' => true
+        ));
     }
 }
