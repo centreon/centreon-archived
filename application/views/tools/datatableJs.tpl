@@ -205,7 +205,6 @@
             $.each($form.serializeArray(), function(k, v) {
                 formValues[v.name] = v.value;
             });
-            console.log(formValues);
             $.ajax({
                 url: '{url_for url=$objectDuplicateUrl}',
                 type: 'POST',
@@ -216,7 +215,7 @@
                 success: function(data, textStatus, jqXHR) {
                     $('#modal').modal('hide');
                     if (data.success) {
-                    } else {
+                        $('.dataTable').dataTable().fnDraw();
                     }
                 }
             });
@@ -276,7 +275,7 @@
             .addClass('btn').addClass('btn-default')
             .text('{t}Cancel{/t}')
             .appendTo($mcFooter);
-        $('<button></button>')
+        var $applyBtn = $('<button></button>')
             .attr('type', 'button')
             .addClass('btn')
             .addClass('btn-primary')
