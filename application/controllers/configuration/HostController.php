@@ -41,6 +41,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Hostgroup,
     \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
+    \Models\Configuration\Relation\Host\Poller,
     \Models\Configuration\Timeperiod,
     \Models\Configuration\Command,
     \Centreon\Core\Form,
@@ -152,8 +153,13 @@ class HostController extends \Centreon\Core\Controller
     {
         $givenParameters = $this->getParams('post');
         
-        if (Form::validateSecurity($givenParameters['token'])) {
-            echo '<pre>'; var_dump($givenParameters); echo '</pre>';
+        if (!Form::validateSecurity($givenParameters['token'])) {
+            echo "fail";
+        }
+        unset($givenParameters['token']);
+        
+        foreach ($givenParameters as $paramName=>$paramValue) {
+            echo $paramName . " => " . $paramValue . "<br />";
         }
     }
     
@@ -562,5 +568,32 @@ class HostController extends \Centreon\Core\Controller
         $formElements = $form->toSmarty();
         $tpl->assign('field', $formElements[$row['name']]['html']);
         $tpl->display('tools/mcField.tpl');
+    
+    /**
+     * Get list of pollers for a specific host
+     *
+     *
+     * @method get
+     * @route /configuration/host/[i:id]/poller
+     */
+    public function pollerForHostAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParam = $this->getParams('named');
+        
+        $hostPollerObj = new Poller();
+        $pollerList = $hostPollerObj->getMergedParameters(array('id', 'name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        
+        $finalPollerList = array();
+        if (count($pollerList) > 0) {
+            $finalPollerList = array(
+                "id" => $pollerList[0]['id'],
+                "text" => $pollerList[0]['name']
+            );
+        }
+        
+        $router->response()->json($finalPollerList);
     }
 }

@@ -10,11 +10,19 @@
 
 {block name="javascript-bottom" append}
     <script>
+        function getSaveData(mySaveData)
+        {
+            {foreach $customValuesGetter as $customValueName => $customValueGetter}
+                mySaveData += '&' + '{$customValueName}' + '=' + {$customValueGetter};
+            {/foreach}
+            return mySaveData;
+        }
+        
         $("#{$formName}").submit(function (event) {
             $.ajax({
                 url: "{url_for url=$validateUrl}",
                 type: "POST",
-                data: $(this).serialize(),
+                data: getSaveData($(this).serialize()),
                 context: document.body
             })
             .success(function(data, status, jqxhr) {

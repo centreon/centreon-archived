@@ -55,9 +55,15 @@ class Router extends \Klein\Klein
                                 $this->respond(
                                     $data['method_type'],
                                     $routeName,
-                                    function ($request, $response) use ($controllerName, $action) {
-                                        $obj = new $controllerName($request);
-                                        $obj->$action();
+                                    function ($request, $response) use ($controllerName, $action, $routeName) {
+                                        if (!isset($_SESSION['user']) && !strstr($routeName, ".css") && 
+                                            !strstr($controllerName, "LoginController")) {
+                                            $obj = new \Controllers\LoginController($request);
+                                            $obj->loginAction();
+                                        } else {
+                                            $obj = new $controllerName($request);
+                                            $obj->$action();
+                                        }
                                     }
                                 );
                             }

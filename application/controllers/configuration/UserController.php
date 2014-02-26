@@ -35,7 +35,7 @@
 
 namespace Controllers\Configuration;
 
-use Models\Configuration\Contact;
+use \Models\Configuration\Contact;
 
 class UserController extends \Centreon\Core\Controller
 {

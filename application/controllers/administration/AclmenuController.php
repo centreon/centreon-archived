@@ -154,7 +154,6 @@ class AclmenuController extends \Centreon\Core\Controller
     public function updateAction()
     {
         $givenParameters = $this->getParams('post');
-        
         if (Form::validateSecurity($givenParameters['token'])) {
             $aclmenu = array(
                 'name' => $givenParameters['name'],
@@ -163,6 +162,7 @@ class AclmenuController extends \Centreon\Core\Controller
             );
             
             $aclmenuObj = new \Models\Configuration\Acl\Menu();
+            $aclMenuGroupRelation = new \Models\Configuration\Relation\Aclgroup\Aclmenu();
             try {
                 $aclmenuObj->update($givenParameters['acl_menu_id'], $aclmenu);
                 $aclData = array();
@@ -171,6 +171,16 @@ class AclmenuController extends \Centreon\Core\Controller
                     $givenParameters['acl_menu_id'],
                     $aclData
                 );
+                $aclMenuGroupRelation->delete(null, $givenParameters['acl_menu_id']);
+                $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+                $db->beginTransaction();
+                $aclgroups = explode(",", $givenParameters['acl_groups']);
+                foreach ($aclgroups as $aclgroupId) {
+                    if (is_numeric($aclgroupId)) {
+                        $aclMenuGroupRelation->insert($aclgroupId, $givenParameters['acl_menu_id']);
+                    }
+                }
+                $db->commit();
             } catch (Exception $e) {
                 echo "fail";
             }
@@ -260,5 +270,37 @@ class AclmenuController extends \Centreon\Core\Controller
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', '/administration/aclmenu/update');
         $tpl->display('configuration/edit.tpl');
+    }
+
+    /**
+     * Get default list of Acl groups
+     *
+     * @method get
+     * @route /administration/aclmenu/[i:id]/aclgroup
+     */
+    public function aclgroupAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $requestParam = $this->getParams('named');
+        
+        $relObj = new \Models\Configuration\Relation\Aclgroup\Aclmenu();
+        $list = $relObj->getMergedParameters(
+            array('acl_group_id', 'acl_group_name'),
+            array(),
+            -1,
+            0,
+            "acl_groups.acl_group_name",
+            "ASC",
+            array('acl_menus.acl_menu_id' => $requestParam['id'])
+        );
+        $finalList = array();
+        foreach ($list as $elem) {
+            $finalList[] = array(
+                "id" => $elem['acl_group_id'],
+                "text" => $elem['acl_group_name']
+            );
+        }
+        $router->response()->json($finalList);
     }
 }
