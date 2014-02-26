@@ -81,6 +81,7 @@ class HostController extends \Centreon\Core\Controller
         $tpl->assign('objectName', 'Host');
         $tpl->assign('objectAddUrl', '/configuration/host/add');
         $tpl->assign('objectListUrl', '/configuration/host/list');
+        $tpl->assign('objectMcFields', '/configuration/host/mc_fields');
         $tpl->display('configuration/list.tpl');
     }
     
@@ -164,7 +165,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Core\Form\Wizard('/configuration/host/add');
+        $form = new \Centreon\Core\Form\Wizard('/configuration/host/add', 0, array('id' => 0));
         echo $form->generate();
     }
     
@@ -503,5 +504,63 @@ class HostController extends \Centreon\Core\Controller
         }
         
         $router->response()->json($finalCommandList);
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/host/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $dbconn = $di->get('db_centreon');
+
+        $data = array(
+            'listMc' => array()
+        );
+
+        $stmt = $dbconn->prepare("SELECT f.field_id, f.label
+            FROM form_field f, form_massive_change_field_relation mcfr, form_massive_change mc
+            WHERE mc.route = :route
+                AND mc.massive_change_id = mcfr.massive_change_id
+                AND f.field_id = mcfr.field_id");
+        $stmt->bindValue(':route', '/configuration/host/mc_fields', \PDO::PARAM_STR);
+        $stmt->execute();
+        while ($row = $stmt->fetch()) {
+            $data['listMc'][$row['field_id']] = $row['label'];
+        }
+
+        $router->response()->json($data);
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/host/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        $dbconn = $di->get('db_centreon');
+        $tpl = $di->get('template');
+        
+        $requestParam = $this->getParams('named');
+
+        $stmt = $dbconn->prepare("SELECT name, label, default_value, attributes, type, help
+            FROM form_field
+            WHERE field_id = :id");
+        $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        $form = new \Centreon\Core\Form('default');
+        $form->add($row);
+        $formElements = $form->toSmarty();
+        $tpl->assign('field', $formElements[$row['name']]['html']);
+        $tpl->display('tools/mcField.tpl');
     }
 }

@@ -9,7 +9,8 @@
           </button>
           <ul class="dropdown-menu">
             <li><a href="#" id="modalDelete">{t}Delete{/t}</a></li>
-            <li><a href="#">{t}Massive change{/t}</a></li>
+            <li><a href="#" id="modalDuplicate">{t}Duplicate{/t}</a></li>
+            <li><a href="#" id="modalMassiveChange">{t}Massive change{/t}</a></li>
           </ul>
         </div>
         {if $datatableParameters.groupname || $datatableParameters.hasCategory}

@@ -519,107 +519,60 @@ class Form
      * @param string $fieldType
      * @param array $additionalParameters
      */
-    public function add($name, $fieldType = 'text', $label = "", $additionalParameters = array())
+    public function add($field, $extraParams = array())
     {
-        if (empty($label)) {
-            $label = $name;
-        }
-        
-        switch (strtolower($fieldType)) {
-            case 'button':
-                $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addButton($name, $label, $additionalParameters['params']);
+        switch ($field['type']) {
+            default:
+                $this->addStatic($field, $extraParams);
                 break;
-            case 'checkbox':
-                $this->checkParameters(
-                    $additionalParameters,
-                    array(
-                        'params' => array('value' => $name),
-                        'separators' => "&nbsp;",
-                    )
-                );
-                $this->addCheckBox($name, $label, $additionalParameters['separators'], $additionalParameters['params']);
-                break;
-            case 'hidden':
-                $this->checkParameters($additionalParameters, array('value' => ''));
-                $this->formProcessor->addElement('hidden', $name, $additionalParameters['value']);
-                break;
-            case 'radio':
-                $this->checkParameters(
-                    $additionalParameters,
-                    array(
-                        'elements' => array(),
-                        'separators' => "&nbsp;",
-                        'defaultValue' => null
-                    )
-                );
-                $this->addRadio(
-                    $name,
-                    $label,
-                    $additionalParameters['separators'],
-                    $additionalParameters['elements'],
-                    $additionalParameters['defaultValue']
-                );
-                break;
-            case 'reset':
-                $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addReset($name, $label, $additionalParameters['params']);
-                break;
-            case 'select':
-                $this->checkParameters(
-                    $additionalParameters,
-                    array(
-                        'multiple' => false,
-                        'data' => array(),
-                        'style' => null
-                    )
-                );
-                if ($additionalParameters['multiple']) {
-                    $this->addMultiSelect(
-                        $name,
-                        $label,
-                        $additionalParameters['data']
-                    );
-                } else {
-                    $this->addSelect(
-                        $name,
-                        $label,
-                        $additionalParameters['data'],
-                        $additionalParameters['style']
-                    );
-                }
-                break;
-            case 'submit':
-                $this->checkParameters($additionalParameters, array('params' => array()));
-                $this->addSubmit($name, $label, $additionalParameters['params']);
-                break;
-            case 'submitbar':
-                $this->checkParameters($additionalParameters, array('cancel' => true));
-                $this->addSubmitBar($name = 'submitbar', $additionalParameters['cancel']);
+            case 'text':
+                $this->addText($field['name'], $field['label']);
                 break;
             case 'textarea':
-                $this->addTextarea($name, $label);
+                $this->addTextarea($field['name'], $field['label']);
                 break;
-            default:
-            case 'text':
-                $this->checkParameters(
-                    $additionalParameters,
-                    array(
-                        'style' => null,
-                        'placeholder' => null,
-                        'help' => null
-                    )
+            
+            case 'radio':
+                $values = json_decode($field['attributes']);
+                $radioValues = array();
+                foreach ($values as $label=>$value) {
+                    $radioValues['list'][] = array(
+                        'name' => $label,
+                        'label' => $label,
+                        'value' => $value
+                    );
+                }
+                $this->addRadio(
+                    $field['name'],
+                    $field['label'],
+                    $field['name'],
+                    '&nbsp;',
+                    $radioValues
                 );
-                $this->addText(
-                    $name,
-                    $label,
-                    $additionalParameters['style'],
-                    $additionalParameters['placeholder'],
-                    $additionalParameters['help']
-                );
+                break;
+                
+            case 'checkbox':
+                $values = json_decode($field['attributes']);
+                if (is_array($values) || is_object($values)) {
+                    $checkboxValues = array();
+                    foreach ($values as $label=>$value) {
+                        $checkboxValues['list'][] = array(
+                            'name' => $label,
+                            'label' => $label,
+                            'value' => $value
+                        );
+                    }
+                    $this->addCheckBox(
+                        $field['name'],
+                        $field['label'],
+                        '&nbsp;',
+                        $checkboxValues
+                    );
+                } else { 
+                    $this->addCheckbox($field['name'], $field['label']);
+                }
                 break;
         }
-        
         return $this;
     }
     
