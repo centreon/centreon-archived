@@ -639,3 +639,7 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 
 .. note::
     La recherche sur les champs texte ne commence qu'à partir de la saisie d'au moins 3 caractères.
+
+.. |pause|    image:: /images/pause.png
+.. |refresh|    image:: /images/refresh.png
+.. |resume|    image:: /images/resume.png

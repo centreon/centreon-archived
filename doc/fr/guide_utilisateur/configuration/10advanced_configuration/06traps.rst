@@ -224,7 +224,8 @@ Au sein de Centreon, les OIDs racines des traps SNMP sont classés par construct
 #. Dans le menu de gauche, cliquez sur **Constructeur**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06constructors.png
+   :align: center 
 
 * Les champs **Nom du constructeur** et **Alias** définissent le nom et l'alias du constructeur
 * Le champ **Description** fournit une indication sur le constructeur
@@ -237,7 +238,8 @@ Il est également possible d'importer des OIDs à partir des MIBs fournies par l
 1. Rendez-vous dans le menu **Configuration** ==> **Traps SNMP**
 2. Dans le menu de gauche, cliquez sur **MIBs**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/06importmibs.png
+   :align: center 
 
 * La liste **Constructeur** permet de choisir le constructeur auquel appartient la MIB que vous importez
 * Le champ **Fichier (mib)** permet de charger la MIB

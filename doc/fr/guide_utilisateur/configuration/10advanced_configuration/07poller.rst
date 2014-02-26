@@ -19,6 +19,9 @@ Installation
 Le processus d'installation est identique à celui d'un serveur Centreon central.
 A la question **Which server type would you like to install ?** il faut choisir l'option **Poller server**.
 
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07installpoller.png
+   :align: center 
+
 Configuration de l'ordonnanceur
 ===============================
 
@@ -28,11 +31,11 @@ Une fois l'installation réalisée, il faut intégrer ce satellite dans la confi
 #. Dupliquez le fichier de configuration du serveur Central et éditez-le
 #. Modifiez les paramètres suivants, puis sauvegardez :
 
-[ TODO Mettre une capture d'écran]
-
 * Changez le **Nom du collecteur**.
 * Entrez l'adresse IP du collecteur dans le champ **Adresse IP**.
 * Activez le collecteur en cliquant sur **Activé** dans le champ **Statut**.
+
+[ TODO Faire capture d'écran car pas de traduction dispo]
 
 Maintenant, il est nécessaire de générer un fichier de configuration pour l'ordonnanceur Centreon Engine :
 
@@ -41,12 +44,17 @@ Maintenant, il est nécessaire de générer un fichier de configuration pour l'o
 #. Dupliquez le fichier de configuration du collecteur **Central** et modifiez-le
 #. Modifiez les paramètres suivants, puis sauvegardez :
 
-[ TODO Mettre une capture d'écran]
-
 * Changez le **Nom de la configuration**.
 * Activez le fichier de configuration de l'ordonnanceur en cliquant sur **Activé** dans le champ **Statut**.
 * Choisissez le nouveau collecteur dans le champ **Collecteur lié**.
+
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07mainconffile.png
+   :align: center 
+
 * Dans l'onglet **Données** - Champ **Multiple module broker** modifiez le nom du fichier de configuration de Centreon Broker **central-module.xml**. Par exemple : poller1-module.xml.
+
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07mainconffilebrokerconf.png
+   :align: center 
 
 Configuration de Centreon Broker
 ================================
@@ -58,13 +66,17 @@ Il est nécessaire de générer un fichier de configuration pour le broker Centr
 #. Dupliquez le fichier de configuration du module de votre serveur central et éditez-le
 #. Modifiez les paramètres suivants, puis sauvegardez :
 
-[ TODO Mettre une capture d'écran]
-
 * Changez le **Nom** de la configuration.
 * Modifiez le **Nom du fichier de configuration** qui doit correspondre au nom du fichier xml définit dans le fichier de configuration de l'ordonnanceur.
 * Activez le fichier de configuration en cliquant sur **Activé** dans le champ **Statut**.
 * Modifiez le champ **Collecteur** en sélectionnant votre nouveau collecteur.
-* Dans l'onglet **Output**, modifiez le champ **Se connecter à l'hôte** en entrant l'adresse IP du serveur contenant votre base MySQL (dans notre cas le serveur central).
+
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/07brokerconf.png
+   :align: center 
+
+* Dans l'onglet **Output**, modifiez le champ **Host to connect to** [ TODO Pas de traduction] en entrant l'adresse IP du serveur contenant votre base MySQL (dans notre cas le serveur central).
+
+[ TODO Faire la capture car pas de traduction]
 
 Configuration de Centreontrapd
 ==============================

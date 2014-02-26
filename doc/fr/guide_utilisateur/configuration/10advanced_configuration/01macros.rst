@@ -48,13 +48,15 @@ Exemple
 
 Lors de la définition d'un hôte, les macros suivantes sont créées :
 
-[TODO images/01.png]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/01hostmacros.png
+   :align: center 
 
 Pour faire appel à ces macros dans une commande de vérification, il faudra les invoquer en utilisant les variables suivantes : $_HOSTUSERLOGIN$, $_HOSTUSERPASSWORD$.
 
 Lors de la définition d'un service, les macros suivantes sont créées :
 
-[TODO images/02.png]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/01servicecreated.png
+   :align: center 
 
 Pour faire appel à ces macros dans une commande de vérification, il faudra les invoquer en utilisant les variables suivantes : $_SERVICEPARTITION$, $_SERVICEWARNING$, $_SERVICECRITICAL$.
 
@@ -78,7 +80,8 @@ Pour ajouter une macro de ressources :
 * Rendez-vous dans le menu **Configuration** ==> **Moteurs de supervision**
 * Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran ]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/01macrosressources.png
+   :align: center 
 
 * Le champ **Nom de la ressource** définit le nom de la macro de ressources. Exemple : $USER3$
 * Le champ **Valeur de la ressource** définit la valeur de la macro.

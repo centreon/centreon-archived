@@ -26,7 +26,8 @@ Ajouter une vue
 
 Pour ajouter une vue, cliquez sur **Ajouter une vue**.
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/01addview.png
+   :align: center 
 
 * Le champ **Nom de la vue** indique le nom de la vue qui sera visible par l'utilisateur
 * Le champ **Mise en page** permet de choisir le nombre de colonne de la vue
@@ -49,7 +50,8 @@ Insérer un widget
 
 Pour ajouter un widget, cliquez sur **Ajouter un widget**.
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/01addwidget.png
+   :align: center 
 
 * Le champ **Titre du widget** permet de définir un nom pour son widget
 * Choisissez dans le tableau en dessous le type de widget que vous souhaitez ajouter
@@ -58,22 +60,22 @@ Personnaliser son widget
 ========================
 
 Il est possible de déplacer un widget en faisant un drag-and-drop depuis la barre de titre.
-Pour réduire un widget, cliquez sur [ TODO Mettre l'icône].
+Pour réduire un widget, cliquez sur |reducewidget|.
 Par défaut les informations contenues au sein du widget sont rafraichies de manière régulière.
-Pour les rafraîchir manuellement cliquez sur [ TODO Mettre l'icône].
+Pour les rafraîchir manuellement cliquez sur |refreshwidget|.
 
-Pour personnaliser son widget, cliquez sur [ TODO Mettre l'icône].
+Pour personnaliser son widget, cliquez sur |configurewidget|.
 
 Supprimer un widget
 ===================
 
-Il est possible de supprimer le widget en cliquant sur [ TODO Mettre l'icône].
+Il est possible de supprimer le widget en cliquant sur |deletewidget|.
 
 ******************
 Détail des widgets
 ******************
 
-Les paragraphes ci-dessous détaillent les attributs de chaque widget après avoir cliqué sur [ TODO Mettre l'icône]
+Les paragraphes ci-dessous détaillent les attributs de chaque widget après avoir cliqué sur |configurewidget|.
 
 [ TODO Pas de traduction pour les widgets ?]
 
@@ -176,3 +178,7 @@ Le widget de groupes de services
 * La liste **Order By** permet de classer les groupes de services par ordre alphabétique suivant plusieus paramètres
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
+.. |deletewidget|    image:: /images/deletewidget.png
+.. |configurewidget|    image:: /images/configurewidget.png
+.. |refreshwidget|    image:: /images/refreshwidget.png
+.. |reducewidget|    image:: /images/reducewidget.png

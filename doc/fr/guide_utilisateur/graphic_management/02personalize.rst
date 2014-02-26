@@ -21,7 +21,8 @@ Pour ajouter un nouveau modèle de graphe :
 #. Dans le menu de gauche cliquez sur **Modèles**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/graphic_management/02addgraph_template.png
+   :align: center 
 
 Informations générales
 ----------------------
@@ -80,7 +81,8 @@ Pour ajouter un nouveau modèle de courbes :
 #. Dans le menu de gauche cliquez sur **Courbes**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/graphic_management/02addcurve.png
+   :align: center 
 
 * Le champ **Nom du modèle** définit le nom du modèle.
 * Le champ **Source de données Hôtes/Service** définit le service pour lequel sera utilisé cette courbe. Si ces informations ne sont pas renseignées, cette définition de courbe s'appliquera à l'ensemble des services dans lesquels cette métrique apparait.
@@ -112,15 +114,18 @@ Quelques exemples de courbes
 
 Les courbes empilées :
 
-[ TODO Mettre une image]
+.. image :: /images/guide_utilisateur/graphic_management/02graphempile.png
+   :align: center 
 
 Les courbes inversées :
 
-[ TODO Mettre une image]
+.. image :: /images/guide_utilisateur/graphic_management/02graphinverse.png
+   :align: center 
 
 Les courbes avec remplissage :
 
-[ TODO Mettre une image]
+.. image :: /images/guide_utilisateur/graphic_management/02graphremplissage.png
+   :align: center 
 
 ************************
 Les métriques virtuelles
@@ -156,7 +161,8 @@ Pour ajouter une métrique virtuelle :
 #. Dans le menu de gauche, cliquez sur **Métriques** (en dessous de **Virtuals**)
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une image]
+.. image :: /images/guide_utilisateur/graphic_management/02addvmetric.png
+   :align: center 
 
 * Le champ **Nom de la Métrique** définit le nom de la métrique.
 * La liste **Source de données Hôte / Service** permet de définir le service depuis lequel nous allons exploiter les métriques.

@@ -16,7 +16,8 @@ La vue d'ensemble
 
 Afin de visualiser la vue d'ensemble, rendez-vous dans le menu **Accueil** ==> **Accueil**.
 
-[ TODO Mettre une capture d'écran ]
+.. image :: /images/guide_utilisateur/supervision/02tacticaloverview.png
+   :align: center 
 
 * Le tableau **Hôtes** permet de visualiser l'état général des hôtes supervisés en présentant le nombre d'objet par état (indisponible, injoignable, disponible ou en attente d'être supervisé).
 * Le tableau **Problèmes d'hôte non traités (100 derniers)** permet de visualiser les 100 derniers incidents d'hôtes non pris en compte (acquittés).
@@ -31,7 +32,8 @@ Pour visualiser les informations de santé globale :
 #. Rendez-vous dans le menu **Accueil** ==> **Accueil**
 #. Dans le menu de gauche, cliquez sur **Santé globale**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/02health.png
+   :align: center 
 
 .. warning:: 
     Flash player doit être disponible sur votre navigateur pour visualiser les camemberts.

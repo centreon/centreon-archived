@@ -27,7 +27,8 @@ Pour ajouter une escalade de notification :
 #. Rendez-vous dans le menu **Configuration** ==> **Notifications**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/04notificationsescalation.png
+   :align: center 
 
 * Les champs **Nom d'escalade** et **Alias** permettent de définir un nom et un alias à l'escalade de notifications.
 * Le champ **Première notification** permet de choisir le numéro de la notification à partir de laquelle le groupe de contact sera averti.

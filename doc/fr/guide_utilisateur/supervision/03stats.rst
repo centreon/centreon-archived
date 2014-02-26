@@ -14,7 +14,8 @@ Pour visualiser les informations de performances de votre ordonnanceur :
 #. Rendez-vous dans **Accueil** ==> **Statistiques de l'ordonnanceur**
 #. Choisissez votre ordonnanceur dans la liste **Collecteur**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/03statsordonnanceur.png
+   :align: center 
 
 Plusieurs tableaux permettent de visualiser les performances de vos ordonnanceurs :
 
@@ -34,7 +35,8 @@ Pour visualiser les statistiques de Centreon Broker :
 #. Dans le menu de gauche, cliquez sur **Statistiques du broker**
 #. Choisissez votre collecteur dans la liste **Collecteur**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/03statsbroker.png
+   :align: center 
 
 Les performances de Centreon Broker sont classées par fichier XML.
 Chaque fichier XML correspond à une entitée de Centreon Broker (module ordonnanceur, Broker-RRD, Broker-Central).
@@ -49,7 +51,8 @@ Les performances d'entrée/sortie
 
 Chaque performance contient plusieurs informations :
 
-[ TODO mettre une capture d'écran des performances]
+.. image :: /images/guide_utilisateur/supervision/03brokerperf.png
+   :align: center 
 
 * Le champ **Statut** contient le statut de l'entrée ou de la sortie
 * Le champ **Temporary recovery mode** [TODO : Besoin d'informations]
@@ -73,4 +76,5 @@ Pour cela :
 #. Choisissez votre collecteur dans la liste **Collecteur**
 #. Choisissez la période sur laquelle vous souhaitez visualiser les graphiques de performances
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/03graphperf.png
+   :align: center 

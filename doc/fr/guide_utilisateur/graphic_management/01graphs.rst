@@ -21,11 +21,13 @@ Les graphiques d'historique ont toujours comme abscisse une période de temps, l
 
 Exemple de graphique de performances :
 
-[ TODO Mettre une image ]
+.. image :: /images/guide_utilisateur/graphic_management/01perf_graph.png
+   :align: center 
 
 Exemple de graphique d'historique :
 
-[ TODO Mettre une image ]
+.. image :: /images/guide_utilisateur/graphic_management/01stat_graph.png
+   :align: center 
 
 *************
 Visualisation
@@ -52,7 +54,8 @@ Visualiser plusieurs graphiques
 
 Pour visualiser l'ensemble des graphiques, rendez-vous dans le menu **Vues** ==> **Graphiques**.
 
-[ TODO Mettre l'image : images/01.png]
+.. image :: /images/guide_utilisateur/graphic_management/01graph_list.png
+   :align: center 
 
 Le menu de gauche permet de sélectionner les hôtes et/ou les services pour lesquels on souhaite visualiser les graphiques.
 

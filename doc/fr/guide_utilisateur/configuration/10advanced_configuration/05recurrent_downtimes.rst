@@ -40,7 +40,7 @@ Configuration des temps d'arrêts
 
 * Les champs **Nom** et **Description** permettent de donner un nom et de décrire le temps d'arrêt récurrent.
 * Le champ **Activer** permet d'activer ou de désactiver le temps d'arrêt.
-* Le champ **Période** permet de définir une ou plusieurs période de temps d'arrêts récurrents. Pour ajouter une période, cliquez sur le symbole "+" bleu [ TODO Mettre l'image].
+* Le champ **Période** permet de définir une ou plusieurs période de temps d'arrêts récurrents. Pour ajouter une période, cliquez sur le symbole "+" bleu.
 
 Il est possible de choisir trois types de périodes :
 

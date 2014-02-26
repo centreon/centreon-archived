@@ -46,7 +46,8 @@ Pour ajouter un méta-service :
 #. Dans le menu de gauche, cliquez sur **Méta-services**
 #. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/02addmetaservice.png
+   :align: center 
 
 Informations générales
 ======================
@@ -94,10 +95,11 @@ Sélectionner manuellement des services
 
 Si vous avez choisit l'option **Sélectionner les services manuellement**, au sein de l'écran regroupant l'ensemble des méta-services :
 
-1. Cliquez sur [ TODO Mettre l'icône] pour sélectionner les métriques entrant en jeu dans le calcul du méta-service. Ces métriques sont appelées indicateurs.
+1. Cliquez sur |flechedirection| pour sélectionner les métriques entrant en jeu dans le calcul du méta-service. Ces métriques sont appelées indicateurs.
 2. Cliquez sur **Ajouter**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/configuration/10advanced_configuration/02metaservicesindicators.png
+   :align: center 
 
 * Le champ **Hôte** permet de sélectionner l'hôte auquel le service à sélectionner appartient.
 * Le champ **Service** permet de choisir le service (première liste) ainsi que la métrique au sein de ce service (seconde liste).
@@ -107,3 +109,5 @@ Si vous avez choisit l'option **Sélectionner les services manuellement**, au se
 
 .. note::
    Un méta-service est à considérer comme service régulier. Il est nécessaire de générer la configuration de l'ordonnanceur central, d'exporter cette dernière puis de redémarrer l'ordonnanceur.
+
+.. |flechedirection|    image:: /images/flechedirection.png

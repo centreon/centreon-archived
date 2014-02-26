@@ -30,12 +30,6 @@ Les services sont démarrés sur l'hôte A, si l'hôte A devient indisponible al
 Notre outil de supervision doit être capable de raisonner de la manière suivante : si l'hôte A est disponible alors l'hôte B n'est pas vérifié (il est également possible de laisser la vérification de l'hôte B tout en désactivant les notifications liés à cet hôte). 
 Si l'hôte A devient indisponible alors l'hôte B est vérifié.
 
-********************************************
-Gestion des dépendances avec Centreon Broker
-********************************************
-
-[ TODO Besoin d'informations : Ou bien voir en dessous j'ai parlé de Centreon Broker pour les champs spécifiques]
-
 *********
 Les hôtes
 *********
