@@ -9,6 +9,6 @@ class Hostcategory extends Relation
     protected $relationTable = "hostcategories_relation";
     protected $firstKey = "hostcategories_hc_id";
     protected $secondKey = "host_host_id";
-    protected $firstObject = "\\Models\\Configuration\\Hostcategory";
-    protected $secondObject = "\\Models\\Configuration\\Host";
+    public static $firstObject = "Models\\Configuration\\Hostcategory";
+    public static $secondObject = "Models\\Configuration\\Host";
 }

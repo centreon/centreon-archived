@@ -7,14 +7,14 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
     protected $relationTable = "host_template_relation";
     protected $firstKey = "host_tpl_id";
     protected $secondKey = "host_host_id";
-    protected $firstObject = "\\Models\\Configuration\\Host";
-    protected $secondObject = "\\Models\\Configuration\\Host";
+    public static $firstObject = "Models\\Configuration\\Host";
+    public static $secondObject = "Models\\Configuration\\Host";
 
     public function __construct()
     {
         parent::__construct();
-        $this->firstObj = new $this->firstObject();
-        $this->secondObj = new $this->secondObject();
+        $this->firstObj = new static::$firstObject();
+        $this->secondObj = new static::$secondObject();
     }
 
     /**

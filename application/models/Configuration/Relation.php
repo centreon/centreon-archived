@@ -32,13 +32,13 @@ abstract class Relation
     /**
      * @var string
      */
-    protected $firstObject = null;
+    public static $firstObject = null;
 
     /**
      *
      * @var string
      */
-    protected $secondObject = null;
+    public static $secondObject = null;
 
     /**
      * Constructor
@@ -48,8 +48,8 @@ abstract class Relation
     public function __construct()
     {
         $this->db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $this->firstObj = new $this->firstObject();
-        $this->secondObj = new $this->secondObject();
+        $this->firstObj = new static::$firstObject();
+        $this->secondObj = new static::$secondObject();
     }
 
     /**

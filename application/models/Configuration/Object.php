@@ -29,6 +29,14 @@ abstract class Object
      */
     protected $uniqueLabelField = null;
 
+
+    /**
+     * Array of relation objects 
+     *
+     * @var array of strings
+     */
+    public static $relations = array();
+
     /**
      * Constructor
      *
@@ -163,6 +171,25 @@ abstract class Object
             unset($sourceParams[$this->primaryKey]);
         }
         $originalName = $sourceParams[$this->uniqueLabelField];
+        $firstKeyCopy = array();
+        $secondKeyCopy = array();
+        foreach (static::$relations as $relation) {
+            $relationObj = new $relation();
+            if ($relation::$firstObject == get_called_class()) {
+                $firstKeyCopy[$relation] = $relationObj->getTargetIdFromSourceId(
+                    $relationObj->getSecondKey(),
+                    $relationObj->getFirstKey(),
+                    $sourceObjectId
+                );
+            } elseif ($relation::$secondObject == get_called_class()) {
+                $secondKeyCopy[$relation] = $relationObj->getTargetIdFromSourceId(
+                    $relationObj->getFirstKey(),
+                    $relationObj->getSecondKey(),
+                    $sourceObjectId
+                );
+            }
+            unset($relationObj);
+        }
         $i = 1;
         $j = 1;
         while ($i <= $duplicateEntries) {
@@ -171,7 +198,23 @@ abstract class Object
             }
             $ids = $this->getIdByParameter($this->uniqueLabelField, array($sourceParams[$this->uniqueLabelField]));
             if (!count($ids)) {
-                $this->insert($sourceParams);
+                $lastId = $this->insert($sourceParams);
+                $this->db->beginTransaction();
+                foreach ($firstKeyCopy as $relation => $idArray) {
+                    $relationObj = new $relation();
+                    foreach ($idArray as $relationId) {
+                        $relationObj->insert($lastId, $relationId);
+                    }
+                    unset($relationObj);
+                }
+                foreach ($secondKeyCopy as $relation => $idArray) {
+                    $relationObj = new $relation();
+                    foreach ($idArray as $relationId) {
+                        $relationObj->insert($relationId, $lastId);
+                    }
+                    unset($relationObj);
+                }
+                $this->db->commit();
                 $i++;
             }
             $j++;

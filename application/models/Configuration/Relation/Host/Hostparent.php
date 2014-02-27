@@ -9,25 +9,20 @@ class Hostparent extends Relation
     protected $relationTable = "host_hostparent_relation";
     protected $firstKey;
     protected $secondKey;
-    protected $firstObject = "\\Models\\Configuration\\Host";
-    protected $secondObject = "\\Models\\Configuration\\Host";
+    public static $firstObject = "Models\\Configuration\\Host";
+    public static $secondObject = "Models\\Configuration\\Host";
 
     /**
      * 
      * @param type $relationType
      */
-    public function __construct($relationType)
+    public function __construct()
     {
-        if (strtolower($relationType) === 'child') {
-            $this->firstKey = "host_host_id";
-            $this->secondKey = "host_parent_hp_id";
-        } else {
-            $this->firstKey = "host_parent_hp_id";
-            $this->secondKey = "host_host_id";
-        }
+        $this->firstKey = "host_parent_hp_id";
+        $this->secondKey = "host_host_id";
         parent::__construct();
-        $this->firstObj = new $this->firstObject();
-        $this->secondObj = new $this->secondObject();
+        $this->firstObj = new static::$firstObject();
+        $this->secondObj = new static::$secondObject();
     }
     
     /**

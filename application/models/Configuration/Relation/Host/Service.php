@@ -1,12 +1,12 @@
 <?php
 
-namespace Models\Configuration;
+namespace Models\Configuration\Relation\Host;
 
-class Relation\Host\Service extends Relation
+class Service extends \Models\Configuration\Relation
 {
     protected $relationTable = "host_service_relation";
     protected $firstKey = "host_host_id";
     protected $secondKey = "service_service_id";
-    protected $firstObject = "\\Models\\Configuration\\Host";
-    protected $secondObject = "\\Models\\Configuration\\Service";
+    public static $firstObject = "Models\\Configuration\\Host";
+    public static $secondObject = "Models\\Configuration\\Service";
 }
