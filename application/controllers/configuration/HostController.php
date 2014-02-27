@@ -131,9 +131,7 @@ class HostController extends ObjectAbstract
         }
         unset($givenParameters['token']);
         
-        foreach ($givenParameters as $paramName=>$paramValue) {
-            echo $paramName . " => " . $paramValue . "<br />";
-        }
+        echo '<pre>'; var_dump($givenParameters); echo '</pre>';
     }
     
     /**

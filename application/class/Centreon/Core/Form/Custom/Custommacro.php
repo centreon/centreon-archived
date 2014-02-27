@@ -71,21 +71,25 @@ class Custommacro implements Custominterface
                        </div>
                    </div>';
         $myHtml .= '<ul id="'.$element['name'].'" class="clonable no-deco-list">
-                        <li class="clone_template" style="display:none;">
-                            <hr style="margin:2;"/>
-                            <div class="clone-cell">
-                                <span style="padding-right: 10px;">'._("Name").' : <input class="form-control" /></span>
-                                <span style="padding-right: 10px;">'._("Value").' : <input class="form-control" /></span>
-                                <span style="padding-right: 10px;">'._("Hidden").' : <input type="checkbox" /></span>
-                                <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i></span>
-                                <a id="'.$element['name'].'_remove_current" class="remove-trigger" style="padding-right:5px;cursor:pointer;">
-                                    <i class="fa fa-times-circle"></i>
-                                </a>
-                            </div>
-                            <input type="hidden" name="clone_order_'.$element['name'].'_#index#" id="clone_order_#index#" />
-                        </li>
                         <li id="'.$element['name'].'_noforms_template">
                             <p class="muted">'._('Nothing here, use the "Add" button').'</p>
+                        </li>
+                        <li id="'.$element['name'].'_clone_template" class="clone_template" style="display:none;">
+                            <hr style="margin:2;"/>
+                            <div class="row clone-cell">
+                                <div class="col-sm-1"><label class="label-controller">'._("Name").'</label></div>
+                                <div class="col-sm-3"><input class="form-control" name="macro_name[]" /></div>
+                                <div class="col-sm-1"><label class="label-controller">'._("Value").'</label></div>
+                                <div class="col-sm-3"><input class="hidden-value form-control" name="macro_value[]" /></div>
+                                <div class="col-sm-1"><label class="label-controller">'._("Hidden").'</label></div>
+                                <div class="col-sm-1"><input class="hidden-value-trigger" type="checkbox" name="macro_hidden[]" /></div>
+                                <div class="col-sm-2">
+                                    <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i><span>
+                                    &nbsp;
+                                    <span class="remove-trigger" style="cursor:pointer;"><i class="fa fa-times-circle"></i><span>
+                                </div>
+                            </div>
+                            <input type="hidden" name="clone_order_'.$element['name'].'_#index#" id="clone_order_#index#" />
                         </li>
                     </ul>';
         

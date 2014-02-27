@@ -1,7 +1,7 @@
 $('.clone-trigger').click(function() {
     
     $('.clone_template').clone()
-            .css("display", "block").removeClass('clone_template')
+            .css("display", "block").removeClass('clone_template').addClass('cloned_element')
             .appendTo('.clonable');
    
     $(".clonable").sortable({
@@ -24,8 +24,16 @@ $('.clone-trigger').click(function() {
 });
 
 $(document).on("click", '.remove-trigger', function() {
-    console.log(this);
-    var currentEl = $(this);
-    var parentEl = currentEl.parent();
-    $(parentEl).remove();
+    var $parentEl = $(this).closest('li.cloned_element');
+    $($parentEl).remove();
+});
+
+$(document).on("change", 'input.hidden-value-trigger', function() {
+    var $inputValueEl = $(this).closest('li.cloned_element').find('input.hidden-value');
+    $inputValueEl.removeAttr('type');
+    if (this.checked) {
+        $inputValueEl.attr('type', 'password');
+    } else {
+        $inputValueEl.attr('type', 'text');
+    }
 });
