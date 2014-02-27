@@ -105,7 +105,9 @@ class ServicegroupRepository extends \Centreon\Repository\Repository
         ),
         'sg_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::sg_name::'
+            )
         ),
         'sg_name' => array(
             'type' => 'url',

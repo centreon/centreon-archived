@@ -101,7 +101,9 @@ class HostgroupRepository extends \Centreon\Repository\Repository
         ),
         'hg_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::hg_name::'
+            )
         ),
         'hg_name' => array(
             'type' => 'url',

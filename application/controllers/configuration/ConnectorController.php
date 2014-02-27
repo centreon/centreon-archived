@@ -39,8 +39,12 @@ use \Models\Configuration\Connector,
     \Centreon\Core\Form,
     \Centreon\Core\Form\Generator;
 
-class ConnectorController extends \Centreon\Core\Controller
+class ConnectorController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Connector';
+    protected $objectName = 'connector';
+    protected $objectBaseUrl = '/configuration/connector';
+    protected $objectClass = '\Models\Configuration\Connector';
 
     /**
      * List connectors
@@ -51,26 +55,11 @@ class ConnectorController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
+        parent::listAction();
+    }
 
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Connector');
-        $tpl->assign('objectAddUrl', '/configuration/connector/add');
-        $tpl->assign('objectListUrl', '/configuration/connector/list');
-        $tpl->display('configuration/list.tpl');
+    public function formListAction()
+    {
     }
 
     /**
@@ -80,14 +69,7 @@ class ConnectorController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'connector',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -144,34 +126,7 @@ class ConnectorController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('connectorForm');
-        $form->addText('name', _('Name'));
-        $form->addText('description', _('Description'));
-        $form->addTextarea('command_line', _('Commande Line'));
-        
-        $radios['list'] = array(
-          array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-          ),
-          array(
-              'name' => 'Disabled',
-              'label' => 'Disabled',
-              'value' => '0'
-          )
-        );
-        $form->addRadio('status', _("Status"), 'status', '&nbsp;', $radios);
-        
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/connector/edit.tpl');
+        parent::addAction();
     }
     
     /**
@@ -215,5 +170,60 @@ class ConnectorController extends \Centreon\Core\Controller
         $tpl->assign('formName', $myForm->getName());
         $tpl->assign('validateUrl', '/configuration/connector/update');
         $tpl->display('configuration/edit.tpl');
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/connector/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/connector/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/connector/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/connector/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for hosttemplate
+     *
+     * @method post
+     * @route /configuration/connector/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }

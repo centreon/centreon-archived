@@ -108,7 +108,9 @@ class ServicecategoryRepository extends \Centreon\Repository\Repository
         ),
         'sc_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::sc_name::'
+            )
         ),
         'sc_name' => array(
             'type' => 'url',

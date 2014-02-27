@@ -49,8 +49,8 @@ use \Models\Configuration\Host,
 
 class HostController extends ObjectAbstract
 {
-    protected $objectDisplayName = 'host';
-    protected $objectName = 'Host';
+    protected $objectDisplayName = 'Host';
+    protected $objectName = 'host';
     protected $objectBaseUrl = '/configuration/host';
     protected $objectClass = '\Models\Configuration\Host';
 

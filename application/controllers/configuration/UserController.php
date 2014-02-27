@@ -37,8 +37,12 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Contact;
 
-class UserController extends \Centreon\Core\Controller
+class UserController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'User';
+    protected $objectName = 'user';
+    protected $objectBaseUrl = '/configuration/user';
+    protected $objectClass = '\Models\Configuration\Contact';
 
     /**
      * List users
@@ -48,26 +52,7 @@ class UserController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'User');
-        $tpl->assign('objectAddUrl', '/configuration/user/add');
-        $tpl->assign('objectListUrl', '/configuration/user/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
 
     /**
@@ -77,14 +62,7 @@ class UserController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'user',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -147,7 +125,7 @@ class UserController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();
     }
     
     /**
@@ -160,5 +138,60 @@ class UserController extends \Centreon\Core\Controller
     public function editAction()
     {
         
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/user/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/user/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/user/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/user/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for hosttemplate
+     *
+     * @method post
+     * @route /configuration/user/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }

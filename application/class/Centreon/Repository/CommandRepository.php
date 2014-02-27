@@ -88,7 +88,9 @@ class CommandRepository extends \Centreon\Repository\Repository
         ),
         'command_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::command_name::'
+            )
         ),
         'command_name' => array(
             'type' => 'url',

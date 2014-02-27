@@ -153,7 +153,9 @@ class ServiceRepository extends \Centreon\Repository\Repository
         ),
         'service_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::service_description::'
+            )
         ),
         'service_description' => array(
             'type' => 'url',
