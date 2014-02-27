@@ -277,8 +277,8 @@ class Form
     {
         return '<div class="form-group">'.
                 '<div class="col-sm-3" style="text-align:right">'.$inputElement['label'].'</div>'.
-                '<div class="col-sm-6">'.$inputElement['input'].'</div>'.
-                '<div class="col-sm-3"><input type="text" disabled="disabled" value="inherited" /></div>'.
+                '<div class="col-sm-9">'.$inputElement['input'].'</div>'.
+                //'<div class="col-sm-3"><input type="text" disabled="disabled" value="inherited" /></div>'.
                 '</div>';
     }
     

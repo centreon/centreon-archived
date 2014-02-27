@@ -34,7 +34,7 @@
  */
 namespace Centreon\Core\Form\Custom;
 
-class Text implements Custominterface
+class Custommacro implements Custominterface
 {
     /**
      * 
@@ -57,19 +57,40 @@ class Text implements Custominterface
             $element['id'] = $element['name'];
         }
         
-        $myJs = "";
+        // Load JsFile
+        $tpl = \Centreon\Core\Di::getDefault()->get('template');
+        $tpl->addJs('centreon-clone.js');
         
-        $inputHtml = '<input '.
-                        'id="'.$element['id'].'" '.
-                        'type="text" '.
-                        'name="'.$element['name'].'" '.
-                        $value.
-                        'class="form-control" '.
-                        $placeholder.
-                        '/>';
+        $myJs = '';
+        
+        $myHtml = '<div id="'.$element['name'].'_controls">
+                       <div id="'.$element['name'].'_add" class="clone-trigger">
+                           <a id="'.$element['name'].'_add_link" class="addclone" style="padding-right:5px;cursor:pointer;">
+                               '._("Add a new entry").' <i data-action="add" class="fa fa-plus-square"></i>
+                           </a>
+                       </div>
+                   </div>';
+        $myHtml .= '<ul id="'.$element['name'].'" class="clonable no-deco-list">
+                        <li class="clone_template" style="display:none;">
+                            <hr style="margin:2;"/>
+                            <div class="clone-cell">
+                                <span style="padding-right: 10px;">'._("Name").' : <input class="form-control" /></span>
+                                <span style="padding-right: 10px;">'._("Value").' : <input class="form-control" /></span>
+                                <span style="padding-right: 10px;">'._("Hidden").' : <input type="checkbox" /></span>
+                                <span class="clonehandle" style="cursor:move;"><i class="fa fa-arrows"></i></span>
+                                <a id="'.$element['name'].'_remove_current" class="remove-trigger" style="padding-right:5px;cursor:pointer;">
+                                    <i class="fa fa-times-circle"></i>
+                                </a>
+                            </div>
+                            <input type="hidden" name="clone_order_'.$element['name'].'_#index#" id="clone_order_#index#" />
+                        </li>
+                        <li id="'.$element['name'].'_noforms_template">
+                            <p class="muted">'._('Nothing here, use the "Add" button').'</p>
+                        </li>
+                    </ul>';
         
         return array(
-            'html' => $inputHtml,
+            'html' => $myHtml,
             'js' => $myJs
         );
     }

@@ -82,8 +82,10 @@ class HostController extends \Centreon\Core\Controller
         $tpl->assign('objectName', 'Host');
         $tpl->assign('objectAddUrl', '/configuration/host/add');
         $tpl->assign('objectListUrl', '/configuration/host/list');
+        $tpl->assign('objectMcUrl', '/configuration/host/massive_change');
         $tpl->assign('objectMcFieldsUrl', '/configuration/host/mc_fields');
         $tpl->assign('objectDuplicateUrl', '/configuration/host/duplicate');
+        $tpl->assign('objectDeleteUrl', '/configuration/host/delete');
         $tpl->display('configuration/list.tpl');
     }
     
@@ -438,13 +440,18 @@ class HostController extends \Centreon\Core\Controller
         $filters = array('host.host_id' => $requestParam['id']);
         $hostList = $hostObj->getList('timeperiod_tp_id', -1, 0, null, "ASC", $filters, "AND");
         
+        if (count($hostList) == 0) {
+            $router->response()->json(array('id' => null, 'text' => null));
+            return;
+        }
+        
         $timeperiodObj = new Timeperiod();
         $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id']);
         $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
         
         $finalTimeperiodList = array(
             "id" => $timeperiodList[0]['tp_id'],
-                "text" => $timeperiodList[0]['tp_name']
+            "text" => $timeperiodList[0]['tp_name']
         );
         
         $router->response()->json($finalTimeperiodList);
@@ -614,6 +621,48 @@ class HostController extends \Centreon\Core\Controller
         foreach ($listDuplicate as $id => $nb) {
             $hostObj->duplicate($id, $nb);
         }
+        $di->get('router')->response()->json(array(
+            'success' => true
+        ));
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/host/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $params = $di->get('router')->request()->paramsPost();
+
+        $hostObj = new Host();
+        foreach ($params['ids'] as $id) {
+            $hostObj->update($id, $params['values']);
+        }
+
+        $di->get('router')->response()->json(array(
+            'success' => true
+        ));
+    }
+
+    /**
+     * Delete action for host
+     *
+     * @method post
+     * @route /configuration/host/delete
+     */
+    public function deleteAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $params = $di->get('router')->request()->paramsPost();
+
+        $hostObj = new Host();
+        foreach ($params['ids'] as $id) {
+            $hostObj->delete($id);
+        }
+
         $di->get('router')->response()->json(array(
             'success' => true
         ));
