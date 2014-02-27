@@ -39,7 +39,7 @@ namespace Models\Configuration\Relation\Host;
 
 use \Models\Configuration\Relation;
 
-class Hostparent extends Relation
+class Hostchild extends Relation
 {
     protected $relationTable = "host_hostparent_relation";
     protected $firstKey;
@@ -53,8 +53,8 @@ class Hostparent extends Relation
      */
     public function __construct()
     {
-        $this->firstKey = "host_parent_hp_id";
-        $this->secondKey = "host_host_id";
+        $this->firstKey = "host_host_id";
+        $this->secondKey = "host_parent_hp_id";
         parent::__construct();
         $this->firstObj = new static::$firstObject();
         $this->secondObj = new static::$secondObject();

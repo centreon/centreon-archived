@@ -47,8 +47,12 @@ use \Models\Configuration\Host,
     \Centreon\Core\Form,
     \Centreon\Core\Form\Generator;
 
-class HostController extends \Centreon\Core\Controller
+class HostController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'host';
+    protected $objectName = 'Host';
+    protected $objectBaseUrl = '/configuration/host';
+    protected $objectClass = '\Models\Configuration\Host';
 
     /**
      * List hosts
@@ -58,35 +62,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css')
-            ->addCss('select2.css')
-            ->addCss('select2-bootstrap.css')
-            ->addCss('centreon-wizard.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js')
-            ->addJs('jquery.select2/select2.min.js')
-            ->addJs('centreon-wizard.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Host');
-        $tpl->assign('objectAddUrl', '/configuration/host/add');
-        $tpl->assign('objectListUrl', '/configuration/host/list');
-        $tpl->assign('objectMcUrl', '/configuration/host/massive_change');
-        $tpl->assign('objectMcFieldsUrl', '/configuration/host/mc_fields');
-        $tpl->assign('objectDuplicateUrl', '/configuration/host/duplicate');
-        $tpl->assign('objectDeleteUrl', '/configuration/host/delete');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
     
     /**
@@ -124,14 +100,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'host',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -139,6 +108,7 @@ class HostController extends \Centreon\Core\Controller
      *
      * @method post
      * @route /configuration/host/create
+     * @todo
      */
     public function createAction()
     {
@@ -172,13 +142,11 @@ class HostController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        $form = new \Centreon\Core\Form\Wizard('/configuration/host/add', 0, array('id' => 0));
-        echo $form->generate();
+        parent::addAction();
     }
     
     /**
      * Update a host
-     *
      *
      * @method get
      * @route /configuration/host/[i:id]
@@ -526,26 +494,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function getMassiveChangeFieldsAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        $dbconn = $di->get('db_centreon');
-
-        $data = array(
-            'listMc' => array()
-        );
-
-        $stmt = $dbconn->prepare("SELECT f.field_id, f.label
-            FROM form_field f, form_massive_change_field_relation mcfr, form_massive_change mc
-            WHERE mc.route = :route
-                AND mc.massive_change_id = mcfr.massive_change_id
-                AND f.field_id = mcfr.field_id");
-        $stmt->bindValue(':route', '/configuration/host/mc_fields', \PDO::PARAM_STR);
-        $stmt->execute();
-        while ($row = $stmt->fetch()) {
-            $data['listMc'][$row['field_id']] = $row['label'];
-        }
-
-        $router->response()->json($data);
+        parent::getMassiveChangeFieldsAction();
     }
 
     /**
@@ -556,24 +505,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function getMcFieldAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        $dbconn = $di->get('db_centreon');
-        $tpl = $di->get('template');
-        
-        $requestParam = $this->getParams('named');
-
-        $stmt = $dbconn->prepare("SELECT name, label, default_value, attributes, type, help
-            FROM form_field
-            WHERE field_id = :id");
-        $stmt->bindValue(':id', $requestParam['id'], \PDO::PARAM_INT);
-        $stmt->execute();
-        $row = $stmt->fetch();
-        $form = new \Centreon\Core\Form('default');
-        $form->add($row, array('id' => 0));
-        $formElements = $form->toSmarty();
-        $tpl->assign('field', $formElements[$row['name']]['html']);
-        $tpl->display('tools/mcField.tpl');
+        parent::getMcFieldAction();
     }
     
     /**
@@ -610,18 +542,9 @@ class HostController extends \Centreon\Core\Controller
      * @method POST
      * @route /configuration/host/duplicate
      */
-    public function duplicateHostAction()
+    public function duplicateAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
-
-        $hostObj = new Host();
-        foreach ($listDuplicate as $id => $nb) {
-            $hostObj->duplicate($id, $nb);
-        }
-        $di->get('router')->response()->json(array(
-            'success' => true
-        ));
+        parent::duplicateAction();
     }
 
     /**
@@ -632,17 +555,7 @@ class HostController extends \Centreon\Core\Controller
      */
     public function massiveChangeAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->paramsPost();
-
-        $hostObj = new Host();
-        foreach ($params['ids'] as $id) {
-            $hostObj->update($id, $params['values']);
-        }
-
-        $di->get('router')->response()->json(array(
-            'success' => true
-        ));
+        parent::massiveChangeAction();
     }
 
     /**
@@ -653,16 +566,6 @@ class HostController extends \Centreon\Core\Controller
      */
     public function deleteAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $params = $di->get('router')->request()->paramsPost();
-
-        $hostObj = new Host();
-        foreach ($params['ids'] as $id) {
-            $hostObj->delete($id);
-        }
-
-        $di->get('router')->response()->json(array(
-            'success' => true
-        ));
+        parent::deleteAction();
     }
 }
