@@ -41,25 +41,12 @@ use \Models\Configuration\Relation;
 
 class Hostparent extends Relation
 {
-    protected $relationTable = "host_hostparent_relation";
-    protected $firstKey;
-    protected $secondKey;
-    public static $firstObject = "Models\\Configuration\\Host";
-    public static $secondObject = "Models\\Configuration\\Host";
+    protected static $relationTable = "host_hostparent_relation";
+    protected static $firstKey = "host_parent_hp_id";
+    protected static $secondKey = "host_host_id";
+    protected static $firstObject = "\\Models\\Configuration\\Host";
+    protected static $secondObject = "\\Models\\Configuration\\Host";
 
-    /**
-     * 
-     * @param type $relationType
-     */
-    public function __construct()
-    {
-        $this->firstKey = "host_parent_hp_id";
-        $this->secondKey = "host_host_id";
-        parent::__construct();
-        $this->firstObj = new static::$firstObject();
-        $this->secondObj = new static::$secondObject();
-    }
-    
     /**
      * Get Merged Parameters from seperate tables
      *
@@ -72,29 +59,28 @@ class Hostparent extends Relation
      * @param string $filterType
      * @return array
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
+    public static function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
-        if (!isset($this->firstObj) || !isset($this->secondObj)) {
-            throw new Exception('Unsupported method on this object');
-        }
         $fString = "";
         $sString = "";
+        $firstObj = static::$firstObject;
         foreach ($firstTableParams as $fparams) {
             if ($fString != "") {
                 $fString .= ",";
             }
-            $fString .= $this->firstObj->getTableName().".".$fparams;
+            $fString .= $firstObj::getTableName().".".$fparams;
         }
+        $secondObj = static::$secondObject;
         foreach ($secondTableParams as $sparams) {
             if ($fString != "" || $sString != "") {
                 $sString .= ",";
             }
-            $sString .= $this->secondObj->getTableName().".".$sparams;
+            $sString .= $secondObj::getTableName().".".$sparams;
         }
         
         $sql = "SELECT ".$fString.$sString."
-        		FROM host, ".$this->relationTable."
-        		WHERE ".$this->firstObj->getTableName().".".$this->firstObj->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey;
+        		FROM host, ".static::$relationTable."
+        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
@@ -110,9 +96,10 @@ class Hostparent extends Relation
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $sql = $this->db->limit($sql, $count, $offset);
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            $sql = $db->limit($sql, $count, $offset);
         }
-        $result = $this->getResult($sql, $filterTab);
+        $result = static::getResult($sql, $filterTab);
         return $result;
     }
 }

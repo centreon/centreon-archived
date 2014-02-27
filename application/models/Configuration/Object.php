@@ -45,24 +45,19 @@ namespace Models\Configuration;
 abstract class Object
 {
     /**
-     * Database Connector
-     */
-    protected $db;
-
-    /**
      * Table name of the object
      */
-    protected $table = null;
+    protected static $table = null;
 
     /**
      * Primary key name
      */
-    protected $primaryKey = null;
+    protected static $primaryKey = null;
 
     /**
      * Unique label field
      */
-    protected $uniqueLabelField = null;
+    protected static $uniqueLabelField = null;
 
 
     /**
@@ -70,17 +65,7 @@ abstract class Object
      *
      * @var array of strings
      */
-    public static $relations = array();
-
-    /**
-     * Constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-    }
+    protected static $relations = array();
 
     /**
      * Get result from sql query
@@ -90,9 +75,10 @@ abstract class Object
      * @param string $fetchMethod
      * @return array
      */
-    protected function getResult($sqlQuery, $sqlParams = array(), $fetchMethod = "fetchAll")
+    protected static function getResult($sqlQuery, $sqlParams = array(), $fetchMethod = "fetchAll")
     {
-        $stmt = $this->db->prepare($sqlQuery);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sqlQuery);
         $stmt->execute($sqlParams);
         $result = $stmt->{$fetchMethod}(\PDO::FETCH_ASSOC);
         return $result;
@@ -104,14 +90,15 @@ abstract class Object
      * @param array $params
      * @return int
      */
-    public function insert($params = array())
+    public static function insert($params = array())
     {
-        $sql = "INSERT INTO $this->table ";
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $sql = "INSERT INTO " . static::$table;
         $sqlFields = "";
         $sqlValues = "";
         $sqlParams = array();
         foreach ($params as $key => $value) {
-            if ($key == $this->primaryKey || is_null($value)) {
+            if ($key == static::$primaryKey || is_null($value)) {
                 continue;
             }
             if ($sqlFields != "") {
@@ -126,9 +113,9 @@ abstract class Object
         }
         if ($sqlFields && $sqlValues) {
             $sql .= "(".$sqlFields.") VALUES (".$sqlValues.")";
-            $stmt = $this->db->prepare($sql);
+            $stmt = $db->prepare($sql);
             $stmt->execute($sqlParams);
-            return $this->db->lastInsertId($this->table, $this->primaryKey);
+            return $db->lastInsertId(static::$table, static::$primaryKey);
         }
         return null;
     }
@@ -138,10 +125,11 @@ abstract class Object
      *
      * @param int $objectId
      */
-    public function delete($objectId)
+    public static function delete($objectId)
     {
-        $sql = "DELETE FROM  $this->table WHERE $this->primaryKey = ?";
-        $stmt = $this->db->prepare($sql);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $sql = "DELETE FROM  " . self::$table . " WHERE ". static::$primaryKey . " = ?";
+        $stmt = $db->prepare($sql);
         $stmt->execute(array($objectId));
     }
 
@@ -152,16 +140,16 @@ abstract class Object
      * @param array $params
      * @return void
      */
-    public function update($objectId, $params = array())
+    public static function update($objectId, $params = array())
     {
-        $sql = "UPDATE $this->table SET ";
+        $sql = "UPDATE " . static::$table . " SET ";
         $sqlUpdate = "";
         $sqlParams = array();
         $not_null_attributes = array();
 
         if (array_search("", $params)) {
-            $sql_attr = "SHOW FIELDS FROM $this->table";
-            $res = $this->getResult($sql_attr, array(), "fetchAll");
+            $sql_attr = "SHOW FIELDS FROM " . static::$table;
+            $res = static::getResult($sql_attr, array(), "fetchAll");
             foreach ($res as $tab) {
                 if ($tab['Null'] == 'NO') {
                     $not_null_attributes[$tab['Field']] = true;
@@ -170,7 +158,7 @@ abstract class Object
         }
 
         foreach ($params as $key => $value) {
-            if ($key == $this->primaryKey) {
+            if ($key == static::$primaryKey) {
                 continue;
             }
             if ($sqlUpdate != "") {
@@ -185,9 +173,10 @@ abstract class Object
         }
 
         if ($sqlUpdate) {
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
             $sqlParams[] = $objectId;
-            $sql .= $sqlUpdate . " WHERE $this->primaryKey = ?";
-            $stmt = $this->db->prepare($sql);
+            $sql .= $sqlUpdate . " WHERE " . static::$primaryKey . " = ?";
+            $stmt = $db->prepare($sql);
             $stmt->execute($sqlParams);
         }
     }
@@ -197,26 +186,26 @@ abstract class Object
      *
      * @param int $sourceObjectId
      * @param int $duplicateEntries
-     * @todo relations
      */
-    public function duplicate($sourceObjectId, $duplicateEntries = 1)
+    public static function duplicate($sourceObjectId, $duplicateEntries = 1)
     {
-        $sourceParams = $this->getParameters($sourceObjectId, "*");
-        if (isset($sourceParams[$this->primaryKey])) {
-            unset($sourceParams[$this->primaryKey]);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $sourceParams = static::getParameters($sourceObjectId, "*");
+        if (isset($sourceParams[static::$primaryKey])) {
+            unset($sourceParams[static::$primaryKey]);
         }
-        $originalName = $sourceParams[$this->uniqueLabelField];
+        $originalName = $sourceParams[static::$uniqueLabelField];
         $firstKeyCopy = array();
         $secondKeyCopy = array();
         foreach (static::$relations as $relation) {
             $relationObj = new $relation();
-            if ($relation::$firstObject == get_called_class()) {
+            if ($relation::$firstObject == "\\".get_called_class()) {
                 $firstKeyCopy[$relation] = $relationObj->getTargetIdFromSourceId(
                     $relationObj->getSecondKey(),
                     $relationObj->getFirstKey(),
                     $sourceObjectId
                 );
-            } elseif ($relation::$secondObject == get_called_class()) {
+            } elseif ($relation::$secondObject == "\\".get_called_class()) {
                 $secondKeyCopy[$relation] = $relationObj->getTargetIdFromSourceId(
                     $relationObj->getFirstKey(),
                     $relationObj->getSecondKey(),
@@ -228,28 +217,24 @@ abstract class Object
         $i = 1;
         $j = 1;
         while ($i <= $duplicateEntries) {
-            if (isset($sourceParams[$this->uniqueLabelField]) && isset($originalName)) {
-                $sourceParams[$this->uniqueLabelField] = $originalName . "_" . $j;
+            if (isset($sourceParams[static::$uniqueLabelField]) && isset($originalName)) {
+                $sourceParams[static::$uniqueLabelField] = $originalName . "_" . $j;
             }
-            $ids = $this->getIdByParameter($this->uniqueLabelField, array($sourceParams[$this->uniqueLabelField]));
+            $ids = static::getIdByParameter(static::$uniqueLabelField, array($sourceParams[static::$uniqueLabelField]));
             if (!count($ids)) {
-                $lastId = $this->insert($sourceParams);
-                $this->db->beginTransaction();
+                $lastId = static::insert($sourceParams);
+                $db->beginTransaction();
                 foreach ($firstKeyCopy as $relation => $idArray) {
-                    $relationObj = new $relation();
                     foreach ($idArray as $relationId) {
-                        $relationObj->insert($lastId, $relationId);
+                        $relation::insert($lastId, $relationId);
                     }
-                    unset($relationObj);
                 }
                 foreach ($secondKeyCopy as $relation => $idArray) {
-                    $relationObj = new $relation();
                     foreach ($idArray as $relationId) {
-                        $relationObj->insert($relationId, $lastId);
+                        $relation::insert($relationId, $lastId);
                     }
-                    unset($relationObj);
                 }
-                $this->db->commit();
+                $db->commit();
                 $i++;
             }
             $j++;
@@ -263,15 +248,15 @@ abstract class Object
      * @param mixed $parameterNames
      * @return array
      */
-    public function getParameters($objectId, $parameterNames)
+    public static function getParameters($objectId, $parameterNames)
     {
         if (is_array($parameterNames)) {
             $params = implode(",", $parameterNames);
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM $this->table WHERE $this->primaryKey = ?";
-        return $this->getResult($sql, array($objectId), "fetch");
+        $sql = "SELECT $params FROM " . static::$table . " WHERE ". static::$primaryKey . " = ?";
+        return static::getResult($sql, array($objectId), "fetch");
     }
 
     /**
@@ -289,7 +274,7 @@ abstract class Object
      * @return array
      * @throws Exception
      */
-    public function getList($parameterNames = "*", $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
+    public static function getList($parameterNames = "*", $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
         if ($filterType != "OR" && $filterType != "AND") {
             throw new Exception('Unknown filter type');
@@ -299,7 +284,7 @@ abstract class Object
         } else {
             $params = $parameterNames;
         }
-        $sql = "SELECT $params FROM $this->table ";
+        $sql = "SELECT $params FROM " . static::$table;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
@@ -319,9 +304,10 @@ abstract class Object
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $sql = $this->db->limit($sql, $count, $offset);
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            $sql = $db->limit($sql, $count, $offset);
         }
-        return $this->getResult($sql, $filterTab, "fetchAll");
+        return static::getResult($sql, $filterTab, "fetchAll");
     }
 
     /**
@@ -332,9 +318,9 @@ abstract class Object
      * @param array $paramValues
      * @return array
      */
-    public function getIdByParameter($paramName, $paramValues = array())
+    public static function getIdByParameter($paramName, $paramValues = array())
     {
-        $sql = "SELECT $this->primaryKey FROM $this->table WHERE ";
+        $sql = "SELECT " . static::$primaryKey . " FROM " . static::$table . " WHERE ";
         $condition = "";
         if (!is_array($paramValues)) {
             $paramValues = array($paramValues);
@@ -347,10 +333,10 @@ abstract class Object
         }
         if ($condition) {
             $sql .= $condition;
-            $rows = $this->getResult($sql, $paramValues, "fetchAll");
+            $rows = static::getResult($sql, $paramValues, "fetchAll");
             $tab = array();
             foreach ($rows as $val) {
-                $tab[] = $val[$this->primaryKey];
+                $tab[] = $val[static::$primaryKey];
             }
             return $tab;
         }
@@ -369,7 +355,7 @@ abstract class Object
     public function __call($name, $args)
     {
         if (preg_match('/^getIdBy([a-zA-Z0-9_]+)/', $name, $matches)) {
-            return $this->getIdByParameter($matches[1], $args);
+            return static::getIdByParameter($matches[1], $args);
         } else {
             throw new Exception('Unknown method');
         }
@@ -380,9 +366,9 @@ abstract class Object
      *
      * @return string
      */
-    public function getPrimaryKey()
+    public static function getPrimaryKey()
     {
-        return $this->primaryKey;
+        return static::$primaryKey;
     }
 
     /**
@@ -390,9 +376,9 @@ abstract class Object
      *
      * @return string
      */
-    public function getUniqueLabelField()
+    public static function getUniqueLabelField()
     {
-        return $this->uniqueLabelField;
+        return static::$uniqueLabelField;
     }
 
     /**
@@ -400,8 +386,8 @@ abstract class Object
      *
      * @return string
      */
-    public function getTableName()
+    public static function getTableName()
     {
-        return $this->table;
+        return static::$table;
     }
 }

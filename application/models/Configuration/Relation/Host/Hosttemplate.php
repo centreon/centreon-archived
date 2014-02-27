@@ -39,11 +39,11 @@ namespace Models\Configuration;
 
 class Relation\Host\Hosttemplate extends Centreon_Object_Relation
 {
-    protected $relationTable = "host_template_relation";
-    protected $firstKey = "host_tpl_id";
-    protected $secondKey = "host_host_id";
-    public static $firstObject = "Models\\Configuration\\Host";
-    public static $secondObject = "Models\\Configuration\\Host";
+    protected static $relationTable = "host_template_relation";
+    protected static $firstKey = "host_tpl_id";
+    protected static $secondKey = "host_host_id";
+    protected static $firstObject = "\\Models\\Configuration\\Host";
+    protected static $secondObject = "\\Models\\Configuration\\Host";
 
     public function __construct()
     {

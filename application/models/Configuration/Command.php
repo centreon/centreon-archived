@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Command extends Object
 {
-    protected $table = "command";
-    protected $primaryKey = "command_id";
-    protected $uniqueLabelField = "command_name";
+    protected static $table = "command";
+    protected static $primaryKey = "command_id";
+    protected static $uniqueLabelField = "command_name";
 }

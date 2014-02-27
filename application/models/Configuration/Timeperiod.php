@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Timeperiod extends Object
 {
-    protected $table = "timeperiod";
-    protected $primaryKey = "tp_id";
-    protected $uniqueLabelField = "tp_name";
+    protected static $table = "timeperiod";
+    protected static $primaryKey = "tp_id";
+    protected static $uniqueLabelField = "tp_name";
 }

@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Contact extends Object
 {
-    protected $table = "contact";
-    protected $primaryKey = "contact_id";
-    protected $uniqueLabelField = "contact_name";
+    protected static $table = "contact";
+    protected static $primaryKey = "contact_id";
+    protected static $uniqueLabelField = "contact_name";
 }

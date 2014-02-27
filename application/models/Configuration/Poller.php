@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Poller extends Object
 {
-    protected $table = "nagios_server";
-    protected $primaryKey = "id";
-    protected $uniqueLabelField = "name";
+    protected static $table = "nagios_server";
+    protected static $primaryKey = "id";
+    protected static $uniqueLabelField = "name";
 }

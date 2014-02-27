@@ -41,9 +41,9 @@ use \Models\Configuration\Relation;
 
 class Contactgroup extends Relation
 {
-    protected $relationTable = "contactgroup_host_relation";
-    protected $firstKey = "contactgroup_cg_id";
-    protected $secondKey = "host_host_id";
-    public static $firstObject = "Models\\Configuration\\Contactgroup";
-    public static $secondObject = "Models\\Configuration\\Host";
+    protected static $relationTable = "contactgroup_host_relation";
+    protected static $firstKey = "contactgroup_cg_id";
+    protected static $secondKey = "host_host_id";
+    protected static $firstObject = "\\Models\\Configuration\\Contactgroup";
+    protected static $secondObject = "\\Models\\Configuration\\Host";
 }

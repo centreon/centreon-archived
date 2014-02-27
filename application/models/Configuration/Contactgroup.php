@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Contactgroup extends Object
 {
-    protected $table = "contactgroup";
-    protected $primaryKey = "cg_id";
-    protected $uniqueLabelField = "cg_name";
+    protected static $table = "contactgroup";
+    protected static $primaryKey = "cg_id";
+    protected static $uniqueLabelField = "cg_name";
 }

@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Hostcategory extends Object
 {
-    protected $table = "hostcategories";
-    protected $primaryKey = "hc_id";
-    protected $uniqueLabelField = "hc_name";
+    protected static $table = "hostcategories";
+    protected static $primaryKey = "hc_id";
+    protected static $uniqueLabelField = "hc_name";
 }

@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Hostgroup extends Object
 {
-    protected $table = "hostgroup";
-    protected $primaryKey = "hg_id";
-    protected $uniqueLabelField = "hg_name";
+    protected static $table = "hostgroup";
+    protected static $primaryKey = "hg_id";
+    protected static $uniqueLabelField = "hg_name";
 }

@@ -45,47 +45,30 @@ namespace Models\Configuration;
 abstract class Relation
 {
     /**
-     * Database Connector
-     */
-    protected $db;
-
-    /**
      * Relation Table
      */
-    protected $relationTable = null;
+    protected static $relationTable = null;
 
     /**
      * First key
      */
-    protected $firstKey = null;
+    protected static $firstKey = null;
 
     /**
      * Second key
      */
-    protected $secondKey = null;
+    protected static $secondKey = null;
 
     /**
      * @var string
      */
-    public static $firstObject = null;
+    protected static $firstObject = null;
 
     /**
      *
      * @var string
      */
-    public static $secondObject = null;
-
-    /**
-     * Constructor
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->db = \Centreon\Core\Di::getDefault()->get('db_centreon');
-        $this->firstObj = new static::$firstObject();
-        $this->secondObj = new static::$secondObject();
-    }
+    protected static $secondObject = null;
 
     /**
      * Used for inserting relation into database
@@ -94,10 +77,12 @@ abstract class Relation
      * @param int $skey
      * @return void
      */
-    public function insert($fkey, $skey = null)
+    public static function insert($fkey, $skey = null)
     {
-        $sql = "INSERT INTO $this->relationTable ($this->firstKey, $this->secondKey) VALUES (?, ?)";
-        $stmt = $this->db->prepare($sql);
+        $sql = "INSERT INTO " . static::$relationTable . " ( " . static::$firstKey . ", " . static::$secondKey . ") 
+            VALUES (?, ?)";
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey, $skey));
     }
 
@@ -108,25 +93,35 @@ abstract class Relation
      * @param int $skey
      * @return void
      */
-    public function delete($fkey, $skey = null)
+    public static function delete($fkey, $skey = null)
     {
         if (isset($fkey) && isset($skey)) {
-            $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ? AND $this->secondKey = ?";
+            $sql = "DELETE FROM " . static::$relationTable . 
+                "WHERE " . static::$firstKey . " = ? AND " . static::$secondKey . " = ?";
             $args = array($fkey, $skey);
         } elseif (isset($skey)) {
-            $sql = "DELETE FROM $this->relationTable WHERE $this->secondKey = ?";
+            $sql = "DELETE FROM " . static::$relationTable . " WHERE ". static::$secondKey . " = ?";
             $args = array($skey);
         } else {
-            $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ?";
+            $sql = "DELETE FROM " . static::$relationTable . " WHERE " . static::$firstKey . " = ?";
             $args = array($fkey);
         }
-        $stmt = $this->db->prepare($sql);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
         $stmt->execute($args);
     }
 
-    protected function getResult($sql, $params = array())
+    /**
+     * Get result
+     *
+     * @param string $sql
+     * @param array $params
+     * @return array
+     */
+    protected static function getResult($sql, $params = array())
     {
-        $stmt = $this->db->prepare($sql);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $stmt = $db->prepare($sql);
         $stmt->execute($params);
         $result = $stmt->fetchAll(\PDO::FETCH_ASSOC);
         return $result;
@@ -145,38 +140,37 @@ abstract class Relation
      * @param array $relationTableParams
      * @return array
      */
-    public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, 
+    public static function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, 
         $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR", 
         $relationTableParams = array())
     {
-        if (!isset($this->firstObj) || !isset($this->secondObj)) {
-            throw new Exception('Unsupported method on this object');
-        }
         $fString = "";
         $sString = "";
         $rString = "";
+        $firstObj = static::$firstObject;
         foreach ($firstTableParams as $fparams) {
             if ($fString != "") {
                 $fString .= ",";
             }
-            $fString .= $this->firstObj->getTableName().".".$fparams;
+            $fString .= $firstObj::getTableName().".".$fparams;
         }
+        $secondObj = static::$secondObject;
         foreach ($secondTableParams as $sparams) {
             if ($fString != "" || $sString != "") {
                 $sString .= ",";
             }
-            $sString .= $this->secondObj->getTableName().".".$sparams;
+            $sString .= $secondObj::getTableName().".".$sparams;
         }
         foreach ($relationTableParams as $rparams) {
             if ($fString != "" || $sString != "" || $rString != "") {
                 $rString .= ",";
             }
-            $rString .= $this->relationTable.".".$rparams;
+            $rString .= static::$relationTable.".".$rparams;
         }
         $sql = "SELECT $fString $sString $rString
-        		FROM ".$this->firstObj->getTableName().",".$this->secondObj->getTableName().",".$this->relationTable."
-        		WHERE ".$this->firstObj->getTableName().".".$this->firstObj->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey."
-        		AND ".$this->relationTable.".".$this->secondKey." = ".$this->secondObj->getTableName().".".$this->secondObj->getPrimaryKey();
+        		FROM ". $firstObj::getTableName().",".$secondObj::getTableName().",". static::$relationTable."
+        		WHERE ".$firstObj::getTableName().".".$firstObj::getPrimaryKey()." = ".static::$relationTable.".".static::$firstKey."
+        		AND ".static::$relationTable.".".static::$secondKey." = ".$secondObj::getTableName().".".$secondObj::getPrimaryKey();
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
@@ -192,9 +186,10 @@ abstract class Relation
             $sql .= " ORDER BY $order $sort ";
         }
         if (isset($count) && $count != -1) {
-            $sql = $this->db->limit($sql, $count, $offset);
+            $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+            $sql = $db->limit($sql, $count, $offset);
         }
-        $result = $this->getResult($sql, $filterTab);
+        $result = static::getResult($sql, $filterTab);
         return $result;
     }
 
@@ -207,13 +202,13 @@ abstract class Relation
      * @param array $sourceId
      * @return array
      */
-    public function getTargetIdFromSourceId($targetKey, $sourceKey, $sourceId)
+    public static function getTargetIdFromSourceId($targetKey, $sourceKey, $sourceId)
     {
         if (!is_array($sourceId)) {
             $sourceId = array($sourceId);
         }
-        $sql = "SELECT $targetKey FROM $this->relationTable WHERE $sourceKey = ?";
-        $result = $this->getResult($sql, $sourceId);
+        $sql = "SELECT $targetKey FROM " . static::$relationTable . " WHERE $sourceKey = ?";
+        $result = static::getResult($sql, $sourceId);
         $tab = array();
         foreach ($result as $rez) {
             $tab[] = $rez[$targetKey];
@@ -235,25 +230,23 @@ abstract class Relation
         if (!count($args)) {
             throw new Exception('Missing arguments');
         }
-        if (!isset($this->secondKey)) {
+        if (!isset(static::$secondKey)) {
             throw new Exception("Not a relation table");
         }
         if (preg_match('/^get([a-zA-Z0-9_]+)From([a-zA-Z0-9_]+)/', $name, $matches)) {
-
-            if (($matches[1] != $this->firstKey && $matches[1] != $this->secondKey) ||
-                ($matches[2] != $this->firstKey && $matches[2] != $this->secondKey)) {
+            if (($matches[1] != static::$firstKey && $matches[1] != static::$secondKey) ||
+                ($matches[2] != static::$firstKey && $matches[2] != static::$secondKey)) {
                 throw new Exception('Unknown field');
             }
-            return $this->getTargetIdFromSourceId($matches[1], $matches[2], $args);
+            return static::getTargetIdFromSourceId($matches[1], $matches[2], $args);
         } elseif (preg_match('/^delete_([a-zA-Z0-9_]+)/', $name, $matches)) {
-            if ($matches[1] == $this->firstKey) {
-                $this->delete($args[0]);
-            } elseif ($matches[1] == $this->secondKey) {
-                $this->delete(null, $args[0]);
+            if ($matches[1] == static::$firstKey) {
+                static::delete($args[0]);
+            } elseif ($matches[1] == static::$secondKey) {
+                static::delete(null, $args[0]);
             } else {
                 throw new Exception('Unknown field');
             }
-
         } else {
             throw new Exception('Unknown method');
         }
@@ -264,9 +257,9 @@ abstract class Relation
      *
      * @return string
      */
-    public function getFirstKey()
+    public static function getFirstKey()
     {
-        return $this->firstKey;
+        return static::$firstKey;
     }
 
     /**
@@ -274,8 +267,8 @@ abstract class Relation
      *
      * @return string
      */
-    public function getSecondKey()
+    public static function getSecondKey()
     {
-        return $this->secondKey;
+        return static::$secondKey;
     }
 }
