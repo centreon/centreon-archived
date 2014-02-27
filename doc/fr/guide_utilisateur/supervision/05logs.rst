@@ -19,7 +19,8 @@ Visualisation
 
 Pour visualiser les journaux d'évènements, rendez-vous dans le menu **Supervision** ==> **Journaux d'évènements**.
 
-[ TODO Mettre l'image : images/02.png]
+.. image :: /images/guide_utilisateur/supervision/05log.png
+   :align: center
 
 Le menu de gauche permet de sélectionner les hôtes et/ou les services pour lesquels on souhaite visualiser les journaux d'évènements.
 

@@ -95,15 +95,15 @@ Par défaut, lors de la visualisation des statuts des hôtes ou des services, le
 Cependant, plusieurs icônes permettent de contrôler le rafraichissement des données.
 Le tableau ci-dessous résume les différentes fonctions de ces icônes :
 
-+-------------------------+----------------------------------------------------------------------+
-|   Icône                 |   Description                                                        | 
-+=========================+======================================================================+
-| [ TODO Mettre l'icône]  | Permet de rafraichir manuellement les résultats                      |
-+-------------------------+----------------------------------------------------------------------+
-| [ TODO Mettre l'icône]  | Permet de mettre en pause le rafrachissement automatique des données |
-+-------------------------+----------------------------------------------------------------------+
-| [ TODO Mettre l'icône]  | Permet de reprendre le rafrachissement automatique des données       |
-+-------------------------+----------------------------------------------------------------------+
++------------+----------------------------------------------------------------------+
+|   Icône    |   Description                                                        | 
++============+======================================================================+
+| |refresh|  | Permet de rafraichir manuellement les résultats                      |
++------------+----------------------------------------------------------------------+
+| |pause|    | Permet de mettre en pause le rafrachissement automatique des données |
++------------+----------------------------------------------------------------------+
+| |resume|   | Permet de reprendre le rafrachissement automatique des données       |
++------------+----------------------------------------------------------------------+
 
 *****
 Hôtes
@@ -127,7 +127,8 @@ Le menu de gauche permet de modifier les hôtes visibles au sein du tableau :
 * Pour visualiser tous les hôtes, cliquez sur **Hôtes**
 * Pour visualiser les hôtes classés par groupes d'hôtes, cliquez sur **Groupes d'hôtes**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04hostgroup.png
+   :align: center 
 
 Tableaux d'hôtes
 ================
@@ -140,8 +141,8 @@ Le tableau ci-dessous donne une description de toutes les colonnes du tableau af
 | S                        | Affiche le niveau de criticité de l'hôte                                                                                         |
 +--------------------------+----------------------------------------------------------------------------------------------------------------------------------+
 | Hôtes                    | Affiche le nom de l'hôte.                                                                                                        |
-|                          | L'icône [ TODO Mettre l'icône] indique que les notifications pour cet hôte sont désactivées.                                     |
-|                          | L'icône [TODO Mettre l'icône) permet de visualiser l'ensemble des graphiques de performances pour cet hôte                       |
+|                          | L'icône |nonotifications| indique que les notifications pour cet hôte sont désactivées.                                          |
+|                          | L'icône |graphperformances| permet de visualiser l'ensemble des graphiques de performances pour cet hôte                         |
 +--------------------------+----------------------------------------------------------------------------------------------------------------------------------+
 | Statut                   | Permet de visualiser le statut de l'hôte                                                                                         |
 +--------------------------+----------------------------------------------------------------------------------------------------------------------------------+
@@ -201,7 +202,8 @@ Détails d'un hôte
 
 Lorsque vous cliquez sur un hôte, la page suivante s'affiche :
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04hostdetail.png
+   :align: center 
 
 Détails du statut
 -----------------
@@ -252,7 +254,7 @@ Options et Commandes disponibles
 --------------------------------
 
 Les options ainsi que les commandes permettent d'effectuer un certain nombre d'actions sur l'hôte.
-Ces différentes options sont traitées au sein du **Guide d'exploitation**. [TODO mettre ref]
+Ces différentes options sont traitées au sein du :ref:`Guide d'exploitation<exploitationguide>`.
 
 Raccourcis d'hôtes
 ------------------
@@ -262,15 +264,15 @@ Le tableau ci-dessous résume la signification des icônes :
 +------------------------+--------------------------------------------------------------------+
 |  Icône                 |  Description                                                       | 
 +========================+====================================================================+
-| [ TODO Mettre l'icône] | Redirige vers la page de configuration de l'hôte                   |
+| |configure|            | Redirige vers la page de configuration de l'hôte                   |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche le statut de tous les services liés à l'hôte               |
+| |showservicesstatuts|  | Affiche le statut de tous les services liés à l'hôte               |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche les journaux liés à l'hôte                                 |
+| |showlogs|             | Affiche les journaux liés à l'hôte                                 |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche le rapport de disponibilité lié à l'hôte                   |
+| |showresult|           | Affiche le rapport de disponibilité lié à l'hôte                   |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche les graphiques de performances des services liés à l'hôte  |
+| |showgraphperf|        | Affiche les graphiques de performances des services liés à l'hôte  |
 +------------------------+--------------------------------------------------------------------+
 
 Outils
@@ -301,7 +303,8 @@ Visualisation
 
 Pour visualiser le statut des services, rendez-vous dans le menu **Supervision** ==> **Services**.
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelist.png
+   :align: center 
 
 La barre de recherche grise permet de filtrer les résultats affichés.
 Le menu de gauche permet de modifier les services visibles au sein du tableau :
@@ -311,26 +314,38 @@ Le menu de gauche permet de modifier les services visibles au sein du tableau :
 * Pour visualiser tous les services, cliquez sur **Tous les services**
 * Pour visualiser tous les services (classés par hôtes), cliquez sur **Détails** (en dessous d'hôtes)
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelistbyhostdetail.png
+   :align: center
+   
 * Pour visualiser le nombre de services (classés par hôtes et statuts), cliquez sur **Résumé** (en dessous d'hôtes)
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelistbyhost.png
+   :align: center
+  
 * Pour visualiser tous les services (classés par groupes d'hôtes), cliquez sur **Détails** (en dessous de groupe d'hôtes)
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelistbyhostgroupdetail.png
+   :align: center
+   
 * Pour visualiser le nombre de services (classés par groupes d'hôtes et statuts), cliquez sur **Résumé** (en dessous de groupe d'hôtes)
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelistbyhostgroup.png
+   :align: center
+   
 * Pour visualiser tous les services (classés par groupes de services), cliquez sur **Détails** (en dessous de groupe de services)
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelistbyservicegroupdetail.png
+   :align: center
+   
 * Pour visualiser le nombre de services (classés par groupes de services et statuts), cliquez sur **Résumé** (en dessous de groupe de services)
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicelistbyservicegroup.png
+   :align: center
 
 * Pour visualiser les méta-services, cliquez sur **Méta-Services**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04metaservices.png
+   :align: center
 
 Tableaux de services
 ====================
@@ -342,11 +357,11 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +====================+=========================================================================================================================+
 | S                  | Affiche le niveau de criticité du service                                                                               |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
-| Hôtes              | Affiche le nom de l'hôte. L'icône [ TODO Mettre l'icône] permet d'accéder à une page web décrivant l'hôte               |
+| Hôtes              | Affiche le nom de l'hôte. L'icône |url_link| permet d'accéder à une page web décrivant l'hôte                           |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
-| Services           | Affiche le nom du service. L'icône [ TODO Mettre l'icône] indique que les notifications pour cet hôte sont désactivées. |
-|                    | L'icône [TODO Mettre l'icône) permet de visualiser le graphique de performance lié à ce service.                        |
-|                    | L'icône [ TODO Mettre l'icône] permet d'accéder à une page web décrivant le service                                     |
+| Services           | Affiche le nom du service. L'icône |nonotifications| indique que les notifications pour ce service sont désactivées     |
+|                    | L'icône |graphperformances| permet de visualiser le graphique de performance lié à ce service.                          |
+|                    | L'icône |url_link| permet d'accéder à une page web décrivant le service                                                 |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
 | Validé depuis      | Affiche la durée depuis laquelle le service a conservé son statut actuel                                                |
 +--------------------+-------------------------------------------------------------------------------------------------------------------------+
@@ -372,8 +387,8 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 |   Nom de la colonne          |   Description                                                                                                                        | 
 +==============================+======================================================================================================================================+
 | Hôtes ou Groupes d'hôtes     | Liste l'ensemble des hôtes ou hôtes séparés par des groupes d'hôtes ou hôtes séparées par des groupes de services                    |
-| Hôtes ou Groupes de services | L'icône [ TODO Mettre l'icône] permet de visualiser l'ensemble des services liés à l'hôte                                            |
-| Hôtes                        | L'icône [ TODO Mettre l'icône] permet de visualiser l'ensemble des graphiques de performances liés aux services appartenant à l'hôte |
+| Hôtes ou Groupes de services | L'icône |showservices| permet de visualiser l'ensemble des services liés à l'hôte                                            |
+| Hôtes                        | L'icône |graphperformances| permet de visualiser l'ensemble des graphiques de performances liés aux services appartenant à l'hôte    |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
 | Statut                       | Affiche le statut de l'hôte                                                                                                          |
 +------------------------------+--------------------------------------------------------------------------------------------------------------------------------------+
@@ -388,7 +403,7 @@ Le tableau ci-dessous décrit les colonnes affichées lors de la visualisation d
 +--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
 |   Nom de la colonne      |   Description                                                                                                                            | 
 +==========================+==========================================================================================================================================+
-| Méta\-Services           | Affiche le nom du méta\-service. L'icône [TODO Mettre l'icône] permet de visualiser le graphique de performance lié à ce méta\-service.  |
+| Méta\-Services           | Affiche le nom du méta\-service. L'icône |graphperformances| permet de visualiser le graphique de performance lié à ce méta\-service.    |
 +--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
 | Statut                   | Affiche le statut du méta\-service                                                                                                       |
 +--------------------------+------------------------------------------------------------------------------------------------------------------------------------------+
@@ -406,7 +421,8 @@ Détails d'un service
 
 Lorsque vous cliquez sur un service, la page suivante s'affiche :
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04servicedetail.png
+   :align: center
 
 Détails du statut
 -----------------
@@ -457,7 +473,7 @@ Options et commandes du service
 -------------------------------
 
 Les options ainsi que les commandes du service permettent d'effectuer un certain nombre d'actions sur le service.
-Ces différentes options sont traitées au sein du **Guide d'exploitation** [TODO mettre ref].
+Ces différentes options sont traitées au sein du :ref:`Guide d'exploitation<exploitationguide>`.
 
 Graphique détaillé et graphiques des statuts
 --------------------------------------------
@@ -478,13 +494,13 @@ Le tableau ci-dessous résume la signification des icônes :
 +------------------------+--------------------------------------------------------------------+
 |  Icône                 |  Description                                                       | 
 +========================+====================================================================+
-| [ TODO Mettre l'icône] | Redirige vers la page de configuration du service                  |
+| |configure|            | Redirige vers la page de configuration du service                  |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche le statut de tous les services liés à l'hôte               |
+| |showservicesstatuts|  | Affiche le statut de tous les services liés à l'hôte               |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche les journaux liés au service                               |
+| |showlogs|             | Affiche les journaux liés au service                               |
 +------------------------+--------------------------------------------------------------------+
-| [ TODO Mettre l'icône] | Affiche le rapport de disponibilité lié au service                 |
+| |showresult|           | Affiche le rapport de disponibilité lié au service                 |
 +------------------------+--------------------------------------------------------------------+
 
 Liens
@@ -510,8 +526,8 @@ Ce menu contextuel permet de visualiser des informations complémentaires telles
 par l'ordonnanceur, les commentaires ou les temps d'arrêt ajoutés aux objets .
 
 .. note::
-	Pour plus d'informations sur les commentaires, rendez-vous dans le **Guide d'exploitation** [TODO mettre ref].
-	Pour plus d'informations sur les temps d'arrêt, rendez-vous dans le **Guide d'exploitation** [TODO mettre ref].
+	Pour plus d'informations sur les commentaires, rendez-vous dans le :ref:`Guide d'exploitation<exploitationguide>`.
+	Pour plus d'informations sur les temps d'arrêt, rendez-vous dans le :ref:`Guide d'exploitation<exploitationguide>`.
 
 File d'attente
 ==============
@@ -523,7 +539,8 @@ Pour visualiser la file d'attente :
 #. Rendez-vous dans le menu **Supervision  ==> **Hôtes** ou **Services**
 #. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **File d'attente**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04waitingqueue.png
+   :align: center
 
 Le tableau ci-dessous décrit les colonnes de cette page.
 
@@ -561,7 +578,8 @@ Pour visualiser les temps d'arrêts en cours sur les ressources :
 #. Rendez-vous dans le menu **Supervision** ==> **Hôtes** ou **Services**
 #. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **Temps d'arrêt**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04downtimelist.png
+   :align: center
 
 Le tableau ci-dessous décrit les colonnes de cette page.
 
@@ -608,7 +626,8 @@ Pour visualiser les commentaires définis sur les ressources :
 #. Rendez-vous dans le menu **Supervision** ==> **Hôtes** ou **Services**
 #. Dans le menu de gauche, sous **Moteur de supervision** cliquez sur **Commentaires**
 
-[ TODO Mettre une capture d'écran]
+.. image :: /images/guide_utilisateur/supervision/04comments.png
+   :align: center
 
 Le tableau ci-dessous décrit les colonnes de cette page.
 
@@ -643,3 +662,13 @@ Vous pouvez filtrer le résultat présenté via les filtres suivants :
 .. |pause|    image:: /images/pause.png
 .. |refresh|    image:: /images/refresh.png
 .. |resume|    image:: /images/resume.png
+.. |graphperformances|    image:: /images/graphperformances.png
+.. |url_link|    image:: /images/url_link.png
+.. |passive_service|    image:: /images/passive_service.png
+.. |showservices|    image:: /images/showservices.png
+.. |nonotifications|    image:: /images/nonotifications.png
+.. |configure|    image:: /images/configure.png
+.. |showservicesstatuts|    image:: /images/showservicesstatuts.png
+.. |showlogs|    image:: /images/showlogs.png
+.. |showgraphperf|    image:: /images/showgraphperf.png
+.. |showresult|    image:: /images/showresult.png

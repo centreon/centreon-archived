@@ -49,11 +49,13 @@ Héritage de type associatif
 Il s'agit d'additionner plusieurs modèles au sein d'un même objet afin d'additionner l'ensemble des paramètres disponibles.
 Si un hôte hérite de plusieurs modèles d'hôtes et si un même paramètre est défini sur plusieurs modèles, alors le modèle d'hôte situé au dessus des autres modèles est prioritaire par rapport à ses ascendants.
 
-[ TODO Schéma explicatif : images/01.png]
+.. image :: /images/guide_utilisateur/configuration/09hostmodels.png
+   :align: center
 
 Le schéma ci-dessous présente un hôte héritant de plusieurs modèles d'hôtes.
 
-[ TODO Schéma explicatif : images/02.png]
+.. image :: /images/guide_utilisateur/configuration/09hostmodelsheritage.png
+   :align: center
 
 Configuration
 =============
@@ -73,7 +75,8 @@ Héritage
 
 Un service ou un modèle de service ne peut hériter que d'un seul modèle de service (héritage de type Père-Fils).
 
-[ TODO Schéma explicatif : images/03.png]
+.. image :: /images/guide_utilisateur/configuration/09heritageservice.png
+   :align: center
 
 Configuration
 =============
@@ -88,16 +91,19 @@ Pour ajouter un modèle de services :
 Les bonnes pratiques
 ********************
 
-[TODO EXPLICATION A REVOIR]
-
 Explications
 ============
 
 La bonne pratique veut que des modèles de services soient associés à des modèles d'hôtes : lors de la création d'un hôte, les services sont générés automatiquement à partir des modèles d'hôtes.
+Il y a deux intérêts à lier les modèles de services aux modèles d'hôtes :
+
+* Les services générés automatiquement conserve leurs granularité : il est donc possible de modifier les attributs d'un service sans impacter les autres services issus de ce modèle
+* La création de nouveaux hôtes est grandement accélérée : vous n'avez qu'à définir l'hôte et les modèles d'hôtes associés à celui-ci
 
 Exemple : Je créé l'hôte webserver01.doccentreon.local selon le modèle ci-dessous :
 
-[ TODO Schéma explicatif : images/04.png]
+.. image :: /images/guide_utilisateur/configuration/09hostexemple.png
+   :align: center
 
 L'hôte webserver01.doccentreon.local aura automatiquement les services suivants générés :
 
@@ -123,7 +129,8 @@ Les modèles de contacts
 
 Un contact ou un modèle de contact peut hériter d'un seul modèle de contacts.
 
-[ TODO Schéma explicatif : images/05.png]
+.. image :: /images/guide_utilisateur/configuration/09contactmodel.png
+   :align: center
 
 Configuration
 =============
