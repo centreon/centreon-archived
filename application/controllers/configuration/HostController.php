@@ -85,6 +85,7 @@ class HostController extends \Centreon\Core\Controller
         $tpl->assign('objectMcUrl', '/configuration/host/massive_change');
         $tpl->assign('objectMcFieldsUrl', '/configuration/host/mc_fields');
         $tpl->assign('objectDuplicateUrl', '/configuration/host/duplicate');
+        $tpl->assign('objectDeleteUrl', '/configuration/host/delete');
         $tpl->display('configuration/list.tpl');
     }
     
@@ -639,6 +640,27 @@ class HostController extends \Centreon\Core\Controller
         $hostObj = new Host();
         foreach ($params['ids'] as $id) {
             $hostObj->update($id, $params['values']);
+        }
+
+        $di->get('router')->response()->json(array(
+            'success' => true
+        ));
+    }
+
+    /**
+     * Delete action for host
+     *
+     * @method post
+     * @route /configuration/host/delete
+     */
+    public function deleteAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $params = $di->get('router')->request()->paramsPost();
+
+        $hostObj = new Host();
+        foreach ($params['ids'] as $id) {
+            $hostObj->delete($id);
         }
 
         $di->get('router')->response()->json(array(
