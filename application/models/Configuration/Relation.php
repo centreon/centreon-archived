@@ -30,6 +30,17 @@ abstract class Relation
     protected $secondKey = null;
 
     /**
+     * @var string
+     */
+    protected $firstObject = null;
+
+    /**
+     *
+     * @var string
+     */
+    protected $secondObject = null;
+
+    /**
      * Constructor
      *
      * @return void
@@ -37,6 +48,8 @@ abstract class Relation
     public function __construct()
     {
         $this->db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $this->firstObj = new $this->firstObject();
+        $this->secondObj = new $this->secondObject();
     }
 
     /**
@@ -101,7 +114,7 @@ abstract class Relation
         $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR", 
         $relationTableParams = array())
     {
-        if (!isset($this->firstObject) || !isset($this->secondObject)) {
+        if (!isset($this->firstObj) || !isset($this->secondObj)) {
             throw new Exception('Unsupported method on this object');
         }
         $fString = "";
@@ -111,13 +124,13 @@ abstract class Relation
             if ($fString != "") {
                 $fString .= ",";
             }
-            $fString .= $this->firstObject->getTableName().".".$fparams;
+            $fString .= $this->firstObj->getTableName().".".$fparams;
         }
         foreach ($secondTableParams as $sparams) {
             if ($fString != "" || $sString != "") {
                 $sString .= ",";
             }
-            $sString .= $this->secondObject->getTableName().".".$sparams;
+            $sString .= $this->secondObj->getTableName().".".$sparams;
         }
         foreach ($relationTableParams as $rparams) {
             if ($fString != "" || $sString != "" || $rString != "") {
@@ -126,9 +139,9 @@ abstract class Relation
             $rString .= $this->relationTable.".".$rparams;
         }
         $sql = "SELECT $fString $sString $rString
-        		FROM ".$this->firstObject->getTableName().",".$this->secondObject->getTableName().",".$this->relationTable."
-        		WHERE ".$this->firstObject->getTableName().".".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey."
-        		AND ".$this->relationTable.".".$this->secondKey." = ".$this->secondObject->getTableName().".".$this->secondObject->getPrimaryKey();
+        		FROM ".$this->firstObj->getTableName().",".$this->secondObj->getTableName().",".$this->relationTable."
+        		WHERE ".$this->firstObj->getTableName().".".$this->firstObj->getPrimaryKey()." = ".$this->relationTable.".".$this->firstKey."
+        		AND ".$this->relationTable.".".$this->secondKey." = ".$this->secondObj->getTableName().".".$this->secondObj->getPrimaryKey();
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {

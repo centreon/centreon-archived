@@ -7,12 +7,14 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
     protected $relationTable = "host_template_relation";
     protected $firstKey = "host_tpl_id";
     protected $secondKey = "host_host_id";
+    protected $firstObject = "\\Models\\Configuration\\Host";
+    protected $secondObject = "\\Models\\Configuration\\Host";
 
     public function __construct()
     {
         parent::__construct();
-        $this->firstObject = new Centreon_Object_Host();
-        $this->secondObject = new Centreon_Object_Host();
+        $this->firstObj = new $this->firstObject();
+        $this->secondObj = new $this->secondObject();
     }
 
     /**
@@ -75,7 +77,7 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
      */
     public function getMergedParameters($firstTableParams = array(), $secondTableParams = array(), $count = -1, $offset = 0, $order = null, $sort = "ASC", $filters = array(), $filterType = "OR")
     {
-        if (!isset($this->firstObject) || !isset($this->secondObject)) {
+        if (!isset($this->firstObj) || !isset($this->secondObj)) {
             throw new Exception('Unsupported method on this object');
         }
         $fString = "";
@@ -93,9 +95,9 @@ class Relation\Host\Hosttemplate extends Centreon_Object_Relation
             $sString .= "h2.".$sparams;
         }
         $sql = "SELECT ".$fString.$sString."
-        		FROM ".$this->firstObject->getTableName()." h,".$this->relationTable."
-        		JOIN ".$this->secondObject->getTableName(). " h2 ON ".$this->relationTable.".".$this->firstKey." = h2.".$this->secondObject->getPrimaryKey() ."
-        		WHERE h.".$this->firstObject->getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
+        		FROM ".$this->firstObj->getTableName()." h,".$this->relationTable."
+        		JOIN ".$this->secondObject->getTableName(). " h2 ON ".$this->relationTable.".".$this->firstKey." = h2.".$this->secondObj->getPrimaryKey() ."
+        		WHERE h.".$this->firstObj->getPrimaryKey()." = ".$this->relationTable.".".$this->secondKey;
         $filterTab = array();
         if (count($filters)) {
             foreach ($filters as $key => $rawvalue) {
