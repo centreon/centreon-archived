@@ -116,7 +116,9 @@ class HostTemplateRepository extends \Centreon\Repository\Repository
         ),
         'host_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::host_name::'
+            )
         ),
         'host_name' => array(
             'type' => 'url',

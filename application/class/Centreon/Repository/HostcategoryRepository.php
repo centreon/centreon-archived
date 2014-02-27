@@ -105,7 +105,9 @@ class HostcategoryRepository extends \Centreon\Repository\Repository
         ),
         'hc_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::hc_name::'
+            )
         ),
         'hc_name' => array(
             'type' => 'url',

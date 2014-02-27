@@ -103,7 +103,9 @@ class UserRepository extends \Centreon\Repository\Repository
     public static $columnCast = array(
         'contact_id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::contact_name::'
+            )
         ),
         'contact_admin' => array(
             'type' => 'select',

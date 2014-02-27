@@ -37,8 +37,12 @@ namespace Controllers\Configuration;
 
 use Models\Configuration\Hostcategory;
 
-class HostcategoryController extends \Centreon\Core\Controller
+class HostcategoryController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Hostcategory';
+    protected $objectName = 'hostcategory';
+    protected $objectBaseUrl = '/configuration/hostcategory';
+    protected $objectClass = '\Models\Configuration\Hostcategory';
 
     /**
      * List hostcategories
@@ -48,26 +52,7 @@ class HostcategoryController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init category
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Hostcategory');
-        $tpl->assign('objectAddUrl', '/configuration/hostcategory/add');
-        $tpl->assign('objectListUrl', '/configuration/hostcategory/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
     
     /**
@@ -104,16 +89,9 @@ class HostcategoryController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'hostcategory',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
-    
+
     /**
      * Create a new hostcategory
      *
@@ -146,7 +124,7 @@ class HostcategoryController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();
     }
     
     /**
@@ -159,5 +137,60 @@ class HostcategoryController extends \Centreon\Core\Controller
     public function editAction()
     {
         
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/hostcategory/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/hostcategory/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/hostcategory/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/hostcategory/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for hostcategory
+     *
+     * @method post
+     * @route /configuration/hostcategory/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }

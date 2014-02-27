@@ -39,8 +39,13 @@ use \Models\Configuration\Command,
     \Centreon\Core\Form,
     \Centreon\Core\Form\Generator;
 
-class CommandController extends \Centreon\Core\Controller
+class CommandController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Command';
+    protected $objectName = 'command';
+    protected $objectBaseUrl = '/configuration/command';
+    protected $objectClass = '\Models\Configuration\Command';
+
     /**
      * List commands
      *
@@ -50,26 +55,7 @@ class CommandController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Command');
-        $tpl->assign('objectAddUrl', '/configuration/command/add');
-        $tpl->assign('objectListUrl', '/configuration/command/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
     
     /**
@@ -106,15 +92,7 @@ class CommandController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(
-            \Centreon\Core\Datatable::getDatas(
-                'command',
-                $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -152,44 +130,7 @@ class CommandController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('commandForm');
-        $form->addText('name', _('Name'));
-        $form->addTextarea('command_line', _('Commande Line'));
-        $radios['list'] = array(
-            array(
-              'name' => 'Notification',
-              'label' => 'Notification',
-              'value' => '1'
-            ),
-            array(
-                'name' => 'Check',
-                'label' => 'Check',
-                'value' => '2'
-            ),
-            array(
-                'name' => 'Misc',
-                'label' => 'Misc',
-                'value' => '3'
-            ),
-            array(
-                'name' => 'Discovery',
-                'label' => 'Discovery',
-                'value' => '4'
-            ),
-          
-        );
-        $form->addRadio('command_type', _("Command type"), 'command_type', '&nbsp;', $radios);
-        $form->addCheckbox('enable_shell', _("Enable shell"));
-        $form->addTextarea('argument_description', _('Argument Description'));
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/command/edit.tpl');
+        parent::addAction();
     }
     
     /**
@@ -236,4 +177,60 @@ class CommandController extends \Centreon\Core\Controller
         $tpl->assign('validateUrl', '/configuration/command/update');
         $tpl->display('configuration/edit.tpl');
     }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/command/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/command/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/command/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/command/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for command
+     *
+     * @method post
+     * @route /configuration/command/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
+    }
+
 }

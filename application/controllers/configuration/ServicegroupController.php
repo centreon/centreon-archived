@@ -37,8 +37,12 @@ namespace Controllers\Configuration;
 
 use \Centreon\Core\Form;
 
-class ServicegroupController extends \Centreon\Core\Controller
+class ServicegroupController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Servicegroup';
+    protected $objectName = 'servicegroup';
+    protected $objectBaseUrl = '/configuration/servicegroup';
+    protected $objectClass = '\Models\Configuration\Servicegroup';
 
     /**
      * List servicegroups
@@ -48,26 +52,11 @@ class ServicegroupController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init group
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
+        parent::listAction();
+    }
 
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Servicegroup');
-        $tpl->assign('objectAddUrl', '/configuration/servicegroup/add');
-        $tpl->assign('objectListUrl', '/configuration/servicegroup/list');
-        $tpl->display('configuration/list.tpl');
+    public function formListAction()
+    {
     }
 
     /**
@@ -77,14 +66,7 @@ class ServicegroupController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'servicegroup',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -119,32 +101,7 @@ class ServicegroupController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-        
-        $form = new Form('servicegroupForm');
-        $form->addText('name', _('Service Group Name'));
-        $form->addText('description', _('Service Description'));
-        $radios['list'] = array(
-            array(
-              'name' => 'Enabled',
-              'label' => 'Enabled',
-              'value' => '1'
-            ),
-            array(
-                'name' => 'Disabled',
-                'label' => 'Disabled',
-                'value' => '0'
-            )
-        );
-        $form->addRadio('servicegroup_status', _("Status"), 'servicegroup_type', '&nbsp;', $radios);
-        $form->addTextarea('comments', _('Comments'));
-        $form->add('save_form', 'submit' , _("Save"), array("onClick" => "validForm();"));
-        $tpl->assign('form', $form->toSmarty());
-        
-        // Display page
-        $tpl->display('configuration/servicegroup/edit.tpl');
+        parent::addAction();
     }
     
     /**
@@ -182,5 +139,61 @@ class ServicegroupController extends \Centreon\Core\Controller
         
         // Display page
         $tpl->display('configuration/servicegroup/edit.tpl');
+    }
+
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/servicegroup/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/servicegroup/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/servicegroup/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/servicegroup/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for servicegroup
+     *
+     * @method post
+     * @route /configuration/servicegroup/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }
