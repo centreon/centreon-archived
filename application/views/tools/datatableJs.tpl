@@ -260,6 +260,7 @@
         var $divSelect = $('<div></div>').addClass('col-sm-6');
         var $select = $('<select></select>')
             .attr('id', 'mcChooseAttr')
+            .attr('name', 'mcChooseAttr')
             .css('width', '100%')
             .append('<option></option>')
             .appendTo($divSelect);
@@ -282,6 +283,33 @@
             .text('{t}Apply{/t}')
             .appendTo($mcFooter);
         $mcFooter.appendTo('#modal .modal-content');
+
+        $applyBtn.on('click', function(e) {
+            var mcValues = {};
+            var ids = [];
+            $.each($form.serializeArray(), function(k, v) {
+                if (v['name'] != 'mcChooseAttr') {
+                    mcValues[v['name']] = v['value'];
+                }
+            });
+            $.each($('table[id^="datatable"] tbody input[type="checkbox"][class^="all"]:checked'), function(k, v) {
+                ids.push($(v).val());
+            });
+            $.ajax({
+                url: '{url_for url=$objectMcUrl}',
+                type: 'POST',
+                data: {
+                    'values': mcValues,
+                    'ids': ids
+                },
+                dataType: 'json',
+                success: function(data, textStatus, jqXHR) {
+                    $('#modal').modal('hide');
+                    if (data.success) {
+                    }
+                }
+            });
+        });
 
         $.ajax({
             url: "{url_for url=$objectMcFieldsUrl}",
