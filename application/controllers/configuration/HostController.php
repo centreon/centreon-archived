@@ -161,9 +161,7 @@ class HostController extends \Centreon\Core\Controller
         }
         unset($givenParameters['token']);
         
-        foreach ($givenParameters as $paramName=>$paramValue) {
-            echo $paramName . " => " . $paramValue . "<br />";
-        }
+        echo '<pre>'; var_dump($givenParameters); echo '</pre>';
     }
     
     /**
