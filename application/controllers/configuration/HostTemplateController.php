@@ -37,8 +37,12 @@ namespace Controllers\Configuration;
 
 use \Models\Configuration\Host;
 
-class HostTemplateController extends \Centreon\Core\Controller
+class HostTemplateController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Hosttemplate';
+    protected $objectName = 'hosttemplate';
+    protected $objectBaseUrl = '/configuration/hosttemplate';
+    protected $objectClass = '\Models\Configuration\Host';
 
     /**
      * List hosttemplates
@@ -48,26 +52,7 @@ class HostTemplateController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
-
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Hosttemplate');
-        $tpl->assign('objectAddUrl', '/configuration/hosttemplate/add');
-        $tpl->assign('objectListUrl', '/configuration/hosttemplate/list');
-        $tpl->display('configuration/list.tpl');
+        parent::listAction();
     }
     
     /**
@@ -105,14 +90,7 @@ class HostTemplateController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'hosttemplate',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -147,7 +125,7 @@ class HostTemplateController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();
     }
     
     /**
@@ -160,5 +138,60 @@ class HostTemplateController extends \Centreon\Core\Controller
     public function editAction()
     {
         
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/hosttemplate/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/hosttemplate/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/hosttemplate/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/hosttemplate/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for hosttemplate
+     *
+     * @method post
+     * @route /configuration/hosttemplate/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }

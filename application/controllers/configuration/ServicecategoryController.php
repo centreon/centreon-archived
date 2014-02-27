@@ -39,8 +39,12 @@ use \Models\Configuration\Servicecategory,
     \Centreon\Core\Form,
     \Centreon\Core\Form\Generator;
 
-class ServicecategoryController extends \Centreon\Core\Controller
+class ServicecategoryController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Servicecategory';
+    protected $objectName = 'servicecategory';
+    protected $objectBaseUrl = '/configuration/servicecategory';
+    protected $objectClass = '\Models\Configuration\Servicecategory';
 
     /**
      * List servicecategories
@@ -50,26 +54,11 @@ class ServicecategoryController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init category
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
+        parent::listAction();
+    }
 
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Servicecategory');
-        $tpl->assign('objectAddUrl', '/configuration/servicecategory/add');
-        $tpl->assign('objectListUrl', '/configuration/servicecategory/list');
-        $tpl->display('configuration/list.tpl');
+    public function formListAction()
+    {
     }
 
     /**
@@ -79,14 +68,7 @@ class ServicecategoryController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'servicecategory',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -139,7 +121,7 @@ class ServicecategoryController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();
     }
     
     /**
@@ -183,5 +165,60 @@ class ServicecategoryController extends \Centreon\Core\Controller
         $tpl->assign('formRedirectRoute', $myForm->getRedirectRoute());
         $tpl->assign('validateUrl', '/configuration/servicecategory/update');
         $tpl->display('configuration/edit.tpl');
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/servicecategory/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/servicecategory/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/servicecategory/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/servicecategory/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for servicecategory
+     *
+     * @method post
+     * @route /configuration/servicecategory/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }

@@ -88,7 +88,9 @@ class ConnectorRepository extends \Centreon\Repository\Repository
         ),
         'id' => array(
             'type' => 'checkbox',
-            'parameters' => array()
+            'parameters' => array(
+                'displayName' => '::name::'
+            )
         ),
         'name' => array(
             'type' => 'url',

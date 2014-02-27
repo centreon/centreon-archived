@@ -35,8 +35,13 @@
 
 namespace Controllers\Configuration;
 
-class ServiceController extends \Centreon\Core\Controller
+class ServiceController extends ObjectAbstract
 {
+    protected $objectDisplayName = 'Service';
+    protected $objectName = 'service';
+    protected $objectBaseUrl = '/configuration/service';
+    protected $objectClass = '\Models\Configuration\Service';
+
     /**
      * List services
      *
@@ -45,26 +50,11 @@ class ServiceController extends \Centreon\Core\Controller
      */
     public function listAction()
     {
-        // Init template
-        $di = \Centreon\Core\Di::getDefault();
-        $tpl = $di->get('template');
+        parent::listAction();
+    }
 
-        // Load CssFile
-        $tpl->addCss('dataTables.css')
-            ->addCss('dataTables.bootstrap.css')
-            ->addCss('dataTables-TableTools.css');
-
-        // Load JsFile
-        $tpl->addJs('jquery.dataTables.min.js')
-            ->addJs('jquery.dataTables.TableTools.min.js')
-            ->addJs('bootstrap-dataTables-paging.js')
-            ->addJs('jquery.dataTables.columnFilter.js');
-        
-        // Display page
-        $tpl->assign('objectName', 'Service');
-        $tpl->assign('objectAddUrl', '/configuration/service/add');
-        $tpl->assign('objectListUrl', '/configuration/service/list');
-        $tpl->display('configuration/list.tpl');
+    public function formListAction()
+    {
     }
 
     /**
@@ -74,14 +64,7 @@ class ServiceController extends \Centreon\Core\Controller
      */
     public function datatableAction()
     {
-        $di = \Centreon\Core\Di::getDefault();
-        $router = $di->get('router');
-        
-        $router->response()->json(\Centreon\Core\Datatable::getDatas(
-            'service',
-            $this->getParams('get')
-            )
-        );
+        parent::datatableAction();
     }
     
     /**
@@ -116,7 +99,7 @@ class ServiceController extends \Centreon\Core\Controller
      */
     public function addAction()
     {
-        
+        parent::addAction();
     }
     
     /**
@@ -129,5 +112,60 @@ class ServiceController extends \Centreon\Core\Controller
     public function editAction()
     {
         
+    }
+
+    /**
+     * Get the list of massive change fields
+     *
+     * @method get
+     * @route /configuration/service/mc_fields
+     */
+    public function getMassiveChangeFieldsAction()
+    {
+        parent::getMassiveChangeFieldsAction();
+    }
+
+    /**
+     * Get the html of attribute filed
+     *
+     * @method get
+     * @route /configuration/service/mc_fields/[i:id]
+     */
+    public function getMcFieldAction()
+    {
+        parent::getMcFieldAction();
+    }
+
+    /**
+     * Duplicate a hosts
+     *
+     * @method POST
+     * @route /configuration/service/duplicate
+     */
+    public function duplicateAction()
+    {
+        parent::duplicateAction();
+    }
+
+    /**
+     * Apply massive change
+     *
+     * @method POST
+     * @route /configuration/service/massive_change
+     */
+    public function massiveChangeAction()
+    {
+        parent::massiveChangeAction();
+    }
+
+    /**
+     * Delete action for hosttemplate
+     *
+     * @method post
+     * @route /configuration/service/delete
+     */
+    public function deleteAction()
+    {
+        parent::deleteAction();
     }
 }
