@@ -177,4 +177,19 @@ echo _("servicegroup dependency");
 /* Views -> Graphs */
 
 echo _("Yearly");
-?>
+
+
+/* 
+ * Centreon -> Centreon- > Centreon-Broker 
+ */
+
+echo _("Centreon Broker information");
+echo _("Centreon-Broker Correlation");
+echo _("Centreon-Broker Input");
+echo _("Centreon-Broker Logger");
+echo _("Centreon-Broker Output");
+echo _("Centreon-Broker Stats");
+echo _("Centreon-Broker Temporary");
+
+
+
