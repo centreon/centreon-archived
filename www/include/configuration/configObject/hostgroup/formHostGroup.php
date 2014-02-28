@@ -31,301 +31,300 @@
  *
  * For more information : contact@centreon.com
  *
- * SVN : $URL$
- * SVN : $Id$
- *
  */
 
- 	if (!isset($oreon))
- 		exit();
+if (!isset($oreon)) {
+    exit();
+}
 
-    if (!$oreon->user->admin) {
-        if ($hg_id && false === strpos($hgString, "'".$hg_id."'")) {
-            $msg = new CentreonMsg();
-            $msg->setImage("./img/icones/16x16/warning.gif");
-            $msg->setTextStyle("bold");
-            $msg->setText(_('You are not allowed to access this host group'));
-            return null;
+if (!$oreon->user->admin) {
+    if ($hg_id && false === strpos($hgString, "'".$hg_id."'")) {
+        $msg = new CentreonMsg();
+        $msg->setImage("./img/icones/16x16/warning.gif");
+        $msg->setTextStyle("bold");
+        $msg->setText(_('You are not allowed to access this host group'));
+        return null;
+    }
+}
+
+$initialValues = array();
+
+/*
+ * Database retrieve information for HostGroup
+	 */
+$hg = array();
+if (($o == "c" || $o == "w") && $hg_id)	{
+    $DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
+    /*
+     * Set base value
+     */
+    $hg = array_map("myDecode", $DBRESULT->fetchRow());
+
+    /*
+     * Get Parent Groups
+     */
+    $hostGroupParents = array();
+    $hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
+
+    /*
+     *  Set HostGroup Childs
+     */
+    $DBRESULT = $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
+    for ($i = 0; $hosts = $DBRESULT->fetchRow();) {
+        if (!$oreon->user->admin && false === strpos($hoststring, "'".$hosts['host_id']."'")) {
+            $initialValues['hg_hosts'][] = $hosts['host_id'];
+        } else {
+            $hg["hg_hosts"][$i] = $hosts["host_id"];
+            $i++;
         }
     }
+    $DBRESULT->free();
+    unset($hosts);
 
-    $initialValues = array();
-
-	/*
-	 * Database retrieve information for HostGroup
-	 */
-	$hg = array();
-	if (($o == "c" || $o == "w") && $hg_id)	{
-		$DBRESULT = $pearDB->query("SELECT * FROM hostgroup WHERE hg_id = '".$hg_id."' LIMIT 1");
-		/*
-		 * Set base value
-		 */
-		$hg = array_map("myDecode", $DBRESULT->fetchRow());
-
-		/*
-		 * Get Parent Groups
-		 */
-		$hostGroupParents = array();
-		$hostGroupParents = getHGParents($hg_id, $hostGroupParents, $pearDB);
-
-		/*
-		 *  Set HostGroup Childs
-		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT host.host_id FROM hostgroup_relation, hostgroup, host WHERE hostgroup_relation.host_host_id = host.host_id AND hostgroup_relation.hostgroup_hg_id = hostgroup.hg_id AND hostgroup.hg_id = '".$hg_id."' ORDER BY host.host_name");
-		for ($i = 0; $hosts = $DBRESULT->fetchRow();) {
-            if (!$oreon->user->admin && false === strpos($hoststring, "'".$hosts['host_id']."'")) {
-                $initialValues['hg_hosts'][] = $hosts['host_id'];
-            } else {
-    			$hg["hg_hosts"][$i] = $hosts["host_id"];
-                $i++;
-            }
-		}
-		$DBRESULT->free();
-		unset($hosts);
-
-		/*
-		 *  Set HostGroup Childs
-		 */
-		$DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
-		for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
-			$hg["hg_hg"][$i] = $hgs["hg_child_id"];
-		}
-		$DBRESULT->free();
-		unset($hgs);
-	}
-
-	/*
-	 * Hosts comes from DB -> Store in $hosts Array
-	 */
-    $aclFrom = "";
-    $aclCond = "";
-    if (!$oreon->user->admin) {
-        $aclFrom = ", $aclDbName.centreon_acl acl ";
-        $aclCond = " AND h.host_id = acl.host_id
-                     AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+    /*
+     *  Set HostGroup Childs
+     */
+    $DBRESULT = $pearDB->query("SELECT DISTINCT hg_child_id FROM hostgroup_hg_relation hgr, hostgroup hg WHERE hgr.hg_parent_id = '".$hg_id."' AND hgr.hg_child_id = hg.hg_id ORDER BY hg.hg_name");
+    for ($i = 0; $hgs = $DBRESULT->fetchRow(); $i++) {
+        $hg["hg_hg"][$i] = $hgs["hg_child_id"];
     }
-	$hosts = array();
-	$DBRESULT = $pearDB->query("SELECT DISTINCT h.host_id, h.host_name
+    $DBRESULT->free();
+    unset($hgs);
+}
+
+/*
+ * Hosts comes from DB -> Store in $hosts Array
+ */
+$aclFrom = "";
+$aclCond = "";
+if (!$oreon->user->admin) {
+    $aclFrom = ", $aclDbName.centreon_acl acl ";
+    $aclCond = " AND h.host_id = acl.host_id
+                 AND acl.group_id IN (".$acl->getAccessGroupsString().") ";
+}
+$hosts = array();
+$DBRESULT = $pearDB->query("SELECT DISTINCT h.host_id, h.host_name
                                 FROM host h $aclFrom
                                 WHERE host_register = '1' $aclCond
                                 ORDER BY host_name");
-	while ($host = $DBRESULT->fetchRow()) {
-		$hosts[$host["host_id"]] = $host["host_name"];
+while ($host = $DBRESULT->fetchRow()) {
+    $hosts[$host["host_id"]] = $host["host_name"];
+}
+$DBRESULT->free();
+unset($host);
+
+/*
+ * Hostgroups comes from DB -> Store in $hosts Array
+ */
+
+$EDITCOND = "";
+if ($o == "w" || $o == "c")
+    $EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
+
+$hostGroups = array();
+$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
+while ($hgs = $DBRESULT->fetchRow()) {
+    if (!isset($hostGroupParents[$hgs["hg_id"]])) {
+        $hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
     }
-	$DBRESULT->free();
-	unset($host);
+}
+$DBRESULT->free();
+unset($hgs);
 
-	/*
-	 * Hostgroups comes from DB -> Store in $hosts Array
-	 */
+/*
+ * Contact Groups comes from DB -> Store in $cgs Array
+ */
+$cgs = array();
+$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
+while ($cg = $DBRESULT->fetchRow())
+    $cgs[$cg["cg_id"]] = $cg["cg_name"];
+$DBRESULT->free();
+unset($cg);
 
-	$EDITCOND = "";
-	if ($o == "w" || $o == "c")
-		$EDITCOND = " WHERE `hg_id` != '".$hg_id."' ";
+/*
+ * IMG comes from DB -> Store in $extImg Array
+ */
+$extImg = array();
+$extImg = return_image_list(1);
+$extImgStatusmap = array();
+$extImgStatusmap = return_image_list(2);
 
-	$hostGroups = array();
-	$DBRESULT = $pearDB->query("SELECT hg_id, hg_name FROM hostgroup $EDITCOND ORDER BY hg_name");
-	while ($hgs = $DBRESULT->fetchRow()) {
-		if (!isset($hostGroupParents[$hgs["hg_id"]])) {
-			$hostGroups[$hgs["hg_id"]] = $hgs["hg_name"];
-		}
-	}
-	$DBRESULT->free();
-	unset($hgs);
+/*
+ * Define Templatse
+ */
+$attrsText 		= array("size"=>"30");
+$attrsTextLong 	= array("size"=>"50");
+$attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
+$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
+$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
 
-	/*
-	 * Contact Groups comes from DB -> Store in $cgs Array
-	 */
-	$cgs = array();
-	$DBRESULT = $pearDB->query("SELECT cg_id, cg_name FROM contactgroup ORDER BY cg_name");
-	while ($cg = $DBRESULT->fetchRow())
-		$cgs[$cg["cg_id"]] = $cg["cg_name"];
-	$DBRESULT->free();
-	unset($cg);
+/*
+ * Create formulary
+ */
+$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
+if ($o == "a")
+    $form->addElement('header', 'title', _("Add a Host Group"));
+else if ($o == "c")
+    $form->addElement('header', 'title', _("Modify a Host Group"));
+else if ($o == "w")
+    $form->addElement('header', 'title', _("View a Host Group"));
 
-	/*
-	 * IMG comes from DB -> Store in $extImg Array
-	 */
-	$extImg = array();
-	$extImg = return_image_list(1);
-	$extImgStatusmap = array();
-	$extImgStatusmap = return_image_list(2);
+/*
+ * Contact basic information
+ */
+$form->addElement('header', 	'information', _("General Information"));
+$form->addElement('text', 		'hg_name', _("Host Group Name"), $attrsText);
+$form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
 
-	/*
-	 * Define Templatse
-	 */
-	$attrsText 		= array("size"=>"30");
-	$attrsTextLong 	= array("size"=>"50");
-	$attrsAdvSelect = array("style" => "width: 300px; height: 220px;");
-	$attrsTextarea 	= array("rows"=>"4", "cols"=>"60");
-	$eTemplate	= '<table><tr><td><div class="ams">{label_2}</div>{unselected}</td><td align="center">{add}<br /><br /><br />{remove}</td><td><div class="ams">{label_3}</div>{selected}</td></tr></table>';
+/*
+ * Hosts Selection
+ */
+$form->addElement('header', 'relation', _("Relations"));
+$ams1 = $form->addElement('advmultiselect', 'hg_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
+$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setElementTemplate($eTemplate);
+echo $ams1->getElementJs(false);
 
-	/*
-	 * Create formulary
-	 */
-	$form = new HTML_QuickForm('Form', 'post', "?p=".$p);
-	if ($o == "a")
-		$form->addElement('header', 'title', _("Add a Host Group"));
-	else if ($o == "c")
-		$form->addElement('header', 'title', _("Modify a Host Group"));
-	else if ($o == "w")
-		$form->addElement('header', 'title', _("View a Host Group"));
+$ams1 = $form->addElement('advmultiselect', 'hg_hg', array(_("Linked Host Groups"), _("Available"), _("Selected")), $hostGroups, $attrsAdvSelect, SORT_ASC);
+$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
+$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
+$ams1->setElementTemplate($eTemplate);
+echo $ams1->getElementJs(false);
 
-	/*
-	 * Contact basic information
-	 */
-	$form->addElement('header', 	'information', _("General Information"));
-	$form->addElement('text', 		'hg_name', _("Host Group Name"), $attrsText);
-	$form->addElement('text', 		'hg_alias', _("Alias"), $attrsText);
+/*
+ * Extended information
+ */
+$form->addElement('header', 	'extended', _("Extended Information"));
+$form->addElement('text', 		'hg_notes', _("Notes"), $attrsText);
+$form->addElement('text', 		'hg_notes_url', _("Notes URL"), $attrsTextLong);
+$form->addElement('text', 		'hg_action_url', _("Action URL"), $attrsTextLong);
+$form->addElement('select', 	'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)"));
+$form->addElement('select', 	'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)"));
 
-	/*
-	 * Hosts Selection
-	 */
-	$form->addElement('header', 'relation', _("Relations"));
-	$ams1 = $form->addElement('advmultiselect', 'hg_hosts', array(_("Linked Hosts"), _("Available"), _("Selected")), $hosts, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
+/*
+ * Further informations
+ */
+$form->addElement('text', 'hg_rrd_retention', _('RRD retention'), array('size' => 5));
+$form->addElement('header', 'furtherInfos', _("Additional Information"));
+$form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
 
-	$ams1 = $form->addElement('advmultiselect', 'hg_hg', array(_("Linked Host Groups"), _("Available"), _("Selected")), $hostGroups, $attrsAdvSelect, SORT_ASC);
-	$ams1->setButtonAttributes('add', array('value' =>  _("Add")));
-	$ams1->setButtonAttributes('remove', array('value' => _("Remove")));
-	$ams1->setElementTemplate($eTemplate);
-	echo $ams1->getElementJs(false);
-
-	/*
-	 * Extended information
-	 */
-	$form->addElement('header', 	'extended', _("Extended Information"));
-	$form->addElement('text', 		'hg_notes', _("Notes"), $attrsText);
-	$form->addElement('text', 		'hg_notes_url', _("Notes URL"), $attrsTextLong);
-	$form->addElement('text', 		'hg_action_url', _("Action URL"), $attrsTextLong);
-	$form->addElement('select', 	'hg_icon_image', _("Icon"), $extImg, array("onChange"=>"showLogo('hg_icon_image_img',this.form.elements['hg_icon_image'].value)"));
-	$form->addElement('select', 	'hg_map_icon_image', _("Map Icon"), $extImg, array("onChange"=>"showLogo('hg_map_icon_image_img',this.form.elements['hg_map_icon_image'].value)"));
-
-	/*
-	 * Further informations
-	 */
-    $form->addElement('text', 'hg_rrd_retention', 'RRD retention', array('size' => 5));
-	$form->addElement('header', 'furtherInfos', _("Additional Information"));
-	$form->addElement('textarea', 'hg_comment', _("Comments"), $attrsTextarea);
-
-	$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Enabled"), '1');
-	$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Disabled"), '0');
-	$form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
-	$form->setDefaults(array('hg_activate' => '1'));
+$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Enabled"), '1');
+$hgActivation[] = HTML_QuickForm::createElement('radio', 'hg_activate', null, _("Disabled"), '0');
+$form->addGroup($hgActivation, 'hg_activate', _("Status"), '&nbsp;');
+$form->setDefaults(array('hg_activate' => '1'));
 
 
-	$tab = array();
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
-	$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
-	$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
-	$form->setDefaults(array('action' => '1'));
+$tab = array();
+$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("List"), '1');
+$tab[] = HTML_QuickForm::createElement('radio', 'action', null, _("Form"), '0');
+$form->addGroup($tab, 'action', _("Post Validation"), '&nbsp;');
+$form->setDefaults(array('action' => '1'));
 
-	$form->addElement('hidden', 'hg_id');
-	$redirect = $form->addElement('hidden', 'o');
-	$redirect->setValue($o);
+$form->addElement('hidden', 'hg_id');
+$redirect = $form->addElement('hidden', 'o');
+$redirect->setValue($o);
 
-    $init = $form->addElement('hidden', 'initialValues');
-    $init->setValue(serialize($initialValues));
+$init = $form->addElement('hidden', 'initialValues');
+$init->setValue(serialize($initialValues));
 
-	/*
-	 * Form Rules
-	 */
-	function myReplace()	{
-		global $form;
-		$ret = $form->getSubmitValues();
-		return (str_replace(" ", "_", $ret["hg_name"]));
-	}
-	$form->applyFilter('__ALL__', 'myTrim');
-	$form->applyFilter('hg_name', 'myReplace');
-	$form->addRule('hg_name', _("Compulsory Name"), 'required');
-	$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
+/*
+ * Form Rules
+ */
+function myReplace()	{
+    global $form;
+    $ret = $form->getSubmitValues();
+    return (str_replace(" ", "_", $ret["hg_name"]));
+}
+$form->applyFilter('__ALL__', 'myTrim');
+$form->applyFilter('hg_name', 'myReplace');
+$form->addRule('hg_name', _("Compulsory Name"), 'required');
+$form->addRule('hg_alias', _("Compulsory Alias"), 'required');
 
-    if (!$oreon->user->admin) {
-        $form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
-    }
+if (!$oreon->user->admin) {
+    $form->addRule('hg_hosts', _('Compulsory hosts (due to ACL restrictions that could prevent you from seeing this host group)'), 'required');
+}
 
-	$form->registerRule('exist', 'callback', 'testHostGroupExistence');
-	$form->addRule('hg_name', _("Name is already in use"), 'exist');
-	$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
+$form->registerRule('exist', 'callback', 'testHostGroupExistence');
+$form->addRule('hg_name', _("Name is already in use"), 'exist');
+$form->setRequiredNote("<font style='color: red;'>*</font>&nbsp;". _("Required fields"));
 
-	/*
-	 * Smarty template Init
-	 */
-	$tpl = new Smarty();
-	$tpl = initSmartyTpl($path, $tpl);
+/*
+ * Smarty template Init
+ */
+$tpl = new Smarty();
+$tpl = initSmartyTpl($path, $tpl);
 
-	if ($o == "w")	{
-		/*
-		 * Just watch a HostGroup information
-		 */
-		if ($centreon->user->access->page($p) != 2)
-			$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hg_id."'"));
-	    $form->setDefaults($hg);
-		$form->freeze();
-	} else if ($o == "c")	{
-		/*
-		 * Modify a HostGroup information
-		 */
-		$subC = $form->addElement('submit', 'submitC', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	    $form->setDefaults($hg);
-	} else if ($o == "a")	{
-		/*
-		 * Add a HostGroup information
-		 */
-		$subA = $form->addElement('submit', 'submitA', _("Save"));
-		$res = $form->addElement('reset', 'reset', _("Reset"));
-	}
+if ($o == "w") {
+    /*
+     * Just watch a HostGroup information
+     */
+    if ($centreon->user->access->page($p) != 2)
+        $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hg_id."'"));
+    $form->setDefaults($hg);
+    $form->freeze();
+} else if ($o == "c") {
+    /*
+     * Modify a HostGroup information
+     */
+    $subC = $form->addElement('submit', 'submitC', _("Save"));
+    $res = $form->addElement('reset', 'reset', _("Reset"));
+    $form->setDefaults($hg);
+} else if ($o == "a") {
+    /*
+     * Add a HostGroup information
+     */
+    $subA = $form->addElement('submit', 'submitA', _("Save"));
+    $res = $form->addElement('reset', 'reset', _("Reset"));
+}
 
-	$tpl->assign('p', $p);
-	$tpl->assign('nagios', $oreon->user->get_version());
-	$tpl->assign("initJS", "<script type='text/javascript'>
+$tpl->assign('p', $p);
+$tpl->assign('nagios', $oreon->user->get_version());
+$tpl->assign("initJS", "<script type='text/javascript'>
 							jQuery(function () {
 							initAutoComplete('Form','city_name','sub');
 							});</script>");
-	$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
-	$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
+$tpl->assign('javascript', "<script type='text/javascript' src='./include/common/javascript/showLogo.js'></script>" );
+$tpl->assign("helpattr", 'TITLE, "'._("Help").'", CLOSEBTN, true, FIX, [this, 0, 5], BGCOLOR, "#ffff99", BORDERCOLOR, "orange", TITLEFONTCOLOR, "black", TITLEBGCOLOR, "orange", CLOSEBTNCOLORS, ["","black", "white", "red"], WIDTH, -300, SHADOW, true, TEXTALIGN, "justify"' );
 
-	# prepare help texts
-	$helptext = "";
-	include_once("help.php");
-	foreach ($help as $key => $text) {
-		$helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
-	}
-	$tpl->assign("helptext", $helptext);
+# prepare help texts
+$helptext = "";
+include_once("help.php");
+foreach ($help as $key => $text) {
+    $helptext .= '<span style="display:none" id="help:'.$key.'">'.$text.'</span>'."\n";
+}
+$tpl->assign("helptext", $helptext);
 
-	$valid = false;
-	if ($form->validate())	{
-		$hgObj = $form->getElement('hg_id');
-		if ($form->getSubmitValue("submitA"))
-			$hgObj->setValue(insertHostGroupInDB());
-		else if ($form->getSubmitValue("submitC"))
-			updateHostGroupInDB($hgObj->getValue());
-		$o = NULL;
-		$hgObj = $form->getElement('hg_id');
-		$form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
-		$form->freeze();
-		$valid = true;
-	}
+$valid = false;
+if ($form->validate())	{
+    $hgObj = $form->getElement('hg_id');
+    if ($form->getSubmitValue("submitA"))
+        $hgObj->setValue(insertHostGroupInDB());
+    else if ($form->getSubmitValue("submitC"))
+        updateHostGroupInDB($hgObj->getValue());
+    $o = NULL;
+    $hgObj = $form->getElement('hg_id');
+    $form->addElement("button", "change", _("Modify"), array("onClick"=>"javascript:window.location.href='?p=".$p."&o=c&hg_id=".$hgObj->getValue()."'"));
+    $form->freeze();
+    $valid = true;
+}
 
-	$action = $form->getSubmitValue("action");
-	if ($valid && $action["action"]["action"]) {
-		require_once($path."listHostGroup.php");
-	} else	{
-		/*
-		 * Apply a template definition
-		 */
-		$renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
-		$renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
-		$renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
-		$form->accept($renderer);
-		$tpl->assign('form', $renderer->toArray());
-        $tpl->assign('days', _('days'));
-		$tpl->assign('o', $o);
-		$tpl->assign('topdoc', _("Documentation"));
-		$tpl->display("formHostGroup.ihtml");
-	}
-?>
+$action = $form->getSubmitValue("action");
+if ($valid && $action["action"]["action"]) {
+    require_once($path."listHostGroup.php");
+} else	{
+    /*
+     * Apply a template definition
+     */
+    $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl, true);
+    $renderer->setRequiredTemplate('{$label}&nbsp;<font color="red" size="1">*</font>');
+    $renderer->setErrorTemplate('<font color="red">{$error}</font><br />{$html}');
+    $form->accept($renderer);
+    $tpl->assign('form', $renderer->toArray());
+    $tpl->assign('days', _('days'));
+    $tpl->assign('o', $o);
+    $tpl->assign('topdoc', _("Documentation"));
+    $tpl->display("formHostGroup.ihtml");
+}
+
+
