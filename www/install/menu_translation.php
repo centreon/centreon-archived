@@ -83,6 +83,7 @@ echo _("SNMP Traps");
 echo _("Manufacturer");
 echo _("MIBs");
 echo _("Contacts / Users");
+echo _("Contact Templates");
 echo _("Contact Groups");
 echo _("Time Periods");
 echo _("Commands");
