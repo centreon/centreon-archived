@@ -176,9 +176,9 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $listDuplicate = json_decode($di->get('router')->request()->param('duplicate'));
 
-        $hostObj = new $this->objectClass();
+        $objClass = $this->objectClass;
         foreach ($listDuplicate as $id => $nb) {
-            $hostObj->duplicate($id, $nb);
+            $objClass::duplicate($id, $nb);
         }
         $di->get('router')->response()->json(array(
             'success' => true
@@ -195,9 +195,9 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $params = $di->get('router')->request()->paramsPost();
 
-        $hostObj = new $this->objectClass();
+        $objClass = $this->objectClass;
         foreach ($params['ids'] as $id) {
-            $hostObj->update($id, $params['values']);
+            $objClass::update($id, $params['values']);
         }
 
         $di->get('router')->response()->json(array(
@@ -215,9 +215,9 @@ abstract class ObjectAbstract extends \Centreon\Core\Controller
         $di = \Centreon\Core\Di::getDefault();
         $params = $di->get('router')->request()->paramsPost();
 
-        $hostObj = new $this->objectClass();
+        $objClass = $this->objectClass;
         foreach ($params['ids'] as $id) {
-            $hostObj->delete($id);
+            $objClass::delete($id);
         }
 
         $di->get('router')->response()->json(array(
