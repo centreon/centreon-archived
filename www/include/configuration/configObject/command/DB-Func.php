@@ -58,7 +58,7 @@ function testCmdExistence ($name = null)
         $id = $form->getSubmitValue('command_id');
     }
     
-    $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".$oreon->checkIllegalChar($pearDB->escape($name))."'");
+    $DBRESULT = $pearDB->query("SELECT `command_name`, `command_id` FROM `command` WHERE `command_name` = '".$pearDB->escape($oreon->checkIllegalChar($name))."'");
     $command = $DBRESULT->fetchRow();
     if ($DBRESULT->numRows() >= 1 && $command["command_id"] == $id)	{
         /*
