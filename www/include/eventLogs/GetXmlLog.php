@@ -696,7 +696,7 @@
 	 */
 	$buffer->writeElement("d", _("Day"), 0);
 	$buffer->writeElement("t", _("Time"), 0);
-	$buffer->writeElement("O", _("Object Status"), 0);
+	$buffer->writeElement("O", _("Object name"), 0);
 	$buffer->writeElement("T", _("Type"), 0);
 	$buffer->writeElement("R", _("Retry"), 0);
 	$buffer->writeElement("o", _("Output"), 0);
