@@ -2,7 +2,7 @@
 <form {$form.attributes}>
 	 <table class="ListTable">
 	 	<tr class="ListHeader">
-	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.title}</td>
+	 		<td class="FormHeader" colspan="2"><img src='./img/icones/16x16/branch_element.gif'>&nbsp;&nbsp;{$form.header.w_title}</td>
 	 	</tr>
 	 	<tr class="list_lvl_1">
 	 		<td class="ListColLvl1_name" colspan="2"><img src='./img/icones/16x16/clipboard.gif'>&nbsp;&nbsp;{$form.header.information}</td>
@@ -17,10 +17,10 @@
 		<tr class="ListHeader">
 			<td class="ListColHeaderPicker"></td>
 			<td class="ListColHeaderLeft"></td>
-			<td class="ListColHeaderLeft">Title</td>
-			<td class="ListColHeaderLeft">Version</td>
-			<td class="ListColHeaderLeft">Description</td>			
-			<td class="ListColHeaderLeft">Author</td>
+			<td class="ListColHeaderLeft">{t}Title{/t}</td>
+			<td class="ListColHeaderLeft">{t}Version{/t}</td>
+			<td class="ListColHeaderLeft">{t}Description{/t}</td>			
+			<td class="ListColHeaderLeft">{t}Author{/t}</td>
 		</tr>
 		{foreach item=elem from=$widgetModels}
 		{cycle values='list_one,list_two' assign=rowStyle}		
