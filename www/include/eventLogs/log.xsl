@@ -287,10 +287,10 @@
 		<tr class='ListHeader'>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/d"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/t"/></td>
-			<td class="ListColHeaderLeft" colspan="2"><xsl:value-of select="//lang/h"/></td>
+			<td class="ListColHeaderLeft" colspan="2"><xsl:value-of select="//lang/O"/></td>
 			<td class="ListColHeaderCenter" style='width:50px;'><xsl:value-of select="//lang/s"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/T"/></td>
-			<td class="ListColHeaderCenter">R</td>
+			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/R"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/o"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/c"/></td>
 			<td class="ListColHeaderCenter"><xsl:value-of select="//lang/C"/></td>
