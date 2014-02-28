@@ -71,8 +71,11 @@ require_once 'HTML/QuickForm/advmultiselect.php';
 require_once 'HTML/QuickForm/Renderer/ArraySmarty.php';
 
 $form = new HTML_QuickForm('Form', 'post', "?p=103");
+
+$form->addElement('header', 'w_title', $title);
 $form->addElement('header', 'title', $title);
 $form->addElement('header', 'information', _("Widget Information"));
+
 /**
  * Name
  */

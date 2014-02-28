@@ -83,6 +83,7 @@ echo _("SNMP Traps");
 echo _("Manufacturer");
 echo _("MIBs");
 echo _("Contacts / Users");
+echo _("Contact Templates");
 echo _("Contact Groups");
 echo _("Time Periods");
 echo _("Commands");
@@ -176,4 +177,19 @@ echo _("servicegroup dependency");
 /* Views -> Graphs */
 
 echo _("Yearly");
-?>
+
+
+/* 
+ * Centreon -> Centreon- > Centreon-Broker 
+ */
+
+echo _("Centreon Broker information");
+echo _("Centreon-Broker Correlation");
+echo _("Centreon-Broker Input");
+echo _("Centreon-Broker Logger");
+echo _("Centreon-Broker Output");
+echo _("Centreon-Broker Stats");
+echo _("Centreon-Broker Temporary");
+
+
+

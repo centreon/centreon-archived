@@ -34,26 +34,26 @@
  */
 
 if (!isset($centreon)) {
-  exit ();
+    exit ();
 }
 
 require_once ("./include/common/autoNumLimit.php");
 
 function searchUserName($user_name) {
-  global $pearDB;
-  $str = "";
+    global $pearDB;
+    $str = "";
   
-  $DBRES = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name LIKE '%".$user_name."%' OR contact_alias LIKE '%".$user_name."%'");
-  while ($row = $DBRES->fetchRow()) {
-    if ($str != "") {
-      $str .= ", ";
+    $DBRES = $pearDB->query("SELECT contact_id FROM contact WHERE contact_name LIKE '%".$user_name."%' OR contact_alias LIKE '%".$user_name."%'");
+    while ($row = $DBRES->fetchRow()) {
+        if ($str != "") {
+            $str .= ", ";
+        }
+        $str .= "'" . $row['contact_id'] . "'";
     }
-    $str .= "'" . $row['contact_id'] . "'";
-  }
-  if ($str == "") {
-    $str = "''";
-  }
-  return $str;
+    if ($str == "") {
+        $str = "''";
+    }
+    return $str;
 }
 
 /*
@@ -85,41 +85,49 @@ while ($row = $DBRES->fetchRow()) {
 }
 
 
-if (isset($_POST["searchO"]))
-  $searchO = $_POST["searchO"];
-elseif (isset($_GET["searchO"]))
-  $searchO = $_GET["searchO"];
-else
-  $searchO = NULL;
+if (isset($_POST["searchO"])) {
+    $searchO = $_POST["searchO"];
+} elseif (isset($_GET["searchO"])) {
+    $searchO = $_GET["searchO"];
+} else {
+    $searchO = NULL;
+}
 
-if (isset($_POST["searchU"]))
-  $searchU = $_POST["searchU"];
-elseif (isset($_GET["searchU"]))
-  $searchU = $_GET["searchU"];
-else
-  $searchU = NULL;
+if (isset($_POST["searchU"])) {
+    $searchU = $_POST["searchU"];
+} elseif (isset($_GET["searchU"])) {
+    $searchU = $_GET["searchU"];
+} else {
+    $searchU = NULL;
+}
 
-if (isset($_POST["otype"]))
-  $otype = $_POST["otype"];
-elseif (isset($_GET["otype"]))
-  $otype = $_GET["otype"];
-else
-  $otype = NULL;
+if (isset($_POST["otype"])) {
+    $otype = $_POST["otype"];
+} elseif (isset($_GET["otype"])) {
+    $otype = $_GET["otype"];
+} else {
+    $otype = NULL;
+}
 
-
+/*
+ * Init QuickForm
+ */
 $form = new HTML_QuickForm('select_form', 'POST', "?p=".$p);
 
+/*
+ * Init Smarty
+ */
 $tpl = new Smarty();
 $tpl = initSmartyTpl($path, $tpl);
 
 $tabAction = array();
-$tabAction["a"] = "Add";
-$tabAction["c"] = "Change";
-$tabAction["mc"] = "Massive Change";
-$tabAction["enable"] = "Enable";
-$tabAction["disable"] = "Disable";
-$tabAction["d"] = "Delete";
-
+$tabAction["a"] = _("Add");
+$tabAction["c"] = _("Change");
+$tabAction["mc"] = _("Massive Change");
+$tabAction["enable"] = _("Enable");
+$tabAction["disable"] = _("Disable");
+$tabAction["d"] = _("Delete");
+                         
 $tpl->assign("date", _("Date"));
 $tpl->assign("type", _("Type"));
 $tpl->assign("object_id", _("Object ID"));
@@ -139,8 +147,8 @@ $objects_type_tab = array();
 $objects_type_tab = $oreon->CentreonLogAction->listObjecttype();
 $options = "";
 foreach ($objects_type_tab as $key => $name) {
-  $name = _("$name");
-  $options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>";
+    $name = _("$name");
+    $options .= "<option value='$key' ".(($otype == $key) ? 'selected' : "").">$name</option>";
 }
 
 $tpl->assign("obj_type", $options);
@@ -160,22 +168,22 @@ $query = "SELECT SQL_CALC_FOUND_ROWS object_id, object_type, object_name, action
 
 $where_flag = 1;
 if ($searchO) {
-  if ($where_flag)  {
-    $query .= " WHERE ";
-    $where_flag = 0;
-  } else {
-    $query .= " AND ";
-  }
-  $query .= " object_name LIKE '%".$searchO."%' ";
+    if ($where_flag)  {
+        $query .= " WHERE ";
+        $where_flag = 0;
+    } else {
+        $query .= " AND ";
+    }
+    $query .= " object_name LIKE '%".$searchO."%' ";
 }
 if ($searchU) {
-  if ($where_flag)  {
-    $query .= " WHERE ";
-    $where_flag = 0;
-  } else {
-    $query .= " AND ";
-  }
-  $query .= " log_contact_id IN (".searchUserName($searchU).") ";
+    if ($where_flag)  {
+        $query .= " WHERE ";
+        $where_flag = 0;
+    } else {
+        $query .= " AND ";
+    }
+    $query .= " log_contact_id IN (".searchUserName($searchU).") ";
 }
 if (!is_null($otype)) {
   if ($objects_type_tab[$otype] != 'All') {
@@ -196,33 +204,33 @@ $rows = $pearDB->numberRows();
 include("./include/common/checkPagination.php");
 
 while ($res = $DBRESULT->fetchRow()) {
-  if ($res['object_id']) { 
-    $res['obj_name'] = str_replace('#S#', "/", $res["object_name"]);
-    $res['obj_name'] = str_replace('#BS#', "\\", $res["obj_name"]);
-    $tabz_obj_id[] = $res['object_id'];
-    $tabz_obj_type[] = $res['object_type'];
-    if ($res['object_type'] == "service") {
-      $info = getMyServiceHosts($res['object_id']);
-      $array = array();
-      if (count($info) != 1) {
-	foreach ($info as $host_id) {
-	  $array[$host_id] = getMyHostName($host_id);
-	}
-	$tabz_hosts[] = $array; 
-      } else {
-	foreach ($info as $host_id) {
-	  $tabz_host[] = getMyHostName($host_id);
+    if ($res['object_id']) { 
+        $res['obj_name'] = str_replace('#S#', "/", $res["object_name"]);
+        $res['obj_name'] = str_replace('#BS#', "\\", $res["obj_name"]);
+        $tabz_obj_id[] = $res['object_id'];
+        $tabz_obj_type[] = $res['object_type'];
+        if ($res['object_type'] == "service") {
+            $info = getMyServiceHosts($res['object_id']);
+            $array = array();
+            if (count($info) != 1) {
+                foreach ($info as $host_id) {
+                    $array[$host_id] = getMyHostName($host_id);
+                }
+                $tabz_hosts[] = $array; 
+            } else {
+                foreach ($info as $host_id) {
+                    $tabz_host[] = getMyHostName($host_id);
+                }
+            }
+        } else {
+            $tabz_host[] = array();
+            $tabz_hosts[] = array();
         }
-      }
-    } else {
-      $tabz_host[] = array();
-      $tabz_hosts[] = array();
+        $tabz_obj_name[] = $res['obj_name'];
+        $tabz_obj_time[] = date('d/m/Y H:i:s', $res['action_log_date']);
+        $tabz_event_type[] = $tabAction[$res['action_type']];
+        $tabz_contact[] = $contactList[$res['log_contact_id']];
     }
-    $tabz_obj_name[] = $res['obj_name'];
-    $tabz_obj_time[] = date('d/m/Y H:i:s', $res['action_log_date']);
-    $tabz_event_type[] = $tabAction[$res['action_type']];
-    $tabz_contact[] = $contactList[$res['log_contact_id']];
-  }
 }
 
 /*
@@ -230,6 +238,7 @@ while ($res = $DBRESULT->fetchRow()) {
  */
 $renderer = new HTML_QuickForm_Renderer_ArraySmarty($tpl);
 $form->accept($renderer);
+
 $tpl->assign('form', $renderer->toArray());
 $tpl->assign('search_object_str', _("Object"));
 $tpl->assign('search_user_str', _("User"));
@@ -251,7 +260,7 @@ $tpl->assign('time', _("Time"));
 $tpl->assign('contact', _("Contact"));
 
 // Set Color
-$tpl->assign("color", array('Add' => "#0BF30B", 'Change' => "#F3D30B", 'Massive Change' => '#F3D30B', 'Delete' => '#F90531', 'Enable' => '#06A1F8', 'Disable' => '#BA0EF0'));
+$tpl->assign("color", array(_('Add') => "#0BF30B", _('Change') => "#F3D30B", _('Massive Change') => '#F3D30B', _('Delete') => '#F90531', _('Enable') => '#06A1F8', _('Disable') => '#BA0EF0'));
 
 // Pagination 
 $tpl->assign('limit', $limit);
@@ -261,21 +270,21 @@ $tpl->assign('p', $p);
 
 if (isset($_POST['searchO']) || isset($_POST['searchU']) 
     || isset($_POST['otype']) || !isset($_GET['object_id'])) {
-  $tpl->display("viewLogs.ihtml");
+    $tpl->display("viewLogs.ihtml");
 } else {
-  $listAction = array();
-  $listAction = $oreon->CentreonLogAction->listAction($_GET['object_id'], $_GET['object_type']);
-  $listModification = array();
-  $listModification = $oreon->CentreonLogAction->listModification($_GET['object_id'], $_GET['object_type']);
+    $listAction = array();
+    $listAction = $oreon->CentreonLogAction->listAction($_GET['object_id'], $_GET['object_type']);
+    $listModification = array();
+    $listModification = $oreon->CentreonLogAction->listModification($_GET['object_id'], $_GET['object_type']);
   
-  if (isset($listAction)) {
-    $tpl->assign("action", $listAction);
-  }
-  if (isset($listModification)) {
-    $tpl->assign("modification", $listModification);
-  }
+    if (isset($listAction)) {
+        $tpl->assign("action", $listAction);
+    }
+    if (isset($listModification)) {
+        $tpl->assign("modification", $listModification);
+    }
   
-  $tpl->display("viewLogsDetails.ihtml");
+    $tpl->display("viewLogsDetails.ihtml");
 }
 
 ?>
