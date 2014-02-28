@@ -1356,10 +1356,11 @@ class CentreonACL
             // no duplicate keys with this
             if ($key != '' && !isset($result[$key])) {
                 if (isset($offset) && $i < $offset) {
+                    $i++;
                     continue;
                 }
                 if (isset($limit) && isset($offset)
-                        && $i > ($offset+$limit)) {
+                        && ($i + 1) > ($offset+$limit)) {
                     break;
                 }
                 $i++;
