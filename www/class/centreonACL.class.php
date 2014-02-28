@@ -1314,7 +1314,7 @@ class CentreonACL
                     }
                 }
 
-                $requests['conditions'] .= $clause . $key . $op . " '" . $pearDB->escape($value)."' ";
+                $requests['conditions'] .= $clause . " " .$key . " " . $op . " '" . $pearDB->escape($value)."' ";
             }
             if (!$first) {
                 $requests['conditions'] .= ') ';
