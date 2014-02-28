@@ -192,7 +192,6 @@ $tpl->display("formGenerateFiles.ihtml");
     function nextStep() {
         var func = window[steps.shift()];
         if (typeof(func) === 'function') {
-            updateProgress();
             func();
         } else {
             // no more step
@@ -207,6 +206,8 @@ $tpl->display("formGenerateFiles.ihtml");
      */
     function generationProcess()
     {
+	curProgress = 0;
+        stepProgress = 0;
         updateProgress();
         cleanErrorPhp();
         document.getElementById('console').style.visibility = 'visible';
@@ -255,7 +256,7 @@ $tpl->display("formGenerateFiles.ihtml");
             abortProgress();
             return null;
         }
-        $('consoleContent').insert("<b><font color='green'>OK</font></b><br/>");
+       $('consoleContent').insert("<b><font color='green'>OK</font></b><br/>");
     }
 
     /**
@@ -285,6 +286,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
+            	updateProgress();
                 nextStep();
             }
         });
@@ -310,6 +312,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
+            	updateProgress();
                 nextStep();
             }
         });
@@ -336,6 +339,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
+            	updateProgress();
                 nextStep();
             }
         });
@@ -358,6 +362,7 @@ $tpl->display("formGenerateFiles.ihtml");
                     abortProgress();
                     return null;
                 }
+            	updateProgress();
                 nextStep();
             }
         });
