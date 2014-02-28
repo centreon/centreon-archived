@@ -39,7 +39,6 @@
 if (!isset($centreon)) {
     exit();
 }
-
 require_once ($centreon_path . "/www/class/centreonHost.class.php");
 require_once ($centreon_path . "/www/class/centreonCriticality.class.php");
 
