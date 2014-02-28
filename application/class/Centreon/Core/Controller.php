@@ -37,7 +37,7 @@
 
 namespace Centreon\Core;
 
-class Controller
+abstract class Controller
 {
     /**
      *
