@@ -406,11 +406,11 @@
 	if ($o != "mc")
 		$form->setDefaults(array('host_notifications_enabled' => '2'));
 
-        /*
-         * Additive
-         */
-        $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
-        $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
+    /*
+     * Additive
+     */
+    $form->addElement('checkbox', 'contact_additive_inheritance', _('Contact additive inheritance'));
+    $form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additive inheritance'));
         
 	if ($o == "mc")	{
 		$mc_mod_notifopt_first_notification_delay = array();
