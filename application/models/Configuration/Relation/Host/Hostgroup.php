@@ -44,6 +44,6 @@ class Hostgroup extends Relation
     protected static $relationTable = "hostgroup_relation";
     protected static $firstKey = "hostgroup_hg_id";
     protected static $secondKey = "host_host_id";
-    protected static $firstObject = "\\Models\\Configuration\\Hostgroup";
-    protected static $secondObject = "\\Models\\Configuration\\Host";
+    public static $firstObject = "\\Models\\Configuration\\Hostgroup";
+    public static $secondObject = "\\Models\\Configuration\\Host";
 }

@@ -44,6 +44,6 @@ class Contact extends Relation
     protected static $relationTable = "contact_host_relation";
     protected static $firstKey = "contact_id";
     protected static $secondKey = "host_host_id";
-    protected static $firstObject = "\\Models\\Configuration\\Contact";
-    protected static $secondObject = "\\Models\\Configuration\\Host";
+    public static $firstObject = "\\Models\\Configuration\\Contact";
+    public static $secondObject = "\\Models\\Configuration\\Host";
 }

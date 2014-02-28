@@ -62,13 +62,13 @@ abstract class Relation
     /**
      * @var string
      */
-    protected static $firstObject = null;
+    public static $firstObject = null;
 
     /**
      *
      * @var string
      */
-    protected static $secondObject = null;
+    public static $secondObject = null;
 
     /**
      * Used for inserting relation into database

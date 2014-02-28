@@ -44,8 +44,8 @@ class Hostparent extends Relation
     protected static $relationTable = "host_hostparent_relation";
     protected static $firstKey = "host_parent_hp_id";
     protected static $secondKey = "host_host_id";
-    protected static $firstObject = "\\Models\\Configuration\\Host";
-    protected static $secondObject = "\\Models\\Configuration\\Host";
+    public static $firstObject = "\\Models\\Configuration\\Host";
+    public static $secondObject = "\\Models\\Configuration\\Host";
 
     /**
      * Get Merged Parameters from seperate tables

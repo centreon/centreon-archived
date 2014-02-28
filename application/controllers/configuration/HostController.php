@@ -411,15 +411,16 @@ class HostController extends ObjectAbstract
             return;
         }
         
-        $timeperiodObj = new Timeperiod();
         $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id']);
-        $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
-        
-        $finalTimeperiodList = array(
-            "id" => $timeperiodList[0]['tp_id'],
-            "text" => $timeperiodList[0]['tp_name']
-        );
-        
+        $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
+
+        $finalTimeperiodList = array();
+        if (count($timeperiodList)) { 
+            $finalTimeperiodList = array(
+                "id" => $timeperiodList[0]['tp_id'],
+                "text" => $timeperiodList[0]['tp_name']
+            );
+        }
         $router->response()->json($finalTimeperiodList);
     }
     
