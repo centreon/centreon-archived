@@ -494,11 +494,11 @@
 		$form->setDefaults(array('service_inherit_contacts_from_host' => '1'));
 	}
     
-        /*
-         * Additive
-         */
-        $form->addElement('checkbox', 'contact_additive_inheritance', 'Contact additive inheritance');
-        $form->addElement('checkbox', 'cg_additive_inheritance', 'Contact group additive inheritance');
+    /*
+     * Additive
+     */
+    $form->addElement('checkbox', 'contact_additive_inheritance', _('Contact additive inheritance'));
+    $form->addElement('checkbox', 'cg_additive_inheritance', _('Contact group additive inheritance'));
         
 	/*
 	 *  Contacts
