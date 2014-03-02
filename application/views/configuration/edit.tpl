@@ -3,7 +3,7 @@
 {block name="title"}{$pageTitle}{/block}
 
 {block name="content"}
-    <div class="container">
+    <div class="content-container">
         {$form}
     </div>
 {/block}
