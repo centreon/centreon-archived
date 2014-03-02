@@ -37,7 +37,7 @@ $(document).ready(function() {
     $(window).on('resize', function() {
         leftPanelHeight();
     });
-    loadMenu('{url_for url="/menu/getmenu/"}', 1);
+    loadMenu('{url_for url="/menu/getmenu/"}', {get_environment_id});
     $('li.envmenu').on('click', function(e) {
         loadMenu('{url_for url="/menu/getmenu/"}', $(this).data('menu'));
     });
