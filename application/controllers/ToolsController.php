@@ -59,8 +59,8 @@ class ToolsController extends \Centreon\Core\Controller
         $baseUrl = $di->get('config')->get('global', 'base_url');
         $route = str_replace($baseUrl, '/', $route);
         $route = str_replace('css', 'less', $route);
-	/* Remove min */
-	$route = str_replace('.min.', '.', $route);
+        /* Remove min */
+        $route = str_replace('.min.', '.', $route);
         $centreonPath = realpath(__DIR__ . '/../../www/');
         if (false === file_exists($centreonPath . $route)) {
             $response->redirect('404', 404);
@@ -69,8 +69,38 @@ class ToolsController extends \Centreon\Core\Controller
         
         /* Response compiled CSS */
         $response->header('Content-Type', 'text/css');
-	$less = new \Less_Parser();
-	$less->parseFile($centreonPath . $route);
+        $less = new \Less_Parser();
+        $less->parseFile($centreonPath . $route);
         $response->body($less->getCss());
+    }
+
+    /**
+     * Action for display image from database
+     *
+     * @method GET
+     * @route /uploads/[*:image][png|jpg|gif|jpeg:format]
+     */
+    public function imageAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
+        $params = $router->request()->paramsNamed();
+        $filename = $params['image'] . $params['format'];
+        $query = 'SELECT `binary`, `mimetype`
+            FROM binaries
+            WHERE filetype = 1
+                AND filename = :filename';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        if (false === $row) {
+            $response->redirect('404', 404);
+            return;
+        }
+
+        $router->response()->header('Content-Type', $row['mimetype']);
+        $router->response()->body($row['binary']);
     }
 }
