@@ -1308,9 +1308,9 @@ function prepare_sudo_config() {
 	# Snmptrapd Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/snmptrapd restart
 	# Centreontrapd restart
-	CENTREON   ALL = NOPASSWD: /etc/init.d/centreontrapd restart
+	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd restart
 	# Centreontrapd reload
-	CENTREON   ALL = NOPASSWD: /etc/init.d/centreontrapd reload
+	CENTREON   ALL = NOPASSWD: $INIT_D/centreontrapd reload
 	# CentStorage Restart
 	CENTREON   ALL = NOPASSWD: $INIT_D/centstorage restart
 	# CentStorage stop
