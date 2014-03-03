@@ -79,4 +79,6 @@ Architecture
 Le schéma ci-dessous résume le fonctionnement de l'architecture :
 
 .. image :: /images/architecture/dschema.png
-   :align: center 
+   :align: center
+
+[TODO : refaire schéma avec un fond d'écran blanc sans carreaux ]
