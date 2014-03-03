@@ -28,7 +28,7 @@ Le serveur satellite a les éléments suivants :
 
 Cette architecture a plusieurs intérets :
 
-* Elle permet la répartition de la charge de supervision entre plusieurs serveurs de supervision
+* Possibilité de répartir la charge de supervision entre plusieurs serveurs de supervision permettant ainsi de disposer de collecteur dans des zones géographiques particulières ou par entité logique
 * Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
 * Avoir une base de données MySQL externalisée limitant les E/S sur disque(s) du serveur central
 
