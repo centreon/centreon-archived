@@ -2,8 +2,6 @@
 Les dépendances
 ===============
 
-[TODO à revoir car je ne suis pas en accord avec le contenu]
-
 ********
 Principe
 ********
@@ -11,7 +9,6 @@ Principe
 Les dépendances sont utilisées afin de répondre à deux besoins :
 
 *  Limiter l'envoi de notifications
-*  [ TODO il est ou le second ? ]
 
 Exemples :
 
@@ -30,14 +27,14 @@ Les services sont démarrés sur l'hôte A, si l'hôte A devient indisponible al
 Notre outil de supervision doit être capable de raisonner de la manière suivante : si l'hôte A est disponible alors l'hôte B n'est pas vérifié (il est également possible de laisser la vérification de l'hôte B tout en désactivant les notifications liés à cet hôte). 
 Si l'hôte A devient indisponible alors l'hôte B est vérifié.
 
-*********
+*************************
+Les dépendances physiques
+*************************
+
 Les hôtes
-*********
+=========
 
-La gestion simple
-=================
-
-Au sein de l'onglet **Relations** d'une fiche de configuration d'hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**) il est possible de définir deux paramètres :
+Les dépendances physiques consistent à prendre en compte les liens physiques entre les équipements. La configuration d'une dépendance physique se déroule au sein de l'onglet **Relations** d'une fiche de configuration d'hôte (**Configuration** ==> **Hôtes** ==> **Ajouter**) il est possible de définir deux paramètres :
 
 * Les hôtes parents : signifie que les hôtes sélectionnés sont parents de l'hôte. Si tous les hôtes parents sélectionnés deviennent indisponible ou injoignable alors l'hôte sera injoignable.
 
@@ -45,12 +42,26 @@ Exemple : Un hôte est connecté à un switch. Si ce switch tombe en panne, l'h�
 
 * Les hôtes enfants : signifie que l'hôte devient parent de tous les hôtes enfants sélectionnés
 
-Le principal défaut de cette méthode de configuration est que les hôtes parents et les hôtes enfants doivent être supervisés par le même collecteur de supervision.
+Dans le cas où les hôtes dépendants les uns des autres sont supervisés par deux collecteurs différents. Il est possible :
 
-La gestion avancée
-==================
+* D'empêcher l'établissement d'une relation de parentée entre deux hôtes supervisés par deux collecteurs différents.
+* D'autoriser l'établisement de cette relation de parentée : dans ce cas la dépendance ne sera pas gérée par les moteurs de supervision mais Centreon Broker prendra en compte cette relation au sein de son moteur de correlation.
 
-Il est possible de gérer la dépendance entre les hôtes d'une manière plus intelligente. Pour cela :
+Pour empecher l'établissement de cette relation de parenté, il est nécessaire de cocher la case **Enable strict mode for host partnership management** [ TODO Traduction à faire] au sein de **Administration** ==> **Options**.
+A l'inverse si cette case n'est pas cochée alors les liens de parenté entre hôtes appartenant à deux collecteurs différents peuvent être établit.
+
+************************
+Les dépendances logiques
+************************
+
+Les dépendances logiques consistent à mettre en place des liens logiques entre les objets.
+
+Par exemple : Un service est chargé de superviser l'accès à une page web à travers un serveur LDAP. Il est logique que si le serveur LDAP est en panne alors le service n'a pas lieu de lever une alerte.
+
+Les hôtes
+=========
+
+Pour configurer une dépendance logique :
 
 #. Rendez-vous dans **Configuration** ==> **Notifications**
 #. Dans le menu de gauche, sous le titre **Dépendances**, cliquez sur **Hôtes**
@@ -70,9 +81,8 @@ Si vous utilisez Centreon Broker, il est également possible à partir des hôte
 * La liste **Services dépendants** définie les services dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
 
-************
 Les services
-************
+============
 
 Pour ajouter une dépendance au niveau des services :
 
@@ -93,10 +103,6 @@ Si vous utilisez Centreon Broker, il est également possible de contrôler l'ex�
 * La liste **Services dépendants** définie les services dépendants
 * La liste **Hôtes dépendants** définie les hôtes dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
-
-***********
-Les groupes
-***********
 
 Les groupes d'hôtes
 ===================
@@ -140,9 +146,8 @@ Deux types de groupes de services : Un groupe de services est dit maitre s'il co
 * La liste **Nom des groupes de services liés** définie le ou les groupes de services dépendants
 * Le champ **Commentaire** permet de commenter la dépendance
 
-*****************
 Les méta-services
-*****************
+=================
 
 Pour ajouter une dépendance au niveau des méta-services :
 

@@ -45,6 +45,8 @@ Pour cela, cliquez sur **Partager la vue**.
 * La liste **Liste des utilisateurs** permet de définir les utilisateurs avec lesquels est partagée la vue
 * La liste **Liste des groupes utilisateur** permet de définir les groupes d'utilisateurs avec lesquels est partagée la vue
 
+.. _leswidgets:
+
 Insérer un widget
 =================
 
@@ -178,7 +180,7 @@ Le widget de groupes de services
 * La liste **Order By** permet de classer les groupes de services par ordre alphabétique suivant plusieus paramètres
 * Le champ **Refresh Interval (seconds)** permet de définir la durée avant le rafraichissement des données
 
-.. |deletewidget|    image:: /images/deletewidget.png
-.. |configurewidget|    image:: /images/configurewidget.png
-.. |refreshwidget|    image:: /images/refreshwidget.png
-.. |reducewidget|    image:: /images/reducewidget.png
+.. |deletewidget|    image:: /images/guide_utilisateur/supervision/deletewidget.png
+.. |configurewidget|    image:: /images/guide_utilisateur/supervision/configurewidget.png
+.. |refreshwidget|    image:: /images/guide_utilisateur/supervision/refreshwidget.png
+.. |reducewidget|    image:: /images/guide_utilisateur/supervision/reducewidget.png

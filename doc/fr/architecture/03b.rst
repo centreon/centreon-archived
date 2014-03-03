@@ -1,0 +1,65 @@
+=======================
+Architecture distribuée
+=======================
+
+**************
+Fonctionnement
+**************
+
+L'architecture distribuée consiste à avoir deux types d'entités :
+
+* Le serveur central qui centralise les informations de supervision
+* Un ou plusieurs serveurs satellites qui sont chargés de la supervision des équipements
+
+Le serveur central regroupe les éléments suivants :
+
+* L'interface web de Centreon
+* La base de données (MySQL + RRD)
+* Le moteur de supervision
+* Le broker
+
+Le serveur satellite a les éléments suivants :
+
+* Le moteur de supervision
+* Le module de broker qui permet l'envoi des informations de supervision vers le serveur central
+
+Cette architecture a plusieurs intérets :
+
+* Elle permet la répartition de la charge de supervision entre plusieurs serveurs de supervision
+* Isolation des flux réseaux : si votre infrastructure de supervision est chargée de superviser une DMZ il est plus simple (et sécurisant) de placer un serveur satellite sur le réseau DMZ
+
+*******
+Entités
+*******
+
+Serveur central
+===============
+
+Le serveur central fonctionne de la manière suivante :
+
+* Le serveur Apache est chargé d'héberger l'interface web de Centreon
+* Plusieurs base de données MySQL sont chargés de stocker la configuration de Centreon, les informations de supervision ainsi que les données de performances
+* Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et satellites ainsi que du redémarrage des moteurs de supervision
+* Le moteur de supervision supervise le système d'informations
+* Les informations de supervision sont envoyées via cbmod à Centreon Broker SQL
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD
+* Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
+
+Serveur satellite
+=================
+
+Le serveur satellite fonctionne de la manière suivante :
+
+* Le moteur de supervision supervise le système d'informations
+* Les informations de supervision sont envoyées via cbmod au service Centreon Broker SQL hébergé sur le serveur Central
+* Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances à Centreon Broker RRD
+* Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
+
+************
+Architecture
+************
+
+Le schéma ci-dessous résume le fonctionnement de l'architecture :
+
+.. image :: /images/architecture/bschema.png
+   :align: center 
