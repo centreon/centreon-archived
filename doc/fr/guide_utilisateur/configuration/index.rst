@@ -7,3 +7,11 @@ Configuration
    01actions
    02hosts
    03services
+   04commands
+   05timeperiod
+   06contact
+   07groups
+   08category
+   09models
+   10advanced_configuration/index
+   11deploy

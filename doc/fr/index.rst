@@ -15,10 +15,9 @@ Sommaire :
    :maxdepth: 2
 
    a_propos/index
-   concepts/index
    guide_utilisateur/index
    guide_exploitation/index
-   administration/index
+   architecture/index
 
 Ressources en ligne supplémentaires:
 

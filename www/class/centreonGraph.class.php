@@ -1254,10 +1254,15 @@ class CentreonGraph {
          * Send Binary Data
          */
         if (!$this->checkcurve) {
+            if (is_writable($this->general_opt['debug_path'])) {
+                $stderr = array('file', $this->general_opt['debug_path'].'/rrdtool.log', 'a');
+            } else {
+                $stderr = array('pipe', 'a');
+            }
             $descriptorspec = array(
                                 0 => array("pipe", "r"),  // stdin est un pipe processus va lire
                                 1 => array("pipe", "w"),  // stdout est un pipe processus va ecrire
-                                2 => array("file", $this->general_opt["debug_path"] . "/rrdtool.log", "a") // stderr est un fichier
+                                2 => $stderr // stderr est un fichier
                             );
 
             $process = proc_open($gmt_export . $this->general_opt["rrdtool_path_bin"] . " - ", $descriptorspec, $pipes, NULL, NULL);
@@ -1524,7 +1529,7 @@ class CentreonGraph {
      * @param unknown_type $message
      */
     private function _log($message) {
-        if ($this->general_opt['debug_rrdtool']) {
+        if ($this->general_opt['debug_rrdtool'] && is_writable($this->general_opt['debug_path'])) {
             error_log("[" . date("d/m/Y H:i") ."] RDDTOOL : ".$message." \n", 3, $this->general_opt["debug_path"]."rrdtool.log");
         }
     }

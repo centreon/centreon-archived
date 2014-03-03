@@ -228,7 +228,7 @@
 		$tpl->assign('msgh', array ("addL"            => "?p=".$p."&o=ah",
 									"addT"            => _("Add a downtime"),
 									"delConfirm"      => _("Do you confirm the deletion ?"),
-		                            "cancelConfirm"   => _("Do you confirm the cancelation?")));
+		                            "cancelConfirm"   => _("Do you confirm the cancellation?")));
 	}
 
 	$tpl->assign("p", $p);

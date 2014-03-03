@@ -46,6 +46,7 @@ use vars qw($centreon_config);
 use vars qw($mysql_user $mysql_passwd $mysql_host $mysql_database_oreon $mysql_database_ods $mysql_database_ndo);
 
 $SIG{__DIE__} = sub {
+    return unless defined $^S and $^S == 0; # Ignore errors in eval
     my $error = shift;
     print "Error: $error";
     exit 1;

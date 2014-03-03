@@ -117,16 +117,16 @@ $sso_mode[] = HTML_QuickForm::createElement('radio', 'sso_mode', null, _("Mixed"
 $form->addGroup($sso_mode, 'sso_mode', _("SSO mode"), '&nbsp;');
 $form->setDefaults(array('sso_mode'=>'1'));
 
-$form->addElement('text', 'sso_trusted_clients', 'SSO trusted client addresses', array('size' => 50));
+$form->addElement('text', 'sso_trusted_clients', _('SSO trusted client addresses'), array('size' => 50));
 
-$form->addElement('text', 'sso_header_username', 'SSO login header', array('size' => 30));
+$form->addElement('text', 'sso_header_username', _('SSO login header'), array('size' => 30));
 $form->setDefaults(array('sso_header_username'=>'HTTP_AUTH_USER'));
 
 $options3[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
 $form->addGroup($options3, 'enable_gmt', _("Enable Timezone management"), '&nbsp;&nbsp;');
 
 $options4[] = HTML_QuickForm::createElement('checkbox', 'yes', '&nbsp;', '');
-$form->addGroup($options4, 'strict_hostParent_poller_management', _("Enable strict mode for host partnership management"), '&nbsp;&nbsp;');
+$form->addGroup($options4, 'strict_hostParent_poller_management', _("Enable strict mode for host parentship management"), '&nbsp;&nbsp;');
 
 /*
  * Support Email
