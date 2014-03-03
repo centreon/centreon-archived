@@ -356,7 +356,7 @@ Exemple
 
 Le résultat sera de la forme : Interface GigabitEthernet0/1 ( SERVEUR NAS ) linkUP. State: up
 
-*   Le champ **Activer le journal d'évènement** permet de [TODO]
+*   Le champ **Activer le journal d'évènement** permet d'activer l'insertion en base de données de l'évènements reçu si le service centreontrapd est configuré pour.
 *   Le champ **Temps d'exécution maximum** exprimé en secondes, permet de définir le temps maximum de traitement de l'évènement y compris les commandes de prétraitement (PREEXEC) ainsi que celles de post-traitement (commande spéciale).
 *   Le champ **Intervalle d'exécution** exprimé en secondes, permet de définir le temps minimum d'attente entre deux traitements d'un évènement.
 *   Le champ **Type d'exécution** permet d'activer l'**Intervalle d'exécution** en définissant les conditions **Par OID racine**, **Par la combinaison OID racine et hôte** ou de désactiver cette restriction **Aucune**.
