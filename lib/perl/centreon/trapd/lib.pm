@@ -68,21 +68,6 @@ sub init_modules {
         }
     }
     
-    ####
-    # Socket Module
-    ####
-    if ($args{config}->{dns_enable} == 1) {
-        eval 'require Socket;';
-        if ($@) {
-            $args{logger}->writeLogError($@);
-            $args{logger}->writeLogError("Could not load the Perl module Socket!  If dns_enable");
-            $args{logger}->writeLogError("is enabled then the Socket module is required");
-            $args{logger}->writeLogError("for system requirements");
-            die("Quit");
-        }
-        $args{logger}->writeLogInfo("********** DNS enabled **********");
-    }
-    
     if ($args{config}->{duplicate_trap_window} > 0) {
         eval 'require Digest::MD5;';
         if ($@) {
