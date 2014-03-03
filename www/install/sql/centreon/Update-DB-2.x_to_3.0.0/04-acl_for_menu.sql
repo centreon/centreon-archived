@@ -1,6 +1,6 @@
 -- Create acl for new routing
 CREATE TABLE `acl_routes` (
-    `acl_route_id` INT NOT NULL AUTO_INCREMENT,
+    `acl_route_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `route` VARCHAR(255) NOT NULL, 
     `permission` INT NOT NULL,
     `acl_group_id` INT,
@@ -10,8 +10,8 @@ CREATE TABLE `acl_routes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `acl_group_menu_relations` (
-  `acl_group_id` INT NOT NULL,
-  `acl_menu_id` INT NOT NULL,
+  `acl_group_id` INT UNSIGNED NOT NULL,
+  `acl_menu_id` INT UNSIGNED NOT NULL,
   KEY `acl_group_id` (`acl_group_id`),
   KEY `acl_menu_id` (`acl_menu_id`),
   CONSTRAINT `acl_group_menu_relations_ibfk_1` FOREIGN KEY (`acl_group_id`) REFERENCES `acl_groups` (`acl_group_id`) ON DELETE CASCADE,
@@ -19,7 +19,7 @@ CREATE TABLE `acl_group_menu_relations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `acl_menus` (
-  `acl_menu_id` INT NOT NULL AUTO_INCREMENT,
+  `acl_menu_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAr(255) NOT NULL,
   `description` VARCHAR(255) NOT NULL,
   `enabled` TINYINT(1) DEFAULT 1,
@@ -27,7 +27,7 @@ CREATE TABLE `acl_menus` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `acl_menu_menu_relations` (
-  `acl_menu_id` INT DEFAULT NULL,
+  `acl_menu_id` INT UNSIGNED DEFAULT NULL,
   `menu_id` INT DEFAULT NULL,
   `acl_level` TINYINT(3) DEFAULT NULL,
   KEY `acl_menu_id` (`acl_menu_id`),
