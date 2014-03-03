@@ -68,9 +68,13 @@ try {
             $views[$key]['icon'] = "locked";
         } else {
             $views[$key]['icon'] = "unlocked";
-        }
+		}
+		$views[$key]['default'] = "";
+		if ($viewObj->getDefaultViewId()) {
+			$views[$key]['default'] = sprintf(" (%s)", _('default'));
+			$views[$key]['default'] = '<span class="ui-icon ui-icon-star" style="float:left;"></span>';
+		}
     }
-        
     $template->assign('views', $views);
     $template->assign('empty', $i);
     $template->assign('msg', _("No view available. To create a new view, please click \"Add view\" button."));
