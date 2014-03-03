@@ -462,7 +462,7 @@
                 $tpl->assign('centreon_path', $centreon->optGen['oreon_path']);
                 $tpl->assign('cloneSet', $cloneSet);
                 $tpl->assign('cloneSetMaching', $cloneSetMaching);
-                $tpl->assign('preexeccmd_str', _('SNMPTT PREEXEC command'));
+                $tpl->assign('preexeccmd_str', _('PREEXEC command'));
 		$tpl->display("formTraps.ihtml");
 	}
 
