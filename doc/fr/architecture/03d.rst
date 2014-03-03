@@ -50,7 +50,7 @@ Le serveur central master fonctionne normalement :
 * Le service CentCore est chargé d'exporter la configuration des moteurs de supervision vers le serveur central et satellites ainsi que du redémarrage des moteurs de supervision
 * Le moteur de supervision supervise le système d'information
 * Les informations de supervision sont envoyées via le module cbmod au composant Centreon Broker SQL
-* Le composant Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances aux 2 services Centreon Broker RRD (le premier se situe sur le master et l'autre sur le slave
+* Le composant Centreon Broker SQL est chargé d'insérer les données de supervision en base de données et de transmettre les données de performances aux 2 services Centreon Broker RRD (le premier se situe sur le master et l'autre sur le slave)
 * Le composant Centreon Broker RRD est chargé de générer les fichiers RRD (qui servent à générer les graphiques de performances)
 
 Une réplication MySQL bi-directionnelle permet de conserver la configuration de Centreon, les informations de supervision ainsi que les données de performances entre les deux serveurs centraux.
