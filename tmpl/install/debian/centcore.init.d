@@ -44,10 +44,10 @@ fi
 do_start()
 {
   start-stop-daemon --start --background --quiet --pidfile ${PIDFILE} --exec ${DAEMON} \
-    --chuid ${CENTREON_USER} --user ${CENTREON_USER} --test
+    --chuid ${CENTREON_USER} --user ${CENTREON_USER} --test -- $OPTIONS
   [ "$?" = "0" ] || return 1
   start-stop-daemon --start --background --quiet --pidfile ${PIDFILE} --exec ${DAEMON} \
-    --make-pidfile --chuid ${CENTREON_USER} --user ${CENTREON_USER}
+    --make-pidfile --chuid ${CENTREON_USER} --user ${CENTREON_USER} -- $OPTIONS
   [ "$?" = "0" ] || return 2
   return 0
 }
