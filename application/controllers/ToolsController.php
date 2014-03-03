@@ -100,6 +100,12 @@ class ToolsController extends \Centreon\Core\Controller
             return;
         }
 
+        /* Write file in filesystem for serve file by http server */
+        $centreonPath = realpath(__DIR__ . '/../../www/');
+        $filefs = $centreonPath . '/uploads/' . $filename;
+	    if (false === file_exists($filename)) {
+            file_put_contents($filefs, $row['binary']);
+	    }
         $router->response()->header('Content-Type', $row['mimetype']);
         $router->response()->body($row['binary']);
     }
