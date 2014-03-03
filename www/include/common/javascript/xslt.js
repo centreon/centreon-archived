@@ -84,7 +84,6 @@ var xslt_js = {
  */
 
 function loadXML(url) {
-
     var xmlDoc;
     /* chargement du fichier XML */
     try {
@@ -267,7 +266,7 @@ function Transformation() {
                     }
                     xsltDoc = xsltRequest.responseXML;
                     xmlDoc = xmlRequest.responseXML;
-                    if (window.ActiveXObject) {                    	
+                    if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {            
                     	document.getElementById(target).innerHTML = xmlDoc.transformNode(xsltDoc);                    	
                     } else {
                     	var resultDoc;
@@ -289,10 +288,9 @@ function Transformation() {
 		
 		var xmlRequest;
 		var xsltRequest;
-		
-		if (window.ActiveXObject) {
-			xmlRequest = new ActiveXObject("Msxml2.XMLHTTP");
-			xsltRequest = new ActiveXObject("Msxml2.XMLHTTP");
+                if (window.ActiveXObject || document.hasOwnProperty.call(window, "ActiveXObject")) {
+   			    xmlRequest = new ActiveXObject("Msxml2.XMLHTTP.6.0");
+			    xsltRequest = new ActiveXObject("Msxml2.XMLHTTP.6.0");
 		} else {
 			xmlRequest = GetXmlHttpRequest();
 			xsltRequest = GetXmlHttpRequest();
@@ -328,7 +326,7 @@ function Transformation() {
 
 function browserSupportsXSLT() {
     var support = false;
-    if (window.ActiveXObject) { // IE 6+
+    if (window.ActiveXObject !== 'undefined') { // IE 6+
         support = true;
     }
     var u = 'undefined';
