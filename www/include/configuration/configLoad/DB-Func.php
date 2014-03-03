@@ -232,15 +232,26 @@
 				$resCFG["resource_comment"] = trim($regs[1])." ".date("d/m/Y - H:i:s", time());
 				# Add in db
 				require_once("./include/configuration/configResources/DB-Func.php");
-                                $db->query("DELETE FROM cfg_resource_instance_relations 
-                                            WHERE instance_id = ".$db->escape($pollerId)."
-                                            AND resource_id IN (SELECT resource_id 
-                                                               FROM cfg_resource
-                                                               WHERE resource_name = '".$db->escape($resCFG['resource_name'])."')");
-                                if ($resId = insertResource($resCFG)) {
-                                    insertInstanceRelations($resId, $pollerId);
+            	$db->query("DELETE FROM cfg_resource_instance_relations 
+                            WHERE instance_id = ".$db->escape($pollerId)."
+                            AND resource_id IN (SELECT resource_id 
+                  	          FROM cfg_resource
+							  WHERE resource_name = '".$db->escape($resCFG['resource_name'])."')"
+						  );
+				$res = $db->query("SELECT resource_id 
+					FROM cfg_resource c
+					WHERE resource_name = '".$db->escape($resCFG['resource_name'])."'
+					AND NOT EXISTS(
+						SELECT resource_id FROM cfg_resource_instance_relations r 
+						WHERE r.resource_id = c.resource_id
+					)");
+				while ($rows = $res->fetchRow()) {
+					$db->query("DELETE FROM cfg_resource WHERE resource_id = " . $db->escape($rows['resource_id']));
+				}
+                if ($resId = insertResource($resCFG)) {
+                	insertInstanceRelations($resId, $pollerId);
 				    $i++;
-                                }
+                }
 			}
 			unset($regs);
 		}
