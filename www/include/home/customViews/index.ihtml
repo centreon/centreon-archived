@@ -19,7 +19,7 @@
 	<div id="tabs" style='margin-top:5px;'>
 		<ul>
 			{foreach name=viewId item=view from=$views}
-				<li><span class="ui-icon ui-icon-{$view.icon}" style="float:left;"></span><a href="./include/home/customViews/views.php?currentView={$view.custom_view_id}">{$view.name}</a></li>			
+				<li>{$view.default}<span class="ui-icon ui-icon-{$view.icon}" style="float:left;"></span><a href="./include/home/customViews/views.php?currentView={$view.custom_view_id}">{$view.name}</a></li>
 			{/foreach}
 		</ul>
 	</div>
