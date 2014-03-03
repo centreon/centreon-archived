@@ -1,6 +1,6 @@
 -- Table manage hooks
 CREATE TABLE `hooks` (
-    `hook_id` INT NOT NULL AUTO_INCREMENT,
+    `hook_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `hook_name` VARCHAR(255),
     `hook_description` VARCHAR(255),
     `hook_type` tinyint(1) DEFAULT 0,
@@ -8,8 +8,8 @@ CREATE TABLE `hooks` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `module_hooks` (
-    `module_id` INT NOT NULL,
-    `hook_id` INT NOT NULL,
+    `module_id` INT UNSIGNED NOT NULL,
+    `hook_id` INT UNSIGNED NOT NULL,
     `module_hook_name` VARCHAR(255) NOT NULL,
     `module_hook_description` VARCHAR(255) NOT NULL,
     KEY `module_id` (`module_id`),
