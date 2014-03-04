@@ -136,8 +136,10 @@ class Template extends \Smarty
         $this->addCss('bootstrap.min.css');
         $this->addCss('font-awesome.min.css');
         $this->addCss('centreon.css');
+        $this->addCss('jquery-ui.min.css');
         /* Load javascript */
         $this->addJs('jquery.min.js');
+        $this->addJs('jquery-ui.min.js');
         $this->addJs('bootstrap.min.js');
         $this->addJs('jquery.ba-resize.js');
         $this->addJs('centreon.functions.js');

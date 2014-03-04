@@ -62,9 +62,6 @@ class Select implements Custominterface
         
         $addJs = '';
         if (isset($element['label_ordered']) && $element['label_ordered']) {
-            $tpl->addCss('jquery-ui.min.css');
-            $tpl->addJs('jquery-ui.min.js');
-            
             $addJs = '$("#'.$element['name'].'").on("change", function() { $("#'.$element['name'].'_val").html($("#'.$element['name'].'").val());});';
 
             $addJs .= '$("#'.$element['name'].'").select2("container").find("ul.select2-choices").sortable({
