@@ -63,7 +63,7 @@ class ToolsController extends \Centreon\Core\Controller
         $route = str_replace('.min.', '.', $route);
         $centreonPath = realpath(__DIR__ . '/../../www/');
         if (false === file_exists($centreonPath . $route)) {
-            $response->redirect('404', 404);
+            $this->notFoundAction();
             return;
         }
         
@@ -87,26 +87,42 @@ class ToolsController extends \Centreon\Core\Controller
         $router = $di->get('router');
         $params = $router->request()->paramsNamed();
         $filename = $params['image'] . $params['format'];
-        $query = 'SELECT `binary`, `mimetype`
-            FROM binaries
-            WHERE filetype = 1
-                AND filename = :filename';
+        $query = 'SELECT b.binary, b.mimetype
+            FROM binaries b, view_img i
+            WHERE i.img_name = :filename
+                AND i.binary_id = b.binary_id';
         $stmt = $dbconn->prepare($query);
         $stmt->bindParam(':filename', $filename, \PDO::PARAM_STR);
         $stmt->execute();
         $row = $stmt->fetch();
         if (false === $row) {
-            $response->redirect('404', 404);
+            $this->notFoundAction();
             return;
         }
 
         /* Write file in filesystem for serve file by http server */
         $centreonPath = realpath(__DIR__ . '/../../www/');
         $filefs = $centreonPath . '/uploads/' . $filename;
-	    if (false === file_exists($filename)) {
+        if (false === file_exists($filename)) {
             file_put_contents($filefs, $row['binary']);
-	    }
+        }
         $router->response()->header('Content-Type', $row['mimetype']);
         $router->response()->body($row['binary']);
+        $router->response()->send();
+    }
+
+    /**
+     * Page 404
+     *
+     * @method GET
+     * @route 404
+     */
+    public function notFoundAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $response = $di->get('router')->response();
+        $response->code(404);
+        $tpl = $di->get('template');
+        $tpl->display('404.tpl');
     }
 }
