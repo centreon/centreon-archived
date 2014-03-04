@@ -39,6 +39,7 @@ use \Models\Configuration\Host,
     \Models\Configuration\Relation\Host\Contact,
     \Models\Configuration\Relation\Host\Contactgroup,
     \Models\Configuration\Relation\Host\Hostgroup,
+    \Models\Configuration\Relation\Host\Hostchild,
     \Models\Configuration\Relation\Host\Hostparent,
     \Models\Configuration\Relation\Host\Hostcategory,
     \Models\Configuration\Relation\Host\Poller,
@@ -77,9 +78,8 @@ class HostController extends ObjectAbstract
         
         $requestParams = $this->getParams('get');
         
-        $hostObj = new Host();
         $filters = array('host_name' => $requestParams['q'].'%', 'host_register' => '1');
-        $hostList = $hostObj->getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
+        $hostList = Host::getList('host_id, host_name', -1, 0, null, "ASC", $filters, "AND");
         
         $finalHostList = array();
         foreach($hostList as $host) {
@@ -158,8 +158,7 @@ class HostController extends ObjectAbstract
         $tpl = $di->get('template');
         
         $requestParam = $this->getParams('named');
-        $connObj = new Host();
-        $currentHostValues = $connObj->getParameters($requestParam['id'], array(
+        $currentHostValues = Host::getParameters($requestParam['id'], array(
             'host_id',
             'host_name',
             'host_alias',
@@ -223,8 +222,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostContactObj = new Contact();
-        $contactList = $hostContactObj->getMergedParameters(array('contact_id', 'contact_name', 'contact_email'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $contactList = Contact::getMergedParameters(array('contact_id', 'contact_name', 'contact_email'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
         
         $finalContactList = array();
         foreach($contactList as $contact) {
@@ -252,8 +250,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostContactgroupObj = new Contactgroup();
-        $contactgroupList = $hostContactgroupObj->getMergedParameters(array('cg_id', 'cg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $contactgroupList = Contactgroup::getMergedParameters(array('cg_id', 'cg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
         
         $finalContactgroupList = array();
         foreach($contactgroupList as $contactgroup) {
@@ -280,8 +277,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostHostgroupObj = new Hostgroup();
-        $hostgroupList = $hostHostgroupObj->getMergedParameters(array('hg_id', 'hg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $hostgroupList = Hostgroup::getMergedParameters(array('hg_id', 'hg_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
         
         $finalHostgroupList = array();
         foreach($hostgroupList as $hostgroup) {
@@ -305,8 +301,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostCategoryObj = new Hostcategory();
-        $hostcategoryList = $hostCategoryObj->getMergedParameters(array('hc_id', 'hc_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $hostcategoryList = Hostcategory::getMergedParameters(array('hc_id', 'hc_name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
         
         $finalHostcategoryList = array();
         foreach($hostcategoryList as $hostcategory) {
@@ -328,8 +323,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostParentObj = new Hostparent('parent');
-        $hostparentList = $hostParentObj->getMergedParameters(
+        $hostparentList = Hostparent::getMergedParameters(
             array('host_id', 'host_name'),
             array(),
             -1,
@@ -364,8 +358,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostChildObj = new Hostparent('child');
-        $hostchildList = $hostChildObj->getMergedParameters(
+        $hostchildList = Hostchild::getMergedParameters(
             array('host_id', 'host_name'),
             array(),
             -1,
@@ -402,9 +395,8 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostObj = new Host();
         $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = $hostObj->getList('timeperiod_tp_id', -1, 0, null, "ASC", $filters, "AND");
+        $hostList = Host::getList('timeperiod_tp_id', -1, 0, null, "ASC", $filters, "AND");
         
         if (count($hostList) == 0) {
             $router->response()->json(array('id' => null, 'text' => null));
@@ -438,13 +430,11 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostObj = new Host();
         $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = $hostObj->getList('timeperiod_tp_id2', -1, 0, null, "ASC", $filters, "AND");
+        $hostList = Host::getList('timeperiod_tp_id2', -1, 0, null, "ASC", $filters, "AND");
         
-        $timeperiodObj = new Timeperiod();
         $filtersTimperiod = array('tp_id' => $hostList[0]['timeperiod_tp_id2']);
-        $timeperiodList = $timeperiodObj->getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
+        $timeperiodList = Timeperiod::getList('tp_id, tp_name', -1, 0, null, "ASC", $filtersTimperiod, "AND");
         
         $finalTimeperiodList = array(
             "id" => $timeperiodList[0]['tp_id'],
@@ -468,13 +458,11 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostObj = new Host();
         $filters = array('host.host_id' => $requestParam['id']);
-        $hostList = $hostObj->getList('command_command_id2', -1, 0, null, "ASC", $filters, "AND");
+        $hostList = Host::getList('command_command_id2', -1, 0, null, "ASC", $filters, "AND");
         
-        $commandObj = new Command();
         $filtersCommand = array('command_id' => $hostList[0]['command_command_id2']);
-        $commandList = $commandObj->getList('command_id, command_name', -1, 0, null, "ASC", $filtersCommand, "AND");
+        $commandList = Command::getList('command_id, command_name', -1, 0, null, "ASC", $filtersCommand, "AND");
         
         $finalCommandList = array();
         if (count($commandList) > 0) {
@@ -523,8 +511,7 @@ class HostController extends ObjectAbstract
         
         $requestParam = $this->getParams('named');
         
-        $hostPollerObj = new Poller();
-        $pollerList = $hostPollerObj->getMergedParameters(array('id', 'name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
+        $pollerList = Poller::getMergedParameters(array('id', 'name'), array(), -1, 0, null, "ASC", array('host.host_id' => $requestParam['id']), "AND");
         
         $finalPollerList = array();
         if (count($pollerList) > 0) {
