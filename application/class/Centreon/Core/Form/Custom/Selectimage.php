@@ -32,81 +32,55 @@
  * For more information : contact@centreon.com
  *
  */
-namespace Controllers;
+namespace Centreon\Core\Form\Custom;
 
-/**
- * Validators controller
- *
- * @authors Lionel Assepo
- * @package Centreon
- * @subpackage Controllers
- */
-class ValidatorsController extends \Centreon\Core\Controller
+class Selectimage implements Custominterface
 {
     /**
      * 
-     * @method post
-     * @route /validator/email
+     * @param array $element
+     * @return array
      */
-    public function emailAction()
+    public static function renderHtmlInput(array $element)
     {
-        $params = $this->getParams('post');
+        $selectImageParameters = array(
+            'label_label' => $element['label_label'],
+            'label_multiple' => false,
+            'name' => $element['name'],
+            'label_defaultValuesRoute' => $element['label_defaultValuesRoute'],
+            'label_listValuesRoute' => $element['label_listValuesRoute'],
+            'label_extra' => $element['label_extra']
+        );
         
-        if (filter_var($params['email'], FILTER_VALIDATE_EMAIL)) {
-            echo "success";
-        } else {
-            echo "fail";
-        }
+        $addImageUrl = \Centreon\Core\Di::getDefault()
+                        ->get('router')
+                        ->getPathFor($element['label_wizardRoute']);
+        
+        $selectForImage = Select::renderHtmlInput($selectImageParameters);
+        $fileUploadForImage = File::renderHtmlInput($element);
+        
+        $finalHtml = '<div class="row">'
+            . '<div class="col-sm-10">'.$selectForImage['html'].'</div>'
+            . '<div class="col-sm-2"><button class="btn btn-default" id="modalAdd_'.$element['name'].'" type="button">Add Files...</button></div>'
+            . '</div>';
+        
+        $finalJs = $selectForImage['js'].' '.$fileUploadForImage['js'].' ';
+        $finalJs .= '$("#modalAdd_'.$element['name'].'").on("click", function(e) {
+            $("#modal").removeData("bs.modal");
+            $("#modal").removeData("centreonWizard");
+            $("#modal .modal-content").text("");
+            $("#modal").one("loaded.bs.modal", function(e) {
+                $(this).centreonWizard();
+            });
+            $("#modal").modal({
+                "remote": "'.$addImageUrl.'"
+            });
+        });';
+        
+        return array(
+            'html' => $finalHtml,
+            'js' => $finalJs
+        );
     }
     
-    /**
-     * 
-     * @method post
-     * @route /validator/resolvedns
-     */
-    public function resolveDnsAction()
-    {
-        $params = $this->getParams('post');
-        
-        $ipAddress = gethostbyname($params['dnsname']);
-        
-        if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
-            echo $ipAddress;
-        } else {
-            echo "fail";
-        }
-    }
-    
-    /**
-     * 
-     * @method post
-     * @route /validator/ipaddress
-     */
-    public function ipAddressAction()
-    {
-        $params = $this->getParams('post');
-        
-        if (filter_var($params['ipaddress'], FILTER_VALIDATE_IP)) {
-            echo "success";
-        } else {
-            echo "fail";
-        }
-    }
-    
-    /**
-     * 
-     * @method post
-     * @route /validator/unique
-     */
-    public function uniqueAction()
-    {
-        $params = $this->getParams('post');
-        
-        $callableObject = '\\Models\\Configuration\\Relation\\'.ucwords($params['object']);
-        if ($callableObject::isUnique($params['value'])) {
-            echo "unique";
-        } else {
-            echo "not unique";
-        }
-    }
 }

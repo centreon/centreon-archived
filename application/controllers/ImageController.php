@@ -41,72 +41,57 @@ namespace Controllers;
  * @package Centreon
  * @subpackage Controllers
  */
-class ValidatorsController extends \Centreon\Core\Controller
+class ImageController extends \Centreon\Core\Controller
 {
+    
     /**
-     * 
-     * @method post
-     * @route /validator/email
+     * Add a image
+     *
+     * @method get
+     * @route /administration/media/image/add
      */
-    public function emailAction()
+    public function addAction()
     {
-        $params = $this->getParams('post');
-        
-        if (filter_var($params['email'], FILTER_VALIDATE_EMAIL)) {
-            echo "success";
-        } else {
-            echo "fail";
-        }
+        $di = \Centreon\Core\Di::getDefault();
+        $config = $di->get('config');
+        $form = new \Centreon\Core\Form\Wizard(rtrim($config->get('global','base_url'), '/').'/administration/media/image/add', 0, array('id' => 0));
+        echo $form->generate();
     }
     
     /**
      * 
-     * @method post
-     * @route /validator/resolvedns
+     * @method get
+     * @route /image/icon/centreon
      */
-    public function resolveDnsAction()
+    public function centreonIconAction()
     {
-        $params = $this->getParams('post');
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
         
-        $ipAddress = gethostbyname($params['dnsname']);
+        $iconList = array(
+            'fa-bolt',
+            'fa-camera',
+            'fa-hdd-o',
+            'fa-laptop',
+            'fa-gears',
+            'fa-mobile-phone',
+            'fa-tablet',
+            'fa-wrench'
+        );
         
-        if (filter_var($ipAddress, FILTER_VALIDATE_IP)) {
-            echo $ipAddress;
-        } else {
-            echo "fail";
+        $finalIconList = array();
+        $finalIconList[] = array(
+            "id" => "",
+            "text" => "Centreon icon",
+        );
+        foreach($iconList as $icon) {
+            $finalIconList[] = array(
+                "id" => md5($icon),
+                "text" => substr($icon, 3),
+                "theming" => '<i class="fa '.$icon.'"></i> '.substr($icon, 3)
+            );
         }
-    }
-    
-    /**
-     * 
-     * @method post
-     * @route /validator/ipaddress
-     */
-    public function ipAddressAction()
-    {
-        $params = $this->getParams('post');
         
-        if (filter_var($params['ipaddress'], FILTER_VALIDATE_IP)) {
-            echo "success";
-        } else {
-            echo "fail";
-        }
-    }
-    
-    /**
-     * 
-     * @method post
-     * @route /validator/unique
-     */
-    public function uniqueAction()
-    {
-        $params = $this->getParams('post');
-        
-        $callableObject = '\\Models\\Configuration\\Relation\\'.ucwords($params['object']);
-        if ($callableObject::isUnique($params['value'])) {
-            echo "unique";
-        } else {
-            echo "not unique";
-        }
+        $router->response()->json($finalIconList);
     }
 }

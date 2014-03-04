@@ -158,6 +158,13 @@ class ToolsController extends \Centreon\Core\Controller
             $fileDestination = realpath(__DIR__.'/../../www/uploads/images/').'/'.$uploadedFile['name'];
 
             if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
+                
+                $query = 'INSERT INTO (binaries) `checksum` 
+                FROM `binaries`
+                WHERE `checksum` = :checksum';
+                
+                
+                
                 $router->response()->json(array(
                     'success' => true,
                     'filename' => $baseUrl.$uploadedFile['name']

@@ -25,7 +25,7 @@ CREATE TABLE `image_type_view_img_relation` (
     `image_type_id` INT UNSIGNED NOT NULL,
     `img_id` INT NOT NULL,
     PRIMARY KEY (`image_type_id`, `img_id`),
-    FOREIGN KEY (`img_id`) REFERENCES `view_img` (`img_id`),
+    FOREIGN KEY (`img_id`) REFERENCES `view_img` (`img_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ALTER TABLE `image_type_view_img_relation`

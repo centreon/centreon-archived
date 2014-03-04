@@ -380,6 +380,19 @@ abstract class Object
     {
         return static::$uniqueLabelField;
     }
+    
+    /**
+     * 
+     * @param string $value
+     */
+    public static function isUnique($value)
+    {
+        if (count($this->getList($value, 1)) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * Get Table Name

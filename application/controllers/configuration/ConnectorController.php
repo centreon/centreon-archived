@@ -29,7 +29,7 @@
  * exception to your version of the program, but you are not obliged to do so. If you
  * do not wish to do so, delete this exception statement from your version.
  *
- * For more information : contact@centreon.com
+ * For more information : connector@centreon.com
  *
  */
 
@@ -58,8 +58,31 @@ class ConnectorController extends ObjectAbstract
         parent::listAction();
     }
 
+    /**
+     * 
+     * @method get
+     * @route /configuration/connector/formlist
+     */
     public function formListAction()
     {
+        $di = \Centreon\Core\Di::getDefault();
+        $router = $di->get('router');
+        
+        $requestParams = $this->getParams('get');
+        
+        $connectorObj = new Connector();
+        $filters = array('name' => $requestParams['q'].'%');
+        $connectorList = $connectorObj->getList('id, name', -1, 0, null, "ASC", $filters, "AND");
+        
+        $finalConnectorList = array();
+        foreach($connectorList as $connector) {
+            $finalConnectorList[] = array(
+                "id" => $connector['id'],
+                "text" => $connector['name']
+            );
+        }
+        
+        $router->response()->json($finalConnectorList);
     }
 
     /**
