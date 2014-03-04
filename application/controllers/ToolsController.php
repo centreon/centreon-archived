@@ -103,4 +103,49 @@ class ToolsController extends \Centreon\Core\Controller
         $router->response()->header('Content-Type', $row['mimetype']);
         $router->response()->body($row['binary']);
     }
+    
+    /**
+     * Action for uploading files from database
+     *
+     * @method POST
+     * @route /file/upload
+     */
+    public function fileUploadAction()
+    {
+        $di = \Centreon\Core\Di::getDefault();
+        $dbconn = $di->get('db_centreon');
+        $router = $di->get('router');
+        
+        $uploadedFile = $_FILES['centreonUploadedFile'];
+        
+        
+        // Check if file exists in DB by its checksum
+        $fileChecksum = md5_file($uploadedFile['tmp_name']);
+        $query = 'SELECT `checksum` 
+            FROM `binaries`
+            WHERE `checksum` = :checksum';
+        $stmt = $dbconn->prepare($query);
+        $stmt->bindParam(':checksum', $fileChecksum, \PDO::PARAM_STR);
+        $stmt->execute();
+        $row = $stmt->fetch();
+        
+        if (false === $row) {
+            $di = \Centreon\Core\Di::getDefault();
+            $config = $di->get('config');
+            $baseUrl = rtrim($config->get('global','base_url'), '/').'/uploads/images/';
+            $fileDestination = realpath(__DIR__.'/../../www/uploads/images/').'/'.$uploadedFile['name'];
+
+            if (move_uploaded_file($uploadedFile['tmp_name'], $fileDestination)) {
+                $router->response()->json(array(
+                    'success' => true,
+                    'filename' => $baseUrl.$uploadedFile['name']
+                ));
+            }
+        } else {
+            $router->response()->json(array(
+                'success' => false,
+                'message' => 'This file already exist on the server'
+            ));
+        }
+    }
 }
