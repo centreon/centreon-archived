@@ -102,7 +102,7 @@ class ToolsController extends \Centreon\Core\Controller
 
         /* Write file in filesystem for serve file by http server */
         $centreonPath = realpath(__DIR__ . '/../../www/');
-        $filefs = $centreonPath . '/uploads/' . $filename;
+        $filefs = $centreonPath . '/uploads/images/' . $filename;
         if (false === file_exists($filename)) {
             file_put_contents($filefs, $row['binary']);
         }
