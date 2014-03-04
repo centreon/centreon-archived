@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Connector extends Object
 {
-    protected $table = "connector";
-    protected $primaryKey = "id";
-    protected $uniqueLabelField = "name";
+    protected static $table = "connector";
+    protected static $primaryKey = "id";
+    protected static $uniqueLabelField = "name";
 }

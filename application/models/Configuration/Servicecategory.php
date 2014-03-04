@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Servicecategory extends Object
 {
-    protected $table = "service_categories";
-    protected $primaryKey = "sc_id";
-    protected $uniqueLabelField = "sc_name";
+    protected static $table = "service_categories";
+    protected static $primaryKey = "sc_id";
+    protected static $uniqueLabelField = "sc_name";
 }

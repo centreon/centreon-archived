@@ -39,9 +39,9 @@ namespace Models\Configuration;
 
 class Relation\Hostgroup\Service extends Relation
 {
-    protected $relationTable = "host_service_relation";
-    protected $firstKey = "hostgroup_hg_id";
-    protected $secondKey = "service_service_id";
-    protected $firstObject = "\\Models\\Configuration\\Hostgroup";
-    protected $secondObject = "\\Models\\Configuration\\Service";
+    protected static $relationTable = "host_service_relation";
+    protected static $firstKey = "hostgroup_hg_id";
+    protected static $secondKey = "service_service_id";
+    public static $firstObject = "\\Models\\Configuration\\Hostgroup";
+    public static $secondObject = "\\Models\\Configuration\\Service";
 }

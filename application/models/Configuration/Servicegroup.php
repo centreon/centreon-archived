@@ -44,7 +44,7 @@ namespace Models\Configuration;
  */
 class Servicegroup extends Object
 {
-    protected $table = "servicegroup";
-    protected $primaryKey = "sg_id";
-    protected $uniqueLabelField = "sg_name";
+    protected static $table = "servicegroup";
+    protected static $primaryKey = "sg_id";
+    protected static $uniqueLabelField = "sg_name";
 }
