@@ -35,6 +35,8 @@
       this.$elem.find( ".steps" ).addClass( "previous-disabled" );
     }
 
+    this.setState();
+
     return this;
   }
 
