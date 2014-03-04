@@ -40,9 +40,9 @@ namespace Models\Configuration;
 
 class Relation\Servicegroup\Hostgroupservice extends Relation
 {
-    protected $relationTable = "servicegroup_relation";
-    protected $firstKey = "servicegroup_sg_id";
-    protected $secondKey = "service_service_id";
+    protected static $relationTable = "servicegroup_relation";
+    protected static $firstKey = "servicegroup_sg_id";
+    protected static $secondKey = "service_service_id";
 
     /**
      * Used for inserting relation into database
@@ -52,10 +52,11 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      * @param int $serviceId
      * @return void
      */
-    public function insert($fkey, $hgId, $serviceId)
+    public static function insert($fkey, $hgId, $serviceId)
     {
-        $sql = "INSERT INTO $this->relationTable ($this->firstKey, hostgroup_hg_id, $this->secondKey) VALUES (?, ?, ?)";
-        $stmt = $this->db->prepare($sql);
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
+        $sql = "INSERT INTO ".static::$relationTable." (".static::$firstKey.", hostgroup_hg_id, ".static::$secondKey.") VALUES (?, ?, ?)";
+        $stmt = $db->prepare($sql);
         $stmt->execute(array($fkey, $hgId, $serviceId));
     }
 
@@ -67,19 +68,20 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      * @param int $serviceId
      * @return void
      */
-    public function delete($fkey, $hgId = null, $serviceId = null)
+    public static function delete($fkey, $hgId = null, $serviceId = null)
     {
+        $db = \Centreon\Core\Di::getDefault()->get('db_centreon');
         if (isset($fkey) && isset($hgId) && isset($serviceId)) {
-            $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ? AND hostgroup_hg_id = ? AND $this->secondKey = ?";
+            $sql = "DELETE FROM ".static::$relationTable." WHERE ".static::$firstKey." = ? AND hostgroup_hg_id = ? AND ".static::$secondKey." = ?";
             $args = array($fkey, $hgId, $serviceId);
         } elseif (isset($hgId) && isset($serviceId)) {
-            $sql = "DELETE FROM $this->relationTable WHERE hostgroup_hg_id = ? AND $this->secondKey = ?";
+            $sql = "DELETE FROM ".static::$relationTable." WHERE hostgroup_hg_id = ? AND ".static::$secondKey." = ?";
             $args = array($hgId, $serviceId);
         } else {
-            $sql = "DELETE FROM $this->relationTable WHERE $this->firstKey = ?";
+            $sql = "DELETE FROM ".static::$relationTable." WHERE ".static::$firstKey." = ?";
             $args = array($fkey);
         }
-        $stmt = $this->db->prepare($sql);
+        $stmt = $db->prepare($sql);
         $stmt->execute($args);
     }
 
@@ -90,13 +92,13 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      * @param int $serviceId
      * @return array
      */
-    public function getServicegroupIdFromHostIdServiceId($hgId, $serviceId)
+    public static function getServicegroupIdFromHostIdServiceId($hgId, $serviceId)
     {
-        $sql = "SELECT $this->firstKey FROM $this->relationTable WHERE hostgroup_hg_id = ? AND $this->secondKey = ?";
-        $result = $this->getResult($sql, array($hgId, $serviceId));
+        $sql = "SELECT ".static::$firstKey." FROM ".static::$relationTable." WHERE hostgroup_hg_id = ? AND ".static::$secondKey." = ?";
+        $result = self::getResult($sql, array($hgId, $serviceId));
         $tab = array();
         foreach ($result as $rez) {
-            $tab[] = $rez[$this->firstKey];
+            $tab[] = $rez[static::$firstKey];
         }
         return $tab;
     }
@@ -107,15 +109,15 @@ class Relation\Servicegroup\Hostgroupservice extends Relation
      * @param int $servicegroupId
      * @return array multidimentional array with hostgroup_id and service_id indexes
      */
-    public function getHostGroupIdServiceIdFromServicegroupId($servicegroupId)
+    public static function getHostGroupIdServiceIdFromServicegroupId($servicegroupId)
     {
-        $sql = "SELECT hostgroup_hg_id, $this->secondKey FROM $this->relationTable WHERE $this->firstKey = ?";
-        $result = $this->getResult($sql, array($servicegroupId));
+        $sql = "SELECT hostgroup_hg_id, ".static::$secondKey." FROM ".static::$relationTable." WHERE ".static::$firstKey." = ?";
+        $result = self::getResult($sql, array($servicegroupId));
         $tab = array();
         $i = 0;
         foreach ($result as $rez) {
             $tab[$i]['hostgroup_id'] = $rez['hostgroup_hg_id'];
-            $tab[$i]['service_id'] = $rez[$this->secondKey];
+            $tab[$i]['service_id'] = $rez[static::$secondKey];
             $i++;
         }
         return $tab;

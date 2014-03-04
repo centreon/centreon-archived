@@ -39,9 +39,9 @@ namespace Models\Configuration\Relation\Aclgroup;
 
 class Aclmenu extends \Models\Configuration\Relation
 {
-    protected $relationTable = "acl_group_menu_relations";
-    protected $firstKey = "acl_group_id";
-    protected $secondKey = "acl_menu_id";
-    protected $firstObject =  "\\Models\\Configuration\\Acl\\Group";
-    protected $secondObject = "\\Models\\Configuration\\Acl\\Menu";
+    protected static $relationTable = "acl_group_menu_relations";
+    protected static $firstKey = "acl_group_id";
+    protected static $secondKey = "acl_menu_id";
+    public static $firstObject =  "\\Models\\Configuration\\Acl\\Group";
+    public static $secondObject = "\\Models\\Configuration\\Acl\\Menu";
 }
